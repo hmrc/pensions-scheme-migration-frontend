@@ -8,11 +8,13 @@ val silencerVersion = "1.7.0"
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
   .settings(
+    name                             := appName,
     majorVersion                     := 0,
     scalaVersion                     := "2.12.12",
     libraryDependencies              ++= AppDependencies.compile ++ AppDependencies.test,
+    PlayKeys.playDefaultPort         := 8213,
     TwirlKeys.templateImports ++= Seq(
-      "uk.gov.hmrc.pensionsschememigrationfrontend.config.AppConfig",
+      "config.AppConfig",
       "uk.gov.hmrc.govukfrontend.views.html.components._",
       "uk.gov.hmrc.govukfrontend.views.html.helpers._",
       "uk.gov.hmrc.hmrcfrontend.views.html.components._",

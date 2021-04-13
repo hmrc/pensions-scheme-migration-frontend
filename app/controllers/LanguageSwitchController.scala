@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionsschememigrationfrontend.controllers
+package controllers
 
-import uk.gov.hmrc.pensionsschememigrationfrontend.config.AppConfig
-import uk.gov.hmrc.play.language.{LanguageController, LanguageUtils}
-import play.api.mvc._
-import play.api.i18n.Lang
 import com.google.inject.Inject
+import config.AppConfig
+import play.api.i18n.Lang
+import play.api.mvc._
+import uk.gov.hmrc.play.language.{LanguageController, LanguageUtils}
+
 import javax.inject.Singleton
 
 @Singleton
 class LanguageSwitchController @Inject()(
-  appConfig: AppConfig,
-  languageUtils: LanguageUtils,
-  cc: ControllerComponents)
+                                          appConfig: AppConfig,
+                                          languageUtils: LanguageUtils,
+                                          cc: ControllerComponents)
     extends LanguageController(languageUtils, cc) {
   import appConfig._
 

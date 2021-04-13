@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.pensionsschememigrationfrontend.config.AppConfig
+package models
 
-@this(layout: Layout)
+import play.api.libs.json.{Json, OFormat}
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+case class MigrationLock(pstr: String, credId: String, psaId: String)
 
-@layout(pageTitle = Some("pensions-scheme-migration-frontend")) {
-    <h1 class="govuk-heading-xl">pensions-scheme-migration-frontend</h1>
-    <p class="govuk-body">@{messages("service.text")}</p>
+object MigrationLock {
+  implicit val format: OFormat[MigrationLock] = Json.format[MigrationLock]
 }

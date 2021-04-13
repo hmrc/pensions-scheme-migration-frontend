@@ -14,17 +14,9 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.pensionsschememigrationfrontend.controllers.routes.LanguageSwitchController._
-@import uk.gov.hmrc.pensionsschememigrationfrontend.config.AppConfig
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcLanguageSelect
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.LanguageSelect
+@import controllers.routes.LanguageSwitchController._
+@import config.AppConfig
 
 @this(hmrcLanguageSelect: HmrcLanguageSelect)
 
 @()(implicit messages: Messages, appConfig: AppConfig)
-@hmrcLanguageSelect(LanguageSelect(
-    if (messages.lang.code == "cy") Cy else En,
-    (En, switchToLanguage("en").url),
-    (Cy, switchToLanguage("cy").url)
-))
-
