@@ -17,9 +17,6 @@
 package controllers
 
 import config.AppConfig
-import connectors.cache.{LockCacheConnector, UserAnswersCacheConnector}
-import models.MigrationLock
-import play.api.libs.json.Json
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.HelloWorldPage

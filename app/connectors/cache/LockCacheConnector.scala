@@ -62,7 +62,7 @@ class LockCacheConnector @Inject()(config: AppConfig,
     get(config.lockByUserUrl, headers(hc))
 
   private def get(url: String, headers: Seq[(String, String)])
-                 (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[MigrationLock]] =
+                 (implicit ec: ExecutionContext): Future[Option[MigrationLock]] =
 
     http
       .url(url)
@@ -91,7 +91,7 @@ class LockCacheConnector @Inject()(config: AppConfig,
     remove(config.lockByUserUrl, headers(hc))
 
   private def remove(url: String, headers: Seq[(String, String)])
-            (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result] =
+            (implicit ec: ExecutionContext): Future[Result] =
     http
       .url(url)
       .withHttpHeaders(headers: _*)

@@ -52,8 +52,7 @@ class UserAnswersCacheConnector @Inject()(config: AppConfig,
       }
 
   def save(lock: MigrationLock, value: JsValue)
-          (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] = {
-
+          (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] =
     http
       .url(config.dataCacheUrl)
       .withHttpHeaders(lockHeaders(hc, lock): _*)
@@ -66,7 +65,6 @@ class UserAnswersCacheConnector @Inject()(config: AppConfig,
             Future.failed(new HttpException(response.body, response.status))
         }
       }
-  }
 
   def remove(pstr: String)
                         (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result] =
