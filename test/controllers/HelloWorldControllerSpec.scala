@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionsschememigrationfrontend.controllers
+package controllers
 
+import config.AppConfig
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -25,10 +26,12 @@ import play.api.test.Helpers._
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
-import uk.gov.hmrc.pensionsschememigrationfrontend.config.AppConfig
-import uk.gov.hmrc.pensionsschememigrationfrontend.views.html.HelloWorldPage
+import views.html.HelloWorldPage
 
 class HelloWorldControllerSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
+
+  implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
+
   private val fakeRequest = FakeRequest("GET", "/")
 
   private val env           = Environment.simple()

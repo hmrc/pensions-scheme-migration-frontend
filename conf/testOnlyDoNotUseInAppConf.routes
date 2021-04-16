@@ -11,3 +11,17 @@
 
 # Add all the application routes to the prod.routes file
 ->         /                          prod.Routes
+
+GET        /:pstr/setLock                       controllers.testonly.TestMongoController.setLock(pstr)
+
+GET        /:pstr/getLock                       controllers.testonly.TestMongoController.getLock(pstr)
+GET        /:pstr/getLockOnScheme               controllers.testonly.TestMongoController.getLockOnScheme(pstr)
+GET        /getLockByUser                       controllers.testonly.TestMongoController.getLockByUser()
+
+GET        /:pstr/removeLock                    controllers.testonly.TestMongoController.removeLock(pstr)
+GET        /:pstr/removeLockOnScheme            controllers.testonly.TestMongoController.removeLockOnScheme(pstr)
+GET        /removeLockByUser                    controllers.testonly.TestMongoController.removeLockByUser()
+
+GET        /:pstr/saveData                      controllers.testonly.TestMongoController.save(pstr)
+GET        /:pstr/fetchData                     controllers.testonly.TestMongoController.get(pstr)
+GET        /:pstr/removeData                    controllers.testonly.TestMongoController.remove(pstr)

@@ -14,28 +14,27 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionsschememigrationfrontend.controllers
+package controllers
 
-import javax.inject.{Inject, Singleton}
-
+import config.AppConfig
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import uk.gov.hmrc.pensionsschememigrationfrontend.config.AppConfig
-import uk.gov.hmrc.pensionsschememigrationfrontend.views.html.HelloWorldPage
+import views.html.HelloWorldPage
 
-import scala.concurrent.Future
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class HelloWorldController @Inject()(
-  appConfig: AppConfig,
-  mcc: MessagesControllerComponents,
-  helloWorldPage: HelloWorldPage)
-    extends FrontendController(mcc) {
+                                      appConfig: AppConfig,
+                                      mcc: MessagesControllerComponents,
+                                      helloWorldPage: HelloWorldPage)
+                                    (implicit val ec: ExecutionContext) extends FrontendController(mcc) {
 
   implicit val config: AppConfig = appConfig
 
   val helloWorld: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(helloWorldPage()))
+        Future.successful(Ok(helloWorldPage()))
   }
 
 }
