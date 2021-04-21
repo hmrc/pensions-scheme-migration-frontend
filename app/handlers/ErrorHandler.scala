@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package config
+package handlers
 
+import config.AppConfig
 import play.api.i18n.MessagesApi
 import play.api.mvc.Request
 import play.twirl.api.Html
