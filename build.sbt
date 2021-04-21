@@ -37,7 +37,7 @@ lazy val microservice = Project(appName, file("."))
   .settings(
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;.*models.*;.*repositories.*;" +
       ".*BuildInfo.*;.*javascript.*;.*Routes.*;.*GuiceInjector;.*UserAnswersCacheConnector;" +
-      ".*ControllerConfiguration;.*LanguageSwitchController;.*TestMongoController;.*LanguageSelect.*;.*TestMongoPage.*",
+      ".*ControllerConfiguration;.*LanguageSwitchController;.*TestMongoController;.*LanguageSelect.*;.*TestMongoPage.*;.*ErrorTemplate.*",
     ScoverageKeys.coverageMinimum := 80,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true
