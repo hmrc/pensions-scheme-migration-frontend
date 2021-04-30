@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.AppConfig
+package forms.beforeYouStart
 
-@this(layout: Layout)
+import forms.mappings.{Constraints, SchemeTypeMapping}
+import models.SchemeType
+import play.api.data.Form
 
-@(title: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+import javax.inject.Inject
 
-@layout(pageTitle = "pensions-scheme-migration-frontend") {
-    <h1 class="govuk-heading-xl">@title</h1>
-    <p class="govuk-body">@{messages("service.text")}</p>
+class SchemeTypeFormProvider @Inject() extends SchemeTypeMapping with Constraints {
+  def apply(): Form[SchemeType] = Form(
+    "schemeType" -> schemeTypeMapping(requiredTypeKey = "messages__scheme_type__error__required")
+  )
 }

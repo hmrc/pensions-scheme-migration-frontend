@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.AppConfig
+package forms.beforeYouStart
 
-@this(layout: Layout)
+import forms.mappings.Mappings
+import play.api.data.Form
+import utils.CountryOptions
 
-@(title: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+import javax.inject.Inject
 
-@layout(pageTitle = "pensions-scheme-migration-frontend") {
-    <h1 class="govuk-heading-xl">@title</h1>
-    <p class="govuk-body">@{messages("service.text")}</p>
+class EstablishedCountryFormProvider @Inject()(countries: CountryOptions) extends Mappings {
+
+  def apply(): Form[String] =
+    Form(
+      "value" -> text("messages__error__scheme_country").verifying(
+        country(countries, "messages__error__scheme_country"))
+    )
 }

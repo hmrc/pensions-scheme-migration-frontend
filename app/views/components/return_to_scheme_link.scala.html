@@ -14,13 +14,14 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
+@(schemeName: Option[String])(implicit messages: Messages)
 
-@this(layout: Layout)
-
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-
-@layout(pageTitle = Some("pensions-scheme-migration-frontend")) {
-    <h1 class="govuk-heading-xl">pensions-scheme-migration-frontend</h1>
-    <p class="govuk-body">@{messages("service.text")}</p>
-}
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <p class="govuk-margin-top-5">
+            <a id="return-link" href="@controllers.routes.TaskListController.onPageLoad">
+                @schemeName.fold(messages("site.return_to_scheme"))(name => messages("site.return_to", name))
+            </a>
+        </p>
+    </div>
+</div>

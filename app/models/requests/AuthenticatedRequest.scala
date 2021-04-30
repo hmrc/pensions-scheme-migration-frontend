@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.AppConfig
+package models.requests
 
-@this(layout: Layout)
+import play.api.mvc.{Request, WrappedRequest}
+import uk.gov.hmrc.domain.{PsaId, PspId}
 
-@(title: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+trait IdentifiedRequest
 
-@layout(pageTitle = "pensions-scheme-migration-frontend") {
-    <h1 class="govuk-heading-xl">@title</h1>
-    <p class="govuk-body">@{messages("service.text")}</p>
-}
+case class AuthenticatedRequest[A](request: Request[A], externalId: String, psaId: Option[PsaId], pspId: Option[PspId] = None)
+  extends WrappedRequest[A](request) with IdentifiedRequest

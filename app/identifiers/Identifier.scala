@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.AppConfig
+package identifiers
 
-@this(layout: Layout)
+import scala.language.implicitConversions
 
-@(title: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+trait Identifier
 
-@layout(pageTitle = "pensions-scheme-migration-frontend") {
-    <h1 class="govuk-heading-xl">@title</h1>
-    <p class="govuk-body">@{messages("service.text")}</p>
+object Identifier {
+
+  implicit def toString(id: Identifier): String =
+    id.toString
 }

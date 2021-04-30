@@ -25,6 +25,8 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig) {
   val welshLanguageSupportEnabled: Boolean = config.getOptional[Boolean]("features.welsh-language-support").getOrElse(false)
+  lazy val locationCanonicalList: String = config.get[String]("location.canonical.list")
+
 
   val en: String            = "en"
   val cy: String            = "cy"

@@ -1,3 +1,46 @@
 service.name = pensions-scheme-migration-frontend
 service.homePageUrl = /pensions-scheme-migration-frontend
 service.text = This is your new service
+
+site.back = Back
+site.save_and_continue = Save and continue
+site.return_to = Return to {0}
+site.return_to_scheme = Return to scheme
+site.error = Error:
+
+error.boolean = Please give an answer
+error.invalid_date = Give a correct date
+error.date.day_blank = Enter a day
+error.date.day_invalid = Give a correct day using numbers 1 to 31
+error.date.month_blank = Enter a month
+error.date.month_invalid = Give a correct month using numbers 1 to 12
+error.date.year_blank = Enter a year
+error.date.year_invalid = Give a correct year
+error.integer = Give an answer in whole numbers
+error.non_numeric = Give a value using only numbers
+error.number = Please enter a valid number
+error.required = Please enter a value
+error.summary.title = There is a problem
+
+messages__scheme_name__heading = What is the name of the scheme?
+messages__error__scheme_name = Enter the name of the scheme
+messages__error__scheme_name_length = The scheme name cannot be more than 160 characters
+messages__error__scheme_name_invalid = The scheme name contains invalid characters
+
+messages__scheme_type__title = What type of scheme is it?
+messages__scheme_type__heading = What type of scheme is {0}?
+messages__scheme_type_single = Single trust
+messages__scheme_type_single_hint = This is set up under trust and covers all members. The terms of the trust do not specifically allocate assets to a particular member.
+messages__scheme_type_group = Group life
+messages__scheme_type_group_hint = This is also known as death in service and only provides benefits upon death.
+messages__scheme_type_corp = Body corporate
+messages__scheme_type_corp_hint = This is a registered company, local authority or a body controlled by Royal Charter.
+messages__scheme_type_other = Other
+messages__scheme_type_other_hint = This can be a deed poll trust.
+messages__scheme_type__error__required = Select a type of pension scheme
+
+messages__established_country__title = Which country was the scheme established in?
+messages__established_country__h1 = Which country was {0} established in?
+messages__error__scheme_country = Enter a recognised country
+messages__scheme_country__hint = Enter the country where the scheme was established
+messages__common__pick_country = Select a country

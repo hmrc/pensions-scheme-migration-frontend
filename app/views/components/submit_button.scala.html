@@ -14,13 +14,8 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
+@(messageKey: String = "site.save_and_continue", enableSubmission: Boolean = true)(implicit messages: Messages)
 
-@this(layout: Layout)
-
-@(title: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-
-@layout(pageTitle = "pensions-scheme-migration-frontend") {
-    <h1 class="govuk-heading-xl">@title</h1>
-    <p class="govuk-body">@{messages("service.text")}</p>
-}
+<div class="subsection">
+    <button id="submit" class="button" @if(!enableSubmission) {disabled}>@messages(messageKey)</button>
+</div>

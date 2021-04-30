@@ -1,6 +1,16 @@
 # microservice specific routes
 
-GET        /language/:lang          controllers.LanguageSwitchController.switchToLanguage(lang: String)
-GET        /assets/*file            controllers.Assets.versioned(path = "/public", file: Asset)
+GET        /language/:lang                      controllers.LanguageSwitchController.switchToLanguage(lang: String)
+GET        /assets/*file                        controllers.Assets.versioned(path = "/public", file: Asset)
 
-GET        /hello-world             controllers.HelloWorldController.helloWorld
+GET        /index                               controllers.IndexController.onPageLoad
+GET        /task-list                           controllers.TaskListController.onPageLoad
+
+GET        /before-you-start/scheme-name        controllers.beforeYouStartSpoke.SchemeNameController.onPageLoad
+POST       /before-you-start/scheme-name        controllers.beforeYouStartSpoke.SchemeNameController.onSubmit
+
+GET        /before-you-start/scheme-type        controllers.beforeYouStartSpoke.SchemeTypeController.onPageLoad
+POST       /before-you-start/scheme-type        controllers.beforeYouStartSpoke.SchemeTypeController.onSubmit
+
+GET        /before-you-start/country            controllers.beforeYouStartSpoke.EstablishedCountryController.onPageLoad
+POST       /before-you-start/country            controllers.beforeYouStartSpoke.EstablishedCountryController.onSubmit

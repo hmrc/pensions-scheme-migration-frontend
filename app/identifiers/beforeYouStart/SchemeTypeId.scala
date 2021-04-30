@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.AppConfig
+package identifiers.beforeYouStart
 
-@this(layout: Layout)
+import identifiers.TypedIdentifier
+import models.SchemeType
 
-@(title: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+object SchemeTypeId extends TypedIdentifier[SchemeType] {
+  self =>
+  override def toString: String = "schemeType"
 
-@layout(pageTitle = "pensions-scheme-migration-frontend") {
-    <h1 class="govuk-heading-xl">@title</h1>
-    <p class="govuk-body">@{messages("service.text")}</p>
 }

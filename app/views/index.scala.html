@@ -15,23 +15,12 @@
  *@
 
 @import config.AppConfig
-@import uk.gov.hmrc.govukfrontend.views.Layouts
 
-@this(
-        govukLayout: GovukLayout,
-        head: Head,
-        hmrcStandardFooter: HmrcStandardFooter,
-        languageSelect: LanguageSelect
-)
-@(pageTitle: String,
-        headBlock: Option[Html] = None,
-        scriptsBlock: Option[Html] = None
-)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
+@this(layout: Layout)
 
-@govukLayout(
-    pageTitle = Some(pageTitle),
-    headBlock = Some(head(headBlock)),
-    scriptsBlock = scriptsBlock,
-    beforeContentBlock = None,
-    footerBlock = Some(hmrcStandardFooter())
-)(contentBlock)
+@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@layout(pageTitle = "pensions-scheme-migration-frontend") {
+    <h1 class="govuk-heading-xl">pensions-scheme-migration-frontend</h1>
+    <p class="govuk-body">@{messages("service.text")}</p>
+}
