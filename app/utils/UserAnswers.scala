@@ -18,12 +18,11 @@ package utils
 
 import identifiers.TypedIdentifier
 import play.api.libs.json._
+import utils.datacompletion.DataCompletion
 
 import scala.util.{Failure, Success, Try}
 
-final case class UserAnswers(
-                              data: JsObject = Json.obj()
-                            ) {
+final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Implicits with DataCompletion {
 
   def get[A](id: TypedIdentifier[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(id.path)).reads(data).getOrElse(None)

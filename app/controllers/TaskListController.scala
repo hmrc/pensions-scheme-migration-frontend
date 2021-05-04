@@ -16,39 +16,32 @@
 
 package controllers
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import forms.beforeYouStart.SchemeNameFormProvider
-import identifiers.beforeYouStart.SchemeNameId
-import navigators.CompoundNavigator
+import controllers.actions.{AuthAction, DataRetrievalAction}
+import helpers.TaskListHelper
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.beforeYouStart.schemeName
+import utils.UserAnswers
+import views.html.taskList
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class TaskListController @Inject()(
                                     override val messagesApi: MessagesApi,
-                                    userAnswersCacheConnector: UserAnswersCacheConnector,
-                                    navigator: CompoundNavigator,
                                     authenticate: AuthAction,
                                     getData: DataRetrievalAction,
-                                    requireData: DataRequiredAction,
-                                    formProvider: SchemeNameFormProvider,
+                                    taskListHelper: TaskListHelper,
                                     val controllerComponents: MessagesControllerComponents,
-                                    val view: schemeName
+                                    val view: taskList
                                   )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
     with Retrievals {
 
-  private val form = formProvider()
-
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(SchemeNameId).fold(form)(v => form.fill(v))
-      Ok(view(preparedForm, existingSchemeName))
+      Ok(view(taskListHelper.taskList(request.userAnswers.getOrElse(UserAnswers())), None))
   }
+
 }

@@ -19,20 +19,19 @@ package navigators
 import com.google.inject.Inject
 import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
+import controllers.beforeYouStartSpoke.routes._
 import identifiers._
-import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId}
+import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}
 import models.requests.DataRequest
 import play.api.mvc.{AnyContent, Call}
 import utils.UserAnswers
-import controllers.beforeYouStartSpoke.routes._
 
 class BeforeYouStartNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector,
                                         appConfig: AppConfig) extends Navigator {
 
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
-    case SchemeNameId => SchemeTypeController.onPageLoad()
-    case SchemeTypeId => EstablishedCountryController.onPageLoad()
+    case SchemeTypeId | EstablishedCountryId | WorkingKnowledgeId => CheckYourAnswersController.onPageLoad()
   }
 
 

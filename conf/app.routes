@@ -14,3 +14,8 @@ POST       /before-you-start/scheme-type        controllers.beforeYouStartSpoke.
 
 GET        /before-you-start/country            controllers.beforeYouStartSpoke.EstablishedCountryController.onPageLoad
 POST       /before-you-start/country            controllers.beforeYouStartSpoke.EstablishedCountryController.onSubmit
+
+GET        /before-you-start/pension-advisor    controllers.beforeYouStartSpoke.WorkingKnowledgeController.onPageLoad
+POST       /before-you-start/pension-advisor    controllers.beforeYouStartSpoke.WorkingKnowledgeController.onSubmit
+
+GET        /before-you-start/check-your-answers    controllers.beforeYouStartSpoke.CheckYourAnswersController.onPageLoad
