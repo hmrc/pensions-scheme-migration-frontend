@@ -14,19 +14,24 @@
  * limitations under the License.
  */
 
-package forms.beforeYouStart
+package utils
 
-import forms.mappings.{Constraints, Mappings}
-import javax.inject.Inject
-import play.api.data.Form
+import identifiers.Identifier
+import models.requests.DataRequest
+import navigators.CompoundNavigator
+import play.api.mvc.{AnyContent, Call}
 
-class SchemeNameFormProvider @Inject() extends Mappings with Constraints {
-  val schemeNameMaxLength = 160
+class FakeNavigator(desiredRoute: Call) extends CompoundNavigator {
 
-  def apply(): Form[String] = Form(
-    "schemeName" -> text("messages__error__scheme_name").
-      verifying(firstError(
-        maxLength(schemeNameMaxLength, "messages__error__scheme_name_length"),
-        safeText("messages__error__scheme_name_invalid")))
-  )
+  private[this] var userAnswers: Option[UserAnswers] = None
+
+  def lastUserAnswers: Option[UserAnswers] = userAnswers
+
+  override def nextPage(id: Identifier, ua: UserAnswers)(implicit request: DataRequest[AnyContent]): Call = {
+    this.userAnswers = Some(ua)
+    desiredRoute
+  }
+
 }
+
+object FakeNavigator extends FakeNavigator(Call("GET", "www.example.com"))

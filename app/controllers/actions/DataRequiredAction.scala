@@ -26,14 +26,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DataRequiredActionImpl @Inject()(implicit val executionContext: ExecutionContext) extends DataRequiredAction {
 
-  override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] = {
-    println("\n\n>>>>>>>>>>>>>>>>>>>. 6 "+request.userAnswers)
+  override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] =
     request.userAnswers match {
       case None => Future.successful(Left(Redirect(routes.IndexController.onPageLoad())))
       case Some(data) => Future.successful(Right(DataRequest(request.request, data,
         request.psaId, request.pspId, request.lock, request.viewOnly)))
     }
-  }
 }
 
 @ImplementedBy(classOf[DataRequiredActionImpl])

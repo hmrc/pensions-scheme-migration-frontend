@@ -16,7 +16,6 @@
 
 package controllers.beforeYouStartSpoke
 
-import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
@@ -34,7 +33,6 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class WorkingKnowledgeController @Inject()(
-                                            appConfig: AppConfig,
                                             override val messagesApi: MessagesApi,
                                             userAnswersCacheConnector: UserAnswersCacheConnector,
                                             navigator: CompoundNavigator,

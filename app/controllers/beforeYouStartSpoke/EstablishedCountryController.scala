@@ -16,7 +16,6 @@
 
 package controllers.beforeYouStartSpoke
 
-import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
@@ -33,8 +32,7 @@ import views.html.beforeYouStart.establishedCountry
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EstablishedCountryController @Inject()(appConfig: AppConfig,
-                                             override val messagesApi: MessagesApi,
+class EstablishedCountryController @Inject()(override val messagesApi: MessagesApi,
                                              userAnswersCacheConnector: UserAnswersCacheConnector,
                                              navigator: CompoundNavigator,
                                              authenticate: AuthAction,

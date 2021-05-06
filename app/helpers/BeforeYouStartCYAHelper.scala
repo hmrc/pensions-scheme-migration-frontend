@@ -42,7 +42,6 @@ class BeforeYouStartCYAHelper extends CYAHelper {
       )
     )
 
-
     CYAViewModel(
       answerSections = Seq(beforeYouStart),
       href = controllers.routes.TaskListController.onPageLoad,
