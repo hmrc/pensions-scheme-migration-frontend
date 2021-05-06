@@ -2,6 +2,8 @@ service.name = pensions-scheme-migration-frontend
 service.homePageUrl = /pensions-scheme-migration-frontend
 service.text = This is your new service
 
+site.signOut = Sign out
+site.service_name = Managing pension schemes
 site.back = Back
 site.save_and_continue = Save and continue
 site.return_to = Return to {0}

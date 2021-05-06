@@ -14,22 +14,28 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
+@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.play.views.html.helpers._
 @import controllers.beforeYouStartSpoke.routes._
+@import utils.ViewHelper.titleWithErrors
 
 @this(
-layout: Layout,
+main_template: main_template,
 formHelper: FormWithCSRF
 )
 
 @(form: Form[_], schemeName: Option[String])(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = messages("messages__scheme_type__title")) {
+@main_template(
+title = titleWithErrors(form, messages("messages__workingKnowledge__title"))) {
 
     @formHelper(action = WorkingKnowledgeController.onSubmit, 'autoComplete -> "off") {
 
-        @components.back_link()
+@components.back_link()
 
-        @components.error_summary(form.errors)
+@components.error_summary(form.errors)
+<div class="form-group @if(form.hasErrors){form-group--error}">
 
         <div class="form-group @if(form.hasErrors){form-group--error}">
 
@@ -47,6 +53,6 @@ formHelper: FormWithCSRF
         </div>
         @components.submit_button("site.save_and_continue")
 
-        @components.return_to_scheme_link(schemeName)
-    }
+@components.return_to_scheme_link(schemeName)
+}
 }

@@ -16,15 +16,17 @@
 
 @import config.AppConfig
 @import controllers.beforeYouStartSpoke.routes._
+@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.play.views.html.helpers._
 
 @this(
-layout: Layout,
+main_template: main_template,
 formHelper: FormWithCSRF
 )
 
 @(form: Form[_], schemeName: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = messages("messages__scheme_type__title")) {
+@main_template(title = messages("messages__scheme_type__title")) {
 
     @formHelper(action = SchemeTypeController.onSubmit, 'autoComplete -> "off") {
 

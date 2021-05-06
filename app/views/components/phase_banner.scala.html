@@ -14,13 +14,14 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
+@(appConfig: config.AppConfig)
 
-@this(main_template: main_template)
+<div class="phase-banner">
 
-@(title: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+    <p>
 
-@main_template(title = "pensions-scheme-migration-frontend") {
-    <h1 class="govuk-heading-xl">@title</h1>
-    <p class="govuk-body">@{messages("service.text")}</p>
-}
+        <strong class="phase-tag">BETA</strong>
+        <span>This is a new service – your <a href="@{appConfig.betaFeedbackUnauthenticatedUrl}">feedback</a> will help us to improve it.</span>
+    </p>
+
+</div>

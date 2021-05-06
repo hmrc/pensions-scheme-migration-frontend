@@ -21,8 +21,8 @@
 @import viewmodels.TaskList
 
 @this(
-layout: Layout,
-appConfig: AppConfig
+    main_template: main_template,
+    appConfig: AppConfig
 )
 
 @(taskSections: TaskList, schemeName: Option[String])(implicit request: Request[_], messages: Messages)
@@ -43,7 +43,7 @@ appConfig: AppConfig
     }
 }
 
-@layout(pageTitle = messages("messages__schemeTaskList__title")) {
+@main_template(title = messages("messages__schemeTaskList__title")) {
 
         @components.back_link()
 
