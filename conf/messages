@@ -7,6 +7,8 @@ site.save_and_continue = Save and continue
 site.return_to = Return to {0}
 site.return_to_scheme = Return to scheme
 site.error = Error:
+site.signOut = Sign out
+site.service_name = Managing pension schemes
 
 error.boolean = Please give an answer
 error.invalid_date = Give a correct date

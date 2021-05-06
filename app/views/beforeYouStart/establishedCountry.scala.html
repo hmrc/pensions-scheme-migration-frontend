@@ -16,16 +16,17 @@
 
 @import config.AppConfig
 @import utils.InputOption
+@import uk.gov.hmrc.play.views.html.helpers._
 @import controllers.beforeYouStartSpoke.routes._
 
 @this(
-    layout: Layout,
+    main_template: main_template,
     formHelper: FormWithCSRF
 )
 
 @(form: Form[_], options: Seq[InputOption], schemeName: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = messages("messages__established_country__title")) {
+@main_template(title = messages("messages__established_country__title")) {
     @formHelper(action = EstablishedCountryController.onSubmit, 'autoComplete -> "off") {
 
         @components.back_link()

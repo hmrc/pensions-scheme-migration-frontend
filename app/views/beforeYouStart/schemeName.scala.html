@@ -15,31 +15,37 @@
  *@
 
 @import config.AppConfig
+@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.play.views.html.helpers._
 @import controllers.beforeYouStartSpoke.routes._
+@import utils.ViewHelper.titleWithErrors
+
 @this(
-    layout: Layout,
-    formHelper: FormWithCSRF
+main_template: main_template,
+formHelper: FormWithCSRF
 )
 
 @(form: Form[_], schemeName: Option[String])(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = messages("messages__scheme_name__heading")) {
+@main_template(
+title = titleWithErrors(form, messages("messages__scheme_name__heading"))) {
 
-        @formHelper(action = SchemeNameController.onSubmit, 'autoComplete -> "off") {
+@formHelper(action = SchemeNameController.onSubmit, 'autoComplete -> "off") {
 
-        @components.back_link()
+@components.back_link()
 
-        @components.error_summary(form.errors)
+@components.error_summary(form.errors)
+<div class="form-group @if(form.hasErrors){form-group--error}">
 
-        @components.input_text(
-            field = form("schemeName"),
-            label = messages("messages__scheme_name__heading"),
-            labelClass = Some("visually-hidden"),
-            headingIsLegend = true
-        )
+    @components.input_text(
+    field = form("schemeName"),
+    label = messages("messages__scheme_name__heading"),
+    labelClass = Some("visually-hidden"),
+    headingIsLegend = true
+    )
+</div>
+@components.submit_button()
 
-        @components.submit_button()
-
-        @components.return_to_scheme_link(schemeName)
-    }
+@components.return_to_scheme_link(schemeName)
+}
 }
