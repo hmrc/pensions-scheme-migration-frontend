@@ -35,10 +35,13 @@ class BeforeYouStartCYAHelper extends CYAHelper {
       Seq(
         AnswerRow("messages__cya__scheme_name", Seq(schemeName), answerIsMessageKey = false, None),
         AnswerRow(messages("messages__cya__scheme_type", schemeName), Seq(s"messages__scheme_type_${getAnswer(SchemeTypeId)}"),
-          answerIsMessageKey = true, changeLink(routes.SchemeTypeController.onPageLoad.url)),
+          answerIsMessageKey = true,
+          changeLink(routes.SchemeTypeController.onPageLoad.url, Some(messages("messages__visuallyhidden__schemeType", schemeName)))),
         AnswerRow(messages("messages__cya__country", schemeName), Seq(countryOptions.getCountryNameFromCode(getAnswer(EstablishedCountryId))),
-          answerIsMessageKey = false, changeLink(routes.EstablishedCountryController.onPageLoad.url)),
-        boolAnswerOrAddLink(WorkingKnowledgeId, "messages__cya__working_knowledge", routes.WorkingKnowledgeController.onPageLoad.url)
+          answerIsMessageKey = false,
+          changeLink(routes.EstablishedCountryController.onPageLoad.url, Some(messages("messages__visuallyhidden__schemeEstablishedCountry", schemeName)))),
+        boolAnswerOrAddLink(WorkingKnowledgeId, "messages__cya__working_knowledge", routes.WorkingKnowledgeController.onPageLoad.url,
+          Some(messages("messages__visuallyhidden__working_knowledge")))
       )
     )
 

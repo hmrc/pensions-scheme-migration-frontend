@@ -3,7 +3,7 @@ service.homePageUrl = /pensions-scheme-migration-frontend
 service.text = This is your new service
 
 site.signOut = Sign out
-site.service_name = Managing pension schemes
+site.service_name = Migrating pension schemes
 site.back = Back
 site.save_and_continue = Save and continue
 site.return_to = Return to {0}
@@ -70,6 +70,10 @@ messages__cya__scheme_name = What is the name of the scheme?
 messages__cya__scheme_type = What type of scheme is {0}?
 messages__cya__country = Which country was {0} established in?
 messages__cya__working_knowledge = Do you have working knowledge of pensions and pensions tax legislation?
+
+messages__visuallyhidden__schemeType = what type of scheme {0} is
+messages__visuallyhidden__schemeEstablishedCountry = the country {0} was established in
+messages__visuallyhidden__working_knowledge = if you have working knowledge of pensions and pensions tax legislation
 
 messages__schemeTaskList__before_you_start_link_text = Set up the scheme application for {0}
 messages__schemeTaskList__scheme_info_link_text = Information about your scheme
