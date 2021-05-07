@@ -49,6 +49,8 @@ messages__scheme_type_corp_hint = This is a registered company, local authority 
 messages__scheme_type_other = Other
 messages__scheme_type_other_hint = This can be a deed poll trust.
 messages__scheme_type__error__required = Select a type of pension scheme
+messages__scheme_details__type_other_more = Details of the scheme type
+messages__error__scheme_type_information = Enter the details of the scheme type
 
 messages__established_country__title = Which country was the scheme established in?
 messages__established_country__h1 = Which country was {0} established in?
