@@ -49,7 +49,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   val betaFeedbackUnauthenticatedUrl: String = getConfigString("contact-frontend.beta-feedback-url.unauthenticated")
   val reportTechnicalIssues = ReportTechnicalIssue(serviceId = "PODS", baseUrl = Some(contactHost))
   lazy val languageTranslationEnabled: Boolean = config.getOptional[Boolean]("features" +
-    ".welsh-translation").getOrElse(true)
+    ".welsh-translation").getOrElse(false)
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
     "cymraeg" -> Lang("cy"))
