@@ -20,25 +20,12 @@ import navigators._
 
 class PODSModule extends AbstractModule {
 
-  //scalastyle:off method.length
   override def configure(): Unit = {
 
     val navigators = Multibinder.newSetBinder(binder(), classOf[Navigator])
     navigators.addBinding().to(classOf[BeforeYouStartNavigator])
 
     bind(classOf[CompoundNavigator]).to(classOf[CompoundNavigatorImpl])
-
-
-
-//    bind(classOf[DataRetrievalAction]).to(classOf[DataRetrievalActionImpl]).asEagerSingleton()
-//    bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()
-//    bind(classOf[AllowSubmissionAction]).to(classOf[AllowSubmissionActionImpl]).asEagerSingleton()
-//
-//    // For session based storage instead of cred based, change to SessionIdentifierAction
-//    bind(classOf[IdentifierAction]).to(classOf[AuthenticatedIdentifierAction]).asEagerSingleton()
-//
-//    bind(classOf[UserAnswersCacheConnector]).to(classOf[UserAnswersCacheConnectorImpl]).asEagerSingleton()
-//    bind(classOf[CacheConnector]).to(classOf[FinancialInfoCacheConnector]).asEagerSingleton()
   }
 }
 
