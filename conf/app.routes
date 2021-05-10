@@ -6,6 +6,8 @@ GET        /assets/*file                        controllers.Assets.versioned(pat
 GET        /index                               controllers.IndexController.onPageLoad
 GET        /task-list                           controllers.TaskListController.onPageLoad
 
+GET         /logout                             controllers.LogoutController.onPageLoad
+
 GET        /before-you-start/scheme-type        controllers.beforeYouStartSpoke.SchemeTypeController.onPageLoad
 POST       /before-you-start/scheme-type        controllers.beforeYouStartSpoke.SchemeTypeController.onSubmit
 
