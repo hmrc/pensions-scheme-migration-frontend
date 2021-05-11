@@ -16,7 +16,7 @@
 
 package connectors.cache
 
-import com.google.inject.Inject
+import com.google.inject.{ImplementedBy, Inject}
 import config.AppConfig
 import connectors.cache.CacheConnector.{lockHeaders, pstrHeaders}
 import models.MigrationLock
@@ -30,9 +30,22 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UserAnswersCacheConnector @Inject()(config: AppConfig,
+@ImplementedBy(classOf[UserAnswersCacheConnectorImpl])
+trait UserAnswersCacheConnector {
+
+  def fetch(pstr: String)
+           (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[JsValue]]
+
+  def save(lock: MigrationLock, value: JsValue)
+          (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue]
+
+  def remove(pstr: String)
+            (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result]
+}
+
+class UserAnswersCacheConnectorImpl @Inject()(config: AppConfig,
                                           http: WSClient
-                                         ) {
+                                         ) extends UserAnswersCacheConnector {
 
   def fetch(pstr: String)
                     (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[JsValue]] =

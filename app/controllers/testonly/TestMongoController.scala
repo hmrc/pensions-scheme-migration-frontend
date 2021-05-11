@@ -103,7 +103,16 @@ class TestMongoController @Inject()(
 
   def save(pstr: String): Action[AnyContent] = Action.async { implicit request =>
     val lock: MigrationLock = MigrationLock(pstr, "dummy cred", "A2100005")
-    val json: JsValue = Json.obj("test-key" -> "test-value")
+
+    val json: JsValue = Json.obj(
+      "schemeName" -> "Migration scheme",
+      "schemeType" -> Json.obj(
+        "name" -> "other",
+        "schemeTypeDetails" -> "xyz"
+      ),
+      "schemeEstablishedCountry" -> "GB"
+    )
+
     userAnswersCacheConnector.save(lock, json).map { response =>
       Ok(testMongoPage(s"save data $json with lock $lock returned $response"))
     }
