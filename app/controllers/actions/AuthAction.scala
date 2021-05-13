@@ -30,11 +30,17 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionImpl @Inject()(val authConnector: AuthConnector,
-               val parser: BodyParsers.Default)
-              (implicit val executionContext: ExecutionContext) extends AuthAction with AuthorisedFunctions {
+class AuthActionImpl @Inject()(
+                                val authConnector: AuthConnector,
+                                val parser: BodyParsers.Default
+                              )(implicit val executionContext: ExecutionContext)
+  extends AuthAction
+    with AuthorisedFunctions {
 
-  override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
+  override def invokeBlock[A](
+                               request: Request[A],
+                               block: AuthenticatedRequest[A] => Future[Result]
+                             ): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     authorised().retrieve(Retrievals.externalId and Retrievals.allEnrolments) {
@@ -45,13 +51,22 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector,
     }
   }
 
-  private def createAuthRequest[A](id: String, enrolments: Enrolments, request: Request[A],
-                                   block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
-    (enrolments.getEnrolment("HMRC-PODS-ORG").flatMap(_.getIdentifier("PSAID")).map(p=> PsaId(p.value)),
-      enrolments.getEnrolment("HMRC-PODSPP-ORG").flatMap(_.getIdentifier("PSPID")).map(p=> PspId(p.value))) match {
-      case (psaId@Some(_), None) => block(AuthenticatedRequest(request, id, psaId, None))
-      case (None, pspId@Some(_)) => block(AuthenticatedRequest(request, id, None, pspId))
-      case _ => block(AuthenticatedRequest(request, id, None, None))
+  private def createAuthRequest[A](
+                                    id: String,
+                                    enrolments: Enrolments,
+                                    request: Request[A],
+                                    block: AuthenticatedRequest[A] => Future[Result]
+                                  ): Future[Result] = {
+    (
+      enrolments.getEnrolment("HMRC-PODS-ORG").flatMap(_.getIdentifier("PSAID")).map(p => PsaId(p.value)),
+      enrolments.getEnrolment("HMRC-PODSPP-ORG").flatMap(_.getIdentifier("PSPID")).map(p => PspId(p.value))
+    ) match {
+      case (psaId@Some(_), None) =>
+        block(AuthenticatedRequest(request, id, psaId, None))
+      case (None, pspId@Some(_)) =>
+        block(AuthenticatedRequest(request, id, None, pspId))
+      case _ =>
+        block(AuthenticatedRequest(request, id, None, None))
     }
   }
 

@@ -8,7 +8,7 @@ val silencerVersion = "1.7.0"
 
 lazy val microservice = Project(appName, file("."))
   .disablePlugins(JUnitXmlReportPlugin)
-  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory)
+  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
   .settings(
     name                             := appName,
     majorVersion                     := 0,
@@ -24,10 +24,7 @@ lazy val microservice = Project(appName, file("."))
   .configs(IntegrationTest)
   .settings(integrationTestSettings(): _*)
   .settings(resolvers ++= Seq(
-    Resolver.bintrayRepo("hmrc", "releases"),
     Resolver.jcenterRepo,
-    Resolver.bintrayRepo("emueller", "maven"),
-    Resolver.bintrayRepo("wolfendale", "maven")
     )
   ).settings(
   // concatenate js
