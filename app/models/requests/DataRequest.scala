@@ -18,13 +18,23 @@ package models.requests
 
 import models.MigrationLock
 import play.api.mvc.{Request, WrappedRequest}
-import uk.gov.hmrc.domain.{PsaId, PspId}
+import uk.gov.hmrc.domain.PsaId
 import utils.UserAnswers
 
-case class OptionalDataRequest[A](request: Request[A], userAnswers: Option[UserAnswers],
-                                  psaId: Option[PsaId], pspId: Option[PspId] = None, lock: MigrationLock, viewOnly : Boolean = false)
+case class OptionalDataRequest[A](
+                                   request: Request[A],
+                                   userAnswers: Option[UserAnswers],
+                                   psaId: PsaId,
+                                   lock: MigrationLock,
+                                   viewOnly: Boolean = false
+                                 )
   extends WrappedRequest[A](request) with IdentifiedRequest
 
-case class DataRequest[A](request: Request[A], userAnswers: UserAnswers, psaId: Option[PsaId],
-                          pspId: Option[PspId] = None, lock: MigrationLock, viewOnly: Boolean = false)
+case class DataRequest[A](
+                           request: Request[A],
+                           userAnswers: UserAnswers,
+                           psaId: PsaId,
+                           lock: MigrationLock,
+                           viewOnly: Boolean = false
+                         )
   extends WrappedRequest[A](request) with IdentifiedRequest

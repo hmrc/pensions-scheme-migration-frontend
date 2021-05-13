@@ -28,9 +28,16 @@ class DataRequiredActionImpl @Inject()(implicit val executionContext: ExecutionC
 
   override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] =
     request.userAnswers match {
-      case None => Future.successful(Left(Redirect(routes.IndexController.onPageLoad())))
-      case Some(data) => Future.successful(Right(DataRequest(request.request, data,
-        request.psaId, request.pspId, request.lock, request.viewOnly)))
+      case None =>
+        Future.successful(Left(Redirect(routes.IndexController.onPageLoad())))
+      case Some(data) =>
+        Future.successful(Right(DataRequest(
+          request = request.request,
+          userAnswers = data,
+          psaId = request.psaId,
+          lock = request.lock,
+          viewOnly = request.viewOnly
+        )))
     }
 }
 

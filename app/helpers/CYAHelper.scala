@@ -25,10 +25,11 @@ import viewmodels.{AnswerRow, Message}
 
 trait CYAHelper {
 
-  def getAnswer[A](id: TypedIdentifier[A ])(implicit ua: UserAnswers, rds: Reads[A]): String =
+  def getAnswer[A](id: TypedIdentifier[A])
+                  (implicit ua: UserAnswers, rds: Reads[A]): String =
     ua.get(id).getOrElse(throw MandatoryAnswerMissingException).toString
 
-  def booleanToText: Boolean => String = bool => if(bool) "site.yes" else "site.no"
+  def booleanToText: Boolean => String = bool => if (bool) "site.yes" else "site.no"
 
   def boolAnswerOrAddLink(id: TypedIdentifier[Boolean], message: String, url: String, visuallyHiddenText: Option[Message] = None)
                          (implicit ua: UserAnswers, rds: Reads[Boolean], messages: Messages): AnswerRow =
@@ -44,11 +45,11 @@ trait CYAHelper {
       case Some(answer) => AnswerRow(message, Seq(answer.toString), answerIsMessageKey = false, changeLink(url, visuallyHiddenText))
     }
 
-  def changeLink(url: String, visuallyHiddenText: Option[Message]= None)
+  def changeLink(url: String, visuallyHiddenText: Option[Message] = None)
                 (implicit messages: Messages): Option[Link] = Some(Link(messages("site.change"), url, visuallyHiddenText))
 
-  def addLink(url: String, visuallyHiddenText: Option[Message]= None)
-  (implicit messages: Messages): Option[Link] = Some(Link(messages("site.add"), url, visuallyHiddenText))
+  def addLink(url: String, visuallyHiddenText: Option[Message] = None)
+             (implicit messages: Messages): Option[Link] = Some(Link(messages("site.add"), url, visuallyHiddenText))
 }
 
 case object MandatoryAnswerMissingException extends Exception("An answer which was mandatory is missing from scheme details returned from TPSS")

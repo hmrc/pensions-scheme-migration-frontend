@@ -16,9 +16,13 @@
 
 package utils
 
+import base.SpecBase.fakeRequest
 import identifiers.beforeYouStart.SchemeNameId
 import models.MigrationLock
+import models.requests.DataRequest
 import play.api.libs.json.Json
+import play.api.mvc.AnyContent
+import uk.gov.hmrc.domain.PsaId
 
 object Data {
 
@@ -30,5 +34,11 @@ object Data {
   val schemeName: String = "Test scheme name"
   val ua: UserAnswers = UserAnswers(Json.obj(SchemeNameId.toString -> Data.schemeName))
 
-
+  implicit val request: DataRequest[AnyContent] =
+    DataRequest(
+      request = fakeRequest,
+      userAnswers = UserAnswers(Json.obj()),
+      psaId = PsaId(psaId),
+      lock = MigrationLock(pstr, "dummy cred", psaId)
+    )
 }

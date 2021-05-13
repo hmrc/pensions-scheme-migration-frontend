@@ -27,19 +27,13 @@ import scala.concurrent.Future
 import scala.language.implicitConversions
 
 trait Retrievals {
-
-
-
   private[controllers] def retrieve[A](id: TypedIdentifier[A])
                                       (f: A => Future[Result])
                                       (implicit request: DataRequest[AnyContent], r: Reads[A]): Future[Result] = {
     request.userAnswers.get(id).map(f).getOrElse {
       Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
     }
-
   }
-
-
 
   private[controllers] def existingSchemeName[A <: WrappedRequest[AnyContent]](implicit request: A): Option[String] =
     request match {

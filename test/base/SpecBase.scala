@@ -68,6 +68,10 @@ trait SpecBase
                           extraModules: Seq[GuiceableModule] = Seq.empty
                         ): GuiceApplicationBuilder = {
     new GuiceApplicationBuilder()
+      .configure(
+        "auditing.enabled" -> false,
+        "metrics.enabled" -> false
+      )
       .overrides(
         extraModules ++ modules(dataRetrievalAction): _*
       )
