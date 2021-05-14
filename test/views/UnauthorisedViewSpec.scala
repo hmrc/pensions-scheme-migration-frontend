@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package views
 
-import models.requests.{AuthenticatedRequest, OptionalDataRequest}
-import utils.{Data, UserAnswers}
+import play.twirl.api.HtmlFormat
+import views.behaviours.ViewBehaviours
+import views.html.unauthorised
 
-import scala.concurrent.{ExecutionContext, Future}
+class UnauthorisedViewSpec extends ViewBehaviours {
 
-class FakeDataRetrievalAction(dataToReturn: Option[UserAnswers]) extends DataRetrievalAction {
+  val view: unauthorised = injector.instanceOf[unauthorised]
 
-  override protected def transform[A](request: AuthenticatedRequest[A]): Future[OptionalDataRequest[A]] =
-    Future(OptionalDataRequest(request.request, dataToReturn, request.psaId, Data.migrationLock))
+  def createView: () => HtmlFormat.Appendable = () => view()(fakeRequest, messages)
 
-  override protected implicit val executionContext: ExecutionContext =
-    scala.concurrent.ExecutionContext.Implicits.global
+  "Unauthorised view" must {
+
+    behave like normalPage(createView, "unauthorised", messages("messages__unauthorised__title"))
+  }
 }
-

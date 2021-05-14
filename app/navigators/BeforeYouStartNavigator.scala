@@ -17,7 +17,6 @@
 package navigators
 
 import com.google.inject.Inject
-import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.beforeYouStartSpoke.routes._
 import identifiers._
@@ -26,13 +25,12 @@ import models.requests.DataRequest
 import play.api.mvc.{AnyContent, Call}
 import utils.UserAnswers
 
-class BeforeYouStartNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector,
-                                        appConfig: AppConfig) extends Navigator {
+class BeforeYouStartNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector)
+  extends Navigator {
 
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
-    case SchemeTypeId | EstablishedCountryId | WorkingKnowledgeId => CheckYourAnswersController.onPageLoad()
+    case SchemeTypeId | EstablishedCountryId | WorkingKnowledgeId =>
+      CheckYourAnswersController.onPageLoad()
   }
-
-
 }

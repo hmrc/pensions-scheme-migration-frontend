@@ -29,16 +29,34 @@ import utils.UserAnswers
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DataRetrievalImpl @Inject()(dataConnector: UserAnswersCacheConnector)(implicit val executionContext: ExecutionContext) extends DataRetrievalAction {
+class DataRetrievalImpl @Inject()(dataConnector: UserAnswersCacheConnector)
+                                 (implicit val executionContext: ExecutionContext)
+  extends DataRetrievalAction {
 
   override protected def transform[A](request: AuthenticatedRequest[A]): Future[OptionalDataRequest[A]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
+    val lock: MigrationLock = MigrationLock(
+      pstr = "pstr",
+      credId = request.externalId,
+      psaId = request.psaId.id
+    )
+
     dataConnector.fetch("pstr") map {
-      case None => OptionalDataRequest(request.request, None, request.psaId, request.pspId,
-        MigrationLock("pstr", request.externalId, request.psaId.get.id))
-      case Some(data) => OptionalDataRequest(request.request, Some(UserAnswers(data.as[JsObject])), request.psaId, request.pspId,
-        MigrationLock("pstr", request.externalId, request.psaId.get.id))
+      case None =>
+        OptionalDataRequest(
+          request = request.request,
+          userAnswers = None,
+          psaId = request.psaId,
+          lock = lock
+        )
+      case Some(data) =>
+        OptionalDataRequest(
+          request = request.request,
+          userAnswers = Some(UserAnswers(data.as[JsObject])),
+          psaId = request.psaId,
+          lock = lock
+        )
     }
   }
 }

@@ -33,6 +33,9 @@ error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
 
+messages__unauthorised__title = You can’t access this service with this account
+
+messages__index__title = pensions-scheme-migration-frontend
 messages__scheme_name__heading = What is the name of the scheme?
 messages__error__scheme_name = Enter the name of the scheme
 messages__error__scheme_name_length = The scheme name cannot be more than 160 characters

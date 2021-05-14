@@ -33,12 +33,7 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
   def getOrException[A](id: TypedIdentifier[A])(implicit rds: Reads[A]): A =
     get(id).getOrElse(throw new RuntimeException("Expected a value but none found for " + id))
 
-  def getAllMembersInCharge[A](charge: String)(implicit rds: Reads[A]): Seq[A] =
-    (data \ charge \ "members" \\ "memberDetails").map { member =>
-      validate[A](member)
-    }
-
-  private def validate[A](jsValue: JsValue)(implicit rds: Reads[A]): A = {
+  def validate[A](jsValue: JsValue)(implicit rds: Reads[A]): A = {
     jsValue.validate[A].fold(
       invalid =
         errors =>
@@ -93,7 +88,7 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
     }
   }
 
-  def removeWithPath(path: JsPath): UserAnswers = {
+  def remove(path: JsPath): UserAnswers = {
     data.removeObject(path) match {
       case JsSuccess(jsValue, _) =>
         UserAnswers(jsValue)

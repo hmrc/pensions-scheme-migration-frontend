@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package models
 
-import models.requests.{AuthenticatedRequest, OptionalDataRequest}
-import utils.{Data, UserAnswers}
+import play.api.mvc.JavascriptLiteral
 
-import scala.concurrent.{ExecutionContext, Future}
+sealed trait Mode
 
-class FakeDataRetrievalAction(dataToReturn: Option[UserAnswers]) extends DataRetrievalAction {
+case object CheckMode extends Mode
+case object NormalMode extends Mode
 
-  override protected def transform[A](request: AuthenticatedRequest[A]): Future[OptionalDataRequest[A]] =
-    Future(OptionalDataRequest(request.request, dataToReturn, request.psaId, Data.migrationLock))
+object Mode {
 
-  override protected implicit val executionContext: ExecutionContext =
-    scala.concurrent.ExecutionContext.Implicits.global
+  case class UnknownModeException() extends Exception
+
+  implicit val jsLiteral: JavascriptLiteral[Mode] = {
+    case NormalMode => "NormalMode"
+    case CheckMode => "CheckMode"
+  }
 }
-

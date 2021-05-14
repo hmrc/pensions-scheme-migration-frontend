@@ -17,9 +17,9 @@
 package models.requests
 
 import play.api.mvc.{Request, WrappedRequest}
-import uk.gov.hmrc.domain.{PsaId, PspId}
+import uk.gov.hmrc.domain.PsaId
 
 trait IdentifiedRequest
 
-case class AuthenticatedRequest[A](request: Request[A], externalId: String, psaId: Option[PsaId], pspId: Option[PspId] = None)
+case class AuthenticatedRequest[A](request: Request[A], externalId: String, psaId: PsaId)
   extends WrappedRequest[A](request) with IdentifiedRequest

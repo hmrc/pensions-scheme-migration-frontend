@@ -25,30 +25,63 @@ import viewmodels.{AnswerRow, Message}
 
 trait CYAHelper {
 
-  def getAnswer[A](id: TypedIdentifier[A ])(implicit ua: UserAnswers, rds: Reads[A]): String =
+  def getAnswer[A](id: TypedIdentifier[A])
+                  (implicit ua: UserAnswers, rds: Reads[A]): String =
     ua.get(id).getOrElse(throw MandatoryAnswerMissingException).toString
 
-  def booleanToText: Boolean => String = bool => if(bool) "site.yes" else "site.no"
+  def booleanToText: Boolean => String = bool => if (bool) "site.yes" else "site.no"
 
-  def boolAnswerOrAddLink(id: TypedIdentifier[Boolean], message: String, url: String, visuallyHiddenText: Option[Message] = None)
-                         (implicit ua: UserAnswers, rds: Reads[Boolean], messages: Messages): AnswerRow =
+  def boolAnswerOrAddLink(
+                           id: TypedIdentifier[Boolean],
+                           message: String,
+                           url: String,
+                           visuallyHiddenText: Option[Message] = None
+                         )(
+                           implicit ua: UserAnswers,
+                           rds: Reads[Boolean],
+                           messages: Messages
+                         ): AnswerRow =
     ua.get(id) match {
-      case None => AnswerRow(message, Seq(messages("site.not_entered")), answerIsMessageKey = false, addLink(url, visuallyHiddenText))
-      case Some(answer) => AnswerRow(message, Seq(booleanToText(answer)), answerIsMessageKey = true, changeLink(url, visuallyHiddenText))
+      case None =>
+        AnswerRow(
+          label = message,
+          answer = Seq(messages("site.not_entered")),
+          answerIsMessageKey = false,
+          changeUrl = addLink(url, visuallyHiddenText)
+        )
+      case Some(answer) =>
+        AnswerRow(
+          label = message,
+          answer = Seq(booleanToText(answer)),
+          answerIsMessageKey = true,
+          changeUrl = changeLink(url, visuallyHiddenText)
+        )
     }
 
   def answerOrAddLink[A](id: TypedIdentifier[A], message: String, url: String, visuallyHiddenText: Option[Message] = None)
                         (implicit ua: UserAnswers, rds: Reads[A], messages: Messages): AnswerRow =
     ua.get(id) match {
-      case None => AnswerRow(message, Seq(messages("site.not_entered")), answerIsMessageKey = false, addLink(url, visuallyHiddenText))
-      case Some(answer) => AnswerRow(message, Seq(answer.toString), answerIsMessageKey = false, changeLink(url, visuallyHiddenText))
+      case None =>
+        AnswerRow(
+          label = message,
+          answer = Seq(messages("site.not_entered")),
+          answerIsMessageKey = false,
+          changeUrl = addLink(url, visuallyHiddenText)
+        )
+      case Some(answer) =>
+        AnswerRow(
+          label = message,
+          answer = Seq(answer.toString),
+          answerIsMessageKey = false,
+          changeUrl = changeLink(url, visuallyHiddenText)
+        )
     }
 
-  def changeLink(url: String, visuallyHiddenText: Option[Message]= None)
+  def changeLink(url: String, visuallyHiddenText: Option[Message] = None)
                 (implicit messages: Messages): Option[Link] = Some(Link(messages("site.change"), url, visuallyHiddenText))
 
-  def addLink(url: String, visuallyHiddenText: Option[Message]= None)
-  (implicit messages: Messages): Option[Link] = Some(Link(messages("site.add"), url, visuallyHiddenText))
+  def addLink(url: String, visuallyHiddenText: Option[Message] = None)
+             (implicit messages: Messages): Option[Link] = Some(Link(messages("site.add"), url, visuallyHiddenText))
 }
 
 case object MandatoryAnswerMissingException extends Exception("An answer which was mandatory is missing from scheme details returned from TPSS")

@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package views
 
-import models.requests.{AuthenticatedRequest, OptionalDataRequest}
-import utils.{Data, UserAnswers}
+import views.behaviours.ViewBehaviours
+import views.html.index
+import config.AppConfig
+import org.scalatestplus.mockito.MockitoSugar.mock
 
-import scala.concurrent.{ExecutionContext, Future}
+class IndexViewSpec extends ViewBehaviours {
 
-class FakeDataRetrievalAction(dataToReturn: Option[UserAnswers]) extends DataRetrievalAction {
+  val viewType: index = injector.instanceOf[index]
+  private val mockAppConfig = mock[AppConfig]
 
-  override protected def transform[A](request: AuthenticatedRequest[A]): Future[OptionalDataRequest[A]] =
-    Future(OptionalDataRequest(request.request, dataToReturn, request.psaId, Data.migrationLock))
+  def view = () => viewType()(fakeRequest, messages, mockAppConfig)
 
-  override protected implicit val executionContext: ExecutionContext =
-    scala.concurrent.ExecutionContext.Implicits.global
+  "Index view" must {
+
+    behave like normalPage(view, "index", messages("messages__index__title"), "_title")
+  }
 }
-
