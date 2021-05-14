@@ -18,7 +18,6 @@ package connectors.cache
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.SessionDataCacheConnector
-import models.AdministratorOrPractitioner
 import org.scalatest._
 import play.api.libs.json.Json
 import uk.gov.hmrc.http._
@@ -37,10 +36,7 @@ class SessionDataCacheConnectorSpec
   private val externalId = "test-value"
   private val sessionDataCacheUrl = s"/pension-administrator/journey-cache/session-data/$externalId"
 
-  private def jsonAOP(aop:AdministratorOrPractitioner) =
-    Json.obj("administratorOrPractitioner" -> aop.toString)
-
-  private def validResponse(administratorOrPractitioner:String) =
+  private def validResponse(administratorOrPractitioner: String) =
     Json.stringify(
       Json.obj(
         "administratorOrPractitioner" -> administratorOrPractitioner
@@ -62,34 +58,6 @@ class SessionDataCacheConnectorSpec
       }
     }
 
-    "return successfully when the backend has returned OK and a correct response for practitioner" in {
-      server.stubFor(
-        get(urlEqualTo(sessionDataCacheUrl))
-          .willReturn(
-            ok(validResponse("practitioner"))
-              .withHeader("Content-Type", "application/json")
-          )
-      )
-
-      connector.fetch(externalId) map {
-        _ mustBe Some(jsonAOP(AdministratorOrPractitioner.Practitioner))
-      }
-    }
-
-    "return successfully when the backend has returned NOT FOUND and a correct response for practitioner" in {
-      server.stubFor(
-        get(urlEqualTo(sessionDataCacheUrl))
-          .willReturn(
-            notFound
-              .withHeader("Content-Type", "application/json")
-          )
-      )
-
-      connector.fetch(externalId) map {
-        _ mustBe None
-      }
-    }
-
     "return BadRequestException when the backend has returned bad request response" in {
       server.stubFor(
         get(urlEqualTo(sessionDataCacheUrl))
@@ -99,9 +67,9 @@ class SessionDataCacheConnectorSpec
           )
       )
 
-        recoverToSucceededIf[HttpException] {
-          connector.fetch(externalId)
-        }
+      recoverToSucceededIf[HttpException] {
+        connector.fetch(externalId)
+      }
     }
   }
 }
