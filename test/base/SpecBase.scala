@@ -18,53 +18,37 @@ package base
 
 import config.AppConfig
 import controllers.actions._
+import models.requests.DataRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
-import play.api.Environment
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.inject.{Injector, bind}
-import play.api.mvc.{AnyContentAsEmpty, MessagesControllerComponents}
+import play.api.libs.json.Json
+import play.api.mvc.{AnyContent, AnyContentAsEmpty, MessagesControllerComponents}
 import play.api.test.FakeRequest
+import play.api.{Application, Environment}
 import uk.gov.hmrc.crypto.ApplicationCrypto
+import uk.gov.hmrc.domain.PsaId
+import utils.Data.{migrationLock, psaId}
+import utils.UserAnswers
+
+import scala.language.implicitConversions
 
 trait SpecBase
   extends PlaySpec
     with GuiceOneAppPerSuite {
-  protected def crypto: ApplicationCrypto = injector.instanceOf[ApplicationCrypto]
 
-  def injector: Injector = app.injector
-
-  def appConfig: AppConfig = injector.instanceOf[AppConfig]
-
-  def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
-
-  def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "/foo")
-
-  implicit def messages: Messages = messagesApi.preferred(fakeRequest)
-
-  def environment: Environment = injector.instanceOf[Environment]
-
-  def controllerComponents: MessagesControllerComponents = injector.instanceOf[MessagesControllerComponents]
-
-  def appRunning(): Unit = app
-
-  def assertNotRenderedById(doc: Document, id: String): Assertion = {
-    assert(doc.getElementById(id) == null, "\n\nElement " + id + " was rendered on the page.\n")
-  }
-
-  def assertRenderedById(doc: Document, id: String): Assertion =
-    assert(doc.getElementById(id) != null, "\n\nElement " + id + " was not rendered on the page.\n")
-
-  def modules(dataRetrievalAction: DataRetrievalAction): Seq[GuiceableModule] = Seq(
-    bind[AuthAction].toInstance(FakeAuthAction),
-    bind[DataRetrievalAction].toInstance(dataRetrievalAction)
-  )
+  def modules(dataRetrievalAction: DataRetrievalAction): Seq[GuiceableModule] =
+    Seq(
+      bind[AuthAction].toInstance(FakeAuthAction),
+      bind[DataRetrievalAction].toInstance(dataRetrievalAction)
+    )
 
   def applicationBuilder(
-                          dataRetrievalAction: DataRetrievalAction,
+                          dataRetrievalAction: DataRetrievalAction = new FakeDataRetrievalAction(Some(UserAnswers())),
                           extraModules: Seq[GuiceableModule] = Seq.empty
                         ): GuiceApplicationBuilder = {
     new GuiceApplicationBuilder()
@@ -76,6 +60,39 @@ trait SpecBase
         extraModules ++ modules(dataRetrievalAction): _*
       )
   }
+
+  def appRunning(): Application = applicationBuilder().build()
+
+  def injector: Injector = appRunning().injector
+
+  protected def crypto: ApplicationCrypto = injector.instanceOf[ApplicationCrypto]
+
+  def appConfig: AppConfig = injector.instanceOf[AppConfig]
+
+  def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
+
+  def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "/foo")
+
+  implicit def fakeDataRequest(ua: UserAnswers = UserAnswers(Json.obj())): DataRequest[AnyContent] =
+    DataRequest(
+      request = fakeRequest,
+      userAnswers = ua,
+      psaId = PsaId(psaId),
+      lock = migrationLock
+    )
+
+  implicit def messages: Messages = messagesApi.preferred(fakeRequest)
+
+  def environment: Environment = injector.instanceOf[Environment]
+
+  def controllerComponents: MessagesControllerComponents = injector.instanceOf[MessagesControllerComponents]
+
+  def assertNotRenderedById(doc: Document, id: String): Assertion = {
+    assert(doc.getElementById(id) == null, "\n\nElement " + id + " was rendered on the page.\n")
+  }
+
+  def assertRenderedById(doc: Document, id: String): Assertion =
+    assert(doc.getElementById(id) != null, "\n\nElement " + id + " was not rendered on the page.\n")
 }
 
 object SpecBase extends SpecBase

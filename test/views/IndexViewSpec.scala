@@ -23,7 +23,7 @@ import org.scalatestplus.mockito.MockitoSugar.mock
 
 class IndexViewSpec extends ViewBehaviours {
 
-  val viewType: index = app.injector.instanceOf[index]
+  val viewType: index = injector.instanceOf[index]
   private val mockAppConfig = mock[AppConfig]
 
   def view = () => viewType()(fakeRequest, messages, mockAppConfig)

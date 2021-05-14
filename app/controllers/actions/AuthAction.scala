@@ -47,7 +47,7 @@ class AuthActionImpl @Inject()(
       case Some(id) ~ enrolments =>
         createAuthRequest(id, enrolments, request, block)
       case _ =>
-        Future.successful(Redirect(routes.IndexController.onPageLoad()))
+        Future.successful(Redirect(routes.UnauthorisedController.onPageLoad()))
     }
   }
 

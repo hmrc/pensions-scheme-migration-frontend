@@ -31,18 +31,50 @@ trait CYAHelper {
 
   def booleanToText: Boolean => String = bool => if (bool) "site.yes" else "site.no"
 
-  def boolAnswerOrAddLink(id: TypedIdentifier[Boolean], message: String, url: String, visuallyHiddenText: Option[Message] = None)
-                         (implicit ua: UserAnswers, rds: Reads[Boolean], messages: Messages): AnswerRow =
+  def boolAnswerOrAddLink(
+                           id: TypedIdentifier[Boolean],
+                           message: String,
+                           url: String,
+                           visuallyHiddenText: Option[Message] = None
+                         )(
+                           implicit ua: UserAnswers,
+                           rds: Reads[Boolean],
+                           messages: Messages
+                         ): AnswerRow =
     ua.get(id) match {
-      case None => AnswerRow(message, Seq(messages("site.not_entered")), answerIsMessageKey = false, addLink(url, visuallyHiddenText))
-      case Some(answer) => AnswerRow(message, Seq(booleanToText(answer)), answerIsMessageKey = true, changeLink(url, visuallyHiddenText))
+      case None =>
+        AnswerRow(
+          label = message,
+          answer = Seq(messages("site.not_entered")),
+          answerIsMessageKey = false,
+          changeUrl = addLink(url, visuallyHiddenText)
+        )
+      case Some(answer) =>
+        AnswerRow(
+          label = message,
+          answer = Seq(booleanToText(answer)),
+          answerIsMessageKey = true,
+          changeUrl = changeLink(url, visuallyHiddenText)
+        )
     }
 
   def answerOrAddLink[A](id: TypedIdentifier[A], message: String, url: String, visuallyHiddenText: Option[Message] = None)
                         (implicit ua: UserAnswers, rds: Reads[A], messages: Messages): AnswerRow =
     ua.get(id) match {
-      case None => AnswerRow(message, Seq(messages("site.not_entered")), answerIsMessageKey = false, addLink(url, visuallyHiddenText))
-      case Some(answer) => AnswerRow(message, Seq(answer.toString), answerIsMessageKey = false, changeLink(url, visuallyHiddenText))
+      case None =>
+        AnswerRow(
+          label = message,
+          answer = Seq(messages("site.not_entered")),
+          answerIsMessageKey = false,
+          changeUrl = addLink(url, visuallyHiddenText)
+        )
+      case Some(answer) =>
+        AnswerRow(
+          label = message,
+          answer = Seq(answer.toString),
+          answerIsMessageKey = false,
+          changeUrl = changeLink(url, visuallyHiddenText)
+        )
     }
 
   def changeLink(url: String, visuallyHiddenText: Option[Message] = None)

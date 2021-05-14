@@ -22,7 +22,7 @@ import views.html.unauthorised
 
 class UnauthorisedViewSpec extends ViewBehaviours {
 
-  val view: unauthorised = app.injector.instanceOf[unauthorised]
+  val view: unauthorised = injector.instanceOf[unauthorised]
 
   def createView: () => HtmlFormat.Appendable = () => view()(fakeRequest, messages)
 

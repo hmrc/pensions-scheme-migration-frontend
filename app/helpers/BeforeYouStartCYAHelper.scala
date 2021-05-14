@@ -22,7 +22,7 @@ import models.requests.DataRequest
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import utils.{CountryOptions, UserAnswers}
-import viewmodels.{AnswerRow, AnswerSection, CYAViewModel}
+import viewmodels.{AnswerRow, AnswerSection, CYAViewModel, Message}
 
 class BeforeYouStartCYAHelper extends CYAHelper {
 
@@ -38,34 +38,34 @@ class BeforeYouStartCYAHelper extends CYAHelper {
       headingKey = None,
       rows = Seq(
         AnswerRow(
-          label = "messages__cya__scheme_name",
+          label = Message("messages__cya__scheme_name").resolve,
           answer = Seq(schemeName),
           answerIsMessageKey = false,
           changeUrl = None
         ),
         AnswerRow(
-          label = messages("messages__cya__scheme_type", schemeName),
-          answer = Seq(s"messages__scheme_type_${getAnswer(SchemeTypeId)}"),
+          label = Message("messages__cya__scheme_type", schemeName).resolve,
+          answer = Seq(Message(s"messages__scheme_type_${getAnswer(SchemeTypeId)}").resolve),
           answerIsMessageKey = true,
           changeUrl = changeLink(
             url = routes.SchemeTypeController.onPageLoad().url,
-            visuallyHiddenText = Some(messages("messages__visuallyhidden__schemeType", schemeName))
+            visuallyHiddenText = Some(Message("messages__visuallyhidden__schemeType", schemeName).resolve)
           )
         ),
         AnswerRow(
-          label = messages("messages__cya__country", schemeName),
+          label = Message("messages__cya__country", schemeName).resolve,
           answer = Seq(countryOptions.getCountryNameFromCode(getAnswer(EstablishedCountryId))),
           answerIsMessageKey = false,
           changeUrl = changeLink(
             url = routes.EstablishedCountryController.onPageLoad().url,
-            visuallyHiddenText = Some(messages("messages__visuallyhidden__schemeEstablishedCountry", schemeName))
+            visuallyHiddenText = Some(Message("messages__visuallyhidden__schemeEstablishedCountry", schemeName).resolve)
           )
         ),
         boolAnswerOrAddLink(
           id = WorkingKnowledgeId,
-          message = "messages__cya__working_knowledge",
+          message = Message("messages__cya__working_knowledge").resolve,
           url = routes.WorkingKnowledgeController.onPageLoad().url,
-          visuallyHiddenText = Some(messages("messages__visuallyhidden__working_knowledge"))
+          visuallyHiddenText = Some(Message("messages__visuallyhidden__working_knowledge").resolve)
         )
       )
     )
