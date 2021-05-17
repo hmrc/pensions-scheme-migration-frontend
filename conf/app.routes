@@ -6,9 +6,6 @@ GET         /assets/*file                               controllers.Assets.versi
 #TODO this is a temporary test root. MUST be removed before production release
 GET        /:pstr/saveData                      controllers.testonly.TestMongoController.save(pstr)
 
-GET        /index                               controllers.IndexController.onPageLoad
-GET        /task-list                           controllers.TaskListController.onPageLoad
-
 GET         /unauthorised                               controllers.UnauthorisedController.onPageLoad
 
 GET         /index                                      controllers.IndexController.onPageLoad
