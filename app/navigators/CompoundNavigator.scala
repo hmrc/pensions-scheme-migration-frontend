@@ -26,10 +26,8 @@ import utils.UserAnswers
 import scala.collection.JavaConverters._
 
 trait CompoundNavigator {
-  def nextPage(
-                id: Identifier,
-                userAnswers: UserAnswers
-              )(implicit request: DataRequest[AnyContent]): Call
+  def nextPage(id: Identifier, userAnswers: UserAnswers)
+              (implicit request: DataRequest[AnyContent]): Call
 }
 
 class CompoundNavigatorImpl @Inject()(navigators: java.util.Set[Navigator])

@@ -18,17 +18,16 @@ package controllers.actions
 
 import base.SpecBase.controllerComponents
 import models.requests.AuthenticatedRequest
-import play.api.mvc.{AnyContent, BodyParser, PlayBodyParsers, Request, Result}
-import uk.gov.hmrc.domain.{PsaId, PspId}
+import play.api.mvc.{AnyContent, BodyParser, Request, Result}
+import uk.gov.hmrc.domain.PsaId
 import utils.Data
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class FakeAuthAction extends AuthAction {
 
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
-    block(AuthenticatedRequest(request, "id", Some(PsaId(Data.psaId)), None))
+    block(AuthenticatedRequest(request, "id", PsaId(Data.psaId)))
 
   override def parser: BodyParser[AnyContent] = controllerComponents.parsers.defaultBodyParser
 
@@ -37,16 +36,3 @@ class FakeAuthAction extends AuthAction {
 }
 
 object FakeAuthAction extends FakeAuthAction()
-
-class FakeAuthActionPsp @Inject()(bodyParsers: PlayBodyParsers) extends AuthAction {
-
-  override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
-    block(AuthenticatedRequest(request, "id", None, Some(PspId(Data.pspId))))
-  }
-
-  override def parser: BodyParser[AnyContent] =
-    bodyParsers.default
-
-  override protected def executionContext: ExecutionContext =
-    scala.concurrent.ExecutionContext.Implicits.global
-}

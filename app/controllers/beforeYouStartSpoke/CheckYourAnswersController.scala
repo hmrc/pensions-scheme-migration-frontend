@@ -28,22 +28,24 @@ import views.html.checkYourAnswers
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi,
-                                           authenticate: AuthAction,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           implicit val countryOptions: CountryOptions,
-                                           cyaHelper: BeforeYouStartCYAHelper,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           val view: checkYourAnswers
-                                           )(implicit val ec: ExecutionContext) extends
-  FrontendBaseController
-  with Enumerable.Implicits with I18nSupport with Retrievals {
+class CheckYourAnswersController @Inject()(
+                                            override val messagesApi: MessagesApi,
+                                            authenticate: AuthAction,
+                                            getData: DataRetrievalAction,
+                                            requireData: DataRequiredAction,
+                                            implicit val countryOptions: CountryOptions,
+                                            cyaHelper: BeforeYouStartCYAHelper,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            val view: checkYourAnswers
+                                          )(implicit val ec: ExecutionContext)
+  extends FrontendBaseController
+    with Enumerable.Implicits
+    with I18nSupport
+    with Retrievals {
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-
         Future.successful(Ok(view(cyaHelper.viewmodel)))
     }
 }

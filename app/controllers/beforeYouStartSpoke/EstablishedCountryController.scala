@@ -32,18 +32,21 @@ import views.html.beforeYouStart.establishedCountry
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EstablishedCountryController @Inject()(override val messagesApi: MessagesApi,
-                                             userAnswersCacheConnector: UserAnswersCacheConnector,
-                                             navigator: CompoundNavigator,
-                                             authenticate: AuthAction,
-                                             getData: DataRetrievalAction,
-                                             requireData: DataRequiredAction,
-                                             formProvider: EstablishedCountryFormProvider,
-                                             countryOptions: CountryOptions,
-                                             val controllerComponents: MessagesControllerComponents,
-                                             val view: establishedCountry
-                                            )(implicit val executionContext: ExecutionContext) extends
-  FrontendBaseController with I18nSupport with Retrievals {
+class EstablishedCountryController @Inject()(
+                                              override val messagesApi: MessagesApi,
+                                              userAnswersCacheConnector: UserAnswersCacheConnector,
+                                              navigator: CompoundNavigator,
+                                              authenticate: AuthAction,
+                                              getData: DataRetrievalAction,
+                                              requireData: DataRequiredAction,
+                                              formProvider: EstablishedCountryFormProvider,
+                                              countryOptions: CountryOptions,
+                                              val controllerComponents: MessagesControllerComponents,
+                                              val view: establishedCountry
+                                            )(implicit val executionContext: ExecutionContext)
+  extends FrontendBaseController
+    with I18nSupport
+    with Retrievals {
 
   private val form = formProvider()
 
@@ -66,10 +69,10 @@ class EstablishedCountryController @Inject()(override val messagesApi: MessagesA
             Future.successful(BadRequest(view(formWithErrors, countryOptions.options, schemeName)))
           },
         value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(EstablishedCountryId, value))
-              _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
-            } yield Redirect(navigator.nextPage(EstablishedCountryId, updatedAnswers))
+          for {
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(EstablishedCountryId, value))
+            _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+          } yield Redirect(navigator.nextPage(EstablishedCountryId, updatedAnswers))
       )
   }
 }

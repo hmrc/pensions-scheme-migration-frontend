@@ -76,10 +76,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with MockitoSuga
         status(result) mustBe OK
         contentAsString(result) mustBe viewAsString
       }
-
     }
-
   }
-
 }
 

@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package navigators
+@import config.AppConfig
 
-import identifiers.Identifier
-import models.requests.DataRequest
-import play.api.mvc.{AnyContent, Call}
-import utils.UserAnswers
+@this(
+        main_template: main_template
+)
 
-trait Navigator {
-  protected def routeMap(userAnswers: UserAnswers)
-                        (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call]
+@()(implicit request: Request[_], messages: Messages)
 
-  def nextPageOptional(userAnswers: UserAnswers)
-                      (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = routeMap(userAnswers)
+@main_template(
+    title = messages("messages__unauthorised__title")) {
+
+    @components.back_link()
+
+    <h1 class="heading-xlarge">@messages("messages__unauthorised__title")</h1>
+
 }
