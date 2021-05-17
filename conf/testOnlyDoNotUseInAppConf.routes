@@ -22,6 +22,5 @@ GET        /:pstr/removeLock                    controllers.testonly.TestMongoCo
 GET        /:pstr/removeLockOnScheme            controllers.testonly.TestMongoController.removeLockOnScheme(pstr)
 GET        /removeLockByUser                    controllers.testonly.TestMongoController.removeLockByUser()
 
-GET        /:pstr/saveData                      controllers.testonly.TestMongoController.save(pstr)
 GET        /:pstr/fetchData                     controllers.testonly.TestMongoController.get(pstr)
 GET        /:pstr/removeData                    controllers.testonly.TestMongoController.remove(pstr)
