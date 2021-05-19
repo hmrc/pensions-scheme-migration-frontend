@@ -32,7 +32,7 @@ error.non_numeric = Give a value using only numbers
 error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
-
+messages__pension_scheme_registration__title = Migrating pension schemes
 messages__unauthorised__title = You can’t access this service with this account
 
 messages__index__title = pensions-scheme-migration-frontend

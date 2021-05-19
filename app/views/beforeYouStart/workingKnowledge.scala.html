@@ -37,7 +37,6 @@ title = titleWithErrors(form, messages("messages__workingKnowledge__title"))) {
         @components.error_summary(form.errors)
         <div class="form-group @if(form.hasErrors){form-group--error}">
 
-                <div class="form-group @if(form.hasErrors){form-group--error}">
 
                 @components.heading(messages("messages__workingKnowledge__heading"))
 
@@ -50,7 +49,6 @@ title = titleWithErrors(form, messages("messages__workingKnowledge__title"))) {
                     label = messages("messages__workingKnowledge__heading"),
                     labelClass = Some("visually-hidden")
                 )
-                </div>
 
             @components.submit_button("site.save_and_continue")
         </div>
