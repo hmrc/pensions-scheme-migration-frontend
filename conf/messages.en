@@ -17,6 +17,7 @@ site.signOut = Sign out
 site.service_name = Migrating pension schemes
 site.back = Back
 site.save_and_continue = Save and continue
+site.continue = Continue
 site.return_to = Return to {0}
 site.return_to_scheme = Return to scheme
 site.error = Error:
