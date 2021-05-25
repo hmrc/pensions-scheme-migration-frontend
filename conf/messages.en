@@ -30,6 +30,7 @@ site.view = View
 site.hidden-delete = Delete {0}
 site.hidden-edit = Change {0}
 site.title.suffix = - Managing pension schemes - GOV.UK
+site.return.to = Return to {0}
 checkYourAnswers.title = Check your answers
 
 error.title.prefix = Error:
@@ -153,3 +154,8 @@ benefitsAndInsurance.p2 = If is secured by a contract of insurance or an annuity
 benefitsAndInsurance.p2b1 = the name of the insurance company
 benefitsAndInsurance.p2b2 = the policy number
 benefitsAndInsurance.p2b3 = the insurance company’s address
+
+isInvestmentRegulated.title = Is the scheme investment regulated?
+isInvestmentRegulated.h1 = Is {0} investment regulated?
+isInvestmentRegulated.error.required = Select yes if {0} is investment regulated
+

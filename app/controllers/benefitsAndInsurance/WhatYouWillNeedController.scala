@@ -43,7 +43,8 @@ class WhatYouWillNeedController @Inject()(override val messagesApi: MessagesApi,
     implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         val json = Json.obj(
-          "schemeName" -> schemeName
+          "schemeName" -> schemeName,
+          "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
         )
         renderer.render("benefitsAndInsurance/whatYouWillNeed.njk", json).map(Ok(_))
       }
