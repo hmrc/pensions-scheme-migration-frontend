@@ -1,6 +1,17 @@
-service.name = pensions-scheme-migration-frontend
-service.homePageUrl = /pensions-scheme-migration-frontend
+service.name = Migrating pension schemes
+service.homePageUrl = /migrate-pension-scheme
 service.text = This is your new service
+
+phaseBanner.1 = This is a new service – your
+phaseBanner.2 = feedback
+phaseBanner.3 = will help us to improve it.
+
+footer.links.support_links = Cysylltiadau cymorth
+footer.links.help = Help using GOV.UK
+footer.links.cookies = Cookies
+footer.links.accessibility = Accessibility
+footer.links.privacy = Privacy policy
+footer.links.terms = Terms and conditions
 
 site.signOut = Sign out
 site.service_name = Migrating pension schemes
@@ -18,6 +29,9 @@ site.view = View
 site.hidden-delete = Delete {0}
 site.hidden-edit = Change {0}
 checkYourAnswers.title = Check your answers
+
+error.title.prefix = Error:
+error.summary.title = There is a problem
 
 error.boolean = Please give an answer
 error.invalid_date = Give a correct date
@@ -113,3 +127,16 @@ messages__finish = Finish
 messages__schemeTaskList__status_visuallyHidden = This section is
 messages__schemeTaskList__heading = Scheme details
 messages__complete__returnToSchemeOverview = Save and return to Managing Pension Schemes
+
+currentMembers.title = How many members does {0} currently have?
+currentMembers.error.required = Select how many members {0} currently has
+futureMembers.title = How many scheme members do you expect to have in 12 months time?
+futureMembers.error.required = Select how many scheme members you expect {0} to have in 12 months time
+messages__visuallyhidden__currentMembers =
+messages__visuallyhidden__futureMembers =
+members.opt1 = None
+members.opt2 = 1
+members.opt3 = 2 to 11
+members.opt4 = 12 to 50
+members.opt5 = 51 to 10,000
+members.opt6 = More than 10,000
