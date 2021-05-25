@@ -31,3 +31,5 @@ GET         /members/membership-future                  controllers.aboutMembers
 POST        /members/membership-future                  controllers.aboutMembership.FutureMembersController.onSubmit
 
 GET         /members/check-your-answers                 controllers.aboutMembership.CheckYourAnswersController.onPageLoad
+
+GET         /benefits-and-finance/what-you-will-need    controllers.benefitsAndInsurance.WhatYouWillNeedController.onPageLoad
