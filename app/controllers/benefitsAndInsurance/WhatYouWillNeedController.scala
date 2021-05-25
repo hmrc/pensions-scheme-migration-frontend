@@ -25,10 +25,9 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Enumerable
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class WhatYouWillNeedController @Inject()(override val messagesApi: MessagesApi,
                                          authenticate: AuthAction,
@@ -43,16 +42,9 @@ class WhatYouWillNeedController @Inject()(override val messagesApi: MessagesApi,
     implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         val json = Json.obj(
-          "schemeName" -> schemeName,
-          "titleMessage" -> "blaa",
+          "schemeName" -> schemeName
         )
-
         renderer.render("benefitsAndInsurance/whatYouWillNeed.njk", json).map(Ok(_))
       }
-  }
-
-  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
-    implicit request =>
-      Future.successful(Ok(""))
   }
 }
