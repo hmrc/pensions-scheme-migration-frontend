@@ -28,6 +28,7 @@ site.not_entered = Not entered
 site.view = View
 site.hidden-delete = Delete {0}
 site.hidden-edit = Change {0}
+site.title.suffix = - Managing pension schemes - GOV.UK
 checkYourAnswers.title = Check your answers
 
 error.title.prefix = Error:
@@ -140,3 +141,14 @@ members.opt3 = 2 to 11
 members.opt4 = 12 to 50
 members.opt5 = 51 to 10,000
 members.opt6 = More than 10,000
+
+benefitsAndInsurance.title = Benefits and insurance for {0}
+benefitsAndInsurance.p1 = You will need to tell us:
+benefitsAndInsurance.p1b1 = if it is investment regulated
+benefitsAndInsurance.p1b2 = if it is an occupational pension scheme
+benefitsAndInsurance.p1b3 = how it provides benefits
+benefitsAndInsurance.p1b4 = if it is secured by a contract of insurance or an annuity
+benefitsAndInsurance.p2 = If is secured by a contract of insurance or an annuity, you will also need to tell us:
+benefitsAndInsurance.p2b1 = the name of the insurance company
+benefitsAndInsurance.p2b2 = the policy number
+benefitsAndInsurance.p2b3 = the insurance company’s address
