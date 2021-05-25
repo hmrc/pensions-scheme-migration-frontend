@@ -41,7 +41,8 @@ class TaskListController @Inject()(
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData) {
     implicit request =>
-      Ok(view(taskListHelper.taskList(request.userAnswers.getOrElse(UserAnswers())), None))
+      implicit val userAnswers: UserAnswers = request.userAnswers.getOrElse(UserAnswers())
+      Ok(view(taskListHelper.taskList(userAnswers), None))
   }
 
 }

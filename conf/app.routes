@@ -29,3 +29,5 @@ POST        /members/membership                         controllers.aboutMembers
 
 GET         /members/membership-future                  controllers.aboutMembership.FutureMembersController.onPageLoad
 POST        /members/membership-future                  controllers.aboutMembership.FutureMembersController.onSubmit
+
+GET         /members/check-your-answers                 controllers.aboutMembership.CheckYourAnswersController.onPageLoad

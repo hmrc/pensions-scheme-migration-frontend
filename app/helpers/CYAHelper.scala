@@ -58,21 +58,21 @@ trait CYAHelper {
         )
     }
 
-  def answerOrAddLink[A](id: TypedIdentifier[A], message: String, url: String, visuallyHiddenText: Option[Message] = None)
+  def answerOrAddLink[A](id: TypedIdentifier[A], message: String, url: String, visuallyHiddenText: Option[Message] = None, answerIsMessageKey: Boolean = false)
                         (implicit ua: UserAnswers, rds: Reads[A], messages: Messages): AnswerRow =
     ua.get(id) match {
       case None =>
         AnswerRow(
           label = message,
           answer = Seq(messages("site.not_entered")),
-          answerIsMessageKey = false,
+          answerIsMessageKey = answerIsMessageKey,
           changeUrl = addLink(url, visuallyHiddenText)
         )
       case Some(answer) =>
         AnswerRow(
           label = message,
           answer = Seq(answer.toString),
-          answerIsMessageKey = false,
+          answerIsMessageKey = answerIsMessageKey,
           changeUrl = changeLink(url, visuallyHiddenText)
         )
     }

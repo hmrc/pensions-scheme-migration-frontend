@@ -20,16 +20,18 @@ import models.TaskListLink
 import utils.UserAnswers
 import viewmodels.Message
 
-case object BeforeYouStartSpoke extends Spoke {
+case object AboutMembersSpoke extends Spoke {
 
   override def changeLink(name: String): TaskListLink =
     TaskListLink(
-      Message("messages__schemeTaskList__before_you_start_link_text", name),
-      controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad.url
+      Message("messages__schemeTaskList__about_members_link_text", name),
+      controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad.url
     )
 
-  override def completeFlag(answers: UserAnswers): Option[Boolean] = Some(answers.isBeforeYouStartCompleted)
+  override def completeFlag(answers: UserAnswers): Option[Boolean] = answers.isMembersCompleted
 }
+
+
 
 
 

@@ -23,16 +23,27 @@ import viewmodels._
 
 class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
 
-  def taskList(answers: UserAnswers): TaskList =
+  def getSchemeName[A](implicit ua: UserAnswers): String =
+    ua.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
+
+  def taskList(implicit answers: UserAnswers): TaskList =
     TaskList(
-      answers.get(SchemeNameId).getOrElse(""),
-      beforeYouStartSection(answers)
+      getSchemeName,
+      beforeYouStartSection,
+      aboutSection
     )
 
-  private[helpers] def beforeYouStartSection(userAnswers: UserAnswers): TaskListEntitySection = {
+  private[helpers] def beforeYouStartSection(implicit userAnswers: UserAnswers): TaskListEntitySection = {
     TaskListEntitySection(None,
-      spokeCreationService.getBeforeYouStartSpoke(userAnswers, userAnswers.get(SchemeNameId).getOrElse("")),
+      spokeCreationService.getBeforeYouStartSpoke(userAnswers, getSchemeName),
       Some(Message("messages__schemeTaskList__before_you_start_header"))
+    )
+  }
+
+  private[helpers] def aboutSection(implicit userAnswers: UserAnswers): TaskListEntitySection = {
+    TaskListEntitySection(None,
+      spokeCreationService.membershipDetailsSpoke(userAnswers, getSchemeName),
+      Some(Message("messages__schemeTaskList__about_scheme_header"))
     )
   }
 

@@ -16,16 +16,19 @@
 
 package helpers
 
-import helpers.spokes.{BeforeYouStartSpoke, Spoke}
+import helpers.spokes.{AboutMembersSpoke, BeforeYouStartSpoke, Spoke}
 import models.EntitySpoke
 import utils.{Enumerable, UserAnswers}
 
 class SpokeCreationService extends Enumerable.Implicits {
 
   def getBeforeYouStartSpoke(answers: UserAnswers, name: String): Seq[EntitySpoke] =
-    Seq(createSpoke(answers, BeforeYouStartSpoke, name, None))
+    Seq(createSpoke(answers, BeforeYouStartSpoke, name))
 
-  def createSpoke(answers: UserAnswers, spoke: Spoke, name: String, isNew: Option[Boolean]): EntitySpoke =
+  def membershipDetailsSpoke(answers: UserAnswers, name: String): Seq[EntitySpoke] =
+    Seq(createSpoke(answers, AboutMembersSpoke, name))
+
+  def createSpoke(answers: UserAnswers, spoke: Spoke, name: String): EntitySpoke =
     EntitySpoke(spoke.changeLink(name), spoke.completeFlag(answers))
 
 }

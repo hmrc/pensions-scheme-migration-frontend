@@ -20,7 +20,8 @@ import models.EntitySpoke
 
 case class TaskList(
                                   h1: String,
-                                  beforeYouStart: TaskListEntitySection
+                                  beforeYouStart: TaskListEntitySection,
+                                  about: TaskListEntitySection
                                 )
 
 case class TaskListEntitySection(
