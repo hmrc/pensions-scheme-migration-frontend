@@ -188,8 +188,3 @@ benefitsType.cashBalanceAndOtherMoneyPurchaseBenefits = A mixture of cash balanc
 benefitsType.title = What type of money purchase benefits does the scheme provide?
 benefitsType.h1 = What type of money purchase benefits does {0} provide?
 benefitsType.error.required = Select what type of money purchase benefits the scheme provides
-
-securedByContract.title = Are any of the scheme benefits secured by a contract of insurance or annuity?
-securedByContract.h1 = Are any of {0}ʼs benefits secured by a contract of insurance or annuity?
-securedByContract.error.required = Select yes if any of the scheme benefits are secured by a contract of insurance or annuity
-securedByContract.p1 = Benefits can be secured by a contract of insurance or an annuity contract by an insurance company that provides administration services to the scheme.

@@ -20,9 +20,10 @@ import base.SpecBase
 import controllers.actions.FakeDataRetrievalAction
 import controllers.benefitsAndInsurance.routes._
 import identifiers._
-import identifiers.benefitsAndInsurance.{IsOccupationalId, HowProvideBenefitsId, IsInvestmentRegulatedId}
+import identifiers.benefitsAndInsurance.{AreBenefitsSecuredId, BenefitsTypeId, HowProvideBenefitsId, IsInvestmentRegulatedId, IsOccupationalId}
 import models._
-import models.benefitsAndInsurance.BenefitsProvisionType.{DefinedBenefitsOnly, MoneyPurchaseOnly}
+import models.benefitsAndInsurance.BenefitsProvisionType.{DefinedBenefitsOnly, MoneyPurchaseOnly, MixedBenefits}
+import models.benefitsAndInsurance.BenefitsType.OtherMoneyPurchaseBenefits
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.{JsString, Writes, Json}
@@ -46,13 +47,17 @@ class AboutBenefitsAndInsuranceNavigatorSpec extends SpecBase with NavigatorBeha
       def navigation: TableFor3[Identifier, UserAnswers, Call] =
         Table(
           ("Id", "UserAnswers", "Next Page"),
-          row(IsInvestmentRegulatedId)(occupationalPension, uaWithValue(IsInvestmentRegulatedId, false)),
-          row(IsOccupationalId)(typesofBenefits, uaWithValue(IsOccupationalId, false)),
-          row(HowProvideBenefitsId)(benefitsSecured, uaWithValue(HowProvideBenefitsId, DefinedBenefitsOnly)),
-          row(HowProvideBenefitsId)(moneyPurchaseBenefits(), uaWithValue(HowProvideBenefitsId, MoneyPurchaseOnly))
-     //     row(MoneyPurchaseBenefitsId)(Other, benefitsSecured),
-     //     row(BenefitsSecuredByInsuranceId)(false, checkYouAnswers()),
-    //      row(BenefitsSecuredByInsuranceId)(true, insuranceCompanyName(NormalMode)),
+          row(IsInvestmentRegulatedId)(isOccupationalPensionPage(), uaWithValue(IsInvestmentRegulatedId, false)),
+          row(IsInvestmentRegulatedId)(isOccupationalPensionPage(), uaWithValue(IsInvestmentRegulatedId, true)),
+          row(IsOccupationalId)(howToProvideBenefitsPage(), uaWithValue(IsOccupationalId, false)),
+          row(IsOccupationalId)(howToProvideBenefitsPage(), uaWithValue(IsOccupationalId, true)),
+          row(HowProvideBenefitsId)(benefitsTypePage(), uaWithValue(HowProvideBenefitsId, MoneyPurchaseOnly)),
+          row(HowProvideBenefitsId)(areBenefitsSecuredPage(), uaWithValue(HowProvideBenefitsId, DefinedBenefitsOnly)),
+          row(HowProvideBenefitsId)(benefitsTypePage(), uaWithValue(HowProvideBenefitsId, MixedBenefits)),
+
+          row(BenefitsTypeId)(areBenefitsSecuredPage(), uaWithValue(BenefitsTypeId, OtherMoneyPurchaseBenefits)),
+//          row(AreBenefitsSecuredId)(checkYouAnswers(), uaWithValue(AreBenefitsSecuredId, false)),
+          row(AreBenefitsSecuredId)(insuranceCompanyName(NormalMode), uaWithValue(AreBenefitsSecuredId, true))
     //      row(BenefitsInsuranceNameId)(someStringValue, policyNumber()),
     //      row(InsurancePolicyNumberId)(someStringValue, insurerPostcode()),
     //      row(InsurerEnterPostCodeId)(someSeqTolerantAddress, insurerAddressList()),
@@ -89,13 +94,14 @@ object AboutBenefitsAndInsuranceNavigatorSpec extends OptionValues {
 
   private implicit def writes[A: Enumerable]: Writes[A] = Writes(value => JsString(value.toString))
 
-  private def uaWithValue[A](x:TypedIdentifier[A], y:A)(implicit writes: Writes[A]) = UserAnswers().set(x, y).toOption
+  private def uaWithValue[A](idType:TypedIdentifier[A], idValue:A)(implicit writes: Writes[A]) =
+    UserAnswers().set(idType, idValue).toOption
 
-  private def occupationalPension: Call                               = IsOccupationalController.onPageLoad(NormalMode)
-  private def typesofBenefits: Call                                   = HowProvideBenefitsController.onPageLoad(NormalMode, None)
-  private def moneyPurchaseBenefits(mode: Mode = NormalMode): Call    = BenefitsTypeController.onPageLoad(mode, None)
-  private def benefitsSecured: Call                                   = AreBenefitsSecuredController.onPageLoad(NormalMode, None)
-  private def insuranceCompanyName(mode: Mode): Call                  = BenefitsInsuranceNameController.onPageLoad(mode, None)
+  private def isOccupationalPensionPage(mode: Mode = NormalMode): Call  = IsOccupationalController.onPageLoad(mode)
+  private def howToProvideBenefitsPage(mode: Mode = NormalMode): Call   = HowProvideBenefitsController.onPageLoad(mode)
+  private def benefitsTypePage(mode: Mode = NormalMode): Call       = BenefitsTypeController.onPageLoad(mode)
+  private def areBenefitsSecuredPage(mode: Mode = NormalMode): Call    = AreBenefitsSecuredController.onPageLoad(mode)
+  private def insuranceCompanyName(mode: Mode = NormalMode): Call                  = BenefitsInsuranceNameController.onPageLoad(mode)
 //  private def policyNumber(mode: Mode = NormalMode): Call             = InsurancePolicyNumberController.onPageLoad(mode, None)
 //  private def insurerPostcode(mode: Mode = NormalMode): Call          = InsurerEnterPostcodeController.onPageLoad(mode, None)
 //  private def insurerAddressList(mode: Mode = NormalMode): Call       = InsurerSelectAddressController.onPageLoad(mode, None)
