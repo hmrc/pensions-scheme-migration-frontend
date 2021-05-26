@@ -23,10 +23,11 @@ import controllers.actions._
 import forms.benefitsAndInsurance.IsInvestmentRegulatedFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import navigators.CompoundNavigator
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import uk.gov.hmrc.viewmodels.Radios
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Enumerable
@@ -46,14 +47,15 @@ class IsInvestmentRegulatedController @Inject()(override val messagesApi: Messag
                                        renderer: Renderer)(implicit ec: ExecutionContext)
   extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
-//  private def form(memberName: String)(implicit messages: Messages): Form[Boolean] =
-//    formProvider(messages("isInvestmentRegulated.error.required", memberName))
+  private def form(memberName: String)(implicit messages: Messages): Form[Boolean] =
+    formProvider(messages("isInvestmentRegulated.error.required", memberName))
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         val json = Json.obj(
           "schemeName" -> schemeName,
+          "radios" -> Radios.yesNo(form(employerName)(implicitly)("value")),
           "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
         )
             renderer.render("benefitsAndInsurance/isInvestmentRegulated.njk", json).map(Ok(_))
