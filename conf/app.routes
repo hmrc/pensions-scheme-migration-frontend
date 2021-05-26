@@ -33,3 +33,4 @@ POST        /members/membership-future                  controllers.aboutMembers
 GET         /benefits-and-finance/what-you-will-need    controllers.benefitsAndInsurance.WhatYouWillNeedController.onPageLoad
 
 GET         /benefits-and-finance/investment-regulated  controllers.benefitsAndInsurance.IsInvestmentRegulatedController.onPageLoad
+POST        /benefits-and-finance/investment-regulated  controllers.benefitsAndInsurance.IsInvestmentRegulatedController.onSubmit
