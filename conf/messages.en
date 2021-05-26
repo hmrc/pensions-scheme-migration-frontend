@@ -188,3 +188,7 @@ benefitsType.cashBalanceAndOtherMoneyPurchaseBenefits = A mixture of cash balanc
 benefitsType.title = What type of money purchase benefits does the scheme provide?
 benefitsType.h1 = What type of money purchase benefits does {0} provide?
 benefitsType.error.required = Select what type of money purchase benefits the scheme provides
+
+benefitsInsurancePolicy.title = What is the policy number?
+benefitsInsurancePolicy.h1 = What is the policy number with {0} ?
+benefitsInsurancePolicy.error.required = Enter the policy number of the insurance company that secures the scheme benefits

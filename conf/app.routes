@@ -47,3 +47,6 @@ POST        /benefits-and-finance/benefits  controllers.benefitsAndInsurance.How
 
 GET         /benefits-and-finance/benefits-type  controllers.benefitsAndInsurance.BenefitsTypeController.onPageLoad
 POST        /benefits-and-finance/benefits-type  controllers.benefitsAndInsurance.BenefitsTypeController.onSubmit
+
+GET         /benefits-and-finance/benefits-insurance-policy  controllers.benefitsAndInsurance.BenefitsInsurancePolicyController.onPageLoad
+POST        /benefits-and-finance/benefits-insurance-policy  controllers.benefitsAndInsurance.BenefitsInsurancePolicyController.onSubmit

@@ -7,7 +7,7 @@
 {% from "macros/title.njk"                         import title %}
 
 {% block pageTitle %}
-  {{ title(messages("benefitsInsuranceName.title"), form.errors) }}
+  {{ title(messages("postcode.title", messages(viewmodel.entityType)), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -22,29 +22,32 @@
           }) }}
         {% endif %}
 
+        <h1 class="govuk-heading-xl">{{messages("postcode.title", viewmodel.entityName)}}</h1>
 
-        <form action="{{  submitUrl }}" method="post" autocomplete="off" novalidate >
+         <p class="govuk-body">
+            {{ messages("postcode.youCan") }} <a href="{{ viewmodel.enterManuallyUrl }}" class="govuk-link">{{ messages("address.linkText.enterManually") }}</a>.
+         </p>
+
+        <form action="{{ viewmodel.submitUrl }}" method="post" autocomplete="off" novalidate>
 
           {{ csrf() | safe }}
 
-
-
-
           {{ govukInput({
             label: {
-              text: messages('benefitsInsuranceName.h1'),
-              isPageHeading: true,
-              classes: "govuk-label--xl"
+              text: messages('postcode.label'),
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--s"
             },
             id: "value",
             name: "value",
             value: form.value.value,
-            errorMessage: form.value.error,
-            classes: "govuk-!-width-three-quarters"
+            classes: "govuk-input--width-10",
+            attributes: {autocomplete: "off"},
+            errorMessage: form.value.error
           }) }}
 
           {{ govukButton({
-            text: messages("site.save_and_continue"),
+            text: messages("findAddress"),
             attributes: {id: "submit"}
           }) }}
 
@@ -53,6 +56,4 @@
       </div>
     </div>
 
-    <p class="govuk-body"><a href="{{ returnUrl }}" class="govuk-link">{{ messages("site.return.to", schemeName) }}</a>
-    </p>
 {% endblock %}

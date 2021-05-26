@@ -7,7 +7,7 @@
 {% from "macros/title.njk"                         import title %}
 
 {% block pageTitle %}
-  {{ title(messages("benefitsInsuranceName.title"), form.errors) }}
+  {{ title(messages("benefitsInsurancePolicy.title"), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -32,7 +32,7 @@
 
           {{ govukInput({
             label: {
-              text: messages('benefitsInsuranceName.h1'),
+              text: messages('benefitsInsurancePolicy.h1',schemeName),
               isPageHeading: true,
               classes: "govuk-label--xl"
             },

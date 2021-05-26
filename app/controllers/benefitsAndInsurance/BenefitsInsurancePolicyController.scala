@@ -20,13 +20,12 @@ import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import forms.benefitsAndInsurance.HowProvideBenefitsFormProvider
+import forms.benefitsAndInsurance.BenefitsInsurancePolicyFormProvider
 import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId}
-import identifiers.benefitsAndInsurance.HowProvideBenefitsId
-import models.benefitsAndInsurance.BenefitsProvisionType
+import identifiers.benefitsAndInsurance.BenefitsInsurancePolicyId
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{MessagesApi, Messages, I18nSupport}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -37,37 +36,35 @@ import utils.Enumerable
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class HowProvideBenefitsController @Inject()(override val messagesApi: MessagesApi,
+class BenefitsInsurancePolicyController @Inject()(override val messagesApi: MessagesApi,
                                        userAnswersCacheConnector: UserAnswersCacheConnector,
                                        authenticate: AuthAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        navigator: CompoundNavigator,
-                                       formProvider: HowProvideBenefitsFormProvider,
+                                       formProvider: BenefitsInsurancePolicyFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        config: AppConfig,
                                        renderer: Renderer)(implicit ec: ExecutionContext)
   extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
-  private def form(schemeName: String)(implicit messages: Messages): Form[BenefitsProvisionType] =
-    formProvider(messages("howProvideBenefits.error.required", schemeName))
+  private def form(schemeName: String)(implicit messages: Messages): Form[String] =
+    formProvider(messages("benefitsInsurancePolicy.error.required", schemeName))
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
-        val preparedForm = request.userAnswers.get(HowProvideBenefitsId) match {
-          case Some(value) =>
-            form(schemeName).fill(value)
+        val preparedForm = request.userAnswers.get(BenefitsInsurancePolicyId) match {
+          case Some(value) => form(schemeName).fill(value)
           case None        => form(schemeName)
         }
         val json = Json.obj(
           "schemeName" -> schemeName,
           "form" -> preparedForm,
-          "radios" -> BenefitsProvisionType.radios(preparedForm),
-          "submitUrl" -> controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onSubmit().url,
+          "submitUrl" -> controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onSubmit().url,
           "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
         )
-        renderer.render("benefitsAndInsurance/howProvideBenefits.njk", json).map(Ok(_))
+        renderer.render("benefitsAndInsurance/benefitsInsurancePolicy.njk", json).map(Ok(_))
       }
     }
 
@@ -81,15 +78,14 @@ class HowProvideBenefitsController @Inject()(override val messagesApi: MessagesA
               val json = Json.obj(
                 "schemeName" -> schemeName,
                 "form" -> formWithErrors,
-                "radios" -> BenefitsProvisionType.radios(formWithErrors),
-                "submitUrl" -> controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onSubmit().url,
+                "submitUrl" -> controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onSubmit().url,
                 "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
               )
 
-              renderer.render("benefitsAndInsurance/howProvideBenefits.njk", json).map(BadRequest(_))
+              renderer.render("benefitsAndInsurance/benefitsInsurancePolicy.njk", json).map(BadRequest(_))
             },
             value => {
-              val updatedUA = request.userAnswers.setOrException(HowProvideBenefitsId, value)
+              val updatedUA = request.userAnswers.setOrException(BenefitsInsurancePolicyId, value)
               userAnswersCacheConnector.save(request.lock, updatedUA.data).map { _ =>
                 Redirect(navigator.nextPage(SchemeTypeId, updatedUA))
               }
