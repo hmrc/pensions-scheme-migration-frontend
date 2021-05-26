@@ -37,3 +37,6 @@ POST        /benefits-and-finance/investment-regulated  controllers.benefitsAndI
 
 GET         /benefits-and-finance/occupational  controllers.benefitsAndInsurance.IsOccupationalController.onPageLoad
 POST        /benefits-and-finance/occupational  controllers.benefitsAndInsurance.IsOccupationalController.onSubmit
+
+GET         /benefits-and-finance/secured-benefits  controllers.benefitsAndInsurance.AreBenefitsSecuredController.onPageLoad
+POST        /benefits-and-finance/secured-benefits  controllers.benefitsAndInsurance.AreBenefitsSecuredController.onSubmit
