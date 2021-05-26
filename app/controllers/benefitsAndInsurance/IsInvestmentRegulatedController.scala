@@ -23,7 +23,6 @@ import controllers.actions._
 import forms.benefitsAndInsurance.IsInvestmentRegulatedFormProvider
 import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId}
 import identifiers.benefitsAndInsurance.IsInvestmentRegulatedId
-import models.Mode
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{MessagesApi, Messages, I18nSupport}
@@ -52,7 +51,7 @@ class IsInvestmentRegulatedController @Inject()(override val messagesApi: Messag
   private def form(schemeName: String)(implicit messages: Messages): Form[Boolean] =
     formProvider(messages("isInvestmentRegulated.error.required", schemeName))
 
-  def onPageLoad(mode:Mode): Action[AnyContent] =
+  def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         val preparedForm = request.userAnswers.get(IsInvestmentRegulatedId) match {
@@ -64,14 +63,14 @@ class IsInvestmentRegulatedController @Inject()(override val messagesApi: Messag
           "form" -> preparedForm,
           //"radios" -> Radios.yesNo(form(schemeName)(implicitly)("value")),
           "radios" -> Radios.yesNo (preparedForm("value")),
-          "submitUrl" -> controllers.benefitsAndInsurance.routes.IsInvestmentRegulatedController.onSubmit(mode).url,
+          "submitUrl" -> controllers.benefitsAndInsurance.routes.IsInvestmentRegulatedController.onSubmit().url,
           "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
         )
         renderer.render("benefitsAndInsurance/isInvestmentRegulated.njk", json).map(Ok(_))
       }
     }
 
-  def onSubmit(mode:Mode): Action[AnyContent] =
+  def onSubmit: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         form(schemeName)
@@ -82,7 +81,7 @@ class IsInvestmentRegulatedController @Inject()(override val messagesApi: Messag
                 "schemeName" -> schemeName,
                 "form" -> formWithErrors,
                 "radios" -> Radios.yesNo(form(schemeName)(implicitly)("value")),
-                "submitUrl" -> controllers.benefitsAndInsurance.routes.IsInvestmentRegulatedController.onSubmit(mode).url,
+                "submitUrl" -> controllers.benefitsAndInsurance.routes.IsInvestmentRegulatedController.onSubmit().url,
                 "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
               )
 

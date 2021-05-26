@@ -30,37 +30,20 @@ POST        /members/membership                         controllers.aboutMembers
 GET         /members/meoccupationalmbership-future                  controllers.aboutMembership.FutureMembersController.onPageLoad
 POST        /members/membership-future                  controllers.aboutMembership.FutureMembersController.onSubmit
 
-GET         /benefits-and-finance/what-you-will-need    controllers.benefitsAndInsurance.WhatYouWillNeedController.onPageLoad
+GET         /benefits-and-finance/investment-regulated  controllers.benefitsAndInsurance.IsInvestmentRegulatedController.onPageLoad
+POST        /benefits-and-finance/investment-regulated  controllers.benefitsAndInsurance.IsInvestmentRegulatedController.onSubmit
 
+GET         /benefits-and-finance/occupational  controllers.benefitsAndInsurance.IsOccupationalController.onPageLoad
+POST        /benefits-and-finance/occupational  controllers.benefitsAndInsurance.IsOccupationalController.onSubmit
 
+GET         /benefits-and-finance/secured-benefits  controllers.benefitsAndInsurance.AreBenefitsSecuredController.onPageLoad
+POST        /benefits-and-finance/secured-benefits  controllers.benefitsAndInsurance.AreBenefitsSecuredController.onSubmit
 
+GET         /benefits-and-finance/benefits-insurance-name  controllers.benefitsAndInsurance.BenefitsInsuranceNameController.onPageLoad
+POST        /benefits-and-finance/benefits-insurance-name  controllers.benefitsAndInsurance.BenefitsInsuranceNameController.onSubmit
 
-GET         /benefits-and-finance/investment-regulated  controllers.benefitsAndInsurance.IsInvestmentRegulatedController.onPageLoad(mode: Mode = NormalMode)
-POST        /benefits-and-finance/investment-regulated  controllers.benefitsAndInsurance.IsInvestmentRegulatedController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/benefits-and-finance/investment-regulated  controllers.benefitsAndInsurance.IsInvestmentRegulatedController.onPageLoad(mode: Mode)
-POST        /:mode/benefits-and-finance/investment-regulated  controllers.benefitsAndInsurance.IsInvestmentRegulatedController.onSubmit(mode: Mode)
+GET         /benefits-and-finance/benefits  controllers.benefitsAndInsurance.HowProvideBenefitsController.onPageLoad
+POST        /benefits-and-finance/benefits  controllers.benefitsAndInsurance.HowProvideBenefitsController.onSubmit
 
-GET         /benefits-and-finance/occupational  controllers.benefitsAndInsurance.IsOccupationalController.onPageLoad(mode: Mode = NormalMode)
-POST        /benefits-and-finance/occupational  controllers.benefitsAndInsurance.IsOccupationalController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/benefits-and-finance/occupational  controllers.benefitsAndInsurance.IsOccupationalController.onPageLoad(mode: Mode)
-POST        /:mode/benefits-and-finance/occupational  controllers.benefitsAndInsurance.IsOccupationalController.onSubmit(mode: Mode)
-
-GET         /benefits-and-finance/secured-benefits  controllers.benefitsAndInsurance.AreBenefitsSecuredController.onPageLoad(mode: Mode = NormalMode)
-POST        /benefits-and-finance/secured-benefits  controllers.benefitsAndInsurance.AreBenefitsSecuredController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/benefits-and-finance/secured-benefits  controllers.benefitsAndInsurance.AreBenefitsSecuredController.onPageLoad(mode: Mode)
-POST        /:mode/benefits-and-finance/secured-benefits  controllers.benefitsAndInsurance.AreBenefitsSecuredController.onSubmit(mode: Mode)
-
-GET         /benefits-and-finance/benefits-insurance-name  controllers.benefitsAndInsurance.BenefitsInsuranceNameController.onPageLoad(mode: Mode = NormalMode)
-POST        /benefits-and-finance/benefits-insurance-name  controllers.benefitsAndInsurance.BenefitsInsuranceNameController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/benefits-and-finance/benefits-insurance-name  controllers.benefitsAndInsurance.BenefitsInsuranceNameController.onPageLoad(mode: Mode)
-POST        /:mode/benefits-and-finance/benefits-insurance-name  controllers.benefitsAndInsurance.BenefitsInsuranceNameController.onSubmit(mode: Mode)
-
-GET         /benefits-and-finance/benefits  controllers.benefitsAndInsurance.HowProvideBenefitsController.onPageLoad(mode: Mode = NormalMode)
-POST        /benefits-and-finance/benefits  controllers.benefitsAndInsurance.HowProvideBenefitsController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/benefits-and-finance/benefits  controllers.benefitsAndInsurance.HowProvideBenefitsController.onPageLoad(mode: Mode)
-POST        /:mode/benefits-and-finance/benefits  controllers.benefitsAndInsurance.HowProvideBenefitsController.onSubmit(mode: Mode)
-
-GET         /benefits-and-finance/benefits-type  controllers.benefitsAndInsurance.BenefitsTypeController.onPageLoad(mode: Mode = NormalMode)
-POST        /benefits-and-finance/benefits-type  controllers.benefitsAndInsurance.BenefitsTypeController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/benefits-and-finance/benefits-type  controllers.benefitsAndInsurance.BenefitsTypeController.onPageLoad(mode: Mode)
-POST        /:mode/benefits-and-finance/benefits-type  controllers.benefitsAndInsurance.BenefitsTypeController.onSubmit(mode: Mode)
+GET         /benefits-and-finance/benefits-type  controllers.benefitsAndInsurance.BenefitsTypeController.onPageLoad
+POST        /benefits-and-finance/benefits-type  controllers.benefitsAndInsurance.BenefitsTypeController.onSubmit

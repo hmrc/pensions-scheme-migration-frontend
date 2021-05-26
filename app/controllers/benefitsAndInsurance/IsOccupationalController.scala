@@ -23,7 +23,6 @@ import controllers.actions._
 import forms.benefitsAndInsurance.IsOccupationalFormProvider
 import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId}
 import identifiers.benefitsAndInsurance.IsOccupationalId
-import models.Mode
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{MessagesApi, Messages, I18nSupport}
@@ -52,7 +51,7 @@ class IsOccupationalController @Inject()(override val messagesApi: MessagesApi,
   private def form(schemeName: String)(implicit messages: Messages): Form[Boolean] =
     formProvider(messages("isOccupational.error.required", schemeName))
 
-  def onPageLoad(mode:Mode): Action[AnyContent] =
+  def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         val preparedForm = request.userAnswers.get(IsOccupationalId) match {
@@ -63,14 +62,14 @@ class IsOccupationalController @Inject()(override val messagesApi: MessagesApi,
           "schemeName" -> schemeName,
           "form" -> preparedForm,
           "radios" -> Radios.yesNo (preparedForm("value")),
-          "submitUrl" -> controllers.benefitsAndInsurance.routes.IsOccupationalController.onSubmit(mode).url,
+          "submitUrl" -> controllers.benefitsAndInsurance.routes.IsOccupationalController.onSubmit().url,
           "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
         )
         renderer.render("benefitsAndInsurance/isOccupational.njk", json).map(Ok(_))
       }
     }
 
-  def onSubmit(mode:Mode): Action[AnyContent] =
+  def onSubmit: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         form(schemeName)
@@ -81,7 +80,7 @@ class IsOccupationalController @Inject()(override val messagesApi: MessagesApi,
                 "schemeName" -> schemeName,
                 "form" -> formWithErrors,
                 "radios" -> Radios.yesNo(form(schemeName)(implicitly)("value")),
-                "submitUrl" -> controllers.benefitsAndInsurance.routes.IsOccupationalController.onSubmit(mode).url,
+                "submitUrl" -> controllers.benefitsAndInsurance.routes.IsOccupationalController.onSubmit().url,
                 "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
               )
 

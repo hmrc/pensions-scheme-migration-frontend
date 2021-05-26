@@ -23,7 +23,6 @@ import controllers.actions._
 import forms.benefitsAndInsurance.AreBenefitsSecuredFormProvider
 import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId}
 import identifiers.benefitsAndInsurance.AreBenefitsSecuredId
-import models.Mode
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{MessagesApi, Messages, I18nSupport}
@@ -52,7 +51,7 @@ class AreBenefitsSecuredController @Inject()(override val messagesApi: MessagesA
   private def form(schemeName: String)(implicit messages: Messages): Form[Boolean] =
     formProvider(messages("areBenefitsSecured.error.required", schemeName))
 
-  def onPageLoad(mode:Mode): Action[AnyContent] =
+  def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         val preparedForm = request.userAnswers.get(AreBenefitsSecuredId) match {
@@ -63,14 +62,14 @@ class AreBenefitsSecuredController @Inject()(override val messagesApi: MessagesA
           "schemeName" -> schemeName,
           "form" -> preparedForm,
           "radios" -> Radios.yesNo (preparedForm("value")),
-          "submitUrl" -> controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onSubmit(mode).url,
+          "submitUrl" -> controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onSubmit().url,
           "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
         )
         renderer.render("benefitsAndInsurance/areBenefitsSecured.njk", json).map(Ok(_))
       }
     }
 
-  def onSubmit(mode:Mode): Action[AnyContent] =
+  def onSubmit: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         form(schemeName)
@@ -81,7 +80,7 @@ class AreBenefitsSecuredController @Inject()(override val messagesApi: MessagesA
                 "schemeName" -> schemeName,
                 "form" -> formWithErrors,
                 "radios" -> Radios.yesNo(form(schemeName)(implicitly)("value")),
-                "submitUrl" -> controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onSubmit(mode).url,
+                "submitUrl" -> controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onSubmit().url,
                 "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
               )
 

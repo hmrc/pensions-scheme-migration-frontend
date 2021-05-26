@@ -23,7 +23,6 @@ import controllers.actions._
 import forms.benefitsAndInsurance.BenefitsInsuranceNameFormProvider
 import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId}
 import identifiers.benefitsAndInsurance.BenefitsInsuranceNameId
-import models.Mode
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{MessagesApi, Messages, I18nSupport}
@@ -31,7 +30,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.{Radios, NunjucksSupport}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Enumerable
 
 import javax.inject.Inject
@@ -52,7 +51,7 @@ class BenefitsInsuranceNameController @Inject()(override val messagesApi: Messag
   private def form(schemeName: String)(implicit messages: Messages): Form[String] =
     formProvider(messages("benefitsInsuranceName.error.required", schemeName))
 
-  def onPageLoad(mode:Mode): Action[AnyContent] =
+  def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         val preparedForm = request.userAnswers.get(BenefitsInsuranceNameId) match {
@@ -62,14 +61,14 @@ class BenefitsInsuranceNameController @Inject()(override val messagesApi: Messag
         val json = Json.obj(
           "schemeName" -> schemeName,
           "form" -> preparedForm,
-          "submitUrl" -> controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onSubmit(mode).url,
+          "submitUrl" -> controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onSubmit().url,
           "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
         )
         renderer.render("benefitsAndInsurance/benefitsInsuranceName.njk", json).map(Ok(_))
       }
     }
 
-  def onSubmit(mode:Mode): Action[AnyContent] =
+  def onSubmit: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         form(schemeName)
@@ -79,7 +78,7 @@ class BenefitsInsuranceNameController @Inject()(override val messagesApi: Messag
               val json = Json.obj(
                 "schemeName" -> schemeName,
                 "form" -> formWithErrors,
-                "submitUrl" -> controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onSubmit(mode).url,
+                "submitUrl" -> controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onSubmit().url,
                 "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
               )
 

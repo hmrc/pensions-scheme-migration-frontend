@@ -53,7 +53,7 @@ class HowProvideBenefitsController @Inject()(override val messagesApi: MessagesA
   private def form(schemeName: String)(implicit messages: Messages): Form[BenefitsProvisionType] =
     formProvider(messages("howProvideBenefits.error.required", schemeName))
 
-  def onPageLoad(mode:Mode): Action[AnyContent] =
+  def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         val preparedForm = request.userAnswers.get(HowProvideBenefitsId) match {
@@ -65,14 +65,14 @@ class HowProvideBenefitsController @Inject()(override val messagesApi: MessagesA
           "schemeName" -> schemeName,
           "form" -> preparedForm,
           "radios" -> BenefitsProvisionType.radios(preparedForm),
-          "submitUrl" -> controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onSubmit(mode).url,
+          "submitUrl" -> controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onSubmit().url,
           "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
         )
         renderer.render("benefitsAndInsurance/howProvideBenefits.njk", json).map(Ok(_))
       }
     }
 
-  def onSubmit(mode:Mode): Action[AnyContent] =
+  def onSubmit: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         form(schemeName)
@@ -83,7 +83,7 @@ class HowProvideBenefitsController @Inject()(override val messagesApi: MessagesA
                 "schemeName" -> schemeName,
                 "form" -> formWithErrors,
                 "radios" -> BenefitsProvisionType.radios(formWithErrors),
-                "submitUrl" -> controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onSubmit(mode).url,
+                "submitUrl" -> controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onSubmit().url,
                 "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
               )
 

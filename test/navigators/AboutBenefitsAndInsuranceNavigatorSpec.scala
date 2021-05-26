@@ -20,9 +20,9 @@ import base.SpecBase
 import controllers.actions.FakeDataRetrievalAction
 import controllers.benefitsAndInsurance.routes._
 import identifiers._
-import identifiers.benefitsAndInsurance.{AreBenefitsSecuredId, BenefitsTypeId, HowProvideBenefitsId, IsInvestmentRegulatedId, IsOccupationalId}
+import identifiers.benefitsAndInsurance._
 import models._
-import models.benefitsAndInsurance.BenefitsProvisionType.{DefinedBenefitsOnly, MoneyPurchaseOnly, MixedBenefits}
+import models.benefitsAndInsurance.BenefitsProvisionType.{DefinedBenefitsOnly, MixedBenefits, MoneyPurchaseOnly}
 import models.benefitsAndInsurance.BenefitsType.OtherMoneyPurchaseBenefits
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor3
@@ -41,28 +41,26 @@ class AboutBenefitsAndInsuranceNavigatorSpec extends SpecBase with NavigatorBeha
       )
   ).build().injector.instanceOf[CompoundNavigator]
 
-  "AboutBenefitsAndInsuranceNavigator" when {
-
-    "in NormalMode" must {
+  "AboutBenefitsAndInsuranceNavigator" must {
       def navigation: TableFor3[Identifier, UserAnswers, Call] =
         Table(
           ("Id", "UserAnswers", "Next Page"),
-          row(IsInvestmentRegulatedId)(isOccupationalPensionPage(), uaWithValue(IsInvestmentRegulatedId, false)),
-          row(IsInvestmentRegulatedId)(isOccupationalPensionPage(), uaWithValue(IsInvestmentRegulatedId, true)),
-          row(IsOccupationalId)(howToProvideBenefitsPage(), uaWithValue(IsOccupationalId, false)),
-          row(IsOccupationalId)(howToProvideBenefitsPage(), uaWithValue(IsOccupationalId, true)),
-          row(HowProvideBenefitsId)(benefitsTypePage(), uaWithValue(HowProvideBenefitsId, MoneyPurchaseOnly)),
-          row(HowProvideBenefitsId)(areBenefitsSecuredPage(), uaWithValue(HowProvideBenefitsId, DefinedBenefitsOnly)),
-          row(HowProvideBenefitsId)(benefitsTypePage(), uaWithValue(HowProvideBenefitsId, MixedBenefits)),
+          row(IsInvestmentRegulatedId)(isOccupationalPensionPage, uaWithValue(IsInvestmentRegulatedId, false)),
+          row(IsInvestmentRegulatedId)(isOccupationalPensionPage, uaWithValue(IsInvestmentRegulatedId, true)),
+          row(IsOccupationalId)(howToProvideBenefitsPage, uaWithValue(IsOccupationalId, false)),
+          row(IsOccupationalId)(howToProvideBenefitsPage, uaWithValue(IsOccupationalId, true)),
+          row(HowProvideBenefitsId)(benefitsTypePage, uaWithValue(HowProvideBenefitsId, MoneyPurchaseOnly)),
+          row(HowProvideBenefitsId)(areBenefitsSecuredPage, uaWithValue(HowProvideBenefitsId, DefinedBenefitsOnly)),
+          row(HowProvideBenefitsId)(benefitsTypePage, uaWithValue(HowProvideBenefitsId, MixedBenefits)),
 
-          row(BenefitsTypeId)(areBenefitsSecuredPage(), uaWithValue(BenefitsTypeId, OtherMoneyPurchaseBenefits)),
-//          row(AreBenefitsSecuredId)(checkYouAnswers(), uaWithValue(AreBenefitsSecuredId, false)),
-          row(AreBenefitsSecuredId)(insuranceCompanyName(NormalMode), uaWithValue(AreBenefitsSecuredId, true))
+          row(BenefitsTypeId)(areBenefitsSecuredPage, uaWithValue(BenefitsTypeId, OtherMoneyPurchaseBenefits)),
+//          row(AreBenefitsSecuredId)(checkYourAnswers(), uaWithValue(AreBenefitsSecuredId, false)),
+          row(AreBenefitsSecuredId)(insuranceCompanyName, uaWithValue(AreBenefitsSecuredId, true))
     //      row(BenefitsInsuranceNameId)(someStringValue, policyNumber()),
     //      row(InsurancePolicyNumberId)(someStringValue, insurerPostcode()),
     //      row(InsurerEnterPostCodeId)(someSeqTolerantAddress, insurerAddressList()),
-    //      row(InsurerSelectAddressId)(someTolerantAddress, checkYouAnswers()),
-     //     row(InsurerConfirmAddressId)(someAddress, checkYouAnswers())
+    //      row(InsurerSelectAddressId)(someTolerantAddress, checkYourAnswers()),
+     //     row(InsurerConfirmAddressId)(someAddress, checkYourAnswers())
         )
       behave like navigatorWithRoutesForMode(NormalMode)(navigator, navigation)
     }
@@ -72,21 +70,20 @@ class AboutBenefitsAndInsuranceNavigatorSpec extends SpecBase with NavigatorBeha
   //    def navigation: TableFor3[Identifier, UserAnswers, Call] =
   //      Table(
   //        ("Id", "UserAnswers", "Next Page"),
-  //        row(IsInvestmentRegulatedId)(checkYouAnswers(), uaWithValue(IsInvestmentRegulatedId, false)),
-  //        row(IsOccupationalId)(checkYouAnswers(), uaWithValue(IsOccupationalId, false)),
-  //        row(HowProvideBenefitsId)(checkYouAnswers(), uaWithValue(HowProvideBenefitsId, DefinedBenefitsOnly)),
+  //        row(IsInvestmentRegulatedId)(checkYourAnswers(), uaWithValue(IsInvestmentRegulatedId, false)),
+  //        row(IsOccupationalId)(checkYourAnswers(), uaWithValue(IsOccupationalId, false)),
+  //        row(HowProvideBenefitsId)(checkYourAnswers(), uaWithValue(HowProvideBenefitsId, DefinedBenefitsOnly)),
   //        row(HowProvideBenefitsId)(moneyPurchaseBenefits(CheckMode), uaWithValue(HowProvideBenefitsId, MoneyPurchaseOnly)),
-  //        //        row(MoneyPurchaseBenefitsId)(CashBalance, checkYouAnswers()),
-  ////        row(BenefitsSecuredByInsuranceId)(false, checkYouAnswers()),
+  //        //        row(MoneyPurchaseBenefitsId)(CashBalance, checkYourAnswers()),
+  ////        row(BenefitsSecuredByInsuranceId)(false, checkYourAnswers()),
   ////        row(BenefitsSecuredByInsuranceId)(true, insuranceCompanyName(CheckMode)),
   ////        row(BenefitsInsuranceNameId)(someStringValue, policyNumber(NormalMode)),
-  ////        row(InsurancePolicyNumberId)(someStringValue, checkYouAnswers()),
-  ////        row(InsurerConfirmAddressId)(someAddress, checkYouAnswers())
+  ////        row(InsurancePolicyNumberId)(someStringValue, checkYourAnswers()),
+  ////        row(InsurerConfirmAddressId)(someAddress, checkYourAnswers())
   //      )
   //    behave like navigatorWithRoutesForMode(CheckMode)(navigator, navigation, None)
   //  }
 
-  }
 
 }
 
@@ -97,13 +94,13 @@ object AboutBenefitsAndInsuranceNavigatorSpec extends OptionValues {
   private def uaWithValue[A](idType:TypedIdentifier[A], idValue:A)(implicit writes: Writes[A]) =
     UserAnswers().set(idType, idValue).toOption
 
-  private def isOccupationalPensionPage(mode: Mode = NormalMode): Call  = IsOccupationalController.onPageLoad(mode)
-  private def howToProvideBenefitsPage(mode: Mode = NormalMode): Call   = HowProvideBenefitsController.onPageLoad(mode)
-  private def benefitsTypePage(mode: Mode = NormalMode): Call       = BenefitsTypeController.onPageLoad(mode)
-  private def areBenefitsSecuredPage(mode: Mode = NormalMode): Call    = AreBenefitsSecuredController.onPageLoad(mode)
-  private def insuranceCompanyName(mode: Mode = NormalMode): Call                  = BenefitsInsuranceNameController.onPageLoad(mode)
-//  private def policyNumber(mode: Mode = NormalMode): Call             = InsurancePolicyNumberController.onPageLoad(mode, None)
-//  private def insurerPostcode(mode: Mode = NormalMode): Call          = InsurerEnterPostcodeController.onPageLoad(mode, None)
-//  private def insurerAddressList(mode: Mode = NormalMode): Call       = InsurerSelectAddressController.onPageLoad(mode, None)
-//  private def checkYouAnswers(mode: Mode = NormalMode): Call          = CheckYourAnswersBenefitsAndInsuranceController.onPageLoad(mode, None)
+  private def isOccupationalPensionPage: Call  = IsOccupationalController.onPageLoad()
+  private def howToProvideBenefitsPage: Call   = HowProvideBenefitsController.onPageLoad()
+  private def benefitsTypePage: Call       = BenefitsTypeController.onPageLoad()
+  private def areBenefitsSecuredPage: Call    = AreBenefitsSecuredController.onPageLoad()
+  private def insuranceCompanyName: Call                  = BenefitsInsuranceNameController.onPageLoad()
+//  private def policyNumber: Call             = InsurancePolicyNumberController.onPageLoad(mode, None)
+//  private def insurerPostcode: Call          = InsurerEnterPostcodeController.onPageLoad(mode, None)
+//  private def insurerAddressList: Call       = InsurerSelectAddressController.onPageLoad(mode, None)
+//  private def checkYourAnswers: Call          = CheckYourAnswersBenefitsAndInsuranceController.onPageLoad(mode, None)
 }
