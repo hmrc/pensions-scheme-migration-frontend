@@ -23,6 +23,7 @@ import controllers.actions._
 import forms.benefitsAndInsurance.BenefitsInsuranceNameFormProvider
 import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId}
 import identifiers.benefitsAndInsurance.BenefitsInsuranceNameId
+import models.Mode
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{MessagesApi, Messages, I18nSupport}
@@ -51,7 +52,7 @@ class BenefitsInsuranceNameController @Inject()(override val messagesApi: Messag
   private def form(schemeName: String)(implicit messages: Messages): Form[String] =
     formProvider(messages("benefitsInsuranceName.error.required", schemeName))
 
-  def onPageLoad: Action[AnyContent] =
+  def onPageLoad(mode:Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         val preparedForm = request.userAnswers.get(BenefitsInsuranceNameId) match {
@@ -61,14 +62,14 @@ class BenefitsInsuranceNameController @Inject()(override val messagesApi: Messag
         val json = Json.obj(
           "schemeName" -> schemeName,
           "form" -> preparedForm,
-          "submitUrl" -> controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onSubmit().url,
+          "submitUrl" -> controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onSubmit(mode).url,
           "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
         )
         renderer.render("benefitsAndInsurance/benefitsInsuranceName.njk", json).map(Ok(_))
       }
     }
 
-  def onSubmit: Action[AnyContent] =
+  def onSubmit(mode:Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         form(schemeName)
@@ -78,7 +79,7 @@ class BenefitsInsuranceNameController @Inject()(override val messagesApi: Messag
               val json = Json.obj(
                 "schemeName" -> schemeName,
                 "form" -> formWithErrors,
-                "submitUrl" -> controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onSubmit().url,
+                "submitUrl" -> controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onSubmit(mode).url,
                 "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
               )
 

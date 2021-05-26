@@ -1,6 +1,7 @@
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings.integrationTestSettings
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
+import play.sbt.routes.RoutesKeys
 
 val appName = "pensions-scheme-migration-frontend"
 
@@ -17,6 +18,11 @@ lazy val microservice = Project(appName, file("."))
     PlayKeys.playDefaultPort         := 8213,
     TwirlKeys.templateImports ++= Seq(
       "config.AppConfig"
+    ),
+    RoutesKeys.routesImport ++= Seq(
+      "models.Mode",
+      "models.CheckMode",
+      "models.NormalMode"
     )
   )
   .settings(silencerSettings)
