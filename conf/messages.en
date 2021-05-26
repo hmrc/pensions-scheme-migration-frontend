@@ -166,6 +166,7 @@ isOccupational.error.required = Select yes if the pension scheme is occupational
 areBenefitsSecured.title = Are any of the schemeʼs benefits secured by a contract of insurance or annuity?
 areBenefitsSecured.h1 = Are any of {0}ʼs benefits secured by a contract of insurance or annuity?
 areBenefitsSecured.error.required = Select yes if any of the scheme benefits are secured by a contract of insurance or annuity
+areBenefitsSecured.p1 = Benefits can be secured by a contract of insurance or an annuity contract by an insurance company that provides administration services to the scheme.
 
 benefitsInsuranceName.title = What is the name of the insurance company that secures the scheme benefits?
 benefitsInsuranceName.h1 = What is the name of the insurance company that secures the scheme benefits?

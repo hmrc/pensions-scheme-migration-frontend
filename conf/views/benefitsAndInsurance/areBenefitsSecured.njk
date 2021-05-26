@@ -27,6 +27,8 @@
 
           {{ csrf() | safe }}
 
+          <h1 class="govuk-heading-xl">{{ messages('areBenefitsSecured.h1', schemeName) }}</h1>
+
           {{ govukRadios({
             classes: "govuk-radios--inline",
             name: 'value',

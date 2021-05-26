@@ -49,6 +49,3 @@ POST        /benefits-and-finance/benefits  controllers.benefitsAndInsurance.How
 
 GET         /benefits-and-finance/benefits-type  controllers.benefitsAndInsurance.BenefitsTypeController.onPageLoad
 POST        /benefits-and-finance/benefits-type  controllers.benefitsAndInsurance.BenefitsTypeController.onSubmit
-
-GET         /benefits-and-finance/secured-contract  controllers.benefitsAndInsurance.SecuredByContractController.onPageLoad
-POST        /benefits-and-finance/secured-contract  controllers.benefitsAndInsurance.SecuredByContractController.onSubmit
