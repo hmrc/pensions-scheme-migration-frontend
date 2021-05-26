@@ -34,3 +34,6 @@ GET         /benefits-and-finance/what-you-will-need    controllers.benefitsAndI
 
 GET         /benefits-and-finance/investment-regulated  controllers.benefitsAndInsurance.IsInvestmentRegulatedController.onPageLoad
 POST        /benefits-and-finance/investment-regulated  controllers.benefitsAndInsurance.IsInvestmentRegulatedController.onSubmit
+
+GET         /benefits-and-finance/occupational  controllers.benefitsAndInsurance.IsOccupationalController.onPageLoad
+POST        /benefits-and-finance/occupational  controllers.benefitsAndInsurance.IsOccupationalController.onSubmit

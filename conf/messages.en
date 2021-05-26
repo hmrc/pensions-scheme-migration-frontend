@@ -157,5 +157,8 @@ benefitsAndInsurance.p2b3 = the insurance company’s address
 
 isInvestmentRegulated.title = Is the scheme investment regulated?
 isInvestmentRegulated.h1 = Is {0} investment regulated?
-isInvestmentRegulated.error.required = Select yes if {0} is investment regulated
+isInvestmentRegulated.error.required = Select yes if the pension scheme is investment regulated
 
+isOccupational.title = Is the scheme an occupational pension scheme?
+isOccupational.h1 = Is {0} an occupational pension scheme?
+isOccupational.error.required = Select yes if the pension scheme is occupational
