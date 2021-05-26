@@ -17,7 +17,8 @@
 package identifiers.benefitsAndInsurance
 
 import identifiers.TypedIdentifier
+import models.benefitsAndInsurance.BenefitsProvisionType
 
-case object HowProvideBenefitsId extends TypedIdentifier[Boolean] {
+case object HowProvideBenefitsId extends TypedIdentifier[BenefitsProvisionType] {
   override def toString: String = "howProvideBenefits"
 }

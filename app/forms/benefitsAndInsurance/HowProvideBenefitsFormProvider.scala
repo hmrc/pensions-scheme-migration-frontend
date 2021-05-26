@@ -18,12 +18,13 @@ package forms.benefitsAndInsurance
 
 import javax.inject.Inject
 import forms.mappings.Mappings
+import models.benefitsAndInsurance.BenefitsProvisionType
 import play.api.data.Form
 
 class HowProvideBenefitsFormProvider @Inject() extends Mappings {
 
-  def apply(errorKey: String): Form[Boolean] =
+  def apply(errorKey: String): Form[BenefitsProvisionType] =
     Form(
-      "value" -> boolean(errorKey)
+      "value" -> enumerable[BenefitsProvisionType](errorKey, "")
     )
 }

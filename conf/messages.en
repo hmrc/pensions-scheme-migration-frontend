@@ -174,3 +174,7 @@ benefitsInsuranceName.error.required = Enter the name of the insurance company t
 howProvideBenefits.title = How does the scheme provide benefits?
 howProvideBenefits.h1 = How does {0} provide benefits?
 howProvideBenefits.error.required = Select how the scheme provides benefits
+howProvideBenefits.moneyPurchaseOnly = Money purchase benefits only - this is a defined contribution
+howProvideBenefits.definedBenefitsOnly = Defined benefits only
+howProvideBenefits.mixedBenefits = Mixture of money purchase benefits and defined benefits
+

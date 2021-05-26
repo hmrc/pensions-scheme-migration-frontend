@@ -28,13 +28,12 @@
           {{ csrf() | safe }}
 
           {{ govukRadios({
-            classes: "govuk-radios--inline",
             name: 'value',
             fieldset: {
               legend: {
                 text: messages('howProvideBenefits.h1', schemeName),
-                isPageHeading: false,
-                classes: "govuk-fieldset__legend--xl"
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--xl govuk-!-margin-bottom-8"
               }
             },
             items: radios,

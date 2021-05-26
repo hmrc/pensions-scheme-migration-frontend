@@ -23,6 +23,7 @@ import controllers.actions._
 import forms.benefitsAndInsurance.HowProvideBenefitsFormProvider
 import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId}
 import identifiers.benefitsAndInsurance.HowProvideBenefitsId
+import models.benefitsAndInsurance.BenefitsProvisionType
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{MessagesApi, Messages, I18nSupport}
@@ -48,21 +49,21 @@ class HowProvideBenefitsController @Inject()(override val messagesApi: MessagesA
                                        renderer: Renderer)(implicit ec: ExecutionContext)
   extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
-  private def form(schemeName: String)(implicit messages: Messages): Form[Boolean] =
+  private def form(schemeName: String)(implicit messages: Messages): Form[BenefitsProvisionType] =
     formProvider(messages("howProvideBenefits.error.required", schemeName))
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         val preparedForm = request.userAnswers.get(HowProvideBenefitsId) match {
-          case Some(value) => form(schemeName).fill(value)
+          case Some(value) =>
+            form(schemeName).fill(value)
           case None        => form(schemeName)
         }
         val json = Json.obj(
           "schemeName" -> schemeName,
           "form" -> preparedForm,
-          //"radios" -> Radios.yesNo(form(schemeName)(implicitly)("value")),
-          "radios" -> Radios.yesNo (preparedForm("value")),
+          "radios" -> BenefitsProvisionType.radios(preparedForm),
           "submitUrl" -> controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onSubmit().url,
           "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
         )
@@ -80,7 +81,7 @@ class HowProvideBenefitsController @Inject()(override val messagesApi: MessagesA
               val json = Json.obj(
                 "schemeName" -> schemeName,
                 "form" -> formWithErrors,
-                "radios" -> Radios.yesNo(form(schemeName)(implicitly)("value")),
+                "radios" -> BenefitsProvisionType.radios(formWithErrors),
                 "submitUrl" -> controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onSubmit().url,
                 "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
               )
