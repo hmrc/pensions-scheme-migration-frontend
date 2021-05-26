@@ -40,3 +40,6 @@ POST        /benefits-and-finance/occupational  controllers.benefitsAndInsurance
 
 GET         /benefits-and-finance/secured-benefits  controllers.benefitsAndInsurance.AreBenefitsSecuredController.onPageLoad
 POST        /benefits-and-finance/secured-benefits  controllers.benefitsAndInsurance.AreBenefitsSecuredController.onSubmit
+
+GET         /benefits-and-finance/benefits-insurance-name  controllers.benefitsAndInsurance.BenefitsInsuranceNameController.onPageLoad
+POST        /benefits-and-finance/benefits-insurance-name  controllers.benefitsAndInsurance.BenefitsInsuranceNameController.onSubmit
