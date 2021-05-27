@@ -56,7 +56,8 @@ class AboutBenefitsAndInsuranceNavigatorSpec extends SpecBase with NavigatorBeha
           row(BenefitsTypeId)(checkYourAnswersPage, uaWithValue(BenefitsTypeId, CashBalanceAndOtherMoneyPurchaseBenefits)),
 
           row(AreBenefitsSecuredId)(checkYourAnswersPage, uaWithValue(AreBenefitsSecuredId, false)),
-          row(AreBenefitsSecuredId)(insuranceCompanyName, uaWithValue(AreBenefitsSecuredId, true))
+          row(AreBenefitsSecuredId)(insuranceCompanyName, uaWithValue(AreBenefitsSecuredId, true)),
+          row(BenefitsInsuranceNameId)(insurancePolicyNumber)
     //      row(BenefitsInsuranceNameId)(someStringValue, policyNumber()),
     //      row(InsurancePolicyNumberId)(someStringValue, insurerPostcode()),
     //      row(InsurerEnterPostCodeId)(someSeqTolerantAddress, insurerAddressList()),
@@ -74,13 +75,8 @@ object AboutBenefitsAndInsuranceNavigatorSpec extends OptionValues {
   private def uaWithValue[A](idType:TypedIdentifier[A], idValue:A)(implicit writes: Writes[A]) =
     UserAnswers().set(idType, idValue).toOption
 
-  private def isOccupationalPensionPage: Call  = IsOccupationalController.onPageLoad()
-  private def howToProvideBenefitsPage: Call   = HowProvideBenefitsController.onPageLoad()
   private def benefitsTypePage: Call       = BenefitsTypeController.onPageLoad()
-  private def areBenefitsSecuredPage: Call    = AreBenefitsSecuredController.onPageLoad()
   private def insuranceCompanyName: Call                  = BenefitsInsuranceNameController.onPageLoad()
-//  private def policyNumber: Call             = InsurancePolicyNumberController.onPageLoad(mode, None)
-//  private def insurerPostcode: Call          = InsurerEnterPostcodeController.onPageLoad(mode, None)
-//  private def insurerAddressList: Call       = InsurerSelectAddressController.onPageLoad(mode, None)
+  private def insurancePolicyNumber: Call                  = BenefitsInsurancePolicyController.onPageLoad()
   private def checkYourAnswersPage: Call          = CheckYourAnswersBenefitsAndInsuranceController.onPageLoad()
 }

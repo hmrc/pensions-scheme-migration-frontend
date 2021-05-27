@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import connectors.cache.UserAnswersCacheConnector
 import identifiers._
 import controllers.benefitsAndInsurance.routes._
-import identifiers.benefitsAndInsurance.{HowProvideBenefitsId, AreBenefitsSecuredId, BenefitsTypeId}
+import identifiers.benefitsAndInsurance.{HowProvideBenefitsId, AreBenefitsSecuredId, BenefitsTypeId, BenefitsInsuranceNameId}
 import models.benefitsAndInsurance.BenefitsProvisionType.DefinedBenefitsOnly
 import models.requests.DataRequest
 import play.api.mvc.{Call, AnyContent}
@@ -38,5 +38,6 @@ class AboutBenefitsAndInsuranceNavigator @Inject()(val dataCacheConnector: UserA
     case AreBenefitsSecuredId if ua.get(AreBenefitsSecuredId).contains(false) =>
       CheckYourAnswersController.onPageLoad()
     case AreBenefitsSecuredId => BenefitsInsuranceNameController.onPageLoad()
+    case BenefitsInsuranceNameId => BenefitsInsurancePolicyController.onPageLoad()
   }
 }
