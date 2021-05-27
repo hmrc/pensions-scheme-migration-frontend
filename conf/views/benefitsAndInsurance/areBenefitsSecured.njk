@@ -28,13 +28,12 @@
           {{ csrf() | safe }}
 
           <h1 class="govuk-heading-xl">{{ messages('areBenefitsSecured.h1', schemeName) }}</h1>
-
+            <p class="govuk-body">{{ messages('areBenefitsSecured.p1') }}</p>
           {{ govukRadios({
             classes: "govuk-radios--inline",
             name: 'value',
             fieldset: {
               legend: {
-                text: messages('areBenefitsSecured.h1', schemeName),
                 isPageHeading: false,
                 classes: "govuk-fieldset__legend--xl"
               }

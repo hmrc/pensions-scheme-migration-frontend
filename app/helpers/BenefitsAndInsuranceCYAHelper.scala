@@ -17,22 +17,22 @@
 package helpers
 
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.benefitsAndInsurance.{InsurerAddressListId, InsurerAddressId, HowProvideBenefitsId, IsInvestmentRegulatedId, IsOccupationalId}
-import models.{Members, Address}
+import identifiers.benefitsAndInsurance.{AreBenefitsSecuredId, BenefitsInsurancePolicyId, BenefitsTypeId, HowProvideBenefitsId, InsurerAddressId, InsurerAddressListId, IsInvestmentRegulatedId, IsOccupationalId}
+import models.{Address, Members}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList, Text}
-import utils.{UserAnswers, Enumerable}
+import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
-import identifiers.aboutMembership.{FutureMembersId, CurrentMembersId}
+import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
 import identifiers.beforeYouStart.SchemeNameId
 import models.Members
-import models.benefitsAndInsurance.BenefitsProvisionType
+import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
 import models.requests.DataRequest
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList, Text}
-import utils.{UserAnswers, Enumerable}
+import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 
 class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
@@ -43,7 +43,9 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
     val schemeName = getAnswer(SchemeNameId)
 
     val answerBooleanTransform: Option[Boolean => Text] = Some(opt => msg"booleanAnswer.${opt.toString}")
+    val answerStringTransform: Option[String => Text] = Some(opt => lit"${opt}")
     val answerBenefitsProvisionTypeTransform: Option[BenefitsProvisionType => Text] = Some(opt => msg"howProvideBenefits.${opt.toString}")
+    val answerBenefitsTypeTransform: Option[BenefitsType => Text] = Some(opt => msg"benefitsType.${opt.toString}")
     val answerBenefitsAddressTransform: Option[Address => Text] = Some(opt => lit"${opt.toString}")
 
     val seq = Seq(
@@ -61,9 +63,30 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
       ),
       answerOrAddRow(
         HowProvideBenefitsId,
-        Message("howProvideBenefits.h1", schemeName).resolve,
+        Message("howProvideBenefits.title").resolve,
         controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onPageLoad().url,
         Some(msg"messages__visuallyhidden__currentMembers"), answerBenefitsProvisionTypeTransform
+      ),
+      answerOrAddRow(
+        BenefitsTypeId,
+        Message("benefitsType.h1", schemeName).resolve,
+        controllers.benefitsAndInsurance.routes.BenefitsTypeController.onPageLoad().url,
+        Some(msg"messages__visuallyhidden__currentMembers"), answerBenefitsTypeTransform
+      ),
+        answerOrAddRow(
+          AreBenefitsSecuredId,
+        Message("areBenefitsSecured.title").resolve,
+        controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onPageLoad().url,
+        Some(msg"messages__visuallyhidden__currentMembers"), answerBooleanTransform
+      )
+    )
+    val seqTest = if(ua.get(AreBenefitsSecuredId).contains(true))Seq(
+
+      answerOrAddRow(
+        BenefitsInsurancePolicyId,
+        Message("benefitsInsurancePolicy.title").resolve,
+        controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onPageLoad().url,
+        Some(msg"messages__visuallyhidden__currentMembers"), answerStringTransform
       ),
       answerOrAddRow(
         InsurerAddressId,
@@ -72,8 +95,9 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
         Some(msg"messages__visuallyhidden__currentMembers"), answerBenefitsAddressTransform
       )
     )
+    else
+      Nil
 
-
-    seq
+    seq ++ seqTest
   }
 }
