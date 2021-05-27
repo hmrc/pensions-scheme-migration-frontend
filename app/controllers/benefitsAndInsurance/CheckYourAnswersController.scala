@@ -18,7 +18,7 @@ package controllers.benefitsAndInsurance
 
 import controllers.Retrievals
 import controllers.actions._
-import helpers.AboutCYAHelper
+import helpers.{AboutCYAHelper, BenefitsAndInsuranceCYAHelper}
 import identifiers.beforeYouStart.SchemeNameId
 import play.api.libs.json.Json
 import play.api.i18n.{MessagesApi, I18nSupport}
@@ -35,7 +35,7 @@ class CheckYourAnswersController @Inject()(
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            cyaHelper: AboutCYAHelper,
+                                            cyaHelper: BenefitsAndInsuranceCYAHelper,
                                             val controllerComponents: MessagesControllerComponents,
                                             renderer: Renderer
                                           )(implicit val ec: ExecutionContext)
@@ -48,7 +48,7 @@ class CheckYourAnswersController @Inject()(
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         val json = Json.obj(
-          "list" -> cyaHelper.benefitsRows,
+          "list" -> cyaHelper.rows,
           "schemeName" -> cyaHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly)
         )
 

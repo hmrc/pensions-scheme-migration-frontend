@@ -16,14 +16,14 @@
 
 package helpers
 
-import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
+import identifiers.aboutMembership.{FutureMembersId, CurrentMembersId}
 import identifiers.beforeYouStart.SchemeNameId
 import models.Members
 import models.requests.DataRequest
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList, Text}
-import utils.{Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable}
 import viewmodels.Message
 
 class AboutCYAHelper extends CYAHelper with Enumerable.Implicits{
@@ -45,35 +45,5 @@ class AboutCYAHelper extends CYAHelper with Enumerable.Implicits{
           Some(msg"messages__visuallyhidden__futureMembers"), answerTransform
         )
       )
-  }
-
-  def benefitsRows(implicit request: DataRequest[AnyContent],
-    messages: Messages
-  ): Seq[SummaryList.Row] = {
-    implicit val ua: UserAnswers = request.userAnswers
-    val schemeName = getAnswer(SchemeNameId)
-
-    val answerTransform: Option[Members => Text] = Some(opt => msg"members.${opt.toString}")
-
-    Seq(
-      answerOrAddRow(
-        CurrentMembersId,
-        Message("isInvestmentRegulated.h1", schemeName).resolve,
-        controllers.benefitsAndInsurance.routes.IsInvestmentRegulatedController.onPageLoad().url,
-        Some(msg"messages__visuallyhidden__currentMembers"), answerTransform
-      ),
-      answerOrAddRow(
-        CurrentMembersId,
-        Message("isOccupational.h1", schemeName).resolve,
-        controllers.benefitsAndInsurance.routes.IsOccupationalController.onPageLoad().url,
-        Some(msg"messages__visuallyhidden__currentMembers"), answerTransform
-      ),
-      answerOrAddRow(
-        CurrentMembersId,
-        Message("howProvideBenefits.h1", schemeName).resolve,
-        controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onPageLoad().url,
-        Some(msg"messages__visuallyhidden__currentMembers"), answerTransform
-      )
-    )
   }
 }

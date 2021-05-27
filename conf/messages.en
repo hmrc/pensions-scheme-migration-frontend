@@ -215,3 +215,6 @@ benefitsType.error.required = Select what type of money purchase benefits the sc
 benefitsInsurancePolicy.title = What is the policy number?
 benefitsInsurancePolicy.h1 = What is the policy number with {0} ?
 benefitsInsurancePolicy.error.required = Enter the policy number of the insurance company that secures the scheme benefits
+
+booleanAnswer.false = No
+booleanAnswer.true = Yes
