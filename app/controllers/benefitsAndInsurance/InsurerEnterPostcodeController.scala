@@ -18,33 +18,36 @@ package controllers.benefitsAndInsurance
 
 import config.AppConfig
 import connectors.AddressLookupConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.PostcodeController
 import forms.address.PostcodeFormProvider
-import identifiers.beforeYouStart.SchemeNameId
-import identifiers.benefitsAndInsurance.BenefitsInsuranceNameId
 
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
-import navigators.{CompoundNavigator, Navigator}
+import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import renderer.Renderer
+import uk.gov.hmrc.viewmodels.NunjucksSupport
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class InsurerEnterPostcodeController @Inject()(val appConfig: AppConfig,
                                                override val messagesApi: MessagesApi,
+                                               val userAnswersCacheConnector: UserAnswersCacheConnector,
                                                val addressLookupConnector: AddressLookupConnector,
                                                val navigator: CompoundNavigator,
                                                authenticate: AuthAction,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
                                                formProvider: PostcodeFormProvider,
-                                               val controllerComponents: MessagesControllerComponents
-                                              )(implicit val ec: ExecutionContext) extends PostcodeController {
+                                               val controllerComponents: MessagesControllerComponents,
+                                               val renderer: Renderer
+                                              )(implicit val ec: ExecutionContext) extends PostcodeController with I18nSupport with NunjucksSupport {
 
   val form: Form[String] = formProvider("","")
 
@@ -52,11 +55,13 @@ class InsurerEnterPostcodeController @Inject()(val appConfig: AppConfig,
     form.withError("value", s"messages__error__postcode_$messageKey")
   }
 
-  def onPageLoad(mode: Mode, srn: Option[String]): Action[AnyContent] =
+  def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      BenefitsInsuranceNameId.retrieve.right.map { name =>
-          get(viewModel(mode, srn, name))
-        }
+      Future.successful(Ok(""))
+      //BenefitsInsuranceNameId.retrieve.right.map { name =>
+      //  getFormToJson().retrieve.right.map(get)
+      //    //get(viewModel(mode, srn, name))
+      //  }
     }
 
 //  def viewModel(mode: Mode, srn: Option[String], name: String)(implicit request: DataRequest[AnyContent])
@@ -70,20 +75,20 @@ class InsurerEnterPostcodeController @Inject()(val appConfig: AppConfig,
 //      srn = srn
 //    )
 
-  def getFormToJson(implicit request: DataRequest[AnyContent]): Form[String] => JsObject = {
+  def getFormToJson(form:Form[String])(implicit request: DataRequest[AnyContent]): Form[String] => JsObject = {
     form =>
       Json.obj(
-        "form" -> form(),
-        "submitUrl" -> controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onSubmit.url,
-        "enterManuallyUrl" -> None
+        "form" -> form,
+        "submitUrl" -> controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onSubmit().url,
+        "enterManuallyUrl" -> ""
       )
   }
-  def onSubmit(mode: Mode, srn: Option[String]): Action[AnyContent] = (authenticate() andThen getData(mode, srn)
-    andThen requireData).async {
+  def onSubmit(mode: Mode, srn: Option[String]): Action[AnyContent] = (authenticate andThen getData andThen requireData).async{
     implicit request =>
-      InsuranceCompanyNameId.retrieve.right.map { name =>
-        post(InsurerEnterPostCodeId, viewModel(mode, srn, name), mode)
-      }
+            Future.successful(Ok(""))
+      //InsuranceCompanyNameId.retrieve.right.map { name =>
+      //  post(InsurerEnterPostCodeId, viewModel(mode, srn, name), mode)
+      //}
   }
 
 }
