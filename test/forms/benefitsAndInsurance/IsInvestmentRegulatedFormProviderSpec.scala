@@ -16,14 +16,23 @@
 
 package forms.benefitsAndInsurance
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import play.api.data.Form
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-class IsInvestmentRegulatedFormProvider @Inject() extends Mappings {
+class IsInvestmentRegulatedFormProviderSpec extends BooleanFieldBehaviours {
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("isInvestmentRegulated.error.required")
+  val requiredKey = "isInvestmentRegulated.error.required"
+
+  val form = new IsInvestmentRegulatedFormProvider()()
+
+  ".value" must  {
+
+    val fieldName = "value"
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
     )
+  }
 }

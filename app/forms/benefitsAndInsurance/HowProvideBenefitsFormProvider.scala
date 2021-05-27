@@ -23,8 +23,8 @@ import play.api.data.Form
 
 class HowProvideBenefitsFormProvider @Inject() extends Mappings {
 
-  def apply(errorKey: String): Form[BenefitsProvisionType] =
+  def apply(): Form[BenefitsProvisionType] =
     Form(
-      "value" -> enumerable[BenefitsProvisionType](errorKey, "")
+      "value" -> enumerable[BenefitsProvisionType]("howProvideBenefits.error.required")
     )
 }

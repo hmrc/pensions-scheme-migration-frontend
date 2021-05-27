@@ -22,8 +22,8 @@ import play.api.data.Form
 
 class IsOccupationalFormProvider @Inject() extends Mappings {
 
-  def apply(errorKey: String): Form[Boolean] =
+  def apply(): Form[Boolean] =
     Form(
-      "value" -> boolean(errorKey)
+      "value" -> boolean("isOccupational.error.required")
     )
 }

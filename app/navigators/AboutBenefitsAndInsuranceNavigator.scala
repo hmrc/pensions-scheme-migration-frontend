@@ -31,12 +31,12 @@ class AboutBenefitsAndInsuranceNavigator @Inject()(val dataCacheConnector: UserA
 
   override protected def routeMap(ua: UserAnswers)
     (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
-    case HowProvideBenefitsId if ua.get(HowProvideBenefitsId).contains(DefinedBenefitsOnly) =>
-      CheckYourAnswersController.onPageLoad()
-    case HowProvideBenefitsId => BenefitsTypeController.onPageLoad()
-    case BenefitsTypeId => CheckYourAnswersController.onPageLoad()
-    case AreBenefitsSecuredId if ua.get(AreBenefitsSecuredId).contains(false) =>
-      CheckYourAnswersController.onPageLoad()
+    //case HowProvideBenefitsId if ua.get(HowProvideBenefitsId).contains(DefinedBenefitsOnly) =>
+    //  CheckYourAnswersController.onPageLoad()
+    //case HowProvideBenefitsId => BenefitsTypeController.onPageLoad()
+    //case BenefitsTypeId => CheckYourAnswersController.onPageLoad()
+    //case AreBenefitsSecuredId if ua.get(AreBenefitsSecuredId).contains(false) =>
+    //  CheckYourAnswersController.onPageLoad()
     case AreBenefitsSecuredId => BenefitsInsuranceNameController.onPageLoad()
     case BenefitsInsuranceNameId => BenefitsInsurancePolicyController.onPageLoad()
   }

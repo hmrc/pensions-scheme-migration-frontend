@@ -22,8 +22,8 @@ import play.api.data.Form
 
 class BenefitsInsuranceNameFormProvider @Inject() extends Mappings {
 
-  def apply(errorKey: String): Form[String] =
+  def apply(): Form[String] =
     Form(
-      "value" -> text(errorKey)
+      "value" -> text("benefitsInsuranceName.error.required")
     )
 }

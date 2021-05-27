@@ -48,15 +48,15 @@ class BenefitsInsuranceNameController @Inject()(override val messagesApi: Messag
                                        renderer: Renderer)(implicit ec: ExecutionContext)
   extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
-  private def form(schemeName: String)(implicit messages: Messages): Form[String] =
-    formProvider(messages("benefitsInsuranceName.error.required", schemeName))
+  private def form(implicit messages: Messages): Form[String] =
+    formProvider()
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         val preparedForm = request.userAnswers.get(BenefitsInsuranceNameId) match {
-          case Some(value) => form(schemeName).fill(value)
-          case None        => form(schemeName)
+          case Some(value) => form.fill(value)
+          case None        => form
         }
         val json = Json.obj(
           "schemeName" -> schemeName,
@@ -71,7 +71,7 @@ class BenefitsInsuranceNameController @Inject()(override val messagesApi: Messag
   def onSubmit: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
-        form(schemeName)
+        form
           .bindFromRequest()
           .fold(
             formWithErrors => {

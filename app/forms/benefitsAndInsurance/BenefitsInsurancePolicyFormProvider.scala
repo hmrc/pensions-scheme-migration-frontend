@@ -23,8 +23,8 @@ import javax.inject.Inject
 
 class BenefitsInsurancePolicyFormProvider @Inject() extends Mappings {
 
-  def apply(errorKey: String): Form[String] =
+  def apply(): Form[String] =
     Form(
-      "value" -> text(errorKey)
+      "value" -> text("benefitsInsurancePolicy.error.required")
     )
 }
