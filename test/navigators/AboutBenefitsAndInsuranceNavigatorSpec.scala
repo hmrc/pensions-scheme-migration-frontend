@@ -23,7 +23,7 @@ import identifiers._
 import identifiers.benefitsAndInsurance._
 import models._
 import models.benefitsAndInsurance.BenefitsProvisionType.{DefinedBenefitsOnly, MixedBenefits, MoneyPurchaseOnly}
-import models.benefitsAndInsurance.BenefitsType.OtherMoneyPurchaseBenefits
+import models.benefitsAndInsurance.BenefitsType._
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.{JsString, Writes, Json}
@@ -45,16 +45,17 @@ class AboutBenefitsAndInsuranceNavigatorSpec extends SpecBase with NavigatorBeha
       def navigation: TableFor3[Identifier, UserAnswers, Call] =
         Table(
           ("Id", "UserAnswers", "Next Page"),
-          row(IsInvestmentRegulatedId)(isOccupationalPensionPage, uaWithValue(IsInvestmentRegulatedId, false)),
-          row(IsInvestmentRegulatedId)(isOccupationalPensionPage, uaWithValue(IsInvestmentRegulatedId, true)),
-          row(IsOccupationalId)(howToProvideBenefitsPage, uaWithValue(IsOccupationalId, false)),
-          row(IsOccupationalId)(howToProvideBenefitsPage, uaWithValue(IsOccupationalId, true)),
           row(HowProvideBenefitsId)(benefitsTypePage, uaWithValue(HowProvideBenefitsId, MoneyPurchaseOnly)),
-          row(HowProvideBenefitsId)(areBenefitsSecuredPage, uaWithValue(HowProvideBenefitsId, DefinedBenefitsOnly)),
+          row(HowProvideBenefitsId)(checkYourAnswersPage, uaWithValue(HowProvideBenefitsId, DefinedBenefitsOnly)),
           row(HowProvideBenefitsId)(benefitsTypePage, uaWithValue(HowProvideBenefitsId, MixedBenefits)),
 
-          row(BenefitsTypeId)(areBenefitsSecuredPage, uaWithValue(BenefitsTypeId, OtherMoneyPurchaseBenefits)),
-//          row(AreBenefitsSecuredId)(checkYourAnswers(), uaWithValue(AreBenefitsSecuredId, false)),
+          row(BenefitsTypeId)(checkYourAnswersPage, uaWithValue(BenefitsTypeId, CollectiveMoneyPurchaseBenefits)),
+          row(BenefitsTypeId)(checkYourAnswersPage, uaWithValue(BenefitsTypeId, CashBalanceBenefits)),
+          row(BenefitsTypeId)(checkYourAnswersPage, uaWithValue(BenefitsTypeId, OtherMoneyPurchaseBenefits)),
+          row(BenefitsTypeId)(checkYourAnswersPage, uaWithValue(BenefitsTypeId, CollectiveMoneyPurchaseAndCashBalanceBenefits)),
+          row(BenefitsTypeId)(checkYourAnswersPage, uaWithValue(BenefitsTypeId, CashBalanceAndOtherMoneyPurchaseBenefits)),
+
+          row(AreBenefitsSecuredId)(checkYourAnswersPage, uaWithValue(AreBenefitsSecuredId, false)),
           row(AreBenefitsSecuredId)(insuranceCompanyName, uaWithValue(AreBenefitsSecuredId, true))
     //      row(BenefitsInsuranceNameId)(someStringValue, policyNumber()),
     //      row(InsurancePolicyNumberId)(someStringValue, insurerPostcode()),
@@ -64,27 +65,6 @@ class AboutBenefitsAndInsuranceNavigatorSpec extends SpecBase with NavigatorBeha
         )
       behave like navigatorWithRoutesForMode(NormalMode)(navigator, navigation)
     }
-
-
-  //  "in CheckMode" must {
-  //    def navigation: TableFor3[Identifier, UserAnswers, Call] =
-  //      Table(
-  //        ("Id", "UserAnswers", "Next Page"),
-  //        row(IsInvestmentRegulatedId)(checkYourAnswers(), uaWithValue(IsInvestmentRegulatedId, false)),
-  //        row(IsOccupationalId)(checkYourAnswers(), uaWithValue(IsOccupationalId, false)),
-  //        row(HowProvideBenefitsId)(checkYourAnswers(), uaWithValue(HowProvideBenefitsId, DefinedBenefitsOnly)),
-  //        row(HowProvideBenefitsId)(moneyPurchaseBenefits(CheckMode), uaWithValue(HowProvideBenefitsId, MoneyPurchaseOnly)),
-  //        //        row(MoneyPurchaseBenefitsId)(CashBalance, checkYourAnswers()),
-  ////        row(BenefitsSecuredByInsuranceId)(false, checkYourAnswers()),
-  ////        row(BenefitsSecuredByInsuranceId)(true, insuranceCompanyName(CheckMode)),
-  ////        row(BenefitsInsuranceNameId)(someStringValue, policyNumber(NormalMode)),
-  ////        row(InsurancePolicyNumberId)(someStringValue, checkYourAnswers()),
-  ////        row(InsurerConfirmAddressId)(someAddress, checkYourAnswers())
-  //      )
-  //    behave like navigatorWithRoutesForMode(CheckMode)(navigator, navigation, None)
-  //  }
-
-
 }
 
 object AboutBenefitsAndInsuranceNavigatorSpec extends OptionValues {
@@ -102,5 +82,5 @@ object AboutBenefitsAndInsuranceNavigatorSpec extends OptionValues {
 //  private def policyNumber: Call             = InsurancePolicyNumberController.onPageLoad(mode, None)
 //  private def insurerPostcode: Call          = InsurerEnterPostcodeController.onPageLoad(mode, None)
 //  private def insurerAddressList: Call       = InsurerSelectAddressController.onPageLoad(mode, None)
-//  private def checkYourAnswers: Call          = CheckYourAnswersBenefitsAndInsuranceController.onPageLoad(mode, None)
+  private def checkYourAnswersPage: Call          = CheckYourAnswersBenefitsAndInsuranceController.onPageLoad()
 }
