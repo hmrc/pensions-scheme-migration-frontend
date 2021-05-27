@@ -17,9 +17,8 @@
 package helpers
 
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.benefitsAndInsurance.{IsOccupationalId, HowProvideBenefitsId, IsInvestmentRegulatedId}
-import models.Members
-import models.requests.DataRequest
+import identifiers.benefitsAndInsurance.{InsurerAddressListId, InsurerAddressId, HowProvideBenefitsId, IsInvestmentRegulatedId, IsOccupationalId}
+import models.{Members, Address}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList, Text}
@@ -45,8 +44,9 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
 
     val answerBooleanTransform: Option[Boolean => Text] = Some(opt => msg"booleanAnswer.${opt.toString}")
     val answerBenefitsProvisionTypeTransform: Option[BenefitsProvisionType => Text] = Some(opt => msg"howProvideBenefits.${opt.toString}")
+    val answerBenefitsAddressTransform: Option[Address => Text] = Some(opt => lit"${opt.toString}")
 
-    Seq(
+    val seq = Seq(
       answerOrAddRow(
         IsInvestmentRegulatedId,
         Message("isInvestmentRegulated.h1", schemeName).resolve,
@@ -64,7 +64,16 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
         Message("howProvideBenefits.h1", schemeName).resolve,
         controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onPageLoad().url,
         Some(msg"messages__visuallyhidden__currentMembers"), answerBenefitsProvisionTypeTransform
+      ),
+      answerOrAddRow(
+        InsurerAddressId,
+        Message("addressFor", schemeName).resolve,
+        controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onPageLoad().url,
+        Some(msg"messages__visuallyhidden__currentMembers"), answerBenefitsAddressTransform
       )
     )
+
+
+    seq
   }
 }
