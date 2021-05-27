@@ -224,3 +224,7 @@ postcode.youCan = You can
 address.linkText.enterManually = enter the address manually
 findAddress = Find address
 
+addressList.title = What is the address for {0}?
+addressList.select = Select the address from the list below, or
+addressList.error.required = Select the address of the insurance company that secures the scheme benefits
+

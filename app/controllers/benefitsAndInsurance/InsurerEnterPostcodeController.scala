@@ -25,8 +25,6 @@ import forms.address.PostcodeFormProvider
 import identifiers.benefitsAndInsurance.{BenefitsInsuranceNameId, InsurerEnterPostCodeId}
 
 import javax.inject.Inject
-import models.Mode
-import models.requests.DataRequest
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{MessagesApi, I18nSupport}
@@ -35,7 +33,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class InsurerEnterPostcodeController @Inject()(val appConfig: AppConfig,
                                                override val messagesApi: MessagesApi,

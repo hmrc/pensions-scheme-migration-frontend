@@ -61,7 +61,7 @@ class AboutBenefitsAndInsuranceNavigatorSpec extends SpecBase with NavigatorBeha
 //          row(BenefitsInsuranceNameId)(someStringValue, policyNumber()),
     //      row(InsurancePolicyNumberId)(someStringValue, insurerPostcode()),
     //      row(InsurerEnterPostCodeId)(someSeqTolerantAddress, insurerAddressList()),
-    //      row(InsurerSelectAddressId)(someTolerantAddress, checkYourAnswers()),
+    //      row(InsurerAddressListId)(someTolerantAddress, checkYourAnswers()),
      //     row(InsurerConfirmAddressId)(someAddress, checkYourAnswers())
         )
       behave like navigatorWithRoutesForMode(NormalMode)(navigator, navigation)

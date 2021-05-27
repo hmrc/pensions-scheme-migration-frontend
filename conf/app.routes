@@ -61,3 +61,6 @@ GET        /submit-declaration                                controllers.Declar
 
 GET         /benefits-and-finance/postcode                               controllers.benefitsAndInsurance.InsurerEnterPostcodeController.onPageLoad
 POST        /benefits-and-finance/postcode                               controllers.benefitsAndInsurance.InsurerEnterPostcodeController.onSubmit
+
+GET         /benefits-and-finance/address-results                               controllers.benefitsAndInsurance.InsurerSelectAddressController.onPageLoad
+POST        /benefits-and-finance/address-results                               controllers.benefitsAndInsurance.InsurerSelectAddressController.onSubmit
