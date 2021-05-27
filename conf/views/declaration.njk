@@ -1,0 +1,59 @@
+{% extends "includes/layout.njk" %}
+
+{% from "macros/title.njk"                         import title %}
+{% from "macros/returnLink.njk"                    import returnLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block pageTitle %}
+  {{ title(messages("messages__declaration__title")) }}
+{% endblock %}
+
+{% block mainContent %}
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">
+          {{ messages("messages__declaration__title") }}
+        </h1>
+
+        <p class="govuk-body">
+          {{ messages("messages__declaration__declare") }}
+        </p>
+        <ul class="govuk-list govuk-list--bullet">
+
+            {% if isCompany %}
+                {%if isDormant %}
+                    <li>{{ messages("messages__declaration__statement1_dormant") }}</li>
+                {% else %}
+                    <li>{{ messages("messages__declaration__statement1_not_dormant") }}</li>
+                {% endif %}
+            {% endif %}
+
+            <li>{{ messages("messages__declaration__statement2") }}</li>
+            <li>{{ messages("messages__declaration__statement3") }}</li>
+            <li>{{ messages("messages__declaration__statement4") }}</li>
+            <li>{{ messages("messages__declaration__statement5") }}</li>
+            <li>{{ messages("messages__declaration__statement6") }}</li>
+            <li>{{ messages("messages__declaration__statement7") }}</li>
+
+            {% if hasWorkingKnowledge %}
+                <li>{{ messages("messages__declaration__statement8_working_knowledge") }}</li>
+            {% else %}
+                <li>{{ messages("messages__declaration__statement8_no_working_knowledge") }}</li>
+            {% endif %}
+
+            <li>{{ messages("messages__declaration__statement9") }}</li>
+
+        </ul>
+        {{ govukButton({
+            href: submitUrl,
+            attributes: {id: "submit"},
+            text: messages("site.agree_and_submit")
+        }) }}
+      </div>
+    </div>
+
+    {{ returnLink(schemeName) }}
+
+{% endblock %}

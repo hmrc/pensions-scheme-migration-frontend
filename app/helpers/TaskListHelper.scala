@@ -18,6 +18,7 @@ package helpers
 
 import com.google.inject.Inject
 import identifiers.beforeYouStart.SchemeNameId
+import play.api.i18n.Messages
 import utils.UserAnswers
 import viewmodels._
 
@@ -26,26 +27,40 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
   def getSchemeName[A](implicit ua: UserAnswers): String =
     ua.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
 
-  def taskList(implicit answers: UserAnswers): TaskList =
+  def taskList(viewOnly: Boolean)(implicit answers: UserAnswers, messages: Messages): TaskList =
     TaskList(
       getSchemeName,
       beforeYouStartSection,
-      aboutSection
+      aboutSection,
+      declarationSection(viewOnly)
     )
 
-  private[helpers] def beforeYouStartSection(implicit userAnswers: UserAnswers): TaskListEntitySection = {
+  private[helpers] def beforeYouStartSection(implicit userAnswers: UserAnswers, messages: Messages): TaskListEntitySection = {
     TaskListEntitySection(None,
       spokeCreationService.getBeforeYouStartSpoke(userAnswers, getSchemeName),
-      Some(Message("messages__schemeTaskList__before_you_start_header"))
+      Some(messages("messages__schemeTaskList__before_you_start_header"))
     )
   }
 
-  private[helpers] def aboutSection(implicit userAnswers: UserAnswers): TaskListEntitySection = {
+  private[helpers] def aboutSection(implicit userAnswers: UserAnswers, messages: Messages): TaskListEntitySection = {
     TaskListEntitySection(None,
       spokeCreationService.membershipDetailsSpoke(userAnswers, getSchemeName),
-      Some(Message("messages__schemeTaskList__about_scheme_header"))
+      Some(messages("messages__schemeTaskList__about_scheme_header", getSchemeName))
     )
   }
+
+  private[helpers] def declarationSection(viewOnly: Boolean)(implicit userAnswers: UserAnswers, messages: Messages): Option[TaskListEntitySection] =
+    if (viewOnly) {
+      None
+    } else {
+      Some(TaskListEntitySection(
+        isCompleted = None,
+        entities = spokeCreationService.declarationSpoke,
+        Some("messages__schemeTaskList__sectionDeclaration_header"),
+        "messages__schemeTaskList__sectionDeclaration_incomplete_v1",
+        "messages__schemeTaskList__sectionDeclaration_incomplete_v2"
+      ))
+    }
 
 
 

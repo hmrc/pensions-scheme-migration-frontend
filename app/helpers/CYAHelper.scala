@@ -20,10 +20,17 @@ import identifiers.TypedIdentifier
 import models.Link
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
+import uk.gov.hmrc.viewmodels.{Html, MessageInterpolators, SummaryList, Text}
+import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
+import uk.gov.hmrc.viewmodels.Text.Literal
 import utils.UserAnswers
 import viewmodels.{AnswerRow, Message}
 
 trait CYAHelper {
+
+  def rows(viewOnly: Boolean, rows: Seq[SummaryList.Row]): Seq[SummaryList.Row] = {
+    if (viewOnly) rows.map(_.copy(actions = Nil)) else rows
+  }
 
   def getAnswer[A](id: TypedIdentifier[A])
                   (implicit ua: UserAnswers, rds: Reads[A]): String =
@@ -74,6 +81,39 @@ trait CYAHelper {
           answer = Seq(answer.toString),
           answerIsMessageKey = answerIsMessageKey,
           changeUrl = changeLink(url, visuallyHiddenText)
+        )
+    }
+
+  def answerOrAddRow[A](id: TypedIdentifier[A],
+                        message: String,
+                        url: String,
+                        visuallyHiddenText: Option[Text] = None,
+                        answerTransform: Option[A => Text] = None)
+                        (implicit ua: UserAnswers, rds: Reads[A], messages: Messages): Row =
+    ua.get(id) match {
+      case None =>
+        Row(
+          key = Key(msg"$message", classes = Seq("govuk-!-width-one-half")),
+          value = Value(msg"site.not_entered", classes = Seq("govuk-!-width-one-third")),
+          actions = List(
+            Action(
+              content = Html(s"<span  aria-hidden=true >${messages("site.add")}</span>"),
+              href = url,
+              visuallyHiddenText = visuallyHiddenText
+            )
+          )
+        )
+      case Some(answer) =>
+        Row(
+          key = Key(msg"$message", classes = Seq("govuk-!-width-one-half")),
+          value = answerTransform.fold(Value(Literal(answer.toString)))(transform => Value(transform(answer))),
+          actions = List(
+            Action(
+              content = Html(s"<span  aria-hidden=true >${messages("site.change")}</span>"),
+              href = url,
+              visuallyHiddenText = visuallyHiddenText
+            )
+          )
         )
     }
 

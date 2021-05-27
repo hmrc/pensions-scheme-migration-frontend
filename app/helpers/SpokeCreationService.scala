@@ -17,18 +17,25 @@
 package helpers
 
 import helpers.spokes.{AboutMembersSpoke, BeforeYouStartSpoke, Spoke}
-import models.EntitySpoke
+import models.{EntitySpoke, TaskListLink}
+import play.api.i18n.Messages
 import utils.{Enumerable, UserAnswers}
 
 class SpokeCreationService extends Enumerable.Implicits {
 
-  def getBeforeYouStartSpoke(answers: UserAnswers, name: String): Seq[EntitySpoke] =
+  def getBeforeYouStartSpoke(answers: UserAnswers, name: String)(implicit messages: Messages): Seq[EntitySpoke] =
     Seq(createSpoke(answers, BeforeYouStartSpoke, name))
 
-  def membershipDetailsSpoke(answers: UserAnswers, name: String): Seq[EntitySpoke] =
+  def membershipDetailsSpoke(answers: UserAnswers, name: String)(implicit messages: Messages): Seq[EntitySpoke] =
     Seq(createSpoke(answers, AboutMembersSpoke, name))
 
-  def createSpoke(answers: UserAnswers, spoke: Spoke, name: String): EntitySpoke =
+  def declarationSpoke(implicit messages: Messages): Seq[EntitySpoke] =
+    Seq(EntitySpoke(TaskListLink(
+          messages("messages__schemeTaskList__declaration_link"),
+          controllers.routes.DeclarationController.onPageLoad().url)
+      ))
+
+  def createSpoke(answers: UserAnswers, spoke: Spoke, name: String)(implicit messages: Messages): EntitySpoke =
     EntitySpoke(spoke.changeLink(name), spoke.completeFlag(answers))
 
 }

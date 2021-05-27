@@ -17,14 +17,14 @@
 package helpers.spokes
 
 import models.TaskListLink
+import play.api.i18n.Messages
 import utils.UserAnswers
-import viewmodels.Message
 
 case object AboutMembersSpoke extends Spoke {
 
-  override def changeLink(name: String): TaskListLink =
+  override def changeLink(name: String)(implicit messages: Messages): TaskListLink =
     TaskListLink(
-      Message("messages__schemeTaskList__about_members_link_text", name),
+      messages("messages__schemeTaskList__about_members_link_text", name),
       controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad.url
     )
 

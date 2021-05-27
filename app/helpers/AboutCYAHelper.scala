@@ -18,39 +18,32 @@ package helpers
 
 import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
 import identifiers.beforeYouStart.SchemeNameId
+import models.Members
 import models.requests.DataRequest
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
+import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList, Text}
 import utils.{Enumerable, UserAnswers}
-import viewmodels.{AnswerSection, CYAViewModel, Message}
+import viewmodels.Message
 
 class AboutCYAHelper extends CYAHelper with Enumerable.Implicits{
 
-  def membershipVm(implicit request: DataRequest[AnyContent],
+  def membershipRows(implicit request: DataRequest[AnyContent],
                 messages: Messages
-               ): CYAViewModel = {
+               ): Seq[SummaryList.Row] = {
     implicit val ua: UserAnswers = request.userAnswers
     val schemeName = getAnswer(SchemeNameId)
 
-    val membershipDetails = AnswerSection(
-      headingKey = None,
-      rows = Seq(answerOrAddLink(CurrentMembersId, Message("currentMembers.title", schemeName).resolve,
+    val answerTransform: Option[Members => Text] = Some(opt => msg"members.${opt.toString}")
+
+    Seq(answerOrAddRow(CurrentMembersId, Message("currentMembers.title", schemeName).resolve,
         controllers.aboutMembership.routes.CurrentMembersController.onPageLoad().url,
-        Some(Message("messages__visuallyhidden__currentMembers"))
+        Some(msg"messages__visuallyhidden__currentMembers"), answerTransform
       ),
-        answerOrAddLink(FutureMembersId, Message("futureMembers.title", schemeName).resolve,
+        answerOrAddRow(FutureMembersId, Message("futureMembers.title", schemeName).resolve,
           controllers.aboutMembership.routes.FutureMembersController.onPageLoad().url,
-          Some(Message("messages__visuallyhidden__futureMembers"))
+          Some(msg"messages__visuallyhidden__futureMembers"), answerTransform
         )
       )
-    )
-
-    CYAViewModel(
-      answerSections = Seq(membershipDetails),
-      href = controllers.routes.TaskListController.onPageLoad(),
-      schemeName = schemeName,
-      hideEditLinks = request.viewOnly,
-      hideSaveAndContinueButton = false
-    )
   }
 }

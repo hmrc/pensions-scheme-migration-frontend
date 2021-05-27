@@ -33,3 +33,6 @@ POST        /members/membership-future                  controllers.aboutMembers
 GET         /members/check-your-answers                 controllers.aboutMembership.CheckYourAnswersController.onPageLoad
 
 GET         /benefits-and-finance/what-you-will-need    controllers.benefitsAndInsurance.WhatYouWillNeedController.onPageLoad
+
+GET         /declaration                                controllers.DeclarationController.onPageLoad
+GET        /submit-declaration                                controllers.DeclarationController.onSubmit
