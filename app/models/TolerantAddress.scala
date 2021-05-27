@@ -19,7 +19,7 @@ package models
 import play.api.Logger
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import utils.countryOptions.CountryOptions
+import utils.CountryOptions
 
 import scala.language.implicitConversions
 
@@ -38,8 +38,8 @@ case class TolerantAddress(
       this.addressLine2,
       this.addressLine3,
       this.addressLine4,
-      this.postcode,
-      countryOptions.getCountryNameFromCode(this)
+      this.postcode
+      //countryOptions.getCountryNameFromCode(this)
     ).flatten(s => s)
   }
 

@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package identifiers
+package identifiers.benefitsAndInsurance
 
-import models.address.TolerantAddress
+import identifiers.TypedIdentifier
+import models.TolerantAddress
 
 
 object InsurerEnterPostCodeId extends TypedIdentifier[Seq[TolerantAddress]] {

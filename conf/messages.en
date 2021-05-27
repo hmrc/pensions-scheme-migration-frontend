@@ -218,3 +218,9 @@ benefitsInsurancePolicy.error.required = Enter the policy number of the insuranc
 
 booleanAnswer.false = No
 booleanAnswer.true = Yes
+
+postcode.title = What is {0}ʼs postcode?
+postcode.youCan = You can
+address.linkText.enterManually = enter the address manually
+findAddress = Find address
+

@@ -22,6 +22,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.PostcodeController
 import forms.address.PostcodeFormProvider
+import identifiers.benefitsAndInsurance.{BenefitsInsuranceNameId, InsurerEnterPostCodeId}
 
 import javax.inject.Inject
 import models.Mode
@@ -49,7 +50,7 @@ class InsurerEnterPostcodeController @Inject()(val appConfig: AppConfig,
                                                val renderer: Renderer
                                               )(implicit val ec: ExecutionContext) extends PostcodeController with I18nSupport with NunjucksSupport {
 
-  val form: Form[String] = formProvider("","")
+  val form: Form[String] = formProvider("aaa","bbb")
 
   def formWithError(messageKey: String): Form[String] = {
     form.withError("value", s"messages__error__postcode_$messageKey")
@@ -57,38 +58,27 @@ class InsurerEnterPostcodeController @Inject()(val appConfig: AppConfig,
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      Future.successful(Ok(""))
-      //BenefitsInsuranceNameId.retrieve.right.map { name =>
-      //  getFormToJson().retrieve.right.map(get)
-      //    //get(viewModel(mode, srn, name))
-      //  }
+        getFormToJson.retrieve.right.map(get)
     }
 
-//  def viewModel(mode: Mode, srn: Option[String], name: String)(implicit request: DataRequest[AnyContent])
-//  : PostcodeLookupViewModel =
-//    PostcodeLookupViewModel(
-//      postCall(mode, srn),
-//      manualCall(mode, srn),
-//      Messages("messages__insurer_enter_postcode__h1", Messages("messages__theInsuranceCompany")),
-//      Messages("messages__insurer_enter_postcode__h1", name),
-//      None,
-//      srn = srn
-//    )
+  def getFormToJson: Retrieval[Form[String] => JsObject] =
+    Retrieval(
+      implicit request =>
+        BenefitsInsuranceNameId.retrieve.right.map { name =>
+          form =>
+            Json.obj(
+              "entityType" -> "Insurance company",
+              "entityName" -> name,
+              "form" -> form,
+              "submitUrl" -> controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onSubmit().url,
+              "enterManuallyUrl" -> ""
+            )
+        }
+    )
 
-  def getFormToJson(form:Form[String])(implicit request: DataRequest[AnyContent]): Form[String] => JsObject = {
-    form =>
-      Json.obj(
-        "form" -> form,
-        "submitUrl" -> controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onSubmit().url,
-        "enterManuallyUrl" -> ""
-      )
-  }
-  def onSubmit(mode: Mode, srn: Option[String]): Action[AnyContent] = (authenticate andThen getData andThen requireData).async{
+  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async{
     implicit request =>
-            Future.successful(Ok(""))
-      //InsuranceCompanyNameId.retrieve.right.map { name =>
-      //  post(InsurerEnterPostCodeId, viewModel(mode, srn, name), mode)
-      //}
+      getFormToJson.retrieve.right.map(form => post( form, InsurerEnterPostCodeId, "bla"))
   }
 
 }

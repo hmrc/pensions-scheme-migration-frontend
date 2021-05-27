@@ -67,10 +67,6 @@ trait Formatters extends Transforms with Constraints {
       Map(key -> value)
   }
 
-  private def standardiseText(s: String): String = {
-    s.replaceAll("""\s+""", " ").trim
-  }
-
   private[mappings] def intFormatter(requiredKey: String, wholeNumberKey: String, nonNumericKey: String)
   : Formatter[Int] =
     new Formatter[Int] {

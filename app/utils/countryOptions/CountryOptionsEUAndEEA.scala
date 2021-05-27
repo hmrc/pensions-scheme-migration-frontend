@@ -17,15 +17,16 @@
 package utils.countryOptions
 
 import com.google.inject.Inject
-import config.FrontendAppConfig
+import config.AppConfig
+
 import javax.inject.Singleton
 import play.api.Environment
-import utils.InputOption
+import utils.{InputOption, CountryOptions}
 
 @Singleton
 class CountryOptionsEUAndEEA @Inject()(
                                         environment: Environment,
-                                        config: FrontendAppConfig
+                                        config: AppConfig
                                       ) extends CountryOptions(environment, config) {
-  override def options: Seq[InputOption] = CountryOptions.getCountries(environment, config.locationCanonicalListEUAndEEA)
+  //override def options: Seq[InputOption] = scala.Seq("") //CountryOptions.getCountries(environment, config.locationCanonicalListEUAndEEA)
 }

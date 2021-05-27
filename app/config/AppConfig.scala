@@ -34,6 +34,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   val en: String            = "en"
   val cy: String            = "cy"
   val defaultLanguage: Lang = Lang(en)
+  private def loadConfig(key: String): String = config.getOptional[String](key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
   lazy val appName: String = config.get[String](path = "appName")
   lazy val migrationUrl: String = servicesConfig.baseUrl("pensions-scheme-migration")
@@ -41,7 +42,8 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val lockByUserUrl: String = s"$migrationUrl${config.get[String](path = "urls.lockByUser")}"
   lazy val lockOnSchemeUrl: String = s"$migrationUrl${config.get[String](path = "urls.lockOnScheme")}"
   lazy val dataCacheUrl: String = s"$migrationUrl${config.get[String](path = "urls.dataCache")}"
-
+  lazy val addressLookUp = s"${servicesConfig.baseUrl("address-lookup")}"
+  lazy val locationCanonicalListEUAndEEA: String = loadConfig("location.canonical.list.EUAndEEA")
   lazy val contactHost: String = baseUrl("contact-frontend")
   val reportAProblemPartialUrl: String = getConfigString("contact-frontend.report-problem-url.with-js")
   val reportAProblemNonJSUrl: String = getConfigString("contact-frontend.report-problem-url.non-js")
