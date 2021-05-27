@@ -48,7 +48,7 @@ class CheckYourAnswersController @Inject()(
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         val json = Json.obj(
-          "list" -> cyaHelper.membershipRows,
+          "list" -> cyaHelper.benefitsRows,
           "schemeName" -> cyaHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly)
         )
 

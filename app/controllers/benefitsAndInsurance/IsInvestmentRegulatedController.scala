@@ -89,7 +89,7 @@ class IsInvestmentRegulatedController @Inject()(override val messagesApi: Messag
             value => {
               val updatedUA = request.userAnswers.setOrException(IsInvestmentRegulatedId, value)
               userAnswersCacheConnector.save(request.lock, updatedUA.data).map { _ =>
-                Redirect(navigator.nextPage(SchemeTypeId, updatedUA))
+                Redirect(navigator.nextPage(IsInvestmentRegulatedId, updatedUA))
               }
             }
           )

@@ -46,4 +46,34 @@ class AboutCYAHelper extends CYAHelper with Enumerable.Implicits{
         )
       )
   }
+
+  def benefitsRows(implicit request: DataRequest[AnyContent],
+    messages: Messages
+  ): Seq[SummaryList.Row] = {
+    implicit val ua: UserAnswers = request.userAnswers
+    val schemeName = getAnswer(SchemeNameId)
+
+    val answerTransform: Option[Members => Text] = Some(opt => msg"members.${opt.toString}")
+
+    Seq(
+      answerOrAddRow(
+        CurrentMembersId,
+        Message("isInvestmentRegulated.h1", schemeName).resolve,
+        controllers.benefitsAndInsurance.routes.IsInvestmentRegulatedController.onPageLoad().url,
+        Some(msg"messages__visuallyhidden__currentMembers"), answerTransform
+      ),
+      answerOrAddRow(
+        CurrentMembersId,
+        Message("isOccupational.h1", schemeName).resolve,
+        controllers.benefitsAndInsurance.routes.IsOccupationalController.onPageLoad().url,
+        Some(msg"messages__visuallyhidden__currentMembers"), answerTransform
+      ),
+      answerOrAddRow(
+        CurrentMembersId,
+        Message("howProvideBenefits.h1", schemeName).resolve,
+        controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onPageLoad().url,
+        Some(msg"messages__visuallyhidden__currentMembers"), answerTransform
+      )
+    )
+  }
 }

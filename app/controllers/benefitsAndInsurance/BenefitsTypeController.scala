@@ -91,7 +91,7 @@ class BenefitsTypeController @Inject()(override val messagesApi: MessagesApi,
             value => {
               val updatedUA = request.userAnswers.setOrException(BenefitsTypeId, value)
               userAnswersCacheConnector.save(request.lock, updatedUA.data).map { _ =>
-                Redirect(navigator.nextPage(SchemeTypeId, updatedUA))
+                Redirect(navigator.nextPage(BenefitsTypeId, updatedUA))
               }
             }
           )

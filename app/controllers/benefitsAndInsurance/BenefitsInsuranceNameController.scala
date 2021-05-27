@@ -87,7 +87,7 @@ class BenefitsInsuranceNameController @Inject()(override val messagesApi: Messag
             value => {
               val updatedUA = request.userAnswers.setOrException(BenefitsInsuranceNameId, value)
               userAnswersCacheConnector.save(request.lock, updatedUA.data).map { _ =>
-                Redirect(navigator.nextPage(SchemeTypeId, updatedUA))
+                Redirect(navigator.nextPage(BenefitsInsuranceNameId, updatedUA))
               }
             }
           )

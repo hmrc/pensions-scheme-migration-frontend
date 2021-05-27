@@ -89,7 +89,7 @@ class AreBenefitsSecuredController @Inject()(override val messagesApi: MessagesA
             value => {
               val updatedUA = request.userAnswers.setOrException(AreBenefitsSecuredId, value)
               userAnswersCacheConnector.save(request.lock, updatedUA.data).map { _ =>
-                Redirect(navigator.nextPage(SchemeTypeId, updatedUA))
+                Redirect(navigator.nextPage(AreBenefitsSecuredId, updatedUA))
               }
             }
           )
