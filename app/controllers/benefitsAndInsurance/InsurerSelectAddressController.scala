@@ -51,7 +51,7 @@ class InsurerSelectAddressController @Inject()(val appConfig: AppConfig,
   val renderer: Renderer)(implicit val ec: ExecutionContext) extends AddressListController with I18nSupport
   with NunjucksSupport with Retrievals {
 
-  override def form: Form[Int] = formProvider("addressList.error.required")
+  override def form: Form[Int] = formProvider("insurerSelectAddress.required")
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
       getFormToJson.retrieve.right.map(get)

@@ -226,5 +226,8 @@ findAddress = Find address
 
 addressList.title = What is the address for {0}?
 addressList.select = Select the address from the list below, or
-addressList.error.required = Select the address of the insurance company that secures the scheme benefits
 
+insurerEnterPostcode.required = Enter the postcode of the insurance company that secures the scheme benefits
+insurerEnterPostcode.invalid = Invalid postcode
+
+insurerSelectAddress.required = Select the address of the insurance company that secures the scheme benefits
