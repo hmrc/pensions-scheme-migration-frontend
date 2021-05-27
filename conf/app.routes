@@ -58,3 +58,6 @@ GET         /members/check-your-answers                 controllers.aboutMembers
 
 GET         /declaration                                controllers.DeclarationController.onPageLoad
 GET        /submit-declaration                                controllers.DeclarationController.onSubmit
+
+GET         /insurance/postcode                               controllers.benefitsAndInsurance.InsurerEnterPostcodeController.onPageLoad
+POST        /insurance/postcode                               controllers.benefitsAndInsurance.InsurerEnterPostcodeController.onSubmit

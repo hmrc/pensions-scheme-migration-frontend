@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package forms.address
+package forms
 
-import forms.mappings.AddressMappings
-import javax.inject.Inject
 import play.api.data.Form
 
-class PostcodeFormProvider @Inject() extends AddressMappings {
+object FormsHelper {
 
-  def apply(keyRequired: String, keyInvalid: String): Form[String] =
-    Form("value" -> postCodeMapping(keyRequired, keyInvalid))
+  def formWithError[A](form: Form[A], message: String): Form[A] = {
+    form.withError("value", message)
+  }
+
 }

@@ -170,6 +170,15 @@ trait Constraints {
       Invalid("error.invalid")
   }
 
+  protected def validAddressLine(invalidKey: String): Constraint[String] = regexp(regexAddressLine, invalidKey)
+
+  protected def optionalValidAddressLine(invalidKey: String): Constraint[Option[String]] = Constraint {
+    case Some(str) if str.matches(regexAddressLine) =>
+      Valid
+    case None => Valid
+    case _ =>
+      Invalid(invalidKey, regexAddressLine)
+  }
   protected def emailAddressRestrictive(errorKey: String): Constraint[String] = regexp(regexEmailRestrictive, errorKey)
 
   protected def postCode(errorKey: String): Constraint[String] = regexp(regexPostcode, errorKey)
@@ -203,5 +212,13 @@ trait Constraints {
           .find(_.value == input)
           .map(_ => Valid)
           .getOrElse(Invalid(errorKey))
+    }
+  protected def optionalMaxLength(maximum: Int, errorKey: String): Constraint[Option[String]] =
+    Constraint {
+      case Some(str) if str.length <= maximum =>
+        Valid
+      case None => Valid
+      case _ =>
+        Invalid(errorKey, maximum)
     }
 }

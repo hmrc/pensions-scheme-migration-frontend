@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package forms.address
+package utils.countryOptions
 
-import forms.mappings.AddressMappings
-import javax.inject.Inject
-import play.api.data.Form
+import com.google.inject.Inject
+import config.FrontendAppConfig
+import javax.inject.Singleton
+import play.api.Environment
+import utils.InputOption
 
-class PostcodeFormProvider @Inject() extends AddressMappings {
-
-  def apply(keyRequired: String, keyInvalid: String): Form[String] =
-    Form("value" -> postCodeMapping(keyRequired, keyInvalid))
+@Singleton
+class CountryOptionsEUAndEEA @Inject()(
+                                        environment: Environment,
+                                        config: FrontendAppConfig
+                                      ) extends CountryOptions(environment, config) {
+  override def options: Seq[InputOption] = CountryOptions.getCountries(environment, config.locationCanonicalListEUAndEEA)
 }

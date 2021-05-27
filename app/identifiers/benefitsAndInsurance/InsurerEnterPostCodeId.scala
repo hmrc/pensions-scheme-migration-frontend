@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package forms.address
+package identifiers
 
-import forms.mappings.AddressMappings
-import javax.inject.Inject
-import play.api.data.Form
+import models.address.TolerantAddress
 
-class PostcodeFormProvider @Inject() extends AddressMappings {
 
-  def apply(keyRequired: String, keyInvalid: String): Form[String] =
-    Form("value" -> postCodeMapping(keyRequired, keyInvalid))
+object InsurerEnterPostCodeId extends TypedIdentifier[Seq[TolerantAddress]] {
+  override def toString: String = "insurerAddresses"
 }
+
