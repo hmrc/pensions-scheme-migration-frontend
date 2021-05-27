@@ -17,18 +17,27 @@
 package viewmodels
 
 import models.EntitySpoke
+import play.api.libs.json.{Format, Json}
 
 case class TaskList(
                                   h1: String,
-                                  beforeYouStart: TaskListEntitySection
+                                  beforeYouStart: TaskListEntitySection,
+                                  about: TaskListEntitySection,
+                                  declaration: Option[TaskListEntitySection]
                                 )
+
+object TaskList {
+  implicit lazy val formats: Format[TaskList] = Json.format[TaskList]
+}
 
 case class TaskListEntitySection(
                                                isCompleted: Option[Boolean],
                                                entities: Seq[EntitySpoke],
-                                               header: Option[Message],
-                                               p1: Message*
+                                               header: Option[String],
+                                               p1: String*
                                              )
-
+object TaskListEntitySection {
+  implicit lazy val formats: Format[TaskListEntitySection] = Json.format[TaskListEntitySection]
+}
 
 

@@ -44,21 +44,21 @@ class AboutBenefitsAndInsuranceNavigatorSpec extends SpecBase with NavigatorBeha
   "AboutBenefitsAndInsuranceNavigator" must {
       def navigation: TableFor3[Identifier, UserAnswers, Call] =
         Table(
-          ("Id", "UserAnswers", "Next Page")
-          //row(HowProvideBenefitsId)(benefitsTypePage, uaWithValue(HowProvideBenefitsId, MoneyPurchaseOnly)),
-          //row(HowProvideBenefitsId)(checkYourAnswersPage, uaWithValue(HowProvideBenefitsId, DefinedBenefitsOnly)),
-          //row(HowProvideBenefitsId)(benefitsTypePage, uaWithValue(HowProvideBenefitsId, MixedBenefits)),
-          //
-          //row(BenefitsTypeId)(checkYourAnswersPage, uaWithValue(BenefitsTypeId, CollectiveMoneyPurchaseBenefits)),
-          //row(BenefitsTypeId)(checkYourAnswersPage, uaWithValue(BenefitsTypeId, CashBalanceBenefits)),
-          //row(BenefitsTypeId)(checkYourAnswersPage, uaWithValue(BenefitsTypeId, OtherMoneyPurchaseBenefits)),
-          //row(BenefitsTypeId)(checkYourAnswersPage, uaWithValue(BenefitsTypeId, CollectiveMoneyPurchaseAndCashBalanceBenefits)),
-          //row(BenefitsTypeId)(checkYourAnswersPage, uaWithValue(BenefitsTypeId, CashBalanceAndOtherMoneyPurchaseBenefits)),
-          //
-          //row(AreBenefitsSecuredId)(checkYourAnswersPage, uaWithValue(AreBenefitsSecuredId, false)),
-          //row(AreBenefitsSecuredId)(insuranceCompanyName, uaWithValue(AreBenefitsSecuredId, true)),
-          //row(BenefitsInsuranceNameId)(insurancePolicyNumber)
-    //      row(BenefitsInsuranceNameId)(someStringValue, policyNumber()),
+          ("Id", "UserAnswers", "Next Page"),
+          row(HowProvideBenefitsId)(benefitsTypePage, uaWithValue(HowProvideBenefitsId, MoneyPurchaseOnly)),
+          row(HowProvideBenefitsId)(checkYourAnswersPage, uaWithValue(HowProvideBenefitsId, DefinedBenefitsOnly)),
+          row(HowProvideBenefitsId)(benefitsTypePage, uaWithValue(HowProvideBenefitsId, MixedBenefits)),
+
+          row(BenefitsTypeId)(checkYourAnswersPage, uaWithValue(BenefitsTypeId, CollectiveMoneyPurchaseBenefits)),
+          row(BenefitsTypeId)(checkYourAnswersPage, uaWithValue(BenefitsTypeId, CashBalanceBenefits)),
+          row(BenefitsTypeId)(checkYourAnswersPage, uaWithValue(BenefitsTypeId, OtherMoneyPurchaseBenefits)),
+          row(BenefitsTypeId)(checkYourAnswersPage, uaWithValue(BenefitsTypeId, CollectiveMoneyPurchaseAndCashBalanceBenefits)),
+          row(BenefitsTypeId)(checkYourAnswersPage, uaWithValue(BenefitsTypeId, CashBalanceAndOtherMoneyPurchaseBenefits)),
+
+          row(AreBenefitsSecuredId)(checkYourAnswersPage, uaWithValue(AreBenefitsSecuredId, false)),
+          row(AreBenefitsSecuredId)(insuranceCompanyName, uaWithValue(AreBenefitsSecuredId, true)),
+          row(BenefitsInsuranceNameId)(insurancePolicyNumber),
+//          row(BenefitsInsuranceNameId)(someStringValue, policyNumber()),
     //      row(InsurancePolicyNumberId)(someStringValue, insurerPostcode()),
     //      row(InsurerEnterPostCodeId)(someSeqTolerantAddress, insurerAddressList()),
     //      row(InsurerSelectAddressId)(someTolerantAddress, checkYourAnswers()),
@@ -78,5 +78,5 @@ object AboutBenefitsAndInsuranceNavigatorSpec extends OptionValues {
   private def benefitsTypePage: Call       = BenefitsTypeController.onPageLoad()
   private def insuranceCompanyName: Call                  = BenefitsInsuranceNameController.onPageLoad()
   private def insurancePolicyNumber: Call                  = BenefitsInsurancePolicyController.onPageLoad()
-  //private def checkYourAnswersPage: Call          = CheckYourAnswersBenefitsAndInsuranceController.onPageLoad()
+  private def checkYourAnswersPage: Call          = CheckYourAnswersController.onPageLoad()
 }

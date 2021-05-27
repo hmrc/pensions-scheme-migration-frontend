@@ -19,10 +19,11 @@ package controllers
 import controllers.actions.{AuthAction, DataRetrievalAction}
 import helpers.TaskListHelper
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswers
-import views.html.taskList
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -33,15 +34,21 @@ class TaskListController @Inject()(
                                     getData: DataRetrievalAction,
                                     taskListHelper: TaskListHelper,
                                     val controllerComponents: MessagesControllerComponents,
-                                    val view: taskList
+                                    renderer: Renderer
                                   )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
     with Retrievals {
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData) {
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData).async {
     implicit request =>
-      Ok(view(taskListHelper.taskList(request.userAnswers.getOrElse(UserAnswers())), None))
+      implicit val userAnswers: UserAnswers = request.userAnswers.getOrElse(UserAnswers())
+      val json = Json.obj(
+        "taskSections" -> taskListHelper.taskList(request.viewOnly),
+        "schemeName" -> taskListHelper.getSchemeName
+      )
+      renderer.render("taskList.njk", json).map(Ok(_))
+
   }
 
 }

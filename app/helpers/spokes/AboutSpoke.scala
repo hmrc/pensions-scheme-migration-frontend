@@ -14,13 +14,24 @@
  * limitations under the License.
  */
 
-package models
+package helpers.spokes
 
-import play.api.libs.json.{Format, Json}
+import models.TaskListLink
+import play.api.i18n.Messages
+import utils.UserAnswers
 
-case class TaskListLink(text: String, target: String, visuallyHiddenText: Option[String] = None)
+case object AboutMembersSpoke extends Spoke {
 
-object TaskListLink {
-  implicit lazy val formats: Format[TaskListLink] = Json.format[TaskListLink]
+  override def changeLink(name: String)(implicit messages: Messages): TaskListLink =
+    TaskListLink(
+      messages("messages__schemeTaskList__about_members_link_text", name),
+      controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad.url
+    )
+
+  override def completeFlag(answers: UserAnswers): Option[Boolean] = answers.isMembersCompleted
 }
+
+
+
+
 

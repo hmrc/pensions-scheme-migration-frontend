@@ -19,14 +19,16 @@ package controllers.benefitsAndInsurance
 import controllers.Retrievals
 import controllers.actions._
 import helpers.AboutCYAHelper
+import identifiers.beforeYouStart.SchemeNameId
+import play.api.libs.json.Json
 import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils._
-import views.html.checkYourAnswers
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class CheckYourAnswersController @Inject()(
                                             override val messagesApi: MessagesApi,
@@ -35,7 +37,7 @@ class CheckYourAnswersController @Inject()(
                                             requireData: DataRequiredAction,
                                             cyaHelper: AboutCYAHelper,
                                             val controllerComponents: MessagesControllerComponents,
-                                            val view: checkYourAnswers
+                                            renderer: Renderer
                                           )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with Enumerable.Implicits
@@ -45,6 +47,11 @@ class CheckYourAnswersController @Inject()(
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        Future.successful(Ok(view(cyaHelper.membershipVm)))
+        val json = Json.obj(
+          "list" -> cyaHelper.membershipRows,
+          "schemeName" -> cyaHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly)
+        )
+
+        renderer.render("check-your-answers.njk", json).map(Ok(_))
     }
 }

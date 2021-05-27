@@ -31,6 +31,8 @@ site.hidden-delete = Delete {0}
 site.hidden-edit = Change {0}
 site.title.suffix = - Managing pension schemes - GOV.UK
 site.return.to = Return to {0}
+site.agree_and_submit = Agree and submit
+
 checkYourAnswers.title = Check your answers
 
 error.title.prefix = Error:
@@ -129,7 +131,14 @@ messages__complete__return = Return to manage your pension schemes
 messages__finish = Finish
 messages__schemeTaskList__status_visuallyHidden = This section is
 messages__schemeTaskList__heading = Scheme details
+messages__schemeTaskList__completed = Completed
+messages__schemeTaskList__inProgress = In progress
 messages__complete__returnToSchemeOverview = Save and return to Managing Pension Schemes
+
+messages__schemeTaskList__sectionDeclaration_header = Declaration
+messages__schemeTaskList__sectionDeclaration_incomplete = You must complete every section before you can declare.
+messages__schemeTaskList__sectionDeclaration_incomplete_v1 = You need to agree to a declaration if you make any changes to this scheme.
+messages__schemeTaskList__sectionDeclaration_incomplete_v2 = You can only see the declaration when you have made any changes.
 
 currentMembers.title = How many members does {0} currently have?
 currentMembers.error.required = Select how many members {0} currently has
@@ -154,6 +163,20 @@ benefitsAndInsurance.p2 = If is secured by a contract of insurance or an annuity
 benefitsAndInsurance.p2b1 = the name of the insurance company
 benefitsAndInsurance.p2b2 = the policy number
 benefitsAndInsurance.p2b3 = the insurance company’s address
+
+messages__declaration__title = Declaration
+messages__declaration__declare = By continuing you declare that:
+messages__declaration__statement1_dormant = to the best of your knowledge and belief, some or all of the sponsoring employer(s) in relation to the scheme have been dormant during the last 12 months
+messages__declaration__statement1_not_dormant = to the best of your knowledge and belief, the sponsoring employer(s) in relation to the scheme have not been dormant during the last 12 months
+messages__declaration__statement2 = this scheme meets all the criteria to be registered as a pension scheme under the Finance Act 2004 and, in particular, is established and will be maintained wholly or mainly for the purpose of making authorised payments of pensions and lumps sums as falling within section 164(1)(a) or (b) of the Finance Act 2004
+messages__declaration__statement3 = the instruments or agreements by which this pension scheme is constituted do not directly or indirectly entitle any person to unauthorised payments and the way in which the pension scheme is to be administered will not knowingly entitle any person to unauthorised payments
+messages__declaration__statement4 = as scheme administrator you are responsible for discharging the functions conferred or imposed on the scheme administrator of the pension scheme by Finance Act 2004 and you intend to discharge those functions at all times, whether resident in the United Kingdom or another EU member state or non-member EEA state
+messages__declaration__statement5 = you will comply with all information notices issued to the scheme administrator under the Finance Act 2004 or the Finance Act 2008 and you understand that you may be liable to a penalty and the pension scheme may be de-registered if you fail to properly discharge those functions
+messages__declaration__statement6 = you may be liable to a penalty and the pension scheme may be de-registered if a false statement is made on this application, or in any information you provide in connection with this application, and that false statements may also lead to prosecution
+messages__declaration__statement7 = to the best of your knowledge and belief, the information given in this application to register the pension scheme for the purposes of tax relief is correct and complete and you understand that you are responsible for providing any further information and declarations reasonably required by HMRC in order to consider the application
+messages__declaration__statement8_working_knowledge = you are a fit and proper person to be the scheme administrator, with a working knowledge of pensions and the scheme administrator duties and liabilities
+messages__declaration__statement8_no_working_knowledge = you do not have a working knowledge of pensions and the scheme administrator duties and liabilities but you are otherwise a fit and proper person and have appointed an adviser to the pension scheme who does have that knowledge
+messages__declaration__statement9 = you understand that where HMRC believes that if any of the persons who are the scheme administrator are not a fit and proper person, HMRC may refuse to register the scheme or, if the scheme is already registered, HMRC may de-register the scheme
 
 isInvestmentRegulated.title = Is the scheme investment regulated?
 isInvestmentRegulated.h1 = Is {0} investment regulated?
