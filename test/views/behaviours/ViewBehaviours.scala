@@ -41,7 +41,7 @@ trait ViewBehaviours extends ViewSpecBase {
 
         "display the correct browser title" in {
           val doc = asDocument(view())
-          assertEqualsMessage(doc, "title", title + " - " + messages("messages__pension_scheme_registration__title"))
+          assertEqualsMessage(doc, "title", title + " - " + messages("site.service_name"))
         }
 
         "display the correct page header" in {

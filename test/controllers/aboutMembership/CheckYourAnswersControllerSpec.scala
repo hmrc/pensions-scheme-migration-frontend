@@ -14,62 +14,52 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.aboutMembership
 
-import controllers.actions._
-import helpers.TaskListHelper
+import controllers.ControllerSpecBase
+import controllers.actions.MutableFakeDataRetrievalAction
+import helpers.AboutCYAHelper
 import matchers.JsonMatchers
-import models.{EntitySpoke, TaskListLink}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
-import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import utils.Data._
-import viewmodels.{Message, TaskList, TaskListEntitySection}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
+import uk.gov.hmrc.viewmodels.SummaryList.{Key, Row, Value}
+import uk.gov.hmrc.viewmodels.Text.Literal
+import utils.Data.{schemeName, ua}
+import utils.UserAnswers
 
 import scala.concurrent.Future
 
-class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach with MockitoSugar with JsonMatchers {
-
-  private val mockTaskListHelper = mock[TaskListHelper]
+class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers {
+  private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction).build()
-  private val templateToBeRendered = "task-list.njk"
-  private val index = 0
-
-  private def httpPathGET: String = controllers.routes.TaskListController.onPageLoad.url
-
-  private val beforeYouStartLinkText = Message("messages__schemeTaskList__before_you_start_link_text", schemeName)
-  private val expectedBeforeYouStartSpoke = Seq(EntitySpoke(TaskListLink(beforeYouStartLinkText,
-    controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad.url), Some(false)))
-
-  private val beforeYouStartHeader = Some(Message("messages__schemeTaskList__before_you_start_header"))
-  private val beforeYouStartSection = TaskListEntitySection(None, expectedBeforeYouStartSpoke, beforeYouStartHeader)
-
-  private val schemeDetailsTL = TaskList(schemeName, beforeYouStartSection, beforeYouStartSection, Some(beforeYouStartSection))
-
-  val json = Json.obj(
-    "taskSections" -> schemeDetailsTL,
-    "schemeName" -> schemeName
+  private val templateToBeRendered = "check-your-answers.njk"
+  private val mockCyaHelper: AboutCYAHelper = mock[AboutCYAHelper]
+  private def httpPathGET: String = controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad.url
+  private val rows: Seq[Row] = Seq(Row(Key(msg""), Value(Literal("")), Nil))
+  private val jsonToPassToTemplate: JsObject = Json.obj(
+    "list" -> rows,
+    "schemeName" -> schemeName,
+    "submitUrl" -> controllers.routes.TaskListController.onPageLoad().url
   )
 
   override def beforeEach: Unit = {
     super.beforeEach
-    when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-    when(mockTaskListHelper.taskList(any())(any(), any())).thenReturn(schemeDetailsTL)
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+    when(mockCyaHelper.membershipRows(any(), any())).thenReturn(rows)
   }
 
 
-  "TaskList Controller" must {
+  "CheckYourAnswers Controller" must {
 
     "return OK and the correct view for a GET" in {
-      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+      mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -81,9 +71,19 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
 
       templateCaptor.getValue mustEqual templateToBeRendered
 
-      jsonCaptor.getValue must containJson(json)
+      jsonCaptor.getValue must containJson(jsonToPassToTemplate)
     }
+
+    "redirect to next url when button is clicked" in {
+
+      mutableFakeDataRetrievalAction.setDataToReturn(Option(ua))
+
+      val result = route(application, httpGETRequest(httpPathGET)).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result) mustBe Some(controllers.routes.TaskListController.onPageLoad().url)
+    }
+
   }
 }
-
-

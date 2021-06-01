@@ -67,3 +67,7 @@ POST        /benefits-and-finance/address-results                               
 
 GET         /benefits-and-finance/address-manual                               controllers.benefitsAndInsurance.InsurerConfirmAddressController.onPageLoad
 POST        /benefits-and-finance/address-manual                               controllers.benefitsAndInsurance.InsurerConfirmAddressController.onSubmit
+
+GET         /submit-declaration                         controllers.DeclarationController.onSubmit
+
+GET         /success                                    controllers.SuccessController.onPageLoad

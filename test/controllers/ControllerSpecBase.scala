@@ -18,15 +18,31 @@ package controllers
 
 
 import base.SpecBase
-import controllers.actions.FakeDataRetrievalAction
+import com.codahale.metrics.SharedMetricRegistries
+import config.AppConfig
+import connectors.cache.UserAnswersCacheConnector
+import controllers.actions._
+import navigators.CompoundNavigator
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.mockito.Mockito
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.http.HeaderNames
+import play.api.inject.bind
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
+import play.api.test.Helpers.{GET, POST}
+import play.api.test.{FakeHeaders, FakeRequest}
+import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import utils.Data.ua
 import utils.{Enumerable, UserAnswers}
 
-trait ControllerSpecBase extends SpecBase with Enumerable.Implicits {
+import scala.concurrent.ExecutionContext
 
-  implicit val global = scala.concurrent.ExecutionContext.Implicits.global
+trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach with MockitoSugar with Enumerable.Implicits {
+
+  implicit val global: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
   val cacheMapId = "id"
 
@@ -39,5 +55,43 @@ trait ControllerSpecBase extends SpecBase with Enumerable.Implicits {
   def dontGetAnyDataViewOnly: FakeDataRetrievalAction = new FakeDataRetrievalAction(None)
 
   def asDocument(htmlAsString: String): Document = Jsoup.parse(htmlAsString)
+
+  override def beforeEach: Unit = {
+    Mockito.reset(mockRenderer, mockUserAnswersCacheConnector, mockCompoundNavigator)
+    SharedMetricRegistries.clear()
+  }
+
+  protected def mockDataRetrievalAction: DataRetrievalAction = mock[DataRetrievalAction]
+
+  protected val mockAppConfig: AppConfig = mock[AppConfig]
+
+  protected val mockUserAnswersCacheConnector: UserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+  protected val mockCompoundNavigator: CompoundNavigator = mock[CompoundNavigator]
+  protected val mockRenderer: NunjucksRenderer = mock[NunjucksRenderer]
+
+  def modules: Seq[GuiceableModule] = Seq(
+    bind[DataRequiredAction].to[DataRequiredActionImpl],
+    bind[NunjucksRenderer].toInstance(mockRenderer),
+    bind[AppConfig].toInstance(mockAppConfig),
+    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
+    bind[CompoundNavigator].toInstance(mockCompoundNavigator)
+  )
+
+  def applicationBuilderUserAnswers(userAnswers: Option[UserAnswers] = None,
+                                   extraModules: Seq[GuiceableModule] = Seq.empty): GuiceApplicationBuilder = {
+    val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction
+    mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
+    super.applicationBuilder(mutableFakeDataRetrievalAction, extraModules ++ modules)
+  }
+
+  protected def httpGETRequest(path: String): FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, path)
+
+  protected def httpPOSTRequest(path: String, values: Map[String, Seq[String]]): FakeRequest[AnyContentAsFormUrlEncoded] =
+    FakeRequest
+      .apply(
+        method = POST,
+        uri = path,
+        headers = FakeHeaders(Seq(HeaderNames.HOST -> "localhost")),
+        body = AnyContentAsFormUrlEncoded(values))
 
 }

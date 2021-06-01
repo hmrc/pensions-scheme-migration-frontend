@@ -58,7 +58,7 @@ class SchemeTypeControllerSpec extends ControllerSpecBase {
   "SchemeType Controller" must {
 
     "return OK and the correct view for a GET" in {
-      SharedMetricRegistries.clear()
+
       val result = controller().onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
@@ -66,7 +66,7 @@ class SchemeTypeControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      SharedMetricRegistries.clear()
+
       val validData = minData.set(SchemeTypeId, SchemeType.SingleTrust).get
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
@@ -76,7 +76,7 @@ class SchemeTypeControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page when valid data is submitted" in {
-      SharedMetricRegistries.clear()
+
       val postRequest = fakeRequest.withFormUrlEncodedBody(("schemeType.type", "single"))
 
       val result = controller().onSubmit()(postRequest)
@@ -88,7 +88,7 @@ class SchemeTypeControllerSpec extends ControllerSpecBase {
     "return a Bad Request and errors" when {
 
       "invalid data is submitted" in {
-        SharedMetricRegistries.clear()
+
         val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
         val boundForm = form.bind(Map("value" -> "invalid value"))
 
@@ -99,7 +99,7 @@ class SchemeTypeControllerSpec extends ControllerSpecBase {
       }
 
       "scheme name matches psa name" in {
-        SharedMetricRegistries.clear()
+
         val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "My PSA"))
         val boundForm = form.bind(Map("value" -> "My PSA"))
 

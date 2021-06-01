@@ -30,6 +30,6 @@ class IndexViewSpec extends ViewBehaviours {
 
   "Index view" must {
 
-    behave like normalPage(view, "index", messages("messages__index__title"), "_title")
+    behave like normalPage(view, "index", messages("site.service_name"), "_title")
   }
 }

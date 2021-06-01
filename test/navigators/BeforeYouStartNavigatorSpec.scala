@@ -31,12 +31,7 @@ class BeforeYouStartNavigatorSpec
   extends SpecBase
     with NavigatorBehaviour {
 
-  private val navigator: CompoundNavigator = applicationBuilder(
-    dataRetrievalAction =
-      new FakeDataRetrievalAction(
-        dataToReturn = Some(UserAnswers(Json.obj()))
-      )
-  ).build().injector.instanceOf[CompoundNavigator]
+  private val navigator: CompoundNavigator = injector.instanceOf[CompoundNavigator]
 
   "BeforeYouStartNavigator" when {
     def navigation: TableFor3[Identifier, UserAnswers, Call] =

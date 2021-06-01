@@ -32,7 +32,8 @@ site.hidden-edit = Change {0}
 site.title.suffix = - Managing pension schemes - GOV.UK
 site.return.to = Return to {0}
 site.agree_and_submit = Agree and submit
-
+site.printThisPage = Print this page
+site.saveOrPrint = Save or print
 checkYourAnswers.title = Check your answers
 
 error.title.prefix = Error:
@@ -131,8 +132,6 @@ messages__complete__return = Return to manage your pension schemes
 messages__finish = Finish
 messages__schemeTaskList__status_visuallyHidden = This section is
 messages__schemeTaskList__heading = Scheme details
-messages__schemeTaskList__completed = Completed
-messages__schemeTaskList__inProgress = In progress
 messages__complete__returnToSchemeOverview = Save and return to Managing Pension Schemes
 
 messages__schemeTaskList__sectionDeclaration_header = Declaration
@@ -241,3 +240,17 @@ address.line3 = Address line 3 (optional)
 address.line4 = Address line 4 (optional)
 address.postcode = Postcode
 address.country = Country
+
+messages__common__what_you_need_to_know = What you need to know
+messages__complete__title = The pension scheme details have been sent to HMRC
+messages__complete__heading = The pension scheme details have been sent to HMRC
+messages__complete__application_number_is = Your submission reference number is {0}
+messages__complete__email = We have sent a confirmation email to
+messages__complete__what_happens_next = What happens next
+messages__complete__copy_1 = The scheme has not been registered yet.
+messages__complete__copy_2 = HMRC will review the details and decide if the scheme can be registered. You can {0} at any time.
+messages__complete__copy_2_link = check the status of your submission
+messages__complete__copy_3 = You‘ll receive a pension scheme tax reference number (PSTR) if the scheme is registered.
+messages__complete__copy_4 = You might be contacted for more details to support this registration.
+messages__complete__copy_5 = There is no time limit for how long it‘ll take HMRC to make a decision.
+messages__complete__appeal_link = You can appeal to a tribunal if HMRC decides not to register the scheme or if a decision has not been made within 6 months

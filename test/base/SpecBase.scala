@@ -41,14 +41,14 @@ trait SpecBase
   extends PlaySpec
     with GuiceOneAppPerSuite {
 
-  def modules(dataRetrievalAction: DataRetrievalAction): Seq[GuiceableModule] =
+  def modules(mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction): Seq[GuiceableModule] =
     Seq(
       bind[AuthAction].toInstance(FakeAuthAction),
-      bind[DataRetrievalAction].toInstance(dataRetrievalAction)
+      bind[DataRetrievalAction].toInstance(mutableFakeDataRetrievalAction)
     )
 
   def applicationBuilder(
-                          dataRetrievalAction: DataRetrievalAction = new FakeDataRetrievalAction(Some(UserAnswers())),
+                          mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction,
                           extraModules: Seq[GuiceableModule] = Seq.empty
                         ): GuiceApplicationBuilder = {
     new GuiceApplicationBuilder()
@@ -57,7 +57,7 @@ trait SpecBase
         "metrics.enabled" -> false
       )
       .overrides(
-        extraModules ++ modules(dataRetrievalAction): _*
+        extraModules ++ modules(mutableFakeDataRetrievalAction): _*
       )
   }
 
