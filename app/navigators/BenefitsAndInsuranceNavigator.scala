@@ -48,6 +48,6 @@ class BenefitsAndInsuranceNavigator @Inject()(val dataCacheConnector: UserAnswer
 }
 
 object BenefitsAndInsuranceNavigator {
-  private val cya = CheckYourAnswersController.onPageLoad()
+  private def cya = CheckYourAnswersController.onPageLoad()
 }
 

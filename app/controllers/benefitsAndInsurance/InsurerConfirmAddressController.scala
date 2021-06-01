@@ -27,7 +27,7 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.InsurerAddressId
 
 import javax.inject.Inject
-import models.{Address, Mode, AddressConfiguration}
+import models.{Address, AddressConfiguration}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{MessagesApi, Messages, I18nSupport}
@@ -35,7 +35,7 @@ import play.api.mvc.{Call, Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class InsurerConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
   val userAnswersCacheConnector: UserAnswersCacheConnector,
@@ -54,7 +54,7 @@ class InsurerConfirmAddressController @Inject()(override val messagesApi: Messag
 
   override protected def addressPage: TypedIdentifier[Address] = InsurerAddressId
 
-  override protected val submitRoute: Call = routes.InsurerConfirmAddressController.onSubmit()
+  override protected def submitRoute: Call = routes.InsurerConfirmAddressController.onSubmit()
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
@@ -66,22 +66,7 @@ class InsurerConfirmAddressController @Inject()(override val messagesApi: Messag
   def onSubmit: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => {
-              renderer.render(viewTemplate,
-                json(Some(schemeName), formWithErrors, AddressConfiguration.PostcodeFirst)).map(BadRequest(_))
-            },
-            value => {
-              val updatedUA = request.userAnswers.setOrException(addressPage, value)
-              val nextPage = navigator.nextPage(addressPage, updatedUA)
-              val futureUA = Future(updatedUA)
-              futureUA
-                .flatMap(ua => userAnswersCacheConnector.save(request.lock, ua.data))
-                .map(_ => Redirect(nextPage))
-            }
-          )
+        post(Some(schemeName), AddressConfiguration.PostcodeFirst)
       }
     }
 }

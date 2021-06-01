@@ -54,7 +54,7 @@ trait ManualAddressController
 
   protected def addressPage: TypedIdentifier[Address]
 
-  protected val submitRoute: Call = Call("", "")
+  protected def submitRoute: Call
 
   protected val pageTitleMessageKey: String = "address.title"
 
@@ -128,12 +128,14 @@ trait ManualAddressController
       case _ => messages (h1MessageKey)
     }
 
-    Json.obj(
+    val fff = Json.obj(
       "submitUrl" -> submitRoute.url,
       "form" -> form,
       "pageTitle" -> pageTitle,
       "h1" -> h1
     ) ++ extraJson
+    println("\n>>>>>GGG:" + fff)
+    fff
   }
 
   private def countryJsonElement(tuple: (String, String),
