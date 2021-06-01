@@ -128,14 +128,12 @@ trait ManualAddressController
       case _ => messages (h1MessageKey)
     }
 
-    val fff = Json.obj(
+    Json.obj(
       "submitUrl" -> submitRoute.url,
       "form" -> form,
       "pageTitle" -> pageTitle,
       "h1" -> h1
     ) ++ extraJson
-    println("\n>>>>>GGG:" + fff)
-    fff
   }
 
   private def countryJsonElement(tuple: (String, String),
