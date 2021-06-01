@@ -131,8 +131,6 @@ messages__complete__return = Return to manage your pension schemes
 messages__finish = Finish
 messages__schemeTaskList__status_visuallyHidden = This section is
 messages__schemeTaskList__heading = Scheme details
-messages__schemeTaskList__completed = Completed
-messages__schemeTaskList__inProgress = In progress
 messages__complete__returnToSchemeOverview = Save and return to Managing Pension Schemes
 
 messages__schemeTaskList__sectionDeclaration_header = Declaration

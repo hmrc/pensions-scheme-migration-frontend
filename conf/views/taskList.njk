@@ -6,16 +6,19 @@
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "macros/title.njk"                         import title %}
+
 {% block pageTitle %}
-{{ title(messages("messages__schemeTaskList__heading"), form.errors) }}
+    {{ title(messages("messages__schemeTaskList__heading"), form.errors) }}
 {% endblock %}
+
 {% macro status(isCompleted) %}
-{% if isCompleted %}
-messages__schemeTaskList__completed
-{% else %}
-messages__schemeTaskList__inProgress
-{% endif %}
+    {% if isCompleted %}
+        {{ messages("messages__schemeTaskList__completed") }}
+    {% else %}
+        {{ messages("messages__schemeTaskList__inProgress") }}
+    {% endif %}
 {% endmacro %}
+
 {% macro statusClass(isCompleted) %}
 {% if isCompleted %}
 "task-status--completed"
@@ -72,7 +75,7 @@ messages__schemeTaskList__inProgress
                       {{ messages(item.link.text) }}
                       </a>
                       </span>
-                      <span class="hmrc-status-tag {{ statusClass(item.isCompleted) }}" id="section-about-status-@i"><span class="govuk-visually-hidden">{{ messages("messages__schemeTaskList__status_visuallyHidden") }}</span>{{ messages(status(isCompleted)) }}</span>
+                      <span class="hmrc-status-tag {{ statusClass(item.isCompleted) }}" id="section-about-status-@i"><span class="govuk-visually-hidden">{{ messages("messages__schemeTaskList__status_visuallyHidden") }}</span>{{ status(isCompleted) }}</span>
                    </li>
                {% endfor %}
             </ul>
