@@ -62,6 +62,7 @@ class CurrentMembersController @Inject()(override val messagesApi: MessagesApi,
           case None => form(schemeName)
           case Some(value) => form(schemeName).fill(value)
         }
+
         val json = Json.obj(
           "form" -> preparedForm,
           "schemeName" -> schemeName,
