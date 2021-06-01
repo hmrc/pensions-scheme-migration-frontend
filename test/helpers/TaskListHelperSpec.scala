@@ -16,25 +16,31 @@
 
 package helpers
 
+import base.SpecBase
 import models._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.{MustMatchers, WordSpec}
 import org.scalatestplus.mockito.MockitoSugar
 import utils.Data.{schemeName, ua}
+import utils.UserAnswers
 import viewmodels.{Message, TaskListEntitySection}
 
-class TaskListHelperSpec extends WordSpec with MustMatchers with MockitoSugar {
-
-  import TaskListHelperSpec._
+class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar {
 
   private val mockSpokeCreationService = mock[SpokeCreationService]
   private val helper = new TaskListHelper(mockSpokeCreationService)
+  private val beforeYouStartLinkText = messages("messages__schemeTaskList__before_you_start_link_text", schemeName)
+  private val beforeYouStartHeader = Some(Message("messages__schemeTaskList__before_you_start_header"))
 
+  private val expectedBeforeYouStartSpoke = Seq(EntitySpoke(TaskListLink(beforeYouStartLinkText,
+    controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad().url), Some(false)))
+
+  implicit val userAnswers: UserAnswers = ua
   "h1" must {
     "display appropriate heading" in {
 
-      helper.taskList(ua).h1 mustBe schemeName
+      helper.taskList(false).h1 mustBe schemeName
     }
   }
 
@@ -43,17 +49,8 @@ class TaskListHelperSpec extends WordSpec with MustMatchers with MockitoSugar {
       when(mockSpokeCreationService.getBeforeYouStartSpoke(any(), any())).thenReturn(expectedBeforeYouStartSpoke)
       val expectedBeforeYouStartSection = TaskListEntitySection(None, expectedBeforeYouStartSpoke, beforeYouStartHeader)
 
-      helper.beforeYouStartSection(ua) mustBe expectedBeforeYouStartSection
+      helper.beforeYouStartSection mustBe expectedBeforeYouStartSection
     }
   }
-}
-
-object TaskListHelperSpec {
-
-  private val beforeYouStartLinkText = Message("messages__schemeTaskList__before_you_start_link_text", schemeName)
-  private val beforeYouStartHeader = Some(Message("messages__schemeTaskList__before_you_start_header"))
-
-  private val expectedBeforeYouStartSpoke = Seq(EntitySpoke(TaskListLink(beforeYouStartLinkText,
-    controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad().url), Some(false)))
 
 }

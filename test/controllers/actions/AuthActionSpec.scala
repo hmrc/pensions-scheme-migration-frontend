@@ -17,7 +17,6 @@
 package controllers.actions
 
 import base.SpecBase
-import connectors.SessionDataCacheConnector
 import org.mockito.Mockito.reset
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
@@ -37,11 +36,6 @@ class AuthActionSpec
     with MockitoSugar {
 
   import AuthActionSpec._
-
-  override def beforeEach(): Unit = {
-    reset(mockSessionDataCacheConnector)
-    super.beforeEach()
-  }
 
   "Auth Action" when {
     "the user has valid credentials" must {
@@ -109,6 +103,4 @@ object AuthActionSpec extends SpecBase with MockitoSugar {
   }
 
   private val parser: BodyParsers.Default = injector.instanceOf[BodyParsers.Default]
-
-  private val mockSessionDataCacheConnector: SessionDataCacheConnector = mock[SessionDataCacheConnector]
 }

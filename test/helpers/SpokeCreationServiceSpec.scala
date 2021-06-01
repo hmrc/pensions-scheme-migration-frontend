@@ -16,14 +16,15 @@
 
 package helpers
 
+import base.SpecBase
 import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}
 import models.{EntitySpoke, _}
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatest.{MustMatchers, OptionValues}
 import utils.Data.{schemeName, ua}
 import viewmodels.Message
 
 class SpokeCreationServiceSpec
-  extends WordSpec
+  extends SpecBase
     with MustMatchers
     with OptionValues {
 

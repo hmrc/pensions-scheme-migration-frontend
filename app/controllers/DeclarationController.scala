@@ -52,7 +52,7 @@ class DeclarationController @Inject()(override val messagesApi: MessagesApi,
 
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      Redirect(controllers.routes.TaskListController.onPageLoad())
+      Redirect(routes.SuccessController.onPageLoad())
   }
 
 }

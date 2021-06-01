@@ -35,4 +35,6 @@ GET         /members/check-your-answers                 controllers.aboutMembers
 GET         /benefits-and-finance/what-you-will-need    controllers.benefitsAndInsurance.WhatYouWillNeedController.onPageLoad
 
 GET         /declaration                                controllers.DeclarationController.onPageLoad
-GET        /submit-declaration                                controllers.DeclarationController.onSubmit
+GET         /submit-declaration                         controllers.DeclarationController.onSubmit
+
+GET         /success                                    controllers.SuccessController.onPageLoad

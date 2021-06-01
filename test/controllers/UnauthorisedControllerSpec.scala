@@ -26,7 +26,7 @@ class UnauthorisedControllerSpec extends ControllerSpecBase {
 
   "Unauthorised Controller" must {
     "return 200 for a GET" in {
-      val result = new UnauthorisedController(appConfig, messagesApi,
+      val result = new UnauthorisedController(mockAppConfig, messagesApi,
         controllerComponents,
         view
       ).onPageLoad()(fakeRequest)
@@ -34,7 +34,7 @@ class UnauthorisedControllerSpec extends ControllerSpecBase {
     }
 
     "return the correct view for a GET" in {
-      val result = new UnauthorisedController(appConfig, messagesApi,
+      val result = new UnauthorisedController(mockAppConfig, messagesApi,
         controllerComponents,
         view
       ).onPageLoad()(fakeRequest)

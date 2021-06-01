@@ -24,7 +24,6 @@ import views.html.index
 
 class IndexControllerSpec extends ControllerSpecBase {
 
-  private val mockAppConfig = mock[AppConfig]
   private val view = injector.instanceOf[index]
   "Index Controller" must {
     "return 200 for a GET" in {

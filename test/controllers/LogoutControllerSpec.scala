@@ -18,39 +18,27 @@ package controllers
 
 import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
-import connectors.SessionDataCacheConnector
 import controllers.actions.FakeAuthAction
-import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
-import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.mvc.Results
 import play.api.test.Helpers._
 
-import scala.concurrent.Future
-
 
 class LogoutControllerSpec extends ControllerSpecBase with Results {
-
-  private val mockSessionDataCacheConnector = mock[SessionDataCacheConnector]
-  private val mockAppConfig = mock[AppConfig]
-
   private val dummySignoutLink = "signout"
 
   def logoutController: LogoutController =
-    new LogoutController(mockAppConfig, controllerComponents, FakeAuthAction, mockSessionDataCacheConnector)
+    new LogoutController(mockAppConfig, controllerComponents, FakeAuthAction)
 
   "Logout Controller" must {
 
     "redirect to feedback survey page for an Individual and clear down session data cache" in {
-      SharedMetricRegistries.clear()
-      when(mockSessionDataCacheConnector.removeAll(any())(any(), any()))
-        .thenReturn(Future.successful(Ok))
+
       when(mockAppConfig.serviceSignOut).thenReturn(dummySignoutLink)
       val result = logoutController.onPageLoad(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(dummySignoutLink)
-      verify(mockSessionDataCacheConnector, times(1)).removeAll(any())(any(), any())
       verify(mockAppConfig, times(1)).serviceSignOut
     }
   }
