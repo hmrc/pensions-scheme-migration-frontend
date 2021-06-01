@@ -72,5 +72,5 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val managePensionsSchemeSummaryUrl: String = ""
   lazy val pensionsAdministratorUrl = s"${servicesConfig.baseUrl("pension-administrator")}"
   lazy val serviceSignOut: String = s"${config.get[String](path = "urls.logout")}"
-  lazy val validCountryCodes: Seq[String] = getConfigString("validCountryCodes").split(",").toSeq
+  lazy val validCountryCodes: Seq[String] = s"${config.get[String](path = "validCountryCodes")}".split(",").toSeq
 }

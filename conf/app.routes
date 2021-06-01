@@ -64,3 +64,6 @@ POST        /benefits-and-finance/postcode                               control
 
 GET         /benefits-and-finance/address-results                               controllers.benefitsAndInsurance.InsurerSelectAddressController.onPageLoad
 POST        /benefits-and-finance/address-results                               controllers.benefitsAndInsurance.InsurerSelectAddressController.onSubmit
+
+GET         /benefits-and-finance/address-manual                               controllers.benefitsAndInsurance.InsurerConfirmAddressController.onPageLoad
+POST        /benefits-and-finance/address-manual                               controllers.benefitsAndInsurance.InsurerConfirmAddressController.onSubmit

@@ -233,3 +233,11 @@ insurerEnterPostcode.invalid = Invalid postcode
 insurerSelectAddress.required = Select the address of the insurance company that secures the scheme benefits
 
 addressFor = Address for {0}
+
+address.title = Enter an address
+address.line1 = Address line 1
+address.line2 = Address line 2 (optional)
+address.line3 = Address line 3 (optional)
+address.line4 = Address line 4 (optional)
+address.postcode = Postcode
+address.country = Country
