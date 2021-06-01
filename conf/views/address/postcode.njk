@@ -22,21 +22,15 @@
           }) }}
         {% endif %}
 
-        <h1 class="govuk-heading-xl">{{messages("postcode.title", entityName)}}</h1>
-
-         <p class="govuk-body">
-            {{ messages("postcode.youCan") }} <a href="{{ enterManuallyUrl }}" class="govuk-link">{{ messages("address.linkText.enterManually") }}</a>.
-         </p>
-
         <form action="{{ viewmodel.submitUrl }}" method="post" autocomplete="off" novalidate>
 
           {{ csrf() | safe }}
 
           {{ govukInput({
             label: {
-              text: messages('postcode.label'),
-              isPageHeading: false,
-              classes: "govuk-fieldset__legend--s"
+              text: messages('postcode.title', entityName),
+              isPageHeading: true,
+              classes: "govuk-label--xl"
             },
             id: "value",
             name: "value",
@@ -45,7 +39,9 @@
             attributes: {autocomplete: "off"},
             errorMessage: form.value.error
           }) }}
-
+         <p class="govuk-body">
+                    {{ messages("postcode.youCan") }} <a href="{{ enterManuallyUrl }}" class="govuk-link">{{ messages("address.linkText.enterManually") }}</a>.
+                 </p>
           {{ govukButton({
             text: messages("findAddress"),
             attributes: {id: "submit"}

@@ -132,6 +132,8 @@ messages__complete__return = Return to manage your pension schemes
 messages__finish = Finish
 messages__schemeTaskList__status_visuallyHidden = This section is
 messages__schemeTaskList__heading = Scheme details
+messages__schemeTaskList__completed = Completed
+messages__schemeTaskList__inProgress = In progress
 messages__complete__returnToSchemeOverview = Save and return to Managing Pension Schemes
 
 messages__schemeTaskList__sectionDeclaration_header = Declaration
@@ -218,6 +220,7 @@ benefitsInsurancePolicy.error.required = Enter the policy number of the insuranc
 booleanAnswer.false = No
 booleanAnswer.true = Yes
 
+postcode.label = Postcode
 postcode.title = What is {0}ʼs postcode?
 postcode.youCan = You can
 address.linkText.enterManually = enter the address manually
@@ -240,6 +243,7 @@ address.line3 = Address line 3 (optional)
 address.line4 = Address line 4 (optional)
 address.postcode = Postcode
 address.country = Country
+address.hint = Enter text and then choose from the list
 
 messages__common__what_you_need_to_know = What you need to know
 messages__complete__title = The pension scheme details have been sent to HMRC
