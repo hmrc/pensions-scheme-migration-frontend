@@ -17,6 +17,7 @@
 package controllers
 
 import config.AppConfig
+import connectors.{MinimalDetailsConnector, MinimalDetailsConnectorImpl}
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -38,7 +39,7 @@ class SuccessController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
                                         userAnswersCacheConnector: UserAnswersCacheConnector,
                                         renderer: Renderer,
-                                        config: AppConfig
+                                        minimalDetailsConnector: MinimalDetailsConnector
                                       )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
@@ -50,20 +51,20 @@ class SuccessController @Inject()(
         val confirmationPanelText: String =
           Html(s"""<span class="heading-large govuk-!-font-weight-bold">${msg"messages__complete__application_number_is".withArgs("1234567890").resolve}</span>""").toString
 
-        val email: String = "dummy@dummy.com"  //TODO Get the correct email id once email pages are implemented
+        minimalDetailsConnector.getPSAEmail.flatMap { email =>
+          val json = Json.obj(
+            "panelHtml" -> confirmationPanelText,
+            "email" -> email,
+            "yourSchemesLink" -> routes.TaskListController.onPageLoad().url,
+            "submitUrl" -> routes.LogoutController.onPageLoad().url,
+          )
 
-              val json = Json.obj(
-                "panelHtml" -> confirmationPanelText,
-                "email" -> email,
-                "yourSchemesLink" -> routes.TaskListController.onPageLoad().url,
-                "submitUrl" -> routes.LogoutController.onPageLoad().url,
-              )
-
-              renderer.render("success.njk", json).flatMap { viewHtml =>
-              //  userAnswersCacheConnector.remove(request.lock.pstr).map { _ =>
-                  Future.successful(Ok(viewHtml))
-            //    }
-              }
+          renderer.render("success.njk", json).flatMap { viewHtml =>
+            userAnswersCacheConnector.remove(request.lock.pstr).map { _ =>
+              Ok(viewHtml)
+            }
+          }
+        }
     }
 
 }
