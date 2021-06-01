@@ -20,27 +20,34 @@ import com.google.inject.Inject
 import connectors.cache.UserAnswersCacheConnector
 import identifiers._
 import controllers.benefitsAndInsurance.routes._
-import identifiers.benefitsAndInsurance.{AreBenefitsSecuredId, BenefitsInsuranceNameId, BenefitsInsurancePolicyId, BenefitsTypeId, HowProvideBenefitsId, InsurerAddressListId, InsurerEnterPostCodeId}
+import identifiers.benefitsAndInsurance.{InsurerEnterPostCodeId, HowProvideBenefitsId, AreBenefitsSecuredId, BenefitsInsurancePolicyId, InsurerAddressListId, BenefitsInsuranceNameId, InsurerAddressId, BenefitsTypeId}
 import models.benefitsAndInsurance.BenefitsProvisionType.DefinedBenefitsOnly
 import models.requests.DataRequest
-import play.api.mvc.{AnyContent, Call}
+import play.api.mvc.{Call, AnyContent}
 import utils.UserAnswers
 
-class AboutBenefitsAndInsuranceNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector)
+class BenefitsAndInsuranceNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector)
   extends Navigator {
 
+  import BenefitsAndInsuranceNavigator._
+
+  //scalastyle:off cyclomatic.complexity
   override protected def routeMap(ua: UserAnswers)
     (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
-    case HowProvideBenefitsId if ua.get(HowProvideBenefitsId).contains(DefinedBenefitsOnly) =>
-      CheckYourAnswersController.onPageLoad()
+    case HowProvideBenefitsId if ua.get(HowProvideBenefitsId).contains(DefinedBenefitsOnly) => cya
     case HowProvideBenefitsId => BenefitsTypeController.onPageLoad()
-    case BenefitsTypeId => CheckYourAnswersController.onPageLoad()
-    case AreBenefitsSecuredId if ua.get(AreBenefitsSecuredId).contains(false) =>
-      CheckYourAnswersController.onPageLoad()
+    case BenefitsTypeId => cya
+    case AreBenefitsSecuredId if ua.get(AreBenefitsSecuredId).contains(false) => cya
     case AreBenefitsSecuredId => BenefitsInsuranceNameController.onPageLoad()
     case BenefitsInsuranceNameId => BenefitsInsurancePolicyController.onPageLoad()
     case InsurerEnterPostCodeId => InsurerSelectAddressController.onPageLoad()
-    case InsurerAddressListId => CheckYourAnswersController.onPageLoad()
-    case BenefitsInsurancePolicyId => CheckYourAnswersController.onPageLoad()
+    case InsurerAddressListId => cya
+    case BenefitsInsurancePolicyId => cya
+    case InsurerAddressId => cya
   }
 }
+
+object BenefitsAndInsuranceNavigator {
+  private val cya = CheckYourAnswersController.onPageLoad()
+}
+

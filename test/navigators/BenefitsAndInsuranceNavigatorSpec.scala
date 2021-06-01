@@ -30,9 +30,9 @@ import play.api.libs.json.{JsString, Writes, Json}
 import play.api.mvc.Call
 import utils.{UserAnswers, Enumerable}
 
-class AboutBenefitsAndInsuranceNavigatorSpec extends SpecBase with NavigatorBehaviour {
+class BenefitsAndInsuranceNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
-  import AboutBenefitsAndInsuranceNavigatorSpec._
+  import BenefitsAndInsuranceNavigatorSpec._
 
   private val navigator: CompoundNavigator = applicationBuilder(
     dataRetrievalAction =
@@ -41,7 +41,7 @@ class AboutBenefitsAndInsuranceNavigatorSpec extends SpecBase with NavigatorBeha
       )
   ).build().injector.instanceOf[CompoundNavigator]
 
-  "AboutBenefitsAndInsuranceNavigator" must {
+  "BenefitsAndInsuranceNavigator" must {
       def navigation: TableFor3[Identifier, UserAnswers, Call] =
         Table(
           ("Id", "UserAnswers", "Next Page"),
@@ -58,17 +58,16 @@ class AboutBenefitsAndInsuranceNavigatorSpec extends SpecBase with NavigatorBeha
           row(AreBenefitsSecuredId)(checkYourAnswersPage, uaWithValue(AreBenefitsSecuredId, false)),
           row(AreBenefitsSecuredId)(insuranceCompanyName, uaWithValue(AreBenefitsSecuredId, true)),
           row(BenefitsInsuranceNameId)(insurancePolicyNumber),
-//          row(BenefitsInsuranceNameId)(someStringValue, policyNumber()),
-    //      row(InsurancePolicyNumberId)(someStringValue, insurerPostcode()),
-    //      row(InsurerEnterPostCodeId)(someSeqTolerantAddress, insurerAddressList()),
-    //      row(InsurerAddressListId)(someTolerantAddress, checkYourAnswers()),
-     //     row(InsurerConfirmAddressId)(someAddress, checkYourAnswers())
+          row(InsurerEnterPostCodeId)(insurerSelectAddress),
+          row(InsurerAddressListId)(checkYourAnswersPage),
+          row(BenefitsInsurancePolicyId)(checkYourAnswersPage),
+          row(InsurerAddressId)(checkYourAnswersPage)
         )
       behave like navigatorWithRoutesForMode(NormalMode)(navigator, navigation)
     }
 }
 
-object AboutBenefitsAndInsuranceNavigatorSpec extends OptionValues {
+object BenefitsAndInsuranceNavigatorSpec extends OptionValues {
 
   private implicit def writes[A: Enumerable]: Writes[A] = Writes(value => JsString(value.toString))
 
@@ -78,5 +77,6 @@ object AboutBenefitsAndInsuranceNavigatorSpec extends OptionValues {
   private def benefitsTypePage: Call       = BenefitsTypeController.onPageLoad()
   private def insuranceCompanyName: Call                  = BenefitsInsuranceNameController.onPageLoad()
   private def insurancePolicyNumber: Call                  = BenefitsInsurancePolicyController.onPageLoad()
+  private def insurerSelectAddress: Call                  = InsurerSelectAddressController.onPageLoad()
   private def checkYourAnswersPage: Call          = CheckYourAnswersController.onPageLoad()
 }
