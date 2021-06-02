@@ -223,7 +223,25 @@ booleanAnswer.true = Yes
 postcode.label = Postcode
 postcode.title = What is {0}ʼs postcode?
 postcode.youCan = You can
+error.postcode.required = Enter the postcode
+error.postcode.invalid = Enter a valid postcode
 address.linkText.enterManually = enter the address manually
+
+error.address_line_1.required = Enter the first line of address
+error.address_line_2.required = Enter the second line of address
+error.address_line_1.length = The first line of address cannot be more than 35 characters
+error.address_line_2.length = The second line of address cannot be more than 35 characters
+error.address_line_3.length = The third line of address cannot be more than 35 characters
+error.address_line_4.length = The fourth line of address cannot be more than 35 characters
+error.address_line_1.invalid = The first line of the address contains invalid characters
+error.address_line_2.invalid = The second line of the address contains invalid characters
+error.address_line_3.invalid = The third line of the address contains invalid characters
+error.address_line_4.invalid = The fourth line of the address contains invalid characters
+error.country.required = Enter a country
+error.country.invalid = Enter a valid country
+
+
+
 findAddress = Find address
 
 addressList.title = What is the address for {0}?
@@ -238,7 +256,7 @@ addressFor = Address for {0}
 
 address.title = Enter an address
 address.line1 = Address line 1
-address.line2 = Address line 2 (optional)
+address.line2 = Address line 2
 address.line3 = Address line 3 (optional)
 address.line4 = Address line 4 (optional)
 address.postcode = Postcode

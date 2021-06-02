@@ -47,7 +47,7 @@ class AddressFormProvider @Inject()(countryOptions: CountryOptions) extends Addr
         "error.address_line_4.invalid"),
 
       "postcode" -> optionalPostcode(
-        None,
+        Some("error.postcode.required"),
         "error.postcode.invalid",
         "error.postcode.nonUK.length",
         "country"),
@@ -55,5 +55,4 @@ class AddressFormProvider @Inject()(countryOptions: CountryOptions) extends Addr
       "country" -> countryMapping(countryOptions, "error.country.required", "error.country.invalid")
     )(Address.apply)(Address.unapply)
   )
-
 }
