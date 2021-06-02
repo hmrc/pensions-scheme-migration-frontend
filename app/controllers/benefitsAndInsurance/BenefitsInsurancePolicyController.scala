@@ -22,7 +22,7 @@ import controllers.Retrievals
 import controllers.actions._
 import forms.benefitsAndInsurance.BenefitsInsurancePolicyFormProvider
 import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId}
-import identifiers.benefitsAndInsurance.BenefitsInsurancePolicyId
+import identifiers.benefitsAndInsurance.{BenefitsInsurancePolicyId, BenefitsInsuranceNameId}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{MessagesApi, Messages, I18nSupport}
@@ -53,13 +53,14 @@ class BenefitsInsurancePolicyController @Inject()(override val messagesApi: Mess
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      SchemeNameId.retrieve.right.map { schemeName =>
+      (SchemeNameId and BenefitsInsuranceNameId).retrieve.right.map { case schemeName ~ insurancePolicyName =>
         val preparedForm = request.userAnswers.get(BenefitsInsurancePolicyId) match {
           case Some(value) => form.fill(value)
           case None        => form
         }
         val json = Json.obj(
           "schemeName" -> schemeName,
+          "insurancePolicyName" -> insurancePolicyName,
           "form" -> preparedForm,
           "submitUrl" -> controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onSubmit().url,
           "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url

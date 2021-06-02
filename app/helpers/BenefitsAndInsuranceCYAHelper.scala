@@ -62,6 +62,7 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
   ): Seq[SummaryList.Row] = {
     implicit val ua: UserAnswers = request.userAnswers
     val schemeName = CYAHelper.getAnswer(SchemeNameId)
+    val insuranceNo = CYAHelper.getAnswer(BenefitsInsuranceNameId)
 
     val seqTop = topSection(schemeName)
     val seqBottom = if(ua.get(AreBenefitsSecuredId).contains(true))
@@ -74,7 +75,7 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
         ),
       answerOrAddRow(
         BenefitsInsurancePolicyId,
-        Message("benefitsInsurancePolicy.title").resolve,
+        Message("benefitsInsurancePolicy.h1", insuranceNo).resolve,
         controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onPageLoad().url,
         Some(msg"messages__visuallyhidden__currentMembers"), answerStringTransform
       ),
@@ -109,7 +110,7 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
       ),
       answerOrAddRow(
         HowProvideBenefitsId,
-        Message("howProvideBenefits.title").resolve,
+        Message("howProvideBenefits.h1", schemeName).resolve,
         controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onPageLoad().url,
         Some(msg"messages__visuallyhidden__currentMembers"), answerBenefitsProvisionTypeTransform
       )
