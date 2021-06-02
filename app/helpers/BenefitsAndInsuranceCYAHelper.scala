@@ -61,7 +61,7 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
     messages: Messages
   ): Seq[SummaryList.Row] = {
     implicit val ua: UserAnswers = request.userAnswers
-    val schemeName = getAnswer(SchemeNameId)
+    val schemeName = CYAHelper.getAnswer(SchemeNameId)
 
     val seqTop = topSection(schemeName)
     val seqBottom = if(ua.get(AreBenefitsSecuredId).contains(true))

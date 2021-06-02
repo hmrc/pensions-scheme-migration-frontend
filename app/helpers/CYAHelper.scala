@@ -32,10 +32,6 @@ trait CYAHelper {
     if (viewOnly) rows.map(_.copy(actions = Nil)) else rows
   }
 
-  def getAnswer[A](id: TypedIdentifier[A])
-                  (implicit ua: UserAnswers, rds: Reads[A]): String =
-    ua.get(id).getOrElse(throw MandatoryAnswerMissingException).toString
-
   def booleanToText: Boolean => String = bool => if (bool) "site.yes" else "site.no"
 
   def boolAnswerOrAddLink(
@@ -122,6 +118,12 @@ trait CYAHelper {
 
   def addLink(url: String, visuallyHiddenText: Option[Message] = None)
              (implicit messages: Messages): Option[Link] = Some(Link(messages("site.add"), url, visuallyHiddenText))
+}
+
+object CYAHelper {
+  def getAnswer[A](id: TypedIdentifier[A])
+    (implicit ua: UserAnswers, rds: Reads[A]): String =
+    ua.get(id).getOrElse(throw MandatoryAnswerMissingException).toString
 }
 
 case object MandatoryAnswerMissingException extends Exception("An answer which was mandatory is missing from scheme details returned from TPSS")

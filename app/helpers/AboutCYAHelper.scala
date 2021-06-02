@@ -32,7 +32,7 @@ class AboutCYAHelper extends CYAHelper with Enumerable.Implicits{
                 messages: Messages
                ): Seq[SummaryList.Row] = {
     implicit val ua: UserAnswers = request.userAnswers
-    val schemeName = getAnswer(SchemeNameId)
+    val schemeName = CYAHelper.getAnswer(SchemeNameId)
 
     val answerTransform: Option[Members => Text] = Some(opt => msg"members.${opt.toString}")
 
