@@ -44,7 +44,7 @@ $(document).ready(function() {
         timeout: 900,
         countdown: 120,
         keepAliveUrl: location.href,
-        signOutUrl: "/migrate-pensions-scheme/logout"
+        signOutUrl: "/migrate-pension-scheme/logout"
     });
 
     // =====================================================
@@ -80,7 +80,7 @@ $(document).ready(function() {
         accessibleAutocomplete({
             element: document.querySelector('select'),
             id: 'country',
-            source: '/register-pension-scheme/assets/javascripts/autocomplete/location-autocomplete-graph.json'
+            source: '/migrate-pension-scheme/assets/javascripts/autocomplete/location-autocomplete-graph.json'
         })
 
         accessibleAutocomplete.enhanceSelectElement({
