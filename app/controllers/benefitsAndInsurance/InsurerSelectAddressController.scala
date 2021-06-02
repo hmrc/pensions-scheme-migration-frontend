@@ -22,6 +22,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.{AddressPages, AddressListController}
 import forms.address.AddressListFormProvider
+import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.{InsurerAddressListId, BenefitsInsuranceNameId, InsurerAddressId, InsurerEnterPostCodeId}
 
 import javax.inject.Inject
@@ -54,16 +55,20 @@ class InsurerSelectAddressController @Inject()(val appConfig: AppConfig,
   override def form: Form[Int] = formProvider("insurerSelectAddress.required")
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
-      getFormToJson.retrieve.right.map(get)
+    retrieve(SchemeNameId) { schemeName =>
+      getFormToJson(schemeName).retrieve.right.map(get)
+    }
   }
 
   def onSubmit: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
         val addressPages: AddressPages = AddressPages(InsurerEnterPostCodeId, InsurerAddressListId, InsurerAddressId)
-        getFormToJson.retrieve.right.map(post(_, addressPages))
+      retrieve(SchemeNameId) { schemeName =>
+        getFormToJson(schemeName).retrieve.right.map(post(_, addressPages))
+      }
     }
 
-  def getFormToJson: Retrieval[Form[Int] => JsObject] =
+  def getFormToJson(schemeName:String): Retrieval[Form[Int] => JsObject] =
     Retrieval(
       implicit request =>
         (BenefitsInsuranceNameId and InsurerEnterPostCodeId).retrieve.right.map {
@@ -73,7 +78,9 @@ class InsurerSelectAddressController @Inject()(val appConfig: AppConfig,
               "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
               "entityType" -> "Insurance company",
               "entityName" -> name,
-              "submitUrl" -> controllers.benefitsAndInsurance.routes.InsurerSelectAddressController.onSubmit().url
+              "submitUrl" -> controllers.benefitsAndInsurance.routes.InsurerSelectAddressController.onSubmit().url,
+              "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url,
+              "schemeName" -> schemeName
             )
         }
     )

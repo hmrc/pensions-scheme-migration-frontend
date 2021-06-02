@@ -22,6 +22,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.PostcodeController
 import forms.address.PostcodeFormProvider
+import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.{BenefitsInsuranceNameId, InsurerEnterPostCodeId}
 
 import javax.inject.Inject
@@ -56,10 +57,12 @@ class InsurerEnterPostcodeController @Inject()(val appConfig: AppConfig,
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-        getFormToJson.retrieve.right.map(get)
+      retrieve(SchemeNameId) { schemeName =>
+        getFormToJson(schemeName).retrieve.right.map(get)
+      }
     }
 
-  def getFormToJson: Retrieval[Form[String] => JsObject] =
+  def getFormToJson(schemeName:String): Retrieval[Form[String] => JsObject] = {
     Retrieval(
       implicit request =>
         BenefitsInsuranceNameId.retrieve.right.map { name =>
@@ -69,14 +72,19 @@ class InsurerEnterPostcodeController @Inject()(val appConfig: AppConfig,
               "entityName" -> name,
               "form" -> form,
               "submitUrl" -> controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onSubmit().url,
-              "enterManuallyUrl" -> controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onPageLoad().url
+              "enterManuallyUrl" -> controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onPageLoad().url,
+              "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url,
+              "schemeName" -> schemeName
             )
         }
     )
+  }
 
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async{
     implicit request =>
-      getFormToJson.retrieve.right.map(form => post( form, InsurerEnterPostCodeId, "bla"))
+      retrieve(SchemeNameId) { schemeName =>
+        getFormToJson(schemeName).retrieve.right.map(form => post(form, InsurerEnterPostCodeId, "insurerEnterPostcode.invalid"))
+      }
   }
 
 }

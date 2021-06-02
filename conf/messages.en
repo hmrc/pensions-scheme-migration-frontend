@@ -230,7 +230,7 @@ addressList.title = What is the address for {0}?
 addressList.select = Select the address from the list below, or
 
 insurerEnterPostcode.required = Enter the postcode of the insurance company that secures the scheme benefits
-insurerEnterPostcode.invalid = Invalid postcode
+insurerEnterPostcode.invalid = Enter a real postcode
 
 insurerSelectAddress.required = Select the address of the insurance company that secures the scheme benefits
 

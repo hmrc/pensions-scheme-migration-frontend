@@ -65,17 +65,17 @@ trait ManualAddressController
   protected def addressConfigurationForPostcodeAndCountry(isUK:Boolean): AddressConfiguration =
     if(isUK) AddressConfiguration.PostcodeFirst else AddressConfiguration.CountryFirst
 
-  protected def get(name: Option[String],
+  protected def get(schemeName: Option[String],
                     addressLocation: AddressConfiguration)(
     implicit request: DataRequest[AnyContent],
     ec: ExecutionContext
   ): Future[Result] = {
     val filledForm =
       request.userAnswers.get(addressPage).fold(form)(form.fill)
-    renderer.render(viewTemplate, json(name, filledForm, addressLocation)).map(Ok(_))
+    renderer.render(viewTemplate, json(schemeName, filledForm, addressLocation)).map(Ok(_))
   }
 
-  protected def post(name: Option[String],
+  protected def post(schemeName: Option[String],
                      addressLocation: AddressConfiguration)(
     implicit request: DataRequest[AnyContent],
     ec: ExecutionContext
@@ -84,7 +84,7 @@ trait ManualAddressController
       .bindFromRequest()
       .fold(
         formWithErrors => {
-          renderer.render(viewTemplate, json(name, formWithErrors, addressLocation)).map(BadRequest(_))
+          renderer.render(viewTemplate, json(schemeName, formWithErrors, addressLocation)).map(BadRequest(_))
         },
         value =>
           for {
@@ -97,7 +97,7 @@ trait ManualAddressController
   }
 
   protected def json(
-    entityName: Option[String],
+    schemeName: Option[String],
     form: Form[Address],
     addressLocation: AddressConfiguration
   )(implicit request: DataRequest[AnyContent]): JsObject = {
@@ -123,7 +123,7 @@ trait ManualAddressController
         case Some(key) => messages(pageTitleMessageKey, messages(key))
         case _ => messages(pageTitleMessageKey)
     }
-    val h1 = entityName match {
+    val h1 = schemeName match {
       case Some(e) =>  messages (h1MessageKey, e)
       case _ => messages (h1MessageKey)
     }
@@ -132,7 +132,9 @@ trait ManualAddressController
       "submitUrl" -> submitRoute.url,
       "form" -> form,
       "pageTitle" -> pageTitle,
-      "h1" -> h1
+      "h1" -> h1,
+      "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url,
+      "schemeName" -> schemeName
     ) ++ extraJson
   }
 
