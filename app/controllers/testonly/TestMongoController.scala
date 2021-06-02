@@ -110,7 +110,9 @@ class TestMongoController @Inject()(
         "name" -> "other",
         "schemeTypeDetails" -> "xyz"
       ),
-      "schemeEstablishedCountry" -> "GB"
+      "schemeEstablishedCountry" -> "GB",
+      "isInvestmentRegulated" -> true,
+      "isOccupational" -> true
     )
 
     userAnswersCacheConnector.save(lock, json).map { response =>
