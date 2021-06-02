@@ -24,12 +24,13 @@ import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
 import play.api.Application
+import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.NunjucksSupport
-import uk.gov.hmrc.viewmodels.SummaryList.{Key, Row, Value}
-import uk.gov.hmrc.viewmodels.Text.Literal
+import uk.gov.hmrc.nunjucks.NunjucksRenderer
+import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
+import uk.gov.hmrc.viewmodels.{Html, NunjucksSupport}
 import utils.Data.{schemeName, ua}
 import utils.UserAnswers
 
@@ -38,11 +39,38 @@ import scala.concurrent.Future
 class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers {
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction).build()
+  val extraModules: Seq[GuiceableModule] = Seq(
+    bind[NunjucksRenderer].toInstance(mockRenderer)
+  )
+  private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
   private val templateToBeRendered = "check-your-answers.njk"
   private val mockCyaHelper: AboutCYAHelper = mock[AboutCYAHelper]
   private def httpPathGET: String = controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad.url
-  private val rows: Seq[Row] = Seq(Row(Key(msg""), Value(Literal("")), Nil))
+  private val rows = Seq(
+    Row(
+      key = Key(msg"currentMembers.title".withArgs(schemeName), classes = Seq("govuk-!-width-one-half")),
+      value = Value(msg"site.not_entered", classes = Seq("govuk-!-width-one-third")),
+      actions = List(
+        Action(
+          content = Html(s"<span  aria-hidden=true >${messages("site.add")}</span>"),
+          href = controllers.aboutMembership.routes.CurrentMembersController.onPageLoad().url,
+          visuallyHiddenText = Some(msg"messages__visuallyhidden__currentMembers")
+        )
+      )
+    ),
+    Row(
+      key = Key(msg"futureMembers.title".withArgs(schemeName), classes = Seq("govuk-!-width-one-half")),
+      value = Value(msg"site.not_entered", classes = Seq("govuk-!-width-one-third")),
+      actions = List(
+        Action(
+          content = Html(s"<span  aria-hidden=true >${messages("site.add")}</span>"),
+          href = routes.FutureMembersController.onPageLoad().url,
+          visuallyHiddenText = Some(msg"messages__visuallyhidden__futureMembers")
+        )
+      )
+    )
+  )
+
   private val jsonToPassToTemplate: JsObject = Json.obj(
     "list" -> rows,
     "schemeName" -> schemeName,
@@ -51,7 +79,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
 
   override def beforeEach: Unit = {
     super.beforeEach
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(play.twirl.api.Html("")))
     when(mockCyaHelper.membershipRows(any(), any())).thenReturn(rows)
   }
 
@@ -72,17 +100,6 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
       templateCaptor.getValue mustEqual templateToBeRendered
 
       jsonCaptor.getValue must containJson(jsonToPassToTemplate)
-    }
-
-    "redirect to next url when button is clicked" in {
-
-      mutableFakeDataRetrievalAction.setDataToReturn(Option(ua))
-
-      val result = route(application, httpGETRequest(httpPathGET)).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result) mustBe Some(controllers.routes.TaskListController.onPageLoad().url)
     }
 
   }

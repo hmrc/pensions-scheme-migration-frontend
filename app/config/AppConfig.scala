@@ -44,6 +44,11 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val dataCacheUrl: String = s"$migrationUrl${config.get[String](path = "urls.dataCache")}"
   lazy val addressLookUp = s"${servicesConfig.baseUrl("address-lookup")}"
   lazy val locationCanonicalListEUAndEEA: String = loadConfig("location.canonical.list.EUAndEEA")
+
+  lazy val pensionsAdministratorUrl = s"${servicesConfig.baseUrl("pension-administrator")}"
+  lazy val getPSAEmail: String = s"$pensionsAdministratorUrl${config.get[String]("urls.get-psa-email")}"
+  lazy val getPSAName: String = s"$pensionsAdministratorUrl${config.get[String]("urls.get-psa-name")}"
+
   lazy val contactHost: String = baseUrl("contact-frontend")
   val reportAProblemPartialUrl: String = getConfigString("contact-frontend.report-problem-url.with-js")
   val reportAProblemNonJSUrl: String = getConfigString("contact-frontend.report-problem-url.non-js")
@@ -70,7 +75,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   lazy val managePensionsSchemeOverviewUrl: String = ""
   lazy val managePensionsSchemeSummaryUrl: String = ""
-  lazy val pensionsAdministratorUrl = s"${servicesConfig.baseUrl("pension-administrator")}"
   lazy val serviceSignOut: String = s"${config.get[String](path = "urls.logout")}"
   lazy val validCountryCodes: Seq[String] = s"${config.get[String](path = "validCountryCodes")}".split(",").toSeq
 }

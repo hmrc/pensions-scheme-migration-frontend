@@ -46,7 +46,7 @@ class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar {
 
   "beforeYouStartSection " must {
     "return correct the correct entity section " in {
-      when(mockSpokeCreationService.getBeforeYouStartSpoke(any(), any())).thenReturn(expectedBeforeYouStartSpoke)
+      when(mockSpokeCreationService.getBeforeYouStartSpoke(any(), any())(any())).thenReturn(expectedBeforeYouStartSpoke)
       val expectedBeforeYouStartSection = TaskListEntitySection(None, expectedBeforeYouStartSpoke, beforeYouStartHeader)
 
       helper.beforeYouStartSection mustBe expectedBeforeYouStartSection

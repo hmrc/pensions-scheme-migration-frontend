@@ -26,9 +26,12 @@ import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
+import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
+import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import utils.Data._
 import viewmodels.{Message, TaskList, TaskListEntitySection}
 
@@ -38,9 +41,13 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
 
   private val mockTaskListHelper = mock[TaskListHelper]
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction).build()
-  private val templateToBeRendered = "task-list.njk"
-  private val index = 0
+  val extraModules: Seq[GuiceableModule] = Seq(
+    bind[NunjucksRenderer].toInstance(mockRenderer),
+    bind[TaskListHelper].to(mockTaskListHelper)
+  )
+  private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
+  private val templateToBeRendered = "taskList.njk"
+
 
   private def httpPathGET: String = controllers.routes.TaskListController.onPageLoad.url
 
@@ -62,6 +69,7 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
     super.beforeEach
     when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
     when(mockTaskListHelper.taskList(any())(any(), any())).thenReturn(schemeDetailsTL)
+    when(mockTaskListHelper.getSchemeName(any())).thenReturn(schemeName)
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 

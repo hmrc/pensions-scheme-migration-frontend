@@ -20,7 +20,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.aboutMembership.MembersFormProvider
-import identifiers.aboutMembership.CurrentMembersId
+import identifiers.aboutMembership.FutureMembersId
 import matchers.JsonMatchers
 import models.Members
 import org.mockito.Matchers.any
@@ -37,14 +37,13 @@ import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
-import viewmodels.Message
 
 import scala.concurrent.Future
 
-class CurrentMembersControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class FutureMembersControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val templateToBeRendered = "aboutMembership/members.njk"
-  private val form: Form[Members] = new MembersFormProvider()(messages("currentMembers.error.required", schemeName))
+  private val form: Form[Members] = new MembersFormProvider()(messages("futureMembers.error.required", schemeName))
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   val extraModules: Seq[GuiceableModule] = Seq(
@@ -53,8 +52,8 @@ class CurrentMembersControllerSpec extends ControllerSpecBase with NunjucksSuppo
   )
   private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
 
-  private def httpPathGET: String = controllers.aboutMembership.routes.CurrentMembersController.onPageLoad.url
-  private def httpPathPOST: String = controllers.aboutMembership.routes.CurrentMembersController.onSubmit.url
+  private def httpPathGET: String = controllers.aboutMembership.routes.FutureMembersController.onPageLoad.url
+  private def httpPathPOST: String = controllers.aboutMembership.routes.FutureMembersController.onSubmit.url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq(Members.One.toString)
@@ -67,7 +66,7 @@ class CurrentMembersControllerSpec extends ControllerSpecBase with NunjucksSuppo
   private val jsonToPassToTemplate: Form[Members] => JsObject = form =>
     Json.obj(
       "schemeName" -> schemeName,
-      "titleMessage" -> msg"currentMembers.title".withArgs(schemeName),
+      "titleMessage" -> msg"futureMembers.title".withArgs(schemeName),
       "radios" -> Members.radios(form)
     )
 
@@ -77,7 +76,7 @@ class CurrentMembersControllerSpec extends ControllerSpecBase with NunjucksSuppo
   }
 
 
-  "CurrentMembers Controller" must {
+  "FutureMembers Controller" must {
 
     "return OK and the correct view for a GET" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
@@ -96,7 +95,7 @@ class CurrentMembersControllerSpec extends ControllerSpecBase with NunjucksSuppo
     }
 
     "return OK and the correct view for a GET when the question has previously been answered" in {
-      val ua = userAnswers.map(_.set(CurrentMembersId, Members.One)).get.toOption.get
+      val ua = userAnswers.map(_.set(FutureMembersId, Members.One)).get.toOption.get
 
       mutableFakeDataRetrievalAction.setDataToReturn(Option(ua))
 
@@ -129,7 +128,7 @@ class CurrentMembersControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(CurrentMembersId), any())(any()))
+      when(mockCompoundNavigator.nextPage(Matchers.eq(FutureMembersId), any())(any()))
         .thenReturn(routes.CheckYourAnswersController.onPageLoad())
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
