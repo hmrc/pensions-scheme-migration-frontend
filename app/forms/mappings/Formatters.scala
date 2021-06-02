@@ -59,7 +59,6 @@ trait Formatters extends Transforms with Constraints {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
       data
         .get(key)
-        .map(standardiseText)
         .filter(_.lengthCompare(0) > 0)
         .toRight(Seq(FormError(key, errorKey)))
 
