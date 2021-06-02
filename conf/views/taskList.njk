@@ -55,7 +55,7 @@
                           {{ messages(spoke.link.text) }}
                           </a>
                           </span>
-                          <span class="hmrc-status-tag {{ statusClass(spoke.isCompleted) }}" id="section-beforeYouStart-status"><span class="visuallyhidden"> {{ messages("messages__schemeTaskList__status_visuallyHidden") }}</span> {{ messages(status(spoke.isCompleted)) }}</span>
+                          <span class="app-task-list__tag {{ statusClass(spoke.isCompleted) }}" id="section-beforeYouStart-status"><span class="visuallyhidden"> {{ messages("messages__schemeTaskList__status_visuallyHidden") }}</span> {{ messages(status(spoke.isCompleted)) }}</span>
                       {% endif %}
                    </li>
                 </ul>
@@ -75,7 +75,7 @@
                       {{ messages(item.link.text) }}
                       </a>
                       </span>
-                      <span class="hmrc-status-tag {{ statusClass(item.isCompleted) }}" id="section-about-status-@i"><span class="govuk-visually-hidden">{{ messages("messages__schemeTaskList__status_visuallyHidden") }}</span>{{ status(isCompleted) }}</span>
+                      <span class="app-task-list__tag {{ statusClass(item.isCompleted) }}" id="section-about-status-@i"><span class="govuk-visually-hidden">{{ messages("messages__schemeTaskList__status_visuallyHidden") }}</span>{{ status(isCompleted) }}</span>
                    </li>
                {% endfor %}
             </ul>
