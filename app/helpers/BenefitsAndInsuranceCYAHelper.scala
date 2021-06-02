@@ -21,8 +21,7 @@ import identifiers.benefitsAndInsurance.{AreBenefitsSecuredId, BenefitsInsurance
 import models.{Address, Members}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList, Text}
-import utils.{UserAnswers, Enumerable}
+import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList, Text, Html}
 import viewmodels.Message
 import identifiers.aboutMembership.{FutureMembersId, CurrentMembersId}
 import identifiers.beforeYouStart.SchemeNameId
@@ -37,6 +36,19 @@ import utils.{UserAnswers, Enumerable}
 import viewmodels.Message
 
 class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
+
+  //private def addressAnswer(addr: Address)(implicit messages: Messages): Html = {
+  //  def addrLineToHtml(l: String): String = s"""<span class="govuk-!-display-block">$l</span>"""
+  //
+  //  Html(
+  //    addrLineToHtml(addr.addressLine1) +
+  //      addrLineToHtml(addr.addressLine2) +
+  //      addr.addressLine3.fold("")(addrLineToHtml) +
+  //      addr.addressLine4.fold("")(addrLineToHtml) +
+  //      addr.postcode.fold("")(addrLineToHtml) +
+  //      addrLineToHtml(messages("country." + addr.country))
+  //  )
+  //}
 
   private val answerBooleanTransform: Option[Boolean => Text] = Some(opt => msg"booleanAnswer.${opt.toString}")
   private val answerStringTransform: Option[String => Text] = Some(opt => lit"${opt}")
@@ -78,6 +90,8 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
 
     seqTop ++ seqBottom
   }
+
+
 
   private def topSection(schemeName: String)(implicit messages: Messages, ua: UserAnswers) = {
     val s1 = Seq(
