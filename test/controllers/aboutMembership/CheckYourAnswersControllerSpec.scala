@@ -39,12 +39,15 @@ import scala.concurrent.Future
 class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers {
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  private val mockCyaHelper: AboutCYAHelper = mock[AboutCYAHelper]
   val extraModules: Seq[GuiceableModule] = Seq(
-    bind[NunjucksRenderer].toInstance(mockRenderer)
+    bind[NunjucksRenderer].toInstance(mockRenderer),
+    bind[AboutCYAHelper].to(mockCyaHelper)
   )
+
   private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
   private val templateToBeRendered = "check-your-answers.njk"
-  private val mockCyaHelper: AboutCYAHelper = mock[AboutCYAHelper]
+
   private def httpPathGET: String = controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad.url
   private val rows = Seq(
     Row(
@@ -81,6 +84,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
     super.beforeEach
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(play.twirl.api.Html("")))
     when(mockCyaHelper.membershipRows(any(), any())).thenReturn(rows)
+    when(mockCyaHelper.getAnswer(any())(any(), any())).thenReturn(schemeName)
   }
 
 
