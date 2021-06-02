@@ -20,11 +20,11 @@ import identifiers.TypedIdentifier
 import models.Link
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
-import uk.gov.hmrc.viewmodels.{Html, MessageInterpolators, SummaryList, Text}
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
+import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList, Html, Text}
+import uk.gov.hmrc.viewmodels.SummaryList.{Action, Value, Row, Key}
 import uk.gov.hmrc.viewmodels.Text.Literal
 import utils.UserAnswers
-import viewmodels.{AnswerRow, Message}
+import viewmodels.{Message, AnswerRow}
 
 trait CYAHelper {
 
@@ -80,9 +80,31 @@ trait CYAHelper {
         )
     }
 
+  private def actionAdd[A](optionURL: Option[String], visuallyHiddenText: Option[Text])(implicit
+    ua: UserAnswers, rds: Reads[A], messages: Messages):Seq[Action] = {
+    optionURL.toSeq.map { url =>
+      Action(
+        content = Html(s"<span  aria-hidden=true >${messages("site.add")}</span>"),
+        href = url,
+        visuallyHiddenText = visuallyHiddenText
+      )
+    }
+  }
+
+  private def actionChange[A](optionURL: Option[String], visuallyHiddenText: Option[Text])(implicit
+    ua: UserAnswers, rds: Reads[A], messages: Messages):Seq[Action] = {
+    optionURL.toSeq.map { url =>
+      Action(
+        content = Html(s"<span  aria-hidden=true >${messages("site.change")}</span>"),
+        href = url,
+        visuallyHiddenText = visuallyHiddenText
+      )
+    }
+  }
+
   def answerOrAddRow[A](id: TypedIdentifier[A],
                         message: String,
-                        url: String,
+                        url: Option[String] = None,
                         visuallyHiddenText: Option[Text] = None,
                         answerTransform: Option[A => Text] = None)
                         (implicit ua: UserAnswers, rds: Reads[A], messages: Messages): Row =
@@ -91,25 +113,13 @@ trait CYAHelper {
         Row(
           key = Key(msg"$message", classes = Seq("govuk-!-width-one-half")),
           value = Value(msg"site.not_entered", classes = Seq("govuk-!-width-one-third")),
-          actions = List(
-            Action(
-              content = Html(s"<span  aria-hidden=true >${messages("site.add")}</span>"),
-              href = url,
-              visuallyHiddenText = visuallyHiddenText
-            )
-          )
+          actions = actionAdd(url, visuallyHiddenText)
         )
       case Some(answer) =>
         Row(
           key = Key(msg"$message", classes = Seq("govuk-!-width-one-half")),
           value = answerTransform.fold(Value(Literal(answer.toString)))(transform => Value(transform(answer))),
-          actions = List(
-            Action(
-              content = Html(s"<span  aria-hidden=true >${messages("site.change")}</span>"),
-              href = url,
-              visuallyHiddenText = visuallyHiddenText
-            )
-          )
+          actions = actionChange(url, visuallyHiddenText)
         )
     }
 

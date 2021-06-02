@@ -68,23 +68,23 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
     val seqBottom = if(ua.get(AreBenefitsSecuredId).contains(true))
       Seq(
         answerOrAddRow(
-        BenefitsInsuranceNameId,
-        Message("benefitsInsuranceName.title").resolve,
-        controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onPageLoad().url,
-        Some(msg"messages__visuallyhidden__currentMembers"), answerStringTransform
+          BenefitsInsuranceNameId,
+          Message("benefitsInsuranceName.title").resolve,
+          Some(controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onPageLoad().url),
+          Some(msg"messages__visuallyhidden__currentMembers"), answerStringTransform
         ),
-      answerOrAddRow(
-        BenefitsInsurancePolicyId,
-        Message("benefitsInsurancePolicy.h1", insuranceNo).resolve,
-        controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onPageLoad().url,
-        Some(msg"messages__visuallyhidden__currentMembers"), answerStringTransform
-      ),
-      answerOrAddRow(
-        InsurerAddressId,
-        Message("addressFor", insuranceNo).resolve,
-        controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onPageLoad().url,
-        Some(msg"messages__visuallyhidden__currentMembers"), answerBenefitsAddressTransform
-      )
+        answerOrAddRow(
+          BenefitsInsurancePolicyId,
+          Message("benefitsInsurancePolicy.h1", insuranceNo).resolve,
+          Some(controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onPageLoad().url),
+          Some(msg"messages__visuallyhidden__currentMembers"), answerStringTransform
+        ),
+        answerOrAddRow(
+          InsurerAddressId,
+          Message("addressFor", insuranceNo).resolve,
+          Some(controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onPageLoad().url),
+          Some(msg"messages__visuallyhidden__currentMembers"), answerBenefitsAddressTransform
+        )
     )
     else
       Nil
@@ -99,19 +99,19 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
       answerOrAddRow(
         IsInvestmentRegulatedId,
         Message("isInvestmentRegulated.h1", schemeName).resolve,
-        controllers.benefitsAndInsurance.routes.IsInvestmentRegulatedController.onPageLoad().url,
+        None,
         Some(msg"messages__visuallyhidden__currentMembers"), answerBooleanTransform
       ),
       answerOrAddRow(
         IsOccupationalId,
         Message("isOccupational.h1", schemeName).resolve,
-        controllers.benefitsAndInsurance.routes.IsOccupationalController.onPageLoad().url,
+        None,
         Some(msg"messages__visuallyhidden__currentMembers"), answerBooleanTransform
       ),
       answerOrAddRow(
         HowProvideBenefitsId,
         Message("howProvideBenefits.h1", schemeName).resolve,
-        controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onPageLoad().url,
+        Some(controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onPageLoad().url),
         Some(msg"messages__visuallyhidden__currentMembers"), answerBenefitsProvisionTypeTransform
       )
     )
@@ -119,7 +119,7 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
       answerOrAddRow(
         BenefitsTypeId,
         Message("benefitsType.h1", schemeName).resolve,
-        controllers.benefitsAndInsurance.routes.BenefitsTypeController.onPageLoad().url,
+        Some(controllers.benefitsAndInsurance.routes.BenefitsTypeController.onPageLoad().url),
         Some(msg"messages__visuallyhidden__currentMembers"), answerBenefitsTypeTransform
       )
     )
@@ -128,7 +128,7 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
       answerOrAddRow(
         AreBenefitsSecuredId,
         Message("areBenefitsSecured.title").resolve,
-        controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onPageLoad().url,
+        Some(controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onPageLoad().url),
         Some(msg"messages__visuallyhidden__currentMembers"), answerBooleanTransform
       )
     )

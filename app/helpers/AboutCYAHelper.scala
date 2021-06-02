@@ -37,11 +37,11 @@ class AboutCYAHelper extends CYAHelper with Enumerable.Implicits{
     val answerTransform: Option[Members => Text] = Some(opt => msg"members.${opt.toString}")
 
     Seq(answerOrAddRow(CurrentMembersId, Message("currentMembers.title", schemeName).resolve,
-        controllers.aboutMembership.routes.CurrentMembersController.onPageLoad().url,
+        Some(controllers.aboutMembership.routes.CurrentMembersController.onPageLoad().url),
         Some(msg"messages__visuallyhidden__currentMembers"), answerTransform
       ),
         answerOrAddRow(FutureMembersId, Message("futureMembers.title", schemeName).resolve,
-          controllers.aboutMembership.routes.FutureMembersController.onPageLoad().url,
+          Some(controllers.aboutMembership.routes.FutureMembersController.onPageLoad().url),
           Some(msg"messages__visuallyhidden__futureMembers"), answerTransform
         )
       )
