@@ -20,7 +20,7 @@ import identifiers.TypedIdentifier
 import models.Link
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList, Html, Text}
+import uk.gov.hmrc.viewmodels.{Content, SummaryList, Text, Html, MessageInterpolators}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Value, Row, Key}
 import uk.gov.hmrc.viewmodels.Text.Literal
 import utils.UserAnswers
@@ -106,7 +106,7 @@ trait CYAHelper {
                         message: String,
                         url: Option[String] = None,
                         visuallyHiddenText: Option[Text] = None,
-                        answerTransform: Option[A => Text] = None)
+                        answerTransform: Option[A => Content] = None)
                         (implicit ua: UserAnswers, rds: Reads[A], messages: Messages): Row =
     ua.get(id) match {
       case None =>
