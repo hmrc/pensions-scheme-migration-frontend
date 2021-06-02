@@ -20,7 +20,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import models.{Address, Mode, TolerantAddress}
+import models.{Address, TolerantAddress}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.Messages

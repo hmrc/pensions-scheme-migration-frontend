@@ -28,8 +28,9 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig) {
   val welshLanguageSupportEnabled: Boolean = config.getOptional[Boolean]("features.welsh-language-support").getOrElse(false)
-  lazy val locationCanonicalList: String = config.get[String]("location.canonical.list")
 
+  lazy val locationCanonicalList: String = loadConfig("location.canonical.list.all")
+  lazy val locationCanonicalListEUAndEEA: String = loadConfig("location.canonical.list.EUAndEEA")
 
   val en: String            = "en"
   val cy: String            = "cy"
@@ -43,7 +44,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val lockOnSchemeUrl: String = s"$migrationUrl${config.get[String](path = "urls.lockOnScheme")}"
   lazy val dataCacheUrl: String = s"$migrationUrl${config.get[String](path = "urls.dataCache")}"
   lazy val addressLookUp = s"${servicesConfig.baseUrl("address-lookup")}"
-  lazy val locationCanonicalListEUAndEEA: String = loadConfig("location.canonical.list.EUAndEEA")
 
   lazy val pensionsAdministratorUrl = s"${servicesConfig.baseUrl("pension-administrator")}"
   lazy val getPSAEmail: String = s"$pensionsAdministratorUrl${config.get[String]("urls.get-psa-email")}"

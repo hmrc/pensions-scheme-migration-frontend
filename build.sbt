@@ -35,15 +35,20 @@ lazy val microservice = Project(appName, file("."))
   ).settings(
   // concatenate js
   Concat.groups := Seq(
-    "javascripts/application.js" -> group(Seq("lib/govuk-frontend/govuk/all.js","lib/hmrc-frontend/hmrc/all.js",
-      "javascripts/aft.js"
-    ))
+    "javascripts/application.js" -> group(
+      Seq(
+        "lib/govuk-frontend/govuk/all.js",
+        "lib/hmrc-frontend/hmrc/all.js",
+        "javascripts/pensionsschememigrationfrontend.js"
+      )
+    )
   ),
-  Concat.groups := Seq(
-    "javascripts/pensionsschememigrationfrontend-app.js" -> group(Seq(
-      "javascripts/show-hide-content.js",
-      "javascripts/pensionsschememigrationfrontend.js"
-    ))),
+  //,
+  //Concat.groups := Seq(
+  //  "javascripts/pensionsschememigrationfrontend-app.js" -> group(Seq(
+  //    "javascripts/show-hide-content.js",
+  //    "javascripts/pensionsschememigrationfrontend.js"
+  //  ))),
   // prevent removal of unused code which generates warning errors due to use of third-party libs
   uglifyCompressOptions := Seq("unused=false", "dead_code=false"),
   pipelineStages := Seq(digest),
