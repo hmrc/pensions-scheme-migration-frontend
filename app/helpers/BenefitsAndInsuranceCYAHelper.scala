@@ -62,10 +62,10 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
   ): Seq[SummaryList.Row] = {
     implicit val ua: UserAnswers = request.userAnswers
     val schemeName = CYAHelper.getAnswer(SchemeNameId)
-    val insuranceNo = CYAHelper.getAnswer(BenefitsInsuranceNameId)
 
     val seqTop = topSection(schemeName)
-    val seqBottom = if(ua.get(AreBenefitsSecuredId).contains(true))
+    val seqBottom = if(ua.get(AreBenefitsSecuredId).contains(true)) {
+      val insuranceName = ua.get(BenefitsInsuranceNameId).getOrElse("Unknown")
       Seq(
         answerOrAddRow(
           BenefitsInsuranceNameId,
@@ -75,18 +75,18 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
         ),
         answerOrAddRow(
           BenefitsInsurancePolicyId,
-          Message("benefitsInsurancePolicy.h1", insuranceNo).resolve,
+          Message("benefitsInsurancePolicy.h1", insuranceName).resolve,
           Some(controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onPageLoad().url),
           Some(msg"messages__visuallyhidden__currentMembers"), answerStringTransform
         ),
         answerOrAddRow(
           InsurerAddressId,
-          Message("addressFor", insuranceNo).resolve,
+          Message("addressFor", insuranceName).resolve,
           Some(controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onPageLoad().url),
           Some(msg"messages__visuallyhidden__currentMembers"), answerBenefitsAddressTransform
         )
     )
-    else
+    } else
       Nil
 
     seqTop ++ seqBottom
