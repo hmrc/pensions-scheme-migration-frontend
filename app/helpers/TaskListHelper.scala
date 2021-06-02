@@ -49,6 +49,30 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
     )
   }
 
+  protected[utils] def establishersSection(userAnswers: UserAnswers)
+  : Seq[TaskListEntitySection] = {
+    val seqEstablishers = userAnswers.allEstablishers(mode)
+
+    val nonDeletedEstablishers = for ((establisher, _) <- seqEstablishers.zipWithIndex) yield {
+      if (establisher.isDeleted) None else {
+        establisher.id match {
+
+          case EstablisherNameId(_) =>
+            Some(SchemeDetailsTaskListEntitySection(
+              None,
+              spokeCreationService.getEstablisherIndividualSpokes(userAnswers, mode, srn, establisher.name, Some
+              (establisher.index)),
+              Some(establisher.name))
+            )
+
+          case _ =>
+            throw new RuntimeException("Unknown section id:" + establisher.id)
+        }
+      }
+    }
+    nonDeletedEstablishers.flatten
+  }
+
   private[helpers] def declarationSection(viewOnly: Boolean)(implicit userAnswers: UserAnswers, messages: Messages): Option[TaskListEntitySection] =
     if (viewOnly) {
       None
