@@ -22,6 +22,7 @@ import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.{MustMatchers, WordSpec}
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.i18n.Messages
 import utils.Data.{schemeName, ua}
 import utils.UserAnswers
 import viewmodels.{Message, TaskListEntitySection}
@@ -52,5 +53,4 @@ class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar {
       helper.beforeYouStartSection mustBe expectedBeforeYouStartSection
     }
   }
-
 }

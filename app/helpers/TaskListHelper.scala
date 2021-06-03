@@ -44,12 +44,17 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService,
     )
   }
 
-  private[helpers] def aboutSection(implicit userAnswers: UserAnswers, messages: Messages): TaskListEntitySection = {
+  private[helpers] def aboutSection(implicit userAnswers: UserAnswers, messages: Messages): TaskListEntitySection =
     TaskListEntitySection(None,
       spokeCreationService.membershipDetailsSpoke(userAnswers, getSchemeName),
       Some(messages("messages__schemeTaskList__about_scheme_header", getSchemeName))
     )
-  }
+
+  def declarationEnabled(implicit userAnswers: UserAnswers): Boolean =
+    Seq(
+      Some(userAnswers.isBeforeYouStartCompleted),
+      userAnswers.isMembersCompleted
+    ).forall(_.contains(true))
 
   protected[helpers] def establishersSection(userAnswers: UserAnswers)
   : Seq[TaskListEntitySection] = {

@@ -43,24 +43,17 @@
             {% for spoke in taskSections.beforeYouStart.entities %}
                 <ul class="app-task-list__items">
                    <li class="app-task-list__item">
-                      {% if not spoke.isCompleted %}
                           <span class="app-task-list__task-name">
-                          <a id="section-before-you-start-link" class="app-task-list__task-name" href="{{ spoke.link.target }}">
+                          <a id="section-before-you-start-link" class="app-task-list__task-name" href="{{ spoke.link.target }}" aria-describedby="section-beforeYouStart-status">
                           {{ messages(spoke.link.text) }}
                           </a>
                           </span>
-                      {% else %}
-                          <span class="app-task-list__task-name">
-                          <a id="section-before-you-start-link" class="app-task-list__task-name" href="@spoke.link.target" aria-describedby="section-beforeYouStart-status">
-                          {{ messages(spoke.link.text) }}
-                          </a>
-                          </span>
-                          <span class="app-task-list__tag {{ statusClass(spoke.isCompleted) }}" id="section-beforeYouStart-status"><span class="visuallyhidden"> {{ messages("messages__schemeTaskList__status_visuallyHidden") }}</span> {{ messages(status(spoke.isCompleted)) }}</span>
-                      {% endif %}
+                          <span class="app-task-list__tag {{ statusClass(spoke.isCompleted) }}" id="section-beforeYouStart-status"><span class="govuk-visually-hidden"> {{ messages("messages__schemeTaskList__status_visuallyHidden") }}</span> {{ status(spoke.isCompleted) }}</span>
                    </li>
                 </ul>
             {% endfor %}
          </li>
+
          <li>
             {% if taskSections.about.header %}
                 <h3 id="section-about-header" class="app-task-list__section">
@@ -75,11 +68,12 @@
                       {{ messages(item.link.text) }}
                       </a>
                       </span>
-                      <span class="app-task-list__tag {{ statusClass(item.isCompleted) }}" id="section-about-status-@i"><span class="govuk-visually-hidden">{{ messages("messages__schemeTaskList__status_visuallyHidden") }}</span>{{ status(isCompleted) }}</span>
+                      <span class="app-task-list__tag {{ statusClass(item.isCompleted) }}" id="section-about-status-@i"><span class="govuk-visually-hidden">{{ messages("messages__schemeTaskList__status_visuallyHidden") }}</span>{{ status(item.isCompleted) }}</span>
                    </li>
                {% endfor %}
             </ul>
          </li>
+
          {% if taskSections.declaration %}
          <li id="DecSubmit">
             {% if taskSections.declaration.header %}
