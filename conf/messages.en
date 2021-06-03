@@ -201,7 +201,7 @@ benefitsType.cashBalanceAndOtherMoneyPurchaseBenefits = A mixture of cash balanc
 
 benefitsType.title = What type of money purchase benefits does the scheme provide?
 benefitsType.h1 = What type of money purchase benefits does {0} provide?
-benefitsType.visuallyHidden = type of money purchase benefits {0} has
+benefitsType.visuallyHidden = the type of money purchase benefits {0} provides
 benefitsType.error.required = Select what type of money purchase benefits the scheme provides
 
 areBenefitsSecured.title = Are any of the scheme benefits secured by a contract of insurance or annuity?
@@ -220,12 +220,12 @@ benefitsInsurancePolicy.title = What is the policy number?
 benefitsInsurancePolicy.h1 = What is the policy number with {0} ?
 benefitsInsurancePolicy.noCompanyName.h1 = What is the policy number of the insurance company that secures the scheme benefits?
 benefitsInsurancePolicy.error.required = Enter the policy number of the insurance company that secures the scheme benefits
-benefitsInsurancePolicy.visuallyHidden = the policy number with {0}
+benefitsInsurancePolicy.visuallyHidden = the policy number with the insurance company that secures the scheme benefits
 
 addressList.title = What is the address of {0}?
 addressList.noInsuranceName.title = What is the address of the insurance company that secures the scheme benefits?
 addressList.select = Select the address from the list below, or
-addressList.visuallyHidden = the address for {0}
+addressList.visuallyHidden = the address of the insurance company that secures the scheme benefits
 
 postcode.label = Postcode
 postcode.title = What is {0}ʼs postcode?

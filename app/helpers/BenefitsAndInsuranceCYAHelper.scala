@@ -86,13 +86,13 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
           BenefitsInsurancePolicyId,
           msgHeadingInsurancePolicy.resolve,
           Some(controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onPageLoad().url),
-          Some(msg"benefitsInsurancePolicy.visuallyHidden".withArgs(insuranceCompanyName)), answerStringTransform
+          Some(msg"benefitsInsurancePolicy.visuallyHidden"), answerStringTransform
         ),
         answerOrAddRow(
           InsurerAddressId,
           msgHeadingInsurerAddress.resolve,
           Some(controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onPageLoad().url),
-          Some(msg"addressList.visuallyHidden".withArgs(insuranceCompanyName)), answerBenefitsAddressTransform
+          Some(msg"addressList.visuallyHidden"), answerBenefitsAddressTransform
         )
     )
     } else
