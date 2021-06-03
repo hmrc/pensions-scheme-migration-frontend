@@ -185,20 +185,10 @@ isInvestmentRegulated.h1 = Is {0} investment regulated?
 isOccupational.title = Is the scheme an occupational pension scheme?
 isOccupational.h1 = Is {0} an occupational pension scheme?
 
-areBenefitsSecured.title = Are any of the scheme benefits secured by a contract of insurance or annuity?
-areBenefitsSecured.h1 = Are any of {0}ʼs benefits secured by a contract of insurance or annuity?
-areBenefitsSecured.error.required = Select yes if any of the scheme benefits are secured by a contract of insurance or annuity
-areBenefitsSecured.p1 = Benefits can be secured by a contract of insurance or an annuity contract by an insurance company that provides administration services to the scheme.
-
-benefitsInsuranceName.title = What is the name of the insurance company that secures the scheme benefits?
-benefitsInsuranceName.h1 = What is the name of the insurance company that secures the scheme benefits?
-benefitsInsuranceName.visuallyHidden = how provides benefits
-benefitsInsuranceName.error.required = Enter the name of the insurance company that secures the scheme benefits
-benefitsInsuranceUnknown = the insurance company that secures the scheme benefits
-
 howProvideBenefits.title = How does the scheme provide benefits?
 howProvideBenefits.h1 = How does {0} provide benefits?
 howProvideBenefits.error.required = Select how the scheme provides benefits
+howProvideBenefits.visuallyHidden = how {0} provides benefits
 howProvideBenefits.moneyPurchaseOnly = Money purchase benefits only - this is a defined contribution
 howProvideBenefits.definedBenefitsOnly = Defined benefits only
 howProvideBenefits.mixedBenefits = Mixture of money purchase benefits and defined benefits
@@ -211,15 +201,31 @@ benefitsType.cashBalanceAndOtherMoneyPurchaseBenefits = A mixture of cash balanc
 
 benefitsType.title = What type of money purchase benefits does the scheme provide?
 benefitsType.h1 = What type of money purchase benefits does {0} provide?
+benefitsType.visuallyHidden = type of money purchase benefits {0} has
 benefitsType.error.required = Select what type of money purchase benefits the scheme provides
+
+areBenefitsSecured.title = Are any of the scheme benefits secured by a contract of insurance or annuity?
+areBenefitsSecured.h1 = Are any of {0}ʼs benefits secured by a contract of insurance or annuity?
+areBenefitsSecured.error.required = Select yes if any of the scheme benefits are secured by a contract of insurance or annuity
+areBenefitsSecured.p1 = Benefits can be secured by a contract of insurance or an annuity contract by an insurance company that provides administration services to the scheme.
+areBenefitsSecured.visuallyHidden = if any of the scheme benefits are secured by a contract of insurance or annuity
+
+benefitsInsuranceName.title = What is the name of the insurance company that secures the scheme benefits?
+benefitsInsuranceName.h1 = What is the name of the insurance company that secures the scheme benefits?
+benefitsInsuranceName.visuallyHidden = the name of the insurance company that secures the scheme benefits
+benefitsInsuranceName.error.required = Enter the name of the insurance company that secures the scheme benefits
+benefitsInsuranceUnknown = the insurance company that secures the scheme benefits
 
 benefitsInsurancePolicy.title = What is the policy number?
 benefitsInsurancePolicy.h1 = What is the policy number with {0} ?
 benefitsInsurancePolicy.noCompanyName.h1 = What is the policy number of the insurance company that secures the scheme benefits?
 benefitsInsurancePolicy.error.required = Enter the policy number of the insurance company that secures the scheme benefits
+benefitsInsurancePolicy.visuallyHidden = the policy number with {0}
 
-booleanAnswer.false = No
-booleanAnswer.true = Yes
+addressList.title = What is the address of {0}?
+addressList.noInsuranceName.title = What is the address of the insurance company that secures the scheme benefits?
+addressList.select = Select the address from the list below, or
+addressList.visuallyHidden = the address for {0}
 
 postcode.label = Postcode
 postcode.title = What is {0}ʼs postcode?
@@ -244,10 +250,6 @@ error.country.invalid = Enter a valid country
 
 findAddress = Find address
 
-addressList.title = What is the address of {0}?
-addressList.noInsuranceName.title = What is the address of the insurance company that secures the scheme benefits?
-addressList.select = Select the address from the list below, or
-
 insurerEnterPostcode.required = Enter the postcode of the insurance company that secures the scheme benefits
 insurerEnterPostcode.invalid = Enter a real postcode
 
@@ -261,6 +263,9 @@ address.line4 = Address line 4 (optional)
 address.postcode = Postcode
 address.country = Country
 address.hint = Enter text and then choose from the list
+
+booleanAnswer.false = No
+booleanAnswer.true = Yes
 
 messages__common__what_you_need_to_know = What you need to know
 messages__complete__title = The pension scheme details have been sent to HMRC
