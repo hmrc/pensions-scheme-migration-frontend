@@ -16,7 +16,6 @@
 
 package controllers.benefitsAndInsurance
 
-import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
@@ -44,7 +43,6 @@ class AreBenefitsSecuredController @Inject()(override val messagesApi: MessagesA
                                        navigator: CompoundNavigator,
                                        formProvider: AreBenefitsSecuredFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
-                                       config: AppConfig,
                                        renderer: Renderer)(implicit ec: ExecutionContext)
   extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
