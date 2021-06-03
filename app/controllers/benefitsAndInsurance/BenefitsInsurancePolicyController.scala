@@ -22,19 +22,21 @@ import controllers.Retrievals
 import controllers.actions._
 import forms.benefitsAndInsurance.BenefitsInsurancePolicyFormProvider
 import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId}
-import identifiers.benefitsAndInsurance.{BenefitsInsurancePolicyId, BenefitsInsuranceNameId}
+import identifiers.benefitsAndInsurance.{BenefitsInsuranceNameId, BenefitsInsurancePolicyId}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{MessagesApi, Messages, I18nSupport}
 import play.api.libs.json.Json
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Enumerable
+import viewmodels.Message
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class BenefitsInsurancePolicyController @Inject()(override val messagesApi: MessagesApi,
                                        userAnswersCacheConnector: UserAnswersCacheConnector,
@@ -53,31 +55,40 @@ class BenefitsInsurancePolicyController @Inject()(override val messagesApi: Mess
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      (SchemeNameId and BenefitsInsuranceNameId).retrieve.right.map { case schemeName ~ insurancePolicyName =>
-        val preparedForm = request.userAnswers.get(BenefitsInsurancePolicyId) match {
-          case Some(value) => form.fill(value)
-          case None        => form
-        }
-        val json = Json.obj(
-          "schemeName" -> schemeName,
-          "insurancePolicyName" -> insurancePolicyName,
-          "form" -> preparedForm,
-          "submitUrl" -> controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onSubmit().url,
-          "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
-        )
-        renderer.render("benefitsAndInsurance/benefitsInsurancePolicy.njk", json).map(Ok(_))
+      (request.userAnswers.get(SchemeNameId), request.userAnswers.get(BenefitsInsuranceNameId)) match {
+        case (Some(schemeName), optionInsurancePolicyName) =>
+          val preparedForm = request.userAnswers.get(BenefitsInsurancePolicyId) match {
+            case Some(value) => form.fill(value)
+            case None        => form
+          }
+
+          val heading = optionInsurancePolicyName.fold(Messages("benefitsInsurancePolicy.noCompanyName.h1"))(Message("benefitsInsurancePolicy.h1", _))
+
+          val json = Json.obj(
+            "schemeName" -> schemeName,
+            "heading" -> heading,
+            "form" -> preparedForm,
+            "submitUrl" -> controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onSubmit().url,
+            "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url,
+
+          )
+          renderer.render("benefitsAndInsurance/benefitsInsurancePolicy.njk", json).map(Ok(_))
+        case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
       }
     }
 
   def onSubmit: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      SchemeNameId.retrieve.right.map { schemeName =>
+      (request.userAnswers.get(SchemeNameId), request.userAnswers.get(BenefitsInsuranceNameId)) match {
+        case (Some(schemeName), optionInsurancePolicyName) =>
         form
           .bindFromRequest()
           .fold(
             formWithErrors => {
+              val heading = optionInsurancePolicyName.fold(Messages("benefitsInsurancePolicy.noCompanyName.h1"))(Message("benefitsInsurancePolicy.h1", _))
               val json = Json.obj(
                 "schemeName" -> schemeName,
+                "heading" -> heading,
                 "form" -> formWithErrors,
                 "submitUrl" -> controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onSubmit().url,
                 "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
@@ -92,7 +103,8 @@ class BenefitsInsurancePolicyController @Inject()(override val messagesApi: Mess
               }
             }
           )
-        }
+        case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
+      }
     }
 
 }
