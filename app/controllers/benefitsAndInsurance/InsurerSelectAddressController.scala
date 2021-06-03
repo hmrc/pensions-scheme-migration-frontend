@@ -24,11 +24,12 @@ import controllers.address.{AddressPages, AddressListController}
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.{InsurerAddressListId, BenefitsInsuranceNameId, InsurerAddressId, InsurerEnterPostCodeId}
+import models.requests.DataRequest
 
 import javax.inject.Inject
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{MessagesApi, I18nSupport}
+import play.api.i18n.{MessagesApi, I18nSupport, Messages}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -68,21 +69,23 @@ class InsurerSelectAddressController @Inject()(val appConfig: AppConfig,
       }
     }
 
-  def getFormToJson(schemeName:String): Retrieval[Form[Int] => JsObject] =
+  def getFormToJson(schemeName:String) : Retrieval[Form[Int] => JsObject] =
     Retrieval(
       implicit request =>
-        (BenefitsInsuranceNameId and InsurerEnterPostCodeId).retrieve.right.map {
-          case name ~ addresses =>
-            form => Json.obj(
-              "form" -> form,
-              "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
-              "entityType" -> "Insurance company",
-              "entityName" -> name,
-              "submitUrl" -> controllers.benefitsAndInsurance.routes.InsurerSelectAddressController.onSubmit().url,
-              "enterManuallyUrl" -> controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onPageLoad().url,
-              "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url,
-              "schemeName" -> schemeName
-            )
+        InsurerEnterPostCodeId.retrieve.right.map { addresses =>
+          val name = request.userAnswers.get(BenefitsInsuranceNameId)
+            .getOrElse(request2Messages(request)messages("benefitsInsuranceUnknown"))
+
+          form => Json.obj(
+            "form" -> form,
+            "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
+            "entityType" -> "Insurance company",
+            "entityName" -> name,
+            "submitUrl" -> controllers.benefitsAndInsurance.routes.InsurerSelectAddressController.onSubmit().url,
+            "enterManuallyUrl" -> controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onPageLoad().url,
+            "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url,
+            "schemeName" -> schemeName
+          )
         }
     )
 }

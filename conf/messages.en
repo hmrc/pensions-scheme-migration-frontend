@@ -196,6 +196,7 @@ benefitsInsuranceName.title = What is the name of the insurance company that sec
 benefitsInsuranceName.h1 = What is the name of the insurance company that secures the scheme benefits?
 benefitsInsuranceName.visuallyHidden = how provides benefits
 benefitsInsuranceName.error.required = Enter the name of the insurance company that secures the scheme benefits
+benefitsInsuranceUnknown = the insurance company that secures the scheme benefits
 
 howProvideBenefits.title = How does the scheme provide benefits?
 howProvideBenefits.h1 = How does {0} provide benefits?

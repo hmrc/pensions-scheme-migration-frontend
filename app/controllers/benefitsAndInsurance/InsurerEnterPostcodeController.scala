@@ -24,6 +24,7 @@ import controllers.address.PostcodeController
 import forms.address.PostcodeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.{BenefitsInsuranceNameId, InsurerEnterPostCodeId}
+import models.requests.DataRequest
 
 import javax.inject.Inject
 import navigators.CompoundNavigator
@@ -58,33 +59,30 @@ class InsurerEnterPostcodeController @Inject()(val appConfig: AppConfig,
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName).retrieve.right.map(get)
+        get(getFormToJson(schemeName))
       }
     }
-
-  def getFormToJson(schemeName:String): Retrieval[Form[String] => JsObject] = {
-    Retrieval(
-      implicit request =>
-        BenefitsInsuranceNameId.retrieve.right.map { name =>
-          form =>
-            Json.obj(
-              "entityType" -> "Insurance company",
-              "entityName" -> name,
-              "form" -> form,
-              "submitUrl" -> controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onSubmit().url,
-              "enterManuallyUrl" -> controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onPageLoad().url,
-              "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url,
-              "schemeName" -> schemeName
-            )
-        }
-    )
-  }
 
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async{
     implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName).retrieve.right.map(form => post(form, InsurerEnterPostCodeId, "insurerEnterPostcode.invalid"))
+        post(getFormToJson(schemeName), InsurerEnterPostCodeId, "insurerEnterPostcode.invalid")
       }
   }
 
+
+  def getFormToJson(schemeName:String)(implicit request:DataRequest[AnyContent]): Form[String] => JsObject = {
+    form => {
+      val name = request.userAnswers.get(BenefitsInsuranceNameId).getOrElse("unknown")
+      Json.obj(
+        "entityType" -> "Insurance company",
+        "entityName" -> name,
+        "form" -> form,
+        "submitUrl" -> controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onSubmit().url,
+        "enterManuallyUrl" -> controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onPageLoad().url,
+        "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url,
+        "schemeName" -> schemeName
+      )
+    }
+  }
 }

@@ -42,7 +42,7 @@ class BenefitsAndInsuranceNavigator @Inject()(val dataCacheConnector: UserAnswer
     case BenefitsInsuranceNameId => BenefitsInsurancePolicyController.onPageLoad()
     case InsurerEnterPostCodeId => InsurerSelectAddressController.onPageLoad()
     case InsurerAddressListId => cya
-    case BenefitsInsurancePolicyId => cya
+    case BenefitsInsurancePolicyId => InsurerEnterPostcodeController.onPageLoad()
     case InsurerAddressId => cya
   }
 }
