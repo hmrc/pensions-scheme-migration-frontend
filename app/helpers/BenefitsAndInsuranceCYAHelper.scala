@@ -79,7 +79,7 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
           BenefitsInsuranceNameId,
           Message("benefitsInsuranceName.title").resolve,
           Some(controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onPageLoad().url),
-          Some(msg"messages__visuallyhidden__currentMembers"), answerStringTransform
+          Some(msg"benefitsInsuranceName.visuallyHidden"), answerStringTransform
         ),
         answerOrAddRow(
           BenefitsInsurancePolicyId,

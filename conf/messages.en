@@ -194,6 +194,7 @@ areBenefitsSecured.p1 = Benefits can be secured by a contract of insurance or an
 
 benefitsInsuranceName.title = What is the name of the insurance company that secures the scheme benefits?
 benefitsInsuranceName.h1 = What is the name of the insurance company that secures the scheme benefits?
+benefitsInsuranceName.visuallyHidden = how provides benefits
 benefitsInsuranceName.error.required = Enter the name of the insurance company that secures the scheme benefits
 
 howProvideBenefits.title = How does the scheme provide benefits?
