@@ -73,7 +73,7 @@ class InsurerEnterPostcodeController @Inject()(val appConfig: AppConfig,
 
   def getFormToJson(schemeName:String)(implicit request:DataRequest[AnyContent]): Form[String] => JsObject = {
     form => {
-      val name = request.userAnswers.get(BenefitsInsuranceNameId).getOrElse("unknown")
+      val name = request.userAnswers.get(BenefitsInsuranceNameId).getOrElse(request2Messages(request)messages("benefitsInsuranceUnknown"))
       Json.obj(
         "entityType" -> "Insurance company",
         "entityName" -> name,

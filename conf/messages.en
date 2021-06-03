@@ -214,7 +214,7 @@ benefitsInsuranceName.title = What is the name of the insurance company that sec
 benefitsInsuranceName.h1 = What is the name of the insurance company that secures the scheme benefits?
 benefitsInsuranceName.visuallyHidden = the name of the insurance company that secures the scheme benefits
 benefitsInsuranceName.error.required = Enter the name of the insurance company that secures the scheme benefits
-benefitsInsuranceUnknown = the insurance company that secures the scheme benefits
+benefitsInsuranceUnknown = the insurance company
 
 benefitsInsurancePolicy.title = What is the policy number?
 benefitsInsurancePolicy.h1 = What is the policy number with {0} ?
