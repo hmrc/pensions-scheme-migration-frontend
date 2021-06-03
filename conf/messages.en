@@ -181,11 +181,9 @@ messages__declaration__statement9 = you understand that where HMRC believes that
 
 isInvestmentRegulated.title = Is the scheme investment regulated?
 isInvestmentRegulated.h1 = Is {0} investment regulated?
-isInvestmentRegulated.error.required = Select yes if the pension scheme is investment regulated
 
 isOccupational.title = Is the scheme an occupational pension scheme?
 isOccupational.h1 = Is {0} an occupational pension scheme?
-isOccupational.error.required = Select yes if the pension scheme is occupational
 
 areBenefitsSecured.title = Are any of the scheme benefits secured by a contract of insurance or annuity?
 areBenefitsSecured.h1 = Are any of {0}ʼs benefits secured by a contract of insurance or annuity?
