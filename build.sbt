@@ -23,7 +23,21 @@ lazy val microservice = Project(appName, file("."))
       "models.Mode",
       "models.CheckMode",
       "models.NormalMode"
+    ),
+      // concatenate js
+      Concat.groups := Seq(
+  "javascripts/application.js" -> group(
+    Seq(
+      "lib/govuk-frontend/govuk/all.js",
+      "lib/hmrc-frontend/hmrc/all.js",
+      "javascripts/psm.js"
     )
+  )
+),
+// prevent removal of unused code which generates warning errors due to use of third-party libs
+uglifyCompressOptions := Seq("unused=false", "dead_code=false"),
+// below line required to force asset pipeline to operate in dev rather than only prod
+pipelineStages in Assets := Seq(concat, uglify)
   )
   .settings(silencerSettings)
   .settings(publishingSettings: _*)
@@ -32,21 +46,6 @@ lazy val microservice = Project(appName, file("."))
   .settings(resolvers ++= Seq(
     Resolver.jcenterRepo,
     )
-  ).settings(
-    // concatenate js
-    Concat.groups := Seq(
-      "javascripts/application.js" -> group(
-        Seq(
-          "lib/govuk-frontend/govuk/all.js",
-          "lib/hmrc-frontend/hmrc/all.js",
-          "javascripts/pensionsschememigrationfrontend.js"
-        )
-      )
-    ),
-    // prevent removal of unused code which generates warning errors due to use of third-party libs
-    uglifyCompressOptions := Seq("unused=false", "dead_code=false"),
-    // below line required to force asset pipeline to operate in dev rather than only prod
-    pipelineStages in Assets := Seq(concat, uglify)
   )
   .settings(
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;.*models.*;.*repositories.*;" +
