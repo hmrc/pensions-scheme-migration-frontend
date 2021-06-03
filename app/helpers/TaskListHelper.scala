@@ -50,12 +50,6 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService,
       Some(messages("messages__schemeTaskList__about_scheme_header", getSchemeName))
     )
 
-  def declarationEnabled(implicit userAnswers: UserAnswers): Boolean =
-    Seq(
-      Some(userAnswers.isBeforeYouStartCompleted),
-      userAnswers.isMembersCompleted
-    ).forall(_.contains(true))
-
   protected[helpers] def establishersSection(userAnswers: UserAnswers)
   : Seq[TaskListEntitySection] = {
     val seqEstablishers = entitiesHelper.allEstablishers(userAnswers)
