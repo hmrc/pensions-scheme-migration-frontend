@@ -16,19 +16,26 @@
 
 package controllers.benefitsAndInsurance
 
+import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
-import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.beforeYouStart.SchemeNameId
+import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import utils.{Data, UserAnswers}
+import uk.gov.hmrc.nunjucks.NunjucksRenderer
+import utils.{UserAnswers, Data}
 
 import scala.concurrent.Future
 
 class AreBenefitsSecuredControllerSpec extends ControllerSpecBase {
 
-  private val mutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val application = applicationBuilder(mutableFakeDataRetrievalAction, Nil).build()
+  val extraModules: Seq[GuiceableModule] = Seq(
+    bind[NunjucksRenderer].toInstance(mockRenderer),
+    bind[UserAnswersCacheConnector].to(mockUserAnswersCacheConnector)
+  )
+
+  private def application(ua:Option[UserAnswers]) = applicationBuilderUserAnswers(ua, Nil).build()
 
   private val httpPathGet: String = controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onPageLoad().url
 
@@ -38,9 +45,7 @@ class AreBenefitsSecuredControllerSpec extends ControllerSpecBase {
 
       val ua: UserAnswers = UserAnswers().setOrException(SchemeNameId, Data.schemeName)
 
-      mutableFakeDataRetrievalAction.setDataToReturn(Option(ua))
-
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGet)).value
+      val result: Future[Result] = route(application(Some(ua)), httpGETRequest(httpPathGet)).value
 
       status(result) mustEqual OK
 
