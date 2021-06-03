@@ -60,12 +60,20 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
   def rows(implicit request: DataRequest[AnyContent],
     messages: Messages
   ): Seq[SummaryList.Row] = {
-    implicit val ua: UserAnswers = request.userAnswers
-    val schemeName = CYAHelper.getAnswer(SchemeNameId)
+      implicit val ua: UserAnswers = request.userAnswers
+      val schemeName = CYAHelper.getAnswer(SchemeNameId)
 
-    val seqTop = topSection(schemeName)
-    val seqBottom = if(ua.get(AreBenefitsSecuredId).contains(true)) {
-      val insuranceName = ua.get(BenefitsInsuranceNameId).getOrElse("Unknown")
+      val seqTop = topSection(schemeName)
+      val seqBottom = if(ua.get(AreBenefitsSecuredId).contains(true)) {
+
+      val (msgHeadingInsurancePolicy, msgHeadingInsurerAddress) = {
+        val optionInsuranceName = ua.get(BenefitsInsuranceNameId)
+        Tuple2(
+          optionInsuranceName.fold(Message("benefitsInsurancePolicy.noCompanyName.h1"))(Message("benefitsInsurancePolicy.h1", _)),
+          optionInsuranceName.fold(Message("addressList.noInsuranceName.title"))(Message("addressList.title", _))
+        )
+      }
+
       Seq(
         answerOrAddRow(
           BenefitsInsuranceNameId,
@@ -75,13 +83,13 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
         ),
         answerOrAddRow(
           BenefitsInsurancePolicyId,
-          Message("benefitsInsurancePolicy.h1", insuranceName).resolve,
+          msgHeadingInsurancePolicy.resolve,
           Some(controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onPageLoad().url),
           Some(msg"messages__visuallyhidden__currentMembers"), answerStringTransform
         ),
         answerOrAddRow(
           InsurerAddressId,
-          Message("addressFor", insuranceName).resolve,
+          msgHeadingInsurerAddress.resolve,
           Some(controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onPageLoad().url),
           Some(msg"messages__visuallyhidden__currentMembers"), answerBenefitsAddressTransform
         )
