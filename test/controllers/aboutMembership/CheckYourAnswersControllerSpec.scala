@@ -18,7 +18,7 @@ package controllers.aboutMembership
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import helpers.AboutCYAHelper
+import helpers.{AboutCYAHelper, CYAHelper}
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
@@ -29,7 +29,7 @@ import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
+import uk.gov.hmrc.viewmodels.SummaryList.{Action, Value, Row, Key}
 import uk.gov.hmrc.viewmodels.{Html, NunjucksSupport}
 import utils.Data.{schemeName, ua}
 import utils.UserAnswers
@@ -48,7 +48,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
   private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
   private val templateToBeRendered = "check-your-answers.njk"
 
-  private def httpPathGET: String = controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad.url
+  private def httpPathGET: String = controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad().url
   private val rows = Seq(
     Row(
       key = Key(msg"currentMembers.title".withArgs(schemeName), classes = Seq("govuk-!-width-one-half")),
@@ -84,7 +84,6 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
     super.beforeEach
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(play.twirl.api.Html("")))
     when(mockCyaHelper.membershipRows(any(), any())).thenReturn(rows)
-    when(mockCyaHelper.getAnswer(any())(any(), any())).thenReturn(schemeName)
   }
 
 

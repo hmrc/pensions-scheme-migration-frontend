@@ -30,12 +30,6 @@ POST        /members/membership                         controllers.aboutMembers
 GET         /members/meoccupationalmbership-future                  controllers.aboutMembership.FutureMembersController.onPageLoad
 POST        /members/membership-future                  controllers.aboutMembership.FutureMembersController.onSubmit
 
-GET         /benefits-and-finance/investment-regulated  controllers.benefitsAndInsurance.IsInvestmentRegulatedController.onPageLoad
-POST        /benefits-and-finance/investment-regulated  controllers.benefitsAndInsurance.IsInvestmentRegulatedController.onSubmit
-
-GET         /benefits-and-finance/occupational  controllers.benefitsAndInsurance.IsOccupationalController.onPageLoad
-POST        /benefits-and-finance/occupational  controllers.benefitsAndInsurance.IsOccupationalController.onSubmit
-
 GET         /benefits-and-finance/secured-benefits  controllers.benefitsAndInsurance.AreBenefitsSecuredController.onPageLoad
 POST        /benefits-and-finance/secured-benefits  controllers.benefitsAndInsurance.AreBenefitsSecuredController.onSubmit
 

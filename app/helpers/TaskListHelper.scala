@@ -24,10 +24,8 @@ import viewmodels._
 
 class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
 
-  def getSchemeName[A](implicit ua: UserAnswers): String = {
-    println("\n>>>" + ua)
+  def getSchemeName[A](implicit ua: UserAnswers): String =
     ua.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
-  }
 
   def taskList(viewOnly: Boolean)(implicit answers: UserAnswers, messages: Messages): TaskList =
     TaskList(
