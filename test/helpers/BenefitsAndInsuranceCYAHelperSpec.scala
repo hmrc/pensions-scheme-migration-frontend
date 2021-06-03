@@ -24,9 +24,9 @@ import models.requests.DataRequest
 import models.{SchemeType, Address, MigrationLock}
 import org.scalatest.{TryValues, MustMatchers, WordSpec}
 import play.api.i18n.Messages
-import play.api.mvc.AnyContent
+import play.api.mvc.{Call, AnyContent}
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.viewmodels.SummaryList
+import uk.gov.hmrc.viewmodels.{Content, SummaryList, Html}
 import uk.gov.hmrc.viewmodels.SummaryList._
 import utils.Data.{pstr, schemeName, psaId, credId}
 import utils.{UserAnswers, CountryOptions, Enumerable, InputOption}
@@ -55,8 +55,16 @@ class BenefitsAndInsuranceCYAHelperSpec
   private val insurerName= "test insurer"
   private val insurerPolicyNo = "test"
   private val insurerAddress = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
-
-  private def summaryListRow(key:String, valueMsgKey:String):Row = {
+  /*
+  (
+content: Content,
+href: String,
+visuallyHiddenText: Option[Text] = None,
+classes: Seq[String] = Seq.empty,
+attributes: Map[String, String] = Map.empty
+)
+   */
+  private def summaryListRow(key:String, valueMsgKey:String, target:Option[Tuple3[String,String,Call]] = None):Row = {
     SummaryList.Row(
       Key(
         GovUKMsg(key),
@@ -65,7 +73,11 @@ class BenefitsAndInsuranceCYAHelperSpec
       Value(
         GovUKMsg(valueMsgKey)
       ),
-      List()
+      target.toSeq.map(xx => Action(
+        content = Html(xx._1),
+        href = xx._3.url,
+        visuallyHiddenText = Some(GovUKMsg(xx._2))
+      ))
     )
   }
 
@@ -87,6 +99,18 @@ class BenefitsAndInsuranceCYAHelperSpec
 
       result.head mustBe summaryListRow(key = Messages("isInvestmentRegulated.h1", schemeName), valueMsgKey = "booleanAnswer.true")
       result(1) mustBe summaryListRow(key = Messages("isOccupational.h1", schemeName), valueMsgKey = "booleanAnswer.true")
+
+
+
+      result(2) mustBe summaryListRow(
+        key = Messages("howProvideBenefits.h1", schemeName),
+        valueMsgKey = "howProvideBenefits.moneyPurchaseOnly",
+        Some(
+          Messages("site.change"),
+          "howProvideBenefits.visuallyHidden",
+          controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onPageLoad()
+        )
+      )
     }
 
   }

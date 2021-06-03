@@ -217,7 +217,7 @@ benefitsInsuranceName.error.required = Enter the name of the insurance company t
 benefitsInsuranceUnknown = the insurance company
 
 benefitsInsurancePolicy.title = What is the policy number?
-benefitsInsurancePolicy.h1 = What is the policy number with {0} ?
+benefitsInsurancePolicy.h1 = What is the policy number with {0}?
 benefitsInsurancePolicy.noCompanyName.h1 = What is the policy number of the insurance company that secures the scheme benefits?
 benefitsInsurancePolicy.error.required = Enter the policy number of the insurance company that secures the scheme benefits
 benefitsInsurancePolicy.visuallyHidden = the policy number with the insurance company that secures the scheme benefits
