@@ -40,7 +40,7 @@
             errorMessage: form.value.error
           }) }}
          <p class="govuk-body">
-                    {{ messages("postcode.youCan") }} <a href="{{ enterManuallyUrl }}" class="govuk-link">{{ messages("address.linkText.enterManually") }}</a>.
+                    {{ messages("postcode.youCan") }} <a id="manual-address-link" href="{{ enterManuallyUrl }}" class="govuk-link">{{ messages("address.linkText.enterManually") }}</a>.
                  </p>
           {{ govukButton({
             text: messages("findAddress"),
