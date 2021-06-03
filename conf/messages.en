@@ -189,3 +189,6 @@ messages__complete__copy_3 = You‘ll receive a pension scheme tax reference num
 messages__complete__copy_4 = You might be contacted for more details to support this registration.
 messages__complete__copy_5 = There is no time limit for how long it‘ll take HMRC to make a decision.
 messages__complete__appeal_link = You can appeal to a tribunal if HMRC decides not to register the scheme or if a decision has not been made within 6 months
+
+messages__addEstablisher_error__selection = Select yes if you want to add another establisher
+messages__establisher__type__error_required = Select what kind of establisher you are adding

@@ -1,3 +1,4 @@
+import play.sbt.routes.RoutesKeys
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings.integrationTestSettings
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
@@ -17,6 +18,10 @@ lazy val microservice = Project(appName, file("."))
     PlayKeys.playDefaultPort         := 8213,
     TwirlKeys.templateImports ++= Seq(
       "config.AppConfig"
+    ),
+    RoutesKeys.routesImport ++= Seq(
+      "models.Index",
+      "models.establishers.EstablisherKind"
     )
   )
   .settings(silencerSettings)

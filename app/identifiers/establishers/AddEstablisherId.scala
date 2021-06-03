@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-package identifiers.establishers.individual
+package identifiers.establishers
 
 import identifiers._
-import identifiers.establishers.EstablishersId
-import models.PersonName
-import play.api.libs.json.{Format, JsPath, Json}
 
-case class EstablisherNameId(index: Int) extends TypedIdentifier[PersonName] {
-  override def path: JsPath = EstablishersId(index).path \ EstablisherNameId.toString
+case class AddEstablisherId(addAnother: Option[Boolean]) extends Identifier {
+  override def toString: String = "addEstablisher"
 }
 
-object EstablisherNameId {
-  override lazy val toString: String = "establisherDetails"
-
-  def collectionPath(index: Int): JsPath = EstablishersId(index).path \ EstablisherNameId.toString
-
-  implicit lazy val formats: Format[EstablisherNameId] = Json.format[EstablisherNameId]
-
+case object AddEstablisherId {
+  override def toString: String = "addEstablisher"
 }

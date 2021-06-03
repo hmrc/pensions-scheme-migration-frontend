@@ -1,18 +1,42 @@
+/*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package helpers
 
-import models.{CompanyDetails, Mode, PartnershipDetails}
-import play.api.libs.json.{JsArray, JsBoolean, JsDefined, JsError, JsPath, JsResult, JsSuccess, JsValue, Reads, __}
+import com.google.inject.Inject
+import identifiers.establishers.individual.EstablisherNameId
+import identifiers.establishers.{EstablisherKindId, EstablishersId, IsEstablisherNewId}
+import models.establishers.EstablisherKind
+import models.{Establisher, EstablisherIndividualEntity, PersonName}
+import play.api.Logger
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
+import play.api.libs.json._
+import utils.UserAnswers
+import utils.datacompletion.DataCompletionEstablishers
 
 
-class EntitiesHelper {
+class EntitiesHelper @Inject()(dataCompletionEstablishers: DataCompletionEstablishers){
 
-  sealed trait Establisher[T] extends Entity[T]
+  private val logger = Logger(classOf[EntitiesHelper])
 
-  def allEstablishersAfterDelete(mode: Mode): Seq[Establisher[_]] =
-    allEstablishers(mode).filterNot(_.isDeleted)
+  def allEstablishersAfterDelete(implicit ua: UserAnswers): Seq[Establisher[_]] =
+    allEstablishers.filterNot(_.isDeleted)
 
-  def allEstablishers(mode: Mode): Seq[Establisher[_]] = {
-    json.validate[Seq[Establisher[_]]](readEstablishers(mode)) match {
+  def allEstablishers(implicit ua: UserAnswers): Seq[Establisher[_]] = {
+    ua.data.validate[Seq[Establisher[_]]](readEstablishers) match {
       case JsSuccess(establishers, _) =>
         establishers
       case JsError(errors) =>
@@ -22,9 +46,9 @@ class EntitiesHelper {
   }
 
   //scalastyle:off method.length
-  def readEstablishers(mode: Mode): Reads[Seq[Establisher[_]]] = new Reads[Seq[Establisher[_]]] {
+  def readEstablishers(implicit ua: UserAnswers): Reads[Seq[Establisher[_]]] = new Reads[Seq[Establisher[_]]] {
 
-    private def noOfRecords: Int = json.validate((__ \ 'establishers).readNullable(__.read(
+    private def noOfRecords: Int = ua.data.validate((__ \ 'establishers).readNullable(__.read(
       Reads.seq((__ \ 'establisherKind).read[String].flatMap {
         case "individual" => (__ \ 'establisherDetails \ "isDeleted").json.pick[JsBoolean] orElse notDeleted
         case "company" => (__ \ 'companyDetails \ "isDeleted").json.pick[JsBoolean] orElse notDeleted
@@ -40,34 +64,8 @@ class EntitiesHelper {
       ) ((details, isNew) =>
       EstablisherIndividualEntity(
         EstablisherNameId(index), details.fullName, details.isDeleted,
-        isEstablisherIndividualComplete(index), isNew.fold(false)(identity), noOfRecords)
+        dataCompletionEstablishers.isEstablisherIndividualComplete(index), isNew.fold(false)(identity), noOfRecords)
     )
-
-    private def readsCompany(index: Int): Reads[Establisher[_]] = (
-      (JsPath \ EstablisherCompanyDetailsId.toString).read[CompanyDetails] and
-        (JsPath \ IsEstablisherNewId.toString).readNullable[Boolean]
-      ) ((details, isNew) =>
-      EstablisherCompanyEntity(EstablisherCompanyDetailsId(index),
-        details.companyName, details.isDeleted, isEstablisherCompanyAndDirectorsComplete(index, mode), isNew.fold
-        (false)(identity), noOfRecords)
-    )
-
-    private def readsPartnership(index: Int): Reads[Establisher[_]] = (
-      (JsPath \ PartnershipDetailsId.toString).read[PartnershipDetails] and
-        (JsPath \ IsEstablisherNewId.toString).readNullable[Boolean]
-      ) ((details, isNew) =>
-      EstablisherPartnershipEntity(PartnershipDetailsId(index),
-        details.name, details.isDeleted, isEstablisherPartnershipAndPartnersComplete(index), isNew.fold(false)
-        (identity), noOfRecords)
-    )
-
-    private def readsSkeleton(index: Int): Reads[Establisher[_]] = new Reads[Establisher[_]] {
-      override def reads(json: JsValue): JsResult[Establisher[_]] = {
-        (json \ EstablisherKindId.toString)
-          .toOption.map(_ => JsSuccess(EstablisherSkeletonEntity(EstablisherKindId(index))))
-          .getOrElse(JsError(s"Establisher does not have element establisherKind: index=$index"))
-      }
-    }
 
     override def reads(json: JsValue): JsResult[Seq[Establisher[_]]] = {
       json \ EstablishersId.toString match {
@@ -75,10 +73,8 @@ class EntitiesHelper {
           val jsResults = establishers.zipWithIndex.map { case (jsValue, index) =>
             val establisherKind = (jsValue \ EstablisherKindId.toString).validate[String].asOpt
             val readsForEstablisherKind = establisherKind match {
-              case Some(EstablisherKind.Indivdual.toString) => readsIndividual(index)
-              case Some(EstablisherKind.Company.toString) => readsCompany(index)
-              case Some(EstablisherKind.Partnership.toString) => readsPartnership(index)
-              case _ => readsSkeleton(index)
+              case Some(EstablisherKind.Individual.toString) => readsIndividual(index)
+              case _ => throw UnrecognisedEstablisherKindException
             }
             readsForEstablisherKind.reads(jsValue)
           }
@@ -109,3 +105,5 @@ class EntitiesHelper {
 
 
 }
+
+case object UnrecognisedEstablisherKindException extends Exception

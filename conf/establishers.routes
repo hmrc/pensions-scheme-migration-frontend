@@ -1,0 +1,6 @@
+
+GET         /scheme-establishers                                     controllers.establishers.AddEstablisherController.onPageLoad()
+POST        /scheme-establishers                                     controllers.establishers.AddEstablisherController.onSubmit()
+
+GET         /:index/establisher-type                                 controllers.establishers.EstablisherKindController.onPageLoad(index:Index)
+POST        /:index/establisher-type                                 controllers.establishers.EstablisherKindController.onSubmit(index:Index)

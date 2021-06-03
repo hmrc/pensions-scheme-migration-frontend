@@ -18,11 +18,13 @@ package helpers
 
 import com.google.inject.Inject
 import identifiers.beforeYouStart.SchemeNameId
+import identifiers.establishers.individual.EstablisherNameId
 import play.api.i18n.Messages
 import utils.UserAnswers
 import viewmodels._
 
-class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
+class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService,
+                               entitiesHelper: EntitiesHelper) {
 
   def getSchemeName[A](implicit ua: UserAnswers): String =
     ua.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
@@ -49,18 +51,18 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
     )
   }
 
-  protected[utils] def establishersSection(userAnswers: UserAnswers)
+  protected[helpers] def establishersSection(userAnswers: UserAnswers)
   : Seq[TaskListEntitySection] = {
-    val seqEstablishers = userAnswers.allEstablishers(mode)
+    val seqEstablishers = entitiesHelper.allEstablishers(userAnswers)
 
     val nonDeletedEstablishers = for ((establisher, _) <- seqEstablishers.zipWithIndex) yield {
       if (establisher.isDeleted) None else {
         establisher.id match {
 
           case EstablisherNameId(_) =>
-            Some(SchemeDetailsTaskListEntitySection(
+            Some(TaskListEntitySection(
               None,
-              spokeCreationService.getEstablisherIndividualSpokes(userAnswers, mode, srn, establisher.name, Some
+              spokeCreationService.getEstablisherIndividualSpokes(userAnswers, establisher.name, Some
               (establisher.index)),
               Some(establisher.name))
             )
@@ -73,8 +75,14 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
     nonDeletedEstablishers.flatten
   }
 
+  def declarationEnabled(implicit userAnswers: UserAnswers): Boolean =
+    Seq(
+      Some(userAnswers.isBeforeYouStartCompleted),
+      userAnswers.isMembersCompleted
+    ).forall(_.contains(true))
+
   private[helpers] def declarationSection(viewOnly: Boolean)(implicit userAnswers: UserAnswers, messages: Messages): Option[TaskListEntitySection] =
-    if (viewOnly) {
+    if (viewOnly || !declarationEnabled) {
       None
     } else {
       Some(TaskListEntitySection(
@@ -85,8 +93,6 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
         "messages__schemeTaskList__sectionDeclaration_incomplete_v2"
       ))
     }
-
-
 
 }
 

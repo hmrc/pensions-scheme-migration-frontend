@@ -17,9 +17,11 @@
 package helpers
 
 import helpers.spokes.{AboutMembersSpoke, BeforeYouStartSpoke, Spoke}
-import models.{EntitySpoke, TaskListLink}
+import identifiers.establishers.IsEstablisherNewId
+import models.{EntitySpoke, Index, Mode, TaskListLink}
 import play.api.i18n.Messages
 import utils.{Enumerable, UserAnswers}
+import models.Index.indexToInt
 
 class SpokeCreationService extends Enumerable.Implicits {
 
@@ -28,6 +30,11 @@ class SpokeCreationService extends Enumerable.Implicits {
 
   def membershipDetailsSpoke(answers: UserAnswers, name: String)(implicit messages: Messages): Seq[EntitySpoke] =
     Seq(createSpoke(answers, AboutMembersSpoke, name))
+
+  def getEstablisherIndividualSpokes(answers: UserAnswers, name: String, index: Option[Index]): Seq[EntitySpoke] = {
+    val isEstablisherNew = answers.get(IsEstablisherNewId(indexToInt(index.getOrElse(Index(0))))).getOrElse(false)
+    Nil
+  }
 
   def declarationSpoke(implicit messages: Messages): Seq[EntitySpoke] =
     Seq(EntitySpoke(TaskListLink(
