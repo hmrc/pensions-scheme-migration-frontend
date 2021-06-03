@@ -62,7 +62,7 @@ class BenefitsAndInsuranceNavigatorSpec extends SpecBase with NavigatorBehaviour
           row(BenefitsInsuranceNameId)(insurancePolicyNumber),
           row(InsurerEnterPostCodeId)(insurerSelectAddress),
           row(InsurerAddressListId)(checkYourAnswersPage),
-          row(BenefitsInsurancePolicyId)(checkYourAnswersPage),
+          row(BenefitsInsurancePolicyId)(insurerEnterPostCode),
           row(InsurerAddressId)(checkYourAnswersPage)
         )
       behave like navigatorWithRoutesForMode(NormalMode)(navigator, navigation)
@@ -80,5 +80,6 @@ object BenefitsAndInsuranceNavigatorSpec extends OptionValues {
   private def insuranceCompanyName: Call                  = BenefitsInsuranceNameController.onPageLoad()
   private def insurancePolicyNumber: Call                  = BenefitsInsurancePolicyController.onPageLoad()
   private def insurerSelectAddress: Call                  = InsurerSelectAddressController.onPageLoad()
+  private def insurerEnterPostCode: Call                  = InsurerEnterPostcodeController.onPageLoad()
   private def checkYourAnswersPage: Call          = CheckYourAnswersController.onPageLoad()
 }
