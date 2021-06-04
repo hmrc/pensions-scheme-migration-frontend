@@ -17,10 +17,10 @@
 package utils.datacompletion
 
 import identifiers.beforeYouStart.{SchemeNameId, WorkingKnowledgeId}
-import identifiers.benefitsAndInsurance.{AreBenefitsSecuredId, BenefitsInsurancePolicyId, BenefitsInsuranceNameId, InsurerAddressId, BenefitsTypeId, HowProvideBenefitsId, IsInvestmentRegulatedId, IsOccupationalId}
-import models.benefitsAndInsurance.{BenefitsType, BenefitsProvisionType}
+import identifiers.benefitsAndInsurance._
+import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
 import org.scalatest.{OptionValues, MustMatchers, WordSpec}
-import utils.Data.{ua, insurerName, insurerPolicyNo, insurerAddress}
+import utils.Data.{ua, insurerAddress, insurerName, insurerPolicyNo}
 import utils.{UserAnswers, Enumerable}
 
 class DataCompletionSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {

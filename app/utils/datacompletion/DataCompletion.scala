@@ -24,8 +24,6 @@ import models.benefitsAndInsurance.BenefitsProvisionType.DefinedBenefitsOnly
 import play.api.libs.json.Reads
 import utils.UserAnswers
 
-import scala.Nil
-
 trait DataCompletion {
 
   self: UserAnswers =>
@@ -44,21 +42,28 @@ trait DataCompletion {
     isAnswerComplete(FutureMembersId)))
 
   def isBenefitsAndInsuranceCompleted: Option[Boolean] = {
-    val s2 = if (get(HowProvideBenefitsId).contains(DefinedBenefitsOnly)) Nil else Seq(get(BenefitsTypeId).map(_=>true))
-    val s3 = if (get(AreBenefitsSecuredId).contains(true)) {
-                Seq(
-                    get(BenefitsInsuranceNameId).map(_=>true),
-                    get(BenefitsInsurancePolicyId).map(_=>true),
-                    get(InsurerAddressId).map(_=>true)
-                )
-              } else Nil
+    val benefitsTypeCompletion =
+      if (get(HowProvideBenefitsId).contains(DefinedBenefitsOnly)) {
+        Nil
+      } else {
+        Seq(get(BenefitsTypeId).map(_=>true))
+      }
+    val policyDetailsCompletion =
+      if (get(AreBenefitsSecuredId).contains(true)) {
+        Seq(
+            get(BenefitsInsuranceNameId).map(_=>true),
+            get(BenefitsInsurancePolicyId).map(_=>true),
+            get(InsurerAddressId).map(_=>true)
+        )
+      } else {
+        Nil
+      }
+
     isComplete(
         Seq(
             get(HowProvideBenefitsId).map(_=>true),
             isAnswerComplete(AreBenefitsSecuredId),
-
-
-        ) ++ s2 ++ s3
+        ) ++ benefitsTypeCompletion ++ policyDetailsCompletion
       )
     }
 
