@@ -24,12 +24,11 @@ import controllers.address.{AddressPages, AddressListController}
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.{InsurerAddressListId, BenefitsInsuranceNameId, InsurerAddressId, InsurerEnterPostCodeId}
-import models.requests.DataRequest
 
 import javax.inject.Inject
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{MessagesApi, I18nSupport, Messages}
+import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer

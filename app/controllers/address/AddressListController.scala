@@ -23,7 +23,6 @@ import models.requests.DataRequest
 import models.{Address, TolerantAddress}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContent, Result}
 import renderer.Renderer
@@ -41,11 +40,11 @@ trait AddressListController extends FrontendBaseController with Retrievals {
   protected def form: Form[Int]
   protected def viewTemplate = "address/addressList.njk"
 
-  def get(json: Form[Int] => JsObject)(implicit request: DataRequest[AnyContent], ec: ExecutionContext, messages: Messages): Future[Result] =
+  def get(json: Form[Int] => JsObject)(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] =
           renderer.render(viewTemplate, json(form)).map(Ok(_))
 
   def post(json: Form[Int] => JsObject, pages: AddressPages)
-          (implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier, messages: Messages): Future[Result] = {
+          (implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
         form.bindFromRequest().fold(
           formWithErrors =>
             renderer.render(viewTemplate, json(formWithErrors)).map(BadRequest(_)),

@@ -20,11 +20,11 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.benefitsAndInsurance.AreBenefitsSecuredFormProvider
-import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId}
+import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.AreBenefitsSecuredId
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{MessagesApi, Messages, I18nSupport}
+import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -46,7 +46,7 @@ class AreBenefitsSecuredController @Inject()(override val messagesApi: MessagesA
                                        renderer: Renderer)(implicit ec: ExecutionContext)
   extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
-  private def form(implicit messages: Messages): Form[Boolean] =
+  private def form: Form[Boolean] =
     formProvider()
 
   def onPageLoad: Action[AnyContent] =
@@ -77,7 +77,7 @@ class AreBenefitsSecuredController @Inject()(override val messagesApi: MessagesA
               val json = Json.obj(
                 "schemeName" -> schemeName,
                 "form" -> formWithErrors,
-                "radios" -> Radios.yesNo(form(implicitly)("value")),
+                "radios" -> Radios.yesNo(form("value")),
                 "submitUrl" -> controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onSubmit().url,
                 "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
               )

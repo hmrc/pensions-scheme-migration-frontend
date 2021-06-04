@@ -21,12 +21,12 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.benefitsAndInsurance.BenefitsTypeFormProvider
-import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId}
+import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.BenefitsTypeId
 import models.benefitsAndInsurance.BenefitsType
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{MessagesApi, Messages, I18nSupport}
+import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -49,7 +49,7 @@ class BenefitsTypeController @Inject()(override val messagesApi: MessagesApi,
                                        renderer: Renderer)(implicit ec: ExecutionContext)
   extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
-  private def form(implicit messages: Messages): Form[BenefitsType] =
+  private def form: Form[BenefitsType] =
     formProvider()
 
   def onPageLoad: Action[AnyContent] =

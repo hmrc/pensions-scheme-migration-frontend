@@ -21,13 +21,12 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.benefitsAndInsurance.BenefitsInsurancePolicyFormProvider
-import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId}
+import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.{BenefitsInsuranceNameId, BenefitsInsurancePolicyId}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{MessagesApi, Messages, I18nSupport}
 import play.api.libs.json.Json
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -50,7 +49,7 @@ class BenefitsInsurancePolicyController @Inject()(override val messagesApi: Mess
                                        renderer: Renderer)(implicit ec: ExecutionContext)
   extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
-  private def form(implicit messages: Messages): Form[String] =
+  private def form: Form[String] =
     formProvider()
 
   def onPageLoad: Action[AnyContent] =

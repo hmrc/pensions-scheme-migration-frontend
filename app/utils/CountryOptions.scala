@@ -81,15 +81,5 @@ object CountryOptions {
       throw new ConfigException.BadValue(fileName, "country json does not exist")
     }
   }
-
-  //def getInternationalRegion(environment: Environment, config: AppConfig, countryCode: String): InternationalRegion = {
-  //  val regionEuEea = getCountryCodes(environment, config.locationCanonicalListEUAndEEA)
-  //  countryCode match {
-  //    case "GB" => UK
-  //    case code if regionEuEea.contains(code) => EuEea
-  //    case _ => RestOfTheWorld
-  //  }
-  //}
-
 }
 

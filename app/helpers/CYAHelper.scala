@@ -81,7 +81,7 @@ trait CYAHelper {
     }
 
   private def actionAdd[A](optionURL: Option[String], visuallyHiddenText: Option[Text])(implicit
-    ua: UserAnswers, rds: Reads[A], messages: Messages):Seq[Action] = {
+    messages: Messages):Seq[Action] = {
     optionURL.toSeq.map { url =>
       Action(
         content = Html(s"<span  aria-hidden=true >${messages("site.add")}</span>"),
@@ -92,7 +92,7 @@ trait CYAHelper {
   }
 
   private def actionChange[A](optionURL: Option[String], visuallyHiddenText: Option[Text])(implicit
-    ua: UserAnswers, rds: Reads[A], messages: Messages):Seq[Action] = {
+    messages: Messages):Seq[Action] = {
     optionURL.toSeq.map { url =>
       Action(
         content = Html(s"<span  aria-hidden=true >${messages("site.change")}</span>"),
