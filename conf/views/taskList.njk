@@ -64,11 +64,11 @@
                {% for item in taskSections.about.entities %}
                    <li class="app-task-list__item">
                       <span class="app-task-list__task-name">
-                      <a id="section-about-link-@i" class="app-task-list__task-name" href="{{item.link.target}}" @if(item.isCompleted.nonEmpty){aria-describedby="section-about-status-@i"}>
+                      <a id="section-about-link-{{ loop.index }} " class="app-task-list__task-name" href="{{item.link.target}}" {% if item.isCompleted.nonEmpty %} aria-describedby=" section-about-status-{{ loop.index }} " {% endif %}>
                       {{ messages(item.link.text) }}
                       </a>
                       </span>
-                      <span class="app-task-list__tag {{ statusClass(item.isCompleted) }}" id="section-about-status-@i"><span class="govuk-visually-hidden">{{ messages("messages__schemeTaskList__status_visuallyHidden") }}</span>{{ status(item.isCompleted) }}</span>
+                      <span class="app-task-list__tag {{ statusClass(item.isCompleted) }}" id="section-about-status-{{ loop.index }} "><span class="govuk-visually-hidden">{{ messages("messages__schemeTaskList__status_visuallyHidden") }}</span>{{ status(item.isCompleted) }}</span>
                    </li>
                {% endfor %}
             </ul>
@@ -94,8 +94,8 @@
          {% endif %}
       </ol>
       <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" aria-hidden="true">
-      <p>
-         <a id="save-and-return" class="app-task-list__task-name" href="appConfig.managePensionsSchemeOverviewUrl">
+      <p class="govuk-body">
+         <a id="save-and-return" class="app-task-list__task-name govuk-link" href="appConfig.managePensionsSchemeOverviewUrl">
          {{ messages("messages__complete__returnToSchemeOverview", schemeName) }}
          </a>
       </p>
