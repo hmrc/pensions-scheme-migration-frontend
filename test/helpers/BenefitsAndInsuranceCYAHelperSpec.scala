@@ -24,13 +24,13 @@ import models.requests.DataRequest
 import models.{SchemeType, Address, MigrationLock}
 import org.scalatest.{TryValues, MustMatchers, WordSpec}
 import play.api.i18n.Messages
-import play.api.mvc.{Call, AnyContent}
+import play.api.mvc.AnyContent
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.viewmodels.{Content, SummaryList, Html}
+import uk.gov.hmrc.viewmodels.{SummaryList, Html}
 import uk.gov.hmrc.viewmodels.SummaryList._
 import utils.Data.{pstr, schemeName, psaId, credId}
 import utils.{UserAnswers, CountryOptions, Enumerable, InputOption}
-import uk.gov.hmrc.viewmodels.Text.{Message => GovUKMsg}
+import uk.gov.hmrc.viewmodels.Text.{Literal, Message => GovUKMsg}
 
 class BenefitsAndInsuranceCYAHelperSpec
   extends WordSpec
@@ -38,9 +38,9 @@ class BenefitsAndInsuranceCYAHelperSpec
     with TryValues
     with Enumerable.Implicits {
 
-  val options = Seq(InputOption("territory:AE-AZ", "Abu Dhabi"), InputOption("country:AF", "Afghanistan"))
+  private val options = Seq(InputOption("territory:AE-AZ", "Abu Dhabi"), InputOption("country:AF", "Afghanistan"))
 
-  implicit val countryOptions: CountryOptions = new CountryOptions(options)
+  private implicit val countryOptions: CountryOptions = new CountryOptions(options)
 
   val benefitsAndInsuranceCYAHelper = new BenefitsAndInsuranceCYAHelper
 
@@ -55,16 +55,10 @@ class BenefitsAndInsuranceCYAHelperSpec
   private val insurerName= "test insurer"
   private val insurerPolicyNo = "test"
   private val insurerAddress = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
-  /*
-  (
-content: Content,
-href: String,
-visuallyHiddenText: Option[Text] = None,
-classes: Seq[String] = Seq.empty,
-attributes: Map[String, String] = Map.empty
-)
-   */
-  private def summaryListRow(key:String, valueMsgKey:String, target:Option[Tuple3[String,String,Call]] = None):Row = {
+
+ case class Link(text: String, target: String, visuallyHiddenText: Option[GovUKMsg] = None)
+
+  private def summaryListRow(key:String, valueMsgKey:String, target:Option[Link] = None):Row = {
     SummaryList.Row(
       Key(
         GovUKMsg(key),
@@ -73,16 +67,65 @@ attributes: Map[String, String] = Map.empty
       Value(
         GovUKMsg(valueMsgKey)
       ),
-      target.toSeq.map(xx => Action(
-        content = Html(xx._1),
-        href = xx._3.url,
-        visuallyHiddenText = Some(GovUKMsg(xx._2))
-      ))
+      target.toSeq.map(t => Action(
+        content = Html(s"<span  aria-hidden=true >${t.text}</span>") ,
+        href = t.target,
+        visuallyHiddenText = t.visuallyHiddenText)
+      )
     )
   }
 
+  private def summaryListRowLiteral(key:String, value:String, target:Option[Link] = None):Row = {
+    SummaryList.Row(
+      Key(
+        GovUKMsg(key),
+        List("govuk-!-width-one-half")
+      ),
+      Value(
+        Literal(value)
+      ),
+      target.toSeq.map(t => Action(
+        content = Html(s"<span  aria-hidden=true >${t.text}</span>") ,
+        href = t.target,
+        visuallyHiddenText = t.visuallyHiddenText)
+      )
+    )
+  }
+
+  private def summaryListRowHtml(key:String, value:Html, target:Option[Link] = None):Row = {
+    SummaryList.Row(
+      Key(
+        GovUKMsg(key),
+        List("govuk-!-width-one-half")
+      ),
+      Value(
+        value
+      ),
+      target.toSeq.map(t => Action(
+        content = Html(s"<span  aria-hidden=true >${t.text}</span>") ,
+        href = t.target,
+        visuallyHiddenText = t.visuallyHiddenText)
+      )
+    )
+  }
+
+  private def addressAnswer(addr: Address)(implicit messages: Messages): Html = {
+    def addrLineToHtml(l: String): String = s"""<span class="govuk-!-display-block">$l</span>"""
+    Html(
+      addrLineToHtml(addr.addressLine1) +
+        addrLineToHtml(addr.addressLine2) +
+        addr.addressLine3.fold("")(addrLineToHtml) +
+        addr.addressLine4.fold("")(addrLineToHtml) +
+        addr.postcode.fold("")(addrLineToHtml) +
+        addrLineToHtml(messages("country." + addr.country))
+    )
+  }
+
+  private def answerBenefitsAddressTransform(addr:Address)(implicit messages: Messages): Html = addressAnswer(addr)
+
+  // scalastyle:off magic.number
   "BenefitsAndInsuranceCYAHelper" must {
-    "return all rows" in {
+    "return all rows with correct change link, value and visually hidden text" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, schemeName)
         .setOrException(SchemeTypeId, SchemeType.Other("other"))
@@ -100,18 +143,77 @@ attributes: Map[String, String] = Map.empty
       result.head mustBe summaryListRow(key = Messages("isInvestmentRegulated.h1", schemeName), valueMsgKey = "booleanAnswer.true")
       result(1) mustBe summaryListRow(key = Messages("isOccupational.h1", schemeName), valueMsgKey = "booleanAnswer.true")
 
-
-
       result(2) mustBe summaryListRow(
         key = Messages("howProvideBenefits.h1", schemeName),
         valueMsgKey = "howProvideBenefits.moneyPurchaseOnly",
         Some(
-          Messages("site.change"),
-          "howProvideBenefits.visuallyHidden",
-          controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onPageLoad()
+          Link(
+            text = Messages("site.change"),
+            target = controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onPageLoad().url,
+            visuallyHiddenText = Some(GovUKMsg("howProvideBenefits.visuallyHidden", schemeName))
+          )
+        )
+      )
+
+      result(3) mustBe summaryListRow(
+        key = Messages("benefitsType.h1", schemeName),
+        valueMsgKey = "benefitsType.cashBalanceBenefits",
+        Some(
+          Link(
+            text = Messages("site.change"),
+            target = controllers.benefitsAndInsurance.routes.BenefitsTypeController.onPageLoad().url,
+            visuallyHiddenText = Some(GovUKMsg("benefitsType.visuallyHidden", schemeName))
+          )
+        )
+      )
+
+      result(4) mustBe summaryListRow(
+        key = Messages("areBenefitsSecured.title"),
+        valueMsgKey = "booleanAnswer.true",
+        Some(
+          Link(
+            text = Messages("site.change"),
+            target = controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onPageLoad().url,
+            visuallyHiddenText = Some(GovUKMsg("areBenefitsSecured.visuallyHidden"))
+          )
+        )
+      )
+
+      result(5) mustBe summaryListRowLiteral(
+        key = Messages("benefitsInsuranceName.title"),
+        value = insurerName,
+        Some(
+          Link(
+            text = Messages("site.change"),
+            target = controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onPageLoad().url,
+            visuallyHiddenText = Some(GovUKMsg("benefitsInsuranceName.visuallyHidden"))
+          )
+        )
+      )
+
+      result(6) mustBe summaryListRowLiteral(
+        key = Messages("benefitsInsurancePolicy.h1", insurerName),
+        value = insurerPolicyNo,
+        Some(
+          Link(
+            text = Messages("site.change"),
+            target = controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onPageLoad().url,
+            visuallyHiddenText = Some(GovUKMsg("benefitsInsurancePolicy.visuallyHidden"))
+          )
+        )
+      )
+
+      result(7) mustBe summaryListRowHtml(
+        key = messages("addressList.title", insurerName),
+        value = answerBenefitsAddressTransform(insurerAddress),
+        Some(
+          Link(
+            text = Messages("site.change"),
+            target = controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onPageLoad().url,
+            visuallyHiddenText = Some(GovUKMsg("addressList.visuallyHidden"))
+          )
         )
       )
     }
-
   }
 }

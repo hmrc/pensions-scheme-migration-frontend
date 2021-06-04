@@ -66,35 +66,34 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
       val seqTop = topSection(schemeName)
       val seqBottom = if(ua.get(AreBenefitsSecuredId).contains(true)) {
 
-      val (msgHeadingInsurancePolicy, msgHeadingInsurerAddress, insuranceCompanyName) = {
-        val optionInsuranceName = ua.get(BenefitsInsuranceNameId)
-        Tuple3(
-          optionInsuranceName.fold(Message("benefitsInsurancePolicy.noCompanyName.h1"))(Message("benefitsInsurancePolicy.h1", _)),
-          optionInsuranceName.fold(Message("addressList.noInsuranceName.title"))(Message("addressList.title", _)),
-          optionInsuranceName.fold(Messages("benefitsInsuranceUnknown"))(identity)
-        )
-      }
+      val (msgHeadingInsurancePolicy, msgHeadingInsurerAddress) = {
+          val optionInsuranceName = ua.get(BenefitsInsuranceNameId)
+          Tuple2(
+            optionInsuranceName.fold(Message("benefitsInsurancePolicy.noCompanyName.h1"))(Message("benefitsInsurancePolicy.h1", _)),
+            optionInsuranceName.fold(Message("addressList.noInsuranceName.title"))(Message("addressList.title", _))
+          )
+        }
 
-      Seq(
-        answerOrAddRow(
-          BenefitsInsuranceNameId,
-          Message("benefitsInsuranceName.title").resolve,
-          Some(controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onPageLoad().url),
-          Some(msg"benefitsInsuranceName.visuallyHidden"), answerStringTransform
-        ),
-        answerOrAddRow(
-          BenefitsInsurancePolicyId,
-          msgHeadingInsurancePolicy.resolve,
-          Some(controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onPageLoad().url),
-          Some(msg"benefitsInsurancePolicy.visuallyHidden"), answerStringTransform
-        ),
-        answerOrAddRow(
-          InsurerAddressId,
-          msgHeadingInsurerAddress.resolve,
-          Some(controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onPageLoad().url),
-          Some(msg"addressList.visuallyHidden"), answerBenefitsAddressTransform
-        )
-    )
+        Seq(
+          answerOrAddRow(
+            BenefitsInsuranceNameId,
+            Message("benefitsInsuranceName.title").resolve,
+            Some(controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onPageLoad().url),
+            Some(msg"benefitsInsuranceName.visuallyHidden"), answerStringTransform
+          ),
+          answerOrAddRow(
+            BenefitsInsurancePolicyId,
+            msgHeadingInsurancePolicy.resolve,
+            Some(controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onPageLoad().url),
+            Some(msg"benefitsInsurancePolicy.visuallyHidden"), answerStringTransform
+          ),
+          answerOrAddRow(
+            InsurerAddressId,
+            msgHeadingInsurerAddress.resolve,
+            Some(controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onPageLoad().url),
+            Some(msg"addressList.visuallyHidden"), answerBenefitsAddressTransform
+          )
+      )
     } else
       Nil
 
