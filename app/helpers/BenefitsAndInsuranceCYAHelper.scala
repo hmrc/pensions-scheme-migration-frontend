@@ -16,22 +16,15 @@
 
 package helpers
 
+import identifiers.benefitsAndInsurance._
+import models.Address
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.benefitsAndInsurance.{AreBenefitsSecuredId, BenefitsInsurancePolicyId, InsurerAddressListId, BenefitsInsuranceNameId, InsurerAddressId, BenefitsTypeId, HowProvideBenefitsId, IsInvestmentRegulatedId, IsOccupationalId}
-import models.{Address, Members}
-import play.api.i18n.Messages
-import play.api.mvc.AnyContent
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList, Text, Html}
-import viewmodels.Message
-import identifiers.aboutMembership.{FutureMembersId, CurrentMembersId}
-import identifiers.beforeYouStart.SchemeNameId
-import models.Members
 import models.benefitsAndInsurance.BenefitsProvisionType.DefinedBenefitsOnly
 import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
 import models.requests.DataRequest
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList, Text}
+import uk.gov.hmrc.viewmodels.{Html, MessageInterpolators, SummaryList, Text}
 import utils.{UserAnswers, Enumerable}
 import viewmodels.Message
 

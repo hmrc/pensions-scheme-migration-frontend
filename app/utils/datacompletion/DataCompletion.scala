@@ -45,7 +45,7 @@ trait DataCompletion {
           isAnswerComplete(AreBenefitsSecuredId),
           get(BenefitsInsuranceNameId).map(_=>true),
           get(BenefitsInsurancePolicyId).map(_=>true),
-          get(BenefitsTypeId).map(_=>true),
+          get(BenefitsTypeId).map(_=>true), // TODO: here conditional logic
           get(HowProvideBenefitsId).map(_=>true),
           get(InsurerAddressId).map(_=>true)
       )

@@ -42,3 +42,4 @@ class SpokeCreationService extends Enumerable.Implicits {
     EntitySpoke(spoke.changeLink(name), spoke.completeFlag(answers))
 
 }
+

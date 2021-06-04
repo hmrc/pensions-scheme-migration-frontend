@@ -17,12 +17,17 @@
 package utils
 
 import base.SpecBase.fakeRequest
-import identifiers.beforeYouStart.SchemeNameId
-import models.MigrationLock
+import identifiers.aboutMembership.{FutureMembersId, CurrentMembersId}
+import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
+import identifiers.benefitsAndInsurance.{AreBenefitsSecuredId, BenefitsInsurancePolicyId, BenefitsInsuranceNameId, InsurerAddressId, BenefitsTypeId, HowProvideBenefitsId, IsInvestmentRegulatedId, IsOccupationalId}
+import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
+import models.{SchemeType, Address, MigrationLock, Members}
 import models.requests.DataRequest
+import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.domain.PsaId
+import utils.Data.ua.writes
 
 object Data {
 
@@ -33,6 +38,27 @@ object Data {
   val migrationLock: MigrationLock = MigrationLock(pstr, credId, psaId)
   val schemeName: String = "Test scheme name"
   val ua: UserAnswers = UserAnswers(Json.obj(SchemeNameId.toString -> Data.schemeName))
+
+
+  val insurerName= "test insurer"
+  val insurerPolicyNo = "test"
+  val insurerAddress = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
+
+  val completeUserAnswers: UserAnswers = UserAnswers().set(SchemeNameId, schemeName).flatMap(
+    _.set(SchemeTypeId, SchemeType.BodyCorporate).flatMap(
+    _.set(EstablishedCountryId, "GB").flatMap(
+    _.set(WorkingKnowledgeId, true).flatMap(
+    _.set(CurrentMembersId, Members.None).flatMap(
+    _.set(FutureMembersId, Members.One)
+    ))))).get
+    .setOrException(IsInvestmentRegulatedId, true)
+    .setOrException(IsOccupationalId, true)
+    .setOrException(HowProvideBenefitsId, BenefitsProvisionType.MoneyPurchaseOnly)
+    .setOrException(BenefitsTypeId, BenefitsType.CashBalanceBenefits)
+    .setOrException(AreBenefitsSecuredId, true)
+    .setOrException(BenefitsInsuranceNameId, insurerName)
+    .setOrException(BenefitsInsurancePolicyId, insurerPolicyNo)
+    .setOrException(InsurerAddressId, insurerAddress)
 
   implicit val request: DataRequest[AnyContent] =
     DataRequest(
