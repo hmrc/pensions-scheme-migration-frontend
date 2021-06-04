@@ -17,11 +17,21 @@
 package utils.datacompletion
 
 import identifiers.beforeYouStart.{SchemeNameId, WorkingKnowledgeId}
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
-import utils.Data.ua
-import utils.{Enumerable, UserAnswers}
+import identifiers.benefitsAndInsurance.{AreBenefitsSecuredId, BenefitsInsurancePolicyId, BenefitsInsuranceNameId, InsurerAddressId, BenefitsTypeId, HowProvideBenefitsId, IsInvestmentRegulatedId, IsOccupationalId}
+import models.benefitsAndInsurance.{BenefitsType, BenefitsProvisionType}
+import org.scalatest.{OptionValues, MustMatchers, WordSpec}
+import utils.Data.{ua, insurerName, insurerPolicyNo, insurerAddress}
+import utils.{UserAnswers, Enumerable}
 
 class DataCompletionSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
+
+  private val uaBenefitsSection = ua
+    .setOrException(IsInvestmentRegulatedId, true)
+    .setOrException(IsOccupationalId, true)
+    .setOrException(AreBenefitsSecuredId, true)
+    .setOrException(BenefitsInsuranceNameId, insurerName)
+    .setOrException(BenefitsInsurancePolicyId, insurerPolicyNo)
+    .setOrException(InsurerAddressId, insurerAddress)
 
   "All generic methods" when {
     "isComplete" must {
@@ -59,6 +69,28 @@ class DataCompletionSpec extends WordSpec with MustMatchers with OptionValues wi
       "return Some(true) when answer is present" in {
         ua.isAnswerComplete(SchemeNameId) mustBe Some(true)
       }
+    }
+
+    "isBenefitsAndInsuranceCompleted" must {
+      "return Some(true) when defined benefits chosen and no benefits type chosen" in {
+        uaBenefitsSection
+          .setOrException(HowProvideBenefitsId, BenefitsProvisionType.DefinedBenefitsOnly)
+          .isBenefitsAndInsuranceCompleted mustBe Some(true)
+      }
+
+      "return Some(false) when defined benefits NOT chosen and no benefits type chosen" in {
+        uaBenefitsSection
+          .setOrException(HowProvideBenefitsId, BenefitsProvisionType.MoneyPurchaseOnly)
+          .isBenefitsAndInsuranceCompleted mustBe Some(false)
+      }
+
+      "return Some(true) when defined benefits NOT chosen and a benefits type chosen" in {
+        uaBenefitsSection
+          .setOrException(HowProvideBenefitsId, BenefitsProvisionType.MoneyPurchaseOnly)
+          .setOrException(BenefitsTypeId, BenefitsType.CashBalanceBenefits)
+          .isBenefitsAndInsuranceCompleted mustBe Some(true)
+      }
+
     }
 
   }

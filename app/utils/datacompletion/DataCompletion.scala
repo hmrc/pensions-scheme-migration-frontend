@@ -20,8 +20,11 @@ import identifiers._
 import identifiers.aboutMembership.{FutureMembersId, CurrentMembersId}
 import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
 import identifiers.benefitsAndInsurance._
+import models.benefitsAndInsurance.BenefitsProvisionType.DefinedBenefitsOnly
 import play.api.libs.json.Reads
 import utils.UserAnswers
+
+import scala.Nil
 
 trait DataCompletion {
 
@@ -40,16 +43,18 @@ trait DataCompletion {
     isAnswerComplete(CurrentMembersId),
     isAnswerComplete(FutureMembersId)))
 
-  def isBenefitsAndInsuranceCompleted: Option[Boolean] = isComplete(
-      Seq(
-          isAnswerComplete(AreBenefitsSecuredId),
-          get(BenefitsInsuranceNameId).map(_=>true),
-          get(BenefitsInsurancePolicyId).map(_=>true),
-          get(BenefitsTypeId).map(_=>true), // TODO: here conditional logic
-          get(HowProvideBenefitsId).map(_=>true),
-          get(InsurerAddressId).map(_=>true)
+  def isBenefitsAndInsuranceCompleted: Option[Boolean] = {
+    val s2 = if (get(HowProvideBenefitsId).contains(DefinedBenefitsOnly)) Nil else Seq(get(BenefitsTypeId).map(_=>true))
+    isComplete(
+        Seq(
+            isAnswerComplete(AreBenefitsSecuredId),
+            get(BenefitsInsuranceNameId).map(_=>true),
+            get(BenefitsInsurancePolicyId).map(_=>true),
+            get(HowProvideBenefitsId).map(_=>true),
+            get(InsurerAddressId).map(_=>true)
+        ) ++ s2
       )
-    )
+    }
 
   //GENERIC METHODS
   def isComplete(list: Seq[Option[Boolean]]): Option[Boolean] =
