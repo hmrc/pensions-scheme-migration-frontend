@@ -29,6 +29,23 @@ import java.time.format.DateTimeFormatter
 
 trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Generators with Transforms with OptionValues {
 
+
+  def fieldWithMaxLength(form: Form[_],
+    fieldName: String,
+    maxLength: Int,
+    lengthError: FormError): Unit = {
+
+    s"must not bind strings longer than $maxLength characters" in {
+
+      forAll(stringsLongerThan(maxLength) -> "longString") {
+        string =>
+          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+          result.errors.head.message mustEqual lengthError.message
+          result.errors.head.key mustEqual lengthError.key
+      }
+    }
+  }
+
   def fieldThatBindsValidData(form: Form[_],
                               fieldName: String,
                               validDataGenerator: Gen[String]): Unit = {

@@ -20,11 +20,11 @@ import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Constraints
 import play.api.data.FormError
 
-class BenefitsInsuranceNameFormProviderSpec extends StringFieldBehaviours with Constraints {
+class BenefitsInsurancePolicyFormProviderSpec extends StringFieldBehaviours with Constraints {
 
-  private val keyBenefitsInsuranceNameRequired = "benefitsInsuranceName.error.required"
-  private val form = new BenefitsInsuranceNameFormProvider()()
-  private val maxLength = 160
+  private val keyBenefitsInsurancePolicyRequired = "benefitsInsurancePolicy.error.required"
+  private val form = new BenefitsInsurancePolicyFormProvider()()
+  private val maxLength = 55
 
   "insurance name" must {
 
@@ -40,13 +40,13 @@ class BenefitsInsuranceNameFormProviderSpec extends StringFieldBehaviours with C
       form,
       fieldName,
       maxLength = maxLength,
-      lengthError = FormError(fieldName, "benefitsInsuranceName.error.length", Seq(maxLength))
+      lengthError = FormError(fieldName, "benefitsInsurancePolicy.error.length", Seq(maxLength))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, keyBenefitsInsuranceNameRequired)
+      requiredError = FormError(fieldName, keyBenefitsInsurancePolicyRequired)
     )
   }
 }
