@@ -27,6 +27,10 @@
 
           {{ csrf() | safe }}
 
+           {% for i in range(0, establishers.length) -%}
+                      {{ establishers[i].name }}
+           {%- endfor %}
+
           {{ govukRadios({
             name: 'value',
             fieldset: {

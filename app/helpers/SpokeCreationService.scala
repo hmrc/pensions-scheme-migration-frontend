@@ -18,10 +18,10 @@ package helpers
 
 import helpers.spokes.{AboutMembersSpoke, BeforeYouStartSpoke, Spoke}
 import identifiers.establishers.IsEstablisherNewId
-import models.{EntitySpoke, Index, Mode, TaskListLink}
+import models.Index.indexToInt
+import models.{EntitySpoke, Index, TaskListLink}
 import play.api.i18n.Messages
 import utils.{Enumerable, UserAnswers}
-import models.Index.indexToInt
 
 class SpokeCreationService extends Enumerable.Implicits {
 
@@ -30,6 +30,24 @@ class SpokeCreationService extends Enumerable.Implicits {
 
   def membershipDetailsSpoke(answers: UserAnswers, name: String)(implicit messages: Messages): Seq[EntitySpoke] =
     Seq(createSpoke(answers, AboutMembersSpoke, name))
+
+  def getAddEstablisherHeaderSpokes(answers: UserAnswers, viewOnly: Boolean)(implicit messages: Messages)
+  : Seq[EntitySpoke] = {
+    (answers.allEstablishersAfterDelete.isEmpty, viewOnly) match {
+      case (_, true) =>
+        Nil
+      case (true, false) =>
+        Seq(EntitySpoke(
+          TaskListLink(messages("messages__schemeTaskList__sectionEstablishers_add_link"),
+            controllers.establishers.routes.EstablisherKindController.onPageLoad(answers.allEstablishers.size).url), None)
+        )
+      case (false, false) =>
+        Seq(EntitySpoke(
+          TaskListLink(messages("messages__schemeTaskList__sectionEstablishers_view_link"),
+            controllers.establishers.routes.AddEstablisherController.onPageLoad.url), None)
+        )
+    }
+  }
 
   def getEstablisherIndividualSpokes(answers: UserAnswers, name: String, index: Option[Index]): Seq[EntitySpoke] = {
     val isEstablisherNew = answers.get(IsEstablisherNewId(indexToInt(index.getOrElse(Index(0))))).getOrElse(false)

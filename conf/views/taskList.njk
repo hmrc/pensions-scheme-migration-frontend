@@ -74,6 +74,44 @@
             </ul>
          </li>
 
+         <li id="Establishers">
+            <h2 id="section-establishers-header" class="govuk-heading-l">
+               {{ messages("messages__schemeTaskList__sectionEstablishers_header") }}
+            </h2>
+
+            {% if taskSections.addEstablisherHeader %}
+                   {% for entity in taskSections.addEstablisherHeader.entities %}
+                            <a id="section-establishers-link" class="task-name" href="{{entity.link.target}}" >
+                                {{ messages(entity.link.text) }}
+                            </a>
+                   {% endfor %}
+
+                   {% for p1Text in taskSections.addEstablisherHeader.p1 %}
+                                    <p>{{ messages(p1Text) }}</p>
+                   {% endfor %}
+            {% endif %}
+
+            {% for item in taskSections.establishers %}
+               {% set establisherIndex = loop.index %}
+               {% if item.header %}
+                  <h3 class="task-list-section">{{ messages(item.header) }}</h3>
+               {% endif %}
+
+                <ul class="task-list-items">
+                    {% for entity in item.entities %}
+                        {% set spokeIndex = loop.index %}
+                        <li class="task-list-item">
+                            <a id="section-establishers-link-{{establisherIndex}}-{{spokeIndex}}" class="task-name" href="{{ entity.link.target }}" {aria-describedby="section-about-status-{{establisherIndex}}"}>
+                                {{ messages(entity.link.text) }}
+                            </a>
+                            <span class="task-status {{statusClass(isCompleted)}}" id="section-establishers-status-{{establisherIndex}}-{{spokeIndex}}"><span class="visuallyhidden">{{ messages("messages__schemeTaskList__status_visuallyHidden") }}</span>{{ status(isCompleted) }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endfor %}
+
+         </li>
+
          {% if taskSections.declaration %}
          <li id="DecSubmit">
             {% if taskSections.declaration.header %}

@@ -23,8 +23,7 @@ import play.api.i18n.Messages
 import utils.UserAnswers
 import viewmodels._
 
-class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService,
-                               entitiesHelper: EntitiesHelper) {
+class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
 
   def getSchemeName[A](implicit ua: UserAnswers): String =
     ua.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
@@ -34,6 +33,8 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService,
       getSchemeName,
       beforeYouStartSection,
       aboutSection,
+      addEstablisherHeader(viewOnly),
+      establishersSection,
       declarationSection(viewOnly)
     )
 
@@ -50,9 +51,21 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService,
       Some(messages("messages__schemeTaskList__about_scheme_header", getSchemeName))
     )
 
-  protected[helpers] def establishersSection(userAnswers: UserAnswers)
+  private[helpers] def addEstablisherHeader(viewOnly: Boolean)(implicit userAnswers: UserAnswers, messages: Messages): Option[TaskListEntitySection] =
+    if (userAnswers.allEstablishersAfterDelete.isEmpty && viewOnly) {
+      Some(TaskListEntitySection(None, Nil, None, messages("messages__schemeTaskList__sectionEstablishers_no_establishers")))
+    } else {
+      spokeCreationService.getAddEstablisherHeaderSpokes(userAnswers, viewOnly) match {
+        case Nil =>
+          None
+        case establisherHeaderSpokes =>
+          Some(TaskListEntitySection(None, establisherHeaderSpokes, None))
+      }
+    }
+
+  protected[helpers] def establishersSection(implicit userAnswers: UserAnswers)
   : Seq[TaskListEntitySection] = {
-    val seqEstablishers = entitiesHelper.allEstablishers(userAnswers)
+    val seqEstablishers = userAnswers.allEstablishers
 
     val nonDeletedEstablishers = for ((establisher, _) <- seqEstablishers.zipWithIndex) yield {
       if (establisher.isDeleted) None else {

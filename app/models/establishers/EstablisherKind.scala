@@ -16,7 +16,9 @@
 
 package models.establishers
 
+import play.api.data.Form
 import play.api.mvc.JavascriptLiteral
+import uk.gov.hmrc.viewmodels.{MessageInterpolators, Radios}
 import utils.{Enumerable, InputOption, WithName}
 
 sealed trait EstablisherKind
@@ -25,9 +27,10 @@ object EstablisherKind {
   val values: Seq[EstablisherKind] = Seq(
     Company, Individual, Partnership
   )
-  val options: Seq[InputOption] = values.map {
-    value =>
-      InputOption(value.toString, s"messages__establishers__add__opt__${value.toString}")
+
+  def radios(form: Form[_]): Seq[Radios.Item] = {
+    val items = values.map(value => Radios.Radio(msg"establishers.${value.toString}", value.toString))
+    Radios(form("value"), items)
   }
 
   case object Company extends WithName("company") with EstablisherKind

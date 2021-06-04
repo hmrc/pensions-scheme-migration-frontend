@@ -19,7 +19,6 @@ package controllers.establishers
 import controllers.Retrievals
 import controllers.actions._
 import forms.establishers.AddEstablisherFormProvider
-import helpers.EntitiesHelper
 import identifiers.establishers.AddEstablisherId
 import navigators.CompoundNavigator
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -38,7 +37,6 @@ class AddEstablisherController @Inject()(override val messagesApi: MessagesApi,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
                                          formProvider: AddEstablisherFormProvider,
-                                         entitiesHelper: EntitiesHelper,
                                          val controllerComponents: MessagesControllerComponents,
                                          renderer: Renderer
                                         )(implicit val ec: ExecutionContext)
@@ -47,7 +45,7 @@ class AddEstablisherController @Inject()(override val messagesApi: MessagesApi,
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        val establishers = entitiesHelper.allEstablishersAfterDelete(request.userAnswers)
+        val establishers = request.userAnswers.allEstablishersAfterDelete
         val json: JsObject = Json.obj(
           "form" -> formProvider(establishers),
           "establishers" -> establishers,
@@ -58,7 +56,7 @@ class AddEstablisherController @Inject()(override val messagesApi: MessagesApi,
 
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      val establishers = entitiesHelper.allEstablishersAfterDelete(request.userAnswers)
+      val establishers = request.userAnswers.allEstablishersAfterDelete
       formProvider(establishers).bindFromRequest().fold(
         formWithErrors => {
           val json: JsObject = Json.obj(

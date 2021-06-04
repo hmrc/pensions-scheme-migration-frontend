@@ -22,6 +22,7 @@ import controllers.actions._
 import forms.establishers.EstablisherKindFormProvider
 import identifiers.establishers.{EstablisherKindId, IsEstablisherNewId}
 import models.Index
+import models.establishers.EstablisherKind
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -59,9 +60,10 @@ class EstablisherKindController @Inject()(
         val json = Json.obj(
           "form" -> formWithData,
           "schemeName" -> existingSchemeName,
+          "radios" -> EstablisherKind.radios(formWithData),
           "submitUrl" -> postCall(index).url
         )
-        renderer.render("establisherKind.njk", json).map(Ok(_))
+        renderer.render("establishers/establisherKind.njk", json).map(Ok(_))
     }
 
   def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
@@ -71,9 +73,10 @@ class EstablisherKindController @Inject()(
           val json = Json.obj(
             "form" -> formWithErrors,
             "schemeName" -> existingSchemeName,
+            "radios" -> EstablisherKind.radios(formWithErrors),
             "submitUrl" -> postCall(index).url
           )
-          renderer.render("establisherKind.njk", json).map(Ok(_))
+          renderer.render("establishers/establisherKind.njk", json).map(Ok(_))
         },
         value => {
 
