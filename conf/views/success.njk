@@ -24,7 +24,7 @@
 
         {{ govukPanel({
                 titleText: messages("messages__complete__heading"),
-                html: panelHtml
+                html: "<span class='heading-large govuk-!-font-weight-bold'>"+messages("messages__complete__application_number_is", refNumber)+"</span>"
         }) }}
         <p class="govuk-body">
             {{messages("messages__complete__email")}}
@@ -38,9 +38,9 @@
 
         <h2 class="govuk-heading-m">{{ messages("messages__complete__what_happens_next") }}</h2>
 
-            <p>{{ messages("messages__complete__copy_3") }}</p>
-            <p>{{ messages("messages__complete__copy_4") }}</p>
-            <p>{{ messages("messages__complete__copy_5") }}</p>
+            <p class="govuk-body">{{ messages("messages__complete__copy_3") }}</p>
+            <p class="govuk-body">{{ messages("messages__complete__copy_4") }}</p>
+            <p class="govuk-body">{{ messages("messages__complete__copy_5") }}</p>
 
         <h2 class="govuk-heading-m">{{ messages("site.saveOrPrint") }}</h2>
 
