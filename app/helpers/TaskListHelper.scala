@@ -49,8 +49,15 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
     )
   }
 
+  def declarationEnabled(implicit userAnswers: UserAnswers): Boolean =
+    Seq(
+      Some(userAnswers.isBeforeYouStartCompleted),
+      userAnswers.isMembersCompleted,
+      userAnswers.isBenefitsAndInsuranceCompleted
+    ).forall(_.contains(true))
+
   private[helpers] def declarationSection(viewOnly: Boolean)(implicit userAnswers: UserAnswers, messages: Messages): Option[TaskListEntitySection] =
-    if (viewOnly) {
+    if (viewOnly || !declarationEnabled) {
       None
     } else {
       Some(TaskListEntitySection(

@@ -17,8 +17,9 @@
 package utils.datacompletion
 
 import identifiers._
-import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
-import identifiers.beforeYouStart.{EstablishedCountryId, SchemeNameId, SchemeTypeId, WorkingKnowledgeId}
+import identifiers.aboutMembership.{FutureMembersId, CurrentMembersId}
+import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
+import identifiers.benefitsAndInsurance._
 import play.api.libs.json.Reads
 import utils.UserAnswers
 
@@ -39,6 +40,16 @@ trait DataCompletion {
     isAnswerComplete(CurrentMembersId),
     isAnswerComplete(FutureMembersId)))
 
+  def isBenefitsAndInsuranceCompleted: Option[Boolean] = isComplete(
+      Seq(
+          isAnswerComplete(AreBenefitsSecuredId),
+          get(BenefitsInsuranceNameId).map(_=>true),
+          get(BenefitsInsurancePolicyId).map(_=>true),
+          get(BenefitsTypeId).map(_=>true),
+          get(HowProvideBenefitsId).map(_=>true),
+          get(InsurerAddressId).map(_=>true)
+      )
+    )
 
   //GENERIC METHODS
   def isComplete(list: Seq[Option[Boolean]]): Option[Boolean] =
