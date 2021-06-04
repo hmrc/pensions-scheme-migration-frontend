@@ -28,7 +28,7 @@ case object BenefitsAndInsuranceSpoke extends Spoke {
       controllers.benefitsAndInsurance.routes.CheckYourAnswersController.onPageLoad.url
     )
 
-  override def completeFlag(answers: UserAnswers): Option[Boolean] = answers.isMembersCompleted
+  override def completeFlag(answers: UserAnswers): Option[Boolean] = answers.isBenefitsAndInsuranceCompleted
 }
 
 
