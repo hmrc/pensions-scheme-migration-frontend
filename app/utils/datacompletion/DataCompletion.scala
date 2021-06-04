@@ -45,14 +45,20 @@ trait DataCompletion {
 
   def isBenefitsAndInsuranceCompleted: Option[Boolean] = {
     val s2 = if (get(HowProvideBenefitsId).contains(DefinedBenefitsOnly)) Nil else Seq(get(BenefitsTypeId).map(_=>true))
+    val s3 = if (get(AreBenefitsSecuredId).contains(true)) {
+                Seq(
+                    get(BenefitsInsuranceNameId).map(_=>true),
+                    get(BenefitsInsurancePolicyId).map(_=>true),
+                    get(InsurerAddressId).map(_=>true)
+                )
+              } else Nil
     isComplete(
         Seq(
-            isAnswerComplete(AreBenefitsSecuredId),
-            get(BenefitsInsuranceNameId).map(_=>true),
-            get(BenefitsInsurancePolicyId).map(_=>true),
             get(HowProvideBenefitsId).map(_=>true),
-            get(InsurerAddressId).map(_=>true)
-        ) ++ s2
+            isAnswerComplete(AreBenefitsSecuredId),
+
+
+        ) ++ s2 ++ s3
       )
     }
 

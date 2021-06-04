@@ -25,10 +25,12 @@ import utils.{UserAnswers, Enumerable}
 
 class DataCompletionSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
 
-  private val uaBenefitsSection = ua
+  private val uaBenefitsSectionNoPolicyDetails = ua
     .setOrException(IsInvestmentRegulatedId, true)
     .setOrException(IsOccupationalId, true)
     .setOrException(AreBenefitsSecuredId, true)
+
+    private val uaBenefitsSectionWithPolicyDetails = uaBenefitsSectionNoPolicyDetails
     .setOrException(BenefitsInsuranceNameId, insurerName)
     .setOrException(BenefitsInsurancePolicyId, insurerPolicyNo)
     .setOrException(InsurerAddressId, insurerAddress)
@@ -73,21 +75,44 @@ class DataCompletionSpec extends WordSpec with MustMatchers with OptionValues wi
 
     "isBenefitsAndInsuranceCompleted" must {
       "return Some(true) when defined benefits chosen and no benefits type chosen" in {
-        uaBenefitsSection
+        uaBenefitsSectionWithPolicyDetails
           .setOrException(HowProvideBenefitsId, BenefitsProvisionType.DefinedBenefitsOnly)
           .isBenefitsAndInsuranceCompleted mustBe Some(true)
       }
 
       "return Some(false) when defined benefits NOT chosen and no benefits type chosen" in {
-        uaBenefitsSection
+        uaBenefitsSectionWithPolicyDetails
           .setOrException(HowProvideBenefitsId, BenefitsProvisionType.MoneyPurchaseOnly)
           .isBenefitsAndInsuranceCompleted mustBe Some(false)
       }
 
       "return Some(true) when defined benefits NOT chosen and a benefits type chosen" in {
-        uaBenefitsSection
+        uaBenefitsSectionWithPolicyDetails
           .setOrException(HowProvideBenefitsId, BenefitsProvisionType.MoneyPurchaseOnly)
           .setOrException(BenefitsTypeId, BenefitsType.CashBalanceBenefits)
+          .isBenefitsAndInsuranceCompleted mustBe Some(true)
+      }
+
+      "return Some(true) when secured benefits true and name, policy no and address all added" in {
+        uaBenefitsSectionWithPolicyDetails
+          .setOrException(HowProvideBenefitsId, BenefitsProvisionType.DefinedBenefitsOnly)
+          .setOrException(AreBenefitsSecuredId, true)
+          .isBenefitsAndInsuranceCompleted mustBe Some(true)
+      }
+
+      "return Some(false) when secured benefits true and name, policy no and address NOT all added" in {
+        uaBenefitsSectionNoPolicyDetails
+          .setOrException(HowProvideBenefitsId, BenefitsProvisionType.DefinedBenefitsOnly)
+          .setOrException(AreBenefitsSecuredId, true)
+          .setOrException(BenefitsInsuranceNameId, insurerName)
+          .setOrException(InsurerAddressId, insurerAddress)
+          .isBenefitsAndInsuranceCompleted mustBe Some(false)
+      }
+
+      "return Some(true) when secured benefits false and no name, policy no and address added" in {
+        uaBenefitsSectionNoPolicyDetails
+          .setOrException(HowProvideBenefitsId, BenefitsProvisionType.DefinedBenefitsOnly)
+          .setOrException(AreBenefitsSecuredId, false)
           .isBenefitsAndInsuranceCompleted mustBe Some(true)
       }
 
