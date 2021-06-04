@@ -18,49 +18,80 @@ package controllers
 
 import controllers.actions._
 import helpers.TaskListHelper
+import matchers.JsonMatchers
 import models.{EntitySpoke, TaskListLink}
+import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.Application
+import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
+import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
+import play.twirl.api.Html
+import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import utils.Data._
 import viewmodels.{Message, TaskList, TaskListEntitySection}
-import views.html.taskList
 
-class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach with MockitoSugar{
+import scala.concurrent.Future
 
-  private val view = injector.instanceOf[taskList]
-  private val taskListHelper = mock[TaskListHelper]
+class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach with MockitoSugar with JsonMatchers {
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getSchemeName): TaskListController =
-    new TaskListController(
-      messagesApi,
-      FakeAuthAction,
-      dataRetrievalAction,
-      taskListHelper,
-      controllerComponents,
-      view
-    )
+  private val mockTaskListHelper = mock[TaskListHelper]
+  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  val extraModules: Seq[GuiceableModule] = Seq(
+    bind[NunjucksRenderer].toInstance(mockRenderer),
+    bind[TaskListHelper].to(mockTaskListHelper)
+  )
+  private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
+  private val templateToBeRendered = "taskList.njk"
+
+
+  private def httpPathGET: String = controllers.routes.TaskListController.onPageLoad.url
 
   private val beforeYouStartLinkText = Message("messages__schemeTaskList__before_you_start_link_text", schemeName)
   private val expectedBeforeYouStartSpoke = Seq(EntitySpoke(TaskListLink(beforeYouStartLinkText,
     controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad.url), Some(false)))
 
   private val beforeYouStartHeader = Some(Message("messages__schemeTaskList__before_you_start_header"))
+  private val beforeYouStartSection = TaskListEntitySection(None, expectedBeforeYouStartSpoke, beforeYouStartHeader)
 
-  private val schemeDetailsTL = TaskList(schemeName, TaskListEntitySection(None, expectedBeforeYouStartSpoke, beforeYouStartHeader))
+  private val schemeDetailsTL = TaskList(schemeName, beforeYouStartSection, beforeYouStartSection, Some(beforeYouStartSection))
 
-  "SchemeTaskList Controller" when {
+  val json = Json.obj(
+    "taskSections" -> schemeDetailsTL,
+    "schemeName" -> schemeName
+  )
 
-      "return OK and the correct view" in {
-        when(taskListHelper.taskList(any())).thenReturn(schemeDetailsTL)
-        val result = controller().onPageLoad()(fakeRequest)
+  override def beforeEach: Unit = {
+    super.beforeEach
+    when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
+    when(mockTaskListHelper.taskList(any())(any(), any())).thenReturn(schemeDetailsTL)
+    when(mockTaskListHelper.getSchemeName(any())).thenReturn(schemeName)
+    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+  }
 
-        status(result) mustBe OK
-        contentAsString(result) mustBe view(schemeDetailsTL, Some(schemeName))(fakeRequest, messages).toString()
-      }
+
+  "TaskList Controller" must {
+
+    "return OK and the correct view for a GET" in {
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+
+      val result = route(application, httpGETRequest(httpPathGET)).value
+
+      status(result) mustEqual OK
+
+      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+
+      templateCaptor.getValue mustEqual templateToBeRendered
+
+      jsonCaptor.getValue must containJson(json)
     }
+  }
 }
 
 

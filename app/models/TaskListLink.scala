@@ -16,9 +16,11 @@
 
 package models
 
-import viewmodels.Message
+import play.api.libs.json.{Format, Json}
 
-case class TaskListLink(text: Message, target: String, visuallyHiddenText: Option[String] = None)
+case class TaskListLink(text: String, target: String, visuallyHiddenText: Option[String] = None)
 
-
+object TaskListLink {
+  implicit lazy val formats: Format[TaskListLink] = Json.format[TaskListLink]
+}
 

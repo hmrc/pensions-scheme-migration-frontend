@@ -17,6 +17,7 @@
 package utils.datacompletion
 
 import identifiers._
+import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
 import identifiers.beforeYouStart.{EstablishedCountryId, SchemeNameId, SchemeTypeId, WorkingKnowledgeId}
 import play.api.libs.json.Reads
 import utils.UserAnswers
@@ -33,6 +34,10 @@ trait DataCompletion {
 
   def isBeforeYouStartCompleted: Boolean =
     !List(get(SchemeNameId), get(SchemeTypeId), get(EstablishedCountryId)).contains(None) && get(WorkingKnowledgeId).nonEmpty
+
+  def isMembersCompleted: Option[Boolean] = isComplete(Seq(
+    isAnswerComplete(CurrentMembersId),
+    isAnswerComplete(FutureMembersId)))
 
 
   //GENERIC METHODS

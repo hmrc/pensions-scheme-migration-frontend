@@ -68,7 +68,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with MockitoSuga
 
     "onPageLoad() is called" must {
       "return OK and the correct view with return to tasklist" in {
-        SharedMetricRegistries.clear()
+
         when(cyaHelper.viewmodel(any(), any(), any())).thenReturn(vm)
 
         val result = controller.onPageLoad()(fakeRequest)

@@ -17,15 +17,14 @@
 package helpers.spokes
 
 import models.TaskListLink
+import play.api.i18n.Messages
 import utils.UserAnswers
-import viewmodels.Message
 
 case object BeforeYouStartSpoke extends Spoke {
-  private val registrationLinkText = "messages__schemeTaskList__before_you_start_link_text"
 
-  override def changeLink(name: String): TaskListLink =
+  override def changeLink(name: String)(implicit messages: Messages): TaskListLink =
     TaskListLink(
-      Message(registrationLinkText, name),
+      messages("messages__schemeTaskList__before_you_start_link_text", name),
       controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad.url
     )
 

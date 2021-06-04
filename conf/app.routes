@@ -23,3 +23,18 @@ GET         /before-you-start/pension-advisor           controllers.beforeYouSta
 POST        /before-you-start/pension-advisor           controllers.beforeYouStartSpoke.WorkingKnowledgeController.onSubmit
 
 GET         /before-you-start/check-your-answers        controllers.beforeYouStartSpoke.CheckYourAnswersController.onPageLoad
+
+GET         /members/membership                         controllers.aboutMembership.CurrentMembersController.onPageLoad
+POST        /members/membership                         controllers.aboutMembership.CurrentMembersController.onSubmit
+
+GET         /members/membership-future                  controllers.aboutMembership.FutureMembersController.onPageLoad
+POST        /members/membership-future                  controllers.aboutMembership.FutureMembersController.onSubmit
+
+GET         /members/check-your-answers                 controllers.aboutMembership.CheckYourAnswersController.onPageLoad
+
+GET         /benefits-and-finance/what-you-will-need    controllers.benefitsAndInsurance.WhatYouWillNeedController.onPageLoad
+
+GET         /declaration                                controllers.DeclarationController.onPageLoad
+GET         /submit-declaration                         controllers.DeclarationController.onSubmit
+
+GET         /success                                    controllers.SuccessController.onPageLoad

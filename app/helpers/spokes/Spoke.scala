@@ -17,11 +17,12 @@
 package helpers.spokes
 
 import models.TaskListLink
+import play.api.i18n.Messages
 import utils.UserAnswers
 
 trait Spoke {
 
-  def changeLink(name: String): TaskListLink
+  def changeLink(name: String)(implicit messages: Messages): TaskListLink
 
   def completeFlag(answers: UserAnswers): Option[Boolean]
 }
