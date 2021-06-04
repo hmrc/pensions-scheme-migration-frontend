@@ -19,20 +19,26 @@ package controllers.benefitsAndInsurance
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
+import forms.benefitsAndInsurance.AreBenefitsSecuredFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import org.mockito.{Matchers, ArgumentCaptor}
+import identifiers.benefitsAndInsurance.AreBenefitsSecuredId
+import matchers.JsonMatchers.containJson
+import org.mockito.{ArgumentCaptor, Matchers}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
 import play.api.Application
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.JsObject
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
-import utils.{UserAnswers, Data}
-
+import utils.{Data, UserAnswers}
+import play.api.libs.json.Reads._
+import uk.gov.hmrc.viewmodels.Radios
+import utils.Data.{schemeName, ua}
 import scala.concurrent.Future
 
 class AreBenefitsSecuredControllerSpec extends ControllerSpecBase {
@@ -42,11 +48,26 @@ class AreBenefitsSecuredControllerSpec extends ControllerSpecBase {
     bind[UserAnswersCacheConnector].to(mockUserAnswersCacheConnector)
   )
 
+  private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-
   private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
+  private val httpPathGET: String = controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onPageLoad().url
+  private val httpPathPOST: String = controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onSubmit().url
+  private val form: Form[Boolean] = new AreBenefitsSecuredFormProvider()()
 
-  private val httpPathGet: String = controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onPageLoad().url
+  private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>
+    Json.obj(
+      "schemeName" -> schemeName,
+      "radios" -> Radios.yesNo(form("value"))
+    )
+
+  private val valuesValid: Map[String, Seq[String]] = Map(
+    "value" -> Seq(Data.schemeName)
+  )
+
+  private val valuesInvalid: Map[String, Seq[String]] = Map(
+    "value" -> Seq.empty
+  )
 
   override def beforeEach: Unit = {
     super.beforeEach
@@ -55,11 +76,11 @@ class AreBenefitsSecuredControllerSpec extends ControllerSpecBase {
 
   "AreBenefitsSecured Controller" must {
 
-    "Return OK for a GET" in {
-
+    "Return OK and the correct view for a GET" in {
       val ua: UserAnswers = UserAnswers().setOrException(SchemeNameId, Data.schemeName)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGet)).value
+
+      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
 
@@ -69,9 +90,82 @@ class AreBenefitsSecuredControllerSpec extends ControllerSpecBase {
         .render(Matchers.eq("benefitsAndInsurance/areBenefitsSecured.njk"), jsonCaptor.capture())(any())
 
       (jsonCaptor.getValue \ "schemeName").toOption.map(_.as[String]) mustBe Some(Data.schemeName)
-
     }
 
+    "return OK and the correct view for a GET when the question has previously been answered" in {
+      val ua: UserAnswers = UserAnswers()
+        .setOrException(SchemeNameId, Data.schemeName)
+        .setOrException(AreBenefitsSecuredId, true)
+
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+
+      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+
+      status(result) mustEqual OK
+
+      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+
+      verify(mockRenderer, times(1))
+        .render(Matchers.eq("benefitsAndInsurance/areBenefitsSecured.njk"), jsonCaptor.capture())(any())
+
+      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(true)))
+    }
+
+    "redirect to Session Expired page for a GET when there is no data" in {
+      val ua: UserAnswers = UserAnswers()
+
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+
+      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
+    }
+
+    "Save data to user answers and redirect to next page when valid data is submitted" in {
+
+      val expectedJson = Json.obj()
+
+      when(mockCompoundNavigator.nextPage(Matchers.eq(SchemeNameId), any())(any()))
+        .thenReturn(routes.CheckYourAnswersController.onPageLoad())
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
+        .thenReturn(Future.successful(Json.obj()))
+
+      mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
+
+      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+
+      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+
+      status(result) mustEqual SEE_OTHER
+
+      verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptor.capture)(any(), any())
+
+      jsonCaptor.getValue must containJson(expectedJson)
+
+      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad().url)
+    }
+
+    "return a BAD REQUEST when invalid data is submitted" in {
+      mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
+
+      val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
+
+      status(result) mustEqual BAD_REQUEST
+
+      verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
+    }
+
+    "redirect to Session Expired page for a POST when there is no data" in {
+      mutableFakeDataRetrievalAction.setDataToReturn(None)
+
+      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
+    }
   }
 
 }
