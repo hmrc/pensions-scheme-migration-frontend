@@ -48,12 +48,9 @@ class SuccessController @Inject()(
     (identify andThen getData andThen requireData).async {
       implicit request =>
 
-        val confirmationPanelText: String =
-          Html(s"""<span class="heading-large govuk-!-font-weight-bold">${msg"messages__complete__application_number_is".withArgs("1234567890").resolve}</span>""").toString
-
         minimalDetailsConnector.getPSAEmail.flatMap { email =>
           val json = Json.obj(
-            "panelHtml" -> confirmationPanelText,
+            "refNumber" -> "1234567890",
             "email" -> email,
             "yourSchemesLink" -> routes.TaskListController.onPageLoad().url,
             "submitUrl" -> routes.LogoutController.onPageLoad().url,

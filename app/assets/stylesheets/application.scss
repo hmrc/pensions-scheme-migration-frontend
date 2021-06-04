@@ -4,8 +4,6 @@ $hmrc-assets-path: "/manage-pension-scheme-accounting-for-tax/assets/lib/hmrc-fr
 @import "lib/govuk-frontend/govuk/all";
 @import "lib/hmrc-frontend/hmrc/components/header/header";
 @import "lib/hmrc-frontend/hmrc/components/page-heading/page-heading";
-@import "language-toggles.scss";
-@import "_responsive-table.scss";
 @import "_task-list.scss";
 
 .js-visible {
@@ -28,3 +26,7 @@ $hmrc-assets-path: "/manage-pension-scheme-accounting-for-tax/assets/lib/hmrc-fr
       min-height: 50px;
     }
 }
+// responsiveness for mobile screen when there more than 3 columns
+  [role="region"][aria-labelledby] {
+    overflow: auto;
+  }
