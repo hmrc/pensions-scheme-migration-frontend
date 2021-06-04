@@ -24,6 +24,6 @@ class BenefitsInsuranceNameFormProvider @Inject() extends Mappings {
 
   def apply(): Form[String] =
     Form(
-      "value" -> text("benefitsInsuranceName.error.required")
+      "value" -> text("benefitsInsuranceName.error.required").verifying("benefitsInsuranceName.error.length", _.length < 161)
     )
 }

@@ -23,10 +23,9 @@ import play.api.data.FormError
 class BenefitsInsuranceNameFormProviderSpec extends StringFieldBehaviours with Constraints {
 
   val keyBenefitsInsuranceNameRequired = "benefitsInsuranceName.error.required"
-  val keyBenefitsInsuranceNameInvalid = "benefitsInsuranceName.error.invalid"
   val form = new BenefitsInsuranceNameFormProvider()()
 
-  "phone" must {
+  "insurance name" must {
 
     val fieldName = "value"
 
@@ -41,13 +40,5 @@ class BenefitsInsuranceNameFormProviderSpec extends StringFieldBehaviours with C
       fieldName,
       requiredError = FormError(fieldName, keyBenefitsInsuranceNameRequired)
     )
-    //
-    //behave like fieldWithRegex(
-    //  form,
-    //  fieldName,
-    //  "ABC",
-    //  FormError(fieldName, keyBenefitsInsuranceNameInvalid, Seq(phoneNumberRegex))
-    //)
-
   }
 }
