@@ -81,23 +81,26 @@ trait CYAHelper {
     }
 
   private def actionAdd[A](optionURL: Option[String], visuallyHiddenText: Option[Text])(implicit
-    messages: Messages):Seq[Action] = {
+    ua: UserAnswers, rds: Reads[A], messages: Messages):Seq[Action] = {
     optionURL.toSeq.map { url =>
       Action(
         content = Html(s"<span  aria-hidden=true >${messages("site.add")}</span>"),
         href = url,
-        visuallyHiddenText = visuallyHiddenText
+        visuallyHiddenText = visuallyHiddenText,
+        attributes = Map("id" ->"cya-add")
       )
     }
   }
 
   private def actionChange[A](optionURL: Option[String], visuallyHiddenText: Option[Text])(implicit
-    messages: Messages):Seq[Action] = {
+    ua: UserAnswers, rds: Reads[A], messages: Messages):Seq[Action] = {
     optionURL.toSeq.map { url =>
       Action(
         content = Html(s"<span  aria-hidden=true >${messages("site.change")}</span>"),
         href = url,
-        visuallyHiddenText = visuallyHiddenText
+        visuallyHiddenText = visuallyHiddenText,
+        attributes = Map("id" ->"cya-change")
+
       )
     }
   }
