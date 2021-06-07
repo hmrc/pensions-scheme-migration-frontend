@@ -16,16 +16,16 @@
 
 package helpers
 
+import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance._
 import models.Address
-import identifiers.beforeYouStart.SchemeNameId
 import models.benefitsAndInsurance.BenefitsProvisionType.DefinedBenefitsOnly
 import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
 import models.requests.DataRequest
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.viewmodels.{Html, MessageInterpolators, SummaryList, Text}
-import utils.{UserAnswers, Enumerable}
+import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 
 class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
@@ -90,7 +90,8 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
     } else
       Nil
 
-    seqTop ++ seqBottom
+   val rowsWithoutDynamicIndices =  seqTop ++ seqBottom
+    rowsWithDynamicIndices(rowsWithoutDynamicIndices)
   }
 
 
