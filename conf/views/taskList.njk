@@ -64,11 +64,11 @@
                {% for item in taskSections.about.entities %}
                    <li class="app-task-list__item">
                       <span class="app-task-list__task-name">
-                      <a id="section-about-link-{{ loop.index }} " class="app-task-list__task-name" href="{{item.link.target}}" {% if item.isCompleted.nonEmpty %} aria-describedby=" section-about-status-{{ loop.index }} " {% endif %}>
+                      <a id="section-about-link-{{ loop.index -1 }} " class="app-task-list__task-name" href="{{item.link.target}}" {% if item.isCompleted.nonEmpty %} aria-describedby=" section-about-status-{{ loop.index -1 }} " {% endif %}>
                       {{ messages(item.link.text) }}
                       </a>
                       </span>
-                      <span class="app-task-list__tag {{ statusClass(item.isCompleted) }}" id="section-about-status-{{ loop.index }} "><span class="govuk-visually-hidden">{{ messages("messages__schemeTaskList__status_visuallyHidden") }}</span>{{ status(item.isCompleted) }}</span>
+                      <span class="app-task-list__tag {{ statusClass(item.isCompleted) }}" id="section-about-status-{{ loop.index -1 }} "><span class="govuk-visually-hidden">{{ messages("messages__schemeTaskList__status_visuallyHidden") }}</span>{{ status(item.isCompleted) }}</span>
                    </li>
                {% endfor %}
             </ul>
