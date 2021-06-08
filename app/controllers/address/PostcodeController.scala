@@ -53,8 +53,12 @@ trait PostcodeController extends FrontendBaseController with Retrievals {
   def post(formToJson: Form[String] => JsObject, postcodeId: TypedIdentifier[Seq[TolerantAddress]], errorMessage: String)
           (implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
     form.bindFromRequest().fold(
-      formWithErrors =>
-        renderer.render(viewTemplate, formToJson(formWithErrors)).map(BadRequest(_)),
+      formWithErrors => {
+        println("\n>>" + formWithErrors)
+        renderer.render(viewTemplate, formToJson(formWithErrors)).map(BadRequest(_))
+      }
+        ,
+
       value =>
           addressLookupConnector.addressLookupByPostCode(value).flatMap {
             case Nil =>

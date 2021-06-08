@@ -47,9 +47,9 @@ trait AddressMappings extends Mappings with Constraints with Transforms {
 
   protected def postCodeMapping(keyRequired: String, keyInvalid: String): Mapping[String] = {
     text(keyRequired)
-      .transform(postCodeTransform, noTransform)
+   //   .transform(postCodeTransform, noTransform)
       .verifying(postCode(keyInvalid))
-      .transform(postCodeValidTransform, noTransform)
+   //   .transform(postCodeValidTransform, noTransform)
   }
 
   def postCodeWithCountryMapping(keyRequired: String, keyInvalid: String, keyNonUKLength: String): Mapping[Option[String]] = {
