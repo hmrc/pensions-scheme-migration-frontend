@@ -20,7 +20,6 @@ import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import forms.address.PostcodeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import matchers.JsonMatchers.containJson
 import models.TolerantAddress
@@ -29,7 +28,6 @@ import org.mockito.{ArgumentCaptor, Matchers}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
 import play.api.Application
-import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
@@ -39,7 +37,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import utils.{UserAnswers, Data}
 import play.api.libs.json.Reads._
-import utils.Data.{schemeName, ua}
+import utils.Data.ua
 
 import scala.concurrent.Future
 
@@ -59,12 +57,6 @@ class InsurerEnterPostcodeControllerSpec extends ControllerSpecBase {
   private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
   private val httpPathGET: String = controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onPageLoad().url
   private val httpPathPOST: String = controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onSubmit().url
-  private val form: Form[String] = new PostcodeFormProvider()("insurerEnterPostcode.required", "insurerEnterPostcode.invalid")
-
-  private val jsonToPassToTemplate: Form[String] => JsObject = form =>
-    Json.obj(
-      "schemeName" -> schemeName
-    )
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq("ZZ11ZZ")
@@ -110,9 +102,6 @@ class InsurerEnterPostcodeControllerSpec extends ControllerSpecBase {
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
-
-      val expectedJson = Json.obj()
-
       val seqAddresses = Seq(TolerantAddress(Some("a"),Some("b"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")))
 
       when(mockCompoundNavigator.nextPage(any(), any())(any()))
@@ -124,16 +113,9 @@ class InsurerEnterPostcodeControllerSpec extends ControllerSpecBase {
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
-
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
-
-      verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptor.capture)(any(), any())
-
-      jsonCaptor.getValue must containJson(expectedJson)
-
       redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad().url)
     }
 

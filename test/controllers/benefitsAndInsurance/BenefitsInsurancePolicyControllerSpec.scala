@@ -63,7 +63,7 @@ class BenefitsInsurancePolicyControllerSpec extends ControllerSpecBase {
     )
 
   private val valuesValid: Map[String, Seq[String]] = Map(
-    "value" -> Seq("true")
+    "value" -> Seq("abcdef")
   )
 
   private val valuesInvalid: Map[String, Seq[String]] = Map(
@@ -126,7 +126,9 @@ class BenefitsInsurancePolicyControllerSpec extends ControllerSpecBase {
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
 
-      val expectedJson = Json.obj()
+      val expectedJson = Json.obj (
+        BenefitsInsurancePolicyId.toString -> "abcdef"
+      )
 
       when(mockCompoundNavigator.nextPage(any(), any())(any()))
         .thenReturn(routes.CheckYourAnswersController.onPageLoad())

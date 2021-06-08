@@ -19,11 +19,11 @@ package controllers.benefitsAndInsurance
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import forms.benefitsAndInsurance.{HowProvideBenefitsFormProvider, BenefitsTypeFormProvider}
+import forms.benefitsAndInsurance.HowProvideBenefitsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.benefitsAndInsurance.{BenefitsTypeId, HowProvideBenefitsId}
+import identifiers.benefitsAndInsurance.HowProvideBenefitsId
 import matchers.JsonMatchers.containJson
-import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
+import models.benefitsAndInsurance.BenefitsProvisionType
 import navigators.CompoundNavigator
 import org.mockito.{ArgumentCaptor, Matchers}
 import org.mockito.Matchers.any
@@ -128,7 +128,9 @@ class HowProvideBenefitsControllerSpec extends ControllerSpecBase {
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
 
-      val expectedJson = Json.obj()
+      val expectedJson = Json.obj(
+        HowProvideBenefitsId.toString -> BenefitsProvisionType.MoneyPurchaseOnly.toString
+      )
 
       when(mockCompoundNavigator.nextPage(any(), any())(any()))
         .thenReturn(routes.CheckYourAnswersController.onPageLoad())

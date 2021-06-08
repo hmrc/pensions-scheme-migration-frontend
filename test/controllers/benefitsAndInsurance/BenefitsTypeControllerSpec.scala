@@ -127,8 +127,9 @@ class BenefitsTypeControllerSpec extends ControllerSpecBase {
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
-
-      val expectedJson = Json.obj()
+      val expectedJson = Json.obj(
+        BenefitsTypeId.toString -> BenefitsType.CashBalanceBenefits.toString
+      )
 
       when(mockCompoundNavigator.nextPage(any(), any())(any()))
         .thenReturn(routes.CheckYourAnswersController.onPageLoad())
