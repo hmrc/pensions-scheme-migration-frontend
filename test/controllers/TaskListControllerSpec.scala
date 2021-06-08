@@ -51,14 +51,13 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
 
   private def httpPathGET: String = controllers.routes.TaskListController.onPageLoad.url
 
-  private val beforeYouStartLinkText = Message("messages__schemeTaskList__before_you_start_link_text", schemeName)
-  private val expectedBeforeYouStartSpoke = Seq(EntitySpoke(TaskListLink(beforeYouStartLinkText,
-    controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad.url), Some(false)))
+  private val expectedSpoke = Seq(EntitySpoke(TaskListLink(Message("messages__schemeTaskList__before_you_start_link_text", schemeName),
+    controllers.routes.IndexController.onPageLoad.url), Some(false)))
 
-  private val beforeYouStartHeader = Some(Message("messages__schemeTaskList__before_you_start_header"))
-  private val beforeYouStartSection = TaskListEntitySection(None, expectedBeforeYouStartSpoke, beforeYouStartHeader)
+  private val testHeader = Some(Message("messages__schemeTaskList__before_you_start_header"))
+  private val testSection = TaskListEntitySection(None, expectedSpoke, testHeader)
 
-  private val schemeDetailsTL = TaskList(schemeName, beforeYouStartSection, beforeYouStartSection, Some(beforeYouStartSection))
+  private val schemeDetailsTL = TaskList(schemeName, testSection, testSection, Some(testSection), Seq(testSection), Some(testSection))
 
   val json = Json.obj(
     "taskSections" -> schemeDetailsTL,

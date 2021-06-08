@@ -4,12 +4,11 @@
 {% from "govuk/components/radios/macro.njk"        import govukRadios %}
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
-{% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "macros/title.njk"                         import title %}
 {% from "macros/returnLink.njk"                    import returnLink %}
 
 {% block pageTitle %}
-  {{ title(messages("messages__addEstablisher_title"), form.errors) }}
+  {{ title(titleMessage, form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -28,20 +27,14 @@
 
           {{ csrf() | safe }}
 
-           <h1 id="chargeC_h1" class="govuk-heading-xl">{{messages('messages__addEstablisher_title')}}</h1>
-
-             <div role="region" aria-labelledby="chargeC_h1" class="govuk-!-margin-bottom-7">
-                 {{ govukTable(table) }}
-             </div>
-
           {{ govukRadios({
             classes: "govuk-radios--inline",
             name: 'value',
             fieldset: {
               legend: {
-                text: messages('messages__addEstablisher_radio_label'),
+                text: messages('messages__delete__heading', name),
                 isPageHeading: false,
-                classes: "govuk-fieldset__legend--s"
+                classes: "govuk-fieldset__legend--xl"
               }
             },
             items: radios,

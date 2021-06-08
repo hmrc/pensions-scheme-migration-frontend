@@ -17,6 +17,7 @@
 package models
 
 import identifiers.establishers.individual.EstablisherNameId
+import models.establishers.EstablisherKind
 import play.api.libs.json.{Format, Json}
 
 sealed trait Entity[ID] {
@@ -28,9 +29,9 @@ sealed trait Entity[ID] {
 
   def isCompleted: Boolean
 
-  def editLink(mode: Mode, srn: Option[String]): Option[String]
+  def editLink: Option[String]
 
-  def deleteLink(mode: Mode, srn: Option[String]): Option[String]
+  def deleteLink: Option[String]
 
   def index: Int
 }
@@ -42,17 +43,13 @@ object Entity {
 case class EstablisherIndividualEntity(id: EstablisherNameId, name: String, isDeleted: Boolean,
                                        isCompleted: Boolean, isNewEntity: Boolean, noOfRecords: Int) extends
   Establisher[EstablisherNameId] {
-  override def editLink(mode: Mode, srn: Option[String]): Option[String] = None
+  override def editLink: Option[String] = None
 
-  override def deleteLink(mode: Mode, srn: Option[String]): Option[String] = {
-    mode match {
-      case _ if noOfRecords > 1 => None
-//   todo uncomment once delete functionality is implemented
-//    Some(controllers.establishers.routes.ConfirmDeleteEstablisherController.onPageLoad(id.index,
-//          EstablisherKind.Individual).url)
-      case _ => None
-    }
-  }
+  override def deleteLink: Option[String] =
+    if (noOfRecords > 1)
+      Some(controllers.establishers.routes.ConfirmDeleteEstablisherController.onPageLoad(id.index, EstablisherKind.Individual).url)
+    else
+      None
 
   override def index: Int = id.index
 }

@@ -19,6 +19,7 @@ package controllers.establishers
 import controllers.Retrievals
 import controllers.actions._
 import forms.establishers.AddEstablisherFormProvider
+import helpers.AddToListHelper
 import identifiers.establishers.AddEstablisherId
 import navigators.CompoundNavigator
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -27,6 +28,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import uk.gov.hmrc.viewmodels.Radios
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,6 +39,7 @@ class AddEstablisherController @Inject()(override val messagesApi: MessagesApi,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
                                          formProvider: AddEstablisherFormProvider,
+                                         helper: AddToListHelper,
                                          val controllerComponents: MessagesControllerComponents,
                                          renderer: Renderer
                                         )(implicit val ec: ExecutionContext)
@@ -46,27 +49,34 @@ class AddEstablisherController @Inject()(override val messagesApi: MessagesApi,
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         val establishers = request.userAnswers.allEstablishersAfterDelete
+        val table = helper.mapToList(establishers, helper.establishersHead)
         val json: JsObject = Json.obj(
           "form" -> formProvider(establishers),
-          "establishers" -> establishers,
+          "table" -> table,
+          "radios" -> Radios.yesNo(formProvider(establishers)("value")),
           "schemeName" -> existingSchemeName
         )
-        renderer.render("addEstablishers.njk", json).map(Ok(_))
+        renderer.render("establishers/addEstablisher.njk", json).map(Ok(_))
     }
 
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val establishers = request.userAnswers.allEstablishersAfterDelete
+      val table = helper.mapToList(establishers, helper.establishersHead)
+
       formProvider(establishers).bindFromRequest().fold(
         formWithErrors => {
           val json: JsObject = Json.obj(
             "form" -> formWithErrors,
-            "establishers" -> establishers,
+            "table" -> table,
+            "radios" -> Radios.yesNo(formWithErrors("value")),
             "schemeName" -> existingSchemeName
           )
-          renderer.render("addEstablishers.njk", json).map(BadRequest(_))},
+          renderer.render("establishers/addEstablisher.njk", json).map(BadRequest(_))},
         value =>
           Future.successful(Redirect(navigator.nextPage(AddEstablisherId(value), request.userAnswers)))
       )
   }
+
+
 }

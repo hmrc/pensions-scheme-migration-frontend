@@ -16,67 +16,72 @@
 
 package controllers.establishers.individual
 
+import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.PersonNameFormProvider
 import identifiers.establishers.individual.EstablisherNameId
 import models.requests.DataRequest
-import models.{Index, Mode, PersonName}
-import navigators.Navigator
+import models.{Index, PersonName}
+import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.UserAnswers
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class EstablisherNameController @Inject()(override val messagesApi: MessagesApi,
-                                           val navigator: Navigator,
+                                           val navigator: CompoundNavigator,
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
                                            formProvider: PersonNameFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
+                                          userAnswersCacheConnector: UserAnswersCacheConnector,
                                           renderer: Renderer
                                          )(implicit val executionContext: ExecutionContext) extends
-  FrontendBaseController with I18nSupport with Retrievals {
+  FrontendBaseController with I18nSupport with Retrievals with NunjucksSupport {
 
-  def onPageLoad(mode: Mode, index: Index, srn: Option[String]): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData) {
+  private def form(implicit messages: Messages): Form[PersonName] = formProvider("messages__error__establisher")
+
+  def onPageLoad(index: Index): Action[AnyContent] =
+    (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        val preparedForm = request.userAnswers.get[PersonName](EstablisherNameId(index)) match {
-          case None => form
-          case Some(value) => form.fill(value)
-        }
-        Ok(view(preparedForm, viewmodel(mode, index, srn), existingSchemeName))
+        val preparedForm: Form[PersonName] =
+          request.userAnswers.get[PersonName](EstablisherNameId(index)) match {
+            case None => form
+            case Some(value) => form.fill(value)
+          }
+        val json = Json.obj(
+          "form" -> preparedForm,
+          "schemeName" -> existingSchemeName
+        )
+        renderer.render("establishers/individual/establisherName.njk", json).flatMap(view => Future.successful(Ok(view)))
     }
 
-  def onSubmit(mode: Mode, index: Index, srn: Option[String]): Action[AnyContent] =
+  def onSubmit(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         form.bindFromRequest().fold(
-          (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(view(formWithErrors, viewmodel(mode, index, srn), existingSchemeName))),
-          value => {
-            userAnswersService.save(mode, srn, EstablisherNameId(index), value).map {
-              cacheMap =>
-                Redirect(navigator.nextPage(EstablisherNameId(index), mode, UserAnswers(cacheMap), srn))
-            }
-          }
+          (formWithErrors: Form[_]) => {
+            val json = Json.obj(
+              "form" -> formWithErrors,
+              "schemeName" -> existingSchemeName
+            )
+            renderer.render("establishers/individual/establisherName.njk", json).map(BadRequest(_))
+          },
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(EstablisherNameId(index), value))
+              _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+            } yield
+              Redirect(navigator.nextPage(EstablisherNameId(index), updatedAnswers))
         )
     }
 
-  private def form(implicit request: DataRequest[AnyContent]) = formProvider("messages__error__establisher")
-
-  private def viewmodel(mode: Mode, index: Index, srn: Option[String]): CommonFormWithHintViewModel =
-    CommonFormWithHintViewModel(
-    postCall = routes.EstablisherNameController.onSubmit(mode, index, srn),
-    title = Message("messages__individualName__title"),
-    heading = Message("messages__individualName__heading"),
-    srn = srn
-  )
 }

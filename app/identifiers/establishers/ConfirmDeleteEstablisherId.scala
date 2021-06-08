@@ -14,20 +14,10 @@
  * limitations under the License.
  */
 
-import com.google.inject.AbstractModule
-import com.google.inject.multibindings.Multibinder
-import navigators._
+package identifiers.establishers
 
-class PODSModule extends AbstractModule {
+import identifiers.TypedIdentifier
 
-  override def configure(): Unit = {
-
-    val navigators = Multibinder.newSetBinder(binder(), classOf[Navigator])
-    navigators.addBinding().to(classOf[BeforeYouStartNavigator])
-    navigators.addBinding().to(classOf[AboutNavigator])
-    navigators.addBinding().to(classOf[EstablishersNavigator])
-
-    bind(classOf[CompoundNavigator]).to(classOf[CompoundNavigatorImpl])
-  }
+case object ConfirmDeleteEstablisherId extends TypedIdentifier[Boolean] {
+  override def toString: String = "confirmDeleteEstablisher"
 }
-

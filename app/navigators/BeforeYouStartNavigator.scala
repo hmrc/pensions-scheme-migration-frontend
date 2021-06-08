@@ -25,8 +25,7 @@ import models.requests.DataRequest
 import play.api.mvc.{AnyContent, Call}
 import utils.UserAnswers
 
-class BeforeYouStartNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector)
-  extends Navigator {
+class BeforeYouStartNavigator extends Navigator {
 
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {

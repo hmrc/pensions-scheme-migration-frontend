@@ -176,6 +176,13 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
     }
   }
 
+  def establishersCount: Int = {
+    (data \ EstablishersId.toString).validate[JsArray] match {
+      case JsSuccess(establisherArray, _) => establisherArray.value.size
+      case _ => 0
+    }
+  }
+
   private def notDeleted: Reads[JsBoolean] = __.read(JsBoolean(false))
 
   private def asJsResultSeq[A](jsResults: Seq[JsResult[A]]): JsResult[Seq[A]] = {

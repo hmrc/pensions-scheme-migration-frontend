@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-import com.google.inject.AbstractModule
-import com.google.inject.multibindings.Multibinder
-import navigators._
+package forms.establishers
 
-class PODSModule extends AbstractModule {
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
+import play.api.i18n.Messages
+import viewmodels.Message
 
-  override def configure(): Unit = {
+class ConfirmDeleteEstablisherFormProvider @Inject() extends Mappings {
 
-    val navigators = Multibinder.newSetBinder(binder(), classOf[Navigator])
-    navigators.addBinding().to(classOf[BeforeYouStartNavigator])
-    navigators.addBinding().to(classOf[AboutNavigator])
-    navigators.addBinding().to(classOf[EstablishersNavigator])
-
-    bind(classOf[CompoundNavigator]).to(classOf[CompoundNavigatorImpl])
-  }
+  def apply(name: String)(implicit messages: Messages): Form[Boolean] =
+    Form(
+      "value" -> boolean(Message("messages__confirmDelete__error_required", name))
+    )
 }
-
