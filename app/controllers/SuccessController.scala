@@ -53,7 +53,7 @@ class SuccessController @Inject()(
             "refNumber" -> "1234567890",
             "email" -> email,
             "yourSchemesLink" -> routes.TaskListController.onPageLoad().url,
-            "submitUrl" -> routes.LogoutController.onPageLoad().url,
+            "submitUrl" -> routes.LogoutController.onPageLoad().url
           )
 
           renderer.render("success.njk", json).flatMap { viewHtml =>
