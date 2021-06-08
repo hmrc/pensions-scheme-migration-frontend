@@ -73,7 +73,7 @@ class InsurerSelectAddressController @Inject()(val appConfig: AppConfig,
       implicit request =>
         InsurerEnterPostCodeId.retrieve.right.map { addresses =>
           val name = request.userAnswers.get(BenefitsInsuranceNameId)
-            .getOrElse(request2Messages(request)messages("benefitsInsuranceUnknown"))
+            .getOrElse(request2Messages(request)("benefitsInsuranceUnknown"))
 
           form => Json.obj(
             "form" -> form,
