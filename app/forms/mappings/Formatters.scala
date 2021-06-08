@@ -133,6 +133,32 @@ trait Formatters extends Transforms with Constraints {
       Map(key -> value.getOrElse(""))
   }
 
+  private def tidyPostcode(value:String):String = {
+      if (value.contains(" ")) {
+        value
+      } else {
+        value.substring(0, value.length - 3) + " " + value.substring(value.length - 3, value.length)
+      }
 
+  }
 
+  private[mappings] def postcodeFormatter(
+    requiredKey: String,
+    invalidKey: String
+  ): Formatter[String] = new Formatter[String] {
+
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] = {
+      val postCode = data.get(key).map(_.replaceAll(" {2,}", " ").toUpperCase)
+      (postCode, requiredKey) match {
+        case (None, rk) => Left(Seq(FormError(key, rk)))
+        case (Some(zip), rk) if zip.isEmpty => Left(Seq(FormError(key, rk)))
+        case (Some(zip), _) if zip.matches(regexPostcode) => Right(tidyPostcode(zip))
+        case (Some(_), _) => Left(Seq(FormError(key, invalidKey)))
+        case _ => Right("")
+      }
+    }
+
+    override def unbind(key: String, value: String): Map[String, String] =
+      Map(key -> value)
+  }
 }

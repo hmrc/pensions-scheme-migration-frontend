@@ -45,12 +45,7 @@ trait AddressMappings extends Mappings with Constraints with Transforms {
         )
       )
 
-  protected def postCodeMapping(keyRequired: String, keyInvalid: String): Mapping[String] = {
-    text(keyRequired)
-   //   .transform(postCodeTransform, noTransform)
-      .verifying(postCode(keyInvalid))
-   //   .transform(postCodeValidTransform, noTransform)
-  }
+
 
   def postCodeWithCountryMapping(keyRequired: String, keyInvalid: String, keyNonUKLength: String): Mapping[Option[String]] = {
 
@@ -77,13 +72,14 @@ trait AddressMappings extends Mappings with Constraints with Transforms {
     }
 
     new CustomBindMapping(fieldName, bind, unbind)
-
   }
 
   protected def optionalPostcode(requiredKey: Option[String],
     invalidKey: String, nonUkLengthKey: String, countryFieldName: String): FieldMapping[Option[String]] =
     of(optionalPostcodeFormatter(requiredKey, invalidKey, nonUkLengthKey, countryFieldName))
 
+  protected def postcode(requiredKey: String, invalidKey: String): FieldMapping[String] =
+    of(postcodeFormatter(requiredKey, invalidKey))
 
   def countryMapping(countryOptions: CountryOptions, keyRequired: String, keyInvalid: String): Mapping[String] = {
     text(keyRequired)

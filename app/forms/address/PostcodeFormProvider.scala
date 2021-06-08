@@ -23,5 +23,5 @@ import play.api.data.Form
 class PostcodeFormProvider @Inject() extends AddressMappings {
 
   def apply(keyRequired: String, keyInvalid: String): Form[String] =
-    Form("value" -> postCodeMapping(keyRequired, keyInvalid))
+    Form("value" -> postcode(keyRequired, keyInvalid))
 }
