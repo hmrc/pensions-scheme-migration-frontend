@@ -27,7 +27,7 @@ GET         /before-you-start/check-your-answers        controllers.beforeYouSta
 GET         /members/membership                         controllers.aboutMembership.CurrentMembersController.onPageLoad
 POST        /members/membership                         controllers.aboutMembership.CurrentMembersController.onSubmit
 
-GET         /members/meoccupationalmbership-future                  controllers.aboutMembership.FutureMembersController.onPageLoad
+GET         /members/membership-future                  controllers.aboutMembership.FutureMembersController.onPageLoad
 POST        /members/membership-future                  controllers.aboutMembership.FutureMembersController.onSubmit
 
 GET         /benefits-and-finance/secured-benefits  controllers.benefitsAndInsurance.AreBenefitsSecuredController.onPageLoad

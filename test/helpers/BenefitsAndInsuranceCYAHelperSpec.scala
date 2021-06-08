@@ -56,7 +56,7 @@ class BenefitsAndInsuranceCYAHelperSpec
   private val insurerPolicyNo = "test"
   private val insurerAddress = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
 
- case class Link(text: String, target: String, visuallyHiddenText: Option[GovUKMsg] = None)
+ case class Link(text: String, target: String, visuallyHiddenText: Option[GovUKMsg] = None, attributes:Map[String,String]=Map.empty)
 
   private def summaryListRow(key:String, valueMsgKey:String, target:Option[Link] = None):Row = {
     SummaryList.Row(
@@ -70,7 +70,8 @@ class BenefitsAndInsuranceCYAHelperSpec
       target.toSeq.map(t => Action(
         content = Html(s"<span  aria-hidden=true >${t.text}</span>") ,
         href = t.target,
-        visuallyHiddenText = t.visuallyHiddenText)
+        visuallyHiddenText = t.visuallyHiddenText,
+        attributes = t.attributes)
       )
     )
   }
@@ -87,7 +88,8 @@ class BenefitsAndInsuranceCYAHelperSpec
       target.toSeq.map(t => Action(
         content = Html(s"<span  aria-hidden=true >${t.text}</span>") ,
         href = t.target,
-        visuallyHiddenText = t.visuallyHiddenText)
+        visuallyHiddenText = t.visuallyHiddenText,
+        attributes = t.attributes)
       )
     )
   }
@@ -104,7 +106,8 @@ class BenefitsAndInsuranceCYAHelperSpec
       target.toSeq.map(t => Action(
         content = Html(s"<span  aria-hidden=true >${t.text}</span>") ,
         href = t.target,
-        visuallyHiddenText = t.visuallyHiddenText)
+        visuallyHiddenText = t.visuallyHiddenText,
+        attributes = t.attributes)
       )
     )
   }
@@ -150,7 +153,10 @@ class BenefitsAndInsuranceCYAHelperSpec
           Link(
             text = Messages("site.change"),
             target = controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onPageLoad().url,
-            visuallyHiddenText = Some(GovUKMsg("howProvideBenefits.visuallyHidden", schemeName))
+            visuallyHiddenText = Some(GovUKMsg("howProvideBenefits.visuallyHidden", schemeName)),
+            attributes = Map("id" ->"cya-2-change")
+
+
           )
         )
       )
@@ -162,7 +168,8 @@ class BenefitsAndInsuranceCYAHelperSpec
           Link(
             text = Messages("site.change"),
             target = controllers.benefitsAndInsurance.routes.BenefitsTypeController.onPageLoad().url,
-            visuallyHiddenText = Some(GovUKMsg("benefitsType.visuallyHidden", schemeName))
+            visuallyHiddenText = Some(GovUKMsg("benefitsType.visuallyHidden", schemeName)),
+            attributes = Map("id" ->"cya-3-change")
           )
         )
       )
@@ -174,7 +181,8 @@ class BenefitsAndInsuranceCYAHelperSpec
           Link(
             text = Messages("site.change"),
             target = controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onPageLoad().url,
-            visuallyHiddenText = Some(GovUKMsg("areBenefitsSecured.visuallyHidden"))
+            visuallyHiddenText = Some(GovUKMsg("areBenefitsSecured.visuallyHidden")),
+            attributes = Map("id" ->"cya-4-change")
           )
         )
       )
@@ -186,7 +194,8 @@ class BenefitsAndInsuranceCYAHelperSpec
           Link(
             text = Messages("site.change"),
             target = controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onPageLoad().url,
-            visuallyHiddenText = Some(GovUKMsg("benefitsInsuranceName.visuallyHidden"))
+            visuallyHiddenText = Some(GovUKMsg("benefitsInsuranceName.visuallyHidden")),
+            attributes = Map("id" ->"cya-5-change")
           )
         )
       )
@@ -198,7 +207,8 @@ class BenefitsAndInsuranceCYAHelperSpec
           Link(
             text = Messages("site.change"),
             target = controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onPageLoad().url,
-            visuallyHiddenText = Some(GovUKMsg("benefitsInsurancePolicy.visuallyHidden"))
+            visuallyHiddenText = Some(GovUKMsg("benefitsInsurancePolicy.visuallyHidden")),
+            attributes = Map("id" ->"cya-6-change")
           )
         )
       )
@@ -210,7 +220,8 @@ class BenefitsAndInsuranceCYAHelperSpec
           Link(
             text = Messages("site.change"),
             target = controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onPageLoad().url,
-            visuallyHiddenText = Some(GovUKMsg("addressList.visuallyHidden"))
+            visuallyHiddenText = Some(GovUKMsg("addressList.visuallyHidden")),
+            attributes = Map("id" ->"cya-7-change")
           )
         )
       )
