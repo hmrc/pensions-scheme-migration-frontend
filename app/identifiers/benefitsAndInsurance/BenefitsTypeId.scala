@@ -20,5 +20,5 @@ import identifiers.TypedIdentifier
 import models.benefitsAndInsurance.BenefitsType
 
 case object BenefitsTypeId extends TypedIdentifier[BenefitsType] {
-  override def toString: String = "benefitsType"
+  override def toString: String = "moneyPurchaseBenefits"
 }

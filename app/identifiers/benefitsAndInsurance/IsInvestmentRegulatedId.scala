@@ -19,5 +19,5 @@ package identifiers.benefitsAndInsurance
 import identifiers.TypedIdentifier
 
 case object IsInvestmentRegulatedId extends TypedIdentifier[Boolean] {
-  override def toString: String = "isInvestmentRegulated"
+  override def toString: String = "investmentRegulated"
 }

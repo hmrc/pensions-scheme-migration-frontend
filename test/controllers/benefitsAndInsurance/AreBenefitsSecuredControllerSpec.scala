@@ -23,6 +23,7 @@ import forms.benefitsAndInsurance.AreBenefitsSecuredFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.AreBenefitsSecuredId
 import matchers.JsonMatchers.containJson
+import navigators.CompoundNavigator
 import org.mockito.{ArgumentCaptor, Matchers}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -35,17 +36,19 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
-import utils.{Data, UserAnswers}
+import utils.{UserAnswers, Data}
 import play.api.libs.json.Reads._
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
+
 import scala.concurrent.Future
 
 class AreBenefitsSecuredControllerSpec extends ControllerSpecBase {
 
   val extraModules: Seq[GuiceableModule] = Seq(
     bind[NunjucksRenderer].toInstance(mockRenderer),
-    bind[UserAnswersCacheConnector].to(mockUserAnswersCacheConnector)
+    bind[UserAnswersCacheConnector].to(mockUserAnswersCacheConnector),
+    bind[CompoundNavigator].toInstance(mockCompoundNavigator)
   )
 
   private val userAnswers: Option[UserAnswers] = Some(ua)
@@ -62,7 +65,7 @@ class AreBenefitsSecuredControllerSpec extends ControllerSpecBase {
     )
 
   private val valuesValid: Map[String, Seq[String]] = Map(
-    "value" -> Seq(Data.schemeName)
+    "value" -> Seq("true")
   )
 
   private val valuesInvalid: Map[String, Seq[String]] = Map(
@@ -127,7 +130,7 @@ class AreBenefitsSecuredControllerSpec extends ControllerSpecBase {
 
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(SchemeNameId), any())(any()))
+      when(mockCompoundNavigator.nextPage(any(), any())(any()))
         .thenReturn(routes.CheckYourAnswersController.onPageLoad())
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))

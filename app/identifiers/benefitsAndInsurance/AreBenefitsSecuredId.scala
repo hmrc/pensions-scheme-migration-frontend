@@ -17,7 +17,17 @@
 package identifiers.benefitsAndInsurance
 
 import identifiers.TypedIdentifier
+import utils.UserAnswers
 
 case object AreBenefitsSecuredId extends TypedIdentifier[Boolean] {
-  override def toString: String = "areBenefitsSecured"
+  override def toString: String = "securedBenefits"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): UserAnswers = {
+    value match {
+      case Some(false) => userAnswers.removeAll(Set(BenefitsInsuranceNameId, BenefitsInsurancePolicyId,
+        InsurerEnterPostCodeId, InsurerAddressListId, InsurerAddressId))
+      case _ => super.cleanup(value, userAnswers)
+    }
+  }
+
 }
