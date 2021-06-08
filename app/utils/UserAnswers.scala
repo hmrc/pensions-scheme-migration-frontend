@@ -20,7 +20,7 @@ import identifiers.TypedIdentifier
 import play.api.libs.json._
 import utils.datacompletion.DataCompletion
 
-import scala.util.{Failure, Success, Try}
+import scala.util.{Try, Success, Failure}
 
 final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Implicits with DataCompletion {
 
@@ -52,7 +52,7 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
         Failure(JsResultException(errors))
     }
 
-    updatedData.flatMap {
+    updatedData.map {
       d =>
         val updatedAnswers = copy(data = d)
         id.cleanup(Some(value), updatedAnswers)
@@ -97,20 +97,37 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
     }
   }
 
-  def remove[A](id: TypedIdentifier[A]): Try[UserAnswers] = {
+  def remove[A](id: TypedIdentifier[A]): UserAnswers = {
     val updatedData = data.removeObject(id.path) match {
       case JsSuccess(jsValue, _) =>
-        Success(jsValue)
+        jsValue
       case JsError(_) =>
         throw new RuntimeException("Unable to remove id: " + id)
     }
 
-    updatedData.flatMap {
-      d =>
-        val updatedAnswers = copy(data = d)
-        id.cleanup(None, updatedAnswers)
+    val updatedAnswers = copy(data = updatedData)
+    id.cleanup(None, updatedAnswers)
+  }
+
+  def removeWithPath(path: JsPath): UserAnswers = {
+    data.removeObject(path) match {
+      case JsSuccess(jsValue, _) => UserAnswers(jsValue)
+      case JsError(_) => throw new RuntimeException("Unable to remove with path: " + path)
     }
   }
+
+  def removeAll(ids: Set[TypedIdentifier[_]]): UserAnswers = {
+    @scala.annotation.tailrec
+    def removeNext(ids: Set[TypedIdentifier[_]], ua: UserAnswers): UserAnswers = {
+      if (ids.isEmpty) {
+        ua
+      } else {
+        removeNext(ids.tail, ua.removeWithPath(ids.head.path))
+      }
+    }
+    removeNext(ids, this)
+  }
+
 }
 
 

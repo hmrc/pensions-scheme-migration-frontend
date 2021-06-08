@@ -19,5 +19,5 @@ package identifiers.benefitsAndInsurance
 import identifiers.TypedIdentifier
 
 case object BenefitsInsuranceNameId extends TypedIdentifier[String] {
-  override def toString: String = "benefitsInsuranceName"
+  override def toString: String = "insuranceCompanyName"
 }

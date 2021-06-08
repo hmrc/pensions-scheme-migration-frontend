@@ -18,7 +18,19 @@ package identifiers.benefitsAndInsurance
 
 import identifiers.TypedIdentifier
 import models.benefitsAndInsurance.BenefitsProvisionType
+import models.benefitsAndInsurance.BenefitsProvisionType.DefinedBenefitsOnly
+import utils.UserAnswers
 
 case object HowProvideBenefitsId extends TypedIdentifier[BenefitsProvisionType] {
-  override def toString: String = "howProvideBenefits"
+  override def toString: String = "benefits"
+
+  override def cleanup(value: Option[BenefitsProvisionType], userAnswers: UserAnswers): UserAnswers =
+    value match {
+      case Some(DefinedBenefitsOnly) =>
+        if(userAnswers.get(BenefitsTypeId).isDefined)
+          userAnswers.remove(BenefitsTypeId)
+        else
+          super.cleanup(value, userAnswers)
+      case _ => super.cleanup(value, userAnswers)
+    }
 }
