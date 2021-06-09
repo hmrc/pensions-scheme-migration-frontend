@@ -46,7 +46,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val getPSAEmail: String = s"$pensionsAdministratorUrl${config.get[String]("urls.get-psa-email")}"
   lazy val getPSAName: String = s"$pensionsAdministratorUrl${config.get[String]("urls.get-psa-name")}"
 
-  lazy val contactHost: String = baseUrl("contact-frontend")
   val reportAProblemPartialUrl: String = getConfigString("contact-frontend.report-problem-url.with-js")
   val reportAProblemNonJSUrl: String = getConfigString("contact-frontend.report-problem-url.non-js")
   val betaFeedbackUrl: String = getConfigString("contact-frontend.beta-feedback-url.authenticated")
