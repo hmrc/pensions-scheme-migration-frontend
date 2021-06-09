@@ -35,14 +35,13 @@ trait NavigatorBehaviour
                    (call: Call, ua: Option[UserAnswers] = None): (Identifier, UserAnswers, Call) =
     Tuple3(id, ua.getOrElse(UserAnswers()), call)
 
-  protected def navigatorWithRoutesForMode(mode: Mode)
-                                          (
+  protected def navigatorWithRoutesForMode(
                                             navigator: CompoundNavigator,
                                             routes: TableFor3[Identifier, UserAnswers, Call]
                                           ): Unit = {
     forAll(routes) {
       (id: Identifier, userAnswers: UserAnswers, call: Call) =>
-        s"move from $id to $call in ${Mode.jsLiteral.to(mode)} with data: ${userAnswers.toString}" in {
+        s"move from $id to $call with data: ${userAnswers.toString}" in {
           val result = navigator.nextPage(id, userAnswers)(request)
           result mustBe call
         }

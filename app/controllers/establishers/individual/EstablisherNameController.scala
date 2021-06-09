@@ -69,6 +69,7 @@ class EstablisherNameController @Inject()(override val messagesApi: MessagesApi,
       implicit request =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
+            println("\n >>>>>>>>>>>>>>>>>>>> "+formWithErrors)
             val json = Json.obj(
               "form" -> formWithErrors,
               "schemeName" -> existingSchemeName

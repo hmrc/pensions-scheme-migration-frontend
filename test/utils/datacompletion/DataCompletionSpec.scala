@@ -16,7 +16,9 @@
 
 package utils.datacompletion
 
-import identifiers.beforeYouStart.{SchemeNameId, WorkingKnowledgeId}
+import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
+import identifiers.beforeYouStart.{EstablishedCountryId, SchemeNameId, SchemeTypeId, WorkingKnowledgeId}
+import models.{Members, SchemeType}
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import utils.Data.ua
 import utils.{Enumerable, UserAnswers}
@@ -58,6 +60,42 @@ class DataCompletionSpec extends WordSpec with MustMatchers with OptionValues wi
 
       "return Some(true) when answer is present" in {
         ua.isAnswerComplete(SchemeNameId) mustBe Some(true)
+      }
+    }
+
+    "isBeforeYouStartCompleted" must {
+      "return true when all the answers are complete" in {
+        val answers = UserAnswers().set(SchemeNameId, "name").flatMap(
+          _.set(SchemeTypeId, SchemeType.SingleTrust).flatMap(
+            _.set(EstablishedCountryId, "GB").flatMap(
+              _.set(WorkingKnowledgeId, true)
+            ))).get
+        answers.isBeforeYouStartCompleted mustBe true
+      }
+
+      "return false when not all the answers are complete" in {
+        val answers = UserAnswers().set(SchemeNameId, "name").flatMap(
+          _.set(SchemeTypeId, SchemeType.SingleTrust).flatMap(
+            _.set(EstablishedCountryId, "GB"))).get
+        answers.isBeforeYouStartCompleted mustBe false
+      }
+
+    }
+
+    "isMembersCompleted" must {
+      "return true when all the answers are completed" in {
+        val answers = UserAnswers().set(CurrentMembersId, Members.One).flatMap(
+          _.set(FutureMembersId, Members.One)).get
+        answers.isMembersCompleted.value mustBe true
+      }
+
+      "return false when all answers not completed" in {
+        val answers = UserAnswers().set(CurrentMembersId, Members.One).get
+        answers.isMembersCompleted.value mustBe false
+      }
+
+      "return None when there is no data" in {
+        UserAnswers().isMembersCompleted mustBe None
       }
     }
 

@@ -19,7 +19,7 @@ package navigators
 import controllers.establishers.routes._
 import identifiers._
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.{AddEstablisherId, EstablisherKindId}
+import identifiers.establishers.{AddEstablisherId, ConfirmDeleteEstablisherId, EstablisherKindId}
 import models.Index
 import models.establishers.EstablisherKind
 import models.requests.DataRequest
@@ -33,6 +33,7 @@ class EstablishersNavigator extends Navigator with Enumerable.Implicits {
     case EstablisherKindId(index) => establisherKindRoutes(index, ua)
     case EstablisherNameId(_) => AddEstablisherController.onPageLoad()
     case AddEstablisherId(value) => addEstablisherRoutes(value, ua)
+    case ConfirmDeleteEstablisherId => AddEstablisherController.onPageLoad()
   }
 
   private def establisherKindRoutes(index: Index, ua: UserAnswers): Call =

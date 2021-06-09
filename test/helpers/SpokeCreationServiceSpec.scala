@@ -18,15 +18,20 @@ package helpers
 
 import base.SpecBase
 import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}
+import identifiers.establishers.EstablisherKindId
+import identifiers.establishers.individual.EstablisherNameId
+import models.establishers.EstablisherKind
 import models.{EntitySpoke, _}
 import org.scalatest.{MustMatchers, OptionValues}
 import utils.Data.{schemeName, ua}
+import utils.Enumerable
 import viewmodels.Message
 
 class SpokeCreationServiceSpec
   extends SpecBase
     with MustMatchers
-    with OptionValues {
+    with OptionValues
+    with Enumerable.Implicits {
 
   val spokeCreationService = new SpokeCreationService()
 
@@ -38,10 +43,69 @@ class SpokeCreationServiceSpec
         .set(EstablishedCountryId, "GB").get
 
       val expectedSpoke = Seq(EntitySpoke(TaskListLink(Message("messages__schemeTaskList__before_you_start_link_text", schemeName),
-        controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad.url), Some(true)))
+        controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad().url), Some(true)))
 
       val result = spokeCreationService.getBeforeYouStartSpoke(userAnswers, schemeName)
       result mustBe expectedSpoke
+    }
+  }
+
+  "getAboutSpoke" when {
+    "in subscription" must {
+      "display all the spokes with link to first page, blank status if the spoke is uninitiated" in {
+
+        val expectedSpoke = Seq(
+          EntitySpoke(TaskListLink(Message("messages__schemeTaskList__about_members_link_text", schemeName),
+            controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad().url), None)
+        )
+
+        val result = spokeCreationService.membershipDetailsSpoke(ua, schemeName)
+        result mustBe expectedSpoke
+      }
+
+    }
+  }
+
+  "getAddEstablisherHeaderSpokes" must {
+    "return no spokes when no establishers and view only" in {
+      val result = spokeCreationService.getAddEstablisherHeaderSpokes(ua, viewOnly = true)
+      result mustBe Nil
+    }
+
+    "return all the spokes with appropriate links when no establishers and NOT view only" in {
+      val expectedSpoke =
+        Seq(EntitySpoke(
+          TaskListLink(Message("messages__schemeTaskList__sectionEstablishers_add_link"),
+            controllers.establishers.routes.EstablisherKindController.onPageLoad(0).url), None)
+        )
+
+      val result = spokeCreationService.getAddEstablisherHeaderSpokes(ua, viewOnly = false)
+      result mustBe expectedSpoke
+    }
+
+    "return all the spokes with appropriate links when establishers and NOT view only" in {
+      val userAnswers = ua.set(EstablisherKindId(0), EstablisherKind.Individual).flatMap(
+        _.set(EstablisherNameId(0), PersonName("a", "b"))).get
+
+      val expectedSpoke =
+        Seq(EntitySpoke(
+          TaskListLink(Message("messages__schemeTaskList__sectionEstablishers_change_link"),
+            controllers.establishers.routes.AddEstablisherController.onPageLoad().url), None)
+        )
+
+      val result = spokeCreationService.getAddEstablisherHeaderSpokes(userAnswers, viewOnly = false)
+      result mustBe expectedSpoke
+    }
+  }
+
+  "declarationSpoke" must {
+    "return declaration spoke with link" in {
+      val expectedSpoke = Seq(EntitySpoke(TaskListLink(
+          messages("messages__schemeTaskList__declaration_link"),
+          controllers.routes.DeclarationController.onPageLoad().url)
+        ))
+
+      spokeCreationService.declarationSpoke mustBe expectedSpoke
     }
   }
 

@@ -67,7 +67,7 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
   : Seq[TaskListEntitySection] = {
     val seqEstablishers = userAnswers.allEstablishers
 
-    val nonDeletedEstablishers = for ((establisher, _) <- seqEstablishers.zipWithIndex) yield {
+    val nonDeletedEstablishers: Seq[Option[TaskListEntitySection]] = for ((establisher, _) <- seqEstablishers.zipWithIndex) yield {
       if (establisher.isDeleted) None else {
         establisher.id match {
 

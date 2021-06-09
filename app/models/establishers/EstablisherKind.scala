@@ -29,7 +29,7 @@ object EstablisherKind {
   )
 
   def radios(form: Form[_]): Seq[Radios.Item] = {
-    val items = values.map(value => Radios.Radio(msg"establishers.${value.toString}", value.toString))
+    val items = values.map(value => Radios.Radio(msg"kind.${value.toString}", value.toString))
     Radios(form("value"), items)
   }
 

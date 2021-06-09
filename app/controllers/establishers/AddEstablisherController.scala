@@ -49,7 +49,7 @@ class AddEstablisherController @Inject()(override val messagesApi: MessagesApi,
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         val establishers = request.userAnswers.allEstablishersAfterDelete
-        val table = helper.mapToList(establishers, helper.establishersHead)
+        val table = helper.mapEstablishersToTable(establishers)
         val json: JsObject = Json.obj(
           "form" -> formProvider(establishers),
           "table" -> table,
@@ -62,7 +62,7 @@ class AddEstablisherController @Inject()(override val messagesApi: MessagesApi,
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val establishers = request.userAnswers.allEstablishersAfterDelete
-      val table = helper.mapToList(establishers, helper.establishersHead)
+      val table = helper.mapEstablishersToTable(establishers)
 
       formProvider(establishers).bindFromRequest().fold(
         formWithErrors => {

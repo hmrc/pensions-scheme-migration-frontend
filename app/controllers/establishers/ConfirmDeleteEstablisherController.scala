@@ -115,7 +115,7 @@ class ConfirmDeleteEstablisherController @Inject()(override val messagesApi: Mes
           "submitUrl" -> routes.ConfirmDeleteEstablisherController.onSubmit(establisherIndex, establisherKind).url,
           "schemeName" -> existingSchemeName
         )
-        renderer.render("delete.njk", json).map(Ok(_))
+        renderer.render("delete.njk", json).map(BadRequest(_))
       },
       value => {
         val deletionResult: Try[UserAnswers] = if (value) {

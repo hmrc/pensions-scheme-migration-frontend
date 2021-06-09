@@ -43,7 +43,7 @@ class BeforeYouStartNavigatorSpec
       )
 
     "in NormalMode" must {
-      behave like navigatorWithRoutesForMode(NormalMode)(navigator, navigation)
+      behave like navigatorWithRoutesForMode(navigator, navigation)
     }
   }
 }

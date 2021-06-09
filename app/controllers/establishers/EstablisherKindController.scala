@@ -51,7 +51,6 @@ class EstablisherKindController @Inject()(
   FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits with NunjucksSupport {
 
   private val form = formProvider()
-  private val postCall = routes.EstablisherKindController.onSubmit _
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
@@ -60,8 +59,7 @@ class EstablisherKindController @Inject()(
         val json = Json.obj(
           "form" -> formWithData,
           "schemeName" -> existingSchemeName,
-          "radios" -> EstablisherKind.radios(formWithData),
-          "submitUrl" -> postCall(index).url
+          "radios" -> EstablisherKind.radios(formWithData)
         )
         renderer.render("establishers/establisherKind.njk", json).map(Ok(_))
     }
@@ -73,10 +71,9 @@ class EstablisherKindController @Inject()(
           val json = Json.obj(
             "form" -> formWithErrors,
             "schemeName" -> existingSchemeName,
-            "radios" -> EstablisherKind.radios(formWithErrors),
-            "submitUrl" -> postCall(index).url
+            "radios" -> EstablisherKind.radios(formWithErrors)
           )
-          renderer.render("establishers/establisherKind.njk", json).map(Ok(_))
+          renderer.render("establishers/establisherKind.njk", json).map(BadRequest(_))
         },
         value => {
 

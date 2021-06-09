@@ -16,18 +16,31 @@
 
 package navigators
 
+import base.SpecBase
 import controllers.aboutMembership.routes._
-import identifiers._
+import identifiers.Identifier
 import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
-import models.requests.DataRequest
-import play.api.mvc.{AnyContent, Call}
+import models.NormalMode
+import org.scalatest.prop.TableFor3
+import play.api.mvc.Call
 import utils.UserAnswers
 
-class AboutNavigator extends Navigator {
+class AboutNavigatorSpec
+  extends SpecBase
+    with NavigatorBehaviour {
 
-  override protected def routeMap(ua: UserAnswers)
-                                 (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
-    case CurrentMembersId | FutureMembersId =>
-      CheckYourAnswersController.onPageLoad()
+  private val navigator: CompoundNavigator = injector.instanceOf[CompoundNavigator]
+
+  "AboutNavigator" when {
+    def navigation: TableFor3[Identifier, UserAnswers, Call] =
+      Table(
+        ("Id", "UserAnswers", "Next Page"),
+        row(CurrentMembersId)(CheckYourAnswersController.onPageLoad()),
+        row(FutureMembersId)(CheckYourAnswersController.onPageLoad())
+      )
+
+    "in NormalMode" must {
+      behave like navigatorWithRoutesForMode(navigator, navigation)
+    }
   }
 }

@@ -25,10 +25,19 @@ import uk.gov.hmrc.viewmodels.{Html, MessageInterpolators, Table}
 
 class AddToListHelper {
 
-  def mapToList[A <: Entity[_]](establishers: Seq[A], head: Seq[Cell])
+  def mapEstablishersToTable[A <: Entity[_]](establishers: Seq[A])
+                               (implicit messages: Messages): Table = mapToTable(establishers, establishersHead)
+
+  private def establishersHead(implicit messages: Messages) = Seq(
+    Cell(msg"addEstablisher.name.header"),
+    Cell(msg"addEstablisher.type.header"),
+    Cell(Html(s"""<span class=govuk-visually-hidden>${messages("addEstablisher.hiddenText.removeLink.header")}</span>"""))
+  )
+
+  private def mapToTable[A <: Entity[_]](entities: Seq[A], head: Seq[Cell])
                             (implicit messages: Messages): Table = {
 
-    val rows = establishers.map { data =>
+    val rows = entities.map { data =>
       Seq(
         Cell(Literal(data.name), classes = Seq("govuk-!-width-one-half")),
         Cell(Literal(getTypeFromId(data.id)), classes = Seq("govuk-!-width-one-quarter"))) ++
@@ -45,12 +54,6 @@ class AddToListHelper {
       s"<a class=govuk-link id=$id href=$url>" + s"<span aria-hidden=true >${messages(text)}</span>" +
         s"<span class= $hiddenTag>${messages(text)} $name</span> </a>")
   }
-
-  def establishersHead(implicit messages: Messages) = Seq(
-    Cell(msg"addEstablisher.name.header"),
-    Cell(msg"addEstablisher.type.header"),
-    Cell(Html(s"""<span class=govuk-visually-hidden>${messages("addEstablisher.hiddenText.removeLink.header")}</span>"""))
-  )
 
   private def getTypeFromId[ID](id: ID)(implicit messages: Messages): String =
     id match {
