@@ -17,10 +17,8 @@
 package queries
 
 
-import play.api.libs.json.{JsPath, __}
+import play.api.libs.json.{__, JsPath}
 import utils.UserAnswers
-
-import scala.util.{Success, Try}
 
 sealed trait Query {
 
