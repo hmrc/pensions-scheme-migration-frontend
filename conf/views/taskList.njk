@@ -1,5 +1,3 @@
-
-
 {% extends "includes/layout.njk" %}
 {% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
 {% from "govuk/components/radios/macro.njk"        import govukRadios %}
@@ -20,86 +18,109 @@
 {% endmacro %}
 
 {% macro statusClass(isCompleted) %}
-{% if isCompleted %}
-"task-status--completed"
-{% else %}
-"task-status--in-progress"
-{% endif %}
+    {% if isCompleted %}
+        "task-status--completed"
+    {% else %}
+        "task-status--in-progress"
+    {% endif %}
 {% endmacro %}
 {% block mainContent %}
-<div class="govuk-grid-row">
-   <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-xl">{{ messages(schemeName) }}</h1>
-      <h2 id="section-before-you-start-header" class="govuk-heading-l">
-         {{ messages("messages__schemeTaskList__heading") }}
-      </h2>
-      <ol class="app-task-list">
-         <li>
-            {% if taskSections.beforeYouStart.header %}
-                <h3 id="section-information-h3" class="app-task-list__section">
-                   {{ messages(taskSections.beforeYouStart.header) }}
-                </h3>
-            {% endif %}
-            {% for spoke in taskSections.beforeYouStart.entities %}
-                <ul class="app-task-list__items">
-                   <li class="app-task-list__item">
-                          <span class="app-task-list__task-name">
-                          <a id="section-before-you-start-link" class="app-task-list__task-name" href="{{ spoke.link.target }}" aria-describedby="section-beforeYouStart-status">
-                          {{ messages(spoke.link.text) }}
-                          </a>
-                          </span>
-                          <span class="app-task-list__tag {{ statusClass(spoke.isCompleted) }}" id="section-beforeYouStart-status"><span class="govuk-visually-hidden"> {{ messages("messages__schemeTaskList__status_visuallyHidden") }}</span> {{ status(spoke.isCompleted) }}</span>
-                   </li>
-                </ul>
-            {% endfor %}
-         </li>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">{{ messages(schemeName) }}</h1>
+            <h2 id="section-before-you-start-header" class="govuk-heading-l">
+                {{ messages("messages__schemeTaskList__heading") }}
+            </h2>
+            <ol class="app-task-list">
+                <li>
+                    {% if taskSections.beforeYouStart.header %}
+                        <h3 id="section-information-h3" class="app-task-list__section">
+                            {{ messages(taskSections.beforeYouStart.header) }}
+                        </h3>
+                    {% endif %}
+                    {% for spoke in taskSections.beforeYouStart.entities %}
+                        <ul class="app-task-list__items">
+                            <li class="app-task-list__item">
+                                <span class="app-task-list__task-name">
+                                    <a id="section-before-you-start-link" class="app-task-list__task-name"
+                                       href="{{ spoke.link.target }}" aria-describedby="section-beforeYouStart-status">
+                                        {{ messages(spoke.link.text) }}
+                                    </a>
+                                </span>
+                                <span class="app-task-list__tag {{ statusClass(spoke.isCompleted) }}"
+                                      id="section-beforeYouStart-status">
+                                    <span class="govuk-visually-hidden">
+                                        {{ messages("messages__schemeTaskList__status_visuallyHidden") }}
+                                    </span>
+                                    {{ status(spoke.isCompleted) }}
+                                </span>
+                            </li>
+                        </ul>
+                    {% endfor %}
+                </li>
 
-         <li>
-            {% if taskSections.about.header %}
-                <h3 id="section-about-header" class="app-task-list__section">
-                   {{ taskSections.about.header }}
-                </h3>
-            {% endif %}
-            <ul class="app-task-list__items">
-               {% for item in taskSections.about.entities %}
-                   <li class="app-task-list__item">
-                      <span class="app-task-list__task-name">
-                      <a id="section-about-link-{{ loop.index -1 }} " class="app-task-list__task-name" href="{{item.link.target}}" {% if item.isCompleted.nonEmpty %} aria-describedby=" section-about-status-{{ loop.index -1 }} " {% endif %}>
-                      {{ messages(item.link.text) }}
-                      </a>
-                      </span>
-                      <span class="app-task-list__tag {{ statusClass(item.isCompleted) }}" id="section-about-status-{{ loop.index -1 }} "><span class="govuk-visually-hidden">{{ messages("messages__schemeTaskList__status_visuallyHidden") }}</span>{{ status(item.isCompleted) }}</span>
-                   </li>
-               {% endfor %}
-            </ul>
-         </li>
+                <li>
+                    {% if taskSections.about.header %}
+                        <h3 id="section-about-header" class="app-task-list__section">
+                            {{ taskSections.about.header }}
+                        </h3>
+                    {% endif %}
+                    <ul class="app-task-list__items">
+                        {% for item in taskSections.about.entities %}
+                            <li class="app-task-list__item">
+                                <span class="app-task-list__task-name">
+                                    <a id="section-about-link-{{ loop.index -1 }}" class="app-task-list__task-name"
+                                       href="{{ item.link.target }}"
+                                       {% if(item.isCompleted.nonEmpty) %} aria-describedby="section-about-status-{{ loop.index -1 }}" {% endif %}>
+                                        {{ messages(item.link.text) }}
+                                    </a>
+                                </span>
+                                <span class="app-task-list__tag {{ statusClass(item.isCompleted) }}"
+                                      id="section-about-status-{{ loop.index -1 }}">
+                                    <span class="govuk-visually-hidden">
+                                        {{ messages("messages__schemeTaskList__status_visuallyHidden") }}
+                                    </span>
+                                    {{ status(item.isCompleted) }}
+                                </span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
 
-         {% if taskSections.declaration %}
-         <li id="DecSubmit">
-            {% if taskSections.declaration.header %}
-                <h2 id="section-declaration-header" class="govuk-heading-l">
-                   {{ messages(taskSections.declaration.header) }}
-                </h2>
-            {% endif %}
-            <ul class="app-task-list__items">
-               <li class="app-task-list__item">
-                  <span class="app-task-list__task-name">
-                  {% for entity in taskSections.declaration.entities %}
-                    <a id="section-declaration-link" class="app-task-list__task-name" href="{{entity.link.target}}">{{ messages(entity.link.text) }}</a>
-                  {% endfor %}
-                  </span>
-               </li>
-            </ul>
-         </li>
-         {% endif %}
-      </ol>
-      <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" aria-hidden="true">
-      <p class="govuk-body">
-         <a id="save-and-return" class="app-task-list__task-name govuk-link" href="appConfig.managePensionsSchemeOverviewUrl">
-         {{ messages("messages__complete__returnToSchemeOverview", schemeName) }}
-         </a>
-      </p>
-   </div>
-</div>
+                {% if taskSections.declaration %}
+                    <li id="DecSubmit">
+                        {% if taskSections.declaration.header %}
+                            <h2 id="section-declaration-header"
+                                class="govuk-heading-l">
+                                {{ messages(taskSections.declaration.header) }}
+                            </h2>
+                        {% endif %}
+                        <ul class="app-task-list__items">
+                            <li class="app-task-list__item">
+                                <span class="app-task-list__task-name">
+                                {% for entity in taskSections.declaration.entities %}
+                                    <a id="section-declaration-link"
+                                       class="app-task-list__task-name"
+                                       href="{{ entity.link.target }}">
+                                        {{ messages(entity.link.text) }}
+                                    </a>
+                                {% endfor %}
+                              </span>
+                            </li>
+                        </ul>
+                    </li>
+                {% endif %}
+            </ol>
+            <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible"
+                aria-hidden="true">
+            <p class="govuk-body">
+                <a id="save-and-return"
+                   class="govuk-link"
+                   href="{{ config.managePensionsSchemeOverviewUrl }}">
+                    {{ messages("messages__complete__returnToSchemeOverview", schemeName) }}
+                </a>
+            </p>
+        </div>
+    </div>
 {% endblock %}
 
