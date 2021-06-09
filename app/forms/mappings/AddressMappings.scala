@@ -17,10 +17,10 @@
 package forms.mappings
 
 import play.api.data.Forms.of
-import play.api.data.{FieldMapping, FormError, Mapping}
+import play.api.data.{FormError, FieldMapping, Mapping}
 import utils.CountryOptions
 
-trait AddressMappings extends Mappings with Constraints with Transforms {
+trait AddressMappings extends Mappings with Constraints {
 
   def addressLineMapping(keyRequired: String, keyLength: String, keyInvalid: String): Mapping[String] =
     text(keyRequired)
@@ -46,33 +46,6 @@ trait AddressMappings extends Mappings with Constraints with Transforms {
       )
 
 
-
-  def postCodeWithCountryMapping(keyRequired: String, keyInvalid: String, keyNonUKLength: String): Mapping[Option[String]] = {
-
-    val fieldName = "postcode"
-
-    def bind(data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
-      val postCode = postCodeDataTransform(data.get(fieldName))
-      val country = countryDataTransform(data.get("country"))
-      val maxLengthNonUKPostCode = 10
-
-      (postCode, country) match {
-        case (Some(zip), Some("GB")) if zip.matches(regexPostcode) => Right(Some(postCodeValidTransform(zip)))
-        case (Some(_), Some("GB")) => Left(Seq(FormError(fieldName, keyInvalid)))
-        case (Some(zip), Some(_)) if zip.length <= maxLengthNonUKPostCode => Right(Some(zip))
-        case (Some(_), Some(_)) => Left(Seq(FormError(fieldName, keyNonUKLength)))
-        case (Some(zip), None) => Right(Some(zip))
-        case (None, Some("GB")) => Left(Seq(FormError(fieldName, keyRequired)))
-        case _ => Right(None)
-      }
-    }
-
-    def unbind(value: Option[String]): Map[String, String] = {
-      Map(fieldName -> value.getOrElse(""))
-    }
-
-    new CustomBindMapping(fieldName, bind, unbind)
-  }
 
   def optionalPostcode(requiredKey: Option[String],
     invalidKey: String, nonUkLengthKey: String, countryFieldName: String): FieldMapping[Option[String]] =

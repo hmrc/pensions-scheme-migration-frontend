@@ -19,15 +19,14 @@ package forms.behaviours
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.data.{Form, FormError}
+import play.api.data.{FormError, Form}
 import forms.FormSpec
-import forms.mappings.Transforms
 import utils.Generators
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Generators with Transforms with OptionValues {
+trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Generators with OptionValues {
 
 
   def fieldWithMaxLength(form: Form[_],
@@ -55,7 +54,7 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
       forAll(validDataGenerator.retryUntil(!_.matches("""^\s+$""")) -> "validDataItem") {
         dataItem: String =>
           val result = form.bind(Map(fieldName -> dataItem)).apply(fieldName)
-          result.errors mustBe empty
+          result.errors.isEmpty mustBe true
       }
     }
   }
@@ -86,7 +85,7 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
       val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
       def testField(fieldName: String, data: String): Unit = {
-        form.bind(Map(fieldName -> data)).apply(fieldName).errors mustBe empty
+        form.bind(Map(fieldName -> data)).apply(fieldName).errors.isEmpty mustBe true
       }
 
       forAll(generator -> "date") {
