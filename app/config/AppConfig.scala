@@ -51,7 +51,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   val reportAProblemNonJSUrl: String = getConfigString("contact-frontend.report-problem-url.non-js")
   val betaFeedbackUrl: String = getConfigString("contact-frontend.beta-feedback-url.authenticated")
   val betaFeedbackUnauthenticatedUrl: String = getConfigString("contact-frontend.beta-feedback-url.unauthenticated")
-  val reportTechnicalIssues = ReportTechnicalIssue(serviceId = "PODS", baseUrl = Some(contactHost))
+  val reportTechnicalIssues = ReportTechnicalIssue(serviceId = "PODS", baseUrl = Some(reportAProblemNonJSUrl))
   lazy val languageTranslationEnabled: Boolean = config.getOptional[Boolean]("features" +
     ".welsh-translation").getOrElse(false)
   def languageMap: Map[String, Lang] = Map(
@@ -70,7 +70,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   private def getConfigString(key: String) = servicesConfig.getConfString(key, throw new Exception(s"Could not find " +
     s"config '$key'"))
 
-  lazy val managePensionsSchemeOverviewUrl: String = ""
-  lazy val managePensionsSchemeSummaryUrl: String = ""
+  lazy val managePensionsSchemeOverviewUrl: String = "Test"
+  lazy val managePensionsSchemeSummaryUrl: String = "Test"
   lazy val serviceSignOut: String = s"${config.get[String](path = "urls.logout")}"
 }

@@ -46,6 +46,6 @@ class Renderer @Inject()(appConfig: AppConfig, renderer: NunjucksRenderer) {
       "betaFeedbackUnauthenticatedUrl"  -> appConfig.betaFeedbackUnauthenticatedUrl,
       "reportAProblemPartialUrl"        -> appConfig.reportAProblemPartialUrl,
       "reportAProblemNonJSUrl"          -> appConfig.reportAProblemNonJSUrl,
-      "contactHost"                     -> appConfig.contactHost
+      "managePensionsSchemeOverviewUrl" -> appConfig.managePensionsSchemeOverviewUrl
   )
 }
