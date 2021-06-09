@@ -173,7 +173,7 @@ trait Formatters extends Constraints {
       }
 
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] = {
-      val postCode = data.get(key).map(_.replaceAll(" {2,}", " ").toUpperCase)
+      val postCode = data.get(key).map(_.replaceAll(" {2,}", " ").toUpperCase.trim)
       (postCode, requiredKey) match {
         case (None, rk) => Left(Seq(FormError(key, rk)))
         case (Some(zip), rk) if zip.isEmpty => Left(Seq(FormError(key, rk)))
