@@ -70,8 +70,7 @@ trait ManualAddressController
     implicit request: DataRequest[AnyContent],
     ec: ExecutionContext
   ): Future[Result] = {
-    val filledForm =
-      request.userAnswers.get(addressPage).fold(form)(form.fill)
+    val filledForm = request.userAnswers.get(addressPage).fold(form)(form.fill)
     renderer.render(viewTemplate, json(schemeName, filledForm, addressLocation)).map(Ok(_))
   }
 

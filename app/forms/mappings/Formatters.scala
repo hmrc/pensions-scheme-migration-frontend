@@ -22,14 +22,15 @@ import utils.Enumerable
 
 import scala.util.control.Exception.nonFatalCatch
 
-trait Formatters extends Transforms with Constraints {
+trait Formatters extends Constraints {
 
   private[mappings] val optionalStringFormatter: Formatter[Option[String]] = new Formatter[Option[String]] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] =
       Right(
         data
           .get(key)
-          .map(standardiseText)
+         // .map(standardiseText)
+          .map(_.replaceAll("""\s{1,}""", " ").trim)
           .filter(_.lengthCompare(0) > 0)
       )
 
@@ -107,11 +108,44 @@ trait Formatters extends Transforms with Constraints {
         baseFormatter.unbind(key, value.toString)
     }
 
+
+  def postCodeValidTransformm(value: String): String = {
+    if (value.matches(regexPostcode)) {
+      if (value.contains(" ")) {
+        value
+      } else {
+        value.substring(0, value.length - 3) + " " + value.substring(value.length - 3, value.length)
+      }
+    }
+    else {
+      value
+    }
+  }
+
+  private def strip(value: String): String = {
+    value.replaceAll(" ", "")
+  }
+
+
+
   //scalastyle:off cyclomatic.complexity
-  private[mappings] def optionalPostcodeFormatter(requiredKey: Option[String],
+  def optionalPostcodeFormatter(requiredKey: Option[String],
                                                   invalidKey: String,
                                                   nonUkLengthKey: String,
                                                   countryFieldName: String): Formatter[Option[String]] = new Formatter[Option[String]] {
+
+    private def minimiseSpace(value: String): String =
+      value.replaceAll(" {2,}", " ")
+
+    private def postCodeTransform(value: String): String =
+      minimiseSpace(value.trim.toUpperCase)
+
+    private def postCodeDataTransform(value: Option[String]): Option[String] =
+      value.map(postCodeTransform).filter(_.nonEmpty)
+
+    private def countryDataTransform(value: Option[String]): Option[String] = {
+      value.map(s => strip(s).toUpperCase()).filter(_.nonEmpty)
+    }
 
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
       val postCode = postCodeDataTransform(data.get(key))
@@ -119,7 +153,7 @@ trait Formatters extends Transforms with Constraints {
       val maxLengthNonUKPostcode = 10
 
       (postCode, country, requiredKey) match {
-        case (Some(zip), Some("GB"), _) if zip.matches(regexPostcode) => Right(Some(postCodeValidTransform(zip)))
+        case (Some(zip), Some("GB"), _) if zip.matches(regexPostcode) => Right(Some(postCodeValidTransformm(zip)))
         case (Some(_), Some("GB"), _) => Left(Seq(FormError(key, invalidKey)))
         case (Some(zip), Some(_), _) if zip.length <= maxLengthNonUKPostcode => Right(Some(zip))
         case (Some(_), Some(_), _) => Left(Seq(FormError(key, nonUkLengthKey)))
@@ -154,7 +188,6 @@ trait Formatters extends Transforms with Constraints {
         case (Some(zip), rk) if zip.isEmpty => Left(Seq(FormError(key, rk)))
         case (Some(zip), _) if zip.matches(regexPostcode) => Right(tidyPostcode(zip))
         case (Some(_), _) => Left(Seq(FormError(key, invalidKey)))
-        case _ => Right("")
       }
     }
 

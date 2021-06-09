@@ -53,14 +53,9 @@ trait PostcodeController extends FrontendBaseController with Retrievals {
   def post(formToJson: Form[String] => JsObject, postcodeId: TypedIdentifier[Seq[TolerantAddress]], errorMessage: String)
           (implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
     form.bindFromRequest().fold(
-      formWithErrors => {
-        println("\n>>" + formWithErrors)
-        renderer.render(viewTemplate, formToJson(formWithErrors)).map(BadRequest(_))
-      }
-        ,
-
-      value => {
-        println("\n>>>" + value)
+      formWithErrors =>
+        renderer.render(viewTemplate, formToJson(formWithErrors)).map(BadRequest(_)),
+      value =>
           addressLookupConnector.addressLookupByPostCode(value).flatMap {
             case Nil =>
               val json = formToJson(formWithError(form, errorMessage))
@@ -72,7 +67,6 @@ trait PostcodeController extends FrontendBaseController with Retrievals {
                 _ <- userAnswersCacheConnector.save(request.lock,updatedAnswers.data)
               } yield Redirect(navigator.nextPage(postcodeId, updatedAnswers))
           }
-}
     )
   }
 

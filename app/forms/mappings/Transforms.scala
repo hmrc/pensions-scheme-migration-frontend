@@ -35,13 +35,13 @@ trait Transforms {
     value.replaceAll(" ", "")
   }
 
-  protected def minimiseSpace(value: String): String =
+  def minimiseSpace(value: String): String =
     value.replaceAll(" {2,}", " ")
 
   protected def standardiseText(s: String): String =
     s.replaceAll("""\s{1,}""", " ").trim
 
-  protected def postCodeDataTransform(value: Option[String]): Option[String] = {
+  def postCodeDataTransform(value: Option[String]): Option[String] = {
     value.map(postCodeTransform).filter(_.nonEmpty)
   }
 

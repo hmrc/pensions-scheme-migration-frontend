@@ -58,6 +58,7 @@ class InsurerConfirmAddressController @Inject()(override val messagesApi: Messag
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
+
       SchemeNameId.retrieve.right.map { schemeName =>
           get(Some(schemeName), AddressConfiguration.PostcodeFirst)
       }

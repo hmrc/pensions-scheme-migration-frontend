@@ -74,7 +74,7 @@ trait AddressMappings extends Mappings with Constraints with Transforms {
     new CustomBindMapping(fieldName, bind, unbind)
   }
 
-  protected def optionalPostcode(requiredKey: Option[String],
+  def optionalPostcode(requiredKey: Option[String],
     invalidKey: String, nonUkLengthKey: String, countryFieldName: String): FieldMapping[Option[String]] =
     of(optionalPostcodeFormatter(requiredKey, invalidKey, nonUkLengthKey, countryFieldName))
 
