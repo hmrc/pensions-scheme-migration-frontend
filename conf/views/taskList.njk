@@ -64,7 +64,7 @@
                {% for item in taskSections.about.entities %}
                    <li class="app-task-list__item">
                       <span class="app-task-list__task-name">
-                      <a id="section-about-link-{{ loop.index -1 }} " class="app-task-list__task-name" href="{{item.link.target}}" {% if item.isCompleted.nonEmpty %} aria-describedby=" section-about-status-{{ loop.index -1 }} " {% endif %}>
+                      <a id="section-about-link-{{ loop.index -1 }}" class="app-task-list__task-name" href="{{item.link.target}}" {% if item.isCompleted.nonEmpty %} aria-describedby=" section-about-status-{{ loop.index -1 }} " {% endif %}>
                       {{ messages(item.link.text) }}
                       </a>
                       </span>
