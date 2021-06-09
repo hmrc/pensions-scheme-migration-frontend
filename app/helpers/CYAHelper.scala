@@ -81,31 +81,37 @@ trait CYAHelper {
     }
 private val attachDynamicIndex: (Map[String, String], Int) => Map[String, String] = (attributeMap, index) => {
   val attribute = attributeMap.getOrElse("id", s"add")
-  Map("id" -> s"cya-${index.toString}-$attribute")
+  Map("id" -> s"cya-0-${index.toString}-$attribute")
 }
  val rowsWithDynamicIndices: Seq[Row] => Seq[Row] = rows => rows.zipWithIndex.map { case (row, index) =>
     val newActions = row.actions.map{act => act.copy(attributes = attachDynamicIndex(act.attributes, index))}
     row.copy(actions =  newActions)
   }
   private def actionAdd[A](optionURL: Option[String], visuallyHiddenText: Option[Text])(implicit
-    messages: Messages):Seq[Action] = {
+    ua: UserAnswers, rds: Reads[A], messages: Messages):Seq[Action] = {
+    val addVisuallyHidden = visuallyHiddenText.map{
+      visuallyHiddn =>  Literal(messages("site.add")+" " + visuallyHiddn.resolve)
+    }
     optionURL.toSeq.map { url =>
       Action(
         content = Html(s"<span  aria-hidden=true >${messages("site.add")}</span>"),
         href = url,
-        visuallyHiddenText = visuallyHiddenText,
-        attributes = Map("id" ->"add")
+        visuallyHiddenText =  addVisuallyHidden,
+        attributes = Map("id" ->"change")
       )
     }
   }
 
   private def actionChange[A](optionURL: Option[String], visuallyHiddenText: Option[Text])(implicit
-    messages: Messages):Seq[Action] = {
+    ua: UserAnswers, rds: Reads[A], messages: Messages):Seq[Action] = {
+    val changeVisuallyHidden = visuallyHiddenText.map{
+      visuallyHiddn =>  Literal(messages("site.change")+" " + visuallyHiddn.resolve)
+    }
     optionURL.toSeq.map { url =>
       Action(
         content = Html(s"<span  aria-hidden=true >${messages("site.change")}</span>"),
         href = url,
-        visuallyHiddenText = visuallyHiddenText,
+        visuallyHiddenText = changeVisuallyHidden,
         attributes = Map("id" ->"change")
 
       )
