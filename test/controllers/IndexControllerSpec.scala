@@ -16,10 +16,7 @@
 
 package controllers
 
-import config.AppConfig
 import play.api.test.Helpers._
-import org.scalatestplus.mockito.MockitoSugar.mock
-
 import views.html.index
 
 class IndexControllerSpec extends ControllerSpecBase {

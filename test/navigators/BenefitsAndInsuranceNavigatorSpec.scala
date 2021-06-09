@@ -17,7 +17,7 @@
 package navigators
 
 import base.SpecBase
-import controllers.actions.{FakeDataRetrievalAction, MutableFakeDataRetrievalAction}
+import controllers.actions.MutableFakeDataRetrievalAction
 import controllers.benefitsAndInsurance.routes._
 import identifiers._
 import identifiers.benefitsAndInsurance._
@@ -26,7 +26,7 @@ import models.benefitsAndInsurance.BenefitsProvisionType.{DefinedBenefitsOnly, M
 import models.benefitsAndInsurance.BenefitsType._
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor3
-import play.api.libs.json.{JsString, Writes, Json}
+import play.api.libs.json.{JsString, Writes}
 import play.api.mvc.Call
 import utils.{UserAnswers, Enumerable}
 
@@ -38,9 +38,6 @@ class BenefitsAndInsuranceNavigatorSpec extends SpecBase with NavigatorBehaviour
 
   private val navigator: CompoundNavigator = applicationBuilder(
     mutableFakeDataRetrievalAction = mutableFakeDataRetrievalAction
-      //new FakeDataRetrievalAction(
-      //  dataToReturn = Some(UserAnswers(Json.obj()))
-      //)
   ).build().injector.instanceOf[CompoundNavigator]
 
   "BenefitsAndInsuranceNavigator" must {
@@ -76,10 +73,10 @@ object BenefitsAndInsuranceNavigatorSpec extends OptionValues {
   private def uaWithValue[A](idType:TypedIdentifier[A], idValue:A)(implicit writes: Writes[A]) =
     UserAnswers().set(idType, idValue).toOption
 
-  private def benefitsTypePage: Call       = BenefitsTypeController.onPageLoad()
-  private def insuranceCompanyName: Call                  = BenefitsInsuranceNameController.onPageLoad()
-  private def insurancePolicyNumber: Call                  = BenefitsInsurancePolicyController.onPageLoad()
-  private def insurerSelectAddress: Call                  = InsurerSelectAddressController.onPageLoad()
-  private def insurerEnterPostCode: Call                  = InsurerEnterPostcodeController.onPageLoad()
-  private def checkYourAnswersPage: Call          = CheckYourAnswersController.onPageLoad()
+  private def benefitsTypePage: Call        = BenefitsTypeController.onPageLoad()
+  private def insuranceCompanyName: Call    = BenefitsInsuranceNameController.onPageLoad()
+  private def insurancePolicyNumber: Call   = BenefitsInsurancePolicyController.onPageLoad()
+  private def insurerSelectAddress: Call    = InsurerSelectAddressController.onPageLoad()
+  private def insurerEnterPostCode: Call    = InsurerEnterPostcodeController.onPageLoad()
+  private def checkYourAnswersPage: Call    = CheckYourAnswersController.onPageLoad()
 }

@@ -36,8 +36,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.{schemeName, ua}
-import utils.{Enumerable, UserAnswers}
-import viewmodels.Message
+import utils.{UserAnswers, Enumerable}
 
 import scala.concurrent.Future
 

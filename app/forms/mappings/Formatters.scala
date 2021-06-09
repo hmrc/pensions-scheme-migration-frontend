@@ -134,18 +134,11 @@ trait Formatters extends Constraints {
                                                   nonUkLengthKey: String,
                                                   countryFieldName: String): Formatter[Option[String]] = new Formatter[Option[String]] {
 
-    private def minimiseSpace(value: String): String =
-      value.replaceAll(" {2,}", " ")
-
-    private def postCodeTransform(value: String): String =
-      minimiseSpace(value.trim.toUpperCase)
-
     private def postCodeDataTransform(value: Option[String]): Option[String] =
-      value.map(postCodeTransform).filter(_.nonEmpty)
+      value.map(_.trim.toUpperCase.replaceAll(" {2,}", " ")).filter(_.nonEmpty)
 
-    private def countryDataTransform(value: Option[String]): Option[String] = {
-      value.map(s => strip(s).toUpperCase()).filter(_.nonEmpty)
-    }
+    private def countryDataTransform(value: Option[String]): Option[String] =
+      value.map(strip(_).toUpperCase()).filter(_.nonEmpty)
 
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
       val postCode = postCodeDataTransform(data.get(key))
@@ -167,19 +160,17 @@ trait Formatters extends Constraints {
       Map(key -> value.getOrElse(""))
   }
 
-  private def tidyPostcode(value:String):String = {
+  private[mappings] def postcodeFormatter(
+    requiredKey: String,
+    invalidKey: String
+  ): Formatter[String] = new Formatter[String] {
+
+    private def tidyPostcode(value:String):String =
       if (value.contains(" ")) {
         value
       } else {
         value.substring(0, value.length - 3) + " " + value.substring(value.length - 3, value.length)
       }
-
-  }
-
-  private[mappings] def postcodeFormatter(
-    requiredKey: String,
-    invalidKey: String
-  ): Formatter[String] = new Formatter[String] {
 
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] = {
       val postCode = data.get(key).map(_.replaceAll(" {2,}", " ").toUpperCase)
