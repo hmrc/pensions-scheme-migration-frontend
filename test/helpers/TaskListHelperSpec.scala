@@ -22,7 +22,7 @@ import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.MustMatchers
 import org.scalatestplus.mockito.MockitoSugar
-import utils.Data.{schemeName, completeUserAnswers, ua}
+import utils.Data.{completeUserAnswers, schemeName, ua}
 import utils.UserAnswers
 import viewmodels.{Message, TaskListEntitySection}
 

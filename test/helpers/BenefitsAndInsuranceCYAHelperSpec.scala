@@ -29,7 +29,7 @@ import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.viewmodels.{SummaryList, Html}
 import uk.gov.hmrc.viewmodels.SummaryList._
 import utils.Data.{pstr, schemeName, psaId, credId}
-import utils.{UserAnswers, CountryOptions, Enumerable, InputOption}
+import utils.{UserAnswers, Enumerable}
 import uk.gov.hmrc.viewmodels.Text.{Literal, Message => GovUKMsg}
 
 class BenefitsAndInsuranceCYAHelperSpec
@@ -37,10 +37,6 @@ class BenefitsAndInsuranceCYAHelperSpec
     with MustMatchers
     with TryValues
     with Enumerable.Implicits {
-
-  private val options = Seq(InputOption("territory:AE-AZ", "Abu Dhabi"), InputOption("country:AF", "Afghanistan"))
-
-  private implicit val countryOptions: CountryOptions = new CountryOptions(options)
 
   val benefitsAndInsuranceCYAHelper = new BenefitsAndInsuranceCYAHelper
 
@@ -76,7 +72,7 @@ class BenefitsAndInsuranceCYAHelperSpec
     )
   }
 
-  private def summaryListRowLiteral(key:String, value:String, target:Option[Link] = None):Row = {
+  private def summaryListRowLiteral(key:String, value:String, target:Option[Link]):Row = {
     SummaryList.Row(
       Key(
         GovUKMsg(key),
@@ -94,7 +90,7 @@ class BenefitsAndInsuranceCYAHelperSpec
     )
   }
 
-  private def summaryListRowHtml(key:String, value:Html, target:Option[Link] = None):Row = {
+  private def summaryListRowHtml(key:String, value:Html, target:Option[Link]):Row = {
     SummaryList.Row(
       Key(
         GovUKMsg(key),

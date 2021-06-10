@@ -38,7 +38,6 @@ import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import utils.{UserAnswers, Data}
 import play.api.libs.json.Reads._
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua, insurerName}
 
 import scala.concurrent.Future

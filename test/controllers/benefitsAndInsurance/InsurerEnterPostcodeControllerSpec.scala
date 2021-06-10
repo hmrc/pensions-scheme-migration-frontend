@@ -21,7 +21,6 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.beforeYouStart.SchemeNameId
-import matchers.JsonMatchers.containJson
 import models.TolerantAddress
 import navigators.CompoundNavigator
 import org.mockito.{ArgumentCaptor, Matchers}

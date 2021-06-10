@@ -20,11 +20,11 @@ import identifiers.TypedIdentifier
 import models.Link
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
+import uk.gov.hmrc.viewmodels.SummaryList.{Action, Value, Row, Key}
 import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{Content, Html, MessageInterpolators, SummaryList, Text}
+import uk.gov.hmrc.viewmodels.{Content, SummaryList, Text, Html, MessageInterpolators}
 import utils.UserAnswers
-import viewmodels.{AnswerRow, Message}
+import viewmodels.{Message, AnswerRow}
 
 trait CYAHelper {
 
@@ -87,8 +87,7 @@ private val attachDynamicIndex: (Map[String, String], Int) => Map[String, String
     val newActions = row.actions.map{act => act.copy(attributes = attachDynamicIndex(act.attributes, index))}
     row.copy(actions =  newActions)
   }
-  private def actionAdd[A](optionURL: Option[String], visuallyHiddenText: Option[Text])(implicit
-    ua: UserAnswers, rds: Reads[A], messages: Messages):Seq[Action] = {
+  private def actionAdd[A](optionURL: Option[String], visuallyHiddenText: Option[Text])(implicit messages: Messages):Seq[Action] = {
     val addVisuallyHidden = visuallyHiddenText.map{
       visuallyHiddn =>  Literal(messages("site.add")+" " + visuallyHiddn.resolve)
     }
@@ -103,7 +102,7 @@ private val attachDynamicIndex: (Map[String, String], Int) => Map[String, String
   }
 
   private def actionChange[A](optionURL: Option[String], visuallyHiddenText: Option[Text])(implicit
-    ua: UserAnswers, rds: Reads[A], messages: Messages):Seq[Action] = {
+    messages: Messages):Seq[Action] = {
     val changeVisuallyHidden = visuallyHiddenText.map{
       visuallyHiddn =>  Literal(messages("site.change")+" " + visuallyHiddn.resolve)
     }

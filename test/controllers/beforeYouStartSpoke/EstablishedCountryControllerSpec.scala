@@ -16,7 +16,6 @@
 
 package controllers.beforeYouStartSpoke
 
-import com.codahale.metrics.SharedMetricRegistries
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
@@ -36,7 +35,9 @@ class EstablishedCountryControllerSpec extends ControllerSpecBase {
 
   val options = Seq(InputOption("territory:AE-AZ", "Abu Dhabi"), InputOption("country:AF", "Afghanistan"))
   val testAnswer = "territory:AE-AZ"
+
   def countryOptions: CountryOptions = new CountryOptions(options)
+
   val formProvider = new EstablishedCountryFormProvider(countryOptions)
   val form = formProvider()
 

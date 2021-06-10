@@ -25,13 +25,16 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class LogoutController @Inject()(appConfig: AppConfig,
-                                 val controllerComponents: MessagesControllerComponents,
-                                 authenticate: AuthAction
-                                )(implicit val ec: ExecutionContext) extends
-  FrontendBaseController with I18nSupport {
+class LogoutController @Inject()(
+                                  appConfig: AppConfig,
+                                  val controllerComponents: MessagesControllerComponents,
+                                  authenticate: AuthAction
+                                )(implicit val ec: ExecutionContext)
+  extends FrontendBaseController
+    with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = authenticate { implicit request =>
+  def onPageLoad: Action[AnyContent] =
+    authenticate {
       Redirect(appConfig.serviceSignOut).withNewSession
-  }
+    }
 }

@@ -20,7 +20,6 @@ import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.InsurerEnterPostCodeId
 import models.TolerantAddress
 import navigators.CompoundNavigator
@@ -37,7 +36,6 @@ import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import utils.{UserAnswers, Data}
 import play.api.libs.json.Reads._
-import utils.Data.ua
 
 import scala.concurrent.Future
 
@@ -52,7 +50,6 @@ class InsurerSelectAddressControllerSpec extends ControllerSpecBase {
     bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
   )
 
-  private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
   private val httpPathGET: String = controllers.benefitsAndInsurance.routes.InsurerSelectAddressController.onPageLoad().url

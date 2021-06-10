@@ -36,7 +36,7 @@ class IndexControllerSpec extends ControllerSpecBase {
         controllerComponents,
         view
       ).onPageLoad()(fakeRequest)
-      contentAsString(result) mustBe view()(fakeRequest, messages,mockAppConfig).toString
+      contentAsString(result) mustBe view()(fakeRequest, messages, mockAppConfig).toString
     }
   }
 }

@@ -29,15 +29,15 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class SuccessController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        identify: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        userAnswersCacheConnector: UserAnswersCacheConnector,
-                                        renderer: Renderer,
-                                        minimalDetailsConnector: MinimalDetailsConnector
-                                      )(implicit ec: ExecutionContext)
+                                   override val messagesApi: MessagesApi,
+                                   identify: AuthAction,
+                                   getData: DataRetrievalAction,
+                                   requireData: DataRequiredAction,
+                                   val controllerComponents: MessagesControllerComponents,
+                                   userAnswersCacheConnector: UserAnswersCacheConnector,
+                                   renderer: Renderer,
+                                   minimalDetailsConnector: MinimalDetailsConnector
+                                 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
 
