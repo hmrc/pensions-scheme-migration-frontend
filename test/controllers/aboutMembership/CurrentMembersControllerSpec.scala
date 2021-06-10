@@ -34,7 +34,7 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
@@ -66,8 +66,9 @@ class CurrentMembersControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
   private val jsonToPassToTemplate: Form[Members] => JsObject = form =>
     Json.obj(
+      "form" -> form,
       "schemeName" -> schemeName,
-      "titleMessage" -> msg"currentMembers.title".withArgs(schemeName),
+      "titleMessage" -> messages("currentMembers.title", schemeName),
       "radios" -> Members.radios(form)
     )
 

@@ -3,7 +3,7 @@ import sbt._
 object AppDependencies {
   import play.core.PlayVersion.current
   val compile = Seq(
-    "uk.gov.hmrc"             %% "bootstrap-frontend-play-27"     % "5.2.0",
+    "uk.gov.hmrc"             %% "bootstrap-frontend-play-27"     % "3.4.0",
     "uk.gov.hmrc"             %% "govuk-template"                 % "5.66.0-play-27",
     "uk.gov.hmrc"             %%  "play-nunjucks"                 % "0.27.0-play-27",
     "uk.gov.hmrc"             %%  "play-nunjucks-viewmodel"       % "0.13.0-play-27",

@@ -33,7 +33,7 @@ import play.api.mvc.Results.Ok
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{Enumerable, UserAnswers}
 
