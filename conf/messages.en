@@ -144,10 +144,10 @@ messages__schemeTaskList__sectionDeclaration_incomplete_v2 = You can only see th
 
 currentMembers.title = How many members does {0} currently have?
 currentMembers.error.required = Select how many members {0} currently has
-futureMembers.title = How many scheme members do you expect to have in 12 months time?
-futureMembers.error.required = Select how many scheme members you expect {0} to have in 12 months time
+futureMembers.title = How many scheme members do you expect to have in 12 monthsʼ time?
+futureMembers.error.required = Select how many scheme members you expect {0} to have in 12 monthsʼ time
 messages__visuallyhidden__currentMembers = how many members {0} has
-messages__visuallyhidden__futureMembers = how many scheme members you expect  to have in 12 months time
+messages__visuallyhidden__futureMembers = how many scheme members you expect  to have in 12 monthsʼ time
 members.opt1 = None
 members.opt2 = 1
 members.opt3 = 2 to 11
