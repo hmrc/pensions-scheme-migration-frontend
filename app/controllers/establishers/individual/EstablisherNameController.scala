@@ -21,7 +21,6 @@ import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.PersonNameFormProvider
 import identifiers.establishers.individual.EstablisherNameId
-import models.requests.DataRequest
 import models.{Index, PersonName}
 import navigators.CompoundNavigator
 import play.api.data.Form
@@ -36,12 +35,12 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class EstablisherNameController @Inject()(override val messagesApi: MessagesApi,
-                                           val navigator: CompoundNavigator,
-                                           authenticate: AuthAction,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           formProvider: PersonNameFormProvider,
-                                           val controllerComponents: MessagesControllerComponents,
+                                          val navigator: CompoundNavigator,
+                                          authenticate: AuthAction,
+                                          getData: DataRetrievalAction,
+                                          requireData: DataRequiredAction,
+                                          formProvider: PersonNameFormProvider,
+                                          val controllerComponents: MessagesControllerComponents,
                                           userAnswersCacheConnector: UserAnswersCacheConnector,
                                           renderer: Renderer
                                          )(implicit val executionContext: ExecutionContext) extends
@@ -69,7 +68,7 @@ class EstablisherNameController @Inject()(override val messagesApi: MessagesApi,
       implicit request =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
-            println("\n >>>>>>>>>>>>>>>>>>>> "+formWithErrors)
+            println("\n >>>>>>>>>>>>>>>>>>>> " + formWithErrors)
             val json = Json.obj(
               "form" -> formWithErrors,
               "schemeName" -> existingSchemeName

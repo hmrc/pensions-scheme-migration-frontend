@@ -19,7 +19,7 @@ package models.establishers
 import play.api.data.Form
 import play.api.mvc.JavascriptLiteral
 import uk.gov.hmrc.viewmodels.{MessageInterpolators, Radios}
-import utils.{Enumerable, InputOption, WithName}
+import utils.{Enumerable, WithName}
 
 sealed trait EstablisherKind
 

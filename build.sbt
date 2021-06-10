@@ -60,7 +60,7 @@ lazy val microservice = Project(appName, file("."))
     ScoverageKeys.coverageHighlighting := true
   )
   .settings(
-    scalacOptions ++= Seq("-Xfatal-warnings", "-feature"),
+    scalacOptions ++= Seq(/*"-Xfatal-warnings",*/ "-feature"),
     retrieveManaged := true,
     evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
   )
