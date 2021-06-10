@@ -75,7 +75,7 @@ class InsurerEnterPostcodeController @Inject()(val appConfig: AppConfig,
     form => {
       val name = request.userAnswers.get(BenefitsInsuranceNameId).getOrElse(request2Messages(request)messages("benefitsInsuranceUnknown"))
       Json.obj(
-        "entityType" -> "Insurance company",
+        "entityType" -> "the insurance company",
         "entityName" -> name,
         "form" -> form,
         "submitUrl" -> controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onSubmit().url,

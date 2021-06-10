@@ -78,7 +78,7 @@ class InsurerSelectAddressController @Inject()(val appConfig: AppConfig,
           form => Json.obj(
             "form" -> form,
             "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
-            "entityType" -> "Insurance company",
+            "entityType" -> "the insurance company",
             "entityName" -> name,
             "submitUrl" -> controllers.benefitsAndInsurance.routes.InsurerSelectAddressController.onSubmit().url,
             "enterManuallyUrl" -> controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onPageLoad().url,
