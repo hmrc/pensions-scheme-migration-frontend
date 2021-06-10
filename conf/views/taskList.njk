@@ -41,7 +41,7 @@
                             <li class="app-task-list__item">
                                 <span class="app-task-list__task-name">
                                     <a id="section-before-you-start-link"
-                                       class="app-task-list__task-name"
+                                       class="app-task-list__task-name govuk-link"
                                        href="{{ spoke.link.target }}"
                                        aria-describedby="section-beforeYouStart-status">
                                         {{ messages(spoke.link.text) }}
@@ -71,7 +71,7 @@
                             <li class="app-task-list__item">
                                 <span class="app-task-list__task-name">
                                     <a id="section-about-link-{{ loop.index -1 }}"
-                                       class="app-task-list__task-name"
+                                       class="app-task-list__task-name govuk-link"
                                        href="{{ item.link.target }}"
                                        {% if(item.isCompleted.nonEmpty) %} aria-describedby="section-about-status-{{ loop.index -1 }}" {% endif %}>
                                         {{ messages(item.link.text) }}
@@ -100,7 +100,7 @@
                             <li class="app-task-list__item">
                                 {% for entity in taskSections.addEstablisherHeader.entities %}
                                     <a id="section-establishers-link"
-                                       class="app-task-list__task-name"
+                                       class="app-task-list__task-name govuk-link"
                                        href="{{ entity.link.target }}">
                                         {{ messages(entity.link.text) }}
                                     </a>
@@ -124,7 +124,7 @@
                                 {% set spokeIndex = loop.index %}
                                 <li class="app-task-list__item">
                                     <a id="section-establishers-link-{{ establisherIndex }}-{{ spokeIndex }}"
-                                       class="app-task-list__task-name" href="{{ entity.link.target }}"
+                                       class="app-task-list__task-name govuk-link" href="{{ entity.link.target }}"
                                        aria-describedby="section-about-status-{{ establisherIndex }}">
                                         {{ messages(entity.link.text) }}
                                     </a>
@@ -155,7 +155,7 @@
                                 <span class="app-task-list__task-name">
                                     {% for entity in taskSections.declaration.entities %}
                                         <a id="section-declaration-link"
-                                           class="app-task-list__task-name"
+                                           class="app-task-list__task-name govuk-link"
                                            href="{{ entity.link.target }}">
                                             {{ messages(entity.link.text) }}
                                         </a>
