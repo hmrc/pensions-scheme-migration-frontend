@@ -16,7 +16,6 @@
 
 package controllers.beforeYouStartSpoke
 
-import com.codahale.metrics.SharedMetricRegistries
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, FakeAuthAction}
 import helpers.BeforeYouStartCYAHelper

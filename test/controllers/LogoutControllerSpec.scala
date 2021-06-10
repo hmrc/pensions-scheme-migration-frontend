@@ -16,8 +16,6 @@
 
 package controllers
 
-import com.codahale.metrics.SharedMetricRegistries
-import config.AppConfig
 import controllers.actions.FakeAuthAction
 import org.mockito.Mockito.{times, verify, when}
 import play.api.mvc.Results

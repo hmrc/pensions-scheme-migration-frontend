@@ -49,6 +49,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
   private val templateToBeRendered = "check-your-answers.njk"
 
   private def httpPathGET: String = controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad.url
+
   private val rows = Seq(
     Row(
       key = Key(msg"currentMembers.title".withArgs(schemeName), classes = Seq("govuk-!-width-one-half")),

@@ -20,9 +20,8 @@ import base.SpecBase
 import models._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.MustMatchers
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.i18n.Messages
 import utils.Data.{completeUserAnswers, schemeName, ua}
 import utils.UserAnswers
 import viewmodels.{Message, TaskListEntitySection}
