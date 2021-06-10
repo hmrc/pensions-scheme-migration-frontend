@@ -39,6 +39,27 @@ trait DataCompletion {
     isAnswerComplete(CurrentMembersId),
     isAnswerComplete(FutureMembersId)))
 
+  def isEstablisherIndividualDetailsCompleted: Option[Boolean] =
+    isComplete(
+      Seq(
+        Some(false)
+      )
+    )
+
+  def isEstablisherIndividualAddressCompleted: Option[Boolean] =
+    isComplete(
+      Seq(
+        Some(false)
+      )
+    )
+
+  def isEstablisherIndividualContactDetailsCompleted: Option[Boolean] =
+    isComplete(
+      Seq(
+        Some(false)
+      )
+    )
+
 
   //GENERIC METHODS
   def isComplete(list: Seq[Option[Boolean]]): Option[Boolean] =

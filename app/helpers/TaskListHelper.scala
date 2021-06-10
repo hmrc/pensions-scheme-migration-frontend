@@ -28,7 +28,8 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
   def getSchemeName[A](implicit ua: UserAnswers): String =
     ua.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
 
-  def taskList(viewOnly: Boolean)(implicit answers: UserAnswers, messages: Messages): TaskList =
+  def taskList(viewOnly: Boolean)
+              (implicit answers: UserAnswers, messages: Messages): TaskList =
     TaskList(
       getSchemeName,
       beforeYouStartSection,
@@ -38,12 +39,11 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
       declarationSection(viewOnly)
     )
 
-  private[helpers] def beforeYouStartSection(implicit userAnswers: UserAnswers, messages: Messages): TaskListEntitySection = {
+  private[helpers] def beforeYouStartSection(implicit userAnswers: UserAnswers, messages: Messages): TaskListEntitySection =
     TaskListEntitySection(None,
       spokeCreationService.getBeforeYouStartSpoke(userAnswers, getSchemeName),
       Some(messages("messages__schemeTaskList__before_you_start_header"))
     )
-  }
 
   private[helpers] def aboutSection(implicit userAnswers: UserAnswers, messages: Messages): TaskListEntitySection =
     TaskListEntitySection(None,
@@ -51,7 +51,8 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
       Some(messages("messages__schemeTaskList__about_scheme_header", getSchemeName))
     )
 
-  private[helpers] def addEstablisherHeader(viewOnly: Boolean)(implicit userAnswers: UserAnswers, messages: Messages): Option[TaskListEntitySection] =
+  private[helpers] def addEstablisherHeader(viewOnly: Boolean)
+                                           (implicit userAnswers: UserAnswers, messages: Messages): Option[TaskListEntitySection] =
     if (userAnswers.allEstablishersAfterDelete.isEmpty && viewOnly) {
       Some(TaskListEntitySection(None, Nil, None, messages("messages__schemeTaskList__sectionEstablishers_no_establishers")))
     } else {
@@ -63,28 +64,29 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
       }
     }
 
-  protected[helpers] def establishersSection(implicit userAnswers: UserAnswers)
-  : Seq[TaskListEntitySection] = {
-    val seqEstablishers = userAnswers.allEstablishers
-
-    val nonDeletedEstablishers: Seq[Option[TaskListEntitySection]] = for ((establisher, _) <- seqEstablishers.zipWithIndex) yield {
-      if (establisher.isDeleted) None else {
-        establisher.id match {
-
-          case EstablisherNameId(_) =>
-            Some(TaskListEntitySection(
-              None,
-              spokeCreationService.getEstablisherIndividualSpokes(userAnswers, establisher.name, Some
-              (establisher.index)),
-              Some(establisher.name))
-            )
-
-          case _ =>
-            throw new RuntimeException("Unknown section id:" + establisher.id)
-        }
-      }
+  protected[helpers] def establishersSection(implicit userAnswers: UserAnswers, messages: Messages): Seq[TaskListEntitySection] = {
+    userAnswers.allEstablishers.flatMap {
+      establisher =>
+        if (establisher.isDeleted)
+          None
+        else
+          establisher.id match {
+            case EstablisherNameId(_) =>
+              Some(
+                TaskListEntitySection(
+                  isCompleted = None,
+                  entities = spokeCreationService.getEstablisherIndividualSpokes(
+                    answers = userAnswers,
+                    name = establisher.name,
+                    index = Some(establisher.index)
+                  ),
+                  header = Some(establisher.name)
+                )
+              )
+            case _ =>
+              throw new RuntimeException("Unknown section id:" + establisher.id)
+          }
     }
-    nonDeletedEstablishers.flatten
   }
 
   def declarationEnabled(implicit userAnswers: UserAnswers): Boolean =
@@ -93,7 +95,8 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
       userAnswers.isMembersCompleted
     ).forall(_.contains(true))
 
-  private[helpers] def declarationSection(viewOnly: Boolean)(implicit userAnswers: UserAnswers, messages: Messages): Option[TaskListEntitySection] =
+  private[helpers] def declarationSection(viewOnly: Boolean)
+                                         (implicit userAnswers: UserAnswers, messages: Messages): Option[TaskListEntitySection] =
     if (viewOnly || !declarationEnabled) {
       None
     } else {

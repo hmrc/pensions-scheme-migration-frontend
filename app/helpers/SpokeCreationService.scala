@@ -17,6 +17,7 @@
 package helpers
 
 import controllers.establishers.routes._
+import helpers.spokes.establishers.individual.{EstablisherIndividualAddress, EstablisherIndividualContactDetails, EstablisherIndividualDetails}
 import helpers.spokes.{AboutMembersSpoke, BeforeYouStartSpoke, Spoke}
 import identifiers.establishers.IsEstablisherNewId
 import models.Index.indexToInt
@@ -59,9 +60,14 @@ class SpokeCreationService extends Enumerable.Implicits {
         )
       )
 
-  def getEstablisherIndividualSpokes(answers: UserAnswers, name: String, index: Option[Index]): Seq[EntitySpoke] = {
-    val isEstablisherNew = answers.get(IsEstablisherNewId(indexToInt(index.getOrElse(Index(0))))).getOrElse(false)
-    Nil
+  def getEstablisherIndividualSpokes(answers: UserAnswers, name: String, index: Option[Index])
+                                    (implicit messages: Messages): Seq[EntitySpoke] = {
+//    val isEstablisherNew = answers.get(IsEstablisherNewId(indexToInt(index.getOrElse(Index(0))))).getOrElse(false)
+    Seq(
+      createSpoke(answers, EstablisherIndividualDetails, name),
+      createSpoke(answers, EstablisherIndividualAddress, name),
+      createSpoke(answers, EstablisherIndividualContactDetails, name)
+    )
   }
 
   def declarationSpoke(implicit messages: Messages): Seq[EntitySpoke] =

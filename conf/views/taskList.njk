@@ -18,11 +18,7 @@
 {% endmacro %}
 
 {% macro statusClass(isCompleted) %}
-    {% if isCompleted %}
-        "task-status--completed"
-    {% else %}
-        "task-status--in-progress"
-    {% endif %}
+    {% if isCompleted %} task-status--completed {% else %} task-status--in-progress {% endif %}
 {% endmacro %}
 {% block mainContent %}
     <div class="govuk-grid-row">
@@ -132,12 +128,12 @@
                                        aria-describedby="section-about-status-{{ establisherIndex }}">
                                         {{ messages(entity.link.text) }}
                                     </a>
-                                    <span class="task-status {{ statusClass(isCompleted) }}"
+                                    <span class="app-task-list__tag {{ statusClass(isCompleted) }}"
                                           id="section-establishers-status-{{ establisherIndex }}-{{ spokeIndex }}">
-                                        <span class="visuallyhidden">
+                                        <span class="govuk-visually-hidden">
                                             {{ messages("messages__schemeTaskList__status_visuallyHidden") }}
                                         </span>
-                                        {{ status(isCompleted) }}
+                                        {{ status(spoke.isCompleted) }}
                                     </span>
                                 </li>
                             {% endfor %}

@@ -22,7 +22,7 @@ import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.individual.EstablisherNameId
 import models.establishers.EstablisherKind
 import models.{EntitySpoke, _}
-import org.scalatest.{MustMatchers, OptionValues}
+import org.scalatest.{MustMatchers, OptionValues, TryValues}
 import utils.Data.{schemeName, ua}
 import utils.Enumerable
 import viewmodels.Message
@@ -31,6 +31,7 @@ class SpokeCreationServiceSpec
   extends SpecBase
     with MustMatchers
     with OptionValues
+    with TryValues
     with Enumerable.Implicits {
 
   val spokeCreationService = new SpokeCreationService()
@@ -98,12 +99,77 @@ class SpokeCreationServiceSpec
     }
   }
 
+  "getEstablisherIndividualSpokes" must {
+    "display all the spokes with appropriate links and incomplete status when no data is returned from TPSS" in {
+      val userAnswers =
+        ua
+          .set(EstablisherKindId(0), EstablisherKind.Individual).success.value
+          .set(EstablisherNameId(0), PersonName("a", "b")).success.value
+
+      val expectedSpoke =
+        Seq(
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Add details for a b",
+              target = "someUrl",
+              visuallyHiddenText = None
+            ),
+            isCompleted = Some(false)
+          ),
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Add address for a b",
+              target = "someUrl",
+              visuallyHiddenText = None
+            ),
+            isCompleted = Some(false)
+          ),
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Add contact details for a b",
+              target = "someUrl",
+              visuallyHiddenText = None
+            ),
+            isCompleted = Some(false)
+          )
+        )
+
+      val result =
+        spokeCreationService.getEstablisherIndividualSpokes(
+          answers = userAnswers,
+          name = "a b",
+          index = Some(0)
+        )
+      result mustBe expectedSpoke
+    }
+
+    //    "display all the spokes with appropriate links, in progress status when establisher individual is in progress" in {
+    //      val userAnswers = userAnswersWithSchemeName.isEstablisherNew(index = 0, flag = true).
+    //        establishersIndividualName(index = 0, PersonName("s", "l")).
+    //        establishersIndividualNino(0, ReferenceValue("AB100100A")).
+    //        establishersIndividualAddress(index = 0, address).
+    //        establishersIndividualEmail(index = 0, email = "s@s.com")
+    //      val expectedSpoke = estIndividualInProgressSpoke(NormalMode, srn = None, linkText = "change", status = Some(false))
+    //
+    //      val result = spokeCreationService.getEstablisherIndividualSpokes(userAnswers, NormalMode, None, schemeName, None)
+    //      result mustBe expectedSpoke
+    //    }
+    //
+    //    "display all the spokes with appropriate links, complete status when establisher individual is completed" in {
+    //      val userAnswers = setCompleteEstIndividual(0, userAnswersWithSchemeName).isEstablisherNew(0, flag = true)
+    //      val expectedSpoke = estIndividualCompleteSpoke(NormalMode, srn = None, linkText = "change", status = Some(true))
+    //
+    //      val result = spokeCreationService.getEstablisherIndividualSpokes(userAnswers, NormalMode, None, schemeName, None)
+    //      result mustBe expectedSpoke
+    //    }
+  }
+
   "declarationSpoke" must {
     "return declaration spoke with link" in {
       val expectedSpoke = Seq(EntitySpoke(TaskListLink(
-          messages("messages__schemeTaskList__declaration_link"),
-          controllers.routes.DeclarationController.onPageLoad().url)
-        ))
+        messages("messages__schemeTaskList__declaration_link"),
+        controllers.routes.DeclarationController.onPageLoad().url)
+      ))
 
       spokeCreationService.declarationSpoke mustBe expectedSpoke
     }
