@@ -17,13 +17,11 @@
 package navigators
 
 import base.SpecBase
-import controllers.actions.FakeDataRetrievalAction
 import controllers.beforeYouStartSpoke.routes._
 import identifiers.Identifier
 import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}
 import models.NormalMode
 import org.scalatest.prop.TableFor3
-import play.api.libs.json.Json
 import play.api.mvc.Call
 import utils.UserAnswers
 

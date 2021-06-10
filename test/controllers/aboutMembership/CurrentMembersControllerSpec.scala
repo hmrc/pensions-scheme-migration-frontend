@@ -37,7 +37,6 @@ import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
-import viewmodels.Message
 
 import scala.concurrent.Future
 
@@ -54,6 +53,7 @@ class CurrentMembersControllerSpec extends ControllerSpecBase with NunjucksSuppo
   private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
 
   private def httpPathGET: String = controllers.aboutMembership.routes.CurrentMembersController.onPageLoad.url
+
   private def httpPathPOST: String = controllers.aboutMembership.routes.CurrentMembersController.onSubmit.url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
