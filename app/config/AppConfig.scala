@@ -59,13 +59,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   def routeToSwitchLanguage: String => Call = (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
 
-  private def baseUrl(serviceName: String): String = {
-    val protocol = config.getOptional[String](s"microservice.services.$serviceName.protocol")
-      .getOrElse("http")
-    val host = config.get[String](s"microservice.services.$serviceName.host")
-    val port = config.get[String](s"microservice.services.$serviceName.port")
-    s"$protocol://$host:$port"
-  }
   private def getConfigString(key: String) = servicesConfig.getConfString(key, throw new Exception(s"Could not find " +
     s"config '$key'"))
 

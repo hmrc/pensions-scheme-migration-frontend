@@ -17,7 +17,6 @@
 package controllers.actions
 
 import base.SpecBase
-import org.mockito.Mockito.reset
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc._
