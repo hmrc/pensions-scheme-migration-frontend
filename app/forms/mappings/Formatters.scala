@@ -29,7 +29,6 @@ trait Formatters extends Constraints {
       Right(
         data
           .get(key)
-         // .map(standardiseText)
           .map(_.replaceAll("""\s{1,}""", " ").trim)
           .filter(_.lengthCompare(0) > 0)
       )

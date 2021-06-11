@@ -59,7 +59,6 @@ class BenefitsInsuranceNameController @Inject()(override val messagesApi: Messag
         val json = Json.obj(
           "schemeName" -> schemeName,
           "form" -> preparedForm,
-          "submitUrl" -> controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onSubmit().url,
           "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
         )
         renderer.render("benefitsAndInsurance/benefitsInsuranceName.njk", json).map(Ok(_))
@@ -76,7 +75,6 @@ class BenefitsInsuranceNameController @Inject()(override val messagesApi: Messag
               val json = Json.obj(
                 "schemeName" -> schemeName,
                 "form" -> formWithErrors,
-                "submitUrl" -> controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onSubmit().url,
                 "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
               )
 

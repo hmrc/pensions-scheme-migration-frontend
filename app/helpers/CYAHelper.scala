@@ -17,7 +17,8 @@
 package helpers
 
 import identifiers.TypedIdentifier
-import models.Link
+import models.{Address, Link}
+import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Value, Row, Key}
@@ -27,6 +28,25 @@ import utils.UserAnswers
 import viewmodels.{Message, AnswerRow}
 
 trait CYAHelper {
+
+  private def addrLineToHtml(l: String): String = s"""<span class="govuk-!-display-block">$l</span>"""
+
+  private def addressAnswer(addr: Address)(implicit messages: Messages): Html = {
+    Html(
+      addrLineToHtml(addr.addressLine1) +
+        addrLineToHtml(addr.addressLine2) +
+        addr.addressLine3.fold("")(addrLineToHtml) +
+        addr.addressLine4.fold("")(addrLineToHtml) +
+        addr.postcode.fold("")(addrLineToHtml) +
+        addrLineToHtml(messages("country." + addr.country))
+    )
+  }
+
+  protected val answerBooleanTransform: Option[Boolean => Text] = Some(opt => msg"booleanAnswer.${opt.toString}")
+  protected val answerStringTransform: Option[String => Text] = Some(opt => lit"${opt}")
+  protected val answerBenefitsProvisionTypeTransform: Option[BenefitsProvisionType => Text] = Some(opt => msg"howProvideBenefits.${opt.toString}")
+  protected val answerBenefitsTypeTransform: Option[BenefitsType => Text] = Some(opt => msg"benefitsType.${opt.toString}")
+  protected def answerBenefitsAddressTransform(implicit messages: Messages): Option[Address => Html] = Some(opt => addressAnswer(opt))
 
   def rows(viewOnly: Boolean, rows: Seq[SummaryList.Row]): Seq[SummaryList.Row] = {
     if (viewOnly) rows.map(_.copy(actions = Nil)) else rows

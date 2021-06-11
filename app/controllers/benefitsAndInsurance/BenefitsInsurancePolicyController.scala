@@ -67,7 +67,6 @@ class BenefitsInsurancePolicyController @Inject()(override val messagesApi: Mess
             "schemeName" -> schemeName,
             "heading" -> heading,
             "form" -> preparedForm,
-            "submitUrl" -> controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onSubmit().url,
             "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url,
 
           )
@@ -89,7 +88,6 @@ class BenefitsInsurancePolicyController @Inject()(override val messagesApi: Mess
                 "schemeName" -> schemeName,
                 "heading" -> heading,
                 "form" -> formWithErrors,
-                "submitUrl" -> controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onSubmit().url,
                 "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
               )
 

@@ -60,7 +60,6 @@ class AreBenefitsSecuredController @Inject()(override val messagesApi: MessagesA
           "schemeName" -> schemeName,
           "form" -> preparedForm,
           "radios" -> Radios.yesNo (preparedForm("value")),
-          "submitUrl" -> controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onSubmit().url,
           "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
         )
         renderer.render("benefitsAndInsurance/areBenefitsSecured.njk", json).map(Ok(_))
@@ -78,7 +77,6 @@ class AreBenefitsSecuredController @Inject()(override val messagesApi: MessagesA
                 "schemeName" -> schemeName,
                 "form" -> formWithErrors,
                 "radios" -> Radios.yesNo(form("value")),
-                "submitUrl" -> controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onSubmit().url,
                 "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
               )
 

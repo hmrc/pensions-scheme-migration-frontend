@@ -72,13 +72,16 @@ class InsurerSelectAddressController @Inject()(val appConfig: AppConfig,
     Retrieval(
       implicit request =>
         InsurerEnterPostCodeId.retrieve.right.map { addresses =>
+
+          val msg = request2Messages(request)
+
           val name = request.userAnswers.get(BenefitsInsuranceNameId)
-            .getOrElse(request2Messages(request)("benefitsInsuranceUnknown"))
+            .getOrElse(msg("benefitsInsuranceUnknown"))
 
           form => Json.obj(
             "form" -> form,
             "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
-            "entityType" -> "the insurance company",
+            "entityType" -> msg("benefitsInsuranceUnknown"),
             "entityName" -> name,
             "submitUrl" -> controllers.benefitsAndInsurance.routes.InsurerSelectAddressController.onSubmit().url,
             "enterManuallyUrl" -> controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onPageLoad().url,

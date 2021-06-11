@@ -18,38 +18,15 @@ package helpers
 
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance._
-import models.Address
 import models.benefitsAndInsurance.BenefitsProvisionType.DefinedBenefitsOnly
-import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
 import models.requests.DataRequest
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
-import uk.gov.hmrc.viewmodels.{Html, MessageInterpolators, SummaryList, Text}
-import utils.{Enumerable, UserAnswers}
+import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList}
+import utils.{UserAnswers, Enumerable}
 import viewmodels.Message
 
 class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
-
-  private def addressAnswer(addr: Address)(implicit messages: Messages): Html = {
-    def addrLineToHtml(l: String): String = s"""<span class="govuk-!-display-block">$l</span>"""
-
-    Html(
-      addrLineToHtml(addr.addressLine1) +
-        addrLineToHtml(addr.addressLine2) +
-        addr.addressLine3.fold("")(addrLineToHtml) +
-        addr.addressLine4.fold("")(addrLineToHtml) +
-        addr.postcode.fold("")(addrLineToHtml) +
-        addrLineToHtml(messages("country." + addr.country))
-    )
-  }
-
-  private val answerBooleanTransform: Option[Boolean => Text] = Some(opt => msg"booleanAnswer.${opt.toString}")
-  private val answerStringTransform: Option[String => Text] = Some(opt => lit"${opt}")
-  private val answerBenefitsProvisionTypeTransform: Option[BenefitsProvisionType => Text] = Some(opt => msg"howProvideBenefits.${opt.toString}")
-  private val answerBenefitsTypeTransform: Option[BenefitsType => Text] = Some(opt => msg"benefitsType.${opt.toString}")
-  private def answerBenefitsAddressTransform(implicit messages: Messages): Option[Address => Html] = Some(opt => addressAnswer(opt))
-
-
   def rows(implicit request: DataRequest[AnyContent],
     messages: Messages
   ): Seq[SummaryList.Row] = {

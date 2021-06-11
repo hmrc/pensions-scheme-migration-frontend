@@ -18,7 +18,7 @@ package models.benefitsAndInsurance
 
 import play.api.data.Form
 import uk.gov.hmrc.viewmodels.{Radios, _}
-import utils.{InputOption, WithName, Enumerable}
+import utils.{WithName, Enumerable}
 
 sealed trait BenefitsType
 
@@ -35,26 +35,9 @@ object BenefitsType extends Enumerable.Implicits {
     CashBalanceAndOtherMoneyPurchaseBenefits
   )
 
-  def options: Seq[InputOption] =
-    Seq(
-      CollectiveMoneyPurchaseBenefits, CashBalanceBenefits, OtherMoneyPurchaseBenefits, CollectiveMoneyPurchaseAndCashBalanceBenefits,
-      CashBalanceAndOtherMoneyPurchaseBenefits
-    ) map { value =>
-      InputOption(value.toString, s"benefitsProvisionType.${value.toString}")
-    }
-
   def radios(form: Form[_]): Seq[Radios.Item] = {
-
-    val field = form("value")
-    val items = Seq(
-      Radios.Radio(msg"benefitsType.collectiveMoneyPurchaseBenefits", CollectiveMoneyPurchaseBenefits.toString),
-      Radios.Radio(msg"benefitsType.cashBalanceBenefits", CashBalanceBenefits.toString),
-      Radios.Radio(msg"benefitsType.otherMoneyPurchaseBenefits", OtherMoneyPurchaseBenefits.toString),
-      Radios.Radio(msg"benefitsType.collectiveMoneyPurchaseAndCashBalanceBenefits", CollectiveMoneyPurchaseAndCashBalanceBenefits.toString),
-      Radios.Radio(msg"benefitsType.cashBalanceAndOtherMoneyPurchaseBenefits", CashBalanceAndOtherMoneyPurchaseBenefits.toString),
-    )
-
-    Radios(field, items)
+    val items = values.map(value => Radios.Radio(msg"benefitsType.${value.toString}", value.toString))
+    Radios(form("value"), items)
   }
 
   implicit val enumerable: Enumerable[BenefitsType] =
