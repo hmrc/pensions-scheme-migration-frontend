@@ -6,6 +6,7 @@
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "macros/title.njk"                         import title %}
 {% from "govuk/components/select/macro.njk"        import govukSelect %}
+{% from "macros/returnLink.njk"                    import returnLink %}
 
 {% block pageHead %}
     <link href="{{ routes.controllers.Assets.versioned("stylesheets/location-autocomplete.min.css").url }}" media="screen" rel="stylesheet" type="text/css" />
@@ -157,8 +158,7 @@
       </div>
     </div>
 
-    <p class="govuk-body"><a href="{{ returnUrl }}" class="govuk-link">{{ messages("site.return.to", schemeName) }}</a>
-    </p>
+  {{ returnLink(schemeName) }}
 
 {% endblock %}
 

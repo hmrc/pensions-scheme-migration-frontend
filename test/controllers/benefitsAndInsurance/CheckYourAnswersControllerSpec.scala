@@ -65,8 +65,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
 
   private val jsonToPassToTemplate: JsObject = Json.obj(
     "list" -> rows,
-    "schemeName" -> schemeName,
-    "submitUrl" -> controllers.routes.TaskListController.onPageLoad().url
+    "schemeName" -> schemeName
   )
 
   override def beforeEach: Unit = {

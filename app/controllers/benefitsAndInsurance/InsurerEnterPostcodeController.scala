@@ -79,9 +79,7 @@ class InsurerEnterPostcodeController @Inject()(val appConfig: AppConfig,
         "entityType" -> msg("benefitsInsuranceUnknown"),
         "entityName" -> name,
         "form" -> form,
-        "submitUrl" -> controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onSubmit().url,
         "enterManuallyUrl" -> controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onPageLoad().url,
-        "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url,
         "schemeName" -> schemeName
       )
     }

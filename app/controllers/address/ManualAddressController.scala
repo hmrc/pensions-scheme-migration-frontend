@@ -27,7 +27,7 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{Messages, I18nSupport}
 import play.api.libs.json.{JsObject, JsArray, Json}
-import play.api.mvc.{Call, AnyContent, Result}
+import play.api.mvc.{AnyContent, Result}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -53,8 +53,6 @@ trait ManualAddressController
   protected def config: AppConfig
 
   protected def addressPage: TypedIdentifier[Address]
-
-  protected def submitRoute: Call
 
   protected val pageTitleMessageKey: String = "address.title"
 
@@ -128,11 +126,9 @@ trait ManualAddressController
     }
 
     Json.obj(
-      "submitUrl" -> submitRoute.url,
       "form" -> form,
       "pageTitle" -> pageTitle,
       "h1" -> h1,
-      "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url,
       "schemeName" -> schemeName
     ) ++ extraJson
   }

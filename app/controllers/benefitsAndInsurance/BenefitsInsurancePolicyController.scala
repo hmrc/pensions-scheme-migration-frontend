@@ -66,9 +66,7 @@ class BenefitsInsurancePolicyController @Inject()(override val messagesApi: Mess
           val json = Json.obj(
             "schemeName" -> schemeName,
             "heading" -> heading,
-            "form" -> preparedForm,
-            "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url,
-
+            "form" -> preparedForm
           )
           renderer.render("benefitsAndInsurance/benefitsInsurancePolicy.njk", json).map(Ok(_))
         case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
@@ -87,8 +85,7 @@ class BenefitsInsurancePolicyController @Inject()(override val messagesApi: Mess
               val json = Json.obj(
                 "schemeName" -> schemeName,
                 "heading" -> heading,
-                "form" -> formWithErrors,
-                "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
+                "form" -> formWithErrors
               )
 
               renderer.render("benefitsAndInsurance/benefitsInsurancePolicy.njk", json).map(BadRequest(_))

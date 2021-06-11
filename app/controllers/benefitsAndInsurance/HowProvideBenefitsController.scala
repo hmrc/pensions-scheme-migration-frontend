@@ -63,8 +63,7 @@ class HowProvideBenefitsController @Inject()(override val messagesApi: MessagesA
         val json = Json.obj(
           "schemeName" -> schemeName,
           "form" -> preparedForm,
-          "radios" -> BenefitsProvisionType.radios(preparedForm),
-          "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
+          "radios" -> BenefitsProvisionType.radios(preparedForm)
         )
         renderer.render("benefitsAndInsurance/howProvideBenefits.njk", json).map(Ok(_))
       }
@@ -80,8 +79,7 @@ class HowProvideBenefitsController @Inject()(override val messagesApi: MessagesA
               val json = Json.obj(
                 "schemeName" -> schemeName,
                 "form" -> formWithErrors,
-                "radios" -> BenefitsProvisionType.radios(formWithErrors),
-                "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
+                "radios" -> BenefitsProvisionType.radios(formWithErrors)
               )
 
               renderer.render("benefitsAndInsurance/howProvideBenefits.njk", json).map(BadRequest(_))

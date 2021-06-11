@@ -83,9 +83,7 @@ class InsurerSelectAddressController @Inject()(val appConfig: AppConfig,
             "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
             "entityType" -> msg("benefitsInsuranceUnknown"),
             "entityName" -> name,
-            "submitUrl" -> controllers.benefitsAndInsurance.routes.InsurerSelectAddressController.onSubmit().url,
             "enterManuallyUrl" -> controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onPageLoad().url,
-            "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url,
             "schemeName" -> schemeName
           )
         }

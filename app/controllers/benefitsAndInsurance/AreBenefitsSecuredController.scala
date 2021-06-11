@@ -60,8 +60,7 @@ class AreBenefitsSecuredController @Inject()(override val messagesApi: MessagesA
         val json = Json.obj(
           "schemeName" -> schemeName,
           "form" -> preparedForm,
-          "radios" -> Radios.yesNo (preparedForm("value")),
-          "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
+          "radios" -> Radios.yesNo (preparedForm("value"))
         )
         renderer.render("benefitsAndInsurance/areBenefitsSecured.njk", json).map(Ok(_))
       }
@@ -77,8 +76,7 @@ class AreBenefitsSecuredController @Inject()(override val messagesApi: MessagesA
               val json = Json.obj(
                 "schemeName" -> schemeName,
                 "form" -> formWithErrors,
-                "radios" -> Radios.yesNo(form("value")),
-                "returnUrl" -> controllers.routes.TaskListController.onPageLoad().url
+                "radios" -> Radios.yesNo(form("value"))
               )
 
               renderer.render("benefitsAndInsurance/areBenefitsSecured.njk", json).map(BadRequest(_))

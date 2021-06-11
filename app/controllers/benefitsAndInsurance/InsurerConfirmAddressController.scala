@@ -31,7 +31,7 @@ import models.{Address, AddressConfiguration}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{MessagesApi, Messages, I18nSupport}
-import play.api.mvc.{Call, Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 
@@ -53,8 +53,6 @@ class InsurerConfirmAddressController @Inject()(override val messagesApi: Messag
   def form(implicit messages: Messages): Form[Address] = formProvider()
 
   override protected def addressPage: TypedIdentifier[Address] = InsurerAddressId
-
-  override protected def submitRoute: Call = routes.InsurerConfirmAddressController.onSubmit()
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>

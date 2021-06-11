@@ -5,6 +5,7 @@
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "macros/title.njk"                         import title %}
+{% from "macros/returnLink.njk"                    import returnLink %}
 
 {% block pageTitle %}
   {{ title(messages("postcode.title", messages(entityType)), form.errors) }}
@@ -52,7 +53,6 @@
       </div>
     </div>
 
-    <p class="govuk-body"><a href="{{ returnUrl }}" class="govuk-link">{{ messages("site.return.to", schemeName) }}</a>
-    </p>
+    {{ returnLink(schemeName) }}
 
 {% endblock %}
