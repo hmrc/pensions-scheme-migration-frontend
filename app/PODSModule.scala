@@ -24,6 +24,7 @@ class PODSModule extends AbstractModule {
 
     val navigators = Multibinder.newSetBinder(binder(), classOf[Navigator])
     navigators.addBinding().to(classOf[BeforeYouStartNavigator])
+    navigators.addBinding().to(classOf[BenefitsAndInsuranceNavigator])
     navigators.addBinding().to(classOf[AboutNavigator])
 
     bind(classOf[CompoundNavigator]).to(classOf[CompoundNavigatorImpl])

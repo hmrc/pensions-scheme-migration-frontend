@@ -31,10 +31,8 @@ class SpokeCreationServiceSpec
   val spokeCreationService = new SpokeCreationService()
 
   "getBeforeYouStartSpoke" must {
-
     "display the spoke with link to cya page with complete status if the spoke is completed" in {
-      val userAnswers = ua.set(SchemeTypeId, SchemeType.SingleTrust).get
-        .set(WorkingKnowledgeId, true).get
+      val userAnswers = ua.set(SchemeTypeId, SchemeType.SingleTrust).get.set(WorkingKnowledgeId, true).get
         .set(EstablishedCountryId, "GB").get
 
       val expectedSpoke = Seq(EntitySpoke(TaskListLink(Message("messages__schemeTaskList__before_you_start_link_text", schemeName),
@@ -44,6 +42,4 @@ class SpokeCreationServiceSpec
       result mustBe expectedSpoke
     }
   }
-
-
 }
