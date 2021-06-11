@@ -22,11 +22,11 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import forms.benefitsAndInsurance.AreBenefitsSecuredFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.AreBenefitsSecuredId
-import matchers.JsonMatchers.containJson
+import matchers.JsonMatchers
 import navigators.CompoundNavigator
-import org.mockito.{ArgumentCaptor, Matchers}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
+import org.mockito.{ArgumentCaptor, Matchers}
 import play.api.Application
 import play.api.data.Form
 import play.api.inject.bind
@@ -35,15 +35,14 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksRenderer
-import utils.{UserAnswers, Data}
-import play.api.libs.json.Reads._
+import uk.gov.hmrc.nunjucks.{NunjucksSupport, NunjucksRenderer}
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
+import utils.{UserAnswers, Enumerable, Data}
 
 import scala.concurrent.Future
 
-class AreBenefitsSecuredControllerSpec extends ControllerSpecBase {
+class AreBenefitsSecuredControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   val extraModules: Seq[GuiceableModule] = Seq(
     bind[NunjucksRenderer].toInstance(mockRenderer),
@@ -60,6 +59,7 @@ class AreBenefitsSecuredControllerSpec extends ControllerSpecBase {
 
   private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>
     Json.obj(
+      "form" -> form,
       "schemeName" -> schemeName,
       "radios" -> Radios.yesNo(form("value"))
     )
@@ -110,6 +110,9 @@ class AreBenefitsSecuredControllerSpec extends ControllerSpecBase {
 
       verify(mockRenderer, times(1))
         .render(Matchers.eq("benefitsAndInsurance/areBenefitsSecured.njk"), jsonCaptor.capture())(any())
+
+      println( "\n>>>>ACT=" + jsonCaptor.getValue)
+      println( "\n>>>>exp=" + jsonToPassToTemplate(form.fill(true)))
 
       jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(true)))
     }

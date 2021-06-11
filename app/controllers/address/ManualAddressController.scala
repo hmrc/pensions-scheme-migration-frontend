@@ -21,7 +21,6 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import models.AddressConfiguration.AddressConfiguration
 import models.{Address, AddressConfiguration}
 import navigators.CompoundNavigator
@@ -30,6 +29,7 @@ import play.api.i18n.{Messages, I18nSupport}
 import play.api.libs.json.{JsObject, JsArray, Json}
 import play.api.mvc.{Call, AnyContent, Result}
 import renderer.Renderer
+import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.{ExecutionContext, Future}
