@@ -22,7 +22,7 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import forms.benefitsAndInsurance.HowProvideBenefitsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.HowProvideBenefitsId
-import matchers.JsonMatchers.containJson
+import matchers.JsonMatchers
 import models.benefitsAndInsurance.BenefitsProvisionType
 import navigators.CompoundNavigator
 import org.mockito.{ArgumentCaptor, Matchers}
@@ -36,14 +36,14 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksRenderer
-import utils.{UserAnswers, Data}
+import uk.gov.hmrc.nunjucks.{NunjucksSupport, NunjucksRenderer}
+import utils.{UserAnswers, Enumerable, Data}
 import play.api.libs.json.Reads._
 import utils.Data.{schemeName, ua}
 
 import scala.concurrent.Future
 
-class HowProvideBenefitsControllerSpec extends ControllerSpecBase {
+class HowProvideBenefitsControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   val extraModules: Seq[GuiceableModule] = Seq(
     bind[NunjucksRenderer].toInstance(mockRenderer),

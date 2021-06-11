@@ -22,7 +22,7 @@ import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.InsurerAddressId
-import matchers.JsonMatchers.containJson
+import matchers.JsonMatchers
 import navigators.CompoundNavigator
 import org.mockito.{ArgumentCaptor, Matchers}
 import org.mockito.Matchers.any
@@ -34,14 +34,14 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksRenderer
-import utils.{UserAnswers, Data}
+import uk.gov.hmrc.nunjucks.{NunjucksSupport, NunjucksRenderer}
+import utils.{UserAnswers, Enumerable, Data}
 import play.api.libs.json.Reads._
 import utils.Data.ua
 
 import scala.concurrent.Future
 
-class InsurerConfirmAddressControllerSpec extends ControllerSpecBase {
+class InsurerConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val mockAddressLookupConnector = mock[AddressLookupConnector]
 
