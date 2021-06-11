@@ -16,15 +16,9 @@
 
 package controllers
 
-import connectors.MinimalDetailsConnector
-import controllers.{ControllerSpecBase, routes}
-import play.api.mvc.Results.Ok
 import controllers.actions.MutableFakeDataRetrievalAction
-import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
-import models.establishers.EstablisherKind
-import models.{Index, PersonName}
-import org.mockito.{ArgumentCaptor, Matchers}
+import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
 import play.api.Application
@@ -36,7 +30,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.{schemeName, ua}
-import utils.{Enumerable, UserAnswers}
+import utils.Enumerable
 
 import scala.concurrent.Future
 

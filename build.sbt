@@ -21,7 +21,10 @@ lazy val microservice = Project(appName, file("."))
     ),
     RoutesKeys.routesImport ++= Seq(
       "models.Index",
-      "models.establishers.EstablisherKind"
+      "models.establishers.EstablisherKind",
+      "models.Mode",
+      "models.CheckMode",
+      "models.NormalMode"
     )
   )
   .settings(silencerSettings)

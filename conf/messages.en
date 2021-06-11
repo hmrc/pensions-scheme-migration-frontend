@@ -58,6 +58,13 @@ error.non_numeric = Give a value using only numbers
 error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
+
+messages__error__date = Enter a valid date
+messages__error__date_future = Date cannot be a date in the future
+messages__error__date_past = The date of birth must be after 1900
+
+messages__dob__hint = For example, 31 3 1980
+
 messages__pension_scheme_registration__title = Migrating pension schemes
 messages__unauthorised__title = You can’t access this service with this account
 
@@ -151,6 +158,8 @@ messages__schemeTaskList__establisherIndividualDetails_addLink = Add details for
 messages__schemeTaskList__establisherIndividualAddress_addLink = Add address for {0}
 messages__schemeTaskList__establisherIndividualContactDetails_addLink = Add contact details for {0}
 
+messages__dob__title = What is the date of birth for {0}?
+
 messages__schemeTaskList__sectionDeclaration_header = Declaration
 messages__schemeTaskList__sectionDeclaration_incomplete = You must complete every section before you can declare.
 messages__schemeTaskList__sectionDeclaration_incomplete_v1 = You need to agree to a declaration if you make any changes to this scheme.
@@ -231,6 +240,12 @@ messages__individualName__title = What is the individual’s name?
 
 messages__confirmDelete__error_required = Select yes if you want to delete {0}
 messages__establisher__name_title = What is the establisher’s name?
+
+messages__establisherDetails__whatYouWillNeed_title = Details for {0}
+messages__establisherDetails__whatYouWillNeed_p = You will need to tell us {0}’s:
+messages__establisherDetails__whatYouWillNeed_li_1 = date of birth
+messages__establisherDetails__whatYouWillNeed_li_2 = National Insurance number, or reason why they do not have one
+messages__establisherDetails__whatYouWillNeed_li_3 = Unique Taxpayer Reference (UTR), or reason why they do not have one
 
 messages__confirmDeleteEstablisher__title = Are you sure you want to delete this establisher?
 messages__confirmDeleteEstablisher__companyHint = This will delete any directors you have added.

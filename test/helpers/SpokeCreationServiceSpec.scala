@@ -17,6 +17,7 @@
 package helpers
 
 import base.SpecBase
+import controllers.establishers.individual.details.routes._
 import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.individual.EstablisherNameId
@@ -111,7 +112,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = TaskListLink(
               text = "Add details for a b",
-              target = "someUrl",
+              target = WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
             isCompleted = Some(false)
@@ -138,7 +139,7 @@ class SpokeCreationServiceSpec
         spokeCreationService.getEstablisherIndividualSpokes(
           answers = userAnswers,
           name = "a b",
-          index = Some(0)
+          index = 0
         )
       result mustBe expectedSpoke
     }

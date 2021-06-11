@@ -78,7 +78,7 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
                   entities = spokeCreationService.getEstablisherIndividualSpokes(
                     answers = userAnswers,
                     name = establisher.name,
-                    index = Some(establisher.index)
+                    index = establisher.index
                   ),
                   header = Some(establisher.name)
                 )

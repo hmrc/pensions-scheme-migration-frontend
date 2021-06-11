@@ -26,11 +26,11 @@ import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList, Text}
 import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 
-class AboutCYAHelper extends CYAHelper with Enumerable.Implicits{
+class AboutCYAHelper extends CYAHelper with Enumerable.Implicits {
 
   def membershipRows(implicit request: DataRequest[AnyContent],
-                messages: Messages
-               ): Seq[SummaryList.Row] = {
+                     messages: Messages
+                    ): Seq[SummaryList.Row] = {
     implicit val ua: UserAnswers = request.userAnswers
     val schemeName = getAnswer(SchemeNameId)
 

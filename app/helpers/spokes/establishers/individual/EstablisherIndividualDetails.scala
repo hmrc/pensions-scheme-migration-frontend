@@ -16,18 +16,19 @@
 
 package helpers.spokes.establishers.individual
 
+import controllers.establishers.individual.details.routes._
 import helpers.spokes.Spoke
-import models.TaskListLink
+import models.{Index, TaskListLink}
 import play.api.i18n.Messages
 import utils.UserAnswers
 
 
-case object EstablisherIndividualDetails extends Spoke {
+case class EstablisherIndividualDetails(index: Index) extends Spoke {
   override def changeLink(name: String)
                          (implicit messages: Messages): TaskListLink =
     TaskListLink(
       text = Messages("messages__schemeTaskList__establisherIndividualDetails_addLink", name),
-      target = "someUrl",
+      target = WhatYouWillNeedController.onPageLoad(index).url,
       visuallyHiddenText = None
     )
 

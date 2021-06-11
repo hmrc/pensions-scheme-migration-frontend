@@ -16,7 +16,9 @@
 
 package navigators
 
+import controllers.establishers.individual.routes._
 import controllers.establishers.routes._
+import controllers.routes._
 import identifiers._
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.{AddEstablisherId, ConfirmDeleteEstablisherId, EstablisherKindId}
@@ -38,16 +40,16 @@ class EstablishersNavigator extends Navigator with Enumerable.Implicits {
 
   private def establisherKindRoutes(index: Index, ua: UserAnswers): Call =
     ua.get(EstablisherKindId(index)) match {
-      case Some(EstablisherKind.Individual) => controllers.establishers.individual.routes.EstablisherNameController.onPageLoad(index)
-      case _ => controllers.routes.IndexController.onPageLoad()
+      case Some(EstablisherKind.Individual) => EstablisherNameController.onPageLoad(index)
+      case _ => IndexController.onPageLoad()
     }
 
   private def addEstablisherRoutes(value: Option[Boolean],
                                    answers: UserAnswers): Call = {
     value match {
-      case Some(false) => controllers.routes.TaskListController.onPageLoad()
+      case Some(false) => TaskListController.onPageLoad()
       case Some(true) => EstablisherKindController.onPageLoad(answers.establishersCount)
-      case None => controllers.routes.IndexController.onPageLoad()
+      case None => IndexController.onPageLoad()
     }
   }
 }

@@ -41,15 +41,15 @@ class SchemeTypeControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = new FakeDataRetrievalAction(Some(minData))): SchemeTypeController =
     new SchemeTypeController(
-      messagesApi,
-      FakeUserAnswersCacheConnector,
-      new FakeNavigator(desiredRoute = onwardRoute),
-      FakeAuthAction,
-      dataRetrievalAction,
-      new DataRequiredActionImpl,
-      formProvider,
-      controllerComponents,
-      view
+      messagesApi = messagesApi,
+      userAnswersCacheConnector = FakeUserAnswersCacheConnector,
+      navigator = new FakeNavigator(desiredRoute = onwardRoute),
+      authenticate = FakeAuthAction,
+      getData = dataRetrievalAction,
+      requireData = new DataRequiredActionImpl,
+      formProvider = formProvider,
+      controllerComponents = controllerComponents,
+      view = view
     )
 
   private def viewAsString(form: Form[_] = form) = view(form, schemeName)(fakeRequest, messages).toString

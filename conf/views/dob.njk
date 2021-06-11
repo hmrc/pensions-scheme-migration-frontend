@@ -1,0 +1,47 @@
+{% extends "includes/layout.njk" %}
+
+{% from "macros/title.njk"                      import title %}
+{% from "macros/returnLink.njk"                 import returnLink %}
+{% from "govuk/components/button/macro.njk"     import govukButton %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+
+{% block pageTitle %}
+    {{ title(messages("messages__dob__title", name)) }}
+{% endblock %}
+
+{% block mainContent %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <h1 class="govuk-heading-xl">
+                {{ messages("messages__dob__title", name) }}
+            </h1>
+
+            {{ govukDateInput({
+                id: "establisherDOB",
+                fieldset: {
+                    legend: {
+                        text: messages("messages__dob__title", name),
+                        isPageHeading: false,
+                        classes: "govuk-visually-hidden"
+                    }
+                },
+                errorMessage: date.error,
+                items: date.items,
+                hint: {
+                    text: messages("messages__dob__hint")
+                }
+            }) }}
+
+            {{ govukButton({
+                href: submitUrl,
+                attributes: {id: "submit"},
+                text: messages("site.continue")
+            }) }}
+        </div>
+    </div>
+
+    {{ returnLink(schemeName) }}
+
+{% endblock %}

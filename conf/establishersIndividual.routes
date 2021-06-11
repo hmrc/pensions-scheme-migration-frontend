@@ -1,0 +1,9 @@
+GET         /:index/individual/name                        controllers.establishers.individual.EstablisherNameController.onPageLoad(index:Index)
+POST        /:index/individual/name                        controllers.establishers.individual.EstablisherNameController.onSubmit(index:Index)
+
+GET         /:index/individual/details                     controllers.establishers.individual.details.WhatYouWillNeedController.onPageLoad(index: Index)
+
+GET         /:index/individual/date-of-birth               controllers.establishers.individual.details.EstablisherDOBController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/individual/date-of-birth               controllers.establishers.individual.details.EstablisherDOBController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/individual/change/date-of-birth        controllers.establishers.individual.details.EstablisherDOBController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/individual/change/date-of-birth        controllers.establishers.individual.details.EstablisherDOBController.onSubmit(index: Index, mode: Mode = CheckMode)

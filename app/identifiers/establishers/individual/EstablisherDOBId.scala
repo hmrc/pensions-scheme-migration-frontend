@@ -16,19 +16,21 @@
 
 package identifiers.establishers.individual
 
-import identifiers._
+import identifiers.TypedIdentifier
 import identifiers.establishers.EstablishersId
-import models.PersonName
 import play.api.libs.json.{Format, JsPath, Json}
 
-case class EstablisherNameId(index: Int) extends TypedIdentifier[PersonName] {
-  override def path: JsPath = EstablishersId(index).path \ EstablisherNameId.toString
+import java.time.LocalDate
+
+case class EstablisherDOBId(index: Int) extends TypedIdentifier[LocalDate] {
+  override def path: JsPath = EstablishersId(index).path \ EstablisherDOBId.toString
 }
 
-object EstablisherNameId {
+object EstablisherDOBId {
   override lazy val toString: String = "establisherDetails"
 
-  def collectionPath(index: Int): JsPath = EstablishersId(index).path \ EstablisherNameId.toString
+  def collectionPath(index: Int): JsPath = EstablishersId(index).path \ EstablisherDOBId.toString
 
-  implicit lazy val formats: Format[EstablisherNameId] = Json.format[EstablisherNameId]
+  implicit lazy val formats: Format[EstablisherDOBId] =
+    Json.format[EstablisherDOBId]
 }
