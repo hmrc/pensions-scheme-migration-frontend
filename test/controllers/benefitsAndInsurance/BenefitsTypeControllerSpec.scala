@@ -60,6 +60,7 @@ class BenefitsTypeControllerSpec extends ControllerSpecBase with NunjucksSupport
 
   private val jsonToPassToTemplate: Form[BenefitsType] => JsObject = form =>
     Json.obj(
+      "form" -> form,
       "schemeName" -> schemeName,
       "radios" -> BenefitsType.radios(form)
     )

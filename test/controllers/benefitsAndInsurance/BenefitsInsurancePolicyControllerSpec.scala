@@ -59,6 +59,7 @@ class BenefitsInsurancePolicyControllerSpec extends ControllerSpecBase with Nunj
 
   private val jsonToPassToTemplate: Form[String] => JsObject = form =>
     Json.obj(
+      "form" -> form,
       "schemeName" -> schemeName
     )
 
