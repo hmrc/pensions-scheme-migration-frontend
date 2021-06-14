@@ -123,14 +123,10 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
 
-      val expectedJson = Json.obj()
-
       when(mockCompoundNavigator.nextPage(Matchers.eq(AddEstablisherId(Some(true))), any())(any()))
         .thenReturn(routes.AddEstablisherController.onPageLoad())
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
-
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 

@@ -18,25 +18,24 @@ package controllers.benefitsAndInsurance
 
 import controllers.Retrievals
 import controllers.actions._
-import helpers.AboutCYAHelper
+import helpers.{CYAHelper, BenefitsAndInsuranceCYAHelper}
 import identifiers.beforeYouStart.SchemeNameId
-import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
+import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils._
-import views.html.checkYourAnswers
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class CheckYourAnswersController @Inject()(
                                             override val messagesApi: MessagesApi,
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            cyaHelper: AboutCYAHelper,
+                                            cyaHelper: BenefitsAndInsuranceCYAHelper,
                                             val controllerComponents: MessagesControllerComponents,
                                             renderer: Renderer
                                           )(implicit val ec: ExecutionContext)
@@ -49,8 +48,9 @@ class CheckYourAnswersController @Inject()(
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         val json = Json.obj(
-          "list" -> cyaHelper.membershipRows,
-          "schemeName" -> cyaHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly)
+          "list" -> cyaHelper.rows,
+          "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+          "submitUrl" -> controllers.routes.TaskListController.onPageLoad().url
         )
 
         renderer.render("check-your-answers.njk", json).map(Ok(_))

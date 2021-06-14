@@ -16,7 +16,6 @@
 
 package controllers.beforeYouStartSpoke
 
-import com.codahale.metrics.SharedMetricRegistries
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._

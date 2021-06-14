@@ -16,9 +16,7 @@
 
 package helpers
 
-import helpers.spokes.{AboutMembersSpoke, BeforeYouStartSpoke, Spoke}
-import identifiers.establishers.IsEstablisherNewId
-import models.Index.indexToInt
+import helpers.spokes.{AboutMembersSpoke, BeforeYouStartSpoke, BenefitsAndInsuranceSpoke, Spoke}
 import models.{EntitySpoke, Index, TaskListLink}
 import play.api.i18n.Messages
 import utils.{Enumerable, UserAnswers}
@@ -28,8 +26,11 @@ class SpokeCreationService extends Enumerable.Implicits {
   def getBeforeYouStartSpoke(answers: UserAnswers, name: String)(implicit messages: Messages): Seq[EntitySpoke] =
     Seq(createSpoke(answers, BeforeYouStartSpoke, name))
 
-  def membershipDetailsSpoke(answers: UserAnswers, name: String)(implicit messages: Messages): Seq[EntitySpoke] =
-    Seq(createSpoke(answers, AboutMembersSpoke, name))
+  def aboutSpokes(answers: UserAnswers, name: String)(implicit messages: Messages): Seq[EntitySpoke] =
+    Seq(
+      createSpoke(answers, AboutMembersSpoke, name),
+      createSpoke(answers, BenefitsAndInsuranceSpoke, name)
+    )
 
   def getAddEstablisherHeaderSpokes(answers: UserAnswers, viewOnly: Boolean)(implicit messages: Messages)
   : Seq[EntitySpoke] =
@@ -43,7 +44,7 @@ class SpokeCreationService extends Enumerable.Implicits {
           controllers.establishers.routes.AddEstablisherController.onPageLoad.url), None))
 
   def getEstablisherIndividualSpokes(answers: UserAnswers, name: String, index: Option[Index]): Seq[EntitySpoke] = {
-    val isEstablisherNew = answers.get(IsEstablisherNewId(indexToInt(index.getOrElse(Index(0))))).getOrElse(false)
+    //val isEstablisherNew = answers.get(IsEstablisherNewId(indexToInt(index.getOrElse(Index(0))))).getOrElse(false)
     Nil
   }
 
@@ -57,3 +58,4 @@ class SpokeCreationService extends Enumerable.Implicits {
     EntitySpoke(spoke.changeLink(name), spoke.completeFlag(answers))
 
 }
+

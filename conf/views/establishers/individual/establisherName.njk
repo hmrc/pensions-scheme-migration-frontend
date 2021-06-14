@@ -28,7 +28,7 @@
         <form method="post" autocomplete="off" novalidate>
 
           {{ csrf() | safe }}
-{{ form | dump }}
+
            {{ govukInput({
                       label: {
                         text: messages('firstName.label'),

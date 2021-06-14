@@ -48,7 +48,6 @@ class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar wi
     controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad().url), Some(false))
   private val expectedDeclarationSpoke = EntitySpoke(TaskListLink(declarationLinkText,
     controllers.routes.DeclarationController.onPageLoad().url), Some(false))
-
   implicit val userAnswers: UserAnswers = ua
   "h1" must {
     "display appropriate heading" in {
@@ -68,7 +67,7 @@ class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar wi
 
   "aboutSection " must {
     "return correct the correct entity section " in {
-      when(mockSpokeCreationService.membershipDetailsSpoke(any(), any())(any())).thenReturn(Seq(expectedMembershipDetailsSpoke))
+      when(mockSpokeCreationService.aboutSpokes(any(), any())(any())).thenReturn(Seq(expectedMembershipDetailsSpoke))
       val expectedAboutSection = TaskListEntitySection(None, Seq(expectedMembershipDetailsSpoke), aboutHeader)
 
       helper.aboutSection mustBe expectedAboutSection

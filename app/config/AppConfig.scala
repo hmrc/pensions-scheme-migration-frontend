@@ -28,12 +28,14 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig) {
   val welshLanguageSupportEnabled: Boolean = config.getOptional[Boolean]("features.welsh-language-support").getOrElse(false)
-  lazy val locationCanonicalList: String = config.get[String]("location.canonical.list")
 
+  lazy val locationCanonicalList: String = loadConfig("location.canonical.list.all")
+  lazy val locationCanonicalListEUAndEEA: String = loadConfig("location.canonical.list.EUAndEEA")
 
   val en: String            = "en"
   val cy: String            = "cy"
   val defaultLanguage: Lang = Lang(en)
+  private def loadConfig(key: String): String = config.getOptional[String](key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
   lazy val appName: String = config.get[String](path = "appName")
   lazy val migrationUrl: String = servicesConfig.baseUrl("pensions-scheme-migration")
@@ -41,6 +43,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val lockByUserUrl: String = s"$migrationUrl${config.get[String](path = "urls.lockByUser")}"
   lazy val lockOnSchemeUrl: String = s"$migrationUrl${config.get[String](path = "urls.lockOnScheme")}"
   lazy val dataCacheUrl: String = s"$migrationUrl${config.get[String](path = "urls.dataCache")}"
+  lazy val addressLookUp = s"${servicesConfig.baseUrl("address-lookup")}"
 
   lazy val pensionsAdministratorUrl = s"${servicesConfig.baseUrl("pension-administrator")}"
   lazy val getPSAEmail: String = s"$pensionsAdministratorUrl${config.get[String]("urls.get-psa-email")}"
@@ -59,17 +62,11 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   def routeToSwitchLanguage: String => Call = (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
 
-  private def baseUrl(serviceName: String): String = {
-    val protocol = config.getOptional[String](s"microservice.services.$serviceName.protocol")
-      .getOrElse("http")
-    val host = config.get[String](s"microservice.services.$serviceName.host")
-    val port = config.get[String](s"microservice.services.$serviceName.port")
-    s"$protocol://$host:$port"
-  }
   private def getConfigString(key: String) = servicesConfig.getConfString(key, throw new Exception(s"Could not find " +
     s"config '$key'"))
 
   lazy val managePensionsSchemeOverviewUrl: String = "Test"
   lazy val managePensionsSchemeSummaryUrl: String = "Test"
   lazy val serviceSignOut: String = s"${config.get[String](path = "urls.logout")}"
+  lazy val validCountryCodes: Seq[String] = s"${config.get[String](path = "validCountryCodes")}".split(",").toSeq
 }

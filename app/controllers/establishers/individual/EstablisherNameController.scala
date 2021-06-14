@@ -21,7 +21,6 @@ import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.PersonNameFormProvider
 import identifiers.establishers.individual.EstablisherNameId
-import models.requests.DataRequest
 import models.{Index, PersonName}
 import navigators.CompoundNavigator
 import play.api.data.Form

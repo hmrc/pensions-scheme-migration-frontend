@@ -43,6 +43,7 @@ trait Retrievals {
       case _ => None
     }
 
+
   trait Retrieval[A] {
     self =>
 

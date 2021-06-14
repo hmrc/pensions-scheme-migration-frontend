@@ -49,7 +49,7 @@ case class Address(addressLine1: String,
       this.addressLine3,
       this.addressLine4,
       this.postcode,
-      Some(countryOptions.getCountryNameFromCode(this))
+      Some(countryOptions.getCountryNameFromCode(this.country))
     ).flatten(s => s)
   }
 }

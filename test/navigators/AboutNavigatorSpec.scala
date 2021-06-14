@@ -20,7 +20,6 @@ import base.SpecBase
 import controllers.aboutMembership.routes._
 import identifiers.Identifier
 import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
-import models.NormalMode
 import org.scalatest.prop.TableFor3
 import play.api.mvc.Call
 import utils.UserAnswers

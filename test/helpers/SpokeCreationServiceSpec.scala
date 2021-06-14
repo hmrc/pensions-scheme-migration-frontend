@@ -36,10 +36,8 @@ class SpokeCreationServiceSpec
   val spokeCreationService = new SpokeCreationService()
 
   "getBeforeYouStartSpoke" must {
-
     "display the spoke with link to cya page with complete status if the spoke is completed" in {
-      val userAnswers = ua.set(SchemeTypeId, SchemeType.SingleTrust).get
-        .set(WorkingKnowledgeId, true).get
+      val userAnswers = ua.set(SchemeTypeId, SchemeType.SingleTrust).get.set(WorkingKnowledgeId, true).get
         .set(EstablishedCountryId, "GB").get
 
       val expectedSpoke = Seq(EntitySpoke(TaskListLink(Message("messages__schemeTaskList__before_you_start_link_text", schemeName),
@@ -56,10 +54,14 @@ class SpokeCreationServiceSpec
 
         val expectedSpoke = Seq(
           EntitySpoke(TaskListLink(Message("messages__schemeTaskList__about_members_link_text", schemeName),
-            controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad().url), None)
+            controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad().url), None),
+          EntitySpoke(TaskListLink(
+            messages("messages__schemeTaskList__about_benefits_and_insurance_link_text", schemeName),
+            controllers.benefitsAndInsurance.routes.CheckYourAnswersController.onPageLoad.url
+          ), None)
         )
 
-        val result = spokeCreationService.membershipDetailsSpoke(ua, schemeName)
+        val result = spokeCreationService.aboutSpokes(ua, schemeName)
         result mustBe expectedSpoke
       }
 
@@ -101,13 +103,12 @@ class SpokeCreationServiceSpec
   "declarationSpoke" must {
     "return declaration spoke with link" in {
       val expectedSpoke = Seq(EntitySpoke(TaskListLink(
-          messages("messages__schemeTaskList__declaration_link"),
-          controllers.routes.DeclarationController.onPageLoad().url)
-        ))
+        messages("messages__schemeTaskList__declaration_link"),
+        controllers.routes.DeclarationController.onPageLoad().url)
+      ))
 
       spokeCreationService.declarationSpoke mustBe expectedSpoke
     }
   }
-
-
 }
+

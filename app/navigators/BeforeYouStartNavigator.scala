@@ -16,8 +16,6 @@
 
 package navigators
 
-import com.google.inject.Inject
-import connectors.cache.UserAnswersCacheConnector
 import controllers.beforeYouStartSpoke.routes._
 import identifiers._
 import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}

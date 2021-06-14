@@ -18,18 +18,17 @@ package controllers.aboutMembership
 
 import controllers.Retrievals
 import controllers.actions._
-import helpers.AboutCYAHelper
+import helpers.{CYAHelper, AboutCYAHelper}
 import identifiers.beforeYouStart.SchemeNameId
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils._
-import views.html.checkYourAnswers
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class CheckYourAnswersController @Inject()(
                                             override val messagesApi: MessagesApi,
@@ -51,7 +50,7 @@ class CheckYourAnswersController @Inject()(
 
         val json = Json.obj(
           "list" -> cyaHelper.membershipRows,
-          "schemeName" -> cyaHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+          "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
           "submitUrl" -> controllers.routes.TaskListController.onPageLoad().url
         )
 

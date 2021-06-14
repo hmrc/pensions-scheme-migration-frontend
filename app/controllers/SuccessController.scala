@@ -16,31 +16,28 @@
 
 package controllers
 
-import config.AppConfig
-import connectors.{MinimalDetailsConnector, MinimalDetailsConnectorImpl}
+import connectors.MinimalDetailsConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels._
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class SuccessController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        identify: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        userAnswersCacheConnector: UserAnswersCacheConnector,
-                                        renderer: Renderer,
-                                        minimalDetailsConnector: MinimalDetailsConnector
-                                      )(implicit ec: ExecutionContext)
+                                   override val messagesApi: MessagesApi,
+                                   identify: AuthAction,
+                                   getData: DataRetrievalAction,
+                                   requireData: DataRequiredAction,
+                                   val controllerComponents: MessagesControllerComponents,
+                                   userAnswersCacheConnector: UserAnswersCacheConnector,
+                                   renderer: Renderer,
+                                   minimalDetailsConnector: MinimalDetailsConnector
+                                 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
 

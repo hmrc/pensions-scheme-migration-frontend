@@ -47,7 +47,7 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
 
   private[helpers] def aboutSection(implicit userAnswers: UserAnswers, messages: Messages): TaskListEntitySection =
     TaskListEntitySection(None,
-      spokeCreationService.membershipDetailsSpoke(userAnswers, getSchemeName),
+      spokeCreationService.aboutSpokes(userAnswers, getSchemeName),
       Some(messages("messages__schemeTaskList__about_scheme_header", getSchemeName))
     )
 
@@ -90,7 +90,8 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
   def declarationEnabled(implicit userAnswers: UserAnswers): Boolean =
     Seq(
       Some(userAnswers.isBeforeYouStartCompleted),
-      userAnswers.isMembersCompleted
+      userAnswers.isMembersCompleted,
+      userAnswers.isBenefitsAndInsuranceCompleted
     ).forall(_.contains(true))
 
   private[helpers] def declarationSection(viewOnly: Boolean)(implicit userAnswers: UserAnswers, messages: Messages): Option[TaskListEntitySection] =

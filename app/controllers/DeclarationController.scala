@@ -27,32 +27,36 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class DeclarationController @Inject()(override val messagesApi: MessagesApi,
-                                      authenticate: AuthAction,
-                                      getData: DataRetrievalAction,
-                                      requireData: DataRequiredAction,
-                                      val controllerComponents: MessagesControllerComponents,
-                                      renderer: Renderer
-                                     )(implicit val executionContext: ExecutionContext) extends FrontendBaseController
-  with I18nSupport with Retrievals {
+class DeclarationController @Inject()(
+                                       override val messagesApi: MessagesApi,
+                                       authenticate: AuthAction,
+                                       getData: DataRetrievalAction,
+                                       requireData: DataRequiredAction,
+                                       val controllerComponents: MessagesControllerComponents,
+                                       renderer: Renderer
+                                     )(implicit val executionContext: ExecutionContext)
+  extends FrontendBaseController
+    with I18nSupport
+    with Retrievals {
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
-    implicit request =>
-      SchemeNameId.retrieve.right.map { schemeName =>
+  def onPageLoad: Action[AnyContent] =
+    (authenticate andThen getData andThen requireData).async {
+      implicit request =>
+        SchemeNameId.retrieve.right.map { schemeName =>
 
-        val json = Json.obj("schemeName" -> schemeName,
-        "isCompany" -> true,
-        "isDormant" -> true,
-        "hasWorkingKnowledge" -> true,
-          "submitUrl" -> routes.DeclarationController.onSubmit().url
-        )
-        renderer.render("declaration.njk", json).map(Ok(_))
-      }
-  }
+          val json = Json.obj(
+            "schemeName" -> schemeName,
+            "isCompany" -> true,
+            "isDormant" -> true,
+            "hasWorkingKnowledge" -> true,
+            "submitUrl" -> routes.DeclarationController.onSubmit().url
+          )
+          renderer.render("declaration.njk", json).map(Ok(_))
+        }
+    }
 
-  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
-    implicit request =>
+  def onSubmit: Action[AnyContent] =
+    (authenticate andThen getData andThen requireData) {
       Redirect(routes.SuccessController.onPageLoad())
-  }
-
+    }
 }
