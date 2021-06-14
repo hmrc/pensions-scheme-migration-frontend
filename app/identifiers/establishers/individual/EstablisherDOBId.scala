@@ -27,7 +27,7 @@ case class EstablisherDOBId(index: Int) extends TypedIdentifier[LocalDate] {
 }
 
 object EstablisherDOBId {
-  override lazy val toString: String = "establisherDetails"
+  override lazy val toString: String = "dateOfBirth"
 
   def collectionPath(index: Int): JsPath = EstablishersId(index).path \ EstablisherDOBId.toString
 

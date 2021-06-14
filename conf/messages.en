@@ -13,6 +13,10 @@ footer.links.accessibility = Accessibility
 footer.links.privacy = Privacy policy
 footer.links.terms = Terms and conditions
 
+site.day.capitalized = Day
+site.month.capitalized = Month
+site.year.capitalized = Year
+
 site.signOut = Sign out
 site.service_name = Migrating pension schemes
 site.back = Back
@@ -58,6 +62,7 @@ error.non_numeric = Give a value using only numbers
 error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
+
 
 messages__error__date = Enter a valid date
 messages__error__date_future = Date cannot be a date in the future

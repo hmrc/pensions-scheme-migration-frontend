@@ -18,7 +18,9 @@ package controllers.dateOfBirth
 
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
+import forms.DOBFormProvider
 import identifiers.TypedIdentifier
+import identifiers.establishers.individual.EstablisherDOBId
 import models.PersonName
 import models.requests.DataRequest
 import navigators.CompoundNavigator
@@ -29,14 +31,16 @@ import play.api.mvc.{AnyContent, Result}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import uk.gov.hmrc.viewmodels.DateInput
 
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
-trait DateOfBirthController extends FrontendBaseController
-  with I18nSupport
-  with Retrievals
-  with NunjucksSupport {
+trait DateOfBirthController
+  extends FrontendBaseController
+    with I18nSupport
+    with Retrievals
+    with NunjucksSupport {
 
   protected implicit def executionContext: ExecutionContext
 
@@ -51,25 +55,36 @@ trait DateOfBirthController extends FrontendBaseController
   protected def get(
                      dobId: TypedIdentifier[LocalDate],
                      personNameId: TypedIdentifier[PersonName],
-                     submitUrl: String
-                   )(implicit request: DataRequest[AnyContent]): Future[Result] =
+                     submitUrl: String,
+                     schemeName: String
+                   )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+
+    val preparedForm: Form[LocalDate] =
+      request.userAnswers.get[LocalDate](dobId) match {
+        case Some(value) => form.fill(value)
+        case _           => form
+      }
 
     personNameId.retrieve.right.map {
       personName =>
         renderer.render(
           template = "dob.njk",
           ctx = Json.obj(
-            "form" -> request.userAnswers.get[LocalDate](dobId).fold(form)(form.fill),
-            "name" -> personName.fullName,
-            "submitUrl" -> submitUrl
+            "form"       -> preparedForm,
+            "date"       -> DateInput.localDate(preparedForm("date")),
+            "name"       -> personName.fullName,
+            "submitUrl"  -> submitUrl,
+            "schemeName" -> schemeName
           )
         ).map(Ok(_))
     }
+  }
 
   protected def post[I <: TypedIdentifier[LocalDate]](
                                                        dobId: TypedIdentifier[LocalDate],
                                                        personNameId: TypedIdentifier[PersonName],
-                                                       submitUrl: String
+                                                       submitUrl: String,
+                                                       schemeName: String
                                                      )(implicit request: DataRequest[AnyContent]): Future[Result] =
 
     form.bindFromRequest().fold(
@@ -79,9 +94,11 @@ trait DateOfBirthController extends FrontendBaseController
             renderer.render(
               template = "dob.njk",
               ctx = Json.obj(
-                "form" -> formWithErrors,
-                "name" -> personName.fullName,
-                "submitUrl" -> submitUrl
+                "form"       -> formWithErrors,
+                "date"       -> DateInput.localDate(formWithErrors("date")),
+                "name"       -> personName.fullName,
+                "submitUrl"  -> submitUrl,
+                "schemeName" -> schemeName
               )
             ).map(BadRequest(_))
         },

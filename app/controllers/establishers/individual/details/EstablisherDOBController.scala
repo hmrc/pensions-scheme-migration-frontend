@@ -19,8 +19,8 @@ package controllers.establishers.individual.details
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.dateOfBirth.DateOfBirthController
-import controllers.establishers.individual.details.routes._
 import forms.DOBFormProvider
+import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.{EstablisherDOBId, EstablisherNameId}
 import models.{Index, Mode}
 import navigators.CompoundNavigator
@@ -51,20 +51,29 @@ class EstablisherDOBController @Inject()(
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        get(
-          dobId = EstablisherDOBId(index),
-          personNameId = EstablisherNameId(index),
-          submitUrl = EstablisherDOBController.onSubmit(index, mode).url
-        )
+
+        SchemeNameId.retrieve.right.map {
+          schemeName =>
+            get(
+              dobId        = EstablisherDOBId(index),
+              personNameId = EstablisherNameId(index),
+              submitUrl    = routes.EstablisherDOBController.onSubmit(index, mode).url,
+              schemeName   = schemeName
+            )
+        }
     }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        post(
-          dobId = EstablisherDOBId(index),
-          personNameId = EstablisherNameId(index),
-          submitUrl = EstablisherDOBController.onSubmit(index, mode).url
-        )
+        SchemeNameId.retrieve.right.map {
+          schemeName =>
+            post(
+              dobId        = EstablisherDOBId(index),
+              personNameId = EstablisherNameId(index),
+              submitUrl    = routes.EstablisherDOBController.onSubmit(index, mode).url,
+              schemeName   = schemeName
+            )
+        }
     }
 }
