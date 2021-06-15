@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package controllers.dateOfBirth
+package controllers
 
 import connectors.cache.UserAnswersCacheConnector
-import controllers.Retrievals
 import identifiers.TypedIdentifier
 import models.PersonName
 import models.requests.DataRequest
@@ -29,12 +28,11 @@ import play.api.mvc.{AnyContent, Result}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.DateInput
+import uk.gov.hmrc.viewmodels.Radios
 
-import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
-trait DateOfBirthController
+trait HasReferenceNumberController
   extends FrontendBaseController
     with I18nSupport
     with Retrievals
@@ -42,23 +40,23 @@ trait DateOfBirthController
 
   protected implicit def executionContext: ExecutionContext
 
-  protected val form: Form[LocalDate]
-
   protected val renderer: Renderer
 
   protected val userAnswersCacheConnector: UserAnswersCacheConnector
 
   protected def navigator: CompoundNavigator
 
-  protected def get(
-                     dobId: TypedIdentifier[LocalDate],
-                     personNameId: TypedIdentifier[PersonName],
-                     submitUrl: String,
-                     schemeName: String
-                   )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+  def get(
+           pageTitle: String,
+           id: TypedIdentifier[Boolean],
+           form: Form[Boolean],
+           personNameId: TypedIdentifier[PersonName],
+           submitUrl: String,
+           schemeName: String
+         )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
-    val preparedForm: Form[LocalDate] =
-      request.userAnswers.get[LocalDate](dobId) match {
+    val preparedForm: Form[Boolean] =
+      request.userAnswers.get[Boolean](id) match {
         case Some(value) => form.fill(value)
         case _           => form
       }
@@ -66,11 +64,12 @@ trait DateOfBirthController
     personNameId.retrieve.right.map {
       personName =>
         renderer.render(
-          template = "dob.njk",
+          template = "hasReferenceNumber.njk",
           ctx = Json.obj(
+            "title"      -> pageTitle,
             "form"       -> preparedForm,
-            "date"       -> DateInput.localDate(preparedForm("date")),
             "name"       -> personName.fullName,
+            "radios"     -> Radios.yesNo(preparedForm("value")),
             "submitUrl"  -> submitUrl,
             "schemeName" -> schemeName
           )
@@ -78,33 +77,36 @@ trait DateOfBirthController
     }
   }
 
-  protected def post(
-                      dobId: TypedIdentifier[LocalDate],
-                      personNameId: TypedIdentifier[PersonName],
-                      submitUrl: String,
-                      schemeName: String
-                    )(implicit request: DataRequest[AnyContent]): Future[Result] =
+  def post(
+            pageTitle: String,
+            id: TypedIdentifier[Boolean],
+            form: Form[Boolean],
+            personNameId: TypedIdentifier[PersonName],
+            submitUrl: String,
+            schemeName: String
+          )(implicit request: DataRequest[AnyContent]): Future[Result] =
 
     form.bindFromRequest().fold(
-      formWithErrors =>
+      (formWithErrors: Form[_]) =>
         personNameId.retrieve.right.map {
           personName =>
             renderer.render(
-              template = "dob.njk",
+              template = "hasReferenceNumber.njk",
               ctx = Json.obj(
+                "title"      -> pageTitle,
                 "form"       -> formWithErrors,
-                "date"       -> DateInput.localDate(formWithErrors("date")),
                 "name"       -> personName.fullName,
+                "radios"     -> Radios.yesNo(form("value")),
                 "submitUrl"  -> submitUrl,
                 "schemeName" -> schemeName
               )
-            ).map(BadRequest(_))
+            ).map(Ok(_))
         },
       value =>
         for {
-          updatedAnswers <- Future.fromTry(request.userAnswers.set(dobId, value))
+          updatedAnswers <- Future.fromTry(request.userAnswers.set(id, value))
           _              <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
         } yield
-          Redirect(navigator.nextPage(dobId, updatedAnswers))
+          Redirect(navigator.nextPage(id, updatedAnswers))
     )
 }

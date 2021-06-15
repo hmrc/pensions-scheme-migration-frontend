@@ -165,6 +165,12 @@ messages__schemeTaskList__establisherIndividualContactDetails_addLink = Add cont
 
 messages__dob__title = What is the date of birth for {0}?
 
+messages__hasNINO = Does {0} have a National Insurance number?
+messages__genericHasNino__error__required = Select yes if {0} has a National Insurance number
+
+messages__hasUTR = Does {0} have a Unique Taxpayer Reference?
+messages__genericHasUtr__error__required = Select yes if {0} has a Unique Taxpayer Reference
+
 messages__schemeTaskList__sectionDeclaration_header = Declaration
 messages__schemeTaskList__sectionDeclaration_incomplete = You must complete every section before you can declare.
 messages__schemeTaskList__sectionDeclaration_incomplete_v1 = You need to agree to a declaration if you make any changes to this scheme.

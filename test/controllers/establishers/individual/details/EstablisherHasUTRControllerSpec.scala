@@ -18,9 +18,9 @@ package controllers.establishers.individual.details
 
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
-import forms.DOBFormProvider
+import forms.HasReferenceNumberFormProvider
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.details.EstablisherDOBId
+import identifiers.establishers.individual.details.EstablisherHasUTRId
 import matchers.JsonMatchers
 import models.{NormalMode, PersonName}
 import org.mockito.ArgumentCaptor
@@ -31,53 +31,44 @@ import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Result}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
-import uk.gov.hmrc.viewmodels.{DateInput, NunjucksSupport}
+import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import utils.Data.ua
 import utils.{FakeNavigator, UserAnswers}
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
-class EstablisherDOBControllerSpec
+class EstablisherHasUTRControllerSpec
   extends ControllerSpecBase
     with NunjucksSupport
     with JsonMatchers
     with TryValues
     with BeforeAndAfterEach {
 
-  private val formProvider: DOBFormProvider =
-    new DOBFormProvider()
-  private val form: Form[LocalDate] =
-    formProvider()
-  private val onwardRoute: Call =
-    controllers.routes.IndexController.onPageLoad()
   private val personName: PersonName =
     PersonName("Jane", "Doe")
+  private val formProvider: HasReferenceNumberFormProvider =
+    new HasReferenceNumberFormProvider()
+  private val form: Form[Boolean] =
+    formProvider("Select Yes if Jane Doe has a Unique Taxpayer Reference")
+  private val onwardRoute: Call =
+    controllers.routes.IndexController.onPageLoad()
   private val userAnswers: UserAnswers =
     ua.set(EstablisherNameId(0), personName).success.value
   private val templateToBeRendered: String =
-    "dob.njk"
+    "hasReferenceNumber.njk"
   private val commonJson: JsObject =
     Json.obj(
       "name"       -> "Jane Doe",
-      "submitUrl"  -> "/migrate-pension-scheme/establisher/1/individual/date-of-birth",
+      "submitUrl"  -> "/migrate-pension-scheme/establisher/1/individual/have-unique-taxpayer-reference",
       "schemeName" -> "Test scheme name"
     )
-
-  private val formData: LocalDate =
-    LocalDate.parse("2000-01-01")
-
-  private val day: Int = formData.getDayOfMonth
-  private val month: Int = formData.getMonthValue
-  private val year: Int = formData.getYear
-
   private def controller(
                           dataRetrievalAction: DataRetrievalAction
-                        ): EstablisherDOBController =
-    new EstablisherDOBController(
+                        ): EstablisherHasUTRController =
+    new EstablisherHasUTRController(
       messagesApi               = messagesApi,
       navigator                 = new FakeNavigator(desiredRoute = onwardRoute),
       authenticate              = new FakeAuthAction(),
@@ -96,7 +87,7 @@ class EstablisherDOBControllerSpec
     )
   }
 
-  "EstablisherDOBController" must {
+  "EstablisherHasUTRController" must {
     "return OK and the correct view for a GET" in {
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
@@ -119,9 +110,10 @@ class EstablisherDOBControllerSpec
       templateCaptor.getValue mustEqual templateToBeRendered
 
       val json: JsObject =
-        Json.obj("date" -> DateInput.localDate(form("date")))
+        Json.obj("radios" -> Radios.yesNo(form("value")))
 
       jsonCaptor.getValue must containJson(commonJson ++ json)
+
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
@@ -130,7 +122,7 @@ class EstablisherDOBControllerSpec
 
       val ua =
         userAnswers
-          .set(EstablisherDOBId(0), formData).success.value
+          .set(EstablisherHasUTRId(0), true).success.value
 
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
 
@@ -150,7 +142,7 @@ class EstablisherDOBControllerSpec
       templateCaptor.getValue mustEqual templateToBeRendered
 
       val json: JsObject =
-        Json.obj("date" -> DateInput.localDate(form.fill(formData).apply("date")))
+        Json.obj("radios" -> Radios.yesNo(form.fill(true).apply("value")))
 
       jsonCaptor.getValue must containJson(commonJson ++ json)
     }
@@ -161,11 +153,7 @@ class EstablisherDOBControllerSpec
 
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
         fakeRequest
-          .withFormUrlEncodedBody(
-            ("date.day", day.toString),
-            ("date.month", month.toString),
-            ("date.year", year.toString)
-          )
+          .withFormUrlEncodedBody(("value", "true"))
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
@@ -187,7 +175,7 @@ class EstablisherDOBControllerSpec
 
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
         fakeRequest
-          .withFormUrlEncodedBody("date" -> "invalid value")
+          .withFormUrlEncodedBody("value" -> "invalid value")
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
@@ -199,7 +187,7 @@ class EstablisherDOBControllerSpec
         controller(getData)
           .onSubmit(0, NormalMode)(request)
 
-      val boundForm = form.bind(Map("date" -> "invalid value"))
+      val boundForm = form.bind(Map("value" -> "invalid value"))
 
       status(result) mustBe BAD_REQUEST
 
@@ -209,7 +197,7 @@ class EstablisherDOBControllerSpec
       templateCaptor.getValue mustEqual templateToBeRendered
 
       val json: JsObject =
-        Json.obj("date" -> DateInput.localDate(boundForm.apply("date")))
+        Json.obj("radios" -> Radios.yesNo(boundForm.apply("value")))
 
       jsonCaptor.getValue must containJson(commonJson ++ json)
 

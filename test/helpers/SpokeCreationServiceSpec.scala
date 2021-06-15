@@ -17,7 +17,7 @@
 package helpers
 
 import base.SpecBase
-import controllers.establishers.individual.details.routes._
+import controllers.establishers.individual.details.routes
 import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.individual.EstablisherNameId
@@ -112,7 +112,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = TaskListLink(
               text = "Add details for a b",
-              target = WhatYouWillNeedController.onPageLoad(0).url,
+              target = routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
             isCompleted = Some(false)

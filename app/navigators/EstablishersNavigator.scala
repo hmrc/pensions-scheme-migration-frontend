@@ -17,12 +17,14 @@
 package navigators
 
 import controllers.establishers.individual.routes._
+import controllers.establishers.individual.details.routes._
 import controllers.establishers.routes._
 import controllers.routes._
 import identifiers._
 import identifiers.establishers.individual.EstablisherNameId
+import identifiers.establishers.individual.details.EstablisherDOBId
 import identifiers.establishers.{AddEstablisherId, ConfirmDeleteEstablisherId, EstablisherKindId}
-import models.Index
+import models.{Index, NormalMode}
 import models.establishers.EstablisherKind
 import models.requests.DataRequest
 import play.api.mvc.{AnyContent, Call}
@@ -36,6 +38,7 @@ class EstablishersNavigator extends Navigator with Enumerable.Implicits {
     case EstablisherNameId(_) => AddEstablisherController.onPageLoad()
     case AddEstablisherId(value) => addEstablisherRoutes(value, ua)
     case ConfirmDeleteEstablisherId => AddEstablisherController.onPageLoad()
+    case EstablisherDOBId(index) => EstablisherHasNINOController.onPageLoad(index, NormalMode)
   }
 
   private def establisherKindRoutes(index: Index, ua: UserAnswers): Call =

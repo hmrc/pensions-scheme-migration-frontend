@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package identifiers.establishers.individual
+package identifiers.establishers.individual.details
 
 import identifiers.TypedIdentifier
 import identifiers.establishers.EstablishersId
@@ -23,13 +23,16 @@ import play.api.libs.json.{Format, JsPath, Json}
 import java.time.LocalDate
 
 case class EstablisherDOBId(index: Int) extends TypedIdentifier[LocalDate] {
-  override def path: JsPath = EstablishersId(index).path \ EstablisherDOBId.toString
+  override def path: JsPath =
+    EstablishersId(index).path \ EstablisherDOBId.toString
 }
 
 object EstablisherDOBId {
-  override lazy val toString: String = "dateOfBirth"
+  override lazy val toString: String =
+    "dateOfBirth"
 
-  def collectionPath(index: Int): JsPath = EstablishersId(index).path \ EstablisherDOBId.toString
+  def collectionPath(index: Int): JsPath =
+    EstablishersId(index).path \ EstablisherDOBId.toString
 
   implicit lazy val formats: Format[EstablisherDOBId] =
     Json.format[EstablisherDOBId]

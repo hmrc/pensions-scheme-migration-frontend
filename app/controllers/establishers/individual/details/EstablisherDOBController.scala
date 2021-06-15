@@ -21,7 +21,8 @@ import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.dateOfBirth.DateOfBirthController
 import forms.DOBFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.individual.{EstablisherDOBId, EstablisherNameId}
+import identifiers.establishers.individual.EstablisherNameId
+import identifiers.establishers.individual.details.EstablisherDOBId
 import models.{Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
