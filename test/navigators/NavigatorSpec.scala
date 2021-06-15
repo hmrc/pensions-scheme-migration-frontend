@@ -31,9 +31,6 @@ class NavigatorSpec extends SpecBase {
   private val call1: PartialFunction[Identifier, Call] = {
     case DummyIdentifier => Call("GET", "/page1")
   }
-//  private val call2: PartialFunction[Identifier, Call] = {
-//    case DummyIdentifier => Call("GET", "/page2")
-//  }
 
   private val dummyNavigator: Navigator = new Navigator {
     protected def routeMap(userAnswers: UserAnswers)

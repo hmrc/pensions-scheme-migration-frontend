@@ -21,14 +21,13 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import controllers.benefitsAndInsurance.routes._
 import identifiers._
 import identifiers.benefitsAndInsurance._
-import models._
 import models.benefitsAndInsurance.BenefitsProvisionType.{DefinedBenefitsOnly, MixedBenefits, MoneyPurchaseOnly}
 import models.benefitsAndInsurance.BenefitsType._
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.{JsString, Writes}
 import play.api.mvc.Call
-import utils.{UserAnswers, Enumerable}
+import utils.{Enumerable, UserAnswers}
 
 class BenefitsAndInsuranceNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
@@ -62,7 +61,7 @@ class BenefitsAndInsuranceNavigatorSpec extends SpecBase with NavigatorBehaviour
           row(BenefitsInsurancePolicyId)(insurerEnterPostCode),
           row(InsurerAddressId)(checkYourAnswersPage)
         )
-      behave like navigatorWithRoutesForMode(NormalMode)(navigator, navigation)
+      behave like navigatorWithRoutesForMode(navigator, navigation)
     }
 }
 

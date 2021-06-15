@@ -16,10 +16,10 @@
 
 package helpers
 
-import helpers.spokes.{BeforeYouStartSpoke, AboutMembersSpoke, Spoke, BenefitsAndInsuranceSpoke}
-import models.{TaskListLink, EntitySpoke}
+import helpers.spokes.{AboutMembersSpoke, BeforeYouStartSpoke, BenefitsAndInsuranceSpoke, Spoke}
+import models.{EntitySpoke, Index, TaskListLink}
 import play.api.i18n.Messages
-import utils.{UserAnswers, Enumerable}
+import utils.{Enumerable, UserAnswers}
 
 class SpokeCreationService extends Enumerable.Implicits {
 
@@ -32,11 +32,27 @@ class SpokeCreationService extends Enumerable.Implicits {
       createSpoke(answers, BenefitsAndInsuranceSpoke, name)
     )
 
+  def getAddEstablisherHeaderSpokes(answers: UserAnswers, viewOnly: Boolean)(implicit messages: Messages)
+  : Seq[EntitySpoke] =
+    if (viewOnly)
+      Nil
+    else if (answers.allEstablishersAfterDelete.isEmpty)
+      Seq(EntitySpoke(TaskListLink(messages("messages__schemeTaskList__sectionEstablishers_add_link"),
+          controllers.establishers.routes.EstablisherKindController.onPageLoad(answers.allEstablishers.size).url), None))
+    else
+      Seq(EntitySpoke(TaskListLink(messages("messages__schemeTaskList__sectionEstablishers_change_link"),
+          controllers.establishers.routes.AddEstablisherController.onPageLoad.url), None))
+
+  def getEstablisherIndividualSpokes(answers: UserAnswers, name: String, index: Option[Index]): Seq[EntitySpoke] = {
+    //val isEstablisherNew = answers.get(IsEstablisherNewId(indexToInt(index.getOrElse(Index(0))))).getOrElse(false)
+    Nil
+  }
+
   def declarationSpoke(implicit messages: Messages): Seq[EntitySpoke] =
     Seq(EntitySpoke(TaskListLink(
-          messages("messages__schemeTaskList__declaration_link"),
-          controllers.routes.DeclarationController.onPageLoad().url)
-      ))
+      messages("messages__schemeTaskList__declaration_link"),
+      controllers.routes.DeclarationController.onPageLoad().url)
+    ))
 
   def createSpoke(answers: UserAnswers, spoke: Spoke, name: String)(implicit messages: Messages): EntitySpoke =
     EntitySpoke(spoke.changeLink(name), spoke.completeFlag(answers))

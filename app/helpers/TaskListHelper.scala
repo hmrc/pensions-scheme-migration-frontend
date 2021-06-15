@@ -18,6 +18,7 @@ package helpers
 
 import com.google.inject.Inject
 import identifiers.beforeYouStart.SchemeNameId
+import identifiers.establishers.individual.EstablisherNameId
 import play.api.i18n.Messages
 import utils.UserAnswers
 import viewmodels._
@@ -32,6 +33,8 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
       getSchemeName,
       beforeYouStartSection,
       aboutSection,
+      addEstablisherHeader(viewOnly),
+      establishersSection,
       declarationSection(viewOnly)
     )
 
@@ -47,6 +50,42 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
       spokeCreationService.aboutSpokes(userAnswers, getSchemeName),
       Some(messages("messages__schemeTaskList__about_scheme_header", getSchemeName))
     )
+
+  private[helpers] def addEstablisherHeader(viewOnly: Boolean)(implicit userAnswers: UserAnswers, messages: Messages): Option[TaskListEntitySection] =
+    if (userAnswers.allEstablishersAfterDelete.isEmpty && viewOnly) {
+      Some(TaskListEntitySection(None, Nil, None, messages("messages__schemeTaskList__sectionEstablishers_no_establishers")))
+    } else {
+      spokeCreationService.getAddEstablisherHeaderSpokes(userAnswers, viewOnly) match {
+        case Nil =>
+          None
+        case establisherHeaderSpokes =>
+          Some(TaskListEntitySection(None, establisherHeaderSpokes, None))
+      }
+    }
+
+  protected[helpers] def establishersSection(implicit userAnswers: UserAnswers)
+  : Seq[TaskListEntitySection] = {
+    val seqEstablishers = userAnswers.allEstablishers
+
+    val nonDeletedEstablishers: Seq[Option[TaskListEntitySection]] = for ((establisher, _) <- seqEstablishers.zipWithIndex) yield {
+      if (establisher.isDeleted) None else {
+        establisher.id match {
+
+          case EstablisherNameId(_) =>
+            Some(TaskListEntitySection(
+              None,
+              spokeCreationService.getEstablisherIndividualSpokes(userAnswers, establisher.name, Some
+              (establisher.index)),
+              Some(establisher.name))
+            )
+
+          case _ =>
+            throw new RuntimeException("Unknown section id:" + establisher.id)
+        }
+      }
+    }
+    nonDeletedEstablishers.flatten
+  }
 
   def declarationEnabled(implicit userAnswers: UserAnswers): Boolean =
     Seq(
@@ -67,8 +106,6 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
         "messages__schemeTaskList__sectionDeclaration_incomplete_v2"
       ))
     }
-
-
 
 }
 

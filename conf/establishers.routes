@@ -1,0 +1,17 @@
+
+GET         /scheme-establishers                                     controllers.establishers.AddEstablisherController.onPageLoad()
+POST        /scheme-establishers                                     controllers.establishers.AddEstablisherController.onSubmit()
+
+GET         /:index/establisher-type                                 controllers.establishers.EstablisherKindController.onPageLoad(index:Index)
+POST        /:index/establisher-type                                 controllers.establishers.EstablisherKindController.onSubmit(index:Index)
+
+GET         /:index/establisher-name                                 controllers.establishers.individual.EstablisherNameController.onPageLoad(index:Index)
+POST        /:index/establisher-name                                 controllers.establishers.individual.EstablisherNameController.onSubmit(index:Index)
+
+GET         /:index/individual/already-deleted                       controllers.establishers.AlreadyDeletedController.onPageLoad(index: Index, establisherKind: EstablisherKind = EstablisherKind.Individual)
+GET         /:index/company/already-deleted                       controllers.establishers.AlreadyDeletedController.onPageLoad(index: Index, establisherKind: EstablisherKind = EstablisherKind.Company)
+
+GET         /:index/individual/delete-establisher                    controllers.establishers.ConfirmDeleteEstablisherController.onPageLoad(index: Index, establisherKind: EstablisherKind = EstablisherKind.Individual)
+POST        /:index/individual/delete-establisher                    controllers.establishers.ConfirmDeleteEstablisherController.onSubmit(index: Index, establisherKind: EstablisherKind = EstablisherKind.Individual)
+GET         /:index/individual/delete-establisher                    controllers.establishers.ConfirmDeleteEstablisherController.onPageLoad(index: Index, establisherKind: EstablisherKind = EstablisherKind.Company)
+POST        /:index/individual/delete-establisher                    controllers.establishers.ConfirmDeleteEstablisherController.onSubmit(index: Index, establisherKind: EstablisherKind = EstablisherKind.Company)

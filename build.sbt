@@ -1,3 +1,4 @@
+import play.sbt.routes.RoutesKeys
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings.integrationTestSettings
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
@@ -22,7 +23,9 @@ lazy val microservice = Project(appName, file("."))
     RoutesKeys.routesImport ++= Seq(
       "models.Mode",
       "models.CheckMode",
-      "models.NormalMode"
+      "models.NormalMode",
+      "models.Index",
+      "models.establishers.EstablisherKind"
     ),
       // concatenate js
       Concat.groups := Seq(

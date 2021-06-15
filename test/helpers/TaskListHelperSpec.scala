@@ -17,16 +17,19 @@
 package helpers
 
 import base.SpecBase
+import identifiers.establishers.individual.EstablisherNameId
+import identifiers.establishers.{EstablisherKindId, IsEstablisherNewId}
 import models._
+import models.establishers.EstablisherKind
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.MustMatchers
 import org.scalatestplus.mockito.MockitoSugar
 import utils.Data.{completeUserAnswers, schemeName, ua}
-import utils.UserAnswers
+import utils.{Enumerable, UserAnswers}
 import viewmodels.{Message, TaskListEntitySection}
 
-class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar {
+class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar with Enumerable.Implicits {
 
   private val mockSpokeCreationService = mock[SpokeCreationService]
   private val helper = new TaskListHelper(mockSpokeCreationService)
@@ -68,6 +71,52 @@ class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar {
       val expectedAboutSection = TaskListEntitySection(None, Seq(expectedMembershipDetailsSpoke), aboutHeader)
 
       helper.aboutSection mustBe expectedAboutSection
+    }
+  }
+
+  "addEstablishersHeaderSection" must {
+    "show no establishers message if viewOnly and no establishers found" in {
+      val expectedSection = Some(TaskListEntitySection(None, Nil, None, messages("messages__schemeTaskList__sectionEstablishers_no_establishers")))
+      helper.addEstablisherHeader(true) mustBe expectedSection
+    }
+
+    "show be none if no spoke is returned by service" in {
+      when(mockSpokeCreationService.getAddEstablisherHeaderSpokes(any(), any())(any())).thenReturn(Nil)
+      helper.addEstablisherHeader(false) mustBe None
+    }
+
+    "show a section with the spoke returned by service" in {
+      val establisherHeaderSpokes = Seq(EntitySpoke(TaskListLink(messages("messages__schemeTaskList__sectionEstablishers_change_link"),
+          controllers.establishers.routes.AddEstablisherController.onPageLoad.url), None))
+      when(mockSpokeCreationService.getAddEstablisherHeaderSpokes(any(), any())(any())).thenReturn(establisherHeaderSpokes)
+      val expectedSection = Some(TaskListEntitySection(None, establisherHeaderSpokes, None))
+      helper.addEstablisherHeader(false) mustBe expectedSection
+    }
+  }
+
+  "establishers Section" must {
+    "return Nil if all establishers are deleted" in {
+      val userAnswers = ua.set(EstablisherKindId(0), EstablisherKind.Individual).flatMap(
+        _.set(EstablisherNameId(0), PersonName("a", "b", true)).flatMap(
+          _.set(IsEstablisherNewId(0), true).flatMap(
+            _.set(EstablisherKindId(1), EstablisherKind.Individual).flatMap(
+              _.set(EstablisherNameId(1), PersonName("c", "d", true)).flatMap(
+                _.set(IsEstablisherNewId(1), true)
+              ))))).get
+      helper.establishersSection(userAnswers) mustBe Nil
+    }
+
+    "return seq of sections if all establishers are not deleted" in {
+      val userAnswers = ua.set(EstablisherKindId(0), EstablisherKind.Individual).flatMap(
+        _.set(EstablisherNameId(0), PersonName("a", "b", true)).flatMap(
+          _.set(IsEstablisherNewId(0), true).flatMap(
+            _.set(EstablisherKindId(1), EstablisherKind.Individual).flatMap(
+              _.set(EstablisherNameId(1), PersonName("c", "d")).flatMap(
+                _.set(IsEstablisherNewId(1), true)
+              ))))).get
+
+      val expectedSection =  Seq(TaskListEntitySection(None, null, Some("c d")))
+      helper.establishersSection(userAnswers) mustBe expectedSection
     }
   }
 

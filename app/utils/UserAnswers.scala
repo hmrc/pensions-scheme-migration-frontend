@@ -17,12 +17,20 @@
 package utils
 
 import identifiers.TypedIdentifier
+import identifiers.establishers.{EstablisherKindId, EstablishersId, IsEstablisherNewId}
+import identifiers.establishers.individual.EstablisherNameId
+import models.establishers.EstablisherKind
+import models.{Establisher, EstablisherIndividualEntity, PersonName}
+import play.api.Logger
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json._
-import utils.datacompletion.DataCompletion
+import utils.datacompletion.{DataCompletion, DataCompletionEstablishers}
 
 import scala.util.{Try, Success, Failure}
 
-final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Implicits with DataCompletion {
+final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Implicits with DataCompletion with DataCompletionEstablishers {
+
+  private val logger = Logger(classOf[UserAnswers])
 
   def get[A](id: TypedIdentifier[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(id.path)).reads(data).getOrElse(None)
@@ -128,6 +136,83 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
     removeNext(ids, this)
   }
 
+  def allEstablishersAfterDelete: Seq[Establisher[_]] =
+    allEstablishers.filterNot(_.isDeleted)
+
+  def allEstablishers: Seq[Establisher[_]] = {
+    data.validate[Seq[Establisher[_]]](readEstablishers) match {
+      case JsSuccess(establishers, _) =>
+        establishers
+      case JsError(errors) =>
+        logger.warn(s"Invalid json while reading all the establishers for addEstablisher: $errors")
+        Nil
+    }
+  }
+
+  //scalastyle:off method.length
+  def readEstablishers: Reads[Seq[Establisher[_]]] = new Reads[Seq[Establisher[_]]] {
+
+    private def noOfRecords: Int = data.validate((__ \ 'establishers).readNullable(__.read(
+      Reads.seq((__ \ 'establisherKind).read[String].flatMap {
+        case "individual" => (__ \ 'establisherDetails \ "isDeleted").json.pick[JsBoolean] orElse notDeleted
+        case "company" => (__ \ 'companyDetails \ "isDeleted").json.pick[JsBoolean] orElse notDeleted
+        case "partnership" => (__ \ 'partnershipDetails \ "isDeleted").json.pick[JsBoolean] orElse notDeleted
+      }).map(_.count(deleted => !deleted.value))))) match {
+      case JsSuccess(Some(ele), _) => ele
+      case _ => 0
+    }
+
+    private def readsIndividual(index: Int): Reads[Establisher[_]] = (
+      (JsPath \ EstablisherNameId.toString).read[PersonName] and
+        (JsPath \ IsEstablisherNewId.toString).readNullable[Boolean]
+      ) ((details, isNew) =>
+      EstablisherIndividualEntity(
+        EstablisherNameId(index), details.fullName, details.isDeleted,
+        isEstablisherIndividualComplete(index), isNew.fold(false)(identity), noOfRecords)
+    )
+
+    override def reads(json: JsValue): JsResult[Seq[Establisher[_]]] = {
+      json \ EstablishersId.toString match {
+        case JsDefined(JsArray(establishers)) =>
+          val jsResults = establishers.zipWithIndex.map { case (jsValue, index) =>
+            val establisherKind = (jsValue \ EstablisherKindId.toString).validate[String].asOpt
+            val readsForEstablisherKind = establisherKind match {
+              case Some(EstablisherKind.Individual.toString) => readsIndividual(index)
+              case _ => throw UnrecognisedEstablisherKindException
+            }
+            readsForEstablisherKind.reads(jsValue)
+          }
+
+          asJsResultSeq(jsResults)
+        case _ => JsSuccess(Nil)
+      }
+    }
+  }
+
+  def establishersCount: Int = {
+    (data \ EstablishersId.toString).validate[JsArray] match {
+      case JsSuccess(establisherArray, _) => establisherArray.value.size
+      case _ => 0
+    }
+  }
+
+  private def notDeleted: Reads[JsBoolean] = __.read(JsBoolean(false))
+
+  private def asJsResultSeq[A](jsResults: Seq[JsResult[A]]): JsResult[Seq[A]] = {
+    val allErrors = jsResults.collect {
+      case JsError(errors) => errors
+    }.flatten
+
+    if (allErrors.nonEmpty) { // If any of JSON is invalid then log warning but return the valid ones
+      logger.warn("Errors in JSON: " + allErrors)
+    }
+
+    JsSuccess(jsResults.collect {
+      case JsSuccess(i, _) => i
+    })
+  }
 }
+
+case object UnrecognisedEstablisherKindException extends Exception
 
 

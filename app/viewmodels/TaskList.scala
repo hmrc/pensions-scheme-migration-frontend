@@ -23,6 +23,8 @@ case class TaskList(
                                   h1: String,
                                   beforeYouStart: TaskListEntitySection,
                                   about: TaskListEntitySection,
+                                  addEstablisherHeader: Option[TaskListEntitySection],
+                                  establishers: Seq[TaskListEntitySection],
                                   declaration: Option[TaskListEntitySection]
                                 )
 
