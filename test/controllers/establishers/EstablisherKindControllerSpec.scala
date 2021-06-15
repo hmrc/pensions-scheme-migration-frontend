@@ -19,14 +19,12 @@ package controllers.establishers
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import forms.aboutMembership.MembersFormProvider
-import forms.establishers.{ConfirmDeleteEstablisherFormProvider, EstablisherKindFormProvider}
-import identifiers.aboutMembership.CurrentMembersId
+import forms.establishers.EstablisherKindFormProvider
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
 import models.establishers.EstablisherKind
-import models.{Index, Members, PersonName}
+import models.{Index, PersonName}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, Matchers}
@@ -37,11 +35,9 @@ import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksRenderer
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import uk.gov.hmrc.nunjucks.{NunjucksRenderer, NunjucksSupport}
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
-import viewmodels.Message
 
 import scala.concurrent.Future
 

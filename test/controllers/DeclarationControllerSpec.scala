@@ -27,8 +27,7 @@ import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksRenderer
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import uk.gov.hmrc.nunjucks.{NunjucksRenderer, NunjucksSupport}
 import utils.Data.{schemeName, ua}
 import utils.Enumerable
 

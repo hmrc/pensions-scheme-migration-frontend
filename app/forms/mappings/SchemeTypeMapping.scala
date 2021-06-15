@@ -50,9 +50,9 @@ trait SchemeTypeMapping extends Formatters with Constraints with Mappings {
 
       schemeTypeTuple match {
         case (key, Some(value)) if key == other => Other(value)
-        case (key, _) if mappings.keySet.contains(key) => {
-          mappings.apply(key)
-        }
+        // TODO: Remove this next line once the page is migrated to use Nunjucks
+        case (key, None) if key == other => Other("")
+        case (key, _) if mappings.keySet.contains(key) => mappings.apply(key)
       }
     }
 

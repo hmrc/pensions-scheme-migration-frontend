@@ -32,7 +32,7 @@ class BeforeYouStartCYAHelper extends CYAHelper {
                  messages: Messages
                ): CYAViewModel = {
     implicit val ua: UserAnswers = request.userAnswers
-    val schemeName = getAnswer(SchemeNameId)
+    val schemeName = CYAHelper.getAnswer(SchemeNameId)
 
     val beforeYouStart = AnswerSection(
       headingKey = None,
@@ -45,7 +45,7 @@ class BeforeYouStartCYAHelper extends CYAHelper {
         ),
         AnswerRow(
           label = Message("messages__cya__scheme_type", schemeName).resolve,
-          answer = Seq(Message(s"messages__scheme_type_${getAnswer(SchemeTypeId)}").resolve),
+          answer = Seq(Message(s"messages__scheme_type_${CYAHelper.getAnswer(SchemeTypeId)}").resolve),
           answerIsMessageKey = true,
           changeUrl = changeLink(
             url = routes.SchemeTypeController.onPageLoad().url,
@@ -54,7 +54,7 @@ class BeforeYouStartCYAHelper extends CYAHelper {
         ),
         AnswerRow(
           label = Message("messages__cya__country", schemeName).resolve,
-          answer = Seq(countryOptions.getCountryNameFromCode(getAnswer(EstablishedCountryId))),
+          answer = Seq(countryOptions.getCountryNameFromCode(CYAHelper.getAnswer(EstablishedCountryId))),
           answerIsMessageKey = false,
           changeUrl = changeLink(
             url = routes.EstablishedCountryController.onPageLoad().url,

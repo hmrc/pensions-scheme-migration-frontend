@@ -17,8 +17,10 @@
 package utils.datacompletion
 
 import identifiers._
-import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
-import identifiers.beforeYouStart.{EstablishedCountryId, SchemeNameId, SchemeTypeId, WorkingKnowledgeId}
+import identifiers.aboutMembership.{FutureMembersId, CurrentMembersId}
+import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
+import identifiers.benefitsAndInsurance._
+import models.benefitsAndInsurance.BenefitsProvisionType.DefinedBenefitsOnly
 import play.api.libs.json.Reads
 import utils.UserAnswers
 
@@ -60,6 +62,31 @@ trait DataCompletion {
       )
     )
 
+  def isBenefitsAndInsuranceCompleted: Option[Boolean] = {
+    val benefitsTypeCompletion =
+      if (get(HowProvideBenefitsId).contains(DefinedBenefitsOnly)) {
+        Nil
+      } else {
+        Seq(get(BenefitsTypeId).map(_=>true))
+      }
+    val policyDetailsCompletion =
+      if (get(AreBenefitsSecuredId).contains(true)) {
+        Seq(
+            get(BenefitsInsuranceNameId).map(_=>true),
+            get(BenefitsInsurancePolicyId).map(_=>true),
+            get(InsurerAddressId).map(_=>true)
+        )
+      } else {
+        Nil
+      }
+
+    isComplete(
+        Seq(
+            get(HowProvideBenefitsId).map(_=>true),
+            isAnswerComplete(AreBenefitsSecuredId)
+        ) ++ benefitsTypeCompletion ++ policyDetailsCompletion
+      )
+    }
 
   //GENERIC METHODS
   def isComplete(list: Seq[Option[Boolean]]): Option[Boolean] =

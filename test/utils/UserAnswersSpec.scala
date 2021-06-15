@@ -18,7 +18,7 @@ package utils
 
 import identifiers.beforeYouStart.SchemeNameId
 import org.scalatest._
-import play.api.libs.json.{JsPath, JsString, Json}
+import play.api.libs.json.{JsString, Json, JsPath}
 import utils.Data._
 
 class UserAnswersSpec
@@ -40,7 +40,7 @@ class UserAnswersSpec
 
       "return empty when no matches" in {
         val userAnswers = UserAnswers(schemeNameJson)
-        userAnswers.get(JsPath \ "schemeNameXYZ") mustNot be(defined)
+        userAnswers.get(JsPath \ "schemeNameXYZ").isDefined mustBe false
       }
     }
 
@@ -53,7 +53,7 @@ class UserAnswersSpec
 
       "return empty when no matches" in {
         val userAnswers = UserAnswers(Json.obj())
-        userAnswers.get[String](SchemeNameId) mustNot be(defined)
+        userAnswers.get[String](SchemeNameId).isDefined mustBe false
       }
     }
 
@@ -109,15 +109,15 @@ class UserAnswersSpec
       "remove values if matched" in {
         val userAnswers: UserAnswers = UserAnswers(schemeNameJson)
         val ua2: UserAnswers = userAnswers.remove(JsPath \ "schemeName")
-        ua2.get(JsPath \ "schemeName") mustNot be(defined)
+        ua2.get(JsPath \ "schemeName").isDefined mustBe false
       }
     }
 
     ".remove by id" must {
       "remove values if matched" in {
         val userAnswers: UserAnswers = UserAnswers(schemeNameJson)
-        val ua2: UserAnswers = userAnswers.remove(SchemeNameId).success.value
-        ua2.get[String](SchemeNameId) mustNot be(defined)
+        val ua2: UserAnswers = userAnswers.remove(SchemeNameId)
+        ua2.get[String](SchemeNameId).isDefined mustBe false
       }
     }
   }

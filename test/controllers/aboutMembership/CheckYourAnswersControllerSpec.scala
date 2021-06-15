@@ -29,7 +29,7 @@ import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
+import uk.gov.hmrc.viewmodels.SummaryList.{Action, Value, Row, Key}
 import uk.gov.hmrc.viewmodels.{Html, NunjucksSupport}
 import utils.Data.{schemeName, ua}
 import utils.UserAnswers
@@ -85,7 +85,6 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
     super.beforeEach
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(play.twirl.api.Html("")))
     when(mockCyaHelper.membershipRows(any(), any())).thenReturn(rows)
-    when(mockCyaHelper.getAnswer(any())(any(), any())).thenReturn(schemeName)
   }
 
 

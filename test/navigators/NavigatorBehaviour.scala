@@ -18,7 +18,6 @@ package navigators
 
 import base.SpecBase
 import identifiers.Identifier
-import models.Mode
 import org.scalatest.MustMatchers
 import org.scalatest.prop.TableFor3
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks

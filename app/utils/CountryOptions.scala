@@ -44,7 +44,7 @@ class CountryOptions(val options: Seq[InputOption]) {
     )
   }
 
-  def getCountryNameFromCode(address: Address): String = getCountryNameFromCode(address.country)
+  def getCountryNameFromAddress(address: Address): String = getCountryNameFromCode(address.country)
 
   def getCountryNameFromCode(code: String): String =
     options
@@ -52,3 +52,34 @@ class CountryOptions(val options: Seq[InputOption]) {
       .map(_.label)
       .getOrElse(code)
 }
+
+object CountryOptions {
+
+  def getCountries(environment: Environment, fileName: String): Seq[InputOption] = {
+    environment.resourceAsStream(fileName).flatMap {
+      in =>
+        val locationJsValue = Json.parse(in)
+        Json.fromJson[Seq[Seq[String]]](locationJsValue).asOpt.map {
+          _.map { countryList =>
+            InputOption(countryList(1).replaceAll("country:", ""), countryList.head)
+          }
+        }
+    }.getOrElse {
+      throw new ConfigException.BadValue(fileName, "country json does not exist")
+    }
+  }
+
+  def getCountryCodes(environment: Environment, fileName: String) : Seq[String] = {
+    environment.resourceAsStream(fileName).map { in =>
+      val locationJsValue = Json.parse(in)
+      Json.fromJson[Seq[Seq[String]]](locationJsValue).asOpt.map {
+        _.map { countryList =>
+          countryList(1).replaceAll("country:", "")
+        }
+      }.fold[Seq[String]](List.empty)(identity)
+    }.getOrElse {
+      throw new ConfigException.BadValue(fileName, "country json does not exist")
+    }
+  }
+}
+
