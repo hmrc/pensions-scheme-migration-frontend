@@ -18,7 +18,6 @@ package controllers
 
 import connectors.cache.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
-import models.PersonName
 import models.requests.DataRequest
 import navigators.CompoundNavigator
 import play.api.data.Form
@@ -32,7 +31,7 @@ import uk.gov.hmrc.viewmodels.Radios
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait HasReferenceNumberController
+trait HasReferenceValueController
   extends FrontendBaseController
     with I18nSupport
     with Retrievals
@@ -48,9 +47,10 @@ trait HasReferenceNumberController
 
   def get(
            pageTitle: String,
+           isPageHeading: Boolean,
            id: TypedIdentifier[Boolean],
            form: Form[Boolean],
-           personNameId: TypedIdentifier[PersonName],
+           personName: String,
            submitUrl: String,
            schemeName: String
          )(implicit request: DataRequest[AnyContent]): Future[Result] = {
@@ -61,47 +61,44 @@ trait HasReferenceNumberController
         case _           => form
       }
 
-    personNameId.retrieve.right.map {
-      personName =>
-        renderer.render(
-          template = "hasReferenceNumber.njk",
-          ctx = Json.obj(
-            "title"      -> pageTitle,
-            "form"       -> preparedForm,
-            "name"       -> personName.fullName,
-            "radios"     -> Radios.yesNo(preparedForm("value")),
-            "submitUrl"  -> submitUrl,
-            "schemeName" -> schemeName
-          )
-        ).map(Ok(_))
-    }
+    renderer.render(
+      template = "hasReferenceValue.njk",
+      ctx = Json.obj(
+        "pageTitle"     -> pageTitle,
+        "isPageHeading" -> isPageHeading,
+        "form"          -> preparedForm,
+        "name"          -> personName,
+        "radios"        -> Radios.yesNo(preparedForm("value")),
+        "submitUrl"     -> submitUrl,
+        "schemeName"    -> schemeName
+      )
+    ).map(Ok(_))
   }
 
   def post(
             pageTitle: String,
+            isPageHeading: Boolean,
             id: TypedIdentifier[Boolean],
             form: Form[Boolean],
-            personNameId: TypedIdentifier[PersonName],
+            personName: String,
             submitUrl: String,
             schemeName: String
           )(implicit request: DataRequest[AnyContent]): Future[Result] =
 
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
-        personNameId.retrieve.right.map {
-          personName =>
-            renderer.render(
-              template = "hasReferenceNumber.njk",
-              ctx = Json.obj(
-                "title"      -> pageTitle,
-                "form"       -> formWithErrors,
-                "name"       -> personName.fullName,
-                "radios"     -> Radios.yesNo(form("value")),
-                "submitUrl"  -> submitUrl,
-                "schemeName" -> schemeName
-              )
-            ).map(Ok(_))
-        },
+        renderer.render(
+          template = "hasReferenceValue.njk",
+          ctx = Json.obj(
+            "pageTitle"     -> pageTitle,
+            "isPageHeading" -> isPageHeading,
+            "form"          -> formWithErrors,
+            "name"          -> personName,
+            "radios"        -> Radios.yesNo(formWithErrors("value")),
+            "submitUrl"     -> submitUrl,
+            "schemeName"    -> schemeName
+          )
+        ).map(BadRequest(_)),
       value =>
         for {
           updatedAnswers <- Future.fromTry(request.userAnswers.set(id, value))

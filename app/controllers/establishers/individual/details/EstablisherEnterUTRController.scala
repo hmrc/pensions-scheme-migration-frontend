@@ -17,14 +17,14 @@
 package controllers.establishers.individual.details
 
 import connectors.cache.UserAnswersCacheConnector
-import controllers.HasReferenceValueController
+import controllers.EnterReferenceValueController
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import forms.HasReferenceNumberFormProvider
+import forms.UTRFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.details.EstablisherHasNINOId
+import identifiers.establishers.individual.details.EstablisherUTRId
 import models.requests.DataRequest
-import models.{Index, Mode}
+import models.{Index, Mode, ReferenceValue}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
@@ -34,18 +34,18 @@ import renderer.Renderer
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class EstablisherHasNINOController @Inject()(
-                                              override val messagesApi: MessagesApi,
-                                              val navigator: CompoundNavigator,
-                                              authenticate: AuthAction,
-                                              getData: DataRetrievalAction,
-                                              requireData: DataRequiredAction,
-                                              formProvider: HasReferenceNumberFormProvider,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                              val renderer: Renderer
-                                            )(implicit val executionContext: ExecutionContext)
-  extends HasReferenceValueController {
+class EstablisherEnterUTRController @Inject()(
+                                               override val messagesApi: MessagesApi,
+                                               val navigator: CompoundNavigator,
+                                               authenticate: AuthAction,
+                                               getData: DataRetrievalAction,
+                                               requireData: DataRequiredAction,
+                                               formProvider: UTRFormProvider,
+                                               val controllerComponents: MessagesControllerComponents,
+                                               val userAnswersCacheConnector: UserAnswersCacheConnector,
+                                               val renderer: Renderer
+                                             )(implicit val executionContext: ExecutionContext)
+  extends EnterReferenceValueController {
 
   private def name(index: Index)
                   (implicit request: DataRequest[AnyContent]): String =
@@ -54,26 +54,20 @@ class EstablisherHasNINOController @Inject()(
       .get(EstablisherNameId(index))
       .fold("the establisher")(_.fullName)
 
-  private def form(index: Index)
-                  (implicit request: DataRequest[AnyContent]): Form[Boolean] = {
-    formProvider(
-      errorMsg = Messages("messages__genericHasNino__error__required", name(index))
-    )
-  }
+  private def form: Form[ReferenceValue] = formProvider()
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-
         SchemeNameId.retrieve.right.map {
           schemeName =>
             get(
-              pageTitle     = Messages("messages__hasNINO", name(index)),
+              pageTitle     = Messages("messages__enterUTR", name(index)),
               isPageHeading = true,
-              id            = EstablisherHasNINOId(index),
-              form          = form(index),
+              id            = EstablisherUTRId(index),
+              form          = form,
               personName    = name(index),
-              submitUrl     = routes.EstablisherHasNINOController.onSubmit(index, mode).url,
+              submitUrl     = routes.EstablisherEnterUTRController.onSubmit(index, mode).url,
               schemeName    = schemeName
             )
         }
@@ -85,12 +79,12 @@ class EstablisherHasNINOController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             post(
-              pageTitle     = Messages("messages__hasNINO", name(index)),
+              pageTitle     = Messages("messages__enterUTR", name(index)),
               isPageHeading = true,
-              id            = EstablisherHasNINOId(index),
-              form          = form(index),
+              id            = EstablisherUTRId(index),
+              form          = form,
               personName    = name(index),
-              submitUrl     = routes.EstablisherHasNINOController.onSubmit(index, mode).url,
+              submitUrl     = routes.EstablisherEnterUTRController.onSubmit(index, mode).url,
               schemeName    = schemeName
             )
         }

@@ -7,8 +7,16 @@
 {% from "govuk/components/error-summary/macro.njk"  import govukErrorSummary %}
 
 {% block pageTitle %}
-    {{ title(title)) }}
+    {{ title(pageTitle, form.errors) }}
 {% endblock %}
+
+{% macro labelClass(isPageheading) %}
+    {% if isPageHeading %}
+        govuk-label--xl
+        {% elif not isPageHeaidng %}
+        govuk-fieldset__legend--s
+    {% endif %}
+{% endmacro %}
 
 {% block mainContent %}
 
@@ -22,9 +30,11 @@
                 }) }}
             {% endif %}
 
-            <h1 class="govuk-heading-xl">
-                {{ title }}
-            </h1>
+            {% if not isPageHeading %}
+                <h1 class="govuk-heading-xl">
+                    {{ pageTitle }}
+                </h1>
+            {% endif %}
 
             <form method="post" autocomplete="off" novalidate>
 
@@ -35,8 +45,9 @@
                     name: 'value',
                     fieldset: {
                         legend: {
-                            isPageHeading: true,
-                            classes: "govuk-fieldset__legend--s"
+                            text: pageTitle,
+                            isPageHeading: isPageHeading,
+                            classes: labelClass(isPageHeading)
                         }
                     },
                     items: radios,

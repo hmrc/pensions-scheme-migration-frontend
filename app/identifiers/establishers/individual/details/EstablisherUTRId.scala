@@ -18,34 +18,21 @@ package identifiers.establishers.individual.details
 
 import identifiers.TypedIdentifier
 import identifiers.establishers.EstablishersId
+import models.ReferenceValue
 import play.api.libs.json.{Format, JsPath, Json}
-import utils.UserAnswers
 
-case class EstablisherHasNINOId(index: Int) extends TypedIdentifier[Boolean] {
+case class EstablisherUTRId(index: Int) extends TypedIdentifier[ReferenceValue] {
   override def path: JsPath =
-    EstablishersId(index).path \ EstablisherHasNINOId.toString
-
-  override def cleanup(
-                        value: Option[Boolean],
-                        userAnswers: UserAnswers
-                      ): UserAnswers =
-    value match {
-      case Some(true) =>
-        userAnswers.remove(EstablisherNoNINOReasonId(index))
-      case Some(false) =>
-        userAnswers.remove(EstablisherNINOId(index))
-      case _ =>
-        super.cleanup(value, userAnswers)
-    }
+    EstablishersId(index).path \ EstablisherUTRId.toString
 }
 
-object EstablisherHasNINOId {
+object EstablisherUTRId {
   override lazy val toString: String =
-    "hasNino"
+    "utr"
 
   def collectionPath(index: Int): JsPath =
-    EstablishersId(index).path \ EstablisherHasNINOId.toString
+    EstablishersId(index).path \ EstablisherUTRId.toString
 
-  implicit lazy val formats: Format[EstablisherHasNINOId] =
-    Json.format[EstablisherHasNINOId]
+  implicit lazy val formats: Format[EstablisherUTRId] =
+    Json.format[EstablisherUTRId]
 }

@@ -17,7 +17,7 @@
 package controllers.establishers.individual.details
 
 import connectors.cache.UserAnswersCacheConnector
-import controllers.HasReferenceNumberController
+import controllers.HasReferenceValueController
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.HasReferenceNumberFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -45,7 +45,7 @@ class EstablisherHasUTRController @Inject()(
                                               val userAnswersCacheConnector: UserAnswersCacheConnector,
                                               val renderer: Renderer
                                             )(implicit val executionContext: ExecutionContext)
-  extends HasReferenceNumberController {
+  extends HasReferenceValueController {
 
   private def name(index: Index)
                   (implicit request: DataRequest[AnyContent]): String =
@@ -55,11 +55,10 @@ class EstablisherHasUTRController @Inject()(
       .fold("the establisher")(_.fullName)
 
   private def form(index: Index)
-                  (implicit request: DataRequest[AnyContent]): Form[Boolean] = {
+                  (implicit request: DataRequest[AnyContent]): Form[Boolean] =
     formProvider(
       errorMsg = Messages("messages__genericHasUtr__error__required", name(index))
     )
-  }
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
@@ -68,10 +67,11 @@ class EstablisherHasUTRController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             get(
-              pageTitle    = Messages("messages__hasNINO", name(index)),
+              pageTitle    = Messages("messages__hasUTR", name(index)),
+              isPageHeading = true,
               id           = EstablisherHasUTRId(index),
               form         = form(index),
-              personNameId = EstablisherNameId(index),
+              personName   = name(index),
               submitUrl    = routes.EstablisherHasUTRController.onSubmit(index, mode).url,
               schemeName   = schemeName
             )
@@ -85,10 +85,11 @@ class EstablisherHasUTRController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             post(
-              pageTitle    = Messages("messages__hasNINO", name(index)),
+              pageTitle    = Messages("messages__hasUTR", name(index)),
+              isPageHeading = true,
               id           = EstablisherHasUTRId(index),
               form         = form(index),
-              personNameId = EstablisherNameId(index),
+              personName   = name(index),
               submitUrl    = routes.EstablisherHasUTRController.onSubmit(index, mode).url,
               schemeName   = schemeName
             )

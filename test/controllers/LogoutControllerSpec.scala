@@ -23,8 +23,6 @@ import play.api.test.Helpers._
 
 
 class LogoutControllerSpec extends ControllerSpecBase with Results {
-  private val dummySignoutLink = "signout"
-
   def logoutController: LogoutController =
     new LogoutController(mockAppConfig, controllerComponents, FakeAuthAction)
 
@@ -32,11 +30,11 @@ class LogoutControllerSpec extends ControllerSpecBase with Results {
 
     "redirect to feedback survey page for an Individual and clear down session data cache" in {
 
-      when(mockAppConfig.serviceSignOut).thenReturn(dummySignoutLink)
+      when(mockAppConfig.serviceSignOut).thenReturn("signout")
       val result = logoutController.onPageLoad(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(dummySignoutLink)
+      redirectLocation(result) mustBe Some("signout")
       verify(mockAppConfig, times(1)).serviceSignOut
     }
   }

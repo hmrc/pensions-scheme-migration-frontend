@@ -18,11 +18,25 @@ package identifiers.establishers.individual.details
 
 import identifiers.TypedIdentifier
 import identifiers.establishers.EstablishersId
-import play.api.libs.json.{Format, JsPath, Json}
+import play.api.libs.json.{Format, JsPath, JsResult, Json}
+import utils.UserAnswers
 
 case class EstablisherHasUTRId(index: Int) extends TypedIdentifier[Boolean] {
   override def path: JsPath =
     EstablishersId(index).path \ EstablisherHasUTRId.toString
+
+  override def cleanup(
+                        value: Option[Boolean],
+                        userAnswers: UserAnswers
+                      ): UserAnswers =
+    value match {
+      case Some(true) =>
+        userAnswers.remove(EstablisherNoUTRReasonId(index))
+      case Some(false) =>
+        userAnswers.remove(EstablisherUTRId(index))
+      case _ =>
+        super.cleanup(value, userAnswers)
+    }
 }
 
 object EstablisherHasUTRId {

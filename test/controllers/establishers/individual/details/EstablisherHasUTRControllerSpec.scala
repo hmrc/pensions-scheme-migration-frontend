@@ -58,7 +58,7 @@ class EstablisherHasUTRControllerSpec
   private val userAnswers: UserAnswers =
     ua.set(EstablisherNameId(0), personName).success.value
   private val templateToBeRendered: String =
-    "hasReferenceNumber.njk"
+    "hasReferenceValue.njk"
   private val commonJson: JsObject =
     Json.obj(
       "name"       -> "Jane Doe",
@@ -173,9 +173,9 @@ class EstablisherHasUTRControllerSpec
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val request: FakeRequest[AnyContentAsFormUrlEncoded] =
+      val request =
         fakeRequest
-          .withFormUrlEncodedBody("value" -> "invalid value")
+          .withFormUrlEncodedBody(("value", "invalid value"))
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 

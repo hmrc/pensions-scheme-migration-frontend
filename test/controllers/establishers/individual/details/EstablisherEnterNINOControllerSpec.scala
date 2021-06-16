@@ -18,30 +18,29 @@ package controllers.establishers.individual.details
 
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
-import forms.HasReferenceNumberFormProvider
+import forms.NINOFormProvider
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.details.EstablisherHasNINOId
+import identifiers.establishers.individual.details.EstablisherNINOId
 import matchers.JsonMatchers
-import models.{NormalMode, PersonName}
+import models.{NormalMode, PersonName, ReferenceValue}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, Json, __}
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.api.test.Helpers.status
 import play.twirl.api.Html
 import renderer.Renderer
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.ua
 import utils.{FakeNavigator, UserAnswers}
 
 import scala.concurrent.Future
 
-class EstablisherHasNINOControllerSpec
+class EstablisherEnterNINOControllerSpec
   extends ControllerSpecBase
     with NunjucksSupport
     with JsonMatchers
@@ -50,26 +49,29 @@ class EstablisherHasNINOControllerSpec
 
   private val personName: PersonName =
     PersonName("Jane", "Doe")
-  private val formProvider: HasReferenceNumberFormProvider =
-    new HasReferenceNumberFormProvider()
-  private val form: Form[Boolean] =
-    formProvider("Select Yes if Jane Doe has a National Insurance number")
+  private val formProvider: NINOFormProvider =
+    new NINOFormProvider()
+  private val form: Form[ReferenceValue] =
+    formProvider(personName.fullName)
   private val onwardRoute: Call =
     controllers.routes.IndexController.onPageLoad()
   private val userAnswers: UserAnswers =
     ua.set(EstablisherNameId(0), personName).success.value
   private val templateToBeRendered: String =
-    "hasReferenceValue.njk"
+    "enterReferenceValue.njk"
   private val commonJson: JsObject =
     Json.obj(
-      "name"       -> "Jane Doe",
-      "submitUrl"  -> "/migrate-pension-scheme/establisher/1/individual/have-national-insurance-number",
+      "name" -> "Jane Doe",
+      "submitUrl" -> "/migrate-pension-scheme/establisher/1/individual/enter-national-insurance-number",
       "schemeName" -> "Test scheme name"
     )
+  private val formData: ReferenceValue =
+    ReferenceValue(value = "AB123456C")
+
   private def controller(
                           dataRetrievalAction: DataRetrievalAction
-                        ): EstablisherHasNINOController =
-    new EstablisherHasNINOController(
+                        ): EstablisherEnterNINOController =
+    new EstablisherEnterNINOController(
       messagesApi               = messagesApi,
       navigator                 = new FakeNavigator(desiredRoute = onwardRoute),
       authenticate              = new FakeAuthAction(),
@@ -81,14 +83,7 @@ class EstablisherHasNINOControllerSpec
       renderer                  = new Renderer(mockAppConfig, mockRenderer)
     )
 
-  override def beforeEach: Unit = {
-    reset(
-      mockRenderer,
-      mockUserAnswersCacheConnector
-    )
-  }
-
-  "EstablisherHasNINOController" must {
+  "EstablisherEnterNINOController" must {
     "return OK and the correct view for a GET" in {
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
@@ -111,10 +106,9 @@ class EstablisherHasNINOControllerSpec
       templateCaptor.getValue mustEqual templateToBeRendered
 
       val json: JsObject =
-        Json.obj("radios" -> Radios.yesNo(form("value")))
+        Json.obj("form" -> form)
 
       jsonCaptor.getValue must containJson(commonJson ++ json)
-
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
@@ -123,7 +117,7 @@ class EstablisherHasNINOControllerSpec
 
       val ua =
         userAnswers
-          .set(EstablisherHasNINOId(0), true).success.value
+          .set(EstablisherNINOId(0), formData).success.value
 
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
 
@@ -143,18 +137,17 @@ class EstablisherHasNINOControllerSpec
       templateCaptor.getValue mustEqual templateToBeRendered
 
       val json: JsObject =
-        Json.obj("radios" -> Radios.yesNo(form.fill(true).apply("value")))
+        Json.obj("form" -> form.fill(formData))
 
       jsonCaptor.getValue must containJson(commonJson ++ json)
     }
-
     "redirect to the next page when valid data is submitted" in {
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
         fakeRequest
-          .withFormUrlEncodedBody(("value", "true"))
+          .withFormUrlEncodedBody("value" -> "AB123456C")
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
@@ -176,7 +169,7 @@ class EstablisherHasNINOControllerSpec
 
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
         fakeRequest
-          .withFormUrlEncodedBody(("value", "invalid value"))
+          .withFormUrlEncodedBody("value" -> "invalid value")
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
@@ -197,8 +190,14 @@ class EstablisherHasNINOControllerSpec
 
       templateCaptor.getValue mustEqual templateToBeRendered
 
+      val path = (__  \\ "values").json.prune
+
+      val x: JsObject = Json.toJson(boundForm).as[JsObject]
+
+      println(s"\n\n\n\n\n${x.transform(path)}\n\n\n\n")
+
       val json: JsObject =
-        Json.obj("radios" -> Radios.yesNo(boundForm.apply("value")))
+        Json.obj("form" -> Json.toJson(boundForm))
 
       jsonCaptor.getValue must containJson(commonJson ++ json)
 
