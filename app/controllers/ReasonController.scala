@@ -49,7 +49,6 @@ trait ReasonController
            isPageHeading: Boolean,
            id: TypedIdentifier[String],
            form: Form[String],
-           personName: String,
            submitUrl: String,
            schemeName: String
          )(implicit request: DataRequest[AnyContent]): Future[Result] =
@@ -60,7 +59,6 @@ trait ReasonController
         "pageTitle"     -> pageTitle,
         "isPageHeading" -> isPageHeading,
         "form"          -> request.userAnswers.get[String](id).fold(form)(form.fill),
-        "name"          -> personName,
         "submitUrl"     -> submitUrl,
         "schemeName"    -> schemeName
       )
@@ -71,7 +69,6 @@ trait ReasonController
             isPageHeading: Boolean,
             id: TypedIdentifier[String],
             form: Form[String],
-            personName: String,
             submitUrl: String,
             schemeName: String
           )(implicit request: DataRequest[AnyContent]): Future[Result] =
@@ -84,7 +81,6 @@ trait ReasonController
             "pageTitle"     -> pageTitle,
             "isPageHeading" -> isPageHeading,
             "form"          -> formWithErrors,
-            "name"          -> personName,
             "submitUrl"     -> submitUrl,
             "schemeName"    -> schemeName
           )

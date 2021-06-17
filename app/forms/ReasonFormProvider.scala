@@ -26,10 +26,9 @@ class ReasonFormProvider @Inject() extends Mappings with Transforms {
 
   val reasonMaxLength = 160
 
-  def apply(requiredMessage: String, name: String)
-           (implicit messages: Messages): Form[String] =
+  def apply(requiredMessage: String): Form[String] =
     Form(
-      "value" -> text(Message(requiredMessage, name).resolve)
+      "value" -> text(requiredMessage)
         .transform(standardTextTransform, noTransform)
         .verifying(
           firstError(

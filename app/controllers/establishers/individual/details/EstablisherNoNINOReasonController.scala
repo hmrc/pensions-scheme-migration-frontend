@@ -56,7 +56,7 @@ class EstablisherNoNINOReasonController @Inject()(
 
   private def form(index: Index)
                   (implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider("messages__reason__error_ninoRequired", name(index))
+    formProvider(Messages("messages__reason__error_ninoRequired", name(index)))
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
@@ -68,7 +68,6 @@ class EstablisherNoNINOReasonController @Inject()(
               isPageHeading = true,
               id            = EstablisherNoNINOReasonId(index),
               form          = form(index),
-              personName    = name(index),
               submitUrl     = routes.EstablisherNoNINOReasonController.onSubmit(index, mode).url,
               schemeName    = schemeName
             )
@@ -85,7 +84,6 @@ class EstablisherNoNINOReasonController @Inject()(
                 isPageHeading = true,
                 id            = EstablisherNoNINOReasonId(index),
                 form          = form(index),
-                personName    = name(index),
                 submitUrl     = routes.EstablisherNoNINOReasonController.onSubmit(index, mode).url,
                 schemeName    = schemeName
               )

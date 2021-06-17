@@ -36,7 +36,10 @@
                 </h1>
             {% endif %}
 
-            <form method="post" autocomplete="off" novalidate>
+            <form method="post"
+                  autocomplete="off"
+                  action="{{ submitUrl }}"
+                  novalidate>
 
                 {{ csrf() | safe }}
 

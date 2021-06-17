@@ -68,7 +68,6 @@ class EstablisherEnterNINOController @Inject()(
               isPageHeading = true,
               id            = EstablisherNINOId(index),
               form          = form(index),
-              personName    = name(index),
               submitUrl     = routes.EstablisherEnterNINOController.onSubmit(index, mode).url,
               schemeName    = schemeName
             )
@@ -85,7 +84,6 @@ class EstablisherEnterNINOController @Inject()(
               isPageHeading = true,
               id            = EstablisherNINOId(index),
               form          = form(index),
-              personName    = name(index),
               submitUrl     = routes.EstablisherEnterNINOController.onSubmit(index, mode).url,
               schemeName    = schemeName
             )

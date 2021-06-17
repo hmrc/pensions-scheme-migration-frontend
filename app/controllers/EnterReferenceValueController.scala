@@ -50,7 +50,6 @@ trait EnterReferenceValueController
            isPageHeading: Boolean,
            id: TypedIdentifier[ReferenceValue],
            form: Form[ReferenceValue],
-           personName: String,
            submitUrl: String,
            schemeName: String
          )(implicit request: DataRequest[AnyContent]): Future[Result] =
@@ -61,7 +60,6 @@ trait EnterReferenceValueController
         "pageTitle"     -> pageTitle,
         "isPageHeading" -> isPageHeading,
         "form"          -> request.userAnswers.get[ReferenceValue](id).fold(form)(form.fill),
-        "name"          -> personName,
         "submitUrl"     -> submitUrl,
         "schemeName"    -> schemeName
       )
@@ -72,7 +70,6 @@ trait EnterReferenceValueController
             isPageHeading: Boolean,
             id: TypedIdentifier[ReferenceValue],
             form: Form[ReferenceValue],
-            personName: String,
             submitUrl: String,
             schemeName: String
           )(implicit request: DataRequest[AnyContent]): Future[Result] =
@@ -85,7 +82,6 @@ trait EnterReferenceValueController
             "pageTitle"     -> pageTitle,
             "isPageHeading" -> isPageHeading,
             "form"          -> formWithErrors,
-            "name"          -> personName,
             "submitUrl"     -> submitUrl,
             "schemeName"    -> schemeName
           )

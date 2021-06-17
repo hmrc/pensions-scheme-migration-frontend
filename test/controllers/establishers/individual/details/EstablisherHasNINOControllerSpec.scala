@@ -62,7 +62,7 @@ class EstablisherHasNINOControllerSpec
     "hasReferenceValue.njk"
   private val commonJson: JsObject =
     Json.obj(
-      "name"       -> "Jane Doe",
+      "pageTitle"  -> "Does Jane Doe have a National Insurance number?",
       "submitUrl"  -> "/migrate-pension-scheme/establisher/1/individual/have-national-insurance-number",
       "schemeName" -> "Test scheme name"
     )

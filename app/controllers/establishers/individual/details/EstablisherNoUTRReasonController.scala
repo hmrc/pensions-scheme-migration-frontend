@@ -22,9 +22,9 @@ import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.ReasonFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.details.EstablisherNoNINOReasonId
-import models.{Index, Mode}
+import identifiers.establishers.individual.details.EstablisherNoUTRReasonId
 import models.requests.DataRequest
+import models.{Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
@@ -56,7 +56,7 @@ class EstablisherNoUTRReasonController @Inject()(
 
   private def form(index: Index)
                   (implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider("messages__reason__error_utrRequired", name(index))
+    formProvider(Messages("messages__reason__error_utrRequired", name(index)))
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
@@ -64,13 +64,12 @@ class EstablisherNoUTRReasonController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             get(
-              pageTitle = Messages("messages__whyNoUTR", name(index)),
+              pageTitle     = Messages("messages__whyNoUTR", name(index)),
               isPageHeading = true,
-              id = EstablisherNoNINOReasonId(index),
-              form = form(index),
-              personName = name(index),
-              submitUrl = routes.EstablisherNoNINOReasonController.onSubmit(index, mode).url,
-              schemeName = schemeName
+              id            = EstablisherNoUTRReasonId(index),
+              form          = form(index),
+              submitUrl     = routes.EstablisherNoUTRReasonController.onSubmit(index, mode).url,
+              schemeName    = schemeName
             )
         }
     }
@@ -81,13 +80,12 @@ class EstablisherNoUTRReasonController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             post(
-              pageTitle = Messages("messages__whyNoUTR", name(index)),
+              pageTitle     = Messages("messages__whyNoUTR", name(index)),
               isPageHeading = true,
-              id = EstablisherNoNINOReasonId(index),
-              form = form(index),
-              personName = name(index),
-              submitUrl = routes.EstablisherNoNINOReasonController.onSubmit(index, mode).url,
-              schemeName = schemeName
+              id            = EstablisherNoUTRReasonId(index),
+              form          = form(index),
+              submitUrl     = routes.EstablisherNoUTRReasonController.onSubmit(index, mode).url,
+              schemeName    = schemeName
             )
         }
     }

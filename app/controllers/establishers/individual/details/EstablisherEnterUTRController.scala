@@ -66,7 +66,6 @@ class EstablisherEnterUTRController @Inject()(
               isPageHeading = true,
               id            = EstablisherUTRId(index),
               form          = form,
-              personName    = name(index),
               submitUrl     = routes.EstablisherEnterUTRController.onSubmit(index, mode).url,
               schemeName    = schemeName
             )
@@ -83,7 +82,6 @@ class EstablisherEnterUTRController @Inject()(
               isPageHeading = true,
               id            = EstablisherUTRId(index),
               form          = form,
-              personName    = name(index),
               submitUrl     = routes.EstablisherEnterUTRController.onSubmit(index, mode).url,
               schemeName    = schemeName
             )

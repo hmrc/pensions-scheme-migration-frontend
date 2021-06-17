@@ -25,16 +25,16 @@ import matchers.JsonMatchers
 import models.{NormalMode, PersonName, ReferenceValue}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json, __}
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import renderer.Renderer
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{FakeNavigator, UserAnswers}
 
@@ -61,12 +61,19 @@ class EstablisherEnterNINOControllerSpec
     "enterReferenceValue.njk"
   private val commonJson: JsObject =
     Json.obj(
-      "name" -> "Jane Doe",
+      "pageTitle"  -> "What is the National Insurance number for Jane Doe?",
       "submitUrl" -> "/migrate-pension-scheme/establisher/1/individual/enter-national-insurance-number",
       "schemeName" -> "Test scheme name"
     )
   private val formData: ReferenceValue =
     ReferenceValue(value = "AB123456C")
+
+  override def beforeEach: Unit = {
+    reset(
+      mockRenderer,
+      mockUserAnswersCacheConnector
+    )
+  }
 
   private def controller(
                           dataRetrievalAction: DataRetrievalAction
@@ -141,6 +148,7 @@ class EstablisherEnterNINOControllerSpec
 
       jsonCaptor.getValue must containJson(commonJson ++ json)
     }
+
     "redirect to the next page when valid data is submitted" in {
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
@@ -189,12 +197,6 @@ class EstablisherEnterNINOControllerSpec
         .render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       templateCaptor.getValue mustEqual templateToBeRendered
-
-      val path = (__  \\ "values").json.prune
-
-      val x: JsObject = Json.toJson(boundForm).as[JsObject]
-
-      println(s"\n\n\n\n\n${x.transform(path)}\n\n\n\n")
 
       val json: JsObject =
         Json.obj("form" -> Json.toJson(boundForm))
