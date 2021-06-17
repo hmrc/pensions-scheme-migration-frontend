@@ -22,15 +22,17 @@ import controllers.establishers.routes._
 import controllers.routes._
 import identifiers._
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.details.{EstablisherDOBId, EstablisherHasNINOId, EstablisherHasUTRId, EstablisherNINOId}
-import identifiers.establishers.{AddEstablisherId, ConfirmDeleteEstablisherId, EstablisherKindId}
+import identifiers.establishers.individual.details._
+import identifiers.establishers._
 import models.{Index, NormalMode}
 import models.establishers.EstablisherKind
 import models.requests.DataRequest
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
 
-class EstablishersNavigator extends Navigator with Enumerable.Implicits {
+class EstablishersNavigator
+  extends Navigator
+    with Enumerable.Implicits {
 
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
@@ -41,17 +43,25 @@ class EstablishersNavigator extends Navigator with Enumerable.Implicits {
     case EstablisherDOBId(index) => EstablisherHasNINOController.onPageLoad(index, NormalMode)
     case EstablisherHasNINOId(index) => establisherHasNino(index, ua)
     case EstablisherNINOId(index) => EstablisherHasUTRController.onPageLoad(index, NormalMode)
+    case EstablisherNoNINOReasonId(index) => EstablisherHasUTRController.onPageLoad(index, NormalMode)
     case EstablisherHasUTRId(index) => establisherHasUtr(index, ua)
+    case EstablisherUTRId(index) => CheckYourAnswersController.onPageLoad(index)
+    case EstablisherNoUTRReasonId(index) => CheckYourAnswersController.onPageLoad(index)
   }
 
-  private def establisherKindRoutes(index: Index, ua: UserAnswers): Call =
+  private def establisherKindRoutes(
+                                     index: Index,
+                                     ua: UserAnswers
+                                   ): Call =
     ua.get(EstablisherKindId(index)) match {
       case Some(EstablisherKind.Individual) => EstablisherNameController.onPageLoad(index)
       case _ => IndexController.onPageLoad()
     }
 
-  private def addEstablisherRoutes(value: Option[Boolean],
-                                   answers: UserAnswers): Call =
+  private def addEstablisherRoutes(
+                                    value: Option[Boolean],
+                                    answers: UserAnswers
+                                  ): Call =
     value match {
       case Some(false) => TaskListController.onPageLoad()
       case Some(true) => EstablisherKindController.onPageLoad(answers.establishersCount)
@@ -69,9 +79,9 @@ class EstablishersNavigator extends Navigator with Enumerable.Implicits {
     }
 
   private def establisherHasUtr(
-                                  index: Index,
-                                  answers: UserAnswers
-                                ): Call =
+                                 index: Index,
+                                 answers: UserAnswers
+                               ): Call =
     answers.get(EstablisherHasUTRId(index)) match {
       case Some(true) => EstablisherEnterUTRController.onPageLoad(index, NormalMode)
       case Some(false) => EstablisherNoUTRReasonController.onPageLoad(index, NormalMode)

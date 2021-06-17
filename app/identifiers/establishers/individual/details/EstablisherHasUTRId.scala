@@ -18,7 +18,7 @@ package identifiers.establishers.individual.details
 
 import identifiers.TypedIdentifier
 import identifiers.establishers.EstablishersId
-import play.api.libs.json.{Format, JsPath, JsResult, Json}
+import play.api.libs.json.{Format, JsPath, Json}
 import utils.UserAnswers
 
 case class EstablisherHasUTRId(index: Int) extends TypedIdentifier[Boolean] {
