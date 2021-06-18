@@ -33,7 +33,7 @@ class EstablisherHasUTRIdSpec
 
     val ua1 =
       UserAnswers()
-        .set(EstablisherUTRId(0), ReferenceValue("AB123456C")).success.value
+        .set(EstablisherUTRId(0), ReferenceValue("1234567890")).success.value
 
     val ua2 =
       UserAnswers()
