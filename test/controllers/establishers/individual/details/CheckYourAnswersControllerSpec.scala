@@ -50,21 +50,21 @@ class CheckYourAnswersControllerSpec
 
   private val cyaHelper =
     new EstablisherDetailsCYAHelper
-  private val personName: PersonName =
-    PersonName("Jane", "Doe")
-  private val uaNinoUtr: UserAnswers =
+
+  private val userAnswers =
     ua
-      .set(EstablisherNameId(0), personName).success.value
+      .set(EstablisherNameId(0), PersonName("Jane", "Doe")).success.value
       .set(EstablisherDOBId(0), LocalDate.parse("2001-01-01")).success.value
+
+  private val uaNinoUtr: UserAnswers =
+    userAnswers
       .set(EstablisherHasNINOId(0), true).success.value
       .set(EstablisherNINOId(0), ReferenceValue("AB123456C")).success.value
       .set(EstablisherHasUTRId(0), true).success.value
       .set(EstablisherUTRId(0), ReferenceValue("1234567890")).success.value
 
   private val uaReasons: UserAnswers =
-    ua
-      .set(EstablisherNameId(0), personName).success.value
-      .set(EstablisherDOBId(0), LocalDate.parse("2001-01-01")).success.value
+    userAnswers
       .set(EstablisherHasNINOId(0), false).success.value
       .set(EstablisherNoNINOReasonId(0), "Reason").success.value
       .set(EstablisherHasUTRId(0), false).success.value
@@ -75,6 +75,12 @@ class CheckYourAnswersControllerSpec
 
   private val templateToBeRendered: String =
     "check-your-answers.njk"
+
+  val commonJson: JsObject =
+    Json.obj(
+      "schemeName" -> "Test scheme name",
+      "submitUrl"  -> "/migrate-pension-scheme/task-list"
+    )
 
   private def jsonToPassToTemplate(answers: Seq[SummaryList.Row]): JsObject =
     Json.obj("list" -> Json.toJson(answers))
@@ -111,10 +117,7 @@ class CheckYourAnswersControllerSpec
         .render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val json: JsObject =
-        Json.obj(
-          "schemeName" -> "Test scheme name",
-          "submitUrl"  -> "/migrate-pension-scheme/task-list"
-        ) ++ jsonToPassToTemplate(rows(fakeDataRequest(uaNinoUtr)))
+        commonJson ++ jsonToPassToTemplate(rows(fakeDataRequest(uaNinoUtr)))
 
       templateCaptor.getValue mustEqual templateToBeRendered
 
@@ -139,10 +142,7 @@ class CheckYourAnswersControllerSpec
         .render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val json: JsObject =
-        Json.obj(
-          "schemeName" -> "Test scheme name",
-          "submitUrl"  -> "/migrate-pension-scheme/task-list"
-        ) ++ jsonToPassToTemplate(rows(fakeDataRequest(uaReasons)))
+        commonJson ++ jsonToPassToTemplate(rows(fakeDataRequest(uaReasons)))
 
       templateCaptor.getValue mustEqual templateToBeRendered
 
