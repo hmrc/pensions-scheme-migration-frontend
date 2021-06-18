@@ -62,7 +62,6 @@ class EstablisherHasUTRControllerSpec
   private val commonJson: JsObject =
     Json.obj(
       "pageTitle"     -> "Does Jane Doe have a Unique Taxpayer Reference (UTR)?",
-      "submitUrl"     -> "/migrate-pension-scheme/establisher/1/individual/have-unique-taxpayer-reference",
       "schemeName"    -> "Test scheme name",
       "paragraphs"    -> Json.arr(
         "This is a 10-digit or 13-digit number. " +

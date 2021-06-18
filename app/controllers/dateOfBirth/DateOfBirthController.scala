@@ -53,7 +53,6 @@ trait DateOfBirthController
   protected def get(
                      dobId: TypedIdentifier[LocalDate],
                      personNameId: TypedIdentifier[PersonName],
-                     submitUrl: String,
                      schemeName: String
                    )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
@@ -71,7 +70,6 @@ trait DateOfBirthController
             "form"       -> preparedForm,
             "date"       -> DateInput.localDate(preparedForm("date")),
             "name"       -> personName.fullName,
-            "submitUrl"  -> submitUrl,
             "schemeName" -> schemeName
           )
         ).map(Ok(_))
@@ -81,7 +79,6 @@ trait DateOfBirthController
   protected def post(
                       dobId: TypedIdentifier[LocalDate],
                       personNameId: TypedIdentifier[PersonName],
-                      submitUrl: String,
                       schemeName: String,
                       mode: Mode
                     )(implicit request: DataRequest[AnyContent]): Future[Result] =
@@ -96,7 +93,6 @@ trait DateOfBirthController
                 "form"       -> formWithErrors,
                 "date"       -> DateInput.localDate(formWithErrors("date")),
                 "name"       -> personName.fullName,
-                "submitUrl"  -> submitUrl,
                 "schemeName" -> schemeName
               )
             ).map(BadRequest(_))

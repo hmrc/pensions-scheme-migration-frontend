@@ -62,7 +62,6 @@ class EstablisherNoNINOReasonControllerSpec
   private val commonJson: JsObject =
     Json.obj(
       "pageTitle"     -> "Why does Jane Doe not have a National Insurance number?",
-      "submitUrl"     -> "/migrate-pension-scheme/establisher/1/individual/reason-for-no-national-insurance-number",
       "schemeName"    -> "Test scheme name",
       "isPageHeading" -> true
     )

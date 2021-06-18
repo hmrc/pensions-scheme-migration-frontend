@@ -50,7 +50,6 @@ trait EnterReferenceValueController
            isPageHeading: Boolean,
            id: TypedIdentifier[ReferenceValue],
            form: Form[ReferenceValue],
-           submitUrl: String,
            schemeName: String,
            hintText: Option[String] = None,
            paragraphText: Seq[String] = Seq(),
@@ -63,7 +62,6 @@ trait EnterReferenceValueController
         "pageTitle"     -> pageTitle,
         "isPageHeading" -> isPageHeading,
         "form"          -> request.userAnswers.get[ReferenceValue](id).fold(form)(form.fill),
-        "submitUrl"     -> submitUrl,
         "schemeName"    -> schemeName,
         "legendClass"   -> legendClass,
         "paragraphs"    -> paragraphText
@@ -76,7 +74,6 @@ trait EnterReferenceValueController
             isPageHeading: Boolean,
             id: TypedIdentifier[ReferenceValue],
             form: Form[ReferenceValue],
-            submitUrl: String,
             schemeName: String,
             hintText: Option[String] = None,
             paragraphText: Seq[String] = Seq(),
@@ -92,7 +89,6 @@ trait EnterReferenceValueController
             "pageTitle"     -> pageTitle,
             "isPageHeading" -> isPageHeading,
             "form"          -> formWithErrors,
-            "submitUrl"     -> submitUrl,
             "schemeName"    -> schemeName,
             "legendClass"   -> legendClass,
             "paragraphs"    -> paragraphText

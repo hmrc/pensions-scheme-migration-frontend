@@ -62,7 +62,6 @@ class EstablisherEnterUTRControllerSpec
   private val commonJson: JsObject =
     Json.obj(
       "pageTitle"     -> "What is the UTR for Jane Doe?",
-      "submitUrl"     -> "/migrate-pension-scheme/establisher/1/individual/enter-unique-taxpayer-reference",
       "schemeName"    -> "Test scheme name",
       "legendClass"   -> "govuk-visually-hidden",
       "paragraphs"    -> Json.arr(

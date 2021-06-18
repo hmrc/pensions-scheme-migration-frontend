@@ -68,7 +68,6 @@ class EstablisherNoUTRReasonController @Inject()(
               isPageHeading = true,
               id            = EstablisherNoUTRReasonId(index),
               form          = form(index),
-              submitUrl     = routes.EstablisherNoUTRReasonController.onSubmit(index, mode).url,
               schemeName    = schemeName
             )
         }
@@ -84,7 +83,6 @@ class EstablisherNoUTRReasonController @Inject()(
               isPageHeading = true,
               id            = EstablisherNoUTRReasonId(index),
               form          = form(index),
-              submitUrl     = routes.EstablisherNoUTRReasonController.onSubmit(index, mode).url,
               schemeName    = schemeName,
               mode          = mode
             )

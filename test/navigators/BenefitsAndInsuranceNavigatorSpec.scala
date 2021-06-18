@@ -21,6 +21,7 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import controllers.benefitsAndInsurance.routes._
 import identifiers._
 import identifiers.benefitsAndInsurance._
+import models.NormalMode
 import models.benefitsAndInsurance.BenefitsProvisionType.{DefinedBenefitsOnly, MixedBenefits, MoneyPurchaseOnly}
 import models.benefitsAndInsurance.BenefitsType._
 import org.scalatest.OptionValues
@@ -61,7 +62,7 @@ class BenefitsAndInsuranceNavigatorSpec extends SpecBase with NavigatorBehaviour
           row(BenefitsInsurancePolicyId)(insurerEnterPostCode),
           row(InsurerAddressId)(checkYourAnswersPage)
         )
-      behave like navigatorWithRoutesForMode(navigator, navigation)
+      behave like navigatorWithRoutesForMode(NormalMode)(navigator, navigation)
     }
 }
 

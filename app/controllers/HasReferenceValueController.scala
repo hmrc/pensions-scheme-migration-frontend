@@ -51,7 +51,6 @@ trait HasReferenceValueController
            isPageHeading: Boolean,
            id: TypedIdentifier[Boolean],
            form: Form[Boolean],
-           submitUrl: String,
            schemeName: String,
            paragraphText: Seq[String] = Seq(),
            legendClass: String = "govuk-fieldset__legend--s"
@@ -70,7 +69,6 @@ trait HasReferenceValueController
         "isPageHeading" -> isPageHeading,
         "form"          -> preparedForm,
         "radios"        -> Radios.yesNo(preparedForm("value")),
-        "submitUrl"     -> submitUrl,
         "schemeName"    -> schemeName,
         "legendClass"   -> legendClass,
         "paragraphs"    -> paragraphText
@@ -83,7 +81,6 @@ trait HasReferenceValueController
             isPageHeading: Boolean,
             id: TypedIdentifier[Boolean],
             form: Form[Boolean],
-            submitUrl: String,
             schemeName: String,
             paragraphText: Seq[String] = Seq(),
             legendClass: String = "govuk-fieldset__legend--s",
@@ -99,7 +96,6 @@ trait HasReferenceValueController
             "isPageHeading" -> isPageHeading,
             "form"          -> formWithErrors,
             "radios"        -> Radios.yesNo(formWithErrors("value")),
-            "submitUrl"     -> submitUrl,
             "schemeName"    -> schemeName,
             "legendClass"   -> legendClass,
             "paragraphs"    -> paragraphText

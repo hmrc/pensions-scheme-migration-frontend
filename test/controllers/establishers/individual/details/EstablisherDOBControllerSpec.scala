@@ -63,7 +63,6 @@ class EstablisherDOBControllerSpec
   private val commonJson: JsObject =
     Json.obj(
       "name"       -> "Jane Doe",
-      "submitUrl"  -> "/migrate-pension-scheme/establisher/1/individual/date-of-birth",
       "schemeName" -> "Test scheme name"
     )
 

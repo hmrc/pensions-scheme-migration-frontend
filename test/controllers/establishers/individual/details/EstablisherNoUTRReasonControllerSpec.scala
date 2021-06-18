@@ -62,7 +62,6 @@ class EstablisherNoUTRReasonControllerSpec
   private val commonJson: JsObject =
     Json.obj(
       "pageTitle"     -> "Why does Jane Doe not have a UTR?",
-      "submitUrl"     -> "/migrate-pension-scheme/establisher/1/individual/reason-for-no-unique-taxpayer-reference",
       "schemeName"    -> "Test scheme name",
       "isPageHeading" -> true
     )

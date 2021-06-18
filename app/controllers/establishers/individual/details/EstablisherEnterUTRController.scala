@@ -66,7 +66,6 @@ class EstablisherEnterUTRController @Inject()(
               isPageHeading = false,
               id            = EstablisherUTRId(index),
               form          = form,
-              submitUrl     = routes.EstablisherEnterUTRController.onSubmit(index, mode).url,
               schemeName    = schemeName,
               legendClass   = "govuk-visually-hidden",
               paragraphText = Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2"))
@@ -84,7 +83,6 @@ class EstablisherEnterUTRController @Inject()(
               isPageHeading = false,
               id            = EstablisherUTRId(index),
               form          = form,
-              submitUrl     = routes.EstablisherEnterUTRController.onSubmit(index, mode).url,
               schemeName    = schemeName,
               legendClass   = "govuk-visually-hidden",
               paragraphText = Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2")),

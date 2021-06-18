@@ -58,7 +58,6 @@ class EstablisherDOBController @Inject()(
             get(
               dobId        = EstablisherDOBId(index),
               personNameId = EstablisherNameId(index),
-              submitUrl    = routes.EstablisherDOBController.onSubmit(index, mode).url,
               schemeName   = schemeName
             )
         }
@@ -72,7 +71,6 @@ class EstablisherDOBController @Inject()(
             post(
               dobId        = EstablisherDOBId(index),
               personNameId = EstablisherNameId(index),
-              submitUrl    = routes.EstablisherDOBController.onSubmit(index, mode).url,
               schemeName   = schemeName,
               mode         = mode
             )

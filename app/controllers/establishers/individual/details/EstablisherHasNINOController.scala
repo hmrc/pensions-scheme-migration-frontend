@@ -72,7 +72,6 @@ class EstablisherHasNINOController @Inject()(
               isPageHeading = true,
               id            = EstablisherHasNINOId(index),
               form          = form(index),
-              submitUrl     = routes.EstablisherHasNINOController.onSubmit(index, mode).url,
               schemeName    = schemeName,
               legendClass   = "govuk-label--xl"
             )
@@ -89,7 +88,6 @@ class EstablisherHasNINOController @Inject()(
               isPageHeading = true,
               id            = EstablisherHasNINOId(index),
               form          = form(index),
-              submitUrl     = routes.EstablisherHasNINOController.onSubmit(index, mode).url,
               schemeName    = schemeName,
               legendClass   = "govuk-label--xl",
               mode          = mode
