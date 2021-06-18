@@ -61,9 +61,11 @@ class EstablisherEnterNINOControllerSpec
     "enterReferenceValue.njk"
   private val commonJson: JsObject =
     Json.obj(
-      "pageTitle"  -> "What is the National Insurance number for Jane Doe?",
-      "submitUrl" -> "/migrate-pension-scheme/establisher/1/individual/enter-national-insurance-number",
-      "schemeName" -> "Test scheme name"
+      "pageTitle"     -> "What is the National Insurance number for Jane Doe?",
+      "submitUrl"     -> "/migrate-pension-scheme/establisher/1/individual/enter-national-insurance-number",
+      "schemeName"    -> "Test scheme name",
+      "legendClass"   -> "govuk-label--xl",
+      "isPageHeading" -> true
     )
   private val formData: ReferenceValue =
     ReferenceValue(value = "AB123456C")

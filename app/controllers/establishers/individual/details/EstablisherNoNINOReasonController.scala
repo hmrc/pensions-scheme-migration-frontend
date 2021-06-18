@@ -85,7 +85,8 @@ class EstablisherNoNINOReasonController @Inject()(
                 id            = EstablisherNoNINOReasonId(index),
                 form          = form(index),
                 submitUrl     = routes.EstablisherNoNINOReasonController.onSubmit(index, mode).url,
-                schemeName    = schemeName
+                schemeName    = schemeName,
+                mode          = mode
               )
           }
       }

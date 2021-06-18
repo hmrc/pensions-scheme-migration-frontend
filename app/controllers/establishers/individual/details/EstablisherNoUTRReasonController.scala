@@ -85,7 +85,8 @@ class EstablisherNoUTRReasonController @Inject()(
               id            = EstablisherNoUTRReasonId(index),
               form          = form(index),
               submitUrl     = routes.EstablisherNoUTRReasonController.onSubmit(index, mode).url,
-              schemeName    = schemeName
+              schemeName    = schemeName,
+              mode          = mode
             )
         }
     }

@@ -163,6 +163,7 @@ messages__schemeTaskList__sectionEstablishers_view_link = View establishers
 messages__schemeTaskList__sectionEstablishers_no_establishers = No establishers
 
 messages__schemeTaskList__establisherIndividualDetails_addLink = Add details for {0}
+messages__schemeTaskList__establisherIndividualDetails_changeLink = Change details for {0}
 messages__schemeTaskList__establisherIndividualAddress_addLink = Add address for {0}
 messages__schemeTaskList__establisherIndividualContactDetails_addLink = Add contact details for {0}
 
@@ -175,6 +176,7 @@ messages__hasNINO__cya__visuallyHidden = whether {0} has a National Insurance nu
 messages__hasNINO__cya = National Insurance number
 
 messages__enterNINO = What is the National Insurance number for {0}?
+messages__enterNINO__hint = For example, QQ 12 34 56 C
 messages__error__common_nino = Enter a National Insurance number
 messages__error__common_nino_invalid = Enter {0}’s National Insurance number in the correct format
 
@@ -182,12 +184,15 @@ messages__whyNoNINO = Why does {0} not have a National Insurance number?
 messages__reason__error_ninoRequired = Enter a reason why {0} does not have a NINO
 messages__whyNoNINO__cya__visuallyHidden = the reason why {0} does not have a National Insurance number
 
-messages__hasUTR = Does {0} have a Unique Taxpayer Reference?
+messages__hasUTR = Does {0} have a Unique Taxpayer Reference (UTR)?
+messages__UTR__p = This is a 10-digit or 13-digit number. You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.
 messages__genericHasUtr__error__required = Select yes if {0} has a Unique Taxpayer Reference
 messages__hasUTR__cya__visuallyHidden = whether {0} has a Unique Taxpayer Reference
 messages__hasUTR__cya = UTR
 
 messages__enterUTR = What is the UTR for {0}?
+messages__UTR__p1 = If the UTR is 13 numbers, only enter the last 10.
+messages__UTR__p2 = If there is a letter ‘K’ at the end of the number, do not enter it.
 messages__utr__hint = For example, 12345 67890
 messages__utr__checkyouranswerslabel = Unique Taxpayer Reference (UTR)
 

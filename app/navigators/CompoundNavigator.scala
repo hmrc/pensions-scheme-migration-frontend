@@ -18,6 +18,7 @@ package navigators
 
 import com.google.inject.Inject
 import identifiers.Identifier
+import models.{Mode, NormalMode}
 import models.requests.DataRequest
 import play.api.Logger
 import play.api.mvc.{AnyContent, Call}
@@ -26,7 +27,7 @@ import utils.UserAnswers
 import scala.collection.JavaConverters._
 
 trait CompoundNavigator {
-  def nextPage(id: Identifier, userAnswers: UserAnswers)
+  def nextPage(id: Identifier, userAnswers: UserAnswers, mode: Mode = NormalMode)
               (implicit request: DataRequest[AnyContent]): Call
 }
 
@@ -42,16 +43,18 @@ class CompoundNavigatorImpl @Inject()(navigators: java.util.Set[Navigator])
 
   def nextPage(
                 id: Identifier,
-                userAnswers: UserAnswers
+                userAnswers: UserAnswers,
+                mode: Mode
               )(implicit request: DataRequest[AnyContent]): Call =
-    nextPageOptional(id, userAnswers)
+    nextPageOptional(id, userAnswers, mode)
       .getOrElse(defaultPage(id))
 
   private def nextPageOptional(
                                 id: Identifier,
-                                userAnswers: UserAnswers
+                                userAnswers: UserAnswers,
+                                mode: Mode
                               )(implicit request: DataRequest[AnyContent]): Option[Call] =
     navigators.asScala
-      .find(_.nextPageOptional(userAnswers).isDefinedAt(id))
-      .map(_.nextPageOptional(userAnswers)(implicitly)(id))
+      .find(_.nextPageOptional(userAnswers, mode).isDefinedAt(id))
+      .map(_.nextPageOptional(userAnswers, mode)(implicitly)(id))
 }

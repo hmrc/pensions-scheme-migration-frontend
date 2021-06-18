@@ -69,7 +69,9 @@ class EstablisherEnterNINOController @Inject()(
               id            = EstablisherNINOId(index),
               form          = form(index),
               submitUrl     = routes.EstablisherEnterNINOController.onSubmit(index, mode).url,
-              schemeName    = schemeName
+              schemeName    = schemeName,
+              hintText      = Some(Messages("messages__enterNINO__hint")),
+              legendClass   = "govuk-label--xl"
             )
         }
     }
@@ -85,7 +87,10 @@ class EstablisherEnterNINOController @Inject()(
               id            = EstablisherNINOId(index),
               form          = form(index),
               submitUrl     = routes.EstablisherEnterNINOController.onSubmit(index, mode).url,
-              schemeName    = schemeName
+              schemeName    = schemeName,
+              hintText      = Some(Messages("messages__enterNINO__hint")),
+              legendClass   = "govuk-label--xl",
+              mode          = mode
             )
         }
     }

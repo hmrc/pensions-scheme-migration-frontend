@@ -18,13 +18,33 @@ package navigators
 
 import identifiers.Identifier
 import models.requests.DataRequest
+import models.{CheckMode, Mode, NormalMode}
 import play.api.mvc.{AnyContent, Call}
 import utils.UserAnswers
 
 trait Navigator {
-  protected def routeMap(userAnswers: UserAnswers)
-                        (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call]
+  protected def routeMap(
+                          userAnswers: UserAnswers
+                        )(
+                          implicit request: DataRequest[AnyContent]
+                        ): PartialFunction[Identifier, Call]
 
-  def nextPageOptional(userAnswers: UserAnswers)
-                      (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = routeMap(userAnswers)
+  protected def editRouteMap(
+                              userAnswers: UserAnswers
+                            )(
+                              implicit request: DataRequest[AnyContent]
+                            ): PartialFunction[Identifier, Call]
+
+  def nextPageOptional(
+                        userAnswers: UserAnswers,
+                        mode: Mode
+                      )(
+                        implicit request: DataRequest[AnyContent]
+                      ): PartialFunction[Identifier, Call] =
+    mode match {
+      case NormalMode =>
+        routeMap(userAnswers)
+      case CheckMode =>
+        editRouteMap(userAnswers)
+    }
 }

@@ -18,6 +18,7 @@ package controllers
 
 import connectors.cache.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
+import models.Mode
 import models.requests.DataRequest
 import navigators.CompoundNavigator
 import play.api.data.Form
@@ -70,7 +71,8 @@ trait ReasonController
             id: TypedIdentifier[String],
             form: Form[String],
             submitUrl: String,
-            schemeName: String
+            schemeName: String,
+            mode: Mode
           )(implicit request: DataRequest[AnyContent]): Future[Result] =
 
     form.bindFromRequest().fold(
@@ -90,6 +92,6 @@ trait ReasonController
           updatedAnswers <- Future.fromTry(request.userAnswers.set(id, value))
           _              <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
         } yield
-          Redirect(navigator.nextPage(id, updatedAnswers))
+          Redirect(navigator.nextPage(id, updatedAnswers, mode))
     )
 }

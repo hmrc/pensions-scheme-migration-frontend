@@ -18,6 +18,7 @@ package utils.datacompletion
 
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.individual.EstablisherNameId
+import identifiers.establishers.individual.details._
 import utils.UserAnswers
 
 trait DataCompletionEstablishers extends DataCompletion {
@@ -32,4 +33,43 @@ trait DataCompletionEstablishers extends DataCompletion {
       )
     ).getOrElse(false)
 
+  def isEstablisherIndividualDetailsCompleted(
+                                               index: Int,
+                                               userAnswers: UserAnswers
+                                             ): Boolean = {
+    val answerOrReasonNINOId: Boolean =
+      userAnswers.get(EstablisherHasNINOId(index)).getOrElse(false)
+    val answerOrReasonUTRId: Boolean =
+      userAnswers.get(EstablisherHasUTRId(index)).getOrElse(false)
+
+    isComplete(
+      Seq(
+        isAnswerComplete(EstablisherDOBId(index)),
+        isAnswerComplete(EstablisherHasNINOId(index)),
+        if (answerOrReasonNINOId)
+          isAnswerComplete(EstablisherNINOId(index))
+        else
+          isAnswerComplete(EstablisherNoNINOReasonId(index)),
+        isAnswerComplete(EstablisherHasUTRId(index)),
+        if (answerOrReasonUTRId)
+          isAnswerComplete(EstablisherUTRId(index))
+        else
+          isAnswerComplete(EstablisherNoUTRReasonId(index))
+      )
+    ).getOrElse(false)
+  }
+
+  def isEstablisherIndividualAddressCompleted: Option[Boolean] =
+    isComplete(
+      Seq(
+        Some(false)
+      )
+    )
+
+  def isEstablisherIndividualContactDetailsCompleted: Option[Boolean] =
+    isComplete(
+      Seq(
+        Some(false)
+      )
+    )
 }

@@ -23,16 +23,27 @@ import play.api.i18n.Messages
 import utils.UserAnswers
 
 
-case class EstablisherIndividualDetails(index: Index) extends Spoke {
+case class EstablisherIndividualDetails(
+                                         index: Index,
+                                         answers: UserAnswers
+                                       ) extends Spoke {
+  val messageKeyPrefix = "messages__schemeTaskList__establisherIndividualDetails_"
+
+  val linkKeyAndRoute: (String, String) =
+    if (completeFlag(answers).getOrElse(false))
+      (s"${messageKeyPrefix}changeLink", CheckYourAnswersController.onPageLoad(index).url)
+    else
+      (s"${messageKeyPrefix}addLink", WhatYouWillNeedController.onPageLoad(index).url)
+
   override def changeLink(name: String)
                          (implicit messages: Messages): TaskListLink =
     TaskListLink(
-      text = Messages("messages__schemeTaskList__establisherIndividualDetails_addLink", name),
-      target = WhatYouWillNeedController.onPageLoad(index).url,
+      text = Messages(linkKeyAndRoute._1, name),
+      target = linkKeyAndRoute._2,
       visuallyHiddenText = None
     )
 
   override def completeFlag(answers: UserAnswers): Option[Boolean] =
-    answers.isEstablisherIndividualDetailsCompleted
+    Some(answers.isEstablisherIndividualDetailsCompleted(0, answers))
 }
 

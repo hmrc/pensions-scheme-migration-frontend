@@ -62,9 +62,11 @@ class EstablisherHasNINOControllerSpec
     "hasReferenceValue.njk"
   private val commonJson: JsObject =
     Json.obj(
-      "pageTitle"  -> "Does Jane Doe have a National Insurance number?",
-      "submitUrl"  -> "/migrate-pension-scheme/establisher/1/individual/have-national-insurance-number",
-      "schemeName" -> "Test scheme name"
+      "pageTitle"     -> "Does Jane Doe have a National Insurance number?",
+      "submitUrl"     -> "/migrate-pension-scheme/establisher/1/individual/have-national-insurance-number",
+      "schemeName"    -> "Test scheme name",
+      "legendClass"   -> "govuk-label--xl",
+      "isPageHeading" -> true
     )
   private def controller(
                           dataRetrievalAction: DataRetrievalAction

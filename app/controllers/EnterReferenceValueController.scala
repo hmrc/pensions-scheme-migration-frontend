@@ -18,12 +18,12 @@ package controllers
 
 import connectors.cache.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
-import models.ReferenceValue
+import models.{Mode, ReferenceValue}
 import models.requests.DataRequest
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.libs.json.Json
+import play.api.libs.json.{JsString, Json}
 import play.api.mvc.{AnyContent, Result}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
@@ -51,8 +51,11 @@ trait EnterReferenceValueController
            id: TypedIdentifier[ReferenceValue],
            form: Form[ReferenceValue],
            submitUrl: String,
-           schemeName: String
-         )(implicit request: DataRequest[AnyContent]): Future[Result] =
+           schemeName: String,
+           hintText: Option[String] = None,
+           paragraphText: Seq[String] = Seq(),
+           legendClass: String = "govuk-fieldset__legend--s"
+         )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     renderer.render(
       template = "enterReferenceValue.njk",
@@ -61,9 +64,12 @@ trait EnterReferenceValueController
         "isPageHeading" -> isPageHeading,
         "form"          -> request.userAnswers.get[ReferenceValue](id).fold(form)(form.fill),
         "submitUrl"     -> submitUrl,
-        "schemeName"    -> schemeName
-      )
+        "schemeName"    -> schemeName,
+        "legendClass"   -> legendClass,
+        "paragraphs"    -> paragraphText
+      ) ++ hintText.fold(Json.obj())(text => Json.obj("hintText" -> JsString(text)))
     ).map(Ok(_))
+  }
 
   def post(
             pageTitle: String,
@@ -71,7 +77,11 @@ trait EnterReferenceValueController
             id: TypedIdentifier[ReferenceValue],
             form: Form[ReferenceValue],
             submitUrl: String,
-            schemeName: String
+            schemeName: String,
+            hintText: Option[String] = None,
+            paragraphText: Seq[String] = Seq(),
+            legendClass: String = "govuk-fieldset__legend--s",
+            mode: Mode
           )(implicit request: DataRequest[AnyContent]): Future[Result] =
 
     form.bindFromRequest().fold(
@@ -83,14 +93,16 @@ trait EnterReferenceValueController
             "isPageHeading" -> isPageHeading,
             "form"          -> formWithErrors,
             "submitUrl"     -> submitUrl,
-            "schemeName"    -> schemeName
-          )
+            "schemeName"    -> schemeName,
+            "legendClass"   -> legendClass,
+            "paragraphs"    -> paragraphText
+          ) ++ hintText.fold(Json.obj())(text => Json.obj("hintText" -> JsString(text)))
         ).map(BadRequest(_)),
       value =>
         for {
           updatedAnswers <- Future.fromTry(request.userAnswers.set(id, value))
           _              <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
         } yield
-          Redirect(navigator.nextPage(id, updatedAnswers))
+          Redirect(navigator.nextPage(id, updatedAnswers, mode))
     )
 }

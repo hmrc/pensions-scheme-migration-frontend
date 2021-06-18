@@ -145,26 +145,6 @@ class SpokeCreationServiceSpec
         )
       result mustBe expectedSpoke
     }
-
-    //    "display all the spokes with appropriate links, in progress status when establisher individual is in progress" in {
-    //      val userAnswers = userAnswersWithSchemeName.isEstablisherNew(index = 0, flag = true).
-    //        establishersIndividualName(index = 0, PersonName("s", "l")).
-    //        establishersIndividualNino(0, ReferenceValue("AB100100A")).
-    //        establishersIndividualAddress(index = 0, address).
-    //        establishersIndividualEmail(index = 0, email = "s@s.com")
-    //      val expectedSpoke = estIndividualInProgressSpoke(NormalMode, srn = None, linkText = "change", status = Some(false))
-    //
-    //      val result = spokeCreationService.getEstablisherIndividualSpokes(userAnswers, NormalMode, None, schemeName, None)
-    //      result mustBe expectedSpoke
-    //    }
-    //
-    //    "display all the spokes with appropriate links, complete status when establisher individual is completed" in {
-    //      val userAnswers = setCompleteEstIndividual(0, userAnswersWithSchemeName).isEstablisherNew(0, flag = true)
-    //      val expectedSpoke = estIndividualCompleteSpoke(NormalMode, srn = None, linkText = "change", status = Some(true))
-    //
-    //      val result = spokeCreationService.getEstablisherIndividualSpokes(userAnswers, NormalMode, None, schemeName, None)
-    //      result mustBe expectedSpoke
-    //    }
   }
 
   "declarationSpoke" must {

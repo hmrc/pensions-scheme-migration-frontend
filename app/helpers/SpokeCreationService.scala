@@ -18,7 +18,6 @@ package helpers
 
 import controllers.establishers.routes._
 import helpers.spokes.establishers.individual._
-import helpers.spokes.{AboutMembersSpoke, BeforeYouStartSpoke, Spoke}
 import helpers.spokes.{AboutMembersSpoke, BeforeYouStartSpoke, BenefitsAndInsuranceSpoke, Spoke}
 import models.{EntitySpoke, Index, TaskListLink}
 import play.api.i18n.Messages
@@ -68,7 +67,7 @@ class SpokeCreationService extends Enumerable.Implicits {
                                     (implicit messages: Messages): Seq[EntitySpoke] = {
 //    val isEstablisherNew = answers.get(IsEstablisherNewId(indexToInt(index.getOrElse(Index(0))))).getOrElse(false)
     Seq(
-      createSpoke(answers, EstablisherIndividualDetails(index), name),
+      createSpoke(answers, EstablisherIndividualDetails(index, answers), name),
       createSpoke(answers, EstablisherIndividualAddress, name),
       createSpoke(answers, EstablisherIndividualContactDetails, name)
     )

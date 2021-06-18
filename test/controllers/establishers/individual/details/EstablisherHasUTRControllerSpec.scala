@@ -61,9 +61,16 @@ class EstablisherHasUTRControllerSpec
     "hasReferenceValue.njk"
   private val commonJson: JsObject =
     Json.obj(
-      "pageTitle"  -> "Does Jane Doe have a Unique Taxpayer Reference?",
-      "submitUrl"  -> "/migrate-pension-scheme/establisher/1/individual/have-unique-taxpayer-reference",
-      "schemeName" -> "Test scheme name"
+      "pageTitle"     -> "Does Jane Doe have a Unique Taxpayer Reference (UTR)?",
+      "submitUrl"     -> "/migrate-pension-scheme/establisher/1/individual/have-unique-taxpayer-reference",
+      "schemeName"    -> "Test scheme name",
+      "paragraphs"    -> Json.arr(
+        "This is a 10-digit or 13-digit number. " +
+        "You can find it on tax returns and other documents from HMRC. " +
+        "It might be called ‘reference’, ‘UTR’ or ‘official use’."
+      ),
+      "legendClass"   -> "govuk-visually-hidden",
+      "isPageHeading" -> false
     )
   private def controller(
                           dataRetrievalAction: DataRetrievalAction

@@ -63,11 +63,13 @@ class EstablisherEnterUTRController @Inject()(
           schemeName =>
             get(
               pageTitle     = Messages("messages__enterUTR", name(index)),
-              isPageHeading = true,
+              isPageHeading = false,
               id            = EstablisherUTRId(index),
               form          = form,
               submitUrl     = routes.EstablisherEnterUTRController.onSubmit(index, mode).url,
-              schemeName    = schemeName
+              schemeName    = schemeName,
+              legendClass   = "govuk-visually-hidden",
+              paragraphText = Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2"))
             )
         }
     }
@@ -79,11 +81,14 @@ class EstablisherEnterUTRController @Inject()(
           schemeName =>
             post(
               pageTitle     = Messages("messages__enterUTR", name(index)),
-              isPageHeading = true,
+              isPageHeading = false,
               id            = EstablisherUTRId(index),
               form          = form,
               submitUrl     = routes.EstablisherEnterUTRController.onSubmit(index, mode).url,
-              schemeName    = schemeName
+              schemeName    = schemeName,
+              legendClass   = "govuk-visually-hidden",
+              paragraphText = Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2")),
+              mode          = mode
             )
         }
     }

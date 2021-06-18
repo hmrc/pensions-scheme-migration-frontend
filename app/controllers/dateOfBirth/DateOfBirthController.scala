@@ -19,7 +19,7 @@ package controllers.dateOfBirth
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import identifiers.TypedIdentifier
-import models.PersonName
+import models.{Mode, PersonName}
 import models.requests.DataRequest
 import navigators.CompoundNavigator
 import play.api.data.Form
@@ -82,7 +82,8 @@ trait DateOfBirthController
                       dobId: TypedIdentifier[LocalDate],
                       personNameId: TypedIdentifier[PersonName],
                       submitUrl: String,
-                      schemeName: String
+                      schemeName: String,
+                      mode: Mode
                     )(implicit request: DataRequest[AnyContent]): Future[Result] =
 
     form.bindFromRequest().fold(
@@ -105,6 +106,6 @@ trait DateOfBirthController
           updatedAnswers <- Future.fromTry(request.userAnswers.set(dobId, value))
           _              <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
         } yield
-          Redirect(navigator.nextPage(dobId, updatedAnswers))
+          Redirect(navigator.nextPage(dobId, updatedAnswers, mode))
     )
 }

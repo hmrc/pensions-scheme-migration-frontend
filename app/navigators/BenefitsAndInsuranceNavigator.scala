@@ -16,24 +16,36 @@
 
 package navigators
 
-import com.google.inject.Inject
-import connectors.cache.UserAnswersCacheConnector
-import identifiers._
 import controllers.benefitsAndInsurance.routes._
-import identifiers.benefitsAndInsurance.{InsurerEnterPostCodeId, HowProvideBenefitsId, AreBenefitsSecuredId, BenefitsInsurancePolicyId, InsurerAddressListId, BenefitsInsuranceNameId, InsurerAddressId, BenefitsTypeId}
+import identifiers._
+import identifiers.benefitsAndInsurance._
 import models.benefitsAndInsurance.BenefitsProvisionType.DefinedBenefitsOnly
 import models.requests.DataRequest
-import play.api.mvc.{Call, AnyContent}
+import play.api.mvc.{AnyContent, Call}
 import utils.UserAnswers
 
-class BenefitsAndInsuranceNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector)
+class BenefitsAndInsuranceNavigator
   extends Navigator {
 
   import BenefitsAndInsuranceNavigator._
 
   //scalastyle:off cyclomatic.complexity
   override protected def routeMap(ua: UserAnswers)
-    (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
+                                 (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
+    case HowProvideBenefitsId if ua.get(HowProvideBenefitsId).contains(DefinedBenefitsOnly) => cya
+    case HowProvideBenefitsId => BenefitsTypeController.onPageLoad()
+    case BenefitsTypeId => cya
+    case AreBenefitsSecuredId if ua.get(AreBenefitsSecuredId).contains(false) => cya
+    case AreBenefitsSecuredId => BenefitsInsuranceNameController.onPageLoad()
+    case BenefitsInsuranceNameId => BenefitsInsurancePolicyController.onPageLoad()
+    case InsurerEnterPostCodeId => InsurerSelectAddressController.onPageLoad()
+    case InsurerAddressListId => cya
+    case BenefitsInsurancePolicyId => InsurerEnterPostcodeController.onPageLoad()
+    case InsurerAddressId => cya
+  }
+
+  override protected def editRouteMap(ua: UserAnswers)
+                                     (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case HowProvideBenefitsId if ua.get(HowProvideBenefitsId).contains(DefinedBenefitsOnly) => cya
     case HowProvideBenefitsId => BenefitsTypeController.onPageLoad()
     case BenefitsTypeId => cya

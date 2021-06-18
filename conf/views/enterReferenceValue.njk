@@ -10,14 +10,6 @@
     {{ title(pageTitle, form.errors) }}
 {% endblock %}
 
-{% macro labelClass(isPageheading) %}
-    {% if isPageHeading %}
-        govuk-label--xl
-    {% elif not isPageHeaidng %}
-        govuk-fieldset__legend--s
-    {% endif %}
-{% endmacro %}
-
 {% block mainContent %}
 
     <div class="govuk-grid-row">
@@ -36,6 +28,12 @@
                 </h1>
             {% endif %}
 
+            {% for paragraph in paragraphs %}
+                <p class="govuk-body">
+                    {{ paragraph }}
+                </p>
+            {% endfor %}
+
             <form method="post"
                   autocomplete="off"
                   action="{{ submitUrl }}"
@@ -47,7 +45,7 @@
                     label: {
                         text: pageTitle,
                         isPageHeading: isPageHeading,
-                        classes: labelClass(isPageHeading)
+                        classes: legendClass
                     },
                     id: "value",
                     name: "value",
@@ -56,7 +54,10 @@
                     attributes: {
                         autocomplete: "off"
                     },
-                    errorMessage: form.error
+                    errorMessage: form.error,
+                    hint: {
+                        text: hintText
+                    }
                 }) }}
 
                 {{ govukButton({

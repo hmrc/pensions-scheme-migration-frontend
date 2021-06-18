@@ -24,7 +24,7 @@ import identifiers._
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.details._
 import identifiers.establishers._
-import models.{Index, NormalMode}
+import models.{CheckMode, Index, Mode, NormalMode}
 import models.establishers.EstablisherKind
 import models.requests.DataRequest
 import play.api.mvc.{AnyContent, Call}
@@ -41,10 +41,21 @@ class EstablishersNavigator
     case AddEstablisherId(value) => addEstablisherRoutes(value, ua)
     case ConfirmDeleteEstablisherId => AddEstablisherController.onPageLoad()
     case EstablisherDOBId(index) => EstablisherHasNINOController.onPageLoad(index, NormalMode)
-    case EstablisherHasNINOId(index) => establisherHasNino(index, ua)
+    case EstablisherHasNINOId(index) => establisherHasNino(index, ua, NormalMode)
     case EstablisherNINOId(index) => EstablisherHasUTRController.onPageLoad(index, NormalMode)
     case EstablisherNoNINOReasonId(index) => EstablisherHasUTRController.onPageLoad(index, NormalMode)
-    case EstablisherHasUTRId(index) => establisherHasUtr(index, ua)
+    case EstablisherHasUTRId(index) => establisherHasUtr(index, ua, NormalMode)
+    case EstablisherUTRId(index) => CheckYourAnswersController.onPageLoad(index)
+    case EstablisherNoUTRReasonId(index) => CheckYourAnswersController.onPageLoad(index)
+  }
+
+  override protected def editRouteMap(ua: UserAnswers)
+                                     (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
+    case EstablisherDOBId(index) => CheckYourAnswersController.onPageLoad(index)
+    case EstablisherHasNINOId(index) => establisherHasNino(index, ua, CheckMode)
+    case EstablisherNINOId(index) => CheckYourAnswersController.onPageLoad(index)
+    case EstablisherNoNINOReasonId(index) => CheckYourAnswersController.onPageLoad(index)
+    case EstablisherHasUTRId(index) => establisherHasUtr(index, ua, CheckMode)
     case EstablisherUTRId(index) => CheckYourAnswersController.onPageLoad(index)
     case EstablisherNoUTRReasonId(index) => CheckYourAnswersController.onPageLoad(index)
   }
@@ -70,21 +81,23 @@ class EstablishersNavigator
 
   private def establisherHasNino(
                                   index: Index,
-                                  answers: UserAnswers
+                                  answers: UserAnswers,
+                                  mode: Mode
                                 ): Call =
     answers.get(EstablisherHasNINOId(index)) match {
-      case Some(true) => EstablisherEnterNINOController.onPageLoad(index, NormalMode)
-      case Some(false) => EstablisherNoNINOReasonController.onPageLoad(index, NormalMode)
+      case Some(true) => EstablisherEnterNINOController.onPageLoad(index, mode)
+      case Some(false) => EstablisherNoNINOReasonController.onPageLoad(index, mode)
       case None => IndexController.onPageLoad()
     }
 
   private def establisherHasUtr(
                                  index: Index,
-                                 answers: UserAnswers
+                                 answers: UserAnswers,
+                                 mode: Mode
                                ): Call =
     answers.get(EstablisherHasUTRId(index)) match {
-      case Some(true) => EstablisherEnterUTRController.onPageLoad(index, NormalMode)
-      case Some(false) => EstablisherNoUTRReasonController.onPageLoad(index, NormalMode)
+      case Some(true) => EstablisherEnterUTRController.onPageLoad(index, mode)
+      case Some(false) => EstablisherNoUTRReasonController.onPageLoad(index, mode)
       case None => IndexController.onPageLoad()
     }
 }

@@ -61,9 +61,15 @@ class EstablisherEnterUTRControllerSpec
     "enterReferenceValue.njk"
   private val commonJson: JsObject =
     Json.obj(
-      "pageTitle"  -> "What is the UTR for Jane Doe?",
-      "submitUrl" -> "/migrate-pension-scheme/establisher/1/individual/enter-unique-taxpayer-reference",
-      "schemeName" -> "Test scheme name"
+      "pageTitle"     -> "What is the UTR for Jane Doe?",
+      "submitUrl"     -> "/migrate-pension-scheme/establisher/1/individual/enter-unique-taxpayer-reference",
+      "schemeName"    -> "Test scheme name",
+      "legendClass"   -> "govuk-visually-hidden",
+      "paragraphs"    -> Json.arr(
+        "If the UTR is 13 numbers, only enter the last 10.",
+        "If there is a letter ‘K’ at the end of the number, do not enter it."
+      ),
+      "isPageHeading" -> false
     )
   private val formData: ReferenceValue =
     ReferenceValue(value = "1234567890")

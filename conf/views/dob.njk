@@ -26,7 +26,10 @@
                 {{ messages("messages__dob__title", name) }}
             </h1>
 
-            <form method="post" autocomplete="off" novalidate>
+            <form method="post"
+                  autocomplete="off"
+                  action="{{ submitUrl }}"
+                  novalidate>
 
                 {{ csrf() | safe }}
 

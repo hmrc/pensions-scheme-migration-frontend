@@ -18,6 +18,7 @@ package navigators
 
 import base.SpecBase
 import identifiers.Identifier
+import models.{CheckMode, NormalMode}
 import models.requests.DataRequest
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Call}
@@ -32,14 +33,21 @@ class NavigatorSpec extends SpecBase {
     case DummyIdentifier => Call("GET", "/page1")
   }
 
+  private val call2: PartialFunction[Identifier, Call] = {
+    case DummyIdentifier => Call("GET", "/page1")
+  }
+
   private val dummyNavigator: Navigator = new Navigator {
     protected def routeMap(userAnswers: UserAnswers)
                           (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = call1
+    protected def editRouteMap(userAnswers: UserAnswers)
+                          (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = call2
   }
 
   "Navigator" must {
       "go to correct route" in {
-        dummyNavigator.nextPageOptional(UserAnswers(Json.obj()))(request) mustBe call1
+        dummyNavigator.nextPageOptional(UserAnswers(Json.obj()), NormalMode)(request) mustBe call1
+        dummyNavigator.nextPageOptional(UserAnswers(Json.obj()), CheckMode)(request) mustBe call2
       }
     }
 }

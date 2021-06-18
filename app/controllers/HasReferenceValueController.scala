@@ -18,11 +18,12 @@ package controllers
 
 import connectors.cache.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
+import models.Mode
 import models.requests.DataRequest
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.libs.json.Json
+import play.api.libs.json.{JsArray, JsString, Json}
 import play.api.mvc.{AnyContent, Result}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
@@ -50,9 +51,10 @@ trait HasReferenceValueController
            isPageHeading: Boolean,
            id: TypedIdentifier[Boolean],
            form: Form[Boolean],
-           personName: String,
            submitUrl: String,
-           schemeName: String
+           schemeName: String,
+           paragraphText: Seq[String] = Seq(),
+           legendClass: String = "govuk-fieldset__legend--s"
          )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     val preparedForm: Form[Boolean] =
@@ -67,10 +69,11 @@ trait HasReferenceValueController
         "pageTitle"     -> pageTitle,
         "isPageHeading" -> isPageHeading,
         "form"          -> preparedForm,
-        "name"          -> personName,
         "radios"        -> Radios.yesNo(preparedForm("value")),
         "submitUrl"     -> submitUrl,
-        "schemeName"    -> schemeName
+        "schemeName"    -> schemeName,
+        "legendClass"   -> legendClass,
+        "paragraphs"    -> paragraphText
       )
     ).map(Ok(_))
   }
@@ -80,10 +83,12 @@ trait HasReferenceValueController
             isPageHeading: Boolean,
             id: TypedIdentifier[Boolean],
             form: Form[Boolean],
-            personName: String,
             submitUrl: String,
-            schemeName: String
-          )(implicit request: DataRequest[AnyContent]): Future[Result] =
+            schemeName: String,
+            paragraphText: Seq[String] = Seq(),
+            legendClass: String = "govuk-fieldset__legend--s",
+            mode: Mode
+  )(implicit request: DataRequest[AnyContent]): Future[Result] =
 
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
@@ -93,10 +98,11 @@ trait HasReferenceValueController
             "pageTitle"     -> pageTitle,
             "isPageHeading" -> isPageHeading,
             "form"          -> formWithErrors,
-            "name"          -> personName,
             "radios"        -> Radios.yesNo(formWithErrors("value")),
             "submitUrl"     -> submitUrl,
-            "schemeName"    -> schemeName
+            "schemeName"    -> schemeName,
+            "legendClass"   -> legendClass,
+            "paragraphs"    -> paragraphText
           )
         ).map(BadRequest(_)),
       value =>
@@ -104,6 +110,6 @@ trait HasReferenceValueController
           updatedAnswers <- Future.fromTry(request.userAnswers.set(id, value))
           _              <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
         } yield
-          Redirect(navigator.nextPage(id, updatedAnswers))
+          Redirect(navigator.nextPage(id, updatedAnswers, mode))
     )
 }
