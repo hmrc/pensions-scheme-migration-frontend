@@ -41,3 +41,18 @@ POST        /:index/individual/change/reason-for-no-unique-taxpayer-reference   
 GET         /:index/individual/check-your-answers                                    controllers.establishers.individual.details.CheckYourAnswersController.onPageLoad(index: Index)
 
 GET         /:index/individual/addresses/what-you-will-need                          controllers.establishers.individual.address.WhatYouWillNeedController.onPageLoad(index: Index)
+
+GET         /:index/individual/addresses/postcode                                    controllers.establishers.individual.address.EnterPostcodeController.onPageLoad(index: Index, mode: Mode = NormalMode)
+GET         /:index/individual/change/addresses/postcode                             controllers.establishers.individual.address.EnterPostcodeController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/individual/addresses/postcode                                    controllers.establishers.individual.address.EnterPostcodeController.onSubmit(index: Index, mode: Mode = NormalMode)
+POST        /:index/individual/change/addresses/postcode                             controllers.establishers.individual.address.EnterPostcodeController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/individual/addresses/address-results                             controllers.establishers.individual.address.SelectAddressController.onPageLoad(index: Index, mode: Mode = NormalMode)
+GET         /:index/individual/change/addresses/address-results                      controllers.establishers.individual.address.SelectAddressController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/individual/addresses/address-results                             controllers.establishers.individual.address.SelectAddressController.onSubmit(index: Index, mode: Mode = NormalMode)
+POST        /:index/individual/change/addresses/address-results                      controllers.establishers.individual.address.SelectAddressController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/individual/addresses/address-manual                              controllers.establishers.individual.address.ConfirmAddressController.onPageLoad(index: Index, mode: Mode = NormalMode)
+GET         /:index/individual/change/addresses/address-manual                       controllers.establishers.individual.address.ConfirmAddressController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/individual/addresses/address-manual                              controllers.establishers.individual.address.ConfirmAddressController.onSubmit(index: Index, mode: Mode = NormalMode)
+POST        /:index/individual/change/addresses/address-manual                       controllers.establishers.individual.address.ConfirmAddressController.onSubmit(index: Index, mode: Mode = CheckMode)

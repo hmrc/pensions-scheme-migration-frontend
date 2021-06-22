@@ -18,22 +18,25 @@ package navigators
 
 import controllers.establishers.individual.routes._
 import controllers.establishers.individual.details.routes._
+import controllers.establishers.individual.address.routes._
 import controllers.establishers.routes._
 import controllers.routes._
 import identifiers._
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.details._
 import identifiers.establishers._
-import models.{CheckMode, Index, Mode, NormalMode}
+import identifiers.establishers.individual.address.{EnterPostCodeId, AddressListId, AddressId}
+import models.{Mode, Index, CheckMode, NormalMode}
 import models.establishers.EstablisherKind
 import models.requests.DataRequest
-import play.api.mvc.{AnyContent, Call}
-import utils.{Enumerable, UserAnswers}
+import play.api.mvc.{Call, AnyContent}
+import utils.{UserAnswers, Enumerable}
 
 class EstablishersNavigator
   extends Navigator
     with Enumerable.Implicits {
 
+  //scalastyle:off cyclomatic.complexity
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case EstablisherKindId(index) => establisherKindRoutes(index, ua)
@@ -47,6 +50,9 @@ class EstablishersNavigator
     case EstablisherHasUTRId(index) => establisherHasUtr(index, ua, NormalMode)
     case EstablisherUTRId(index) => CheckYourAnswersController.onPageLoad(index)
     case EstablisherNoUTRReasonId(index) => CheckYourAnswersController.onPageLoad(index)
+    case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index, NormalMode)
+    case AddressListId(index) => CheckYourAnswersController.onPageLoad(index)
+    case AddressId(index) => CheckYourAnswersController.onPageLoad(index)
   }
 
   override protected def editRouteMap(ua: UserAnswers)
