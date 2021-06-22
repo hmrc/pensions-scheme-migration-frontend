@@ -18,7 +18,7 @@ package controllers.establishers.individual.address
 
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import controllers.establishers.individual.details.routes._
+import controllers.establishers.individual.address.routes._
 import helpers.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
@@ -55,7 +55,7 @@ class WhatYouWillNeedController @Inject()(
               template = "establishers/individual/address/whatYouWillNeed.njk",
               ctx = Json.obj(
                 "name"        -> personName.fullName,
-                "continueUrl" -> EstablisherDOBController.onPageLoad(index, NormalMode).url,
+                "continueUrl" -> EnterPostcodeController.onPageLoad(index, NormalMode).url,
                 "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )
             ).map(Ok(_))

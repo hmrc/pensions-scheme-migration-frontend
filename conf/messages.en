@@ -644,3 +644,9 @@ messages__establisherAddress__whatYouWillNeed_title = Address for {0}
 messages__establisherAddress__whatYouWillNeed_p = You will need to tell us {0}’s:
 messages__establisherAddress__whatYouWillNeed_li_1 = current address
 messages__establisherAddress__whatYouWillNeed_li_2 = previous address if {0} has used the current address for less than 1 year
+
+establisherEnterPostcode.required = Enter a postcode
+establisherEnterPostcode.invalid = Enter a real postcode
+
+establisherSelectAddress.required = Select an address
+establisherUnknown = unknown establisher

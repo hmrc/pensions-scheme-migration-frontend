@@ -22,7 +22,6 @@ import controllers.Retrievals
 import controllers.actions._
 import controllers.address.ManualAddressController
 import forms.address.AddressFormProvider
-import identifiers.TypedIdentifier
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.InsurerAddressId
 
@@ -52,20 +51,18 @@ class InsurerConfirmAddressController @Inject()(override val messagesApi: Messag
 
   def form(implicit messages: Messages): Form[Address] = formProvider()
 
-  override protected def addressPage: TypedIdentifier[Address] = InsurerAddressId
-
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
 
       SchemeNameId.retrieve.right.map { schemeName =>
-          get(Some(schemeName), AddressConfiguration.PostcodeFirst)
+          get(Some(schemeName), InsurerAddressId, AddressConfiguration.PostcodeFirst)
       }
     }
 
   def onSubmit: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
-        post(Some(schemeName), AddressConfiguration.PostcodeFirst)
+        post(Some(schemeName), InsurerAddressId, AddressConfiguration.PostcodeFirst)
       }
     }
 }

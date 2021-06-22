@@ -52,8 +52,6 @@ trait ManualAddressController
 
   protected def config: AppConfig
 
-  protected def addressPage: TypedIdentifier[Address]
-
   protected val pageTitleMessageKey: String = "address.title"
 
   protected val pageTitleEntityTypeMessageKey: Option[String] = None
@@ -64,6 +62,7 @@ trait ManualAddressController
     if(isUK) AddressConfiguration.PostcodeFirst else AddressConfiguration.CountryFirst
 
   protected def get(schemeName: Option[String],
+                    addressPage: TypedIdentifier[Address],
                     addressLocation: AddressConfiguration)(
     implicit request: DataRequest[AnyContent],
     ec: ExecutionContext
@@ -73,6 +72,7 @@ trait ManualAddressController
   }
 
   protected def post(schemeName: Option[String],
+                     addressPage: TypedIdentifier[Address],
                      addressLocation: AddressConfiguration)(
     implicit request: DataRequest[AnyContent],
     ec: ExecutionContext

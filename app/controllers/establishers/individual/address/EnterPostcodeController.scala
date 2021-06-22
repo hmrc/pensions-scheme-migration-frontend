@@ -23,6 +23,7 @@ import controllers.actions._
 import controllers.address.PostcodeController
 import forms.address.PostcodeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
+import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.EnterPostCodeId
 import models.{Mode, Index}
 import models.requests.DataRequest
@@ -51,7 +52,7 @@ class EnterPostcodeController @Inject()(val appConfig: AppConfig,
                                                val renderer: Renderer
                                               )(implicit val ec: ExecutionContext) extends PostcodeController with I18nSupport with NunjucksSupport {
 
-  def form: Form[String] = formProvider("insurerEnterPostcode.required", "insurerEnterPostcode.invalid")
+  def form: Form[String] = formProvider("establisherEnterPostcode.required", "establisherEnterPostcode.invalid")
 
   def formWithError(messageKey: String): Form[String] = {
     form.withError("value", s"messages__error__postcode_$messageKey")
@@ -67,7 +68,7 @@ class EnterPostcodeController @Inject()(val appConfig: AppConfig,
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async{
     implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        post(getFormToJson(schemeName, index, mode), EnterPostCodeId(index), "insurerEnterPostcode.invalid")
+        post(getFormToJson(schemeName, index, mode), EnterPostCodeId(index), "establisherEnterPostcode.invalid")
       }
   }
 
@@ -75,9 +76,9 @@ class EnterPostcodeController @Inject()(val appConfig: AppConfig,
   def getFormToJson(schemeName:String, index: Index, mode: Mode)(implicit request:DataRequest[AnyContent]): Form[String] => JsObject = {
     form => {
       val msg = request2Messages(request)
-      val name = Some("aa") //request.userAnswers.get(BenefitsInsuranceNameId).getOrElse(msg("benefitsInsuranceUnknown"))
+      val name = request.userAnswers.get(EstablisherNameId(index)).map(_.fullName).getOrElse(msg("establisherUnknown"))
       Json.obj(
-        "entityType" -> msg("benefitsInsuranceUnknown"),
+        "entityType" -> msg("establisherUnknown"),
         "entityName" -> name,
         "form" -> form,
         "enterManuallyUrl" -> controllers.establishers.individual.address.routes.ConfirmAddressController.onPageLoad(index, mode).url,

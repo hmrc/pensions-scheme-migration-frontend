@@ -56,3 +56,5 @@ GET         /:index/individual/addresses/address-manual                         
 GET         /:index/individual/change/addresses/address-manual                       controllers.establishers.individual.address.ConfirmAddressController.onPageLoad(index: Index, mode: Mode = CheckMode)
 POST        /:index/individual/addresses/address-manual                              controllers.establishers.individual.address.ConfirmAddressController.onSubmit(index: Index, mode: Mode = NormalMode)
 POST        /:index/individual/change/addresses/address-manual                       controllers.establishers.individual.address.ConfirmAddressController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/individual/addresses/check-your-answers                          controllers.establishers.individual.address.CheckYourAnswersController.onPageLoad(index: Index)

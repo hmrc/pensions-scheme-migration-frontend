@@ -48,23 +48,26 @@ class EstablishersNavigator
     case EstablisherNINOId(index) => EstablisherHasUTRController.onPageLoad(index, NormalMode)
     case EstablisherNoNINOReasonId(index) => EstablisherHasUTRController.onPageLoad(index, NormalMode)
     case EstablisherHasUTRId(index) => establisherHasUtr(index, ua, NormalMode)
-    case EstablisherUTRId(index) => CheckYourAnswersController.onPageLoad(index)
-    case EstablisherNoUTRReasonId(index) => CheckYourAnswersController.onPageLoad(index)
+    case EstablisherUTRId(index) => cyaDetails(index)
+    case EstablisherNoUTRReasonId(index) => cyaDetails(index)
     case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index, NormalMode)
-    case AddressListId(index) => CheckYourAnswersController.onPageLoad(index)
-    case AddressId(index) => CheckYourAnswersController.onPageLoad(index)
+    case AddressListId(index) => cyaAddress(index)
+    case AddressId(index) => cyaAddress(index)
   }
 
   override protected def editRouteMap(ua: UserAnswers)
                                      (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
-    case EstablisherDOBId(index) => CheckYourAnswersController.onPageLoad(index)
+    case EstablisherDOBId(index) => cyaDetails(index)
     case EstablisherHasNINOId(index) => establisherHasNino(index, ua, CheckMode)
-    case EstablisherNINOId(index) => CheckYourAnswersController.onPageLoad(index)
-    case EstablisherNoNINOReasonId(index) => CheckYourAnswersController.onPageLoad(index)
+    case EstablisherNINOId(index) => cyaDetails(index)
+    case EstablisherNoNINOReasonId(index) => cyaDetails(index)
     case EstablisherHasUTRId(index) => establisherHasUtr(index, ua, CheckMode)
-    case EstablisherUTRId(index) => CheckYourAnswersController.onPageLoad(index)
-    case EstablisherNoUTRReasonId(index) => CheckYourAnswersController.onPageLoad(index)
+    case EstablisherUTRId(index) => cyaDetails(index)
+    case EstablisherNoUTRReasonId(index) => cyaDetails(index)
   }
+
+  private def cyaAddress(index:Int) = controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
+  private def cyaDetails(index:Int) = controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index)
 
   private def establisherKindRoutes(
                                      index: Index,

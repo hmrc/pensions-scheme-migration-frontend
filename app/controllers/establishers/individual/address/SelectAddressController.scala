@@ -23,6 +23,7 @@ import controllers.actions._
 import controllers.address.{AddressPages, AddressListController}
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
+import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{EnterPostCodeId, AddressListId, AddressId}
 import models.{Mode, Index}
 
@@ -53,7 +54,7 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
   val renderer: Renderer)(implicit val ec: ExecutionContext) extends AddressListController with I18nSupport
   with NunjucksSupport with Retrievals {
 
-  override def form: Form[Int] = formProvider("insurerSelectAddress.required")
+  override def form: Form[Int] = formProvider("establisherSelectAddress.required")
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
     retrieve(SchemeNameId) { schemeName =>
@@ -76,8 +77,7 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
 
           val msg = request2Messages(request)
 
-          val name = Some("wibble") //request.userAnswers.get(BenefitsInsuranceNameId)
-            .getOrElse(msg("benefitsInsuranceUnknown"))
+          val name = request.userAnswers.get(EstablisherNameId(index)).map(_.fullName).getOrElse(msg("establisherUnknown"))
 
           form => Json.obj(
             "form" -> form,

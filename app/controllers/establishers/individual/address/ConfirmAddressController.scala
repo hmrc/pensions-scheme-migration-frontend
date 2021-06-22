@@ -22,7 +22,6 @@ import controllers.Retrievals
 import controllers.actions._
 import controllers.address.ManualAddressController
 import forms.address.AddressFormProvider
-import identifiers.TypedIdentifier
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.address.AddressId
 
@@ -52,19 +51,17 @@ class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
 
   def form(implicit messages: Messages): Form[Address] = formProvider()
 
-  override protected def addressPage: TypedIdentifier[Address] = AddressId(0)
-
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
-          get(Some(schemeName), AddressConfiguration.PostcodeFirst)
+          get(Some(schemeName), AddressId(index), AddressConfiguration.PostcodeFirst)
       }
     }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
-        post(Some(schemeName), AddressConfiguration.PostcodeFirst)
+        post(Some(schemeName), AddressId(index), AddressConfiguration.PostcodeFirst)
       }
     }
 }

@@ -54,7 +54,7 @@ trait CYAHelper {
   protected val referenceValueTransform: Option[ReferenceValue => Text] =
     Some(opt => msg"${opt.value}")
 
-  protected def answerBenefitsAddressTransform(implicit messages: Messages): Option[Address => Html] =
+  protected def answerAddressTransform(implicit messages: Messages): Option[Address => Html] =
     Some(opt => addressAnswer(opt))
 
   def rows(viewOnly: Boolean, rows: Seq[SummaryList.Row]): Seq[SummaryList.Row] =
