@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package forms.beforeYouStart
+package viewmodels.forNunjucks
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import play.api.libs.json._
+import uk.gov.hmrc.viewmodels.Html
 
-class EstablishedCountryFormProvider extends Mappings {
+final case class Conditional(html: Html)
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("messages__error__scheme_country")
-    )
+object Conditional {
+  implicit def writes: OWrites[Conditional] = Json.writes[Conditional]
 }
