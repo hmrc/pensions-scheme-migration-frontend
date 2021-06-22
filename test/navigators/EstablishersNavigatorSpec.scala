@@ -18,19 +18,21 @@ package navigators
 
 import base.SpecBase
 import controllers.establishers.individual.details
-import controllers.establishers.individual.details._
+import controllers.establishers.individual.address._
 import controllers.establishers.routes
-import identifiers.Identifier
+import identifiers.{Identifier, TypedIdentifier}
 import identifiers.establishers.{AddEstablisherId, EstablisherKindId}
 import identifiers.establishers.individual.EstablisherNameId
+import identifiers.establishers.individual.address.{EnterPostCodeId, AddressListId, AddressId, AddressYearsId}
 import identifiers.establishers.individual.details._
-import models.{CheckMode, Index, Mode, NormalMode, PersonName, ReferenceValue}
+import models.{PersonName, NormalMode, Mode, ReferenceValue, Index, TolerantAddress, CheckMode, Address}
 import models.establishers.EstablisherKind
 import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
+import play.api.libs.json.Writes
 import play.api.mvc.Call
 import utils.Data.ua
-import utils.{Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable}
 
 import java.time.LocalDate
 
@@ -51,19 +53,37 @@ class EstablishersNavigatorSpec
   private val detailsUa: UserAnswers =
     ua.set(EstablisherNameId(0), PersonName("Jane", "Doe")).success.value
   private def hasNinoPage(mode: Mode): Call =
-    details.routes.EstablisherHasNINOController.onPageLoad(index, mode)   
+    details.routes.EstablisherHasNINOController.onPageLoad(index, mode)
   private def enterNinoPage(mode: Mode): Call =
     details.routes.EstablisherEnterNINOController.onPageLoad(index, mode)
   private def noNinoPage(mode: Mode): Call =
     details.routes.EstablisherNoNINOReasonController.onPageLoad(index, mode)
   private def hasUtrPage(mode: Mode): Call =
-    details.routes.EstablisherHasUTRController.onPageLoad(index, mode)   
+    details.routes.EstablisherHasUTRController.onPageLoad(index, mode)
   private def enterUtrPage(mode: Mode): Call =
     details.routes.EstablisherEnterUTRController.onPageLoad(index, mode)
   private def noUtrPage(mode: Mode): Call =
     details.routes.EstablisherNoUTRReasonController.onPageLoad(index, mode)
   private val cya: Call =
     details.routes.CheckYourAnswersController.onPageLoad(index)
+  private def addressUAWithValue[A](idType:TypedIdentifier[A], idValue:A)(implicit writes: Writes[A]) =
+    detailsUa.set(idType, idValue).toOption
+
+  private val seqAddresses = Seq(
+    TolerantAddress(Some("1"),Some("1"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")),
+    TolerantAddress(Some("2"),Some("2"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")),
+  )
+
+  val address = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
+
+  private val cyaAddress: Call =
+    controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
+
+  private def selectAddress(mode:Mode): Call =
+    controllers.establishers.individual.address.routes.SelectAddressController.onPageLoad(index, mode)
+
+  private def addressYears(mode:Mode): Call =
+    controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index, mode)
 
   "EstablishersNavigator" when {
     def navigation: TableFor3[Identifier, UserAnswers, Call] =
@@ -82,7 +102,11 @@ class EstablishersNavigatorSpec
         row(EstablisherHasUTRId(index))(enterUtrPage(NormalMode), Some(detailsUa.set(EstablisherHasUTRId(index), true).success.value)),
         row(EstablisherHasUTRId(index))(noUtrPage(NormalMode), Some(detailsUa.set(EstablisherHasUTRId(index), false).success.value)),
         row(EstablisherUTRId(index))(cya, Some(detailsUa.set(EstablisherUTRId(index), ReferenceValue("1234567890")).success.value)),
-        row(EstablisherNoUTRReasonId(index))(cya, Some(detailsUa.set(EstablisherNoUTRReasonId(index), "Reason").success.value))
+        row(EstablisherNoUTRReasonId(index))(cya, Some(detailsUa.set(EstablisherNoUTRReasonId(index), "Reason").success.value)),
+        row(EnterPostCodeId(index))(selectAddress(NormalMode), addressUAWithValue(EnterPostCodeId(index), seqAddresses)),
+        row(AddressListId(index))(addressYears(NormalMode), addressUAWithValue(AddressListId(index), 0)),
+        row(AddressId(index))(addressYears(NormalMode), addressUAWithValue(AddressId(index), address)),
+        row(AddressYearsId(index))(cyaAddress, addressUAWithValue(AddressYearsId(index), true))
       )
 
     def editNavigation: TableFor3[Identifier, UserAnswers, Call] =

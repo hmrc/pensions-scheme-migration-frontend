@@ -18,7 +18,7 @@ package controllers.establishers.individual.address
 
 import controllers.Retrievals
 import controllers.actions.{DataRetrievalAction, DataRequiredAction, AuthAction}
-import helpers.{EstablisherDetailsCYAHelper, CYAHelper, EstablisherAddressCYAHelper}
+import helpers.{CYAHelper, EstablisherAddressCYAHelper}
 import identifiers.beforeYouStart.SchemeNameId
 import models.Index
 import play.api.i18n.{MessagesApi, I18nSupport}
