@@ -52,13 +52,13 @@ class EstablisherAddressCYAHelper
         AddressId(index),
         Message("messages__establisherAddress__whatYouWillNeed_title", establisherName).resolve,
         Some(controllers.establishers.individual.address.routes.EnterPostcodeController.onPageLoad(index, CheckMode).url),
-        Some(msg"addressList.visuallyHidden"), answerAddressTransform
+        Some(msg"messages__visuallyHidden__address".withArgs(establisherName)), answerAddressTransform
       ),
       answerOrAddRow(
         AddressYearsId(index),
         Message("establisherAddressYears.h1", establisherName).resolve,
         Some(controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index, CheckMode).url),
-        Some(msg"messages__visuallyhidden__establisherAddressYears"), answerBooleanTransform
+        Some(msg"messages__visuallyhidden__establisherAddressYears".withArgs(establisherName)), answerBooleanTransform
       )
 
     )
