@@ -26,13 +26,19 @@ import uk.gov.hmrc.viewmodels.{Html, MessageInterpolators, Table}
 class AddToListHelper {
 
   def mapEstablishersToTable[A <: Entity[_]](establishers: Seq[A])
-                               (implicit messages: Messages): Table = mapToTable(establishers, establishersHead)
+                                            (implicit messages: Messages): Table = mapToTable(establishers, establishersHead(establishers))
+  private def establishersHead[A <: Entity[_]](establishers: Seq[A])(implicit messages: Messages): Seq[Cell] = {
 
-  private def establishersHead(implicit messages: Messages) = Seq(
-    Cell(msg"addEstablisher.name.header"),
-    Cell(msg"addEstablisher.type.header"),
-    Cell(Html(s"""<span class=govuk-visually-hidden>${messages("addEstablisher.hiddenText.removeLink.header")}</span>"""))
-  )
+    val linkHeader = if(establishers.size > 1){
+      Seq(Cell(Html(s"""<span class=govuk-visually-hidden>${messages("addEstablisher.hiddenText.removeLink.header")}</span>""")))
+    }
+      else Nil
+    Seq(
+      Cell(msg"addEstablisher.name.header"),
+      Cell(msg"addEstablisher.type.header")
+    ) ++linkHeader
+
+  }
 
   private def mapToTable[A <: Entity[_]](entities: Seq[A], head: Seq[Cell])
                             (implicit messages: Messages): Table = {
