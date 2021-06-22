@@ -12,41 +12,6 @@
   {{ title(messages("messages__scheme_type__title"), form.errors) }}
 {% endblock %}
 
-{% set otherSchemeTypeHtml %}
-    {{ govukInput({
-      id: "schemeType.schemeTypeDetails",
-      name: 'schemeType.schemeTypeDetails',
-      value: form.schemeType.schemeTypeDetails.value,
-      classes: "govuk-!-width-one-third",
-      errorMessage: form.schemeType.schemeTypeDetails.error,
-      label: {
-        text: messages("messages__scheme_details__type_other_more"),
-        isPageHeading: false,
-        classes: "govuk-label--s"
-      }
-    }) }}
-{% endset -%}
-
-{% set newRadios = [] %}
-{% for item in radios %}
-    {% if item.text === "Other" %}
-        {% set newRadios = (newRadios.push({
-            id: item.id,
-            checked: item.checked,
-            value: item.value,
-            text: item.text,
-            hint: item.hint,
-            classes: item.classes,
-            conditional: {
-                html: otherSchemeTypeHtml
-            }
-        }), newRadios)
-        %}
-    {% else %}
-        {% set newRadios = (newRadios.push(item), newRadios) %}
-    {% endif %}
-{% endfor %}
-
 {% block mainContent %}
 
     <div class="govuk-grid-row">
@@ -62,8 +27,7 @@
         <form method="post" autocomplete="off" novalidate>
 
           {{ csrf() | safe }}
-{{radios | dump }}
-{{newRadios | dump }}
+
           {{ govukRadios({
             name: 'schemeType.type',
             fieldset: {
@@ -73,7 +37,7 @@
                 classes: "govuk-fieldset__legend--xl govuk-!-margin-bottom-8"
               }
             },
-            items: newRadios,
+            items: radios,
             errorMessage: form.schemeType.type.error
           }) }}
 

@@ -17,10 +17,11 @@
 package models
 
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.libs.json._
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.WithName
-import viewmodels.forNunjucks.{Hint, Radios}
+import viewmodels.forNunjucks._
 
 sealed trait SchemeType
 
@@ -33,12 +34,23 @@ object SchemeType {
   val mappings: Map[String, SchemeType] = values.map(v => (v.toString, v)).toMap
 
 
-  def radios(form: Form[_]): Seq[Radios.Item] = {
+
+
+  def radios(form: Form[_])(implicit messages: Messages): Seq[Radios.Item] = {
     val items: Seq[Radios.Radio] = values.map(value =>
       Radios.Radio(msg"messages__scheme_type_${value.toString}", value.toString,
         Some(Hint(msg"messages__scheme_type_${value.toString}_hint", "hint-id"))))
+
+    val input = TextInput(
+      "schemeType.schemeTypeDetails",
+      form("schemeType.schemeTypeDetails").value.getOrElse(""),
+      "schemeType.schemeTypeDetails",
+      Label(msg"messages__scheme_details__type_other_more",  Seq("govuk-label govuk-label--s"))
+    )
+
     val otherItem: Radios.Radio = Radios.Radio(msg"messages__scheme_type_other", Other.toString.toLowerCase,
-        Some(Hint(msg"messages__scheme_type_other_hint", "hint-id")))
+        Some(Hint(msg"messages__scheme_type_other_hint", "hint-id")),
+      Some(Conditional(TextInput.inputHtml(input, messages))))
 
     Radios(form("schemeType.type"), items :+ otherItem)
   }

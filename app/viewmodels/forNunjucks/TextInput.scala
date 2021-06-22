@@ -19,7 +19,7 @@ package viewmodels.forNunjucks
 import play.api.i18n.Messages
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{OWrites, __}
-import uk.gov.hmrc.viewmodels.Text
+import uk.gov.hmrc.viewmodels.{Html, Text}
 
 case class Label(text: Text, classes: Seq[String] = Seq.empty, isPageHeading: Boolean = false)
 
@@ -29,24 +29,32 @@ object Label {
       (__ \ "classes").writeNullable[String] and
         (__ \ "isPageHeading").write[Boolean]
     ) { label =>
-    (label.text, classes(label.classes), label.isPageHeading)
+    (label.text, TextInput.classes(label.classes), label.isPageHeading)
   }
-
-  private def classes(classes: Seq[String]): Option[String] =
-    if (classes.isEmpty) None else Some(classes.mkString(" "))
 }
 
 final case class TextInput(
                           id: String,
+                          value: String,
                           name: String,
-                          label: Label)
+                          label: Label,
+                          classes: Seq[String] = Seq.empty)
 
 object TextInput {
     implicit def writes(implicit messages: Messages): OWrites[TextInput] = (
       (__ \ "id").write[String] and
+        (__ \ "value").write[String] and
         (__ \ "name").write[String] and
-        (__ \ "label").write[Label]
+        (__ \ "label").write[Label] and
+        (__ \ "classes").writeNullable[String]
       ) { textInput =>
-      (textInput.id, textInput.name, textInput.label)
+      (textInput.id, textInput.value, textInput.name, textInput.label, classes(textInput.classes))
     }
+
+  def classes(classes: Seq[String]): Option[String] =
+    if (classes.isEmpty) None else Some(classes.mkString(" "))
+
+  val inputHtml: (TextInput, Messages) => Html = (input, messages) => Html(s"<div class='govuk-form-group'>" +
+    s"<label class='${input.label.classes.mkString}' for='${input.id}'>${input.label.text.resolve(messages)}</label>" +
+    s"<input class='govuk-input govuk-!-width-one-third' id='${input.id}' name='${input.name}' value='${input.value}' type='text'></div>")
 }
