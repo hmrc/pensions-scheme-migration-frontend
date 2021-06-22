@@ -25,7 +25,7 @@ import identifiers._
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.details._
 import identifiers.establishers._
-import identifiers.establishers.individual.address.{EnterPostCodeId, AddressListId, AddressId}
+import identifiers.establishers.individual.address.{EnterPostCodeId, AddressListId, AddressId, AddressYearsId}
 import models.{Mode, Index, CheckMode, NormalMode}
 import models.establishers.EstablisherKind
 import models.requests.DataRequest
@@ -51,8 +51,9 @@ class EstablishersNavigator
     case EstablisherUTRId(index) => cyaDetails(index)
     case EstablisherNoUTRReasonId(index) => cyaDetails(index)
     case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index, NormalMode)
-    case AddressListId(index) => cyaAddress(index)
-    case AddressId(index) => cyaAddress(index)
+    case AddressListId(index) => addressYears(index, NormalMode)
+    case AddressId(index) => addressYears(index, NormalMode)
+    case AddressYearsId(index) => cyaAddress(index)
   }
 
   override protected def editRouteMap(ua: UserAnswers)
@@ -68,6 +69,7 @@ class EstablishersNavigator
 
   private def cyaAddress(index:Int) = controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
   private def cyaDetails(index:Int) = controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index)
+  private def addressYears(index:Int, mode:Mode) = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index, mode)
 
   private def establisherKindRoutes(
                                      index: Index,

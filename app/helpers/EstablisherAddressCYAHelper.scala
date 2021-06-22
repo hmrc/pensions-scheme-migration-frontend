@@ -20,7 +20,7 @@ import controllers.establishers.individual.details.routes
 import helpers.CYAHelper.getName
 import identifiers.benefitsAndInsurance.InsurerAddressId
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.address.AddressId
+import identifiers.establishers.individual.address.{AddressId, AddressYearsId}
 import identifiers.establishers.individual.details._
 import models.requests.DataRequest
 import models.{Index, CheckMode}
@@ -53,7 +53,14 @@ class EstablisherAddressCYAHelper
         Message("messages__establisherAddress__whatYouWillNeed_title", establisherName).resolve,
         Some(controllers.establishers.individual.address.routes.EnterPostcodeController.onPageLoad(index, CheckMode).url),
         Some(msg"addressList.visuallyHidden"), answerAddressTransform
+      ),
+      answerOrAddRow(
+        AddressYearsId(index),
+        Message("establisherAddressYears.h1", establisherName).resolve,
+        Some(controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index, CheckMode).url),
+        Some(msg"messages__visuallyhidden__establisherAddressYears"), answerBooleanTransform
       )
+
     )
   }
 }
