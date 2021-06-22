@@ -59,7 +59,10 @@ trait DataCompletionEstablishers extends DataCompletion {
     ).getOrElse(false)
   }
 
-  def isEstablisherIndividualAddressCompleted: Option[Boolean] =
+  def isEstablisherIndividualAddressCompleted(
+    index: Int,
+    userAnswers: UserAnswers
+  ): Option[Boolean] =
     isComplete(
       Seq(
         Some(false)

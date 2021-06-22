@@ -39,3 +39,5 @@ GET         /:index/individual/change/reason-for-no-unique-taxpayer-reference   
 POST        /:index/individual/change/reason-for-no-unique-taxpayer-reference        controllers.establishers.individual.details.EstablisherNoUTRReasonController.onSubmit(index: Index, mode: Mode = CheckMode)
 
 GET         /:index/individual/check-your-answers                                    controllers.establishers.individual.details.CheckYourAnswersController.onPageLoad(index: Index)
+
+GET         /:index/individual/addresses/what-you-will-need                          controllers.establishers.individual.address.WhatYouWillNeedController.onPageLoad(index: Index)

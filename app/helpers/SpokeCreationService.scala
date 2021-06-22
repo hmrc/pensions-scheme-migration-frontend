@@ -68,7 +68,7 @@ class SpokeCreationService extends Enumerable.Implicits {
 //    val isEstablisherNew = answers.get(IsEstablisherNewId(indexToInt(index.getOrElse(Index(0))))).getOrElse(false)
     Seq(
       createSpoke(answers, EstablisherIndividualDetails(index, answers), name),
-      createSpoke(answers, EstablisherIndividualAddress, name),
+      createSpoke(answers, EstablisherIndividualAddress(index, answers), name),
       createSpoke(answers, EstablisherIndividualContactDetails, name)
     )
   }
