@@ -62,16 +62,18 @@ trait ManualAddressController
     if(isUK) AddressConfiguration.PostcodeFirst else AddressConfiguration.CountryFirst
 
   protected def get(schemeName: Option[String],
+                    entityName: String,
                     addressPage: TypedIdentifier[Address],
                     addressLocation: AddressConfiguration)(
     implicit request: DataRequest[AnyContent],
     ec: ExecutionContext
   ): Future[Result] = {
     val filledForm = request.userAnswers.get(addressPage).fold(form)(form.fill)
-    renderer.render(viewTemplate, json(schemeName, filledForm, addressLocation)).map(Ok(_))
+    renderer.render(viewTemplate, json(schemeName, entityName, filledForm, addressLocation)).map(Ok(_))
   }
 
   protected def post(schemeName: Option[String],
+                     entityName: String,
                      addressPage: TypedIdentifier[Address],
                      addressLocation: AddressConfiguration)(
     implicit request: DataRequest[AnyContent],
@@ -81,7 +83,7 @@ trait ManualAddressController
       .bindFromRequest()
       .fold(
         formWithErrors => {
-          renderer.render(viewTemplate, json(schemeName, formWithErrors, addressLocation)).map(BadRequest(_))
+          renderer.render(viewTemplate, json(schemeName, entityName, formWithErrors, addressLocation)).map(BadRequest(_))
         },
         value =>
           for {
@@ -95,6 +97,7 @@ trait ManualAddressController
 
   protected def json(
     schemeName: Option[String],
+    entityName: String,
     form: Form[Address],
     addressLocation: AddressConfiguration
   )(implicit request: DataRequest[AnyContent]): JsObject = {
@@ -120,10 +123,8 @@ trait ManualAddressController
         case Some(key) => messages(pageTitleMessageKey, messages(key))
         case _ => messages(pageTitleMessageKey)
     }
-    val h1 = schemeName match {
-      case Some(e) =>  messages (h1MessageKey, e)
-      case _ => messages (h1MessageKey)
-    }
+
+    val h1 =  messages (h1MessageKey, entityName)
 
     Json.obj(
       "form" -> form,

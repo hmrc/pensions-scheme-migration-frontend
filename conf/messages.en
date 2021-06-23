@@ -650,6 +650,8 @@ messages__establisherAddress__whatYouWillNeed_p = You will need to tell us {0}â€
 messages__establisherAddress__whatYouWillNeed_li_1 = current address
 messages__establisherAddress__whatYouWillNeed_li_2 = previous address if {0} has used the current address for less than 1 year
 
+messages__establisherPreviousAddress = Previous address
+
 establisherEnterPostcode.required = Enter a postcode
 establisherEnterPostcode.invalid = Enter a real postcode
 
@@ -661,4 +663,5 @@ establisherAddressYears.h1 = Has {0} used this address for at least 1 year?
 establisherAddressYears.error.required = Select yes if the individual has used this address for more than 1 year
 messages__visuallyhidden__establisherAddressYears = whether {0} has used this address for at least 1 year
 messages__visuallyHidden__address = the address of {0}
+messages__visuallyHidden__previousAddress = the previous address for {0}
 

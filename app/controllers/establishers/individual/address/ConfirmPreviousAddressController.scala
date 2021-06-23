@@ -23,6 +23,7 @@ import controllers.actions._
 import controllers.address.ManualAddressController
 import forms.address.AddressFormProvider
 import identifiers.beforeYouStart.SchemeNameId
+import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.PreviousAddressId
 
 import javax.inject.Inject
@@ -49,21 +50,23 @@ class ConfirmPreviousAddressController @Inject()(override val messagesApi: Messa
 )(implicit ec: ExecutionContext) extends ManualAddressController
   with Retrievals with I18nSupport with NunjucksSupport {
 
+  override protected val pageTitleEntityTypeMessageKey: Option[String] = Some("establisherUnknown")
+  override protected val h1MessageKey: String = "previousAddress.title"
   override protected val pageTitleMessageKey: String = "previousAddress.title"
 
   def form(implicit messages: Messages): Form[Address] = formProvider()
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      SchemeNameId.retrieve.right.map { schemeName =>
-          get(Some(schemeName), PreviousAddressId(index), AddressConfiguration.PostcodeFirst)
+      (EstablisherNameId(index) and SchemeNameId).retrieve.right.map { case establisherName ~ schemeName =>
+          get(Some(schemeName), establisherName.fullName, PreviousAddressId(index), AddressConfiguration.PostcodeFirst)
       }
     }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      SchemeNameId.retrieve.right.map { schemeName =>
-        post(Some(schemeName), PreviousAddressId(index), AddressConfiguration.PostcodeFirst)
+      (EstablisherNameId(index) and SchemeNameId).retrieve.right.map { case establisherName ~ schemeName =>
+        post(Some(schemeName), establisherName.fullName, PreviousAddressId(index), AddressConfiguration.PostcodeFirst)
       }
     }
 }

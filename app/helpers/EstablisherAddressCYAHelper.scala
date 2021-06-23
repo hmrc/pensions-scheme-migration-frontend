@@ -20,7 +20,7 @@ import controllers.establishers.individual.details.routes
 import helpers.CYAHelper.getName
 import identifiers.benefitsAndInsurance.InsurerAddressId
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.address.{AddressId, AddressYearsId}
+import identifiers.establishers.individual.address.{AddressYearsId, AddressId, PreviousAddressId}
 import identifiers.establishers.individual.details._
 import models.requests.DataRequest
 import models.{Index, CheckMode}
@@ -59,6 +59,12 @@ class EstablisherAddressCYAHelper
         Message("establisherAddressYears.h1", establisherName).resolve,
         Some(controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index, CheckMode).url),
         Some(msg"messages__visuallyhidden__establisherAddressYears".withArgs(establisherName)), answerBooleanTransform
+      ),
+      answerOrAddRow(
+        PreviousAddressId(index),
+        Message("messages__establisherPreviousAddress").resolve,
+        Some(controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index, CheckMode).url),
+        Some(msg"messages__visuallyHidden__previousAddress".withArgs(establisherName)), answerAddressTransform
       )
 
     )

@@ -49,20 +49,22 @@ class InsurerConfirmAddressController @Inject()(override val messagesApi: Messag
 )(implicit ec: ExecutionContext) extends ManualAddressController
   with Retrievals with I18nSupport with NunjucksSupport {
 
+  override protected val pageTitleEntityTypeMessageKey: Option[String] = None
+
   def form(implicit messages: Messages): Form[Address] = formProvider()
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
 
       SchemeNameId.retrieve.right.map { schemeName =>
-          get(Some(schemeName), InsurerAddressId, AddressConfiguration.PostcodeFirst)
+          get(Some(schemeName), schemeName, InsurerAddressId, AddressConfiguration.PostcodeFirst)
       }
     }
 
   def onSubmit: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
-        post(Some(schemeName), InsurerAddressId, AddressConfiguration.PostcodeFirst)
+        post(Some(schemeName), schemeName, InsurerAddressId, AddressConfiguration.PostcodeFirst)
       }
     }
 }
