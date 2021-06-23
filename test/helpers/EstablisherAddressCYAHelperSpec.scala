@@ -86,7 +86,7 @@ class EstablisherAddressCYAHelperSpec extends WordSpec with MustMatchers with Tr
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__address", establisherName.fullName))),
           attributes = Map("id" -> "change"))))
 
-      result(1) mustBe summaryListRow(key = Messages("establisherAddressYears.h1", establisherName.fullName), valueMsgKey = "booleanAnswer.false",
+      result(1) mustBe summaryListRow(key = Messages("establisherAddressYears.title", establisherName.fullName), valueMsgKey = "booleanAnswer.false",
         Some(Link(text = Messages("site.change"),
           target = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +

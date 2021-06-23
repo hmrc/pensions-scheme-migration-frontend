@@ -77,12 +77,12 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
 
           val msg = request2Messages(request)
 
-          val name = request.userAnswers.get(EstablisherNameId(index)).map(_.fullName).getOrElse(msg("establisherUnknown"))
+          val name = request.userAnswers.get(EstablisherNameId(index)).map(_.fullName).getOrElse(msg("establisherEntityTypeIndividual"))
 
           form => Json.obj(
             "form" -> form,
             "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
-            "entityType" -> msg("benefitsInsuranceUnknown"),
+            "entityType" -> msg("establisherEntityTypeIndividual"),
             "entityName" -> name,
             "enterManuallyUrl" -> controllers.establishers.individual.address.routes.ConfirmAddressController.onPageLoad(index, mode).url,
             "schemeName" -> schemeName

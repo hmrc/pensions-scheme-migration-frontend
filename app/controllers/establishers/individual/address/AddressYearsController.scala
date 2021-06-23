@@ -21,11 +21,12 @@ import controllers.Retrievals
 import controllers.actions._
 import forms.establishers.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
+import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressYearsId
 import models.{Mode, Index}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{MessagesApi, I18nSupport}
+import play.api.i18n.{MessagesApi, Messages, I18nSupport}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -53,34 +54,38 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      SchemeNameId.retrieve.right.map { schemeName =>
+      (EstablisherNameId(index) and SchemeNameId).retrieve.right.map { case establisherName ~ schemeName =>
         val preparedForm = request.userAnswers.get(AddressYearsId(index)) match {
           case Some(value) => form.fill(value)
           case None        => form
         }
         val json = Json.obj(
           "schemeName" -> schemeName,
+          "entityName" -> establisherName.fullName,
+          "entityType" -> Messages("establisherEntityTypeIndividual"),
           "form" -> preparedForm,
           "radios" -> Radios.yesNo (preparedForm("value"))
         )
-        renderer.render("establishers/address/address/addressYears.njk", json).map(Ok(_))
+        renderer.render("establishers/individual/address/addressYears.njk", json).map(Ok(_))
       }
     }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      SchemeNameId.retrieve.right.map { schemeName =>
+      (EstablisherNameId(index) and SchemeNameId).retrieve.right.map { case establisherName ~ schemeName =>
         form
           .bindFromRequest()
           .fold(
             formWithErrors => {
               val json = Json.obj(
                 "schemeName" -> schemeName,
+                "entityName" -> establisherName.fullName,
+                "entityType" -> Messages("establisherEntityTypeIndividual"),
                 "form" -> formWithErrors,
                 "radios" -> Radios.yesNo(form("value"))
               )
 
-              renderer.render("establishers/address/address/addressYears.njk", json).map(BadRequest(_))
+              renderer.render("establishers/individual/address/addressYears.njk", json).map(BadRequest(_))
             },
             value => {
               val updatedUA = request.userAnswers.setOrException(AddressYearsId(index), value)

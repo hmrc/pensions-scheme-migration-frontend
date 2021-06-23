@@ -52,7 +52,7 @@ class WhatYouWillNeedController @Inject()(
         EstablisherNameId(index).retrieve.right.map {
           personName =>
             renderer.render(
-              template = "establishers/address/details/whatYouWillNeed.njk",
+              template = "establishers/individual/details/whatYouWillNeed.njk",
               ctx = Json.obj(
                 "name"        -> personName.fullName,
                 "continueUrl" -> EstablisherDOBController.onPageLoad(index, NormalMode).url,

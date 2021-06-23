@@ -292,7 +292,7 @@ benefitsInsurancePolicy.error.required = Enter the policy number of the insuranc
 benefitsInsurancePolicy.error.length = Policy number must be fewer than 56 characters
 benefitsInsurancePolicy.visuallyHidden = the policy number with the insurance company that secures the scheme benefits
 
-addressList.title = What is the address of {0}?
+addressList.title = What is the address for {0}?
 addressList.noInsuranceName.title = What is the address of the insurance company that secures the scheme benefits?
 addressList.select = Select the address from the list below, or
 addressList.visuallyHidden = the address of the insurance company that secures the scheme benefits
@@ -657,11 +657,12 @@ establisherEnterPostcode.invalid = Enter a real postcode
 
 establisherSelectAddress.required = Select an address
 establisherUnknown = the company
+establisherEntityTypeIndividual = the individual
 
-establisherAddressYears.h1 = Has {0} used this address for at least 1 year?
+establisherAddressYears.title = Has {0} used this address for at least 1 year?
 
 establisherAddressYears.error.required = Select yes if the individual has used this address for more than 1 year
 messages__visuallyhidden__establisherAddressYears = whether {0} has used this address for at least 1 year
-messages__visuallyHidden__address = the address of {0}
+messages__visuallyHidden__address = the address for {0}
 messages__visuallyHidden__previousAddress = the previous address for {0}
 

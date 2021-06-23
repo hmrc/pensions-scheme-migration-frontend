@@ -50,7 +50,7 @@ class ConfirmPreviousAddressController @Inject()(override val messagesApi: Messa
 )(implicit ec: ExecutionContext) extends ManualAddressController
   with Retrievals with I18nSupport with NunjucksSupport {
 
-  override protected val pageTitleEntityTypeMessageKey: Option[String] = Some("establisherUnknown")
+  override protected val pageTitleEntityTypeMessageKey: Option[String] = Some("establisherEntityTypeIndividual")
   override protected val h1MessageKey: String = "previousAddress.title"
   override protected val pageTitleMessageKey: String = "previousAddress.title"
 

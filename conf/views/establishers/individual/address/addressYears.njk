@@ -8,7 +8,7 @@
 {% from "macros/returnLink.njk"                    import returnLink %}
 
 {% block pageTitle %}
-  {{ title(messages("establisherAddressYears.title"), form.errors) }}
+  {{ title(messages("establisherAddressYears.title", entityType), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -33,7 +33,7 @@
             name: 'value',
             fieldset: {
               legend: {
-                text: messages('establisherAddressYears.h1', schemeName),
+                text: messages('establisherAddressYears.title', entityName),
                 isPageHeading: false,
                 classes: "govuk-fieldset__legend--xl"
               }

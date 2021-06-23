@@ -51,7 +51,7 @@ class EstablisherAddressCYAHelper
       ),
       answerOrAddRow(
         AddressYearsId(index),
-        Message("establisherAddressYears.h1", establisherName).resolve,
+        Message("establisherAddressYears.title", establisherName).resolve,
         Some(controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index, CheckMode).url),
         Some(msg"messages__visuallyhidden__establisherAddressYears".withArgs(establisherName)), answerBooleanTransform
       ),

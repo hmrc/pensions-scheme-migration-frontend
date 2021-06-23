@@ -76,9 +76,9 @@ class EnterPostcodeController @Inject()(val appConfig: AppConfig,
   def getFormToJson(schemeName:String, index: Index, mode: Mode)(implicit request:DataRequest[AnyContent]): Form[String] => JsObject = {
     form => {
       val msg = request2Messages(request)
-      val name = request.userAnswers.get(EstablisherNameId(index)).map(_.fullName).getOrElse(msg("establisherUnknown"))
+      val name = request.userAnswers.get(EstablisherNameId(index)).map(_.fullName).getOrElse(msg("establisherEntityTypeIndividual"))
       Json.obj(
-        "entityType" -> msg("establisherUnknown"),
+        "entityType" -> msg("establisherEntityTypeIndividual"),
         "entityName" -> name,
         "form" -> form,
         "enterManuallyUrl" -> controllers.establishers.individual.address.routes.ConfirmAddressController.onPageLoad(index, mode).url,
