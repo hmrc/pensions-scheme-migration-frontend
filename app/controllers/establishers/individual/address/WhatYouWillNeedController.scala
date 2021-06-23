@@ -52,7 +52,7 @@ class WhatYouWillNeedController @Inject()(
         EstablisherNameId(index).retrieve.right.map {
           personName =>
             renderer.render(
-              template = "establishers/address/address/whatYouWillNeed.njk",
+              template = "establishers/individual/address/whatYouWillNeed.njk",
               ctx = Json.obj(
                 "name"        -> personName.fullName,
                 "continueUrl" -> EnterPostcodeController.onPageLoad(index, NormalMode).url,
