@@ -42,12 +42,6 @@ object Data {
   val ua: UserAnswers =
     UserAnswers()
       .setOrException(SchemeNameId, Data.schemeName)
-      .setOrException(EstablisherNameId(0), Data.establisherIndividualName)
-  //  UserAnswers(
-  //  Json.obj(
-  //    SchemeNameId.toString -> Data.schemeName
-  //  )
-  //)
 
 
   val insurerName= "test insurer"

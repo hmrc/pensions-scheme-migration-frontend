@@ -39,7 +39,6 @@ import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.{NunjucksSupport, NunjucksRenderer}
 import utils.{UserAnswers, Enumerable, Data}
 import play.api.libs.json.Reads._
-import utils.Data.ua
 
 import scala.concurrent.Future
 
@@ -53,6 +52,9 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with Nunju
     bind[CompoundNavigator].toInstance(mockCompoundNavigator),
     bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
   )
+
+  private val ua: UserAnswers =
+    Data.ua.setOrException(EstablisherNameId(0), Data.establisherIndividualName)
 
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
