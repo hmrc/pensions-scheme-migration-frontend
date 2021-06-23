@@ -63,3 +63,20 @@ GET         /:index/individual/addresses/address-years                          
 GET         /:index/individual/change/addresses/address-years                       controllers.establishers.individual.address.AddressYearsController.onPageLoad(index: Index, mode: Mode = CheckMode)
 POST        /:index/individual/addresses/address-years                              controllers.establishers.individual.address.AddressYearsController.onSubmit(index: Index, mode: Mode = NormalMode)
 POST        /:index/individual/change/addresses/address-years                       controllers.establishers.individual.address.AddressYearsController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/individual/addresses/address-previous                           controllers.establishers.individual.address.EnterPreviousPostcodeController.onPageLoad(index: Index, mode: Mode = NormalMode)
+GET         /:index/individual/change/addresses/address-previous                    controllers.establishers.individual.address.EnterPreviousPostcodeController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/individual/addresses/address-previous                           controllers.establishers.individual.address.EnterPreviousPostcodeController.onSubmit(index: Index, mode: Mode = NormalMode)
+POST        /:index/individual/change/addresses/address-previous                    controllers.establishers.individual.address.EnterPreviousPostcodeController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/individual/addresses/address-previous-results                   controllers.establishers.individual.address.SelectPreviousAddressController.onPageLoad(index: Index, mode: Mode = NormalMode)
+GET         /:index/individual/change/addresses/address-previous-results            controllers.establishers.individual.address.SelectPreviousAddressController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/individual/addresses/address-previous-results                   controllers.establishers.individual.address.SelectPreviousAddressController.onSubmit(index: Index, mode: Mode = NormalMode)
+POST        /:index/individual/change/addresses/address-previous-results            controllers.establishers.individual.address.SelectPreviousAddressController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/individual/addresses/address-previous-manual                    controllers.establishers.individual.address.ConfirmPreviousAddressController.onPageLoad(index: Index, mode: Mode = NormalMode)
+GET         /:index/individual/change/addresses/address-previous-manual             controllers.establishers.individual.address.ConfirmPreviousAddressController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/individual/addresses/address-previous-manual                    controllers.establishers.individual.address.ConfirmPreviousAddressController.onSubmit(index: Index, mode: Mode = NormalMode)
+POST        /:index/individual/change/addresses/address-previous-manual             controllers.establishers.individual.address.ConfirmPreviousAddressController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+

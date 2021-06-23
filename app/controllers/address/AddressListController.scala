@@ -40,8 +40,19 @@ trait AddressListController extends FrontendBaseController with Retrievals {
   protected def form: Form[Int]
   protected def viewTemplate = "address/addressList.njk"
 
-  def get(json: Form[Int] => JsObject)(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] =
-          renderer.render(viewTemplate, json(form)).map(Ok(_))
+  def get(json: Form[Int] => JsObject)(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
+
+    val jsonToUse = {
+      val j = json(form)
+      if (j.keys.contains("h1MessageKey")) {
+        j
+      } else {
+        j ++ Json.obj("h1MessageKey" -> "addressList.title")
+      }
+    }
+
+    renderer.render(viewTemplate, jsonToUse).map(Ok(_))
+  }
 
   def post(json: Form[Int] => JsObject, pages: AddressPages)
           (implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {

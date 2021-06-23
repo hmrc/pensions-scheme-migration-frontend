@@ -25,7 +25,7 @@ import identifiers._
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.details._
 import identifiers.establishers._
-import identifiers.establishers.individual.address.{EnterPostCodeId, AddressListId, AddressId, AddressYearsId}
+import identifiers.establishers.individual.address.{PreviousAddressId, AddressId, PreviousAddressListId, AddressListId, AddressYearsId, EnterPostCodeId, EnterPreviousPostCodeId}
 import models.{Mode, Index, CheckMode, NormalMode}
 import models.establishers.EstablisherKind
 import models.requests.DataRequest
@@ -53,7 +53,11 @@ class EstablishersNavigator
     case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index, NormalMode)
     case AddressListId(index) => addressYears(index, NormalMode)
     case AddressId(index) => addressYears(index, NormalMode)
-    case AddressYearsId(index) => cyaAddress(index)
+    case AddressYearsId(index) =>
+      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else EnterPreviousPostcodeController.onPageLoad(index, NormalMode)
+    case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index, NormalMode)
+    case PreviousAddressListId(index) => cyaAddress(index)
+    case PreviousAddressId(index) => cyaAddress(index)
   }
 
   override protected def editRouteMap(ua: UserAnswers)

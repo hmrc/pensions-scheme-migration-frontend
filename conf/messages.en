@@ -297,8 +297,11 @@ addressList.noInsuranceName.title = What is the address of the insurance company
 addressList.select = Select the address from the list below, or
 addressList.visuallyHidden = the address of the insurance company that secures the scheme benefits
 
+previousAddressList.title = What was the previous address for {0}?
+
 postcode.label = Postcode
 postcode.title = What is {0}ʼs postcode?
+previousPostcode.title = What was {0}ʼs previous postcode?
 postcode.youCan = You can
 error.postcode.required = Enter the postcode
 error.postcode.invalid = Enter a valid postcode
@@ -333,6 +336,8 @@ address.line4 = Address line 4 (optional)
 address.postcode = Postcode
 address.country = Country
 address.hint = Enter text and then choose from the list
+
+previousAddress.title = What was the previous address for {0}?
 
 booleanAnswer.false = No
 booleanAnswer.true = Yes
@@ -649,10 +654,11 @@ establisherEnterPostcode.required = Enter a postcode
 establisherEnterPostcode.invalid = Enter a real postcode
 
 establisherSelectAddress.required = Select an address
-establisherUnknown = unknown establisher
+establisherUnknown = the company
 
 establisherAddressYears.h1 = Has {0} used this address for at least 1 year?
 
 establisherAddressYears.error.required = Select yes if the individual has used this address for more than 1 year
 messages__visuallyhidden__establisherAddressYears = whether {0} has used this address for at least 1 year
 messages__visuallyHidden__address = the address of {0}
+
