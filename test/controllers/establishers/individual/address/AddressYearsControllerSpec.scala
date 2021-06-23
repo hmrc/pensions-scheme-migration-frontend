@@ -38,6 +38,7 @@ import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
 import utils.{UserAnswers, Enumerable, Data}
 import forms.establishers.address.AddressYearsFormProvider
+import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressYearsId
 import models.NormalMode
 
@@ -51,7 +52,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
     bind[CompoundNavigator].toInstance(mockCompoundNavigator)
   )
 
-  private val userAnswers: Option[UserAnswers] = Some(ua)
+  private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(EstablisherNameId(0), Data.establisherIndividualName))
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
   private val httpPathGET: String = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(0, NormalMode).url
@@ -81,7 +82,9 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
   "AddressYears Controller" must {
 
     "Return OK and the correct view for a GET" in {
-      val ua: UserAnswers = UserAnswers().setOrException(SchemeNameId, Data.schemeName)
+      val ua: UserAnswers = UserAnswers()
+        .setOrException(SchemeNameId, Data.schemeName)
+        .setOrException(EstablisherNameId(0), Data.establisherIndividualName)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
       val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
@@ -99,6 +102,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
     "return OK and the correct view for a GET when the question has previously been answered" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, Data.schemeName)
+        .setOrException(EstablisherNameId(0), Data.establisherIndividualName)
         .setOrException(AddressYearsId(0), true)
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
