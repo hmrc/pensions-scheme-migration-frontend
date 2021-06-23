@@ -130,7 +130,7 @@ class AreBenefitsSecuredControllerSpec extends ControllerSpecBase with NunjucksS
 
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(any(), any())(any()))
+      when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
         .thenReturn(routes.CheckYourAnswersController.onPageLoad())
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))

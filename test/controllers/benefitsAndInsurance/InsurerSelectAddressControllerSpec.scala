@@ -109,7 +109,7 @@ class InsurerSelectAddressControllerSpec extends ControllerSpecBase with Nunjuck
       val ua: UserAnswers = Data.ua
         .setOrException(InsurerEnterPostCodeId, seqAddresses)
 
-      when(mockCompoundNavigator.nextPage(any(), any())(any()))
+      when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
         .thenReturn(routes.CheckYourAnswersController.onPageLoad())
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))

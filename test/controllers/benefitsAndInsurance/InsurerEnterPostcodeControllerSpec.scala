@@ -104,7 +104,7 @@ class InsurerEnterPostcodeControllerSpec extends ControllerSpecBase with Nunjuck
     "Save data to user answers and redirect to next page when valid data is submitted" in {
       val seqAddresses = Seq(TolerantAddress(Some("a"),Some("b"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")))
 
-      when(mockCompoundNavigator.nextPage(any(), any())(any()))
+      when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
         .thenReturn(routes.CheckYourAnswersController.onPageLoad())
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
