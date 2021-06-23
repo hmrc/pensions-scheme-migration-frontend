@@ -20,8 +20,9 @@ import base.SpecBase.fakeRequest
 import identifiers.aboutMembership.{FutureMembersId, CurrentMembersId}
 import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
 import identifiers.benefitsAndInsurance.{AreBenefitsSecuredId, BenefitsInsurancePolicyId, BenefitsInsuranceNameId, InsurerAddressId, BenefitsTypeId, HowProvideBenefitsId, IsInvestmentRegulatedId, IsOccupationalId}
+import identifiers.establishers.individual.EstablisherNameId
 import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
-import models.{SchemeType, Address, MigrationLock, Members}
+import models.{Address, PersonName, MigrationLock, SchemeType, Members}
 import models.requests.DataRequest
 import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.Json
@@ -37,7 +38,16 @@ object Data {
   val pstr: String = "pstr"
   val migrationLock: MigrationLock = MigrationLock(pstr, credId, psaId)
   val schemeName: String = "Test scheme name"
-  val ua: UserAnswers = UserAnswers(Json.obj(SchemeNameId.toString -> Data.schemeName))
+  val establisherIndividualName = PersonName("test", "name")
+  val ua: UserAnswers =
+    UserAnswers()
+      .setOrException(SchemeNameId, Data.schemeName)
+      .setOrException(EstablisherNameId(0), Data.establisherIndividualName)
+  //  UserAnswers(
+  //  Json.obj(
+  //    SchemeNameId.toString -> Data.schemeName
+  //  )
+  //)
 
 
   val insurerName= "test insurer"

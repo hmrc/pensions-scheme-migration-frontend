@@ -24,7 +24,7 @@ import controllers.address.{AddressPages, AddressListController}
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.address.{EnterPreviousPostCodeId, EnterPostCodeId, PreviousAddressId, PreviousAddressListId}
+import identifiers.establishers.individual.address.{EnterPreviousPostCodeId, PreviousAddressId, PreviousAddressListId}
 import models.{Mode, Index}
 
 import javax.inject.Inject
@@ -73,7 +73,7 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
   def getFormToJson(schemeName:String, index: Index, mode: Mode) : Retrieval[Form[Int] => JsObject] =
     Retrieval(
       implicit request =>
-        EnterPostCodeId(index).retrieve.right.map { addresses =>
+        EnterPreviousPostCodeId(index).retrieve.right.map { addresses =>
 
           val msg = request2Messages(request)
 
