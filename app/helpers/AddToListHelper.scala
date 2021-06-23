@@ -57,7 +57,7 @@ class AddToListHelper {
 
   private def getTypeFromId[ID](id: ID)(implicit messages: Messages): String =
     id match {
-      case EstablisherNameId(_) => messages("kind.address")
+      case EstablisherNameId(_) => messages("kind.individual")
       case _ => messages("kind.company")
     }
 
