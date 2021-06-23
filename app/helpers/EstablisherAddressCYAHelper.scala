@@ -16,12 +16,9 @@
 
 package helpers
 
-import controllers.establishers.individual.details.routes
 import helpers.CYAHelper.getName
-import identifiers.benefitsAndInsurance.InsurerAddressId
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.address.{AddressYearsId, AddressId, PreviousAddressId}
-import identifiers.establishers.individual.details._
+import identifiers.establishers.individual.address.{AddressYearsId, PreviousAddressId, AddressId}
 import models.requests.DataRequest
 import models.{Index, CheckMode}
 import play.api.i18n.Messages
@@ -36,9 +33,7 @@ class EstablisherAddressCYAHelper
     with Enumerable.Implicits {
 
   //scalastyle:off method.length
-  def detailsRows(
-                   index: Index
-                 )(
+  def rows(index: Index)(
                    implicit request: DataRequest[AnyContent],
                    messages: Messages
                  ): Seq[Row] = {

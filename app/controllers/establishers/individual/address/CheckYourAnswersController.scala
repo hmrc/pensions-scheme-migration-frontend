@@ -51,7 +51,7 @@ class CheckYourAnswersController @Inject()(
         renderer.render(
           template = "check-your-answers.njk",
           ctx = Json.obj(
-            "list"       -> cyaHelper.detailsRows(index),
+            "list"       -> cyaHelper.rows(index),
             "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
             "submitUrl"  -> controllers.routes.TaskListController.onPageLoad().url
           )

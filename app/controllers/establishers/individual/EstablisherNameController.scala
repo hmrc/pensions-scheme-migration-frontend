@@ -57,7 +57,7 @@ class EstablisherNameController @Inject()(
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         renderer.render(
-          template = "establishers/individual/establisherName.njk",
+          template = "establishers/address/establisherName.njk",
           ctx = Json.obj(
             "form"       -> request.userAnswers.get[PersonName](EstablisherNameId(index)).fold(form)(form.fill),
             "schemeName" -> existingSchemeName
@@ -71,7 +71,7 @@ class EstablisherNameController @Inject()(
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
             renderer.render(
-              template = "establishers/individual/establisherName.njk",
+              template = "establishers/address/establisherName.njk",
               ctx = Json.obj(
                 "form"       -> formWithErrors,
                 "schemeName" -> existingSchemeName

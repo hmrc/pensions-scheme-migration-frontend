@@ -23,7 +23,7 @@ import controllers.establishers.routes
 import identifiers.{Identifier, TypedIdentifier}
 import identifiers.establishers.{AddEstablisherId, EstablisherKindId}
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.address.{EnterPostCodeId, AddressListId, AddressId, AddressYearsId}
+import identifiers.establishers.individual.address.{PreviousAddressId, AddressId, PreviousAddressListId, AddressListId, AddressYearsId, EnterPostCodeId, EnterPreviousPostCodeId}
 import identifiers.establishers.individual.details._
 import models.{PersonName, NormalMode, Mode, ReferenceValue, Index, TolerantAddress, CheckMode, Address}
 import models.establishers.EstablisherKind
@@ -79,8 +79,14 @@ class EstablishersNavigatorSpec
   private val cyaAddress: Call =
     controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
 
+  private def enterPreviousPostcode(mode:Mode): Call =
+    controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index, mode)
+
   private def selectAddress(mode:Mode): Call =
     controllers.establishers.individual.address.routes.SelectAddressController.onPageLoad(index, mode)
+
+  private def selectPreviousAddress(mode:Mode): Call =
+    controllers.establishers.individual.address.routes.SelectPreviousAddressController.onPageLoad(index, mode)
 
   private def addressYears(mode:Mode): Call =
     controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index, mode)
@@ -103,10 +109,17 @@ class EstablishersNavigatorSpec
         row(EstablisherHasUTRId(index))(noUtrPage(NormalMode), Some(detailsUa.set(EstablisherHasUTRId(index), false).success.value)),
         row(EstablisherUTRId(index))(cya, Some(detailsUa.set(EstablisherUTRId(index), ReferenceValue("1234567890")).success.value)),
         row(EstablisherNoUTRReasonId(index))(cya, Some(detailsUa.set(EstablisherNoUTRReasonId(index), "Reason").success.value)),
+
         row(EnterPostCodeId(index))(selectAddress(NormalMode), addressUAWithValue(EnterPostCodeId(index), seqAddresses)),
         row(AddressListId(index))(addressYears(NormalMode), addressUAWithValue(AddressListId(index), 0)),
         row(AddressId(index))(addressYears(NormalMode), addressUAWithValue(AddressId(index), address)),
-        row(AddressYearsId(index))(cyaAddress, addressUAWithValue(AddressYearsId(index), true))
+
+        row(AddressYearsId(index))(cyaAddress, addressUAWithValue(AddressYearsId(index), true)),
+        row(AddressYearsId(index))(enterPreviousPostcode(NormalMode), addressUAWithValue(AddressYearsId(index), false)),
+
+        row(EnterPreviousPostCodeId(index))(selectPreviousAddress(NormalMode), addressUAWithValue(EnterPreviousPostCodeId(index), seqAddresses)),
+        row(PreviousAddressListId(index))(cyaAddress, addressUAWithValue(PreviousAddressListId(index), 0)),
+        row(PreviousAddressId(index))(cyaAddress, addressUAWithValue(PreviousAddressId(index), address)),
       )
 
     def editNavigation: TableFor3[Identifier, UserAnswers, Call] =

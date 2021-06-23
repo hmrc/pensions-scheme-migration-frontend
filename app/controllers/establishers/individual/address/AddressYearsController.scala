@@ -63,7 +63,7 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
           "form" -> preparedForm,
           "radios" -> Radios.yesNo (preparedForm("value"))
         )
-        renderer.render("establishers/individual/address/addressYears.njk", json).map(Ok(_))
+        renderer.render("establishers/address/address/addressYears.njk", json).map(Ok(_))
       }
     }
 
@@ -80,7 +80,7 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
                 "radios" -> Radios.yesNo(form("value"))
               )
 
-              renderer.render("establishers/individual/address/addressYears.njk", json).map(BadRequest(_))
+              renderer.render("establishers/address/address/addressYears.njk", json).map(BadRequest(_))
             },
             value => {
               val updatedUA = request.userAnswers.setOrException(AddressYearsId(index), value)

@@ -47,11 +47,11 @@ class WhatYouWillNeedControllerSpec
   private val userAnswers: UserAnswers =
     ua.set(EstablisherNameId(0), personName).success.value
   private val templateToBeRendered: String =
-    "establishers/individual/details/whatYouWillNeed.njk"
+    "establishers/address/details/whatYouWillNeed.njk"
   private val json: JsObject =
     Json.obj(
       "name"        -> "Jane Doe",
-      "continueUrl" -> "/migrate-pension-scheme/establisher/1/individual/date-of-birth",
+      "continueUrl" -> "/migrate-pension-scheme/establisher/1/address/date-of-birth",
       "schemeName"  -> "Test scheme name"
     )
 

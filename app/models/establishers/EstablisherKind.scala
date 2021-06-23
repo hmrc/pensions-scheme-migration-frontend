@@ -35,7 +35,7 @@ object EstablisherKind {
 
   case object Company extends WithName("company") with EstablisherKind
 
-  case object Individual extends WithName("individual") with EstablisherKind
+  case object Individual extends WithName("address") with EstablisherKind
 
   case object Partnership extends WithName("partnership") with EstablisherKind
 
