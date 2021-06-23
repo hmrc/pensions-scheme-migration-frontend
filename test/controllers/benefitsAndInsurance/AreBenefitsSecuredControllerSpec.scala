@@ -111,9 +111,6 @@ class AreBenefitsSecuredControllerSpec extends ControllerSpecBase with NunjucksS
       verify(mockRenderer, times(1))
         .render(Matchers.eq("benefitsAndInsurance/areBenefitsSecured.njk"), jsonCaptor.capture())(any())
 
-      println( "\n>>>>ACT=" + jsonCaptor.getValue)
-      println( "\n>>>>exp=" + jsonToPassToTemplate(form.fill(true)))
-
       jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(true)))
     }
 
@@ -133,7 +130,7 @@ class AreBenefitsSecuredControllerSpec extends ControllerSpecBase with NunjucksS
 
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(any(), any())(any()))
+      when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
         .thenReturn(routes.CheckYourAnswersController.onPageLoad())
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))

@@ -112,7 +112,7 @@ class EstablisherKindControllerSpec extends ControllerSpecBase with NunjucksSupp
 
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(EstablisherKindId(0)), any())(any()))
+      when(mockCompoundNavigator.nextPage(Matchers.eq(EstablisherKindId(0)), any(), any())(any()))
         .thenReturn(controllers.establishers.individual.routes.EstablisherNameController.onPageLoad(0))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
