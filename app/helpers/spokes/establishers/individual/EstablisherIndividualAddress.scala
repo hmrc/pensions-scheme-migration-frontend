@@ -16,7 +16,7 @@
 
 package helpers.spokes.establishers.individual
 
-import controllers.establishers.individual.address.routes.WhatYouWillNeedController
+import controllers.establishers.individual.address.routes.{WhatYouWillNeedController, CheckYourAnswersController}
 import helpers.spokes.Spoke
 import models.{TaskListLink, Index}
 import play.api.i18n.Messages
@@ -29,12 +29,12 @@ case class EstablisherIndividualAddress(
 ) extends Spoke {
   val messageKeyPrefix = "messages__schemeTaskList__establisherIndividualAddress_"
 
-  val linkKeyAndRoute: (String, String) =
+  val linkKeyAndRoute: (String, String) = {
     if (completeFlag(answers).getOrElse(false))
-      (s"${messageKeyPrefix}addLink", WhatYouWillNeedController.onPageLoad(index).url)
-      //(s"${messageKeyPrefix}changeLink", CheckYourAnswersController.onPageLoad(index).url)
+      (s"${messageKeyPrefix}changeLink", CheckYourAnswersController.onPageLoad(index).url)
     else
       (s"${messageKeyPrefix}addLink", WhatYouWillNeedController.onPageLoad(index).url)
+  }
 
   override def changeLink(name: String)
     (implicit messages: Messages): TaskListLink =

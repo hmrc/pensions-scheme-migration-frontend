@@ -18,11 +18,12 @@ package utils.datacompletion
 
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.individual.EstablisherNameId
+import identifiers.establishers.individual.address.{AddressYearsId, PreviousAddressId, AddressId}
 import identifiers.establishers.individual.details._
 import models.{PersonName, ReferenceValue}
 import models.establishers.EstablisherKind
-import org.scalatest.{MustMatchers, OptionValues, TryValues, WordSpec}
-import utils.{Enumerable, UserAnswers}
+import org.scalatest.{OptionValues, TryValues, MustMatchers, WordSpec}
+import utils.{UserAnswers, Enumerable, Data}
 
 import java.time.LocalDate
 
@@ -88,5 +89,42 @@ class DataCompletionEstablishersSpec
 
       }
     }
+
+    "isEstablisherIndividualAddressCompleted" must {
+      "return true when all answers are present" in {
+        val ua1 =
+          UserAnswers()
+            .setOrException(AddressId(0), Data.address)
+            .setOrException(AddressYearsId(0), true)
+
+        val ua2 =
+          UserAnswers()
+            .setOrException(AddressId(0), Data.address)
+            .setOrException(AddressYearsId(0), false)
+            .setOrException(PreviousAddressId(0), Data.address)
+
+        ua1.isEstablisherIndividualAddressCompleted(0, ua1) mustBe Some(true)
+        ua2.isEstablisherIndividualAddressCompleted(0, ua2) mustBe Some(true)
+      }
+
+      "return false when some answer is missing" in {
+        val ua1 =
+          UserAnswers()
+            .setOrException(AddressId(0), Data.address)
+            .setOrException(AddressYearsId(0), false)
+
+        val ua2 =
+          UserAnswers()
+            .setOrException(AddressId(0), Data.address)
+
+        ua1.isEstablisherIndividualAddressCompleted(0, ua1) mustBe Some(false)
+        ua2.isEstablisherIndividualAddressCompleted(0, ua2) mustBe Some(false)
+      }
+
+      "return None when no answers present" in {
+        UserAnswers().isEstablisherIndividualAddressCompleted(0, UserAnswers()) mustBe None
+      }
+    }
+
   }
 }

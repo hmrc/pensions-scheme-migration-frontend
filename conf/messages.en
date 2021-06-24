@@ -165,6 +165,7 @@ messages__schemeTaskList__sectionEstablishers_no_establishers = No establishers
 messages__schemeTaskList__establisherIndividualDetails_addLink = Add details for {0}
 messages__schemeTaskList__establisherIndividualDetails_changeLink = Change details for {0}
 messages__schemeTaskList__establisherIndividualAddress_addLink = Add address for {0}
+messages__schemeTaskList__establisherIndividualAddress_changeLink = Change address for {0}
 messages__schemeTaskList__establisherIndividualContactDetails_addLink = Add contact details for {0}
 
 messages__dob__title = What is the date of birth for {0}?
