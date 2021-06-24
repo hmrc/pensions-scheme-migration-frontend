@@ -23,7 +23,7 @@ import forms.establishers.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressYearsId
-import models.{Mode, Index}
+import models.Index
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{MessagesApi, Messages, I18nSupport}
@@ -52,7 +52,7 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
   private def form: Form[Boolean] =
     formProvider()
 
-  def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       (EstablisherNameId(index) and SchemeNameId).retrieve.right.map { case establisherName ~ schemeName =>
         val preparedForm = request.userAnswers.get(AddressYearsId(index)) match {
@@ -70,7 +70,7 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
       }
     }
 
-  def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       (EstablisherNameId(index) and SchemeNameId).retrieve.right.map { case establisherName ~ schemeName =>
         form

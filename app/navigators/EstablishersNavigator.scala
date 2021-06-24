@@ -25,7 +25,8 @@ import identifiers._
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.details._
 import identifiers.establishers._
-import identifiers.establishers.individual.address.{PreviousAddressId, AddressId, PreviousAddressListId, AddressListId, AddressYearsId, EnterPostCodeId, EnterPreviousPostCodeId}
+import identifiers.establishers.individual.address.{PreviousAddressId, AddressId,
+  PreviousAddressListId, AddressListId, AddressYearsId, EnterPostCodeId, EnterPreviousPostCodeId}
 import models.{Mode, Index, CheckMode, NormalMode}
 import models.establishers.EstablisherKind
 import models.requests.DataRequest
@@ -50,12 +51,12 @@ class EstablishersNavigator
     case EstablisherHasUTRId(index) => establisherHasUtr(index, ua, NormalMode)
     case EstablisherUTRId(index) => cyaDetails(index)
     case EstablisherNoUTRReasonId(index) => cyaDetails(index)
-    case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index, NormalMode)
-    case AddressListId(index) => addressYears(index, NormalMode)
-    case AddressId(index) => addressYears(index, NormalMode)
+    case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index)
+    case AddressListId(index) => addressYears(index)
+    case AddressId(index) => addressYears(index)
     case AddressYearsId(index) =>
-      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else EnterPreviousPostcodeController.onPageLoad(index, NormalMode)
-    case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index, NormalMode)
+      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else EnterPreviousPostcodeController.onPageLoad(index)
+    case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index)
     case PreviousAddressListId(index) => cyaAddress(index)
     case PreviousAddressId(index) => cyaAddress(index)
   }
@@ -71,9 +72,9 @@ class EstablishersNavigator
     case EstablisherNoUTRReasonId(index) => cyaDetails(index)
   }
 
-  private def cyaAddress(index:Int) = controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
-  private def cyaDetails(index:Int) = controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index)
-  private def addressYears(index:Int, mode:Mode) = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index, mode)
+  private def cyaAddress(index:Int): Call = controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
+  private def cyaDetails(index:Int): Call = controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index)
+  private def addressYears(index:Int) = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index)
 
   private def establisherKindRoutes(
                                      index: Index,

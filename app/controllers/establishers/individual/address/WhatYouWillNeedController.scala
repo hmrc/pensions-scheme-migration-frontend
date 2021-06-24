@@ -17,13 +17,13 @@
 package controllers.establishers.individual.address
 
 import controllers.Retrievals
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{DataRetrievalAction, DataRequiredAction, AuthAction}
 import controllers.establishers.individual.address.routes._
 import helpers.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
-import models.{Index, NormalMode}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import models.Index
+import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -55,7 +55,7 @@ class WhatYouWillNeedController @Inject()(
               template = "establishers/individual/address/whatYouWillNeed.njk",
               ctx = Json.obj(
                 "name"        -> personName.fullName,
-                "continueUrl" -> EnterPostcodeController.onPageLoad(index, NormalMode).url,
+                "continueUrl" -> EnterPostcodeController.onPageLoad(index).url,
                 "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )
             ).map(Ok(_))
