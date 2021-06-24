@@ -42,7 +42,7 @@ class EstablisherAddressCYAHelper
     val establisherName: String =
       getName(EstablisherNameId(index))
 
-    Seq(
+    val s1 = Seq(
       answerOrAddRow(
         AddressId(index),
         Message("messages__establisherAddress__whatYouWillNeed_title", establisherName).resolve,
@@ -54,14 +54,22 @@ class EstablisherAddressCYAHelper
         Message("establisherAddressYears.title", establisherName).resolve,
         Some(controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index, CheckMode).url),
         Some(msg"messages__visuallyhidden__establisherAddressYears".withArgs(establisherName)), answerBooleanTransform
-      ),
-      answerOrAddRow(
-        PreviousAddressId(index),
-        Message("messages__establisherPreviousAddress").resolve,
-        Some(controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index, CheckMode).url),
-        Some(msg"messages__visuallyHidden__previousAddress".withArgs(establisherName)), answerAddressTransform
       )
-
     )
+
+    val s2 = if (ua.get(AddressYearsId(index)).contains(true)) {
+      Nil
+    } else {
+      Seq(
+        answerOrAddRow(
+          PreviousAddressId(index),
+          Message("messages__establisherPreviousAddress").resolve,
+          Some(controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index, CheckMode).url),
+          Some(msg"messages__visuallyHidden__previousAddress".withArgs(establisherName)), answerAddressTransform
+        )
+      )
+    }
+
+    s1 ++ s2
   }
 }

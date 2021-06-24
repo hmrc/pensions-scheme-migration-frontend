@@ -655,6 +655,9 @@ messages__establisherPreviousAddress = Previous address
 establisherEnterPostcode.required = Enter a postcode
 establisherEnterPostcode.invalid = Enter a real postcode
 
+establisherEnterPreviousPostcode.required = Enter the individual’s previous postcode
+establisherEnterPreviousPostcode.invalid = Enter the individual’s real postcode
+
 establisherSelectAddress.required = Select an address
 establisherUnknown = the company
 establisherEntityTypeIndividual = the individual
