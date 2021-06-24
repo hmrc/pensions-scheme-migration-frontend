@@ -40,7 +40,6 @@ import utils.{UserAnswers, Enumerable, Data}
 import forms.establishers.address.AddressYearsFormProvider
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressYearsId
-import models.NormalMode
 
 import scala.concurrent.Future
 
@@ -55,8 +54,8 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
   private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(EstablisherNameId(0), Data.establisherIndividualName))
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(0, NormalMode).url
-  private val httpPathPOST: String = controllers.establishers.individual.address.routes.AddressYearsController.onSubmit(0, NormalMode).url
+  private val httpPathGET: String = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(0).url
+  private val httpPathPOST: String = controllers.establishers.individual.address.routes.AddressYearsController.onSubmit(0).url
   private val form: Form[Boolean] = new AddressYearsFormProvider()()
 
   private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>

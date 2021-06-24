@@ -22,7 +22,7 @@ import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.establishers.individual.address.EnterPostCodeId
 import matchers.JsonMatchers
-import models.{TolerantAddress, NormalMode}
+import models.TolerantAddress
 import navigators.CompoundNavigator
 import org.mockito.{ArgumentCaptor, Matchers}
 import org.mockito.Matchers.any
@@ -53,8 +53,8 @@ class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = controllers.establishers.individual.address.routes.SelectAddressController.onPageLoad(0, NormalMode).url
-  private val httpPathPOST: String = controllers.establishers.individual.address.routes.SelectAddressController.onSubmit(0, NormalMode).url
+  private val httpPathGET: String = controllers.establishers.individual.address.routes.SelectAddressController.onPageLoad(0).url
+  private val httpPathPOST: String = controllers.establishers.individual.address.routes.SelectAddressController.onSubmit(0).url
 
   private val seqAddresses = Seq(
     TolerantAddress(Some("1"),Some("1"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")),

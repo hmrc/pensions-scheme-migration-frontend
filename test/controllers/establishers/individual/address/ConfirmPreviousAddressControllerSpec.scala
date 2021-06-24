@@ -24,7 +24,6 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.PreviousAddressId
 import matchers.JsonMatchers
-import models.NormalMode
 import navigators.CompoundNavigator
 import org.mockito.{ArgumentCaptor, Matchers}
 import org.mockito.Matchers.any
@@ -59,8 +58,8 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with Nunju
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = controllers.establishers.individual.address.routes.ConfirmPreviousAddressController.onPageLoad(0, NormalMode).url
-  private val httpPathPOST: String = controllers.establishers.individual.address.routes.ConfirmPreviousAddressController.onSubmit(0, NormalMode).url
+  private val httpPathGET: String = controllers.establishers.individual.address.routes.ConfirmPreviousAddressController.onPageLoad(0).url
+  private val httpPathPOST: String = controllers.establishers.individual.address.routes.ConfirmPreviousAddressController.onSubmit(0).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "line1" -> Seq("1"),

@@ -21,7 +21,7 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{AddressYearsId, PreviousAddressId, AddressId}
 import models.requests.DataRequest
-import models.{PersonName, Address, MigrationLock, CheckMode}
+import models.{PersonName, Address, MigrationLock}
 import org.scalatest.{TryValues, MustMatchers, WordSpec}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
@@ -82,20 +82,20 @@ class EstablisherAddressCYAHelperSpec extends WordSpec with MustMatchers with Tr
 
       result.head mustBe summaryListRowHtml(key = messages("messages__establisherAddress__whatYouWillNeed_title", establisherName.fullName),
         value = answerAddressTransform(establisherAddress), Some(Link(text = Messages("site.change"),
-          target = controllers.establishers.individual.address.routes.EnterPostcodeController.onPageLoad(0, CheckMode).url,
+          target = controllers.establishers.individual.address.routes.EnterPostcodeController.onPageLoad(0).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__address", establisherName.fullName))),
           attributes = Map("id" -> "cya-0-0-change"))))
 
       result(1) mustBe summaryListRow(key = Messages("establisherAddressYears.title", establisherName.fullName), valueMsgKey = "booleanAnswer.false",
         Some(Link(text = Messages("site.change"),
-          target = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(0, CheckMode).url,
+          target = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(0).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
             Messages("messages__visuallyhidden__establisherAddressYears", establisherName.fullName))),
           attributes = Map("id" -> "cya-0-1-change"))))
 
       result(2) mustBe summaryListRowHtml(key = messages("messages__establisherPreviousAddress"),
         value = answerAddressTransform(establisherPreviousAddress), Some(Link(text = Messages("site.change"),
-          target = controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(0, CheckMode).url,
+          target = controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(0).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__previousAddress", establisherName.fullName))),
           attributes = Map("id" -> "cya-0-2-change"))))
     }

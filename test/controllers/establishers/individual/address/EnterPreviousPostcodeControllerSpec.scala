@@ -22,7 +22,7 @@ import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.beforeYouStart.SchemeNameId
 import matchers.JsonMatchers
-import models.{TolerantAddress, NormalMode}
+import models.TolerantAddress
 import navigators.CompoundNavigator
 import org.mockito.{ArgumentCaptor, Matchers}
 import org.mockito.Matchers.any
@@ -55,8 +55,8 @@ class EnterPreviousPostcodeControllerSpec extends ControllerSpecBase with Nunjuc
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(0, NormalMode).url
-  private val httpPathPOST: String = controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onSubmit(0, NormalMode).url
+  private val httpPathGET: String = controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(0).url
+  private val httpPathPOST: String = controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onSubmit(0).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq("ZZ11ZZ")

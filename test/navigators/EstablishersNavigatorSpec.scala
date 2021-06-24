@@ -18,14 +18,13 @@ package navigators
 
 import base.SpecBase
 import controllers.establishers.individual.details
-import controllers.establishers.individual.address._
 import controllers.establishers.routes
 import identifiers.{Identifier, TypedIdentifier}
 import identifiers.establishers.{AddEstablisherId, EstablisherKindId}
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.address.{PreviousAddressId, AddressId, PreviousAddressListId, AddressListId, AddressYearsId, EnterPostCodeId, EnterPreviousPostCodeId}
+import identifiers.establishers.individual.address._
 import identifiers.establishers.individual.details._
-import models.{PersonName, NormalMode, Mode, ReferenceValue, Index, TolerantAddress, CheckMode, Address}
+import models._
 import models.establishers.EstablisherKind
 import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
@@ -80,16 +79,16 @@ class EstablishersNavigatorSpec
     controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
 
   private def enterPreviousPostcode(mode:Mode): Call =
-    controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index, mode)
+    controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index)
 
   private def selectAddress(mode:Mode): Call =
-    controllers.establishers.individual.address.routes.SelectAddressController.onPageLoad(index, mode)
+    controllers.establishers.individual.address.routes.SelectAddressController.onPageLoad(index)
 
   private def selectPreviousAddress(mode:Mode): Call =
-    controllers.establishers.individual.address.routes.SelectPreviousAddressController.onPageLoad(index, mode)
+    controllers.establishers.individual.address.routes.SelectPreviousAddressController.onPageLoad(index)
 
   private def addressYears(mode:Mode): Call =
-    controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index, mode)
+    controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index)
 
   "EstablishersNavigator" when {
     def navigation: TableFor3[Identifier, UserAnswers, Call] =

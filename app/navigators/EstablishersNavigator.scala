@@ -25,8 +25,7 @@ import identifiers._
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.details._
 import identifiers.establishers._
-import identifiers.establishers.individual.address.{PreviousAddressId, AddressId,
-  PreviousAddressListId, AddressListId, AddressYearsId, EnterPostCodeId, EnterPreviousPostCodeId}
+import identifiers.establishers.individual.address._
 import models.{Mode, Index, CheckMode, NormalMode}
 import models.establishers.EstablisherKind
 import models.requests.DataRequest
