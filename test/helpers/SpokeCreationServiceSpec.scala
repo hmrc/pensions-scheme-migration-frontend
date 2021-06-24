@@ -125,7 +125,7 @@ class SpokeCreationServiceSpec
               target = controllers.establishers.individual.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
-            isCompleted = Some(false)
+            isCompleted = None
           ),
           EntitySpoke(
             link = TaskListLink(
