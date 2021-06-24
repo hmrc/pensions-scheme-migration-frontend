@@ -84,20 +84,20 @@ class EstablisherAddressCYAHelperSpec extends WordSpec with MustMatchers with Tr
         value = answerAddressTransform(establisherAddress), Some(Link(text = Messages("site.change"),
           target = controllers.establishers.individual.address.routes.EnterPostcodeController.onPageLoad(0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__address", establisherName.fullName))),
-          attributes = Map("id" -> "change"))))
+          attributes = Map("id" -> "cya-0-0-change"))))
 
       result(1) mustBe summaryListRow(key = Messages("establisherAddressYears.title", establisherName.fullName), valueMsgKey = "booleanAnswer.false",
         Some(Link(text = Messages("site.change"),
           target = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
             Messages("messages__visuallyhidden__establisherAddressYears", establisherName.fullName))),
-          attributes = Map("id" -> "change"))))
+          attributes = Map("id" -> "cya-0-1-change"))))
 
       result(2) mustBe summaryListRowHtml(key = messages("messages__establisherPreviousAddress"),
         value = answerAddressTransform(establisherPreviousAddress), Some(Link(text = Messages("site.change"),
           target = controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__previousAddress", establisherName.fullName))),
-          attributes = Map("id" -> "change"))))
+          attributes = Map("id" -> "cya-0-2-change"))))
     }
   }
 }

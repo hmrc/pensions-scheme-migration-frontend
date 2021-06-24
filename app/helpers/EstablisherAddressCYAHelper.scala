@@ -70,6 +70,7 @@ class EstablisherAddressCYAHelper
       )
     }
 
-    s1 ++ s2
+    val rowsWithoutDynamicIndices = s1 ++ s2
+    rowsWithDynamicIndices(rowsWithoutDynamicIndices)
   }
 }
