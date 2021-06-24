@@ -22,12 +22,10 @@ import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
 import play.api.Application
-import play.api.inject.bind
-import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.JsObject
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.{NunjucksRenderer, NunjucksSupport}
+import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.{Enumerable, UserAnswers}
 
 import scala.concurrent.Future
@@ -37,10 +35,8 @@ class UnauthorisedControllerSpec extends ControllerSpecBase with NunjucksSupport
   private val templateToBeRendered = "unauthorised.njk"
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  val extraModules: Seq[GuiceableModule] = Seq(
-    bind[NunjucksRenderer].toInstance(mockRenderer)
-  )
-  private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
+
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
   private def httpPathGET: String = controllers.routes.UnauthorisedController.onPageLoad().url
 

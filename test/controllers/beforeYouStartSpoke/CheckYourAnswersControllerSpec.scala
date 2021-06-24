@@ -28,7 +28,6 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
-import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import uk.gov.hmrc.viewmodels.SummaryList.{Key, Row, Value}
 import uk.gov.hmrc.viewmodels.Text.Literal
@@ -41,11 +40,10 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val mockCyaHelper: BeforeYouStartCYAHelper = mock[BeforeYouStartCYAHelper]
   val extraModules: Seq[GuiceableModule] = Seq(
-    bind[NunjucksRenderer].toInstance(mockRenderer),
     bind[BeforeYouStartCYAHelper].to(mockCyaHelper)
   )
 
-  private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
   private val templateToBeRendered = "check-your-answers.njk"
 
   private def httpPathGET: String = controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad().url

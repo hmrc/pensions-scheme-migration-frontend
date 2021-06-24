@@ -36,7 +36,7 @@ class BeforeYouStartCYAHelperSpec
 
   val options = Seq(InputOption("territory:AE-AZ", "Abu Dhabi"), InputOption("country:AF", "Afghanistan"))
 
-  implicit val countryOptions: CountryOptions = new CountryOptions(options)
+  override implicit val countryOptions: CountryOptions = new CountryOptions(options)
 
   val beforeYouStartCYAHelper = new BeforeYouStartCYAHelper
 

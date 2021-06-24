@@ -16,11 +16,9 @@
 
 package controllers.beforeYouStartSpoke
 
-import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.beforeYouStart.SchemeTypeFormProvider
-import identifiers.aboutMembership.CurrentMembersId
 import identifiers.beforeYouStart.SchemeTypeId
 import matchers.JsonMatchers
 import models.SchemeType
@@ -29,12 +27,10 @@ import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, Matchers}
 import play.api.Application
 import play.api.data.Form
-import play.api.inject.bind
-import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.{NunjucksRenderer, NunjucksSupport}
+import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.Enumerable
 
@@ -46,11 +42,8 @@ class SchemeTypeControllerSpec extends ControllerSpecBase with NunjucksSupport w
   private val form: Form[SchemeType] = new SchemeTypeFormProvider()()
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  val extraModules: Seq[GuiceableModule] = Seq(
-    bind[NunjucksRenderer].toInstance(mockRenderer),
-    bind[UserAnswersCacheConnector].to(mockUserAnswersCacheConnector)
-  )
-  private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
+
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
   private def httpPathGET: String = routes.SchemeTypeController.onPageLoad().url
   private def httpPathPOST: String = routes.SchemeTypeController.onSubmit().url
@@ -128,7 +121,7 @@ class SchemeTypeControllerSpec extends ControllerSpecBase with NunjucksSupport w
 
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(CurrentMembersId), any())(any()))
+      when(mockCompoundNavigator.nextPage(Matchers.eq(SchemeTypeId), any())(any()))
         .thenReturn(routes.CheckYourAnswersController.onPageLoad())
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))

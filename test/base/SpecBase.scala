@@ -17,15 +17,14 @@
 package base
 
 import config.AppConfig
-import controllers.actions._
 import models.requests.DataRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
-import play.api.inject.{Injector, bind}
+import play.api.inject.Injector
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, AnyContentAsEmpty, MessagesControllerComponents}
 import play.api.test.FakeRequest
@@ -33,7 +32,7 @@ import play.api.{Application, Environment}
 import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.domain.PsaId
 import utils.Data.{migrationLock, psaId}
-import utils.UserAnswers
+import utils.{CountryOptions, UserAnswers}
 
 import scala.language.implicitConversions
 
@@ -41,33 +40,44 @@ trait SpecBase
   extends PlaySpec
     with GuiceOneAppPerSuite {
 
-  def modules(mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction): Seq[GuiceableModule] =
-    Seq(
-      bind[AuthAction].toInstance(FakeAuthAction),
-      bind[DataRetrievalAction].toInstance(mutableFakeDataRetrievalAction)
+//  def modules(mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction): Seq[GuiceableModule] =
+//    Seq(
+//      bind[AuthAction].toInstance(FakeAuthAction),
+//      bind[DataRetrievalAction].toInstance(mutableFakeDataRetrievalAction)
+//    )
+//
+//  def applicationBuilder(
+//                          mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction,
+//                          extraModules: Seq[GuiceableModule] = Seq.empty
+//                        ): GuiceApplicationBuilder = {
+//    new GuiceApplicationBuilder()
+//      .configure(
+//        "auditing.enabled" -> false,
+//        "metrics.enabled" -> false
+//      )
+//      .overrides(
+//        extraModules ++ modules(mutableFakeDataRetrievalAction): _*
+//      )
+//  }
+//
+//  def appRunning(): Application = applicationBuilder().build()
+
+  override def fakeApplication(): Application = GuiceApplicationBuilder()
+    .configure(
+      //turn off metrics
+      "auditing.enabled" -> false,
+      "metrics.jvm"     -> false,
+      "metrics.enabled" -> false
     )
+    .build()
 
-  def applicationBuilder(
-                          mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction,
-                          extraModules: Seq[GuiceableModule] = Seq.empty
-                        ): GuiceApplicationBuilder = {
-    new GuiceApplicationBuilder()
-      .configure(
-        "auditing.enabled" -> false,
-        "metrics.enabled" -> false
-      )
-      .overrides(
-        extraModules ++ modules(mutableFakeDataRetrievalAction): _*
-      )
-  }
-
-  def appRunning(): Application = applicationBuilder().build()
-
-  def injector: Injector = appRunning().injector
+  def injector: Injector = fakeApplication().injector
 
   protected def crypto: ApplicationCrypto = injector.instanceOf[ApplicationCrypto]
 
   def appConfig: AppConfig = injector.instanceOf[AppConfig]
+
+  def countryOptions: CountryOptions = injector.instanceOf[CountryOptions]
 
   def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
 
