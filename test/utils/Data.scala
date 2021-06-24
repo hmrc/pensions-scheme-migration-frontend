@@ -46,7 +46,7 @@ object Data {
 
   val insurerName= "test insurer"
   val insurerPolicyNo = "test"
-  val insurerAddress = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
+  val address = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
 
   val completeUserAnswers: UserAnswers = UserAnswers().set(SchemeNameId, schemeName).flatMap(
     _.set(SchemeTypeId, SchemeType.BodyCorporate).flatMap(
@@ -62,7 +62,7 @@ object Data {
     .setOrException(AreBenefitsSecuredId, true)
     .setOrException(BenefitsInsuranceNameId, insurerName)
     .setOrException(BenefitsInsurancePolicyId, insurerPolicyNo)
-    .setOrException(InsurerAddressId, insurerAddress)
+    .setOrException(InsurerAddressId, address)
 
   implicit val request: DataRequest[AnyContent] =
     DataRequest(

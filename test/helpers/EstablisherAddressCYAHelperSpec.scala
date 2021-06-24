@@ -46,7 +46,7 @@ class EstablisherAddressCYAHelperSpec extends WordSpec with MustMatchers with Tr
   case class Link(text: String, target: String, visuallyHiddenText: Option[Text] = None,
     attributes: Map[String, String] = Map.empty)
 
-  private def summaryListRow(key: String, valueMsgKey: String, target: Option[Link] = None): Row = {
+  private def summaryListRow(key: String, valueMsgKey: String, target: Option[Link]): Row = {
     SummaryList.Row(Key(GovUKMsg(key), List("govuk-!-width-one-half")), Value(GovUKMsg(valueMsgKey)), target.toSeq.map(
       t => Action(content = Html(s"<span aria-hidden=true >${t.text}</span>"), href = t.target,
         visuallyHiddenText = t.visuallyHiddenText, attributes = t.attributes)))
