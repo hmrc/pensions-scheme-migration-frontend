@@ -7,6 +7,12 @@
 {% from "macros/title.njk"                         import title %}
 {% from "macros/returnLink.njk"                    import returnLink %}
 
+{% set hint %}
+    <p id="p1" class="govuk-body govuk-!-font-weight-regular">{{ messages("messages__workingKnowledge__p1") }}</p>
+    <p id="p2" class="govuk-body govuk-!-font-weight-regular">{{ messages("messages__workingKnowledge__p2") }}</p>
+    <p id="p3" class="govuk-body govuk-!-font-weight-regular">{{ messages("messages__workingKnowledge__p3") }}</p>
+{% endset %}
+
 {% block pageTitle %}
   {{ title(messages("messages__workingKnowledge__title"), form.errors) }}
 {% endblock %}
@@ -28,20 +34,19 @@
 
           {{ csrf() | safe }}
 
-          <h1 class="govuk-heading-xl">{{ messages('messages__workingKnowledge__title') }}</h1>
-            <p id="p1" class="govuk-body">{{ messages("messages__workingKnowledge__p1") }}</p>
-            <p id="p2" class="govuk-body">{{ messages("messages__workingKnowledge__p2") }}</p>
-            <p id="p3" class="govuk-body">{{ messages("messages__workingKnowledge__p3") }}</p>
-
           {{ govukRadios({
             classes: "govuk-radios--inline",
             name: 'value',
             fieldset: {
               legend: {
-                isPageHeading: false,
-                classes: "govuk-fieldset__legend--xl"
+                text: messages('messages__workingKnowledge__title'),
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--xl govuk-!-margin-bottom-8"
               }
             },
+            hint: {
+                html: hint
+              },
             items: radios,
             errorMessage: form.value.error
           }) }}

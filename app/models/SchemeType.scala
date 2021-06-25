@@ -38,8 +38,11 @@ object SchemeType {
 
   def radios(form: Form[_])(implicit messages: Messages): Seq[Radios.Item] = {
     val items: Seq[Radios.Radio] = values.map(value =>
-      Radios.Radio(msg"messages__scheme_type_${value.toString}", value.toString,
-        Some(Hint(msg"messages__scheme_type_${value.toString}_hint", "hint-id"))))
+      Radios.Radio(msg"messages__scheme_type_${value.toString}",
+        value.toString,
+        Some(Hint(msg"messages__scheme_type_${value.toString}_hint", "hint-id")),
+        labelClasses = Some(LabelClasses(Seq("govuk-!-font-weight-bold")))
+      ))
 
     val input = TextInput(
       "schemeType.schemeTypeDetails",
@@ -50,7 +53,9 @@ object SchemeType {
 
     val otherItem: Radios.Radio = Radios.Radio(msg"messages__scheme_type_other", Other.toString.toLowerCase,
         Some(Hint(msg"messages__scheme_type_other_hint", "hint-id")),
-      Some(Conditional(TextInput.inputHtml(input, messages))))
+      Some(Conditional(TextInput.inputHtml(input, messages))),
+      labelClasses = Some(LabelClasses(Seq("govuk-!-font-weight-bold")))
+    )
 
     Radios(form("schemeType.type"), items :+ otherItem)
   }
