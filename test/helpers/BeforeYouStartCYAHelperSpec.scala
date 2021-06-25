@@ -16,24 +16,27 @@
 
 package helpers
 
-import base.SpecBase._
+import base.SpecBase
 import controllers.beforeYouStartSpoke.routes
 import identifiers.beforeYouStart._
-import models.{Link, SchemeType}
-import org.scalatest.{MustMatchers, TryValues, WordSpec}
+import models.SchemeType
+import org.scalatest.{MustMatchers, TryValues}
+import play.api.i18n.Messages
+import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
+import uk.gov.hmrc.viewmodels.Text.{Literal, Message}
+import uk.gov.hmrc.viewmodels.{Html, MessageInterpolators}
 import utils.Data.schemeName
 import utils.{CountryOptions, Enumerable, InputOption, UserAnswers}
-import viewmodels.{AnswerRow, AnswerSection, CYAViewModel, Message}
 
 class BeforeYouStartCYAHelperSpec
-  extends WordSpec
+  extends SpecBase
     with MustMatchers
     with TryValues
     with Enumerable.Implicits {
 
   val options = Seq(InputOption("territory:AE-AZ", "Abu Dhabi"), InputOption("country:AF", "Afghanistan"))
 
-  implicit val countryOptions: CountryOptions = new CountryOptions(options)
+  override implicit val countryOptions: CountryOptions = new CountryOptions(options)
 
   val beforeYouStartCYAHelper = new BeforeYouStartCYAHelper
 
@@ -45,59 +48,45 @@ class BeforeYouStartCYAHelperSpec
 
   "BeforeYouStartCYAHelper" must {
     "return all rows" in {
-      val result = beforeYouStartCYAHelper.viewmodel(countryOptions, fakeDataRequest(ua), messages)
-
-      val rows: Seq[AnswerSection] = Seq(
-        AnswerSection(
-          headingKey = None,
-          rows = Seq(
-            AnswerRow(
-              label = Message("messages__cya__scheme_name").resolve,
-              answer = Seq(schemeName),
-              answerIsMessageKey = false,
-              changeUrl = None
-            ),
-            AnswerRow(
-              label = Message("messages__cya__scheme_type", schemeName).resolve,
-              answer = Seq(Message("messages__scheme_type_other").resolve),
-              answerIsMessageKey = true,
-              changeUrl = Some(Link(
-                text = "Change",
-                target = routes.SchemeTypeController.onPageLoad().url,
-                visuallyHiddenText = Some(Message("messages__visuallyhidden__schemeType", schemeName).resolve)
-              ))
-            ),
-            AnswerRow(
-              label = Message("messages__cya__country", schemeName).resolve,
-              answer = Seq("AF"),
-              answerIsMessageKey = false,
-              changeUrl = Some(Link(
-                text = "Change",
-                target = routes.EstablishedCountryController.onPageLoad().url,
-                visuallyHiddenText = Some(Message("messages__visuallyhidden__schemeEstablishedCountry", schemeName).resolve)
-              ))
-            ),
-            AnswerRow(
-              label = Message("messages__cya__working_knowledge").resolve,
-              answer = Seq("site.yes"),
-              answerIsMessageKey = true,
-              changeUrl = Some(Link(
-                text = "Change",
-                target = routes.WorkingKnowledgeController.onPageLoad().url,
-                visuallyHiddenText = Some(Message("messages__visuallyhidden__working_knowledge").resolve)
-              ))
-            )
-          )
+      val result = beforeYouStartCYAHelper.rows(fakeDataRequest(ua), messages)
+      val rows: Seq[Row] = Seq(Row(
+        key = Key(Message(msg"messages__cya__scheme_name".resolve), classes = Seq("govuk-!-width-one-half")),
+        value = Value(Literal(schemeName)),
+        actions = Nil
+      ),
+        Row(
+          key = Key(msg"messages__cya__scheme_type".withArgs(schemeName), classes = Seq("govuk-!-width-one-half")),
+          value = Value(msg"messages__scheme_type_other", classes = Seq("govuk-!-width-one-third")),
+          actions = Seq(Action(
+            content = Html(s"<span  aria-hidden=true >${messages("site.change")}</span>"),
+            href =  routes.SchemeTypeController.onPageLoad().url,
+            visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyhidden__schemeType", schemeName))),
+            attributes = Map("id" -> "cya-0-1-change")
+          ))
+        ),
+        Row(
+          key = Key(Message(msg"messages__cya__country".withArgs(schemeName).resolve), classes = Seq("govuk-!-width-one-half")),
+          value = Value(Literal("Afghanistan")),
+          actions = Seq(Action(
+            content = Html(s"<span  aria-hidden=true >${messages("site.change")}</span>"),
+            href =  routes.EstablishedCountryController.onPageLoad().url,
+            visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyhidden__schemeEstablishedCountry", schemeName))),
+            attributes = Map("id" -> "cya-0-2-change")
+          ))
+        ),
+        Row(
+          key = Key(Message(msg"messages__cya__working_knowledge".resolve), classes = Seq("govuk-!-width-one-half")),
+          value = Value(msg"site.yes"),
+          actions = Seq(Action(
+            content = Html(s"<span  aria-hidden=true >${messages("site.change")}</span>"),
+            href =  routes.WorkingKnowledgeController.onPageLoad().url,
+            visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyhidden__working_knowledge"))),
+            attributes = Map("id" -> "cya-0-3-change")
+          ))
         )
       )
 
-      result mustBe CYAViewModel(
-        answerSections = rows,
-        href = controllers.routes.TaskListController.onPageLoad(),
-        schemeName = schemeName,
-        hideEditLinks = false,
-        hideSaveAndContinueButton = false
-      )
+      result mustBe rows
     }
   }
 }

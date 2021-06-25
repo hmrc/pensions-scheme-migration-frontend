@@ -16,11 +16,10 @@
 
 package controllers.establishers
 
-import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.establishers.ConfirmDeleteEstablisherFormProvider
-import identifiers.aboutMembership.CurrentMembersId
+import identifiers.establishers.ConfirmDeleteEstablisherId
 import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
 import models.establishers.EstablisherKind
@@ -30,12 +29,10 @@ import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, Matchers}
 import play.api.Application
 import play.api.data.Form
-import play.api.inject.bind
-import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.{NunjucksRenderer, NunjucksSupport}
+import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
@@ -51,11 +48,8 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Nun
   private val form: Form[Boolean] = new ConfirmDeleteEstablisherFormProvider()(establisherName)
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  val extraModules: Seq[GuiceableModule] = Seq(
-    bind[NunjucksRenderer].toInstance(mockRenderer),
-    bind[UserAnswersCacheConnector].to(mockUserAnswersCacheConnector)
-  )
-  private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
+
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
   private def httpPathGET: String = controllers.establishers.routes.ConfirmDeleteEstablisherController.onPageLoad(index, kind).url
   private def httpPathPOST: String = controllers.establishers.routes.ConfirmDeleteEstablisherController.onSubmit(index, kind).url
@@ -116,7 +110,7 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Nun
 
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(CurrentMembersId), any())(any()))
+      when(mockCompoundNavigator.nextPage(Matchers.eq(ConfirmDeleteEstablisherId), any())(any()))
         .thenReturn(routes.AddEstablisherController.onPageLoad())
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))

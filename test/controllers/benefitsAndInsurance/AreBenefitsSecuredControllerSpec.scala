@@ -16,43 +16,33 @@
 
 package controllers.benefitsAndInsurance
 
-import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.benefitsAndInsurance.AreBenefitsSecuredFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.AreBenefitsSecuredId
 import matchers.JsonMatchers
-import navigators.CompoundNavigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, Matchers}
 import play.api.Application
 import play.api.data.Form
-import play.api.inject.bind
-import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.{NunjucksSupport, NunjucksRenderer}
+import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{UserAnswers, Enumerable, Data}
+import utils.{Data, Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 
 class AreBenefitsSecuredControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
-  val extraModules: Seq[GuiceableModule] = Seq(
-    bind[NunjucksRenderer].toInstance(mockRenderer),
-    bind[UserAnswersCacheConnector].to(mockUserAnswersCacheConnector),
-    bind[CompoundNavigator].toInstance(mockCompoundNavigator)
-  )
-
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
   private val httpPathGET: String = controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onPageLoad().url
   private val httpPathPOST: String = controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onSubmit().url
   private val form: Form[Boolean] = new AreBenefitsSecuredFormProvider()()
@@ -110,9 +100,6 @@ class AreBenefitsSecuredControllerSpec extends ControllerSpecBase with NunjucksS
 
       verify(mockRenderer, times(1))
         .render(Matchers.eq("benefitsAndInsurance/areBenefitsSecured.njk"), jsonCaptor.capture())(any())
-
-      println( "\n>>>>ACT=" + jsonCaptor.getValue)
-      println( "\n>>>>exp=" + jsonToPassToTemplate(form.fill(true)))
 
       jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(true)))
     }
