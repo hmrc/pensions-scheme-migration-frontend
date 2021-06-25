@@ -18,7 +18,8 @@ package utils.datacompletion
 
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.address.{AddressYearsId, AddressId, PreviousAddressId}
+import identifiers.establishers.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
+import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.individual.details._
 import utils.UserAnswers
 
@@ -74,10 +75,11 @@ trait DataCompletionEstablishers extends DataCompletion {
     )
   }
 
-  def isEstablisherIndividualContactDetailsCompleted: Option[Boolean] =
+  def isEstablisherIndividualContactDetailsCompleted(index: Int): Option[Boolean] =
     isComplete(
       Seq(
-        Some(false)
+        isAnswerComplete(EnterEmailId(index)),
+        isAnswerComplete(EnterPhoneId(index))
       )
     )
 }

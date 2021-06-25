@@ -69,7 +69,7 @@ class SpokeCreationService extends Enumerable.Implicits {
     Seq(
       createSpoke(answers, EstablisherIndividualDetails(index, answers), name),
       createSpoke(answers, EstablisherIndividualAddress(index, answers), name),
-      createSpoke(answers, EstablisherIndividualContactDetails, name)
+      createSpoke(answers, EstablisherIndividualContactDetails(index, answers), name)
     )
   }
 

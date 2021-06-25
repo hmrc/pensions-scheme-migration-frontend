@@ -19,18 +19,20 @@ package navigators
 import controllers.establishers.individual.routes._
 import controllers.establishers.individual.details.routes._
 import controllers.establishers.individual.address.routes._
+import controllers.establishers.individual.contact.routes._
 import controllers.establishers.routes._
 import controllers.routes._
 import identifiers._
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.details._
 import identifiers.establishers._
-import identifiers.establishers.individual.address.{PreviousAddressId, AddressId, PreviousAddressListId, AddressListId, AddressYearsId, EnterPostCodeId, EnterPreviousPostCodeId}
-import models.{Mode, Index, CheckMode, NormalMode}
+import identifiers.establishers.individual.address.{AddressId, AddressListId, AddressYearsId, EnterPostCodeId, EnterPreviousPostCodeId, PreviousAddressId, PreviousAddressListId}
+import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
+import models.{CheckMode, Index, Mode, NormalMode}
 import models.establishers.EstablisherKind
 import models.requests.DataRequest
-import play.api.mvc.{Call, AnyContent}
-import utils.{UserAnswers, Enumerable}
+import play.api.mvc.{AnyContent, Call}
+import utils.{Enumerable, UserAnswers}
 
 class EstablishersNavigator
   extends Navigator
@@ -58,6 +60,8 @@ class EstablishersNavigator
     case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index, NormalMode)
     case PreviousAddressListId(index) => cyaAddress(index)
     case PreviousAddressId(index) => cyaAddress(index)
+    case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
+    case EnterPhoneId(index) => cyaContactDetails(index)
   }
 
   override protected def editRouteMap(ua: UserAnswers)
@@ -69,10 +73,13 @@ class EstablishersNavigator
     case EstablisherHasUTRId(index) => establisherHasUtr(index, ua, CheckMode)
     case EstablisherUTRId(index) => cyaDetails(index)
     case EstablisherNoUTRReasonId(index) => cyaDetails(index)
+    case EnterEmailId(index) => cyaContactDetails(index)
+    case EnterPhoneId(index) => cyaContactDetails(index)
   }
 
   private def cyaAddress(index:Int) = controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
   private def cyaDetails(index:Int) = controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index)
+  private def cyaContactDetails(index:Int) = controllers.establishers.individual.contact.routes.CheckYourAnswersController.onPageLoad(index)
   private def addressYears(index:Int, mode:Mode) = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index, mode)
 
   private def establisherKindRoutes(
