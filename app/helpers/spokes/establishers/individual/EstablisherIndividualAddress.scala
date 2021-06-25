@@ -45,6 +45,6 @@ case class EstablisherIndividualAddress(
     )
 
   override def completeFlag(answers: UserAnswers): Option[Boolean] =
-    answers.isEstablisherIndividualAddressCompleted(0, answers)
+    answers.isEstablisherIndividualAddressCompleted(index, answers)
 }
 

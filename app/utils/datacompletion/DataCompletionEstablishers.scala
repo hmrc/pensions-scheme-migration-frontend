@@ -18,7 +18,7 @@ package utils.datacompletion
 
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.address.{AddressYearsId, AddressId, PreviousAddressId}
+import identifiers.establishers.individual.address.{AddressYearsId, PreviousAddressId, AddressId}
 import identifiers.establishers.individual.details._
 import utils.UserAnswers
 
