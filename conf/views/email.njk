@@ -44,17 +44,17 @@
                 {{ csrf() | safe }}
 
                 {{ govukInput({
-                    label: {
-                        text: pageTitle,
-                        isPageHeading: isPageHeading,
-                        classes: legendClass
-                    },
-                    id: "value",
-                    name: "value",
-                    value: form.value.value,
-                    classes: "govuk-input--width-10",0
-                    errorMessage: form.error
-                }) }}
+                                    label: {
+                                        text: pageTitle,
+                                        isPageHeading: isPageHeading,
+                                        classes: legendClass
+                                    },
+                                    id: "value",
+                                    name: "value",
+                                    value: form.value.value,
+                                    classes: "govuk-input--width-10",
+                                    errorMessage: form.error
+                                }) }}
 
                 {{ govukButton({
                     attributes: {id: "submit"},

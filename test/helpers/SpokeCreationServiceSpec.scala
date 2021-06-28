@@ -130,10 +130,10 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = TaskListLink(
               text = "Add contact details for a b",
-              target = "someUrl",
+              target = controllers.establishers.individual.contact.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
-            isCompleted = Some(false)
+            isCompleted = None
           )
         )
 
