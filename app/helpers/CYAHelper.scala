@@ -43,80 +43,18 @@ trait CYAHelper {
         addrLineToHtml(messages("country." + addr.country))
     )
 
-  protected val answerBooleanTransform: Option[Boolean => Text] =
-    Some(opt => msg"booleanAnswer.${opt.toString}")
-  protected val answerStringTransform: Option[String => Text] =
-    Some(opt => lit"$opt")
-  protected val answerBenefitsProvisionTypeTransform: Option[BenefitsProvisionType => Text] =
-    Some(opt => msg"howProvideBenefits.${opt.toString}")
-  protected val answerBenefitsTypeTransform: Option[BenefitsType => Text] =
-    Some(opt => msg"benefitsType.${opt.toString}")
-  protected val referenceValueTransform: Option[ReferenceValue => Text] =
-    Some(opt => msg"${opt.value}")
-
-  protected def answerBenefitsAddressTransform(implicit messages: Messages): Option[Address => Html] =
-    Some(opt => addressAnswer(opt))
+  protected val answerBooleanTransform: Option[Boolean => Text] = Some(opt => msg"booleanAnswer.${opt.toString}")
+  protected val answerStringTransform: Option[String => Text] = Some(opt => lit"$opt")
+  protected val answerBenefitsProvisionTypeTransform: Option[BenefitsProvisionType => Text] = Some(opt => msg"howProvideBenefits.${opt.toString}")
+  protected val answerBenefitsTypeTransform: Option[BenefitsType => Text] = Some(opt => msg"benefitsType.${opt.toString}")
+  protected val referenceValueTransform: Option[ReferenceValue => Text] = Some(opt => msg"${opt.value}")
+  protected def answerBenefitsAddressTransform(implicit messages: Messages): Option[Address => Html] = Some(opt => addressAnswer(opt))
 
   def rows(viewOnly: Boolean, rows: Seq[SummaryList.Row]): Seq[SummaryList.Row] =
     if (viewOnly) rows.map(_.copy(actions = Nil)) else rows
 
-  def booleanToText: Boolean => String =
-    bool => if (bool) "site.yes" else "site.no"
-
-  def boolAnswerOrAddLink(
-                           id: TypedIdentifier[Boolean],
-                           message: String,
-                           url: String,
-                           visuallyHiddenText: Option[Message] = None
-                         )(
-                           implicit ua: UserAnswers,
-                           rds: Reads[Boolean],
-                           messages: Messages
-                         ): AnswerRow =
-    ua.get(id) match {
-      case None =>
-        AnswerRow(
-          label = message,
-          answer = Seq(messages("site.not_entered")),
-          answerIsMessageKey = false,
-          changeUrl = addLink(url, visuallyHiddenText)
-        )
-      case Some(answer) =>
-        AnswerRow(
-          label = message,
-          answer = Seq(booleanToText(answer)),
-          answerIsMessageKey = true,
-          changeUrl = changeLink(url, visuallyHiddenText)
-        )
-    }
-
-  def answerOrAddLink[A](
-                          id: TypedIdentifier[A],
-                          message: String,
-                          url: String,
-                          visuallyHiddenText: Option[Message] = None,
-                          answerIsMessageKey: Boolean = false
-                        )(
-                          implicit ua: UserAnswers,
-                          rds: Reads[A],
-                          messages: Messages
-                        ): AnswerRow =
-    ua.get(id) match {
-      case None =>
-        AnswerRow(
-          label = message,
-          answer = Seq(messages("site.not_entered")),
-          answerIsMessageKey = answerIsMessageKey,
-          changeUrl = addLink(url, visuallyHiddenText)
-        )
-      case Some(answer) =>
-        AnswerRow(
-          label = message,
-          answer = Seq(answer.toString),
-          answerIsMessageKey = answerIsMessageKey,
-          changeUrl = changeLink(url, visuallyHiddenText)
-        )
-    }
+  def booleanToText: Boolean => String = bool => if (bool) "site.yes" else "site.no"
+  def booleanToContent: Boolean => Content = bool => if (bool) msg"site.yes" else msg"site.no"
 
   private val attachDynamicIndex: (Map[String, String], Int) => Map[String, String] =
     (attributeMap, index) => {
@@ -203,6 +141,61 @@ trait CYAHelper {
   def addLink(url: String, visuallyHiddenText: Option[Message] = None)
              (implicit messages: Messages): Option[Link] =
     Some(Link(messages("site.add"), url, visuallyHiddenText))
+
+  def boolAnswerOrAddLink(
+    id: TypedIdentifier[Boolean],
+    message: String,
+    url: String,
+    visuallyHiddenText: Option[Message] = None
+  )(
+    implicit ua: UserAnswers,
+    rds: Reads[Boolean],
+    messages: Messages
+  ): AnswerRow =
+    ua.get(id) match {
+      case None =>
+        AnswerRow(
+          label = message,
+          answer = Seq(messages("site.not_entered")),
+          answerIsMessageKey = false,
+          changeUrl = addLink(url, visuallyHiddenText)
+        )
+      case Some(answer) =>
+        AnswerRow(
+          label = message,
+          answer = Seq(booleanToText(answer)),
+          answerIsMessageKey = true,
+          changeUrl = changeLink(url, visuallyHiddenText)
+        )
+    }
+
+  def answerOrAddLink[A](
+    id: TypedIdentifier[A],
+    message: String,
+    url: String,
+    visuallyHiddenText: Option[Message] = None,
+    answerIsMessageKey: Boolean = false
+  )(
+    implicit ua: UserAnswers,
+    rds: Reads[A],
+    messages: Messages
+  ): AnswerRow =
+    ua.get(id) match {
+      case None =>
+        AnswerRow(
+          label = message,
+          answer = Seq(messages("site.not_entered")),
+          answerIsMessageKey = answerIsMessageKey,
+          changeUrl = addLink(url, visuallyHiddenText)
+        )
+      case Some(answer) =>
+        AnswerRow(
+          label = message,
+          answer = Seq(answer.toString),
+          answerIsMessageKey = answerIsMessageKey,
+          changeUrl = changeLink(url, visuallyHiddenText)
+        )
+    }
 }
 
 object CYAHelper {
