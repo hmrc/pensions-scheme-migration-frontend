@@ -134,6 +134,17 @@ trait CYAHelper {
         )
     }
 
+  def answerRow[A](message: String,
+    answer: String,
+    url: Option[String] = None,
+    visuallyHiddenText: Option[Text] = None)
+    (implicit messages: Messages): Row =
+    Row(
+      key = Key(msg"$message", classes = Seq("govuk-!-width-one-half")),
+      value = Value(Literal(answer)),
+      actions = actionChange(url, visuallyHiddenText)
+    )
+
   def changeLink(url: String, visuallyHiddenText: Option[Message] = None)
                 (implicit messages: Messages): Option[Link] =
     Some(Link(messages("site.change"), url, visuallyHiddenText))
