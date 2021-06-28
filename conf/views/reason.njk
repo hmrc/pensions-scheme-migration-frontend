@@ -1,0 +1,73 @@
+{% extends "includes/layout.njk" %}
+
+{% from "macros/title.njk"                          import title %}
+{% from "macros/returnLink.njk"                     import returnLink %}
+{% from "govuk/components/button/macro.njk"         import govukButton %}
+{% from "govuk/components/error-summary/macro.njk"  import govukErrorSummary %}
+{% from "govuk/components/input/macro.njk"          import govukInput %}
+
+{% block pageTitle %}
+    {{ title(pageTitle, form.errors) }}
+{% endblock %}
+
+{% macro labelClass(isPageheading) %}
+    {% if isPageHeading %}
+        govuk-label--xl
+    {% elif not isPageHeaidng %}
+        govuk-fieldset__legend--s
+    {% endif %}
+{% endmacro %}
+
+{% block mainContent %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            {% if form.errors.length > 0 %}
+                {{ govukErrorSummary({
+                    "titleText": messages("error.summary.title"),
+                    "errorList": form.errors
+                }) }}
+            {% endif %}
+
+            {% if not isPageHeading %}
+                <h1 class="govuk-heading-xl">
+                    {{ pageHeading }}
+                </h1>
+            {% endif %}
+
+            <form method="post"
+                  autocomplete="off"
+                  action="{{ submitUrl }}"
+                  novalidate>
+
+                {{ csrf() | safe }}
+
+                {{ govukInput({
+                    label: {
+                        text: pageHeading,
+                        isPageHeading: isPageHeading,
+                        classes: labelClass(isPageHeading)
+                    },
+                    id: "value",
+                    name: "value",
+                    value: form.value.value,
+                    classes: "govuk-input--width-20",
+                    attributes: {
+                        autocomplete: "off"
+                    },
+                    errorMessage: form.error
+                }) }}
+
+                {{ govukButton({
+                    attributes: {id: "submit"},
+                    text: messages("site.save_and_continue")
+                }) }}
+
+            </form>
+        </div>
+    </div>
+
+    {{ returnLink(schemeName) }}
+
+{% endblock %}

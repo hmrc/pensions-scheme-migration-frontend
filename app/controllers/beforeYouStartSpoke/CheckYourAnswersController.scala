@@ -20,23 +20,23 @@ import controllers.Retrievals
 import controllers.actions._
 import helpers.BeforeYouStartCYAHelper
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils._
-import views.html.checkYourAnswers
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class CheckYourAnswersController @Inject()(
                                             override val messagesApi: MessagesApi,
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            implicit val countryOptions: CountryOptions,
                                             cyaHelper: BeforeYouStartCYAHelper,
                                             val controllerComponents: MessagesControllerComponents,
-                                            val view: checkYourAnswers
+                                            renderer: Renderer
                                           )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with Enumerable.Implicits
@@ -46,6 +46,13 @@ class CheckYourAnswersController @Inject()(
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        Future.successful(Ok(view(cyaHelper.viewmodel)))
+
+        val json = Json.obj(
+            "list" -> cyaHelper.rows,
+            "schemeName" -> existingSchemeName,
+            "submitUrl" -> controllers.routes.TaskListController.onPageLoad().url
+          )
+
+        renderer.render("check-your-answers.njk", json).map(Ok(_))
     }
 }

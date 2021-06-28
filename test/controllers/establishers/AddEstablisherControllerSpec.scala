@@ -16,7 +16,6 @@
 
 package controllers.establishers
 
-import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.establishers.ConfirmDeleteEstablisherFormProvider
@@ -26,7 +25,6 @@ import identifiers.establishers.{AddEstablisherId, EstablisherKindId, IsEstablis
 import matchers.JsonMatchers
 import models.PersonName
 import models.establishers.EstablisherKind
-import navigators.CompoundNavigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, Matchers}
@@ -37,7 +35,7 @@ import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.{NunjucksRenderer, NunjucksSupport}
+import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.{Radios, Table}
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
@@ -60,12 +58,9 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   val extraModules: Seq[GuiceableModule] = Seq(
-    bind[NunjucksRenderer].toInstance(mockRenderer),
-    bind[AddToListHelper].toInstance(mockHelper),
-    bind[CompoundNavigator].to(mockCompoundNavigator),
-    bind[UserAnswersCacheConnector].to(mockUserAnswersCacheConnector)
+    bind[AddToListHelper].toInstance(mockHelper)
   )
-  private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
   private def httpPathGET: String = controllers.establishers.routes.AddEstablisherController.onPageLoad().url
   private def httpPathPOST: String = controllers.establishers.routes.AddEstablisherController.onSubmit().url
@@ -123,7 +118,7 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(AddEstablisherId(Some(true))), any())(any()))
+      when(mockCompoundNavigator.nextPage(Matchers.eq(AddEstablisherId(Some(true))), any(), any())(any()))
         .thenReturn(routes.AddEstablisherController.onPageLoad())
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)

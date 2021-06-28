@@ -17,12 +17,13 @@
 package helpers
 
 import base.SpecBase
+import controllers.establishers.individual.details.routes
 import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.individual.EstablisherNameId
 import models.establishers.EstablisherKind
 import models.{EntitySpoke, _}
-import org.scalatest.{MustMatchers, OptionValues}
+import org.scalatest.{MustMatchers, OptionValues, TryValues}
 import utils.Data.{schemeName, ua}
 import utils.Enumerable
 import viewmodels.Message
@@ -31,6 +32,7 @@ class SpokeCreationServiceSpec
   extends SpecBase
     with MustMatchers
     with OptionValues
+    with TryValues
     with Enumerable.Implicits {
 
   val spokeCreationService = new SpokeCreationService()
@@ -96,6 +98,51 @@ class SpokeCreationServiceSpec
         )
 
       val result = spokeCreationService.getAddEstablisherHeaderSpokes(userAnswers, viewOnly = false)
+      result mustBe expectedSpoke
+    }
+  }
+
+  "getEstablisherIndividualSpokes" must {
+    "display all the spokes with appropriate links and incomplete status when no data is returned from TPSS" in {
+      val userAnswers =
+        ua
+          .set(EstablisherKindId(0), EstablisherKind.Individual).success.value
+          .set(EstablisherNameId(0), PersonName("a", "b")).success.value
+
+      val expectedSpoke =
+        Seq(
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Add details for a b",
+              target = routes.WhatYouWillNeedController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = Some(false)
+          ),
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Add address for a b",
+              target = "someUrl",
+              visuallyHiddenText = None
+            ),
+            isCompleted = Some(false)
+          ),
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Add contact details for a b",
+              target = "someUrl",
+              visuallyHiddenText = None
+            ),
+            isCompleted = Some(false)
+          )
+        )
+
+      val result =
+        spokeCreationService.getEstablisherIndividualSpokes(
+          answers = userAnswers,
+          name = "a b",
+          index = 0
+        )
       result mustBe expectedSpoke
     }
   }

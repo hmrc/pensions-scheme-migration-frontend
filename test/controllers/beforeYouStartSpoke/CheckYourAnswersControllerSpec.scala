@@ -17,65 +17,75 @@
 package controllers.beforeYouStartSpoke
 
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRequiredActionImpl, FakeAuthAction}
+import controllers.actions.MutableFakeDataRetrievalAction
 import helpers.BeforeYouStartCYAHelper
-import org.mockito.Matchers._
-import org.mockito.Mockito._
-import org.scalatestplus.mockito.MockitoSugar
-import play.api.mvc.Call
+import matchers.JsonMatchers
+import org.mockito.ArgumentCaptor
+import org.mockito.Matchers.any
+import org.mockito.Mockito.{times, verify, when}
+import play.api.Application
+import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
+import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
-import utils.Data._
-import utils.{CountryOptions, InputOption}
-import viewmodels.{AnswerSection, CYAViewModel}
-import views.html.checkYourAnswers
+import uk.gov.hmrc.viewmodels.NunjucksSupport
+import uk.gov.hmrc.viewmodels.SummaryList.{Key, Row, Value}
+import uk.gov.hmrc.viewmodels.Text.Literal
+import utils.Data.{schemeName, ua}
 
-class CheckYourAnswersControllerSpec extends ControllerSpecBase with MockitoSugar {
+import scala.concurrent.Future
 
- private val view = injector.instanceOf[checkYourAnswers]
+class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers {
 
-  val options = Seq(InputOption("territory:AE-AZ", "Abu Dhabi"), InputOption("country:AF", "Afghanistan"))
-  val testAnswer = "territory:AE-AZ"
-  def countryOptions: CountryOptions = new CountryOptions(options)
-  val cyaHelper: BeforeYouStartCYAHelper = mock[BeforeYouStartCYAHelper]
-
-  private def controller: CheckYourAnswersController =
-    new CheckYourAnswersController(
-      messagesApi,
-      FakeAuthAction,
-      getSchemeName,
-      new DataRequiredActionImpl,
-      countryOptions,
-      cyaHelper,
-      controllerComponents,
-      view
-    )
-
-  private def postUrl: Call = controllers.routes.TaskListController.onPageLoad()
-
-  private def vm = CYAViewModel(
-    answerSections = Seq(AnswerSection(None, Nil)),
-    href = postUrl,
-    schemeName = schemeName,
-    hideEditLinks = false,
-    hideSaveAndContinueButton = false
+  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  private val mockCyaHelper: BeforeYouStartCYAHelper = mock[BeforeYouStartCYAHelper]
+  val extraModules: Seq[GuiceableModule] = Seq(
+    bind[BeforeYouStartCYAHelper].to(mockCyaHelper)
   )
 
-  private def viewAsString: String =
-    view(vm)(fakeRequest, messages).toString
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
+  private val templateToBeRendered = "check-your-answers.njk"
 
-  "CheckYourAnswers Controller" when {
+  private def httpPathGET: String = controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad().url
 
-    "onPageLoad() is called" must {
-      "return OK and the correct view with return to tasklist" in {
+  private val rows = Seq(
+    Row(
+      key = Key(msg"messages__cya__scheme_name", classes = Seq("govuk-!-width-one-half")),
+      value = Value(Literal(schemeName)),
+      actions = Nil
+    )
+  )
 
-        when(cyaHelper.viewmodel(any(), any(), any())).thenReturn(vm)
+  private val jsonToPassToTemplate: JsObject = Json.obj(
+    "list" -> rows,
+    "schemeName" -> schemeName,
+    "submitUrl" -> controllers.routes.TaskListController.onPageLoad().url
+  )
 
-        val result = controller.onPageLoad()(fakeRequest)
+  override def beforeEach: Unit = {
+    super.beforeEach
+    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(play.twirl.api.Html("")))
+    when(mockCyaHelper.rows(any(), any())).thenReturn(rows)
+  }
 
-        status(result) mustBe OK
-        contentAsString(result) mustBe viewAsString
-      }
+
+  "CheckYourAnswers Controller" must {
+
+    "return OK and the correct view for a GET" in {
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+
+      val result = route(application, httpGETRequest(httpPathGET)).value
+
+      status(result) mustEqual OK
+
+      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+
+      templateCaptor.getValue mustEqual templateToBeRendered
+
+      jsonCaptor.getValue must containJson(jsonToPassToTemplate)
     }
+
   }
 }
-

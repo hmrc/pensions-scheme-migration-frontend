@@ -20,6 +20,7 @@ import base.SpecBase
 import controllers.beforeYouStartSpoke.routes._
 import identifiers.Identifier
 import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}
+import models.NormalMode
 import org.scalatest.prop.TableFor3
 import play.api.mvc.Call
 import utils.UserAnswers
@@ -40,7 +41,7 @@ class BeforeYouStartNavigatorSpec
       )
 
     "in NormalMode" must {
-      behave like navigatorWithRoutesForMode(navigator, navigation)
+      behave like navigatorWithRoutesForMode(NormalMode)(navigator, navigation)
     }
   }
 }

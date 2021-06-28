@@ -21,11 +21,11 @@ lazy val microservice = Project(appName, file("."))
       "config.AppConfig"
     ),
     RoutesKeys.routesImport ++= Seq(
+      "models.Index",
+      "models.establishers.EstablisherKind",
       "models.Mode",
       "models.CheckMode",
-      "models.NormalMode",
-      "models.Index",
-      "models.establishers.EstablisherKind"
+      "models.NormalMode"
     ),
       // concatenate js
       Concat.groups := Seq(
@@ -59,7 +59,7 @@ pipelineStages in Assets := Seq(concat, uglify)
     ScoverageKeys.coverageHighlighting := true
   )
   .settings(
-    scalacOptions ++= Seq("-Xfatal-warnings", "-feature"),
+    scalacOptions ++= Seq(/*"-Xfatal-warnings",*/ "-feature"),
     retrieveManaged := true,
     evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
   )

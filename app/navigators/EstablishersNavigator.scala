@@ -16,17 +16,23 @@
 
 package navigators
 
+import controllers.establishers.individual.routes._
+import controllers.establishers.individual.details.routes._
 import controllers.establishers.routes._
+import controllers.routes._
 import identifiers._
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.{AddEstablisherId, ConfirmDeleteEstablisherId, EstablisherKindId}
-import models.Index
+import identifiers.establishers.individual.details._
+import identifiers.establishers._
+import models.{CheckMode, Index, Mode, NormalMode}
 import models.establishers.EstablisherKind
 import models.requests.DataRequest
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
 
-class EstablishersNavigator extends Navigator with Enumerable.Implicits {
+class EstablishersNavigator
+  extends Navigator
+    with Enumerable.Implicits {
 
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
@@ -34,20 +40,64 @@ class EstablishersNavigator extends Navigator with Enumerable.Implicits {
     case EstablisherNameId(_) => AddEstablisherController.onPageLoad()
     case AddEstablisherId(value) => addEstablisherRoutes(value, ua)
     case ConfirmDeleteEstablisherId => AddEstablisherController.onPageLoad()
+    case EstablisherDOBId(index) => EstablisherHasNINOController.onPageLoad(index, NormalMode)
+    case EstablisherHasNINOId(index) => establisherHasNino(index, ua, NormalMode)
+    case EstablisherNINOId(index) => EstablisherHasUTRController.onPageLoad(index, NormalMode)
+    case EstablisherNoNINOReasonId(index) => EstablisherHasUTRController.onPageLoad(index, NormalMode)
+    case EstablisherHasUTRId(index) => establisherHasUtr(index, ua, NormalMode)
+    case EstablisherUTRId(index) => CheckYourAnswersController.onPageLoad(index)
+    case EstablisherNoUTRReasonId(index) => CheckYourAnswersController.onPageLoad(index)
   }
 
-  private def establisherKindRoutes(index: Index, ua: UserAnswers): Call =
+  override protected def editRouteMap(ua: UserAnswers)
+                                     (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
+    case EstablisherDOBId(index) => CheckYourAnswersController.onPageLoad(index)
+    case EstablisherHasNINOId(index) => establisherHasNino(index, ua, CheckMode)
+    case EstablisherNINOId(index) => CheckYourAnswersController.onPageLoad(index)
+    case EstablisherNoNINOReasonId(index) => CheckYourAnswersController.onPageLoad(index)
+    case EstablisherHasUTRId(index) => establisherHasUtr(index, ua, CheckMode)
+    case EstablisherUTRId(index) => CheckYourAnswersController.onPageLoad(index)
+    case EstablisherNoUTRReasonId(index) => CheckYourAnswersController.onPageLoad(index)
+  }
+
+  private def establisherKindRoutes(
+                                     index: Index,
+                                     ua: UserAnswers
+                                   ): Call =
     ua.get(EstablisherKindId(index)) match {
-      case Some(EstablisherKind.Individual) => controllers.establishers.individual.routes.EstablisherNameController.onPageLoad(index)
-      case _ => controllers.routes.IndexController.onPageLoad()
+      case Some(EstablisherKind.Individual) => EstablisherNameController.onPageLoad(index)
+      case _ => IndexController.onPageLoad()
     }
 
-  private def addEstablisherRoutes(value: Option[Boolean],
-                                   answers: UserAnswers): Call = {
+  private def addEstablisherRoutes(
+                                    value: Option[Boolean],
+                                    answers: UserAnswers
+                                  ): Call =
     value match {
-      case Some(false) => controllers.routes.TaskListController.onPageLoad()
+      case Some(false) => TaskListController.onPageLoad()
       case Some(true) => EstablisherKindController.onPageLoad(answers.establishersCount)
-      case None => controllers.routes.IndexController.onPageLoad()
+      case None => IndexController.onPageLoad()
     }
-  }
+
+  private def establisherHasNino(
+                                  index: Index,
+                                  answers: UserAnswers,
+                                  mode: Mode
+                                ): Call =
+    answers.get(EstablisherHasNINOId(index)) match {
+      case Some(true) => EstablisherEnterNINOController.onPageLoad(index, mode)
+      case Some(false) => EstablisherNoNINOReasonController.onPageLoad(index, mode)
+      case None => IndexController.onPageLoad()
+    }
+
+  private def establisherHasUtr(
+                                 index: Index,
+                                 answers: UserAnswers,
+                                 mode: Mode
+                               ): Call =
+    answers.get(EstablisherHasUTRId(index)) match {
+      case Some(true) => EstablisherEnterUTRController.onPageLoad(index, mode)
+      case Some(false) => EstablisherNoUTRReasonController.onPageLoad(index, mode)
+      case None => IndexController.onPageLoad()
+    }
 }

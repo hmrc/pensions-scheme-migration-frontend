@@ -16,83 +16,149 @@
 
 package controllers.beforeYouStartSpoke
 
-import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
-import controllers.actions._
+import controllers.actions.MutableFakeDataRetrievalAction
 import forms.beforeYouStart.WorkingKnowledgeFormProvider
 import identifiers.beforeYouStart.WorkingKnowledgeId
+import matchers.JsonMatchers
+import org.mockito.Matchers.any
+import org.mockito.Mockito.{times, verify, when}
+import org.mockito.{ArgumentCaptor, Matchers}
+import play.api.Application
 import play.api.data.Form
-import play.api.mvc.Call
+import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
+import play.twirl.api.Html
+import uk.gov.hmrc.nunjucks.NunjucksSupport
+import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.FakeNavigator
-import views.html.beforeYouStart.workingKnowledge
+import utils.Enumerable
 
-class WorkingKnowledgeControllerSpec extends ControllerSpecBase {
-  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+import scala.concurrent.Future
 
-  private val view = injector.instanceOf[workingKnowledge]
+class WorkingKnowledgeControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
-  val formProvider = new WorkingKnowledgeFormProvider()
-  val form = formProvider()
+  private val templateToBeRendered = "beforeYouStart/workingKnowledge.njk"
+  private val form: Form[Boolean] = new WorkingKnowledgeFormProvider()()
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getSchemeName): WorkingKnowledgeController =
-    new WorkingKnowledgeController(
-      messagesApi,
-      FakeUserAnswersCacheConnector,
-      new FakeNavigator(desiredRoute = onwardRoute),
-      FakeAuthAction,
-      dataRetrievalAction,
-      new DataRequiredActionImpl,
-      formProvider,
-      controllerComponents,
-      view
+  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
+
+  private def httpPathGET: String = routes.WorkingKnowledgeController.onPageLoad().url
+  private def httpPathPOST: String = routes.WorkingKnowledgeController.onSubmit().url
+
+  private val valuesValid: Map[String, Seq[String]] = Map(
+    "value" -> Seq("true")
+  )
+
+  private val valuesInvalid: Map[String, Seq[String]] = Map(
+    "value" -> Seq.empty
+  )
+
+  private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>
+    Json.obj(
+      "form" -> form,
+      "schemeName" -> schemeName,
+      "radios" -> Radios.yesNo(form("value"))
     )
 
-  private def viewAsString(form: Form[_] = form) = view(form, Some(schemeName))(fakeRequest, messages).toString
+  override def beforeEach: Unit = {
+    super.beforeEach
+    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+  }
 
-  "Working knowledge Controller" must {
+
+  "WorkingKnowledgeController" must {
 
     "return OK and the correct view for a GET" in {
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = controller().onPageLoad()(fakeRequest)
+      val result = route(application, httpGETRequest(httpPathGET)).value
 
-      status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString()
+      status(result) mustEqual OK
+
+      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+
+      templateCaptor.getValue mustEqual templateToBeRendered
+
+      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form))
     }
 
-    "populate the view correctly on a GET when the question has previously been answered" in {
+    "return OK and the correct view for a GET when the question has previously been answered" in {
+      val userAnswers = ua.set(WorkingKnowledgeId, true).toOption.get
 
-      val validData = ua.set(WorkingKnowledgeId, true).get
-      val getRelevantData = new FakeDataRetrievalAction(Some(validData))
+      mutableFakeDataRetrievalAction.setDataToReturn(Option(userAnswers))
 
-      val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
 
-      contentAsString(result) mustBe viewAsString(form.fill(true))
+      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+
+      val result = route(application, httpGETRequest(httpPathGET)).value
+
+      status(result) mustEqual OK
+
+      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+
+      templateCaptor.getValue mustEqual templateToBeRendered
+
+      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(true)))
     }
 
-    "redirect to the next page when valid data is submitted" in {
+    "redirect to Session Expired page for a GET when there is no data" in {
+      mutableFakeDataRetrievalAction.setDataToReturn(None)
 
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+      val result = route(application, httpGETRequest(httpPathGET)).value
 
-      val result = controller().onSubmit()(postRequest)
+      status(result) mustEqual SEE_OTHER
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
     }
 
-    "return a Bad Request and errors" when {
+    "Save data to user answers and redirect to next page when valid data is submitted" in {
 
-      "invalid data is submitted" in {
+      val expectedJson = Json.obj()
 
-        val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
-        val boundForm = form.bind(Map("value" -> "invalid value"))
+      when(mockCompoundNavigator.nextPage(Matchers.eq(WorkingKnowledgeId), any(), any())(any()))
+        .thenReturn(routes.CheckYourAnswersController.onPageLoad())
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
+        .thenReturn(Future.successful(Json.obj()))
 
-        val result = controller().onSubmit()(postRequest)
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-        status(result) mustBe BAD_REQUEST
-        contentAsString(result) mustBe viewAsString(boundForm)
-      }
+      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+
+      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+
+      status(result) mustEqual SEE_OTHER
+
+      verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptor.capture)(any(), any())
+
+      jsonCaptor.getValue must containJson(expectedJson)
+
+      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad().url)
+    }
+
+    "return a BAD REQUEST when invalid data is submitted" in {
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+
+      val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
+
+      status(result) mustEqual BAD_REQUEST
+
+      verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
+    }
+
+    "redirect to Session Expired page for a POST when there is no data" in {
+      mutableFakeDataRetrievalAction.setDataToReturn(None)
+
+      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
     }
   }
 }

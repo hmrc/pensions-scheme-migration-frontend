@@ -17,27 +17,18 @@
 package forms.beforeYouStart
 
 import forms.FormSpec
-import utils.{CountryOptions, InputOption}
 
 class EstablishedCountryFormProviderSpec extends FormSpec {
 
   val requiredKey = "messages__error__scheme_country"
-  val options = Seq(InputOption("territory:AE-AZ", "Abu Dhabi"), InputOption("country:AF", "Afghanistan"))
 
   "EstablishedCountry Form" must {
 
-    val countryOptions: CountryOptions = new CountryOptions(options)
-
-    val formProvider = new EstablishedCountryFormProvider(countryOptions)
+    val formProvider = new EstablishedCountryFormProvider()
 
     "bind a valid country" in {
       val form = formProvider().bind(Map("value" -> "territory:AE-AZ"))
       form.get mustBe "territory:AE-AZ"
-    }
-
-    "fail to bind an invalid country" in {
-      val expectedError = error("value", requiredKey)
-      checkForError(formProvider(), Map("value" -> "test"), expectedError)
     }
 
     "fail to bind a blank value" in {

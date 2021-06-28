@@ -44,6 +44,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val lockOnSchemeUrl: String = s"$migrationUrl${config.get[String](path = "urls.lockOnScheme")}"
   lazy val dataCacheUrl: String = s"$migrationUrl${config.get[String](path = "urls.dataCache")}"
   lazy val addressLookUp = s"${servicesConfig.baseUrl("address-lookup")}"
+  lazy val yourPensionSchemesUrl: String = loadConfig("urls.yourPensionSchemes")
 
   lazy val pensionsAdministratorUrl = s"${servicesConfig.baseUrl("pension-administrator")}"
   lazy val getPSAEmail: String = s"$pensionsAdministratorUrl${config.get[String]("urls.get-psa-email")}"

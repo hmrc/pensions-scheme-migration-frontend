@@ -16,7 +16,6 @@
 
 package controllers.aboutMembership
 
-import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.aboutMembership.MembersFormProvider
@@ -28,12 +27,9 @@ import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, Matchers}
 import play.api.Application
 import play.api.data.Form
-import play.api.inject.bind
-import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
@@ -46,11 +42,8 @@ class CurrentMembersControllerSpec extends ControllerSpecBase with NunjucksSuppo
   private val form: Form[Members] = new MembersFormProvider()(messages("currentMembers.error.required", schemeName))
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  val extraModules: Seq[GuiceableModule] = Seq(
-    bind[NunjucksRenderer].toInstance(mockRenderer),
-    bind[UserAnswersCacheConnector].to(mockUserAnswersCacheConnector)
-  )
-  private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
+
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
   private def httpPathGET: String = controllers.aboutMembership.routes.CurrentMembersController.onPageLoad.url
 
@@ -130,7 +123,7 @@ class CurrentMembersControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(CurrentMembersId), any())(any()))
+      when(mockCompoundNavigator.nextPage(Matchers.eq(CurrentMembersId), any(), any())(any()))
         .thenReturn(routes.CheckYourAnswersController.onPageLoad())
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))

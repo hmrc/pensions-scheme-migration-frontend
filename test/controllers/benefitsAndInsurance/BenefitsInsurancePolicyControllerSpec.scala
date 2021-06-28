@@ -16,43 +16,33 @@
 
 package controllers.benefitsAndInsurance
 
-import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.benefitsAndInsurance.BenefitsInsurancePolicyFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.BenefitsInsurancePolicyId
 import matchers.JsonMatchers
-import navigators.CompoundNavigator
-import org.mockito.{ArgumentCaptor, Matchers}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
+import org.mockito.{ArgumentCaptor, Matchers}
 import play.api.Application
 import play.api.data.Form
-import play.api.inject.bind
-import play.api.inject.guice.GuiceableModule
+import play.api.libs.json.Reads._
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.{NunjucksSupport, NunjucksRenderer}
-import utils.{UserAnswers, Enumerable, Data}
-import play.api.libs.json.Reads._
-import utils.Data.{schemeName, ua, insurerPolicyNo}
+import uk.gov.hmrc.nunjucks.NunjucksSupport
+import utils.Data.{insurerPolicyNo, schemeName, ua}
+import utils.{Data, Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 
 class BenefitsInsurancePolicyControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
-  val extraModules: Seq[GuiceableModule] = Seq(
-    bind[NunjucksRenderer].toInstance(mockRenderer),
-    bind[UserAnswersCacheConnector].to(mockUserAnswersCacheConnector),
-    bind[CompoundNavigator].toInstance(mockCompoundNavigator)
-  )
-
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
   private val httpPathGET: String = controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onPageLoad().url
   private val httpPathPOST: String = controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onSubmit().url
   private val form: Form[String] = new BenefitsInsurancePolicyFormProvider()()
@@ -131,7 +121,7 @@ class BenefitsInsurancePolicyControllerSpec extends ControllerSpecBase with Nunj
         BenefitsInsurancePolicyId.toString -> "abcdef"
       )
 
-      when(mockCompoundNavigator.nextPage(any(), any())(any()))
+      when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
         .thenReturn(routes.CheckYourAnswersController.onPageLoad())
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))

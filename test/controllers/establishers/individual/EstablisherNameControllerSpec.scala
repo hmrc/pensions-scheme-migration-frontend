@@ -16,7 +16,6 @@
 
 package controllers.establishers.individual
 
-import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.PersonNameFormProvider
@@ -28,12 +27,9 @@ import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, Matchers}
 import play.api.Application
 import play.api.data.Form
-import play.api.inject.bind
-import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
@@ -49,11 +45,8 @@ class EstablisherNameControllerSpec extends ControllerSpecBase with NunjucksSupp
   private val form: Form[PersonName] = new PersonNameFormProvider()("messages__error__establisher")
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  val extraModules: Seq[GuiceableModule] = Seq(
-    bind[NunjucksRenderer].toInstance(mockRenderer),
-    bind[UserAnswersCacheConnector].to(mockUserAnswersCacheConnector)
-  )
-  private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
+
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
   private def httpPathGET: String = controllers.establishers.individual.routes.EstablisherNameController.onPageLoad(index).url
   private def httpPathPOST: String = controllers.establishers.individual.routes.EstablisherNameController.onSubmit(index).url
@@ -130,7 +123,7 @@ class EstablisherNameControllerSpec extends ControllerSpecBase with NunjucksSupp
 
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(EstablisherNameId(0)), any())(any()))
+      when(mockCompoundNavigator.nextPage(Matchers.eq(EstablisherNameId(0)), any(), any())(any()))
         .thenReturn(controllers.establishers.routes.AddEstablisherController.onPageLoad())
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))

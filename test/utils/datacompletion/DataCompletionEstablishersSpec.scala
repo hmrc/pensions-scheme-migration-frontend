@@ -18,27 +18,75 @@ package utils.datacompletion
 
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.individual.EstablisherNameId
-import models.PersonName
+import identifiers.establishers.individual.details._
+import models.{PersonName, ReferenceValue}
 import models.establishers.EstablisherKind
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatest.{MustMatchers, OptionValues, TryValues, WordSpec}
 import utils.{Enumerable, UserAnswers}
 
-class DataCompletionEstablishersSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
+import java.time.LocalDate
+
+class DataCompletionEstablishersSpec
+  extends WordSpec
+    with MustMatchers
+    with OptionValues
+    with TryValues
+    with Enumerable.Implicits {
 
   "Establisher Individual completion status should be returned correctly" when {
     "isEstablisherIndividualComplete" must {
       "return true when all answers are present" in {
-        val ua = UserAnswers().set(EstablisherKindId(0), EstablisherKind.Individual).flatMap(_.set(EstablisherNameId(0), PersonName("a", "b"))).get
+        val ua =
+          UserAnswers()
+            .set(EstablisherKindId(0), EstablisherKind.Individual).success.value
+            .set(EstablisherNameId(0), PersonName("a", "b")).success.value
+
         ua.isEstablisherIndividualComplete(0) mustBe true
       }
 
       "return false when some answer is missing" in {
-        val ua = UserAnswers().set(EstablisherKindId(0), EstablisherKind.Individual).flatMap(
-          _.set(EstablisherNameId(0), PersonName("a", "b")).flatMap(
-            _.set(EstablisherKindId(1), EstablisherKind.Individual)
-          )).get
+        val ua =
+          UserAnswers()
+            .set(EstablisherKindId(0), EstablisherKind.Individual).success.value
+            .set(EstablisherNameId(0), PersonName("a", "b")).success.value
+            .set(EstablisherKindId(1), EstablisherKind.Individual).success.value
+
         ua.isEstablisherIndividualComplete(1) mustBe false
       }
     }
+
+    "isEstablisherIndividualDetailsCompleted" must {
+      "return true when all answers are present" in {
+        val ua =
+          UserAnswers()
+            .set(EstablisherDOBId(0), LocalDate.parse("2001-01-01")).success.value
+
+        val ua1 =
+          ua
+            .set(EstablisherHasNINOId(0), true).success.value
+            .set(EstablisherNINOId(0), ReferenceValue("AB123456C")).success.value
+            .set(EstablisherHasUTRId(0), true).success.value
+            .set(EstablisherUTRId(0), ReferenceValue("1234567890")).success.value
+
+        val ua2 =
+          ua
+            .set(EstablisherHasNINOId(0), false).success.value
+            .set(EstablisherNoNINOReasonId(0), "Reason").success.value
+            .set(EstablisherHasUTRId(0), false).success.value
+            .set(EstablisherNoUTRReasonId(0), "Reason").success.value
+
+        ua1.isEstablisherIndividualDetailsCompleted(0, ua1) mustBe true
+        ua2.isEstablisherIndividualDetailsCompleted(0, ua2) mustBe true
+      }
+
+      "return false when some answer is missing" in {
+        val ua =
+          UserAnswers()
+            .set(EstablisherDOBId(0), LocalDate.parse("2001-01-01")).success.value
+
+        ua.isEstablisherIndividualDetailsCompleted(0, ua) mustBe false
+
+      }
+    }
   }
-  }
+}

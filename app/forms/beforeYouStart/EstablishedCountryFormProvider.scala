@@ -18,15 +18,11 @@ package forms.beforeYouStart
 
 import forms.mappings.Mappings
 import play.api.data.Form
-import utils.CountryOptions
 
-import javax.inject.Inject
-
-class EstablishedCountryFormProvider @Inject()(countries: CountryOptions) extends Mappings {
+class EstablishedCountryFormProvider extends Mappings {
 
   def apply(): Form[String] =
     Form(
-      "value" -> text("messages__error__scheme_country").verifying(
-        country(countries, "messages__error__scheme_country"))
+      "value" -> text("messages__error__scheme_country")
     )
 }

@@ -30,4 +30,10 @@ class BeforeYouStartNavigator extends Navigator {
     case SchemeTypeId | EstablishedCountryId | WorkingKnowledgeId =>
       CheckYourAnswersController.onPageLoad()
   }
+
+  override protected def editRouteMap(ua: UserAnswers)
+                                     (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
+    case SchemeTypeId | EstablishedCountryId | WorkingKnowledgeId =>
+      CheckYourAnswersController.onPageLoad()
+  }
 }

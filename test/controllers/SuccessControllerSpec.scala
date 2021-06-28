@@ -17,7 +17,6 @@
 package controllers
 
 import connectors.MinimalDetailsConnector
-import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
@@ -32,7 +31,6 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Results.Ok
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{Enumerable, UserAnswers}
@@ -49,11 +47,9 @@ class SuccessControllerSpec extends ControllerSpecBase with NunjucksSupport with
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   val extraModules: Seq[GuiceableModule] = Seq(
-    bind[NunjucksRenderer].toInstance(mockRenderer),
-    bind[UserAnswersCacheConnector].to(mockUserAnswersCacheConnector),
     bind[MinimalDetailsConnector].to(mockMinimalDetailsConnector)
   )
-  private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
   private def httpPathGET: String = controllers.routes.SuccessController.onPageLoad().url
 

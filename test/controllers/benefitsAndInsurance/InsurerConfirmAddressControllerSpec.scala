@@ -17,44 +17,40 @@
 package controllers.benefitsAndInsurance
 
 import connectors.AddressLookupConnector
-import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
+import helpers.CountriesHelper
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.InsurerAddressId
 import matchers.JsonMatchers
-import navigators.CompoundNavigator
-import org.mockito.{ArgumentCaptor, Matchers}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
+import org.mockito.{ArgumentCaptor, Matchers}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
+import play.api.libs.json.Reads._
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.{NunjucksSupport, NunjucksRenderer}
-import utils.{UserAnswers, Enumerable, Data}
-import play.api.libs.json.Reads._
-import utils.Data.ua
+import uk.gov.hmrc.nunjucks.NunjucksSupport
+import utils.Data.{countryCodes, ua}
+import utils.{Data, Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 
-class InsurerConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class InsurerConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits with CountriesHelper {
 
   private val mockAddressLookupConnector = mock[AddressLookupConnector]
 
   val extraModules: Seq[GuiceableModule] = Seq(
-    bind[NunjucksRenderer].toInstance(mockRenderer),
-    bind[UserAnswersCacheConnector].to(mockUserAnswersCacheConnector),
-    bind[CompoundNavigator].toInstance(mockCompoundNavigator),
     bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
   )
 
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
   private val httpPathGET: String = controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onPageLoad().url
   private val httpPathPOST: String = controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onSubmit().url
 
@@ -74,6 +70,7 @@ class InsurerConfirmAddressControllerSpec extends ControllerSpecBase with Nunjuc
   override def beforeEach: Unit = {
     super.beforeEach
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+    when(mockAppConfig.validCountryCodes).thenReturn(countryCodes)
   }
 
   "InsurerConfirmAddress Controller" must {
@@ -108,7 +105,7 @@ class InsurerConfirmAddressControllerSpec extends ControllerSpecBase with Nunjuc
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
 
-      when(mockCompoundNavigator.nextPage(any(), any())(any()))
+      when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
         .thenReturn(routes.CheckYourAnswersController.onPageLoad())
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))

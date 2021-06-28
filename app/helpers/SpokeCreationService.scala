@@ -16,6 +16,8 @@
 
 package helpers
 
+import controllers.establishers.routes._
+import helpers.spokes.establishers.individual._
 import helpers.spokes.{AboutMembersSpoke, BeforeYouStartSpoke, BenefitsAndInsuranceSpoke, Spoke}
 import models.{EntitySpoke, Index, TaskListLink}
 import play.api.i18n.Messages
@@ -23,39 +25,70 @@ import utils.{Enumerable, UserAnswers}
 
 class SpokeCreationService extends Enumerable.Implicits {
 
-  def getBeforeYouStartSpoke(answers: UserAnswers, name: String)(implicit messages: Messages): Seq[EntitySpoke] =
+  def getBeforeYouStartSpoke(answers: UserAnswers, name: String)
+                            (implicit messages: Messages): Seq[EntitySpoke] =
     Seq(createSpoke(answers, BeforeYouStartSpoke, name))
 
+  def membershipDetailsSpoke(answers: UserAnswers, name: String)
+                            (implicit messages: Messages): Seq[EntitySpoke] =
+    Seq(createSpoke(answers, AboutMembersSpoke, name))
   def aboutSpokes(answers: UserAnswers, name: String)(implicit messages: Messages): Seq[EntitySpoke] =
     Seq(
       createSpoke(answers, AboutMembersSpoke, name),
       createSpoke(answers, BenefitsAndInsuranceSpoke, name)
     )
 
-  def getAddEstablisherHeaderSpokes(answers: UserAnswers, viewOnly: Boolean)(implicit messages: Messages)
-  : Seq[EntitySpoke] =
+  def getAddEstablisherHeaderSpokes(answers: UserAnswers, viewOnly: Boolean)
+                                   (implicit messages: Messages): Seq[EntitySpoke] =
     if (viewOnly)
       Nil
     else if (answers.allEstablishersAfterDelete.isEmpty)
-      Seq(EntitySpoke(TaskListLink(messages("messages__schemeTaskList__sectionEstablishers_add_link"),
-          controllers.establishers.routes.EstablisherKindController.onPageLoad(answers.allEstablishers.size).url), None))
+      Seq(
+        EntitySpoke(
+          link = TaskListLink(
+            text = messages("messages__schemeTaskList__sectionEstablishers_add_link"),
+            target = EstablisherKindController.onPageLoad(answers.allEstablishers.size).url
+          ),
+          isCompleted = None
+        )
+      )
     else
-      Seq(EntitySpoke(TaskListLink(messages("messages__schemeTaskList__sectionEstablishers_change_link"),
-          controllers.establishers.routes.AddEstablisherController.onPageLoad.url), None))
+      Seq(
+        EntitySpoke(
+          link = TaskListLink(
+            text = messages("messages__schemeTaskList__sectionEstablishers_change_link"),
+            target = AddEstablisherController.onPageLoad().url
+          ),
+          isCompleted = None
+        )
+      )
 
-  def getEstablisherIndividualSpokes(answers: UserAnswers, name: String, index: Option[Index]): Seq[EntitySpoke] = {
-    //val isEstablisherNew = answers.get(IsEstablisherNewId(indexToInt(index.getOrElse(Index(0))))).getOrElse(false)
-    Nil
+  def getEstablisherIndividualSpokes(answers: UserAnswers, name: String, index: Index)
+                                    (implicit messages: Messages): Seq[EntitySpoke] = {
+//    val isEstablisherNew = answers.get(IsEstablisherNewId(indexToInt(index.getOrElse(Index(0))))).getOrElse(false)
+    Seq(
+      createSpoke(answers, EstablisherIndividualDetails(index, answers), name),
+      createSpoke(answers, EstablisherIndividualAddress, name),
+      createSpoke(answers, EstablisherIndividualContactDetails, name)
+    )
   }
 
   def declarationSpoke(implicit messages: Messages): Seq[EntitySpoke] =
-    Seq(EntitySpoke(TaskListLink(
-      messages("messages__schemeTaskList__declaration_link"),
-      controllers.routes.DeclarationController.onPageLoad().url)
-    ))
+    Seq(
+      EntitySpoke(
+        link = TaskListLink(
+          text = messages("messages__schemeTaskList__declaration_link"),
+          target = controllers.routes.DeclarationController.onPageLoad().url
+        )
+      )
+    )
 
-  def createSpoke(answers: UserAnswers, spoke: Spoke, name: String)(implicit messages: Messages): EntitySpoke =
-    EntitySpoke(spoke.changeLink(name), spoke.completeFlag(answers))
+  def createSpoke(answers: UserAnswers, spoke: Spoke, name: String)
+                 (implicit messages: Messages): EntitySpoke =
+    EntitySpoke(
+      link = spoke.changeLink(name),
+      isCompleted = spoke.completeFlag(answers)
+    )
 
 }
 
