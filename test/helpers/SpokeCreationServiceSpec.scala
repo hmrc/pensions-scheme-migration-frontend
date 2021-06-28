@@ -147,7 +147,7 @@ class SpokeCreationServiceSpec
       result mustBe expectedSpoke
     }
 
-    "display all the spokes with appropriate links and incomplete status when data is returned from TPSS" in {
+    "display all the spokes with appropriate links and incomplete status when data is returned from TPSS for address spoke" in {
       val userAnswers =
         ua
           .set(EstablisherKindId(0), EstablisherKind.Individual).success.value
