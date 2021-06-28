@@ -48,6 +48,7 @@ trait HasReferenceValueController
 
   def get(
            pageTitle: String,
+           pageHeading: String,
            isPageHeading: Boolean,
            id: TypedIdentifier[Boolean],
            form: Form[Boolean],
@@ -66,6 +67,7 @@ trait HasReferenceValueController
       template = "hasReferenceValue.njk",
       ctx = Json.obj(
         "pageTitle"     -> pageTitle,
+        "pageHeading" -> pageHeading,
         "isPageHeading" -> isPageHeading,
         "form"          -> preparedForm,
         "radios"        -> Radios.yesNo(preparedForm("value")),
@@ -78,6 +80,7 @@ trait HasReferenceValueController
 
   def post(
             pageTitle: String,
+            pageHeading: String,
             isPageHeading: Boolean,
             id: TypedIdentifier[Boolean],
             form: Form[Boolean],
@@ -93,6 +96,7 @@ trait HasReferenceValueController
           template = "hasReferenceValue.njk",
           ctx = Json.obj(
             "pageTitle"     -> pageTitle,
+            "pageHeading" -> pageHeading,
             "isPageHeading" -> isPageHeading,
             "form"          -> formWithErrors,
             "radios"        -> Radios.yesNo(formWithErrors("value")),

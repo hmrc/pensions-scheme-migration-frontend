@@ -47,6 +47,7 @@ trait EnterReferenceValueController
 
   def get(
            pageTitle: String,
+           pageHeading: String,
            isPageHeading: Boolean,
            id: TypedIdentifier[ReferenceValue],
            form: Form[ReferenceValue],
@@ -60,6 +61,7 @@ trait EnterReferenceValueController
       template = "enterReferenceValue.njk",
       ctx = Json.obj(
         "pageTitle"     -> pageTitle,
+        "pageHeading" -> pageHeading,
         "isPageHeading" -> isPageHeading,
         "form"          -> request.userAnswers.get[ReferenceValue](id).fold(form)(form.fill),
         "schemeName"    -> schemeName,
@@ -71,6 +73,7 @@ trait EnterReferenceValueController
 
   def post(
             pageTitle: String,
+            pageHeading: String,
             isPageHeading: Boolean,
             id: TypedIdentifier[ReferenceValue],
             form: Form[ReferenceValue],
@@ -87,6 +90,7 @@ trait EnterReferenceValueController
           template = "enterReferenceValue.njk",
           ctx = Json.obj(
             "pageTitle"     -> pageTitle,
+            "pageHeading" -> pageHeading,
             "isPageHeading" -> isPageHeading,
             "form"          -> formWithErrors,
             "schemeName"    -> schemeName,

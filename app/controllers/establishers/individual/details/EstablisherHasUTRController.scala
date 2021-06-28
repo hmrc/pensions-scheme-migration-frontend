@@ -27,9 +27,10 @@ import models.requests.DataRequest
 import models.{Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -57,7 +58,7 @@ class EstablisherHasUTRController @Inject()(
   private def form(index: Index)
                   (implicit request: DataRequest[AnyContent]): Form[Boolean] =
     formProvider(
-      errorMsg = Messages("messages__genericHasUtr__error__required", name(index))
+      errorMsg = Message("messages__genericHasUtr__error__required", name(index))
     )
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
@@ -67,12 +68,13 @@ class EstablisherHasUTRController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             get(
-              pageTitle     = Messages("messages__hasUTR", name(index)),
+              pageTitle     = Message("messages__hasUTR", Message("messages__individual")),
+              pageHeading     = Message("messages__hasUTR", name(index)),
               isPageHeading = false,
               id            = EstablisherHasUTRId(index),
               form          = form(index),
               schemeName    = schemeName,
-              paragraphText = Seq(Messages("messages__UTR__p")),
+              paragraphText = Seq(Message("messages__UTR__p")),
               legendClass   = "govuk-visually-hidden"
             )
         }
@@ -85,12 +87,13 @@ class EstablisherHasUTRController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             post(
-              pageTitle     = Messages("messages__hasUTR", name(index)),
+              pageTitle     = Message("messages__hasUTR", Message("messages__individual")),
+              pageHeading     = Message("messages__hasUTR", name(index)),
               isPageHeading = false,
               id            = EstablisherHasUTRId(index),
               form          = form(index),
               schemeName    = schemeName,
-              paragraphText = Seq(Messages("messages__UTR__p")),
+              paragraphText = Seq(Message("messages__UTR__p")),
               legendClass   = "govuk-visually-hidden",
               mode          = mode
             )

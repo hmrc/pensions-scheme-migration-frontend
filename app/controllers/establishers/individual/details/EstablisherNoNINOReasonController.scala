@@ -23,13 +23,14 @@ import forms.ReasonFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.details.EstablisherNoNINOReasonId
-import models.{Index, Mode}
 import models.requests.DataRequest
+import models.{Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -56,7 +57,7 @@ class EstablisherNoNINOReasonController @Inject()(
 
   private def form(index: Index)
                   (implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Messages("messages__reason__error_ninoRequired", name(index)))
+    formProvider(Message("messages__reason__error_ninoRequired", name(index)))
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
@@ -64,7 +65,8 @@ class EstablisherNoNINOReasonController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             get(
-              pageTitle     = Messages("messages__whyNoNINO", name(index)),
+              pageTitle     = Message("messages__whyNoNINO", Message("messages__individual")),
+              pageHeading     = Message("messages__whyNoNINO", name(index)),
               isPageHeading = true,
               id            = EstablisherNoNINOReasonId(index),
               form          = form(index),
@@ -79,7 +81,8 @@ class EstablisherNoNINOReasonController @Inject()(
           SchemeNameId.retrieve.right.map {
             schemeName =>
               post(
-                pageTitle     = Messages("messages__whyNoNINO", name(index)),
+                pageTitle     = Message("messages__whyNoNINO", Message("messages__individual")),
+                pageHeading     = Message("messages__whyNoNINO", name(index)),
                 isPageHeading = true,
                 id            = EstablisherNoNINOReasonId(index),
                 form          = form(index),

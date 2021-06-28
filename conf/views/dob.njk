@@ -7,7 +7,7 @@
 {% from "govuk/components/error-summary/macro.njk"  import govukErrorSummary %}
 
 {% block pageTitle %}
-    {{ title(messages("messages__dob__title", name)) }}
+    {{ title(messages("messages__dob__title", messages("messages__individual"))) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -23,7 +23,7 @@
             {% endif %}
 
             <h1 class="govuk-heading-xl">
-                {{ messages("messages__dob__title", name) }}
+                {{ messages("messages__dob__h1", name) }}
             </h1>
 
             <form method="post"
@@ -37,7 +37,7 @@
                     id: "establisherDOB",
                     fieldset: {
                         legend: {
-                            text: messages("messages__dob__title", name),
+                            text: messages("messages__dob__h1", name),
                             isPageHeading: false,
                             classes: "govuk-visually-hidden"
                         }
@@ -51,7 +51,7 @@
 
                 {{ govukButton({
                     attributes: {id: "submit"},
-                    text: messages("site.continue")
+                    text: messages("site.save_and_continue")
                 }) }}
 
             </form>

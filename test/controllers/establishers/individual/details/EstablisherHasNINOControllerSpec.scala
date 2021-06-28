@@ -62,7 +62,8 @@ class EstablisherHasNINOControllerSpec
     "hasReferenceValue.njk"
   private val commonJson: JsObject =
     Json.obj(
-      "pageTitle"     -> "Does Jane Doe have a National Insurance number?",
+      "pageTitle"     -> "Does the individual have a National Insurance number?",
+      "pageHeading"     -> "Does Jane Doe have a National Insurance number?",
       "schemeName"    -> "Test scheme name",
       "legendClass"   -> "govuk-label--xl",
       "isPageHeading" -> true
