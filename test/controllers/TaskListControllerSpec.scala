@@ -31,7 +31,6 @@ import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import utils.Data._
 import viewmodels.{Message, TaskList, TaskListEntitySection}
 
@@ -42,10 +41,9 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
   private val mockTaskListHelper = mock[TaskListHelper]
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   val extraModules: Seq[GuiceableModule] = Seq(
-    bind[NunjucksRenderer].toInstance(mockRenderer),
     bind[TaskListHelper].to(mockTaskListHelper)
   )
-  private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
   private val templateToBeRendered = "taskList.njk"
 
 

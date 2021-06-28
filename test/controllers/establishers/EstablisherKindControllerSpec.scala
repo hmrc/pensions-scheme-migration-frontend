@@ -16,7 +16,6 @@
 
 package controllers.establishers
 
-import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.establishers.EstablisherKindFormProvider
@@ -30,12 +29,10 @@ import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, Matchers}
 import play.api.Application
 import play.api.data.Form
-import play.api.inject.bind
-import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.{NunjucksRenderer, NunjucksSupport}
+import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
 
@@ -50,11 +47,8 @@ class EstablisherKindControllerSpec extends ControllerSpecBase with NunjucksSupp
   private val form: Form[EstablisherKind] = new EstablisherKindFormProvider()()
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  val extraModules: Seq[GuiceableModule] = Seq(
-    bind[NunjucksRenderer].toInstance(mockRenderer),
-    bind[UserAnswersCacheConnector].to(mockUserAnswersCacheConnector)
-  )
-  private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
+
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
   private def httpPathGET: String = controllers.establishers.routes.EstablisherKindController.onPageLoad(index).url
   private def httpPathPOST: String = controllers.establishers.routes.EstablisherKindController.onSubmit(index).url

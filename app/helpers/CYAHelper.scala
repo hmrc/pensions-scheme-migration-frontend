@@ -25,7 +25,7 @@ import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels.Text.Literal
 import uk.gov.hmrc.viewmodels.{Content, Html, MessageInterpolators, SummaryList, Text}
 import utils.UserAnswers
-import viewmodels.{AnswerRow, Message}
+import viewmodels.Message
 
 trait CYAHelper {
 
@@ -56,33 +56,22 @@ trait CYAHelper {
   def booleanToText: Boolean => String = bool => if (bool) "site.yes" else "site.no"
   def booleanToContent: Boolean => Content = bool => if (bool) msg"site.yes" else msg"site.no"
 
-  private val attachDynamicIndex: (Map[String, String], Int) => Map[String, String] =
-    (attributeMap, index) => {
-      val attribute = attributeMap.getOrElse("id", s"add")
-      Map("id" -> s"cya-0-${index.toString}-$attribute")
-    }
+  private val attachDynamicIndex: (Map[String, String], Int) => Map[String, String] = (attributeMap, index) => {
+    val attribute = attributeMap.getOrElse("id", s"add")
+    Map("id" -> s"cya-0-${index.toString}-$attribute")
+  }
+  val rowsWithDynamicIndices: Seq[Row] => Seq[Row] = rows => rows.zipWithIndex.map { case (row, index) =>
+    val newActions = row.actions.map { act => act.copy(attributes = attachDynamicIndex(act.attributes, index)) }
+    row.copy(actions = newActions)
+  }
 
-  val rowsWithDynamicIndices: Seq[Row] => Seq[Row] =
-    rows => rows.zipWithIndex.map { case (row, index) =>
-      val newActions =
-        row.actions.map {
-          act =>
-            act.copy(attributes = attachDynamicIndex(act.attributes, index))
-        }
-      row.copy(actions = newActions)
-    }
-
-  private def actionAdd[A](
-                            optionURL: Option[String],
-                            visuallyHiddenText: Option[Text]
-                          )(implicit messages: Messages): Seq[Action] = {
+  def actionAdd[A](optionURL: Option[String], visuallyHiddenText: Option[Text])(implicit messages: Messages): Seq[Action] = {
     val addVisuallyHidden = visuallyHiddenText.map {
-      visuallyHidden =>
-        Literal(messages("site.add") + " " + visuallyHidden.resolve)
+      visuallyHiddn => Literal(messages("site.add") + " " + visuallyHiddn.resolve)
     }
     optionURL.toSeq.map { url =>
       Action(
-        content = Html(s"<span  aria-hidden=true >${messages("site.add")}</span>"),
+        content = Html(s"<span aria-hidden=true >${messages("site.add")}</span>"),
         href = url,
         visuallyHiddenText = addVisuallyHidden,
         attributes = Map("id" -> "change")
@@ -90,13 +79,10 @@ trait CYAHelper {
     }
   }
 
-  private def actionChange[A](
-                               optionURL: Option[String],
-                               visuallyHiddenText: Option[Text]
-                             )(implicit messages: Messages): Seq[Action] = {
+  def actionChange[A](optionURL: Option[String], visuallyHiddenText: Option[Text])(implicit
+                                                                                           messages: Messages): Seq[Action] = {
     val changeVisuallyHidden = visuallyHiddenText.map {
-      visuallyHidden =>
-        Literal(messages("site.change") + " " + visuallyHidden.resolve)
+      visuallyHiddn => Literal(messages("site.change") + " " + visuallyHiddn.resolve)
     }
     optionURL.toSeq.map { url =>
       Action(
@@ -104,21 +90,17 @@ trait CYAHelper {
         href = url,
         visuallyHiddenText = changeVisuallyHidden,
         attributes = Map("id" -> "change")
+
       )
     }
   }
 
-  def answerOrAddRow[A](
-                         id: TypedIdentifier[A],
-                         message: String,
-                         url: Option[String] = None,
-                         visuallyHiddenText: Option[Text] = None,
-                         answerTransform: Option[A => Content] = None
-                       )(
-                         implicit ua: UserAnswers,
-                         rds: Reads[A],
-                         messages: Messages
-                       ): Row =
+  def answerOrAddRow[A](id: TypedIdentifier[A],
+                        message: String,
+                        url: Option[String] = None,
+                        visuallyHiddenText: Option[Text] = None,
+                        answerTransform: Option[A => Content] = None)
+                       (implicit ua: UserAnswers, rds: Reads[A], messages: Messages): Row =
     ua.get(id) match {
       case None =>
         Row(
@@ -135,10 +117,10 @@ trait CYAHelper {
     }
 
   def answerRow[A](message: String,
-    answer: String,
-    url: Option[String] = None,
-    visuallyHiddenText: Option[Text] = None)
-    (implicit messages: Messages): Row =
+                   answer: String,
+                   url: Option[String] = None,
+                   visuallyHiddenText: Option[Text] = None)
+                  (implicit messages: Messages): Row =
     Row(
       key = Key(msg"$message", classes = Seq("govuk-!-width-one-half")),
       value = Value(Literal(answer)),
@@ -146,67 +128,10 @@ trait CYAHelper {
     )
 
   def changeLink(url: String, visuallyHiddenText: Option[Message] = None)
-                (implicit messages: Messages): Option[Link] =
-    Some(Link(messages("site.change"), url, visuallyHiddenText))
+                (implicit messages: Messages): Option[Link] = Some(Link(messages("site.change"), url, visuallyHiddenText))
 
   def addLink(url: String, visuallyHiddenText: Option[Message] = None)
-             (implicit messages: Messages): Option[Link] =
-    Some(Link(messages("site.add"), url, visuallyHiddenText))
-
-  def boolAnswerOrAddLink(
-    id: TypedIdentifier[Boolean],
-    message: String,
-    url: String,
-    visuallyHiddenText: Option[Message] = None
-  )(
-    implicit ua: UserAnswers,
-    rds: Reads[Boolean],
-    messages: Messages
-  ): AnswerRow =
-    ua.get(id) match {
-      case None =>
-        AnswerRow(
-          label = message,
-          answer = Seq(messages("site.not_entered")),
-          answerIsMessageKey = false,
-          changeUrl = addLink(url, visuallyHiddenText)
-        )
-      case Some(answer) =>
-        AnswerRow(
-          label = message,
-          answer = Seq(booleanToText(answer)),
-          answerIsMessageKey = true,
-          changeUrl = changeLink(url, visuallyHiddenText)
-        )
-    }
-
-  def answerOrAddLink[A](
-    id: TypedIdentifier[A],
-    message: String,
-    url: String,
-    visuallyHiddenText: Option[Message] = None,
-    answerIsMessageKey: Boolean = false
-  )(
-    implicit ua: UserAnswers,
-    rds: Reads[A],
-    messages: Messages
-  ): AnswerRow =
-    ua.get(id) match {
-      case None =>
-        AnswerRow(
-          label = message,
-          answer = Seq(messages("site.not_entered")),
-          answerIsMessageKey = answerIsMessageKey,
-          changeUrl = addLink(url, visuallyHiddenText)
-        )
-      case Some(answer) =>
-        AnswerRow(
-          label = message,
-          answer = Seq(answer.toString),
-          answerIsMessageKey = answerIsMessageKey,
-          changeUrl = changeLink(url, visuallyHiddenText)
-        )
-    }
+             (implicit messages: Messages): Option[Link] = Some(Link(messages("site.add"), url, visuallyHiddenText))
 }
 
 object CYAHelper {

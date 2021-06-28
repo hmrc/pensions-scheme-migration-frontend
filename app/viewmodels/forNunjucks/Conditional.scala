@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,16 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@(schemeName: Option[String])(implicit messages: Messages)
+package viewmodels.forNunjucks
 
-<div class="grid-row">
-    <div class="column-two-thirds">
-        <p class="govuk-margin-top-5">
-            <a id="return-link" href="@controllers.routes.TaskListController.onPageLoad">
-                @schemeName.fold(messages("site.return_to_scheme"))(name => messages("site.return_to", name))
-            </a>
-        </p>
-    </div>
-</div>
+import play.api.libs.json._
+import uk.gov.hmrc.viewmodels.Html
+
+final case class Conditional(html: Html)
+
+object Conditional {
+  implicit def writes: OWrites[Conditional] = Json.writes[Conditional]
+}

@@ -18,64 +18,64 @@ package helpers
 
 import controllers.beforeYouStartSpoke.routes
 import identifiers.beforeYouStart.{EstablishedCountryId, SchemeNameId, SchemeTypeId, WorkingKnowledgeId}
+import models.SchemeType.Other
 import models.requests.DataRequest
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
-import utils.{CountryOptions, UserAnswers}
-import viewmodels.{AnswerRow, AnswerSection, CYAViewModel, Message}
+import uk.gov.hmrc.viewmodels.MessageInterpolators
+import uk.gov.hmrc.viewmodels.SummaryList.{Key, Row, Value}
+import utils.UserAnswers
+import viewmodels.Message
 
-class BeforeYouStartCYAHelper extends CYAHelper {
+class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
 
-  def viewmodel(
-                 implicit countryOptions: CountryOptions,
-                 request: DataRequest[AnyContent],
-                 messages: Messages
-               ): CYAViewModel = {
+  def rows(implicit request: DataRequest[AnyContent],
+            messages: Messages
+          ): Seq[Row] = {
     implicit val ua: UserAnswers = request.userAnswers
     val schemeName = CYAHelper.getAnswer(SchemeNameId)
 
-    val beforeYouStart = AnswerSection(
-      headingKey = None,
-      rows = Seq(
-        AnswerRow(
-          label = Message("messages__cya__scheme_name").resolve,
-          answer = Seq(schemeName),
-          answerIsMessageKey = false,
-          changeUrl = None
-        ),
-        AnswerRow(
-          label = Message("messages__cya__scheme_type", schemeName).resolve,
-          answer = Seq(Message(s"messages__scheme_type_${CYAHelper.getAnswer(SchemeTypeId)}").resolve),
-          answerIsMessageKey = true,
-          changeUrl = changeLink(
-            url = routes.SchemeTypeController.onPageLoad().url,
-            visuallyHiddenText = Some(Message("messages__visuallyhidden__schemeType", schemeName).resolve)
-          )
-        ),
-        AnswerRow(
-          label = Message("messages__cya__country", schemeName).resolve,
-          answer = Seq(countryOptions.getCountryNameFromCode(CYAHelper.getAnswer(EstablishedCountryId))),
-          answerIsMessageKey = false,
-          changeUrl = changeLink(
-            url = routes.EstablishedCountryController.onPageLoad().url,
-            visuallyHiddenText = Some(Message("messages__visuallyhidden__schemeEstablishedCountry", schemeName).resolve)
-          )
-        ),
-        boolAnswerOrAddLink(
-          id = WorkingKnowledgeId,
-          message = Message("messages__cya__working_knowledge").resolve,
-          url = routes.WorkingKnowledgeController.onPageLoad().url,
-          visuallyHiddenText = Some(Message("messages__visuallyhidden__working_knowledge").resolve)
+    val schemeTypeRow = {
+      val url: String = routes.SchemeTypeController.onPageLoad().url
+      val visuallyHiddenText = msg"messages__visuallyhidden__schemeType".withArgs(schemeName)
+
+      ua.get(SchemeTypeId) match {
+        case None => Row(
+          key = Key(msg"messages__cya__scheme_type".withArgs(schemeName), classes = Seq("govuk-!-width-one-half")),
+          value = Value(msg"site.not_entered", classes = Seq("govuk-!-width-one-third")),
+          actions = actionAdd(Some(url), Some(visuallyHiddenText))
         )
+        case Some(Other(_)) => Row(
+          key = Key(msg"messages__cya__scheme_type".withArgs(schemeName), classes = Seq("govuk-!-width-one-half")),
+          value = Value(msg"messages__scheme_type_other", classes = Seq("govuk-!-width-one-third")),
+          actions = actionChange(Some(url), Some(visuallyHiddenText))
+        )
+        case Some(value) => Row(
+          key = Key(msg"messages__cya__scheme_type".withArgs(schemeName), classes = Seq("govuk-!-width-one-half")),
+          value = Value(msg"messages__scheme_type_$value", classes = Seq("govuk-!-width-one-third")),
+          actions = Seq.empty
+        )
+      }
+    }
+
+    val beforeYouStart = Seq(
+      answerRow(messages("messages__cya__scheme_name"), schemeName),
+      schemeTypeRow,
+      answerRow(messages("messages__cya__country", schemeName),
+        messages(s"country.${CYAHelper.getAnswer(EstablishedCountryId)}"),
+        Some(routes.EstablishedCountryController.onPageLoad().url),
+        Some(msg"messages__visuallyhidden__schemeEstablishedCountry".withArgs(schemeName))),
+      answerOrAddRow(
+        id = WorkingKnowledgeId,
+        message = Message("messages__cya__working_knowledge").resolve,
+        url = Some(routes.WorkingKnowledgeController.onPageLoad().url),
+        visuallyHiddenText = Some(msg"messages__visuallyhidden__working_knowledge"),
+        answerTransform = Some(booleanToContent)
       )
     )
 
-    CYAViewModel(
-      answerSections = Seq(beforeYouStart),
-      href = controllers.routes.TaskListController.onPageLoad(),
-      schemeName = schemeName,
-      hideEditLinks = request.viewOnly,
-      hideSaveAndContinueButton = false
-    )
+
+
+    rowsWithDynamicIndices(beforeYouStart)
   }
 }

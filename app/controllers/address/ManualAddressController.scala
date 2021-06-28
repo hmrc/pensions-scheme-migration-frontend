@@ -19,14 +19,15 @@ package controllers.address
 import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
+import helpers.CountriesHelper
 import identifiers.TypedIdentifier
-import models.requests.DataRequest
 import models.AddressConfiguration.AddressConfiguration
+import models.requests.DataRequest
 import models.{Address, AddressConfiguration}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{Messages, I18nSupport}
-import play.api.libs.json.{JsObject, JsArray, Json}
+import play.api.i18n.{I18nSupport, Messages}
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContent, Result}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
@@ -38,7 +39,8 @@ trait ManualAddressController
     extends FrontendBaseController
     with Retrievals
     with I18nSupport
-    with NunjucksSupport {
+    with NunjucksSupport
+    with CountriesHelper{
 
   protected def renderer: Renderer
 
@@ -131,28 +133,5 @@ trait ManualAddressController
       "h1" -> h1,
       "schemeName" -> schemeName
     ) ++ extraJson
-  }
-
-  private def countryJsonElement(tuple: (String, String),
-                                 isSelected: Boolean): JsArray =
-    Json.arr(if (isSelected) {
-      Json.obj("value" -> tuple._1, "text" -> tuple._2, "selected" -> true)
-    } else {
-      Json.obj("value" -> tuple._1, "text" -> tuple._2)
-    })
-
-  def jsonCountries(countrySelected: Option[String], config: AppConfig)(
-    implicit messages: Messages
-  ): JsArray = {
-    config.validCountryCodes
-      .map(countryCode => (countryCode, messages(s"country.$countryCode")))
-      .sortWith(_._2 < _._2)
-      .foldLeft(JsArray(Seq(Json.obj("value" -> "", "text" -> "")))) {
-        (acc, nextCountryTuple) =>
-          acc ++ countryJsonElement(
-            nextCountryTuple,
-            countrySelected.contains(nextCountryTuple._1)
-          )
-      }
   }
 }

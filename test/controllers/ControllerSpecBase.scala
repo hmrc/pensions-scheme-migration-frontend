@@ -36,7 +36,7 @@ import play.api.test.Helpers.{GET, POST}
 import play.api.test.{FakeHeaders, FakeRequest}
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import utils.Data.ua
-import utils.{Enumerable, UserAnswers}
+import utils.{CountryOptions, Enumerable, UserAnswers}
 
 import scala.concurrent.ExecutionContext
 
@@ -70,19 +70,44 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach with MockitoSu
   protected val mockRenderer: NunjucksRenderer = mock[NunjucksRenderer]
 
   def modules: Seq[GuiceableModule] = Seq(
+    bind[AuthAction].to[FakeAuthAction],
     bind[DataRequiredAction].to[DataRequiredActionImpl],
     bind[NunjucksRenderer].toInstance(mockRenderer),
     bind[AppConfig].toInstance(mockAppConfig),
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
-    bind[CompoundNavigator].toInstance(mockCompoundNavigator)
+    bind[CompoundNavigator].toInstance(mockCompoundNavigator),
+    bind[CountryOptions].toInstance(countryOptions)
   )
 
-  def applicationBuilderUserAnswers(userAnswers: Option[UserAnswers] = None,
-                                   extraModules: Seq[GuiceableModule] = Seq.empty): GuiceApplicationBuilder = {
-    val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction
-    mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
-    super.applicationBuilder(mutableFakeDataRetrievalAction, extraModules ++ modules)
-  }
+  def applicationBuilder(userAnswers: Option[UserAnswers] = None,
+                                   extraModules: Seq[GuiceableModule] = Seq.empty): GuiceApplicationBuilder =
+    new GuiceApplicationBuilder()
+      .configure(
+        //turn off metrics
+        "metrics.jvm" -> false,
+        "metrics.enabled" -> false
+      )
+      .overrides(
+        modules ++ extraModules ++ Seq[GuiceableModule](
+          bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers))
+        ): _*
+      )
+
+  protected def applicationBuilderMutableRetrievalAction(
+                                                          mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction,
+                                                          extraModules: Seq[GuiceableModule] = Seq.empty
+                                                        ): GuiceApplicationBuilder =
+    new GuiceApplicationBuilder()
+      .configure(
+        //turn off metrics
+        "metrics.jvm" -> false,
+        "metrics.enabled" -> false
+      )
+      .overrides(
+        modules ++ extraModules ++ Seq[GuiceableModule](
+          bind[DataRetrievalAction].toInstance(mutableFakeDataRetrievalAction)
+        ): _*
+      )
 
   protected def httpGETRequest(path: String): FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, path)
 

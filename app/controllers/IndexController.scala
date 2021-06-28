@@ -18,23 +18,23 @@ package controllers
 
 import config.AppConfig
 import play.api.mvc._
+import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.index
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class IndexController @Inject()(
                                       appConfig: AppConfig,
                                       mcc: MessagesControllerComponents,
-                                      view: index)
+                                      renderer: Renderer)
                                     (implicit val ec: ExecutionContext) extends FrontendController(mcc) {
 
   implicit val config: AppConfig = appConfig
 
   val onPageLoad: Action[AnyContent] = Action.async { implicit request =>
-        Future.successful(Ok(view()))
+    renderer.render("index.njk").map(Ok(_))
   }
 
 }

@@ -21,12 +21,15 @@ import controllers.Retrievals
 import controllers.actions._
 import forms.beforeYouStart.SchemeTypeFormProvider
 import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId}
+import models.SchemeType
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import renderer.Renderer
+import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.beforeYouStart.schemeType
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,9 +42,9 @@ class SchemeTypeController @Inject()(override val messagesApi: MessagesApi,
                                      requireData: DataRequiredAction,
                                      formProvider: SchemeTypeFormProvider,
                                      val controllerComponents: MessagesControllerComponents,
-                                     val view: schemeType
+                                     renderer: Renderer
                                     )(implicit val executionContext: ExecutionContext) extends FrontendBaseController
-  with I18nSupport with Retrievals {
+  with I18nSupport with Retrievals with NunjucksSupport {
 
   private val form = formProvider()
 
@@ -52,7 +55,15 @@ class SchemeTypeController @Inject()(override val messagesApi: MessagesApi,
           case None => form
           case Some(value) => form.fill(value)
         }
-        Future.successful(Ok(view(preparedForm, schemeName)))
+
+
+        val json = Json.obj(
+          "schemeName" -> schemeName,
+          "form" -> preparedForm,
+          "radios" -> SchemeType.radios(preparedForm)
+        )
+
+        renderer.render("beforeYouStart/schemeType.njk", json).map(Ok(_))
       }
   }
 
@@ -61,7 +72,12 @@ class SchemeTypeController @Inject()(override val messagesApi: MessagesApi,
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           SchemeNameId.retrieve.right.map { schemeName =>
-            Future.successful(BadRequest(view(formWithErrors, schemeName)))
+            val json = Json.obj(
+              "schemeName" -> schemeName,
+              "form" -> formWithErrors,
+              "radios" -> SchemeType.radios(formWithErrors)
+            )
+            renderer.render("beforeYouStart/schemeType.njk", json).map(BadRequest(_))
           },
         value =>
           for {

@@ -17,7 +17,6 @@
 package navigators
 
 import base.SpecBase
-import controllers.actions.MutableFakeDataRetrievalAction
 import controllers.benefitsAndInsurance.routes._
 import identifiers._
 import identifiers.benefitsAndInsurance._
@@ -34,11 +33,7 @@ class BenefitsAndInsuranceNavigatorSpec extends SpecBase with NavigatorBehaviour
 
   import BenefitsAndInsuranceNavigatorSpec._
 
-  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-
-  private val navigator: CompoundNavigator = applicationBuilder(
-    mutableFakeDataRetrievalAction = mutableFakeDataRetrievalAction
-  ).build().injector.instanceOf[CompoundNavigator]
+  private val navigator: CompoundNavigator = injector.instanceOf[CompoundNavigator]
 
   "BenefitsAndInsuranceNavigator" must {
       def navigation: TableFor3[Identifier, UserAnswers, Call] =
