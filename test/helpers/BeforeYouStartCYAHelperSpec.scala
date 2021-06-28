@@ -58,7 +58,7 @@ class BeforeYouStartCYAHelperSpec
           key = Key(msg"messages__cya__scheme_type".withArgs(schemeName), classes = Seq("govuk-!-width-one-half")),
           value = Value(msg"messages__scheme_type_other", classes = Seq("govuk-!-width-one-third")),
           actions = Seq(Action(
-            content = Html(s"<span  aria-hidden=true >${messages("site.change")}</span>"),
+            content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
             href =  routes.SchemeTypeController.onPageLoad().url,
             visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyhidden__schemeType", schemeName))),
             attributes = Map("id" -> "cya-0-1-change")
@@ -68,7 +68,7 @@ class BeforeYouStartCYAHelperSpec
           key = Key(Message(msg"messages__cya__country".withArgs(schemeName).resolve), classes = Seq("govuk-!-width-one-half")),
           value = Value(Literal("Afghanistan")),
           actions = Seq(Action(
-            content = Html(s"<span  aria-hidden=true >${messages("site.change")}</span>"),
+            content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
             href =  routes.EstablishedCountryController.onPageLoad().url,
             visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyhidden__schemeEstablishedCountry", schemeName))),
             attributes = Map("id" -> "cya-0-2-change")
@@ -78,7 +78,7 @@ class BeforeYouStartCYAHelperSpec
           key = Key(Message(msg"messages__cya__working_knowledge".resolve), classes = Seq("govuk-!-width-one-half")),
           value = Value(msg"site.yes"),
           actions = Seq(Action(
-            content = Html(s"<span  aria-hidden=true >${messages("site.change")}</span>"),
+            content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
             href =  routes.WorkingKnowledgeController.onPageLoad().url,
             visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyhidden__working_knowledge"))),
             attributes = Map("id" -> "cya-0-3-change")

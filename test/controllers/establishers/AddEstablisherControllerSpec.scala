@@ -118,7 +118,7 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(AddEstablisherId(Some(true))), any())(any()))
+      when(mockCompoundNavigator.nextPage(Matchers.eq(AddEstablisherId(Some(true))), any(), any())(any()))
         .thenReturn(routes.AddEstablisherController.onPageLoad())
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)

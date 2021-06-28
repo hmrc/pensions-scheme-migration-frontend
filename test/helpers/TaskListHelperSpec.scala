@@ -103,7 +103,7 @@ class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar wi
               _.set(EstablisherNameId(1), PersonName("c", "d", true)).flatMap(
                 _.set(IsEstablisherNewId(1), true)
               ))))).get
-      helper.establishersSection(userAnswers) mustBe Nil
+      helper.establishersSection(userAnswers, messages) mustBe Nil
     }
 
     "return seq of sections if all establishers are not deleted" in {
@@ -116,7 +116,7 @@ class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar wi
               ))))).get
 
       val expectedSection =  Seq(TaskListEntitySection(None, null, Some("c d")))
-      helper.establishersSection(userAnswers) mustBe expectedSection
+      helper.establishersSection(userAnswers, messages) mustBe expectedSection
     }
   }
 

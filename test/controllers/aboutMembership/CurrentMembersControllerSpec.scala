@@ -123,7 +123,7 @@ class CurrentMembersControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(CurrentMembersId), any())(any()))
+      when(mockCompoundNavigator.nextPage(Matchers.eq(CurrentMembersId), any(), any())(any()))
         .thenReturn(routes.CheckYourAnswersController.onPageLoad())
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))

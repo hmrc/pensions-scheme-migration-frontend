@@ -16,6 +16,7 @@
 
 package models
 
+import controllers.establishers.routes._
 import identifiers.establishers.individual.EstablisherNameId
 import models.establishers.EstablisherKind
 import play.api.libs.json.{Format, Json}
@@ -36,14 +37,23 @@ sealed trait Entity[ID] {
   def index: Int
 }
 
-case class EstablisherIndividualEntity(id: EstablisherNameId, name: String, isDeleted: Boolean,
-                                       isCompleted: Boolean, isNewEntity: Boolean, noOfRecords: Int) extends
-  Establisher[EstablisherNameId] {
+object Entity {
+  implicit lazy val formats: Format[Entity[_]] = Json.format[Entity[_]]
+}
+
+case class EstablisherIndividualEntity(
+                                        id: EstablisherNameId,
+                                        name: String,
+                                        isDeleted: Boolean,
+                                        isCompleted: Boolean,
+                                        isNewEntity: Boolean,
+                                        noOfRecords: Int
+                                      ) extends Establisher[EstablisherNameId] {
   override def editLink: Option[String] = None
 
   override def deleteLink: Option[String] =
     if (noOfRecords > 1)
-      Some(controllers.establishers.routes.ConfirmDeleteEstablisherController.onPageLoad(id.index, EstablisherKind.Individual).url)
+      Some(ConfirmDeleteEstablisherController.onPageLoad(id.index, EstablisherKind.Individual).url)
     else
       None
 
@@ -55,3 +65,7 @@ object EstablisherIndividualEntity {
 }
 
 sealed trait Establisher[T] extends Entity[T]
+
+object Establisher {
+  implicit lazy val formats: Format[Establisher[_]] = Json.format[Establisher[_]]
+}

@@ -121,7 +121,7 @@ class WorkingKnowledgeControllerSpec extends ControllerSpecBase with NunjucksSup
 
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(WorkingKnowledgeId), any())(any()))
+      when(mockCompoundNavigator.nextPage(Matchers.eq(WorkingKnowledgeId), any(), any())(any()))
         .thenReturn(routes.CheckYourAnswersController.onPageLoad())
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))

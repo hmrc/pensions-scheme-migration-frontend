@@ -27,7 +27,8 @@ import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList, Text}
 import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 
-class AboutCYAHelper extends CYAHelper with Enumerable.Implicits{
+class AboutCYAHelper extends CYAHelper with Enumerable.Implicits {
+
   def membershipRows(implicit request: DataRequest[AnyContent],
                      messages: Messages
                     ): Seq[SummaryList.Row] = {
@@ -37,9 +38,9 @@ class AboutCYAHelper extends CYAHelper with Enumerable.Implicits{
 
     val rowsWithoutDynamicIndices = Seq(
       answerOrAddRow(CurrentMembersId, Message("currentMembers.title", schemeName).resolve,
-      Some(controllers.aboutMembership.routes.CurrentMembersController.onPageLoad().url),
-      Some(msg"messages__visuallyhidden__currentMembers".withArgs(schemeName)), answerTransform
-    ),
+        Some(controllers.aboutMembership.routes.CurrentMembersController.onPageLoad().url),
+        Some(msg"messages__visuallyhidden__currentMembers".withArgs(schemeName)), answerTransform
+      ),
       answerOrAddRow(FutureMembersId, Message("futureMembers.title", schemeName).resolve,
         Some(controllers.aboutMembership.routes.FutureMembersController.onPageLoad().url),
         Some(msg"messages__visuallyhidden__futureMembers"), answerTransform

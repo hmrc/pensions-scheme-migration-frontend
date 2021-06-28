@@ -121,7 +121,7 @@ class SchemeTypeControllerSpec extends ControllerSpecBase with NunjucksSupport w
 
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(SchemeTypeId), any())(any()))
+      when(mockCompoundNavigator.nextPage(Matchers.eq(SchemeTypeId), any(), any())(any()))
         .thenReturn(routes.CheckYourAnswersController.onPageLoad())
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))

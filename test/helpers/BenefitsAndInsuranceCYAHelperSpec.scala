@@ -48,19 +48,19 @@ class BenefitsAndInsuranceCYAHelperSpec extends WordSpec with MustMatchers with 
 
   private def summaryListRow(key: String, valueMsgKey: String, target: Option[Link] = None): Row = {
     SummaryList.Row(Key(GovUKMsg(key), List("govuk-!-width-one-half")), Value(GovUKMsg(valueMsgKey)), target.toSeq.map(
-      t => Action(content = Html(s"<span  aria-hidden=true >${t.text}</span>"), href = t.target,
+      t => Action(content = Html(s"<span aria-hidden=true >${t.text}</span>"), href = t.target,
         visuallyHiddenText = t.visuallyHiddenText, attributes = t.attributes)))
   }
 
   private def summaryListRowLiteral(key: String, value: String, target: Option[Link]): Row = {
     SummaryList.Row(Key(GovUKMsg(key), List("govuk-!-width-one-half")), Value(Literal(value)), target.toSeq.map(
-      t => Action(content = Html(s"<span  aria-hidden=true >${t.text}</span>"), href = t.target,
+      t => Action(content = Html(s"<span aria-hidden=true >${t.text}</span>"), href = t.target,
         visuallyHiddenText = t.visuallyHiddenText, attributes = t.attributes)))
   }
 
   private def summaryListRowHtml(key: String, value: Html, target: Option[Link]): Row = {
     SummaryList.Row(Key(GovUKMsg(key), List("govuk-!-width-one-half")), Value(value), target.toSeq.map(
-      t => Action(content = Html(s"<span  aria-hidden=true >${t.text}</span>"), href = t.target,
+      t => Action(content = Html(s"<span aria-hidden=true >${t.text}</span>"), href = t.target,
         visuallyHiddenText = t.visuallyHiddenText, attributes = t.attributes)))
   }
 

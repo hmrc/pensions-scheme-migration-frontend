@@ -53,7 +53,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
       value = Value(msg"site.not_entered", classes = Seq("govuk-!-width-one-third")),
       actions = List(
         Action(
-          content = Html(s"<span  aria-hidden=true >${messages("site.add")}</span>"),
+          content = Html(s"<span aria-hidden=true >${messages("site.add")}</span>"),
           href = "/test-url",
           visuallyHiddenText = Some(Literal("hidden-text"))
         )

@@ -17,6 +17,7 @@
 package utils
 
 import identifiers.Identifier
+import models.Mode
 import models.requests.DataRequest
 import navigators.CompoundNavigator
 import play.api.mvc.{AnyContent, Call}
@@ -27,7 +28,8 @@ class FakeNavigator(desiredRoute: Call) extends CompoundNavigator {
 
   def lastUserAnswers: Option[UserAnswers] = userAnswers
 
-  override def nextPage(id: Identifier, ua: UserAnswers)(implicit request: DataRequest[AnyContent]): Call = {
+  override def nextPage(id: Identifier, ua: UserAnswers, mode: Mode)
+                       (implicit request: DataRequest[AnyContent]): Call = {
     this.userAnswers = Some(ua)
     desiredRoute
   }

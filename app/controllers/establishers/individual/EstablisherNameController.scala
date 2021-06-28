@@ -34,52 +34,53 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EstablisherNameController @Inject()(override val messagesApi: MessagesApi,
+class EstablisherNameController @Inject()(
+                                           override val messagesApi: MessagesApi,
                                            val navigator: CompoundNavigator,
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
                                            formProvider: PersonNameFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
-                                          userAnswersCacheConnector: UserAnswersCacheConnector,
-                                          renderer: Renderer
-                                         )(implicit val executionContext: ExecutionContext) extends
-  FrontendBaseController with I18nSupport with Retrievals with NunjucksSupport {
+                                           userAnswersCacheConnector: UserAnswersCacheConnector,
+                                           renderer: Renderer
+                                         )(implicit val executionContext: ExecutionContext)
+  extends FrontendBaseController
+    with I18nSupport
+    with Retrievals
+    with NunjucksSupport {
 
-  private def form(implicit messages: Messages): Form[PersonName] = formProvider("messages__error__establisher")
+  private def form(implicit messages: Messages): Form[PersonName] =
+    formProvider("messages__error__establisher")
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        val preparedForm: Form[PersonName] =
-          request.userAnswers.get[PersonName](EstablisherNameId(index)) match {
-            case None => form
-            case Some(value) => form.fill(value)
-          }
-        val json = Json.obj(
-          "form" -> preparedForm,
-          "schemeName" -> existingSchemeName
-        )
-
-        renderer.render("establishers/individual/establisherName.njk", json).flatMap(view => Future.successful(Ok(view)))
+        renderer.render(
+          template = "establishers/individual/establisherName.njk",
+          ctx = Json.obj(
+            "form"       -> request.userAnswers.get[PersonName](EstablisherNameId(index)).fold(form)(form.fill),
+            "schemeName" -> existingSchemeName
+          )
+        ).flatMap(view => Future.successful(Ok(view)))
     }
 
   def onSubmit(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         form.bindFromRequest().fold(
-          (formWithErrors: Form[_]) => {
-
-            val json = Json.obj(
-              "form" -> formWithErrors,
-              "schemeName" -> existingSchemeName
-            )
-            renderer.render("establishers/individual/establisherName.njk", json).map(BadRequest(_))
-          },
+          (formWithErrors: Form[_]) =>
+            renderer.render(
+              template = "establishers/individual/establisherName.njk",
+              ctx = Json.obj(
+                "form"       -> formWithErrors,
+                "schemeName" -> existingSchemeName
+              )
+            ).map(BadRequest(_)),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(EstablisherNameId(index), value))
-              _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+              _              <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
             } yield
               Redirect(navigator.nextPage(EstablisherNameId(index), updatedAnswers))
         )

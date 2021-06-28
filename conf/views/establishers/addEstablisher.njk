@@ -9,55 +9,55 @@
 {% from "macros/returnLink.njk"                    import returnLink %}
 
 {% block pageTitle %}
-  {{ title(messages("messages__addEstablisher_title"), form.errors) }}
+    {{ title(messages("messages__addEstablisher_title"), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
 
     <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-grid-column-two-thirds">
 
-        {% if form.errors.length > 0 %}
-          {{ govukErrorSummary({
-            "titleText": messages("error.summary.title"),
-            "errorList": form.errors
-          }) }}
-        {% endif %}
+            {% if form.errors.length > 0 %}
+                {{ govukErrorSummary({
+                    "titleText": messages("error.summary.title"),
+                    "errorList": form.errors
+                }) }}
+            {% endif %}
 
-        <form method="post" autocomplete="off" novalidate>
+            <form method="post" autocomplete="off" novalidate>
 
-          {{ csrf() | safe }}
+                {{ csrf() | safe }}
 
-           <h1 id="chargeC_h1" class="govuk-heading-xl">{{messages('messages__addEstablisher_title')}}</h1>
+                <h1 id="chargeC_h1" class="govuk-heading-xl">{{ messages('messages__addEstablisher_title') }}</h1>
 
-             <div role="region" aria-labelledby="chargeC_h1" class="govuk-!-margin-bottom-7">
-                 {{ govukTable(table) }}
-             </div>
+                <div role="region" aria-labelledby="chargeC_h1" class="govuk-!-margin-bottom-7">
+                    {{ govukTable(table) }}
+                </div>
 
-          {{ govukRadios({
-            classes: "govuk-radios--inline",
-            name: 'value',
-            fieldset: {
-              legend: {
-                text: messages('messages__addEstablisher_radio_label'),
-                isPageHeading: false,
-                classes: "govuk-fieldset__legend--s"
-              }
-            },
-            items: radios,
-            errorMessage: form.value.error
-          }) }}
+                {{ govukRadios({
+                    classes: "govuk-radios--inline",
+                    name: 'value',
+                    fieldset: {
+                        legend: {
+                            text: messages('messages__addEstablisher_radio_label'),
+                            isPageHeading: false,
+                            classes: "govuk-fieldset__legend--s"
+                        }
+                    },
+                    items: radios,
+                    errorMessage: form.value.error
+                }) }}
 
-          {{ govukButton({
-            text: messages("site.save_and_continue"),
-            attributes: {id: "submit"}
-          }) }}
+                {{ govukButton({
+                    text: messages("site.save_and_continue"),
+                    attributes: {id: "submit"}
+                }) }}
 
-        </form>
+            </form>
 
-      </div>
+        </div>
     </div>
 
-     {{ returnLink(schemeName) }}
+    {{ returnLink(schemeName) }}
 
 {% endblock %}

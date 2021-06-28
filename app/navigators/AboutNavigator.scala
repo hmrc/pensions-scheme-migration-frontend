@@ -30,4 +30,10 @@ class AboutNavigator extends Navigator {
     case CurrentMembersId | FutureMembersId =>
       CheckYourAnswersController.onPageLoad()
   }
+
+  override protected def editRouteMap(ua: UserAnswers)
+                                     (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
+    case CurrentMembersId | FutureMembersId =>
+      CheckYourAnswersController.onPageLoad()
+  }
 }
