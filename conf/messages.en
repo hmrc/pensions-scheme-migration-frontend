@@ -405,7 +405,8 @@ messages__alreadyDeleted__p2 = This page no longer exists.
 
 establisherEntityTypeIndividual = the individual
 
-messages__establisherAddress__whatYouWillNeed_title = Address for {0}
+messages__establisherAddress__whatYouWillNeed_h1 = Address for {0}
+messages__establisherAddress__whatYouWillNeed_title = Adding establisher’s address
 messages__establisherAddress__whatYouWillNeed_p = You will need to tell us {0}’s:
 messages__establisherAddress__whatYouWillNeed_li_1 = current address
 messages__establisherAddress__whatYouWillNeed_li_2 = previous address if {0} has used the current address for less than 1 year
