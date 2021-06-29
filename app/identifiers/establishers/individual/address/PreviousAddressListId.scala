@@ -27,8 +27,6 @@ case class PreviousAddressListId(index: Int) extends TypedIdentifier[Int] {
 
 object PreviousAddressListId {
   override lazy val toString: String = "previousAddressList"
-  def collectionPath(index: Int): JsPath =
-    EstablishersId(index).path \ PreviousAddressListId.toString
 
   implicit lazy val formats: Format[PreviousAddressListId] =
     Json.format[PreviousAddressListId]

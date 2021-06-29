@@ -28,8 +28,6 @@ case class EnterPreviousPostCodeId(index: Int) extends TypedIdentifier[Seq[Toler
 
 object EnterPreviousPostCodeId {
   override lazy val toString: String = "previousAddresses"
-  def collectionPath(index: Int): JsPath =
-    EstablishersId(index).path \ EnterPreviousPostCodeId.toString
 
   implicit lazy val formats: Format[EnterPreviousPostCodeId] =
     Json.format[EnterPreviousPostCodeId]

@@ -20,7 +20,7 @@ import helpers.CYAHelper.getName
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{AddressYearsId, PreviousAddressId, AddressId}
 import models.requests.DataRequest
-import models.{Index, CheckMode}
+import models.Index
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.viewmodels.MessageInterpolators
@@ -46,13 +46,13 @@ class EstablisherAddressCYAHelper
       answerOrAddRow(
         AddressId(index),
         Message("messages__establisherAddress__whatYouWillNeed_title", establisherName).resolve,
-        Some(controllers.establishers.individual.address.routes.EnterPostcodeController.onPageLoad(index, CheckMode).url),
+        Some(controllers.establishers.individual.address.routes.EnterPostcodeController.onPageLoad(index).url),
         Some(msg"messages__visuallyHidden__address".withArgs(establisherName)), answerAddressTransform
       ),
       answerOrAddRow(
         AddressYearsId(index),
         Message("establisherAddressYears.title", establisherName).resolve,
-        Some(controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index, CheckMode).url),
+        Some(controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index).url),
         Some(msg"messages__visuallyhidden__establisherAddressYears".withArgs(establisherName)), answerBooleanTransform
       )
     )
@@ -64,7 +64,7 @@ class EstablisherAddressCYAHelper
         answerOrAddRow(
           PreviousAddressId(index),
           Message("messages__establisherPreviousAddress").resolve,
-          Some(controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index, CheckMode).url),
+          Some(controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index).url),
           Some(msg"messages__visuallyHidden__previousAddress".withArgs(establisherName)), answerAddressTransform
         )
       )

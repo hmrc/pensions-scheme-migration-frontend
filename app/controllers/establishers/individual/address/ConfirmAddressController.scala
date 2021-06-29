@@ -26,7 +26,7 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.address.AddressId
 
 import javax.inject.Inject
-import models.{Address, Mode, Index, AddressConfiguration}
+import models.{Address, Index, AddressConfiguration}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{MessagesApi, Messages, I18nSupport}
@@ -51,14 +51,14 @@ class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
 
   def form(implicit messages: Messages): Form[Address] = formProvider()
 
-  def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
           get(Some(schemeName), Messages("address.title"), AddressId(index), AddressConfiguration.PostcodeFirst)
       }
     }
 
-  def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         post(Some(schemeName), Messages("address.title"), AddressId(index), AddressConfiguration.PostcodeFirst)

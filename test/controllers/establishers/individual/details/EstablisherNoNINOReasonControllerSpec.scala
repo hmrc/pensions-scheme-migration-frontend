@@ -61,7 +61,8 @@ class EstablisherNoNINOReasonControllerSpec
     "reason.njk"
   private val commonJson: JsObject =
     Json.obj(
-      "pageTitle"     -> "Why does Jane Doe not have a National Insurance number?",
+      "pageTitle"     -> "Why does the individual not have a National Insurance number?",
+      "pageHeading"     -> "Why does Jane Doe not have a National Insurance number?",
       "schemeName"    -> "Test scheme name",
       "isPageHeading" -> true
     )

@@ -47,8 +47,6 @@ class CheckYourAnswersControllerSpec
     with Enumerable.Implicits
     with TryValues {
 
-  appRunning()
-
   private val cyaHelper = new EstablisherContactDetailsCYAHelper
   private val uaEmailPhone: UserAnswers = ua
     .set(EstablisherNameId(0), PersonName("Jane", "Doe")).success.value

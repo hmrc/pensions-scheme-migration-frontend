@@ -24,7 +24,7 @@
 
             {% if not isPageHeading %}
                 <h1 class="govuk-heading-xl">
-                    {{ pageTitle }}
+                    {{ pageHeading }}
                 </h1>
             {% endif %}
 
@@ -43,7 +43,7 @@
 
                 {{ govukInput({
                     label: {
-                        text: pageTitle,
+                        text: pageHeading,
                         isPageHeading: isPageHeading,
                         classes: legendClass
                     },
@@ -62,7 +62,7 @@
 
                 {{ govukButton({
                     attributes: {id: "submit"},
-                    text: messages("site.continue")
+                    text: messages("site.save_and_continue")
                 }) }}
 
             </form>

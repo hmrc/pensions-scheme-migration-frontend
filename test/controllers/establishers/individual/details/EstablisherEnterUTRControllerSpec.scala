@@ -61,7 +61,8 @@ class EstablisherEnterUTRControllerSpec
     "enterReferenceValue.njk"
   private val commonJson: JsObject =
     Json.obj(
-      "pageTitle"     -> "What is the UTR for Jane Doe?",
+      "pageTitle"     -> "What is the individual’s UTR?",
+      "pageHeading"     -> "What is the UTR for Jane Doe?",
       "schemeName"    -> "Test scheme name",
       "legendClass"   -> "govuk-visually-hidden",
       "paragraphs"    -> Json.arr(

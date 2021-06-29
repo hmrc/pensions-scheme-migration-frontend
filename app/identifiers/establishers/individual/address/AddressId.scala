@@ -19,7 +19,7 @@ package identifiers.establishers.individual.address
 import identifiers.TypedIdentifier
 import identifiers.establishers.EstablishersId
 import models.Address
-import play.api.libs.json.{Format, JsPath, Json}
+import play.api.libs.json.{Format, Json, JsPath}
 
 case class AddressId(index: Int) extends TypedIdentifier[Address] {
   override def path: JsPath =
@@ -28,8 +28,6 @@ case class AddressId(index: Int) extends TypedIdentifier[Address] {
 
 object AddressId {
   override lazy val toString: String = "address"
-  def collectionPath(index: Int): JsPath =
-    EstablishersId(index).path \ AddressId.toString
 
   implicit lazy val formats: Format[AddressId] =
     Json.format[AddressId]

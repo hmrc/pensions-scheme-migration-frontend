@@ -29,7 +29,7 @@ import play.api.mvc.{AnyContent, Result}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.DateInput
+import viewmodels.DateInput
 
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
@@ -84,7 +84,7 @@ trait DateOfBirthController
                     )(implicit request: DataRequest[AnyContent]): Future[Result] =
 
     form.bindFromRequest().fold(
-      formWithErrors =>
+      formWithErrors => {
         personNameId.retrieve.right.map {
           personName =>
             renderer.render(
@@ -96,7 +96,7 @@ trait DateOfBirthController
                 "schemeName" -> schemeName
               )
             ).map(BadRequest(_))
-        },
+        }},
       value =>
         for {
           updatedAnswers <- Future.fromTry(request.userAnswers.set(dobId, value))

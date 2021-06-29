@@ -25,7 +25,7 @@ import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{EnterPostCodeId, AddressListId, AddressId}
-import models.{Mode, Index}
+import models.{Mode, Index, NormalMode}
 
 import javax.inject.Inject
 import navigators.CompoundNavigator
@@ -56,17 +56,17 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
 
   override def form: Form[Int] = formProvider("establisherSelectAddress.required")
 
-  def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
+  def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
     retrieve(SchemeNameId) { schemeName =>
-      getFormToJson(schemeName, index, mode).retrieve.right.map(get)
+      getFormToJson(schemeName, index, NormalMode).retrieve.right.map(get)
     }
   }
 
-  def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
         val addressPages: AddressPages = AddressPages(EnterPostCodeId(index), AddressListId(index), AddressId(index))
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, index, mode).retrieve.right.map(post(_, addressPages))
+        getFormToJson(schemeName, index, NormalMode).retrieve.right.map(post(_, addressPages))
       }
     }
 
@@ -84,7 +84,7 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
             "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
             "entityType" -> msg("establisherEntityTypeIndividual"),
             "entityName" -> name,
-            "enterManuallyUrl" -> controllers.establishers.individual.address.routes.ConfirmAddressController.onPageLoad(index, mode).url,
+            "enterManuallyUrl" -> controllers.establishers.individual.address.routes.ConfirmAddressController.onPageLoad(index).url,
             "schemeName" -> schemeName
           )
         }

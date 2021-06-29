@@ -17,13 +17,11 @@
 package controllers.establishers.individual.address
 
 import connectors.AddressLookupConnector
-import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.establishers.individual.address.EnterPreviousPostCodeId
 import matchers.JsonMatchers
-import models.{TolerantAddress, NormalMode}
-import navigators.CompoundNavigator
+import models.TolerantAddress
 import org.mockito.{ArgumentCaptor, Matchers}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -34,7 +32,7 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.{NunjucksSupport, NunjucksRenderer}
+import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.{UserAnswers, Enumerable, Data}
 import play.api.libs.json.Reads._
 
@@ -45,16 +43,13 @@ class SelectPreviousAddressControllerSpec extends ControllerSpecBase with Nunjuc
   private val mockAddressLookupConnector = mock[AddressLookupConnector]
 
   val extraModules: Seq[GuiceableModule] = Seq(
-    bind[NunjucksRenderer].toInstance(mockRenderer),
-    bind[UserAnswersCacheConnector].to(mockUserAnswersCacheConnector),
-    bind[CompoundNavigator].toInstance(mockCompoundNavigator),
     bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
   )
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = controllers.establishers.individual.address.routes.SelectPreviousAddressController.onPageLoad(0, NormalMode).url
-  private val httpPathPOST: String = controllers.establishers.individual.address.routes.SelectPreviousAddressController.onSubmit(0, NormalMode).url
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
+  private val httpPathGET: String = controllers.establishers.individual.address.routes.SelectPreviousAddressController.onPageLoad(0).url
+  private val httpPathPOST: String = controllers.establishers.individual.address.routes.SelectPreviousAddressController.onSubmit(0).url
 
   private val seqAddresses = Seq(
     TolerantAddress(Some("1"),Some("1"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")),

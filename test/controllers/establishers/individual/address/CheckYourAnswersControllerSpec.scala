@@ -29,7 +29,6 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
-import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Value, Row, Key}
 import uk.gov.hmrc.viewmodels.{Html, NunjucksSupport}
 import utils.Data.{schemeName, ua}
@@ -45,10 +44,9 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
   private val mockCyaHelper: EstablisherAddressCYAHelper = mock[EstablisherAddressCYAHelper]
   private def httpPathGET: String = controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(0).url
   val extraModules: Seq[GuiceableModule] = Seq(
-    bind[NunjucksRenderer].toInstance(mockRenderer),
     bind[EstablisherAddressCYAHelper].toInstance(mockCyaHelper)
   )
-  private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
   private val rows = Seq(
     Row(
       key = Key(Literal("test-key"), classes = Seq("govuk-!-width-one-half")),

@@ -43,9 +43,6 @@ object EstablisherHasNINOId {
   override lazy val toString: String =
     "hasNino"
 
-  def collectionPath(index: Int): JsPath =
-    EstablishersId(index).path \ EstablisherHasNINOId.toString
-
   implicit lazy val formats: Format[EstablisherHasNINOId] =
     Json.format[EstablisherHasNINOId]
 }

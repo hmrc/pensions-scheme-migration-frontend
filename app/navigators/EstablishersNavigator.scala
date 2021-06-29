@@ -16,21 +16,21 @@
 
 package navigators
 
-import controllers.establishers.individual.routes._
-import controllers.establishers.individual.details.routes._
 import controllers.establishers.individual.address.routes._
 import controllers.establishers.individual.contact.routes._
+import controllers.establishers.individual.details.routes._
+import controllers.establishers.individual.routes._
 import controllers.establishers.routes._
 import controllers.routes._
 import identifiers._
-import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.details._
 import identifiers.establishers._
-import identifiers.establishers.individual.address.{AddressId, AddressListId, AddressYearsId, EnterPostCodeId, EnterPreviousPostCodeId, PreviousAddressId, PreviousAddressListId}
+import identifiers.establishers.individual.EstablisherNameId
+import identifiers.establishers.individual.address._
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
-import models.{CheckMode, Index, Mode, NormalMode}
+import identifiers.establishers.individual.details._
 import models.establishers.EstablisherKind
 import models.requests.DataRequest
+import models.{CheckMode, Index, Mode, NormalMode}
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
 
@@ -52,12 +52,12 @@ class EstablishersNavigator
     case EstablisherHasUTRId(index) => establisherHasUtr(index, ua, NormalMode)
     case EstablisherUTRId(index) => cyaDetails(index)
     case EstablisherNoUTRReasonId(index) => cyaDetails(index)
-    case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index, NormalMode)
+    case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index)
     case AddressListId(index) => addressYears(index, NormalMode)
     case AddressId(index) => addressYears(index, NormalMode)
     case AddressYearsId(index) =>
-      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else EnterPreviousPostcodeController.onPageLoad(index, NormalMode)
-    case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index, NormalMode)
+      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else EnterPreviousPostcodeController.onPageLoad(index)
+    case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index)
     case PreviousAddressListId(index) => cyaAddress(index)
     case PreviousAddressId(index) => cyaAddress(index)
     case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
@@ -77,10 +77,10 @@ class EstablishersNavigator
     case EnterPhoneId(index) => cyaContactDetails(index)
   }
 
-  private def cyaAddress(index:Int) = controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
-  private def cyaDetails(index:Int) = controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index)
-  private def cyaContactDetails(index:Int) = controllers.establishers.individual.contact.routes.CheckYourAnswersController.onPageLoad(index)
-  private def addressYears(index:Int, mode:Mode) = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index, mode)
+  private def cyaAddress(index:Int): Call = controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
+  private def cyaDetails(index:Int): Call = controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index)
+  private def cyaContactDetails(index:Int): Call = controllers.establishers.individual.contact.routes.CheckYourAnswersController.onPageLoad(index)
+  private def addressYears(index:Int, mode:Mode): Call = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index)
 
   private def establisherKindRoutes(
                                      index: Index,

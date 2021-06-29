@@ -21,9 +21,13 @@ import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{AddressYearsId, PreviousAddressId, AddressId}
 import identifiers.establishers.individual.details._
 import models.{PersonName, ReferenceValue}
+import identifiers.establishers.individual.details._
+import models.{PersonName, ReferenceValue}
 import models.establishers.EstablisherKind
 import org.scalatest.{OptionValues, TryValues, MustMatchers, WordSpec}
 import utils.{UserAnswers, Enumerable, Data}
+import org.scalatest.{MustMatchers, OptionValues, TryValues, WordSpec}
+import utils.{Enumerable, UserAnswers}
 
 import java.time.LocalDate
 
@@ -125,6 +129,5 @@ class DataCompletionEstablishersSpec
         UserAnswers().isEstablisherIndividualAddressCompleted(0, UserAnswers()) mustBe None
       }
     }
-
   }
 }

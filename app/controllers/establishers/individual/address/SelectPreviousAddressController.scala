@@ -25,7 +25,7 @@ import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{EnterPreviousPostCodeId, PreviousAddressId, PreviousAddressListId}
-import models.{Mode, Index}
+import models.{Mode, Index, NormalMode}
 
 import javax.inject.Inject
 import navigators.CompoundNavigator
@@ -56,17 +56,17 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
 
   override def form: Form[Int] = formProvider("establisherSelectAddress.required")
 
-  def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
+  def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
     retrieve(SchemeNameId) { schemeName =>
-      getFormToJson(schemeName, index, mode).retrieve.right.map(get)
+      getFormToJson(schemeName, index, NormalMode).retrieve.right.map(get)
     }
   }
 
-  def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
         val addressPages: AddressPages = AddressPages(EnterPreviousPostCodeId(index), PreviousAddressListId(index), PreviousAddressId(index))
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, index, mode).retrieve.right.map(post(_, addressPages))
+        getFormToJson(schemeName, index, NormalMode).retrieve.right.map(post(_, addressPages))
       }
     }
 
@@ -84,7 +84,7 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
             "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
             "entityType" -> msg("establisherEntityTypeIndividual"),
             "entityName" -> name,
-            "enterManuallyUrl" -> controllers.establishers.individual.address.routes.ConfirmPreviousAddressController.onPageLoad(index, mode).url,
+            "enterManuallyUrl" -> controllers.establishers.individual.address.routes.ConfirmPreviousAddressController.onPageLoad(index).url,
             "schemeName" -> schemeName,
             "h1MessageKey" -> "previousAddressList.title"
           )

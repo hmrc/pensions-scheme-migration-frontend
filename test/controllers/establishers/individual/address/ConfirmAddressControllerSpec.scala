@@ -17,14 +17,11 @@
 package controllers.establishers.individual.address
 
 import connectors.AddressLookupConnector
-import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.address.AddressId
 import matchers.JsonMatchers
-import models.NormalMode
-import navigators.CompoundNavigator
 import org.mockito.{ArgumentCaptor, Matchers}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -35,7 +32,7 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.{NunjucksSupport, NunjucksRenderer}
+import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.{UserAnswers, Enumerable, Data}
 import play.api.libs.json.Reads._
 import utils.Data.ua
@@ -47,17 +44,14 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
   private val mockAddressLookupConnector = mock[AddressLookupConnector]
 
   val extraModules: Seq[GuiceableModule] = Seq(
-    bind[NunjucksRenderer].toInstance(mockRenderer),
-    bind[UserAnswersCacheConnector].to(mockUserAnswersCacheConnector),
-    bind[CompoundNavigator].toInstance(mockCompoundNavigator),
     bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
   )
 
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = controllers.establishers.individual.address.routes.ConfirmAddressController.onPageLoad(0, NormalMode).url
-  private val httpPathPOST: String = controllers.establishers.individual.address.routes.ConfirmAddressController.onSubmit(0, NormalMode).url
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
+  private val httpPathGET: String = controllers.establishers.individual.address.routes.ConfirmAddressController.onPageLoad(0).url
+  private val httpPathPOST: String = controllers.establishers.individual.address.routes.ConfirmAddressController.onSubmit(0).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "line1" -> Seq("1"),
@@ -75,6 +69,7 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
   override def beforeEach: Unit = {
     super.beforeEach
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+    when(mockAppConfig.validCountryCodes).thenReturn(Seq("GB"))
   }
 
   "ConfirmAddress Controller" must {

@@ -4,12 +4,10 @@ object AppDependencies {
   import play.core.PlayVersion.current
   val compile = Seq(
     "uk.gov.hmrc"                   %% "bootstrap-frontend-play-27"     % "5.3.0",
-    "uk.gov.hmrc"                   %% "govuk-template"                 % "5.68.0-play-27",
     "uk.gov.hmrc"                   %% "play-nunjucks"                  % "0.28.0-play-27",
     "uk.gov.hmrc"                   %% "play-nunjucks-viewmodel"        % "0.14.0-play-27",
     "org.webjars.npm"               %  "govuk-frontend"                 % "3.12.0",
     "org.webjars.npm"               %  "hmrc-frontend"                  % "1.19.0",
-    "uk.gov.hmrc"                   %% "play-ui"                        % "9.5.0-play-27",
     "uk.gov.hmrc"                   %% "play-conditional-form-mapping"  % "1.9.0-play-27",
     "uk.gov.hmrc"                   %% "play-language"                  % "5.1.0-play-27",
     "com.google.inject.extensions"  %  "guice-multibindings"            % "4.2.2",

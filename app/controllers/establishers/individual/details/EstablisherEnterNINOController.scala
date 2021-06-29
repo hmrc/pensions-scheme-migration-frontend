@@ -27,9 +27,10 @@ import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -64,12 +65,13 @@ class EstablisherEnterNINOController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             get(
-              pageTitle     = Messages("messages__enterNINO", name(index)),
+              pageTitle     = Message("messages__enterNINO_title", Message("messages__individual")),
+              pageHeading     = Message("messages__enterNINO", name(index)),
               isPageHeading = true,
               id            = EstablisherNINOId(index),
               form          = form(index),
               schemeName    = schemeName,
-              hintText      = Some(Messages("messages__enterNINO__hint")),
+              hintText      = Some(Message("messages__enterNINO__hint")),
               legendClass   = "govuk-label--xl"
             )
         }
@@ -81,12 +83,13 @@ class EstablisherEnterNINOController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             post(
-              pageTitle     = Messages("messages__enterNINO", name(index)),
+              pageTitle     = Message("messages__enterNINO_title", Message("messages__individual")),
+              pageHeading     = Message("messages__enterNINO", name(index)),
               isPageHeading = true,
               id            = EstablisherNINOId(index),
               form          = form(index),
               schemeName    = schemeName,
-              hintText      = Some(Messages("messages__enterNINO__hint")),
+              hintText      = Some(Message("messages__enterNINO__hint")),
               legendClass   = "govuk-label--xl",
               mode          = mode
             )

@@ -61,7 +61,8 @@ class EstablisherHasUTRControllerSpec
     "hasReferenceValue.njk"
   private val commonJson: JsObject =
     Json.obj(
-      "pageTitle"     -> "Does Jane Doe have a Unique Taxpayer Reference (UTR)?",
+      "pageTitle"     -> "Does the individual have a Unique Taxpayer Reference (UTR)?",
+      "pageHeading"     -> "Does Jane Doe have a Unique Taxpayer Reference (UTR)?",
       "schemeName"    -> "Test scheme name",
       "paragraphs"    -> Json.arr(
         "This is a 10-digit or 13-digit number. " +
