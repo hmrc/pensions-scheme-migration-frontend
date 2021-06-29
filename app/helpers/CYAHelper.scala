@@ -33,7 +33,7 @@ trait CYAHelper {
     s"""<span class="govuk-!-display-block">$l</span>"""
 
   private def addressAnswer(addr: Address)
-                           (implicit messages: Messages): Html =
+    (implicit messages: Messages): Html =
     Html(
       addrLineToHtml(addr.addressLine1) +
         addrLineToHtml(addr.addressLine2) +
@@ -48,7 +48,7 @@ trait CYAHelper {
   protected val answerBenefitsProvisionTypeTransform: Option[BenefitsProvisionType => Text] = Some(opt => msg"howProvideBenefits.${opt.toString}")
   protected val answerBenefitsTypeTransform: Option[BenefitsType => Text] = Some(opt => msg"benefitsType.${opt.toString}")
   protected val referenceValueTransform: Option[ReferenceValue => Text] = Some(opt => msg"${opt.value}")
-  protected def answerBenefitsAddressTransform(implicit messages: Messages): Option[Address => Html] = Some(opt => addressAnswer(opt))
+  protected def answerAddressTransform(implicit messages: Messages): Option[Address => Html] = Some(opt => addressAnswer(opt))
 
   def rows(viewOnly: Boolean, rows: Seq[SummaryList.Row]): Seq[SummaryList.Row] =
     if (viewOnly) rows.map(_.copy(actions = Nil)) else rows
@@ -80,7 +80,7 @@ trait CYAHelper {
   }
 
   def actionChange[A](optionURL: Option[String], visuallyHiddenText: Option[Text])(implicit
-                                                                                           messages: Messages): Seq[Action] = {
+    messages: Messages): Seq[Action] = {
     val changeVisuallyHidden = visuallyHiddenText.map {
       visuallyHiddn => Literal(messages("site.change") + " " + visuallyHiddn.resolve)
     }
@@ -96,11 +96,11 @@ trait CYAHelper {
   }
 
   def answerOrAddRow[A](id: TypedIdentifier[A],
-                        message: String,
-                        url: Option[String] = None,
-                        visuallyHiddenText: Option[Text] = None,
-                        answerTransform: Option[A => Content] = None)
-                       (implicit ua: UserAnswers, rds: Reads[A], messages: Messages): Row =
+    message: String,
+    url: Option[String] = None,
+    visuallyHiddenText: Option[Text] = None,
+    answerTransform: Option[A => Content] = None)
+    (implicit ua: UserAnswers, rds: Reads[A], messages: Messages): Row =
     ua.get(id) match {
       case None =>
         Row(
@@ -117,10 +117,10 @@ trait CYAHelper {
     }
 
   def answerRow[A](message: String,
-                   answer: String,
-                   url: Option[String] = None,
-                   visuallyHiddenText: Option[Text] = None)
-                  (implicit messages: Messages): Row =
+    answer: String,
+    url: Option[String] = None,
+    visuallyHiddenText: Option[Text] = None)
+    (implicit messages: Messages): Row =
     Row(
       key = Key(msg"$message", classes = Seq("govuk-!-width-one-half")),
       value = Value(Literal(answer)),
@@ -128,21 +128,21 @@ trait CYAHelper {
     )
 
   def changeLink(url: String, visuallyHiddenText: Option[Message] = None)
-                (implicit messages: Messages): Option[Link] = Some(Link(messages("site.change"), url, visuallyHiddenText))
+    (implicit messages: Messages): Option[Link] = Some(Link(messages("site.change"), url, visuallyHiddenText))
 
   def addLink(url: String, visuallyHiddenText: Option[Message] = None)
-             (implicit messages: Messages): Option[Link] = Some(Link(messages("site.add"), url, visuallyHiddenText))
+    (implicit messages: Messages): Option[Link] = Some(Link(messages("site.add"), url, visuallyHiddenText))
 }
 
 object CYAHelper {
   def getAnswer[A](id: TypedIdentifier[A])
-                  (implicit ua: UserAnswers, rds: Reads[A]): String =
+    (implicit ua: UserAnswers, rds: Reads[A]): String =
     ua.get(id)
       .getOrElse(throw MandatoryAnswerMissingException)
       .toString
 
   def getName(id: TypedIdentifier[PersonName])
-             (implicit ua: UserAnswers, rds: Reads[PersonName]): String =
+    (implicit ua: UserAnswers, rds: Reads[PersonName]): String =
     ua.get(id)
       .getOrElse(throw MandatoryAnswerMissingException)
       .fullName
@@ -150,4 +150,3 @@ object CYAHelper {
 
 case object MandatoryAnswerMissingException
   extends Exception("An answer which was mandatory is missing from scheme details returned from TPSS")
-

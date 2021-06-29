@@ -20,8 +20,9 @@ import base.SpecBase.fakeRequest
 import identifiers.aboutMembership.{FutureMembersId, CurrentMembersId}
 import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
 import identifiers.benefitsAndInsurance.{AreBenefitsSecuredId, BenefitsInsurancePolicyId, BenefitsInsuranceNameId, InsurerAddressId, BenefitsTypeId, HowProvideBenefitsId, IsInvestmentRegulatedId, IsOccupationalId}
+import identifiers.establishers.individual.EstablisherNameId
 import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
-import models.{SchemeType, Address, MigrationLock, Members}
+import models.{Address, PersonName, MigrationLock, SchemeType, Members}
 import models.requests.DataRequest
 import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.Json
@@ -37,12 +38,15 @@ object Data {
   val pstr: String = "pstr"
   val migrationLock: MigrationLock = MigrationLock(pstr, credId, psaId)
   val schemeName: String = "Test scheme name"
-  val ua: UserAnswers = UserAnswers(Json.obj(SchemeNameId.toString -> Data.schemeName))
+  val establisherIndividualName = PersonName("test", "name")
+  val ua: UserAnswers =
+    UserAnswers()
+      .setOrException(SchemeNameId, Data.schemeName)
 
 
   val insurerName= "test insurer"
   val insurerPolicyNo = "test"
-  val insurerAddress = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
+  val address = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
 
   val completeUserAnswers: UserAnswers = UserAnswers().set(SchemeNameId, schemeName).flatMap(
     _.set(SchemeTypeId, SchemeType.BodyCorporate).flatMap(
@@ -58,7 +62,7 @@ object Data {
     .setOrException(AreBenefitsSecuredId, true)
     .setOrException(BenefitsInsuranceNameId, insurerName)
     .setOrException(BenefitsInsurancePolicyId, insurerPolicyNo)
-    .setOrException(InsurerAddressId, insurerAddress)
+    .setOrException(InsurerAddressId, address)
 
   implicit val request: DataRequest[AnyContent] =
     DataRequest(

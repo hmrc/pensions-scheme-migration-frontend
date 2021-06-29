@@ -16,22 +16,35 @@
 
 package helpers.spokes.establishers.individual
 
+import controllers.establishers.individual.address.routes.{WhatYouWillNeedController, CheckYourAnswersController}
 import helpers.spokes.Spoke
-import models.TaskListLink
+import models.{TaskListLink, Index}
 import play.api.i18n.Messages
 import utils.UserAnswers
 
 
-case object EstablisherIndividualAddress extends Spoke {
+case class EstablisherIndividualAddress(
+  index: Index,
+  answers: UserAnswers
+) extends Spoke {
+  val messageKeyPrefix = "messages__schemeTaskList__establisherIndividualAddress_"
+
+  val linkKeyAndRoute: (String, String) = {
+    if (completeFlag(answers).isDefined)
+      (s"${messageKeyPrefix}changeLink", CheckYourAnswersController.onPageLoad(index).url)
+    else
+      (s"${messageKeyPrefix}addLink", WhatYouWillNeedController.onPageLoad(index).url)
+  }
+
   override def changeLink(name: String)
-                         (implicit messages: Messages): TaskListLink =
+    (implicit messages: Messages): TaskListLink =
     TaskListLink(
-      text = Messages("messages__schemeTaskList__establisherIndividualAddress_addLink", name),
-      target = "someUrl",
+      text = Messages(linkKeyAndRoute._1, name),
+      target = linkKeyAndRoute._2,
       visuallyHiddenText = None
     )
 
   override def completeFlag(answers: UserAnswers): Option[Boolean] =
-    answers.isEstablisherIndividualAddressCompleted
+    answers.isEstablisherIndividualAddressCompleted(index, answers)
 }
 

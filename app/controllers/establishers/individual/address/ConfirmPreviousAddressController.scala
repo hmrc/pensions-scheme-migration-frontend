@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.benefitsAndInsurance
+package controllers.establishers.individual.address
 
 import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
@@ -23,10 +23,11 @@ import controllers.actions._
 import controllers.address.ManualAddressController
 import forms.address.AddressFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.benefitsAndInsurance.InsurerAddressId
+import identifiers.establishers.individual.EstablisherNameId
+import identifiers.establishers.individual.address.PreviousAddressId
 
 import javax.inject.Inject
-import models.{Address, AddressConfiguration}
+import models.{Address, Index, AddressConfiguration}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{MessagesApi, Messages, I18nSupport}
@@ -36,7 +37,7 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 
 import scala.concurrent.ExecutionContext
 
-class InsurerConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
+class ConfirmPreviousAddressController @Inject()(override val messagesApi: MessagesApi,
   val userAnswersCacheConnector: UserAnswersCacheConnector,
   val navigator: CompoundNavigator,
   authenticate: AuthAction,
@@ -49,22 +50,23 @@ class InsurerConfirmAddressController @Inject()(override val messagesApi: Messag
 )(implicit ec: ExecutionContext) extends ManualAddressController
   with Retrievals with I18nSupport with NunjucksSupport {
 
-  override protected val pageTitleEntityTypeMessageKey: Option[String] = None
+  override protected val pageTitleEntityTypeMessageKey: Option[String] = Some("establisherEntityTypeIndividual")
+  override protected val h1MessageKey: String = "previousAddress.title"
+  override protected val pageTitleMessageKey: String = "previousAddress.title"
 
   def form(implicit messages: Messages): Form[Address] = formProvider()
 
-  def onPageLoad: Action[AnyContent] =
+  def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-
-      SchemeNameId.retrieve.right.map { schemeName =>
-          get(Some(schemeName), schemeName, InsurerAddressId, AddressConfiguration.PostcodeFirst)
+      (EstablisherNameId(index) and SchemeNameId).retrieve.right.map { case establisherName ~ schemeName =>
+          get(Some(schemeName), establisherName.fullName, PreviousAddressId(index), AddressConfiguration.PostcodeFirst)
       }
     }
 
-  def onSubmit: Action[AnyContent] =
+  def onSubmit(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      SchemeNameId.retrieve.right.map { schemeName =>
-        post(Some(schemeName), schemeName, InsurerAddressId, AddressConfiguration.PostcodeFirst)
+      (EstablisherNameId(index) and SchemeNameId).retrieve.right.map { case establisherName ~ schemeName =>
+        post(Some(schemeName), establisherName.fullName, PreviousAddressId(index), AddressConfiguration.PostcodeFirst)
       }
     }
 }

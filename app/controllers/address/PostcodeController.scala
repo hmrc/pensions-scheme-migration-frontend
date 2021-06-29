@@ -44,21 +44,29 @@ trait PostcodeController extends FrontendBaseController with Retrievals {
   protected def addressLookupConnector: AddressLookupConnector
   protected def viewTemplate = "address/postcode.njk"
 
+  private def prepareJson(jsObject: JsObject):JsObject = {
+    if (jsObject.keys.contains("h1MessageKey")) {
+      jsObject
+    } else {
+      jsObject ++ Json.obj("h1MessageKey" -> "postcode.title")
+    }
+  }
+
   def get(json: Form[String] => JsObject)
          (implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
 
-    renderer.render(viewTemplate, json(form)).map(Ok(_))
+    renderer.render(viewTemplate, prepareJson(json(form))).map(Ok(_))
   }
 
   def post(formToJson: Form[String] => JsObject, postcodeId: TypedIdentifier[Seq[TolerantAddress]], errorMessage: String)
           (implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
     form.bindFromRequest().fold(
       formWithErrors =>
-        renderer.render(viewTemplate, formToJson(formWithErrors)).map(BadRequest(_)),
+        renderer.render(viewTemplate, prepareJson(formToJson(formWithErrors))).map(BadRequest(_)),
       value =>
           addressLookupConnector.addressLookupByPostCode(value).flatMap {
             case Nil =>
-              val json = formToJson(formWithError(form, errorMessage))
+              val json = prepareJson(formToJson(formWithError(form, errorMessage)))
                 renderer.render(viewTemplate, json).map(BadRequest(_))
 
             case addresses =>

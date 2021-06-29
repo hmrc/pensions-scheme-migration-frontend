@@ -61,7 +61,7 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
             InsurerAddressId,
             msgHeadingInsurerAddress.resolve,
             Some(controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onPageLoad().url),
-            Some(msg"addressList.visuallyHidden"), answerBenefitsAddressTransform
+            Some(msg"addressList.visuallyHidden"), answerAddressTransform
           )
       )
     } else

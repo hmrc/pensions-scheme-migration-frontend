@@ -18,6 +18,8 @@ package utils.datacompletion
 
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.individual.EstablisherNameId
+import identifiers.establishers.individual.address.{AddressYearsId, PreviousAddressId, AddressId}
+import identifiers.establishers.individual.details._
 import identifiers.establishers.individual.details._
 import utils.UserAnswers
 
@@ -59,12 +61,19 @@ trait DataCompletionEstablishers extends DataCompletion {
     ).getOrElse(false)
   }
 
-  def isEstablisherIndividualAddressCompleted: Option[Boolean] =
+  def isEstablisherIndividualAddressCompleted(
+    index: Int,
+    userAnswers: UserAnswers
+  ): Option[Boolean] = {
+    val atAddressMoreThanOneYear = userAnswers.get(AddressYearsId(index)).contains(true)
     isComplete(
       Seq(
-        Some(false)
+        isAnswerComplete(AddressId(index)),
+        isAnswerComplete(AddressYearsId(index)),
+        if (atAddressMoreThanOneYear) Some(true) else isAnswerComplete(PreviousAddressId(index))
       )
     )
+  }
 
   def isEstablisherIndividualContactDetailsCompleted: Option[Boolean] =
     isComplete(

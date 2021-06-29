@@ -26,7 +26,7 @@ import identifiers.beforeYouStart.{SchemeNameId, WorkingKnowledgeId}
 import identifiers.benefitsAndInsurance._
 import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
 import org.scalatest.{OptionValues, MustMatchers, WordSpec}
-import utils.Data.{ua, insurerAddress, insurerName, insurerPolicyNo}
+import utils.Data.{ua, address, insurerName, insurerPolicyNo}
 import utils.{UserAnswers, Enumerable}
 
 class DataCompletionSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
@@ -39,7 +39,7 @@ class DataCompletionSpec extends WordSpec with MustMatchers with OptionValues wi
     private val uaBenefitsSectionWithPolicyDetails = uaBenefitsSectionNoPolicyDetails
     .setOrException(BenefitsInsuranceNameId, insurerName)
     .setOrException(BenefitsInsurancePolicyId, insurerPolicyNo)
-    .setOrException(InsurerAddressId, insurerAddress)
+    .setOrException(InsurerAddressId, address)
 
   "All generic methods" when {
     "isComplete" must {
@@ -147,7 +147,7 @@ class DataCompletionSpec extends WordSpec with MustMatchers with OptionValues wi
           .setOrException(HowProvideBenefitsId, BenefitsProvisionType.DefinedBenefitsOnly)
           .setOrException(AreBenefitsSecuredId, true)
           .setOrException(BenefitsInsuranceNameId, insurerName)
-          .setOrException(InsurerAddressId, insurerAddress)
+          .setOrException(InsurerAddressId, address)
           .isBenefitsAndInsuranceCompleted mustBe Some(false)
       }
 

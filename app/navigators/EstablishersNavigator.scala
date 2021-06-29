@@ -18,22 +18,25 @@ package navigators
 
 import controllers.establishers.individual.routes._
 import controllers.establishers.individual.details.routes._
+import controllers.establishers.individual.address.routes._
 import controllers.establishers.routes._
 import controllers.routes._
 import identifiers._
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.details._
 import identifiers.establishers._
-import models.{CheckMode, Index, Mode, NormalMode}
+import identifiers.establishers.individual.address._
+import models.{Mode, Index, CheckMode, NormalMode}
 import models.establishers.EstablisherKind
 import models.requests.DataRequest
-import play.api.mvc.{AnyContent, Call}
-import utils.{Enumerable, UserAnswers}
+import play.api.mvc.{Call, AnyContent}
+import utils.{UserAnswers, Enumerable}
 
 class EstablishersNavigator
   extends Navigator
     with Enumerable.Implicits {
 
+  //scalastyle:off cyclomatic.complexity
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case EstablisherKindId(index) => establisherKindRoutes(index, ua)
@@ -45,20 +48,33 @@ class EstablishersNavigator
     case EstablisherNINOId(index) => EstablisherHasUTRController.onPageLoad(index, NormalMode)
     case EstablisherNoNINOReasonId(index) => EstablisherHasUTRController.onPageLoad(index, NormalMode)
     case EstablisherHasUTRId(index) => establisherHasUtr(index, ua, NormalMode)
-    case EstablisherUTRId(index) => CheckYourAnswersController.onPageLoad(index)
-    case EstablisherNoUTRReasonId(index) => CheckYourAnswersController.onPageLoad(index)
+    case EstablisherUTRId(index) => cyaDetails(index)
+    case EstablisherNoUTRReasonId(index) => cyaDetails(index)
+    case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index)
+    case AddressListId(index) => addressYears(index)
+    case AddressId(index) => addressYears(index)
+    case AddressYearsId(index) =>
+      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else EnterPreviousPostcodeController.onPageLoad(index)
+    case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index)
+    case PreviousAddressListId(index) => cyaAddress(index)
+    case PreviousAddressId(index) => cyaAddress(index)
+
   }
 
   override protected def editRouteMap(ua: UserAnswers)
                                      (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
-    case EstablisherDOBId(index) => CheckYourAnswersController.onPageLoad(index)
+    case EstablisherDOBId(index) => cyaDetails(index)
     case EstablisherHasNINOId(index) => establisherHasNino(index, ua, CheckMode)
-    case EstablisherNINOId(index) => CheckYourAnswersController.onPageLoad(index)
-    case EstablisherNoNINOReasonId(index) => CheckYourAnswersController.onPageLoad(index)
+    case EstablisherNINOId(index) => cyaDetails(index)
+    case EstablisherNoNINOReasonId(index) => cyaDetails(index)
     case EstablisherHasUTRId(index) => establisherHasUtr(index, ua, CheckMode)
-    case EstablisherUTRId(index) => CheckYourAnswersController.onPageLoad(index)
-    case EstablisherNoUTRReasonId(index) => CheckYourAnswersController.onPageLoad(index)
+    case EstablisherUTRId(index) => cyaDetails(index)
+    case EstablisherNoUTRReasonId(index) => cyaDetails(index)
   }
+
+  private def cyaAddress(index:Int): Call = controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
+  private def cyaDetails(index:Int): Call = controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index)
+  private def addressYears(index:Int): Call = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index)
 
   private def establisherKindRoutes(
                                      index: Index,

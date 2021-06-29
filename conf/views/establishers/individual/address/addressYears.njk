@@ -1,14 +1,14 @@
 {% extends "includes/layout.njk" %}
 
 {% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
-{% from "govuk/components/input/macro.njk"         import govukInput %}
+{% from "govuk/components/radios/macro.njk"        import govukRadios %}
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "macros/title.njk"                         import title %}
 {% from "macros/returnLink.njk"                    import returnLink %}
 
 {% block pageTitle %}
-  {{ title(messages(h1MessageKey, messages(entityType)), form.errors) }}
+  {{ title(messages("establisherAddressYears.title", entityType), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -23,28 +23,27 @@
           }) }}
         {% endif %}
 
-        <form action="{{ viewmodel.submitUrl }}" method="post" autocomplete="off" novalidate>
+
+        <form method="post" autocomplete="off" novalidate >
 
           {{ csrf() | safe }}
 
-          {{ govukInput({
-            label: {
-              text: messages(h1MessageKey, entityName),
-              isPageHeading: true,
-              classes: "govuk-label--xl"
+          {{ govukRadios({
+            classes: "govuk-radios--inline",
+            name: 'value',
+            fieldset: {
+              legend: {
+                text: messages('establisherAddressYears.title', entityName),
+                isPageHeading: false,
+                classes: "govuk-fieldset__legend--xl"
+              }
             },
-            id: "value",
-            name: "value",
-            value: form.value.value,
-            classes: "govuk-input--width-10",
-            attributes: {autocomplete: "off"},
+            items: radios,
             errorMessage: form.value.error
           }) }}
-         <p class="govuk-body">
-                    {{ messages("postcode.youCan") }} <a id="manual-address-link" href="{{ enterManuallyUrl }}" class="govuk-link">{{ messages("address.linkText.enterManually") }}</a>.
-                 </p>
+
           {{ govukButton({
-            text: messages("findAddress"),
+            text: messages("site.save_and_continue"),
             attributes: {id: "submit"}
           }) }}
 
@@ -52,7 +51,5 @@
 
       </div>
     </div>
-
     {{ returnLink(schemeName) }}
-
 {% endblock %}
