@@ -18,12 +18,15 @@ package helpers
 
 import base.SpecBase
 import controllers.establishers.individual.details.routes
+import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}
+import controllers.establishers.individual.details.routes
 import identifiers.beforeYouStart.{SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressId
 import models.establishers.EstablisherKind
 import models.{EntitySpoke, _}
+import org.scalatest.{MustMatchers, OptionValues, TryValues}
 import org.scalatest.{OptionValues, TryValues, MustMatchers}
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, Data}
@@ -146,50 +149,50 @@ class SpokeCreationServiceSpec
         )
       result mustBe expectedSpoke
     }
+  }
 
-    "display all the spokes with appropriate links and incomplete status when data is returned from TPSS for address spoke" in {
-      val userAnswers =
-        ua
-          .set(EstablisherKindId(0), EstablisherKind.Individual).success.value
-          .set(EstablisherNameId(0), PersonName("a", "b")).success.value
-          .setOrException(AddressId(0), Data.address)
+  "display all the spokes with appropriate links and incomplete status when data is returned from TPSS for address spoke" in {
+    val userAnswers =
+      ua
+        .set(EstablisherKindId(0), EstablisherKind.Individual).success.value
+        .set(EstablisherNameId(0), PersonName("a", "b")).success.value
+        .setOrException(AddressId(0), Data.address)
 
-      val expectedSpoke =
-        Seq(
-          EntitySpoke(
-            link = TaskListLink(
-              text = "Add details for a b",
-              target = routes.WhatYouWillNeedController.onPageLoad(0).url,
-              visuallyHiddenText = None
-            ),
-            isCompleted = Some(false)
+    val expectedSpoke =
+      Seq(
+        EntitySpoke(
+          link = TaskListLink(
+            text = "Add details for a b",
+            target = routes.WhatYouWillNeedController.onPageLoad(0).url,
+            visuallyHiddenText = None
           ),
-          EntitySpoke(
-            link = TaskListLink(
-              text = "Change address for a b",
-              target = controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(0).url,
-              visuallyHiddenText = None
-            ),
-            isCompleted = Some(false)
+          isCompleted = Some(false)
+        ),
+        EntitySpoke(
+          link = TaskListLink(
+            text = "Change address for a b",
+            target = controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(0).url,
+            visuallyHiddenText = None
           ),
-          EntitySpoke(
-            link = TaskListLink(
-              text = "Add contact details for a b",
-              target = "someUrl",
-              visuallyHiddenText = None
-            ),
-            isCompleted = Some(false)
-          )
+          isCompleted = Some(false)
+        ),
+        EntitySpoke(
+          link = TaskListLink(
+            text = "Add contact details for a b",
+            target = "someUrl",
+            visuallyHiddenText = None
+          ),
+          isCompleted = Some(false)
         )
+      )
 
-      val result =
-        spokeCreationService.getEstablisherIndividualSpokes(
-          answers = userAnswers,
-          name = "a b",
-          index = 0
-        )
-      result mustBe expectedSpoke
-    }
+    val result =
+      spokeCreationService.getEstablisherIndividualSpokes(
+        answers = userAnswers,
+        name = "a b",
+        index = 0
+      )
+    result mustBe expectedSpoke
   }
 
   "declarationSpoke" must {

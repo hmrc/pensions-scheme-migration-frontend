@@ -1,0 +1,66 @@
+{% extends "includes/layout.njk" %}
+
+{% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
+{% from "govuk/components/radios/macro.njk"        import govukRadios %}
+{% from "govuk/components/button/macro.njk"        import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/select/macro.njk"        import govukSelect %}
+{% from "macros/title.njk"                         import title %}
+{% from "macros/returnLink.njk"                    import returnLink %}
+
+{% block pageTitle %}
+  {{ title(messages("messages__established_country__title"), form.errors) }}
+{% endblock %}
+
+{% block mainContent %}
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        {% if form.errors.length > 0 %}
+          {{ govukErrorSummary({
+            "titleText": messages("error.summary.title"),
+            "errorList": form.errors
+          }) }}
+        {% endif %}
+
+
+        <form method="post" autocomplete="off" novalidate >
+
+          {{ csrf() | safe }}
+
+          <h1 class="govuk-heading-xl">{{ messages("messages__established_country__h1", schemeName) }}</h1>
+
+           <div class="autocomplete-wrapper">
+                        {{ govukSelect({
+                          label: {
+                              text: messages("messages__established_country__h1", schemeName),
+                              isPageHeading: false,
+                              classes: "govuk-visually-hidden"
+                          },
+                          id: "value",
+                          classes: "autocomplete",
+                          name: "value",
+                          items: countries,
+                          errorMessage: form.error,
+                          attributes: {
+                              value: form.value
+                          }
+                        }) }}
+                    </div>
+
+          {{ govukButton({
+            text: messages("site.save_and_continue"),
+            attributes: {id: "submit"}
+          }) }}
+
+        </form>
+
+      </div>
+    </div>
+    {{ returnLink(schemeName) }}
+{% endblock %}
+
+{% block pageScripts %}
+    <script src="{{ routes.controllers.Assets.versioned("javascripts/autocomplete/location-autocomplete.min.js").url }}"></script>
+{% endblock %}

@@ -115,8 +115,8 @@ trait Constraints {
       "other")
 
     Constraint {
-      case schemeType if validSchemeTypes.contains(schemeType) => Valid
-      case _ => Invalid(invalidKey)
+      case schemeType if validSchemeTypes.contains(schemeType.toLowerCase) => Valid
+      case schemeType => Invalid(invalidKey)
     }
   }
 

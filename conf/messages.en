@@ -165,10 +165,12 @@ messages__schemeTaskList__sectionEstablishers_no_establishers = No establishers
 messages__schemeTaskList__establisherIndividualDetails_addLink = Add details for {0}
 messages__schemeTaskList__establisherIndividualDetails_changeLink = Change details for {0}
 messages__schemeTaskList__establisherIndividualAddress_addLink = Add address for {0}
-messages__schemeTaskList__establisherIndividualAddress_changeLink = Change address for {0}
 messages__schemeTaskList__establisherIndividualContactDetails_addLink = Add contact details for {0}
+messages__schemeTaskList__establisherIndividualAddress_changeLink = Change address for {0}
 
-messages__dob__title = What is the date of birth for {0}?
+messages__individual = the individual
+messages__dob__title = What is {0}’s date of birth?
+messages__dob__h1 = What is the date of birth for {0}?
 messages__dob__cya__visuallyHidden = the date of birth for {0}
 
 messages__hasNINO = Does {0} have a National Insurance number?
@@ -176,6 +178,7 @@ messages__genericHasNino__error__required = Select yes if {0} has a National Ins
 messages__hasNINO__cya__visuallyHidden = whether {0} has a National Insurance number
 messages__hasNINO__cya = National Insurance number
 
+messages__enterNINO_title = What is {0}’s National Insurance number?
 messages__enterNINO = What is the National Insurance number for {0}?
 messages__enterNINO__hint = For example, QQ 12 34 56 C
 messages__error__common_nino = Enter a National Insurance number
@@ -191,6 +194,7 @@ messages__genericHasUtr__error__required = Select yes if {0} has a Unique Taxpay
 messages__hasUTR__cya__visuallyHidden = whether {0} has a Unique Taxpayer Reference
 messages__hasUTR__cya = UTR
 
+messages__enterUTR_title = What is {0}’s UTR?
 messages__enterUTR = What is the UTR for {0}?
 messages__UTR__p1 = If the UTR is 13 numbers, only enter the last 10.
 messages__UTR__p2 = If there is a letter ‘K’ at the end of the number, do not enter it.
@@ -201,6 +205,9 @@ messages__utr__error_required = Enter a Unique Taxpayer Reference (UTR)
 messages__utr__error_maxLength = Enter a UTR in the correct format
 messages__utr__error_invalid = Enter a Unique Taxpayer Reference (UTR) in the correct format
 
+messages__reason__error_maxLength = Reason must be 160 characters or less
+messages__reason__error_invalid = Reason must only include letters, numbers and punctuation marks
+messages__whyNoUTR_title = Why does {0} not have a Unique Taxpayer Reference?
 messages__whyNoUTR = Why does {0} not have a UTR?
 messages__reason__error_utrRequired = Enter a reason why {0} does not have a UTR
 messages__whyNoUTR__cya__visuallyHidden = the reason why {0} does not have a UTR
@@ -380,7 +387,8 @@ messages__individualName__title = What is the individual’s name?
 messages__confirmDelete__error_required = Select yes if you want to delete {0}
 messages__establisher__name_title = What is the establisher’s name?
 
-messages__establisherDetails__whatYouWillNeed_title = Details for {0}
+messages__establisherDetails__whatYouWillNeed_title = Adding establisher’s details
+messages__establisherDetails__whatYouWillNeed_h1 = Details for {0}
 messages__establisherDetails__whatYouWillNeed_p = You will need to tell us {0}’s:
 messages__establisherDetails__whatYouWillNeed_li_1 = date of birth
 messages__establisherDetails__whatYouWillNeed_li_2 = National Insurance number, or reason why they do not have one

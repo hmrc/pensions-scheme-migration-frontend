@@ -16,23 +16,26 @@
 
 package controllers.beforeYouStartSpoke
 
+import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.beforeYouStart.EstablishedCountryFormProvider
+import helpers.CountriesHelper
 import identifiers.beforeYouStart.{EstablishedCountryId, SchemeNameId}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import renderer.Renderer
+import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.CountryOptions
-import views.html.beforeYouStart.establishedCountry
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EstablishedCountryController @Inject()(
+class EstablishedCountryController @Inject()( config: AppConfig,
                                               override val messagesApi: MessagesApi,
                                               userAnswersCacheConnector: UserAnswersCacheConnector,
                                               navigator: CompoundNavigator,
@@ -40,13 +43,14 @@ class EstablishedCountryController @Inject()(
                                               getData: DataRetrievalAction,
                                               requireData: DataRequiredAction,
                                               formProvider: EstablishedCountryFormProvider,
-                                              countryOptions: CountryOptions,
                                               val controllerComponents: MessagesControllerComponents,
-                                              val view: establishedCountry
+                                              renderer: Renderer
                                             )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
-    with Retrievals {
+    with Retrievals
+    with NunjucksSupport
+    with CountriesHelper {
 
   private val form = formProvider()
 
@@ -57,7 +61,13 @@ class EstablishedCountryController @Inject()(
           case None => form
           case Some(value) => form.fill(value)
         }
-        Future.successful(Ok(view(preparedForm, countryOptions.options, schemeName)))
+        val json = Json.obj(
+          "form" -> preparedForm,
+          "schemeName" -> schemeName,
+          "countries" ->   jsonCountries(preparedForm.data.get("value"), config)
+        )
+
+        renderer.render("beforeYouStart/establishedCountry.njk", json).map(Ok(_))
       }
   }
 
@@ -66,7 +76,13 @@ class EstablishedCountryController @Inject()(
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           SchemeNameId.retrieve.right.map { schemeName =>
-            Future.successful(BadRequest(view(formWithErrors, countryOptions.options, schemeName)))
+            val json = Json.obj(
+              "form" -> formWithErrors,
+              "schemeName" -> schemeName,
+              "countries" ->   jsonCountries(form.data.get("country"), config)
+            )
+
+            renderer.render("beforeYouStart/establishedCountry.njk", json).map(BadRequest(_))
           },
         value =>
           for {

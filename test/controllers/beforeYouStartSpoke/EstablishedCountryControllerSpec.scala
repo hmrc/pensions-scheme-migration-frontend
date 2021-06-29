@@ -16,89 +16,151 @@
 
 package controllers.beforeYouStartSpoke
 
-import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
-import controllers.actions._
+import controllers.actions.MutableFakeDataRetrievalAction
 import forms.beforeYouStart.EstablishedCountryFormProvider
+import helpers.CountriesHelper
 import identifiers.beforeYouStart.EstablishedCountryId
+import matchers.JsonMatchers
+import org.mockito.Matchers.any
+import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.{ArgumentCaptor, Matchers}
+import play.api.Application
 import play.api.data.Form
-import play.api.mvc.Call
+import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
-import utils.Data.ua
-import utils.{CountryOptions, Data, FakeNavigator, InputOption}
-import views.html.beforeYouStart.establishedCountry
+import play.twirl.api.Html
+import uk.gov.hmrc.nunjucks.NunjucksSupport
+import utils.Data.{countryCodes, schemeName, ua}
+import utils.Enumerable
 
-class EstablishedCountryControllerSpec extends ControllerSpecBase {
-  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+import scala.concurrent.Future
 
-  private val view = injector.instanceOf[establishedCountry]
+class EstablishedCountryControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits with CountriesHelper {
 
-  val options = Seq(InputOption("territory:AE-AZ", "Abu Dhabi"), InputOption("country:AF", "Afghanistan"))
-  val testAnswer = "territory:AE-AZ"
+  private val templateToBeRendered = "beforeYouStart/establishedCountry.njk"
+  private val form: Form[String] = new EstablishedCountryFormProvider()()
 
-  def countryOptions: CountryOptions = new CountryOptions(options)
+  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 
-  val formProvider = new EstablishedCountryFormProvider(countryOptions)
-  val form = formProvider()
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getSchemeName): EstablishedCountryController =
-    new EstablishedCountryController(
-      messagesApi,
-      FakeUserAnswersCacheConnector,
-      new FakeNavigator(desiredRoute = onwardRoute),
-      FakeAuthAction,
-      dataRetrievalAction,
-      new DataRequiredActionImpl,
-      formProvider,
-      countryOptions,
-      controllerComponents,
-      view
-    )
+  private def httpPathGET: String = routes.EstablishedCountryController.onPageLoad().url
+  private def httpPathPOST: String = routes.EstablishedCountryController.onSubmit().url
 
-  private def viewAsString(form: Form[_] = form) = view(form, countryOptions.options, Data.schemeName)(fakeRequest, messages).toString
+  private val valuesValid: Map[String, Seq[String]] = Map(
+    "value" -> Seq("GB")
+  )
 
-  "EstablishedCountry Controller" must {
+  private val valuesInvalid: Map[String, Seq[String]] = Map(
+    "value" -> Seq.empty
+  )
+
+  private val jsonToPassToTemplate: (Form[String], Option[String]) => JsObject = (form, countryOpt) =>
+    Json.obj(
+    "form" -> form,
+    "schemeName" -> schemeName,
+    "countries" ->   jsonCountries(countryOpt, mockAppConfig)
+  )
+
+  override def beforeEach: Unit = {
+    super.beforeEach
+    reset(mockAppConfig)
+    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+    when(mockAppConfig.validCountryCodes).thenReturn(countryCodes)
+  }
+
+
+  "Established Country Controller" must {
 
     "return OK and the correct view for a GET" in {
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = controller().onPageLoad()(fakeRequest)
+      val result = route(application, httpGETRequest(httpPathGET)).value
 
-      status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString()
+      status(result) mustEqual OK
+
+      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+
+      templateCaptor.getValue mustEqual templateToBeRendered
+
+      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form, None))
     }
 
-    "populate the view correctly on a GET when the question has previously been answered" in {
+    "return OK and the correct view for a GET when the question has previously been answered" in {
+      val userAnswers = ua.set(EstablishedCountryId, "GB").toOption.get
 
-      val validData = ua.set(EstablishedCountryId, "AF").get
-      val getRelevantData = new FakeDataRetrievalAction(Some(validData))
+      mutableFakeDataRetrievalAction.setDataToReturn(Option(userAnswers))
 
-      val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
 
-      contentAsString(result) mustBe viewAsString(form.fill("AF"))
+      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+
+      val result = route(application, httpGETRequest(httpPathGET)).value
+
+      status(result) mustEqual OK
+
+      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+
+      templateCaptor.getValue mustEqual templateToBeRendered
+
+      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill("GB"), Some("GB")))
     }
 
-    "redirect to the next page when valid data is submitted" in {
+    "redirect to Session Expired page for a GET when there is no data" in {
+      mutableFakeDataRetrievalAction.setDataToReturn(None)
 
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "country:AF"))
+      val result = route(application, httpGETRequest(httpPathGET)).value
 
-      val result = controller().onSubmit()(postRequest)
+      status(result) mustEqual SEE_OTHER
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
     }
 
-    "return a Bad Request and errors" when {
+    "Save data to user answers and redirect to next page when valid data is submitted" in {
 
-      "invalid data is submitted" in {
+      val expectedJson = Json.obj()
 
-        val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
-        val boundForm = form.bind(Map("value" -> "invalid value"))
+      when(mockCompoundNavigator.nextPage(Matchers.eq(EstablishedCountryId), any(), any())(any()))
+        .thenReturn(routes.CheckYourAnswersController.onPageLoad())
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
+        .thenReturn(Future.successful(Json.obj()))
 
-        val result = controller().onSubmit()(postRequest)
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-        status(result) mustBe BAD_REQUEST
-        contentAsString(result) mustBe viewAsString(boundForm)
-      }
+      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+
+      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+
+      status(result) mustEqual SEE_OTHER
+
+      verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptor.capture)(any(), any())
+
+      jsonCaptor.getValue must containJson(expectedJson)
+
+      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad().url)
+    }
+
+    "return a BAD REQUEST when invalid data is submitted" in {
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+
+      val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
+
+      status(result) mustEqual BAD_REQUEST
+
+      verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
+    }
+
+    "redirect to Session Expired page for a POST when there is no data" in {
+      mutableFakeDataRetrievalAction.setDataToReturn(None)
+
+      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
     }
   }
 }

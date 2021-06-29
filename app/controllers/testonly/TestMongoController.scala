@@ -37,8 +37,8 @@ import connectors.cache.{LockCacheConnector, UserAnswersCacheConnector}
 import models.MigrationLock
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc._
+import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.TestMongoPage
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -49,62 +49,95 @@ class TestMongoController @Inject()(
                                      lockCacheConnector: LockCacheConnector,
                                      userAnswersCacheConnector: UserAnswersCacheConnector,
                                      mcc: MessagesControllerComponents,
-                                     testMongoPage: TestMongoPage)
+                                     renderer: Renderer)
                                    (implicit val ec: ExecutionContext) extends FrontendController(mcc) {
 
   implicit val config: AppConfig = appConfig
 
   def setLock(pstr: String): Action[AnyContent] = Action.async { implicit request =>
     val lock: MigrationLock = MigrationLock(pstr, "dummy cred", "A2100005")
-    lockCacheConnector.setLock(lock).map { response =>
-      Ok(testMongoPage(s"set lock with details: $lock returned $response"))
+    lockCacheConnector.setLock(lock).flatMap { response =>
+      val json = Json.obj(
+        "heading" -> "Set lock",
+        "lock" -> lock.toString,
+        "response" ->  Json.prettyPrint(response)
+      )
+      renderer.render("testMongo.njk", json).map(Ok(_))
     }
   }
 
   def getLock(pstr: String): Action[AnyContent] = Action.async { implicit request =>
     val lock: MigrationLock = MigrationLock(pstr, "dummy cred", "A2100005")
-    lockCacheConnector.getLock(lock).map { response =>
-      Ok(testMongoPage(s"get lock with details: $lock returned $response"))
+    lockCacheConnector.getLock(lock).flatMap { response =>
+      val json = Json.obj(
+        "heading" -> "Get lock",
+        "lock" -> lock.toString,
+        "response" ->  response.toString
+      )
+      renderer.render("testMongo.njk", json).map(Ok(_))
     }
   }
 
   def getLockOnScheme(pstr: String): Action[AnyContent] = Action.async { implicit request =>
-    lockCacheConnector.getLockOnScheme(pstr).map { response =>
-      Ok(testMongoPage(s"get lock on scheme with details: $pstr returned ${response.toString}"))
+    lockCacheConnector.getLockOnScheme(pstr).flatMap { response =>
+      val json = Json.obj(
+        "heading" -> "Get lock on scheme",
+        "pstr" -> pstr,
+        "response" ->  response.toString
+      )
+      renderer.render("testMongo.njk", json).map(Ok(_))
     }
   }
 
   def getLockByUser(): Action[AnyContent] = Action.async { implicit request =>
 
-    lockCacheConnector.getLockByUser.map { response =>
-      Ok(testMongoPage(s"get lock by user returned $response"))
+    lockCacheConnector.getLockByUser.flatMap { response =>
+      val json = Json.obj(
+        "heading" -> "Get lock by user",
+        "response" ->  response.toString
+      )
+      renderer.render("testMongo.njk", json).map(Ok(_))
     }
   }
 
   def removeLock(pstr: String): Action[AnyContent] = Action.async { implicit request =>
     val lock: MigrationLock = MigrationLock(pstr, "dummy cred", "A2100005")
-    lockCacheConnector.removeLock(lock).map { response =>
-      Ok(testMongoPage(s"remove lock with details: $lock returned $response"))
+    lockCacheConnector.removeLock(lock).flatMap { response =>
+      val json = Json.obj(
+        "heading" -> "Remove lock",
+        "lock" -> lock.toString,
+        "response" ->  response.toString
+      )
+      renderer.render("testMongo.njk", json).map(Ok(_))
     }
   }
 
   def removeLockOnScheme(pstr: String): Action[AnyContent] = Action.async { implicit request =>
-    lockCacheConnector.removeLockOnScheme(pstr).map { response =>
-      Ok(testMongoPage(s"remove lock on scheme with details: $pstr returned ${response.toString}"))
+    lockCacheConnector.removeLockOnScheme(pstr).flatMap { response =>
+      val json = Json.obj(
+        "heading" -> "Remove lock on scheme ",
+        "pstr" -> pstr,
+        "response" ->  response.toString
+      )
+      renderer.render("testMongo.njk", json).map(Ok(_))
     }
   }
 
   def removeLockByUser(): Action[AnyContent] = Action.async { implicit request =>
 
-    lockCacheConnector.removeLockByUser.map { response =>
-      Ok(testMongoPage(s"remove lock by user returned $response"))
+    lockCacheConnector.removeLockByUser.flatMap { response =>
+      val json = Json.obj(
+        "heading" -> "Remove lock by user",
+        "response" ->  response.toString
+      )
+      renderer.render("testMongo.njk", json).map(Ok(_))
     }
   }
 
   def save(pstr: String): Action[AnyContent] = Action.async { implicit request =>
     val lock: MigrationLock = MigrationLock(pstr, "dummy cred", "A2100005")
 
-    val json: JsValue = Json.obj(
+    val data: JsValue = Json.obj(
       "schemeName" -> "Migration scheme",
       "schemeType" -> Json.obj(
         "name" -> "other",
@@ -115,22 +148,38 @@ class TestMongoController @Inject()(
       "occupationalPensionScheme" -> true
     )
 
-    userAnswersCacheConnector.save(lock, json).map { response =>
-      Ok(testMongoPage(s"save data $json with lock $lock returned $response"))
+    userAnswersCacheConnector.save(lock, data).flatMap { response =>
+      val json = Json.obj(
+        "heading" -> "Save data",
+        "lock" -> lock.toString,
+        "response" -> Json.prettyPrint(response),
+        "data" -> Json.prettyPrint(data)
+      )
+      renderer.render("testMongo.njk", json).map(Ok(_))
     }
   }
 
   def get(pstr: String): Action[AnyContent] = Action.async { implicit request =>
 
-    userAnswersCacheConnector.fetch(pstr).map { response =>
-      Ok(testMongoPage(s"fetch data with $pstr returned $response"))
+    userAnswersCacheConnector.fetch(pstr).flatMap { response =>
+      val json = Json.obj(
+        "heading" -> "Fetch data",
+        "pstr" -> pstr,
+        "response" ->  response.toString
+      )
+      renderer.render("testMongo.njk", json).map(Ok(_))
     }
   }
 
   def remove(pstr: String): Action[AnyContent] = Action.async { implicit request =>
 
-    userAnswersCacheConnector.remove(pstr).map { response =>
-      Ok(testMongoPage(s"remove data with $pstr returned $response"))
+    userAnswersCacheConnector.remove(pstr).flatMap { response =>
+      val json = Json.obj(
+        "heading" -> "Remove data",
+        "pstr" -> pstr,
+        "response" ->  response.toString
+      )
+      renderer.render("testMongo.njk", json).map(Ok(_))
     }
   }
 

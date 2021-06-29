@@ -47,6 +47,7 @@ trait ReasonController
 
   def get(
            pageTitle: String,
+           pageHeading: String,
            isPageHeading: Boolean,
            id: TypedIdentifier[String],
            form: Form[String],
@@ -57,6 +58,7 @@ trait ReasonController
       template = "reason.njk",
       ctx = Json.obj(
         "pageTitle"     -> pageTitle,
+        "pageHeading" -> pageHeading,
         "isPageHeading" -> isPageHeading,
         "form"          -> request.userAnswers.get[String](id).fold(form)(form.fill),
         "schemeName"    -> schemeName
@@ -65,6 +67,7 @@ trait ReasonController
 
   def post(
             pageTitle: String,
+            pageHeading: String,
             isPageHeading: Boolean,
             id: TypedIdentifier[String],
             form: Form[String],
@@ -78,6 +81,7 @@ trait ReasonController
           template = "reason.njk",
           ctx = Json.obj(
             "pageTitle"     -> pageTitle,
+            "pageHeading" -> pageHeading,
             "isPageHeading" -> isPageHeading,
             "form"          -> formWithErrors,
             "schemeName"    -> schemeName

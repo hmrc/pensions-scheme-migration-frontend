@@ -58,6 +58,7 @@ class EstablishersNavigator
     case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index)
     case PreviousAddressListId(index) => cyaAddress(index)
     case PreviousAddressId(index) => cyaAddress(index)
+
   }
 
   override protected def editRouteMap(ua: UserAnswers)
@@ -73,7 +74,7 @@ class EstablishersNavigator
 
   private def cyaAddress(index:Int): Call = controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
   private def cyaDetails(index:Int): Call = controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index)
-  private def addressYears(index:Int) = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index)
+  private def addressYears(index:Int): Call = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index)
 
   private def establisherKindRoutes(
                                      index: Index,

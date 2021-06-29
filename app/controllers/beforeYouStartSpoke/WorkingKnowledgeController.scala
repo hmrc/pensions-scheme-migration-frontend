@@ -24,10 +24,13 @@ import identifiers.beforeYouStart.WorkingKnowledgeId
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import renderer.Renderer
+import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils._
-import views.html.beforeYouStart.workingKnowledge
+import uk.gov.hmrc.viewmodels.Radios
+import utils.Enumerable
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,23 +44,34 @@ class WorkingKnowledgeController @Inject()(
                                             requireData: DataRequiredAction,
                                             formProvider: WorkingKnowledgeFormProvider,
                                             val controllerComponents: MessagesControllerComponents,
-                                            val view: workingKnowledge
+                                            renderer: Renderer
                                           )(implicit val executionContext: ExecutionContext) extends
-  FrontendBaseController with I18nSupport with Retrievals with Enumerable.Implicits {
+  FrontendBaseController with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
   private val form = formProvider()
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val preparedForm = request.userAnswers.get(WorkingKnowledgeId).fold(form)(form.fill)
-      Ok(view(preparedForm, existingSchemeName))
+      val json: JsObject = Json.obj(
+        "form" -> preparedForm,
+        "schemeName" -> existingSchemeName,
+        "radios" -> Radios.yesNo(preparedForm("value"))
+      )
+      renderer.render("beforeYouStart/workingKnowledge.njk", json).map(Ok(_))
   }
 
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, existingSchemeName))),
+        (formWithErrors: Form[_]) => {
+          val json: JsObject = Json.obj(
+            "form" -> formWithErrors,
+            "schemeName" -> existingSchemeName,
+            "radios" -> Radios.yesNo(formWithErrors("value"))
+          )
+          renderer.render("beforeYouStart/workingKnowledge.njk", json).map(BadRequest(_))
+        },
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(WorkingKnowledgeId, value))

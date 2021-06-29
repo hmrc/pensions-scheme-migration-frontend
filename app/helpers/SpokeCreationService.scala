@@ -18,10 +18,10 @@ package helpers
 
 import controllers.establishers.routes._
 import helpers.spokes.establishers.individual._
-import helpers.spokes.{AboutMembersSpoke, BeforeYouStartSpoke, BenefitsAndInsuranceSpoke, Spoke}
-import models.{EntitySpoke, Index, TaskListLink}
+import helpers.spokes.{BeforeYouStartSpoke, AboutMembersSpoke, Spoke, BenefitsAndInsuranceSpoke}
+import models.{TaskListLink, EntitySpoke, Index}
 import play.api.i18n.Messages
-import utils.{Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable}
 
 class SpokeCreationService extends Enumerable.Implicits {
 

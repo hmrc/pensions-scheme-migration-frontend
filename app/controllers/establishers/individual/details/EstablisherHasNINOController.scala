@@ -27,9 +27,10 @@ import models.requests.DataRequest
 import models.{Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -57,7 +58,7 @@ class EstablisherHasNINOController @Inject()(
   private def form(index: Index)
                   (implicit request: DataRequest[AnyContent]): Form[Boolean] = {
     formProvider(
-      errorMsg = Messages("messages__genericHasNino__error__required", name(index))
+      errorMsg = Message("messages__genericHasNino__error__required", name(index))
     )
   }
 
@@ -68,7 +69,8 @@ class EstablisherHasNINOController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             get(
-              pageTitle     = Messages("messages__hasNINO", name(index)),
+              pageTitle     = Message("messages__hasNINO", Message("messages__individual")),
+              pageHeading     = Message("messages__hasNINO", name(index)),
               isPageHeading = true,
               id            = EstablisherHasNINOId(index),
               form          = form(index),
@@ -84,7 +86,8 @@ class EstablisherHasNINOController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             post(
-              pageTitle     = Messages("messages__hasNINO", name(index)),
+              pageTitle     = Message("messages__hasNINO", Message("messages__individual")),
+              pageHeading     = Message("messages__hasNINO", name(index)),
               isPageHeading = true,
               id            = EstablisherHasNINOId(index),
               form          = form(index),

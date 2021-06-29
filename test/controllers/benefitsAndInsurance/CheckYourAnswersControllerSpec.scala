@@ -23,14 +23,13 @@ import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
-import uk.gov.hmrc.viewmodels.Text.Literal
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
-import uk.gov.hmrc.nunjucks.NunjucksRenderer
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Value, Row, Key}
+import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
+import uk.gov.hmrc.viewmodels.Text.Literal
 import uk.gov.hmrc.viewmodels.{Html, NunjucksSupport}
 import utils.Data.{schemeName, ua}
 import utils.UserAnswers
@@ -45,17 +44,16 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
   private val mockCyaHelper: BenefitsAndInsuranceCYAHelper = mock[BenefitsAndInsuranceCYAHelper]
   private def httpPathGET: String = controllers.benefitsAndInsurance.routes.CheckYourAnswersController.onPageLoad().url
   val extraModules: Seq[GuiceableModule] = Seq(
-    bind[NunjucksRenderer].toInstance(mockRenderer),
     bind[BenefitsAndInsuranceCYAHelper].toInstance(mockCyaHelper)
   )
-  private val application: Application = applicationBuilder(mutableFakeDataRetrievalAction, extraModules).build()
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
   private val rows = Seq(
     Row(
       key = Key(Literal("test-key"), classes = Seq("govuk-!-width-one-half")),
       value = Value(msg"site.not_entered", classes = Seq("govuk-!-width-one-third")),
       actions = List(
         Action(
-          content = Html(s"<span  aria-hidden=true >${messages("site.add")}</span>"),
+          content = Html(s"<span aria-hidden=true >${messages("site.add")}</span>"),
           href = "/test-url",
           visuallyHiddenText = Some(Literal("hidden-text"))
         )

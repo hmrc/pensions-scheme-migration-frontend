@@ -30,6 +30,7 @@ import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -62,13 +63,14 @@ class EstablisherEnterUTRController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             get(
-              pageTitle     = Messages("messages__enterUTR", name(index)),
+              pageTitle     = Message("messages__enterUTR_title", Message("messages__individual")),
+              pageHeading     = Message("messages__enterUTR", name(index)),
               isPageHeading = false,
               id            = EstablisherUTRId(index),
               form          = form,
               schemeName    = schemeName,
               legendClass   = "govuk-visually-hidden",
-              paragraphText = Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2"))
+              paragraphText = Seq(Message("messages__UTR__p1"), Messages("messages__UTR__p2"))
             )
         }
     }
@@ -79,13 +81,14 @@ class EstablisherEnterUTRController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             post(
-              pageTitle     = Messages("messages__enterUTR", name(index)),
+              pageTitle     = Message("messages__enterUTR_title", Message("messages__individual")),
+              pageHeading     = Message("messages__enterUTR", name(index)),
               isPageHeading = false,
               id            = EstablisherUTRId(index),
               form          = form,
               schemeName    = schemeName,
               legendClass   = "govuk-visually-hidden",
-              paragraphText = Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2")),
+              paragraphText = Seq(Message("messages__UTR__p1"), Message("messages__UTR__p2")),
               mode          = mode
             )
         }
