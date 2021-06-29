@@ -44,7 +44,7 @@ class EstablisherContactDetailsCYAHelper
     val establisherName: String =
       getName(EstablisherNameId(index))
 
-    Seq(
+    val rowsWithoutDynamicIndices = Seq(
       Some(answerOrAddRow(
         id = EnterEmailId(index),
         message = Message("messages__enterEmail", establisherName).resolve,
@@ -56,6 +56,8 @@ class EstablisherContactDetailsCYAHelper
         message = Message("messages__enterPhone", establisherName).resolve,
         url = Some(routes.EnterPhoneController.onPageLoad(index, CheckMode).url),
         visuallyHiddenText = Some(msg"messages__enterPhone__cya__visuallyHidden".withArgs(establisherName))
-      )))
-  }.flatten
+      ))).flatten
+
+    rowsWithDynamicIndices(rowsWithoutDynamicIndices)
+  }
 }

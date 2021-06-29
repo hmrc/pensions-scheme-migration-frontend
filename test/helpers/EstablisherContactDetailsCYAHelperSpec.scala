@@ -62,7 +62,7 @@ class EstablisherContactDetailsCYAHelperSpec extends WordSpec with MustMatchers 
           href = routes.EnterEmailController.onPageLoad(0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
             Messages("messages__enterEmail__cya__visuallyHidden", establisherName.fullName))),
-          attributes = Map("id" -> "change")
+          attributes = Map("id" -> "cya-0-0-change")
         ))
       )
 
@@ -74,7 +74,7 @@ class EstablisherContactDetailsCYAHelperSpec extends WordSpec with MustMatchers 
           href = routes.EnterPhoneController.onPageLoad(0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
             Messages("messages__enterPhone__cya__visuallyHidden", establisherName.fullName))),
-          attributes = Map("id" -> "change")
+          attributes = Map("id" -> "cya-0-1-change")
         ))
       )
 
