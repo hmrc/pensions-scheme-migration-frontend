@@ -155,7 +155,7 @@ class TestMongoController @Inject()(
       ),
       "schemeEstablishedCountry" -> "GB",
       "investmentRegulated" -> true,
-      "occupationalPensionScheme" -> true,
+      "occupationalPensionScheme" -> true
     )
 
     userAnswersCacheConnector.save(lock, data).flatMap { response =>
