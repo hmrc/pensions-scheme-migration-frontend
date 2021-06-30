@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package identifiers.trustees
+package forms.beforeYouStart
 
-import identifiers.TypedIdentifier
-import models.trustees.TrusteeKind
-import play.api.libs.json.{JsPath, __}
+import javax.inject.Inject
+import forms.mappings.Mappings
+import play.api.data.Form
 
-case class TrusteeKindId(index: Int) extends TypedIdentifier[TrusteeKind] {
-  override def path: JsPath = TrusteesId(index).path \ TrusteeKindId.toString
-}
+class HaveAnyTrusteesFormProvider @Inject() extends Mappings {
 
-object TrusteeKindId {
-  def collectionPath: JsPath = __ \ TrusteesId.toString \\ TrusteeKindId.toString
-  override lazy val toString: String = "trusteeKind"
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("haveAnyTrustees.error.required")
+    )
 }

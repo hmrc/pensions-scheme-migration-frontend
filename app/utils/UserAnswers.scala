@@ -287,6 +287,12 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
       case JsSuccess(i, _) => i
     })
   }
+
+  //def getAllRecursive[A](path: JsPath)(implicit rds: Reads[A]): Option[Seq[A]] = {
+  //  JsLens.fromPath(path)
+  //    .getAll(json)
+  //    .flatMap(a => traverse(a.map(Json.fromJson[A]))).asOpt
+  //}
 }
 
 case object UnrecognisedEstablisherKindException extends Exception

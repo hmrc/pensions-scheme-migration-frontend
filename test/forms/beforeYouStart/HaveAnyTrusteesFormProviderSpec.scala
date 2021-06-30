@@ -14,17 +14,25 @@
  * limitations under the License.
  */
 
-package identifiers.trustees
+package forms.beforeYouStart
 
-import identifiers.TypedIdentifier
-import models.trustees.TrusteeKind
-import play.api.libs.json.{JsPath, __}
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-case class TrusteeKindId(index: Int) extends TypedIdentifier[TrusteeKind] {
-  override def path: JsPath = TrusteesId(index).path \ TrusteeKindId.toString
-}
+class HaveAnyTrusteesFormProviderSpec extends BooleanFieldBehaviours {
 
-object TrusteeKindId {
-  def collectionPath: JsPath = __ \ TrusteesId.toString \\ TrusteeKindId.toString
-  override lazy val toString: String = "trusteeKind"
+  val requiredKey = "haveAnyTrustees.error.required"
+
+  val form = new HaveAnyTrusteesFormProvider()()
+
+  ".value" must  {
+
+    val fieldName = "value"
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }
