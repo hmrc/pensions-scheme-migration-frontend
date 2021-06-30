@@ -17,9 +17,10 @@
 package helpers
 
 import com.google.inject.Inject
-import identifiers.beforeYouStart.SchemeNameId
+import identifiers.beforeYouStart.{HaveAnyTrusteesId, SchemeNameId, SchemeTypeId}
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.trustees.individual.TrusteeNameId
+import models.SchemeType
 import play.api.i18n.Messages
 import utils.UserAnswers
 import viewmodels._
@@ -72,12 +73,18 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
     if (userAnswers.allTrusteesAfterDelete.isEmpty && viewOnly) {
       Some(TaskListEntitySection(None, Nil, None, messages("messages__schemeTaskList__sectionTrustees_no_trustees")))
     } else {
-      spokeCreationService.getAddTrusteeHeaderSpokes(userAnswers, viewOnly) match {
-        case Nil =>
+      (userAnswers.get(SchemeTypeId), userAnswers.get(HaveAnyTrusteesId)) match {
+        case (Some(st), Some(false)) if st == SchemeType.BodyCorporate || st == SchemeType.GroupLifeDeath =>
           None
-        case trusteeHeaderSpokes =>
-          Some(TaskListEntitySection(None, trusteeHeaderSpokes, None))
+        case _ =>
+          spokeCreationService.getAddTrusteeHeaderSpokes(userAnswers, viewOnly) match {
+            case Nil =>
+              None
+            case trusteeHeaderSpokes =>
+              Some(TaskListEntitySection(None, trusteeHeaderSpokes, None))
+          }
       }
+
     }
 
   protected[helpers] def establishersSection(implicit userAnswers: UserAnswers, messages: Messages): Seq[TaskListEntitySection] = {

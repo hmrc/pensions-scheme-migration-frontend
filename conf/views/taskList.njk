@@ -140,67 +140,65 @@
                             {% endfor %}
                         </ul>
                     {% endfor %}
-
                 </li>
 
+                {% if taskSections.addTrusteeHeader or taskSections.trustees | length > 0 %}
 
+                    <li id="Trustees">
+                        <h2 id="section-trustees-header"
+                            class="govuk-heading-l">
+                            {{ messages("messages__schemeTaskList__sectionTrustees_header") }}
+                        </h2>
 
+                        {% if taskSections.addTrusteeHeader %}
+                            <ul class="app-task-list__items">
+                                <li class="app-task-list__item">
+                                    {% for entity in taskSections.addTrusteeHeader.entities %}
+                                        <a id="section-trustees-link"
+                                           class="app-task-list__task-name govuk-link"
+                                           href="{{ entity.link.target }}">
+                                            {{ messages(entity.link.text) }}
+                                        </a>
+                                    {% endfor %}
 
-
-                <li id="Trustees">
-                    <h2 id="section-trustees-header"
-                        class="govuk-heading-l">
-                        {{ messages("messages__schemeTaskList__sectionTrustees_header") }}
-                    </h2>
-
-                    {% if taskSections.addTrusteeHeader %}
-                        <ul class="app-task-list__items">
-                            <li class="app-task-list__item">
-                                {% for entity in taskSections.addTrusteeHeader.entities %}
-                                    <a id="section-trustees-link"
-                                       class="app-task-list__task-name govuk-link"
-                                       href="{{ entity.link.target }}">
-                                        {{ messages(entity.link.text) }}
-                                    </a>
-                                {% endfor %}
-
-                                {% for p1Text in taskSections.addTrusteeHeader.p1 %}
-                                    <p>{{ messages(p1Text) }}</p>
-                                {% endfor %}
-                            </li>
-                        </ul>
-                    {% endif %}
-
-                    {% for item in taskSections.trustees %}
-                        {% set trusteeIndex = loop.index %}
-                        {% if item.header %}
-                            <h3 class="govuk-heading-m task-list-section">{{ messages(item.header) }}</h3>
+                                    {% for p1Text in taskSections.addTrusteeHeader.p1 %}
+                                        <p>{{ messages(p1Text) }}</p>
+                                    {% endfor %}
+                                </li>
+                            </ul>
                         {% endif %}
 
-                        <ul class="app-task-list__items">
-                            {% for entity in item.entities %}
-                                {% set spokeIndex = loop.index %}
-                                <li class="app-task-list__item">
-                                    <a id="section-trustees-link-{{ trusteeIndex }}-{{ spokeIndex }}"
-                                       class="app-task-list__task-name govuk-link"
-                                       href="{{ entity.link.target }}"
-                                       aria-describedby="section-about-status-{{ trusteeIndex }}">
-                                        {{ messages(entity.link.text) }}
-                                    </a>
-                                    <span class="app-task-list__tag {{ statusClass(entity.isCompleted) }}"
-                                          id="section-trustees-status-{{ trusteeIndex }}-{{ spokeIndex }}">
-                                        <span class="govuk-visually-hidden">
-                                            {{ messages("messages__schemeTaskList__status_visuallyHidden") }}
+                        {% for item in taskSections.trustees %}
+                            {% set trusteeIndex = loop.index %}
+                            {% if item.header %}
+                                <h3 class="govuk-heading-m task-list-section">{{ messages(item.header) }}</h3>
+                            {% endif %}
+
+                            <ul class="app-task-list__items">
+                                {% for entity in item.entities %}
+                                    {% set spokeIndex = loop.index %}
+                                    <li class="app-task-list__item">
+                                        <a id="section-trustees-link-{{ trusteeIndex }}-{{ spokeIndex }}"
+                                           class="app-task-list__task-name govuk-link"
+                                           href="{{ entity.link.target }}"
+                                           aria-describedby="section-about-status-{{ trusteeIndex }}">
+                                            {{ messages(entity.link.text) }}
+                                        </a>
+                                        <span class="app-task-list__tag {{ statusClass(entity.isCompleted) }}"
+                                              id="section-trustees-status-{{ trusteeIndex }}-{{ spokeIndex }}">
+                                            <span class="govuk-visually-hidden">
+                                                {{ messages("messages__schemeTaskList__status_visuallyHidden") }}
+                                            </span>
+                                            {{ status(entity.isCompleted) }}
                                         </span>
-                                        {{ status(entity.isCompleted) }}
-                                    </span>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% endfor %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endfor %}
 
-                </li>
+                    </li>
 
+                {% endif %}
 
 
                 {% if taskSections.declaration %}

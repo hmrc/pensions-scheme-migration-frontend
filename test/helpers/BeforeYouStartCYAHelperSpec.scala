@@ -20,13 +20,13 @@ import base.SpecBase
 import controllers.beforeYouStartSpoke.routes
 import identifiers.beforeYouStart._
 import models.SchemeType
-import org.scalatest.{MustMatchers, TryValues}
+import org.scalatest.{TryValues, MustMatchers}
 import play.api.i18n.Messages
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
-import uk.gov.hmrc.viewmodels.Text.{Literal, Message}
-import uk.gov.hmrc.viewmodels.{Html, MessageInterpolators}
+import uk.gov.hmrc.viewmodels.SummaryList.{Action, Value, Row, Key}
+import uk.gov.hmrc.viewmodels.Text.{Message, Literal}
+import uk.gov.hmrc.viewmodels.{MessageInterpolators, Html}
 import utils.Data.schemeName
-import utils.{CountryOptions, Enumerable, InputOption, UserAnswers}
+import utils.{UserAnswers, CountryOptions, Enumerable, InputOption}
 
 class BeforeYouStartCYAHelperSpec
   extends SpecBase

@@ -716,3 +716,7 @@ addTrustee.type.header = Type
 addTrustee.hiddenText.removeLink.header = Remove trustee link
 
 messages__error__trustee = trustee’s
+
+haveAnyTrustees.h1 = Does {0} have any trustees?
+haveAnyTrustees.error.required = Select yes if the pension scheme has trustees
+messages__visuallyhidden__haveAnyTrustees = if {0} has any trustees

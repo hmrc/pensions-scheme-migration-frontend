@@ -23,7 +23,7 @@ import play.api.libs.json.{JsResult, JsSuccess}
 import utils.UserAnswers
 
 case object HaveAnyTrusteesId extends TypedIdentifier[Boolean] {
-  override def toString: String = "securedBenefits"
+  override def toString: String = "haveAnyTrustees"
 
   //override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): UserAnswers = {
   //  value match {
