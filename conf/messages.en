@@ -697,3 +697,5 @@ messages__trustee__name_title = What is the trustee’s name?
 addTrustee.name.header = Trustee name
 addTrustee.type.header = Type
 addTrustee.hiddenText.removeLink.header = Remove trustee link
+
+messages__error__trustee = trustee’s
