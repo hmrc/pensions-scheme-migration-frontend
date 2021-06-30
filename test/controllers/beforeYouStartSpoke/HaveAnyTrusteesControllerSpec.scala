@@ -79,7 +79,7 @@ class HaveAnyTrusteesControllerSpec extends ControllerSpecBase with NunjucksSupp
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       verify(mockRenderer, times(1))
-        .render(Matchers.eq("benefitsAndInsurance/haveAnyTrustees.njk"), jsonCaptor.capture())(any())
+        .render(Matchers.eq("beforeYouStart/haveAnyTrustees.njk"), jsonCaptor.capture())(any())
 
       (jsonCaptor.getValue \ "schemeName").toOption.map(_.as[String]) mustBe Some(Data.schemeName)
     }
