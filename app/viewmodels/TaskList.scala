@@ -24,7 +24,9 @@ case class TaskList(
                                   beforeYouStart: TaskListEntitySection,
                                   about: TaskListEntitySection,
                                   addEstablisherHeader: Option[TaskListEntitySection],
+                                  addTrusteeHeader: Option[TaskListEntitySection],
                                   establishers: Seq[TaskListEntitySection],
+                                  trustees: Seq[TaskListEntitySection],
                                   declaration: Option[TaskListEntitySection]
                                 )
 

@@ -38,6 +38,19 @@ class AddToListHelper {
     ) ++ (if(establishers.size > 1) linkHeader else Nil)
   }
 
+  def mapTrusteesToTable[A <: Entity[_]](trustees: Seq[A])
+    (implicit messages: Messages): Table = mapToTable(trustees, trusteesHead(trustees))
+
+  private def trusteesHead[A <: Entity[_]](trustees: Seq[A])(implicit messages: Messages): Seq[Cell] = {
+
+    val linkHeader = Seq(Cell(Html(s"""<span class=govuk-visually-hidden>${messages("addTrustee.hiddenText.removeLink.header")}</span>""")))
+
+    Seq(
+      Cell(msg"addTrustee.name.header"),
+      Cell(msg"addTrustee.type.header")
+    ) ++ (if(trustees.size > 1) linkHeader else Nil)
+  }
+
   private def mapToTable[A <: Entity[_]](entities: Seq[A], head: Seq[Cell])
                             (implicit messages: Messages): Table = {
 

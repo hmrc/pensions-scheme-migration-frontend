@@ -697,6 +697,22 @@ country.ZW = Zimbabwe
 country.JM = Jamaica
 country.EE = Estonia
 
+messages__schemeTaskList__sectionTrustees_header = Trustees
+messages__schemeTaskList__sectionTrustees_add_link = Add trustees
+messages__schemeTaskList__sectionTrustees_change_link = Change trustees
+messages__schemeTaskList__sectionTrustees_view_link = View trustees
+messages__schemeTaskList__sectionTrustees_no_trustees = No trustees
 
+messages__addTrustee_title = Trustees
+messages__addTrustee_radio_label = Do you want to add another trustee?
+messages__addTrustee_error__selection = Select yes if you want to add another trustee
+messages__trustee__type__error_required = Select what kind of trustee you are adding
+messages__trustee__type_title = What kind of trustee are you adding?
 
+messages__trustee__name_title = What is the trustee’s name?
 
+addTrustee.name.header = Trustee name
+addTrustee.type.header = Type
+addTrustee.hiddenText.removeLink.header = Remove trustee link
+
+messages__error__trustee = trustee’s

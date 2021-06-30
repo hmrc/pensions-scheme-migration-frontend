@@ -73,6 +73,41 @@ class SpokeCreationService extends Enumerable.Implicits {
     )
   }
 
+  def getAddTrusteeHeaderSpokes(answers: UserAnswers, viewOnly: Boolean)
+    (implicit messages: Messages): Seq[EntitySpoke] =
+    if (viewOnly)
+      Nil
+    else if (answers.allTrusteesAfterDelete.isEmpty)
+      Seq(
+        EntitySpoke(
+          link = TaskListLink(
+            text = messages("messages__schemeTaskList__sectionTrustees_add_link"),
+            target = controllers.trustees.routes.TrusteeKindController.onPageLoad(answers.allTrustees.size).url
+          ),
+          isCompleted = None
+        )
+      )
+    else
+      Seq(
+        EntitySpoke(
+          link = TaskListLink(
+            text = messages("messages__schemeTaskList__sectionTrustees_change_link"),
+            target = controllers.trustees.routes.AddTrusteeController.onPageLoad().url
+          ),
+          isCompleted = None
+        )
+      )
+
+  def getTrusteeIndividualSpokes(answers: UserAnswers, name: String, index: Index)
+    (implicit messages: Messages): Seq[EntitySpoke] = {
+    //    val isTrusteeNew = answers.get(IsTrusteeNewId(indexToInt(index.getOrElse(Index(0))))).getOrElse(false)
+    Seq(
+      //createSpoke(answers, controllers.trustees.routes.TrusteeIndividualDetails(index, answers), name),
+      //createSpoke(answers, controllers.trustees.routes.TrusteeIndividualAddress(index, answers), name),
+      //createSpoke(answers, controllers.trustees.routes.TrusteeIndividualContactDetails, name)
+    )
+  }
+
   def declarationSpoke(implicit messages: Messages): Seq[EntitySpoke] =
     Seq(
       EntitySpoke(

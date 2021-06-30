@@ -1,0 +1,2 @@
+GET         /:index/individual/name                                                  controllers.trustees.individual.TrusteeNameController.onPageLoad(index:Index)
+POST        /:index/individual/name                                                  controllers.trustees.individual.TrusteeNameController.onSubmit(index:Index)

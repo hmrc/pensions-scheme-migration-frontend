@@ -19,6 +19,7 @@ package helpers
 import com.google.inject.Inject
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
+import identifiers.trustees.individual.TrusteeNameId
 import play.api.i18n.Messages
 import utils.UserAnswers
 import viewmodels._
@@ -35,7 +36,9 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
       beforeYouStartSection,
       aboutSection,
       addEstablisherHeader(viewOnly),
+      addTrusteeHeader(viewOnly),
       establishersSection,
+      trusteesSection,
       declarationSection(viewOnly)
     )
 
@@ -64,6 +67,19 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
       }
     }
 
+  private[helpers] def addTrusteeHeader(viewOnly: Boolean)
+    (implicit userAnswers: UserAnswers, messages: Messages): Option[TaskListEntitySection] =
+    if (userAnswers.allTrusteesAfterDelete.isEmpty && viewOnly) {
+      Some(TaskListEntitySection(None, Nil, None, messages("messages__schemeTaskList__sectionTrustees_no_trustees")))
+    } else {
+      spokeCreationService.getAddTrusteeHeaderSpokes(userAnswers, viewOnly) match {
+        case Nil =>
+          None
+        case trusteeHeaderSpokes =>
+          Some(TaskListEntitySection(None, trusteeHeaderSpokes, None))
+      }
+    }
+
   protected[helpers] def establishersSection(implicit userAnswers: UserAnswers, messages: Messages): Seq[TaskListEntitySection] = {
     userAnswers.allEstablishers.flatMap {
       establisher =>
@@ -85,6 +101,31 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
               )
             case _ =>
               throw new RuntimeException("Unknown section id:" + establisher.id)
+          }
+    }
+  }
+
+  protected[helpers] def trusteesSection(implicit userAnswers: UserAnswers, messages: Messages): Seq[TaskListEntitySection] = {
+    userAnswers.allTrustees.flatMap {
+      trustee =>
+        if (trustee.isDeleted)
+          None
+        else
+          trustee.id match {
+            case TrusteeNameId(_) =>
+              Some(
+                TaskListEntitySection(
+                  isCompleted = None,
+                  entities = spokeCreationService.getTrusteeIndividualSpokes(
+                    answers = userAnswers,
+                    name = trustee.name,
+                    index = trustee.index
+                  ),
+                  header = Some(trustee.name)
+                )
+              )
+            case _ =>
+              throw new RuntimeException("Unknown section id:" + trustee.id)
           }
     }
   }

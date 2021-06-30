@@ -17,18 +17,22 @@
 package utils
 
 import identifiers.TypedIdentifier
-import identifiers.establishers.{EstablisherKindId, EstablishersId, IsEstablisherNewId}
+import identifiers.establishers.{EstablishersId, IsEstablisherNewId, EstablisherKindId}
 import identifiers.establishers.individual.EstablisherNameId
+import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId, TrusteesId}
+import identifiers.trustees.individual.TrusteeNameId
 import models.establishers.EstablisherKind
-import models.{Establisher, EstablisherIndividualEntity, PersonName}
+import models.trustees.TrusteeKind
+import models._
 import play.api.Logger
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json._
-import utils.datacompletion.{DataCompletion, DataCompletionEstablishers}
+import utils.datacompletion.{DataCompletion, DataCompletionTrustees, DataCompletionEstablishers}
 
 import scala.util.{Try, Success, Failure}
 
-final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Implicits with DataCompletion with DataCompletionEstablishers {
+final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Implicits with DataCompletion
+  with DataCompletionEstablishers with DataCompletionTrustees {
 
   private val logger = Logger(classOf[UserAnswers])
 
@@ -196,6 +200,78 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
     }
   }
 
+
+
+
+
+
+
+
+
+
+
+  def allTrusteesAfterDelete: Seq[Trustee[_]] =
+    allTrustees.filterNot(_.isDeleted)
+
+  def allTrustees: Seq[Trustee[_]] = {
+    data.validate[Seq[Trustee[_]]](readTrustees) match {
+      case JsSuccess(trustees, _) =>
+        trustees
+      case JsError(errors) =>
+        logger.warn(s"Invalid json while reading all the trustees for addTrustee: $errors")
+        Nil
+    }
+  }
+
+  //scalastyle:off method.length
+  def readTrustees: Reads[Seq[Trustee[_]]] = new Reads[Seq[Trustee[_]]] {
+
+    private def noOfRecords: Int = data.validate((__ \ 'trustees).readNullable(__.read(
+      Reads.seq((__ \ 'trusteeKind).read[String].flatMap {
+        case "individual" => (__ \ 'trusteeDetails \ "isDeleted").json.pick[JsBoolean] orElse notDeleted
+        case "company" => (__ \ 'companyDetails \ "isDeleted").json.pick[JsBoolean] orElse notDeleted
+        case "partnership" => (__ \ 'partnershipDetails \ "isDeleted").json.pick[JsBoolean] orElse notDeleted
+      }).map(_.count(deleted => !deleted.value))))) match {
+      case JsSuccess(Some(ele), _) => ele
+      case _ => 0
+    }
+
+    private def readsIndividual(index: Int): Reads[Trustee[_]] = (
+      (JsPath \ TrusteeNameId.toString).read[PersonName] and
+        (JsPath \ IsTrusteeNewId.toString).readNullable[Boolean]
+      ) ((details, isNew) =>
+      TrusteeIndividualEntity(
+        TrusteeNameId(index), details.fullName, details.isDeleted,
+        isTrusteeIndividualComplete(index), isNew.fold(false)(identity), noOfRecords)
+    )
+
+    override def reads(json: JsValue): JsResult[Seq[Trustee[_]]] = {
+      json \ TrusteesId.toString match {
+        case JsDefined(JsArray(trustees)) =>
+          val jsResults = trustees.zipWithIndex.map { case (jsValue, index) =>
+            val trusteeKind = (jsValue \ TrusteeKindId.toString).validate[String].asOpt
+            val readsForTrusteeKind = trusteeKind match {
+              case Some(TrusteeKind.Individual.toString) => readsIndividual(index)
+              case _ => throw UnrecognisedTrusteeKindException
+            }
+            readsForTrusteeKind.reads(jsValue)
+          }
+
+          asJsResultSeq(jsResults)
+        case _ => JsSuccess(Nil)
+      }
+    }
+  }
+
+  def trusteesCount: Int = {
+    (data \ TrusteesId.toString).validate[JsArray] match {
+      case JsSuccess(trusteeArray, _) => trusteeArray.value.size
+      case _ => 0
+    }
+  }
+
+
+
   private def notDeleted: Reads[JsBoolean] = __.read(JsBoolean(false))
 
   private def asJsResultSeq[A](jsResults: Seq[JsResult[A]]): JsResult[Seq[A]] = {
@@ -214,5 +290,7 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
 }
 
 case object UnrecognisedEstablisherKindException extends Exception
+
+case object UnrecognisedTrusteeKindException extends Exception
 
 
