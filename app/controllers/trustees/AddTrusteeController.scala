@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.establishers
+package controllers.trustees
 
 import controllers.Retrievals
 import controllers.actions._
-import forms.establishers.AddEstablisherFormProvider
+import forms.trustees.AddTrusteeFormProvider
 import helpers.AddToListHelper
-import identifiers.establishers.AddEstablisherId
+import identifiers.trustees.AddTrusteeId
 import navigators.CompoundNavigator
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
@@ -33,12 +33,12 @@ import uk.gov.hmrc.viewmodels.Radios
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddEstablisherController @Inject()(override val messagesApi: MessagesApi,
+class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
                                          navigator: CompoundNavigator,
                                          authenticate: AuthAction,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
-                                         formProvider: AddEstablisherFormProvider,
+                                         formProvider: AddTrusteeFormProvider,
                                          helper: AddToListHelper,
                                          val controllerComponents: MessagesControllerComponents,
                                          renderer: Renderer
@@ -48,23 +48,23 @@ class AddEstablisherController @Inject()(override val messagesApi: MessagesApi,
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        val establishers = request.userAnswers.allEstablishersAfterDelete
-        val table = helper.mapEstablishersToTable(establishers)
+        val trustees = request.userAnswers.allTrusteesAfterDelete
+        val table = helper.mapTrusteesToTable(trustees)
         val json: JsObject = Json.obj(
-          "form" -> formProvider(establishers),
+          "form" -> formProvider(trustees),
           "table" -> table,
-          "radios" -> Radios.yesNo(formProvider(establishers)("value")),
+          "radios" -> Radios.yesNo(formProvider(trustees)("value")),
           "schemeName" -> existingSchemeName
         )
-        renderer.render("establishers/addEstablisher.njk", json).map(Ok(_))
+        renderer.render("trustees/addTrustee.njk", json).map(Ok(_))
     }
 
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      val establishers = request.userAnswers.allEstablishersAfterDelete
-      val table = helper.mapEstablishersToTable(establishers)
+      val trustees = request.userAnswers.allTrusteesAfterDelete
+      val table = helper.mapTrusteesToTable(trustees)
 
-      formProvider(establishers).bindFromRequest().fold(
+      formProvider(trustees).bindFromRequest().fold(
         formWithErrors => {
           val json: JsObject = Json.obj(
             "form" -> formWithErrors,
@@ -72,9 +72,9 @@ class AddEstablisherController @Inject()(override val messagesApi: MessagesApi,
             "radios" -> Radios.yesNo(formWithErrors("value")),
             "schemeName" -> existingSchemeName
           )
-          renderer.render("establishers/addEstablisher.njk", json).map(BadRequest(_))},
+          renderer.render("trustees/addTrustee.njk", json).map(BadRequest(_))},
         value =>
-          Future.successful(Redirect(navigator.nextPage(AddEstablisherId(value), request.userAnswers)))
+          Future.successful(Redirect(navigator.nextPage(AddTrusteeId(value), request.userAnswers)))
       )
   }
 

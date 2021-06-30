@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package forms.establishers
+package forms.trustees
 
 import forms.mappings.Mappings
-import models.establishers.EstablisherKind
+import models.trustees.TrusteeKind
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class EstablisherKindFormProvider @Inject() extends Mappings {
+class TrusteeKindFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[EstablisherKind] =
+  def apply(): Form[TrusteeKind] =
     Form(
-      "value" -> enumerable[EstablisherKind]("messages__establisher__type__error_required")
+      "value" -> enumerable[TrusteeKind]("messages__trustee__type__error_required")
     )
 }

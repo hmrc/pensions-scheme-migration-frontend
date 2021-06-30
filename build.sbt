@@ -23,6 +23,7 @@ lazy val microservice = Project(appName, file("."))
     RoutesKeys.routesImport ++= Seq(
       "models.Index",
       "models.establishers.EstablisherKind",
+      "models.trustees.TrusteeKind",
       "models.Mode",
       "models.CheckMode",
       "models.NormalMode"

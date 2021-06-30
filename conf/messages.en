@@ -680,6 +680,10 @@ country.ZW = Zimbabwe
 country.JM = Jamaica
 country.EE = Estonia
 
-
+messages__schemeTaskList__sectionTrustees_header = Trustees
+messages__schemeTaskList__sectionTrustees_add_link = Add trustees
+messages__schemeTaskList__sectionTrustees_change_link = Change trustees
+messages__schemeTaskList__sectionTrustees_view_link = View trustees
+messages__schemeTaskList__sectionTrustees_no_trustees = No trustees
 
 

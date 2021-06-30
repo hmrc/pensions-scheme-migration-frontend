@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package identifiers.establishers
+package identifiers.trustees
 
 import identifiers.TypedIdentifier
-import models.establishers.EstablisherKind
+import models.trustees.TrusteeKind
 import play.api.libs.json.JsPath
 
-case class EstablisherKindId(index: Int) extends TypedIdentifier[EstablisherKind] {
-  override def path: JsPath = EstablishersId(index).path \ EstablisherKindId.toString
+case class TrusteeKindId(index: Int) extends TypedIdentifier[TrusteeKind] {
+  override def path: JsPath = TrusteesId(index).path \ TrusteeKindId.toString
 }
 
-object EstablisherKindId {
-  override lazy val toString: String = "establisherKind"
+object TrusteeKindId {
+  override lazy val toString: String = "trusteeKind"
 }

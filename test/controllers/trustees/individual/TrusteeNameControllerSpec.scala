@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package controllers.establishers.individual
+package controllers.trustees.individual
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.PersonNameFormProvider
-import identifiers.establishers.individual.EstablisherNameId
+import identifiers.trustees.individual.TrusteeNameId
 import matchers.JsonMatchers
 import models.{Index, PersonName}
 import org.mockito.Matchers.any
@@ -36,20 +36,20 @@ import utils.{Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 
-class EstablisherNameControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class TrusteeNameControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val index: Index = Index(0)
   private val personName: PersonName = PersonName("Jane", "Doe")
-  private val userAnswers: Option[UserAnswers] = ua.set(EstablisherNameId(0), personName).toOption
-  private val templateToBeRendered = "establishers/individual/establisherName.njk"
-  private val form: Form[PersonName] = new PersonNameFormProvider()("messages__error__establisher")
+  private val userAnswers: Option[UserAnswers] = ua.set(TrusteeNameId(0), personName).toOption
+  private val templateToBeRendered = "trustees/individual/trusteeName.njk"
+  private val form: Form[PersonName] = new PersonNameFormProvider()("messages__error__trustee")
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
-  private def httpPathGET: String = controllers.establishers.individual.routes.EstablisherNameController.onPageLoad(index).url
-  private def httpPathPOST: String = controllers.establishers.individual.routes.EstablisherNameController.onSubmit(index).url
+  private def httpPathGET: String = controllers.trustees.individual.routes.TrusteeNameController.onPageLoad(index).url
+  private def httpPathPOST: String = controllers.trustees.individual.routes.TrusteeNameController.onSubmit(index).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "firstName" -> Seq("Jane"),
@@ -72,7 +72,7 @@ class EstablisherNameControllerSpec extends ControllerSpecBase with NunjucksSupp
   }
 
 
-  "EstablisherNameController" must {
+  "TrusteeNameController" must {
 
     "return OK and the correct view for a GET" in {
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
@@ -123,8 +123,8 @@ class EstablisherNameControllerSpec extends ControllerSpecBase with NunjucksSupp
 
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(EstablisherNameId(0)), any(), any())(any()))
-        .thenReturn(controllers.establishers.routes.AddEstablisherController.onPageLoad())
+      when(mockCompoundNavigator.nextPage(Matchers.eq(TrusteeNameId(0)), any(), any())(any()))
+        .thenReturn(controllers.trustees.routes.AddTrusteeController.onPageLoad())
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -140,7 +140,7 @@ class EstablisherNameControllerSpec extends ControllerSpecBase with NunjucksSupp
 
       jsonCaptor.getValue must containJson(expectedJson)
 
-      redirectLocation(result) mustBe Some(controllers.establishers.routes.AddEstablisherController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.trustees.routes.AddTrusteeController.onPageLoad().url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

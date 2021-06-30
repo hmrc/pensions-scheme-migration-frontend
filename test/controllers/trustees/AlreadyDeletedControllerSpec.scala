@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.establishers
+package controllers.trustees
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import identifiers.establishers.individual.EstablisherNameId
+import identifiers.trustees.individual.TrusteeNameId
 import matchers.JsonMatchers
-import models.establishers.EstablisherKind
+import models.trustees.TrusteeKind
 import models.{Index, PersonName}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
@@ -38,23 +38,23 @@ import scala.concurrent.Future
 class AlreadyDeletedControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val index: Index = Index(0)
-  private val kind: EstablisherKind = EstablisherKind.Individual
+  private val kind: TrusteeKind = TrusteeKind.Individual
   private val name = PersonName("Jane", "Doe")
-  private val userAnswers: Option[UserAnswers] = ua.set(EstablisherNameId(0), name).toOption
+  private val userAnswers: Option[UserAnswers] = ua.set(TrusteeNameId(0), name).toOption
   private val templateToBeRendered = "alreadyDeleted.njk"
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
-  private def httpPathGET: String = controllers.establishers.routes.AlreadyDeletedController.onPageLoad(index, kind).url
+  private def httpPathGET: String = controllers.trustees.routes.AlreadyDeletedController.onPageLoad(index, kind).url
 
   private val jsonToPassToTemplate: JsObject =
     Json.obj(
-      "title" -> messages("messages__alreadyDeleted__establisher_title"),
+      "title" -> messages("messages__alreadyDeleted__trustee_title"),
       "name" -> name.fullName,
       "schemeName" -> schemeName,
-      "submitUrl" -> controllers.establishers.routes.AddEstablisherController.onPageLoad().url
+      "submitUrl" -> controllers.trustees.routes.AddTrusteeController.onPageLoad().url
     )
 
   override def beforeEach: Unit = {

@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package controllers.establishers
+package controllers.trustees
 
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import forms.establishers.EstablisherKindFormProvider
-import identifiers.establishers.{EstablisherKindId, IsEstablisherNewId}
+import forms.trustees.TrusteeKindFormProvider
+import identifiers.trustees.{TrusteeKindId, IsTrusteeNewId}
 import models.Index
-import models.establishers.EstablisherKind
+import models.trustees.TrusteeKind
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -37,13 +37,13 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
-class EstablisherKindController @Inject()(
+class TrusteeKindController @Inject()(
                                            override val messagesApi: MessagesApi,
                                            navigator: CompoundNavigator,
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
-                                           formProvider: EstablisherKindFormProvider,
+                                           formProvider: TrusteeKindFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
                                            userAnswersCacheConnector: UserAnswersCacheConnector,
                                            renderer: Renderer
@@ -55,13 +55,13 @@ class EstablisherKindController @Inject()(
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        val formWithData = request.userAnswers.get(EstablisherKindId(index)).fold(form)(form.fill)
+        val formWithData = request.userAnswers.get(TrusteeKindId(index)).fold(form)(form.fill)
         val json = Json.obj(
           "form" -> formWithData,
           "schemeName" -> existingSchemeName,
-          "radios" -> EstablisherKind.radios(formWithData)
+          "radios" -> TrusteeKind.radios(formWithData)
         )
-        renderer.render("establishers/establisherKind.njk", json).map(Ok(_))
+        renderer.render("trustees/trusteeKind.njk", json).map(Ok(_))
     }
 
   def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
@@ -71,19 +71,19 @@ class EstablisherKindController @Inject()(
           val json = Json.obj(
             "form" -> formWithErrors,
             "schemeName" -> existingSchemeName,
-            "radios" -> EstablisherKind.radios(formWithErrors)
+            "radios" -> TrusteeKind.radios(formWithErrors)
           )
-          renderer.render("establishers/establisherKind.njk", json).map(BadRequest(_))
+          renderer.render("trustees/trusteeKind.njk", json).map(BadRequest(_))
         },
         value => {
 
-          val ua: Try[UserAnswers] = request.userAnswers.set(IsEstablisherNewId(index), value = true).flatMap(_.set(EstablisherKindId(index), value))
+          val ua: Try[UserAnswers] = request.userAnswers.set(IsTrusteeNewId(index), value = true).flatMap(_.set(TrusteeKindId(index), value))
 
           for {
             updatedAnswers <- Future.fromTry(ua)
             _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
           } yield
-            Redirect(navigator.nextPage(EstablisherKindId(index), updatedAnswers))
+            Redirect(navigator.nextPage(TrusteeKindId(index), updatedAnswers))
         }
       )
   }

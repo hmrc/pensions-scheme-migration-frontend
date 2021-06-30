@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package models.establishers
+package models.trustees
 
 import play.api.data.Form
 import play.api.mvc.JavascriptLiteral
 import uk.gov.hmrc.viewmodels.{MessageInterpolators, Radios}
 import utils.{Enumerable, WithName}
 
-sealed trait EstablisherKind
+sealed trait TrusteeKind
 
-object EstablisherKind {
-  val values: Seq[EstablisherKind] = Seq(
+object TrusteeKind {
+  val values: Seq[TrusteeKind] = Seq(
     Company, Individual, Partnership
   )
 
@@ -33,18 +33,18 @@ object EstablisherKind {
     Radios(form("value"), items)
   }
 
-  case object Company extends WithName("company") with EstablisherKind
+  case object Company extends WithName("company") with TrusteeKind
 
-  case object Individual extends WithName("individual") with EstablisherKind
+  case object Individual extends WithName("individual") with TrusteeKind
 
-  case object Partnership extends WithName("partnership") with EstablisherKind
+  case object Partnership extends WithName("partnership") with TrusteeKind
 
-  implicit val enumerable: Enumerable[EstablisherKind] =
+  implicit val enumerable: Enumerable[TrusteeKind] =
     Enumerable(values.map(v => v.toString -> v): _*)
 
   //noinspection ConvertExpressionToSAM
-  implicit val jsLiteral: JavascriptLiteral[EstablisherKind] = new JavascriptLiteral[EstablisherKind] {
-    override def to(value: EstablisherKind): String = value match {
+  implicit val jsLiteral: JavascriptLiteral[TrusteeKind] = new JavascriptLiteral[TrusteeKind] {
+    override def to(value: TrusteeKind): String = value match {
       case Company => "Company"
       case Individual => "Individual"
       case Partnership => "Partnership"

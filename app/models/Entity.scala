@@ -18,7 +18,9 @@ package models
 
 import controllers.establishers.routes._
 import identifiers.establishers.individual.EstablisherNameId
+import identifiers.trustees.individual.TrusteeNameId
 import models.establishers.EstablisherKind
+import models.trustees.TrusteeKind
 import play.api.libs.json.{Format, Json}
 
 sealed trait Entity[ID] {
@@ -68,4 +70,33 @@ sealed trait Establisher[T] extends Entity[T]
 
 object Establisher {
   implicit lazy val formats: Format[Establisher[_]] = Json.format[Establisher[_]]
+}
+
+case class TrusteeIndividualEntity(
+  id: TrusteeNameId,
+  name: String,
+  isDeleted: Boolean,
+  isCompleted: Boolean,
+  isNewEntity: Boolean,
+  noOfRecords: Int
+) extends Trustee[TrusteeNameId] {
+  override def editLink: Option[String] = None
+
+  override def deleteLink: Option[String] =
+    if (noOfRecords > 1)
+      Some(controllers.trustees.routes.ConfirmDeleteTrusteeController.onPageLoad(id.index, TrusteeKind.Individual).url)
+    else
+      None
+
+  override def index: Int = id.index
+}
+
+object TrusteeIndividualEntity {
+  implicit lazy val formats: Format[TrusteeIndividualEntity] = Json.format[TrusteeIndividualEntity]
+}
+
+sealed trait Trustee[T] extends Entity[T]
+
+object Trustee {
+  implicit lazy val formats: Format[Trustee[_]] = Json.format[Trustee[_]]
 }

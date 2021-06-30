@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package controllers.establishers
+package controllers.trustees
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import forms.establishers.ConfirmDeleteEstablisherFormProvider
-import identifiers.establishers.ConfirmDeleteEstablisherId
-import identifiers.establishers.individual.EstablisherNameId
+import forms.trustees.ConfirmDeleteTrusteeFormProvider
+import identifiers.trustees.ConfirmDeleteTrusteeId
+import identifiers.trustees.individual.TrusteeNameId
 import matchers.JsonMatchers
-import models.establishers.EstablisherKind
+import models.trustees.TrusteeKind
 import models.{Index, PersonName}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -39,20 +39,20 @@ import utils.{Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 
-class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
-  private val establisherName: String = "Jane Doe"
+class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+  private val trusteeName: String = "Jane Doe"
   private val index: Index = Index(0)
-  private val kind: EstablisherKind = EstablisherKind.Individual
-  private val userAnswers: Option[UserAnswers] = ua.set(EstablisherNameId(0), PersonName("Jane", "Doe")).toOption
+  private val kind: TrusteeKind = TrusteeKind.Individual
+  private val userAnswers: Option[UserAnswers] = ua.set(TrusteeNameId(0), PersonName("Jane", "Doe")).toOption
   private val templateToBeRendered = "delete.njk"
-  private val form: Form[Boolean] = new ConfirmDeleteEstablisherFormProvider()(establisherName)
+  private val form: Form[Boolean] = new ConfirmDeleteTrusteeFormProvider()(trusteeName)
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
-  private def httpPathGET: String = controllers.establishers.routes.ConfirmDeleteEstablisherController.onPageLoad(index, kind).url
-  private def httpPathPOST: String = controllers.establishers.routes.ConfirmDeleteEstablisherController.onSubmit(index, kind).url
+  private def httpPathGET: String = controllers.trustees.routes.ConfirmDeleteTrusteeController.onPageLoad(index, kind).url
+  private def httpPathPOST: String = controllers.trustees.routes.ConfirmDeleteTrusteeController.onSubmit(index, kind).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq("true")
@@ -65,10 +65,10 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Nun
   private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>
   Json.obj(
     "form" -> form,
-    "titleMessage" -> messages("messages__confirmDeleteEstablisher__title"),
-    "name" -> establisherName,
+    "titleMessage" -> messages("messages__confirmDeleteTrustee__title"),
+    "name" -> trusteeName,
     "radios" -> Radios.yesNo(form("value")),
-    "submitUrl" -> routes.ConfirmDeleteEstablisherController.onSubmit(index, kind).url,
+    "submitUrl" -> routes.ConfirmDeleteTrusteeController.onSubmit(index, kind).url,
     "schemeName" -> schemeName
   )
 
@@ -78,7 +78,7 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Nun
   }
 
 
-  "ConfirmDeleteEstablisherController" must {
+  "ConfirmDeleteTrusteeController" must {
 
     "return OK and the correct view for a GET" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
@@ -110,8 +110,8 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Nun
 
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(ConfirmDeleteEstablisherId), any(), any())(any()))
-        .thenReturn(routes.AddEstablisherController.onPageLoad())
+      when(mockCompoundNavigator.nextPage(Matchers.eq(ConfirmDeleteTrusteeId), any(), any())(any()))
+        .thenReturn(routes.AddTrusteeController.onPageLoad())
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -127,7 +127,7 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Nun
 
       jsonCaptor.getValue must containJson(expectedJson)
 
-      redirectLocation(result) mustBe Some(routes.AddEstablisherController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.AddTrusteeController.onPageLoad().url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.establishers
+package controllers.trustees
 
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import identifiers.establishers.individual.EstablisherNameId
+import identifiers.trustees.individual.TrusteeNameId
 import models.Index
-import models.establishers.EstablisherKind
-import models.establishers.EstablisherKind.Individual
+import models.trustees.TrusteeKind
+import models.trustees.TrusteeKind.Individual
 import models.requests.DataRequest
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
@@ -42,28 +42,28 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
                                         )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits {
 
-  def onPageLoad(index: Index, establisherKind: EstablisherKind): Action[AnyContent] =
+  def onPageLoad(index: Index, trusteeKind: TrusteeKind): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        establisherName(index, establisherKind) match {
-          case Right(establisherName) =>
-            renderer.render("alreadyDeleted.njk", json(establisherName, existingSchemeName)).map(Ok(_))
+        trusteeName(index, trusteeKind) match {
+          case Right(trusteeName) =>
+            renderer.render("alreadyDeleted.njk", json(trusteeName, existingSchemeName)).map(Ok(_))
           case Left(result) => result
         }
     }
 
-  private def json(establisherName: String, schemeName: Option[String])(implicit messages: Messages): JsObject = Json.obj(
-    "title" -> messages("messages__alreadyDeleted__establisher_title"),
-    "name" -> establisherName,
+  private def json(trusteeName: String, schemeName: Option[String])(implicit messages: Messages): JsObject = Json.obj(
+    "title" -> messages("messages__alreadyDeleted__trustee_title"),
+    "name" -> trusteeName,
     "schemeName" -> schemeName,
-    "submitUrl" -> controllers.establishers.routes.AddEstablisherController.onPageLoad.url
+    "submitUrl" -> controllers.trustees.routes.AddTrusteeController.onPageLoad.url
   )
 
-  private def establisherName(index: Index, establisherKind: EstablisherKind)(implicit
+  private def trusteeName(index: Index, trusteeKind: TrusteeKind)(implicit
                                                                               dataRequest: DataRequest[AnyContent])
   : Either[Future[Result], String] = {
-    establisherKind match {
-      case Individual => EstablisherNameId(index).retrieve.right.map(_.fullName)
+    trusteeKind match {
+      case Individual => TrusteeNameId(index).retrieve.right.map(_.fullName)
       case _ => Right("Unimplemented functionality")
     }
   }

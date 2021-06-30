@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package identifiers.establishers
+package identifiers.trustees
 
 import identifiers.TypedIdentifier
 
-case object ConfirmDeleteEstablisherId extends TypedIdentifier[Boolean] {
-  override def toString: String = "confirmDeleteEstablisher"
+case object ConfirmDeleteTrusteeId extends TypedIdentifier[Boolean] {
+  override def toString: String = "confirmDeleteTrustee"
 }

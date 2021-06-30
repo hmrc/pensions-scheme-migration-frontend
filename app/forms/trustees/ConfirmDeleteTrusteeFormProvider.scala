@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.establishers
+package forms.trustees
 
 import forms.mappings.Mappings
 import javax.inject.Inject
@@ -22,7 +22,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import viewmodels.Message
 
-class ConfirmDeleteEstablisherFormProvider @Inject() extends Mappings {
+class ConfirmDeleteTrusteeFormProvider @Inject() extends Mappings {
 
   def apply(name: String)(implicit messages: Messages): Form[Boolean] =
     Form(

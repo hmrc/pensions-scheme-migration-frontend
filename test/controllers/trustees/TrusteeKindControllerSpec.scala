@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package controllers.establishers
+package controllers.trustees
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import forms.establishers.EstablisherKindFormProvider
-import identifiers.establishers.EstablisherKindId
-import identifiers.establishers.individual.EstablisherNameId
+import forms.trustees.TrusteeKindFormProvider
+import identifiers.trustees.TrusteeKindId
+import identifiers.trustees.individual.TrusteeNameId
 import matchers.JsonMatchers
-import models.establishers.EstablisherKind
+import models.trustees.TrusteeKind
 import models.{Index, PersonName}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -38,20 +38,20 @@ import utils.{Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 
-class EstablisherKindControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class TrusteeKindControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val index: Index = Index(0)
-  private val kind: EstablisherKind = EstablisherKind.Individual
-  private val userAnswers: Option[UserAnswers] = ua.set(EstablisherNameId(0), PersonName("Jane", "Doe")).toOption
-  private val templateToBeRendered = "establishers/establisherKind.njk"
-  private val form: Form[EstablisherKind] = new EstablisherKindFormProvider()()
+  private val kind: TrusteeKind = TrusteeKind.Individual
+  private val userAnswers: Option[UserAnswers] = ua.set(TrusteeNameId(0), PersonName("Jane", "Doe")).toOption
+  private val templateToBeRendered = "trustees/trusteeKind.njk"
+  private val form: Form[TrusteeKind] = new TrusteeKindFormProvider()()
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
-  private def httpPathGET: String = controllers.establishers.routes.EstablisherKindController.onPageLoad(index).url
-  private def httpPathPOST: String = controllers.establishers.routes.EstablisherKindController.onSubmit(index).url
+  private def httpPathGET: String = controllers.trustees.routes.TrusteeKindController.onPageLoad(index).url
+  private def httpPathPOST: String = controllers.trustees.routes.TrusteeKindController.onSubmit(index).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq(kind.toString)
@@ -61,11 +61,11 @@ class EstablisherKindControllerSpec extends ControllerSpecBase with NunjucksSupp
     "value" -> Seq.empty
   )
 
-  private val jsonToPassToTemplate: Form[EstablisherKind] => JsObject = form =>
+  private val jsonToPassToTemplate: Form[TrusteeKind] => JsObject = form =>
     Json.obj(
       "form" -> form,
       "schemeName" -> schemeName,
-      "radios" -> EstablisherKind.radios(form)
+      "radios" -> TrusteeKind.radios(form)
     )
 
   override def beforeEach: Unit = {
@@ -74,7 +74,7 @@ class EstablisherKindControllerSpec extends ControllerSpecBase with NunjucksSupp
   }
 
 
-  "EstablisherKindController" must {
+  "TrusteeKindController" must {
 
     "return OK and the correct view for a GET" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
@@ -106,8 +106,8 @@ class EstablisherKindControllerSpec extends ControllerSpecBase with NunjucksSupp
 
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(EstablisherKindId(0)), any(), any())(any()))
-        .thenReturn(controllers.establishers.individual.routes.EstablisherNameController.onPageLoad(0))
+      when(mockCompoundNavigator.nextPage(Matchers.eq(TrusteeKindId(0)), any(), any())(any()))
+        .thenReturn(controllers.trustees.individual.routes.TrusteeNameController.onPageLoad(0))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -123,7 +123,7 @@ class EstablisherKindControllerSpec extends ControllerSpecBase with NunjucksSupp
 
       jsonCaptor.getValue must containJson(expectedJson)
 
-      redirectLocation(result) mustBe Some(controllers.establishers.individual.routes.EstablisherNameController.onPageLoad(0).url)
+      redirectLocation(result) mustBe Some(controllers.trustees.individual.routes.TrusteeNameController.onPageLoad(0).url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

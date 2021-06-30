@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.establishers.individual
+package controllers.trustees.individual
 
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.PersonNameFormProvider
-import identifiers.establishers.individual.EstablisherNameId
+import identifiers.trustees.individual.TrusteeNameId
 import models.{Index, PersonName}
 import navigators.CompoundNavigator
 import play.api.data.Form
@@ -34,7 +34,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EstablisherNameController @Inject()(
+class TrusteeNameController @Inject()(
                                            override val messagesApi: MessagesApi,
                                            val navigator: CompoundNavigator,
                                            authenticate: AuthAction,
@@ -51,15 +51,15 @@ class EstablisherNameController @Inject()(
     with NunjucksSupport {
 
   private def form(implicit messages: Messages): Form[PersonName] =
-    formProvider("messages__error__establisher")
+    formProvider("messages__error__trustee")
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         renderer.render(
-          template = "establishers/individual/establisherName.njk",
+          template = "trustees/individual/trusteeName.njk",
           ctx = Json.obj(
-            "form"       -> request.userAnswers.get[PersonName](EstablisherNameId(index)).fold(form)(form.fill),
+            "form"       -> request.userAnswers.get[PersonName](TrusteeNameId(index)).fold(form)(form.fill),
             "schemeName" -> existingSchemeName
           )
         ).flatMap(view => Future.successful(Ok(view)))
@@ -71,7 +71,7 @@ class EstablisherNameController @Inject()(
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
             renderer.render(
-              template = "establishers/individual/establisherName.njk",
+              template = "trustees/individual/trusteeName.njk",
               ctx = Json.obj(
                 "form"       -> formWithErrors,
                 "schemeName" -> existingSchemeName
@@ -79,10 +79,10 @@ class EstablisherNameController @Inject()(
             ).map(BadRequest(_)),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(EstablisherNameId(index), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(TrusteeNameId(index), value))
               _              <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
             } yield
-              Redirect(navigator.nextPage(EstablisherNameId(index), updatedAnswers))
+              Redirect(navigator.nextPage(TrusteeNameId(index), updatedAnswers))
         )
     }
 

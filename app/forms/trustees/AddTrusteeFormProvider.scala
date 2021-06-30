@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package forms.establishers
+package forms.trustees
 
 import forms.mappings.Mappings
 import play.api.data.{Form, Forms}
 
 import javax.inject.Inject
 
-class AddEstablisherFormProvider @Inject() extends Mappings {
+class AddTrusteeFormProvider @Inject() extends Mappings {
 
-  def apply(establishers: Seq[_]): Form[Option[Boolean]] = {
-    if (establishers.isEmpty) {
+  def apply(trustees: Seq[_]): Form[Option[Boolean]] = {
+    if (trustees.isEmpty) {
       Form(
-        "value" -> Forms.optional(boolean("messages__addEstablisher_error__selection"))
+        "value" -> Forms.optional(boolean("messages__addTrustee_error__selection"))
       )
     } else {
       Form(
-        "value" -> Forms.optional(boolean("messages__addEstablisher_error__selection"))
-          .verifying("messages__addEstablisher_error__selection", _.isDefined)
+        "value" -> Forms.optional(boolean("messages__addTrustee_error__selection"))
+          .verifying("messages__addTrustee_error__selection", _.isDefined)
       )
     }
   }

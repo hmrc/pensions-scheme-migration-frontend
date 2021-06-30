@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package identifiers.establishers
+package identifiers.trustees
 
 import identifiers._
 
-case class AddEstablisherId(addAnother: Option[Boolean]) extends Identifier {
-  override def toString: String = "addEstablisher"
+case class AddTrusteeId(addAnother: Option[Boolean]) extends Identifier {
+  override def toString: String = "addTrustee"
 }
 
-case object AddEstablisherId {
-  override def toString: String = "addEstablisher"
+case object AddTrusteeId {
+  override def toString: String = "addTrustee"
 }

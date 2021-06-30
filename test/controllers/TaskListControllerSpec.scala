@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import helpers.TaskListHelper
 import matchers.JsonMatchers
-import models.{EntitySpoke, TaskListLink}
+import models.{TaskListLink, EntitySpoke}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -55,7 +55,16 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
   private val testHeader = Some(Message("messages__schemeTaskList__before_you_start_header"))
   private val testSection = TaskListEntitySection(None, expectedSpoke, testHeader)
 
-  private val schemeDetailsTL = TaskList(schemeName, testSection, testSection, Some(testSection), Seq(testSection), Some(testSection))
+  private val schemeDetailsTL = TaskList(
+    h1 = schemeName,
+    beforeYouStart = testSection,
+    about = testSection,
+    addEstablisherHeader = Some(testSection),
+    addTrusteeHeader = Some(testSection),
+    establishers = Seq(testSection),
+    trustees = Seq(testSection),
+    declaration = Some(testSection)
+  )
 
   val json = Json.obj(
     "taskSections" -> schemeDetailsTL,
