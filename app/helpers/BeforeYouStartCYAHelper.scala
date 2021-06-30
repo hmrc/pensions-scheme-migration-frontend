@@ -62,12 +62,12 @@ class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
       answerRow(messages("messages__cya__scheme_name"), schemeName),
       schemeTypeRow)
 
-    val s2 = if (schemeTypeAnswer.contains(SchemeType.BodyCorporate)) {
+    val s2 = if (schemeTypeAnswer.contains(SchemeType.BodyCorporate) || schemeTypeAnswer.contains(SchemeType.GroupLifeDeath)) {
       Seq(
           answerOrAddRow(
           HaveAnyTrusteesId,
           Message("haveAnyTrustees.h1", schemeName).resolve,
-          None,
+            Some(routes.HaveAnyTrusteesController.onPageLoad().url),
           Some(msg"messages__visuallyhidden__haveAnyTrustees"), answerBooleanTransform
         )
       )

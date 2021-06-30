@@ -17,41 +17,17 @@
 package identifiers.beforeYouStart
 
 import identifiers.TypedIdentifier
-import identifiers.trustees.{TrusteeKindId, TrusteesId}
-import models.trustees.TrusteeKind
-import play.api.libs.json.{JsResult, JsSuccess}
+import identifiers.trustees.TrusteesId
 import utils.UserAnswers
 
 case object HaveAnyTrusteesId extends TypedIdentifier[Boolean] {
   override def toString: String = "haveAnyTrustees"
 
-  //override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): UserAnswers = {
-  //  value match {
-  //    case Some(false) => userAnswers.removeAll(Set(BenefitsInsuranceNameId, BenefitsInsurancePolicyId,
-  //      InsurerEnterPostCodeId, InsurerAddressListId, InsurerAddressId))
-  //    case _ => super.cleanup(value, userAnswers)
-  //  }
-  //}
-
-  /*
-    override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = {
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): UserAnswers = {
     value match {
       case Some(false) =>
-        removeAllTrustees(userAnswers).flatMap(_.remove(MoreThanTenTrusteesId))
-      case _ =>
-        super.cleanup(value, userAnswers)
+        userAnswers.remove(TrusteesId.collectionPath)
+      case _ => super.cleanup(value, userAnswers)
     }
   }
-*/
-  //private def removeAllTrustees(userAnswers: UserAnswers): JsResult[UserAnswers] = {
-  //  userAnswers.getAllRecursive[TrusteeKind](TrusteeKindId.collectionPath) match {
-  //    case Some(allTrustees) if allTrustees.nonEmpty =>
-  //      userAnswers.remove(TrusteesId(0)).flatMap(removeAllTrustees)
-  //    case _ => JsSuccess(userAnswers)
-  //  }
-  //}
-
-
-
-
 }
