@@ -711,7 +711,7 @@ messages__trustee__type_title = What kind of trustee are you adding?
 
 messages__trustee__name_title = What is the trustee’s name?
 
-addTrustee.name.header = Trustee name
+addTrustee.name.header = Trustee’s name
 addTrustee.type.header = Type
 addTrustee.hiddenText.removeLink.header = Remove trustee link
 

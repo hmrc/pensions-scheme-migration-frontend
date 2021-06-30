@@ -17,11 +17,12 @@
 package helpers
 
 import identifiers.establishers.individual.EstablisherNameId
+import identifiers.trustees.individual.TrusteeNameId
 import models.Entity
 import play.api.i18n.Messages
 import uk.gov.hmrc.viewmodels.Table.Cell
 import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{Html, MessageInterpolators, Table}
+import uk.gov.hmrc.viewmodels.{Table, MessageInterpolators, Html}
 
 class AddToListHelper {
 
@@ -75,6 +76,7 @@ class AddToListHelper {
   private def getTypeFromId[ID](id: ID)(implicit messages: Messages): String =
     id match {
       case EstablisherNameId(_) => messages("kind.individual")
+      case TrusteeNameId(_) => messages("kind.individual")
       case _ => messages("kind.company")
     }
 
