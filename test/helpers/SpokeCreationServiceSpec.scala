@@ -20,16 +20,17 @@ import base.SpecBase
 import controllers.establishers.individual.details.routes
 import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}
 import controllers.establishers.individual.details.routes
-import identifiers.beforeYouStart.{SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
+import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressId
+import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
 import models.establishers.EstablisherKind
 import models.{EntitySpoke, _}
 import org.scalatest.{MustMatchers, OptionValues, TryValues}
-import org.scalatest.{OptionValues, TryValues, MustMatchers}
+import org.scalatest.{MustMatchers, OptionValues, TryValues}
 import utils.Data.{schemeName, ua}
-import utils.{Enumerable, Data}
+import utils.{Data, Enumerable}
 import viewmodels.Message
 
 class SpokeCreationServiceSpec
@@ -134,10 +135,10 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = TaskListLink(
               text = "Add contact details for a b",
-              target = "someUrl",
+              target = controllers.establishers.individual.contact.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
-            isCompleted = Some(false)
+            isCompleted = None
           )
         )
 
@@ -157,6 +158,7 @@ class SpokeCreationServiceSpec
         .set(EstablisherKindId(0), EstablisherKind.Individual).success.value
         .set(EstablisherNameId(0), PersonName("a", "b")).success.value
         .setOrException(AddressId(0), Data.address)
+        .setOrException(EnterEmailId(0), "a@a.a")
 
     val expectedSpoke =
       Seq(
@@ -179,7 +181,7 @@ class SpokeCreationServiceSpec
         EntitySpoke(
           link = TaskListLink(
             text = "Add contact details for a b",
-            target = "someUrl",
+            target = controllers.establishers.individual.contact.routes.WhatYouWillNeedController.onPageLoad(0).url,
             visuallyHiddenText = None
           ),
           isCompleted = Some(false)

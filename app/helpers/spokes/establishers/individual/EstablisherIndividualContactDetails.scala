@@ -17,21 +17,32 @@
 package helpers.spokes.establishers.individual
 
 import helpers.spokes.Spoke
-import models.TaskListLink
+import models.{Index, TaskListLink}
 import play.api.i18n.Messages
 import utils.UserAnswers
+import controllers.establishers.individual.contact.routes._
 
 
-case object EstablisherIndividualContactDetails extends Spoke {
+case class EstablisherIndividualContactDetails(
+index: Index,
+  answers: UserAnswers
+  ) extends Spoke {
+  val messageKeyPrefix = "messages__schemeTaskList__establisherIndividualContactDetails_"
+  val linkKeyAndRoute: (String, String) = {
+    if (completeFlag(answers).getOrElse(false))
+      (s"${messageKeyPrefix}changeLink", CheckYourAnswersController.onPageLoad(index).url)
+    else
+      (s"${messageKeyPrefix}addLink", WhatYouWillNeedController.onPageLoad(index).url)
+  }
   override def changeLink(name: String)
                          (implicit messages: Messages): TaskListLink =
     TaskListLink(
-      text = Messages("messages__schemeTaskList__establisherIndividualContactDetails_addLink", name),
-      target = "someUrl",
+      text = Messages(linkKeyAndRoute._1, name),
+      target = linkKeyAndRoute._2,
       visuallyHiddenText = None
     )
 
   override def completeFlag(answers: UserAnswers): Option[Boolean] =
-    answers.isEstablisherIndividualContactDetailsCompleted
+    answers.isEstablisherIndividualContactDetailsCompleted(index)
 }
 

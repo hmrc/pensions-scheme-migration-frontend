@@ -138,6 +138,16 @@ class TestMongoController @Inject()(
     val lock: MigrationLock = MigrationLock(pstr, "dummy cred", "A2100005")
 
     val data: JsValue = Json.obj(
+      "establishers" -> Json.arr(
+        Json.obj("establisherDetails" -> Json.obj(
+          "firstName" -> "other",
+          "lastName" -> "xyz",
+          "isDeleted" -> false
+        ),
+          "establisherKind" -> "individual",
+          "isEstablisherNew" -> true,
+        "phone" -> "88",
+        "email" -> "s@s.com")),
       "schemeName" -> "Migration scheme",
       "schemeType" -> Json.obj(
         "name" -> "other",
@@ -145,7 +155,7 @@ class TestMongoController @Inject()(
       ),
       "schemeEstablishedCountry" -> "GB",
       "investmentRegulated" -> true,
-      "occupationalPensionScheme" -> true
+      "occupationalPensionScheme" -> true,
     )
 
     userAnswersCacheConnector.save(lock, data).flatMap { response =>
