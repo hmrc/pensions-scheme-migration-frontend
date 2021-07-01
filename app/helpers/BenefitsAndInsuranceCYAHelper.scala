@@ -74,7 +74,7 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
 
 
   private def topSection(schemeName: String)(implicit messages: Messages, ua: UserAnswers) = {
-    val section1 = Seq(
+    val seqRowFirstItems = Seq(
       answerOrAddRow(
         IsInvestmentRegulatedId,
         Message("isInvestmentRegulated.h1", schemeName).resolve,
@@ -94,7 +94,7 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
         Some(msg"howProvideBenefits.visuallyHidden".withArgs(schemeName)), answerBenefitsProvisionTypeTransform
       )
     )
-    val section2 = if(ua.get(HowProvideBenefitsId).contains(DefinedBenefitsOnly)) Nil else Seq(
+    val seqRowBenefitsType = if(ua.get(HowProvideBenefitsId).contains(DefinedBenefitsOnly)) Nil else Seq(
       answerOrAddRow(
         BenefitsTypeId,
         Message("benefitsType.h1", schemeName).resolve,
@@ -103,7 +103,7 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
       )
     )
 
-    val section3 = Seq(
+    val seqRowBenefitsSecured = Seq(
       answerOrAddRow(
         AreBenefitsSecuredId,
         Message("areBenefitsSecured.title").resolve,
@@ -111,6 +111,6 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
         Some(msg"areBenefitsSecured.visuallyHidden"), answerBooleanTransform
       )
     )
-    section1 ++ section2 ++ section3
+    seqRowFirstItems ++ seqRowBenefitsType ++ seqRowBenefitsSecured
   }
 }

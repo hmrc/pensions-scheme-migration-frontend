@@ -58,11 +58,11 @@ class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
       }
     }
 
-     val section1 = Seq(
+     val seqRowSchemeNameAndType = Seq(
       answerRow(messages("messages__cya__scheme_name"), schemeName),
       schemeTypeRow)
 
-    val section2 = if (schemeTypeAnswer.contains(SchemeType.BodyCorporate) || schemeTypeAnswer.contains(SchemeType.GroupLifeDeath)) {
+    val seqRowAnyTrusteesQuestion = if (schemeTypeAnswer.contains(SchemeType.BodyCorporate) || schemeTypeAnswer.contains(SchemeType.GroupLifeDeath)) {
       Seq(
           answerOrAddRow(
           HaveAnyTrusteesId,
@@ -75,7 +75,7 @@ class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
       Nil
     }
 
-    val section3 = Seq(
+    val seqRowCountryWorkingKnowledge = Seq(
       answerRow(messages("messages__cya__country", schemeName),
         messages(s"country.${CYAHelper.getAnswer(EstablishedCountryId)}"),
         Some(routes.EstablishedCountryController.onPageLoad().url),
@@ -88,7 +88,7 @@ class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
         answerTransform = Some(booleanToContent)
       )
     )
-    val beforeYouStart = section1 ++ section2 ++ section3
+    val beforeYouStart = seqRowSchemeNameAndType ++ seqRowAnyTrusteesQuestion ++ seqRowCountryWorkingKnowledge
 
       rowsWithDynamicIndices(beforeYouStart)
   }
