@@ -19,15 +19,15 @@ package helpers
 import base.SpecBase
 import controllers.establishers.individual.details.routes
 import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}
-import controllers.establishers.individual.details.routes
-import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressId
-import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
+import identifiers.establishers.individual.contact.EnterEmailId
+import identifiers.trustees.TrusteeKindId
+import identifiers.trustees.individual.TrusteeNameId
 import models.establishers.EstablisherKind
+import models.trustees.TrusteeKind
 import models.{EntitySpoke, _}
-import org.scalatest.{MustMatchers, OptionValues, TryValues}
 import org.scalatest.{MustMatchers, OptionValues, TryValues}
 import utils.Data.{schemeName, ua}
 import utils.{Data, Enumerable}
@@ -197,7 +197,37 @@ class SpokeCreationServiceSpec
     result mustBe expectedSpoke
   }
 
+  "geTrusteesIndividualSpokes" must {
+    "display all the spokes with appropriate links and incomplete status when no data is returned from TPSS" in {
+      val userAnswers =
+        ua
+          .set(TrusteeKindId(0), TrusteeKind.Individual).success.value
+          .set(TrusteeNameId(0), PersonName("a", "b")).success.value
+
+      val expectedSpoke =
+        Seq(
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Add contact details for a b",
+              target = controllers.trustees.individual.contact.routes.WhatYouWillNeedController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = Some(false)
+          )
+        )
+
+      val result =
+        spokeCreationService.getTrusteeIndividualSpokes(
+          answers = userAnswers,
+          name = "a b",
+          index = 0
+        )
+      result mustBe expectedSpoke
+    }
+  }
+
   "declarationSpoke" must {
+
     "return declaration spoke with link" in {
       val expectedSpoke = Seq(EntitySpoke(TaskListLink(
         messages("messages__schemeTaskList__declaration_link"),
