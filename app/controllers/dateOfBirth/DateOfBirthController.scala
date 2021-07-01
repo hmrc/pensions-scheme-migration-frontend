@@ -85,6 +85,8 @@ trait DateOfBirthController
 
     form.bindFromRequest().fold(
       formWithErrors => {
+        // This is to get round Nunjucks issue whereby clicking error message relating to day field
+        // was not going to the correct input field.
         val formWithErrorsDayIdCorrection = formWithErrors.copy(
           errors = formWithErrors.errors map { e => if (e.key == "date.day") e.copy(key = "date") else e }
         )
