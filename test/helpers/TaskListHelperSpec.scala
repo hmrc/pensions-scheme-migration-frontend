@@ -165,7 +165,7 @@ class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar wi
               _.set(TrusteeNameId(1), PersonName("c", "d", true)).flatMap(
                 _.set(IsTrusteeNewId(1), true)
               ))))).get
-      helper.trusteesSection(userAnswers, messages) mustBe Nil
+      helper.trusteesSection(userAnswers, messages) mustBe Some(Nil)
     }
 
     "return seq of sections if all trustees are not deleted" in {
@@ -177,8 +177,28 @@ class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar wi
                 _.set(IsTrusteeNewId(1), true)
               ))))).get
 
-      val expectedSection =  Seq(TaskListEntitySection(None, null, Some("c d")))
+      val expectedSection =  Some(Seq(TaskListEntitySection(None, null, Some("c d"))))
       helper.trusteesSection(userAnswers, messages) mustBe expectedSection
+    }
+
+    "return None if scheme type is body corporate and have any trustees is answered as no" in {
+      val userAnswers = ua
+          .setOrException(TrusteeKindId(0), TrusteeKind.Individual)
+          .setOrException(TrusteeNameId(0), PersonName("a", "b"))
+          .setOrException(IsTrusteeNewId(0), true)
+          .setOrException(SchemeTypeId, SchemeType.BodyCorporate)
+          .setOrException(HaveAnyTrusteesId, false)
+      helper.trusteesSection(userAnswers, messages) mustBe None
+    }
+
+    "return trustees if scheme type is body corporate and have any trustees is answered as yes" in {
+      val userAnswers = ua
+        .setOrException(TrusteeKindId(0), TrusteeKind.Individual)
+        .setOrException(TrusteeNameId(0), PersonName("a", "b"))
+        .setOrException(IsTrusteeNewId(0), true)
+        .setOrException(SchemeTypeId, SchemeType.BodyCorporate)
+        .setOrException(HaveAnyTrusteesId, true)
+      helper.trusteesSection(userAnswers, messages).isDefined mustBe true
     }
   }
 

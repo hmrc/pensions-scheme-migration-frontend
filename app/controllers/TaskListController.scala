@@ -43,6 +43,8 @@ class TaskListController @Inject()(
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData).async {
     implicit request =>
       implicit val userAnswers: UserAnswers = request.userAnswers.getOrElse(UserAnswers())
+      val ff = taskListHelper.taskList(request.viewOnly)
+      println("\n>>>" + ff.trustees)
       val json = Json.obj(
         "taskSections" -> taskListHelper.taskList(request.viewOnly),
         "schemeName" -> taskListHelper.getSchemeName
