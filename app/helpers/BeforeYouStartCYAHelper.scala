@@ -17,29 +17,29 @@
 package helpers
 
 import controllers.beforeYouStartSpoke.routes
-import identifiers.beforeYouStart.{EstablishedCountryId, SchemeNameId, SchemeTypeId, WorkingKnowledgeId}
+import identifiers.beforeYouStart.{EstablishedCountryId, WorkingKnowledgeId, SchemeTypeId, HaveAnyTrusteesId, SchemeNameId}
+import models.SchemeType
 import models.SchemeType.Other
 import models.requests.DataRequest
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.viewmodels.MessageInterpolators
-import uk.gov.hmrc.viewmodels.SummaryList.{Key, Row, Value}
+import uk.gov.hmrc.viewmodels.SummaryList.{Value, Row, Key}
 import utils.UserAnswers
 import viewmodels.Message
 
 class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
-
+  //scalastyle:off method.length
   def rows(implicit request: DataRequest[AnyContent],
             messages: Messages
           ): Seq[Row] = {
     implicit val ua: UserAnswers = request.userAnswers
     val schemeName = CYAHelper.getAnswer(SchemeNameId)
-
+    val schemeTypeAnswer = ua.get(SchemeTypeId)
     val schemeTypeRow = {
       val url: String = routes.SchemeTypeController.onPageLoad().url
       val visuallyHiddenText = msg"messages__visuallyhidden__schemeType".withArgs(schemeName)
-
-      ua.get(SchemeTypeId) match {
+      schemeTypeAnswer match {
         case None => Row(
           key = Key(msg"messages__cya__scheme_type".withArgs(schemeName), classes = Seq("govuk-!-width-one-half")),
           value = Value(msg"site.not_entered", classes = Seq("govuk-!-width-one-third")),
@@ -58,9 +58,24 @@ class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
       }
     }
 
-    val beforeYouStart = Seq(
+     val seqRowSchemeNameAndType = Seq(
       answerRow(messages("messages__cya__scheme_name"), schemeName),
-      schemeTypeRow,
+      schemeTypeRow)
+
+    val seqRowAnyTrusteesQuestion = if (schemeTypeAnswer.contains(SchemeType.BodyCorporate) || schemeTypeAnswer.contains(SchemeType.GroupLifeDeath)) {
+      Seq(
+          answerOrAddRow(
+          HaveAnyTrusteesId,
+          Message("haveAnyTrustees.h1", schemeName).resolve,
+            Some(routes.HaveAnyTrusteesController.onPageLoad().url),
+          Some(msg"messages__visuallyhidden__haveAnyTrustees"), answerBooleanTransform
+        )
+      )
+    } else {
+      Nil
+    }
+
+    val seqRowCountryWorkingKnowledge = Seq(
       answerRow(messages("messages__cya__country", schemeName),
         messages(s"country.${CYAHelper.getAnswer(EstablishedCountryId)}"),
         Some(routes.EstablishedCountryController.onPageLoad().url),
@@ -73,9 +88,8 @@ class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
         answerTransform = Some(booleanToContent)
       )
     )
+    val beforeYouStart = seqRowSchemeNameAndType ++ seqRowAnyTrusteesQuestion ++ seqRowCountryWorkingKnowledge
 
-
-
-    rowsWithDynamicIndices(beforeYouStart)
+      rowsWithDynamicIndices(beforeYouStart)
   }
 }

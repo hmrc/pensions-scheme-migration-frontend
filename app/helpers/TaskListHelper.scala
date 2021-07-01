@@ -17,9 +17,10 @@
 package helpers
 
 import com.google.inject.Inject
-import identifiers.beforeYouStart.SchemeNameId
+import identifiers.beforeYouStart.{HaveAnyTrusteesId, SchemeNameId, SchemeTypeId}
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.trustees.individual.TrusteeNameId
+import models.SchemeType
 import play.api.i18n.Messages
 import utils.UserAnswers
 import viewmodels._
@@ -67,16 +68,24 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
       }
     }
 
+  private[helpers] def isAvailableTrusteesSection(userAnswers: UserAnswers) =
+    !userAnswers.get(SchemeTypeId).exists(st=>st == SchemeType.BodyCorporate || st == SchemeType.GroupLifeDeath) ||
+      userAnswers.get(HaveAnyTrusteesId).forall(identity)
+
   private[helpers] def addTrusteeHeader(viewOnly: Boolean)
     (implicit userAnswers: UserAnswers, messages: Messages): Option[TaskListEntitySection] =
     if (userAnswers.allTrusteesAfterDelete.isEmpty && viewOnly) {
       Some(TaskListEntitySection(None, Nil, None, messages("messages__schemeTaskList__sectionTrustees_no_trustees")))
     } else {
-      spokeCreationService.getAddTrusteeHeaderSpokes(userAnswers, viewOnly) match {
-        case Nil =>
-          None
-        case trusteeHeaderSpokes =>
-          Some(TaskListEntitySection(None, trusteeHeaderSpokes, None))
+      if (isAvailableTrusteesSection(userAnswers)) {
+        spokeCreationService.getAddTrusteeHeaderSpokes(userAnswers, viewOnly) match {
+          case Nil =>
+            None
+          case trusteeHeaderSpokes =>
+            Some(TaskListEntitySection(None, trusteeHeaderSpokes, None))
+        }
+      } else {
+        None
       }
     }
 
@@ -105,28 +114,33 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
     }
   }
 
-  protected[helpers] def trusteesSection(implicit userAnswers: UserAnswers, messages: Messages): Seq[TaskListEntitySection] = {
-    userAnswers.allTrustees.flatMap {
-      trustee =>
-        if (trustee.isDeleted)
-          None
-        else
-          trustee.id match {
-            case TrusteeNameId(_) =>
-              Some(
-                TaskListEntitySection(
-                  isCompleted = None,
-                  entities = spokeCreationService.getTrusteeIndividualSpokes(
-                    answers = userAnswers,
-                    name = trustee.name,
-                    index = trustee.index
-                  ),
-                  header = Some(trustee.name)
+  protected[helpers] def trusteesSection(implicit userAnswers: UserAnswers, messages: Messages): Option[Seq[TaskListEntitySection]] = {
+    if (isAvailableTrusteesSection(userAnswers)) {
+      val section = userAnswers.allTrustees.flatMap {
+        trustee =>
+          if (trustee.isDeleted)
+            None
+          else
+            trustee.id match {
+              case TrusteeNameId(_) =>
+                Some(
+                  TaskListEntitySection(
+                    isCompleted = None,
+                    entities = spokeCreationService.getTrusteeIndividualSpokes(
+                      answers = userAnswers,
+                      name = trustee.name,
+                      index = trustee.index
+                    ),
+                    header = Some(trustee.name)
+                  )
                 )
-              )
-            case _ =>
-              throw new RuntimeException("Unknown section id:" + trustee.id)
-          }
+              case _ =>
+                throw new RuntimeException("Unknown section id:" + trustee.id)
+            }
+      }
+      Some(section)
+    } else {
+      None
     }
   }
 

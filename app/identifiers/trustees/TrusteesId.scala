@@ -20,9 +20,11 @@ import identifiers.TypedIdentifier
 import play.api.libs.json._
 
 case class TrusteesId(index: Int) extends TypedIdentifier[Nothing] {
-  override def path: JsPath = __ \ TrusteesId.toString \ index
+  override def path: JsPath = TrusteesId.collectionPath \ index
 }
 
 object TrusteesId {
+  val collectionPath: JsPath = __ \ TrusteesId.toString
+
   override def toString: String = "trustees"
 }

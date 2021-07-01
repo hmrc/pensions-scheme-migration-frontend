@@ -42,7 +42,7 @@ class EstablisherAddressCYAHelper
     val establisherName: String =
       getName(EstablisherNameId(index))
 
-    val s1 = Seq(
+    val seqRowAddressAndYears = Seq(
       answerOrAddRow(
         AddressId(index),
         Message("messages__establisherAddress__whatYouWillNeed_title", establisherName).resolve,
@@ -57,7 +57,7 @@ class EstablisherAddressCYAHelper
       )
     )
 
-    val s2 = if (ua.get(AddressYearsId(index)).contains(true)) {
+    val seqRowPreviousAddress = if (ua.get(AddressYearsId(index)).contains(true)) {
       Nil
     } else {
       Seq(
@@ -70,7 +70,7 @@ class EstablisherAddressCYAHelper
       )
     }
 
-    val rowsWithoutDynamicIndices = s1 ++ s2
+    val rowsWithoutDynamicIndices = seqRowAddressAndYears ++ seqRowPreviousAddress
     rowsWithDynamicIndices(rowsWithoutDynamicIndices)
   }
 }

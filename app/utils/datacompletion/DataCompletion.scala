@@ -18,8 +18,9 @@ package utils.datacompletion
 
 import identifiers._
 import identifiers.aboutMembership.{FutureMembersId, CurrentMembersId}
-import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
+import identifiers.beforeYouStart.{EstablishedCountryId, WorkingKnowledgeId, SchemeTypeId, HaveAnyTrusteesId, SchemeNameId}
 import identifiers.benefitsAndInsurance._
+import models.SchemeType
 import models.benefitsAndInsurance.BenefitsProvisionType.DefinedBenefitsOnly
 import play.api.libs.json.Reads
 import utils.UserAnswers
@@ -34,8 +35,18 @@ trait DataCompletion {
       case (_, false) => false
     })
 
-  def isBeforeYouStartCompleted: Boolean =
-    !List(get(SchemeNameId), get(SchemeTypeId), get(EstablishedCountryId)).contains(None) && get(WorkingKnowledgeId).nonEmpty
+  def isBeforeYouStartCompleted: Boolean = {
+    (get(SchemeTypeId), get(HaveAnyTrusteesId)) match {
+      case (Some(st), None) if st == SchemeType.BodyCorporate || st == SchemeType.GroupLifeDeath => false
+      case _ =>
+        Seq(
+          get(SchemeNameId).isDefined,
+          get(SchemeTypeId).isDefined,
+          get(EstablishedCountryId).isDefined,
+          get(WorkingKnowledgeId).isDefined
+        ).forall(identity)
+    }
+  }
 
   def isMembersCompleted: Option[Boolean] = isComplete(Seq(
     isAnswerComplete(CurrentMembersId),

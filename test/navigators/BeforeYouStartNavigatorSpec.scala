@@ -18,16 +18,19 @@ package navigators
 
 import base.SpecBase
 import controllers.beforeYouStartSpoke.routes._
-import identifiers.Identifier
-import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}
-import models.NormalMode
+import identifiers.{Identifier, TypedIdentifier}
+import identifiers.beforeYouStart.{HaveAnyTrusteesId, SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
+import models.{NormalMode, SchemeType}
 import org.scalatest.prop.TableFor3
+import play.api.libs.json.Writes
 import play.api.mvc.Call
 import utils.UserAnswers
 
 class BeforeYouStartNavigatorSpec
   extends SpecBase
     with NavigatorBehaviour {
+
+  import BeforeYouStartNavigatorSpec._
 
   private val navigator: CompoundNavigator = injector.instanceOf[CompoundNavigator]
 
@@ -36,6 +39,9 @@ class BeforeYouStartNavigatorSpec
       Table(
         ("Id", "UserAnswers", "Next Page"),
         row(SchemeTypeId)(CheckYourAnswersController.onPageLoad()),
+        row(SchemeTypeId)(HaveAnyTrusteesController.onPageLoad(), uaWithValue(SchemeTypeId, SchemeType.BodyCorporate)),
+        row(SchemeTypeId)(HaveAnyTrusteesController.onPageLoad(), uaWithValue(SchemeTypeId, SchemeType.GroupLifeDeath)),
+        row(HaveAnyTrusteesId)(CheckYourAnswersController.onPageLoad()),
         row(EstablishedCountryId)(CheckYourAnswersController.onPageLoad()),
         row(WorkingKnowledgeId)(CheckYourAnswersController.onPageLoad())
       )
@@ -45,3 +51,9 @@ class BeforeYouStartNavigatorSpec
     }
   }
 }
+
+object BeforeYouStartNavigatorSpec {
+  private def uaWithValue[A](idType:TypedIdentifier[A], idValue:A)(implicit writes: Writes[A]) =
+    UserAnswers().set(idType, idValue).toOption
+}
+
