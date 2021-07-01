@@ -38,7 +38,13 @@ trait DataCompletion {
   def isBeforeYouStartCompleted: Boolean = {
     (get(SchemeTypeId), get(HaveAnyTrusteesId)) match {
       case (Some(st), None) if st == SchemeType.BodyCorporate || st == SchemeType.GroupLifeDeath => false
-      case _ => !List(get(SchemeNameId), get(SchemeTypeId), get(EstablishedCountryId)).contains(None) && get(WorkingKnowledgeId).nonEmpty
+      case _ =>
+        Seq(
+          get(SchemeNameId).isDefined,
+          get(SchemeTypeId).isDefined,
+          get(EstablishedCountryId).isDefined,
+          get(WorkingKnowledgeId).isDefined
+        ).forall(identity)
     }
   }
 
