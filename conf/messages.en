@@ -371,6 +371,7 @@ messages__establisher__type_title = What kind of establisher are you adding?
 
 addEstablisher.name.header = Establisher name
 addEstablisher.type.header = Type
+addEstablisher.type.header.hiddenText = Type of establisher
 addEstablisher.hiddenText.removeLink.header = Remove establisher link
 
 messages__error__trustees = trustee’s
