@@ -96,6 +96,15 @@ class DataCompletionSpec extends WordSpec with MustMatchers with OptionValues wi
         answers.isBeforeYouStartCompleted mustBe false
       }
 
+      "return false when all answers are complete except any trustees question where applicable" in {
+        val answers = UserAnswers().set(SchemeNameId, "name").flatMap(
+          _.set(SchemeTypeId, SchemeType.BodyCorporate).flatMap(
+            _.set(EstablishedCountryId, "GB").flatMap(
+              _.set(WorkingKnowledgeId, true)
+            ))).get
+        answers.isBeforeYouStartCompleted mustBe false
+      }
+
     }
 
     "isMembersCompleted" must {
