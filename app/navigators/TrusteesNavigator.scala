@@ -16,13 +16,15 @@
 
 package navigators
 
+import controllers.trustees.individual.address.routes.{SelectAddressController, EnterPreviousPostcodeController, SelectPreviousAddressController}
 import controllers.trustees.individual.routes._
 import controllers.trustees.routes._
 import controllers.routes._
 import identifiers._
+import identifiers.trustees.individual.address.{PreviousAddressId, AddressId, PreviousAddressListId, AddressListId, AddressYearsId, EnterPostCodeId, EnterPreviousPostCodeId}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees._
-import models.Index
+import models.{Index, NormalMode, Mode}
 import models.trustees.TrusteeKind
 import models.requests.DataRequest
 import play.api.mvc.{Call, AnyContent}
@@ -39,12 +41,25 @@ class TrusteesNavigator
     case TrusteeNameId(_) => AddTrusteeController.onPageLoad()
     case AddTrusteeId(value) => addTrusteeRoutes(value, ua)
     case ConfirmDeleteTrusteeId => AddTrusteeController.onPageLoad()
+    case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index)
+    case AddressListId(index) => addressYears(index, NormalMode)
+    case AddressId(index) => addressYears(index, NormalMode)
+    case AddressYearsId(index) =>
+      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else EnterPreviousPostcodeController.onPageLoad(index)
+    case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index)
+    case PreviousAddressListId(index) => cyaAddress(index)
+    case PreviousAddressId(index) => cyaAddress(index)
+
   }
 
   override protected def editRouteMap(ua: UserAnswers)
                                      (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case _ => IndexController.onPageLoad()
   }
+
+
+  private def cyaAddress(index:Int): Call = controllers.trustees.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
+  private def addressYears(index:Int, mode:Mode): Call = controllers.trustees.individual.address.routes.AddressYearsController.onPageLoad(index)
 
   private def trusteeKindRoutes(
                                      index: Index,

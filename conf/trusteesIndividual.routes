@@ -1,2 +1,27 @@
 GET         /:index/individual/name                                                  controllers.trustees.individual.TrusteeNameController.onPageLoad(index:Index)
 POST        /:index/individual/name                                                  controllers.trustees.individual.TrusteeNameController.onSubmit(index:Index)
+
+GET         /:index/individual/addresses/what-you-will-need                          controllers.trustees.individual.address.WhatYouWillNeedController.onPageLoad(index: Index)
+
+GET         /:index/individual/addresses/postcode                                    controllers.trustees.individual.address.EnterPostcodeController.onPageLoad(index: Index)
+POST        /:index/individual/addresses/postcode                                    controllers.trustees.individual.address.EnterPostcodeController.onSubmit(index: Index)
+
+GET         /:index/individual/addresses/address-results                             controllers.trustees.individual.address.SelectAddressController.onPageLoad(index: Index)
+POST        /:index/individual/addresses/address-results                             controllers.trustees.individual.address.SelectAddressController.onSubmit(index: Index)
+
+GET         /:index/individual/addresses/address-manual                              controllers.trustees.individual.address.ConfirmAddressController.onPageLoad(index: Index)
+POST        /:index/individual/addresses/address-manual                              controllers.trustees.individual.address.ConfirmAddressController.onSubmit(index: Index)
+
+GET         /:index/individual/addresses/check-your-answers                          controllers.trustees.individual.address.CheckYourAnswersController.onPageLoad(index: Index)
+
+GET         /:index/individual/addresses/address-years                              controllers.trustees.individual.address.AddressYearsController.onPageLoad(index: Index)
+POST        /:index/individual/addresses/address-years                              controllers.trustees.individual.address.AddressYearsController.onSubmit(index: Index)
+
+GET         /:index/individual/addresses/address-previous                           controllers.trustees.individual.address.EnterPreviousPostcodeController.onPageLoad(index: Index)
+POST        /:index/individual/addresses/address-previous                           controllers.trustees.individual.address.EnterPreviousPostcodeController.onSubmit(index: Index)
+
+GET         /:index/individual/addresses/address-previous-results                   controllers.trustees.individual.address.SelectPreviousAddressController.onPageLoad(index: Index)
+POST        /:index/individual/addresses/address-previous-results                   controllers.trustees.individual.address.SelectPreviousAddressController.onSubmit(index: Index)
+
+GET         /:index/individual/addresses/address-previous-manual                    controllers.trustees.individual.address.ConfirmPreviousAddressController.onPageLoad(index: Index)
+POST        /:index/individual/addresses/address-previous-manual                    controllers.trustees.individual.address.ConfirmPreviousAddressController.onSubmit(index: Index)
