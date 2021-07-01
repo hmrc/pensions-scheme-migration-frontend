@@ -38,3 +38,4 @@ POST        /:index/individual/reason-for-no-unique-taxpayer-reference          
 GET         /:index/individual/change/reason-for-no-unique-taxpayer-reference        controllers.trustees.individual.details.TrusteeNoUTRReasonController.onPageLoad(index: Index, mode: Mode = CheckMode)
 POST        /:index/individual/change/reason-for-no-unique-taxpayer-reference        controllers.trustees.individual.details.TrusteeNoUTRReasonController.onSubmit(index: Index, mode: Mode = CheckMode)
 
+GET         /:index/individual/check-your-answers                                    controllers.trustees.individual.details.CheckYourAnswersController.onPageLoad(index: Index)

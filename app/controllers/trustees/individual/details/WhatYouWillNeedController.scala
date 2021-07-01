@@ -18,10 +18,8 @@ package controllers.trustees.individual.details
 
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import controllers.establishers.individual.details.routes._
 import helpers.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.individual.EstablisherNameId
 import identifiers.trustees.individual.TrusteeNameId
 import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -56,7 +54,7 @@ class WhatYouWillNeedController @Inject()(
               template = "establishers/individual/details/whatYouWillNeed.njk",
               ctx = Json.obj(
                 "name"        -> personName.fullName,
-                "continueUrl" -> EstablisherDOBController.onPageLoad(index, NormalMode).url, //TODO update
+                "continueUrl" -> routes.TrusteeDOBController.onPageLoad(index, NormalMode).url,
                 "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )
             ).map(Ok(_))

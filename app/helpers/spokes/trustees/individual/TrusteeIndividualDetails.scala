@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package helpers.spokes.establishers.individual
+package helpers.spokes.trustees.individual
 
-import controllers.establishers.individual.details.routes._
+import controllers.trustees.individual.details.routes._
 import helpers.spokes.Spoke
 import models.{Index, TaskListLink}
 import play.api.i18n.Messages
 import utils.UserAnswers
 
 
-case class EstablisherIndividualDetails(
+case class TrusteeIndividualDetails(
                                          index: Index,
                                          answers: UserAnswers
                                        ) extends Spoke {
@@ -44,6 +44,6 @@ case class EstablisherIndividualDetails(
     )
 
   override def completeFlag(answers: UserAnswers): Option[Boolean] =
-    Some(answers.isEstablisherIndividualDetailsCompleted(index))
+    Some(answers.isTrusteeIndividualDetailsCompleted(index))
 }
 

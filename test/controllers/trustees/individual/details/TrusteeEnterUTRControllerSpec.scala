@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.establishers.individual.details
+package controllers.trustees.individual.details
 
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.UTRFormProvider
-import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.details.EstablisherUTRId
+import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.individual.details.TrusteeUTRId
 import matchers.JsonMatchers
 import models.{NormalMode, PersonName, ReferenceValue}
 import org.mockito.ArgumentCaptor
@@ -47,18 +47,18 @@ class TrusteeEnterUTRControllerSpec
     with TryValues
     with BeforeAndAfterEach {
 
-  private val personName: PersonName =
-    PersonName("Jane", "Doe")
-  private val formProvider: UTRFormProvider =
-    new UTRFormProvider()
-  private val form: Form[ReferenceValue] =
-    formProvider()
-  private val onwardRoute: Call =
-    controllers.routes.IndexController.onPageLoad()
-  private val userAnswers: UserAnswers =
-    ua.set(EstablisherNameId(0), personName).success.value
-  private val templateToBeRendered: String =
-    "enterReferenceValue.njk"
+  private val personName: PersonName = PersonName("Jane", "Doe")
+
+  private val formProvider: UTRFormProvider = new UTRFormProvider()
+
+  private val form: Form[ReferenceValue] = formProvider()
+
+  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+
+  private val userAnswers: UserAnswers = ua.set(TrusteeNameId(0), personName).success.value
+
+  private val templateToBeRendered: String = "enterReferenceValue.njk"
+
   private val commonJson: JsObject =
     Json.obj(
       "pageTitle"     -> "What is the individual’s UTR?",
@@ -71,8 +71,8 @@ class TrusteeEnterUTRControllerSpec
       ),
       "isPageHeading" -> false
     )
-  private val formData: ReferenceValue =
-    ReferenceValue(value = "1234567890")
+
+  private val formData: ReferenceValue = ReferenceValue(value = "1234567890")
 
   override def beforeEach: Unit = {
     reset(
@@ -83,8 +83,8 @@ class TrusteeEnterUTRControllerSpec
 
   private def controller(
                           dataRetrievalAction: DataRetrievalAction
-                        ): EstablisherEnterUTRController =
-    new EstablisherEnterUTRController(
+                        ): TrusteeEnterUTRController =
+    new TrusteeEnterUTRController(
       messagesApi               = messagesApi,
       navigator                 = new FakeNavigator(desiredRoute = onwardRoute),
       authenticate              = new FakeAuthAction(),
@@ -96,41 +96,33 @@ class TrusteeEnterUTRControllerSpec
       renderer                  = new Renderer(mockAppConfig, mockRenderer)
     )
 
-  "EstablisherEnterUTRController" must {
+  "TrusteeEnterUTRController" must {
     "return OK and the correct view for a GET" in {
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
-      val result: Future[Result] =
-        controller(getData)
-          .onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
+      val result: Future[Result] = controller(getData).onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       templateCaptor.getValue mustEqual templateToBeRendered
 
-      val json: JsObject =
-        Json.obj("form" -> form)
+      val json: JsObject = Json.obj("form" -> form)
 
       jsonCaptor.getValue must containJson(commonJson ++ json)
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
+      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val ua =
-        userAnswers
-          .set(EstablisherUTRId(0), formData).success.value
+      val ua = userAnswers.set(TrusteeUTRId(0), formData).success.value
 
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
 
@@ -138,19 +130,15 @@ class TrusteeEnterUTRControllerSpec
 
       val getData = new FakeDataRetrievalAction(Some(ua))
 
-      val result: Future[Result] =
-        controller(getData)
-          .onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
+      val result: Future[Result] = controller(getData).onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       templateCaptor.getValue mustEqual templateToBeRendered
 
-      val json: JsObject =
-        Json.obj("form" -> form.fill(formData))
+      val json: JsObject = Json.obj("form" -> form.fill(formData))
 
       jsonCaptor.getValue must containJson(commonJson ++ json)
     }
@@ -160,14 +148,11 @@ class TrusteeEnterUTRControllerSpec
         .thenReturn(Future.successful(Json.obj()))
 
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
-        fakeRequest
-          .withFormUrlEncodedBody("value" -> "1234567890")
+        fakeRequest.withFormUrlEncodedBody("value" -> "1234567890")
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
-      val result: Future[Result] =
-        controller(getData)
-          .onSubmit(0, NormalMode)(request)
+      val result: Future[Result] = controller(getData).onSubmit(0, NormalMode)(request)
 
       status(result) mustBe SEE_OTHER
 
@@ -178,12 +163,10 @@ class TrusteeEnterUTRControllerSpec
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
+      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
-        fakeRequest
-          .withFormUrlEncodedBody("value" -> "invalid value")
+        fakeRequest.withFormUrlEncodedBody("value" -> "invalid value")
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
@@ -191,21 +174,17 @@ class TrusteeEnterUTRControllerSpec
 
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
 
-      val result: Future[Result] =
-        controller(getData)
-          .onSubmit(0, NormalMode)(request)
+      val result: Future[Result] = controller(getData).onSubmit(0, NormalMode)(request)
 
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
       status(result) mustBe BAD_REQUEST
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       templateCaptor.getValue mustEqual templateToBeRendered
 
-      val json: JsObject =
-        Json.obj("form" -> Json.toJson(boundForm))
+      val json: JsObject = Json.obj("form" -> Json.toJson(boundForm))
 
       jsonCaptor.getValue must containJson(commonJson ++ json)
 

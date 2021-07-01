@@ -98,7 +98,7 @@ class EstablishersNavigator
     value match {
       case Some(false) => TaskListController.onPageLoad()
       case Some(true) => EstablisherKindController.onPageLoad(answers.establishersCount)
-      case None => IndexController.onPageLoad()
+      case None => controllers.routes.TaskListController.onPageLoad()
     }
 
   private def establisherHasNino(
@@ -109,7 +109,7 @@ class EstablishersNavigator
     answers.get(EstablisherHasNINOId(index)) match {
       case Some(true) => EstablisherEnterNINOController.onPageLoad(index, mode)
       case Some(false) => EstablisherNoNINOReasonController.onPageLoad(index, mode)
-      case None => IndexController.onPageLoad()
+      case None => controllers.routes.TaskListController.onPageLoad()
     }
 
   private def establisherHasUtr(
@@ -120,6 +120,6 @@ class EstablishersNavigator
     answers.get(EstablisherHasUTRId(index)) match {
       case Some(true) => EstablisherEnterUTRController.onPageLoad(index, mode)
       case Some(false) => EstablisherNoUTRReasonController.onPageLoad(index, mode)
-      case None => IndexController.onPageLoad()
+      case None => controllers.routes.TaskListController.onPageLoad()
     }
 }
