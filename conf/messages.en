@@ -169,6 +169,7 @@ messages__schemeTaskList__establisherIndividualContactDetails_addLink = Add cont
 messages__schemeTaskList__establisherIndividualAddress_changeLink = Change address for {0}
 messages__schemeTaskList__establisherIndividualContactDetails_changeLink = Change contact details for {0}
 
+
 messages__individual = the individual
 messages__dob__title = What is {0}’s date of birth?
 messages__dob__h1 = What is the date of birth for {0}?
@@ -411,10 +412,10 @@ messages__establisherAddress__whatYouWillNeed_p = You will need to tell us {0}�
 messages__establisherAddress__whatYouWillNeed_li_1 = current address
 messages__establisherAddress__whatYouWillNeed_li_2 = previous address if {0} has used the current address for less than 1 year
 
-messages__establisherContactDetails__whatYouWillNeed_title = Contact details for {0}
-messages__establisherContactDetails__whatYouWillNeed_p = You will need to tell us {0}’s:
-messages__establisherContactDetails__whatYouWillNeed_li_1 = contact email address
-messages__establisherContactDetails__whatYouWillNeed_li_2 = contact phone number
+messages__individualContactDetails__whatYouWillNeed_title = Contact details for {0}
+messages__individualContactDetails__whatYouWillNeed_p = You will need to tell us {0}’s:
+messages__individualContactDetails__whatYouWillNeed_li_1 = contact email address
+messages__individualContactDetails__whatYouWillNeed_li_2 = contact phone number
 
 messages__establisherPreviousAddress = Previous address
 previousAddress.title = What was the previous address for {0}?
@@ -444,6 +445,9 @@ messages__enterPhone__error_required = Enter phone number for {0}
 messages__enterPhone__error_invalid = Enter a phone number in the correct format
 messages__enterPhone = What is the phone number for {0}?
 messages__enterPhone__cya__visuallyHidden = the phone number for {0}
+
+messages__schemeTaskList__trusteeIndividualContactDetails_addLink = Add contact details for {0}
+messages__schemeTaskList__trusteeIndividualContactDetails_changeLink = Change contact details for {0}
 
 country.AD = Andorra
 country.AE = United Arab Emirates
