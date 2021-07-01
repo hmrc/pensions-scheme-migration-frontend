@@ -45,7 +45,7 @@ class EstablisherAddressCYAHelper
     val seqRowAddressAndYears = Seq(
       answerOrAddRow(
         AddressId(index),
-        Message("messages__establisherAddress__whatYouWillNeed_title", establisherName).resolve,
+        Message("messages__establisherAddress__whatYouWillNeed_h1", establisherName).resolve,
         Some(controllers.establishers.individual.address.routes.EnterPostcodeController.onPageLoad(index).url),
         Some(msg"messages__visuallyHidden__address".withArgs(establisherName)), answerAddressTransform
       ),

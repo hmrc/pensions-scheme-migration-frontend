@@ -45,7 +45,7 @@ class TrusteeAddressCYAHelper
     val seqRowAddressAndYears = Seq(
       answerOrAddRow(
         AddressId(index),
-        Message("messages__trusteeAddress__whatYouWillNeed_title", trusteeName).resolve,
+        Message("messages__trusteeAddress__whatYouWillNeed_h1", trusteeName).resolve,
         Some(controllers.trustees.individual.address.routes.EnterPostcodeController.onPageLoad(index).url),
         Some(msg"messages__visuallyHidden__address".withArgs(trusteeName)), answerAddressTransform
       ),
