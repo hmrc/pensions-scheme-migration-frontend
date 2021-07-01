@@ -720,3 +720,5 @@ messages__error__trustee = trustee’s
 haveAnyTrustees.h1 = Does {0} have any trustees?
 haveAnyTrustees.error.required = Select yes if the pension scheme has trustees
 messages__visuallyhidden__haveAnyTrustees = if {0} has any trustees
+
+messages__confirmDeleteTrustee__title = Are you sure you want to delete this trustee?
