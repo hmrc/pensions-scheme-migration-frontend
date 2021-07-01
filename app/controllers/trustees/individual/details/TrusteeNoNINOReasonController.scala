@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package controllers.establishers.individual.details
+package controllers.trustees.individual.details
 
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ReasonController
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.ReasonFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.details.EstablisherNoNINOReasonId
+import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.individual.details.TrusteeNoNINOReasonId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import navigators.CompoundNavigator
@@ -35,7 +35,7 @@ import viewmodels.Message
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class EstablisherNoNINOReasonController @Inject()(
+class TrusteeNoNINOReasonController @Inject()(
                                                    override val messagesApi: MessagesApi,
                                                    val navigator: CompoundNavigator,
                                                    authenticate: AuthAction,
@@ -52,8 +52,8 @@ class EstablisherNoNINOReasonController @Inject()(
                   (implicit request: DataRequest[AnyContent]): String =
     request
       .userAnswers
-      .get(EstablisherNameId(index))
-      .fold(Message("messages__establisher"))(_.fullName)
+      .get(TrusteeNameId(index))
+      .fold(Message("messages__trustee"))(_.fullName)
 
   private def form(index: Index)
                   (implicit request: DataRequest[AnyContent]): Form[String] =
@@ -68,7 +68,7 @@ class EstablisherNoNINOReasonController @Inject()(
               pageTitle     = Message("messages__whyNoNINO", Message("messages__individual")),
               pageHeading     = Message("messages__whyNoNINO", name(index)),
               isPageHeading = true,
-              id            = EstablisherNoNINOReasonId(index),
+              id            = TrusteeNoNINOReasonId(index),
               form          = form(index),
               schemeName    = schemeName
             )
@@ -84,7 +84,7 @@ class EstablisherNoNINOReasonController @Inject()(
                 pageTitle     = Message("messages__whyNoNINO", Message("messages__individual")),
                 pageHeading     = Message("messages__whyNoNINO", name(index)),
                 isPageHeading = true,
-                id            = EstablisherNoNINOReasonId(index),
+                id            = TrusteeNoNINOReasonId(index),
                 form          = form(index),
                 schemeName    = schemeName,
                 mode          = mode

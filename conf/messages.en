@@ -170,6 +170,8 @@ messages__schemeTaskList__establisherIndividualAddress_changeLink = Change addre
 messages__schemeTaskList__establisherIndividualContactDetails_changeLink = Change contact details for {0}
 
 messages__individual = the individual
+messages__establisher = the establisher
+messages__trustee = the trustee
 messages__dob__title = What is {0}’s date of birth?
 messages__dob__h1 = What is the date of birth for {0}?
 messages__dob__cya__visuallyHidden = the date of birth for {0}

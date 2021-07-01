@@ -40,7 +40,7 @@ import utils.{FakeNavigator, UserAnswers}
 
 import scala.concurrent.Future
 
-class EstablisherEnterUTRControllerSpec
+class TrusteeEnterUTRControllerSpec
   extends ControllerSpecBase
     with NunjucksSupport
     with JsonMatchers
