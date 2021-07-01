@@ -84,19 +84,23 @@ trait DateOfBirthController
                     )(implicit request: DataRequest[AnyContent]): Future[Result] =
 
     form.bindFromRequest().fold(
-      formWithErrors =>
+      formWithErrors => {
+        val formWithErrorsDayIdCorrection = formWithErrors.copy(
+          errors = formWithErrors.errors map { e => if (e.key == "date.day") e.copy(key = "date") else e }
+        )
         personNameId.retrieve.right.map {
           personName =>
             renderer.render(
               template = "dob.njk",
               ctx = Json.obj(
-                "form"       -> formWithErrors,
-                "date"       -> DateInput.localDate(formWithErrors("date")),
+                "form"       -> formWithErrorsDayIdCorrection,
+                "date"       -> DateInput.localDate(formWithErrorsDayIdCorrection("date")),
                 "name"       -> personName.fullName,
                 "schemeName" -> schemeName
               )
             ).map(BadRequest(_))
-        },
+        }
+      },
       value =>
         for {
           updatedAnswers <- Future.fromTry(request.userAnswers.set(dobId, value))
