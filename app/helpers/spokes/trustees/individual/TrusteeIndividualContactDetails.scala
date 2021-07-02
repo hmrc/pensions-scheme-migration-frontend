@@ -30,7 +30,7 @@ index: Index,
   val messageKeyPrefix = "messages__schemeTaskList__trusteeIndividualContactDetails_"
   val linkKeyAndRoute: (String, String) = {
     if (completeFlag(answers).getOrElse(false))
-      (s"${messageKeyPrefix}changeLink", WhatYouWillNeedController.onPageLoad(index).url)
+      (s"${messageKeyPrefix}changeLink", CheckYourAnswersController.onPageLoad(index).url)
     else
       (s"${messageKeyPrefix}addLink", WhatYouWillNeedController.onPageLoad(index).url)
   }
@@ -43,6 +43,6 @@ index: Index,
     )
 
   override def completeFlag(answers: UserAnswers): Option[Boolean] =
-    answers.isTrusteeIndividualContactDetailsCompleted
+    answers.isTrusteeIndividualContactDetailsCompleted(index)
 }
 

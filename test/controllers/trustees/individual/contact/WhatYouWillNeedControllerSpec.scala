@@ -20,7 +20,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.trustees.individual.TrusteeNameId
 import matchers.JsonMatchers
-import models.PersonName
+import models.{NormalMode, PersonName}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -48,7 +48,7 @@ class WhatYouWillNeedControllerSpec
   private def json: JsObject =
     Json.obj(
       "name"        -> personName.fullName,
-      "continueUrl" -> "/wipUrl",
+      "continueUrl" -> controllers.trustees.individual.contact.routes.EnterEmailController.onPageLoad(0, NormalMode).url,
       "schemeName"  -> schemeName
     )
 

@@ -21,13 +21,14 @@ import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import helpers.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.individual.TrusteeNameId
-import models.Index
+import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import controllers.trustees.individual.contact.routes.EnterEmailController
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -54,7 +55,7 @@ class WhatYouWillNeedController @Inject()(
               template = "trustees/individual/contact/whatYouWillNeed.njk",
               ctx = Json.obj(
                 "name"        -> personName.fullName,
-                "continueUrl" -> "/wipUrl",
+                "continueUrl" -> EnterEmailController.onPageLoad(index, NormalMode).url,
                 "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )
             ).map(Ok(_))
