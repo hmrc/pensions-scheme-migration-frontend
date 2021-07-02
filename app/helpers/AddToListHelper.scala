@@ -48,9 +48,9 @@ class AddToListHelper {
         s"""<span aria-hidden=true>${
           messages("addEstablisher.type.header")
         }</span>""" +
-        s"""<span class=govuk-visually-hidden>${
-          messages("addEstablisher.type.header.hiddenText")
-        }</span>"""
+          s"""<span class=govuk-visually-hidden>${
+            messages("addEstablisher.type.header.hiddenText")
+          }</span>"""
       )
     Seq(
       Cell(msg"addEstablisher.name.header"),
@@ -77,9 +77,19 @@ class AddToListHelper {
         ))
       )
 
+    val typeHeader: Html =
+      Html(
+        s"""<span aria-hidden=true>${
+          messages("addTrustee.type.header")
+        }</span>""" +
+          s"""<span class=govuk-visually-hidden>${
+            messages("addTrustee.type.header.hiddenText")
+          }</span>"""
+      )
+
     Seq(
       Cell(msg"addTrustee.name.header"),
-      Cell(msg"addTrustee.type.header")
+      Cell(typeHeader)
     ) ++ (if (trustees.size > 1) linkHeader else Nil)
   }
 
