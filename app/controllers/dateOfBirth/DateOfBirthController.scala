@@ -29,7 +29,7 @@ import play.api.mvc.{AnyContent, Result}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.DateInput
+import uk.gov.hmrc.viewmodels.DateInput
 
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
@@ -85,18 +85,24 @@ trait DateOfBirthController
 
     form.bindFromRequest().fold(
       formWithErrors => {
+        // This is to get round Nunjucks issue whereby clicking error message relating to day field
+        // was not going to the correct input field.
+        val formWithErrorsDayIdCorrection = formWithErrors.copy(
+          errors = formWithErrors.errors map { e => if (e.key == "date.day") e.copy(key = "date") else e }
+        )
         personNameId.retrieve.right.map {
           personName =>
             renderer.render(
               template = "dob.njk",
               ctx = Json.obj(
-                "form"       -> formWithErrors,
-                "date"       -> DateInput.localDate(formWithErrors("date")),
+                "form"       -> formWithErrorsDayIdCorrection,
+                "date"       -> DateInput.localDate(formWithErrorsDayIdCorrection("date")),
                 "name"       -> personName.fullName,
                 "schemeName" -> schemeName
               )
             ).map(BadRequest(_))
-        }},
+        }
+      },
       value =>
         for {
           updatedAnswers <- Future.fromTry(request.userAnswers.set(dobId, value))
