@@ -56,7 +56,8 @@ class EnterPhoneControllerSpec extends ControllerSpecBase
 
   private val commonJson: JsObject =
     Json.obj(
-      "pageTitle" -> Messages("messages__enterPhone", personName.fullName),
+      "entityName" -> personName.fullName,
+      "entityType" -> Messages("messages__individual"),
       "schemeName" -> Data.schemeName,
       "isPageHeading" -> false
     )
