@@ -63,7 +63,8 @@ class EnterPhoneController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             get(
-              pageTitle = Messages("messages__enterPhone", name(index)),
+              entityName = name(index),
+              entityType = Messages("messages__individual"),
               isPageHeading = false,
               id = EnterPhoneId(index),
               form = form(index),
@@ -80,7 +81,8 @@ class EnterPhoneController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             post(
-              pageTitle = Messages("messages__enterPhone", name(index)),
+              entityName = name(index),
+              entityType = Messages("messages__individual"),
               isPageHeading = false,
               id = EnterPhoneId(index),
               form = form(index),
