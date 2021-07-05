@@ -46,7 +46,8 @@ class TrusteeDetailsCYAHelper
         id                 = TrusteeDOBId(index),
         message            = Message("messages__dob__title", trusteeName).resolve,
         url                = Some(routes.TrusteeDOBController.onPageLoad(index, CheckMode).url),
-        visuallyHiddenText = Some(msg"messages__dob__cya__visuallyHidden".withArgs(trusteeName))
+        visuallyHiddenText = Some(msg"messages__dob__cya__visuallyHidden".withArgs(trusteeName)),
+        answerTransform = answerDateTransform
       )),
       Some(answerOrAddRow(
         id                 = TrusteeHasNINOId(index),
