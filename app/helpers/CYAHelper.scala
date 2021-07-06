@@ -27,6 +27,9 @@ import uk.gov.hmrc.viewmodels.{Content, Html, MessageInterpolators, SummaryList,
 import utils.UserAnswers
 import viewmodels.Message
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 trait CYAHelper {
 
   private def addrLineToHtml(l: String): String =
@@ -48,6 +51,7 @@ trait CYAHelper {
   protected val answerBenefitsProvisionTypeTransform: Option[BenefitsProvisionType => Text] = Some(opt => msg"howProvideBenefits.${opt.toString}")
   protected val answerBenefitsTypeTransform: Option[BenefitsType => Text] = Some(opt => msg"benefitsType.${opt.toString}")
   protected val referenceValueTransform: Option[ReferenceValue => Text] = Some(opt => msg"${opt.value}")
+  protected val answerDateTransform: Option[LocalDate => Text] = Some(date => lit"${date.format(DateTimeFormatter.ofPattern("d-M-yyyy"))}")
   protected def answerAddressTransform(implicit messages: Messages): Option[Address => Html] = Some(opt => addressAnswer(opt))
 
   def rows(viewOnly: Boolean, rows: Seq[SummaryList.Row]): Seq[SummaryList.Row] =

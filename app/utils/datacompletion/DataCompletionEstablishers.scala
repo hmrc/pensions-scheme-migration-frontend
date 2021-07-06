@@ -35,31 +35,14 @@ trait DataCompletionEstablishers extends DataCompletion {
       )
     ).getOrElse(false)
 
-  def isEstablisherIndividualDetailsCompleted(
-                                               index: Int,
-                                               userAnswers: UserAnswers
-                                             ): Boolean = {
-    val answerOrReasonNINOId: Boolean =
-      userAnswers.get(EstablisherHasNINOId(index)).getOrElse(false)
-    val answerOrReasonUTRId: Boolean =
-      userAnswers.get(EstablisherHasUTRId(index)).getOrElse(false)
-
+  def isEstablisherIndividualDetailsCompleted(index: Int): Boolean =
     isComplete(
       Seq(
         isAnswerComplete(EstablisherDOBId(index)),
-        isAnswerComplete(EstablisherHasNINOId(index)),
-        if (answerOrReasonNINOId)
-          isAnswerComplete(EstablisherNINOId(index))
-        else
-          isAnswerComplete(EstablisherNoNINOReasonId(index)),
-        isAnswerComplete(EstablisherHasUTRId(index)),
-        if (answerOrReasonUTRId)
-          isAnswerComplete(EstablisherUTRId(index))
-        else
-          isAnswerComplete(EstablisherNoUTRReasonId(index))
+        isAnswerComplete(EstablisherHasNINOId(index), EstablisherNINOId(index), Some(EstablisherNoNINOReasonId(index))),
+        isAnswerComplete(EstablisherHasUTRId(index), EstablisherUTRId(index), Some(EstablisherNoUTRReasonId(index)))
       )
     ).getOrElse(false)
-  }
 
   def isEstablisherIndividualAddressCompleted(
     index: Int,

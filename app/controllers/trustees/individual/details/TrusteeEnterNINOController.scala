@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package controllers.establishers.individual.details
+package controllers.trustees.individual.details
 
 import connectors.cache.UserAnswersCacheConnector
-import controllers.HasReferenceValueController
+import controllers.EnterReferenceValueController
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import forms.HasReferenceNumberFormProvider
+import forms.NINOFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.details.EstablisherHasNINOId
+import identifiers.establishers.individual.details.EstablisherNINOId
+import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.individual.details.TrusteeNINOId
 import models.requests.DataRequest
-import models.{Index, Mode}
+import models.{Index, Mode, ReferenceValue}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -35,46 +37,43 @@ import viewmodels.Message
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class EstablisherHasNINOController @Inject()(
-                                              override val messagesApi: MessagesApi,
-                                              val navigator: CompoundNavigator,
-                                              authenticate: AuthAction,
-                                              getData: DataRetrievalAction,
-                                              requireData: DataRequiredAction,
-                                              formProvider: HasReferenceNumberFormProvider,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                              val renderer: Renderer
-                                            )(implicit val executionContext: ExecutionContext)
-  extends HasReferenceValueController {
+class TrusteeEnterNINOController @Inject()(
+                                                override val messagesApi: MessagesApi,
+                                                val navigator: CompoundNavigator,
+                                                authenticate: AuthAction,
+                                                getData: DataRetrievalAction,
+                                                requireData: DataRequiredAction,
+                                                formProvider: NINOFormProvider,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                val userAnswersCacheConnector: UserAnswersCacheConnector,
+                                                val renderer: Renderer
+                                              )(implicit val executionContext: ExecutionContext)
+  extends EnterReferenceValueController {
 
   private def name(index: Index)
                   (implicit request: DataRequest[AnyContent]): String =
     request
       .userAnswers
-      .get(EstablisherNameId(index))
-      .fold(Message("messages__establisher"))(_.fullName)
+      .get(TrusteeNameId(index))
+      .fold(Message("messages__trustee"))(_.fullName)
 
   private def form(index: Index)
-                  (implicit request: DataRequest[AnyContent]): Form[Boolean] = {
-    formProvider(
-      errorMsg = Message("messages__genericHasNino__error__required", name(index))
-    )
-  }
+                  (implicit request: DataRequest[AnyContent]): Form[ReferenceValue] =
+    formProvider(name(index))
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-
         SchemeNameId.retrieve.right.map {
           schemeName =>
             get(
-              pageTitle     = Message("messages__hasNINO", Message("messages__individual")),
-              pageHeading     = Message("messages__hasNINO", name(index)),
+              pageTitle     = Message("messages__enterNINO_title", Message("messages__individual")),
+              pageHeading     = Message("messages__enterNINO", name(index)),
               isPageHeading = true,
-              id            = EstablisherHasNINOId(index),
+              id            = TrusteeNINOId(index),
               form          = form(index),
               schemeName    = schemeName,
+              hintText      = Some(Message("messages__enterNINO__hint")),
               legendClass   = "govuk-label--xl"
             )
         }
@@ -86,12 +85,13 @@ class EstablisherHasNINOController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             post(
-              pageTitle     = Message("messages__hasNINO", Message("messages__individual")),
-              pageHeading     = Message("messages__hasNINO", name(index)),
+              pageTitle     = Message("messages__enterNINO_title", Message("messages__individual")),
+              pageHeading     = Message("messages__enterNINO", name(index)),
               isPageHeading = true,
-              id            = EstablisherHasNINOId(index),
+              id            = TrusteeNINOId(index),
               form          = form(index),
               schemeName    = schemeName,
+              hintText      = Some(Message("messages__enterNINO__hint")),
               legendClass   = "govuk-label--xl",
               mode          = mode
             )
