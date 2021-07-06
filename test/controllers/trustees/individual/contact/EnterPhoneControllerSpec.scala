@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.establishers.individual.contact
+package controllers.trustees.individual.contact
 
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.PhoneFormProvider
-import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.contact.EnterPhoneId
+import identifiers.trustees.individual.contact.EnterPhoneId
+import identifiers.trustees.individual.TrusteeNameId
 import matchers.JsonMatchers
 import models.{NormalMode, PersonName}
 import org.mockito.ArgumentCaptor
@@ -51,7 +51,7 @@ class EnterPhoneControllerSpec extends ControllerSpecBase
   private val formProvider: PhoneFormProvider = new PhoneFormProvider()
   private val form = formProvider("")
   private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
-  private val userAnswers: UserAnswers = ua.set(EstablisherNameId(0), personName).success.value
+  private val userAnswers: UserAnswers = ua.set(TrusteeNameId(0), personName).success.value
   private val templateToBeRendered: String = "phone.njk"
 
   private val commonJson: JsObject =

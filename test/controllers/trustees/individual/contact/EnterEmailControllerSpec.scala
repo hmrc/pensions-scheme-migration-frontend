@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.establishers.individual.contact
+package controllers.trustees.individual.contact
 
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
-import forms.PhoneFormProvider
-import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.contact.EnterPhoneId
+import forms.EmailFormProvider
+import identifiers.trustees.individual.contact.EnterEmailId
+import identifiers.trustees.individual.TrusteeNameId
 import matchers.JsonMatchers
 import models.{NormalMode, PersonName}
 import org.mockito.ArgumentCaptor
@@ -40,19 +40,19 @@ import utils.{Data, FakeNavigator, UserAnswers}
 
 import scala.concurrent.Future
 
-class EnterPhoneControllerSpec extends ControllerSpecBase
+class EnterEmailControllerSpec extends ControllerSpecBase
   with NunjucksSupport
   with JsonMatchers
   with TryValues
   with BeforeAndAfterEach {
 
   private val personName: PersonName = PersonName("Jane", "Doe")
-  private val phone = "777"
-  private val formProvider: PhoneFormProvider = new PhoneFormProvider()
+  private val email = "test@test.com"
+  private val formProvider: EmailFormProvider = new EmailFormProvider()
   private val form = formProvider("")
   private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
-  private val userAnswers: UserAnswers = ua.set(EstablisherNameId(0), personName).success.value
-  private val templateToBeRendered: String = "phone.njk"
+  private val userAnswers: UserAnswers = ua.set(TrusteeNameId(0), personName).success.value
+  private val templateToBeRendered: String = "email.njk"
 
   private val commonJson: JsObject =
     Json.obj(
@@ -61,7 +61,7 @@ class EnterPhoneControllerSpec extends ControllerSpecBase
       "schemeName" -> Data.schemeName,
       "isPageHeading" -> false
     )
-  private val formData: String = phone
+  private val formData: String = email
 
   override def beforeEach: Unit = {
     reset(
@@ -73,8 +73,8 @@ class EnterPhoneControllerSpec extends ControllerSpecBase
 
   private def controller(
                           dataRetrievalAction: DataRetrievalAction
-                        ): EnterPhoneController =
-    new EnterPhoneController(
+                        ): EnterEmailController =
+    new EnterEmailController(
       messagesApi = messagesApi,
       navigator = new FakeNavigator(desiredRoute = onwardRoute),
       authenticate = new FakeAuthAction(),
@@ -89,7 +89,7 @@ class EnterPhoneControllerSpec extends ControllerSpecBase
   private val templateCaptor = ArgumentCaptor.forClass(classOf[String])
   private val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
-  "EnterPhoneController" must {
+  "EnterEmailController" must {
     "return OK and the correct view for a GET" in {
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
@@ -104,7 +104,7 @@ class EnterPhoneControllerSpec extends ControllerSpecBase
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val ua = userAnswers.set(EnterPhoneId(0), formData).success.value
+      val ua = userAnswers.set(EnterEmailId(0), formData).success.value
       val getData = new FakeDataRetrievalAction(Some(ua))
 
       val result: Future[Result] =
@@ -121,7 +121,7 @@ class EnterPhoneControllerSpec extends ControllerSpecBase
 
     "redirect to the next page when valid data is submitted" in {
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-      val request: FakeRequest[AnyContentAsFormUrlEncoded] = fakeRequest.withFormUrlEncodedBody("value" -> phone)
+      val request: FakeRequest[AnyContentAsFormUrlEncoded] = fakeRequest.withFormUrlEncodedBody("value" -> email)
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
       val result: Future[Result] = controller(getData).onSubmit(0, NormalMode)(request)

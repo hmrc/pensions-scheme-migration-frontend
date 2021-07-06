@@ -23,8 +23,10 @@ import identifiers.Identifier
 import identifiers.trustees.TrusteeKindId
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.details._
+import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import models.trustees.TrusteeKind
 import models._
+import models.{Index, Mode, NormalMode, PersonName}
 import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
 import play.api.mvc.Call
@@ -32,6 +34,7 @@ import utils.Data.ua
 import utils.{Enumerable, UserAnswers}
 
 import java.time.LocalDate
+import utils.{Enumerable, UserAnswers}
 
 class TrusteesNavigatorSpec
   extends SpecBase
@@ -42,7 +45,10 @@ class TrusteesNavigatorSpec
   private val navigator: CompoundNavigator = injector.instanceOf[CompoundNavigator]
   private val index: Index = Index(0)
   private val uaWithTrusteeKind: TrusteeKind => UserAnswers = kind => UserAnswers().set(TrusteeKindId(index), kind).get
+  private val indvDetailsUa: UserAnswers = uaWithTrusteeKind(TrusteeKind.Individual).set(TrusteeNameId(0), PersonName("Jane", "Doe")).success.value
   private val trusteeNamePage: Call = controllers.trustees.individual.routes.TrusteeNameController.onPageLoad(index)
+  private def trusteeEmailPage(mode: Mode): Call = controllers.trustees.individual.contact.routes.EnterEmailController.onPageLoad(index, mode)
+  private def trusteePhonePage(mode: Mode): Call = controllers.trustees.individual.contact.routes.EnterPhoneController.onPageLoad(index, mode)
   private val addTrusteePage: Call = controllers.trustees.routes.AddTrusteeController.onPageLoad()
   private val taskListPage: Call = controllers.routes.TaskListController.onPageLoad()
   private val trusteeKindPage: Call = routes.TrusteeKindController.onPageLoad(index)
@@ -63,6 +69,8 @@ class TrusteesNavigatorSpec
     detailsRoutes.TrusteeNoUTRReasonController.onPageLoad(index, mode)
   private val cya: Call =
     detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+  private val cyaContact: Call =
+    controllers.trustees.individual.contact.routes.CheckYourAnswersController.onPageLoad(index)
 
   "TrusteesNavigator" when {
     def navigation: TableFor3[Identifier, UserAnswers, Call] =
@@ -82,6 +90,8 @@ class TrusteesNavigatorSpec
         row(TrusteeHasUTRId(index))(noUtrPage(NormalMode), Some(detailsUa.set(TrusteeHasUTRId(index), false).success.value)),
         row(TrusteeUTRId(index))(cya, Some(detailsUa.set(TrusteeUTRId(index), ReferenceValue("1234567890")).success.value)),
         row(TrusteeNoUTRReasonId(index))(cya, Some(detailsUa.set(TrusteeNoUTRReasonId(index), "Reason").success.value)),
+        row(EnterEmailId(index))(trusteePhonePage(NormalMode), Some(indvDetailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
+        row(EnterPhoneId(index))(cyaContact, Some(indvDetailsUa.set(EnterPhoneId(index), "123").success.value))
       )
 
     def editNavigation: TableFor3[Identifier, UserAnswers, Call] =
@@ -95,7 +105,9 @@ class TrusteesNavigatorSpec
         row(TrusteeHasUTRId(index))(enterUtrPage(CheckMode), Some(detailsUa.set(TrusteeHasUTRId(index), true).success.value)),
         row(TrusteeHasUTRId(index))(noUtrPage(CheckMode), Some(detailsUa.set(TrusteeHasUTRId(index), false).success.value)),
         row(TrusteeUTRId(index))(cya, Some(detailsUa.set(TrusteeUTRId(index), ReferenceValue("1234567890")).success.value)),
-        row(TrusteeNoUTRReasonId(index))(cya, Some(detailsUa.set(TrusteeNoUTRReasonId(index), "Reason").success.value))
+        row(TrusteeNoUTRReasonId(index))(cya, Some(detailsUa.set(TrusteeNoUTRReasonId(index), "Reason").success.value)),
+        row(EnterEmailId(index))(cyaContact, Some(indvDetailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
+        row(EnterPhoneId(index))(cyaContact, Some(indvDetailsUa.set(EnterPhoneId(index), "123").success.value))
       )
     "in NormalMode" must {
       behave like navigatorWithRoutesForMode(NormalMode)(navigator, navigation)

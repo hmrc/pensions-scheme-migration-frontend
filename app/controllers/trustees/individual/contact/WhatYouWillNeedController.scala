@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.trustees.individual.details
+package controllers.trustees.individual.contact
 
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
@@ -28,6 +28,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import controllers.trustees.individual.contact.routes.EnterEmailController
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -51,14 +52,13 @@ class WhatYouWillNeedController @Inject()(
         TrusteeNameId(index).retrieve.right.map {
           personName =>
             renderer.render(
-              template = "trustees/individual/details/whatYouWillNeed.njk",
+              template = "trustees/individual/contact/whatYouWillNeed.njk",
               ctx = Json.obj(
                 "name"        -> personName.fullName,
-                "continueUrl" -> routes.TrusteeDOBController.onPageLoad(index, NormalMode).url,
+                "continueUrl" -> EnterEmailController.onPageLoad(index, NormalMode).url,
                 "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )
             ).map(Ok(_))
         }
     }
-
 }

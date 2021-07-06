@@ -23,7 +23,7 @@ import models.requests.DataRequest
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.libs.json.{JsArray, JsString, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Result}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
@@ -67,7 +67,7 @@ trait HasReferenceValueController
       template = "hasReferenceValue.njk",
       ctx = Json.obj(
         "pageTitle"     -> pageTitle,
-        "pageHeading" -> pageHeading,
+        "pageHeading"   -> pageHeading,
         "isPageHeading" -> isPageHeading,
         "form"          -> preparedForm,
         "radios"        -> Radios.yesNo(preparedForm("value")),
@@ -96,7 +96,7 @@ trait HasReferenceValueController
           template = "hasReferenceValue.njk",
           ctx = Json.obj(
             "pageTitle"     -> pageTitle,
-            "pageHeading" -> pageHeading,
+            "pageHeading"   -> pageHeading,
             "isPageHeading" -> isPageHeading,
             "form"          -> formWithErrors,
             "radios"        -> Radios.yesNo(formWithErrors("value")),

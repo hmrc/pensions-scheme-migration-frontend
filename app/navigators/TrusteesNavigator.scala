@@ -18,6 +18,8 @@ package navigators
 
 import controllers.routes._
 import controllers.trustees.individual.details.routes._
+import controllers.routes._
+import controllers.trustees.individual.contact.routes._
 import controllers.trustees.individual.routes._
 import controllers.trustees.routes._
 import identifiers._
@@ -26,7 +28,13 @@ import identifiers.trustees._
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.details._
 import models.requests.DataRequest
+import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
+import models.requests.DataRequest
 import models.trustees.TrusteeKind
+import models.{Index, NormalMode}
+import play.api.mvc.{AnyContent, Call}
+import utils.{Enumerable, UserAnswers}
 import models.{CheckMode, Index, Mode, NormalMode}
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
@@ -49,6 +57,8 @@ class TrusteesNavigator
     case TrusteeHasUTRId(index) => trusteeHasUtr(index, ua, NormalMode)
     case TrusteeUTRId(index) => cyaDetails(index)
     case TrusteeNoUTRReasonId(index) => cyaDetails(index)
+    case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
+    case EnterPhoneId(index) => cyaContactDetails(index)
   }
 
   override protected def editRouteMap(ua: UserAnswers)
@@ -60,9 +70,13 @@ class TrusteesNavigator
     case TrusteeHasUTRId(index) => trusteeHasUtr(index, ua, CheckMode)
     case TrusteeUTRId(index) => cyaDetails(index)
     case TrusteeNoUTRReasonId(index) => cyaDetails(index)
+    case EnterEmailId(index) => cyaContactDetails(index)
+    case EnterPhoneId(index) => cyaContactDetails(index)
   }
 
   private def cyaDetails(index:Int): Call = controllers.trustees.individual.details.routes.CheckYourAnswersController.onPageLoad(index)
+
+  private def cyaContactDetails(index:Int): Call = controllers.trustees.individual.contact.routes.CheckYourAnswersController.onPageLoad(index)
 
   private def trusteeKindRoutes(
                                      index: Index,

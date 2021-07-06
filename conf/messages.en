@@ -169,6 +169,7 @@ messages__schemeTaskList__establisherIndividualContactDetails_addLink = Add cont
 messages__schemeTaskList__establisherIndividualAddress_changeLink = Change address for {0}
 messages__schemeTaskList__establisherIndividualContactDetails_changeLink = Change contact details for {0}
 
+
 messages__individual = the individual
 messages__establisher = the establisher
 messages__trustee = the trustee
@@ -373,6 +374,7 @@ messages__establisher__type_title = What kind of establisher are you adding?
 
 addEstablisher.name.header = Establisher name
 addEstablisher.type.header = Type
+addEstablisher.type.header.hiddenText = Type of establisher
 addEstablisher.hiddenText.removeLink.header = Remove establisher link
 
 messages__error__trustees = trustee’s
@@ -391,6 +393,7 @@ messages__confirmDelete__error_required = Select yes if you want to delete {0}
 messages__establisher__name_title = What is the establisher’s name?
 
 messages__establisherDetails__whatYouWillNeed_title = Adding establisher’s details
+messages__trusteeDetails__whatYouWillNeed_title = Adding trustee’s details
 messages__establisherDetails__whatYouWillNeed_h1 = Details for {0}
 messages__establisherDetails__whatYouWillNeed_p = You will need to tell us {0}’s:
 messages__establisherDetails__whatYouWillNeed_li_1 = date of birth
@@ -413,10 +416,10 @@ messages__establisherAddress__whatYouWillNeed_p = You will need to tell us {0}�
 messages__establisherAddress__whatYouWillNeed_li_1 = current address
 messages__establisherAddress__whatYouWillNeed_li_2 = previous address if {0} has used the current address for less than 1 year
 
-messages__establisherContactDetails__whatYouWillNeed_title = Contact details for {0}
-messages__establisherContactDetails__whatYouWillNeed_p = You will need to tell us {0}’s:
-messages__establisherContactDetails__whatYouWillNeed_li_1 = contact email address
-messages__establisherContactDetails__whatYouWillNeed_li_2 = contact phone number
+messages__individualContactDetails__whatYouWillNeed_title = Contact details for {0}
+messages__individualContactDetails__whatYouWillNeed_p = You will need to tell us {0}’s:
+messages__individualContactDetails__whatYouWillNeed_li_1 = contact email address
+messages__individualContactDetails__whatYouWillNeed_li_2 = contact phone number
 
 messages__establisherPreviousAddress = Previous address
 previousAddress.title = What was the previous address for {0}?
@@ -446,6 +449,9 @@ messages__enterPhone__error_required = Enter phone number for {0}
 messages__enterPhone__error_invalid = Enter a phone number in the correct format
 messages__enterPhone = What is the phone number for {0}?
 messages__enterPhone__cya__visuallyHidden = the phone number for {0}
+
+messages__schemeTaskList__trusteeIndividualContactDetails_addLink = Add contact details for {0}
+messages__schemeTaskList__trusteeIndividualContactDetails_changeLink = Change contact details for {0}
 
 country.AD = Andorra
 country.AE = United Arab Emirates
@@ -715,6 +721,7 @@ messages__trustee__name_title = What is the trustee’s name?
 
 addTrustee.name.header = Trustee’s name
 addTrustee.type.header = Type
+addTrustee.type.header.hiddenText = Type of trustee
 addTrustee.hiddenText.removeLink.header = Remove trustee link
 
 messages__error__trustee = trustee’s

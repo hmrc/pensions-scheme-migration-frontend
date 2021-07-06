@@ -37,7 +37,7 @@ import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.ua
 import utils.{FakeNavigator, UserAnswers}
-import viewmodels.DateInput
+import uk.gov.hmrc.viewmodels.DateInput
 
 import java.time.LocalDate
 import scala.concurrent.Future

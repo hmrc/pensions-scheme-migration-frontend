@@ -18,7 +18,7 @@ package helpers
 
 import controllers.establishers.routes._
 import helpers.spokes.establishers.individual._
-import helpers.spokes.trustees.individual.TrusteeIndividualDetails
+import helpers.spokes.trustees.individual.{TrusteeIndividualContactDetails, TrusteeIndividualDetails}
 import helpers.spokes.{AboutMembersSpoke, BeforeYouStartSpoke, BenefitsAndInsuranceSpoke, Spoke}
 import models.{EntitySpoke, Index, TaskListLink}
 import play.api.i18n.Messages
@@ -33,7 +33,9 @@ class SpokeCreationService extends Enumerable.Implicits {
   def membershipDetailsSpoke(answers: UserAnswers, name: String)
                             (implicit messages: Messages): Seq[EntitySpoke] =
     Seq(createSpoke(answers, AboutMembersSpoke, name))
-  def aboutSpokes(answers: UserAnswers, name: String)(implicit messages: Messages): Seq[EntitySpoke] =
+
+  def aboutSpokes(answers: UserAnswers, name: String)
+                 (implicit messages: Messages): Seq[EntitySpoke] =
     Seq(
       createSpoke(answers, AboutMembersSpoke, name),
       createSpoke(answers, BenefitsAndInsuranceSpoke, name)
@@ -74,7 +76,7 @@ class SpokeCreationService extends Enumerable.Implicits {
   }
 
   def getAddTrusteeHeaderSpokes(answers: UserAnswers, viewOnly: Boolean)
-    (implicit messages: Messages): Seq[EntitySpoke] =
+                               (implicit messages: Messages): Seq[EntitySpoke] =
     if (viewOnly)
       Nil
     else if (answers.allTrusteesAfterDelete.isEmpty)
@@ -103,7 +105,7 @@ class SpokeCreationService extends Enumerable.Implicits {
     Seq(
       createSpoke(answers, TrusteeIndividualDetails(index, answers), name),
       //createSpoke(answers, controllers.trustees.routes.TrusteeIndividualAddress(index, answers), name),
-      //createSpoke(answers, controllers.trustees.routes.TrusteeIndividualContactDetails, name)
+      createSpoke(answers, TrusteeIndividualContactDetails(index, answers), name)
     )
   }
 

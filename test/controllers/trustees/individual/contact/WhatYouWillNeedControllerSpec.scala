@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.trustees.individual.details
+package controllers.trustees.individual.contact
 
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.trustees.individual.TrusteeNameId
 import matchers.JsonMatchers
-import models.PersonName
+import models.{NormalMode, PersonName}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -31,7 +31,7 @@ import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import utils.Data.ua
+import utils.Data.{schemeName, ua}
 import utils.UserAnswers
 
 import scala.concurrent.Future
@@ -44,13 +44,12 @@ class WhatYouWillNeedControllerSpec
 
   private val personName: PersonName = PersonName("Jane", "Doe")
   private val userAnswers: UserAnswers = ua.set(TrusteeNameId(0), personName).success.value
-  private val templateToBeRendered: String = "trustees/individual/details/whatYouWillNeed.njk"
-
-  private val json: JsObject =
+  private val templateToBeRendered: String = "trustees/individual/contact/whatYouWillNeed.njk"
+  private def json: JsObject =
     Json.obj(
-      "name"        -> "Jane Doe",
-      "continueUrl" -> "/migrate-pension-scheme/trustee/1/individual/date-of-birth",
-      "schemeName"  -> "Test scheme name"
+      "name"        -> personName.fullName,
+      "continueUrl" -> controllers.trustees.individual.contact.routes.EnterEmailController.onPageLoad(0, NormalMode).url,
+      "schemeName"  -> schemeName
     )
 
   private def controller(
