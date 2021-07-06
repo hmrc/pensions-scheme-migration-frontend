@@ -39,7 +39,7 @@ trait DataCompletionTrustees extends DataCompletion {
       Seq(
         isAnswerComplete(TrusteeDOBId(index)),
         isAnswerComplete(TrusteeHasNINOId(index), TrusteeNINOId(index), Some(TrusteeNoNINOReasonId(index))),
-        isAnswerComplete(TrusteeHasUTRId(index), TrusteeUTRId(index), Some(TrusteeNoUTRReasonId(index))),
+        isAnswerComplete(TrusteeHasUTRId(index), TrusteeUTRId(index), Some(TrusteeNoUTRReasonId(index)))
       )
     ).getOrElse(false)
 
