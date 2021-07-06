@@ -310,7 +310,7 @@ addressList.visuallyHidden = the address of the insurance company that secures t
 previousAddressList.title = What was the previous address for {0}?
 
 postcode.label = Postcode
-postcode.title = What is {0}ʼs postcode?
+postcode.title = What is {0}’s postcode?
 previousPostcode.title = What was {0}ʼs previous postcode?
 postcode.youCan = You can
 error.postcode.required = Enter the postcode
@@ -738,7 +738,7 @@ trusteeEnterPostcode.required = Enter a postcode
 trusteeEnterPostcode.invalid = Enter a real postcode
 
 trusteeEnterPreviousPostcode.required = Enter the individual’s previous postcode
-trusteeEnterPreviousPostcode.invalid = Enter the individual’s real postcode
+trusteeEnterPreviousPostcode.invalid = Enter a real postcode
 
 trusteeSelectAddress.required = Select an address
 
