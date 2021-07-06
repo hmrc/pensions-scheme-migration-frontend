@@ -18,6 +18,7 @@ package utils.datacompletion
 
 import identifiers.trustees.TrusteeKindId
 import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.individual.details._
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import utils.UserAnswers
 
@@ -33,27 +34,14 @@ trait DataCompletionTrustees extends DataCompletion {
       )
     ).getOrElse(false)
 
-  //def isTrusteeIndividualDetailsCompleted(
-  //                                             index: Int,
-  //                                             userAnswers: UserAnswers
-  //                                           ): Boolean = {
-  //  isComplete(
-  //    Seq(
-  //      Some(false)
-  //    )
-  //  )
-  //}
-  //
-  //def isTrusteeIndividualAddressCompleted(
-  //  index: Int,
-  //  userAnswers: UserAnswers
-  //): Option[Boolean] = {
-  //  isComplete(
-  //    Seq(
-  //      Some(false)
-  //    )
-  //  )
-  //}
+  def isTrusteeIndividualDetailsCompleted(index: Int): Boolean =
+    isComplete(
+      Seq(
+        isAnswerComplete(TrusteeDOBId(index)),
+        isAnswerComplete(TrusteeHasNINOId(index), TrusteeNINOId(index), Some(TrusteeNoNINOReasonId(index))),
+        isAnswerComplete(TrusteeHasUTRId(index), TrusteeUTRId(index), Some(TrusteeNoUTRReasonId(index))),
+      )
+    ).getOrElse(false)
 
   def isTrusteeIndividualContactDetailsCompleted(index: Int): Option[Boolean] =
     isComplete(

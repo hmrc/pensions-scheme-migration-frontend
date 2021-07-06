@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package controllers.establishers.individual.details
+package controllers.trustees.individual.details
 
 import connectors.cache.UserAnswersCacheConnector
 import controllers.HasReferenceValueController
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.HasReferenceNumberFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.details.EstablisherHasNINOId
+import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.individual.details.TrusteeHasUTRId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import navigators.CompoundNavigator
@@ -35,7 +35,7 @@ import viewmodels.Message
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class EstablisherHasNINOController @Inject()(
+class TrusteeHasUTRController @Inject()(
                                               override val messagesApi: MessagesApi,
                                               val navigator: CompoundNavigator,
                                               authenticate: AuthAction,
@@ -52,15 +52,14 @@ class EstablisherHasNINOController @Inject()(
                   (implicit request: DataRequest[AnyContent]): String =
     request
       .userAnswers
-      .get(EstablisherNameId(index))
-      .fold(Message("messages__establisher"))(_.fullName)
+      .get(TrusteeNameId(index))
+      .fold(Message("messages__trustee"))(_.fullName)
 
   private def form(index: Index)
-                  (implicit request: DataRequest[AnyContent]): Form[Boolean] = {
+                  (implicit request: DataRequest[AnyContent]): Form[Boolean] =
     formProvider(
-      errorMsg = Message("messages__genericHasNino__error__required", name(index))
+      errorMsg = Message("messages__genericHasUtr__error__required", name(index))
     )
-  }
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
@@ -69,13 +68,14 @@ class EstablisherHasNINOController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             get(
-              pageTitle     = Message("messages__hasNINO", Message("messages__individual")),
-              pageHeading     = Message("messages__hasNINO", name(index)),
-              isPageHeading = true,
-              id            = EstablisherHasNINOId(index),
+              pageTitle     = Message("messages__hasUTR", Message("messages__individual")),
+              pageHeading     = Message("messages__hasUTR", name(index)),
+              isPageHeading = false,
+              id            = TrusteeHasUTRId(index),
               form          = form(index),
               schemeName    = schemeName,
-              legendClass   = "govuk-label--xl"
+              paragraphText = Seq(Message("messages__UTR__p")),
+              legendClass   = "govuk-visually-hidden"
             )
         }
     }
@@ -83,16 +83,18 @@ class EstablisherHasNINOController @Inject()(
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
+
         SchemeNameId.retrieve.right.map {
           schemeName =>
             post(
-              pageTitle     = Message("messages__hasNINO", Message("messages__individual")),
-              pageHeading     = Message("messages__hasNINO", name(index)),
-              isPageHeading = true,
-              id            = EstablisherHasNINOId(index),
+              pageTitle     = Message("messages__hasUTR", Message("messages__individual")),
+              pageHeading     = Message("messages__hasUTR", name(index)),
+              isPageHeading = false,
+              id            = TrusteeHasUTRId(index),
               form          = form(index),
               schemeName    = schemeName,
-              legendClass   = "govuk-label--xl",
+              paragraphText = Seq(Message("messages__UTR__p")),
+              legendClass   = "govuk-visually-hidden",
               mode          = mode
             )
         }

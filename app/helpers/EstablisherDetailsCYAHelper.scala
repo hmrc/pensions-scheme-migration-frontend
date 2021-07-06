@@ -49,7 +49,8 @@ class EstablisherDetailsCYAHelper
         id                 = EstablisherDOBId(index),
         message            = Message("messages__dob__title", establisherName).resolve,
         url                = Some(routes.EstablisherDOBController.onPageLoad(index, CheckMode).url),
-        visuallyHiddenText = Some(msg"messages__dob__cya__visuallyHidden".withArgs(establisherName))
+        visuallyHiddenText = Some(msg"messages__dob__cya__visuallyHidden".withArgs(establisherName)),
+        answerTransform = answerDateTransform
       )),
       Some(answerOrAddRow(
         id                 = EstablisherHasNINOId(index),

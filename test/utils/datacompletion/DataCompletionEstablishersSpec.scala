@@ -21,14 +21,10 @@ import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.individual.details._
-import models.{PersonName, ReferenceValue}
-import identifiers.establishers.individual.details._
-import models.{PersonName, ReferenceValue}
 import models.establishers.EstablisherKind
+import models.{PersonName, ReferenceValue}
 import org.scalatest.{MustMatchers, OptionValues, TryValues, WordSpec}
 import utils.{Data, Enumerable, UserAnswers}
-import org.scalatest.{MustMatchers, OptionValues, TryValues, WordSpec}
-import utils.{Enumerable, UserAnswers}
 
 import java.time.LocalDate
 
@@ -81,8 +77,8 @@ class DataCompletionEstablishersSpec
             .set(EstablisherHasUTRId(0), false).success.value
             .set(EstablisherNoUTRReasonId(0), "Reason").success.value
 
-        ua1.isEstablisherIndividualDetailsCompleted(0, ua1) mustBe true
-        ua2.isEstablisherIndividualDetailsCompleted(0, ua2) mustBe true
+        ua1.isEstablisherIndividualDetailsCompleted(0) mustBe true
+        ua2.isEstablisherIndividualDetailsCompleted(0) mustBe true
       }
 
       "return false when some answer is missing" in {
@@ -90,7 +86,7 @@ class DataCompletionEstablishersSpec
           UserAnswers()
             .set(EstablisherDOBId(0), LocalDate.parse("2001-01-01")).success.value
 
-        ua.isEstablisherIndividualDetailsCompleted(0, ua) mustBe false
+        ua.isEstablisherIndividualDetailsCompleted(0) mustBe false
 
       }
     }
