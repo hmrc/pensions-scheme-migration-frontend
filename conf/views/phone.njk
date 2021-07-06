@@ -7,7 +7,7 @@
 {% from "macros/title.njk"                         import title %}
 
 {% block pageTitle %}
-    {{ title(pageTitle, form.errors) }}
+    {{ title(messages("messages__enterPhone", entityType), form.errors) }}
 {% endblock %}
 
 
@@ -25,7 +25,7 @@
 
         {% if not isPageHeading %}
                         <h1 class="govuk-heading-xl">
-                            {{ pageTitle }}
+                            {{ messages('messages__enterPhone', entityName) }}
                         </h1>
                     {% endif %}
 
@@ -60,7 +60,7 @@
 
                 {{ govukButton({
                     attributes: {id: "submit"},
-                    text: messages("site.continue")
+                    text: messages("site.save_and_continue")
                 }) }}
 
             </form>

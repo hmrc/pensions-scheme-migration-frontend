@@ -17,16 +17,18 @@
 package navigators
 
 import controllers.trustees.individual.address.routes.{SelectAddressController, EnterPreviousPostcodeController, SelectPreviousAddressController}
+import controllers.routes._
+import controllers.trustees.individual.contact.routes._
 import controllers.trustees.individual.routes._
 import controllers.trustees.routes._
-import controllers.routes._
 import identifiers._
-import identifiers.trustees.individual.address.{PreviousAddressId, AddressId, PreviousAddressListId, AddressListId, AddressYearsId, EnterPostCodeId, EnterPreviousPostCodeId}
-import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.individual.address._
 import identifiers.trustees._
-import models.{Index, NormalMode, Mode}
-import models.trustees.TrusteeKind
+import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import models.requests.DataRequest
+import models.trustees.TrusteeKind
+import models.{Mode, Index, NormalMode}
 import play.api.mvc.{Call, AnyContent}
 import utils.{UserAnswers, Enumerable}
 
@@ -49,17 +51,23 @@ class TrusteesNavigator
     case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index)
     case PreviousAddressListId(index) => cyaAddress(index)
     case PreviousAddressId(index) => cyaAddress(index)
+    case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
+    case EnterPhoneId(index) => cyaContactDetails(index)
 
   }
 
   override protected def editRouteMap(ua: UserAnswers)
                                      (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
+    case EnterEmailId(index) => cyaContactDetails(index)
+    case EnterPhoneId(index) => cyaContactDetails(index)
     case _ => IndexController.onPageLoad()
   }
 
 
   private def cyaAddress(index:Int): Call = controllers.trustees.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
   private def addressYears(index:Int, mode:Mode): Call = controllers.trustees.individual.address.routes.AddressYearsController.onPageLoad(index)
+
+  private def cyaContactDetails(index:Int): Call = controllers.trustees.individual.contact.routes.CheckYourAnswersController.onPageLoad(index)
 
   private def trusteeKindRoutes(
                                      index: Index,

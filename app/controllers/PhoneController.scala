@@ -45,7 +45,8 @@ trait PhoneController
   protected def navigator: CompoundNavigator
 
   def get(
-           pageTitle: String,
+           entityName: String,
+           entityType: String,
            isPageHeading: Boolean,
            id: TypedIdentifier[String],
            form: Form[String],
@@ -57,7 +58,8 @@ trait PhoneController
     renderer.render(
       template = "phone.njk",
       ctx = Json.obj(
-        "pageTitle" -> pageTitle,
+        "entityName" -> entityName,
+        "entityType" -> entityType,
         "isPageHeading" -> isPageHeading,
         "form" -> request.userAnswers.get[String](id).fold(form)(form.fill),
         "schemeName" -> schemeName,
@@ -68,7 +70,8 @@ trait PhoneController
   }
 
   def post(
-            pageTitle: String,
+            entityName: String,
+            entityType: String,
             isPageHeading: Boolean,
             id: TypedIdentifier[String],
             form: Form[String],
@@ -83,7 +86,8 @@ trait PhoneController
         renderer.render(
           template = "phone.njk",
           ctx = Json.obj(
-            "pageTitle" -> pageTitle,
+            "entityName" -> entityName,
+            "entityType" -> entityType,
             "isPageHeading" -> isPageHeading,
             "form" -> formWithErrors,
             "schemeName" -> schemeName,

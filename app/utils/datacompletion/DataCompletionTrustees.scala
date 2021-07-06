@@ -18,7 +18,8 @@ package utils.datacompletion
 
 import identifiers.trustees.TrusteeKindId
 import identifiers.trustees.individual.TrusteeNameId
-import identifiers.trustees.individual.address.{AddressYearsId, AddressId, PreviousAddressId}
+import identifiers.trustees.individual.address.{AddressYearsId, PreviousAddressId, AddressId}
+import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import utils.UserAnswers
 
 trait DataCompletionTrustees extends DataCompletion {
@@ -43,17 +44,6 @@ trait DataCompletionTrustees extends DataCompletion {
   //    )
   //  )
   //}
-  //
-  //def isTrusteeIndividualAddressCompleted(
-  //  index: Int,
-  //  userAnswers: UserAnswers
-  //): Option[Boolean] = {
-  //  isComplete(
-  //    Seq(
-  //      Some(false)
-  //    )
-  //  )
-  //}
 
   def isTrusteeIndividualAddressCompleted(
     index: Int,
@@ -69,10 +59,11 @@ trait DataCompletionTrustees extends DataCompletion {
     )
   }
 
-  def isTrusteeIndividualContactDetailsCompleted: Option[Boolean] =
+  def isTrusteeIndividualContactDetailsCompleted(index: Int): Option[Boolean] =
     isComplete(
       Seq(
-        Some(false)
+        isAnswerComplete(EnterEmailId(index)),
+        isAnswerComplete(EnterPhoneId(index))
       )
     )
 }

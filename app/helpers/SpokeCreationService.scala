@@ -18,9 +18,8 @@ package helpers
 
 import controllers.establishers.routes._
 import helpers.spokes.establishers.individual._
-import helpers.spokes.trustees.individual.TrusteeIndividualAddress
+import helpers.spokes.trustees.individual.{TrusteeIndividualContactDetails, TrusteeIndividualAddress}
 import helpers.spokes.{BeforeYouStartSpoke, AboutMembersSpoke, Spoke, BenefitsAndInsuranceSpoke}
-import identifiers.trustees.IsTrusteeNewId
 import models.{TaskListLink, EntitySpoke, Index}
 import play.api.i18n.Messages
 import models.Index._
@@ -35,7 +34,9 @@ class SpokeCreationService extends Enumerable.Implicits {
   def membershipDetailsSpoke(answers: UserAnswers, name: String)
                             (implicit messages: Messages): Seq[EntitySpoke] =
     Seq(createSpoke(answers, AboutMembersSpoke, name))
-  def aboutSpokes(answers: UserAnswers, name: String)(implicit messages: Messages): Seq[EntitySpoke] =
+
+  def aboutSpokes(answers: UserAnswers, name: String)
+                 (implicit messages: Messages): Seq[EntitySpoke] =
     Seq(
       createSpoke(answers, AboutMembersSpoke, name),
       createSpoke(answers, BenefitsAndInsuranceSpoke, name)
@@ -68,7 +69,7 @@ class SpokeCreationService extends Enumerable.Implicits {
 
   def getEstablisherIndividualSpokes(answers: UserAnswers, name: String, index: Index)
                                     (implicit messages: Messages): Seq[EntitySpoke] = {
-//    val isEstablisherNew = answers.get(IsEstablisherNewId(indexToInt(index.getOrElse(Index(0))))).getOrElse(false)
+    //    val isEstablisherNew = answers.get(IsEstablisherNewId(indexToInt(index.getOrElse(Index(0))))).getOrElse(false)
     Seq(
       createSpoke(answers, EstablisherIndividualDetails(index, answers), name),
       createSpoke(answers, EstablisherIndividualAddress(index, answers), name),
@@ -77,7 +78,7 @@ class SpokeCreationService extends Enumerable.Implicits {
   }
 
   def getAddTrusteeHeaderSpokes(answers: UserAnswers, viewOnly: Boolean)
-    (implicit messages: Messages): Seq[EntitySpoke] =
+                               (implicit messages: Messages): Seq[EntitySpoke] =
     if (viewOnly)
       Nil
     else if (answers.allTrusteesAfterDelete.isEmpty)
@@ -102,12 +103,12 @@ class SpokeCreationService extends Enumerable.Implicits {
       )
 
   def getTrusteeIndividualSpokes(answers: UserAnswers, name: String, index: Index)
-    (implicit messages: Messages): Seq[EntitySpoke] = {
-        val isTrusteeNew = answers.get(IsTrusteeNewId(index)).getOrElse(false)
+                                (implicit messages: Messages): Seq[EntitySpoke] = {
+    //    val isTrusteeNew = answers.get(IsTrusteeNewId(indexToInt(index.getOrElse(Index(0))))).getOrElse(false)
     Seq(
       //createSpoke(answers, controllers.trustees.routes.TrusteeIndividualDetails(index, answers), name),
-      createSpoke(answers, TrusteeIndividualAddress(index, answers), name)
-      //createSpoke(answers, controllers.trustees.routes.TrusteeIndividualContactDetails, name)
+      createSpoke(answers, TrusteeIndividualAddress(index, answers), name),
+      createSpoke(answers, TrusteeIndividualContactDetails(index, answers), name)
     )
   }
 

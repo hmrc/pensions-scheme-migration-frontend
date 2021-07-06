@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-package controllers.establishers.individual.contact
+package controllers.trustees.individual.contact
 
 import connectors.cache.UserAnswersCacheConnector
 import controllers.EmailAddressController
-import controllers.actions.{DataRetrievalAction, DataRequiredAction, AuthAction}
+import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.EmailFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.contact.EnterEmailId
+import identifiers.trustees.individual.contact.EnterEmailId
+import identifiers.trustees.individual.TrusteeNameId
 import models.requests.DataRequest
-import models.{Mode, Index}
+import models.{Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{MessagesApi, Messages}
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -51,8 +52,8 @@ class EnterEmailController @Inject()(
                   (implicit request: DataRequest[AnyContent]): String =
     request
       .userAnswers
-      .get(EstablisherNameId(index))
-      .fold("the establisher")(_.fullName)
+      .get(TrusteeNameId(index))
+      .fold("the trustee")(_.fullName)
 
   private def form(index: Index)(implicit request: DataRequest[AnyContent]): Form[String] =
     formProvider(Messages("messages__enterEmail__error_required", name(index)))

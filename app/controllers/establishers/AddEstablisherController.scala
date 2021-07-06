@@ -23,7 +23,7 @@ import helpers.AddToListHelper
 import identifiers.establishers.AddEstablisherId
 import navigators.CompoundNavigator
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
@@ -33,49 +33,64 @@ import uk.gov.hmrc.viewmodels.Radios
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddEstablisherController @Inject()(override val messagesApi: MessagesApi,
-                                         navigator: CompoundNavigator,
-                                         authenticate: AuthAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
-                                         formProvider: AddEstablisherFormProvider,
-                                         helper: AddToListHelper,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         renderer: Renderer
+class AddEstablisherController @Inject()(
+                                          override val messagesApi: MessagesApi,
+                                          navigator: CompoundNavigator,
+                                          authenticate: AuthAction,
+                                          getData: DataRetrievalAction,
+                                          requireData: DataRequiredAction,
+                                          formProvider: AddEstablisherFormProvider,
+                                          helper: AddToListHelper,
+                                          val controllerComponents: MessagesControllerComponents,
+                                          renderer: Renderer
                                         )(implicit val ec: ExecutionContext)
-  extends FrontendBaseController with Retrievals with I18nSupport with NunjucksSupport {
+  extends FrontendBaseController
+    with Retrievals
+    with I18nSupport
+    with NunjucksSupport {
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         val establishers = request.userAnswers.allEstablishersAfterDelete
-        val table = helper.mapEstablishersToTable(establishers)
-        val json: JsObject = Json.obj(
-          "form" -> formProvider(establishers),
-          "table" -> table,
-          "radios" -> Radios.yesNo(formProvider(establishers)("value")),
-          "schemeName" -> existingSchemeName
-        )
-        renderer.render("establishers/addEstablisher.njk", json).map(Ok(_))
-    }
+        val table        = helper.mapEstablishersToTable(establishers)
 
-  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
-    implicit request =>
-      val establishers = request.userAnswers.allEstablishersAfterDelete
-      val table = helper.mapEstablishersToTable(establishers)
-
-      formProvider(establishers).bindFromRequest().fold(
-        formWithErrors => {
-          val json: JsObject = Json.obj(
-            "form" -> formWithErrors,
-            "table" -> table,
-            "radios" -> Radios.yesNo(formWithErrors("value")),
+        renderer.render(
+          template = "establishers/addEstablisher.njk",
+          ctx = Json.obj(
+            "form"       -> formProvider(establishers),
+            "table"      -> table,
+            "radios"     -> Radios.yesNo(formProvider(establishers)("value")),
             "schemeName" -> existingSchemeName
           )
-          renderer.render("establishers/addEstablisher.njk", json).map(BadRequest(_))},
-        value =>
-          Future.successful(Redirect(navigator.nextPage(AddEstablisherId(value), request.userAnswers)))
-      )
+        ).map(Ok(_))
+    }
+
+  def onSubmit: Action[AnyContent] =
+    (authenticate andThen getData andThen requireData).async {
+      implicit request =>
+        val establishers = request.userAnswers.allEstablishersAfterDelete
+        val table        = helper.mapEstablishersToTable(establishers)
+
+        formProvider(establishers).bindFromRequest().fold(
+          formWithErrors =>
+            renderer.render(
+              template = "establishers/addEstablisher.njk",
+              ctx = Json.obj(
+                "form"       -> formWithErrors,
+                "table"      -> table,
+                "radios"     -> Radios.yesNo(formWithErrors("value")),
+                "schemeName" -> existingSchemeName
+              )
+            ).map(BadRequest(_)),
+          value =>
+            Future.successful(Redirect(
+              navigator.nextPage(
+                id          = AddEstablisherId(value),
+                userAnswers = request.userAnswers
+              )
+            ))
+        )
   }
 
 
