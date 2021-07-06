@@ -26,6 +26,7 @@ import identifiers.establishers.individual.contact.EnterEmailId
 import identifiers.trustees.TrusteeKindId
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.contact.{EnterEmailId => TrusteeEmailId, EnterPhoneId => TrusteePhoneId}
+import identifiers.trustees.individual.details.{TrusteeDOBId, TrusteeNINOId, TrusteeUTRId}
 import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind
 import models.{EntitySpoke, _}
@@ -33,6 +34,8 @@ import org.scalatest.{MustMatchers, OptionValues, TryValues}
 import utils.Data.{schemeName, ua}
 import utils.{Data, Enumerable}
 import viewmodels.Message
+
+import java.time.LocalDate
 
 class SpokeCreationServiceSpec
   extends SpecBase
@@ -239,11 +242,22 @@ class SpokeCreationServiceSpec
         ua
           .set(TrusteeKindId(0), TrusteeKind.Individual).success.value
           .set(TrusteeNameId(0), PersonName("a", "b")).success.value
+          .set(TrusteeDOBId(0), LocalDate.now).success.value
+          .set(TrusteeNINOId(0), ReferenceValue("AB123456C")).success.value
+          .set(TrusteeUTRId(0), ReferenceValue("1234567890")).success.value
           .set(TrusteeEmailId(0), "test@test.com").success.value
           .set(TrusteePhoneId(0), "1234").success.value
 
       val expectedSpoke =
         Seq(
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Change details for a b",
+              target = controllers.trustees.individual.details.routes.CheckYourAnswersController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = Some(true)
+          ),
           EntitySpoke(
             link = TaskListLink(
               text = "Change contact details for a b",
