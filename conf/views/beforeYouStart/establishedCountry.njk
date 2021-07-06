@@ -29,14 +29,12 @@
 
           {{ csrf() | safe }}
 
-          <h1 class="govuk-heading-xl">{{ messages("messages__established_country__h1", schemeName) }}</h1>
-
            <div class="autocomplete-wrapper">
                         {{ govukSelect({
                           label: {
                               text: messages("messages__established_country__h1", schemeName),
-                              isPageHeading: false,
-                              classes: "govuk-visually-hidden"
+                              isPageHeading: true,
+                              classes: "govuk-label--xl"
                           },
                           id: "value",
                           classes: "autocomplete",

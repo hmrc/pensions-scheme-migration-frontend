@@ -7,6 +7,10 @@
 {% from "macros/title.njk"                         import title %}
 {% from "macros/returnLink.njk"                    import returnLink %}
 
+{% set hint %}
+    <p id="p1" class="govuk-body govuk-!-font-weight-regular">{{ messages('areBenefitsSecured.p1') }}</p>
+{% endset %}
+
 {% block pageTitle %}
   {{ title(messages("areBenefitsSecured.title"), form.errors) }}
 {% endblock %}
@@ -28,17 +32,17 @@
 
           {{ csrf() | safe }}
 
-          <h1 class="govuk-heading-xl">{{ messages('areBenefitsSecured.h1', schemeName) }}</h1>
-            <p class="govuk-body">{{ messages('areBenefitsSecured.p1') }}</p>
           {{ govukRadios({
             classes: "govuk-radios--inline",
             name: 'value',
             fieldset: {
               legend: {
-                isPageHeading: false,
-                classes: "govuk-fieldset__legend--xl"
+                text: messages('areBenefitsSecured.h1', schemeName),
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--xl govuk-!-margin-bottom-8"
               }
             },
+            hint: { html: hint },
             items: radios,
             errorMessage: form.value.error
           }) }}
