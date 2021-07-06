@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package controllers.establishers.individual.contact
+package controllers.trustees.individual.contact
 
 import connectors.cache.UserAnswersCacheConnector
-import controllers.EmailAddressController
+import controllers.PhoneController
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import forms.EmailFormProvider
+import forms.PhoneFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.contact.EnterEmailId
+import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.individual.contact.EnterPhoneId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import navigators.CompoundNavigator
@@ -30,33 +30,32 @@ import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class EnterEmailController @Inject()(
+class EnterPhoneController @Inject()(
                                             override val messagesApi: MessagesApi,
                                             val navigator: CompoundNavigator,
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            formProvider: EmailFormProvider,
+                                            formProvider: PhoneFormProvider,
                                             val controllerComponents: MessagesControllerComponents,
                                             val userAnswersCacheConnector: UserAnswersCacheConnector,
                                             val renderer: Renderer
                                           )(implicit val executionContext: ExecutionContext)
-  extends EmailAddressController {
+  extends PhoneController {
 
   private def name(index: Index)
                   (implicit request: DataRequest[AnyContent]): String =
     request
       .userAnswers
-      .get(EstablisherNameId(index))
-      .fold("the establisher")(_.fullName)
+      .get(TrusteeNameId(index))
+      .fold("the trustee")(_.fullName)
 
   private def form(index: Index)(implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Messages("messages__enterEmail__error_required", name(index)))
+    formProvider(Messages("messages__enterPhone__error_required", name(index)))
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
@@ -67,10 +66,10 @@ class EnterEmailController @Inject()(
               entityName = name(index),
               entityType = Messages("messages__individual"),
               isPageHeading = false,
-              id            = EnterEmailId(index),
-              form          = form(index),
-              schemeName    = schemeName,
-              legendClass   = "govuk-visually-hidden",
+              id = EnterPhoneId(index),
+              form = form(index),
+              schemeName = schemeName,
+              legendClass = "govuk-visually-hidden",
               paragraphText = Seq(Messages("messages__contact_details__hint", name(index)))
             )
         }
@@ -85,12 +84,12 @@ class EnterEmailController @Inject()(
               entityName = name(index),
               entityType = Messages("messages__individual"),
               isPageHeading = false,
-              id            = EnterEmailId(index),
-              form          = form(index),
-              schemeName    = schemeName,
-              legendClass   = "govuk-visually-hidden",
+              id = EnterPhoneId(index),
+              form = form(index),
+              schemeName = schemeName,
+              legendClass = "govuk-visually-hidden",
               paragraphText = Seq(Messages("messages__contact_details__hint", name(index))),
-              mode          = mode
+              mode = mode
             )
         }
     }

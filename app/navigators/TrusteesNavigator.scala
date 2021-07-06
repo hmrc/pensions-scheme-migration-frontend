@@ -16,17 +16,19 @@
 
 package navigators
 
+import controllers.routes._
+import controllers.trustees.individual.contact.routes._
 import controllers.trustees.individual.routes._
 import controllers.trustees.routes._
-import controllers.routes._
 import identifiers._
-import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees._
-import models.Index
-import models.trustees.TrusteeKind
+import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import models.requests.DataRequest
-import play.api.mvc.{Call, AnyContent}
-import utils.{UserAnswers, Enumerable}
+import models.trustees.TrusteeKind
+import models.{Index, NormalMode}
+import play.api.mvc.{AnyContent, Call}
+import utils.{Enumerable, UserAnswers}
 
 class TrusteesNavigator
   extends Navigator
@@ -39,12 +41,18 @@ class TrusteesNavigator
     case TrusteeNameId(_) => AddTrusteeController.onPageLoad()
     case AddTrusteeId(value) => addTrusteeRoutes(value, ua)
     case ConfirmDeleteTrusteeId => AddTrusteeController.onPageLoad()
+    case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
+    case EnterPhoneId(index) => cyaContactDetails(index)
   }
 
   override protected def editRouteMap(ua: UserAnswers)
                                      (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
+    case EnterEmailId(index) => cyaContactDetails(index)
+    case EnterPhoneId(index) => cyaContactDetails(index)
     case _ => IndexController.onPageLoad()
   }
+
+  private def cyaContactDetails(index:Int): Call = controllers.trustees.individual.contact.routes.CheckYourAnswersController.onPageLoad(index)
 
   private def trusteeKindRoutes(
                                      index: Index,

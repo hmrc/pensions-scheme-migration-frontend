@@ -1,2 +1,16 @@
 GET         /:index/individual/name                                                  controllers.trustees.individual.TrusteeNameController.onPageLoad(index:Index)
 POST        /:index/individual/name                                                  controllers.trustees.individual.TrusteeNameController.onSubmit(index:Index)
+
+GET         /:index/individual/contact-details/what-you-will-need                    controllers.trustees.individual.contact.WhatYouWillNeedController.onPageLoad(index: Index)
+
+GET         /:index/individual/enter-email-address                                       controllers.trustees.individual.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/individual/enter-email-address                                       controllers.trustees.individual.contact.EnterEmailController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/individual/change/enter-email-address                                controllers.trustees.individual.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/individual/change/enter-email-address                                controllers.trustees.individual.contact.EnterEmailController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/individual/enter-phone-number                                       controllers.trustees.individual.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/individual/enter-phone-number                                       controllers.trustees.individual.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/individual/change/enter-phone-number                                controllers.trustees.individual.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/individual/change/enter-phone-number                               controllers.trustees.individual.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/individual/contact-details/check-your-answers                          controllers.trustees.individual.contact.CheckYourAnswersController.onPageLoad(index: Index)
