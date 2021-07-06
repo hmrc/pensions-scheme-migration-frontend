@@ -17,7 +17,8 @@
 package controllers.actions
 
 import com.google.inject.{ImplementedBy, Inject}
-import controllers.routes
+import config.AppConfig
+import controllers.routes._
 import models.requests.AuthenticatedRequest
 import play.api.mvc.Results._
 import play.api.mvc._
@@ -30,41 +31,45 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionImpl @Inject()(
-                                val authConnector: AuthConnector,
-                                val parser: BodyParsers.Default
+class AuthActionImpl @Inject()(val authConnector: AuthConnector,
+                               val parser: BodyParsers.Default,
+                               config: AppConfig
                               )(implicit val executionContext: ExecutionContext)
-  extends AuthAction
-    with AuthorisedFunctions {
+                              extends AuthAction with AuthorisedFunctions {
 
   override def invokeBlock[A](
                                request: Request[A],
                                block: AuthenticatedRequest[A] => Future[Result]
                              ): Future[Result] = {
+
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     authorised().retrieve(Retrievals.externalId and Retrievals.allEnrolments) {
-      case Some(id) ~ enrolments =>
-        createAuthRequest(id, enrolments, request, block)
-      case _ =>
-        Future.successful(Redirect(routes.UnauthorisedController.onPageLoad()))
+
+      case Some(id) ~ enrolments =>           createAuthRequest(id, enrolments, request, block)
+      case _ =>                               Future.successful(Redirect(UnauthorisedController.onPageLoad()))
+
+    } recover {
+
+      case _: NoActiveSession =>              Redirect(config.loginUrl, Map("continue" -> Seq(config.psaOverviewUrl.url)))
+      case _: InsufficientEnrolments =>       Redirect(UnauthorisedController.onPageLoad())
+      case _: InsufficientConfidenceLevel =>  Redirect(UnauthorisedController.onPageLoad())
+      case _: UnsupportedAuthProvider =>      Redirect(UnauthorisedController.onPageLoad())
+      case _: UnsupportedAffinityGroup =>     Redirect(UnauthorisedController.onPageLoad())
+      case _: UnsupportedCredentialRole =>    Redirect(UnauthorisedController.onPageLoad())
+      case _: IdNotFound =>                   Redirect(YouNeedToRegisterController.onPageLoad())
     }
   }
 
-  private def createAuthRequest[A](
-                                    id: String,
-                                    enrolments: Enrolments,
-                                    request: Request[A],
-                                    block: AuthenticatedRequest[A] => Future[Result]
+  private def createAuthRequest[A](id: String,
+                                   enrolments: Enrolments,
+                                   request: Request[A],
+                                   block: AuthenticatedRequest[A] => Future[Result]
                                   ): Future[Result] = {
 
-    enrolments
-      .getEnrolment("HMRC-PODS-ORG")
-      .flatMap(_.getIdentifier("PSAID")) match {
-      case Some(psaId) =>
-        block(AuthenticatedRequest(request, id, PsaId(psaId.value)))
-      case _ =>
-        Future.successful(Redirect(routes.UnauthorisedController.onPageLoad()))
+    enrolments.getEnrolment("HMRC-PODS-ORG").flatMap(_.getIdentifier("PSAID")) match {
+      case Some(psaId) => block(AuthenticatedRequest(request, id, PsaId(psaId.value)))
+      case _ => Future.successful(Redirect(YouNeedToRegisterController.onPageLoad()))
     }
   }
 

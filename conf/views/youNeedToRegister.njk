@@ -1,0 +1,46 @@
+{% extends "includes/layout.njk" %}
+
+{% from "macros/title.njk"                         import title %}
+{% from "macros/returnLink.njk"                    import returnLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+
+{% set psaGovUkLink %}
+    <a id='psa-gov-uk-link' href='{{psaUrl}}'>{{messages('messages__youNeedToRegister__p1__link')}}</a>
+{% endset %}
+
+{% set pspGovUkLink %}
+    <a id='psp-gov-uk-link' href='{{pspUrl}}'>{{messages('messages__youNeedToRegister__p2__link')}}</a>
+{% endset %}
+
+{% block pageTitle %}
+  {{ title(messages("messages__youNeedToRegister__title")) }}
+{% endblock %}
+
+{% block mainContent %}
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">{{ messages("messages__youNeedToRegister__heading") }}</h1>
+
+           <p class="govuk-body">{{ messages("messages__youNeedToRegister__lede") }}</p>
+
+            <p class="govuk-body">{{ messages("messages__youNeedToRegister__p1", psaGovUkLink) | safe }}</p>
+            <p class="govuk-body">{{ messages("messages__youNeedToRegister__p2", pspGovUkLink) | safe }}</p>
+
+
+        <div class="section">
+            {{ govukButton({
+                attributes: {id: "redirect-to-psa"},
+                 href: registerPsaUrl,
+                text: messages("messages__youNeedToRegister__button")
+            }) }}
+        </div>
+
+            <a id="gov-uk-link" class="govuk-link" href="{{govUkUrl}}" role="button">{{ messages("messages__youNeedToRegister__govUk__link") }}</a>
+
+      </div>
+    </div>
+
+{% endblock %}

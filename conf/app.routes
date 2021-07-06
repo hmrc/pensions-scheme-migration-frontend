@@ -9,6 +9,7 @@ GET         /assets/*file                                          controllers.A
 GET         /:pstr/saveData                                        controllers.testonly.TestMongoController.save(pstr)
 
 GET         /unauthorised                                          controllers.UnauthorisedController.onPageLoad
+GET         /you-need-to-register                                  controllers.YouNeedToRegisterController.onPageLoad()
 
 GET         /index                                                 controllers.IndexController.onPageLoad
 GET         /task-list                                             controllers.TaskListController.onPageLoad
