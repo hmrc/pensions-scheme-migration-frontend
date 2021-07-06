@@ -16,21 +16,23 @@
 
 package navigators
 
-import controllers.trustees.individual.address.routes.{SelectAddressController, EnterPreviousPostcodeController, SelectPreviousAddressController}
 import controllers.routes._
 import controllers.trustees.individual.contact.routes._
+import controllers.trustees.individual.details.routes._
+import controllers.trustees.individual.address.routes.{SelectAddressController, EnterPreviousPostcodeController, SelectPreviousAddressController}
 import controllers.trustees.individual.routes._
 import controllers.trustees.routes._
 import identifiers._
-import identifiers.trustees.individual.address._
 import identifiers.trustees._
 import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.individual.address._
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
+import identifiers.trustees.individual.details._
 import models.requests.DataRequest
 import models.trustees.TrusteeKind
-import models.{Mode, Index, NormalMode}
-import play.api.mvc.{Call, AnyContent}
-import utils.{UserAnswers, Enumerable}
+import models.{CheckMode, Index, Mode, NormalMode}
+import play.api.mvc.{AnyContent, Call}
+import utils.{Enumerable, UserAnswers}
 
 class TrusteesNavigator
   extends Navigator
@@ -43,6 +45,13 @@ class TrusteesNavigator
     case TrusteeNameId(_) => AddTrusteeController.onPageLoad()
     case AddTrusteeId(value) => addTrusteeRoutes(value, ua)
     case ConfirmDeleteTrusteeId => AddTrusteeController.onPageLoad()
+    case TrusteeDOBId(index) => TrusteeHasNINOController.onPageLoad(index, NormalMode)
+    case TrusteeHasNINOId(index) => trusteeHasNino(index, ua, NormalMode)
+    case TrusteeNINOId(index) => TrusteeHasUTRController.onPageLoad(index, NormalMode)
+    case TrusteeNoNINOReasonId(index) => TrusteeHasUTRController.onPageLoad(index, NormalMode)
+    case TrusteeHasUTRId(index) => trusteeHasUtr(index, ua, NormalMode)
+    case TrusteeUTRId(index) => cyaDetails(index)
+    case TrusteeNoUTRReasonId(index) => cyaDetails(index)
     case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index)
     case AddressListId(index) => addressYears(index, NormalMode)
     case AddressId(index) => addressYears(index, NormalMode)
@@ -58,10 +67,18 @@ class TrusteesNavigator
 
   override protected def editRouteMap(ua: UserAnswers)
                                      (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
+    case TrusteeDOBId(index) => cyaDetails(index)
+    case TrusteeHasNINOId(index) => trusteeHasNino(index, ua, CheckMode)
+    case TrusteeNINOId(index) => cyaDetails(index)
+    case TrusteeNoNINOReasonId(index) => cyaDetails(index)
+    case TrusteeHasUTRId(index) => trusteeHasUtr(index, ua, CheckMode)
+    case TrusteeUTRId(index) => cyaDetails(index)
+    case TrusteeNoUTRReasonId(index) => cyaDetails(index)
     case EnterEmailId(index) => cyaContactDetails(index)
     case EnterPhoneId(index) => cyaContactDetails(index)
-    case _ => IndexController.onPageLoad()
   }
+
+  private def cyaDetails(index:Int): Call = controllers.trustees.individual.details.routes.CheckYourAnswersController.onPageLoad(index)
 
 
   private def cyaAddress(index:Int): Call = controllers.trustees.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
@@ -86,5 +103,27 @@ class TrusteesNavigator
       case Some(false) => TaskListController.onPageLoad()
       case Some(true) => TrusteeKindController.onPageLoad(answers.trusteesCount)
       case None => IndexController.onPageLoad()
+    }
+
+  private def trusteeHasNino(
+                                  index: Index,
+                                  answers: UserAnswers,
+                                  mode: Mode
+                                ): Call =
+    answers.get(TrusteeHasNINOId(index)) match {
+      case Some(true) => TrusteeEnterNINOController.onPageLoad(index, mode)
+      case Some(false) => TrusteeNoNINOReasonController.onPageLoad(index, mode)
+      case None => controllers.routes.TaskListController.onPageLoad()
+    }
+
+  private def trusteeHasUtr(
+                                 index: Index,
+                                 answers: UserAnswers,
+                                 mode: Mode
+                               ): Call =
+    answers.get(TrusteeHasUTRId(index)) match {
+      case Some(true) => TrusteeEnterUTRController.onPageLoad(index, mode)
+      case Some(false) => TrusteeNoUTRReasonController.onPageLoad(index, mode)
+      case None => controllers.routes.TaskListController.onPageLoad()
     }
 }
