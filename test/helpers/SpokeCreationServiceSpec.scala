@@ -210,6 +210,14 @@ class SpokeCreationServiceSpec
         Seq(
           EntitySpoke(
             link = TaskListLink(
+              text = "Add address for a b",
+              target = controllers.trustees.individual.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = None
+          ),
+          EntitySpoke(
+            link = TaskListLink(
               text = "Add contact details for a b",
               target = controllers.trustees.individual.contact.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
@@ -233,9 +241,18 @@ class SpokeCreationServiceSpec
           .set(TrusteeNameId(0), PersonName("a", "b")).success.value
           .set(TrusteeEmailId(0), "test@test.com").success.value
           .set(TrusteePhoneId(0), "1234").success.value
+          .setOrException(identifiers.trustees.individual.address.AddressId(0), Data.address)
 
       val expectedSpoke =
         Seq(
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Change address for a b",
+              target = controllers.trustees.individual.address.routes.CheckYourAnswersController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = Some(false)
+          ),
           EntitySpoke(
             link = TaskListLink(
               text = "Change contact details for a b",
