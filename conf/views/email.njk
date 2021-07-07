@@ -4,12 +4,16 @@
 {% from "govuk/components/input/macro.njk"         import govukInput %}
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "macros/returnLink.njk"                     import returnLink %}
 {% from "macros/title.njk"                         import title %}
 
-{% block pageTitle %}
-    {{ title(pageTitle, form.errors) }}
-{% endblock %}
+{% set hint %}
+    <p id="p1" class="govuk-body govuk-!-font-weight-regular">{{ paragraph }}</p>
+{% endset %}
 
+{% block pageTitle %}
+    {{ title(messages("messages__enterEmail", entityType), form.errors) }}
+{% endblock %}
 
 {% block mainContent %}
 
@@ -23,19 +27,6 @@
           }) }}
         {% endif %}
 
-        {% if not isPageHeading %}
-                        <h1 class="govuk-heading-xl">
-                            {{ pageTitle }}
-                        </h1>
-                    {% endif %}
-
-         {% for paragraph in paragraphs %}
-                         <p class="govuk-body">
-                             {{ paragraph }}
-                         </p>
-                     {% endfor %}
-
-
 <form method="post"
                   autocomplete="off"
                   action="{{ submitUrl }}"
@@ -45,24 +36,27 @@
 
                 {{ govukInput({
                                     label: {
-                                        text: pageTitle,
-                                        isPageHeading: isPageHeading,
-                                        classes: legendClass
+                                        text: messages('messages__enterEmail', entityName),
+                                        isPageHeading: true,
+                                        classes: "govuk-label--xl govuk-!-margin-bottom-8"
                                     },
+                                    hint: { html: hint },
                                     id: "value",
                                     name: "value",
                                     value: form.value.value,
                                     classes: "govuk-input--width-10",
-                                    errorMessage: form.error
+                                    errorMessage: form.value.error
                                 }) }}
 
                 {{ govukButton({
                     attributes: {id: "submit"},
-                    text: messages("site.continue")
+                    text: messages("site.save_and_continue")
                 }) }}
 
             </form>
       </div>
     </div>
+
+     {{ returnLink(schemeName) }}
 
 {% endblock %}

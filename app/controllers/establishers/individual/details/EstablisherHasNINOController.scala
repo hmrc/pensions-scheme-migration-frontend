@@ -53,7 +53,7 @@ class EstablisherHasNINOController @Inject()(
     request
       .userAnswers
       .get(EstablisherNameId(index))
-      .fold("the establisher")(_.fullName)
+      .fold(Message("messages__establisher"))(_.fullName)
 
   private def form(index: Index)
                   (implicit request: DataRequest[AnyContent]): Form[Boolean] = {

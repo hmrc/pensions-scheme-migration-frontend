@@ -162,14 +162,17 @@ messages__schemeTaskList__sectionEstablishers_change_link = Change establishers
 messages__schemeTaskList__sectionEstablishers_view_link = View establishers
 messages__schemeTaskList__sectionEstablishers_no_establishers = No establishers
 
-messages__schemeTaskList__establisherIndividualDetails_addLink = Add details for {0}
-messages__schemeTaskList__establisherIndividualDetails_changeLink = Change details for {0}
+messages__schemeTaskList__individualDetails_addLink = Add details for {0}
+messages__schemeTaskList__individualDetails_changeLink = Change details for {0}
 messages__schemeTaskList__establisherIndividualAddress_addLink = Add address for {0}
 messages__schemeTaskList__establisherIndividualContactDetails_addLink = Add contact details for {0}
 messages__schemeTaskList__establisherIndividualAddress_changeLink = Change address for {0}
 messages__schemeTaskList__establisherIndividualContactDetails_changeLink = Change contact details for {0}
 
+
 messages__individual = the individual
+messages__establisher = the establisher
+messages__trustee = the trustee
 messages__dob__title = What is {0}’s date of birth?
 messages__dob__h1 = What is the date of birth for {0}?
 messages__dob__cya__visuallyHidden = the date of birth for {0}
@@ -390,6 +393,7 @@ messages__confirmDelete__error_required = Select yes if you want to delete {0}
 messages__establisher__name_title = What is the establisher’s name?
 
 messages__establisherDetails__whatYouWillNeed_title = Adding establisher’s details
+messages__trusteeDetails__whatYouWillNeed_title = Adding trustee’s details
 messages__establisherDetails__whatYouWillNeed_h1 = Details for {0}
 messages__establisherDetails__whatYouWillNeed_p = You will need to tell us {0}’s:
 messages__establisherDetails__whatYouWillNeed_li_1 = date of birth
@@ -412,10 +416,10 @@ messages__establisherAddress__whatYouWillNeed_p = You will need to tell us {0}�
 messages__establisherAddress__whatYouWillNeed_li_1 = current address
 messages__establisherAddress__whatYouWillNeed_li_2 = previous address if {0} has used the current address for less than 1 year
 
-messages__establisherContactDetails__whatYouWillNeed_title = Contact details for {0}
-messages__establisherContactDetails__whatYouWillNeed_p = You will need to tell us {0}’s:
-messages__establisherContactDetails__whatYouWillNeed_li_1 = contact email address
-messages__establisherContactDetails__whatYouWillNeed_li_2 = contact phone number
+messages__individualContactDetails__whatYouWillNeed_title = Contact details for {0}
+messages__individualContactDetails__whatYouWillNeed_p = You will need to tell us {0}’s:
+messages__individualContactDetails__whatYouWillNeed_li_1 = contact email address
+messages__individualContactDetails__whatYouWillNeed_li_2 = contact phone number
 
 messages__establisherPreviousAddress = Previous address
 previousAddress.title = What was the previous address for {0}?
@@ -445,6 +449,9 @@ messages__enterPhone__error_required = Enter phone number for {0}
 messages__enterPhone__error_invalid = Enter a phone number in the correct format
 messages__enterPhone = What is the phone number for {0}?
 messages__enterPhone__cya__visuallyHidden = the phone number for {0}
+
+messages__schemeTaskList__trusteeIndividualContactDetails_addLink = Add contact details for {0}
+messages__schemeTaskList__trusteeIndividualContactDetails_changeLink = Change contact details for {0}
 
 country.AD = Andorra
 country.AE = United Arab Emirates

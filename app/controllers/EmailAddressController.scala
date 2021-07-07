@@ -45,36 +45,33 @@ trait EmailAddressController
   protected def navigator: CompoundNavigator
 
   def get(
-           pageTitle: String,
-           isPageHeading: Boolean,
+           entityName: String,
+           entityType: String,
            id: TypedIdentifier[String],
            form: Form[String],
            schemeName: String,
-           paragraphText: Seq[String] = Seq(),
-           legendClass: String = "govuk-fieldset__legend--s"
+           paragraphText: Seq[String] = Seq()
          )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     renderer.render(
       template = "email.njk",
       ctx = Json.obj(
-        "pageTitle" -> pageTitle,
-        "isPageHeading" -> isPageHeading,
+        "entityName" -> entityName,
+        "entityType" -> entityType,
         "form" -> request.userAnswers.get[String](id).fold(form)(form.fill),
         "schemeName" -> schemeName,
-        "legendClass" -> legendClass,
-        "paragraphs" -> paragraphText
+        "paragraph" -> paragraphText
       )
     ).map(Ok(_))
   }
 
   def post(
-            pageTitle: String,
-            isPageHeading: Boolean,
+            entityName: String,
+            entityType: String,
             id: TypedIdentifier[String],
             form: Form[String],
             schemeName: String,
             paragraphText: Seq[String] = Seq(),
-            legendClass: String = "govuk-fieldset__legend--s",
             mode: Mode
           )(implicit request: DataRequest[AnyContent]): Future[Result] =
 
@@ -83,12 +80,11 @@ trait EmailAddressController
         renderer.render(
           template = "email.njk",
           ctx = Json.obj(
-            "pageTitle" -> pageTitle,
-            "isPageHeading" -> isPageHeading,
+            "entityName" -> entityName,
+            "entityType" -> entityType,
             "form" -> formWithErrors,
             "schemeName" -> schemeName,
-            "legendClass" -> legendClass,
-            "paragraphs" -> paragraphText
+            "paragraph" -> paragraphText
           )
         ).map(BadRequest(_)),
       value =>

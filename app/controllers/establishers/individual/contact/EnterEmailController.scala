@@ -63,12 +63,11 @@ class EnterEmailController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             get(
-              pageTitle     = Messages("messages__enterEmail", name(index)),
-              isPageHeading = false,
+              entityName = name(index),
+              entityType = Messages("messages__individual"),
               id            = EnterEmailId(index),
               form          = form(index),
               schemeName    = schemeName,
-              legendClass   = "govuk-visually-hidden",
               paragraphText = Seq(Messages("messages__contact_details__hint", name(index)))
             )
         }
@@ -80,12 +79,11 @@ class EnterEmailController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             post(
-              pageTitle     = Messages("messages__enterEmail", name(index)),
-              isPageHeading = false,
+              entityName = name(index),
+              entityType = Messages("messages__individual"),
               id            = EnterEmailId(index),
               form          = form(index),
               schemeName    = schemeName,
-              legendClass   = "govuk-visually-hidden",
               paragraphText = Seq(Messages("messages__contact_details__hint", name(index))),
               mode          = mode
             )

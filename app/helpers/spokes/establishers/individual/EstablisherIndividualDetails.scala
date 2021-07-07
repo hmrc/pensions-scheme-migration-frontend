@@ -27,7 +27,7 @@ case class EstablisherIndividualDetails(
                                          index: Index,
                                          answers: UserAnswers
                                        ) extends Spoke {
-  val messageKeyPrefix = "messages__schemeTaskList__establisherIndividualDetails_"
+  val messageKeyPrefix = "messages__schemeTaskList__individualDetails_"
 
   val linkKeyAndRoute: (String, String) =
     if (completeFlag(answers).getOrElse(false))
@@ -44,6 +44,6 @@ case class EstablisherIndividualDetails(
     )
 
   override def completeFlag(answers: UserAnswers): Option[Boolean] =
-    Some(answers.isEstablisherIndividualDetailsCompleted(index, answers))
+    Some(answers.isEstablisherIndividualDetailsCompleted(index))
 }
 
