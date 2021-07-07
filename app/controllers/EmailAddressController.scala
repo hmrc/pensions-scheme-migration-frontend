@@ -50,7 +50,7 @@ trait EmailAddressController
            id: TypedIdentifier[String],
            form: Form[String],
            schemeName: String,
-           paragraphText: Seq[String] = Seq(),
+           paragraphText: Seq[String] = Seq()
          )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     renderer.render(
