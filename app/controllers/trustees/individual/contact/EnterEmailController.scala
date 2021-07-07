@@ -21,8 +21,8 @@ import controllers.EmailAddressController
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.EmailFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.trustees.individual.contact.EnterEmailId
 import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.individual.contact.EnterEmailId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import navigators.CompoundNavigator
@@ -30,7 +30,6 @@ import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -66,11 +65,9 @@ class EnterEmailController @Inject()(
             get(
               entityName = name(index),
               entityType = Messages("messages__individual"),
-              isPageHeading = false,
               id            = EnterEmailId(index),
               form          = form(index),
               schemeName    = schemeName,
-              legendClass   = "govuk-visually-hidden",
               paragraphText = Seq(Messages("messages__contact_details__hint", name(index)))
             )
         }
@@ -84,11 +81,9 @@ class EnterEmailController @Inject()(
             post(
               entityName = name(index),
               entityType = Messages("messages__individual"),
-              isPageHeading = false,
               id            = EnterEmailId(index),
               form          = form(index),
               schemeName    = schemeName,
-              legendClass   = "govuk-visually-hidden",
               paragraphText = Seq(Messages("messages__contact_details__hint", name(index))),
               mode          = mode
             )
