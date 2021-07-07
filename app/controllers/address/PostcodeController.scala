@@ -38,13 +38,18 @@ import scala.concurrent.{ExecutionContext, Future}
 trait PostcodeController extends FrontendBaseController with Retrievals {
 
   protected def renderer: Renderer
+
   protected def userAnswersCacheConnector: UserAnswersCacheConnector
+
   protected def navigator: CompoundNavigator
+
   protected def form: Form[String]
+
   protected def addressLookupConnector: AddressLookupConnector
+
   protected def viewTemplate = "address/postcode.njk"
 
-  private def prepareJson(jsObject: JsObject):JsObject = {
+  private def prepareJson(jsObject: JsObject): JsObject = {
     if (jsObject.keys.contains("h1MessageKey")) {
       jsObject
     } else {
@@ -64,43 +69,17 @@ trait PostcodeController extends FrontendBaseController with Retrievals {
       formWithErrors =>
         renderer.render(viewTemplate, prepareJson(formToJson(formWithErrors))).map(BadRequest(_)),
       value =>
-          addressLookupConnector.addressLookupByPostCode(value).flatMap {
-            case Nil =>
-              val json = prepareJson(formToJson(formWithError(form, errorMessage)))
-                renderer.render(viewTemplate, json).map(BadRequest(_))
+        addressLookupConnector.addressLookupByPostCode(value).flatMap {
+          case Nil =>
+            val json = prepareJson(formToJson(formWithError(form, errorMessage)))
+            renderer.render(viewTemplate, json).map(BadRequest(_))
 
-            case addresses =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(postcodeId, addresses))
-                _ <- userAnswersCacheConnector.save(request.lock,updatedAnswers.data)
-              } yield Redirect(navigator.nextPage(postcodeId, updatedAnswers))
-          }
+          case addresses =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(postcodeId, addresses))
+              _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+            } yield Redirect(navigator.nextPage(postcodeId, updatedAnswers))
+        }
     )
   }
-
-  private def countryJsonElement(tuple: (String, String), isSelected: Boolean): JsArray = Json.arr(
-    if (isSelected) {
-      Json.obj(
-        "value" -> tuple._1,
-        "text" -> tuple._2,
-        "selected" -> true
-      )
-    } else {
-      Json.obj(
-        "value" -> tuple._1,
-        "text" -> tuple._2
-      )
-    }
-  )
-
-  def jsonCountries(countrySelected: Option[String], config: AppConfig)(implicit messages: Messages): JsArray =
-    config.validCountryCodes
-      .map(countryCode => (countryCode, messages(s"country.$countryCode")))
-      .sortWith(_._2 < _._2)
-      .foldLeft(JsArray(Seq(Json.obj("value" -> "", "text" -> "")))) { (acc, nextCountryTuple) =>
-        acc ++ countryJsonElement(nextCountryTuple, countrySelected.contains(nextCountryTuple._1))
-      }
-
 }
-
-

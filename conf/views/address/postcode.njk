@@ -33,12 +33,12 @@
               isPageHeading: true,
               classes: "govuk-label--xl"
             },
-            id: "value",
-            name: "value",
-            value: form.value.value,
+            id: "postcode",
+            name: "postcode",
+            value: form.postcode.value,
             classes: "govuk-input--width-10",
             attributes: {autocomplete: "off"},
-            errorMessage: form.value.error
+            errorMessage: form.postcode.error
           }) }}
          <p class="govuk-body">
                     {{ messages("postcode.youCan") }} <a id="manual-address-link" href="{{ enterManuallyUrl }}" class="govuk-link">{{ messages("address.linkText.enterManually") }}</a>.

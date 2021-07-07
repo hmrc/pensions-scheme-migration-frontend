@@ -54,11 +54,11 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with NunjucksSuppor
   private val httpPathPOST: String = controllers.trustees.individual.address.routes.EnterPostcodeController.onSubmit(0).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
-    "value" -> Seq("ZZ11ZZ")
+    "postcode" -> Seq("ZZ11ZZ")
   )
 
   private val valuesInvalid: Map[String, Seq[String]] = Map(
-    "value" -> Seq.empty
+    "postcode" -> Seq.empty
   )
 
   override def beforeEach: Unit = {
