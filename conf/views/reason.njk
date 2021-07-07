@@ -13,7 +13,7 @@
 {% macro labelClass(isPageheading) %}
     {% if isPageHeading %}
         govuk-label--xl
-    {% elif not isPageHeaidng %}
+    {% elif not isPageHeading %}
         govuk-fieldset__legend--s
     {% endif %}
 {% endmacro %}
@@ -56,7 +56,7 @@
                     attributes: {
                         autocomplete: "off"
                     },
-                    errorMessage: form.error
+                    errorMessage: form.value.error
                 }) }}
 
                 {{ govukButton({

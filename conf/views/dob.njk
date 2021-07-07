@@ -22,10 +22,6 @@
                 }) }}
             {% endif %}
 
-            <h1 class="govuk-heading-xl">
-                {{ messages("messages__dob__h1", name) }}
-            </h1>
-
             <form method="post"
                   autocomplete="off"
                   action="{{ submitUrl }}"
@@ -38,8 +34,8 @@
                     fieldset: {
                         legend: {
                             text: messages("messages__dob__h1", name),
-                            isPageHeading: false,
-                            classes: "govuk-visually-hidden"
+                            isPageHeading: true,
+                            classes: "govuk-fieldset__legend--xl govuk-!-margin-bottom-8"
                         }
                     },
                     errorMessage: date.error,
