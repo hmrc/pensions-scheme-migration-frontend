@@ -58,8 +58,7 @@ class EnterEmailControllerSpec extends ControllerSpecBase
     Json.obj(
       "entityName" -> personName.fullName,
       "entityType" -> Messages("messages__individual"),
-      "schemeName" -> Data.schemeName,
-      "isPageHeading" -> false
+      "schemeName" -> Data.schemeName
     )
   private val formData: String = email
 
