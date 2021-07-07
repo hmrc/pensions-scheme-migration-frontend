@@ -19,20 +19,20 @@ package navigators
 import base.SpecBase
 import controllers.trustees.individual.details.{routes => detailsRoutes}
 import controllers.trustees.routes
-import identifiers.trustees.TrusteeKindId
+import identifiers.trustees.{AddTrusteeId, TrusteeKindId}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address._
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.details._
 import identifiers.{Identifier, TypedIdentifier}
 import models.trustees.TrusteeKind
-import models.{Index, Mode, NormalMode, PersonName, _}
+import models.{PersonName, Mode, Index, NormalMode, _}
 import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes
 import play.api.mvc.Call
 import utils.Data.ua
-import utils.{Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable}
 
 import java.time.LocalDate
 
@@ -49,7 +49,6 @@ class TrusteesNavigatorSpec
   private val uaWithTrusteeKind: TrusteeKind => UserAnswers = kind => UserAnswers().set(TrusteeKindId(index), kind).get
   private val indvDetailsUa: UserAnswers = uaWithTrusteeKind(TrusteeKind.Individual).set(TrusteeNameId(0), PersonName("Jane", "Doe")).success.value
   private val trusteeNamePage: Call = controllers.trustees.individual.routes.TrusteeNameController.onPageLoad(index)
-  private def trusteeEmailPage(mode: Mode): Call = controllers.trustees.individual.contact.routes.EnterEmailController.onPageLoad(index, mode)
   private def trusteePhonePage(mode: Mode): Call = controllers.trustees.individual.contact.routes.EnterPhoneController.onPageLoad(index, mode)
   private val addTrusteePage: Call = controllers.trustees.routes.AddTrusteeController.onPageLoad()
   private val taskListPage: Call = controllers.routes.TaskListController.onPageLoad()
@@ -104,10 +103,10 @@ class TrusteesNavigatorSpec
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
         row(TrusteeKindId(index))(trusteeNamePage, Some(uaWithTrusteeKind(TrusteeKind.Individual))),
-        //row(TrusteeKindId(index))(indexPage, Some(uaWithTrusteeKind(TrusteeKind.Company))),
-        //row(TrusteeNameId(index))(addTrusteePage),
-        //row(AddTrusteeId(Some(true)))(trusteeKindPage),
-        //row(AddTrusteeId(Some(false)))(taskListPage),
+        row(TrusteeKindId(index))(indexPage, Some(uaWithTrusteeKind(TrusteeKind.Company))),
+        row(TrusteeNameId(index))(addTrusteePage),
+        row(AddTrusteeId(Some(true)))(trusteeKindPage),
+        row(AddTrusteeId(Some(false)))(taskListPage),
         row(TrusteeDOBId(index))(hasNinoPage(NormalMode), Some(detailsUa.set(TrusteeDOBId(index), LocalDate.parse("2000-01-01")).success.value)),
         row(TrusteeHasNINOId(index))(enterNinoPage(NormalMode), Some(detailsUa.set(TrusteeHasNINOId(index), true).success.value)),
         row(TrusteeHasNINOId(index))(noNinoPage(NormalMode), Some(detailsUa.set(TrusteeHasNINOId(index), false).success.value)),
@@ -117,7 +116,7 @@ class TrusteesNavigatorSpec
         row(TrusteeHasUTRId(index))(noUtrPage(NormalMode), Some(detailsUa.set(TrusteeHasUTRId(index), false).success.value)),
         row(TrusteeUTRId(index))(cya, Some(detailsUa.set(TrusteeUTRId(index), ReferenceValue("1234567890")).success.value)),
         row(TrusteeNoUTRReasonId(index))(cya, Some(detailsUa.set(TrusteeNoUTRReasonId(index), "Reason").success.value)),
-        row(EnterEmailId(index))(trusteePhonePage(NormalMode), Some(indvDetailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
+
         row(EnterPostCodeId(index))(selectAddress(NormalMode), addressUAWithValue(EnterPostCodeId(index), seqAddresses)),
         row(AddressListId(index))(addressYears(NormalMode), addressUAWithValue(AddressListId(index), 0)),
         row(AddressId(index))(addressYears(NormalMode), addressUAWithValue(AddressId(index), address)),
