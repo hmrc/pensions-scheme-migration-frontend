@@ -27,7 +27,7 @@ class MutableFakeDataRetrievalAction extends DataRetrievalAction {
   def setDataToReturn(userAnswers: Option[UserAnswers]): Unit = dataToReturn = userAnswers
 
   override protected def transform[A](request: AuthenticatedRequest[A]): Future[OptionalDataRequest[A]] = {
-    Future(OptionalDataRequest(request.request, dataToReturn, request.psaId, Data.migrationLock))
+    Future(OptionalDataRequest(request.request, dataToReturn, request.psaId, Some(Data.migrationLock)))
   }
 
   override protected implicit val executionContext: ExecutionContext =

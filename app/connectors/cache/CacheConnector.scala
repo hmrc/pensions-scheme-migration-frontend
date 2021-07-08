@@ -24,7 +24,9 @@ object CacheConnector {
   val names: HeaderCarrier => Seq[String] = hc => Seq(hc.names.authorisation, hc.names.xRequestId, hc.names.xSessionId)
 
   val headers: HeaderCarrier => Seq[(String, String)] =
-    hc => hc.headers(CacheConnector.names(hc))
+    hc => hc.headers(CacheConnector.names(hc)) ++ hc.withExtraHeaders(
+      ("content-type", "application/json")
+    ).extraHeaders
 
   val lockHeaders: (HeaderCarrier, MigrationLock) => Seq[(String, String)] =
     (hc, lock) => hc.headers(CacheConnector.names(hc)) ++ hc.withExtraHeaders(

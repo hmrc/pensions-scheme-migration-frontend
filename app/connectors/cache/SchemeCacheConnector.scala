@@ -43,7 +43,7 @@ class SchemeCacheConnectorImpl @Inject()(config: AppConfig, http: WSClient) exte
 
   def fetch(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[JsValue]] =
     http
-      .url(config.dataCacheUrl)
+      .url(config.schemeDataCacheUrl)
       .withHttpHeaders(headers(hc): _*)
       .get()
       .flatMap { response =>
@@ -60,7 +60,7 @@ class SchemeCacheConnectorImpl @Inject()(config: AppConfig, http: WSClient) exte
   def save(value: JsValue)
           (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] =
     http
-      .url(config.dataCacheUrl)
+      .url(config.schemeDataCacheUrl)
       .withHttpHeaders(headers(hc): _*)
       .post(PlainText(Json.stringify(value)).value)
       .flatMap { response =>
@@ -74,7 +74,7 @@ class SchemeCacheConnectorImpl @Inject()(config: AppConfig, http: WSClient) exte
 
   def remove(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result] =
     http
-      .url(config.dataCacheUrl)
+      .url(config.schemeDataCacheUrl)
       .withHttpHeaders(headers(hc): _*)
       .delete()
       .map(_ => Ok)

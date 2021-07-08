@@ -17,13 +17,14 @@
 package controllers.actions
 
 import base.SpecBase
+import controllers.routes
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc._
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
-import uk.gov.hmrc.auth.core.{Enrolments, EnrolmentIdentifier, Enrolment, AuthConnector}
+import uk.gov.hmrc.auth.core.{AuthConnector, BearerTokenExpired, Enrolment, EnrolmentIdentifier, Enrolments, InsufficientConfidenceLevel, InsufficientEnrolments, MissingBearerToken, UnsupportedAffinityGroup, UnsupportedAuthProvider, UnsupportedCredentialRole}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -39,7 +40,7 @@ class AuthActionSpec
   "Auth Action" when {
     "the user has valid credentials" must {
       "return OK" in {
-        val authAction = new AuthActionImpl(fakeAuthConnector(authRetrievals()), parser)
+        val authAction = new AuthActionImpl(fakeAuthConnector(authRetrievals()), parser, appConfig)
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(fakeRequest)
@@ -48,7 +49,7 @@ class AuthActionSpec
     }
     "the user does not have valid enrolments" must {
       "redirect to unauthorised" in {
-        val authAction = new AuthActionImpl(fakeAuthConnector(emptyAuthRetrievals), parser)
+        val authAction = new AuthActionImpl(fakeAuthConnector(emptyAuthRetrievals), parser, appConfig)
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(fakeRequest)
@@ -57,11 +58,81 @@ class AuthActionSpec
     }
     "the user does not have valid id" must {
       "redirect to unauthorised" in {
-        val authAction = new AuthActionImpl(fakeAuthConnector(erroneousRetrievals), parser)
+        val authAction = new AuthActionImpl(fakeAuthConnector(erroneousRetrievals), parser, appConfig)
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
+      }
+    }
+
+    "the user hasn't logged in" must {
+      "redirect the user to log in " in {
+        val authAction = new AuthActionImpl(fakeAuthConnector(Future.failed(new MissingBearerToken)), parser, appConfig)
+        val controller = new Harness(authAction)
+        val result = controller.onPageLoad()(fakeRequest)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).get must startWith(appConfig.loginUrl)
+      }
+    }
+
+    "the user's session has expired" must {
+      "redirect the user to log in " in {
+        val authAction = new AuthActionImpl(fakeAuthConnector(Future.failed(new BearerTokenExpired)), parser, appConfig)
+        val controller = new Harness(authAction)
+        val result = controller.onPageLoad()(fakeRequest)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).get must startWith(appConfig.loginUrl)
+      }
+    }
+
+    "the user doesn't have sufficient enrolments" must {
+      "redirect the user to the unauthorised page" in {
+        val authAction = new AuthActionImpl(fakeAuthConnector(Future.failed(new InsufficientEnrolments)), parser, appConfig)
+        val controller = new Harness(authAction)
+        val result = controller.onPageLoad()(fakeRequest)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+      }
+    }
+
+    "the user doesn't have sufficient confidence level" must {
+      "redirect the user to the unauthorised page" in {
+        val authAction = new AuthActionImpl(fakeAuthConnector(Future.failed(new InsufficientConfidenceLevel)), parser, appConfig)
+        val controller = new Harness(authAction)
+        val result = controller.onPageLoad()(fakeRequest)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+      }
+    }
+
+    "the user used an unaccepted auth provider" must {
+      "redirect the user to the unauthorised page" in {
+        val authAction = new AuthActionImpl(fakeAuthConnector(Future.failed(new UnsupportedAuthProvider)), parser, appConfig)
+        val controller = new Harness(authAction)
+        val result = controller.onPageLoad()(fakeRequest)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+      }
+    }
+
+    "the user has an unsupported affinity group" must {
+      "redirect the user to the unauthorised page" in {
+        val authAction = new AuthActionImpl(fakeAuthConnector(Future.failed(new UnsupportedAffinityGroup)), parser, appConfig)
+        val controller = new Harness(authAction)
+        val result = controller.onPageLoad()(fakeRequest)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+      }
+    }
+
+    "the user has an unsupported credential administratorOrPractitioner" must {
+      "redirect the user to the unauthorised page" in {
+        val authAction = new AuthActionImpl(fakeAuthConnector(Future.failed(new UnsupportedCredentialRole)), parser, appConfig)
+        val controller = new Harness(authAction)
+        val result = controller.onPageLoad()(fakeRequest)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
       }
     }
   }
