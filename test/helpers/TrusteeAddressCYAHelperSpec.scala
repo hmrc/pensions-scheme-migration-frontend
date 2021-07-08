@@ -18,8 +18,8 @@ package helpers
 
 import base.SpecBase._
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.address.{AddressYearsId, PreviousAddressId, AddressId}
+import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.individual.address.{AddressYearsId, PreviousAddressId, AddressId}
 import models.requests.DataRequest
 import models.{PersonName, Address, MigrationLock}
 import org.scalatest.{TryValues, MustMatchers, WordSpec}
@@ -32,16 +32,16 @@ import utils.Data.{pstr, schemeName, psaId, credId}
 import utils.{UserAnswers, Enumerable}
 import uk.gov.hmrc.viewmodels.Text.{Literal, Message => GovUKMsg}
 
-class EstablisherAddressCYAHelperSpec extends WordSpec with MustMatchers with TryValues with Enumerable.Implicits {
+class TrusteeAddressCYAHelperSpec extends WordSpec with MustMatchers with TryValues with Enumerable.Implicits {
 
-  val establisherAddressCYAHelper = new EstablisherAddressCYAHelper
+  val trusteeAddressCYAHelper = new TrusteeAddressCYAHelper
 
   private def dataRequest(ua: UserAnswers) = DataRequest[AnyContent](request = fakeRequest, userAnswers = ua,
     psaId = PsaId(psaId), lock = MigrationLock(pstr = pstr, credId = credId, psaId = psaId), viewOnly = false)
 
-  private val establisherName = PersonName("test", "establisher")
-  private val establisherAddress = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
-  private val establisherPreviousAddress = Address("prevaddr1", "prevaddr2", None, None, Some("ZZ11ZZ"), "GB")
+  private val trusteeName = PersonName("test", "trustee")
+  private val trusteeAddress = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
+  private val trusteePreviousAddress = Address("prevaddr1", "prevaddr2", None, None, Some("ZZ11ZZ"), "GB")
 
   case class Link(text: String, target: String, visuallyHiddenText: Option[Text] = None,
     attributes: Map[String, String] = Map.empty)
@@ -69,34 +69,34 @@ class EstablisherAddressCYAHelperSpec extends WordSpec with MustMatchers with Tr
   private def answerAddressTransform(addr: Address)(implicit messages: Messages): Html = addressAnswer(addr)
 
   // scalastyle:off magic.number
-  "EstablisherAddressCYAHelper" must {
+  "TrusteeAddressCYAHelper" must {
     "return all rows with correct change link, value and visually hidden text" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, schemeName)
-        .setOrException(EstablisherNameId(0), establisherName)
-        .setOrException(AddressId(0), establisherAddress)
+        .setOrException(TrusteeNameId(0), trusteeName)
+        .setOrException(AddressId(0), trusteeAddress)
         .setOrException(AddressYearsId(0), false)
-        .setOrException(PreviousAddressId(0), establisherPreviousAddress)
+        .setOrException(PreviousAddressId(0), trusteePreviousAddress)
 
-      val result = establisherAddressCYAHelper.rows(0)(dataRequest(ua), messages)
+      val result = trusteeAddressCYAHelper.rows(0)(dataRequest(ua), messages)
 
-      result.head mustBe summaryListRowHtml(key = messages("messages__establisherAddress__whatYouWillNeed_h1", establisherName.fullName),
-        value = answerAddressTransform(establisherAddress), Some(Link(text = Messages("site.change"),
-          target = controllers.establishers.individual.address.routes.EnterPostcodeController.onPageLoad(0).url,
-          visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__address", establisherName.fullName))),
+      result.head mustBe summaryListRowHtml(key = messages("messages__trusteeAddress__whatYouWillNeed_h1", trusteeName.fullName),
+        value = answerAddressTransform(trusteeAddress), Some(Link(text = Messages("site.change"),
+          target = controllers.trustees.individual.address.routes.EnterPostcodeController.onPageLoad(0).url,
+          visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__address", trusteeName.fullName))),
           attributes = Map("id" -> "cya-0-0-change"))))
 
-      result(1) mustBe summaryListRow(key = Messages("establisherAddressYears.title", establisherName.fullName), valueMsgKey = "booleanAnswer.false",
+      result(1) mustBe summaryListRow(key = Messages("trusteeAddressYears.title", trusteeName.fullName), valueMsgKey = "booleanAnswer.false",
         Some(Link(text = Messages("site.change"),
-          target = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(0).url,
+          target = controllers.trustees.individual.address.routes.AddressYearsController.onPageLoad(0).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__visuallyhidden__establisherAddressYears", establisherName.fullName))),
+            Messages("messages__visuallyhidden__trusteeAddressYears", trusteeName.fullName))),
           attributes = Map("id" -> "cya-0-1-change"))))
 
-      result(2) mustBe summaryListRowHtml(key = messages("messages__establisherPreviousAddress"),
-        value = answerAddressTransform(establisherPreviousAddress), Some(Link(text = Messages("site.change"),
-          target = controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(0).url,
-          visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__previousAddress", establisherName.fullName))),
+      result(2) mustBe summaryListRowHtml(key = messages("messages__trusteePreviousAddress"),
+        value = answerAddressTransform(trusteePreviousAddress), Some(Link(text = Messages("site.change"),
+          target = controllers.trustees.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(0).url,
+          visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__previousAddress", trusteeName.fullName))),
           attributes = Map("id" -> "cya-0-2-change"))))
     }
   }

@@ -18,16 +18,16 @@ package controllers.establishers.individual.contact
 
 import connectors.cache.UserAnswersCacheConnector
 import controllers.EmailAddressController
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{DataRetrievalAction, DataRequiredAction, AuthAction}
 import forms.EmailFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.contact.EnterEmailId
 import models.requests.DataRequest
-import models.{Index, Mode}
+import models.{Mode, Index}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.{MessagesApi, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 

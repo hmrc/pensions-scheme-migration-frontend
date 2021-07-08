@@ -17,8 +17,8 @@
 package helpers
 
 import helpers.CYAHelper.getName
-import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.address.{AddressYearsId, PreviousAddressId, AddressId}
+import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.individual.address.{AddressYearsId, PreviousAddressId, AddressId}
 import models.requests.DataRequest
 import models.Index
 import play.api.i18n.Messages
@@ -28,7 +28,7 @@ import uk.gov.hmrc.viewmodels.SummaryList.Row
 import utils.{UserAnswers, Enumerable}
 import viewmodels.Message
 
-class EstablisherAddressCYAHelper
+class TrusteeAddressCYAHelper
   extends CYAHelper
     with Enumerable.Implicits {
 
@@ -39,21 +39,21 @@ class EstablisherAddressCYAHelper
                  ): Seq[Row] = {
     implicit val ua: UserAnswers =
       request.userAnswers
-    val establisherName: String =
-      getName(EstablisherNameId(index))
+    val trusteeName: String =
+      getName(TrusteeNameId(index))
 
     val seqRowAddressAndYears = Seq(
       answerOrAddRow(
         AddressId(index),
-        Message("messages__establisherAddress__whatYouWillNeed_h1", establisherName).resolve,
-        Some(controllers.establishers.individual.address.routes.EnterPostcodeController.onPageLoad(index).url),
-        Some(msg"messages__visuallyHidden__address".withArgs(establisherName)), answerAddressTransform
+        Message("messages__trusteeAddress__whatYouWillNeed_h1", trusteeName).resolve,
+        Some(controllers.trustees.individual.address.routes.EnterPostcodeController.onPageLoad(index).url),
+        Some(msg"messages__visuallyHidden__address".withArgs(trusteeName)), answerAddressTransform
       ),
       answerOrAddRow(
         AddressYearsId(index),
-        Message("establisherAddressYears.title", establisherName).resolve,
-        Some(controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index).url),
-        Some(msg"messages__visuallyhidden__establisherAddressYears".withArgs(establisherName)), answerBooleanTransform
+        Message("trusteeAddressYears.title", trusteeName).resolve,
+        Some(controllers.trustees.individual.address.routes.AddressYearsController.onPageLoad(index).url),
+        Some(msg"messages__visuallyhidden__trusteeAddressYears".withArgs(trusteeName)), answerBooleanTransform
       )
     )
 
@@ -63,9 +63,9 @@ class EstablisherAddressCYAHelper
       Seq(
         answerOrAddRow(
           PreviousAddressId(index),
-          Message("messages__establisherPreviousAddress").resolve,
-          Some(controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index).url),
-          Some(msg"messages__visuallyHidden__previousAddress".withArgs(establisherName)), answerAddressTransform
+          Message("messages__trusteePreviousAddress").resolve,
+          Some(controllers.trustees.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index).url),
+          Some(msg"messages__visuallyHidden__previousAddress".withArgs(trusteeName)), answerAddressTransform
         )
       )
     }

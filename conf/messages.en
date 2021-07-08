@@ -312,7 +312,7 @@ addressList.visuallyHidden = the address of the insurance company that secures t
 previousAddressList.title = What was the previous address for {0}?
 
 postcode.label = Postcode
-postcode.title = What is {0}ʼs postcode?
+postcode.title = What is {0}’s postcode?
 previousPostcode.title = What was {0}ʼs previous postcode?
 postcode.youCan = You can
 error.postcode.required = Enter the postcode
@@ -392,8 +392,8 @@ messages__individualName__title = What is the individual’s name?
 messages__confirmDelete__error_required = Select yes if you want to delete {0}
 messages__establisher__name_title = What is the establisher’s name?
 
-messages__establisherDetails__whatYouWillNeed_title = Adding establisher’s details
-messages__trusteeDetails__whatYouWillNeed_title = Adding trustee’s details
+messages__establisherDetails__whatYouWillNeed_title = The establisher’s details
+messages__trusteeDetails__whatYouWillNeed_title = The trustee’s details
 messages__establisherDetails__whatYouWillNeed_h1 = Details for {0}
 messages__establisherDetails__whatYouWillNeed_p = You will need to tell us {0}’s:
 messages__establisherDetails__whatYouWillNeed_li_1 = date of birth
@@ -410,13 +410,14 @@ messages__alreadyDeleted__p2 = This page no longer exists.
 
 establisherEntityTypeIndividual = the individual
 
+messages__establisherAddress__whatYouWillNeed_title = The establisher’s address
 messages__establisherAddress__whatYouWillNeed_h1 = Address for {0}
-messages__establisherAddress__whatYouWillNeed_title = Adding establisher’s address
 messages__establisherAddress__whatYouWillNeed_p = You will need to tell us {0}’s:
 messages__establisherAddress__whatYouWillNeed_li_1 = current address
 messages__establisherAddress__whatYouWillNeed_li_2 = previous address if {0} has used the current address for less than 1 year
 
-messages__individualContactDetails__whatYouWillNeed_title = Contact details for {0}
+messages__establisherIndividualContactDetails__whatYouWillNeed_title = The establisher’s contact details
+messages__establisherIndividualContactDetails__whatYouWillNeed_h1 = Contact details for {0}
 messages__individualContactDetails__whatYouWillNeed_p = You will need to tell us {0}’s:
 messages__individualContactDetails__whatYouWillNeed_li_1 = contact email address
 messages__individualContactDetails__whatYouWillNeed_li_2 = contact phone number
@@ -731,3 +732,33 @@ haveAnyTrustees.error.required = Select yes if the pension scheme has trustees
 messages__visuallyhidden__haveAnyTrustees = if {0} has any trustees
 
 messages__confirmDeleteTrustee__title = Are you sure you want to delete this trustee?
+
+messages__schemeTaskList__trusteeIndividualAddress_addLink = Add address for {0}
+
+messages__trusteePreviousAddress = Previous address
+
+trusteeEnterPostcode.required = Enter a postcode
+trusteeEnterPostcode.invalid = Enter a real postcode
+
+trusteeEnterPreviousPostcode.required = Enter the individual’s previous postcode
+trusteeEnterPreviousPostcode.invalid = Enter a real postcode
+
+trusteeSelectAddress.required = Select an address
+
+trusteeAddressYears.title = Has {0} used this address for at least 1 year?
+trusteeAddressYears.error.required = Select yes if the individual has used this address for more than 1 year
+messages__visuallyhidden__trusteeAddressYears = whether {0} has used this address for at least 1 year
+
+trusteeEntityTypeIndividual = the individual
+
+messages__schemeTaskList__trusteeIndividualAddress_addLink = Add address for {0}
+messages__schemeTaskList__trusteeIndividualAddress_changeLink = Change address for {0}
+
+messages__trusteeAddress__whatYouWillNeed_h1 = Address for {0}
+messages__trusteeAddress__whatYouWillNeed_title = The trustee’s address
+messages__trusteeAddress__whatYouWillNeed_p = You will need to tell us {0}’s:
+messages__trusteeAddress__whatYouWillNeed_li_1 = current address
+messages__trusteeAddress__whatYouWillNeed_li_2 = previous address if {0} has used the current address for less than 1 year
+
+messages__trusteeIndividualContactDetails__whatYouWillNeed_title = The trustee’s contact details
+messages__trusteeIndividualContactDetails__whatYouWillNeed_h1 = Contact details for {0}
