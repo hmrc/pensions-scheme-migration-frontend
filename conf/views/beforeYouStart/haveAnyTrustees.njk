@@ -28,15 +28,14 @@
 
           {{ csrf() | safe }}
 
-          <h1 class="govuk-heading-xl">{{ messages('haveAnyTrustees.h1', schemeName) }}</h1>
-
           {{ govukRadios({
             classes: "govuk-radios--inline",
             name: 'value',
             fieldset: {
               legend: {
-                isPageHeading: false,
-                classes: "govuk-fieldset__legend--xl"
+                text: messages('haveAnyTrustees.h1', schemeName),
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--xl govuk-!-margin-bottom-8"
               }
             },
             items: radios,

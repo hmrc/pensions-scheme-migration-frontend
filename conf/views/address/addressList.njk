@@ -7,6 +7,11 @@
 {% from "macros/title.njk"                         import title %}
 {% from "macros/returnLink.njk"                    import returnLink %}
 
+{% set hint %}
+    <p id="p1" class="govuk-body govuk-!-font-weight-regular">{{ messages("addressList.select") }}
+    <a href="{{ enterManuallyUrl }}" class="govuk-link">{{ messages("address.linkText.enterManually") }}</a>.</p>
+{% endset %}
+
 {% block pageTitle %}
   {{ title(messages(h1MessageKey, messages(entityType)), form.errors) }}
 {% endblock %}
@@ -23,12 +28,6 @@
           }) }}
         {% endif %}
 
-        <h1 class="govuk-heading-xl">{{messages(h1MessageKey, entityName)}}</h1>
-
-        <p class="govuk-body">
-          {{ messages("addressList.select") }} <a href="{{ enterManuallyUrl }}" class="govuk-link">{{ messages("address.linkText.enterManually") }}</a>.
-        </p>
-
         <form action="{{ submitUrl }}" method="post" autocomplete="off" novalidate>
 
           {{ csrf() | safe }}
@@ -37,11 +36,14 @@
             name: 'value',
             fieldset: {
               legend: {
-                text: messages('addressList.h1', entityName),
-                isPageHeading: false,
-                classes: "govuk-fieldset__legend--xl govuk-visually-hidden"
+                text: messages(h1MessageKey, entityName),
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--xl govuk-!-margin-bottom-8"
               }
             },
+            hint: {
+                            html: hint
+                          },
             items: addresses,
             errorMessage: form.value.error
           }) }}

@@ -313,7 +313,7 @@ previousAddressList.title = What was the previous address for {0}?
 
 postcode.label = Postcode
 postcode.title = What is {0}’s postcode?
-previousPostcode.title = What was {0}ʼs previous postcode?
+previousPostcode.title = What was {0}’s previous postcode?
 postcode.youCan = You can
 error.postcode.required = Enter the postcode
 error.postcode.invalid = Enter a valid postcode
