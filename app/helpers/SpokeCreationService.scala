@@ -18,8 +18,9 @@ package helpers
 
 import controllers.establishers.routes._
 import helpers.spokes.establishers.individual._
-import helpers.spokes.trustees.individual.{TrusteeIndividualContactDetails, TrusteeIndividualDetails}
+import helpers.spokes.trustees.individual.{TrusteeIndividualAddress, TrusteeIndividualContactDetails, TrusteeIndividualDetails}
 import helpers.spokes.{AboutMembersSpoke, BeforeYouStartSpoke, BenefitsAndInsuranceSpoke, Spoke}
+import models.Index._
 import models.{EntitySpoke, Index, TaskListLink}
 import play.api.i18n.Messages
 import utils.{Enumerable, UserAnswers}
@@ -104,7 +105,7 @@ class SpokeCreationService extends Enumerable.Implicits {
     (implicit messages: Messages): Seq[EntitySpoke] = {
     Seq(
       createSpoke(answers, TrusteeIndividualDetails(index, answers), name),
-      //createSpoke(answers, controllers.trustees.routes.TrusteeIndividualAddress(index, answers), name),
+      createSpoke(answers, TrusteeIndividualAddress(index, answers), name),
       createSpoke(answers, TrusteeIndividualContactDetails(index, answers), name)
     )
   }
