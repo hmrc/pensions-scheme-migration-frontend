@@ -17,7 +17,6 @@
 package identifiers.trustees.individual.details
 
 import identifiers.TypedIdentifier
-import identifiers.establishers.EstablishersId
 import identifiers.trustees.TrusteesId
 import models.ReferenceValue
 import play.api.libs.json.{Format, JsPath, Json}
