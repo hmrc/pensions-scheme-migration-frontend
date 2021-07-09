@@ -58,7 +58,7 @@ trait EnterReferenceValueController
          )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     renderer.render(
-      template = "enterReferenceValue.njk",
+      template = if(paragraphText.nonEmpty || hintText.nonEmpty )"enterReferenceValueWithHint.njk" else "enterReferenceValue.njk",
       ctx = Json.obj(
         "pageTitle"     -> pageTitle,
         "pageHeading" -> pageHeading,
@@ -87,7 +87,7 @@ trait EnterReferenceValueController
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
         renderer.render(
-          template = "enterReferenceValue.njk",
+          template = if(paragraphText.nonEmpty || hintText.nonEmpty ) "enterReferenceValue.njk" else "enterReferenceValue.njk",
           ctx = Json.obj(
             "pageTitle"     -> pageTitle,
             "pageHeading" -> pageHeading,

@@ -64,7 +64,7 @@ trait HasReferenceValueController
       }
 
     renderer.render(
-      template = "hasReferenceValue.njk",
+      template = if(paragraphText.nonEmpty)"hasReferenceValueWithHint.njk" else "hasReferenceValue.njk",
       ctx = Json.obj(
         "pageTitle"     -> pageTitle,
         "pageHeading"   -> pageHeading,
@@ -93,7 +93,7 @@ trait HasReferenceValueController
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
         renderer.render(
-          template = "hasReferenceValue.njk",
+          template = if(paragraphText.nonEmpty)"hasReferenceValueWithHint.njk" else "hasReferenceValue.njk",
           ctx = Json.obj(
             "pageTitle"     -> pageTitle,
             "pageHeading"   -> pageHeading,

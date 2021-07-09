@@ -22,18 +22,6 @@
                 }) }}
             {% endif %}
 
-            {% if not isPageHeading %}
-                <h1 class="govuk-heading-xl">
-                    {{ pageHeading }}
-                </h1>
-            {% endif %}
-
-            {% for paragraph in paragraphs %}
-                <p class="govuk-body">
-                    {{ paragraph }}
-                </p>
-            {% endfor %}
-
             <form method="post"
                   autocomplete="off"
                   action="{{ submitUrl }}"
@@ -45,7 +33,7 @@
                     label: {
                         text: pageHeading,
                         isPageHeading: isPageHeading,
-                        classes: legendClass
+                        classes: "govuk-label--xl govuk-!-margin-bottom-8"
                     },
                     id: "value",
                     name: "value",
