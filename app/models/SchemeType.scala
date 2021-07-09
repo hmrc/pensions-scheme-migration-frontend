@@ -26,34 +26,39 @@ import viewmodels.forNunjucks._
 sealed trait SchemeType
 
 object SchemeType {
-  val values = Seq(
-    SingleTrust,
-    GroupLifeDeath,
-    BodyCorporate
-  )
-  val mappings: Map[String, SchemeType] = values.map(v => (v.toString, v)).toMap
-
-
-
-
-  def radios(form: Form[_])(implicit messages: Messages): Seq[Radios.Item] = {
-    val items: Seq[Radios.Radio] = values.map(value =>
-      Radios.Radio(msg"messages__scheme_type_${value.toString}",
-        value.toString,
-        Some(Hint(msg"messages__scheme_type_${value.toString}_hint", "hint-id")),
-        labelClasses = Some(LabelClasses(Seq("govuk-!-font-weight-bold")))
-      ))
-
-    val input = TextInput(
-      "schemeType.schemeTypeDetails",
-      form("schemeType.schemeTypeDetails").value.getOrElse(""),
-      "schemeType.schemeTypeDetails",
-      Label(msg"messages__scheme_details__type_other_more",  Seq("govuk-label govuk-label--s"))
+  val values: Seq[WithName with SchemeType] =
+    Seq(
+      SingleTrust,
+      GroupLifeDeath,
+      BodyCorporate
     )
 
-    val otherItem: Radios.Radio = Radios.Radio(msg"messages__scheme_type_other", Other.toString.toLowerCase,
-        Some(Hint(msg"messages__scheme_type_other_hint", "hint-id")),
-      Some(Conditional(TextInput.inputHtml(input, messages))),
+  val mappings: Map[String, SchemeType] =
+    values.map(v => (v.toString, v)).toMap
+
+  def radios(form: Form[_])(implicit messages: Messages): Seq[Radios.Item] = {
+    val items: Seq[Radios.Radio] = values.map(
+      value =>
+        Radios.Radio(
+          label = msg"messages__scheme_type_${value.toString}",
+          value = value.toString,
+          hint = Some(Hint(msg"messages__scheme_type_${value.toString}_hint", "hint-id")),
+          labelClasses = Some(LabelClasses(Seq("govuk-!-font-weight-bold")))
+        )
+    )
+
+    val input = TextInput(
+      id = "schemeType.schemeTypeDetails",
+      value = form("schemeType.schemeTypeDetails").value.getOrElse(""),
+      name = "schemeType.schemeTypeDetails",
+      label = Label(msg"messages__scheme_details__type_other_more", Seq("govuk-label govuk-label--s"))
+    )
+
+    val otherItem: Radios.Radio = Radios.Radio(
+      label = msg"messages__scheme_type_other",
+      value = Other.toString.toLowerCase,
+      hint = Some(Hint(msg"messages__scheme_type_other_hint", "hint-id")),
+      conditional = Some(Conditional(TextInput.inputHtml(input, messages))),
       labelClasses = Some(LabelClasses(Seq("govuk-!-font-weight-bold")))
     )
 
@@ -61,12 +66,21 @@ object SchemeType {
   }
 
   def getSchemeType(schemeTypeStr: Option[String]): Option[String] =
-      schemeTypeStr.flatMap { schemeStr =>
-        List(SingleTrust.toString, GroupLifeDeath.toString, BodyCorporate.toString, "other").find(scheme =>
-          schemeStr.toLowerCase.contains(scheme.toLowerCase)).map { str =>
-          s"messages__scheme_details__type_$str"
+    schemeTypeStr.flatMap {
+      schemeStr =>
+        List(
+          SingleTrust.toString,
+          GroupLifeDeath.toString,
+          BodyCorporate.toString,
+          "other"
+        ).find(
+          scheme =>
+            schemeStr.toLowerCase.contains(scheme.toLowerCase)
+        ).map {
+          str =>
+            s"messages__scheme_details__type_$str"
         }
-      }
+    }
 
   case class Other(schemeTypeDetails: String) extends WithName("other") with SchemeType
 

@@ -34,58 +34,69 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SchemeTypeController @Inject()(override val messagesApi: MessagesApi,
-                                     userAnswersCacheConnector: UserAnswersCacheConnector,
-                                     navigator: CompoundNavigator,
-                                     authenticate: AuthAction,
-                                     getData: DataRetrievalAction,
-                                     requireData: DataRequiredAction,
-                                     formProvider: SchemeTypeFormProvider,
-                                     val controllerComponents: MessagesControllerComponents,
-                                     renderer: Renderer
-                                    )(implicit val executionContext: ExecutionContext) extends FrontendBaseController
-  with I18nSupport with Retrievals with NunjucksSupport {
+class SchemeTypeController @Inject()(
+                                      override val messagesApi: MessagesApi,
+                                      userAnswersCacheConnector: UserAnswersCacheConnector,
+                                      navigator: CompoundNavigator,
+                                      authenticate: AuthAction,
+                                      getData: DataRetrievalAction,
+                                      requireData: DataRequiredAction,
+                                      formProvider: SchemeTypeFormProvider,
+                                      val controllerComponents: MessagesControllerComponents,
+                                      renderer: Renderer
+                                    )(implicit val executionContext: ExecutionContext)
+  extends FrontendBaseController
+    with I18nSupport
+    with Retrievals
+    with NunjucksSupport {
 
   private val form = formProvider()
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
-    implicit request =>
-      SchemeNameId.retrieve.right.map { schemeName =>
-        val preparedForm = request.userAnswers.get(SchemeTypeId) match {
-          case None => form
-          case Some(value) => form.fill(value)
+  def onPageLoad: Action[AnyContent] =
+    (authenticate andThen getData andThen requireData).async {
+      implicit request =>
+        SchemeNameId.retrieve.right.map {
+          schemeName =>
+            val preparedForm = request.userAnswers.get(SchemeTypeId) match {
+              case None        => form
+              case Some(value) => form.fill(value)
+            }
+
+            renderer.render(
+              template = "beforeYouStart/schemeType.njk",
+              ctx = Json.obj(
+                "schemeName" -> schemeName,
+                "form"       -> preparedForm,
+                "radios"     -> SchemeType.radios(preparedForm)
+              )
+            ).map(Ok(_))
         }
+    }
 
-
-        val json = Json.obj(
-          "schemeName" -> schemeName,
-          "form" -> preparedForm,
-          "radios" -> SchemeType.radios(preparedForm)
+  def onSubmit: Action[AnyContent] =
+    (authenticate andThen getData andThen requireData).async {
+      implicit request =>
+        form.bindFromRequest().fold(
+          (formWithErrors: Form[_]) =>
+            SchemeNameId.retrieve.right.map {
+              schemeName =>
+                println(s"\n\n\n\n\n$formWithErrors\n\n\n\n\n\n")
+                renderer.render(
+                  template = "beforeYouStart/schemeType.njk",
+                  ctx = Json.obj(
+                    "schemeName" -> schemeName,
+                    "form"       -> formWithErrors,
+                    "radios"     -> SchemeType.radios(formWithErrors)
+                  )
+                ).map(BadRequest(_))
+            },
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(SchemeTypeId, value))
+              _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+            } yield Redirect(navigator.nextPage(SchemeTypeId, updatedAnswers))
         )
-
-        renderer.render("beforeYouStart/schemeType.njk", json).map(Ok(_))
-      }
-  }
-
-  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
-    implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          SchemeNameId.retrieve.right.map { schemeName =>
-            val json = Json.obj(
-              "schemeName" -> schemeName,
-              "form" -> formWithErrors,
-              "radios" -> SchemeType.radios(formWithErrors)
-            )
-            renderer.render("beforeYouStart/schemeType.njk", json).map(BadRequest(_))
-          },
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(SchemeTypeId, value))
-            _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
-          } yield Redirect(navigator.nextPage(SchemeTypeId, updatedAnswers))
-      )
-  }
+    }
 
 
 }

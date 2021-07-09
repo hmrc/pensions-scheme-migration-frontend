@@ -16,14 +16,11 @@
 
 package utils.datacompletion
 
-import identifiers.trustees.TrusteeKindId
-import identifiers.trustees.individual.TrusteeNameId
-import identifiers.trustees.individual.details._
-import models.trustees.TrusteeKind
-import models.{PersonName, ReferenceValue}
-import org.scalatest.{MustMatchers, OptionValues, TryValues, WordSpec}
-import utils.{Data, Enumerable, UserAnswers}
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
+import identifiers.trustees.individual.details._
+import models.ReferenceValue
+import org.scalatest.{MustMatchers, OptionValues, TryValues, WordSpec}
+import utils.{Enumerable, UserAnswers}
 
 import java.time.LocalDate
 
