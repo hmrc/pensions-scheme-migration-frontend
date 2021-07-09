@@ -7,10 +7,13 @@
 {% from "macros/returnLink.njk"                     import returnLink %}
 {% from "macros/title.njk"                         import title %}
 
+{% set hint %}
+    <p id="p1" class="govuk-body govuk-!-font-weight-regular">{{ paragraph }}</p>
+{% endset %}
+
 {% block pageTitle %}
     {{ title(messages("messages__enterEmail", entityType), form.errors) }}
 {% endblock %}
-
 
 {% block mainContent %}
 
@@ -24,19 +27,6 @@
           }) }}
         {% endif %}
 
-        {% if not isPageHeading %}
-                        <h1 class="govuk-heading-xl">
-                            {{ messages('messages__enterEmail', entityName) }}
-                        </h1>
-                    {% endif %}
-
-         {% for paragraph in paragraphs %}
-                         <p class="govuk-body">
-                             {{ paragraph }}
-                         </p>
-                     {% endfor %}
-
-
 <form method="post"
                   autocomplete="off"
                   action="{{ submitUrl }}"
@@ -46,15 +36,16 @@
 
                 {{ govukInput({
                                     label: {
-                                        text: pageTitle,
-                                        isPageHeading: isPageHeading,
-                                        classes: legendClass
+                                        text: messages('messages__enterEmail', entityName),
+                                        isPageHeading: true,
+                                        classes: "govuk-label--xl govuk-!-margin-bottom-8"
                                     },
+                                    hint: { html: hint },
                                     id: "value",
                                     name: "value",
                                     value: form.value.value,
                                     classes: "govuk-input--width-10",
-                                    errorMessage: form.error
+                                    errorMessage: form.value.error
                                 }) }}
 
                 {{ govukButton({

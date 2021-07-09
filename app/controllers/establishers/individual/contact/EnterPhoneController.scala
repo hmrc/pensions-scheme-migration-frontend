@@ -65,11 +65,9 @@ class EnterPhoneController @Inject()(
             get(
               entityName = name(index),
               entityType = Messages("messages__individual"),
-              isPageHeading = false,
               id = EnterPhoneId(index),
               form = form(index),
               schemeName = schemeName,
-              legendClass = "govuk-visually-hidden",
               paragraphText = Seq(Messages("messages__contact_details__hint", name(index)))
             )
         }
@@ -83,11 +81,9 @@ class EnterPhoneController @Inject()(
             post(
               entityName = name(index),
               entityType = Messages("messages__individual"),
-              isPageHeading = false,
               id = EnterPhoneId(index),
               form = form(index),
               schemeName = schemeName,
-              legendClass = "govuk-visually-hidden",
               paragraphText = Seq(Messages("messages__contact_details__hint", name(index))),
               mode = mode
             )

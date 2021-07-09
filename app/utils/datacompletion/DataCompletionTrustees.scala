@@ -18,8 +18,9 @@ package utils.datacompletion
 
 import identifiers.trustees.TrusteeKindId
 import identifiers.trustees.individual.TrusteeNameId
-import identifiers.trustees.individual.details._
+import identifiers.trustees.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
+import identifiers.trustees.individual.details._
 import utils.UserAnswers
 
 trait DataCompletionTrustees extends DataCompletion {
@@ -43,6 +44,19 @@ trait DataCompletionTrustees extends DataCompletion {
       )
     ).getOrElse(false)
 
+  def isTrusteeIndividualAddressCompleted(
+                                           index: Int,
+                                           userAnswers: UserAnswers
+                                         ): Option[Boolean] = {
+    val atAddressMoreThanOneYear = userAnswers.get(AddressYearsId(index)).contains(true)
+    isComplete(
+      Seq(
+        isAnswerComplete(AddressId(index)),
+        isAnswerComplete(AddressYearsId(index)),
+        if (atAddressMoreThanOneYear) Some(true) else isAnswerComplete(PreviousAddressId(index))
+      )
+    )
+  }
   def isTrusteeIndividualContactDetailsCompleted(index: Int): Option[Boolean] =
     isComplete(
       Seq(

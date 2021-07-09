@@ -17,24 +17,19 @@
 package navigators
 
 import controllers.routes._
-import controllers.trustees.individual.details.routes._
-import controllers.routes._
 import controllers.trustees.individual.contact.routes._
+import controllers.trustees.individual.details.routes._
+import controllers.trustees.individual.address.routes.{SelectAddressController, EnterPreviousPostcodeController, SelectPreviousAddressController}
 import controllers.trustees.individual.routes._
 import controllers.trustees.routes._
 import identifiers._
-import identifiers.establishers.individual.details._
 import identifiers.trustees._
 import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.individual.address._
+import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.details._
 import models.requests.DataRequest
-import identifiers.trustees.individual.TrusteeNameId
-import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
-import models.requests.DataRequest
 import models.trustees.TrusteeKind
-import models.{Index, NormalMode}
-import play.api.mvc.{AnyContent, Call}
-import utils.{Enumerable, UserAnswers}
 import models.{CheckMode, Index, Mode, NormalMode}
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
@@ -57,8 +52,17 @@ class TrusteesNavigator
     case TrusteeHasUTRId(index) => trusteeHasUtr(index, ua, NormalMode)
     case TrusteeUTRId(index) => cyaDetails(index)
     case TrusteeNoUTRReasonId(index) => cyaDetails(index)
+    case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index)
+    case AddressListId(index) => addressYears(index, NormalMode)
+    case AddressId(index) => addressYears(index, NormalMode)
+    case AddressYearsId(index) =>
+      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else EnterPreviousPostcodeController.onPageLoad(index)
+    case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index)
+    case PreviousAddressListId(index) => cyaAddress(index)
+    case PreviousAddressId(index) => cyaAddress(index)
     case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
     case EnterPhoneId(index) => cyaContactDetails(index)
+
   }
 
   override protected def editRouteMap(ua: UserAnswers)
@@ -75,6 +79,10 @@ class TrusteesNavigator
   }
 
   private def cyaDetails(index:Int): Call = controllers.trustees.individual.details.routes.CheckYourAnswersController.onPageLoad(index)
+
+
+  private def cyaAddress(index:Int): Call = controllers.trustees.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
+  private def addressYears(index:Int, mode:Mode): Call = controllers.trustees.individual.address.routes.AddressYearsController.onPageLoad(index)
 
   private def cyaContactDetails(index:Int): Call = controllers.trustees.individual.contact.routes.CheckYourAnswersController.onPageLoad(index)
 

@@ -80,7 +80,7 @@ class EstablisherAddressCYAHelperSpec extends WordSpec with MustMatchers with Tr
 
       val result = establisherAddressCYAHelper.rows(0)(dataRequest(ua), messages)
 
-      result.head mustBe summaryListRowHtml(key = messages("messages__establisherAddress__whatYouWillNeed_title", establisherName.fullName),
+      result.head mustBe summaryListRowHtml(key = messages("messages__establisherAddress__whatYouWillNeed_h1", establisherName.fullName),
         value = answerAddressTransform(establisherAddress), Some(Link(text = Messages("site.change"),
           target = controllers.establishers.individual.address.routes.EnterPostcodeController.onPageLoad(0).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__address", establisherName.fullName))),

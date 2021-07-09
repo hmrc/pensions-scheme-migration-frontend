@@ -47,12 +47,10 @@ trait PhoneController
   def get(
            entityName: String,
            entityType: String,
-           isPageHeading: Boolean,
            id: TypedIdentifier[String],
            form: Form[String],
            schemeName: String,
-           paragraphText: Seq[String] = Seq(),
-           legendClass: String = "govuk-fieldset__legend--s"
+           paragraphText: Seq[String] = Seq()
          )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     renderer.render(
@@ -60,11 +58,9 @@ trait PhoneController
       ctx = Json.obj(
         "entityName" -> entityName,
         "entityType" -> entityType,
-        "isPageHeading" -> isPageHeading,
         "form" -> request.userAnswers.get[String](id).fold(form)(form.fill),
         "schemeName" -> schemeName,
-        "legendClass" -> legendClass,
-        "paragraphs" -> paragraphText
+        "paragraph" -> paragraphText
       )
     ).map(Ok(_))
   }
@@ -72,12 +68,10 @@ trait PhoneController
   def post(
             entityName: String,
             entityType: String,
-            isPageHeading: Boolean,
             id: TypedIdentifier[String],
             form: Form[String],
             schemeName: String,
             paragraphText: Seq[String] = Seq(),
-            legendClass: String = "govuk-fieldset__legend--s",
             mode: Mode
           )(implicit request: DataRequest[AnyContent]): Future[Result] =
 
@@ -88,11 +82,9 @@ trait PhoneController
           ctx = Json.obj(
             "entityName" -> entityName,
             "entityType" -> entityType,
-            "isPageHeading" -> isPageHeading,
             "form" -> formWithErrors,
             "schemeName" -> schemeName,
-            "legendClass" -> legendClass,
-            "paragraphs" -> paragraphText
+            "paragraph" -> paragraphText
           )
         ).map(BadRequest(_)),
       value =>
