@@ -38,32 +38,51 @@ class DataRetrievalImpl @Inject()(dataConnector: UserAnswersCacheConnector,
   override protected def transform[A](request: AuthenticatedRequest[A]): Future[OptionalDataRequest[A]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    retrieveLock.flatMap { lock =>
+    retrieveLock.flatMap {
+      case Some(lock) =>
+        lockCacheConnector.getLockOnScheme(lock.pstr).flatMap {
+          case None => lockCacheConnector.setLock(lock).flatMap { _ =>
+            fetchDataAndFormRequest(lock, viewOnly = false, request)
+          }
+          case Some(lockOnScheme) => fetchDataAndFormRequest(lock, lock.credId != lockOnScheme.credId, request)
+        }
+      case _ =>
+        Future.successful(OptionalDataRequest(
+          request = request.request,
+          userAnswers = None,
+          psaId = request.psaId,
+          lock = None
+        ))
 
-      dataConnector.fetch("pstr") map {
-        case None =>
-          OptionalDataRequest(
-            request = request.request,
-            userAnswers = None,
-            psaId = request.psaId,
-            lock = lock
-          )
-        case Some(data) =>
-          OptionalDataRequest(
-            request = request.request,
-            userAnswers = Some(UserAnswers(data.as[JsObject])),
-            psaId = request.psaId,
-            lock = lock
-          )
-      }
     }
   }
+
+    private def fetchDataAndFormRequest[A](lock: MigrationLock, viewOnly: Boolean, request: AuthenticatedRequest[A])
+                                          (implicit hc: HeaderCarrier): Future[OptionalDataRequest[A]] =
+      dataConnector.fetch(lock.pstr) map {
+      case None =>
+        OptionalDataRequest(
+          request = request.request,
+          userAnswers = None,
+          psaId = request.psaId,
+          lock = Some(lock),
+          viewOnly = viewOnly
+        )
+      case Some(data) =>
+        OptionalDataRequest(
+          request = request.request,
+          userAnswers = Some(UserAnswers(data.as[JsObject])),
+          psaId = request.psaId,
+          lock = Some(lock),
+          viewOnly = viewOnly
+        )
+    }
 
   private def retrieveLock(implicit hc: HeaderCarrier): Future[Option[MigrationLock]] =
     schemeCacheConnector.fetch flatMap {
       case Some(value) =>
         value.validate[MigrationLock] match {
-          case JsSuccess(value, _) =>  Future.successful(Some(value))
+          case JsSuccess(value, _) => Future.successful(Some(value))
           case JsError(errors) => throw JsResultException(errors)
         }
       case _ =>
@@ -71,8 +90,7 @@ class DataRetrievalImpl @Inject()(dataConnector: UserAnswersCacheConnector,
           case Some(lock) => schemeCacheConnector.save(Json.toJson(lock)).map(_.asOpt[MigrationLock])
           case _ => Future.successful(None)
         }
-
-  }
+    }
 }
 
 @ImplementedBy(classOf[DataRetrievalImpl])
