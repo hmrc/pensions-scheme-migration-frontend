@@ -58,7 +58,7 @@ class TrusteeHasUTRControllerSpec
   private val userAnswers: UserAnswers =
     ua.set(TrusteeNameId(0), personName).success.value
   private val templateToBeRendered: String =
-    "hasReferenceValue.njk"
+    "hasReferenceValueWithHint.njk"
   private val commonJson: JsObject =
     Json.obj(
       "pageTitle"     -> "Does the individual have a Unique Taxpayer Reference (UTR)?",
