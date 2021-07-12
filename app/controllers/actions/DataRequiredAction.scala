@@ -27,17 +27,12 @@ import scala.concurrent.{ExecutionContext, Future}
 class DataRequiredActionImpl @Inject()(implicit val executionContext: ExecutionContext) extends DataRequiredAction {
 
   override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] =
-    request.userAnswers match {
-      case None =>
+    (request.userAnswers, request.lock) match {
+      case (Some(data), Some(lock)) =>
+        Future.successful(Right(DataRequest(request.request, data, request.psaId, lock, request.viewOnly)))
+      case _ =>
+        //TODO Redirect user to list of schemes page (once implemented) to select a scheme, since their scheme selection could not be retrieved
         Future.successful(Left(Redirect(routes.IndexController.onPageLoad())))
-      case Some(data) =>
-        Future.successful(Right(DataRequest(
-          request = request.request,
-          userAnswers = data,
-          psaId = request.psaId,
-          lock = request.lock,
-          viewOnly = request.viewOnly
-        )))
     }
 }
 

@@ -21,8 +21,6 @@ import controllers.EnterReferenceValueController
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.NINOFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.details.EstablisherNINOId
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.details.TrusteeNINOId
 import models.requests.DataRequest

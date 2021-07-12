@@ -25,7 +25,7 @@ case class OptionalDataRequest[A](
                                    request: Request[A],
                                    userAnswers: Option[UserAnswers],
                                    psaId: PsaId,
-                                   lock: MigrationLock,
+                                   lock: Option[MigrationLock],
                                    viewOnly: Boolean = false
                                  )
   extends WrappedRequest[A](request) with IdentifiedRequest

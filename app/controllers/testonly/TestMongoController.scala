@@ -33,7 +33,7 @@
 package controllers.testonly
 
 import config.AppConfig
-import connectors.cache.{LockCacheConnector, UserAnswersCacheConnector}
+import connectors.cache.{LockCacheConnector, SchemeCacheConnector, UserAnswersCacheConnector}
 import models.MigrationLock
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc._
@@ -48,6 +48,7 @@ class TestMongoController @Inject()(
                                      appConfig: AppConfig,
                                      lockCacheConnector: LockCacheConnector,
                                      userAnswersCacheConnector: UserAnswersCacheConnector,
+                                     schemeCacheConnector: SchemeCacheConnector,
                                      mcc: MessagesControllerComponents,
                                      renderer: Renderer)
                                    (implicit val ec: ExecutionContext) extends FrontendController(mcc) {
@@ -191,6 +192,45 @@ class TestMongoController @Inject()(
       )
       renderer.render("testMongo.njk", json).map(Ok(_))
     }
+  }
+
+  def saveSchemeData: Action[AnyContent] = Action.async { implicit request =>
+    schemeCacheConnector.save(Json.toJson(MigrationLock("new pstr", "credId", "psaId"))).flatMap { response =>
+      val json = Json.obj(
+        "heading" -> "Store scheme details",
+        "response" ->  Json.prettyPrint(response)
+      )
+      renderer.render("testMongo.njk", json).map(Ok(_))
+    }
+
+  }
+
+  def getSchemeData: Action[AnyContent] = Action.async { implicit request =>
+    schemeCacheConnector.fetch.flatMap {
+      case Some(response) =>
+      val json = Json.obj(
+        "heading" -> "Get scheme details",
+        "response" ->  response.toString()
+      )
+      renderer.render("testMongo.njk", json).map(Ok(_))
+      case _ =>
+        val json = Json.obj(
+          "heading" -> "Get scheme details returned empty response"
+        )
+        renderer.render("testMongo.njk", json).map(Ok(_))
+    }
+
+  }
+
+  def removeSchemeData: Action[AnyContent] = Action.async { implicit request =>
+    schemeCacheConnector.remove.flatMap { response =>
+      val json = Json.obj(
+        "heading" -> "Remove scheme details",
+        "response" ->  response.toString()
+      )
+      renderer.render("testMongo.njk", json).map(Ok(_))
+    }
+
   }
 
 }

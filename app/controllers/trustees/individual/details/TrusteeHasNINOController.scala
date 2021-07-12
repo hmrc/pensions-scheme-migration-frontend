@@ -21,8 +21,6 @@ import controllers.HasReferenceValueController
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.HasReferenceNumberFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.details.EstablisherHasNINOId
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.details.TrusteeHasNINOId
 import models.requests.DataRequest

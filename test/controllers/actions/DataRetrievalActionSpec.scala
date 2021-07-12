@@ -17,7 +17,8 @@
 package controllers.actions
 
 import base.SpecBase
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{LockCacheConnector, SchemeCacheConnector, UserAnswersCacheConnector}
+import models.MigrationLock
 import models.requests.{AuthenticatedRequest, OptionalDataRequest}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
@@ -35,19 +36,25 @@ class DataRetrievalActionSpec
     with MockitoSugar
     with ScalaFutures {
 
-  class Harness(dataCacheConnector: UserAnswersCacheConnector)
-    extends DataRetrievalImpl(dataCacheConnector) {
+  class Harness(dataCacheConnector: UserAnswersCacheConnector,
+                schemeCacheConnector: SchemeCacheConnector,
+                lockCacheConnector: LockCacheConnector)
+    extends DataRetrievalImpl(dataCacheConnector, schemeCacheConnector, lockCacheConnector) {
     def callTransform[A](request: AuthenticatedRequest[A]): Future[OptionalDataRequest[A]] =
       transform(request)
   }
 
   private val dataCacheConnector: UserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+  private val schemeCacheConnector: SchemeCacheConnector = mock[SchemeCacheConnector]
+  private val lockCacheConnector: LockCacheConnector = mock[LockCacheConnector]
+  private val lock: MigrationLock = MigrationLock("pstr", "credId", "psaId")
 
   "Data Retrieval Action" when {
     "there is no data in the cache" must {
       "set userAnswers to 'None' in the request" in {
         when(dataCacheConnector.fetch(any())(any(), any())) thenReturn Future(None)
-        val action = new Harness(dataCacheConnector)
+        when(schemeCacheConnector.fetch(any(), any())) thenReturn Future(Some(Json.toJson(lock)))
+        val action = new Harness(dataCacheConnector, schemeCacheConnector, lockCacheConnector)
 
         val futureResult = action.callTransform(
           AuthenticatedRequest(
@@ -66,7 +73,8 @@ class DataRetrievalActionSpec
     "there is data in the cache" must {
       "build a userAnswers object and add it to the request" in {
         when(dataCacheConnector.fetch(any())(any(), any())) thenReturn Future.successful(Some(Json.obj()))
-        val action = new Harness(dataCacheConnector)
+        when(schemeCacheConnector.fetch(any(), any())) thenReturn Future(Some(Json.toJson(lock)))
+        val action = new Harness(dataCacheConnector, schemeCacheConnector, lockCacheConnector)
 
         val futureResult = action.callTransform(
           AuthenticatedRequest(
@@ -78,6 +86,49 @@ class DataRetrievalActionSpec
 
         whenReady(futureResult) { result =>
           result.userAnswers.isDefined mustBe true
+        }
+      }
+    }
+
+    "there is no scheme data in the cache but user holds lock in locking table" must {
+      "retrieve lock from current locks using credId and add it to the request" in {
+        when(dataCacheConnector.fetch(any())(any(), any())) thenReturn Future.successful(Some(Json.obj()))
+        when(schemeCacheConnector.fetch(any(), any())) thenReturn Future(None)
+        when(schemeCacheConnector.save(any())(any(), any())) thenReturn Future(Json.toJson(lock))
+        when(lockCacheConnector.getLockByUser(any(), any())) thenReturn Future(Some(lock))
+        val action = new Harness(dataCacheConnector, schemeCacheConnector, lockCacheConnector)
+
+        val futureResult = action.callTransform(
+          AuthenticatedRequest(
+            request = fakeRequest,
+            externalId = "id",
+            psaId = PsaId(psaId)
+          )
+        )
+
+        whenReady(futureResult) { result =>
+          result.lock.isDefined mustBe true
+        }
+      }
+    }
+
+    "there is no scheme data in the cache and user does not hold lock in locking table" must {
+      "create request without lock" in {
+        when(dataCacheConnector.fetch(any())(any(), any())) thenReturn Future.successful(Some(Json.obj()))
+        when(schemeCacheConnector.fetch(any(), any())) thenReturn Future(None)
+        when(lockCacheConnector.getLockByUser(any(), any())) thenReturn Future(None)
+        val action = new Harness(dataCacheConnector, schemeCacheConnector, lockCacheConnector)
+
+        val futureResult = action.callTransform(
+          AuthenticatedRequest(
+            request = fakeRequest,
+            externalId = "id",
+            psaId = PsaId(psaId)
+          )
+        )
+
+        whenReady(futureResult) { result =>
+          result.lock.isDefined mustBe false
         }
       }
     }

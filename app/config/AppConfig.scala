@@ -38,11 +38,19 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   private def loadConfig(key: String): String = config.getOptional[String](key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
   lazy val appName: String = config.get[String](path = "appName")
+  lazy val loginUrl: String = loadConfig("urls.login")
+  lazy val govUkLink: String = loadConfig("urls.govUkLink")
+  lazy val pensionAdministratorGovUkLink: String = loadConfig("urls.pensionAdministratorGovUkLink")
+  lazy val pensionPractitionerGovUkLink: String = loadConfig("urls.pensionPractitionerGovUkLink")
+
+  lazy val registerSchemeAdministratorUrl: String = loadConfig("urls.registerSchemeAdministrator")
+  lazy val psaOverviewUrl: Call = Call("GET", loadConfig("urls.psaOverview"))
   lazy val migrationUrl: String = servicesConfig.baseUrl("pensions-scheme-migration")
   lazy val lockUrl: String = s"$migrationUrl${config.get[String](path = "urls.lock")}"
   lazy val lockByUserUrl: String = s"$migrationUrl${config.get[String](path = "urls.lockByUser")}"
   lazy val lockOnSchemeUrl: String = s"$migrationUrl${config.get[String](path = "urls.lockOnScheme")}"
   lazy val dataCacheUrl: String = s"$migrationUrl${config.get[String](path = "urls.dataCache")}"
+  lazy val schemeDataCacheUrl: String = s"$migrationUrl${config.get[String](path = "urls.schemeDataCache")}"
   lazy val addressLookUp = s"${servicesConfig.baseUrl("address-lookup")}"
   lazy val yourPensionSchemesUrl: String = loadConfig("urls.yourPensionSchemes")
 
