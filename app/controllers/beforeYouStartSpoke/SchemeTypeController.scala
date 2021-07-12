@@ -80,7 +80,6 @@ class SchemeTypeController @Inject()(
           (formWithErrors: Form[_]) =>
             SchemeNameId.retrieve.right.map {
               schemeName =>
-                println(s"\n\n\n\n\n$formWithErrors\n\n\n\n\n\n")
                 renderer.render(
                   template = "beforeYouStart/schemeType.njk",
                   ctx = Json.obj(
