@@ -22,23 +22,27 @@ import play.api.data.Forms.tuple
 import play.api.data.Mapping
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
-trait SchemeTypeMapping extends Formatters with Constraints with Mappings {
+trait SchemeTypeMapping
+  extends Formatters
+    with Constraints
+    with Mappings {
 
-  protected def schemeTypeMapping(requiredTypeKey: String = "messages__scheme_type__error__required",
-                                  invalidTypeKey: String = "messages__error__scheme_type_information",
-                                  requiredOtherKey: String = "messages__error__scheme_type_information",
-                                  lengthOtherKey: String = "messages__error__scheme_type_other_length",
-                                  invalidOtherKey: String = "messages__error__scheme_type_other_invalid")
-  : Mapping[SchemeType] = {
-    val schemeTypeDetailsMaxLength = 160
+  protected def schemeTypeMapping(
+                                   requiredTypeKey: String = "messages__scheme_type__error__required",
+                                   invalidTypeKey: String = "messages__error__scheme_type_information",
+                                   requiredOtherKey: String = "messages__error__scheme_type_information",
+                                   lengthOtherKey: String = "messages__error__scheme_type_other_length",
+                                   invalidOtherKey: String = "messages__error__scheme_type_other_invalid"
+                                 ): Mapping[SchemeType] = {
     val other = "other"
 
-    def fromSchemeType(schemeType: SchemeType): (String, Option[String]) = {
+    def fromSchemeType(schemeType: SchemeType): (String, Option[String]) =
       schemeType match {
-        case SchemeType.Other(someValue) => (other, Some(someValue))
-        case _ => (schemeType.toString, None)
+        case SchemeType.Other(someValue) =>
+          (other, Some(someValue))
+        case _ =>
+          (schemeType.toString, None)
       }
-    }
 
     def toSchemeType(schemeTypeTuple: (String, Option[String])): SchemeType = {
 
@@ -49,17 +53,27 @@ trait SchemeTypeMapping extends Formatters with Constraints with Mappings {
       ).map(v => (v.toString, v)).toMap
 
       schemeTypeTuple match {
-        case (key, Some(value)) if key == other => Other(value)
-        case (key, _) if mappings.keySet.contains(key) => mappings.apply(key)
+        case (key, Some(value)) if key == other =>
+          Other(value)
+        case (key, _) if mappings.keySet.contains(key) =>
+          mappings.apply(key)
       }
     }
 
     tuple(
-      "type" -> text(requiredTypeKey).verifying(schemeTypeConstraint(invalidTypeKey)),
-      "schemeTypeDetails" -> mandatoryIfEqual("schemeType.type", other, text(requiredOtherKey).
-        verifying(firstError(
-          maxLength(schemeTypeDetailsMaxLength, lengthOtherKey),
-          safeText(invalidOtherKey))))
+      "type" -> text(requiredTypeKey)
+        .verifying(schemeTypeConstraint(invalidTypeKey)),
+      "schemeTypeDetails" -> mandatoryIfEqual(
+        fieldName = "schemeType.type",
+        value = other,
+        mapping = text(requiredOtherKey)
+          .verifying(
+            firstError(
+              maxLength(160, lengthOtherKey),
+              safeText(invalidOtherKey)
+            )
+          )
+      )
     ).transform(toSchemeType, fromSchemeType)
   }
 }

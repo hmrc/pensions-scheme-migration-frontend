@@ -9,48 +9,50 @@
 {% from "macros/returnLink.njk"                    import returnLink %}
 
 {% block pageTitle %}
-  {{ title(messages("messages__scheme_type__title"), form.errors) }}
+    {{ title(messages("messages__scheme_type__title"), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
 
     <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-grid-column-two-thirds">
 
-        {% if form.errors.length > 0 %}
-          {{ govukErrorSummary({
-            "titleText": messages("error.summary.title"),
-            "errorList": form.errors
-          }) }}
-        {% endif %}
+            {% if form.errors.length > 0 %}
+                {{ govukErrorSummary({
+                    "titleText": messages("error.summary.title"),
+                    "errorList": form.errors
+                }) }}
+            {% endif %}
 
-        <form method="post" autocomplete="off" novalidate>
+            <form method="post"
+                  autocomplete="off"
+                  novalidate>
 
-          {{ csrf() | safe }}
+                {{ csrf() | safe }}
 
-          {{ govukRadios({
-            name: 'schemeType.type',
-            fieldset: {
-              legend: {
-                text: messages("messages__scheme_type__heading", schemeName),
-                isPageHeading: true,
-                classes: "govuk-fieldset__legend--xl govuk-!-margin-bottom-8"
-              }
-            },
-            items: radios,
-            errorMessage: form.schemeType.type.error
-          }) }}
+                {{ govukRadios({
+                    name: 'schemeType.type',
+                    fieldset: {
+                        legend: {
+                            text: messages("messages__scheme_type__heading", schemeName),
+                            isPageHeading: true,
+                            classes: "govuk-fieldset__legend--xl govuk-!-margin-bottom-8"
+                        }
+                    },
+                    items: radios,
+                    errorMessage: form.errors[0]
+                }) }}
 
-          {{ govukButton({
-            text: messages("site.save_and_continue"),
-            attributes: {id: "submit"}
-          }) }}
+                {{ govukButton({
+                    text: messages("site.save_and_continue"),
+                    attributes: {id: "submit"}
+                }) }}
 
-        </form>
+            </form>
 
-      </div>
+        </div>
     </div>
 
-     {{ returnLink(schemeName) }}
+    {{ returnLink(schemeName) }}
 
 {% endblock %}
