@@ -46,6 +46,9 @@ trait HasReferenceValueController
 
   protected def navigator: CompoundNavigator
 
+  private def templateName(paragraphText: Seq[String]) =
+    if (paragraphText.nonEmpty) "hasReferenceValueWithHint.njk" else "hasReferenceValue.njk"
+
   def get(
            pageTitle: String,
            pageHeading: String,
@@ -60,20 +63,20 @@ trait HasReferenceValueController
     val preparedForm: Form[Boolean] =
       request.userAnswers.get[Boolean](id) match {
         case Some(value) => form.fill(value)
-        case _           => form
+        case _ => form
       }
 
     renderer.render(
-      template = if(paragraphText.nonEmpty)"hasReferenceValueWithHint.njk" else "hasReferenceValue.njk",
+      template = templateName(paragraphText),
       ctx = Json.obj(
-        "pageTitle"     -> pageTitle,
-        "pageHeading"   -> pageHeading,
+        "pageTitle" -> pageTitle,
+        "pageHeading" -> pageHeading,
         "isPageHeading" -> isPageHeading,
-        "form"          -> preparedForm,
-        "radios"        -> Radios.yesNo(preparedForm("value")),
-        "schemeName"    -> schemeName,
-        "legendClass"   -> legendClass,
-        "paragraphs"    -> paragraphText
+        "form" -> preparedForm,
+        "radios" -> Radios.yesNo(preparedForm("value")),
+        "schemeName" -> schemeName,
+        "legendClass" -> legendClass,
+        "paragraphs" -> paragraphText
       )
     ).map(Ok(_))
   }
@@ -88,27 +91,27 @@ trait HasReferenceValueController
             paragraphText: Seq[String] = Seq(),
             legendClass: String = "govuk-fieldset__legend--s",
             mode: Mode
-  )(implicit request: DataRequest[AnyContent]): Future[Result] =
+          )(implicit request: DataRequest[AnyContent]): Future[Result] =
 
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
         renderer.render(
-          template = if(paragraphText.nonEmpty)"hasReferenceValueWithHint.njk" else "hasReferenceValue.njk",
+          template = templateName(paragraphText),
           ctx = Json.obj(
-            "pageTitle"     -> pageTitle,
-            "pageHeading"   -> pageHeading,
+            "pageTitle" -> pageTitle,
+            "pageHeading" -> pageHeading,
             "isPageHeading" -> isPageHeading,
-            "form"          -> formWithErrors,
-            "radios"        -> Radios.yesNo(formWithErrors("value")),
-            "schemeName"    -> schemeName,
-            "legendClass"   -> legendClass,
-            "paragraphs"    -> paragraphText
+            "form" -> formWithErrors,
+            "radios" -> Radios.yesNo(formWithErrors("value")),
+            "schemeName" -> schemeName,
+            "legendClass" -> legendClass,
+            "paragraphs" -> paragraphText
           )
         ).map(BadRequest(_)),
       value =>
         for {
           updatedAnswers <- Future.fromTry(request.userAnswers.set(id, value))
-          _              <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+          _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
         } yield
           Redirect(navigator.nextPage(id, updatedAnswers, mode))
     )

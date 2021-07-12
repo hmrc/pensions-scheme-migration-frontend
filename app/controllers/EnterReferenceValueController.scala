@@ -45,6 +45,9 @@ trait EnterReferenceValueController
 
   protected def navigator: CompoundNavigator
 
+  private def templateName(paragraphText: Seq[String], hintText: Option[String]) =
+    if (paragraphText.nonEmpty || hintText.nonEmpty) "enterReferenceValueWithHint.njk" else "enterReferenceValue.njk"
+
   def get(
            pageTitle: String,
            pageHeading: String,
@@ -58,7 +61,7 @@ trait EnterReferenceValueController
          )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     renderer.render(
-      template = if(paragraphText.nonEmpty || hintText.nonEmpty )"enterReferenceValueWithHint.njk" else "enterReferenceValue.njk",
+      template = templateName(paragraphText, hintText),
       ctx = Json.obj(
         "pageTitle"     -> pageTitle,
         "pageHeading" -> pageHeading,
@@ -87,7 +90,7 @@ trait EnterReferenceValueController
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
         renderer.render(
-          template = if(paragraphText.nonEmpty || hintText.nonEmpty ) "enterReferenceValue.njk" else "enterReferenceValue.njk",
+          template = templateName(paragraphText, hintText),
           ctx = Json.obj(
             "pageTitle"     -> pageTitle,
             "pageHeading" -> pageHeading,
