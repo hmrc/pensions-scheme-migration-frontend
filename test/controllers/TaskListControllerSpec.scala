@@ -16,10 +16,11 @@
 
 package controllers
 
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import helpers.TaskListHelper
 import matchers.JsonMatchers
-import models.{TaskListLink, EntitySpoke}
+import models.{EntitySpoke, TaskListLink}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -31,6 +32,7 @@ import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
+import utils.Data
 import utils.Data._
 import viewmodels.{Message, TaskList, TaskListEntitySection}
 
@@ -82,7 +84,7 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
 
   "TaskList Controller" must {
 
-    "return OK and the correct view for a GET" in {
+    "return OK and the correct view for a GET when data present in userAnswers" in {
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -97,6 +99,36 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
 
       jsonCaptor.getValue must containJson(json)
     }
+
+    "redirect to Tasklist if lock can not be retrieved " in {
+      mutableFakeDataRetrievalAction.setLockToReturn(None)
+      val result = route(application, httpGETRequest(httpPathGET)).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.routes.IndexController.onPageLoad().url)
+
+    }
+
+    "retrieved data from API store it and return  OK" in {
+      mutableFakeDataRetrievalAction.setDataToReturn(None)
+      mutableFakeDataRetrievalAction.setLockToReturn(Some(Data.migrationLock))
+      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+
+      when( mockUserAnswersCacheConnector.save(any(), any())(any(),any())).thenReturn(Future.successful(Json.obj()))
+
+      val result = route(application, httpGETRequest(httpPathGET)).value
+
+
+      status(result) mustEqual OK
+
+      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+
+      templateCaptor.getValue mustEqual templateToBeRendered
+
+      jsonCaptor.getValue must containJson(json)
+    }
+
   }
 }
 
