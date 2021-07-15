@@ -57,7 +57,7 @@ class TrusteeEnterUTRControllerSpec
 
   private val userAnswers: UserAnswers = ua.set(TrusteeNameId(0), personName).success.value
 
-  private val templateToBeRendered: String = "enterReferenceValue.njk"
+  private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
 
   private val commonJson: JsObject =
     Json.obj(

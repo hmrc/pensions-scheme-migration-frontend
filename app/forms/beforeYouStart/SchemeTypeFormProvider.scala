@@ -24,6 +24,6 @@ import javax.inject.Inject
 
 class SchemeTypeFormProvider @Inject() extends SchemeTypeMapping with Constraints {
   def apply(): Form[SchemeType] = Form(
-    "schemeType" -> schemeTypeMapping(requiredTypeKey = "messages__scheme_type__error__required")
+    "schemeType" -> schemeTypeMapping()
   )
 }

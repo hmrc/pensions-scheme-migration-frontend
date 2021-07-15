@@ -6,6 +6,16 @@
 {% from "govuk/components/radios/macro.njk"         import govukRadios %}
 {% from "govuk/components/error-summary/macro.njk"  import govukErrorSummary %}
 
+{% if paragraphs|length %}
+    {% set hint  %}
+     {% for paragraph in paragraphs %}
+        <p class="govuk-body govuk-!-font-weight-regular">
+            {{ paragraph }}
+        </p>
+        {% endfor %}
+    {% endset %}
+    {% endif %}
+
 {% block pageTitle %}
     {{ title(pageTitle, form.errors) }}
 {% endblock %}
@@ -25,21 +35,22 @@
             <form method="post" autocomplete="off" novalidate>
 
                 {{ csrf() | safe }}
-
-             {{ govukRadios({
-                                classes: "govuk-radios--inline",
-                                name: 'value',
-                                fieldset: {
-                                    legend: {
-                                        text: pageHeading,
-                                        isPageHeading: true,
-                                        classes: "govuk-label--xl govuk-!-margin-bottom-8"
-                                    }
-                                },
-                                items: radios,
-                                errorMessage: form.value.error
-                            }) }}
-
+                {% if hint|length %}
+                {{ govukRadios({
+                    classes: "govuk-radios--inline",
+                    name: 'value',
+                    fieldset: {
+                        legend: {
+                            text: pageHeading,
+                            isPageHeading: true,
+                            classes: "govuk-label--xl govuk-!-margin-bottom-8"
+                        }
+                    },
+                    items: radios,
+                    errorMessage: form.value.error,
+                    hint: {html: hint}
+                }) }}
+                {% endif %}
                 {{ govukButton({
                     attributes: {id: "submit"},
                     text: messages("site.save_and_continue")

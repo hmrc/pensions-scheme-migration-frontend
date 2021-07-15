@@ -58,7 +58,7 @@ class EstablisherEnterNINOControllerSpec
   private val userAnswers: UserAnswers =
     ua.set(EstablisherNameId(0), personName).success.value
   private val templateToBeRendered: String =
-    "enterReferenceValue.njk"
+    "enterReferenceValueWithHint.njk"
   private val commonJson: JsObject =
     Json.obj(
       "pageTitle"     -> "What is the individual’s National Insurance number?",
