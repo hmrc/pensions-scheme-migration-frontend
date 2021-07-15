@@ -21,7 +21,7 @@ import controllers.Retrievals
 import controllers.actions._
 import forms.establishers.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.company.EstablisherNameId
+import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address.AddressYearsId
 import models.Index
 import navigators.CompoundNavigator
@@ -54,14 +54,14 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      (EstablisherNameId(index) and SchemeNameId).retrieve.right.map { case establisherName ~ schemeName =>
+      (CompanyDetailsId(index) and SchemeNameId).retrieve.right.map { case establisherName ~ schemeName =>
         val preparedForm = request.userAnswers.get(AddressYearsId(index)) match {
           case Some(value) => form.fill(value)
           case None        => form
         }
         val json = Json.obj(
           "schemeName" -> schemeName,
-          "entityName" -> establisherName.fullName,
+          "entityName" -> establisherName.companyName,
           "entityType" -> Messages("establisherEntityTypeIndividual"),
           "form" -> preparedForm,
           "radios" -> Radios.yesNo (preparedForm("value"))
@@ -72,14 +72,14 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
 
   def onSubmit(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      (EstablisherNameId(index) and SchemeNameId).retrieve.right.map { case establisherName ~ schemeName =>
+      (CompanyDetailsId(index) and SchemeNameId).retrieve.right.map { case establisherName ~ schemeName =>
         form
           .bindFromRequest()
           .fold(
             formWithErrors => {
               val json = Json.obj(
                 "schemeName" -> schemeName,
-                "entityName" -> establisherName.fullName,
+                "entityName" -> establisherName.companyName,
                 "entityType" -> Messages("establisherEntityTypeIndividual"),
                 "form" -> formWithErrors,
                 "radios" -> Radios.yesNo(form("value"))

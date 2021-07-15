@@ -23,7 +23,7 @@ import controllers.actions._
 import controllers.address.PostcodeController
 import forms.address.PostcodeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.company.EstablisherNameId
+import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address.EnterPostCodeId
 import models.{Mode, Index, NormalMode}
 import models.requests.DataRequest
@@ -76,7 +76,7 @@ class EnterPostcodeController @Inject()(val appConfig: AppConfig,
   def getFormToJson(schemeName:String, index: Index, mode: Mode)(implicit request:DataRequest[AnyContent]): Form[String] => JsObject = {
     form => {
       val msg = request2Messages(request)
-      val name = request.userAnswers.get(EstablisherNameId(index)).map(_.fullName).getOrElse(msg("establisherEntityTypeIndividual"))
+      val name = request.userAnswers.get(CompanyDetailsId(index)).map(_.companyName).getOrElse(msg("establisherEntityTypeIndividual"))
       Json.obj(
         "entityType" -> msg("establisherEntityTypeIndividual"),
         "entityName" -> name,

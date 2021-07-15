@@ -23,7 +23,7 @@ import controllers.actions._
 import controllers.address.ManualAddressController
 import forms.address.AddressFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.company.EstablisherNameId
+import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address.PreviousAddressId
 
 import javax.inject.Inject
@@ -58,15 +58,15 @@ class ConfirmPreviousAddressController @Inject()(override val messagesApi: Messa
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      (EstablisherNameId(index) and SchemeNameId).retrieve.right.map { case establisherName ~ schemeName =>
-          get(Some(schemeName), establisherName.fullName, PreviousAddressId(index), AddressConfiguration.PostcodeFirst)
+      (CompanyDetailsId(index) and SchemeNameId).retrieve.right.map { case establisherName ~ schemeName =>
+          get(Some(schemeName), establisherName.companyName, PreviousAddressId(index), AddressConfiguration.PostcodeFirst)
       }
     }
 
   def onSubmit(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      (EstablisherNameId(index) and SchemeNameId).retrieve.right.map { case establisherName ~ schemeName =>
-        post(Some(schemeName), establisherName.fullName, PreviousAddressId(index), AddressConfiguration.PostcodeFirst)
+      (CompanyDetailsId(index) and SchemeNameId).retrieve.right.map { case establisherName ~ schemeName =>
+        post(Some(schemeName), establisherName.companyName, PreviousAddressId(index), AddressConfiguration.PostcodeFirst)
       }
     }
 }

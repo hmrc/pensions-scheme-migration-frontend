@@ -21,7 +21,7 @@ import controllers.actions.{DataRetrievalAction, DataRequiredAction, AuthAction}
 import controllers.establishers.company.address.routes._
 import helpers.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.company.EstablisherNameId
+import identifiers.establishers.company.CompanyDetailsId
 import models.Index
 import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.libs.json.Json
@@ -49,12 +49,12 @@ class WhatYouWillNeedController @Inject()(
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        EstablisherNameId(index).retrieve.right.map {
+        CompanyDetailsId(index).retrieve.right.map {
           personName =>
             renderer.render(
               template = "establishers/company/address/whatYouWillNeed.njk",
               ctx = Json.obj(
-                "name"        -> personName.fullName,
+                "name"        -> personName.companyName,
                 "continueUrl" -> EnterPostcodeController.onPageLoad(index).url,
                 "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )

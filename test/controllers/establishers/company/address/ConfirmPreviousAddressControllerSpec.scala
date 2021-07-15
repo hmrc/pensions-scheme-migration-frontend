@@ -20,7 +20,7 @@ import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.company.EstablisherNameId
+import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address.PreviousAddressId
 import matchers.JsonMatchers
 import org.mockito.{ArgumentCaptor, Matchers}
@@ -48,7 +48,7 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with Nunju
   )
 
   private val ua: UserAnswers =
-    Data.ua.setOrException(EstablisherNameId(0), Data.establisherIndividualName)
+    Data.ua.setOrException(CompanyDetailsId(0), Data.establisherCompanyDetails)
 
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -80,7 +80,7 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with Nunju
     "Return OK and the correct view for a GET" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, Data.schemeName)
-        .setOrException(EstablisherNameId(0), Data.establisherIndividualName)
+        .setOrException(CompanyDetailsId(0), Data.establisherCompanyDetails)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
       val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value

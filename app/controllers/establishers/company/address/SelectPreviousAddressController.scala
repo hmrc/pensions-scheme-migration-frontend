@@ -23,7 +23,7 @@ import controllers.actions._
 import controllers.address.{AddressPages, AddressListController}
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.company.EstablisherNameId
+import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address.{EnterPreviousPostCodeId, PreviousAddressId, PreviousAddressListId}
 import models.{Mode, Index, NormalMode}
 
@@ -77,7 +77,7 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
 
           val msg = request2Messages(request)
 
-          val name = request.userAnswers.get(EstablisherNameId(index)).map(_.fullName).getOrElse(msg("establisherEntityTypeIndividual"))
+          val name = request.userAnswers.get(CompanyDetailsId(index)).map(_.companyName).getOrElse(msg("establisherEntityTypeIndividual"))
 
           form => Json.obj(
             "form" -> form,

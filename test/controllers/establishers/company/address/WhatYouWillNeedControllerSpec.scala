@@ -18,7 +18,7 @@ package controllers.establishers.company.address
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import identifiers.establishers.company.EstablisherNameId
+import identifiers.establishers.company.CompanyDetailsId
 import matchers.JsonMatchers
 import models.PersonName
 import org.mockito.ArgumentCaptor
@@ -32,7 +32,7 @@ import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.ua
-import utils.UserAnswers
+import utils.{UserAnswers, Data}
 
 import scala.concurrent.Future
 
@@ -42,10 +42,8 @@ class WhatYouWillNeedControllerSpec
     with JsonMatchers
     with TryValues {
 
-  private val personName: PersonName =
-    PersonName("Jane", "Doe")
   private val userAnswers: UserAnswers =
-    ua.set(EstablisherNameId(0), personName).success.value
+    ua.set(CompanyDetailsId(0), Data.establisherCompanyDetails).success.value
   private val templateToBeRendered: String =
     "establishers/company/address/whatYouWillNeed.njk"
   private def json: JsObject =
