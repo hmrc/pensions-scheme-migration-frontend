@@ -27,6 +27,7 @@ class PODSModule extends AbstractModule {
     navigators.addBinding().to(classOf[BenefitsAndInsuranceNavigator])
     navigators.addBinding().to(classOf[AboutNavigator])
     navigators.addBinding().to(classOf[EstablishersNavigator])
+    navigators.addBinding().to(classOf[EstablishersCompanyNavigator])
     navigators.addBinding().to(classOf[TrusteesNavigator])
 
     bind(classOf[CompoundNavigator]).to(classOf[CompoundNavigatorImpl])

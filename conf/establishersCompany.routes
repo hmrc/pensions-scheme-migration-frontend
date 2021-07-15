@@ -1,0 +1,3 @@
+
+GET         /:index/company/name                                                      controllers.establishers.company.CompanyDetailsController.onPageLoad(index: Index)
+POST        /:index/company/name                                                      controllers.establishers.company.CompanyDetailsController.onSubmit(index: Index)
