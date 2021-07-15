@@ -772,3 +772,9 @@ messages__youNeedToRegister__p2 = If you are a {0}, you cannot register to use t
 messages__youNeedToRegister__p2__link = pension scheme practitioner
 messages__youNeedToRegister__button = Register as a pension scheme administrator
 messages__youNeedToRegister__govUk__link = Exit to GOV.UK
+
+
+messages__companyName__title = What is the company’s name?
+messages__error__company_name = Enter the company name
+messages__error__company_name_length = The company name cannot be more than 160 characters
+messages__error__company_name_invalid = The company name contains invalid characters

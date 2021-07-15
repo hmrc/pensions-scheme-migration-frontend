@@ -14,4 +14,5 @@ GET         /:index/individual/already-deleted           controllers.establisher
 GET         /:index/company/already-deleted              controllers.establishers.AlreadyDeletedController.onPageLoad(index: Index, establisherKind: EstablisherKind = EstablisherKind.Company)
 
 ->          /                                            establishersIndividual.Routes
+->          /                                            establishersCompany.Routes
 
