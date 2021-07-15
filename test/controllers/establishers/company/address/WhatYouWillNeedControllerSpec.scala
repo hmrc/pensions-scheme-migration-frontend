@@ -20,7 +20,6 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.establishers.company.CompanyDetailsId
 import matchers.JsonMatchers
-import models.PersonName
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -48,7 +47,7 @@ class WhatYouWillNeedControllerSpec
     "establishers/company/address/whatYouWillNeed.njk"
   private def json: JsObject =
     Json.obj(
-      "name"        -> "Jane Doe",
+      "name"        -> "test company",
       "continueUrl" -> controllers.establishers.company.address.routes.EnterPostcodeController.onPageLoad(0).url,
       "schemeName"  -> "Test scheme name"
     )
