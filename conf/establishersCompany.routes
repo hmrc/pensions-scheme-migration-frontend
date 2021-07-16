@@ -18,6 +18,9 @@ GET         /:index/company/addresses/check-your-answers                        
 GET         /:index/company/addresses/address-years                              controllers.establishers.company.address.AddressYearsController.onPageLoad(index: Index)
 POST        /:index/company/addresses/address-years                              controllers.establishers.company.address.AddressYearsController.onSubmit(index: Index)
 
+GET         /:index/company/addresses/company-exists-years                              controllers.establishers.company.address.TradingTimeController.onPageLoad(index: Index)
+POST        /:index/company/addresses/company-exists-years                              controllers.establishers.company.address.TradingTimeController.onSubmit(index: Index)
+
 GET         /:index/company/addresses/address-previous                           controllers.establishers.company.address.EnterPreviousPostcodeController.onPageLoad(index: Index)
 POST        /:index/company/addresses/address-previous                           controllers.establishers.company.address.EnterPreviousPostcodeController.onSubmit(index: Index)
 

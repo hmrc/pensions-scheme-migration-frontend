@@ -39,7 +39,9 @@ class EstablishersCompanyNavigator
     case AddressListId(index) => addressYears(index, NormalMode)
     case AddressId(index) => addressYears(index, NormalMode)
     case AddressYearsId(index) =>
-      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else EnterPreviousPostcodeController.onPageLoad(index)
+      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else TradingTimeController.onPageLoad(index)
+    case TradingTimeId(index) =>
+      if (ua.get(TradingTimeId(index)).contains(true)) EnterPreviousPostcodeController.onPageLoad(index) else cyaAddress(index)
     case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index)
     case PreviousAddressListId(index) => cyaAddress(index)
     case PreviousAddressId(index) => cyaAddress(index)

@@ -50,7 +50,7 @@ class ConfirmPreviousAddressController @Inject()(override val messagesApi: Messa
 )(implicit ec: ExecutionContext) extends ManualAddressController
   with Retrievals with I18nSupport with NunjucksSupport {
 
-  override protected val pageTitleEntityTypeMessageKey: Option[String] = Some("establisherEntityTypeIndividual")
+  override protected val pageTitleEntityTypeMessageKey: Option[String] = Some("establisherEntityTypeCompany")
   override protected val h1MessageKey: String = "previousAddress.title"
   override protected val pageTitleMessageKey: String = "previousAddress.title"
 
@@ -58,15 +58,15 @@ class ConfirmPreviousAddressController @Inject()(override val messagesApi: Messa
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      (CompanyDetailsId(index) and SchemeNameId).retrieve.right.map { case establisherName ~ schemeName =>
-          get(Some(schemeName), establisherName.companyName, PreviousAddressId(index), AddressConfiguration.PostcodeFirst)
+      (CompanyDetailsId(index) and SchemeNameId).retrieve.right.map { case companyDetails ~ schemeName =>
+          get(Some(schemeName), companyDetails.companyName, PreviousAddressId(index), AddressConfiguration.PostcodeFirst)
       }
     }
 
   def onSubmit(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      (CompanyDetailsId(index) and SchemeNameId).retrieve.right.map { case establisherName ~ schemeName =>
-        post(Some(schemeName), establisherName.companyName, PreviousAddressId(index), AddressConfiguration.PostcodeFirst)
+      (CompanyDetailsId(index) and SchemeNameId).retrieve.right.map { case companyDetails ~ schemeName =>
+        post(Some(schemeName), companyDetails.companyName, PreviousAddressId(index), AddressConfiguration.PostcodeFirst)
       }
     }
 }

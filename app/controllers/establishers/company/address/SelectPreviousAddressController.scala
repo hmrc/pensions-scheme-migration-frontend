@@ -77,12 +77,12 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
 
           val msg = request2Messages(request)
 
-          val name = request.userAnswers.get(CompanyDetailsId(index)).map(_.companyName).getOrElse(msg("establisherEntityTypeIndividual"))
+          val name = request.userAnswers.get(CompanyDetailsId(index)).map(_.companyName).getOrElse(msg("establisherEntityTypeCompany"))
 
           form => Json.obj(
             "form" -> form,
             "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
-            "entityType" -> msg("establisherEntityTypeIndividual"),
+            "entityType" -> msg("establisherEntityTypeCompany"),
             "entityName" -> name,
             "enterManuallyUrl" -> controllers.establishers.company.address.routes.ConfirmPreviousAddressController.onPageLoad(index).url,
             "schemeName" -> schemeName,

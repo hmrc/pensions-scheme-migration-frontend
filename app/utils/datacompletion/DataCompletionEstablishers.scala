@@ -19,8 +19,8 @@ package utils.datacompletion
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
-import identifiers.establishers.company.address.{AddressId => CompanyAddressId, AddressYearsId => CompanyAddressYearsId, PreviousAddressId => CompanyPreviousAddressId}
+import identifiers.establishers.individual.address.{AddressYearsId, PreviousAddressId, AddressId}
+import identifiers.establishers.company.address.{TradingTimeId, AddressYearsId => CompanyAddressYearsId, PreviousAddressId => CompanyPreviousAddressId, AddressId => CompanyAddressId}
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.individual.details._
 import utils.UserAnswers
@@ -65,11 +65,18 @@ trait DataCompletionEstablishers extends DataCompletion {
     userAnswers: UserAnswers
   ): Option[Boolean] = {
     val atAddressMoreThanOneYear = userAnswers.get(CompanyAddressYearsId(index)).contains(true)
+    val tradingTime = userAnswers.get(TradingTimeId(index)).contains(true)
     isComplete(
       Seq(
         isAnswerComplete(CompanyAddressId(index)),
         isAnswerComplete(CompanyAddressYearsId(index)),
-        if (atAddressMoreThanOneYear) Some(true) else isAnswerComplete(CompanyPreviousAddressId(index))
+        if (atAddressMoreThanOneYear) Some(true) else {
+          if (tradingTime) {
+            isAnswerComplete(CompanyPreviousAddressId(index))
+          } else {
+            Some(true)
+          }
+        }
       )
     )
   }

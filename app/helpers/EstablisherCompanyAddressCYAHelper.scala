@@ -18,7 +18,7 @@ package helpers
 
 import helpers.CYAHelper.getCompanyName
 import identifiers.establishers.company.CompanyDetailsId
-import identifiers.establishers.company.address.{AddressYearsId, PreviousAddressId, AddressId}
+import identifiers.establishers.company.address.{TradingTimeId, AddressYearsId, PreviousAddressId, AddressId}
 import models.requests.DataRequest
 import models.Index
 import play.api.i18n.Messages
@@ -57,20 +57,33 @@ class EstablisherCompanyAddressCYAHelper
       )
     )
 
-    val seqRowPreviousAddress = if (ua.get(AddressYearsId(index)).contains(true)) {
-      Nil
-    } else {
+    val seqTradingTime = if (ua.get(AddressYearsId(index)).contains(false)) {
       Seq(
         answerOrAddRow(
-          PreviousAddressId(index),
-          Message("messages__establisherPreviousAddress").resolve,
-          Some(controllers.establishers.company.address.routes.EnterPreviousPostcodeController.onPageLoad(index).url),
-          Some(msg"messages__visuallyHidden__previousAddress".withArgs(establisherName)), answerAddressTransform
+          TradingTimeId(index),
+          Message("tradingTime.title", establisherName).resolve,
+          Some(controllers.establishers.company.address.routes.TradingTimeController.onPageLoad(index).url),
+          Some(msg"messages__visuallyhidden__establisherTradingTime".withArgs(establisherName)), answerBooleanTransform
         )
       )
+    } else {
+      Nil
     }
 
-    val rowsWithoutDynamicIndices = seqRowAddressAndYears ++ seqRowPreviousAddress
+    val seqRowPreviousAddress =(ua.get(AddressYearsId(index)), ua.get(TradingTimeId(index))) match {
+      case (Some(false), Some(true)) =>
+        Seq(
+          answerOrAddRow(
+            PreviousAddressId(index),
+            Message("messages__establisherPreviousAddress").resolve,
+            Some(controllers.establishers.company.address.routes.EnterPreviousPostcodeController.onPageLoad(index).url),
+            Some(msg"messages__visuallyHidden__previousAddress".withArgs(establisherName)), answerAddressTransform
+          )
+        )
+      case _ => Nil
+    }
+
+    val rowsWithoutDynamicIndices = seqRowAddressAndYears ++ seqTradingTime ++ seqRowPreviousAddress
     rowsWithDynamicIndices(rowsWithoutDynamicIndices)
   }
 }

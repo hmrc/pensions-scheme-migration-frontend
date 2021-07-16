@@ -19,10 +19,10 @@ package controllers.establishers.company.address
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import forms.establishers.address.AddressYearsFormProvider
+import forms.establishers.address.TradingTimeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
-import identifiers.establishers.company.address.AddressYearsId
+import identifiers.establishers.company.address.TradingTimeId
 import models.Index
 import navigators.CompoundNavigator
 import play.api.data.Form
@@ -38,13 +38,13 @@ import utils.Enumerable
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
+class TradingTimeController @Inject()(override val messagesApi: MessagesApi,
                                        userAnswersCacheConnector: UserAnswersCacheConnector,
                                        authenticate: AuthAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        navigator: CompoundNavigator,
-                                       formProvider: AddressYearsFormProvider,
+                                       formProvider: TradingTimeFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer)(implicit ec: ExecutionContext)
   extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
@@ -55,7 +55,7 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       (CompanyDetailsId(index) and SchemeNameId).retrieve.right.map { case companyDetails ~ schemeName =>
-        val preparedForm = request.userAnswers.get(AddressYearsId(index)) match {
+        val preparedForm = request.userAnswers.get(TradingTimeId(index)) match {
           case Some(value) => form.fill(value)
           case None        => form
         }
@@ -66,7 +66,7 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
           "form" -> preparedForm,
           "radios" -> Radios.yesNo (preparedForm("value"))
         )
-        renderer.render("establishers/company/address/addressYears.njk", json).map(Ok(_))
+        renderer.render("establishers/company/address/tradingTime.njk", json).map(Ok(_))
       }
     }
 
@@ -85,12 +85,12 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
                 "radios" -> Radios.yesNo(form("value"))
               )
 
-              renderer.render("establishers/company/address/addressYears.njk", json).map(BadRequest(_))
+              renderer.render("establishers/company/address/tradingTime.njk", json).map(BadRequest(_))
             },
             value => {
-              val updatedUA = request.userAnswers.setOrException(AddressYearsId(index), value)
+              val updatedUA = request.userAnswers.setOrException(TradingTimeId(index), value)
               userAnswersCacheConnector.save(request.lock, updatedUA.data).map { _ =>
-                Redirect(navigator.nextPage(AddressYearsId(index), updatedUA))
+                Redirect(navigator.nextPage(TradingTimeId(index), updatedUA))
               }
             }
           )

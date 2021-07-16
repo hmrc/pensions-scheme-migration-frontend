@@ -18,7 +18,7 @@ package controllers.establishers.company.address
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import helpers.EstablisherAddressCYAHelper
+import helpers.EstablisherCompanyAddressCYAHelper
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
@@ -41,10 +41,10 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 
   private val templateToBeRendered = "check-your-answers.njk"
-  private val mockCyaHelper: EstablisherAddressCYAHelper = mock[EstablisherAddressCYAHelper]
+  private val mockCyaHelper: EstablisherCompanyAddressCYAHelper = mock[EstablisherCompanyAddressCYAHelper]
   private def httpPathGET: String = controllers.establishers.company.address.routes.CheckYourAnswersController.onPageLoad(0).url
   val extraModules: Seq[GuiceableModule] = Seq(
-    bind[EstablisherAddressCYAHelper].toInstance(mockCyaHelper)
+    bind[EstablisherCompanyAddressCYAHelper].toInstance(mockCyaHelper)
   )
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
   private val rows = Seq(
