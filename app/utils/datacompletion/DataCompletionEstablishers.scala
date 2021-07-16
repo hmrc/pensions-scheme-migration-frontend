@@ -23,6 +23,7 @@ import identifiers.establishers.individual.address.{AddressYearsId, PreviousAddr
 import identifiers.establishers.company.address.{TradingTimeId, AddressYearsId => CompanyAddressYearsId,
   PreviousAddressId => CompanyPreviousAddressId, AddressId => CompanyAddressId}
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
+import identifiers.establishers.company.{contact => companyContact}
 import identifiers.establishers.individual.details._
 import utils.UserAnswers
 
@@ -94,7 +95,16 @@ trait DataCompletionEstablishers extends DataCompletion {
     isComplete(
       Seq(
         isAnswerComplete(CompanyDetailsId(index)),
-        isAnswerComplete(EstablisherKindId(index))
+        isAnswerComplete(EstablisherKindId(index)),
+        isEstablisherCompanyContactDetailsCompleted(index)
       )
     ).getOrElse(false)
+
+  def isEstablisherCompanyContactDetailsCompleted(index: Int): Option[Boolean] =
+    isComplete(
+      Seq(
+        isAnswerComplete(companyContact.EnterEmailId(index)),
+        isAnswerComplete(companyContact.EnterPhoneId(index))
+      )
+    )
 }

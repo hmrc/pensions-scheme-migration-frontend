@@ -21,15 +21,16 @@ import controllers.PhoneController
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.PhoneFormProvider
 import identifiers.beforeYouStart.SchemeNameId
+import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.contact.EnterPhoneId
-import identifiers.establishers.individual.EstablisherNameId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -51,11 +52,11 @@ class EnterPhoneController @Inject()(
                   (implicit request: DataRequest[AnyContent]): String =
     request
       .userAnswers
-      .get(EstablisherNameId(index))
-      .fold("the establisher")(_.fullName)
+      .get(CompanyDetailsId(index))
+      .fold(Message("messages__company"))(_.companyName)
 
   private def form(index: Index)(implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Messages("messages__enterPhone__error_required", name(index)))
+    formProvider(Message("messages__enterPhone__error_required", name(index)))
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
@@ -64,11 +65,11 @@ class EnterPhoneController @Inject()(
           schemeName =>
             get(
               entityName = name(index),
-              entityType = Messages("messages__company"),
+              entityType = Message("messages__company"),
               id = EnterPhoneId(index),
               form = form(index),
               schemeName = schemeName,
-              paragraphText = Seq(Messages("messages__contact_details__hint", name(index)))
+              paragraphText = Seq(Message("messages__contact_details__hint", name(index)))
             )
         }
     }
@@ -80,11 +81,11 @@ class EnterPhoneController @Inject()(
           schemeName =>
             post(
               entityName = name(index),
-              entityType = Messages("messages__company"),
+              entityType = Message("messages__company"),
               id = EnterPhoneId(index),
               form = form(index),
               schemeName = schemeName,
-              paragraphText = Seq(Messages("messages__contact_details__hint", name(index))),
+              paragraphText = Seq(Message("messages__contact_details__hint", name(index))),
               mode = mode
             )
         }

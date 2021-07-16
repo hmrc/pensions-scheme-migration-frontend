@@ -166,8 +166,8 @@ messages__schemeTaskList__individualDetails_addLink = Add details for {0}
 messages__schemeTaskList__individualDetails_changeLink = Change details for {0}
 messages__schemeTaskList__establisherAddress_addLink = Add address for {0}
 messages__schemeTaskList__establisherAddress_changeLink = Change address for {0}
-messages__schemeTaskList__establisherIndividualContactDetails_addLink = Add contact details for {0}
-messages__schemeTaskList__establisherIndividualContactDetails_changeLink = Change contact details for {0}
+messages__schemeTaskList__contactDetails_addLink = Add contact details for {0}
+messages__schemeTaskList__contactDetails_changeLink = Change contact details for {0}
 
 
 messages__individual = the individual
@@ -424,7 +424,7 @@ messages__individualContactDetails__whatYouWillNeed_p = You will need to tell us
 messages__individualContactDetails__whatYouWillNeed_li_1 = contact email address
 messages__individualContactDetails__whatYouWillNeed_li_2 = contact phone number
 
-messages__establisherCompanyContactDetails__whatYouWillNeed_title = The establisher’s contact details
+messages__establisherCompanyContactDetails__whatYouWillNeed_title = Contact details
 messages__establisherCompanyContactDetails__whatYouWillNeed_h1 = Contact details for {0}
 messages__companyDetails__whatYouWillNeed_p = You will need to tell us {0}’s:
 messages__companyDetails__whatYouWillNeed_li_1 = contact email address

@@ -21,6 +21,7 @@ import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.establishers.company.contact.routes.EnterEmailController
 import helpers.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
+import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
 import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -49,12 +50,12 @@ class WhatYouWillNeedCompanyContactController @Inject()(
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        EstablisherNameId(index).retrieve.right.map {
-          personName =>
+        CompanyDetailsId(index).retrieve.right.map {
+          details =>
             renderer.render(
               template = "establishers/company/contact/whatYouWillNeed.njk",
               ctx = Json.obj(
-                "name"        -> personName.fullName,
+                "name"        -> details.companyName,
                 "continueUrl" -> EnterEmailController.onPageLoad(index, NormalMode).url,
                 "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )

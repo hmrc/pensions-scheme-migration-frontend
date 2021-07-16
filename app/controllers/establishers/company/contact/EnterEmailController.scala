@@ -21,8 +21,8 @@ import controllers.EmailAddressController
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.EmailFormProvider
 import identifiers.beforeYouStart.SchemeNameId
+import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.contact.EnterEmailId
-import identifiers.establishers.individual.EstablisherNameId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import navigators.CompoundNavigator
@@ -30,6 +30,7 @@ import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -51,8 +52,8 @@ class EnterEmailController @Inject()(
                   (implicit request: DataRequest[AnyContent]): String =
     request
       .userAnswers
-      .get(EstablisherNameId(index))
-      .fold("the establisher")(_.fullName)
+      .get(CompanyDetailsId(index))
+      .fold(Message("messages__company"))(_.companyName)
 
   private def form(index: Index)(implicit request: DataRequest[AnyContent]): Form[String] =
     formProvider(Messages("messages__enterEmail__error_required", name(index)))
@@ -64,11 +65,11 @@ class EnterEmailController @Inject()(
           schemeName =>
             get(
               entityName = name(index),
-              entityType = Messages("messages__company"),
+              entityType = Message("messages__company"),
               id            = EnterEmailId(index),
               form          = form(index),
               schemeName    = schemeName,
-              paragraphText = Seq(Messages("messages__contact_details__hint", name(index)))
+              paragraphText = Seq(Message("messages__contact_details__hint", name(index)))
             )
         }
     }
@@ -80,11 +81,11 @@ class EnterEmailController @Inject()(
           schemeName =>
             post(
               entityName = name(index),
-              entityType = Messages("messages__company"),
+              entityType = Message("messages__company"),
               id            = EnterEmailId(index),
               form          = form(index),
               schemeName    = schemeName,
-              paragraphText = Seq(Messages("messages__contact_details__hint", name(index))),
+              paragraphText = Seq(Message("messages__contact_details__hint", name(index))),
               mode          = mode
             )
         }

@@ -17,9 +17,9 @@
 package helpers
 
 import controllers.establishers.company.contact.routes
-import helpers.CYAHelper.getName
+import helpers.CYAHelper.getCompanyName
+import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.contact.{EnterEmailId, EnterPhoneId}
-import identifiers.establishers.individual.EstablisherNameId
 import models.requests.DataRequest
 import models.{CheckMode, Index}
 import play.api.i18n.Messages
@@ -42,7 +42,7 @@ class EstablisherCompanyContactDetailsCYAHelper
     implicit val ua: UserAnswers =
       request.userAnswers
     val establisherName: String =
-      getName(EstablisherNameId(index))
+      getCompanyName(CompanyDetailsId(index))
 
     val rowsWithoutDynamicIndices = Seq(
       Some(answerOrAddRow(
