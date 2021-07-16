@@ -25,7 +25,7 @@ import models.{NormalMode, Mode}
 import models.requests.DataRequest
 import play.api.mvc.{Call, AnyContent}
 import utils.{UserAnswers, Enumerable}
-import controllers.establishers.individual.address.routes._
+import controllers.establishers.company.address.routes._
 
 class EstablishersCompanyNavigator
   extends Navigator

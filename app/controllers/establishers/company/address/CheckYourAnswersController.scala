@@ -18,7 +18,7 @@ package controllers.establishers.company.address
 
 import controllers.Retrievals
 import controllers.actions.{DataRetrievalAction, DataRequiredAction, AuthAction}
-import helpers.{CYAHelper, EstablisherAddressCYAHelper}
+import helpers.{CYAHelper, EstablisherAddressCYAHelper, EstablisherCompanyAddressCYAHelper}
 import identifiers.beforeYouStart.SchemeNameId
 import models.Index
 import play.api.i18n.{MessagesApi, I18nSupport}
@@ -36,7 +36,7 @@ class CheckYourAnswersController @Inject()(
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            cyaHelper: EstablisherAddressCYAHelper,
+                                            cyaHelper: EstablisherCompanyAddressCYAHelper,
                                             val controllerComponents: MessagesControllerComponents,
                                             renderer: Renderer
                                           )(implicit val ec: ExecutionContext)
