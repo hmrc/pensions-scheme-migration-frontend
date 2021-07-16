@@ -64,19 +64,27 @@ trait DataCompletionEstablishers extends DataCompletion {
     index: Int,
     userAnswers: UserAnswers
   ): Option[Boolean] = {
-    val atAddressMoreThanOneYear = userAnswers.get(CompanyAddressYearsId(index)).contains(true)
-    val tradingTime = userAnswers.get(TradingTimeId(index)).contains(true)
+
+   val previousAddress = (userAnswers.get(CompanyAddressYearsId(index)), userAnswers.get(TradingTimeId(index))) match {
+      case (Some(true), _) => Some(true)
+      case (Some(false), Some(true)) => isAnswerComplete(CompanyPreviousAddressId(index))
+      case (Some(false), Some(false)) => Some(true)
+      case _ => None
+    }
+
     isComplete(
       Seq(
         isAnswerComplete(CompanyAddressId(index)),
         isAnswerComplete(CompanyAddressYearsId(index)),
-        if (atAddressMoreThanOneYear) Some(true) else {
-          if (tradingTime) {
-            isAnswerComplete(CompanyPreviousAddressId(index))
-          } else {
-            Some(true)
-          }
-        }
+        previousAddress
+
+        //if (atAddressMoreThanOneYear) Some(true) else {
+        //  if (tradingTime) {
+        //    isAnswerComplete(CompanyPreviousAddressId(index))
+        //  } else {
+        //    Some(true)
+        //  }
+        //}
       )
     )
   }
