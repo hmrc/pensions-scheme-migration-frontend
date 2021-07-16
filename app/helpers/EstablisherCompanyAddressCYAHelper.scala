@@ -46,13 +46,13 @@ class EstablisherCompanyAddressCYAHelper
       answerOrAddRow(
         AddressId(index),
         Message("messages__establisherAddress__whatYouWillNeed_h1", establisherName).resolve,
-        Some(controllers.establishers.individual.address.routes.EnterPostcodeController.onPageLoad(index).url),
+        Some(controllers.establishers.company.address.routes.EnterPostcodeController.onPageLoad(index).url),
         Some(msg"messages__visuallyHidden__address".withArgs(establisherName)), answerAddressTransform
       ),
       answerOrAddRow(
         AddressYearsId(index),
         Message("establisherAddressYears.title", establisherName).resolve,
-        Some(controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index).url),
+        Some(controllers.establishers.company.address.routes.AddressYearsController.onPageLoad(index).url),
         Some(msg"messages__visuallyhidden__establisherAddressYears".withArgs(establisherName)), answerBooleanTransform
       )
     )
@@ -64,7 +64,7 @@ class EstablisherCompanyAddressCYAHelper
         answerOrAddRow(
           PreviousAddressId(index),
           Message("messages__establisherPreviousAddress").resolve,
-          Some(controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index).url),
+          Some(controllers.establishers.company.address.routes.EnterPreviousPostcodeController.onPageLoad(index).url),
           Some(msg"messages__visuallyHidden__previousAddress".withArgs(establisherName)), answerAddressTransform
         )
       )
