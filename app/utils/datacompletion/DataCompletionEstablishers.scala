@@ -20,7 +20,8 @@ import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{AddressYearsId, PreviousAddressId, AddressId}
-import identifiers.establishers.company.address.{TradingTimeId, AddressYearsId => CompanyAddressYearsId, PreviousAddressId => CompanyPreviousAddressId, AddressId => CompanyAddressId}
+import identifiers.establishers.company.address.{TradingTimeId, AddressYearsId => CompanyAddressYearsId,
+  PreviousAddressId => CompanyPreviousAddressId, AddressId => CompanyAddressId}
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.individual.details._
 import utils.UserAnswers
@@ -77,14 +78,6 @@ trait DataCompletionEstablishers extends DataCompletion {
         isAnswerComplete(CompanyAddressId(index)),
         isAnswerComplete(CompanyAddressYearsId(index)),
         previousAddress
-
-        //if (atAddressMoreThanOneYear) Some(true) else {
-        //  if (tradingTime) {
-        //    isAnswerComplete(CompanyPreviousAddressId(index))
-        //  } else {
-        //    Some(true)
-        //  }
-        //}
       )
     )
   }
