@@ -46,6 +46,7 @@ class EstablishersNavigatorSpec
   private val index: Index = Index(0)
   private val uaWithEstablisherKind: EstablisherKind => UserAnswers = kind => UserAnswers().set(EstablisherKindId(index), kind).get
   private val establisherNamePage: Call = controllers.establishers.individual.routes.EstablisherNameController.onPageLoad(index)
+  private val companyDetailsPage: Call = controllers.establishers.company.routes.CompanyDetailsController.onPageLoad(index)
   private val addEstablisherPage: Call = controllers.establishers.routes.AddEstablisherController.onPageLoad()
   private val taskListPage: Call = controllers.routes.TaskListController.onPageLoad()
   private val establisherKindPage: Call = routes.EstablisherKindController.onPageLoad(index)
@@ -103,7 +104,8 @@ class EstablishersNavigatorSpec
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
         row(EstablisherKindId(index))(establisherNamePage, Some(uaWithEstablisherKind(EstablisherKind.Individual))),
-        row(EstablisherKindId(index))(indexPage, Some(uaWithEstablisherKind(EstablisherKind.Company))),
+        row(EstablisherKindId(index))(companyDetailsPage, Some(uaWithEstablisherKind(EstablisherKind.Company))),
+        row(EstablisherKindId(index))(indexPage, Some(uaWithEstablisherKind(EstablisherKind.Partnership))),
         row(EstablisherNameId(index))(addEstablisherPage),
         row(AddEstablisherId(Some(true)))(establisherKindPage),
         row(AddEstablisherId(Some(false)))(taskListPage),
