@@ -17,6 +17,7 @@
 package models
 
 import controllers.establishers.routes._
+import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.trustees.individual.TrusteeNameId
 import models.establishers.EstablisherKind
@@ -64,6 +65,25 @@ case class EstablisherIndividualEntity(
 
 object EstablisherIndividualEntity {
   implicit lazy val formats: Format[EstablisherIndividualEntity] = Json.format[EstablisherIndividualEntity]
+}
+
+case class EstablisherCompanyEntity(id: CompanyDetailsId, name: String, isDeleted: Boolean,
+                                    isCompleted: Boolean, isNewEntity: Boolean, noOfRecords: Int) extends
+  Establisher[CompanyDetailsId] {
+  override def editLink: Option[String] = None
+
+  override def deleteLink: Option[String] = {
+    if (noOfRecords > 1)
+      Some(ConfirmDeleteEstablisherController.onPageLoad(id.index, EstablisherKind.Company).url)
+    else
+      None
+  }
+
+  override def index: Int = id.index
+}
+
+object EstablisherCompanyEntity {
+  implicit lazy val formats: Format[EstablisherCompanyEntity] = Json.format[EstablisherCompanyEntity]
 }
 
 sealed trait Establisher[T] extends Entity[T]

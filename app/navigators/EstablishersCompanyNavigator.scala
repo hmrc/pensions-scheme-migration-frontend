@@ -22,6 +22,10 @@ import identifiers._
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.company.contact.{EnterEmailId, EnterPhoneId}
 import models.NormalMode
+import controllers.establishers.routes._
+import controllers.routes._
+import identifiers._
+import identifiers.establishers.company.CompanyDetailsId
 import models.requests.DataRequest
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
@@ -36,10 +40,12 @@ class EstablishersCompanyNavigator
     case EstablisherNameId(_) => AddEstablisherController.onPageLoad()
     case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
     case EnterPhoneId(index) => cyaContactDetails(index)
+    case CompanyDetailsId(_) => AddEstablisherController.onPageLoad()
   }
 
   override protected def editRouteMap(ua: UserAnswers)
                                      (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
+    case CompanyDetailsId(_) => IndexController.onPageLoad()
     case EnterEmailId(index) => cyaContactDetails(index)
     case EnterPhoneId(index) => cyaContactDetails(index)
   }

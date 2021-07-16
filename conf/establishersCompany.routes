@@ -1,4 +1,6 @@
 
+GET         /:index/company/name                                                      controllers.establishers.company.CompanyDetailsController.onPageLoad(index: Index)
+POST        /:index/company/name                                                      controllers.establishers.company.CompanyDetailsController.onSubmit(index: Index)
 
 GET         /:index/company/contact-details/what-you-will-need                        controllers.establishers.company.contact.WhatYouWillNeedCompanyContactController.onPageLoad(index: Index)
 

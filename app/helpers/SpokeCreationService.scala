@@ -76,6 +76,9 @@ class SpokeCreationService extends Enumerable.Implicits {
     )
   }
 
+  def getEstablisherCompanySpokes(answers: UserAnswers, name: String, index: Index)
+                                    (implicit messages: Messages): Seq[EntitySpoke] = Nil
+
   def getAddTrusteeHeaderSpokes(answers: UserAnswers, viewOnly: Boolean)
                                (implicit messages: Messages): Seq[EntitySpoke] =
     if (viewOnly)

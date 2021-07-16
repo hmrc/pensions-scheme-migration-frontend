@@ -17,7 +17,8 @@
 package utils
 
 import identifiers.TypedIdentifier
-import identifiers.establishers.{EstablishersId, IsEstablisherNewId, EstablisherKindId}
+import identifiers.establishers.company.CompanyDetailsId
+import identifiers.establishers.{EstablisherKindId, EstablishersId, IsEstablisherNewId}
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId, TrusteesId}
 import identifiers.trustees.individual.TrusteeNameId
@@ -27,9 +28,9 @@ import models._
 import play.api.Logger
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json._
-import utils.datacompletion.{DataCompletion, DataCompletionTrustees, DataCompletionEstablishers}
+import utils.datacompletion.{DataCompletion, DataCompletionEstablishers, DataCompletionTrustees}
 
-import scala.util.{Try, Success, Failure}
+import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Implicits with DataCompletion
   with DataCompletionEstablishers with DataCompletionTrustees {
@@ -137,6 +138,7 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
         removeNext(ids.tail, ua.removeWithPath(ids.head.path))
       }
     }
+
     removeNext(ids, this)
   }
 
@@ -175,6 +177,15 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
         isEstablisherIndividualComplete(index), isNew.fold(false)(identity), noOfRecords)
     )
 
+    private def readsCompany(index: Int): Reads[Establisher[_]] = (
+      (JsPath \ CompanyDetailsId.toString).read[CompanyDetails] and
+        (JsPath \ IsEstablisherNewId.toString).readNullable[Boolean]
+      ) ((details, isNew) =>
+      EstablisherCompanyEntity(CompanyDetailsId(index),
+        details.companyName, details.isDeleted, isEstablisherCompanyComplete(index), isNew.fold
+        (false)(identity), noOfRecords)
+    )
+
     override def reads(json: JsValue): JsResult[Seq[Establisher[_]]] = {
       json \ EstablishersId.toString match {
         case JsDefined(JsArray(establishers)) =>
@@ -182,11 +193,11 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
             val establisherKind = (jsValue \ EstablisherKindId.toString).validate[String].asOpt
             val readsForEstablisherKind = establisherKind match {
               case Some(EstablisherKind.Individual.toString) => readsIndividual(index)
+              case Some(EstablisherKind.Company.toString) => readsCompany(index)
               case _ => throw UnrecognisedEstablisherKindException
             }
             readsForEstablisherKind.reads(jsValue)
           }
-
           asJsResultSeq(jsResults)
         case _ => JsSuccess(Nil)
       }
@@ -199,15 +210,6 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
       case _ => 0
     }
   }
-
-
-
-
-
-
-
-
-
 
 
   def allTrusteesAfterDelete: Seq[Trustee[_]] =
@@ -269,7 +271,6 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
       case _ => 0
     }
   }
-
 
 
   private def notDeleted: Reads[JsBoolean] = __.read(JsBoolean(false))
