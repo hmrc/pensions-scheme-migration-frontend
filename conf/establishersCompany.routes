@@ -2,6 +2,34 @@
 GET         /:index/company/name                                                      controllers.establishers.company.CompanyDetailsController.onPageLoad(index: Index)
 POST        /:index/company/name                                                      controllers.establishers.company.CompanyDetailsController.onSubmit(index: Index)
 
+GET         /:index/company/addresses/what-you-will-need                          controllers.establishers.company.address.WhatYouWillNeedController.onPageLoad(index: Index)
+
+GET         /:index/company/addresses/postcode                                    controllers.establishers.company.address.EnterPostcodeController.onPageLoad(index: Index)
+POST        /:index/company/addresses/postcode                                    controllers.establishers.company.address.EnterPostcodeController.onSubmit(index: Index)
+
+GET         /:index/company/addresses/address-results                             controllers.establishers.company.address.SelectAddressController.onPageLoad(index: Index)
+POST        /:index/company/addresses/address-results                             controllers.establishers.company.address.SelectAddressController.onSubmit(index: Index)
+
+GET         /:index/company/addresses/address-manual                              controllers.establishers.company.address.ConfirmAddressController.onPageLoad(index: Index)
+POST        /:index/company/addresses/address-manual                              controllers.establishers.company.address.ConfirmAddressController.onSubmit(index: Index)
+
+GET         /:index/company/addresses/check-your-answers                          controllers.establishers.company.address.CheckYourAnswersController.onPageLoad(index: Index)
+
+GET         /:index/company/addresses/address-years                              controllers.establishers.company.address.AddressYearsController.onPageLoad(index: Index)
+POST        /:index/company/addresses/address-years                              controllers.establishers.company.address.AddressYearsController.onSubmit(index: Index)
+
+GET         /:index/company/addresses/company-exists-years                              controllers.establishers.company.address.TradingTimeController.onPageLoad(index: Index)
+POST        /:index/company/addresses/company-exists-years                              controllers.establishers.company.address.TradingTimeController.onSubmit(index: Index)
+
+GET         /:index/company/addresses/address-previous                           controllers.establishers.company.address.EnterPreviousPostcodeController.onPageLoad(index: Index)
+POST        /:index/company/addresses/address-previous                           controllers.establishers.company.address.EnterPreviousPostcodeController.onSubmit(index: Index)
+
+GET         /:index/company/addresses/address-previous-results                   controllers.establishers.company.address.SelectPreviousAddressController.onPageLoad(index: Index)
+POST        /:index/company/addresses/address-previous-results                   controllers.establishers.company.address.SelectPreviousAddressController.onSubmit(index: Index)
+
+GET         /:index/company/addresses/address-previous-manual                    controllers.establishers.company.address.ConfirmPreviousAddressController.onPageLoad(index: Index)
+POST        /:index/company/addresses/address-previous-manual                    controllers.establishers.company.address.ConfirmPreviousAddressController.onSubmit(index: Index)
+
 GET         /:index/company/contact-details/what-you-will-need                        controllers.establishers.company.contact.WhatYouWillNeedCompanyContactController.onPageLoad(index: Index)
 
 GET         /:index/company/enter-email-address                                       controllers.establishers.company.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = NormalMode)

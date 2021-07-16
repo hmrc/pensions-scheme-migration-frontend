@@ -26,9 +26,12 @@ import controllers.establishers.routes._
 import controllers.routes._
 import identifiers._
 import identifiers.establishers.company.CompanyDetailsId
+import identifiers.establishers.company.address._
+import models.{NormalMode, Mode}
 import models.requests.DataRequest
-import play.api.mvc.{AnyContent, Call}
-import utils.{Enumerable, UserAnswers}
+import play.api.mvc.{Call, AnyContent}
+import utils.{UserAnswers, Enumerable}
+import controllers.establishers.company.address.routes._
 
 class EstablishersCompanyNavigator
   extends Navigator
@@ -41,6 +44,17 @@ class EstablishersCompanyNavigator
     case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
     case EnterPhoneId(index) => cyaContactDetails(index)
     case CompanyDetailsId(_) => AddEstablisherController.onPageLoad()
+    case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index)
+    case AddressListId(index) => addressYears(index, NormalMode)
+    case AddressId(index) => addressYears(index, NormalMode)
+    case AddressYearsId(index) =>
+      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else TradingTimeController.onPageLoad(index)
+    case TradingTimeId(index) =>
+      if (ua.get(TradingTimeId(index)).contains(true)) EnterPreviousPostcodeController.onPageLoad(index) else cyaAddress(index)
+    case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index)
+    case PreviousAddressListId(index) => cyaAddress(index)
+    case PreviousAddressId(index) => cyaAddress(index)
+
   }
 
   override protected def editRouteMap(ua: UserAnswers)
@@ -50,6 +64,8 @@ class EstablishersCompanyNavigator
     case EnterPhoneId(index) => cyaContactDetails(index)
   }
 
+  private def cyaAddress(index:Int): Call = controllers.establishers.company.address.routes.CheckYourAnswersController.onPageLoad(index)
+  private def addressYears(index:Int, mode:Mode): Call = controllers.establishers.company.address.routes.AddressYearsController.onPageLoad(index)
   private def cyaContactDetails(index:Int): Call = controllers.establishers.company.contact.routes.CheckYourAnswersController.onPageLoad(index)
 
 }
