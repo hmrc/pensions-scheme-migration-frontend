@@ -18,10 +18,10 @@ package utils.datacompletion
 
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.company.CompanyDetailsId
+import identifiers.establishers.company.address.{TradingTimeId, AddressId => CompanyAddressId, AddressYearsId => CompanyAddressYearsId, PreviousAddressId => CompanyPreviousAddressId}
+import identifiers.establishers.company.details._
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.address.{AddressYearsId, PreviousAddressId, AddressId}
-import identifiers.establishers.company.address.{TradingTimeId, AddressYearsId => CompanyAddressYearsId,
-  PreviousAddressId => CompanyPreviousAddressId, AddressId => CompanyAddressId}
+import identifiers.establishers.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.individual.details._
 import utils.UserAnswers
@@ -59,6 +59,17 @@ trait DataCompletionEstablishers extends DataCompletion {
         if (atAddressMoreThanOneYear) Some(true) else isAnswerComplete(PreviousAddressId(index))
       )
     )
+  }
+
+  def isEstablisherCompanyDetailsCompleted(index: Int): Boolean = {
+    isComplete(
+      Seq(
+        isAnswerComplete(HaveCompanyNumberId(index),CompanyNumberId(index),Some(NoCompanyNumberReasonId(index))),
+        isAnswerComplete(HaveUTRId(index), CompanyUTRId(index), Some(NoUTRReasonId(index))),
+        isAnswerComplete(VATId(index)),
+        isAnswerComplete(PAYEId(index))
+      )
+    ).getOrElse(false)
   }
 
   def isEstablisherCompanyAddressCompleted(
