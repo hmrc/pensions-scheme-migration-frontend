@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-package forms
+package forms.mappings
 
-import forms.mappings.UtrMapping
-import models.ReferenceValue
-import play.api.data.Form
-import play.api.data.Forms._
+import play.api.data.Mapping
 
-import javax.inject.Inject
+trait VatMapping extends Mappings with Transforms {
 
-class UTRFormProvider @Inject() extends UtrMapping {
-
-  def apply(): Form[ReferenceValue] =
-    Form(
-      mapping(
-        "value" -> utrMapping()
-      )(ReferenceValue.applyEditable)(ReferenceValue.unapplyEditable)
+  def vatMapping(invalidVatKey: String = "messages__enterVAT__company_invalid",
+                 requiredVatKey: String = "messages__error__vat_required"):
+  Mapping[String] = text(requiredVatKey)
+    .transform(vatRegistrationNumberTransform, noTransform)
+    .verifying(
+      firstError(
+        maxLength(VatMapping.maxVatLength, invalidVatKey),
+        vatRegistrationNumber(invalidVatKey))
     )
+}
+
+object VatMapping {
+  val maxVatLength = 9
 }

@@ -807,3 +807,14 @@ messages__genericHasVat__error__required = Select yes if {0} is registered for V
 messages__havePAYE = Does {0} have an employer PAYE reference?
 messages__havePAYE__hint = This is a 3 digit tax office number, a forward slash, and a tax office employer reference, like 123/AB456. It may be called ‘Employer PAYE reference’ or ‘PAYE reference’. It will be on letters from HMRC about PAYE.
 messages__genericHavePaye__error__required = Select yes if {0} has an employer PAYE reference
+
+messages__vat = What is the VAT registration number for {0}?
+messages__vat__p = This is 9 numbers, sometimes with ‘GB’ at the start, for example 123456789 or GB123456789. You can find it on the VAT registration certificate for .
+messages__vat__error_invalid = Enter {0}’s VAT registration number in the correct format
+messages__vat__error_required = Enter a VAT registration number
+
+messages__paye = What is the employer PAYE reference for {0}?
+messages__paye__p = You can tell us any employer PAYE reference if has more then one.
+messages__paye__error_invalid = Enter {0}’s employer PAYE reference in the correct format
+messages__paye__error_length = Enter {0}’s employer PAYE reference using 16 characters or less
+messages__paye__error_required = Enter an employer PAYE reference
