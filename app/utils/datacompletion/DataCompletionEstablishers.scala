@@ -95,8 +95,7 @@ trait DataCompletionEstablishers extends DataCompletion {
     isComplete(
       Seq(
         isAnswerComplete(CompanyDetailsId(index)),
-        isAnswerComplete(EstablisherKindId(index)),
-        isEstablisherCompanyContactDetailsCompleted(index)
+        isAnswerComplete(EstablisherKindId(index))
       )
     ).getOrElse(false)
 

@@ -21,6 +21,7 @@ import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
+import identifiers.establishers.company.{contact => companyContact}
 import identifiers.establishers.individual.details._
 import models.establishers.EstablisherKind
 import models.{CompanyDetails, PersonName, ReferenceValue}
@@ -173,5 +174,28 @@ class DataCompletionEstablishersSpec
         ua.isEstablisherCompanyComplete(1) mustBe false
       }
     }
+    "isEstablisherCompanyContactDetailsCompleted" must {
+      "return true when all answers are present" in {
+        val ua =
+          UserAnswers()
+            .set(companyContact.EnterEmailId(0), "test@test.com").success.value
+            .set(companyContact.EnterPhoneId(0), "123").success.value
+
+        ua.isEstablisherCompanyContactDetailsCompleted(0).value mustBe true
+      }
+
+      "return false when some answer is missing" in {
+        val ua =
+          UserAnswers()
+            .set(companyContact.EnterEmailId(0), "test@test.com").success.value
+
+        ua.isEstablisherCompanyContactDetailsCompleted(0).value mustBe false
+      }
+
+      "return None when no answer is present" in {
+        UserAnswers().isEstablisherCompanyContactDetailsCompleted(0) mustBe None
+      }
+    }
+
   }
 }
