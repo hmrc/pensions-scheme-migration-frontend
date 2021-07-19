@@ -756,6 +756,9 @@ trusteeEntityTypeIndividual = the individual
 messages__schemeTaskList__trusteeIndividualAddress_addLink = Add address for {0}
 messages__schemeTaskList__trusteeIndividualAddress_changeLink = Change address for {0}
 
+messages__schemeTaskList__companyDetails_addLink = Add company details for {0}
+messages__schemeTaskList__companyDetails_changeLink = Change company details for {0}
+
 messages__trusteeAddress__whatYouWillNeed_h1 = Address for {0}
 messages__trusteeAddress__whatYouWillNeed_title = The trustee’s address
 messages__trusteeAddress__whatYouWillNeed_p = You will need to tell us {0}’s:

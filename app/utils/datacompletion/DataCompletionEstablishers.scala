@@ -61,7 +61,7 @@ trait DataCompletionEstablishers extends DataCompletion {
     )
   }
 
-  def isEstablisherCompanyDetailsCompleted(index: Int): Boolean = {
+  def isEstablisherCompanyDetailsCompleted(index: Int): Option[Boolean] = {
     isComplete(
       Seq(
         isAnswerComplete(HaveCompanyNumberId(index),CompanyNumberId(index),Some(NoCompanyNumberReasonId(index))),
@@ -69,7 +69,7 @@ trait DataCompletionEstablishers extends DataCompletion {
         isAnswerComplete(VATId(index)),
         isAnswerComplete(PAYEId(index))
       )
-    ).getOrElse(false)
+    )
   }
 
   def isEstablisherCompanyAddressCompleted(
