@@ -70,7 +70,7 @@ class HaveCompanyNumberController @Inject()(
               form          = form(index),
               schemeName    = schemeName,
               legendClass   = "govuk-label--xl",
-              paragraphText = Message("messages__haveCompanyNumber__p")
+              paragraphText = Seq(Message("messages__haveCompanyNumber__p"))
             )
         }
     }
@@ -89,7 +89,7 @@ class HaveCompanyNumberController @Inject()(
               schemeName    = schemeName,
               legendClass   = "govuk-label--xl",
               mode          = mode,
-              paragraphText = Message("messages__haveCompanyNumber__p")
+              paragraphText = Seq(Message("messages__haveCompanyNumber__p"))
             )
         }
     }

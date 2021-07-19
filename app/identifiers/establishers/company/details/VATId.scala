@@ -25,7 +25,7 @@ case class VATId(index: Int) extends TypedIdentifier[ReferenceValue] {
   override def path: JsPath = EstablishersId(index).path \ VATId.toString
 }
 
-object UTRId {
+object VATId {
   override lazy val toString: String = "vat"
   implicit lazy val formats: Format[VATId] = Json.format[VATId]
 }

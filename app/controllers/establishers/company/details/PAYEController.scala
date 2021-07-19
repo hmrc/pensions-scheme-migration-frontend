@@ -22,12 +22,12 @@ import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.PAYEFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
-import identifiers.establishers.company.details.UTRId
+import identifiers.establishers.company.details.{PAYEId, UTRId}
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import viewmodels.Message
@@ -55,7 +55,7 @@ class PAYEController @Inject()(
       .get(CompanyDetailsId(index))
       .fold("messages__company")(_.companyName)
 
-  private def form: Form[ReferenceValue] = formProvider()
+  private def form(name:String)(implicit messages:Messages): Form[ReferenceValue] = formProvider(name)
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
@@ -66,8 +66,8 @@ class PAYEController @Inject()(
               pageTitle     = Message("messages__paye", Message("messages__company")),
               pageHeading     = Message("messages__paye", name(index)),
               isPageHeading = false,
-              id            = UTRId(index),
-              form          = form,
+              id            = PAYEId(index),
+              form          = form(name(index)),
               schemeName    = schemeName,
               legendClass   = "govuk-visually-hidden",
               paragraphText = Seq(Message("messages__paye__p"))
@@ -84,8 +84,8 @@ class PAYEController @Inject()(
               pageTitle     = Message("messages__paye", Message("messages__company")),
               pageHeading     = Message("messages__paye", name(index)),
               isPageHeading = false,
-              id            = UTRId(index),
-              form          = form,
+              id            = PAYEId(index),
+              form          = form(name(index)),
               schemeName    = schemeName,
               legendClass   = "govuk-visually-hidden",
               paragraphText = Seq(Message("messages__paye__p")),

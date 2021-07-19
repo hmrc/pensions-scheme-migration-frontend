@@ -27,7 +27,7 @@ case class HaveUTRId(index: Int) extends TypedIdentifier[Boolean] {
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): UserAnswers =
     value match {
       case Some(true) => userAnswers.remove(NoUTRReasonId(index))
-      case Some(false) => userAnswers.remove(UTRId(index))
+      case Some(false) => userAnswers.remove(CompanyUTRId(index))
       case _ => super.cleanup(value, userAnswers)
     }
 }

@@ -22,7 +22,7 @@ import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.VATFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
-import identifiers.establishers.company.details.UTRId
+import identifiers.establishers.company.details.{UTRId, VATId}
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
 import navigators.CompoundNavigator
@@ -66,7 +66,7 @@ class VATController @Inject()(
               pageTitle     = Message("messages__vat", Message("messages__company")),
               pageHeading     = Message("messages__vat", name(index)),
               isPageHeading = false,
-              id            = UTRId(index),
+              id            = VATId(index),
               form          = form(name(index)),
               schemeName    = schemeName,
               legendClass   = "govuk-visually-hidden",
@@ -84,7 +84,7 @@ class VATController @Inject()(
               pageTitle     = Message("messages__vat", Message("messages__company")),
               pageHeading     = Message("messages__vat", name(index)),
               isPageHeading = false,
-              id            = UTRId(index),
+              id            = VATId(index),
               form          = form(name(index)),
               schemeName    = schemeName,
               legendClass   = "govuk-visually-hidden",

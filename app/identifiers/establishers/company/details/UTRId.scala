@@ -21,11 +21,11 @@ import identifiers.establishers.EstablishersId
 import models.ReferenceValue
 import play.api.libs.json.{Format, JsPath, Json}
 
-case class UTRId(index: Int) extends TypedIdentifier[ReferenceValue] {
-  override def path: JsPath = EstablishersId(index).path \ UTRId.toString
+case class CompanyUTRId(index: Int) extends TypedIdentifier[ReferenceValue] {
+  override def path: JsPath = EstablishersId(index).path \ CompanyUTRId.toString
 }
 
-object UTRId {
+object CompanyUTRId {
   override lazy val toString: String = "utr"
-  implicit lazy val formats: Format[UTRId] = Json.format[UTRId]
+  implicit lazy val formats: Format[CompanyUTRId] = Json.format[CompanyUTRId]
 }

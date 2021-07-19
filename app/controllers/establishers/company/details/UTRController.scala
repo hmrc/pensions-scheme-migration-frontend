@@ -22,7 +22,7 @@ import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.UTRFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
-import identifiers.establishers.company.details.UTRId
+import identifiers.establishers.company.details.{CompanyUTRId, UTRId}
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.details.EstablisherUTRId
 import models.requests.DataRequest
@@ -68,7 +68,7 @@ class UTRController @Inject()(
               pageTitle     = Message("messages__enterUTR_title", Message("messages__company")),
               pageHeading     = Message("messages__enterUTR", name(index)),
               isPageHeading = false,
-              id            = UTRId(index),
+              id            = CompanyUTRId(index),
               form          = form,
               schemeName    = schemeName,
               legendClass   = "govuk-visually-hidden",
@@ -86,7 +86,7 @@ class UTRController @Inject()(
               pageTitle     = Message("messages__enterUTR_title", Message("messages__company")),
               pageHeading     = Message("messages__enterUTR", name(index)),
               isPageHeading = false,
-              id            = UTRId(index),
+              id            = CompanyUTRId(index),
               form          = form,
               schemeName    = schemeName,
               legendClass   = "govuk-visually-hidden",
