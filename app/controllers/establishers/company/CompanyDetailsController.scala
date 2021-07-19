@@ -44,7 +44,7 @@ class CompanyDetailsController @Inject()(
                                           val controllerComponents: MessagesControllerComponents,
                                           userAnswersCacheConnector: UserAnswersCacheConnector,
                                           renderer: Renderer
-                                         )(implicit val executionContext: ExecutionContext)
+                                        )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
     with Retrievals
@@ -58,7 +58,7 @@ class CompanyDetailsController @Inject()(
         renderer.render(
           template = "establishers/company/companyDetails.njk",
           ctx = Json.obj(
-            "form"       -> request.userAnswers.get[CompanyDetails](CompanyDetailsId(index)).fold(form)(form.fill),
+            "form" -> request.userAnswers.get[CompanyDetails](CompanyDetailsId(index)).fold(form)(form.fill),
             "schemeName" -> existingSchemeName
           )
         ).flatMap(view => Future.successful(Ok(view)))
@@ -72,17 +72,16 @@ class CompanyDetailsController @Inject()(
             renderer.render(
               template = "establishers/company/companyDetails.njk",
               ctx = Json.obj(
-                "form"       -> formWithErrors,
+                "form" -> formWithErrors,
                 "schemeName" -> existingSchemeName
               )
             ).map(BadRequest(_)),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(CompanyDetailsId(index), value))
-              _              <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+              _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
             } yield
               Redirect(navigator.nextPage(CompanyDetailsId(index), updatedAnswers))
         )
     }
-
 }
