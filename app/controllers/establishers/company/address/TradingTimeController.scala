@@ -66,7 +66,7 @@ class TradingTimeController @Inject()(override val messagesApi: MessagesApi,
           "form" -> preparedForm,
           "radios" -> Radios.yesNo (preparedForm("value"))
         )
-        renderer.render("establishers/company/address/tradingTime.njk", json).map(Ok(_))
+        renderer.render("address/tradingTime.njk", json).map(Ok(_))
       }
     }
 
@@ -85,7 +85,7 @@ class TradingTimeController @Inject()(override val messagesApi: MessagesApi,
                 "radios" -> Radios.yesNo(form("value"))
               )
 
-              renderer.render("establishers/company/address/tradingTime.njk", json).map(BadRequest(_))
+              renderer.render("address/tradingTime.njk", json).map(BadRequest(_))
             },
             value => {
               val updatedUA = request.userAnswers.setOrException(TradingTimeId(index), value)
