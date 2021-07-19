@@ -164,9 +164,9 @@ messages__schemeTaskList__sectionEstablishers_no_establishers = No establishers
 
 messages__schemeTaskList__individualDetails_addLink = Add details for {0}
 messages__schemeTaskList__individualDetails_changeLink = Change details for {0}
-messages__schemeTaskList__establisherIndividualAddress_addLink = Add address for {0}
+messages__schemeTaskList__establisherAddress_addLink = Add address for {0}
+messages__schemeTaskList__establisherAddress_changeLink = Change address for {0}
 messages__schemeTaskList__establisherIndividualContactDetails_addLink = Add contact details for {0}
-messages__schemeTaskList__establisherIndividualAddress_changeLink = Change address for {0}
 messages__schemeTaskList__establisherIndividualContactDetails_changeLink = Change contact details for {0}
 
 
@@ -410,6 +410,7 @@ messages__alreadyDeleted__p1 = You have already confirmed deletion of {0}
 messages__alreadyDeleted__p2 = This page no longer exists.
 
 establisherEntityTypeIndividual = the individual
+establisherEntityTypeCompany = the company
 
 messages__establisherAddress__whatYouWillNeed_title = The establisher’s address
 messages__establisherAddress__whatYouWillNeed_h1 = Address for {0}
@@ -818,3 +819,8 @@ messages__paye__p = You can tell us any employer PAYE reference if has more then
 messages__paye__error_invalid = Enter {0}’s employer PAYE reference in the correct format
 messages__paye__error_length = Enter {0}’s employer PAYE reference using 16 characters or less
 messages__paye__error_required = Enter an employer PAYE reference
+
+tradingTime.title = Has {0} been trading for at least 1 year?
+establisherTradingTime.error.required = Select yes if the company has been trading for at least 1 year
+messages__visuallyhidden__establisherTradingTime = whether {0} has been trading for at least 1 year
+

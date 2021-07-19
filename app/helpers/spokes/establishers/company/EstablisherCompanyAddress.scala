@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package helpers.spokes.establishers.individual
+package helpers.spokes.establishers.company
 
-import controllers.establishers.individual.address.routes.{WhatYouWillNeedController, CheckYourAnswersController}
+import controllers.establishers.company.address.routes.{WhatYouWillNeedController, CheckYourAnswersController}
 import helpers.spokes.Spoke
 import models.{TaskListLink, Index}
 import play.api.i18n.Messages
 import utils.UserAnswers
 
 
-case class EstablisherIndividualAddress(
+case class EstablisherCompanyAddress(
   index: Index,
   answers: UserAnswers
 ) extends Spoke {
@@ -45,6 +45,6 @@ case class EstablisherIndividualAddress(
     )
 
   override def completeFlag(answers: UserAnswers): Option[Boolean] =
-    answers.isEstablisherIndividualAddressCompleted(index, answers)
+    answers.isEstablisherCompanyAddressCompleted(index, answers)
 }
 

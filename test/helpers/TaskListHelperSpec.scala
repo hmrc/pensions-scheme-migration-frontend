@@ -18,10 +18,11 @@ package helpers
 
 import base.SpecBase
 import identifiers.beforeYouStart.{HaveAnyTrusteesId, SchemeTypeId}
+import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.{IsEstablisherNewId, EstablisherKindId}
-import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId}
+import identifiers.establishers.{EstablisherKindId, IsEstablisherNewId}
 import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId}
 import models._
 import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind
@@ -29,8 +30,8 @@ import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.MustMatchers
 import org.scalatestplus.mockito.MockitoSugar
-import utils.Data.{schemeName, completeUserAnswers, ua}
-import utils.{UserAnswers, Enumerable}
+import utils.Data.{completeUserAnswers, schemeName, ua}
+import utils.{Enumerable, UserAnswers}
 import viewmodels.{Message, TaskListEntitySection}
 
 class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar with Enumerable.Implicits {
@@ -137,7 +138,13 @@ class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar wi
           _.set(IsEstablisherNewId(0), true).flatMap(
             _.set(EstablisherKindId(1), EstablisherKind.Individual).flatMap(
               _.set(EstablisherNameId(1), PersonName("c", "d", true)).flatMap(
-                _.set(IsEstablisherNewId(1), true)
+                _.set(IsEstablisherNewId(1), true).flatMap(
+                  _.set(EstablisherKindId(2), EstablisherKind.Company).flatMap(
+                    _.set(CompanyDetailsId(2), CompanyDetails("test company", true)).flatMap(
+                      _.set(IsEstablisherNewId(2), true)
+                    )
+                  )
+                )
               ))))).get
       helper.establishersSection(userAnswers, messages) mustBe Nil
     }
@@ -148,10 +155,14 @@ class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar wi
           _.set(IsEstablisherNewId(0), true).flatMap(
             _.set(EstablisherKindId(1), EstablisherKind.Individual).flatMap(
               _.set(EstablisherNameId(1), PersonName("c", "d")).flatMap(
-                _.set(IsEstablisherNewId(1), true)
-              ))))).get
+                _.set(IsEstablisherNewId(1), true).flatMap(
+                  _.set(EstablisherKindId(2), EstablisherKind.Company).flatMap(
+                    _.set(CompanyDetailsId(2), CompanyDetails("test company")).flatMap(
+                      _.set(IsEstablisherNewId(2), true)
+              )))))))).get
 
-      val expectedSection =  Seq(TaskListEntitySection(None, null, Some("c d")))
+      val expectedSection =  Seq(TaskListEntitySection(None, null, Some("c d")),
+        TaskListEntitySection(None, null, Some("test company")))
       helper.establishersSection(userAnswers, messages) mustBe expectedSection
     }
   }
