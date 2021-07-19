@@ -29,7 +29,7 @@ class VATFormProvider @Inject() extends VatMapping {
 
   def apply(name: String)(implicit messages: Messages): Form[ReferenceValue] =
     Form(
-      mapping("vat" -> vatMapping(Message("messages__enterVAT__company_invalid", name)))
+      mapping("value" -> vatMapping(Message("messages__vat__error_invalid", name)))
       (ReferenceValue.applyEditable)(ReferenceValue.unapplyEditable)
     )
 }

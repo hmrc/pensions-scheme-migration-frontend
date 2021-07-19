@@ -18,11 +18,10 @@ package controllers.establishers.company.details
 
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import controllers.establishers.individual.details.routes._
+import controllers.establishers.company.details.routes.HaveCompanyNumberController
 import helpers.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
-import identifiers.establishers.individual.EstablisherNameId
 import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -56,7 +55,7 @@ class WhatYouWillNeedController @Inject()(
               template = "whatYouWillNeedCompanyDetails.njk",
               ctx = Json.obj(
                 "name"        -> details.companyName,
-                "continueUrl" -> EstablisherDOBController.onPageLoad(index, NormalMode).url,
+                "continueUrl" -> HaveCompanyNumberController.onPageLoad(index, NormalMode).url,
                 "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )
             ).map(Ok(_))

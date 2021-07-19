@@ -22,7 +22,7 @@ import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.HasReferenceNumberFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
-import identifiers.establishers.company.details.HaveUTRId
+import identifiers.establishers.company.details.{HavePAYEId, HaveUTRId}
 import models.requests.DataRequest
 import models.{Index, Mode}
 import navigators.CompoundNavigator
@@ -66,7 +66,7 @@ class HavePAYEController @Inject()(
               pageTitle     = Message("messages__havePAYE", Message("messages__company")),
               pageHeading     = Message("messages__havePAYE", name(index)),
               isPageHeading = false,
-              id            = HaveUTRId(index),
+              id            = HavePAYEId(index),
               form          = form(index),
               schemeName    = schemeName,
               paragraphText = Seq(Message("messages__havePAYE__hint")),
@@ -85,7 +85,7 @@ class HavePAYEController @Inject()(
               pageTitle     = Message("messages__havePAYE", Message("messages__company")),
               pageHeading     = Message("messages__havePAYE", name(index)),
               isPageHeading = false,
-              id            = HaveUTRId(index),
+              id            = HavePAYEId(index),
               form          = form(index),
               schemeName    = schemeName,
               paragraphText = Seq(Message("messages__havePAYE__hint")),

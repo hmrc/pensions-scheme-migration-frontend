@@ -16,7 +16,7 @@
 
 package helpers.spokes.establishers.company
 
-import controllers.establishers.company.details.routes.{WhatYouWillNeedController}
+import controllers.establishers.company.details.routes.{WhatYouWillNeedController,CheckYourAnswersController}
 import helpers.spokes.Spoke
 import models.{TaskListLink, Index}
 import play.api.i18n.Messages
@@ -30,9 +30,9 @@ case class EstablisherCompanyDetails(
   val messageKeyPrefix = "messages__schemeTaskList__companyDetails_"
 
   val linkKeyAndRoute: (String, String) = {
-  //  if (completeFlag(answers).isDefined)
-  //    (s"${messageKeyPrefix}changeLink", CheckYourAnswersController.onPageLoad(index).url)
-  //  else
+    if (completeFlag(answers).isDefined)
+      (s"${messageKeyPrefix}changeLink", CheckYourAnswersController.onPageLoad(index).url)
+    else
       (s"${messageKeyPrefix}addLink", WhatYouWillNeedController.onPageLoad(index).url)
   }
 

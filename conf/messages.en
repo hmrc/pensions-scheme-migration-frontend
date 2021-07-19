@@ -806,7 +806,7 @@ messages__whyNoCompanyNumber = Why does {0} not have a company number?
 messages__reason__error_companyNumber_required = Enter a reason why the company does not have a company number
 
 messages__haveVAT = Is {0} registered for VAT?
-messages__genericHasVat__error__required = Select yes if {0} is registered for VAT
+messages__genericHaveVat__error__required = Select yes if {0} is registered for VAT
 
 messages__havePAYE = Does {0} have an employer PAYE reference?
 messages__havePAYE__hint = This is a 3 digit tax office number, a forward slash, and a tax office employer reference, like 123/AB456. It may be called ‘Employer PAYE reference’ or ‘PAYE reference’. It will be on letters from HMRC about PAYE.

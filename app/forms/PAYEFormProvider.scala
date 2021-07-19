@@ -30,7 +30,7 @@ class PAYEFormProvider @Inject() extends PayeMapping {
   def apply(name: String)(implicit messages: Messages): Form[ReferenceValue] =
     Form(
       mapping(
-        "paye" -> payeMapping(
+        "value" -> payeMapping(
           requiredPayeKey = "messages__paye__error_required",
           payeLengthKey = Message("messages__paye__error_length", name),
           invalidPayeKey = Message("messages__paye__error_invalid", name)

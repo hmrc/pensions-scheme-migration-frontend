@@ -20,8 +20,8 @@ import play.api.data.Mapping
 
 trait VatMapping extends Mappings with Transforms {
 
-  def vatMapping(invalidVatKey: String = "messages__enterVAT__company_invalid",
-                 requiredVatKey: String = "messages__error__vat_required"):
+  def vatMapping(invalidVatKey: String = "messages__vat__error_invalid",
+                 requiredVatKey: String = "messages__vat__error_required"):
   Mapping[String] = text(requiredVatKey)
     .transform(vatRegistrationNumberTransform, noTransform)
     .verifying(
