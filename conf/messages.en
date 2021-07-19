@@ -823,6 +823,17 @@ messages__paye__error_invalid = Enter {0}’s employer PAYE reference in the cor
 messages__paye__error_length = Enter {0}’s employer PAYE reference using 16 characters or less
 messages__paye__error_required = Enter an employer PAYE reference
 
+messages__haveCompanyNumber__cya__visuallyHidden = whether {0} has a company number
+messages__companyNumber__cya__visuallyHidden =
+messages__whyNoCompanyNumber__cya__visuallyHidden =
+messages__hasUTR__cya__visuallyHidden =
+messages__enterUTR__cya__visuallyHidden =
+messages__whyNoUTR__cya__visuallyHidden =
+messages__haveVAT__cya__visuallyHidden =
+messages__vat__cya__visuallyHidden =
+messages__havePAYE__cya__visuallyHidden =
+messages__paye__cya__visuallyHidden =
+
 tradingTime.title = Has {0} been trading for at least 1 year?
 establisherTradingTime.error.required = Select yes if the company has been trading for at least 1 year
 messages__visuallyhidden__establisherTradingTime = whether {0} has been trading for at least 1 year
