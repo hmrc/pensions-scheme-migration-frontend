@@ -16,16 +16,18 @@
 
 package navigators
 
+import controllers.establishers.company.address.routes._
+import controllers.establishers.company.details.{routes => detailsRoutes}
 import controllers.establishers.routes._
 import controllers.routes._
 import identifiers._
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address._
-import models.{NormalMode, Mode}
+import identifiers.establishers.company.details._
 import models.requests.DataRequest
-import play.api.mvc.{Call, AnyContent}
-import utils.{UserAnswers, Enumerable}
-import controllers.establishers.company.address.routes._
+import models.{Index, Mode, NormalMode}
+import play.api.mvc.{AnyContent, Call}
+import utils.{Enumerable, UserAnswers}
 
 class EstablishersCompanyNavigator
   extends Navigator
@@ -34,6 +36,16 @@ class EstablishersCompanyNavigator
   //scalastyle:off cyclomatic.complexity
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
+    case HaveCompanyNumberId(index) => companyNumberRoutes(index, ua, NormalMode)
+    case CompanyNumberId(index) => detailsRoutes.HaveUTRController.onPageLoad(index, NormalMode)
+    case NoCompanyNumberReasonId(index) => detailsRoutes.HaveUTRController.onPageLoad(index, NormalMode)
+    case HaveUTRId(index) => utrRoutes(index, ua, NormalMode)
+    case CompanyUTRId(index) => detailsRoutes.HaveVATController.onPageLoad(index, NormalMode)
+    case NoUTRReasonId(index) => detailsRoutes.HaveVATController.onPageLoad(index, NormalMode)
+    case HaveVATId(index) => vatRoutes(index, ua, NormalMode)
+    case VATId(index) => detailsRoutes.HavePAYEController.onPageLoad(index, NormalMode)
+    case HavePAYEId(index) => payeRoutes(index, ua, NormalMode)
+    case PAYEId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
     case CompanyDetailsId(_) => AddEstablisherController.onPageLoad()
     case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index)
     case AddressListId(index) => addressYears(index, NormalMode)
@@ -56,5 +68,47 @@ class EstablishersCompanyNavigator
   private def cyaAddress(index:Int): Call = controllers.establishers.company.address.routes.CheckYourAnswersController.onPageLoad(index)
   private def addressYears(index:Int, mode:Mode): Call = controllers.establishers.company.address.routes.AddressYearsController.onPageLoad(index)
 
+  private def companyNumberRoutes(
+                                  index: Index,
+                                  answers: UserAnswers,
+                                  mode: Mode
+                                ): Call =
+    answers.get(HaveCompanyNumberId(index)) match {
+      case Some(true) => detailsRoutes.CompanyNumberController.onPageLoad(index, mode)
+      case Some(false) => detailsRoutes.NoCompanyNumberReasonController.onPageLoad(index, mode)
+      case None => controllers.routes.TaskListController.onPageLoad()
+    }
 
+  private def utrRoutes(
+                                   index: Index,
+                                   answers: UserAnswers,
+                                   mode: Mode
+                                 ): Call =
+    answers.get(HaveUTRId(index)) match {
+      case Some(true) => detailsRoutes.UTRController.onPageLoad(index, mode)
+      case Some(false) => detailsRoutes.NoUTRReasonController.onPageLoad(index, mode)
+      case None => controllers.routes.TaskListController.onPageLoad()
+    }
+
+  private def vatRoutes(
+                                   index: Index,
+                                   answers: UserAnswers,
+                                   mode: Mode
+                                 ): Call =
+    answers.get(HaveVATId(index)) match {
+      case Some(true) => detailsRoutes.VATController.onPageLoad(index, mode)
+      case Some(false) => detailsRoutes.HavePAYEController.onPageLoad(index, mode)
+      case None => controllers.routes.TaskListController.onPageLoad()
+    }
+
+  private def payeRoutes(
+                         index: Index,
+                         answers: UserAnswers,
+                         mode: Mode
+                       ): Call =
+    answers.get(HavePAYEId(index)) match {
+      case Some(true) => detailsRoutes.PAYEController.onPageLoad(index, mode)
+      case Some(false) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+      case None => controllers.routes.TaskListController.onPageLoad()
+    }
 }
