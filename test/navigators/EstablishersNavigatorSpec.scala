@@ -26,13 +26,13 @@ import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.individual.details._
 import identifiers.establishers.{AddEstablisherId, EstablisherKindId}
 import models.establishers.EstablisherKind
-import models.{CheckMode, Index, Mode, NormalMode, PersonName, ReferenceValue, _}
+import models.{CheckMode, PersonName, NormalMode, Mode, ReferenceValue, Index, _}
 import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes
 import play.api.mvc.Call
 import utils.Data.ua
-import utils.{Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable}
 
 import java.time.LocalDate
 

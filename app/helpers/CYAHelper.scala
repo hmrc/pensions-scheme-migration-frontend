@@ -18,12 +18,12 @@ package helpers
 
 import identifiers.TypedIdentifier
 import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
-import models.{Address, Link, PersonName, ReferenceValue}
+import models.{CompanyDetails, Address, PersonName, ReferenceValue, Link}
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
+import uk.gov.hmrc.viewmodels.SummaryList.{Action, Value, Row, Key}
 import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{Content, Html, MessageInterpolators, SummaryList, Text}
+import uk.gov.hmrc.viewmodels.{Content, SummaryList, Text, Html, MessageInterpolators}
 import utils.UserAnswers
 import viewmodels.Message
 
@@ -150,6 +150,12 @@ object CYAHelper {
     ua.get(id)
       .getOrElse(throw MandatoryAnswerMissingException)
       .fullName
+
+  def getCompanyName(id: TypedIdentifier[CompanyDetails])
+    (implicit ua: UserAnswers, rds: Reads[CompanyDetails]): String =
+    ua.get(id)
+      .getOrElse(throw MandatoryAnswerMissingException)
+      .companyName
 }
 
 case object MandatoryAnswerMissingException

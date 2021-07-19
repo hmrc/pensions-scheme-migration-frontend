@@ -17,13 +17,14 @@
 package helpers
 
 import controllers.establishers.routes._
+import helpers.spokes.establishers.company.EstablisherCompanyAddress
 import helpers.spokes.establishers.individual._
-import helpers.spokes.trustees.individual.{TrusteeIndividualAddress, TrusteeIndividualContactDetails, TrusteeIndividualDetails}
-import helpers.spokes.{AboutMembersSpoke, BeforeYouStartSpoke, BenefitsAndInsuranceSpoke, Spoke}
+import helpers.spokes.trustees.individual.{TrusteeIndividualAddress, TrusteeIndividualDetails, TrusteeIndividualContactDetails}
+import helpers.spokes.{BeforeYouStartSpoke, AboutMembersSpoke, Spoke, BenefitsAndInsuranceSpoke}
 import models.Index._
-import models.{EntitySpoke, Index, TaskListLink}
+import models.{TaskListLink, EntitySpoke, Index}
 import play.api.i18n.Messages
-import utils.{Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable}
 
 class SpokeCreationService extends Enumerable.Implicits {
 
@@ -77,7 +78,11 @@ class SpokeCreationService extends Enumerable.Implicits {
   }
 
   def getEstablisherCompanySpokes(answers: UserAnswers, name: String, index: Index)
-                                    (implicit messages: Messages): Seq[EntitySpoke] = Nil
+                                    (implicit messages: Messages): Seq[EntitySpoke] = {
+    Seq(
+      createSpoke(answers, EstablisherCompanyAddress(index, answers), name)
+    )
+  }
 
   def getAddTrusteeHeaderSpokes(answers: UserAnswers, viewOnly: Boolean)
                                (implicit messages: Messages): Seq[EntitySpoke] =
