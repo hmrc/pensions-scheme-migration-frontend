@@ -824,15 +824,13 @@ messages__paye__error_length = Enter {0}’s employer PAYE reference using 16 ch
 messages__paye__error_required = Enter an employer PAYE reference
 
 messages__haveCompanyNumber__cya__visuallyHidden = whether {0} has a company number
-messages__companyNumber__cya__visuallyHidden =
-messages__whyNoCompanyNumber__cya__visuallyHidden =
-messages__hasUTR__cya__visuallyHidden =
-messages__enterUTR__cya__visuallyHidden =
-messages__whyNoUTR__cya__visuallyHidden =
-messages__haveVAT__cya__visuallyHidden =
-messages__vat__cya__visuallyHidden =
-messages__havePAYE__cya__visuallyHidden =
-messages__paye__cya__visuallyHidden =
+messages__companyNumber__cya__visuallyHidden = the company number for {0}
+messages__whyNoCompanyNumber__cya__visuallyHidden = the reason why {0} does not have a company number
+messages__enterUTR__cya__visuallyHidden = the UTR for {0}
+messages__haveVAT__cya__visuallyHidden = whether {0} is registered for VAT
+messages__vat__cya__visuallyHidden = the VAT registration number for {0}
+messages__havePAYE__cya__visuallyHidden = whether {0} has an employer PAYE reference
+messages__paye__cya__visuallyHidden = the employer PAYE reference for {0}
 
 tradingTime.title = Has {0} been trading for at least 1 year?
 establisherTradingTime.error.required = Select yes if the company has been trading for at least 1 year
