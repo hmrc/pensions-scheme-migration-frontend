@@ -39,11 +39,9 @@ class EstablisherCompanyDetailsCYAHelper
                    implicit request: DataRequest[AnyContent],
                    messages: Messages
                  ): Seq[Row] = {
-    implicit val ua: UserAnswers =
-      request.userAnswers
+    implicit val ua: UserAnswers = request.userAnswers
 
     val companyName: String = getCompanyName(CompanyDetailsId(index))
-
 
     companyNumberAnswers(index, companyName) ++
       utrAnswers(index, companyName) ++
@@ -59,17 +57,21 @@ class EstablisherCompanyDetailsCYAHelper
     val visuallyHidden = Some(msg"messages__haveCompanyNumber__cya__visuallyHidden")
 
     ua.get(HaveCompanyNumberId(index)) match {
+
       case None => Seq(addRow(message, url, visuallyHidden))
+
       case Some(true) => Seq(
-        answerRow(message, booleanToText(true), url, visuallyHidden),
+        answerRow(message, Message(booleanToText(true)), url, visuallyHidden),
+
         answerOrAddRow(
           id = CompanyNumberId(index),
           message = Message("messages__companyNumber", companyName),
           url = Some(routes.CompanyNumberController.onPageLoad(index, CheckMode).url),
-          visuallyHiddenText = Some(msg"messages__companyNumber__cya__visuallyHidden".withArgs(companyName))
+          visuallyHiddenText = Some(msg"messages__companyNumber__cya__visuallyHidden".withArgs(companyName)),
+          answerTransform = referenceValueTransform
         ))
       case Some(false) => Seq(
-        answerRow(message, booleanToText(false), url, visuallyHidden),
+        answerRow(message, Message(booleanToText(false)), url, visuallyHidden),
         answerOrAddRow(
           id = NoCompanyNumberReasonId(index),
           message = Message("messages__whyNoCompanyNumber", companyName),
@@ -87,15 +89,16 @@ class EstablisherCompanyDetailsCYAHelper
     ua.get(HaveUTRId(index)) match {
       case None => Seq(addRow(message, url, visuallyHidden))
       case Some(true) => Seq(
-        answerRow(message, booleanToText(true), url, visuallyHidden),
+        answerRow(message, Message(booleanToText(true)), url, visuallyHidden),
         answerOrAddRow(
           id = CompanyUTRId(index),
           message = Message("messages__enterUTR", companyName),
           url = Some(routes.UTRController.onPageLoad(index, CheckMode).url),
-          visuallyHiddenText = Some(msg"messages__enterUTR__cya__visuallyHidden".withArgs(companyName))
+          visuallyHiddenText = Some(msg"messages__enterUTR__cya__visuallyHidden".withArgs(companyName)),
+          answerTransform = referenceValueTransform
         ))
       case Some(false) => Seq(
-        answerRow(message, booleanToText(false), url, visuallyHidden),
+        answerRow(message, Message(booleanToText(false)), url, visuallyHidden),
         answerOrAddRow(
           id = NoUTRReasonId(index),
           message = Message("messages__whyNoUTR", companyName),
@@ -114,15 +117,16 @@ class EstablisherCompanyDetailsCYAHelper
       case None => Seq(addRow(message, url, visuallyHidden))
 
       case Some(true) => Seq(
-        answerRow(message, booleanToText(true), url, visuallyHidden),
+        answerRow(message, Message(booleanToText(true)), url, visuallyHidden),
         answerOrAddRow(
           id = VATId(index),
           message = Message("messages__vat", companyName),
           url = Some(routes.VATController.onPageLoad(index, CheckMode).url),
-          visuallyHiddenText = Some(msg"messages__vat__cya__visuallyHidden".withArgs(companyName))
+          visuallyHiddenText = Some(msg"messages__vat__cya__visuallyHidden".withArgs(companyName)),
+          answerTransform = referenceValueTransform
         ))
 
-      case Some(false) => Seq(answerRow(message, booleanToText(false), url, visuallyHidden))
+      case Some(false) => Seq(answerRow(message, Message(booleanToText(false)), url, visuallyHidden))
     }
   }
 
@@ -135,15 +139,16 @@ class EstablisherCompanyDetailsCYAHelper
       case None => Seq(addRow(message, url, visuallyHidden))
 
       case Some(true) => Seq(
-        answerRow(message, booleanToText(true), url, visuallyHidden),
+        answerRow(message, Message(booleanToText(true)), url, visuallyHidden),
         answerOrAddRow(
           id = PAYEId(index),
           message = Message("messages__paye", companyName),
           url = Some(routes.PAYEController.onPageLoad(index, CheckMode).url),
-          visuallyHiddenText = Some(msg"messages__paye__cya__visuallyHidden".withArgs(companyName))
+          visuallyHiddenText = Some(msg"messages__paye__cya__visuallyHidden".withArgs(companyName)),
+          answerTransform = referenceValueTransform
         ))
 
-      case Some(false) => Seq(answerRow(message, booleanToText(false), url, visuallyHidden))
+      case Some(false) => Seq(answerRow(message, Message(booleanToText(false)), url, visuallyHidden))
     }
   }
 

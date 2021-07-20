@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.establishers.individual.contact
+package controllers.establishers.company.details
 
 import controllers.ControllerSpecBase
 import controllers.actions._
+import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
-import models.{NormalMode, PersonName}
+import models.{CompanyDetails, Index, NormalMode, PersonName}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -31,38 +32,27 @@ import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import utils.Data.{ua, schemeName}
+import utils.Data.ua
 import utils.UserAnswers
 
 import scala.concurrent.Future
 
-class WhatYouWillNeedControllerSpec
-  extends ControllerSpecBase
-    with NunjucksSupport
-    with JsonMatchers
-    with TryValues {
+class WhatYouWillNeedControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues {
 
-  private val personName: PersonName = PersonName("Jane", "Doe")
-  private val userAnswers: UserAnswers = ua.set(EstablisherNameId(0), personName).success.value
-  private val templateToBeRendered: String = "establishers/individual/contact/whatYouWillNeed.njk"
+  private val index: Index = Index(0)
+  private val companyName: CompanyDetails = CompanyDetails("ABC Ltd")
+  private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(0), companyName).success.value
+  private val templateToBeRendered: String = "whatYouWillNeedCompanyDetails.njk"
   private def json: JsObject =
     Json.obj(
-      "name"        -> personName.fullName,
-      "continueUrl" -> controllers.establishers.individual.contact.routes.EnterEmailController.onPageLoad(0, NormalMode).url,
-      "schemeName"  -> schemeName
+      "name"        -> companyName.companyName,
+      "continueUrl" -> routes.HaveCompanyNumberController.onPageLoad(index, NormalMode).url,
+      "schemeName"  -> "Test scheme name"
     )
 
-  private def controller(
-                          dataRetrievalAction: DataRetrievalAction
-                        ): WhatYouWillNeedController =
-    new WhatYouWillNeedController(
-      messagesApi          = messagesApi,
-      authenticate         = new FakeAuthAction(),
-      getData              = dataRetrievalAction,
-      requireData          = new DataRequiredActionImpl,
-      controllerComponents = controllerComponents,
-      renderer             = new Renderer(mockAppConfig, mockRenderer)
-    )
+  private def controller(dataRetrievalAction: DataRetrievalAction): WhatYouWillNeedController =
+    new WhatYouWillNeedController(messagesApi, new FakeAuthAction(), dataRetrievalAction,
+      new DataRequiredActionImpl, controllerComponents, new Renderer(mockAppConfig, mockRenderer))
 
   "WhatYouWillNeedController" must {
     "return OK and the correct view for a GET" in {
