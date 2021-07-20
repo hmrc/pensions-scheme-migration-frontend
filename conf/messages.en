@@ -450,12 +450,12 @@ messages__visuallyhidden__establisherAddressYears = whether {0} has used this ad
 messages__visuallyHidden__address = the address for {0}
 
 messages__enterEmail__error_invalid = Enter an email address in the correct format, like name@example.com
-messages__enterEmail__error_required = Enter email address for {0}
+messages__enterEmail__error_required = Enter an email address for {0}
 messages__enterEmail = What is the email address for {0}?
 messages__contact_details__hint = We will only use this to contact {0} about pension scheme administration.
 messages__enterEmail__cya__visuallyHidden = the email address for {0}
 
-messages__enterPhone__error_required = Enter phone number for {0}
+messages__enterPhone__error_required = Enter a phone number for {0}
 messages__enterPhone__error_invalid = Enter a phone number in the correct format
 messages__enterPhone = What is the phone number for {0}?
 messages__enterPhone__cya__visuallyHidden = the phone number for {0}
