@@ -17,12 +17,13 @@
 package utils.datacompletion
 
 import identifiers.establishers.EstablisherKindId
+import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.individual.details._
 import models.establishers.EstablisherKind
-import models.{PersonName, ReferenceValue}
+import models.{CompanyDetails, PersonName, ReferenceValue}
 import org.scalatest.{MustMatchers, OptionValues, TryValues, WordSpec}
 import utils.{Data, Enumerable, UserAnswers}
 
@@ -147,6 +148,29 @@ class DataCompletionEstablishersSpec
 
       "return None when no answer is present" in {
         UserAnswers().isEstablisherIndividualContactDetailsCompleted(0) mustBe None
+      }
+    }
+  }
+
+  "Establisher Company completion status should be returned correctly" when {
+    "isEstablisherCompanyComplete" must {
+      "return true when all answers are present" in {
+        val ua =
+          UserAnswers()
+            .set(EstablisherKindId(0), EstablisherKind.Company).success.value
+            .set(CompanyDetailsId(0), CompanyDetails("test company")).success.value
+
+        ua.isEstablisherCompanyComplete(0) mustBe true
+      }
+
+      "return false when some answer is missing" in {
+        val ua =
+          UserAnswers()
+            .set(EstablisherKindId(0), EstablisherKind.Company).success.value
+            .set(CompanyDetailsId(0), CompanyDetails("test company")).success.value
+            .set(EstablisherKindId(1), EstablisherKind.Company).success.value
+
+        ua.isEstablisherCompanyComplete(1) mustBe false
       }
     }
   }

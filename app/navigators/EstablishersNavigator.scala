@@ -33,6 +33,7 @@ import models.requests.DataRequest
 import models.{CheckMode, Index, Mode, NormalMode}
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
+import controllers.establishers.company.routes.CompanyDetailsController
 
 class EstablishersNavigator
   extends Navigator
@@ -88,6 +89,7 @@ class EstablishersNavigator
                                    ): Call =
     ua.get(EstablisherKindId(index)) match {
       case Some(EstablisherKind.Individual) => EstablisherNameController.onPageLoad(index)
+      case Some(EstablisherKind.Company) => CompanyDetailsController.onPageLoad(index)
       case _ => IndexController.onPageLoad()
     }
 

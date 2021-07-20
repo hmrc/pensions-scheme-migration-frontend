@@ -21,10 +21,11 @@ import controllers.Retrievals
 import controllers.actions._
 import forms.establishers.ConfirmDeleteEstablisherFormProvider
 import identifiers.establishers.ConfirmDeleteEstablisherId
+import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
 import models._
 import models.establishers.EstablisherKind
-import models.establishers.EstablisherKind.Individual
+import models.establishers.EstablisherKind.{Company, Individual}
 import models.requests.DataRequest
 import navigators.CompoundNavigator
 import play.api.data.Form
@@ -80,6 +81,8 @@ class ConfirmDeleteEstablisherController @Inject()(override val messagesApi: Mes
     establisherKind match {
       case Individual => userAnswers.get(EstablisherNameId(index)).map(details =>
         DeletableEstablisher(details.fullName, details.isDeleted))
+      case Company => userAnswers.get(CompanyDetailsId(index)).map(details =>
+        DeletableEstablisher(details.companyName, details.isDeleted))
       case _ => None
     }
   }
@@ -92,7 +95,11 @@ class ConfirmDeleteEstablisherController @Inject()(override val messagesApi: Mes
         establisherKind match {
           case Individual =>
             EstablisherNameId(establisherIndex).retrieve.right.map { establisherDetails =>
-              updateEstablisherKind(establisherDetails.fullName, establisherKind, establisherIndex, Some(establisherDetails))
+              updateEstablisherKind(establisherDetails.fullName, establisherKind, establisherIndex, Some(establisherDetails), None)
+            }
+          case Company =>
+            CompanyDetailsId(establisherIndex).retrieve.right.map { establisherDetails =>
+              updateEstablisherKind(establisherDetails.companyName, establisherKind, establisherIndex, None, Some(establisherDetails))
             }
           case _ =>
             Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
@@ -102,7 +109,8 @@ class ConfirmDeleteEstablisherController @Inject()(override val messagesApi: Mes
   private def updateEstablisherKind(name: String,
                                     establisherKind: EstablisherKind,
                                     establisherIndex: Index,
-                                    establisherName: Option[PersonName])(implicit request: DataRequest[AnyContent])
+                                    establisherName: Option[PersonName],
+                                    companyDetails: Option[CompanyDetails])(implicit request: DataRequest[AnyContent])
   : Future[Result] = {
     form(name).bindFromRequest().fold(
       (formWithErrors: Form[_]) => {
@@ -123,6 +131,9 @@ class ConfirmDeleteEstablisherController @Inject()(override val messagesApi: Mes
             case Individual => establisherName.fold(Try(request.userAnswers))(
               individual => request.userAnswers.set(EstablisherNameId(establisherIndex),
                 individual.copy (isDeleted = true)))
+            case Company => companyDetails.fold(Try(request.userAnswers))(
+              company => request.userAnswers.set(CompanyDetailsId(establisherIndex),
+                company.copy (isDeleted = true)))
             case _ => Try(request.userAnswers)
           }
         } else {

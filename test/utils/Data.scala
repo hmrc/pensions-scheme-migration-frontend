@@ -38,6 +38,7 @@ object Data {
   val migrationLock: MigrationLock = MigrationLock(pstr, credId, psaId)
   val schemeName: String = "Test scheme name"
   val establisherIndividualName = PersonName("test", "name")
+  val establisherCompanyDetails = CompanyDetails("test company")
   val trusteeIndividualName = PersonName("test", "name")
   val ua: UserAnswers =
     UserAnswers()

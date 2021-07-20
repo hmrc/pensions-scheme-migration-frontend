@@ -17,8 +17,11 @@
 package utils.datacompletion
 
 import identifiers.establishers.EstablisherKindId
+import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
+import identifiers.establishers.individual.address.{AddressYearsId, PreviousAddressId, AddressId}
+import identifiers.establishers.company.address.{TradingTimeId, AddressYearsId => CompanyAddressYearsId,
+  PreviousAddressId => CompanyPreviousAddressId, AddressId => CompanyAddressId}
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.individual.details._
 import utils.UserAnswers
@@ -58,6 +61,27 @@ trait DataCompletionEstablishers extends DataCompletion {
     )
   }
 
+  def isEstablisherCompanyAddressCompleted(
+    index: Int,
+    userAnswers: UserAnswers
+  ): Option[Boolean] = {
+
+   val previousAddress = (userAnswers.get(CompanyAddressYearsId(index)), userAnswers.get(TradingTimeId(index))) match {
+      case (Some(true), _) => Some(true)
+      case (Some(false), Some(true)) => isAnswerComplete(CompanyPreviousAddressId(index))
+      case (Some(false), Some(false)) => Some(true)
+      case _ => None
+    }
+
+    isComplete(
+      Seq(
+        isAnswerComplete(CompanyAddressId(index)),
+        isAnswerComplete(CompanyAddressYearsId(index)),
+        previousAddress
+      )
+    )
+  }
+
   def isEstablisherIndividualContactDetailsCompleted(index: Int): Option[Boolean] =
     isComplete(
       Seq(
@@ -65,4 +89,12 @@ trait DataCompletionEstablishers extends DataCompletion {
         isAnswerComplete(EnterPhoneId(index))
       )
     )
+
+  def isEstablisherCompanyComplete(index: Int): Boolean =
+    isComplete(
+      Seq(
+        isAnswerComplete(CompanyDetailsId(index)),
+        isAnswerComplete(EstablisherKindId(index))
+      )
+    ).getOrElse(false)
 }
