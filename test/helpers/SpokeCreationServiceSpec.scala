@@ -20,6 +20,8 @@ import base.SpecBase
 import controllers.establishers.individual.details.routes
 import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}
 import identifiers.establishers.EstablisherKindId
+import identifiers.establishers.company.CompanyDetailsId
+import identifiers.establishers.company.contact.EnterPhoneId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressId
 import identifiers.establishers.individual.contact.EnterEmailId
@@ -294,6 +296,82 @@ class SpokeCreationServiceSpec
       result mustBe expectedSpoke
     }
   }
+
+  "getEstablisherCompanySpokes" must {
+    "display all the spokes with appropriate links and incomplete status when no data is returned from TPSS" in {
+      val userAnswers =
+        ua
+          .set(EstablisherKindId(0), EstablisherKind.Company).success.value
+          .set(CompanyDetailsId(0), CompanyDetails("test",false)).success.value
+
+      val expectedSpoke =
+          Seq(EntitySpoke(
+            link = TaskListLink(
+              text = "Add address for test",
+              target = controllers.establishers.company.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = None
+          ),
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Add contact details for test",
+              target = controllers.establishers.company.contact.routes.WhatYouWillNeedCompanyContactController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = None
+          )
+        )
+
+      val result =
+        spokeCreationService.getEstablisherCompanySpokes(
+          answers = userAnswers,
+          name = "test",
+          index = 0
+        )
+      result mustBe expectedSpoke
+    }
+  }
+
+  "display all the spokes with appropriate links and incomplete status when data is returned from TPSS for company address spoke" in {
+    val userAnswers =
+      ua
+        .set(EstablisherKindId(0), EstablisherKind.Company).success.value
+        .set(CompanyDetailsId(0), CompanyDetails("test",false)).success.value
+        .setOrException(AddressId(0), Data.address)
+         .setOrException(EnterEmailId(0), "a@a.a")
+        .setOrException(EnterPhoneId(0), "1234567890")
+
+    val expectedSpoke =
+      Seq(
+        EntitySpoke(
+          link = TaskListLink(
+            text = "Change address for test",
+            target = controllers.establishers.company.address.routes.CheckYourAnswersController.onPageLoad(0).url,
+            visuallyHiddenText = None
+          ),
+          isCompleted = Some(false)
+        ),
+        EntitySpoke(
+          link = TaskListLink(
+            text = "Add contact details for test",
+            target = controllers.establishers.company.contact.routes.WhatYouWillNeedCompanyContactController.onPageLoad(0).url,
+            visuallyHiddenText = None
+          ),
+          isCompleted = Some(false)
+        )
+      )
+
+    val result =
+      spokeCreationService.getEstablisherCompanySpokes(
+        answers = userAnswers,
+        name = "test",
+        index = 0
+      )
+    result mustBe expectedSpoke
+  }
+
+
 
   "declarationSpoke" must {
 
