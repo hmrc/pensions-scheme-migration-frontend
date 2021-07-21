@@ -25,7 +25,7 @@ import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address._
 import identifiers.establishers.company.details._
 import models.requests.DataRequest
-import models.{Index, Mode, NormalMode}
+import models.{CheckMode, Index, Mode, NormalMode}
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
 
@@ -63,6 +63,16 @@ class EstablishersCompanyNavigator
   override protected def editRouteMap(ua: UserAnswers)
                                      (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case CompanyDetailsId(_) => IndexController.onPageLoad()
+    case HaveCompanyNumberId(index) => companyNumberRoutes(index, ua, CheckMode)
+    case CompanyNumberId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+    case NoCompanyNumberReasonId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+    case HaveUTRId(index) => utrRoutes(index, ua, CheckMode)
+    case CompanyUTRId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+    case NoUTRReasonId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+    case HaveVATId(index) => vatRoutes(index, ua, CheckMode)
+    case VATId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+    case HavePAYEId(index) => payeRoutes(index, ua, CheckMode)
+    case PAYEId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
   }
 
   private def cyaAddress(index:Int): Call = controllers.establishers.company.address.routes.CheckYourAnswersController.onPageLoad(index)

@@ -22,27 +22,18 @@ import play.api.libs.json.{Format, JsPath, Json}
 import utils.UserAnswers
 
 case class TrusteeHasUTRId(index: Int) extends TypedIdentifier[Boolean] {
-  override def path: JsPath =
-    TrusteesId(index).path \ TrusteeHasUTRId.toString
+  override def path: JsPath = TrusteesId(index).path \ TrusteeHasUTRId.toString
 
-  override def cleanup(
-                        value: Option[Boolean],
-                        userAnswers: UserAnswers
-                      ): UserAnswers =
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): UserAnswers =
     value match {
-      case Some(true) =>
-        userAnswers.remove(TrusteeNoUTRReasonId(index))
-      case Some(false) =>
-        userAnswers.remove(TrusteeUTRId(index))
-      case _ =>
-        super.cleanup(value, userAnswers)
+      case Some(true) => userAnswers.remove(TrusteeNoUTRReasonId(index))
+      case Some(false) => userAnswers.remove(TrusteeUTRId(index))
+      case _ => super.cleanup(value, userAnswers)
     }
 }
 
 object TrusteeHasUTRId {
-  override lazy val toString: String =
-    "hasUtr"
+  override lazy val toString: String = "hasUtr"
 
-  implicit lazy val formats: Format[TrusteeHasUTRId] =
-    Json.format[TrusteeHasUTRId]
+  implicit lazy val formats: Format[TrusteeHasUTRId] = Json.format[TrusteeHasUTRId]
 }

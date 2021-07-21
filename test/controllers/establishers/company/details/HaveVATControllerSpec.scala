@@ -20,7 +20,7 @@ import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.HasReferenceNumberFormProvider
 import identifiers.establishers.company.CompanyDetailsId
-import identifiers.establishers.company.details.HaveCompanyNumberId
+import identifiers.establishers.company.details.HaveVATId
 import matchers.JsonMatchers
 import models.{Index, NormalMode}
 import org.mockito.ArgumentCaptor
@@ -41,33 +41,32 @@ import viewmodels.Message
 
 import scala.concurrent.Future
 
-class HaveCompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with BeforeAndAfterEach {
+class HaveVATControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with BeforeAndAfterEach {
 
   private val index: Index = Index(0)
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(index), company).success.value
 
   private val formProvider: HasReferenceNumberFormProvider = new HasReferenceNumberFormProvider()
-  private val form: Form[Boolean] = formProvider(Message("messages__haveCompanyNumber__error", company.companyName))
+  private val form: Form[Boolean] = formProvider(Message("messages__genericHaveVat__error__required", company.companyName))
   private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
-  private val templateToBeRendered: String = "hasReferenceValueWithHint.njk"
+  private val templateToBeRendered: String = "hasReferenceValue.njk"
 
   private val commonJson: JsObject =
     Json.obj(
-      "pageTitle"     -> messages("messages__haveCompanyNumber", messages("messages__company")),
-      "pageHeading"     -> messages("messages__haveCompanyNumber", company.companyName),
+      "pageTitle"     -> messages("messages__haveVAT", messages("messages__company")),
+      "pageHeading"     -> messages("messages__haveVAT", company.companyName),
       "schemeName"    -> schemeName,
-      "paragraphs"    -> Json.arr(messages("messages__haveCompanyNumber__p")),
-      "legendClass"   -> "govuk-label--xl",
-      "isPageHeading" -> false
+      "legendClass"   -> "govuk-visually-hidden",
+      "isPageHeading" -> true
     )
 
-  private def controller(dataRetrievalAction: DataRetrievalAction): HaveCompanyNumberController =
-    new HaveCompanyNumberController(messagesApi, new FakeNavigator(desiredRoute = onwardRoute), new FakeAuthAction(), dataRetrievalAction,
+  private def controller(dataRetrievalAction: DataRetrievalAction): HaveVATController =
+    new HaveVATController(messagesApi, new FakeNavigator(desiredRoute = onwardRoute), new FakeAuthAction(), dataRetrievalAction,
       new DataRequiredActionImpl, formProvider, controllerComponents, mockUserAnswersCacheConnector, new Renderer(mockAppConfig, mockRenderer))
 
   override def beforeEach: Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
 
-  "HaveCompanyNumberController" must {
+  "HaveVATController" must {
     "return OK and the correct view for a GET" in {
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
@@ -90,7 +89,7 @@ class HaveCompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSu
     "populate the view correctly on a GET when the question has previously been answered" in {
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val ua = userAnswers.set(HaveCompanyNumberId(0), true).success.value
+      val ua = userAnswers.set(HaveVATId(0), true).success.value
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
       val getData = new FakeDataRetrievalAction(Some(ua))

@@ -37,12 +37,11 @@ object Data {
   val pstr: String = "pstr"
   val migrationLock: MigrationLock = MigrationLock(pstr, credId, psaId)
   val schemeName: String = "Test scheme name"
+  val company: CompanyDetails = CompanyDetails("ABC Ltd")
   val establisherIndividualName = PersonName("test", "name")
   val establisherCompanyDetails = CompanyDetails("test company")
   val trusteeIndividualName = PersonName("test", "name")
-  val ua: UserAnswers =
-    UserAnswers()
-      .setOrException(SchemeNameId, Data.schemeName)
+  val ua: UserAnswers = UserAnswers().setOrException(SchemeNameId, Data.schemeName)
 
 
   val insurerName= "test insurer"
