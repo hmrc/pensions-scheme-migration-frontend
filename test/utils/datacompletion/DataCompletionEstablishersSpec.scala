@@ -153,8 +153,8 @@ class DataCompletionEstablishersSpec
             .set(HavePAYEId(0), false).success.value
 
 
-        ua1.isEstablisherCompanyDetailsCompleted(0) mustBe true
-        ua2.isEstablisherCompanyDetailsCompleted(0) mustBe true
+        ua1.isEstablisherCompanyDetailsCompleted(0) mustBe Some(true)
+        ua2.isEstablisherCompanyDetailsCompleted(0) mustBe Some(true)
       }
 
       "return false when some answer is missing" in {

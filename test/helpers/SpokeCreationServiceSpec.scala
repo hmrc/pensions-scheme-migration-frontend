@@ -17,9 +17,11 @@
 package helpers
 
 import base.SpecBase
+import controllers.establishers.company.address.routes.WhatYouWillNeedController
 import controllers.establishers.individual.details.routes
 import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}
 import identifiers.establishers.EstablisherKindId
+import identifiers.establishers.company.details.{CompanyNumberId, HaveCompanyNumberId}
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressId
 import identifiers.establishers.individual.contact.EnterEmailId
@@ -155,6 +157,41 @@ class SpokeCreationServiceSpec
       result mustBe expectedSpoke
     }
   }
+
+  "getEstablisherCompanySpokes" must {
+    "display all the spokes with appropriate links and incomplete status when no data is returned from TPSS" in {
+
+
+      val expectedSpoke =
+        Seq(
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Add company details for Qwerty",
+              target = controllers.establishers.company.details.routes.WhatYouWillNeedController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = None
+          ),
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Add address for Qwerty",
+              target = controllers.establishers.company.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = None
+          )
+        )
+
+      val result =
+        spokeCreationService.getEstablisherCompanySpokes(
+          answers = ua,
+          name = "Qwerty",
+          index = 0
+        )
+      result mustBe expectedSpoke
+    }
+  }
+
 
   "display all the spokes with appropriate links and incomplete status when data is returned from TPSS for address spoke" in {
     val userAnswers =
