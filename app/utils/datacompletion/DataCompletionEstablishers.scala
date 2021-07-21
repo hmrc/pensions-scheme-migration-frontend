@@ -66,8 +66,8 @@ trait DataCompletionEstablishers extends DataCompletion {
       Seq(
         isAnswerComplete(HaveCompanyNumberId(index),CompanyNumberId(index),Some(NoCompanyNumberReasonId(index))),
         isAnswerComplete(HaveUTRId(index), CompanyUTRId(index), Some(NoUTRReasonId(index))),
-        isAnswerComplete(VATId(index)),
-        isAnswerComplete(PAYEId(index))
+        isAnswerComplete(HaveVATId(index),VATId(index),None),
+        isAnswerComplete(HavePAYEId(index),PAYEId(index),None)
       )
     )
   }
