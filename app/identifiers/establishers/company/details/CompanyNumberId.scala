@@ -20,9 +20,13 @@ import identifiers.TypedIdentifier
 import identifiers.establishers.EstablishersId
 import models.ReferenceValue
 import play.api.libs.json.{Format, JsPath, Json}
+import utils.UserAnswers
 
 case class CompanyNumberId(index: Int) extends TypedIdentifier[ReferenceValue] {
   override def path: JsPath = EstablishersId(index).path \ CompanyNumberId.toString
+
+  override def cleanup(value: Option[ReferenceValue], userAnswers: UserAnswers): UserAnswers =
+    userAnswers.remove(NoCompanyNumberReasonId(index))
 }
 
 object CompanyNumberId {

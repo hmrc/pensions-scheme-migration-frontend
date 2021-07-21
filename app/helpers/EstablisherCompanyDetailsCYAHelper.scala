@@ -43,10 +43,11 @@ class EstablisherCompanyDetailsCYAHelper
 
     val companyName: String = getCompanyName(CompanyDetailsId(index))
 
-    companyNumberAnswers(index, companyName) ++
+    rowsWithDynamicIndices(
+      companyNumberAnswers(index, companyName) ++
       utrAnswers(index, companyName) ++
       vatAnswers(index, companyName) ++
-      payeAnswers(index, companyName)
+      payeAnswers(index, companyName))
 
 
   }
@@ -54,7 +55,7 @@ class EstablisherCompanyDetailsCYAHelper
   private def companyNumberAnswers(index: Index, companyName: String)(implicit ua: UserAnswers, messages: Messages): Seq[Row] = {
     val message = Message("messages__haveCompanyNumber", companyName)
     val url = Some(routes.HaveCompanyNumberController.onPageLoad(index, CheckMode).url)
-    val visuallyHidden = Some(msg"messages__haveCompanyNumber__cya__visuallyHidden")
+    val visuallyHidden = Some(msg"messages__haveCompanyNumber__cya__visuallyHidden".withArgs(companyName))
 
     ua.get(HaveCompanyNumberId(index)) match {
 
@@ -84,7 +85,7 @@ class EstablisherCompanyDetailsCYAHelper
   private def utrAnswers(index: Index, companyName: String)(implicit ua: UserAnswers, messages: Messages): Seq[Row] = {
     val message = Message("messages__hasUTR", companyName)
     val url = Some(routes.HaveUTRController.onPageLoad(index, CheckMode).url)
-    val visuallyHidden = Some(msg"messages__hasUTR__cya__visuallyHidden")
+    val visuallyHidden = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(companyName))
 
     ua.get(HaveUTRId(index)) match {
       case None => Seq(addRow(message, url, visuallyHidden))
@@ -111,7 +112,7 @@ class EstablisherCompanyDetailsCYAHelper
   private def vatAnswers(index: Index, companyName: String)(implicit ua: UserAnswers, messages: Messages): Seq[Row] = {
     val message = Message("messages__haveVAT", companyName)
     val url = Some(routes.HaveVATController.onPageLoad(index, CheckMode).url)
-    val visuallyHidden = Some(msg"messages__haveVAT__cya__visuallyHidden")
+    val visuallyHidden = Some(msg"messages__haveVAT__cya__visuallyHidden".withArgs(companyName))
 
     ua.get(HaveVATId(index)) match {
       case None => Seq(addRow(message, url, visuallyHidden))
@@ -133,7 +134,7 @@ class EstablisherCompanyDetailsCYAHelper
   private def payeAnswers(index: Index, companyName: String)(implicit ua: UserAnswers, messages: Messages): Seq[Row] = {
     val message = Message("messages__havePAYE", companyName)
     val url = Some(routes.HavePAYEController.onPageLoad(index, CheckMode).url)
-    val visuallyHidden = Some(msg"messages__havePAYE__cya__visuallyHidden")
+    val visuallyHidden = Some(msg"messages__havePAYE__cya__visuallyHidden".withArgs(companyName))
 
     ua.get(HavePAYEId(index)) match {
       case None => Seq(addRow(message, url, visuallyHidden))

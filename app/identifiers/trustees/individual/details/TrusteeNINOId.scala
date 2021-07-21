@@ -20,10 +20,14 @@ import identifiers.TypedIdentifier
 import identifiers.trustees.TrusteesId
 import models.ReferenceValue
 import play.api.libs.json.{Format, JsPath, Json}
+import utils.UserAnswers
 
 case class TrusteeNINOId(index: Int) extends TypedIdentifier[ReferenceValue] {
   override def path: JsPath =
     TrusteesId(index).path \ TrusteeNINOId.toString
+
+  override def cleanup(value: Option[ReferenceValue], userAnswers: UserAnswers): UserAnswers =
+    userAnswers.remove(TrusteeNoNINOReasonId(index))
 }
 
 object TrusteeNINOId {
