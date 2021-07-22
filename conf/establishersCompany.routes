@@ -29,3 +29,17 @@ POST        /:index/company/addresses/address-previous-results                  
 
 GET         /:index/company/addresses/address-previous-manual                    controllers.establishers.company.address.ConfirmPreviousAddressController.onPageLoad(index: Index)
 POST        /:index/company/addresses/address-previous-manual                    controllers.establishers.company.address.ConfirmPreviousAddressController.onSubmit(index: Index)
+
+GET         /:index/company/contact-details/what-you-will-need                        controllers.establishers.company.contact.WhatYouWillNeedCompanyContactController.onPageLoad(index: Index)
+
+GET         /:index/company/enter-email-address                                       controllers.establishers.company.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/enter-email-address                                       controllers.establishers.company.contact.EnterEmailController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/enter-email-address                                controllers.establishers.company.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/enter-email-address                                controllers.establishers.company.contact.EnterEmailController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/company/enter-phone-number                                        controllers.establishers.company.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/enter-phone-number                                        controllers.establishers.company.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/enter-phone-number                                 controllers.establishers.company.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/enter-phone-number                                 controllers.establishers.company.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/company/contact-details/check-your-answers                        controllers.establishers.company.contact.CheckYourAnswersController.onPageLoad(index: Index)

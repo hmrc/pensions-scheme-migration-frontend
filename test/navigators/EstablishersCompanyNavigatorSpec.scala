@@ -20,13 +20,14 @@ import base.SpecBase
 import identifiers.{Identifier, TypedIdentifier}
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address._
+import identifiers.establishers.company.contact.{EnterEmailId, EnterPhoneId}
 import models._
 import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes
 import play.api.mvc.Call
 import utils.Data.{establisherCompanyDetails, ua}
-import utils.{UserAnswers, Enumerable}
+import utils.{Enumerable, UserAnswers}
 
 class EstablishersCompanyNavigatorSpec
   extends SpecBase
@@ -68,6 +69,12 @@ class EstablishersCompanyNavigatorSpec
   private def addressYears: Call =
     controllers.establishers.company.address.routes.AddressYearsController.onPageLoad(index)
 
+  private def enterPhonePage(mode:Mode): Call =
+    controllers.establishers.company.contact.routes.EnterPhoneController.onPageLoad(index, mode)
+
+  private val cyaContact: Call =
+    controllers.establishers.company.contact.routes.CheckYourAnswersController.onPageLoad(index)
+
   "EstablishersCompanyNavigator" when {
     def navigation: TableFor3[Identifier, UserAnswers, Call] =
       Table(
@@ -86,13 +93,16 @@ class EstablishersCompanyNavigatorSpec
         row(EnterPreviousPostCodeId(index))(selectPreviousAddress, addressUAWithValue(EnterPreviousPostCodeId(index), seqAddresses)),
         row(PreviousAddressListId(index))(cyaAddress, addressUAWithValue(PreviousAddressListId(index), 0)),
         row(PreviousAddressId(index))(cyaAddress, addressUAWithValue(PreviousAddressId(index), address)),
-
+        row(EnterEmailId(index))(enterPhonePage(NormalMode), Some(detailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
+        row(EnterPhoneId(index))(cyaContact, Some(detailsUa.set(EnterPhoneId(index), "1234").success.value))
       )
 
     def editNavigation: TableFor3[Identifier, UserAnswers, Call] =
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
-        row(CompanyDetailsId(index))(controllers.routes.IndexController.onPageLoad())
+        row(CompanyDetailsId(index))(controllers.routes.IndexController.onPageLoad()) ,
+        row(EnterEmailId(index))(cyaContact, Some(detailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
+        row(EnterPhoneId(index))(cyaContact, Some(detailsUa.set(EnterPhoneId(index), "1234").success.value))
       )
 
     "in NormalMode" must {
