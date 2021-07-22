@@ -17,7 +17,7 @@
 package controllers.actions
 
 import base.SpecBase
-import connectors.cache.{LockCacheConnector, SchemeCacheConnector, UserAnswersCacheConnector}
+import connectors.cache.{LockCacheConnector, CurrentPstrCacheConnector, UserAnswersCacheConnector}
 import models.MigrationLock
 import models.requests.{AuthenticatedRequest, OptionalDataRequest}
 import org.mockito.Matchers._
@@ -40,7 +40,7 @@ class DataRetrievalActionSpec
     with ScalaFutures {
 
   class Harness(dataCacheConnector: UserAnswersCacheConnector,
-                schemeCacheConnector: SchemeCacheConnector,
+                schemeCacheConnector: CurrentPstrCacheConnector,
                 lockCacheConnector: LockCacheConnector)
     extends DataRetrievalImpl(dataCacheConnector, schemeCacheConnector, lockCacheConnector) {
     def callTransform[A](request: AuthenticatedRequest[A]): Future[OptionalDataRequest[A]] =
@@ -48,7 +48,7 @@ class DataRetrievalActionSpec
   }
 
   private val dataCacheConnector: UserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-  private val schemeCacheConnector: SchemeCacheConnector = mock[SchemeCacheConnector]
+  private val schemeCacheConnector: CurrentPstrCacheConnector = mock[CurrentPstrCacheConnector]
   private val lockCacheConnector: LockCacheConnector = mock[LockCacheConnector]
   private val lock: MigrationLock = MigrationLock("pstr", "credId", "psaId")
 

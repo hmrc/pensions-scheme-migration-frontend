@@ -29,8 +29,8 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-@ImplementedBy(classOf[SchemeCacheConnectorImpl])
-trait SchemeCacheConnector {
+@ImplementedBy(classOf[CurrentPstrCacheConnectorImpl])
+trait CurrentPstrCacheConnector {
 
   def fetch(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[JsValue]]
 
@@ -39,7 +39,7 @@ trait SchemeCacheConnector {
   def remove(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result]
 }
 
-class SchemeCacheConnectorImpl @Inject()(config: AppConfig, http: WSClient) extends SchemeCacheConnector {
+class CurrentPstrCacheConnectorImpl @Inject()(config: AppConfig, http: WSClient) extends CurrentPstrCacheConnector {
 
   def fetch(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[JsValue]] =
     http

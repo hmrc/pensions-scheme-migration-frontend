@@ -16,7 +16,7 @@
 
 package services
 
-import connectors.cache.{LockCacheConnector, SchemeCacheConnector}
+import connectors.cache.{LockCacheConnector, CurrentPstrCacheConnector}
 import models.MigrationLock
 import models.requests.AuthenticatedRequest
 import play.api.libs.json.Json
@@ -28,7 +28,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class LockingService @Inject()(lockCacheConnector: LockCacheConnector,
-                               schemeCacheConnector: SchemeCacheConnector){
+                               schemeCacheConnector: CurrentPstrCacheConnector){
 
 
 //TODO - Call on listOfSchemes when user selects a scheme

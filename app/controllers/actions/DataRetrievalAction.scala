@@ -18,7 +18,7 @@ package controllers.actions
 
 
 import com.google.inject.{ImplementedBy, Inject}
-import connectors.cache.{LockCacheConnector, SchemeCacheConnector, UserAnswersCacheConnector}
+import connectors.cache.{LockCacheConnector, CurrentPstrCacheConnector, UserAnswersCacheConnector}
 import models.MigrationLock
 import models.requests.{AuthenticatedRequest, OptionalDataRequest}
 import play.api.libs.json._
@@ -30,7 +30,7 @@ import utils.UserAnswers
 import scala.concurrent.{ExecutionContext, Future}
 
 class DataRetrievalImpl @Inject()(dataConnector: UserAnswersCacheConnector,
-                                  schemeCacheConnector: SchemeCacheConnector,
+                                  schemeCacheConnector: CurrentPstrCacheConnector,
                                   lockCacheConnector: LockCacheConnector)
                                  (implicit val executionContext: ExecutionContext)
   extends DataRetrievalAction {

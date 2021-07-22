@@ -17,7 +17,7 @@
 package services
 
 import base.SpecBase
-import connectors.cache.{LockCacheConnector, SchemeCacheConnector}
+import connectors.cache.{LockCacheConnector, CurrentPstrCacheConnector}
 import models.requests.AuthenticatedRequest
 import org.mockito.Matchers
 import org.mockito.Matchers.any
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class LockingServiceSpec extends SpecBase with MockitoSugar {
 
   private val mockLockCacheConnector = mock[LockCacheConnector]
-  private val mockSchemeCacheConnector = mock[SchemeCacheConnector]
+  private val mockSchemeCacheConnector = mock[CurrentPstrCacheConnector]
   private implicit lazy val hc: HeaderCarrier = HeaderCarrier()
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
