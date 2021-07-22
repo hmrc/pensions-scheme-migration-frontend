@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.establishers.individual
+package controllers.establishers.company.director
 
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions._
 import forms.PersonNameFormProvider
-import identifiers.establishers.individual.EstablisherNameId
+import identifiers.establishers.company.director.DirectorNameId
 import models.{Index, PersonName}
 import navigators.CompoundNavigator
 import play.api.data.Form
@@ -34,39 +34,40 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EstablisherNameController @Inject()(
-                                           override val messagesApi: MessagesApi,
-                                           val navigator: CompoundNavigator,
-                                           authenticate: AuthAction,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           formProvider: PersonNameFormProvider,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           userAnswersCacheConnector: UserAnswersCacheConnector,
-                                           renderer: Renderer
-                                         )(implicit val executionContext: ExecutionContext)
+class DirectorNameController @Inject()(
+                                        override val messagesApi: MessagesApi,
+                                        //@EstablishersCompanyDirector
+                                        navigator: CompoundNavigator,
+                                        authenticate: AuthAction,
+                                        getData: DataRetrievalAction,
+                                        requireData: DataRequiredAction,
+                                        formProvider: PersonNameFormProvider,
+                                        val controllerComponents: MessagesControllerComponents,
+                                        userAnswersCacheConnector: UserAnswersCacheConnector,
+                                        renderer: Renderer
+                                      )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
-    with I18nSupport
-    with Retrievals
-    with NunjucksSupport {
+  with Retrievals
+  with I18nSupport
+  with NunjucksSupport {
 
   private def form(implicit messages: Messages): Form[PersonName] =
-    formProvider("messages__error__establisher")
+    formProvider("messages__error__director")
 
-  def onPageLoad(index: Index): Action[AnyContent] =
+  def onPageLoad(establisherIndex: Index, directorIndex: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         renderer.render(
           template = "personName.njk",
           ctx = Json.obj(
-            "form"       -> request.userAnswers.get[PersonName](EstablisherNameId(index)).fold(form)(form.fill),
+            "form" -> request.userAnswers.get[PersonName](DirectorNameId(establisherIndex, directorIndex)).fold(form)(form.fill),
             "schemeName" -> existingSchemeName,
-            "entityType" -> "establisher"
+            "entityType" -> "director"
           )
-        ).flatMap(view => Future.successful(Ok(view)))
+        ).flatMap( view => Future.successful(Ok(view)))
     }
 
-  def onSubmit(index: Index): Action[AnyContent] =
+  def onSubmit(establisherIndex: Index, directorIndex: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         form.bindFromRequest().fold(
@@ -74,16 +75,16 @@ class EstablisherNameController @Inject()(
             renderer.render(
               template = "personName.njk",
               ctx = Json.obj(
-                "form"       -> formWithErrors,
+                "form" -> formWithErrors,
                 "schemeName" -> existingSchemeName
               )
             ).map(BadRequest(_)),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(EstablisherNameId(index), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(DirectorNameId(establisherIndex, directorIndex), value))
               _              <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
             } yield
-              Redirect(navigator.nextPage(EstablisherNameId(index), updatedAnswers))
+              Redirect(navigator.nextPage(DirectorNameId(establisherIndex, directorIndex), updatedAnswers))
         )
     }
 

@@ -8,7 +8,7 @@
 {% from "macros/returnLink.njk"                    import returnLink %}
 
 {% block pageTitle %}
-    {{ title(messages("messages__establisher__name_title"), form.errors) }}
+    {{ title(messages("messages__name_title", entityType), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -23,7 +23,7 @@
                 }) }}
             {% endif %}
 
-            <h1 class="govuk-heading-xl">{{ messages('messages__establisher__name_title') }}</h1>
+            <h1 class="govuk-heading-xl">{{ messages("messages__name_title", entityType) }}</h1>
 
             <form method="post" autocomplete="off" novalidate>
 

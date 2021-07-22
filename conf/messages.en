@@ -390,7 +390,7 @@ messages__error__last_name_invalid = Name must only include letters and punctuat
 messages__individualName__title = What is the individual’s name?
 
 messages__confirmDelete__error_required = Select yes if you want to delete {0}
-messages__establisher__name_title = What is the establisher’s name?
+messages__name_title = What is the {0}’s name?
 
 messages__establisherDetails__whatYouWillNeed_title = The establisher’s details
 messages__trusteeDetails__whatYouWillNeed_title = The trustee’s details

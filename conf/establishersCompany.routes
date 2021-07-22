@@ -29,3 +29,6 @@ POST        /:index/company/addresses/address-previous-results                  
 
 GET         /:index/company/addresses/address-previous-manual                    controllers.establishers.company.address.ConfirmPreviousAddressController.onPageLoad(index: Index)
 POST        /:index/company/addresses/address-previous-manual                    controllers.establishers.company.address.ConfirmPreviousAddressController.onSubmit(index: Index)
+
+
+->          /                                                                         establishersCompanyDirector.Routes
