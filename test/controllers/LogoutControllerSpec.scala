@@ -16,20 +16,26 @@
 
 package controllers
 
+import connectors.cache.LockCacheConnector
 import controllers.actions.FakeAuthAction
+import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
 import play.api.mvc.Results
 import play.api.test.Helpers._
 
+import scala.concurrent.Future
+
 
 class LogoutControllerSpec extends ControllerSpecBase with Results {
+
+  private val mockLockCacheConnector = mock[LockCacheConnector]
   def logoutController: LogoutController =
-    new LogoutController(mockAppConfig, controllerComponents, FakeAuthAction)
+    new LogoutController(mockAppConfig, controllerComponents, FakeAuthAction,mockLockCacheConnector)
 
   "Logout Controller" must {
 
     "redirect to feedback survey page for an Individual and clear down session data cache" in {
-
+      when(mockLockCacheConnector.removeLockByUser(any(),any())).thenReturn(Future.successful(Ok))
       when(mockAppConfig.serviceSignOut).thenReturn("signout")
       val result = logoutController.onPageLoad(fakeRequest)
 
