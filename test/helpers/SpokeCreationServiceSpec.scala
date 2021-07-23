@@ -168,7 +168,7 @@ class SpokeCreationServiceSpec
       val expectedSpoke =
         Seq(EntitySpoke(
           link = TaskListLink(
-            text = "Add company details for test",
+            text = "Add details for test",
             target = controllers.establishers.company.details.routes.WhatYouWillNeedController.onPageLoad(0).url,
             visuallyHiddenText = None
           ),
@@ -216,7 +216,7 @@ class SpokeCreationServiceSpec
       Seq(
         EntitySpoke(
           link = TaskListLink(
-            text = "Change company details for test",
+            text = "Change details for test",
             target = controllers.establishers.company.details.routes.CheckYourAnswersController.onPageLoad(0).url,
             visuallyHiddenText = None
           ),
