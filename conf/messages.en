@@ -378,6 +378,8 @@ addEstablisher.type.header = Type
 addEstablisher.type.header.hiddenText = Type of establisher
 addEstablisher.hiddenText.removeLink.header = Remove establisher link
 
+messages__addCompanyDirectors__error__required = Select yes if you want to add another director
+
 messages__error__trustees = trustee’s
 messages__error__director = director’s
 messages__error__partner = partner’s

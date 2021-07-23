@@ -91,6 +91,11 @@ sealed trait Establisher[T] extends Entity[T]
 object Establisher {
   implicit lazy val formats: Format[Establisher[_]] = Json.format[Establisher[_]]
 }
+//sealed trait Director[T] extends Entity[T]
+//
+//object Director {
+//  implicit lazy val formats: Format[Director[_]] = Json.format[Director[_]]
+//}
 
 case class TrusteeIndividualEntity(
   id: TrusteeNameId,

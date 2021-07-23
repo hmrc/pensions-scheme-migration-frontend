@@ -18,6 +18,7 @@ package utils
 
 import identifiers.TypedIdentifier
 import identifiers.establishers.company.CompanyDetailsId
+import identifiers.establishers.company.director.{DirectorNameId, IsNewDirectorId}
 import identifiers.establishers.{EstablisherKindId, EstablishersId, IsEstablisherNewId}
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId, TrusteesId}
@@ -211,6 +212,26 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
     }
   }
 
+//  def allDirectorsAfterDelete(establisherIndex: Int): Seq[Director[_]] =
+//    allDirectors(establisherIndex).filterNot(_.isDeleted)
+//
+//  def allDirectors(establisherIndex: Int): Seq[Director[_]] = {
+//    getAllRecursive[PersonName](DirectorNameId.collectionPath(establisherIndex)).map {
+//      details =>
+//        for ((director, directorIndex) <- details.zipWithIndex) yield {
+//          val isComplete = isDirectorComplete(establisherIndex, directorIndex)
+//          val isNew = get(IsNewDirectorId(establisherIndex, directorIndex)).getOrElse(false)
+//          DirectorEntity(
+//            DirectorNameId(establisherIndex, directorIndex),
+//            director.fullName,
+//            director.isDeleted,
+//            isComplete,
+//            isNew,
+//            details.count(!_.isDeleted)
+//          )
+//        }
+//    }.getOrElse(Seq.empty)
+//  }
 
   def allTrusteesAfterDelete: Seq[Trustee[_]] =
     allTrustees.filterNot(_.isDeleted)
@@ -289,11 +310,11 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
     })
   }
 
-  //def getAllRecursive[A](path: JsPath)(implicit rds: Reads[A]): Option[Seq[A]] = {
-  //  JsLens.fromPath(path)
-  //    .getAll(json)
-  //    .flatMap(a => traverse(a.map(Json.fromJson[A]))).asOpt
-  //}
+//  def getAllRecursive[A](path: JsPath)(implicit rds: Reads[A]): Option[Seq[A]] = {
+//    JsLens.fromPath(path)
+//     .getAll(json)
+//      .flatMap(a => traverse(a.map(Json.fromJson[A]))).asOpt
+//  }
 }
 
 case object UnrecognisedEstablisherKindException extends Exception
