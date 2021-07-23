@@ -19,7 +19,7 @@ package identifiers.establishers.individual.address
 import identifiers.TypedIdentifier
 import identifiers.establishers.EstablishersId
 import models.Address
-import play.api.libs.json.{Format, Json, JsPath}
+import play.api.libs.json.{Format, JsPath, Json}
 
 case class PreviousAddressId(index: Int) extends TypedIdentifier[Address] {
   override def path: JsPath =

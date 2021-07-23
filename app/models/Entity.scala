@@ -18,8 +18,8 @@ package models
 
 import controllers.establishers.routes._
 import identifiers.establishers.company.CompanyDetailsId
-import identifiers.trustees.company.{CompanyDetailsId => TrusteeCompanyDetailsId}
 import identifiers.establishers.individual.EstablisherNameId
+import identifiers.trustees.company.{CompanyDetailsId => TrusteeCompanyDetailsId}
 import identifiers.trustees.individual.TrusteeNameId
 import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind

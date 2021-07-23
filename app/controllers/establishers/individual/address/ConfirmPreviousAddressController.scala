@@ -25,16 +25,15 @@ import forms.address.AddressFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.PreviousAddressId
-
-import javax.inject.Inject
-import models.{Address, Index, AddressConfiguration}
+import models.{Address, AddressConfiguration, Index}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{MessagesApi, Messages, I18nSupport}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class ConfirmPreviousAddressController @Inject()(override val messagesApi: MessagesApi,

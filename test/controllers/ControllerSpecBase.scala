@@ -18,7 +18,6 @@ package controllers
 
 
 import base.SpecBase
-import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
@@ -35,8 +34,7 @@ import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.Helpers.{GET, POST}
 import play.api.test.{FakeHeaders, FakeRequest}
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
-import utils.Data.ua
-import utils.{CountryOptions, Enumerable, UserAnswers}
+import utils.{CountryOptions, Enumerable}
 
 import scala.concurrent.ExecutionContext
 

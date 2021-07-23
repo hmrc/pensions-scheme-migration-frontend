@@ -25,18 +25,17 @@ import forms.address.PostcodeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.EnterPreviousPostCodeId
-import models.{Mode, Index, NormalMode}
 import models.requests.DataRequest
-
-import javax.inject.Inject
+import models.{Index, Mode, NormalMode}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{MessagesApi, I18nSupport}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class EnterPreviousPostcodeController @Inject()(val appConfig: AppConfig,

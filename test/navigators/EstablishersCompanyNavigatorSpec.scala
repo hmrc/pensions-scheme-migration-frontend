@@ -17,10 +17,10 @@
 package navigators
 
 import base.SpecBase
-import identifiers.{Identifier, TypedIdentifier}
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address._
 import identifiers.establishers.company.contact.{EnterEmailId, EnterPhoneId}
+import identifiers.{Identifier, TypedIdentifier}
 import models._
 import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3

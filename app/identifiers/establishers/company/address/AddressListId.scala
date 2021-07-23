@@ -18,7 +18,7 @@ package identifiers.establishers.company.address
 
 import identifiers.TypedIdentifier
 import identifiers.establishers.EstablishersId
-import play.api.libs.json.{Format, Json, JsPath}
+import play.api.libs.json.{Format, JsPath, Json}
 
 case class AddressListId(index: Int) extends TypedIdentifier[Int] {
   override def path: JsPath = EstablishersId(index).path \ AddressListId.toString

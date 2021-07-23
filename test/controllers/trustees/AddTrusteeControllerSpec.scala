@@ -21,7 +21,7 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import forms.trustees.ConfirmDeleteTrusteeFormProvider
 import helpers.AddToListHelper
 import identifiers.trustees.individual.TrusteeNameId
-import identifiers.trustees.{AddTrusteeId, TrusteeKindId, IsTrusteeNewId}
+import identifiers.trustees.{AddTrusteeId, IsTrusteeNewId, TrusteeKindId}
 import matchers.JsonMatchers
 import models.PersonName
 import models.trustees.TrusteeKind

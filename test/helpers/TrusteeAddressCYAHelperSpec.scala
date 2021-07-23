@@ -19,18 +19,18 @@ package helpers
 import base.SpecBase._
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.individual.TrusteeNameId
-import identifiers.trustees.individual.address.{AddressYearsId, PreviousAddressId, AddressId}
+import identifiers.trustees.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
 import models.requests.DataRequest
-import models.{PersonName, Address, MigrationLock}
-import org.scalatest.{TryValues, MustMatchers, WordSpec}
+import models.{Address, MigrationLock, PersonName}
+import org.scalatest.{MustMatchers, TryValues, WordSpec}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.viewmodels.{SummaryList, Html, Text}
 import uk.gov.hmrc.viewmodels.SummaryList._
-import utils.Data.{pstr, schemeName, psaId, credId}
-import utils.{UserAnswers, Enumerable}
 import uk.gov.hmrc.viewmodels.Text.{Literal, Message => GovUKMsg}
+import uk.gov.hmrc.viewmodels.{Html, SummaryList, Text}
+import utils.Data.{credId, psaId, pstr, schemeName}
+import utils.{Enumerable, UserAnswers}
 
 class TrusteeAddressCYAHelperSpec extends WordSpec with MustMatchers with TryValues with Enumerable.Implicits {
 

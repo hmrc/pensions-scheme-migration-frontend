@@ -19,8 +19,8 @@ package controllers.trustees.individual.contact
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.EmailFormProvider
-import identifiers.trustees.individual.contact.EnterEmailId
 import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.individual.contact.EnterEmailId
 import matchers.JsonMatchers
 import models.{NormalMode, PersonName}
 import org.mockito.ArgumentCaptor

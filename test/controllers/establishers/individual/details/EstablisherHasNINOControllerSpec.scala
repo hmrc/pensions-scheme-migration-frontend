@@ -31,8 +31,7 @@ import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Result}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import play.api.test.Helpers.status
+import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}

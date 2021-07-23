@@ -18,10 +18,10 @@ package navigators
 
 import controllers.beforeYouStartSpoke.routes._
 import identifiers._
-import identifiers.beforeYouStart.{HaveAnyTrusteesId, SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
+import identifiers.beforeYouStart.{EstablishedCountryId, HaveAnyTrusteesId, SchemeTypeId, WorkingKnowledgeId}
 import models.SchemeType
 import models.requests.DataRequest
-import play.api.mvc.{Call, AnyContent}
+import play.api.mvc.{AnyContent, Call}
 import utils.UserAnswers
 
 class BeforeYouStartNavigator extends Navigator {

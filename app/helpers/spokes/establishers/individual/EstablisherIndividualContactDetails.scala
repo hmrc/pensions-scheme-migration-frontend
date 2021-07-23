@@ -16,11 +16,11 @@
 
 package helpers.spokes.establishers.individual
 
+import controllers.establishers.individual.contact.routes._
 import helpers.spokes.Spoke
 import models.{Index, TaskListLink}
 import play.api.i18n.Messages
 import utils.UserAnswers
-import controllers.establishers.individual.contact.routes._
 
 
 case class EstablisherIndividualContactDetails(

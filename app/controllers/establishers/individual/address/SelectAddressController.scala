@@ -20,17 +20,15 @@ import config.AppConfig
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
-import controllers.address.{AddressPages, AddressListController}
+import controllers.address.{AddressListController, AddressPages}
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.address.{EnterPostCodeId, AddressListId, AddressId}
-import models.{Mode, Index, NormalMode}
-
-import javax.inject.Inject
+import identifiers.establishers.individual.address.{AddressId, AddressListId, EnterPostCodeId}
+import models.{Index, Mode, NormalMode}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{MessagesApi, I18nSupport}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -38,6 +36,7 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.CountryOptions
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class SelectAddressController @Inject()(val appConfig: AppConfig,
