@@ -14,21 +14,27 @@
  * limitations under the License.
  */
 
-package forms
+package forms.mappings
 
-import forms.mappings.UtrMapping
-import models.ReferenceValue
-import play.api.data.Form
-import play.api.data.Forms._
+import play.api.data.Mapping
 
-import javax.inject.Inject
+trait PayeMapping extends Mappings with Transforms {
 
-class UTRFormProvider @Inject() extends UtrMapping {
-
-  def apply(): Form[ReferenceValue] =
-    Form(
-      mapping(
-        "value" -> utrMapping()
-      )(ReferenceValue.applyEditable)(ReferenceValue.unapplyEditable)
+  def payeMapping(requiredPayeKey: String,
+                  invalidPayeKey: String,
+                  payeLengthKey: String):
+  Mapping[String] = text(requiredPayeKey)
+    .transform(payeTransform, noTransform)
+    .verifying(
+      firstError(
+        maxLength(PayeMapping.maxPayeLength, payeLengthKey),
+        payeEmployerReferenceNumber(invalidPayeKey)
+      )
     )
 }
+
+object PayeMapping {
+  val maxPayeLength = 16
+}
+
+

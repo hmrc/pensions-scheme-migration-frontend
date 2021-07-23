@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package identifiers.establishers.company.details
 
-import forms.mappings.UtrMapping
-import models.ReferenceValue
-import play.api.data.Form
-import play.api.data.Forms._
+import identifiers.TypedIdentifier
+import identifiers.establishers.EstablishersId
+import play.api.libs.json.JsPath
 
-import javax.inject.Inject
-
-class UTRFormProvider @Inject() extends UtrMapping {
-
-  def apply(): Form[ReferenceValue] =
-    Form(
-      mapping(
-        "value" -> utrMapping()
-      )(ReferenceValue.applyEditable)(ReferenceValue.unapplyEditable)
-    )
+case class NoUTRReasonId(index: Int) extends TypedIdentifier[String] {
+  override def path: JsPath = EstablishersId(index).path \ NoUTRReasonId.toString
 }
+
+object NoUTRReasonId {
+  override def toString: String = "noUtrReason"
+}
+
+

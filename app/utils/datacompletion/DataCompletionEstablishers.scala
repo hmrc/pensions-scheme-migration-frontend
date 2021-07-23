@@ -17,11 +17,15 @@
 package utils.datacompletion
 
 import identifiers.establishers.EstablisherKindId
+import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address.{TradingTimeId, AddressId => CompanyAddressId, AddressYearsId => CompanyAddressYearsId, PreviousAddressId => CompanyPreviousAddressId}
-import identifiers.establishers.company.{CompanyDetailsId, contact => companyContact}
+import identifiers.establishers.company.details._
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
+import identifiers.establishers.individual.address.{AddressYearsId, PreviousAddressId, AddressId}
+import identifiers.establishers.company.address.{TradingTimeId, AddressYearsId => CompanyAddressYearsId,
+  PreviousAddressId => CompanyPreviousAddressId, AddressId => CompanyAddressId}
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
+import identifiers.establishers.company.{contact => companyContact}
 import identifiers.establishers.individual.details._
 import utils.UserAnswers
 
@@ -56,6 +60,17 @@ trait DataCompletionEstablishers extends DataCompletion {
         isAnswerComplete(AddressId(index)),
         isAnswerComplete(AddressYearsId(index)),
         if (atAddressMoreThanOneYear) Some(true) else isAnswerComplete(PreviousAddressId(index))
+      )
+    )
+  }
+
+  def isEstablisherCompanyDetailsCompleted(index: Int): Option[Boolean] = {
+    isComplete(
+      Seq(
+        isAnswerComplete(HaveCompanyNumberId(index),CompanyNumberId(index),Some(NoCompanyNumberReasonId(index))),
+        isAnswerComplete(HaveUTRId(index), CompanyUTRId(index), Some(NoUTRReasonId(index))),
+        isAnswerComplete(HaveVATId(index),VATId(index),None),
+        isAnswerComplete(HavePAYEId(index),PAYEId(index),None)
       )
     )
   }

@@ -17,9 +17,12 @@
 package navigators
 
 import base.SpecBase
+import controllers.establishers.company.address.{routes => addressRoutes}
+import controllers.establishers.company.details.{routes => detailsRoutes}
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address._
 import identifiers.establishers.company.contact.{EnterEmailId, EnterPhoneId}
+import identifiers.establishers.company.details._
 import identifiers.{Identifier, TypedIdentifier}
 import models._
 import org.scalatest.TryValues
@@ -49,25 +52,30 @@ class EstablishersCompanyNavigatorSpec
     TolerantAddress(Some("2"),Some("2"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")),
   )
 
-  val address = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
+  val address: Address = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
 
-  private val cyaAddress: Call =
-    controllers.establishers.company.address.routes.CheckYourAnswersController.onPageLoad(index)
+  private def companyNumber(mode: Mode = NormalMode): Call = detailsRoutes.CompanyNumberController.onPageLoad(index, mode)
+  private def noCompanyNumber(mode: Mode = NormalMode): Call = detailsRoutes.NoCompanyNumberReasonController.onPageLoad(index, mode)
+  private def haveUtr(mode: Mode = NormalMode): Call = detailsRoutes.HaveUTRController.onPageLoad(index, mode)
+  private def utr(mode: Mode = NormalMode): Call = detailsRoutes.UTRController.onPageLoad(index, mode)
+  private def noUtr(mode: Mode = NormalMode): Call = detailsRoutes.NoUTRReasonController.onPageLoad(index, mode)
+  private def haveVat(mode: Mode = NormalMode): Call = detailsRoutes.HaveVATController.onPageLoad(index, mode)
+  private def vat(mode: Mode = NormalMode): Call = detailsRoutes.VATController.onPageLoad(index, mode)
+  private def havePaye(mode: Mode = NormalMode): Call = detailsRoutes.HavePAYEController.onPageLoad(index, mode)
+  private def paye(mode: Mode = NormalMode): Call = detailsRoutes.PAYEController.onPageLoad(index, mode)
+  private val cyaDetails: Call = detailsRoutes.CheckYourAnswersController.onPageLoad(index)
 
-  private def enterPreviousPostcode: Call =
-    controllers.establishers.company.address.routes.EnterPreviousPostcodeController.onPageLoad(index)
+  private val cyaAddress: Call = addressRoutes.CheckYourAnswersController.onPageLoad(index)
 
-  private def tradingTime: Call =
-    controllers.establishers.company.address.routes.TradingTimeController.onPageLoad(index)
+  private def enterPreviousPostcode: Call = addressRoutes.EnterPreviousPostcodeController.onPageLoad(index)
 
-  private def selectAddress: Call =
-    controllers.establishers.company.address.routes.SelectAddressController.onPageLoad(index)
+  private def tradingTime: Call = addressRoutes.TradingTimeController.onPageLoad(index)
 
-  private def selectPreviousAddress: Call =
-    controllers.establishers.company.address.routes.SelectPreviousAddressController.onPageLoad(index)
+  private def selectAddress: Call = addressRoutes.SelectAddressController.onPageLoad(index)
 
-  private def addressYears: Call =
-    controllers.establishers.company.address.routes.AddressYearsController.onPageLoad(index)
+  private def selectPreviousAddress: Call = addressRoutes.SelectPreviousAddressController.onPageLoad(index)
+
+  private def addressYears: Call = addressRoutes.AddressYearsController.onPageLoad(index)
 
   private def enterPhonePage(mode:Mode): Call =
     controllers.establishers.company.contact.routes.EnterPhoneController.onPageLoad(index, mode)
@@ -79,7 +87,21 @@ class EstablishersCompanyNavigatorSpec
     def navigation: TableFor3[Identifier, UserAnswers, Call] =
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
-        row(CompanyDetailsId(index))(addEstablisherPage),
+         row(CompanyDetailsId(index))(addEstablisherPage),
+        row(HaveCompanyNumberId(index))(companyNumber(), addressUAWithValue(HaveCompanyNumberId(index), true)),
+        row(HaveCompanyNumberId(index))(noCompanyNumber(), addressUAWithValue(HaveCompanyNumberId(index), false)),
+        row(CompanyNumberId(index))(haveUtr()),
+        row(NoCompanyNumberReasonId(index))(haveUtr()),
+        row(HaveUTRId(index))(utr(), addressUAWithValue(HaveUTRId(index), true)),
+        row(HaveUTRId(index))(noUtr(), addressUAWithValue(HaveUTRId(index), false)),
+        row(CompanyUTRId(index))(haveVat()),
+        row(NoUTRReasonId(index))(haveVat()),
+        row(HaveVATId(index))(vat(), addressUAWithValue(HaveVATId(index), true)),
+        row(HaveVATId(index))(havePaye(), addressUAWithValue(HaveVATId(index), false)),
+        row(VATId(index))(havePaye()),
+        row(HavePAYEId(index))(paye(), addressUAWithValue(HavePAYEId(index), true)),
+        row(HavePAYEId(index))(cyaDetails, addressUAWithValue(HavePAYEId(index), false)),
+        row(PAYEId(index))(cyaDetails),
         row(EnterPostCodeId(index))(selectAddress, addressUAWithValue(EnterPostCodeId(index), seqAddresses)),
         row(AddressListId(index))(addressYears, addressUAWithValue(AddressListId(index), 0)),
         row(AddressId(index))(addressYears, addressUAWithValue(AddressId(index), address)),
@@ -100,7 +122,21 @@ class EstablishersCompanyNavigatorSpec
     def editNavigation: TableFor3[Identifier, UserAnswers, Call] =
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
-        row(CompanyDetailsId(index))(controllers.routes.IndexController.onPageLoad()) ,
+        row(CompanyDetailsId(index))(controllers.routes.IndexController.onPageLoad()),
+        row(HaveCompanyNumberId(index))(companyNumber(CheckMode), addressUAWithValue(HaveCompanyNumberId(index), true)),
+        row(HaveCompanyNumberId(index))(noCompanyNumber(CheckMode), addressUAWithValue(HaveCompanyNumberId(index), false)),
+        row(CompanyNumberId(index))(cyaDetails),
+        row(NoCompanyNumberReasonId(index))(cyaDetails),
+        row(HaveUTRId(index))(utr(CheckMode), addressUAWithValue(HaveUTRId(index), true)),
+        row(HaveUTRId(index))(noUtr(CheckMode), addressUAWithValue(HaveUTRId(index), false)),
+        row(CompanyUTRId(index))(cyaDetails),
+        row(NoUTRReasonId(index))(cyaDetails),
+        row(HaveVATId(index))(vat(CheckMode), addressUAWithValue(HaveVATId(index), true)),
+        row(HaveVATId(index))(havePaye(CheckMode), addressUAWithValue(HaveVATId(index), false)),
+        row(VATId(index))(cyaDetails),
+        row(HavePAYEId(index))(paye(CheckMode), addressUAWithValue(HavePAYEId(index), true)),
+        row(HavePAYEId(index))(cyaDetails, addressUAWithValue(HavePAYEId(index), false)),
+        row(PAYEId(index))(cyaDetails),
         row(EnterEmailId(index))(cyaContact, Some(detailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
         row(EnterPhoneId(index))(cyaContact, Some(detailsUa.set(EnterPhoneId(index), "1234").success.value))
       )

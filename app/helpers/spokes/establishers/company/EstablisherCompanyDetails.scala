@@ -16,26 +16,28 @@
 
 package helpers.spokes.establishers.company
 
-import controllers.establishers.company.contact.routes._
+import controllers.establishers.company.details.routes.{WhatYouWillNeedController,CheckYourAnswersController}
 import helpers.spokes.Spoke
-import models.{Index, TaskListLink}
+import models.{TaskListLink, Index}
 import play.api.i18n.Messages
 import utils.UserAnswers
 
 
-case class EstablisherCompanyContactDetails(
-index: Index,
+case class EstablisherCompanyDetails(
+  index: Index,
   answers: UserAnswers
-  ) extends Spoke {
-  val messageKeyPrefix = "messages__schemeTaskList__contactDetails_"
+) extends Spoke {
+  val messageKeyPrefix = "messages__schemeTaskList__companyDetails_"
+
   val linkKeyAndRoute: (String, String) = {
     if (completeFlag(answers).isDefined)
       (s"${messageKeyPrefix}changeLink", CheckYourAnswersController.onPageLoad(index).url)
     else
-      (s"${messageKeyPrefix}addLink", WhatYouWillNeedCompanyContactController.onPageLoad(index).url)
+      (s"${messageKeyPrefix}addLink", WhatYouWillNeedController.onPageLoad(index).url)
   }
+
   override def changeLink(name: String)
-                         (implicit messages: Messages): TaskListLink =
+    (implicit messages: Messages): TaskListLink =
     TaskListLink(
       text = Messages(linkKeyAndRoute._1, name),
       target = linkKeyAndRoute._2,
@@ -43,6 +45,6 @@ index: Index,
     )
 
   override def completeFlag(answers: UserAnswers): Option[Boolean] =
-    answers.isEstablisherCompanyContactDetailsCompleted(index)
+    answers.isEstablisherCompanyDetailsCompleted(index)
 }
 
