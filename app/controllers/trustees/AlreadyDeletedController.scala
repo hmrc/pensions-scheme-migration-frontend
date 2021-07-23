@@ -20,9 +20,9 @@ import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.trustees.individual.TrusteeNameId
 import models.Index
+import models.requests.DataRequest
 import models.trustees.TrusteeKind
 import models.trustees.TrusteeKind.Individual
-import models.requests.DataRequest
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}

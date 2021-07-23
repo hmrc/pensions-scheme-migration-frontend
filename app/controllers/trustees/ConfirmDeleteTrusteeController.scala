@@ -24,9 +24,9 @@ import identifiers.trustees.ConfirmDeleteTrusteeId
 import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.individual.TrusteeNameId
 import models._
+import models.requests.DataRequest
 import models.trustees.TrusteeKind
 import models.trustees.TrusteeKind.{Company, Individual}
-import models.requests.DataRequest
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}

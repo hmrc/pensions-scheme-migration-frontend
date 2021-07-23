@@ -18,12 +18,12 @@ package navigators
 
 import base.SpecBase
 import identifiers.Identifier
-import models.{CheckMode, NormalMode}
 import models.requests.DataRequest
+import models.{CheckMode, NormalMode}
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Call}
-import utils.UserAnswers
 import utils.Data._
+import utils.UserAnswers
 
 class NavigatorSpec extends SpecBase {
 

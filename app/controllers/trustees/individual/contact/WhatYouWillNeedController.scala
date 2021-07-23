@@ -18,6 +18,7 @@ package controllers.trustees.individual.contact
 
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.trustees.individual.contact.routes.EnterEmailController
 import helpers.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.individual.TrusteeNameId
@@ -28,7 +29,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import controllers.trustees.individual.contact.routes.EnterEmailController
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext

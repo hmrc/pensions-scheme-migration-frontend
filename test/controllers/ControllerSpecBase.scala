@@ -18,7 +18,6 @@ package controllers
 
 
 import base.SpecBase
-import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
@@ -35,8 +34,7 @@ import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.Helpers.{GET, POST}
 import play.api.test.{FakeHeaders, FakeRequest}
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
-import utils.Data.ua
-import utils.{CountryOptions, Enumerable, UserAnswers}
+import utils.{CountryOptions, Enumerable}
 
 import scala.concurrent.ExecutionContext
 
@@ -46,19 +44,10 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach with MockitoSu
 
   val cacheMapId = "id"
 
-  def getEmptyData: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(UserAnswers()))
-
-  def getSchemeName: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(ua))
-
-  def dontGetAnyData: FakeDataRetrievalAction = new FakeDataRetrievalAction(None)
-
-  def dontGetAnyDataViewOnly: FakeDataRetrievalAction = new FakeDataRetrievalAction(None)
-
   def asDocument(htmlAsString: String): Document = Jsoup.parse(htmlAsString)
 
   override def beforeEach: Unit = {
     Mockito.reset(mockRenderer, mockUserAnswersCacheConnector, mockCompoundNavigator)
-    SharedMetricRegistries.clear()
   }
 
   protected def mockDataRetrievalAction: DataRetrievalAction = mock[DataRetrievalAction]
@@ -78,20 +67,6 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach with MockitoSu
     bind[CompoundNavigator].toInstance(mockCompoundNavigator),
     bind[CountryOptions].toInstance(countryOptions)
   )
-
-  def applicationBuilder(userAnswers: Option[UserAnswers] = None,
-                                   extraModules: Seq[GuiceableModule] = Seq.empty): GuiceApplicationBuilder =
-    new GuiceApplicationBuilder()
-      .configure(
-        //turn off metrics
-        "metrics.jvm" -> false,
-        "metrics.enabled" -> false
-      )
-      .overrides(
-        modules ++ extraModules ++ Seq[GuiceableModule](
-          bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers))
-        ): _*
-      )
 
   protected def applicationBuilderMutableRetrievalAction(
                                                           mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction,

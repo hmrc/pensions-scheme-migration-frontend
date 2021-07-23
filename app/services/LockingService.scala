@@ -16,7 +16,7 @@
 
 package services
 
-import connectors.cache.{LockCacheConnector, CurrentPstrCacheConnector}
+import connectors.cache.{CurrentPstrCacheConnector, LockCacheConnector}
 import models.MigrationLock
 import models.requests.AuthenticatedRequest
 import play.api.libs.json.Json

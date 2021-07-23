@@ -16,6 +16,7 @@
 
 package navigators
 
+import controllers.establishers.company.routes.CompanyDetailsController
 import controllers.establishers.individual.address.routes._
 import controllers.establishers.individual.contact.routes._
 import controllers.establishers.individual.details.routes._
@@ -33,7 +34,6 @@ import models.requests.DataRequest
 import models.{CheckMode, Index, Mode, NormalMode}
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
-import controllers.establishers.company.routes.CompanyDetailsController
 
 class EstablishersNavigator
   extends Navigator
