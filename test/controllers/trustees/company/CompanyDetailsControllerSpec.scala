@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package controllers.establishers.company
+package controllers.trustees.company
 
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.CompanyDetailsFormProvider
-import identifiers.establishers.company.CompanyDetailsId
+import identifiers.trustees.company.CompanyDetailsId
 import matchers.JsonMatchers
 import models.CompanyDetails
 import org.mockito.ArgumentCaptor

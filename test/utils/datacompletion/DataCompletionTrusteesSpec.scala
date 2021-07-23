@@ -16,9 +16,12 @@
 
 package utils.datacompletion
 
+import identifiers.trustees.TrusteeKindId
+import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.details._
-import models.ReferenceValue
+import models.trustees.TrusteeKind
+import models.{CompanyDetails, ReferenceValue}
 import org.scalatest.{MustMatchers, OptionValues, TryValues, WordSpec}
 import utils.{Enumerable, UserAnswers}
 
@@ -88,6 +91,29 @@ class DataCompletionTrusteesSpec
 
       "return None when no answer is present" in {
         UserAnswers().isEstablisherIndividualContactDetailsCompleted(0) mustBe None
+      }
+    }
+  }
+
+  "Trustee Company completion status should be returned correctly" when {
+    "isTrusteeCompanyComplete" must {
+      "return true when all answers are present" in {
+        val ua =
+          UserAnswers()
+            .set(TrusteeKindId(0), TrusteeKind.Company).success.value
+            .set(CompanyDetailsId(0), CompanyDetails("test company")).success.value
+
+        ua.isTrusteeCompanyComplete(0) mustBe true
+      }
+
+      "return false when some answer is missing" in {
+        val ua =
+          UserAnswers()
+            .set(TrusteeKindId(0), TrusteeKind.Company).success.value
+            .set(CompanyDetailsId(0), CompanyDetails("test company")).success.value
+            .set(TrusteeKindId(1), TrusteeKind.Company).success.value
+
+        ua.isTrusteeCompanyComplete(1) mustBe false
       }
     }
   }
