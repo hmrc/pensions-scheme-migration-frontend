@@ -18,9 +18,10 @@ package utils.datacompletion
 
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.company.CompanyDetailsId
-import identifiers.establishers.company.address.{TradingTimeId, AddressId => CompanyAddressId, AddressYearsId => CompanyAddressYearsId, PreviousAddressId => CompanyPreviousAddressId}
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
+import identifiers.establishers.company.address.{TradingTimeId, AddressId => CompanyAddressId, AddressYearsId => CompanyAddressYearsId, PreviousAddressId => CompanyPreviousAddressId}
+import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.individual.details._
 import utils.UserAnswers
@@ -97,42 +98,8 @@ trait DataCompletionEstablishers extends DataCompletion {
       )
     ).getOrElse(false)
 
-  //DIRECTORS
-
-//  def isDirectorComplete(estIndex: Int, dirIndex: Int): Boolean =
-//    isComplete(Seq(
-//      isAnswerComplete(DirectorDetailsId(estIndex, dirIndex)),
-//      isAswerComplete(DirectorAddressCompleted(estIndex, dirIndex),
-//      isContactDetailsComplete(DirectorEmailId(estIndex, dirIndex), DirectorPhoneNumberId(estIndex, dirIndex))))
-//      .getOrElse(false)
-//
-//  def isDirectorDetailsComplete(estIndex: Int, dirIndex: Int): Option[Boolean] =
-//    isComplete(Seq(
-//      Some(get(DirectorDOBId(estIndex, dirIndex)).isDefined),
-//      isAnswerComplete(DirectorHasNINOId(estIndex, dirIndex), DirectorEnterNINOId(estIndex, dirIndex), Some
-//      (DirectorNoNINOReasonId(estIndex, dirIndex))),
-//      isAnswerComplete(DirectorHasUTRId(estIndex, dirIndex), DirectorEnterUTRId(estIndex, dirIndex), Some
-//      (DirectorNoUTRReasonId(estIndex, dirIndex)))
-//    ))
-//
-//  def isEstablisherCompanyDirectorAddressCompleted(
-//    index: Int,
-//    userAnswers: UserAnswers
-//  ): Option[Boolean] = {
-//
-//    val previousAddress = (userAnswers.get(DirectorAddressId(estIndex, dirIndex)), userAnswers.get(TradingTimeId(index))) match {
-//      case (Some(true), _) => Some(true)
-//      case (Some(false), Some(true)) => isAnswerComplete(DirectorPreviousAddressId(estIndex, dirIndex))
-//      case (Some(false), Some(false)) => Some(true)
-//      case _ => None
-//    }
-//
-//    isComplete(
-//      Seq(
-//        isAnswerComplete(DirectorAddressId(estIndex, dirIndex)),
-//        isAnswerComplete(DirectorAddressYearsId(estIndex, dirIndex)),
-//        previousAddress
-//      )
-//    )
-//  }
+  def isDirectorComplete(estIndex: Int, dirIndex: Int): Boolean =
+    isComplete(Seq(
+      isAnswerComplete(DirectorNameId(estIndex, dirIndex))))
+      .getOrElse(false)
 }

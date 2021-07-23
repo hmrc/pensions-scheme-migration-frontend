@@ -29,5 +29,8 @@ object DirectorNameId {
   override lazy val toString: String = "directorDetails"
 
   implicit lazy val formats: Format[DirectorNameId] = Json.format[DirectorNameId]
+
+  def collectionPath(establisherIndex: Int): JsPath =
+    EstablishersId(establisherIndex).path \ "director" \\ DirectorNameId.toString
 }
 
