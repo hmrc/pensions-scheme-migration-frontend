@@ -16,6 +16,6 @@
 
 package identifiers
 
-import queries.{Settable, Gettable}
+import queries.{Gettable, Settable}
 
 trait TypedIdentifier[A] extends Identifier with Gettable[A] with Settable[A]

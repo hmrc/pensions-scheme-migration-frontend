@@ -17,7 +17,6 @@
 package identifiers.trustees.company
 
 import identifiers._
-import identifiers.establishers.EstablishersId
 import identifiers.trustees.TrusteesId
 import models.CompanyDetails
 import play.api.libs.json.{Format, JsPath, Json}

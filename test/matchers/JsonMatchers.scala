@@ -16,7 +16,7 @@
 
 package matchers
 
-import org.scalatest.matchers.{Matcher, MatchResult}
+import org.scalatest.matchers.{MatchResult, Matcher}
 import play.api.libs.json._
 
 trait JsonMatchers {

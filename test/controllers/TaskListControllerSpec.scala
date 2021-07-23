@@ -16,7 +16,6 @@
 
 package controllers
 
-import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import helpers.TaskListHelper
 import matchers.JsonMatchers

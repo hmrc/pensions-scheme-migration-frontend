@@ -19,20 +19,20 @@ package navigators
 import base.SpecBase
 import controllers.trustees.individual.details.{routes => detailsRoutes}
 import controllers.trustees.routes
-import identifiers.trustees.{AddTrusteeId, TrusteeKindId}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address._
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.details._
+import identifiers.trustees.{AddTrusteeId, TrusteeKindId}
 import identifiers.{Identifier, TypedIdentifier}
 import models.trustees.TrusteeKind
-import models.{PersonName, Mode, Index, NormalMode, _}
+import models.{Index, Mode, NormalMode, PersonName, _}
 import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes
 import play.api.mvc.Call
 import utils.Data.ua
-import utils.{UserAnswers, Enumerable}
+import utils.{Enumerable, UserAnswers}
 
 import java.time.LocalDate
 

@@ -17,9 +17,9 @@
 package navigators
 
 import controllers.routes._
+import controllers.trustees.individual.address.routes.{EnterPreviousPostcodeController, SelectAddressController, SelectPreviousAddressController}
 import controllers.trustees.individual.contact.routes._
 import controllers.trustees.individual.details.routes._
-import controllers.trustees.individual.address.routes.{SelectAddressController, EnterPreviousPostcodeController, SelectPreviousAddressController}
 import controllers.trustees.individual.routes._
 import controllers.trustees.routes._
 import identifiers._

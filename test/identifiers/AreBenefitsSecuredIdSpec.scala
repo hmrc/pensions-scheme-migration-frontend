@@ -19,10 +19,10 @@ package identifiers
 import base.SpecBase
 import identifiers.benefitsAndInsurance._
 import models.Address
-import org.scalatest.{OptionValues, MustMatchers}
+import org.scalatest.{MustMatchers, OptionValues}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
-import utils.{UserAnswers, Enumerable}
+import utils.{Enumerable, UserAnswers}
 
 class AreBenefitsSecuredIdSpec extends SpecBase with MustMatchers with ScalaCheckPropertyChecks with OptionValues with Enumerable.Implicits {
 

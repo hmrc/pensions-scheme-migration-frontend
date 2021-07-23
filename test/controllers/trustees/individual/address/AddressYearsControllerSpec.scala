@@ -18,7 +18,10 @@ package controllers.trustees.individual.address
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
+import forms.trustees.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
+import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.individual.address.AddressYearsId
 import matchers.JsonMatchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -32,10 +35,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{UserAnswers, Enumerable, Data}
-import forms.trustees.address.AddressYearsFormProvider
-import identifiers.trustees.individual.TrusteeNameId
-import identifiers.trustees.individual.address.AddressYearsId
+import utils.{Data, Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 

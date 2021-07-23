@@ -16,10 +16,11 @@
 
 package forms.benefitsAndInsurance
 
-import javax.inject.Inject
 import forms.mappings.Mappings
 import models.benefitsAndInsurance.BenefitsType
 import play.api.data.Form
+
+import javax.inject.Inject
 
 class BenefitsTypeFormProvider @Inject() extends Mappings {
 

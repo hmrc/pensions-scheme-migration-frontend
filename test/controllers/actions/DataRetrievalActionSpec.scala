@@ -17,18 +17,15 @@
 package controllers.actions
 
 import base.SpecBase
-import connectors.cache.{LockCacheConnector, CurrentPstrCacheConnector, UserAnswersCacheConnector}
+import connectors.cache.{CurrentPstrCacheConnector, LockCacheConnector, UserAnswersCacheConnector}
 import models.MigrationLock
 import models.requests.{AuthenticatedRequest, OptionalDataRequest}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
-import org.scalatest.RecoverMethods.recoverToExceptionIf
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.http.Status
 import play.api.libs.json.{JsResultException, Json}
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.http.HttpException
 import utils.Data.psaId
 
 import scala.concurrent.ExecutionContext.Implicits.global

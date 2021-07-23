@@ -18,7 +18,7 @@ package models.benefitsAndInsurance
 
 import play.api.data.Form
 import uk.gov.hmrc.viewmodels.{Radios, _}
-import utils.{InputOption, WithName, Enumerable}
+import utils.{Enumerable, InputOption, WithName}
 
 sealed trait BenefitsProvisionType
 

@@ -18,21 +18,20 @@ package utils
 
 import identifiers.TypedIdentifier
 import identifiers.establishers.company.CompanyDetailsId
-import identifiers.establishers.{EstablisherKindId, EstablishersId, IsEstablisherNewId}
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId, TrusteesId}
+import identifiers.establishers.{EstablisherKindId, EstablishersId, IsEstablisherNewId}
+import identifiers.trustees.company.{CompanyDetailsId => TrusteeCompanyDetailsId}
 import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId, TrusteesId}
+import models._
 import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind
-import models._
 import play.api.Logger
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json._
 import utils.datacompletion.{DataCompletion, DataCompletionEstablishers, DataCompletionTrustees}
 
 import scala.util.{Failure, Success, Try}
-
-import identifiers.trustees.company.{CompanyDetailsId => TrusteeCompanyDetailsId}
 
 final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Implicits with DataCompletion
   with DataCompletionEstablishers with DataCompletionTrustees {

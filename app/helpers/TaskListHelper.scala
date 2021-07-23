@@ -19,8 +19,8 @@ package helpers
 import com.google.inject.Inject
 import identifiers.beforeYouStart.{HaveAnyTrusteesId, SchemeNameId, SchemeTypeId}
 import identifiers.establishers.company.CompanyDetailsId
-import identifiers.trustees.company.{CompanyDetailsId => TrusteeCompanyDetailsId}
 import identifiers.establishers.individual.EstablisherNameId
+import identifiers.trustees.company.{CompanyDetailsId => TrusteeCompanyDetailsId}
 import identifiers.trustees.individual.TrusteeNameId
 import models.SchemeType
 import play.api.i18n.Messages

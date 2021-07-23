@@ -17,7 +17,7 @@
 package services
 
 import base.SpecBase
-import connectors.cache.{LockCacheConnector, CurrentPstrCacheConnector}
+import connectors.cache.{CurrentPstrCacheConnector, LockCacheConnector}
 import models.requests.AuthenticatedRequest
 import org.mockito.Matchers
 import org.mockito.Matchers.any

@@ -16,15 +16,14 @@
 
 package connectors
 
-import models.TolerantAddress
-import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse}
 import com.google.inject.Inject
 import config.AppConfig
+import models.TolerantAddress
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.Reads
-import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpException, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 

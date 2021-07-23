@@ -18,7 +18,7 @@ package controllers.actions
 
 
 import com.google.inject.{ImplementedBy, Inject}
-import connectors.cache.{LockCacheConnector, CurrentPstrCacheConnector, UserAnswersCacheConnector}
+import connectors.cache.{CurrentPstrCacheConnector, LockCacheConnector, UserAnswersCacheConnector}
 import models.MigrationLock
 import models.requests.{AuthenticatedRequest, OptionalDataRequest}
 import play.api.libs.json._

@@ -21,8 +21,6 @@ import models.ReferenceValue
 import org.scalatest.{MustMatchers, TryValues}
 import utils.{Enumerable, UserAnswers}
 
-import java.time.LocalDate
-
 class EstablisherHasUTRIdSpec
   extends SpecBase
     with MustMatchers

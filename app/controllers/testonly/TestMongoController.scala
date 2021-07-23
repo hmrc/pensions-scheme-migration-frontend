@@ -33,7 +33,7 @@
 package controllers.testonly
 
 import config.AppConfig
-import connectors.cache.{LockCacheConnector, CurrentPstrCacheConnector, UserAnswersCacheConnector}
+import connectors.cache.{CurrentPstrCacheConnector, LockCacheConnector, UserAnswersCacheConnector}
 import models.MigrationLock
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc._

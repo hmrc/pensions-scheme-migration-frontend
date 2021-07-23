@@ -19,13 +19,13 @@ package controllers.benefitsAndInsurance
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.beforeYouStart.SchemeNameId
-import play.api.i18n.{MessagesApi, I18nSupport}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.Enumerable
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import utils.Enumerable
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext

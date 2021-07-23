@@ -18,8 +18,8 @@ package navigators
 
 import base.SpecBase
 import controllers.beforeYouStartSpoke.routes._
+import identifiers.beforeYouStart.{EstablishedCountryId, HaveAnyTrusteesId, SchemeTypeId, WorkingKnowledgeId}
 import identifiers.{Identifier, TypedIdentifier}
-import identifiers.beforeYouStart.{HaveAnyTrusteesId, SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
 import models.{NormalMode, SchemeType}
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes

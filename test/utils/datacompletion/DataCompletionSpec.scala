@@ -18,16 +18,12 @@ package utils.datacompletion
 
 import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
 import identifiers.beforeYouStart.{EstablishedCountryId, SchemeNameId, SchemeTypeId, WorkingKnowledgeId}
-import models.{Members, SchemeType}
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
-import utils.Data.ua
-import utils.{Enumerable, UserAnswers}
-import identifiers.beforeYouStart.{SchemeNameId, WorkingKnowledgeId}
 import identifiers.benefitsAndInsurance._
 import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
-import org.scalatest.{OptionValues, MustMatchers, WordSpec}
-import utils.Data.{ua, address, insurerName, insurerPolicyNo}
-import utils.{UserAnswers, Enumerable}
+import models.{Members, SchemeType}
+import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import utils.Data.{address, insurerName, insurerPolicyNo, ua}
+import utils.{Enumerable, UserAnswers}
 
 class DataCompletionSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
 

@@ -18,7 +18,7 @@ package utils
 
 import identifiers.beforeYouStart.SchemeNameId
 import org.scalatest._
-import play.api.libs.json.{JsString, Json, JsPath}
+import play.api.libs.json.{JsPath, JsString, Json}
 import utils.Data._
 
 class UserAnswersSpec

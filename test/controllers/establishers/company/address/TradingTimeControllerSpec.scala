@@ -18,7 +18,10 @@ package controllers.establishers.company.address
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
+import forms.establishers.address.TradingTimeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
+import identifiers.establishers.company.CompanyDetailsId
+import identifiers.establishers.company.address.TradingTimeId
 import matchers.JsonMatchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -32,10 +35,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{UserAnswers, Enumerable, Data}
-import forms.establishers.address.TradingTimeFormProvider
-import identifiers.establishers.company.CompanyDetailsId
-import identifiers.establishers.company.address.TradingTimeId
+import utils.{Data, Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 

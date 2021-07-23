@@ -17,11 +17,11 @@
 package controllers.establishers.company.address
 
 import controllers.Retrievals
-import controllers.actions.{DataRetrievalAction, DataRequiredAction, AuthAction}
-import helpers.{EstablisherCompanyAddressCYAHelper, CYAHelper}
+import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import helpers.{CYAHelper, EstablisherCompanyAddressCYAHelper}
 import identifiers.beforeYouStart.SchemeNameId
 import models.Index
-import play.api.i18n.{MessagesApi, I18nSupport}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer

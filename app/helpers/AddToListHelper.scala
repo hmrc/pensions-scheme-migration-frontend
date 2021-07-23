@@ -22,7 +22,7 @@ import models.Entity
 import play.api.i18n.Messages
 import uk.gov.hmrc.viewmodels.Table.Cell
 import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{Table, MessageInterpolators, Html}
+import uk.gov.hmrc.viewmodels.{Html, MessageInterpolators, Table}
 
 class AddToListHelper {
 

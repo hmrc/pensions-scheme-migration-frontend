@@ -18,14 +18,14 @@ package helpers
 
 import helpers.CYAHelper.getName
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.address.{AddressYearsId, PreviousAddressId, AddressId}
-import models.requests.DataRequest
+import identifiers.establishers.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
 import models.Index
+import models.requests.DataRequest
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.SummaryList.Row
-import utils.{UserAnswers, Enumerable}
+import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 
 class EstablisherAddressCYAHelper

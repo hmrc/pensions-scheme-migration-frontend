@@ -18,8 +18,8 @@ package helpers
 
 import controllers.trustees.individual.contact.routes
 import helpers.CYAHelper.getName
-import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import models.requests.DataRequest
 import models.{CheckMode, Index}
 import play.api.i18n.Messages

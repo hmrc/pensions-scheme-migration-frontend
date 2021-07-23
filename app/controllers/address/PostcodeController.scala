@@ -20,18 +20,18 @@ import config.AppConfig
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
-import models.requests.DataRequest
+import forms.FormsHelper.formWithError
+import identifiers.TypedIdentifier
 import models.TolerantAddress
+import models.requests.DataRequest
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.libs.json.{JsObject, JsArray, Json}
+import play.api.libs.json.{JsArray, JsObject, Json}
 import play.api.mvc.{AnyContent, Result}
 import renderer.Renderer
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import forms.FormsHelper.formWithError
-import identifiers.TypedIdentifier
 
 import scala.concurrent.{ExecutionContext, Future}
 

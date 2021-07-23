@@ -17,11 +17,11 @@
 package utils
 
 import base.SpecBase.fakeRequest
-import identifiers.aboutMembership.{FutureMembersId, CurrentMembersId}
+import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
 import identifiers.beforeYouStart._
 import identifiers.benefitsAndInsurance._
-import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
 import models._
+import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
 import models.requests.DataRequest
 import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.Json

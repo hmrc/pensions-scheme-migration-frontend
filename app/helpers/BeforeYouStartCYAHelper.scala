@@ -17,14 +17,14 @@
 package helpers
 
 import controllers.beforeYouStartSpoke.routes
-import identifiers.beforeYouStart.{EstablishedCountryId, WorkingKnowledgeId, SchemeTypeId, HaveAnyTrusteesId, SchemeNameId}
+import identifiers.beforeYouStart._
 import models.SchemeType
 import models.SchemeType.Other
 import models.requests.DataRequest
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.viewmodels.MessageInterpolators
-import uk.gov.hmrc.viewmodels.SummaryList.{Value, Row, Key}
+import uk.gov.hmrc.viewmodels.SummaryList.{Key, Row, Value}
 import utils.UserAnswers
 import viewmodels.Message
 

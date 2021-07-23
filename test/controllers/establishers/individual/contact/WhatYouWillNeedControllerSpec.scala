@@ -31,7 +31,7 @@ import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import utils.Data.{ua, schemeName}
+import utils.Data.{schemeName, ua}
 import utils.UserAnswers
 
 import scala.concurrent.Future
