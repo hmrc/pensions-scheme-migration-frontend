@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.establishers.company
+package controllers.trustees.company
 
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.CompanyDetailsFormProvider
-import identifiers.establishers.company.CompanyDetailsId
+import identifiers.trustees.company.CompanyDetailsId
 import models.{CompanyDetails, Index}
 import navigators.CompoundNavigator
 import play.api.data.Form

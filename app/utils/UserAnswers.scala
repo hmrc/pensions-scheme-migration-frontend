@@ -32,6 +32,8 @@ import utils.datacompletion.{DataCompletion, DataCompletionEstablishers, DataCom
 
 import scala.util.{Failure, Success, Try}
 
+import identifiers.trustees.company.{CompanyDetailsId => TrusteeCompanyDetailsId}
+
 final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Implicits with DataCompletion
   with DataCompletionEstablishers with DataCompletionTrustees {
 
@@ -247,6 +249,15 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
         isTrusteeIndividualComplete(index), isNew.fold(false)(identity), noOfRecords)
     )
 
+    private def readsCompany(index: Int): Reads[Trustee[_]] = (
+      (JsPath \ TrusteeCompanyDetailsId.toString).read[CompanyDetails] and
+        (JsPath \ IsTrusteeNewId.toString).readNullable[Boolean]
+      ) ((details, isNew) =>
+      TrusteeCompanyEntity(TrusteeCompanyDetailsId(index),
+        details.companyName, details.isDeleted, isTrusteeCompanyComplete(index), isNew.fold
+        (false)(identity), noOfRecords)
+    )
+
     override def reads(json: JsValue): JsResult[Seq[Trustee[_]]] = {
       json \ TrusteesId.toString match {
         case JsDefined(JsArray(trustees)) =>
@@ -254,6 +265,7 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
             val trusteeKind = (jsValue \ TrusteeKindId.toString).validate[String].asOpt
             val readsForTrusteeKind = trusteeKind match {
               case Some(TrusteeKind.Individual.toString) => readsIndividual(index)
+              case Some(TrusteeKind.Company.toString) => readsCompany(index)
               case _ => throw UnrecognisedTrusteeKindException
             }
             readsForTrusteeKind.reads(jsValue)

@@ -19,6 +19,7 @@ package helpers
 import com.google.inject.Inject
 import identifiers.beforeYouStart.{HaveAnyTrusteesId, SchemeNameId, SchemeTypeId}
 import identifiers.establishers.company.CompanyDetailsId
+import identifiers.trustees.company.{CompanyDetailsId => TrusteeCompanyDetailsId}
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.trustees.individual.TrusteeNameId
 import models.SchemeType
@@ -147,6 +148,13 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
                     header = Some(trustee.name)
                   )
                 )
+              case TrusteeCompanyDetailsId(_) =>
+                Some(TaskListEntitySection(
+                  isCompleted = None,
+                  spokeCreationService.getTrusteeCompanySpokes(userAnswers, trustee.name, trustee.index),
+                  Some(trustee.name))
+                )
+
               case _ =>
                 throw new RuntimeException("Unknown section id:" + trustee.id)
             }
