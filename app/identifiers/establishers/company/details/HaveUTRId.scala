@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-package identifiers.trustees.individual.details
+package identifiers.establishers.company.details
 
 import identifiers.TypedIdentifier
-import identifiers.trustees.TrusteesId
+import identifiers.establishers.EstablishersId
 import play.api.libs.json.{Format, JsPath, Json}
 import utils.UserAnswers
 
-case class TrusteeHasNINOId(index: Int) extends TypedIdentifier[Boolean] {
-  override def path: JsPath =
-    TrusteesId(index).path \ TrusteeHasNINOId.toString
+case class HaveUTRId(index: Int) extends TypedIdentifier[Boolean] {
+  override def path: JsPath = EstablishersId(index).path \ HaveUTRId.toString
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): UserAnswers =
     value match {
-      case Some(true) => userAnswers.remove(TrusteeNoNINOReasonId(index))
-      case Some(false) => userAnswers.remove(TrusteeNINOId(index))
+      case Some(true) => userAnswers.remove(NoUTRReasonId(index))
+      case Some(false) => userAnswers.remove(CompanyUTRId(index))
       case _ => super.cleanup(value, userAnswers)
     }
 }
 
-object TrusteeHasNINOId {
-  override lazy val toString: String = "hasNino"
-
-  implicit lazy val formats: Format[TrusteeHasNINOId] = Json.format[TrusteeHasNINOId]
+object HaveUTRId {
+  override lazy val toString: String = "hasUtr"
+  implicit lazy val formats: Format[HaveUTRId] = Json.format[HaveUTRId]
 }
+
+

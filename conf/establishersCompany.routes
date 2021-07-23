@@ -1,6 +1,60 @@
 
-GET         /:index/company/name                                                      controllers.establishers.company.CompanyDetailsController.onPageLoad(index: Index)
-POST        /:index/company/name                                                      controllers.establishers.company.CompanyDetailsController.onSubmit(index: Index)
+GET         /:index/company/name                                                    controllers.establishers.company.CompanyDetailsController.onPageLoad(index: Index)
+POST        /:index/company/name                                                    controllers.establishers.company.CompanyDetailsController.onSubmit(index: Index)
+
+GET         /:index/company/details                                                 controllers.establishers.company.details.WhatYouWillNeedController.onPageLoad(index: Index)
+
+GET         /:index/company/have-company-number                                     controllers.establishers.company.details.HaveCompanyNumberController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/have-company-number                                     controllers.establishers.company.details.HaveCompanyNumberController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/have-change/company-number                              controllers.establishers.company.details.HaveCompanyNumberController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/have-change/company-number                              controllers.establishers.company.details.HaveCompanyNumberController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/company/company-number                                          controllers.establishers.company.details.CompanyNumberController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/company-number                                          controllers.establishers.company.details.CompanyNumberController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/company-number                                   controllers.establishers.company.details.CompanyNumberController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/company-number                                   controllers.establishers.company.details.CompanyNumberController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/company/reason-for-no-company-number                            controllers.establishers.company.details.NoCompanyNumberReasonController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/reason-for-no-company-number                            controllers.establishers.company.details.NoCompanyNumberReasonController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/reason-for-no-company-number                     controllers.establishers.company.details.NoCompanyNumberReasonController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/reason-for-no-company-number                     controllers.establishers.company.details.NoCompanyNumberReasonController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/company/have-unique-taxpayer-reference                          controllers.establishers.company.details.HaveUTRController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/have-unique-taxpayer-reference                          controllers.establishers.company.details.HaveUTRController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/have-unique-taxpayer-reference                   controllers.establishers.company.details.HaveUTRController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/have-unique-taxpayer-reference                   controllers.establishers.company.details.HaveUTRController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/company/enter-unique-taxpayer-reference                         controllers.establishers.company.details.UTRController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/enter-unique-taxpayer-reference                         controllers.establishers.company.details.UTRController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/enter-unique-taxpayer-reference                  controllers.establishers.company.details.UTRController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/enter-unique-taxpayer-reference                  controllers.establishers.company.details.UTRController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/company/reason-for-no-unique-taxpayer-reference                 controllers.establishers.company.details.NoUTRReasonController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/reason-for-no-unique-taxpayer-reference                 controllers.establishers.company.details.NoUTRReasonController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/reason-for-no-unique-taxpayer-reference          controllers.establishers.company.details.NoUTRReasonController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/reason-for-no-unique-taxpayer-reference          controllers.establishers.company.details.NoUTRReasonController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/company/is-registered-for-vat                                   controllers.establishers.company.details.HaveVATController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/is-registered-for-vat                                   controllers.establishers.company.details.HaveVATController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/is-registered-for-vat                            controllers.establishers.company.details.HaveVATController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/is-registered-for-vat                            controllers.establishers.company.details.HaveVATController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/company/enter-vat                                               controllers.establishers.company.details.VATController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/enter-vat                                               controllers.establishers.company.details.VATController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/enter-vat                                        controllers.establishers.company.details.VATController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/enter-vat                                        controllers.establishers.company.details.VATController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/company/have-paye-number                                        controllers.establishers.company.details.HavePAYEController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/have-paye-number                                        controllers.establishers.company.details.HavePAYEController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/have-paye-number                                 controllers.establishers.company.details.HavePAYEController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/have-paye-number                                 controllers.establishers.company.details.HavePAYEController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/company/enter-paye-number                                       controllers.establishers.company.details.PAYEController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/enter-paye-number                                       controllers.establishers.company.details.PAYEController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/enter-paye-number                                controllers.establishers.company.details.PAYEController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/enter-paye-number                                controllers.establishers.company.details.PAYEController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/company/details/check-your-answers                              controllers.establishers.company.details.CheckYourAnswersController.onPageLoad(index: Index)
 
 GET         /:index/company/addresses/what-you-will-need                          controllers.establishers.company.address.WhatYouWillNeedController.onPageLoad(index: Index)
 

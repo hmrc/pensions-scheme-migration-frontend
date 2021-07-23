@@ -114,8 +114,12 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
             case CompanyDetailsId(_) =>
               Some(TaskListEntitySection(
                 isCompleted = None,
-                spokeCreationService.getEstablisherCompanySpokes(userAnswers, establisher.name, establisher.index),
-                Some(establisher.name))
+                entities = spokeCreationService.getEstablisherCompanySpokes(
+                  answers = userAnswers,
+                  name = establisher.name,
+                  index = establisher.index
+                ),
+                header = Some(establisher.name))
               )
 
             case _ =>

@@ -18,6 +18,7 @@ package utils.datacompletion
 
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.company.CompanyDetailsId
+import identifiers.establishers.company.details.{CompanyNumberId, CompanyUTRId, HaveCompanyNumberId, HavePAYEId, HaveUTRId, HaveVATId, NoCompanyNumberReasonId, NoUTRReasonId, PAYEId, VATId}
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
@@ -126,6 +127,44 @@ class DataCompletionEstablishersSpec
 
       "return None when no answers present" in {
         UserAnswers().isEstablisherIndividualAddressCompleted(0, UserAnswers()) mustBe None
+      }
+    }
+
+    "isEstablisherCompanyDetailsCompleted" must {
+      "return true when all answers are present" in {
+
+        val ua1 =
+          UserAnswers()
+            .set(HaveCompanyNumberId(0), true).success.value
+            .set(CompanyNumberId(0), ReferenceValue("AB123456C")).success.value
+            .set(HaveUTRId(0), true).success.value
+            .set(CompanyUTRId(0), ReferenceValue("1234567890")).success.value
+            .set(HaveVATId(0), true).success.value
+            .set(VATId(0), ReferenceValue("123456789")).success.value
+            .set(HavePAYEId(0), true).success.value
+            .set(PAYEId(0), ReferenceValue("12345678")).success.value
+
+        val ua2 =
+          UserAnswers()
+            .set(HaveCompanyNumberId(0), false).success.value
+            .set(NoCompanyNumberReasonId(0), "Reason").success.value
+            .set(HaveUTRId(0), false).success.value
+            .set(NoUTRReasonId(0), "Reason").success.value
+            .set(HaveVATId(0), false).success.value
+            .set(HavePAYEId(0), false).success.value
+
+
+        ua1.isEstablisherCompanyDetailsCompleted(0) mustBe Some(true)
+        ua2.isEstablisherCompanyDetailsCompleted(0) mustBe Some(true)
+      }
+
+      "return false when some answer is missing" in {
+        val ua =
+          UserAnswers()
+            .set(HaveCompanyNumberId(0), false).success.value
+
+        ua.isEstablisherIndividualDetailsCompleted(0) mustBe false
+
       }
     }
 

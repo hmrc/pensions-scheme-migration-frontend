@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package identifiers.establishers.company.details
 
-import forms.mappings.UtrMapping
+import identifiers.TypedIdentifier
+import identifiers.establishers.EstablishersId
 import models.ReferenceValue
-import play.api.data.Form
-import play.api.data.Forms._
+import play.api.libs.json.{Format, JsPath, Json}
 
-import javax.inject.Inject
+case class VATId(index: Int) extends TypedIdentifier[ReferenceValue] {
+  override def path: JsPath = EstablishersId(index).path \ VATId.toString
+}
 
-class UTRFormProvider @Inject() extends UtrMapping {
-
-  def apply(): Form[ReferenceValue] =
-    Form(
-      mapping(
-        "value" -> utrMapping()
-      )(ReferenceValue.applyEditable)(ReferenceValue.unapplyEditable)
-    )
+object VATId {
+  override lazy val toString: String = "vat"
+  implicit lazy val formats: Format[VATId] = Json.format[VATId]
 }

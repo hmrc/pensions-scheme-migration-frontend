@@ -16,19 +16,25 @@
 
 package forms
 
-import forms.mappings.UtrMapping
+import forms.mappings.PayeMapping
 import models.ReferenceValue
 import play.api.data.Form
-import play.api.data.Forms._
+import play.api.data.Forms.mapping
+import play.api.i18n.Messages
+import viewmodels.Message
 
 import javax.inject.Inject
 
-class UTRFormProvider @Inject() extends UtrMapping {
+class PAYEFormProvider @Inject() extends PayeMapping {
 
-  def apply(): Form[ReferenceValue] =
+  def apply(name: String)(implicit messages: Messages): Form[ReferenceValue] =
     Form(
       mapping(
-        "value" -> utrMapping()
+        "value" -> payeMapping(
+          requiredPayeKey = "messages__paye__error_required",
+          payeLengthKey = Message("messages__paye__error_length", name),
+          invalidPayeKey = Message("messages__paye__error_invalid", name)
+        )
       )(ReferenceValue.applyEditable)(ReferenceValue.unapplyEditable)
     )
 }
