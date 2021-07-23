@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package helpers.spokes.establishers.individual
+package helpers.spokes.establishers.company
 
+import controllers.establishers.company.contact.routes._
 import helpers.spokes.Spoke
 import models.{Index, TaskListLink}
 import play.api.i18n.Messages
 import utils.UserAnswers
-import controllers.establishers.individual.contact.routes._
 
 
-case class EstablisherIndividualContactDetails(
+case class EstablisherCompanyContactDetails(
 index: Index,
   answers: UserAnswers
   ) extends Spoke {
   val messageKeyPrefix = "messages__schemeTaskList__contactDetails_"
   val linkKeyAndRoute: (String, String) = {
-    if (completeFlag(answers).getOrElse(false))
+    if (completeFlag(answers).isDefined)
       (s"${messageKeyPrefix}changeLink", CheckYourAnswersController.onPageLoad(index).url)
     else
-      (s"${messageKeyPrefix}addLink", WhatYouWillNeedController.onPageLoad(index).url)
+      (s"${messageKeyPrefix}addLink", WhatYouWillNeedCompanyContactController.onPageLoad(index).url)
   }
   override def changeLink(name: String)
                          (implicit messages: Messages): TaskListLink =
@@ -43,6 +43,6 @@ index: Index,
     )
 
   override def completeFlag(answers: UserAnswers): Option[Boolean] =
-    answers.isEstablisherIndividualContactDetailsCompleted(index)
+    answers.isEstablisherCompanyContactDetailsCompleted(index)
 }
 

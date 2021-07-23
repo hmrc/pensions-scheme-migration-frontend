@@ -33,7 +33,7 @@
 package controllers.testonly
 
 import config.AppConfig
-import connectors.cache.{LockCacheConnector, SchemeCacheConnector, UserAnswersCacheConnector}
+import connectors.cache.{LockCacheConnector, CurrentPstrCacheConnector, UserAnswersCacheConnector}
 import models.MigrationLock
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc._
@@ -48,7 +48,7 @@ class TestMongoController @Inject()(
                                      appConfig: AppConfig,
                                      lockCacheConnector: LockCacheConnector,
                                      userAnswersCacheConnector: UserAnswersCacheConnector,
-                                     schemeCacheConnector: SchemeCacheConnector,
+                                     schemeCacheConnector: CurrentPstrCacheConnector,
                                      mcc: MessagesControllerComponents,
                                      renderer: Renderer)
                                    (implicit val ec: ExecutionContext) extends FrontendController(mcc) {

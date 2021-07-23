@@ -18,14 +18,21 @@ package navigators
 
 import controllers.establishers.company.address.routes._
 import controllers.establishers.company.details.{routes => detailsRoutes}
+import controllers.establishers.company.address.routes._
+import controllers.establishers.company.contact.routes._
 import controllers.establishers.routes._
 import controllers.routes._
 import identifiers._
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address._
 import identifiers.establishers.company.details._
+import identifiers.establishers.company.contact.{EnterEmailId, EnterPhoneId}
+import identifiers.establishers.individual.EstablisherNameId
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode, NormalMode}
+import play.api.mvc.{AnyContent, Call}
+import utils.{Enumerable, UserAnswers}
+import models.{Mode, NormalMode}
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
 
@@ -36,6 +43,9 @@ class EstablishersCompanyNavigator
   //scalastyle:off cyclomatic.complexity
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
+    case EstablisherNameId(_) => AddEstablisherController.onPageLoad()
+    case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
+    case EnterPhoneId(index) => cyaContactDetails(index)
     case HaveCompanyNumberId(index) => companyNumberRoutes(index, ua, NormalMode)
     case CompanyNumberId(index) => detailsRoutes.HaveUTRController.onPageLoad(index, NormalMode)
     case NoCompanyNumberReasonId(index) => detailsRoutes.HaveUTRController.onPageLoad(index, NormalMode)
@@ -73,6 +83,8 @@ class EstablishersCompanyNavigator
     case VATId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
     case HavePAYEId(index) => payeRoutes(index, ua, CheckMode)
     case PAYEId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+    case EnterEmailId(index) => cyaContactDetails(index)
+    case EnterPhoneId(index) => cyaContactDetails(index)
   }
 
   private def cyaAddress(index:Int): Call = controllers.establishers.company.address.routes.CheckYourAnswersController.onPageLoad(index)
@@ -99,6 +111,7 @@ class EstablishersCompanyNavigator
       case Some(false) => detailsRoutes.NoUTRReasonController.onPageLoad(index, mode)
       case None => controllers.routes.TaskListController.onPageLoad()
     }
+  private def cyaContactDetails(index:Int): Call = controllers.establishers.company.contact.routes.CheckYourAnswersController.onPageLoad(index)
 
   private def vatRoutes(
                                    index: Index,

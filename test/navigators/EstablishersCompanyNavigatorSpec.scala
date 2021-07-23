@@ -17,12 +17,13 @@
 package navigators
 
 import base.SpecBase
-import controllers.establishers.company.details.{routes => detailsRoutes}
 import controllers.establishers.company.address.{routes => addressRoutes}
-import identifiers.{Identifier, TypedIdentifier}
+import controllers.establishers.company.details.{routes => detailsRoutes}
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address._
+import identifiers.establishers.company.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.company.details._
+import identifiers.{Identifier, TypedIdentifier}
 import models._
 import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
@@ -51,7 +52,7 @@ class EstablishersCompanyNavigatorSpec
     TolerantAddress(Some("2"),Some("2"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")),
   )
 
-  val address = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
+  val address: Address = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
 
   private def companyNumber(mode: Mode = NormalMode): Call = detailsRoutes.CompanyNumberController.onPageLoad(index, mode)
   private def noCompanyNumber(mode: Mode = NormalMode): Call = detailsRoutes.NoCompanyNumberReasonController.onPageLoad(index, mode)
@@ -75,6 +76,12 @@ class EstablishersCompanyNavigatorSpec
   private def selectPreviousAddress: Call = addressRoutes.SelectPreviousAddressController.onPageLoad(index)
 
   private def addressYears: Call = addressRoutes.AddressYearsController.onPageLoad(index)
+
+  private def enterPhonePage(mode:Mode): Call =
+    controllers.establishers.company.contact.routes.EnterPhoneController.onPageLoad(index, mode)
+
+  private val cyaContact: Call =
+    controllers.establishers.company.contact.routes.CheckYourAnswersController.onPageLoad(index)
 
   "EstablishersCompanyNavigator" when {
     def navigation: TableFor3[Identifier, UserAnswers, Call] =
@@ -108,7 +115,8 @@ class EstablishersCompanyNavigatorSpec
         row(EnterPreviousPostCodeId(index))(selectPreviousAddress, addressUAWithValue(EnterPreviousPostCodeId(index), seqAddresses)),
         row(PreviousAddressListId(index))(cyaAddress, addressUAWithValue(PreviousAddressListId(index), 0)),
         row(PreviousAddressId(index))(cyaAddress, addressUAWithValue(PreviousAddressId(index), address)),
-
+        row(EnterEmailId(index))(enterPhonePage(NormalMode), Some(detailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
+        row(EnterPhoneId(index))(cyaContact, Some(detailsUa.set(EnterPhoneId(index), "1234").success.value))
       )
 
     def editNavigation: TableFor3[Identifier, UserAnswers, Call] =
@@ -129,6 +137,8 @@ class EstablishersCompanyNavigatorSpec
         row(HavePAYEId(index))(paye(CheckMode), addressUAWithValue(HavePAYEId(index), true)),
         row(HavePAYEId(index))(cyaDetails, addressUAWithValue(HavePAYEId(index), false)),
         row(PAYEId(index))(cyaDetails),
+        row(EnterEmailId(index))(cyaContact, Some(detailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
+        row(EnterPhoneId(index))(cyaContact, Some(detailsUa.set(EnterPhoneId(index), "1234").success.value))
       )
 
     "in NormalMode" must {

@@ -26,13 +26,13 @@ import play.api.mvc.Results._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 import utils.WireMockHelper
 
-class SchemeCacheConnectorSpec extends AsyncWordSpec with WireMockHelper with OptionValues with RecoverMethods {
+class CurrentPstrCacheConnectorSpec extends AsyncWordSpec with WireMockHelper with OptionValues with RecoverMethods {
 
   private implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
   override protected def portConfigKey: String = "microservice.services.pensions-scheme-migration.port"
 
-  private lazy val connector: SchemeCacheConnector = injector.instanceOf[SchemeCacheConnector]
+  private lazy val connector: CurrentPstrCacheConnector = injector.instanceOf[CurrentPstrCacheConnector]
   private val dataCacheUrl = "/pensions-scheme-migration/scheme-data"
   private val pstr = "pstr"
   private val lock: MigrationLock = MigrationLock(pstr, "credId", "psaId")
