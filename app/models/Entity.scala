@@ -18,6 +18,7 @@ package models
 
 import controllers.establishers.routes._
 import identifiers.establishers.company.CompanyDetailsId
+import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.trustees.individual.TrusteeNameId
 import models.establishers.EstablisherKind
@@ -43,6 +44,7 @@ sealed trait Entity[ID] {
 object Entity {
   implicit lazy val formats: Format[Entity[_]] = Json.format[Entity[_]]
 }
+
 
 case class EstablisherIndividualEntity(
                                         id: EstablisherNameId,
@@ -86,6 +88,8 @@ object EstablisherCompanyEntity {
   implicit lazy val formats: Format[EstablisherCompanyEntity] = Json.format[EstablisherCompanyEntity]
 }
 
+
+
 sealed trait Establisher[T] extends Entity[T]
 
 object Establisher {
@@ -120,3 +124,26 @@ sealed trait Trustee[T] extends Entity[T]
 object Trustee {
   implicit lazy val formats: Format[Trustee[_]] = Json.format[Trustee[_]]
 }
+
+case class DirectorEntity(id: DirectorNameId, name: String, isDeleted: Boolean,
+                          isCompleted: Boolean, isNewEntity: Boolean, noOfRecords: Int) extends Director[DirectorNameId] {
+  override def editLink: Option[String] = None
+
+  override def deleteLink: Option[String] = {
+    if (noOfRecords > 1)
+      Some(controllers.establishers.company.director.routes.ConfirmDeleteDirectorController.onPageLoad(id.establisherIndex, id.directorIndex).url)
+    else
+      None
+  }
+
+  override def index: Int = id.directorIndex
+}
+
+object DirectorEntity {
+  implicit lazy val formats: Format[DirectorEntity] = Json.format[DirectorEntity]
+}
+
+sealed trait Director[T] extends Entity[T]
+
+
+

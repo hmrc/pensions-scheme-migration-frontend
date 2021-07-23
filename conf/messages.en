@@ -401,7 +401,8 @@ messages__establisherDetails__whatYouWillNeed_li_2 = National Insurance number, 
 messages__establisherDetails__whatYouWillNeed_li_3 = Unique Taxpayer Reference (UTR), or reason why they do not have one
 
 messages__confirmDeleteEstablisher__title = Are you sure you want to delete this establisher?
-messages__confirmDeleteEstablisher__companyHint = This will delete any directors you have added.
+messages__confirmDeleteEstablisher__companyHint = This will delete any establishers you have added.
+messages__confirmDeleteDirectors__companyHint = This will delete any directors you have added.
 messages__confirmDeleteEstablisher__partnershipHint = This will delete any partners you have added.
 messages__delete__heading = Are you sure you want to remove {0}?
 messages__alreadyDeleted__title = You have already deleted {0}
@@ -783,4 +784,15 @@ messages__error__company_name_invalid = The company name contains invalid charac
 tradingTime.title = Has {0} been trading for at least 1 year?
 establisherTradingTime.error.required = Select yes if the company has been trading for at least 1 year
 messages__visuallyhidden__establisherTradingTime = whether {0} has been trading for at least 1 year
+
+messages__directors__title = Directors
+messages__directors__whatYouWillNeedDirectors__p1 = For every director associated with the company you’re registering, you will need to tell us the director’s:
+messages__directors__whatYouWillNeed__item1 = name
+messages__directors__whatYouWillNeed__item2 = date of birth
+messages__directors__whatYouWillNeed__item3 = National Insurance number, or reason why they do not have one
+messages__directors__whatYouWillNeed__item4 = Unique Taxpayer Reference (UTR), or reason why they do not have one
+messages__directors__whatYouWillNeed__item5 = current address
+messages__directors__whatYouWillNeed__item6 = previous address if they have used their current address for less than 1 year
+messages__directors__whatYouWillNeed__item7 = contact email address
+messages__directors__whatYouWillNeed__item8 = contact phone number
 

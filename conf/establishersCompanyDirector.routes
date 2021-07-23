@@ -1,5 +1,4 @@
-#GET         /:establisherIndex/company/director/details                                                                  controllers.register.establishers.company.director.WhatYouWillNeedDirectorController.onPageLoad(mode: Mode = NormalMode, srn: Option[String] = None, establisherIndex: Index)
-#GET         /:establisherIndex/:mode/company/director/details/:srn                                                       controllers.register.establishers.company.director.WhatYouWillNeedDirectorController.onPageLoad(mode: Mode, srn: Option[String], establisherIndex: Index)
+GET         /:establisherIndex/company/director/details                                                                  controllers.establishers.company.director.WhatYouWillNeedDirectorController.onPageLoad(establisherIndex: Index)
 
 GET         /:establisherIndex/company/director/:directorIndex/name                                                      controllers.establishers.company.director.DirectorNameController.onPageLoad(establisherIndex: Index, directorIndex: Index)
 POST        /:establisherIndex/company/director/:directorIndex/name                                                      controllers.establishers.company.director.DirectorNameController.onSubmit(establisherIndex: Index, directorIndex: Index)
@@ -91,7 +90,7 @@ POST        /:establisherIndex/change/company/director/:directorIndex/name      
 
 #GET         /:establisherIndex/company/director/:directorIndex/check-your-answers                                        controllers.register.establishers.company.director.CheckYourAnswersController.onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode = NormalMode, srn: Option[String] = None)
 
-#GET         /:establisherIndex/company/director/:directorIndex/confirm-delete                                            controllers.register.establishers.company.director.ConfirmDeleteDirectorController.onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode = NormalMode, srn: Option[String] = None)
-#POST        /:establisherIndex/company/director/:directorIndex/confirm-delete                                            controllers.register.establishers.company.director.ConfirmDeleteDirectorController.onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode = NormalMode, srn: Option[String] = None)
+GET         /:establisherIndex/company/director/:directorIndex/confirm-delete                                            controllers.establishers.company.director.ConfirmDeleteDirectorController.onPageLoad(establisherIndex: Index, directorIndex: Index)
+POST        /:establisherIndex/company/director/:directorIndex/confirm-delete                                            controllers.establishers.company.director.ConfirmDeleteDirectorController.onSubmit(establisherIndex: Index, directorIndex: Index)
 
-#GET         /:establisherIndex/company/director/:directorIndex/already-deleted                                           controllers.register.establishers.company.director.AlreadyDeletedController.onPageLoad(establisherIndex: Index, directorIndex: Index, srn: Option[String] = None)
+GET         /:establisherIndex/company/director/:directorIndex/already-deleted                                           controllers.establishers.company.director.AlreadyDeletedController.onPageLoad(establisherIndex: Index, directorIndex: Index)

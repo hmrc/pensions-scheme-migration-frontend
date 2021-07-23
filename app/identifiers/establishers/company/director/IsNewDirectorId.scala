@@ -16,21 +16,16 @@
 
 package identifiers.establishers.company.director
 
-import identifiers._
+import identifiers.TypedIdentifier
 import identifiers.establishers.EstablishersId
-import models.PersonName
-import play.api.libs.json.{Format, JsPath, Json}
+import play.api.libs.json.JsPath
 
-case class DirectorNameId(establisherIndex: Int, directorIndex: Int) extends TypedIdentifier[PersonName] {
-  override def path: JsPath = EstablishersId(establisherIndex).path \ "director" \ directorIndex \ DirectorNameId.toString
+case class IsNewDirectorId(establisherIndex: Int, directorIndex: Int) extends TypedIdentifier[Boolean] {
+  override def path: JsPath  =
+    EstablishersId(establisherIndex)
+      .path \ "director" \ directorIndex \ IsNewDirectorId.toString
 }
 
-object DirectorNameId {
-  override lazy val toString: String = "directorDetails"
-
-  implicit lazy val formats: Format[DirectorNameId] = Json.format[DirectorNameId]
-
-  def collectionPath(establisherIndex: Int): JsPath =
-    EstablishersId(establisherIndex).path \ "director" \\ DirectorNameId.toString
+object IsNewDirectorId {
+  override def toString: String = "isNewDirector"
 }
-
