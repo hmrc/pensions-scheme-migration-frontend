@@ -2,7 +2,7 @@
 GET         /:index/company/name                                                    controllers.establishers.company.CompanyDetailsController.onPageLoad(index: Index)
 POST        /:index/company/name                                                    controllers.establishers.company.CompanyDetailsController.onSubmit(index: Index)
 
-GET         /:index/company/what-you-will-need                                      controllers.establishers.company.details.WhatYouWillNeedController.onPageLoad(index: Index)
+GET         /:index/company/details                                                 controllers.establishers.company.details.WhatYouWillNeedController.onPageLoad(index: Index)
 
 GET         /:index/company/have-company-number                                     controllers.establishers.company.details.HaveCompanyNumberController.onPageLoad(index: Index, mode: Mode = NormalMode)
 POST        /:index/company/have-company-number                                     controllers.establishers.company.details.HaveCompanyNumberController.onSubmit(index: Index, mode: Mode = NormalMode)

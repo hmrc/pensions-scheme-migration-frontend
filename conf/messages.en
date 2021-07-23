@@ -792,14 +792,13 @@ messages__error__company_name = Enter the company name
 messages__error__company_name_length = The company name cannot be more than 160 characters
 messages__error__company_name_invalid = The company name contains invalid characters
 
-messages__companyDetails__whatYouWillNeed_title = Company details
-messages__companyDetails__whatYouWillNeed_h1 = Company details for {0}
+messages__companyDetails__whatYouWillNeed_h1 = Details for {0}
 messages__companyDetails__whatYouWillNeed_list1_head = You will need to tell us {0}’s:
 messages__companyDetails__whatYouWillNeed_li1_1 = company number, or reason why it does not have one
 messages__companyDetails__whatYouWillNeed_li1_2 = Unique Taxpayer Reference (UTR), or reason why it does not have one
 messages__companyDetails__whatYouWillNeed_list2_head = If {0} has them, you will also need to tell us their:
 messages__companyDetails__whatYouWillNeed_li2_1 = VAT registration number
-messages__companyDetails__whatYouWillNeed_li2_2 = employer PAYE reference (you can tell us any employer PAYE reference if fds has more than one)
+messages__companyDetails__whatYouWillNeed_li2_2 = employer PAYE reference (you can tell us any employer PAYE reference if {0} has more than one)
 
 messages__haveCompanyNumber = Does {0} have a company number?
 messages__haveCompanyNumber__p = You can find this on the company’s certificate of incorporation or on any official letters from Companies House.
