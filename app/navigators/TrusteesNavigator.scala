@@ -92,6 +92,7 @@ class TrusteesNavigator
                                    ): Call =
     ua.get(TrusteeKindId(index)) match {
       case Some(TrusteeKind.Individual) => TrusteeNameController.onPageLoad(index)
+      case Some(TrusteeKind.Company) => controllers.trustees.company.routes.CompanyDetailsController.onPageLoad(index)
       case _ => IndexController.onPageLoad()
     }
 
