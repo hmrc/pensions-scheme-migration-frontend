@@ -51,7 +51,7 @@ class TrusteeAddressCYAHelper
       ),
       answerOrAddRow(
         AddressYearsId(index),
-        Message("trusteeAddressYears.title", trusteeName).resolve,
+        Message("addressYears.title", trusteeName).resolve,
         Some(controllers.trustees.individual.address.routes.AddressYearsController.onPageLoad(index).url),
         Some(msg"messages__visuallyhidden__trusteeAddressYears".withArgs(trusteeName)), answerBooleanTransform
       )

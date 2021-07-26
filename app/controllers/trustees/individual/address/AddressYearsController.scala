@@ -17,8 +17,8 @@
 package controllers.trustees.individual.address
 
 import connectors.cache.UserAnswersCacheConnector
-import controllers.Retrievals
 import controllers.actions._
+import controllers.address.CommonAddressYearsController
 import forms.trustees.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.individual.TrusteeNameId
@@ -26,74 +26,42 @@ import identifiers.trustees.individual.address.AddressYearsId
 import models.Index
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{MessagesApi, Messages, I18nSupport}
-import play.api.libs.json.Json
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Enumerable
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
-                                       userAnswersCacheConnector: UserAnswersCacheConnector,
+                                       val userAnswersCacheConnector: UserAnswersCacheConnector,
                                        authenticate: AuthAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
-                                       navigator: CompoundNavigator,
+                                       val navigator: CompoundNavigator,
                                        formProvider: AddressYearsFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer)(implicit ec: ExecutionContext)
-  extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
+                                       val renderer: Renderer)(implicit ec: ExecutionContext)
+  extends CommonAddressYearsController
+    with Enumerable.Implicits {
 
   private def form: Form[Boolean] =
     formProvider()
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      (TrusteeNameId(index) and SchemeNameId).retrieve.right.map { case trusteeName ~ schemeName =>
-        val preparedForm = request.userAnswers.get(AddressYearsId(index)) match {
-          case Some(value) => form.fill(value)
-          case None        => form
-        }
-        val json = Json.obj(
-          "schemeName" -> schemeName,
-          "entityName" -> trusteeName.fullName,
-          "entityType" -> Messages("trusteeEntityTypeIndividual"),
-          "form" -> preparedForm,
-          "radios" -> Radios.yesNo (preparedForm("value"))
-        )
-        renderer.render("trustees/individual/address/addressYears.njk", json).map(Ok(_))
+      (TrusteeNameId(index) and SchemeNameId).retrieve.right.map {
+        case trusteeName ~ schemeName =>
+          get(Some(schemeName), trusteeName.fullName, Messages("trusteeEntityTypeIndividual"), form, AddressYearsId(index))
       }
     }
 
   def onSubmit(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      (TrusteeNameId(index) and SchemeNameId).retrieve.right.map { case trusteeName ~ schemeName =>
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => {
-              val json = Json.obj(
-                "schemeName" -> schemeName,
-                "entityName" -> trusteeName.fullName,
-                "entityType" -> Messages("trusteeEntityTypeIndividual"),
-                "form" -> formWithErrors,
-                "radios" -> Radios.yesNo(form("value"))
-              )
-
-              renderer.render("trustees/individual/address/addressYears.njk", json).map(BadRequest(_))
-            },
-            value => {
-              val updatedUA = request.userAnswers.setOrException(AddressYearsId(index), value)
-              userAnswersCacheConnector.save(request.lock, updatedUA.data).map { _ =>
-                Redirect(navigator.nextPage(AddressYearsId(index), updatedUA))
-              }
-            }
-          )
+      (TrusteeNameId(index) and SchemeNameId).retrieve.right.map {
+        case trusteeName ~ schemeName =>
+          post(Some(schemeName), trusteeName.fullName, Messages("trusteeEntityTypeIndividual"), form, AddressYearsId(index))
         }
     }
 

@@ -439,7 +439,7 @@ establisherEnterPreviousPostcode.invalid = Enter the individual’s real postcod
 
 establisherSelectAddress.required = Select an address
 
-establisherAddressYears.title = Has {0} used this address for at least 1 year?
+addressYears.title = Has {0} used this address for at least 1 year?
 establisherAddressYears.error.required = Select yes if the individual has used this address for more than 1 year
 messages__visuallyhidden__establisherAddressYears = whether {0} has used this address for at least 1 year
 
@@ -750,7 +750,6 @@ trusteeEnterPreviousPostcode.invalid = Enter a real postcode
 
 trusteeSelectAddress.required = Select an address
 
-trusteeAddressYears.title = Has {0} used this address for at least 1 year?
 trusteeAddressYears.error.required = Select yes if the individual has used this address for more than 1 year
 messages__visuallyhidden__trusteeAddressYears = whether {0} has used this address for at least 1 year
 
