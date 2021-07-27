@@ -17,8 +17,8 @@
 package navigators
 
 import controllers.establishers.company.director.address.routes._
-import controllers.establishers.company.director.details.routes._
 import controllers.establishers.company.director.contact.routes._
+import controllers.establishers.company.director.details.routes._
 import identifiers._
 import identifiers.establishers.company.director._
 import identifiers.establishers.company.director.address._
@@ -72,8 +72,8 @@ class EstablishersCompanyDirectorNavigator
       else prevPostcode(establisherIndex, directorIndex)
     case EnterPostCodeId(establisherIndex, directorIndex) => selectAddress(establisherIndex, directorIndex)
     case EnterPreviousPostCodeId(establisherIndex, directorIndex) => selectPrevAddress(establisherIndex, directorIndex)
-    case PreviousAddressId(establisherIndex, directorIndex) => email(establisherIndex, directorIndex, NormalMode)
-    case PreviousAddressListId(establisherIndex, directorIndex) => email(establisherIndex, directorIndex, NormalMode)
+    case PreviousAddressId(establisherIndex, directorIndex) => cyaDetails(establisherIndex,directorIndex)
+    case PreviousAddressListId(establisherIndex, directorIndex) => cyaDetails(establisherIndex,directorIndex)
     case DirectorEmailId(establisherIndex, directorIndex) => cyaDetails(establisherIndex,directorIndex)
     case DirectorPhoneNumberId(establisherIndex, directorIndex) => cyaDetails(establisherIndex,directorIndex)
   }

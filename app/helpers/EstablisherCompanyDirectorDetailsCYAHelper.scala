@@ -19,7 +19,7 @@ package helpers
 import controllers.establishers.company.director.routes
 import helpers.CYAHelper.getName
 import identifiers.establishers.company.director._
-import identifiers.establishers.company.director.address.{AddressId, AddressYearsId, EnterPreviousPostCodeId, PreviousAddressId}
+import identifiers.establishers.company.director.address.{AddressId, AddressYearsId, PreviousAddressId}
 import models.requests.DataRequest
 import models.{CheckMode, Index}
 import play.api.i18n.Messages

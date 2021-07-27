@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package helpers.spokes.trustees.individual
+package helpers.spokes.establishers.company
 
-import controllers.trustees.individual.details.routes._
+import controllers.establishers.company.director.details.routes._
 import helpers.spokes.Spoke
 import models.{Index, TaskListLink}
 import play.api.i18n.Messages
 import utils.UserAnswers
 
 
-case class TrusteeIndividualDetails(
+case class EstablisherCompanyDirectorDetails(
                                          index: Index,
                                          answers: UserAnswers
                                        ) extends Spoke {
-  val messageKeyPrefix = "messages__schemeTaskList__details_"
-
+  val messageKeyPrefix = "messages__schemeTaskList__directors_"
+  val directorIndex = answers.allDirectors(index).size
   val linkKeyAndRoute: (String, String) =
     if (completeFlag(answers).getOrElse(false))
-      (s"${messageKeyPrefix}changeLink", CheckYourAnswersController.onPageLoad(index).url)
+      (s"${messageKeyPrefix}changeLink", CheckYourAnswersController.onPageLoad(index, directorIndex).url)
     else
       (s"${messageKeyPrefix}addLink", WhatYouWillNeedController.onPageLoad(index).url)
 
@@ -43,7 +43,9 @@ case class TrusteeIndividualDetails(
       visuallyHiddenText = None
     )
 
-  override def completeFlag(answers: UserAnswers): Option[Boolean] =
-    Some(answers.isTrusteeIndividualDetailsCompleted(index))
+  override def completeFlag(answers: UserAnswers): Option[Boolean] = {
+    val directorIndex = answers.allDirectors(index).size
+    Some(answers.isDirectorComplete(index, directorIndex))
+  }
 }
 

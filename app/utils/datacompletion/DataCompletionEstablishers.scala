@@ -100,6 +100,6 @@ trait DataCompletionEstablishers extends DataCompletion {
 
   def isDirectorComplete(estIndex: Int, dirIndex: Int): Boolean =
     isComplete(Seq(
-      isAnswerComplete(DirectorNameId(estIndex, dirIndex))))
+      isAnswerComplete(DirectorNameId(estIndex, dirIndex)))) //TODO
       .getOrElse(false)
 }

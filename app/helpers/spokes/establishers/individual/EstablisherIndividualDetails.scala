@@ -27,7 +27,7 @@ case class EstablisherIndividualDetails(
                                          index: Index,
                                          answers: UserAnswers
                                        ) extends Spoke {
-  val messageKeyPrefix = "messages__schemeTaskList__individualDetails_"
+  val messageKeyPrefix = "messages__schemeTaskList__details_"
 
   val linkKeyAndRoute: (String, String) =
     if (completeFlag(answers).getOrElse(false))
