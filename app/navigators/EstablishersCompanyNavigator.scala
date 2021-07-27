@@ -16,18 +16,21 @@
 
 package navigators
 
+import config.AppConfig
+import controllers.establishers.company.address.routes._
 import controllers.establishers.routes._
 import controllers.routes._
 import identifiers._
-import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address._
-import models.{NormalMode, Mode}
+import identifiers.establishers.company.{AddCompanyDirectorsId, CompanyDetailsId}
 import models.requests.DataRequest
-import play.api.mvc.{Call, AnyContent}
-import utils.{UserAnswers, Enumerable}
-import controllers.establishers.company.address.routes._
+import models.{Mode, NormalMode}
+import play.api.mvc.{AnyContent, Call}
+import utils.{Enumerable, UserAnswers}
 
-class EstablishersCompanyNavigator
+import javax.inject.Inject
+
+class EstablishersCompanyNavigator@Inject()(config: AppConfig)
   extends Navigator
     with Enumerable.Implicits {
 
@@ -45,6 +48,8 @@ class EstablishersCompanyNavigator
     case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index)
     case PreviousAddressListId(index) => cyaAddress(index)
     case PreviousAddressId(index) => cyaAddress(index)
+    case AddCompanyDirectorsId(index) =>
+      addDirectors(index, ua)
 
   }
 
@@ -55,6 +60,24 @@ class EstablishersCompanyNavigator
 
   private def cyaAddress(index:Int): Call = controllers.establishers.company.address.routes.CheckYourAnswersController.onPageLoad(index)
   private def addressYears(index:Int, mode:Mode): Call = controllers.establishers.company.address.routes.AddressYearsController.onPageLoad(index)
+  private def addDirectors(index: Int, answers: UserAnswers): Call = {
+    if (answers.allDirectorsAfterDelete(index).isEmpty) {
+      controllers.establishers.company.director.routes.DirectorNameController
+        .onPageLoad(index, answers.allDirectors(index).size)
+    } else if (answers.allDirectorsAfterDelete(index).length < config.maxDirectors) {
+      answers.get(AddCompanyDirectorsId(index)).map { addCompanyDirectors =>
+        if (addCompanyDirectors) {
+          controllers.establishers.company.director.routes.DirectorNameController
+            .onPageLoad(index, answers.allDirectors(index).size)
+        } else {
+          controllers.routes.TaskListController.onPageLoad()
+        }
+      }.getOrElse(controllers.routes.TaskListController.onPageLoad())
 
+    }else {
+      controllers.routes.TaskListController.onPageLoad()
+      //TODO change above call to this once develop controllers.establishers.company.director.routes.OtherDirectorsController.onPageLoad(mode,index)
+    }
+  }
 
 }

@@ -30,5 +30,9 @@ POST        /:index/company/addresses/address-previous-results                  
 GET         /:index/company/addresses/address-previous-manual                    controllers.establishers.company.address.ConfirmPreviousAddressController.onPageLoad(index: Index)
 POST        /:index/company/addresses/address-previous-manual                    controllers.establishers.company.address.ConfirmPreviousAddressController.onSubmit(index: Index)
 
+GET         /:index/company/list-of-directors                                    controllers.establishers.company.AddCompanyDirectorsController.onPageLoad(index: Index,mode: Mode = NormalMode)
+POST        /:index/company/list-of-directors                                    controllers.establishers.company.AddCompanyDirectorsController.onSubmit(index: Index,mode: Mode = NormalMode)
+GET         /:index/change/company/list-of-directors                             controllers.establishers.company.AddCompanyDirectorsController.onPageLoad(index: Index,mode: Mode = CheckMode)
+POST        /:index/change/company/list-of-directors                             controllers.establishers.company.AddCompanyDirectorsController.onSubmit(index: Index,mode: Mode = CheckMode)
 
 ->          /                                                                         establishersCompanyDirector.Routes

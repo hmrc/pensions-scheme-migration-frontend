@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package identifiers.establishers.company.director
+package identifiers.establishers.company
 
-import identifiers.TypedIdentifier
+import identifiers._
 
-case class ConfirmDeleteDirectorId(index: Int) extends TypedIdentifier[Boolean] {
-  override def toString: String = "confirmDeleteDirector"
+case class AddCompanyDirectorsId(index: Int) extends TypedIdentifier[Boolean] {
+  override def toString: String = "addCompanyDirectors"
 }
