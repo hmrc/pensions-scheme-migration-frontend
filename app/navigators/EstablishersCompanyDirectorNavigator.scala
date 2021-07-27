@@ -53,6 +53,7 @@ class EstablishersCompanyDirectorNavigator
     case PreviousAddressListId(establisherIndex, directorIndex) => email(establisherIndex, directorIndex, NormalMode)
     case DirectorEmailId(establisherIndex, directorIndex) => EnterPhoneNumberController.onPageLoad(establisherIndex, directorIndex, NormalMode)
     case DirectorPhoneNumberId(establisherIndex, directorIndex) =>cyaDetails(establisherIndex,directorIndex)
+    case ConfirmDeleteDirectorId(establisherIndex) => controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(establisherIndex,NormalMode)
   }
 
   override protected def editRouteMap(ua: UserAnswers)

@@ -132,7 +132,16 @@ object Trustee {
 
 case class DirectorEntity(id: DirectorNameId, name: String, isDeleted: Boolean,
                           isCompleted: Boolean, isNewEntity: Boolean, noOfRecords: Int) extends Director[DirectorNameId] {
-  override def editLink: Option[String] = None
+  override def editLink: Option[String] = (isNewEntity, isCompleted) match {
+    case (false, _) => Some(controllers.establishers.company.director.details.routes.CheckYourAnswersController
+      .onPageLoad(
+        id.establisherIndex, id.directorIndex).url)
+    case (_, true) => Some(controllers.establishers.company.director.details.routes.CheckYourAnswersController
+      .onPageLoad(
+        id.establisherIndex, id.directorIndex).url)
+    case (_, false) => Some(controllers.establishers.company.director.routes.DirectorNameController.onPageLoad(
+      id.establisherIndex, id.directorIndex).url)
+  }
 
   override def deleteLink: Option[String] = {
     if (noOfRecords > 1)
