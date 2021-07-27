@@ -307,6 +307,10 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
     }
   }
 
+  def allDirectorsAfterDelete(establisherIndex: Int): Seq[DirectorEntity] = {
+    allDirectors(establisherIndex).filterNot(_.isDeleted)
+  }
+
   def getAllRecursive[A](path: JsPath)(implicit rds: Reads[A]): Option[Seq[A]] = {
     JsLens.fromPath(path)
       .getAll(data)

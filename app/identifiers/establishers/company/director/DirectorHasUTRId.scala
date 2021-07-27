@@ -16,36 +16,32 @@
 
 package identifiers.establishers.company.director
 
-import identifiers.TypedIdentifier
+import identifiers._
 import identifiers.establishers.EstablishersId
 import play.api.libs.json.{Format, JsPath, Json}
 import utils.UserAnswers
 
-case class DirectorHasNINOId(establisherIndex: Int, directorIndex: Int) extends TypedIdentifier[Boolean] {
+case class DirectorHasUTRId(establisherIndex: Int, directorIndex: Int) extends TypedIdentifier[Boolean] {
   override def path: JsPath =
-    EstablishersId(establisherIndex).path \ "director" \ directorIndex \  DirectorHasNINOId.toString
+    EstablishersId(establisherIndex).path \ "director" \ directorIndex \ DirectorHasUTRId.toString
 
-  override def cleanup(
-                        value: Option[Boolean],
-                        userAnswers: UserAnswers
-                      ): UserAnswers =
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): UserAnswers = {
     value match {
       case Some(true) =>
-        userAnswers.remove(DirectorNoNINOReasonId(establisherIndex, directorIndex))
+        userAnswers.remove(DirectorNoUTRReasonId(establisherIndex, directorIndex))
       case Some(false) =>
-        userAnswers.remove(DirectorNINOId(establisherIndex, directorIndex))
+        userAnswers.remove(DirectorEnterUTRId(establisherIndex, directorIndex))
       case _ =>
         super.cleanup(value, userAnswers)
     }
+  }
 }
 
-object DirectorHasNINOId {
-  override lazy val toString: String =
-    "hasNino"
+object DirectorHasUTRId {
+  override def toString: String = "hasUtr"
 
-  implicit lazy val formats: Format[DirectorHasNINOId] =
-    Json.format[DirectorHasNINOId]
+  implicit lazy val formats: Format[DirectorHasUTRId] =
+    Json.format[DirectorHasUTRId]
 }
-
 
 

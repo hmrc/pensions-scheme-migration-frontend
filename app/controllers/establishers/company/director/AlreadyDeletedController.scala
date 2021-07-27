@@ -19,15 +19,14 @@ package controllers.establishers.company.director
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.establishers.company.director.DirectorNameId
+import models.Index
 import models.requests.DataRequest
-import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Enumerable
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

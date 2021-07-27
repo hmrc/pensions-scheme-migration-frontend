@@ -42,11 +42,11 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
                                        val navigator: CompoundNavigator,
                                        formProvider: AddressYearsFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
-                                       val renderer: Renderer)(implicit ec: ExecutionContext)
+                                       val renderer: Renderer)
+                                      (implicit ec: ExecutionContext)
   extends CommonAddressYearsController
     with Enumerable.Implicits
 {
-
   private def form: Form[Boolean] =
     formProvider()
 

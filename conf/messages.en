@@ -441,7 +441,7 @@ establisherSelectAddress.required = Select an address
 
 addressYears.title = Has {0} used this address for at least 1 year?
 establisherAddressYears.error.required = Select yes if the individual has used this address for more than 1 year
-messages__visuallyhidden__establisherAddressYears = whether {0} has used this address for at least 1 year
+messages__visuallyhidden__addressYears = whether {0} has used this address for at least 1 year
 
 messages__visuallyHidden__address = the address for {0}
 
@@ -798,3 +798,5 @@ messages__directors__whatYouWillNeed__item6 = previous address if they have used
 messages__directors__whatYouWillNeed__item7 = contact email address
 messages__directors__whatYouWillNeed__item8 = contact phone number
 
+messages__director__name = Director's name
+messages__director__name__cya__visuallyHidden = the director's name {0}

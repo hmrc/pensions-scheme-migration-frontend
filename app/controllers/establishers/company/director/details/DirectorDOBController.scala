@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.establishers.company.director
+package controllers.establishers.company.director.details
 
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
@@ -35,7 +35,6 @@ import scala.concurrent.ExecutionContext
 
 class DirectorDOBController @Inject()(
                                        override val messagesApi: MessagesApi,
-                                       //@EstablishersCompanyDirector
                                        val navigator: CompoundNavigator,
                                        authenticate: AuthAction,
                                        getData: DataRetrievalAction,

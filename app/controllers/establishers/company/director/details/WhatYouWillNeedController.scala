@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package controllers.establishers.company.director
+package controllers.establishers.company.director.details
 
-import controllers.establishers.company.director.routes._
 import controllers.Retrievals
 import controllers.actions._
-import controllers.establishers.individual.details.routes.EstablisherDOBController
+import controllers.establishers.company.director.routes._
 import helpers.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
-import models.{Index, NormalMode}
+import models.Index
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -32,14 +31,14 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
-class WhatYouWillNeedDirectorController @Inject()(override val messagesApi: MessagesApi,
-                                                  authenticate: AuthAction,
-                                                  getData: DataRetrievalAction,
-                                                  requireData: DataRequiredAction,
-                                                  val controllerComponents: MessagesControllerComponents,
-                                                  val renderer: Renderer
+class WhatYouWillNeedController @Inject()(override val messagesApi: MessagesApi,
+                                          authenticate: AuthAction,
+                                          getData: DataRetrievalAction,
+                                          requireData: DataRequiredAction,
+                                          val controllerComponents: MessagesControllerComponents,
+                                          val renderer: Renderer
                                                  )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport

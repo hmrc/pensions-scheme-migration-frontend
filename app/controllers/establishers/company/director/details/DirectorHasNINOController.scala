@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.establishers.company.director
+package controllers.establishers.company.director.details
 
 import connectors.cache.UserAnswersCacheConnector
-import controllers.ReasonController
+import controllers.HasReferenceValueController
 import controllers.actions._
-import forms.ReasonFormProvider
+import forms.HasReferenceNumberFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.company.director.{DirectorNameId, DirectorNoNINOReasonId}
+import identifiers.establishers.company.director.{DirectorHasNINOId, DirectorNameId}
 import models.requests.DataRequest
 import models.{Index, Mode}
 import navigators.CompoundNavigator
@@ -34,19 +34,18 @@ import viewmodels.Message
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class DirectorNoNINOReasonController @Inject()(
-                                                override val messagesApi: MessagesApi,
-                                                //@EstablishersCompanyDirector override
-                                                val navigator: CompoundNavigator,
-                                                authenticate: AuthAction,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
-                                                formProvider: ReasonFormProvider,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                                val renderer: Renderer
-                                              )(implicit val executionContext: ExecutionContext)
-  extends ReasonController {
+class DirectorHasNINOController @Inject()(
+                                          override val messagesApi: MessagesApi,
+                                          val navigator: CompoundNavigator,
+                                          authenticate: AuthAction,
+                                          getData: DataRetrievalAction,
+                                          requireData: DataRequiredAction,
+                                          formProvider: HasReferenceNumberFormProvider,
+                                          val controllerComponents: MessagesControllerComponents,
+                                          val userAnswersCacheConnector: UserAnswersCacheConnector,
+                                          val renderer: Renderer
+                                         )(implicit val executionContext: ExecutionContext) extends
+  HasReferenceValueController {
 
   private def name(establisherIndex: Index, directorIndex: Index)
                   (implicit request: DataRequest[AnyContent]): String =
@@ -56,21 +55,26 @@ class DirectorNoNINOReasonController @Inject()(
       .fold(Message("messages__director"))(_.fullName)
 
   private def form(establisherIndex: Index, directorIndex: Index)
-                  (implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Message("messages__reason__error_ninoRequired", name(establisherIndex, directorIndex)))
+                  (implicit request: DataRequest[AnyContent]): Form[Boolean] = {
+    formProvider(
+      errorMsg = Message("messages__genericHasNino__error__required", name(establisherIndex, directorIndex))
+    )
+  }
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
+
         SchemeNameId.retrieve.right.map {
           schemeName =>
             get(
-              pageTitle     = Message("messages__whyNoNINO", Message("messages__director")),
-              pageHeading     = Message("messages__whyNoNINO", name(establisherIndex, directorIndex)),
+              pageTitle     = Message("messages__hasNINO", Message("messages__director")),
+              pageHeading     = Message("messages__hasNINO", name(establisherIndex, directorIndex)),
               isPageHeading = true,
-              id            = DirectorNoNINOReasonId(establisherIndex, directorIndex),
+              id            = DirectorHasNINOId(establisherIndex, directorIndex),
               form          = form(establisherIndex, directorIndex),
-              schemeName    = schemeName
+              schemeName    = schemeName,
+              legendClass   = "govuk-label--xl"
             )
         }
     }
@@ -81,12 +85,13 @@ class DirectorNoNINOReasonController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             post(
-              pageTitle     = Message("messages__whyNoNINO", Message("messages__individual")),
-              pageHeading     = Message("messages__whyNoNINO", name(establisherIndex, directorIndex)),
+              pageTitle     = Message("messages__hasNINO", Message("messages__director")),
+              pageHeading     = Message("messages__hasNINO", name(establisherIndex, directorIndex)),
               isPageHeading = true,
-              id            = DirectorNoNINOReasonId(establisherIndex, directorIndex),
+              id            = DirectorHasNINOId(establisherIndex, directorIndex),
               form          = form(establisherIndex, directorIndex),
               schemeName    = schemeName,
+              legendClass   = "govuk-label--xl",
               mode          = mode
             )
         }

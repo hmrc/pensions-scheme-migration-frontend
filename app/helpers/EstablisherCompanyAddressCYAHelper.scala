@@ -53,7 +53,7 @@ class EstablisherCompanyAddressCYAHelper
         AddressYearsId(index),
         Message("addressYears.title", establisherName).resolve,
         Some(controllers.establishers.company.address.routes.AddressYearsController.onPageLoad(index).url),
-        Some(msg"messages__visuallyhidden__establisherAddressYears".withArgs(establisherName)), answerBooleanTransform
+        Some(msg"messages__visuallyhidden__addressYears".withArgs(establisherName)), answerBooleanTransform
       )
     )
 

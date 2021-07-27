@@ -36,7 +36,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DirectorNameController @Inject()(
                                         override val messagesApi: MessagesApi,
-                                        //@EstablishersCompanyDirector
                                         navigator: CompoundNavigator,
                                         authenticate: AuthAction,
                                         getData: DataRetrievalAction,
