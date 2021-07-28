@@ -17,6 +17,7 @@
 package helpers
 
 import com.google.inject.Inject
+import helpers.cya.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.{HaveAnyTrusteesId, SchemeNameId, SchemeTypeId}
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId

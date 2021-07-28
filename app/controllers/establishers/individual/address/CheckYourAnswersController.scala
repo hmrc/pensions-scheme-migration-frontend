@@ -18,7 +18,8 @@ package controllers.establishers.individual.address
 
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import helpers.{CYAHelper, EstablisherAddressCYAHelper}
+import helpers.cya.CYAHelper
+import helpers.cya.establishers.individual.EstablisherAddressCYAHelper
 import identifiers.beforeYouStart.SchemeNameId
 import models.Index
 import play.api.i18n.{I18nSupport, MessagesApi}

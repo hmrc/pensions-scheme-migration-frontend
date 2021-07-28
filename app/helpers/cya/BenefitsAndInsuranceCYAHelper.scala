@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.cya
 
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance._

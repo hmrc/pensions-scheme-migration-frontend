@@ -18,7 +18,7 @@ package controllers.aboutMembership
 
 import controllers.Retrievals
 import controllers.actions._
-import helpers.{AboutCYAHelper, CYAHelper}
+import helpers.cya.{AboutCYAHelper, CYAHelper}
 import identifiers.beforeYouStart.SchemeNameId
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json

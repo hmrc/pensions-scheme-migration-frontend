@@ -18,6 +18,7 @@ package utils.datacompletion
 
 import identifiers.trustees.TrusteeKindId
 import identifiers.trustees.company.CompanyDetailsId
+import identifiers.trustees.company.details._
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.details._
 import models.trustees.TrusteeKind
@@ -56,8 +57,8 @@ class DataCompletionTrusteesSpec
             .set(TrusteeHasUTRId(0), false).success.value
             .set(TrusteeNoUTRReasonId(0), "Reason").success.value
 
-        ua1.isTrusteeIndividualDetailsCompleted(0) mustBe true
-        ua2.isTrusteeIndividualDetailsCompleted(0) mustBe true
+        ua1.isTrusteeIndividualDetailsCompleted(0) mustBe Some(true)
+        ua2.isTrusteeIndividualDetailsCompleted(0) mustBe Some(true)
       }
 
       "return false when some answer is missing" in {
@@ -65,7 +66,7 @@ class DataCompletionTrusteesSpec
           UserAnswers()
             .set(TrusteeDOBId(0), LocalDate.parse("2001-01-01")).success.value
 
-        ua.isTrusteeIndividualDetailsCompleted(0) mustBe false
+        ua.isTrusteeIndividualDetailsCompleted(0) mustBe Some(false)
 
       }
     }
@@ -90,7 +91,7 @@ class DataCompletionTrusteesSpec
       }
 
       "return None when no answer is present" in {
-        UserAnswers().isEstablisherIndividualContactDetailsCompleted(0) mustBe None
+        UserAnswers().isTrusteeIndividualContactDetailsCompleted(0) mustBe None
       }
     }
   }
@@ -114,6 +115,50 @@ class DataCompletionTrusteesSpec
             .set(TrusteeKindId(1), TrusteeKind.Company).success.value
 
         ua.isTrusteeCompanyComplete(1) mustBe false
+      }
+    }
+
+    "isTrusteeCompanyDetailsCompleted" must {
+      "return true when all answers are present" in {
+
+        val ua1 =
+          UserAnswers()
+            .set(HaveCompanyNumberId(0), true).success.value
+            .set(CompanyNumberId(0), ReferenceValue("AB123456C")).success.value
+            .set(HaveUTRId(0), true).success.value
+            .set(CompanyUTRId(0), ReferenceValue("1234567890")).success.value
+            .set(HaveVATId(0), true).success.value
+            .set(VATId(0), ReferenceValue("123456789")).success.value
+            .set(HavePAYEId(0), true).success.value
+            .set(PAYEId(0), ReferenceValue("12345678")).success.value
+
+        val ua2 =
+          UserAnswers()
+            .set(HaveCompanyNumberId(0), false).success.value
+            .set(NoCompanyNumberReasonId(0), "Reason").success.value
+            .set(HaveUTRId(0), false).success.value
+            .set(NoUTRReasonId(0), "Reason").success.value
+            .set(HaveVATId(0), false).success.value
+            .set(HavePAYEId(0), false).success.value
+
+
+        ua1.isTrusteeCompanyDetailsCompleted(0) mustBe Some(true)
+        ua2.isTrusteeCompanyDetailsCompleted(0) mustBe Some(true)
+      }
+
+      "return false when some answer is missing" in {
+        val ua =
+          UserAnswers()
+            .set(HaveCompanyNumberId(0), false).success.value
+            .set(CompanyNumberId(0), ReferenceValue("AB123456C")).success.value
+            .set(HaveUTRId(0), true).success.value
+            .set(CompanyUTRId(0), ReferenceValue("1234567890")).success.value
+            .set(HaveVATId(0), true).success.value
+            .set(VATId(0), ReferenceValue("123456789")).success.value
+            .set(HavePAYEId(0), true).success.value
+
+        ua.isTrusteeCompanyDetailsCompleted(0) mustBe Some(false)
+
       }
     }
   }

@@ -17,6 +17,7 @@
 package helpers
 
 import base.SpecBase._
+import helpers.cya.trustees.individual.TrusteeAddressCYAHelper
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address.{AddressId, AddressYearsId, PreviousAddressId}

@@ -18,7 +18,7 @@ package controllers.trustees.individual.address
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import helpers.TrusteeAddressCYAHelper
+import helpers.cya.trustees.individual.TrusteeAddressCYAHelper
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any

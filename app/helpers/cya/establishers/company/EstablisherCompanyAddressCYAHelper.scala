@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.cya.establishers.company
 
-import helpers.CYAHelper.getCompanyName
+import helpers.cya.CYAHelper
+import helpers.cya.CYAHelper.getCompanyName
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address.{AddressId, AddressYearsId, PreviousAddressId, TradingTimeId}
 import models.Index

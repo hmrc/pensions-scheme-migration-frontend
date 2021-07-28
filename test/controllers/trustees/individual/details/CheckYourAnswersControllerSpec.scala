@@ -18,7 +18,7 @@ package controllers.trustees.individual.details
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import helpers.TrusteeDetailsCYAHelper
+import helpers.cya.trustees.individual.TrusteeDetailsCYAHelper
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.details._
 import matchers.JsonMatchers

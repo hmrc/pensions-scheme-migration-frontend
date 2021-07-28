@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.cya
 
-import helpers.CYAHelper.getAnswer
+import CYAHelper.getAnswer
 import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
 import identifiers.beforeYouStart.SchemeNameId
 import models.Members
