@@ -1,0 +1,57 @@
+{% extends "includes/layout.njk" %}
+
+{% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
+{% from "macros/title.njk"                         import title %}
+{% from "macros/returnLink.njk"                    import returnLink %}
+{% from "govuk/components/button/macro.njk"        import govukButton %}
+
+{% block pageTitle %}
+    {{ pageTitle }}
+{% endblock %}
+
+{% block mainContent %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">
+                {{ messages("messages__BeforeYouStart__title") }}
+            </h1>
+
+            <p class="govuk-body">
+                {{ messages("messages__BeforeYouStart__lede") }}
+            </p>
+
+            <p class="govuk-body">
+                {{ messages("messages__BeforeYouStart__lede2") }}
+            </p>
+
+            <p class="govuk-body">
+                {{ messages("messages__BeforeYouStart__lede3") }}
+             </p>
+
+             <p class="govuk-body">
+                 {{ messages("messages__BeforeYouStart__list_heading") }}
+             </p>
+
+
+
+            <ul class="govuk-list govuk-list--bullet">
+                <li>{{ messages("messages__BeforeYouStart__item1") }}</li>
+                <li>{{ messages("messages__BeforeYouStart__item2") }}</li>
+                <li>{{ messages("messages__BeforeYouStart__item3") }}</li>
+                <li>{{ messages("messages__BeforeYouStart__item4") }}</li>
+                <li>{{ messages("messages__BeforeYouStart__item5") }}</li>
+            </ul>
+
+
+            {{ govukButton({
+                href: continueUrl,
+                attributes: {id: "submit"},
+                text: messages("site.continue")
+            }) }}
+        </div>
+    </div>
+
+    {{ returnLink(schemeName) }}
+
+{% endblock %}
