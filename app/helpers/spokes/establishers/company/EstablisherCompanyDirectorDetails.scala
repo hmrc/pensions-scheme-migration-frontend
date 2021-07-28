@@ -18,7 +18,8 @@ package helpers.spokes.establishers.company
 
 import controllers.establishers.company.director.details.routes._
 import helpers.spokes.Spoke
-import models.{Index, TaskListLink}
+import models.Index.indexToInt
+import models.{Index, NormalMode, TaskListLink}
 import play.api.i18n.Messages
 import utils.UserAnswers
 
@@ -28,12 +29,12 @@ case class EstablisherCompanyDirectorDetails(
                                          answers: UserAnswers
                                        ) extends Spoke {
   val messageKeyPrefix = "messages__schemeTaskList__directors_"
-  val directorIndex = answers.allDirectors(index).size
+  val isDirectorExists= answers.allDirectorsAfterDelete(indexToInt(index)).isEmpty
   val linkKeyAndRoute: (String, String) =
-    if (completeFlag(answers).getOrElse(false))
-      (s"${messageKeyPrefix}changeLink", CheckYourAnswersController.onPageLoad(index, directorIndex).url)
-    else
+    if (isDirectorExists)
       (s"${messageKeyPrefix}addLink", WhatYouWillNeedController.onPageLoad(index).url)
+    else
+      (s"${messageKeyPrefix}changeLink", controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(index,NormalMode).url)
 
   override def changeLink(name: String)
                          (implicit messages: Messages): TaskListLink =
@@ -43,9 +44,6 @@ case class EstablisherCompanyDirectorDetails(
       visuallyHiddenText = None
     )
 
-  override def completeFlag(answers: UserAnswers): Option[Boolean] = {
-    val directorIndex = answers.allDirectors(index).size
-    Some(answers.isDirectorComplete(index, directorIndex))
-  }
+  override def completeFlag(answers: UserAnswers): Option[Boolean] = None
 }
 

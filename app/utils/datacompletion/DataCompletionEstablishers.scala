@@ -18,10 +18,10 @@ package utils.datacompletion
 
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.company.CompanyDetailsId
+import identifiers.establishers.company.address.{TradingTimeId, AddressId => CompanyAddressId, AddressYearsId => CompanyAddressYearsId, PreviousAddressId => CompanyPreviousAddressId}
+import identifiers.establishers.company.director._
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
-import identifiers.establishers.company.address.{TradingTimeId, AddressId => CompanyAddressId, AddressYearsId => CompanyAddressYearsId, PreviousAddressId => CompanyPreviousAddressId}
-import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.individual.details._
 import utils.UserAnswers
@@ -100,6 +100,17 @@ trait DataCompletionEstablishers extends DataCompletion {
 
   def isDirectorComplete(estIndex: Int, dirIndex: Int): Boolean =
     isComplete(Seq(
-      isAnswerComplete(DirectorNameId(estIndex, dirIndex)))) //TODO
-      .getOrElse(false)
+      isDirectorDetailsComplete(estIndex, dirIndex),
+      //TODO Add code for Address
+      isContactDetailsComplete(DirectorEmailId(estIndex, dirIndex), DirectorPhoneNumberId(estIndex, dirIndex))
+      )
+    ).getOrElse(false)
+
+  def isDirectorDetailsComplete(estIndex: Int, dirIndex: Int): Option[Boolean]  =
+    isComplete(Seq(
+      isAnswerComplete(DirectorDOBId(estIndex, dirIndex)),
+      isAnswerComplete(DirectorHasNINOId(estIndex, dirIndex), DirectorNINOId(estIndex, dirIndex), Some(DirectorNoNINOReasonId(estIndex, dirIndex))),
+      isAnswerComplete(DirectorHasUTRId(estIndex, dirIndex), DirectorEnterUTRId(estIndex, dirIndex), Some(DirectorNoUTRReasonId(estIndex, dirIndex)))
+    ))
+
 }

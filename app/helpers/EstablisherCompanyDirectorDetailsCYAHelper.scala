@@ -50,8 +50,7 @@ class EstablisherCompanyDirectorDetailsCYAHelper
         message            = Message("messages__director__name").resolve,
         url                = Some(routes.DirectorNameController.onPageLoad(establisherIndex,directorIndex).url),
         visuallyHiddenText = Some(msg"messages__director__name__cya__visuallyHidden".withArgs(directorName)),
-        answerPersonNameTransform
-
+        answerTransform    =answerPersonNameTransform
       )),
 
       Some(answerOrAddRow(

@@ -83,7 +83,9 @@ class AddCompanyDirectorsController @Inject()(
             "form"       -> form,
             "table"      -> table,
             "radios"     -> Radios.yesNo(form("value")),
-            "schemeName" -> existingSchemeName
+            "schemeName" -> existingSchemeName,
+            "isMaxDirector" -> (directors.size < config.maxDirectors)
+
           )
         ).map(Ok(_))
     }
@@ -110,7 +112,8 @@ class AddCompanyDirectorsController @Inject()(
                   "form"       -> formWithErrors,
                   "table"      -> table,
                   "radios"     -> Radios.yesNo(formWithErrors("value")),
-                  "schemeName" -> existingSchemeName
+                  "schemeName" -> existingSchemeName,
+                  "isMaxDirector" -> (directors.size < config.maxDirectors)
                 )
               ).map(BadRequest(_)),
             value => {

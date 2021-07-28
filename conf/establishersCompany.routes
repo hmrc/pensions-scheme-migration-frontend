@@ -35,4 +35,10 @@ POST        /:index/company/list-of-directors                                   
 GET         /:index/change/company/list-of-directors                             controllers.establishers.company.AddCompanyDirectorsController.onPageLoad(index: Index,mode: Mode = CheckMode)
 POST        /:index/change/company/list-of-directors                             controllers.establishers.company.AddCompanyDirectorsController.onSubmit(index: Index,mode: Mode = CheckMode)
 
+GET         /:index/company/other-directors                                      controllers.establishers.company.OtherDirectorsController.onPageLoad(index:Index,mode:Mode=NormalMode)
+POST        /:index/company/other-directors                                      controllers.establishers.company.OtherDirectorsController.onSubmit(index:Index,mode:Mode=NormalMode)
+GET         /:index/change/company/other-directors                               controllers.establishers.company.OtherDirectorsController.onPageLoad(index:Index,mode:Mode=CheckMode)
+POST        /:index/change/company/other-directors                               controllers.establishers.company.OtherDirectorsController.onSubmit(index:Index,mode:Mode=CheckMode)
+
+
 ->          /                                                                         establishersCompanyDirector.Routes

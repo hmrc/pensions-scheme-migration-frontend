@@ -804,3 +804,11 @@ messages__director__name = Director's name
 messages__director__name__cya__visuallyHidden = the director's name {0}
 messages__addDirector_radio_label = Do you want to add another director?
 messages__confirmDeleteDirectors__title = Are you sure you want to delete this director?
+messages__addCompanyDirectors_lede = You must tell us about all your directors. You can add up to 10 using the digital service.
+
+messages__otherDirectors__title=Do you need to tell us about other directors?
+messages__otherDirectors__heading=Do you need to tell us about other directors?
+messages__otherDirectors__lede=You do not have to add them now. We may contact you if we need this information.
+messages__otherDirectors__error__required = Select yes if you need to tell us about other directors
+messages__addCompanyDirectors_at_maximum = You have added the maximum number of directors.
+messages__addCompanyDirectorsOrPartners_tell_us_if_you_have_more = You can tell us on the next page if you have more to add.

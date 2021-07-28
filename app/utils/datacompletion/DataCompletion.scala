@@ -104,4 +104,12 @@ trait DataCompletion {
       case (Some(false), _, None) => Some(true)
       case _ => Some(false)
     }
+
+  def isContactDetailsComplete(emailId: TypedIdentifier[String],
+                               phoneId: TypedIdentifier[String]): Option[Boolean] =
+    (get(emailId), get(phoneId)) match {
+      case (Some(_), Some(_)) => Some(true)
+      case (None, None) => None
+      case _ => Some(false)
+    }
 }

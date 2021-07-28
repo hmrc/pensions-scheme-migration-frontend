@@ -75,8 +75,7 @@ class EstablishersCompanyNavigator@Inject()(config: AppConfig)
       }.getOrElse(controllers.routes.TaskListController.onPageLoad())
 
     }else {
-      controllers.routes.TaskListController.onPageLoad()
-      //TODO change above call to this once develop controllers.establishers.company.director.routes.OtherDirectorsController.onPageLoad(mode,index)
+      controllers.establishers.company.routes.OtherDirectorsController.onPageLoad(index,NormalMode)
     }
   }
 

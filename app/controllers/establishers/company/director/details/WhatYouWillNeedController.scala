@@ -48,18 +48,14 @@ class WhatYouWillNeedController @Inject()(override val messagesApi: MessagesApi,
   def onPageLoad(establisherIndex: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
 
-    implicit request =>
-      val directorIndex = request.userAnswers.allDirectors(establisherIndex).size
-      EstablisherNameId(establisherIndex).retrieve.right.map {
-        personName =>
-          renderer.render(
-            template = "establishers/company/director/whatYouWillNeed.njk",
-            ctx = Json.obj(
-              "name"        -> personName.fullName,
-              "continueUrl" -> DirectorNameController.onPageLoad(establisherIndex, directorIndex).url,
-              "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
-            )
-          ).map(Ok(_))
-      }
-  }
+      implicit request =>
+        val directorIndex = request.userAnswers.allDirectors(establisherIndex).size
+        renderer.render(
+          template = "establishers/company/director/whatYouWillNeed.njk",
+          ctx = Json.obj(
+            "continueUrl" -> DirectorNameController.onPageLoad(establisherIndex, directorIndex).url,
+            "schemeName" -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
+          )
+        ).map(Ok(_))
+    }
 }
