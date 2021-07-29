@@ -20,7 +20,6 @@ import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.HasReferenceNumberFormProvider
 import identifiers.establishers.company.director.{DirectorHasUTRId, DirectorNameId}
-import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
 import models.{NormalMode, PersonName}
 import org.mockito.ArgumentCaptor

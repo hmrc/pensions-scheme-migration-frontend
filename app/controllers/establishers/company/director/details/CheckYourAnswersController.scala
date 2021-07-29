@@ -20,7 +20,6 @@ import controllers.Retrievals
 import controllers.actions._
 import helpers.{CYAHelper, EstablisherCompanyDirectorDetailsCYAHelper}
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.company.director.DirectorNameId
 import models._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json

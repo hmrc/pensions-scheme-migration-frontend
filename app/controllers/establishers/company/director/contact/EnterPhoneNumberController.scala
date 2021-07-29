@@ -20,6 +20,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.PhoneController
 import controllers.actions._
 import forms.PhoneFormProvider
+import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.{DirectorNameId, DirectorPhoneNumberId}
 import models.requests.DataRequest
 import models.{Index, Mode}
@@ -60,14 +61,14 @@ class EnterPhoneNumberController @Inject()(
   def onPageLoad(establisherIndex: Index, directorIndex: Index,mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        DirectorNameId(establisherIndex, directorIndex).retrieve.right.map {
-          details =>
+        SchemeNameId.retrieve.right.map {
+          schemeName =>
             get(
               entityName = name(establisherIndex, directorIndex),
               entityType = Messages("messages__director"),
               id = DirectorPhoneNumberId(establisherIndex, directorIndex),
               form = form(establisherIndex, directorIndex),
-              schemeName = existingSchemeName.toString,
+              schemeName = schemeName,
               paragraphText = Seq(Messages("messages__contact_details__hint", name(establisherIndex, directorIndex)))
             )
 
@@ -77,19 +78,18 @@ class EnterPhoneNumberController @Inject()(
   def onSubmit( establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        DirectorNameId(establisherIndex, directorIndex).retrieve.right.map {
-          details =>{
+        SchemeNameId.retrieve.right.map {
+          schemeName =>
             post(
               entityName = name(establisherIndex, directorIndex),
               entityType = Messages("messages__director"),
               id = DirectorPhoneNumberId(establisherIndex, directorIndex),
               form = form(establisherIndex, directorIndex),
-              schemeName = existingSchemeName.toString,
+              schemeName = schemeName,
               paragraphText = Seq(Messages("messages__contact_details__hint", name(establisherIndex, directorIndex))),
               mode = mode
             )
           }
-        }
     }
 
 }
