@@ -75,7 +75,8 @@ class DirectorNameController @Inject()(
               template = "personName.njk",
               ctx = Json.obj(
                 "form" -> formWithErrors,
-                "schemeName" -> existingSchemeName
+                "schemeName" -> existingSchemeName,
+                "entityType" -> "director"
               )
             ).map(BadRequest(_)),
           value =>

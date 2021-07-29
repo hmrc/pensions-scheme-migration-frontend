@@ -23,7 +23,7 @@ import forms.establishers.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.address.AddressYearsId
-import models.Index
+import models.{Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
@@ -50,7 +50,7 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
   private def form: Form[Boolean] =
     formProvider()
 
-  def onPageLoad(establisherIndex: Index, directorIndex: Index): Action[AnyContent] =
+  def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.right.map {
         case directorName ~ schemeName =>
@@ -58,11 +58,11 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
       }
     }
 
-  def onSubmit(establisherIndex: Index, directorIndex: Index): Action[AnyContent] =
+  def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.right.map {
         case directorName ~ schemeName =>
-          post(Some(schemeName), directorName.fullName, Messages("messages__director"), form, AddressYearsId(establisherIndex, directorIndex))
+          post(Some(schemeName), directorName.fullName, Messages("messages__director"), form, AddressYearsId(establisherIndex, directorIndex), Some(mode))
       }
     }
 }

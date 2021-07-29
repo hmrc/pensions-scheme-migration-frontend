@@ -56,17 +56,17 @@ class EnterPostcodeController @Inject()(val appConfig: AppConfig,
     form.withError("value", s"messages__error__postcode_$messageKey")
   }
 
-  def onPageLoad(establisherIndex: Index, directorIndex: Index): Action[AnyContent] =
+  def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        get(getFormToJson(schemeName, establisherIndex, directorIndex, NormalMode))
+        get(getFormToJson(schemeName, establisherIndex, directorIndex, mode))
       }
     }
 
-  def onSubmit(establisherIndex: Index, directorIndex: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async{
+  def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async{
     implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        post(getFormToJson(schemeName, establisherIndex, directorIndex, NormalMode), EnterPostCodeId(establisherIndex, directorIndex), "establisherEnterPostcode.invalid")
+        post(getFormToJson(schemeName, establisherIndex, directorIndex, mode), EnterPostCodeId(establisherIndex, directorIndex), "establisherEnterPostcode.invalid", Some(mode))
       }
   }
 
@@ -79,7 +79,7 @@ class EnterPostcodeController @Inject()(val appConfig: AppConfig,
         "entityType" -> msg("messages__director"),
         "entityName" -> name,
         "form" -> form,
-        "enterManuallyUrl" -> controllers.establishers.company.director.address.routes.ConfirmAddressController.onPageLoad(establisherIndex, directorIndex).url,
+        "enterManuallyUrl" -> controllers.establishers.company.director.address.routes.ConfirmAddressController.onPageLoad(establisherIndex, directorIndex, mode).url,
         "schemeName" -> schemeName
       )
     }

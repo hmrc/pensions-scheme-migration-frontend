@@ -23,7 +23,7 @@ import identifiers._
 import identifiers.establishers.company.director._
 import identifiers.establishers.company.director.address._
 import models.requests.DataRequest
-import models.{Index, Mode, NormalMode}
+import models.{CheckMode, Index, Mode, NormalMode}
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
 
@@ -40,15 +40,15 @@ class EstablishersCompanyDirectorNavigator
     case DirectorNINOId(establisherIndex, directorIndex) => hassUTR(establisherIndex, directorIndex,NormalMode)
     case DirectorNoNINOReasonId(establisherIndex, directorIndex) => hassUTR(establisherIndex, directorIndex,NormalMode)
     case DirectorHasUTRId(establisherIndex, directorIndex) => establisherHasUtr(establisherIndex, directorIndex, ua, NormalMode)
-    case DirectorEnterUTRId(establisherIndex, directorIndex) => postcode(establisherIndex, directorIndex)
-    case DirectorNoUTRReasonId(establisherIndex, directorIndex) => postcode(establisherIndex, directorIndex)
-    case AddressId(establisherIndex, directorIndex) => addressYears(establisherIndex, directorIndex)
-    case AddressListId(establisherIndex, directorIndex) => addressYears(establisherIndex, directorIndex)
+    case DirectorEnterUTRId(establisherIndex, directorIndex) => postcode(establisherIndex, directorIndex, NormalMode)
+    case DirectorNoUTRReasonId(establisherIndex, directorIndex) => postcode(establisherIndex, directorIndex, NormalMode)
+    case AddressId(establisherIndex, directorIndex) => addressYears(establisherIndex, directorIndex, NormalMode)
+    case AddressListId(establisherIndex, directorIndex) => addressYears(establisherIndex, directorIndex, NormalMode)
     case AddressYearsId(establisherIndex, directorIndex) =>
       if (ua.get(AddressYearsId(establisherIndex, directorIndex)).contains(true)) email(establisherIndex, directorIndex, NormalMode)
-      else prevPostcode(establisherIndex, directorIndex)
-    case EnterPostCodeId(establisherIndex, directorIndex) => selectAddress(establisherIndex, directorIndex)
-    case EnterPreviousPostCodeId(establisherIndex, directorIndex) => selectPrevAddress(establisherIndex, directorIndex)
+      else prevPostcode(establisherIndex, directorIndex, NormalMode)
+    case EnterPostCodeId(establisherIndex, directorIndex) => selectAddress(establisherIndex, directorIndex, NormalMode)
+    case EnterPreviousPostCodeId(establisherIndex, directorIndex) => selectPrevAddress(establisherIndex, directorIndex, NormalMode)
     case PreviousAddressId(establisherIndex, directorIndex) => email(establisherIndex, directorIndex, NormalMode)
     case PreviousAddressListId(establisherIndex, directorIndex) => email(establisherIndex, directorIndex, NormalMode)
     case DirectorEmailId(establisherIndex, directorIndex) => EnterPhoneNumberController.onPageLoad(establisherIndex, directorIndex, NormalMode)
@@ -60,19 +60,19 @@ class EstablishersCompanyDirectorNavigator
                                      (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case DirectorNameId(establisherIndex, directorIndex) => cyaDetails(establisherIndex,directorIndex)
     case DirectorDOBId(establisherIndex,directorIndex) => cyaDetails(establisherIndex,directorIndex)
-    case DirectorHasNINOId(establisherIndex, directorIndex) => directorHasNino(establisherIndex, directorIndex, ua, NormalMode)
+    case DirectorHasNINOId(establisherIndex, directorIndex) => directorHasNino(establisherIndex, directorIndex, ua, CheckMode)
     case DirectorNINOId(establisherIndex, directorIndex) => cyaDetails(establisherIndex,directorIndex)
     case DirectorNoNINOReasonId(establisherIndex, directorIndex) => cyaDetails(establisherIndex,directorIndex)
-    case DirectorHasUTRId(establisherIndex, directorIndex) => establisherHasUtr(establisherIndex, directorIndex, ua, NormalMode)
+    case DirectorHasUTRId(establisherIndex, directorIndex) => establisherHasUtr(establisherIndex, directorIndex, ua, CheckMode)
     case DirectorEnterUTRId(establisherIndex, directorIndex) => cyaDetails(establisherIndex,directorIndex)
     case DirectorNoUTRReasonId(establisherIndex, directorIndex) => cyaDetails(establisherIndex,directorIndex)
-    case AddressId(establisherIndex, directorIndex) => addressYears(establisherIndex, directorIndex)
-    case AddressListId(establisherIndex, directorIndex) => addressYears(establisherIndex, directorIndex)
+    case AddressId(establisherIndex, directorIndex) => cyaDetails(establisherIndex,directorIndex)
+    case AddressListId(establisherIndex, directorIndex) => cyaDetails(establisherIndex,directorIndex)
     case AddressYearsId(establisherIndex, directorIndex) =>
       if (ua.get(AddressYearsId(establisherIndex, directorIndex)).contains(true)) cyaDetails(establisherIndex,directorIndex)
-      else prevPostcode(establisherIndex, directorIndex)
-    case EnterPostCodeId(establisherIndex, directorIndex) => selectAddress(establisherIndex, directorIndex)
-    case EnterPreviousPostCodeId(establisherIndex, directorIndex) => selectPrevAddress(establisherIndex, directorIndex)
+      else prevPostcode(establisherIndex, directorIndex, CheckMode)
+    case EnterPostCodeId(establisherIndex, directorIndex) => selectAddress(establisherIndex, directorIndex, CheckMode)
+    case EnterPreviousPostCodeId(establisherIndex, directorIndex) => selectPrevAddress(establisherIndex, directorIndex, CheckMode)
     case PreviousAddressId(establisherIndex, directorIndex) => cyaDetails(establisherIndex,directorIndex)
     case PreviousAddressListId(establisherIndex, directorIndex) => cyaDetails(establisherIndex,directorIndex)
     case DirectorEmailId(establisherIndex, directorIndex) => cyaDetails(establisherIndex,directorIndex)
@@ -81,12 +81,12 @@ class EstablishersCompanyDirectorNavigator
 
   private def cyaDetails(establisherIndex:Int,directorIndex:Int): Call = CheckYourAnswersController.onPageLoad(establisherIndex,directorIndex)
   private def hassUTR(establisherIndex:Int,directorIndex:Int,mode: Mode): Call = DirectorHasUTRController.onPageLoad(establisherIndex, directorIndex, mode)
-  private def addressYears(establisherIndex:Int,directorIndex:Int): Call = AddressYearsController.onPageLoad(establisherIndex, directorIndex)
+  private def addressYears(establisherIndex:Int,directorIndex:Int,mode: Mode): Call = AddressYearsController.onPageLoad(establisherIndex, directorIndex, mode)
   private def email(establisherIndex:Int,directorIndex:Int,mode: Mode): Call = EnterEmailController.onPageLoad(establisherIndex, directorIndex, mode)
-  private def postcode(establisherIndex:Int,directorIndex:Int): Call = EnterPostcodeController.onPageLoad(establisherIndex, directorIndex)
-  private def prevPostcode(establisherIndex:Int,directorIndex:Int): Call = EnterPreviousPostcodeController.onPageLoad(establisherIndex, directorIndex)
-  private def selectAddress(establisherIndex:Int,directorIndex:Int): Call = SelectAddressController.onPageLoad(establisherIndex, directorIndex)
-  private def selectPrevAddress(establisherIndex:Int,directorIndex:Int): Call = SelectPreviousAddressController.onPageLoad(establisherIndex, directorIndex)
+  private def postcode(establisherIndex:Int,directorIndex:Int,mode: Mode): Call = EnterPostcodeController.onPageLoad(establisherIndex, directorIndex, mode)
+  private def prevPostcode(establisherIndex:Int,directorIndex:Int,mode: Mode): Call = EnterPreviousPostcodeController.onPageLoad(establisherIndex, directorIndex, mode)
+  private def selectAddress(establisherIndex:Int,directorIndex:Int,mode: Mode): Call = SelectAddressController.onPageLoad(establisherIndex, directorIndex, mode)
+  private def selectPrevAddress(establisherIndex:Int,directorIndex:Int,mode: Mode): Call = SelectPreviousAddressController.onPageLoad(establisherIndex, directorIndex, mode)
 
   private def directorHasNino(
                                   establisherIndex:Index,

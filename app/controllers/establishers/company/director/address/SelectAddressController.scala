@@ -25,7 +25,7 @@ import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.address.{AddressId, AddressListId, EnterPostCodeId}
-import models.{Index, Mode, NormalMode}
+import models.{Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -55,17 +55,17 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
 
   override def form: Form[Int] = formProvider("establisherSelectAddress.required")
 
-  def onPageLoad(establisherIndex: Index, directorIndex: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
+  def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
     retrieve(SchemeNameId) { schemeName =>
-      getFormToJson(schemeName, establisherIndex, directorIndex, NormalMode).retrieve.right.map(get)
+      getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.right.map(get)
     }
   }
 
-  def onSubmit(establisherIndex: Index, directorIndex: Index): Action[AnyContent] =
+  def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
         val addressPages: AddressPages = AddressPages(EnterPostCodeId(establisherIndex, directorIndex), AddressListId(establisherIndex, directorIndex), AddressId(establisherIndex, directorIndex))
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, establisherIndex, directorIndex, NormalMode).retrieve.right.map(post(_, addressPages))
+        getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.right.map(post(_, addressPages))
       }
     }
 
@@ -83,7 +83,7 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
             "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
             "entityType" -> msg("establisherEntityTypeIndividual"),
             "entityName" -> name,
-            "enterManuallyUrl" -> controllers.establishers.company.director.address.routes.ConfirmAddressController.onPageLoad(establisherIndex, directorIndex).url,
+            "enterManuallyUrl" -> controllers.establishers.company.director.address.routes.ConfirmAddressController.onPageLoad(establisherIndex, directorIndex, mode).url,
             "schemeName" -> schemeName
           )
         }

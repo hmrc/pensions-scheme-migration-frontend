@@ -117,7 +117,7 @@ class EstablisherCompanyDirectorDetailsCYAHelper
           answerOrAddRow(
             id                  = AddressId(establisherIndex, directorIndex),
             message             = Message("messages__establisherAddress__whatYouWillNeed_h1", directorName).resolve,
-            url                 = Some(controllers.establishers.company.director.address.routes.EnterPostcodeController.onPageLoad(establisherIndex, directorIndex).url),
+            url                 = Some(controllers.establishers.company.director.address.routes.EnterPostcodeController.onPageLoad(establisherIndex, directorIndex,  CheckMode).url),
             visuallyHiddenText  = Some(msg"messages__visuallyHidden__address".withArgs(directorName)), answerAddressTransform
           )
       },
@@ -126,7 +126,7 @@ class EstablisherCompanyDirectorDetailsCYAHelper
           answerOrAddRow(
             id                  = AddressYearsId(establisherIndex, directorIndex),
             message             = Message("addressYears.title", directorName).resolve,
-            url                 = Some(controllers.establishers.company.director.address.routes.AddressYearsController.onPageLoad(establisherIndex, directorIndex).url),
+            url                 = Some(controllers.establishers.company.director.address.routes.AddressYearsController.onPageLoad(establisherIndex, directorIndex, CheckMode).url),
             visuallyHiddenText  = Some(msg"messages__visuallyhidden__addressYears".withArgs(directorName)), answerBooleanTransform
           )
       },
@@ -135,8 +135,8 @@ class EstablisherCompanyDirectorDetailsCYAHelper
           answerOrAddRow(
             id                  = PreviousAddressId(establisherIndex, directorIndex),
             message             = Message("messages__establisherPreviousAddress").resolve,
-            url                 = Some(controllers.establishers.company.director.address.routes.EnterPreviousPostcodeController.onPageLoad(establisherIndex, directorIndex).url),
-            visuallyHiddenText  = Some(msg"messages__visuallyHidden__previousAddress".withArgs(directorName))
+            url                 = Some(controllers.establishers.company.director.address.routes.EnterPreviousPostcodeController.onPageLoad(establisherIndex, directorIndex,  CheckMode).url),
+            visuallyHiddenText  = Some(msg"messages__visuallyHidden__previousAddress".withArgs(directorName)), answerAddressTransform
           )
       },
       Some(answerOrAddRow(

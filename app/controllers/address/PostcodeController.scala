@@ -21,11 +21,11 @@ import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import models.requests.DataRequest
-import models.TolerantAddress
+import models.{Mode, NormalMode, TolerantAddress}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.libs.json.{JsObject, JsArray, Json}
+import play.api.libs.json.{JsArray, JsObject, Json}
 import play.api.mvc.{AnyContent, Result}
 import renderer.Renderer
 import uk.gov.hmrc.http.HeaderCarrier
@@ -58,7 +58,7 @@ trait PostcodeController extends FrontendBaseController with Retrievals {
     renderer.render(viewTemplate, prepareJson(json(form))).map(Ok(_))
   }
 
-  def post(formToJson: Form[String] => JsObject, postcodeId: TypedIdentifier[Seq[TolerantAddress]], errorMessage: String)
+  def post(formToJson: Form[String] => JsObject, postcodeId: TypedIdentifier[Seq[TolerantAddress]], errorMessage: String,mode: Option[Mode] = None)
           (implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
     form.bindFromRequest().fold(
       formWithErrors =>
@@ -73,7 +73,11 @@ trait PostcodeController extends FrontendBaseController with Retrievals {
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(postcodeId, addresses))
                 _ <- userAnswersCacheConnector.save(request.lock,updatedAnswers.data)
-              } yield Redirect(navigator.nextPage(postcodeId, updatedAnswers))
+              } yield
+                {
+                  val finalMode = mode.getOrElse(NormalMode)
+                  Redirect(navigator.nextPage(postcodeId, updatedAnswers, finalMode))
+                }
           }
     )
   }

@@ -25,7 +25,7 @@ import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.address.{EnterPreviousPostCodeId, PreviousAddressId, PreviousAddressListId}
-import models.{Index, Mode, NormalMode}
+import models.{Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -55,17 +55,17 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
 
   override def form: Form[Int] = formProvider("establisherSelectAddress.required")
 
-  def onPageLoad(establisherIndex: Index, directorIndex: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
+  def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
     retrieve(SchemeNameId) { schemeName =>
-      getFormToJson(schemeName, establisherIndex, directorIndex, NormalMode).retrieve.right.map(get)
+      getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.right.map(get)
     }
   }
 
-  def onSubmit(establisherIndex: Index, directorIndex: Index): Action[AnyContent] =
+  def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
         val addressPages: AddressPages = AddressPages(EnterPreviousPostCodeId(establisherIndex, directorIndex), PreviousAddressListId(establisherIndex, directorIndex), PreviousAddressId(establisherIndex, directorIndex))
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, establisherIndex, directorIndex, NormalMode).retrieve.right.map(post(_, addressPages))
+        getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.right.map(post(_, addressPages))
       }
     }
 
@@ -83,7 +83,7 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
             "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
             "entityType" -> msg("messages__director"),
             "entityName" -> name,
-            "enterManuallyUrl" -> controllers.establishers.company.director.address.routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, directorIndex).url,
+            "enterManuallyUrl" -> controllers.establishers.company.director.address.routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, directorIndex, mode).url,
             "schemeName" -> schemeName,
             "h1MessageKey" -> "previousAddressList.title"
           )

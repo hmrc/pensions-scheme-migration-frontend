@@ -20,6 +20,7 @@ import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import identifiers.TypedIdentifier
+import models.{Mode, NormalMode}
 import models.requests.DataRequest
 import navigators.CompoundNavigator
 import play.api.data.Form
@@ -49,8 +50,7 @@ trait CommonAddressYearsController extends FrontendBaseController
                     form : Form[Boolean],
                     addressYearsId : TypedIdentifier[Boolean])(
                      implicit request: DataRequest[AnyContent],
-                     ec: ExecutionContext
-                   ): Future[Result] = {
+                     ec: ExecutionContext): Future[Result] = {
     val filledForm = request.userAnswers.get(addressYearsId).fold(form)(form.fill)
     renderer.render(viewTemplate, json(schemeName, entityType, entityName, filledForm)).map(Ok(_))
   }
@@ -59,10 +59,10 @@ trait CommonAddressYearsController extends FrontendBaseController
                      entityName: String,
                      entityType : String,
                      form : Form[Boolean],
-                     addressYearsId : TypedIdentifier[Boolean])(
+                     addressYearsId : TypedIdentifier[Boolean],
+                     mode: Option[Mode] = None)(
                       implicit request: DataRequest[AnyContent],
-                      ec: ExecutionContext
-                    ): Future[Result] = {
+                      ec: ExecutionContext): Future[Result] = {
     form
       .bindFromRequest()
       .fold(
@@ -74,7 +74,8 @@ trait CommonAddressYearsController extends FrontendBaseController
             updatedAnswers <- Future.fromTry(request.userAnswers.set(addressYearsId, value))
             _ <- userAnswersCacheConnector.save(request.lock,updatedAnswers.data)
           } yield {
-            Redirect(navigator.nextPage(addressYearsId, updatedAnswers))
+            val finalMode = mode.getOrElse(NormalMode)
+            Redirect(navigator.nextPage(addressYearsId, updatedAnswers, finalMode))
           }
       )
   }

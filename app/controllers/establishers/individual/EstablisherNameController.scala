@@ -75,7 +75,8 @@ class EstablisherNameController @Inject()(
               template = "personName.njk",
               ctx = Json.obj(
                 "form"       -> formWithErrors,
-                "schemeName" -> existingSchemeName
+                "schemeName" -> existingSchemeName,
+                "entityType" -> "establisher"
               )
             ).map(BadRequest(_)),
           value =>

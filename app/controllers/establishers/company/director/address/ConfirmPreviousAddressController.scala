@@ -25,7 +25,7 @@ import forms.address.AddressFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.address.PreviousAddressId
-import models.{Address, AddressConfiguration, Index}
+import models.{Address, AddressConfiguration, Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -55,17 +55,17 @@ class ConfirmPreviousAddressController @Inject()(override val messagesApi: Messa
 
   def form(implicit messages: Messages): Form[Address] = formProvider()
 
-  def onPageLoad(establisherIndex: Index, directorIndex: Index): Action[AnyContent] =
+  def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.right.map { case directorName ~ schemeName =>
           get(Some(schemeName), directorName.fullName, PreviousAddressId(establisherIndex, directorIndex), AddressConfiguration.PostcodeFirst)
       }
     }
 
-  def onSubmit(establisherIndex: Index, directorIndex: Index): Action[AnyContent] =
+  def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.right.map { case directorName ~ schemeName =>
-        post(Some(schemeName), directorName.fullName, PreviousAddressId(establisherIndex, directorIndex), AddressConfiguration.PostcodeFirst)
+        post(Some(schemeName), directorName.fullName, PreviousAddressId(establisherIndex, directorIndex), AddressConfiguration.PostcodeFirst, Some(mode))
       }
     }
 }

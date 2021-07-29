@@ -21,7 +21,6 @@ import controllers.actions._
 import controllers.establishers.company.director.routes._
 import helpers.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.individual.EstablisherNameId
 import models.Index
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
