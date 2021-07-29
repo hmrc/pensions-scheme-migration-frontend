@@ -17,9 +17,7 @@
 package controllers
 import connectors.MinimalDetailsConnector
 import controllers.actions._
-import identifiers.establishers.company.CompanyDetailsId
 import matchers.JsonMatchers
-import models.CompanyDetails
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -31,7 +29,6 @@ import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import utils.Data.ua
 import utils.UserAnswers
 
 import scala.concurrent.Future
