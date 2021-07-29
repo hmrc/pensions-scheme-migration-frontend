@@ -62,7 +62,6 @@ trait SpecBase
 
   def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "/foo")
 
-  def minimalDetailsConnector: MinimalDetailsConnector = injector.instanceOf[MinimalDetailsConnector]
 
   implicit def fakeDataRequest(ua: UserAnswers = UserAnswers(Json.obj())): DataRequest[AnyContent] =
     DataRequest(

@@ -15,17 +15,16 @@
  */
 
 package controllers
-
-import controllers.ControllerSpecBase
+import connectors.MinimalDetailsConnector
 import controllers.actions._
 import identifiers.establishers.company.CompanyDetailsId
-import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
-import models.{CompanyDetails, Index, NormalMode, PersonName}
+import models.CompanyDetails
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.TryValues
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
@@ -37,29 +36,29 @@ import utils.UserAnswers
 
 import scala.concurrent.Future
 
-class BeforeYouStartControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues {
-  private val companyName: CompanyDetails = CompanyDetails("ABC Ltd")
-  private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(0), companyName).success.value
+class BeforeYouStartControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with MockitoSugar {
+  private val psaName: String = "Nigel"
   private val templateToBeRendered: String = "beforeYouStart.njk"
+  private val mockMinimalDetailsConnector: MinimalDetailsConnector = mock[MinimalDetailsConnector]
   private def json: JsObject =
     Json.obj(
       "continueUrl" -> controllers.routes.TaskListController.onPageLoad().url,
-      "schemeName"  -> "Test scheme name"
+      "psaName" -> psaName,
+      "returnUrl" -> appConfig.psaOverviewUrl.url
     )
 
-  private def controller(dataRetrievalAction: DataRetrievalAction): BeforeYouStartController =
-    new BeforeYouStartController(appConfig,messagesApi, new FakeAuthAction(), dataRetrievalAction,
-      new DataRequiredActionImpl, minimalDetailsConnector, controllerComponents, new Renderer(mockAppConfig, mockRenderer))
+  private def controller(): BeforeYouStartController =
+    new BeforeYouStartController(appConfig,messagesApi, new FakeAuthAction(), new FakeDataRetrievalAction(Some(UserAnswers())),
+      new DataRequiredActionImpl, mockMinimalDetailsConnector, controllerComponents, new Renderer(mockAppConfig, mockRenderer))
 
   "BeforeYouStartController" must {
     "return OK and the correct view for a GET" in {
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
+      when(mockMinimalDetailsConnector.getPSAName(any(),any())).thenReturn(Future.successful(psaName))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val getData = new FakeDataRetrievalAction(Some(userAnswers))
-      val result: Future[Result] = controller(getData).onPageLoad()(fakeDataRequest(userAnswers))
+      val result: Future[Result] = controller().onPageLoad()(fakeDataRequest())
 
       status(result) mustBe OK
 
