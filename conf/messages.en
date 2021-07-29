@@ -233,7 +233,7 @@ messages__BeforeYouStart__item2 = the country the scheme was established in
 messages__BeforeYouStart__item3 = membership details, including how many members the scheme has at the moment, and how many you expect the scheme to have in the next 12 months
 messages__BeforeYouStart__item4 = details of how the scheme provides benefits, for example ‘Defined Benefits’
 messages__BeforeYouStart__item5 = Establisher and Trustee details and contact information, (possibly including dates of birth, Unique Taxpayer References, or reason why they do not have one, National Insurance numbers, VAT registration numbers, employer PAYE references)
-
+return.to.link = Return to {0}
 
 currentMembers.title = How many members does {0} currently have?
 currentMembers.error.required = Select how many members {0} currently has

@@ -48,8 +48,8 @@ class BeforeYouStartControllerSpec extends ControllerSpecBase with NunjucksSuppo
     )
 
   private def controller(dataRetrievalAction: DataRetrievalAction): BeforeYouStartController =
-    new BeforeYouStartController(messagesApi, new FakeAuthAction(), dataRetrievalAction,
-      new DataRequiredActionImpl, controllerComponents, new Renderer(mockAppConfig, mockRenderer))
+    new BeforeYouStartController(appConfig,messagesApi, new FakeAuthAction(), dataRetrievalAction,
+      new DataRequiredActionImpl, minimalDetailsConnector, controllerComponents, new Renderer(mockAppConfig, mockRenderer))
 
   "BeforeYouStartController" must {
     "return OK and the correct view for a GET" in {

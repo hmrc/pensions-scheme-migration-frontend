@@ -51,7 +51,6 @@
             }) }}
         </div>
     </div>
-
-    {{ returnLink(schemeName) }}
+    <p class="govuk-body"><a id="return_to_psa" href="{{ returnUrl }}" class="govuk-link">{{ messages("return.to.link", psaName) }}</a></p>
 
 {% endblock %}

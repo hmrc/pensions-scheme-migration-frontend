@@ -16,6 +16,8 @@
 
 package controllers
 
+import config.AppConfig
+import connectors.MinimalDetailsConnector
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.establishers.company.details.routes.HaveCompanyNumberController
@@ -32,13 +34,15 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.Message
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class BeforeYouStartController @Inject()(
+                                           appConfig : AppConfig,
                                            override val messagesApi: MessagesApi,
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
+                                           minimalDetailsConnector: MinimalDetailsConnector,
                                            val controllerComponents: MessagesControllerComponents,
                                            val renderer: Renderer
                                          )(implicit val ec: ExecutionContext)
@@ -50,16 +54,18 @@ class BeforeYouStartController @Inject()(
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        {
+        minimalDetailsConnector.getPSAName.flatMap { psaName =>
             renderer.render(
               template = "beforeYouStart.njk",
               ctx = Json.obj(
                 "pageTitle" -> Messages("messages__BeforeYouStart__title"),
                 "continueUrl" -> controllers.routes.TaskListController.onPageLoad().url,
-                "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
+                "psaName" -> psaName,
+                "returnUrl" -> appConfig.psaOverviewUrl.url
               )
             ).map(Ok(_))
         }
+
     }
 
 }
