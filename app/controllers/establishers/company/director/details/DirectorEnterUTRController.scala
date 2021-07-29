@@ -20,6 +20,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.EnterReferenceValueController
 import controllers.actions._
 import forms.UTRFormProvider
+import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.{DirectorEnterUTRId, DirectorNameId}
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
@@ -58,31 +59,37 @@ class DirectorEnterUTRController @Inject()(
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        get(
-          pageTitle     = Message("messages__enterUTR_title", Message("messages__director")),
-          pageHeading     = Message("messages__enterUTR", name(establisherIndex,directorIndex)),
-          isPageHeading = false,
-          id            = DirectorEnterUTRId(establisherIndex, directorIndex),
-          form          = form,
-          schemeName    = existingSchemeName.toString,
-          legendClass   = "govuk-visually-hidden",
-          paragraphText = Seq(Message("messages__UTR__p1"), Message("messages__UTR__p2"))
-        )
+        SchemeNameId.retrieve.right.map {
+          schemeName =>
+            get(
+              pageTitle = Message("messages__enterUTR_title", Message("messages__director")),
+              pageHeading = Message("messages__enterUTR", name(establisherIndex, directorIndex)),
+              isPageHeading = false,
+              id = DirectorEnterUTRId(establisherIndex, directorIndex),
+              form = form,
+              schemeName = schemeName,
+              legendClass = "govuk-visually-hidden",
+              paragraphText = Seq(Message("messages__UTR__p1"), Message("messages__UTR__p2"))
+            )
+        }
     }
 
   def onSubmit( establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        post(
-          pageTitle     = Message("messages__enterUTR_title", Message("messages__director")),
-          pageHeading     = Message("messages__enterUTR",name(establisherIndex,directorIndex)),
-          isPageHeading = false,
-          id            = DirectorEnterUTRId(establisherIndex, directorIndex),
-          form          = form,
-          schemeName    = existingSchemeName.toString,
-          legendClass   = "govuk-visually-hidden",
-          paragraphText = Seq(Message("messages__UTR__p1"), Message("messages__UTR__p2")),
-          mode          = mode
-        )
+        SchemeNameId.retrieve.right.map {
+          schemeName =>
+            post(
+              pageTitle = Message("messages__enterUTR_title", Message("messages__director")),
+              pageHeading = Message("messages__enterUTR", name(establisherIndex, directorIndex)),
+              isPageHeading = false,
+              id = DirectorEnterUTRId(establisherIndex, directorIndex),
+              form = form,
+              schemeName =schemeName,
+              legendClass = "govuk-visually-hidden",
+              paragraphText = Seq(Message("messages__UTR__p1"), Message("messages__UTR__p2")),
+              mode = mode
+            )
+        }
     }
 }

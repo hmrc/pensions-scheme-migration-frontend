@@ -80,7 +80,7 @@ class DirectorNoNINOReasonController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             post(
-              pageTitle     = Message("messages__whyNoNINO", Message("messages__individual")),
+              pageTitle     = Message("messages__whyNoNINO", Message("messages__director")),
               pageHeading     = Message("messages__whyNoNINO", name(establisherIndex, directorIndex)),
               isPageHeading = true,
               id            = DirectorNoNINOReasonId(establisherIndex, directorIndex),

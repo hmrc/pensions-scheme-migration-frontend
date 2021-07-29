@@ -20,6 +20,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.ReasonController
 import controllers.actions._
 import forms.ReasonFormProvider
+import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.{DirectorNameId, DirectorNoUTRReasonId}
 import models.requests.DataRequest
 import models.{Index, Mode}
@@ -59,15 +60,15 @@ class DirectorNoUTRReasonController @Inject()(override val messagesApi: Messages
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        DirectorNameId(establisherIndex, directorIndex).retrieve.right.map {
-          details =>
+        SchemeNameId.retrieve.right.map {
+          schemeName =>
             get(
               pageTitle     = Message("messages__whyNoUTR_title", Message("messages__director")),
               pageHeading     = Message("messages__whyNoUTR",  name(establisherIndex,directorIndex)),
               isPageHeading = true,
               id            = DirectorNoUTRReasonId(establisherIndex,directorIndex),
               form          = form(establisherIndex,directorIndex),
-              schemeName    = existingSchemeName.toString
+              schemeName    = schemeName
             )
         }
     }
@@ -75,15 +76,15 @@ class DirectorNoUTRReasonController @Inject()(override val messagesApi: Messages
   def onSubmit(establisherIndex: Index, directorIndex: Index,mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        DirectorNameId(establisherIndex, directorIndex).retrieve.right.map {
-          details =>
+        SchemeNameId.retrieve.right.map {
+          schemeName =>
             post(
               pageTitle     = Message("messages__whyNoUTR_title", Message("messages__director")),
               pageHeading     = Message("messages__whyNoUTR",name(establisherIndex,directorIndex)),
               isPageHeading = true,
               id            = DirectorNoUTRReasonId(establisherIndex,directorIndex),
               form          = form(establisherIndex,directorIndex),
-              schemeName    = existingSchemeName.toString,
+              schemeName    = schemeName,
               mode          = mode
             )
         }

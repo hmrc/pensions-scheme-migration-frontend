@@ -20,6 +20,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.HasReferenceValueController
 import controllers.actions._
 import forms.HasReferenceNumberFormProvider
+import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.{DirectorHasUTRId, DirectorNameId}
 import models.requests.DataRequest
 import models.{Index, Mode}
@@ -62,15 +63,15 @@ class DirectorHasUTRController @Inject()(
   def onPageLoad( establisherIndex: Index, directorIndex: Index,mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        DirectorNameId(establisherIndex, directorIndex).retrieve.right.map {
-          details =>
+        SchemeNameId.retrieve.right.map {
+          schemeName =>
             get(
               pageTitle     = Message("messages__hasUTR", Message("messages__director")),
               pageHeading     = Message("messages__hasUTR", name(establisherIndex,directorIndex)),
               isPageHeading = false,
               id            = DirectorHasUTRId(establisherIndex, directorIndex),
               form          = form(establisherIndex,directorIndex),
-              schemeName    = existingSchemeName.toString,
+              schemeName    = schemeName,
               paragraphText = Seq(Message("messages__UTR__p")),
               legendClass   = "govuk-visually-hidden"
             )
@@ -80,15 +81,15 @@ class DirectorHasUTRController @Inject()(
   def onSubmit(establisherIndex: Index, directorIndex: Index,mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        DirectorNameId(establisherIndex, directorIndex).retrieve.right.map {
-          details =>
+        SchemeNameId.retrieve.right.map {
+          schemeName =>
             post(
               pageTitle     = Message("messages__hasUTR", Message("messages__director")),
               pageHeading     = Message("messages__hasUTR", name(establisherIndex,directorIndex)),
               isPageHeading = false,
               id            = DirectorHasUTRId(establisherIndex, directorIndex),
               form          = form(establisherIndex,directorIndex),
-              schemeName    = existingSchemeName.toString,
+              schemeName    = schemeName,
               paragraphText = Seq(Message("messages__UTR__p")),
               legendClass   = "govuk-visually-hidden",
               mode          = mode
