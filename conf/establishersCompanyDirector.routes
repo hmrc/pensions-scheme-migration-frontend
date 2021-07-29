@@ -83,7 +83,7 @@ POST        /:establisherIndex/company/director/:directorIndex/enter-phone-numbe
 GET         /:establisherIndex/change/company/director/:directorIndex/enter-phone-number                                 controllers.establishers.company.director.contact.EnterPhoneNumberController.onPageLoad(establisherIndex: Index, directorIndex: Index,mode: Mode = CheckMode)
 POST        /:establisherIndex/change/company/director/:directorIndex/enter-phone-number                                 controllers.establishers.company.director.contact.EnterPhoneNumberController.onSubmit(establisherIndex: Index, directorIndex: Index,mode: Mode = CheckMode)
 
-GET         /:establisherIndex/company/director/:directorIndex/check-your-answers                                        controllers.establishers.company.director.details.CheckYourAnswersController.onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode = NormalMode)
+GET         /:establisherIndex/company/director/:directorIndex/check-your-answers                                        controllers.establishers.company.director.details.CheckYourAnswersController.onPageLoad(establisherIndex: Index, directorIndex: Index)
 
 GET         /:establisherIndex/company/director/:directorIndex/confirm-delete                                            controllers.establishers.company.director.ConfirmDeleteDirectorController.onPageLoad(establisherIndex: Index, directorIndex: Index)
 POST        /:establisherIndex/company/director/:directorIndex/confirm-delete                                            controllers.establishers.company.director.ConfirmDeleteDirectorController.onSubmit(establisherIndex: Index, directorIndex: Index)

@@ -19,6 +19,7 @@ package controllers.establishers.company.director.details
 import controllers.Retrievals
 import controllers.actions._
 import helpers.{CYAHelper, EstablisherCompanyDirectorDetailsCYAHelper}
+import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
 import models._
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -35,7 +36,6 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            requiredData: DataRequiredAction,
-                                           implicit val countryOptions: CountryOptions,
                                            val controllerComponents: MessagesControllerComponents,
                                            cyaHelper: EstablisherCompanyDirectorDetailsCYAHelper,
                                            renderer: Renderer
@@ -45,15 +45,15 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
     with I18nSupport
     with Retrievals {
 
-  def onPageLoad(companyIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(companyIndex: Index, directorIndex: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requiredData).async {
       implicit request =>
         renderer.render(
           template = "check-your-answers.njk",
           ctx = Json.obj(
             "list" -> cyaHelper.detailsRows(companyIndex,directorIndex),
-           "schemeName" -> CYAHelper.getName(DirectorNameId(companyIndex, directorIndex))(request.userAnswers, implicitly),
-            "submitUrl" -> controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(companyIndex,NormalMode).url
+           "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+            "submitUrl" -> controllers.routes.TaskListController.onPageLoad().url
           )
         ).map(Ok(_))
     }
