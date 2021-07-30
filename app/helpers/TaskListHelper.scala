@@ -20,6 +20,7 @@ import com.google.inject.Inject
 import identifiers.beforeYouStart.{HaveAnyTrusteesId, SchemeNameId, SchemeTypeId}
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
+import identifiers.trustees.company.{CompanyDetailsId => TrusteeCompanyDetailsId}
 import identifiers.trustees.individual.TrusteeNameId
 import models.SchemeType
 import play.api.i18n.Messages
@@ -113,8 +114,12 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
             case CompanyDetailsId(_) =>
               Some(TaskListEntitySection(
                 isCompleted = None,
-                spokeCreationService.getEstablisherCompanySpokes(userAnswers, establisher.name, establisher.index),
-                Some(establisher.name))
+                entities = spokeCreationService.getEstablisherCompanySpokes(
+                  answers = userAnswers,
+                  name = establisher.name,
+                  index = establisher.index
+                ),
+                header = Some(establisher.name))
               )
 
             case _ =>
@@ -143,6 +148,13 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
                     header = Some(trustee.name)
                   )
                 )
+              case TrusteeCompanyDetailsId(_) =>
+                Some(TaskListEntitySection(
+                  isCompleted = None,
+                  spokeCreationService.getTrusteeCompanySpokes(userAnswers, trustee.name, trustee.index),
+                  Some(trustee.name))
+                )
+
               case _ =>
                 throw new RuntimeException("Unknown section id:" + trustee.id)
             }

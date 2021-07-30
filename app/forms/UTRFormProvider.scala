@@ -23,8 +23,7 @@ import play.api.data.Forms._
 
 import javax.inject.Inject
 
-class UTRFormProvider @Inject()
-  extends UtrMapping {
+class UTRFormProvider @Inject() extends UtrMapping {
 
   def apply(): Form[ReferenceValue] =
     Form(

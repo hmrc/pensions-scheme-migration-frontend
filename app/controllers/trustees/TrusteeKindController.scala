@@ -20,7 +20,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.trustees.TrusteeKindFormProvider
-import identifiers.trustees.{TrusteeKindId, IsTrusteeNewId}
+import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId}
 import models.Index
 import models.trustees.TrusteeKind
 import navigators.CompoundNavigator

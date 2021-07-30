@@ -18,12 +18,12 @@ package helpers
 
 import identifiers.TypedIdentifier
 import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
-import models.{CompanyDetails, Address, PersonName, ReferenceValue, Link}
+import models._
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Value, Row, Key}
+import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{Content, SummaryList, Text, Html, MessageInterpolators}
+import uk.gov.hmrc.viewmodels.{Content, Html, MessageInterpolators, SummaryList, Text}
 import utils.UserAnswers
 import viewmodels.Message
 
@@ -130,6 +130,16 @@ trait CYAHelper {
       key = Key(msg"$message", classes = Seq("govuk-!-width-one-half")),
       value = Value(Literal(answer)),
       actions = actionChange(url, visuallyHiddenText)
+    )
+
+  def addRow[A](message: String,
+                   url: Option[String] = None,
+                   visuallyHiddenText: Option[Text] = None)
+                  (implicit messages: Messages): Row =
+    Row(
+      key = Key(msg"$message", classes = Seq("govuk-!-width-one-half")),
+      value = Value(msg"site.not_entered", classes = Seq("govuk-!-width-one-third")),
+      actions = actionAdd(url, visuallyHiddenText)
     )
 
   def changeLink(url: String, visuallyHiddenText: Option[Message] = None)

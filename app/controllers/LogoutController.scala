@@ -17,6 +17,7 @@
 package controllers
 
 import config.AppConfig
+import connectors.cache.LockCacheConnector
 import controllers.actions.AuthAction
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -28,13 +29,16 @@ import scala.concurrent.ExecutionContext
 class LogoutController @Inject()(
                                   appConfig: AppConfig,
                                   val controllerComponents: MessagesControllerComponents,
-                                  authenticate: AuthAction
+                                  authenticate: AuthAction,
+                                  lockCacheConnector: LockCacheConnector
                                 )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
-    authenticate {
-      Redirect(appConfig.serviceSignOut).withNewSession
+    authenticate.async { implicit request =>
+      lockCacheConnector.removeLockByUser.map { _ =>
+        Redirect(appConfig.serviceSignOut).withNewSession
+      }
     }
 }

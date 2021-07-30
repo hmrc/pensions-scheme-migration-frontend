@@ -56,7 +56,7 @@ class CompanyDetailsController @Inject()(
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         renderer.render(
-          template = "establishers/company/companyDetails.njk",
+          template = "companyDetails.njk",
           ctx = Json.obj(
             "form" -> request.userAnswers.get[CompanyDetails](CompanyDetailsId(index)).fold(form)(form.fill),
             "schemeName" -> existingSchemeName
@@ -70,7 +70,7 @@ class CompanyDetailsController @Inject()(
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
             renderer.render(
-              template = "establishers/company/companyDetails.njk",
+              template = "companyDetails.njk",
               ctx = Json.obj(
                 "form" -> formWithErrors,
                 "schemeName" -> existingSchemeName

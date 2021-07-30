@@ -28,7 +28,6 @@ case class TrusteeHasNINOId(index: Int) extends TypedIdentifier[Boolean] {
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): UserAnswers =
     value match {
       case Some(true) => userAnswers.remove(TrusteeNoNINOReasonId(index))
-
       case Some(false) => userAnswers.remove(TrusteeNINOId(index))
       case _ => super.cleanup(value, userAnswers)
     }

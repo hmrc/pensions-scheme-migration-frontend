@@ -17,11 +17,11 @@
 package identifiers.trustees.address
 
 import base.SpecBase
-import identifiers.trustees.individual.address.{EnterPreviousPostCodeId, AddressYearsId, PreviousAddressId, PreviousAddressListId}
-import org.scalatest.{OptionValues, MustMatchers}
+import identifiers.trustees.individual.address.{AddressYearsId, EnterPreviousPostCodeId, PreviousAddressId, PreviousAddressListId}
+import org.scalatest.{MustMatchers, OptionValues}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
-import utils.{UserAnswers, Enumerable, Data}
+import utils.{Data, Enumerable, UserAnswers}
 
 class AddressYearsIdSpec extends SpecBase with MustMatchers with ScalaCheckPropertyChecks with OptionValues with Enumerable.Implicits {
 

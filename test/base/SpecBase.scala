@@ -49,7 +49,7 @@ trait SpecBase
     )
     .build()
 
-  def injector: Injector = fakeApplication().injector
+  def injector: Injector = app.injector
 
   protected def crypto: ApplicationCrypto = injector.instanceOf[ApplicationCrypto]
 

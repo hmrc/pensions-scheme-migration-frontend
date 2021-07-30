@@ -19,13 +19,14 @@ package utils
 import identifiers.TypedIdentifier
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.director.{DirectorNameId, IsNewDirectorId}
-import identifiers.establishers.{EstablisherKindId, EstablishersId, IsEstablisherNewId}
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId, TrusteesId}
+import identifiers.establishers.{EstablisherKindId, EstablishersId, IsEstablisherNewId}
+import identifiers.trustees.company.{CompanyDetailsId => TrusteeCompanyDetailsId}
 import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId, TrusteesId}
+import models._
 import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind
-import models._
 import play.api.Logger
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json._
@@ -249,6 +250,15 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
         isTrusteeIndividualComplete(index), isNew.fold(false)(identity), noOfRecords)
     )
 
+    private def readsCompany(index: Int): Reads[Trustee[_]] = (
+      (JsPath \ TrusteeCompanyDetailsId.toString).read[CompanyDetails] and
+        (JsPath \ IsTrusteeNewId.toString).readNullable[Boolean]
+      ) ((details, isNew) =>
+      TrusteeCompanyEntity(TrusteeCompanyDetailsId(index),
+        details.companyName, details.isDeleted, isTrusteeCompanyComplete(index), isNew.fold
+        (false)(identity), noOfRecords)
+    )
+
     override def reads(json: JsValue): JsResult[Seq[Trustee[_]]] = {
       json \ TrusteesId.toString match {
         case JsDefined(JsArray(trustees)) =>
@@ -256,6 +266,7 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
             val trusteeKind = (jsValue \ TrusteeKindId.toString).validate[String].asOpt
             val readsForTrusteeKind = trusteeKind match {
               case Some(TrusteeKind.Individual.toString) => readsIndividual(index)
+              case Some(TrusteeKind.Company.toString) => readsCompany(index)
               case _ => throw UnrecognisedTrusteeKindException
             }
             readsForTrusteeKind.reads(jsValue)

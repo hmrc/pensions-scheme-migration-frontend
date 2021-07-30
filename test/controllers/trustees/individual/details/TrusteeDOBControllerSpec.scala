@@ -34,10 +34,9 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import renderer.Renderer
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import uk.gov.hmrc.viewmodels.{DateInput, NunjucksSupport}
 import utils.Data.ua
 import utils.{FakeNavigator, UserAnswers}
-import uk.gov.hmrc.viewmodels.DateInput
 
 import java.time.LocalDate
 import scala.concurrent.Future

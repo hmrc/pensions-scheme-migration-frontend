@@ -17,6 +17,7 @@
 package helpers
 
 import controllers.establishers.routes._
+import helpers.spokes.establishers.company.{EstablisherCompanyAddress, EstablisherCompanyContactDetails, EstablisherCompanyDetails}
 import helpers.spokes.establishers.company.{EstablisherCompanyAddress, EstablisherCompanyDirectorDetails}
 import helpers.spokes.establishers.individual._
 import helpers.spokes.trustees.individual.{TrusteeIndividualAddress, TrusteeIndividualContactDetails, TrusteeIndividualDetails}
@@ -80,7 +81,9 @@ class SpokeCreationService extends Enumerable.Implicits {
   def getEstablisherCompanySpokes(answers: UserAnswers, name: String, index: Index)
                                     (implicit messages: Messages): Seq[EntitySpoke] = {
     Seq(
+      createSpoke(answers, EstablisherCompanyDetails(index, answers), name),
       createSpoke(answers, EstablisherCompanyAddress(index, answers), name),
+      createSpoke(answers, EstablisherCompanyContactDetails(index, answers), name),
       createSpoke(answers, EstablisherCompanyDirectorDetails(index, answers), name)
     )
   }
@@ -117,6 +120,11 @@ class SpokeCreationService extends Enumerable.Implicits {
       createSpoke(answers, TrusteeIndividualAddress(index, answers), name),
       createSpoke(answers, TrusteeIndividualContactDetails(index, answers), name)
     )
+  }
+
+  def getTrusteeCompanySpokes(answers: UserAnswers, name: String, index: Index)
+    (implicit messages: Messages): Seq[EntitySpoke] = {
+    Nil
   }
 
   def declarationSpoke(implicit messages: Messages): Seq[EntitySpoke] =

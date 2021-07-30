@@ -18,7 +18,7 @@ package identifiers.establishers.individual.address
 
 import identifiers.TypedIdentifier
 import identifiers.establishers.EstablishersId
-import play.api.libs.json.{Format, Json, JsPath}
+import play.api.libs.json.{Format, JsPath, Json}
 import utils.UserAnswers
 
 case class AddressYearsId(index: Int) extends TypedIdentifier[Boolean] {

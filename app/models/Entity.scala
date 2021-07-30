@@ -20,6 +20,7 @@ import controllers.establishers.routes._
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.individual.EstablisherNameId
+import identifiers.trustees.company.{CompanyDetailsId => TrusteeCompanyDetailsId}
 import identifiers.trustees.individual.TrusteeNameId
 import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind
@@ -122,6 +123,25 @@ case class TrusteeIndividualEntity(
 
 object TrusteeIndividualEntity {
   implicit lazy val formats: Format[TrusteeIndividualEntity] = Json.format[TrusteeIndividualEntity]
+}
+
+case class TrusteeCompanyEntity(id: TrusteeCompanyDetailsId, name: String, isDeleted: Boolean,
+                                    isCompleted: Boolean, isNewEntity: Boolean, noOfRecords: Int) extends
+  Trustee[TrusteeCompanyDetailsId] {
+  override def editLink: Option[String] = None
+
+  override def deleteLink: Option[String] = {
+    if (noOfRecords > 1)
+      Some(controllers.trustees.routes.ConfirmDeleteTrusteeController.onPageLoad(id.index, TrusteeKind.Company).url)
+    else
+      None
+  }
+
+  override def index: Int = id.index
+}
+
+object TrusteeCompanyEntity {
+  implicit lazy val formats: Format[TrusteeCompanyEntity] = Json.format[TrusteeCompanyEntity]
 }
 
 sealed trait Trustee[T] extends Entity[T]

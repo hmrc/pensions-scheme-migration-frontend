@@ -20,15 +20,13 @@ import config.AppConfig
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
-import controllers.address.{AddressPages, AddressListController}
+import controllers.address.{AddressListController, AddressPages}
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.benefitsAndInsurance.{InsurerAddressListId, BenefitsInsuranceNameId, InsurerAddressId, InsurerEnterPostCodeId}
-
-import javax.inject.Inject
+import identifiers.benefitsAndInsurance.{BenefitsInsuranceNameId, InsurerAddressId, InsurerAddressListId, InsurerEnterPostCodeId}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{MessagesApi, I18nSupport}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -36,6 +34,7 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.CountryOptions
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class InsurerSelectAddressController @Inject()(val appConfig: AppConfig,

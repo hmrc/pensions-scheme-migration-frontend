@@ -20,16 +20,17 @@ import identifiers.TypedIdentifier
 import identifiers.trustees.TrusteesId
 import models.ReferenceValue
 import play.api.libs.json.{Format, JsPath, Json}
+import utils.UserAnswers
 
 case class TrusteeUTRId(index: Int) extends TypedIdentifier[ReferenceValue] {
-  override def path: JsPath =
-    TrusteesId(index).path \ TrusteeUTRId.toString
+  override def path: JsPath = TrusteesId(index).path \ TrusteeUTRId.toString
+
+  override def cleanup(value: Option[ReferenceValue], userAnswers: UserAnswers): UserAnswers =
+    userAnswers.remove(TrusteeNoUTRReasonId(index))
 }
 
 object TrusteeUTRId {
-  override lazy val toString: String =
-    "utr"
+  override lazy val toString: String = "utr"
 
-  implicit lazy val formats: Format[TrusteeUTRId] =
-    Json.format[TrusteeUTRId]
+  implicit lazy val formats: Format[TrusteeUTRId] = Json.format[TrusteeUTRId]
 }

@@ -19,8 +19,8 @@ package controllers.dateOfBirth
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import identifiers.TypedIdentifier
-import models.{Mode, PersonName}
 import models.requests.DataRequest
+import models.{Mode, PersonName}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.I18nSupport

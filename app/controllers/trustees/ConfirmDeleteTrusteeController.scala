@@ -21,11 +21,12 @@ import controllers.Retrievals
 import controllers.actions._
 import forms.trustees.ConfirmDeleteTrusteeFormProvider
 import identifiers.trustees.ConfirmDeleteTrusteeId
+import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.individual.TrusteeNameId
 import models._
-import models.trustees.TrusteeKind
-import models.trustees.TrusteeKind.Individual
 import models.requests.DataRequest
+import models.trustees.TrusteeKind
+import models.trustees.TrusteeKind.{Company, Individual}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -80,6 +81,8 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
     trusteeKind match {
       case Individual => userAnswers.get(TrusteeNameId(index)).map(details =>
         DeletableTrustee(details.fullName, details.isDeleted))
+      case Company => userAnswers.get(CompanyDetailsId(index)).map(details =>
+        DeletableTrustee(details.companyName, details.isDeleted))
       case _ => None
     }
   }
@@ -92,7 +95,11 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
         trusteeKind match {
           case Individual =>
             TrusteeNameId(trusteeIndex).retrieve.right.map { trusteeDetails =>
-              updateTrusteeKind(trusteeDetails.fullName, trusteeKind, trusteeIndex, Some(trusteeDetails))
+              updateTrusteeKind(trusteeDetails.fullName, trusteeKind, trusteeIndex, Some(trusteeDetails), None)
+            }
+          case Company =>
+            CompanyDetailsId(trusteeIndex).retrieve.right.map { trusteeDetails =>
+              updateTrusteeKind(trusteeDetails.companyName, trusteeKind, trusteeIndex, None, Some(trusteeDetails))
             }
           case _ =>
             Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
@@ -102,7 +109,8 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
   private def updateTrusteeKind(name: String,
                                     trusteeKind: TrusteeKind,
                                     trusteeIndex: Index,
-                                    trusteeName: Option[PersonName])(implicit request: DataRequest[AnyContent])
+                                    trusteeName: Option[PersonName],
+                                    companyDetails: Option[CompanyDetails])(implicit request: DataRequest[AnyContent])
   : Future[Result] = {
     form(name).bindFromRequest().fold(
       (formWithErrors: Form[_]) => {
@@ -123,6 +131,8 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
             case Individual => trusteeName.fold(Try(request.userAnswers))(
               individual => request.userAnswers.set(TrusteeNameId(trusteeIndex),
                 individual.copy (isDeleted = true)))
+            case Company => companyDetails.fold(Try(request.userAnswers))(
+              company => request.userAnswers.set(CompanyDetailsId(trusteeIndex), company.copy(isDeleted = true)))
             case _ => Try(request.userAnswers)
           }
         } else {

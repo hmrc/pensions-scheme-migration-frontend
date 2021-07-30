@@ -19,20 +19,20 @@ package navigators
 import base.SpecBase
 import controllers.establishers.individual.details
 import controllers.establishers.routes
-import identifiers.{Identifier, TypedIdentifier}
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address._
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.individual.details._
 import identifiers.establishers.{AddEstablisherId, EstablisherKindId}
+import identifiers.{Identifier, TypedIdentifier}
 import models.establishers.EstablisherKind
-import models.{CheckMode, PersonName, NormalMode, Mode, ReferenceValue, Index, _}
+import models.{CheckMode, Index, Mode, NormalMode, PersonName, ReferenceValue, _}
 import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes
 import play.api.mvc.Call
 import utils.Data.ua
-import utils.{UserAnswers, Enumerable}
+import utils.{Enumerable, UserAnswers}
 
 import java.time.LocalDate
 

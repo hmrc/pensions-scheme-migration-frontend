@@ -16,18 +16,18 @@
 
 package helpers.spokes.establishers.individual
 
+import controllers.establishers.individual.contact.routes._
 import helpers.spokes.Spoke
 import models.{Index, TaskListLink}
 import play.api.i18n.Messages
 import utils.UserAnswers
-import controllers.establishers.individual.contact.routes._
 
 
 case class EstablisherIndividualContactDetails(
 index: Index,
   answers: UserAnswers
   ) extends Spoke {
-  val messageKeyPrefix = "messages__schemeTaskList__establisherIndividualContactDetails_"
+  val messageKeyPrefix = "messages__schemeTaskList__contactDetails_"
   val linkKeyAndRoute: (String, String) = {
     if (completeFlag(answers).getOrElse(false))
       (s"${messageKeyPrefix}changeLink", CheckYourAnswersController.onPageLoad(index).url)

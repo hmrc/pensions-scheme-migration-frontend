@@ -17,8 +17,8 @@
 package utils.datacompletion
 
 import identifiers._
-import identifiers.aboutMembership.{FutureMembersId, CurrentMembersId}
-import identifiers.beforeYouStart.{EstablishedCountryId, WorkingKnowledgeId, SchemeTypeId, HaveAnyTrusteesId, SchemeNameId}
+import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
+import identifiers.beforeYouStart._
 import identifiers.benefitsAndInsurance._
 import models.SchemeType
 import models.benefitsAndInsurance.BenefitsProvisionType.DefinedBenefitsOnly

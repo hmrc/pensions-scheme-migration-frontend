@@ -17,26 +17,26 @@
 package controllers.establishers.individual.details
 
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRetrievalAction, FakeAuthAction, DataRequiredActionImpl, FakeDataRetrievalAction}
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.DOBFormProvider
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.details.EstablisherDOBId
 import matchers.JsonMatchers
-import models.{PersonName, NormalMode}
+import models.{NormalMode, PersonName}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
-import org.mockito.Mockito.{times, verify, reset, when}
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Call, AnyContentAsFormUrlEncoded, Result}
+import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.{DateInput, NunjucksSupport}
 import utils.Data.ua
-import utils.{UserAnswers, FakeNavigator}
+import utils.{FakeNavigator, UserAnswers}
 
 import java.time.LocalDate
 import scala.concurrent.Future

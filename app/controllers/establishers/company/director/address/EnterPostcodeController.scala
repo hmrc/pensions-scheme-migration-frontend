@@ -26,7 +26,7 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.address.EnterPostCodeId
 import models.requests.DataRequest
-import models.{Index, Mode, NormalMode}
+import models.{Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
