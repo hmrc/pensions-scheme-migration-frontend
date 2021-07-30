@@ -52,7 +52,7 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
           ctx = Json.obj(
             "list" -> cyaHelper.detailsRows(companyIndex,directorIndex),
            "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
-            "submitUrl" -> controllers.routes.TaskListController.onPageLoad().url
+            "submitUrl" -> controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(companyIndex,NormalMode).url
           )
         ).map(Ok(_))
     }

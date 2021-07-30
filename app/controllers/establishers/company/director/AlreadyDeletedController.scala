@@ -19,7 +19,7 @@ package controllers.establishers.company.director
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.establishers.company.director.DirectorNameId
-import models.Index
+import models.{Index, NormalMode}
 import models.requests.DataRequest
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
@@ -45,21 +45,17 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
       implicit request =>
         directorName(establisherIndex, directorIndex) match {
           case Right(directorName) =>
-            renderer.render("alreadyDeleted.njk", json(directorName, existingSchemeName)).map(Ok(_))
+            renderer.render("alreadyDeleted.njk", json(establisherIndex,directorName, existingSchemeName)).map(Ok(_))
           case Left(result) => result
         }
-//        DirectorNameId(establisherIndex, directorIndex).retrieve.right.map {
-//          details =>
-//          Future.successful(Ok(view(vm(establisherIndex, details.fullName, srn))))
-//        }
 
     }
 
-  private def json(establisherName: String, schemeName: Option[String])(implicit messages: Messages): JsObject = Json.obj(
+  private def json(establisherIndex: Index,directorName: String, schemeName: Option[String])(implicit messages: Messages): JsObject = Json.obj(
     "title" -> messages("messages__alreadyDeleted__establisher_title"),
-    "name" -> establisherName,
+    "name" -> directorName,
     "schemeName" -> schemeName,
-    "submitUrl" -> controllers.establishers.routes.AddEstablisherController.onPageLoad.url
+    "submitUrl" -> controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(establisherIndex,NormalMode).url
   )
 
   private def directorName(establisherIndex: Index, directorIndex: Index)(implicit

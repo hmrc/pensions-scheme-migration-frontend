@@ -20,6 +20,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.HasReferenceValueController
 import controllers.actions._
 import forms.HasReferenceNumberFormProvider
+import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.OtherDirectorsId
 import models.requests.DataRequest
 import models.{Index, Mode}
@@ -55,32 +56,38 @@ HasReferenceValueController {
   def onPageLoad(index: Index,mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        get(
-          pageTitle     = Message("messages__otherDirectors__title"),
-          pageHeading     = Message("messages__otherDirectors__heading"),
-          isPageHeading = false,
-          id            = OtherDirectorsId(index),
-          form          = form,
-          schemeName    = existingSchemeName.toString,
-          paragraphText = Seq(Message("messages__otherDirectors__lede")),
-          legendClass   = "govuk-visually-hidden"
-        )
+        SchemeNameId.retrieve.right.map {
+          schemeName =>
+            get(
+              pageTitle = Message("messages__otherDirectors__title"),
+              pageHeading = Message("messages__otherDirectors__heading"),
+              isPageHeading = false,
+              id = OtherDirectorsId(index),
+              form = form,
+              schemeName = schemeName,
+              paragraphText = Seq(Message("messages__otherDirectors__lede")),
+              legendClass = "govuk-visually-hidden"
+            )
+        }
     }
 
   def onSubmit(index: Index,mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        post(
-          pageTitle     = Message("messages__otherDirectors__title"),
-          pageHeading     = Message("messages__otherDirectors__heading"),
-          isPageHeading = false,
-          id            = OtherDirectorsId(index),
-          form          = form,
-          schemeName    = existingSchemeName.toString,
-          paragraphText = Seq(Message("messages__otherDirectors__lede")),
-          legendClass   = "govuk-visually-hidden",
-          mode          = mode
-        )
+        SchemeNameId.retrieve.right.map {
+          schemeName =>
+            post(
+              pageTitle = Message("messages__otherDirectors__title"),
+              pageHeading = Message("messages__otherDirectors__heading"),
+              isPageHeading = false,
+              id = OtherDirectorsId(index),
+              form = form,
+              schemeName = schemeName,
+              paragraphText = Seq(Message("messages__otherDirectors__lede")),
+              legendClass = "govuk-visually-hidden",
+              mode = mode
+            )
+        }
     }
 
 }

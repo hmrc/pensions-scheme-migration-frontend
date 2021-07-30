@@ -164,8 +164,8 @@ messages__schemeTaskList__sectionEstablishers_no_establishers = No establishers
 
 messages__schemeTaskList__details_addLink = Add details for {0}
 messages__schemeTaskList__details_changeLink = Change details for {0}
-messages__schemeTaskList__directors_addLink = Add director for {0}
-messages__schemeTaskList__directors_changeLink = Change director for {0}
+messages__schemeTaskList__directors_addLink = Add directors for {0}
+messages__schemeTaskList__directors_changeLink = Change directors for {0}
 messages__schemeTaskList__establisherAddress_addLink = Add address for {0}
 messages__schemeTaskList__establisherAddress_changeLink = Change address for {0}
 messages__schemeTaskList__establisherIndividualContactDetails_addLink = Add contact details for {0}
@@ -812,3 +812,4 @@ messages__otherDirectors__lede=You do not have to add them now. We may contact y
 messages__otherDirectors__error__required = Select yes if you need to tell us about other directors
 messages__addCompanyDirectors_at_maximum = You have added the maximum number of directors.
 messages__addCompanyDirectorsOrPartners_tell_us_if_you_have_more = You can tell us on the next page if you have more to add.
+messages__addCompanyDirectors_add_director = Add a director
