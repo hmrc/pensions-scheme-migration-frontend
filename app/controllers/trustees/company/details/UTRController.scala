@@ -63,7 +63,7 @@ class UTRController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             get(
-              pageTitle     = Message("messages__enterUTR_title", Message("messages__company")),
+              pageTitle     = Message("messages__enterUTR", Message("messages__company")),
               pageHeading     = Message("messages__enterUTR", name(index)),
               isPageHeading = false,
               id            = CompanyUTRId(index),
@@ -81,7 +81,7 @@ class UTRController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             post(
-              pageTitle     = Message("messages__enterUTR_title", Message("messages__company")),
+              pageTitle     = Message("messages__enterUTR", Message("messages__company")),
               pageHeading     = Message("messages__enterUTR", name(index)),
               isPageHeading = false,
               id            = CompanyUTRId(index),

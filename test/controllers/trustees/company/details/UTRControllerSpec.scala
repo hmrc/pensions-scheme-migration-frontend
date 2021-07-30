@@ -53,7 +53,7 @@ class UTRControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
 
   private val commonJson: JsObject =
     Json.obj(
-      "pageTitle"     -> messages("messages__enterUTR_title", messages("messages__company")),
+      "pageTitle"     -> messages("messages__enterUTR", messages("messages__company")),
       "pageHeading"     -> messages("messages__enterUTR", company.companyName),
       "schemeName"    -> schemeName,
       "paragraphs"      -> Json.arr(messages("messages__UTR__p1"), messages("messages__UTR__p2")),
