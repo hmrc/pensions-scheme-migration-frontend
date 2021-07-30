@@ -41,7 +41,7 @@ class TrusteeNameControllerSpec extends ControllerSpecBase with NunjucksSupport 
   private val index: Index = Index(0)
   private val personName: PersonName = PersonName("Jane", "Doe")
   private val userAnswers: Option[UserAnswers] = ua.set(TrusteeNameId(0), personName).toOption
-  private val templateToBeRendered = "trustees/individual/trusteeName.njk"
+  private val templateToBeRendered = "personName.njk"
   private val form: Form[PersonName] = new PersonNameFormProvider()("messages__error__trustee")
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -63,7 +63,8 @@ class TrusteeNameControllerSpec extends ControllerSpecBase with NunjucksSupport 
   private val jsonToPassToTemplate: Form[PersonName] => JsObject = form =>
     Json.obj(
       "form" -> form,
-      "schemeName" -> schemeName
+      "schemeName" -> schemeName,
+      "entityType" -> "trustee"
     )
 
   override def beforeEach: Unit = {

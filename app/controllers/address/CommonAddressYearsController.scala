@@ -16,12 +16,11 @@
 
 package controllers.address
 
-import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import identifiers.TypedIdentifier
-import models.{Mode, NormalMode}
 import models.requests.DataRequest
+import models.{Mode, NormalMode}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.I18nSupport

@@ -21,7 +21,7 @@ import controllers.actions._
 import controllers.establishers.company.director.routes._
 import helpers.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
-import models.Index
+import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -52,7 +52,7 @@ class WhatYouWillNeedController @Inject()(override val messagesApi: MessagesApi,
         renderer.render(
           template = "establishers/company/director/whatYouWillNeed.njk",
           ctx = Json.obj(
-            "continueUrl" -> DirectorNameController.onPageLoad(establisherIndex, directorIndex).url,
+            "continueUrl" -> DirectorNameController.onPageLoad(establisherIndex, directorIndex, NormalMode).url,
             "schemeName" -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
           )
         ).map(Ok(_))

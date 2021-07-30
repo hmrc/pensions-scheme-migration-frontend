@@ -48,7 +48,7 @@ class EstablisherCompanyDirectorDetailsCYAHelper
       Some(answerOrAddRow(
         id                 = DirectorNameId(establisherIndex, directorIndex),
         message            = Message("messages__director__name").resolve,
-        url                = Some(routes.DirectorNameController.onPageLoad(establisherIndex,directorIndex).url),
+        url                = Some(routes.DirectorNameController.onPageLoad(establisherIndex,directorIndex, CheckMode).url),
         visuallyHiddenText = Some(msg"messages__director__name__cya__visuallyHidden".withArgs(directorName)),
         answerTransform    =answerPersonNameTransform
       )),

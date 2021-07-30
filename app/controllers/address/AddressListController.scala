@@ -20,7 +20,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import models.{Address, TolerantAddress}
+import models.{Address, Mode, NormalMode, TolerantAddress}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
@@ -52,7 +52,7 @@ trait AddressListController extends FrontendBaseController with Retrievals {
     renderer.render(viewTemplate, prepareJson(json(form))).map(Ok(_))
   }
 
-  def post(json: Form[Int] => JsObject, pages: AddressPages)
+  def post(json: Form[Int] => JsObject, pages: AddressPages, mode: Option[Mode] = None)
           (implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
         form.bindFromRequest().fold(
           formWithErrors =>
@@ -63,7 +63,11 @@ trait AddressListController extends FrontendBaseController with Retrievals {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(pages.addressPage,
                   addresses(value).copy(country = Some("GB")).toAddress))
                 _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
-              } yield Redirect(navigator.nextPage(pages.addressListPage, updatedAnswers))
+              } yield
+              {
+                val finalMode = mode.getOrElse(NormalMode)
+                Redirect(navigator.nextPage(pages.addressListPage, updatedAnswers, finalMode))
+              }
             }
         )
   }

@@ -21,7 +21,7 @@ import controllers.Retrievals
 import controllers.actions._
 import forms.PersonNameFormProvider
 import identifiers.establishers.company.director.DirectorNameId
-import models.{Index, PersonName}
+import models.{Index, Mode, PersonName}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -53,7 +53,7 @@ class DirectorNameController @Inject()(
   private def form(implicit messages: Messages): Form[PersonName] =
     formProvider("messages__error__director")
 
-  def onPageLoad(establisherIndex: Index, directorIndex: Index): Action[AnyContent] =
+  def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         renderer.render(
@@ -66,7 +66,7 @@ class DirectorNameController @Inject()(
         ).flatMap( view => Future.successful(Ok(view)))
     }
 
-  def onSubmit(establisherIndex: Index, directorIndex: Index): Action[AnyContent] =
+  def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         form.bindFromRequest().fold(
@@ -84,7 +84,7 @@ class DirectorNameController @Inject()(
               updatedAnswers <- Future.fromTry(request.userAnswers.set(DirectorNameId(establisherIndex, directorIndex), value))
               _              <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
             } yield
-              Redirect(navigator.nextPage(DirectorNameId(establisherIndex, directorIndex), updatedAnswers))
+              Redirect(navigator.nextPage(DirectorNameId(establisherIndex, directorIndex), updatedAnswers, mode))
         )
     }
 

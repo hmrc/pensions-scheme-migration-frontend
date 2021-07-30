@@ -63,12 +63,12 @@ class EstablishersCompanyNavigator@Inject()(config: AppConfig)
   private def addDirectors(index: Int, answers: UserAnswers): Call = {
     if (answers.allDirectorsAfterDelete(index).isEmpty) {
       controllers.establishers.company.director.routes.DirectorNameController
-        .onPageLoad(index, answers.allDirectors(index).size)
+        .onPageLoad(index, answers.allDirectors(index).size, NormalMode)
     } else if (answers.allDirectorsAfterDelete(index).length < config.maxDirectors) {
       answers.get(AddCompanyDirectorsId(index)).map { addCompanyDirectors =>
         if (addCompanyDirectors) {
           controllers.establishers.company.director.routes.DirectorNameController
-            .onPageLoad(index, answers.allDirectors(index).size)
+            .onPageLoad(index, answers.allDirectors(index).size, NormalMode)
         } else {
           controllers.routes.TaskListController.onPageLoad()
         }

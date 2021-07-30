@@ -140,7 +140,7 @@ case class DirectorEntity(id: DirectorNameId, name: String, isDeleted: Boolean,
       .onPageLoad(
         id.establisherIndex, id.directorIndex).url)
     case (_, false) => Some(controllers.establishers.company.director.routes.DirectorNameController.onPageLoad(
-      id.establisherIndex, id.directorIndex).url)
+      id.establisherIndex, id.directorIndex, CheckMode).url)
   }
 
   override def deleteLink: Option[String] = {

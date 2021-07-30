@@ -57,10 +57,11 @@ class TrusteeNameController @Inject()(
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         renderer.render(
-          template = "trustees/individual/trusteeName.njk",
+          template = "personName.njk",
           ctx = Json.obj(
             "form"       -> request.userAnswers.get[PersonName](TrusteeNameId(index)).fold(form)(form.fill),
-            "schemeName" -> existingSchemeName
+            "schemeName" -> existingSchemeName,
+            "entityType" -> "trustee"
           )
         ).flatMap(view => Future.successful(Ok(view)))
     }
@@ -71,10 +72,11 @@ class TrusteeNameController @Inject()(
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
             renderer.render(
-              template = "trustees/individual/trusteeName.njk",
+              template = "personName.njk",
               ctx = Json.obj(
                 "form"       -> formWithErrors,
-                "schemeName" -> existingSchemeName
+                "schemeName" -> existingSchemeName,
+                "entityType" -> "trustee"
               )
             ).map(BadRequest(_)),
           value =>

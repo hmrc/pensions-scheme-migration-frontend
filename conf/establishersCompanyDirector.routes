@@ -1,7 +1,9 @@
 GET         /:establisherIndex/company/director/what-you-will-need                                                       controllers.establishers.company.director.details.WhatYouWillNeedController.onPageLoad(establisherIndex: Index)
 
-GET         /:establisherIndex/company/director/:directorIndex/name                                                      controllers.establishers.company.director.DirectorNameController.onPageLoad(establisherIndex: Index, directorIndex: Index)
-POST        /:establisherIndex/company/director/:directorIndex/name                                                      controllers.establishers.company.director.DirectorNameController.onSubmit(establisherIndex: Index, directorIndex: Index)
+GET         /:establisherIndex/company/director/:directorIndex/name                                                      controllers.establishers.company.director.DirectorNameController.onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode = NormalMode)
+POST        /:establisherIndex/company/director/:directorIndex/name                                                      controllers.establishers.company.director.DirectorNameController.onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode = NormalMode)
+GET         /:establisherIndex/change/company/director/:directorIndex/name                                               controllers.establishers.company.director.DirectorNameController.onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode = CheckMode)
+POST        /:establisherIndex/change/company/director/:directorIndex/name                                               controllers.establishers.company.director.DirectorNameController.onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode = CheckMode)
 
 GET         /:establisherIndex/company/director/:directorIndex/date-of-birth                                             controllers.establishers.company.director.details.DirectorDOBController.onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode = NormalMode)
 POST        /:establisherIndex/company/director/:directorIndex/date-of-birth                                             controllers.establishers.company.director.details.DirectorDOBController.onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode = NormalMode)

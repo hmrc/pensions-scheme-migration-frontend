@@ -14,106 +14,113 @@
  * limitations under the License.
  */
 
-package controllers.establishers.individual
+package controllers.establishers.company.director.address
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import forms.PersonNameFormProvider
-import identifiers.establishers.individual.EstablisherNameId
+import forms.establishers.address.AddressYearsFormProvider
+import identifiers.beforeYouStart.SchemeNameId
+import identifiers.establishers.company.director.DirectorNameId
+import identifiers.establishers.company.director.address.AddressYearsId
 import matchers.JsonMatchers
-import models.{Index, PersonName}
+import models.{CheckMode, NormalMode, PersonName}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, Matchers}
 import play.api.Application
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
+import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{Enumerable, UserAnswers}
+import utils.{Data, Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 
-class EstablisherNameControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
-  private val index: Index = Index(0)
   private val personName: PersonName = PersonName("Jane", "Doe")
-  private val userAnswers: Option[UserAnswers] = ua.set(EstablisherNameId(0), personName).toOption
-  private val templateToBeRendered = "personName.njk"
-  private val form: Form[PersonName] = new PersonNameFormProvider()("messages__error__establisher")
-
+  private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(DirectorNameId(0,0), personName))
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
+  private val httpPathGET: String = controllers.establishers.company.director.address.routes.AddressYearsController.onPageLoad(0, 0, NormalMode).url
+  private val httpPathPOST: String = controllers.establishers.company.director.address.routes.AddressYearsController.onSubmit(0, 0, NormalMode).url
+  private val httpPathGETCheck: String = controllers.establishers.company.director.address.routes.AddressYearsController.onPageLoad(0, 0, CheckMode).url
+  private val httpPathPOSTCheck: String = controllers.establishers.company.director.address.routes.AddressYearsController.onSubmit(0, 0, CheckMode).url
+  private val form: Form[Boolean] = new AddressYearsFormProvider()()
 
-  private def httpPathGET: String = controllers.establishers.individual.routes.EstablisherNameController.onPageLoad(index).url
-  private def httpPathPOST: String = controllers.establishers.individual.routes.EstablisherNameController.onSubmit(index).url
+  private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>
+    Json.obj(
+      "form" -> form,
+      "schemeName" -> schemeName,
+      "radios" -> Radios.yesNo(form("value")),
+      "entityName" -> personName.fullName,
+      "entityType" -> Messages("messages__director")
+    )
 
   private val valuesValid: Map[String, Seq[String]] = Map(
-    "firstName" -> Seq("Jane"),
-    "lastName" -> Seq("Doe")
+    "value" -> Seq("true")
   )
 
   private val valuesInvalid: Map[String, Seq[String]] = Map(
     "value" -> Seq.empty
   )
 
-  private val jsonToPassToTemplate: Form[PersonName] => JsObject = form =>
-    Json.obj(
-      "form" -> form,
-      "schemeName" -> schemeName,
-      "entityType" -> "establisher"
-    )
-
   override def beforeEach: Unit = {
     super.beforeEach
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
+  "AddressYears Controller" must {
 
-  "EstablisherNameController" must {
-
-    "return OK and the correct view for a GET" in {
+    "Return OK and the correct view for a GET" in {
+      val ua: UserAnswers = UserAnswers()
+        .setOrException(SchemeNameId, Data.schemeName)
+        .setOrException(DirectorNameId(0, 0), personName)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
-      templateCaptor.getValue mustEqual templateToBeRendered
+      verify(mockRenderer, times(1))
+        .render(Matchers.eq("address/addressYears.njk"), jsonCaptor.capture())(any())
 
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form))
+      (jsonCaptor.getValue \ "schemeName").toOption.map(_.as[String]) mustBe Some(Data.schemeName)
     }
 
     "return OK and the correct view for a GET when the question has previously been answered" in {
+      val ua: UserAnswers = UserAnswers()
+        .setOrException(SchemeNameId, Data.schemeName)
+        .setOrException(DirectorNameId(0, 0), personName)
+        .setOrException(AddressYearsId(0, 0), true)
 
-      mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val result: Future[Result] = route(application, httpGETRequest(httpPathGETCheck)).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
-      templateCaptor.getValue mustEqual templateToBeRendered
+      verify(mockRenderer, times(1))
+        .render(Matchers.eq("address/addressYears.njk"), jsonCaptor.capture())(any())
 
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(personName)))
+      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(true)))
     }
 
     "redirect to Session Expired page for a GET when there is no data" in {
-      mutableFakeDataRetrievalAction.setDataToReturn(None)
+      val ua: UserAnswers = UserAnswers()
 
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+
+      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -124,8 +131,8 @@ class EstablisherNameControllerSpec extends ControllerSpecBase with NunjucksSupp
 
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(EstablisherNameId(0)), any(), any())(any()))
-        .thenReturn(controllers.establishers.routes.AddEstablisherController.onPageLoad())
+      when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
+        .thenReturn(controllers.establishers.company.director.details.routes.CheckYourAnswersController.onPageLoad(0,0))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -141,7 +148,7 @@ class EstablisherNameControllerSpec extends ControllerSpecBase with NunjucksSupp
 
       jsonCaptor.getValue must containJson(expectedJson)
 
-      redirectLocation(result) mustBe Some(controllers.establishers.routes.AddEstablisherController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.establishers.company.director.details.routes.CheckYourAnswersController.onPageLoad(0,0).url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {
@@ -164,4 +171,5 @@ class EstablisherNameControllerSpec extends ControllerSpecBase with NunjucksSupp
       redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
     }
   }
+
 }
