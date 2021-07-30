@@ -34,34 +34,40 @@
 
                 <h1 id="chargeC_h1" class="govuk-heading-xl">{{ messages('messages__directors__title') }}</h1>
 
-                <div role="region" aria-labelledby="chargeC_h1" class="govuk-!-margin-bottom-7">
-                    {{ govukTable(table) }}
-                </div>
-                {%if isMaxDirector%}
-                    {{ govukRadios({
-                        classes: "govuk-radios--inline",
-                        name: 'value',
-                        fieldset: {
-                            legend: {
-                                text: messages('messages__addDirector_radio_label'),
-                                isPageHeading: false,
-                                classes: "govuk-fieldset__legend--s"
-                            }
-                        },
-                        items: radios,
-                        errorMessage: form.value.error,
-                        hint:{html: hint}
-
-                    }) }}
+                {%if directorSize <=0 %}
+                     <p class="govuk-body govuk-!-font-weight-regular">{{ messages('messages__addCompanyDirectors_lede') }}</p>
+                     {{ govukButton({ text: messages("messages__addCompanyDirectors_add_director"),
+                                      attributes: {id: "submit"}
+                                     }) }}
                 {% else %}
-                    <p class="govuk-body govuk-!-font-weight-regular">{{ messages('messages__addCompanyDirectors_at_maximum') }}</p>
-                    <p class="govuk-body govuk-!-font-weight-regular">{{ messages('messages__addCompanyDirectorsOrPartners_tell_us_if_you_have_more') }}</p>
-                {% endif %}
-                {{ govukButton({
-                    text: messages("site.save_and_continue"),
-                    attributes: {id: "submit"}
-                }) }}
+                        <div role="region" aria-labelledby="chargeC_h1" class="govuk-!-margin-bottom-7">
+                            {{ govukTable(table) }}
+                        </div>
+                        {%if directorSize < maxDirectors %}
+                            {{ govukRadios({
+                                classes: "govuk-radios--inline",
+                                name: 'value',
+                                fieldset: {
+                                    legend: {
+                                        text: messages('messages__addDirector_radio_label'),
+                                        isPageHeading: false,
+                                        classes: "govuk-fieldset__legend--s"
+                                    }
+                                },
+                                items: radios,
+                                errorMessage: form.value.error,
+                                hint:{html: hint}
 
+                            }) }}
+                        {% else %}
+                            <p class="govuk-body govuk-!-font-weight-regular">{{ messages('messages__addCompanyDirectors_at_maximum') }}</p>
+                            <p class="govuk-body govuk-!-font-weight-regular">{{ messages('messages__addCompanyDirectorsOrPartners_tell_us_if_you_have_more') }}</p>
+                        {% endif %}
+                        {{ govukButton({
+                            text: messages("site.save_and_continue"),
+                            attributes: {id: "submit"}
+                        }) }}
+                {% endif %}
             </form>
 
         </div>

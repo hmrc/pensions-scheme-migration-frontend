@@ -74,9 +74,9 @@ class AddCompanyDirectorsController @Inject()(
   def onPageLoad(index: Int,mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
+
         val directors = request.userAnswers.allDirectorsAfterDelete(index)
         val table        = helper.mapDirectorToTable(directors)
-
         renderer.render(
           template = "establishers/company/addDirector.njk",
           ctx = Json.obj(
@@ -84,7 +84,8 @@ class AddCompanyDirectorsController @Inject()(
             "table"      -> table,
             "radios"     -> Radios.yesNo(form("value")),
             "schemeName" -> existingSchemeName,
-            "isMaxDirector" -> (directors.size < config.maxDirectors)
+            "directorSize" -> directors.size ,
+            "maxDirectors" -> config.maxDirectors
 
           )
         ).map(Ok(_))
@@ -113,7 +114,8 @@ class AddCompanyDirectorsController @Inject()(
                   "table"      -> table,
                   "radios"     -> Radios.yesNo(formWithErrors("value")),
                   "schemeName" -> existingSchemeName,
-                  "isMaxDirector" -> (directors.size < config.maxDirectors)
+                  "directorSize" -> directors.size ,
+                  "maxDirectors" -> config.maxDirectors
                 )
               ).map(BadRequest(_)),
             value => {

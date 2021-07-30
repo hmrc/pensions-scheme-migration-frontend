@@ -144,7 +144,7 @@ case class DirectorEntity(id: DirectorNameId, name: String, isDeleted: Boolean,
   }
 
   override def deleteLink: Option[String] = {
-    if (noOfRecords > 1)
+    if (noOfRecords >= 1)
       Some(controllers.establishers.company.director.routes.ConfirmDeleteDirectorController.onPageLoad(id.establisherIndex, id.directorIndex).url)
     else
       None
