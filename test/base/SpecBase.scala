@@ -17,7 +17,6 @@
 package base
 
 import config.AppConfig
-import connectors.MinimalDetailsConnector
 import models.requests.DataRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
@@ -61,7 +60,6 @@ trait SpecBase
   def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
 
   def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "/foo")
-
 
   implicit def fakeDataRequest(ua: UserAnswers = UserAnswers(Json.obj())): DataRequest[AnyContent] =
     DataRequest(
