@@ -52,7 +52,7 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
     }
 
   private def json(establisherIndex: Index,directorName: String, schemeName: Option[String])(implicit messages: Messages): JsObject = Json.obj(
-    "title" -> messages("messages__alreadyDeleted__establisher_title"),
+    "title" -> messages("messages__alreadyDeleted__director_title"),
     "name" -> directorName,
     "schemeName" -> schemeName,
     "submitUrl" -> controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(establisherIndex,NormalMode).url

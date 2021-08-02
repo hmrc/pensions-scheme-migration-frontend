@@ -19,17 +19,19 @@ package navigators
 import base.SpecBase
 import controllers.establishers.company.address.{routes => addressRoutes}
 import controllers.establishers.company.details.{routes => detailsRoutes}
-import identifiers.establishers.company.CompanyDetailsId
+import identifiers.establishers.EstablishersId
+import identifiers.establishers.company.{AddCompanyDirectorsId, CompanyDetailsId}
 import identifiers.establishers.company.address._
 import identifiers.establishers.company.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.company.details._
+import identifiers.establishers.company.director.DirectorNameId
 import identifiers.{Identifier, TypedIdentifier}
 import models._
 import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
-import play.api.libs.json.Writes
+import play.api.libs.json.{JsObject, Json, Writes}
 import play.api.mvc.Call
-import utils.Data.{establisherCompanyDetails, ua}
+import utils.Data.{company, establisherCompanyDetails, ua}
 import utils.{Enumerable, UserAnswers}
 
 class EstablishersCompanyNavigatorSpec
@@ -80,8 +82,29 @@ class EstablishersCompanyNavigatorSpec
   private def enterPhonePage(mode:Mode): Call =
     controllers.establishers.company.contact.routes.EnterPhoneController.onPageLoad(index, mode)
 
+  private def otherDirectors(mode: Mode,index:Index) = controllers.establishers.company.routes.OtherDirectorsController.onPageLoad(index,mode)
+
+  private def directorNamePage(mode:Mode,directorSize:Int): Call =
+    controllers.establishers.company.director.routes.DirectorNameController
+      .onPageLoad(index,directorSize, mode)
+
   private val cyaContact: Call =
     controllers.establishers.company.contact.routes.CheckYourAnswersController.onPageLoad(index)
+
+  private val johnDoe = PersonName("John", "Doe")
+
+  private def validData(directors: PersonName*): JsObject = {
+    Json.obj(
+      EstablishersId.toString -> Json.arr(
+        Json.obj(
+          CompanyDetailsId.toString -> CompanyDetails("test company name"),
+          "director" -> directors.map(d => Json.obj(DirectorNameId.toString -> Json.toJson(d)))
+        )
+      )
+    )
+  }
+  private def addCompanyDirectorsMoreThanTen =
+    UserAnswers(validData(Seq.fill(10)(johnDoe): _*))
 
   "EstablishersCompanyNavigator" when {
     def navigation: TableFor3[Identifier, UserAnswers, Call] =
@@ -116,7 +139,9 @@ class EstablishersCompanyNavigatorSpec
         row(PreviousAddressListId(index))(cyaAddress, addressUAWithValue(PreviousAddressListId(index), 0)),
         row(PreviousAddressId(index))(cyaAddress, addressUAWithValue(PreviousAddressId(index), address)),
         row(EnterEmailId(index))(enterPhonePage(NormalMode), Some(detailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
-        row(EnterPhoneId(index))(cyaContact, Some(detailsUa.set(EnterPhoneId(index), "1234").success.value))
+        row(EnterPhoneId(index))(cyaContact, Some(detailsUa.set(EnterPhoneId(index), "1234").success.value)),
+        row(AddCompanyDirectorsId(index))(directorNamePage(NormalMode,0), Some(detailsUa.set(CompanyDetailsId(index), company).success.value)),
+        row(AddCompanyDirectorsId(index))(otherDirectors(NormalMode,index), Some(addCompanyDirectorsMoreThanTen))
       )
 
     def editNavigation: TableFor3[Identifier, UserAnswers, Call] =

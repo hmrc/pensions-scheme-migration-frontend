@@ -27,7 +27,7 @@ import matchers.JsonMatchers
 import models.establishers.EstablisherKind
 import models.{CompanyDetails, NormalMode, PersonName}
 import org.mockito.Matchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.{ArgumentCaptor, Matchers}
 import play.api.Application
 import play.api.data.Form
@@ -38,7 +38,7 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.{Radios, Table}
-import utils.Data.{schemeName, ua}
+import utils.Data.{company, schemeName, ua}
 import utils.{Enumerable, UserAnswers}
 
 import scala.concurrent.Future
@@ -48,10 +48,27 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with Nunjucks
     PersonName("Jane", "Doe")
   private val userAnswers: Option[UserAnswers] =
    ua.set(EstablisherKindId(0), EstablisherKind.Company).flatMap(
-     _.set(CompanyDetailsId(0), CompanyDetails("ABC")).flatMap(
+     _.set(CompanyDetailsId(0), CompanyDetails(company.companyName)).flatMap(
         _.set(DirectorNameId(0,0), directorName).flatMap(
           _.set(IsNewDirectorId(0,0), true)
      ))).toOption
+
+  private def validData() = {
+    ua.set(EstablisherKindId(1), EstablisherKind.Company).flatMap(
+      _.set(CompanyDetailsId(1), CompanyDetails(company.companyName)).flatMap(
+        _.set(DirectorNameId(1,1), directorName).flatMap(
+        _.set(DirectorNameId(1,2), directorName).flatMap(
+        _.set(DirectorNameId(1,3), directorName).flatMap(
+        _.set(DirectorNameId(1,4), directorName).flatMap(
+        _.set(DirectorNameId(1,5), directorName).flatMap(
+        _.set(DirectorNameId(1,6), directorName).flatMap(
+        _.set(DirectorNameId(1,7), directorName).flatMap(
+        _.set(DirectorNameId(1,8), directorName).flatMap(
+        _.set(DirectorNameId(1,9), directorName).flatMap(
+          _.set(DirectorNameId(1,10), directorName).flatMap(
+          _.set(IsNewDirectorId(1,1), false)
+        )))))))))))).toOption
+  }
 
   private val templateToBeRendered = "establishers/company/addDirector.njk"
 
@@ -70,7 +87,6 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with Nunjucks
   private def httpPathGET: String = controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(0,NormalMode).url
   private def httpPathPOST: String = controllers.establishers.company.routes.AddCompanyDirectorsController.onSubmit(0,NormalMode).url
 
-  private val maxDirectors = appConfig.maxDirectors
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq("true")
   )
@@ -86,13 +102,16 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with Nunjucks
       "radios" -> Radios.yesNo(form("value")),
       "schemeName" -> schemeName,
       "directorSize" -> 1,
-      "maxDirectors" -> 10
+      "maxDirectors" -> mockAppConfig.maxDirectors
     )
 
   override def beforeEach: Unit = {
     super.beforeEach
+    reset(mockAppConfig)
+    when(mockAppConfig.maxDirectors).thenReturn(10)
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
     when(mockHelper.mapDirectorToTable(any())(any())).thenReturn(table)
+
   }
 
 
@@ -138,10 +157,19 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with Nunjucks
       redirectLocation(result) mustBe Some(routes.AddCompanyDirectorsController.onPageLoad(0,NormalMode).url)
     }
 
+    "redirect to the next page when maximum directors exist and the user submits" in {
+      mutableFakeDataRetrievalAction.setDataToReturn(validData)
+      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
+    }
+
     "return a BAD REQUEST when invalid data is submitted" in {
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
 
       status(result) mustEqual BAD_REQUEST

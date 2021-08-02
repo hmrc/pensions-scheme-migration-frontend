@@ -29,9 +29,9 @@ case class EstablisherCompanyDirectorDetails(
                                          answers: UserAnswers
                                        ) extends Spoke {
   val messageKeyPrefix = "messages__schemeTaskList__directors_"
-  val isDirectorExists= answers.allDirectorsAfterDelete(indexToInt(index)).isEmpty
+  val isDirectorNotExists= answers.allDirectorsAfterDelete(indexToInt(index)).isEmpty
   val linkKeyAndRoute: (String, String) =
-    if (isDirectorExists)
+    if (isDirectorNotExists)
       (s"${messageKeyPrefix}addLink", WhatYouWillNeedController.onPageLoad(index).url)
     else
       (s"${messageKeyPrefix}changeLink", controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(index,NormalMode).url)

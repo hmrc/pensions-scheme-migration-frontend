@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package controllers.establishers.company.director
+package controllers.establishers.company
 
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
-import controllers.establishers.company.OtherDirectorsController
 import forms.HasReferenceNumberFormProvider
 import identifiers.establishers.company.OtherDirectorsId
 import identifiers.establishers.company.director.DirectorNameId
