@@ -14,24 +14,25 @@
  * limitations under the License.
  */
 
-package identifiers.establishers.company.director
+package identifiers.establishers.company.director.details
 
-import identifiers._
+import identifiers.TypedIdentifier
 import identifiers.establishers.EstablishersId
 import play.api.libs.json.{Format, JsPath, Json}
 
-case class DirectorEmailId(establisherIndex: Int, directorIndex: Int) extends TypedIdentifier[String] {
-  override def path: JsPath = EstablishersId(establisherIndex).path \ "director" \ directorIndex \ "directorContactDetails" \ DirectorEmailId.toString
+import java.time.LocalDate
+
+case class DirectorDOBId(establisherIndex: Int, directorIndex: Int) extends TypedIdentifier[LocalDate] {
+  override def path: JsPath =
+    EstablishersId(establisherIndex).path \ "director" \ directorIndex \ DirectorDOBId.toString
 }
 
+object DirectorDOBId {
+  override lazy val toString: String =
+    "dateOfBirth"
 
-object DirectorEmailId {
-  override def toString: String = "emailAddress"
-  def collectionPath(establisherIndex: Int, directorIndex: Int): JsPath =
-    EstablishersId(establisherIndex).path \ "director" \ directorIndex \ "directorContactDetails" \ DirectorEmailId.toString
-
-  implicit lazy val formats: Format[DirectorEmailId] =
-    Json.format[DirectorEmailId]
+  implicit lazy val formats: Format[DirectorDOBId] =
+    Json.format[DirectorDOBId]
 }
 
 

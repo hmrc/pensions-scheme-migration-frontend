@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package identifiers.establishers.company.director
+package identifiers.establishers.company.director.contact
 
 import identifiers._
 import identifiers.establishers.EstablishersId
 import play.api.libs.json.{Format, JsPath, Json}
 
-case class DirectorPhoneNumberId(establisherIndex: Int, directorIndex: Int) extends TypedIdentifier[String] {
-  override def path: JsPath =
-    EstablishersId(establisherIndex)
-      .path \ "director" \ directorIndex \ "directorContactDetails" \ DirectorPhoneNumberId.toString
+case class EnterEmailId(establisherIndex: Int, directorIndex: Int) extends TypedIdentifier[String] {
+  override def path: JsPath = EstablishersId(establisherIndex).path \ "director" \ directorIndex \ "directorContactDetails" \ EnterEmailId.toString
 }
 
 
-object DirectorPhoneNumberId {
-  override def toString: String = "phoneNumber"
+object EnterEmailId {
+  override def toString: String = "emailAddress"
+
   def collectionPath(establisherIndex: Int, directorIndex: Int): JsPath =
-    EstablishersId(establisherIndex)
-      .path \ "director" \ directorIndex \ "directorContactDetails" \ DirectorPhoneNumberId.toString
+    EstablishersId(establisherIndex).path \ "director" \ directorIndex \ "directorContactDetails" \ EnterEmailId.toString
 
-  implicit lazy val formats: Format[DirectorPhoneNumberId] =
-    Json.format[DirectorPhoneNumberId]
+  implicit lazy val formats: Format[EnterEmailId] =
+    Json.format[EnterEmailId]
 }
+
+

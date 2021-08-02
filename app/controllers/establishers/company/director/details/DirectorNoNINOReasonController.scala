@@ -21,7 +21,8 @@ import controllers.ReasonController
 import controllers.actions._
 import forms.ReasonFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.company.director.{DirectorNameId, DirectorNoNINOReasonId}
+import identifiers.establishers.company.director.DirectorNameId
+import identifiers.establishers.company.director.details.DirectorNoNINOReasonId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import navigators.CompoundNavigator

@@ -21,7 +21,8 @@ import controllers.actions._
 import controllers.dateOfBirth.DateOfBirthController
 import forms.DOBFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.company.director.{DirectorDOBId, DirectorNameId}
+import identifiers.establishers.company.director.DirectorNameId
+import identifiers.establishers.company.director.details.DirectorDOBId
 import models.{Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form

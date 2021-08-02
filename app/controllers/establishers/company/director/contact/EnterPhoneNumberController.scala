@@ -21,7 +21,8 @@ import controllers.PhoneController
 import controllers.actions._
 import forms.PhoneFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.company.director.{DirectorNameId, DirectorPhoneNumberId}
+import identifiers.establishers.company.director.DirectorNameId
+import identifiers.establishers.company.director.contact.EnterPhoneId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import navigators.CompoundNavigator
@@ -66,7 +67,7 @@ class EnterPhoneNumberController @Inject()(
             get(
               entityName = name(establisherIndex, directorIndex),
               entityType = Messages("messages__director"),
-              id = DirectorPhoneNumberId(establisherIndex, directorIndex),
+              id = EnterPhoneId(establisherIndex, directorIndex),
               form = form(establisherIndex, directorIndex),
               schemeName = schemeName,
               paragraphText = Seq(Messages("messages__contact_details__hint", name(establisherIndex, directorIndex)))
@@ -83,7 +84,7 @@ class EnterPhoneNumberController @Inject()(
             post(
               entityName = name(establisherIndex, directorIndex),
               entityType = Messages("messages__director"),
-              id = DirectorPhoneNumberId(establisherIndex, directorIndex),
+              id = EnterPhoneId(establisherIndex, directorIndex),
               form = form(establisherIndex, directorIndex),
               schemeName = schemeName,
               paragraphText = Seq(Messages("messages__contact_details__hint", name(establisherIndex, directorIndex))),

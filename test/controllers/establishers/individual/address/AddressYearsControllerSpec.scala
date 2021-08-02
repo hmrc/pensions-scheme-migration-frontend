@@ -83,7 +83,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       verify(mockRenderer, times(1))
-        .render(Matchers.eq("establishers/individual/address/addressYears.njk"), jsonCaptor.capture())(any())
+        .render(Matchers.eq("address/addressYears.njk"), jsonCaptor.capture())(any())
 
       (jsonCaptor.getValue \ "schemeName").toOption.map(_.as[String]) mustBe Some(Data.schemeName)
     }
@@ -103,7 +103,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       verify(mockRenderer, times(1))
-        .render(Matchers.eq("establishers/individual/address/addressYears.njk"), jsonCaptor.capture())(any())
+        .render(Matchers.eq("address/addressYears.njk"), jsonCaptor.capture())(any())
 
       jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(true)))
     }

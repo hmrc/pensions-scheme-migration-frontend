@@ -20,6 +20,8 @@ import controllers.establishers.company.director.routes
 import helpers.CYAHelper.getName
 import identifiers.establishers.company.director._
 import identifiers.establishers.company.director.address.{AddressId, AddressYearsId, PreviousAddressId}
+import identifiers.establishers.company.director.contact.{EnterEmailId, EnterPhoneId}
+import identifiers.establishers.company.director.details.{DirectorDOBId, DirectorEnterUTRId, DirectorHasNINOId, DirectorHasUTRId, DirectorNINOId, DirectorNoNINOReasonId, DirectorNoUTRReasonId}
 import models.requests.DataRequest
 import models.{CheckMode, Index}
 import play.api.i18n.Messages
@@ -140,13 +142,13 @@ class EstablisherCompanyDirectorDetailsCYAHelper
           )
       },
       Some(answerOrAddRow(
-        id                  = DirectorEmailId(establisherIndex, directorIndex),
+        id                  = EnterEmailId(establisherIndex, directorIndex),
         message             = Message("messages__enterEmail", directorName).resolve,
         url                 = Some(controllers.establishers.company.director.contact.routes.EnterEmailController.onPageLoad(establisherIndex, directorIndex,CheckMode).url),
         visuallyHiddenText  = Some(msg"messages__enterEmail__cya__visuallyHidden".withArgs(directorName))
       )),
       Some(answerOrAddRow(
-        id                  = DirectorPhoneNumberId(establisherIndex, directorIndex),
+        id                  = EnterPhoneId(establisherIndex, directorIndex),
         message             = Message("messages__enterPhone", directorName).resolve,
         url                 = Some(controllers.establishers.company.director.contact.routes.EnterPhoneNumberController.onPageLoad(establisherIndex, directorIndex, CheckMode).url),
         visuallyHiddenText  = Some(msg"messages__enterPhone__cya__visuallyHidden".withArgs(directorName))

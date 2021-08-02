@@ -21,7 +21,8 @@ import controllers.EnterReferenceValueController
 import controllers.actions._
 import forms.UTRFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.company.director.{DirectorEnterUTRId, DirectorNameId}
+import identifiers.establishers.company.director.DirectorNameId
+import identifiers.establishers.company.director.details.DirectorEnterUTRId
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
 import navigators.CompoundNavigator

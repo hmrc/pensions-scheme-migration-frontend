@@ -21,7 +21,8 @@ import controllers.EnterReferenceValueController
 import controllers.actions._
 import forms.NINOFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.company.director.{DirectorNINOId, DirectorNameId}
+import identifiers.establishers.company.director.DirectorNameId
+import identifiers.establishers.company.director.details.DirectorNINOId
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
 import navigators.CompoundNavigator
