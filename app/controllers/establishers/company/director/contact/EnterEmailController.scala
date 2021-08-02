@@ -21,7 +21,8 @@ import controllers.EmailAddressController
 import controllers.actions._
 import forms.EmailFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.company.director.{DirectorEmailId, DirectorNameId}
+import identifiers.establishers.company.director.DirectorNameId
+import identifiers.establishers.company.director.contact.EnterEmailId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import navigators.CompoundNavigator
@@ -66,7 +67,7 @@ class EnterEmailController @Inject()(
             get(
               entityName = name(establisherIndex, directorIndex),
               entityType = Messages("messages__director"),
-              id = DirectorEmailId(establisherIndex, directorIndex),
+              id = EnterEmailId(establisherIndex, directorIndex),
               form = form(establisherIndex, directorIndex),
               schemeName = schemeName,
               paragraphText = Seq(Messages("messages__contact_details__hint", name(establisherIndex, directorIndex)))
@@ -82,7 +83,7 @@ class EnterEmailController @Inject()(
             post(
               entityName = name(establisherIndex, directorIndex),
               entityType = Messages("messages__director"),
-              id = DirectorEmailId(establisherIndex, directorIndex),
+              id = EnterEmailId(establisherIndex, directorIndex),
               form = form(establisherIndex, directorIndex),
               schemeName = schemeName,
               paragraphText = Seq(Messages("messages__contact_details__hint", name(establisherIndex, directorIndex))),

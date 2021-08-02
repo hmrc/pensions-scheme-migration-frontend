@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package identifiers.establishers.company.director
+package identifiers.establishers.company.director.details
 
 import identifiers._
 import identifiers.establishers.EstablishersId

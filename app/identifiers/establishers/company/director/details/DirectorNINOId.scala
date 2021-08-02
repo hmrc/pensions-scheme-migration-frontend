@@ -14,16 +14,25 @@
  * limitations under the License.
  */
 
-package identifiers.establishers.company.director
+package identifiers.establishers.company.director.details
 
 import identifiers.TypedIdentifier
 import identifiers.establishers.EstablishersId
-import play.api.libs.json.JsPath
+import models.ReferenceValue
+import play.api.libs.json.{Format, JsPath, Json}
 
-case class DirectorNoNINOReasonId(establisherIndex: Int, directorIndex: Int) extends TypedIdentifier[String] {
-  override def path: JsPath = EstablishersId(establisherIndex).path \ "director" \ directorIndex \  DirectorNoNINOReasonId.toString
+case class DirectorNINOId(establisherIndex: Int, directorIndex: Int) extends TypedIdentifier[ReferenceValue] {
+  override def path: JsPath =
+    EstablishersId(establisherIndex).path \ "director" \ directorIndex \ DirectorNINOId.toString
 }
 
-object DirectorNoNINOReasonId {
-  override def toString: String = "noNinoReason"
+object DirectorNINOId {
+  override lazy val toString: String =
+    "nino"
+
+  implicit lazy val formats: Format[DirectorNINOId] =
+    Json.format[DirectorNINOId]
 }
+
+
+

@@ -19,7 +19,8 @@ package controllers.establishers.company.director.details
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.UTRFormProvider
-import identifiers.establishers.company.director.{DirectorEnterUTRId, DirectorNameId}
+import identifiers.establishers.company.director.DirectorNameId
+import identifiers.establishers.company.director.details.DirectorEnterUTRId
 import matchers.JsonMatchers
 import models.{NormalMode, PersonName, ReferenceValue}
 import org.mockito.ArgumentCaptor

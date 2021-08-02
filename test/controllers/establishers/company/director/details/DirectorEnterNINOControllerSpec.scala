@@ -19,7 +19,8 @@ package controllers.establishers.company.director.details
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.NINOFormProvider
-import identifiers.establishers.company.director.{DirectorNINOId, DirectorNameId}
+import identifiers.establishers.company.director.DirectorNameId
+import identifiers.establishers.company.director.details.DirectorNINOId
 import matchers.JsonMatchers
 import models.{NormalMode, PersonName, ReferenceValue}
 import org.mockito.ArgumentCaptor

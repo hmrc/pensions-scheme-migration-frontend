@@ -17,13 +17,15 @@
 package utils.datacompletion
 
 import identifiers.establishers.EstablisherKindId
-import identifiers.establishers.company.CompanyDetailsId
-import identifiers.establishers.company.details.{CompanyNumberId, CompanyUTRId, HaveCompanyNumberId, HavePAYEId, HaveUTRId, HaveVATId, NoCompanyNumberReasonId, NoUTRReasonId, PAYEId, VATId}
-import identifiers.establishers.individual.EstablisherNameId
+import identifiers.establishers.company.details._
+import identifiers.establishers.company.director.details._
+import identifiers.establishers.company.director.{address => directorAddress}
+import identifiers.establishers.company.{CompanyDetailsId, contact => companyContact}
 import identifiers.establishers.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
-import identifiers.establishers.company.{contact => companyContact}
 import identifiers.establishers.individual.details._
+import identifiers.establishers.individual.EstablisherNameId
+import identifiers.establishers.company.director.{contact => directorContact}
 import models.establishers.EstablisherKind
 import models.{CompanyDetails, PersonName, ReferenceValue}
 import org.scalatest.{MustMatchers, OptionValues, TryValues, WordSpec}
@@ -235,6 +237,115 @@ class DataCompletionEstablishersSpec
         UserAnswers().isEstablisherCompanyContactDetailsCompleted(0) mustBe None
       }
     }
+    "Director completion status should be returned correctly" when {
+      "isDirectorComplete" must {
+        "return true when all answers are present" in {
+          val ua1 =
+            UserAnswers()
+              .set(DirectorDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
+              .set(DirectorHasNINOId(0, 0), true).success.value
+              .set(DirectorNINOId(0, 0), ReferenceValue("1234567890")).success.value
+              .set(DirectorHasUTRId(0, 0), true).success.value
+              .set(DirectorEnterUTRId(0, 0), ReferenceValue("123456789")).success.value
+              .setOrException(directorAddress.AddressId(0, 0), Data.address)
+              .setOrException(directorAddress.AddressYearsId(0, 0), true)
+              .set(directorContact.EnterEmailId(0, 0), "test@test.com").success.value
+              .set(directorContact.EnterPhoneId(0, 0), "123").success.value
 
+          val ua2 =
+            UserAnswers()
+              .set(DirectorDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
+              .set(DirectorHasNINOId(0, 0), false).success.value
+              .set(DirectorNoNINOReasonId(0, 0), "Reason").success.value
+              .set(DirectorHasUTRId(0, 0), false).success.value
+              .set(DirectorNoUTRReasonId(0, 0), "Reason").success.value
+              .setOrException(directorAddress.AddressId(0, 0), Data.address)
+              .setOrException(directorAddress.AddressYearsId(0, 0), false)
+              .setOrException(directorAddress.PreviousAddressId(0, 0), Data.address)
+              .set(directorContact.EnterEmailId(0, 0), "test@test.com").success.value
+              .set(directorContact.EnterPhoneId(0, 0), "123").success.value
+
+          ua1.isDirectorComplete(0, 0) mustBe true
+          ua2.isDirectorComplete(0, 0) mustBe true
+        }
+
+        "return false when some answer is missing" in {
+          val ua =
+            UserAnswers()
+              .set(DirectorDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
+              .set(DirectorHasNINOId(0, 0), false).success.value
+              .set(DirectorHasUTRId(0, 0), false).success.value
+              .setOrException(directorAddress.AddressId(0, 0), Data.address)
+              .setOrException(directorAddress.AddressYearsId(0, 0), false)
+
+          ua.isDirectorComplete(0,0) mustBe false
+        }
+      }
+    }
+  }
+
+    "Director Details completion status should be returned correctly" when {
+      "isDirectorDetailsComplete" must {
+        "return true when all answers are present" in {
+          val ua1 =
+            UserAnswers()
+              .set(DirectorDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
+              .set(DirectorHasNINOId(0, 0), true).success.value
+              .set(DirectorNINOId(0, 0), ReferenceValue("1234567890")).success.value
+              .set(DirectorHasUTRId(0, 0), true).success.value
+              .set(DirectorEnterUTRId(0, 0), ReferenceValue("123456789")).success.value
+
+          val ua2 =
+            UserAnswers()
+              .set(DirectorDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
+              .set(DirectorHasNINOId(0, 0), false).success.value
+              .set(DirectorNoNINOReasonId(0, 0), "Reason").success.value
+              .set(DirectorHasUTRId(0, 0), false).success.value
+              .set(DirectorNoUTRReasonId(0, 0), "Reason").success.value
+
+          ua1.isDirectorDetailsComplete(0, 0) mustBe Some(true)
+          ua2.isDirectorDetailsComplete(0, 0) mustBe Some(true)
+        }
+
+        "return false when some answer is missing" in {
+          val ua =
+            UserAnswers()
+              .set(DirectorDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
+              .set(DirectorHasNINOId(0, 0), false).success.value
+              .set(DirectorHasUTRId(0, 0), false).success.value
+
+          ua.isDirectorDetailsComplete(0,0) mustBe Some(false)
+        }
+      }
+    }
+
+  "Director Address completion status should be returned correctly" when {
+
+  "isDirectorAddressComplete" must {
+      "return true when all answers are present" in {
+        val ua1 =
+          UserAnswers()
+            .setOrException(directorAddress.AddressId(0, 0), Data.address)
+            .setOrException(directorAddress.AddressYearsId(0, 0), true)
+
+        val ua2 =
+          UserAnswers()
+            .setOrException(directorAddress.AddressId(0, 0), Data.address)
+            .setOrException(directorAddress.AddressYearsId(0, 0), false)
+            .setOrException(directorAddress.PreviousAddressId(0, 0), Data.address)
+
+        ua1.isDirectorAddressComplete(0, 0) mustBe Some(true)
+        ua2.isDirectorAddressComplete(0, 0) mustBe Some(true)
+      }
+
+      "return false when some answer is missing" in {
+        val ua =
+          UserAnswers()
+            .setOrException(directorAddress.AddressId(0, 0), Data.address)
+            .setOrException(directorAddress.AddressYearsId(0, 0), false)
+
+        ua.isDirectorAddressComplete(0,0) mustBe Some(false)
+      }
+    }
   }
 }

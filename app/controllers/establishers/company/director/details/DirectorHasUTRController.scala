@@ -21,7 +21,8 @@ import controllers.HasReferenceValueController
 import controllers.actions._
 import forms.HasReferenceNumberFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.company.director.{DirectorHasUTRId, DirectorNameId}
+import identifiers.establishers.company.director.DirectorNameId
+import identifiers.establishers.company.director.details.DirectorHasUTRId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import navigators.CompoundNavigator

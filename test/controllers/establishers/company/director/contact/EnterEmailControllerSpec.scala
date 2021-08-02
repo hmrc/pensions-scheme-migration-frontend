@@ -19,7 +19,8 @@ package controllers.establishers.company.director.contact
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.EmailFormProvider
-import identifiers.establishers.company.director.{DirectorEmailId, DirectorNameId}
+import identifiers.establishers.company.director.DirectorNameId
+import identifiers.establishers.company.director.contact.EnterEmailId
 import matchers.JsonMatchers
 import models.{NormalMode, PersonName}
 import org.mockito.ArgumentCaptor
@@ -102,7 +103,7 @@ class EnterEmailControllerSpec extends ControllerSpecBase
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val ua = userAnswers.set(DirectorEmailId(0,0), formData).success.value
+      val ua = userAnswers.set(EnterEmailId(0,0), formData).success.value
       val getData = new FakeDataRetrievalAction(Some(ua))
 
       val result: Future[Result] =

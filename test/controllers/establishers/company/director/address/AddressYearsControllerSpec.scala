@@ -29,7 +29,6 @@ import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, Matchers}
 import play.api.Application
 import play.api.data.Form
-import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers._
@@ -48,18 +47,15 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
   private val httpPathGET: String = controllers.establishers.company.director.address.routes.AddressYearsController.onPageLoad(0, 0, NormalMode).url
-  private val httpPathPOST: String = controllers.establishers.company.director.address.routes.AddressYearsController.onSubmit(0, 0, NormalMode).url
   private val httpPathGETCheck: String = controllers.establishers.company.director.address.routes.AddressYearsController.onPageLoad(0, 0, CheckMode).url
-  private val httpPathPOSTCheck: String = controllers.establishers.company.director.address.routes.AddressYearsController.onSubmit(0, 0, CheckMode).url
+  private val httpPathPOST: String = controllers.establishers.company.director.address.routes.AddressYearsController.onSubmit(0, 0, NormalMode).url
   private val form: Form[Boolean] = new AddressYearsFormProvider()()
 
   private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>
     Json.obj(
       "form" -> form,
       "schemeName" -> schemeName,
-      "radios" -> Radios.yesNo(form("value")),
-      "entityName" -> personName.fullName,
-      "entityType" -> Messages("messages__director")
+      "radios" -> Radios.yesNo(form("value"))
     )
 
   private val valuesValid: Map[String, Seq[String]] = Map(

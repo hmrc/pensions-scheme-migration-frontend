@@ -22,6 +22,8 @@ import controllers.establishers.company.director.details.routes._
 import identifiers._
 import identifiers.establishers.company.director._
 import identifiers.establishers.company.director.address._
+import identifiers.establishers.company.director.contact.{EnterEmailId, EnterPhoneId}
+import identifiers.establishers.company.director.details.{DirectorDOBId, DirectorEnterUTRId, DirectorHasNINOId, DirectorHasUTRId, DirectorNINOId, DirectorNoNINOReasonId, DirectorNoUTRReasonId}
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode, NormalMode}
 import play.api.mvc.{AnyContent, Call}
@@ -51,8 +53,8 @@ class EstablishersCompanyDirectorNavigator
     case EnterPreviousPostCodeId(establisherIndex, directorIndex) => selectPrevAddress(establisherIndex, directorIndex, NormalMode)
     case PreviousAddressId(establisherIndex, directorIndex) => email(establisherIndex, directorIndex, NormalMode)
     case PreviousAddressListId(establisherIndex, directorIndex) => email(establisherIndex, directorIndex, NormalMode)
-    case DirectorEmailId(establisherIndex, directorIndex) => EnterPhoneNumberController.onPageLoad(establisherIndex, directorIndex, NormalMode)
-    case DirectorPhoneNumberId(establisherIndex, directorIndex) =>cyaDetails(establisherIndex,directorIndex)
+    case EnterEmailId(establisherIndex, directorIndex) => EnterPhoneNumberController.onPageLoad(establisherIndex, directorIndex, NormalMode)
+    case EnterPhoneId(establisherIndex, directorIndex) =>cyaDetails(establisherIndex,directorIndex)
     case ConfirmDeleteDirectorId(establisherIndex) => controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(establisherIndex,NormalMode)
   }
 
@@ -75,8 +77,8 @@ class EstablishersCompanyDirectorNavigator
     case EnterPreviousPostCodeId(establisherIndex, directorIndex) => selectPrevAddress(establisherIndex, directorIndex, CheckMode)
     case PreviousAddressId(establisherIndex, directorIndex) => cyaDetails(establisherIndex,directorIndex)
     case PreviousAddressListId(establisherIndex, directorIndex) => cyaDetails(establisherIndex,directorIndex)
-    case DirectorEmailId(establisherIndex, directorIndex) => cyaDetails(establisherIndex,directorIndex)
-    case DirectorPhoneNumberId(establisherIndex, directorIndex) => cyaDetails(establisherIndex,directorIndex)
+    case EnterEmailId(establisherIndex, directorIndex) => cyaDetails(establisherIndex,directorIndex)
+    case EnterPhoneId(establisherIndex, directorIndex) => cyaDetails(establisherIndex,directorIndex)
   }
 
   private def cyaDetails(establisherIndex:Int,directorIndex:Int): Call = CheckYourAnswersController.onPageLoad(establisherIndex,directorIndex)

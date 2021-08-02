@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package identifiers.establishers.company.director
+package identifiers.establishers.company.director.details
 
 import identifiers.TypedIdentifier
 import identifiers.establishers.EstablishersId
@@ -23,7 +23,7 @@ import utils.UserAnswers
 
 case class DirectorHasNINOId(establisherIndex: Int, directorIndex: Int) extends TypedIdentifier[Boolean] {
   override def path: JsPath =
-    EstablishersId(establisherIndex).path \ "director" \ directorIndex \  DirectorHasNINOId.toString
+    EstablishersId(establisherIndex).path \ "director" \ directorIndex \ DirectorHasNINOId.toString
 
   override def cleanup(
                         value: Option[Boolean],

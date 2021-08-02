@@ -14,25 +14,16 @@
  * limitations under the License.
  */
 
-package identifiers.establishers.company.director
+package identifiers.establishers.company.director.details
 
 import identifiers.TypedIdentifier
 import identifiers.establishers.EstablishersId
-import models.ReferenceValue
-import play.api.libs.json.{Format, JsPath, Json}
+import play.api.libs.json.JsPath
 
-case class DirectorNINOId(establisherIndex: Int, directorIndex: Int) extends TypedIdentifier[ReferenceValue] {
-  override def path: JsPath =
-    EstablishersId(establisherIndex).path \ "director" \ directorIndex \ DirectorNINOId.toString
+case class CheckYourAnswersId(establisherIndex: Int, directorIndex: Int) extends TypedIdentifier[String] {
+  override def path: JsPath = EstablishersId(establisherIndex).path \ "director" \ directorIndex \ CheckYourAnswersId.toString
 }
 
-object DirectorNINOId {
-  override lazy val toString: String =
-    "nino"
-
-  implicit lazy val formats: Format[DirectorNINOId] =
-    Json.format[DirectorNINOId]
+object CheckYourAnswersId {
+  override def toString: String = "checkYourAnswers"
 }
-
-
-

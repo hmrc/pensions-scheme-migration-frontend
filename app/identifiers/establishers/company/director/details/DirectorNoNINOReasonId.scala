@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package identifiers.establishers.company.director
+package identifiers.establishers.company.director.details
 
-import identifiers._
+import identifiers.TypedIdentifier
 import identifiers.establishers.EstablishersId
 import play.api.libs.json.JsPath
 
-case class DirectorNoUTRReasonId(establisherIndex: Int, directorIndex: Int) extends TypedIdentifier[String] {
-  override def path: JsPath =EstablishersId(establisherIndex).path \ "director" \ directorIndex \ DirectorNoUTRReasonId.toString
+case class DirectorNoNINOReasonId(establisherIndex: Int, directorIndex: Int) extends TypedIdentifier[String] {
+  override def path: JsPath = EstablishersId(establisherIndex).path \ "director" \ directorIndex \ DirectorNoNINOReasonId.toString
 }
 
-object DirectorNoUTRReasonId {
-  override def toString: String = "noUtrReason"
-  }
-
+object DirectorNoNINOReasonId {
+  override def toString: String = "noNinoReason"
+}
