@@ -18,8 +18,10 @@ package navigators
 
 import base.SpecBase
 import controllers.establishers.company.director.details
+import identifiers.establishers.company.director.{ConfirmDeleteDirectorId, DirectorNameId}
 import identifiers.establishers.company.director.address._
-import identifiers.establishers.company.director.{DirectorDOBId, DirectorEmailId, DirectorNameId, DirectorPhoneNumberId, _}
+import identifiers.establishers.company.director.contact.{EnterEmailId, EnterPhoneId}
+import identifiers.establishers.company.director.details.{DirectorDOBId, DirectorEnterUTRId, DirectorHasNINOId, DirectorHasUTRId, DirectorNINOId, DirectorNoNINOReasonId, DirectorNoUTRReasonId}
 import identifiers.{Identifier, TypedIdentifier}
 import models.{CheckMode, Index, Mode, NormalMode, PersonName, ReferenceValue, _}
 import org.scalatest.TryValues
@@ -113,8 +115,8 @@ class EstablishersCompanyDirectorNavigatorSpec
         row(EnterPreviousPostCodeId(establisherIndex,directorIndex))(selectPreviousAddress(establisherIndex,directorIndex,NormalMode), addressUAWithValue(EnterPreviousPostCodeId(establisherIndex,directorIndex), seqAddresses)),
         row(PreviousAddressListId(establisherIndex,directorIndex))(enterEmailPage(establisherIndex,directorIndex,NormalMode), addressUAWithValue(PreviousAddressListId(establisherIndex,directorIndex), 0)),
         row(PreviousAddressId(establisherIndex,directorIndex))(enterEmailPage(establisherIndex,directorIndex,NormalMode), addressUAWithValue(PreviousAddressId(establisherIndex,directorIndex), address)),
-        row(DirectorEmailId(establisherIndex,directorIndex))(enterPhonePage(establisherIndex,directorIndex,NormalMode), Some(detailsUa.set(DirectorEmailId(establisherIndex,directorIndex), "test@test.com").success.value)),
-        row(DirectorPhoneNumberId(establisherIndex,directorIndex))(cya, Some(detailsUa.set(DirectorPhoneNumberId(establisherIndex,directorIndex), "1234").success.value)),
+        row(EnterEmailId(establisherIndex,directorIndex))(enterPhonePage(establisherIndex,directorIndex,NormalMode), Some(detailsUa.set(EnterEmailId(establisherIndex,directorIndex), "test@test.com").success.value)),
+        row(EnterPhoneId(establisherIndex,directorIndex))(cya, Some(detailsUa.set(EnterPhoneId(establisherIndex,directorIndex), "1234").success.value)),
         row(ConfirmDeleteDirectorId(directorIndex))(addAddCompanyDirectorsPage(directorIndex,NormalMode), Some(detailsUa.set(ConfirmDeleteDirectorId(directorIndex),true).success.value))
       )
 
@@ -139,8 +141,8 @@ class EstablishersCompanyDirectorNavigatorSpec
         row(EnterPreviousPostCodeId(establisherIndex,directorIndex))(selectPreviousAddress(establisherIndex,directorIndex,CheckMode), addressUAWithValue(EnterPreviousPostCodeId(establisherIndex,directorIndex), seqAddresses)),
         row(PreviousAddressListId(establisherIndex,directorIndex))(cya, addressUAWithValue(PreviousAddressListId(establisherIndex,directorIndex), 0)),
         row(PreviousAddressId(establisherIndex,directorIndex))(cya, addressUAWithValue(PreviousAddressId(establisherIndex,directorIndex), address)),
-        row(DirectorEmailId(establisherIndex,directorIndex))(cya, Some(detailsUa.set(DirectorEmailId(establisherIndex,directorIndex), "test@test.com").success.value)),
-        row(DirectorPhoneNumberId(establisherIndex,directorIndex))(cya, Some(detailsUa.set(DirectorPhoneNumberId(establisherIndex,directorIndex), "1234").success.value))
+        row(EnterEmailId(establisherIndex,directorIndex))(cya, Some(detailsUa.set(EnterEmailId(establisherIndex,directorIndex), "test@test.com").success.value)),
+        row(EnterPhoneId(establisherIndex,directorIndex))(cya, Some(detailsUa.set(EnterPhoneId(establisherIndex,directorIndex), "1234").success.value))
       )
 
     "in NormalMode" must {
