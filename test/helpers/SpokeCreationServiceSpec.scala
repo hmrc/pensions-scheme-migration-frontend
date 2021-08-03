@@ -29,6 +29,8 @@ import identifiers.trustees.TrusteeKindId
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.contact.{EnterEmailId => TrusteeEmailId, EnterPhoneId => TrusteePhoneId}
 import identifiers.trustees.individual.details.{TrusteeDOBId, TrusteeNINOId, TrusteeUTRId}
+//import identifiers.trustees.company.CompanyDetailsId
+//import identifiers.trustees.company.contacts.EnterPhoneId
 import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind
 import models.{EntitySpoke, _}
@@ -339,6 +341,35 @@ class SpokeCreationServiceSpec
         spokeCreationService.getTrusteeIndividualSpokes(
           answers = userAnswers,
           name = "a b",
+          index = 0
+        )
+      result mustBe expectedSpoke
+    }
+  }
+
+  "getTrusteeCompanySpokes" must {
+    "display all the spokes with appropriate links and incomplete status when no data is returned from TPSS" in {
+      val userAnswers =
+        ua
+          .set(TrusteeKindId(0), TrusteeKind.Company).success.value
+          .set(CompanyDetailsId(0), CompanyDetails("test",false)).success.value
+
+      val expectedSpoke =
+        Seq(
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Add contact details for test",
+              target = controllers.trustees.company.contacts.routes.WhatYouWillNeedCompanyContactController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = None
+          )
+        )
+
+      val result =
+        spokeCreationService.getTrusteeCompanySpokes(
+          answers = userAnswers,
+          name = "test",
           index = 0
         )
       result mustBe expectedSpoke

@@ -34,7 +34,7 @@ import utils.Data.{credId, psaId, pstr, schemeName}
 import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 
-class EstablisherCompanyContactDetailsCYAHelperSpec extends WordSpec with MustMatchers with TryValues with Enumerable.Implicits {
+class TrusteeCompanyContactDetailsCYAHelperSpec extends WordSpec with MustMatchers with TryValues with Enumerable.Implicits {
 
   val establisherCompanyContactDetailsCYAHelper = new EstablisherCompanyContactDetailsCYAHelper
 
