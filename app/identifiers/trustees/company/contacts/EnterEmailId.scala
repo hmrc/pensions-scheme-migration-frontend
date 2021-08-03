@@ -17,12 +17,12 @@
 package identifiers.trustees.company.contacts
 
 import identifiers.TypedIdentifier
-import identifiers.establishers.EstablishersId
+import identifiers.trustees.TrusteesId
 import play.api.libs.json.{Format, JsPath, Json}
 
 case class EnterEmailId(index: Int) extends TypedIdentifier[String] {
   override def path: JsPath =
-    EstablishersId(index).path \ EnterEmailId.toString
+    TrusteesId(index).path \ EnterEmailId.toString
 }
 
 object EnterEmailId {
@@ -30,7 +30,7 @@ object EnterEmailId {
     "companyEmail"
 
   def collectionPath(index: Int): JsPath =
-    EstablishersId(index).path \ EnterEmailId.toString
+    TrusteesId(index).path \ EnterEmailId.toString
 
   implicit lazy val formats: Format[EnterEmailId] =
     Json.format[EnterEmailId]

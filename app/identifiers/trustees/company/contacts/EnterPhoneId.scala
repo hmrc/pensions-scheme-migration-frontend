@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package identifiers.establishers.company.contact
+package identifiers.trustees.company.contacts
 
 import identifiers.TypedIdentifier
-import identifiers.establishers.EstablishersId
+import identifiers.trustees.TrusteesId
 import play.api.libs.json.{Format, JsPath, Json}
 
 case class EnterPhoneId(index: Int) extends TypedIdentifier[String] {
   override def path: JsPath =
-    EstablishersId(index).path \ EnterPhoneId.toString
+    TrusteesId(index).path \ EnterPhoneId.toString
 }
 
 object EnterPhoneId {
@@ -30,7 +30,7 @@ object EnterPhoneId {
     "companyPhone"
 
   def collectionPath(index: Int): JsPath =
-    EstablishersId(index).path \ EnterPhoneId.toString
+    TrusteesId(index).path \ EnterPhoneId.toString
 
   implicit lazy val formats: Format[EnterPhoneId] =
     Json.format[EnterPhoneId]
