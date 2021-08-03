@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.trustees.individual.address
+package controllers.trustees.company.address
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.trustees.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.trustees.individual.TrusteeNameId
-import identifiers.trustees.individual.address.AddressYearsId
+import identifiers.trustees.company.CompanyDetailsId
+import identifiers.trustees.company.address.AddressYearsId
 import matchers.JsonMatchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -41,11 +41,11 @@ import scala.concurrent.Future
 
 class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
-  private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(TrusteeNameId(0), Data.trusteeIndividualName))
+  private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(CompanyDetailsId(0), Data.establisherCompanyDetails))
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
-  private val httpPathGET: String = controllers.trustees.individual.address.routes.AddressYearsController.onPageLoad(0).url
-  private val httpPathPOST: String = controllers.trustees.individual.address.routes.AddressYearsController.onSubmit(0).url
+  private val httpPathGET: String = controllers.trustees.company.address.routes.AddressYearsController.onPageLoad(0).url
+  private val httpPathPOST: String = controllers.trustees.company.address.routes.AddressYearsController.onSubmit(0).url
   private val form: Form[Boolean] = new AddressYearsFormProvider()()
 
   private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>
@@ -73,7 +73,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
     "Return OK and the correct view for a GET" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, Data.schemeName)
-        .setOrException(TrusteeNameId(0), Data.trusteeIndividualName)
+        .setOrException(CompanyDetailsId(0), Data.establisherCompanyDetails)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
       val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
@@ -83,7 +83,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       verify(mockRenderer, times(1))
-        .render(Matchers.eq("trustees/individual/address/addressYears.njk"), jsonCaptor.capture())(any())
+        .render(Matchers.eq("trustees/company/address/addressYears.njk"), jsonCaptor.capture())(any())
 
       (jsonCaptor.getValue \ "schemeName").toOption.map(_.as[String]) mustBe Some(Data.schemeName)
     }
@@ -91,7 +91,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
     "return OK and the correct view for a GET when the question has previously been answered" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, Data.schemeName)
-        .setOrException(TrusteeNameId(0), Data.trusteeIndividualName)
+        .setOrException(CompanyDetailsId(0), Data.establisherCompanyDetails)
         .setOrException(AddressYearsId(0), true)
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
@@ -103,7 +103,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       verify(mockRenderer, times(1))
-        .render(Matchers.eq("trustees/individual/address/addressYears.njk"), jsonCaptor.capture())(any())
+        .render(Matchers.eq("trustees/company/address/addressYears.njk"), jsonCaptor.capture())(any())
 
       jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(true)))
     }

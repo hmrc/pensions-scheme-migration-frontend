@@ -362,6 +362,14 @@ class SpokeCreationServiceSpec
             visuallyHiddenText = None
           ),
           isCompleted = None
+        ),
+          EntitySpoke(
+          link = TaskListLink(
+            text = "Add address for test",
+            target = controllers.trustees.company.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
+            visuallyHiddenText = None
+          ),
+          isCompleted = None
         )
         )
 
@@ -393,6 +401,14 @@ class SpokeCreationServiceSpec
             visuallyHiddenText = None
           ),
           isCompleted = Some(false)
+        ),
+        EntitySpoke(
+          link = TaskListLink(
+            text = "Add address for test",
+            target = controllers.trustees.company.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
+            visuallyHiddenText = None
+          ),
+          isCompleted = None
         )
       )
 
@@ -429,6 +445,14 @@ class SpokeCreationServiceSpec
             visuallyHiddenText = None
           ),
           isCompleted = Some(true)
+        ),
+        EntitySpoke(
+          link = TaskListLink(
+            text = "Add address for test",
+            target = controllers.trustees.company.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
+            visuallyHiddenText = None
+          ),
+          isCompleted = None
         )
       )
 

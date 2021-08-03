@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.trustees.individual.address
+package controllers.trustees.company.address
 
 import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.trustees.individual.TrusteeNameId
-import identifiers.trustees.individual.address.PreviousAddressId
+import identifiers.trustees.company.CompanyDetailsId
+import identifiers.trustees.company.address.PreviousAddressId
 import matchers.JsonMatchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -48,13 +48,13 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with Nunju
   )
 
   private val ua: UserAnswers =
-    Data.ua.setOrException(TrusteeNameId(0), Data.trusteeIndividualName)
+    Data.ua.setOrException(CompanyDetailsId(0), Data.establisherCompanyDetails)
 
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = controllers.trustees.individual.address.routes.ConfirmPreviousAddressController.onPageLoad(0).url
-  private val httpPathPOST: String = controllers.trustees.individual.address.routes.ConfirmPreviousAddressController.onSubmit(0).url
+  private val httpPathGET: String = controllers.trustees.company.address.routes.ConfirmPreviousAddressController.onPageLoad(0).url
+  private val httpPathPOST: String = controllers.trustees.company.address.routes.ConfirmPreviousAddressController.onSubmit(0).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "line1" -> Seq("1"),
@@ -80,7 +80,7 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with Nunju
     "Return OK and the correct view for a GET" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, Data.schemeName)
-        .setOrException(TrusteeNameId(0), Data.trusteeIndividualName)
+        .setOrException(CompanyDetailsId(0), Data.establisherCompanyDetails)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
       val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package controllers.trustees.individual.address
+package controllers.trustees.company.address
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import helpers.cya.trustees.individual.TrusteeAddressCYAHelper
+import helpers.cya.trustees.company.TrusteeAddressCYAHelper
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
@@ -42,7 +42,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
 
   private val templateToBeRendered = "check-your-answers.njk"
   private val mockCyaHelper: TrusteeAddressCYAHelper = mock[TrusteeAddressCYAHelper]
-  private def httpPathGET: String = controllers.trustees.individual.address.routes.CheckYourAnswersController.onPageLoad(0).url
+  private def httpPathGET: String = controllers.trustees.company.address.routes.CheckYourAnswersController.onPageLoad(0).url
   val extraModules: Seq[GuiceableModule] = Seq(
     bind[TrusteeAddressCYAHelper].toInstance(mockCyaHelper)
   )

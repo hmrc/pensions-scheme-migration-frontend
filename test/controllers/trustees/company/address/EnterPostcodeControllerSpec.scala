@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.trustees.individual.address
+package controllers.trustees.company.address
 
 import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
@@ -50,8 +50,8 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with NunjucksSuppor
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = controllers.trustees.individual.address.routes.EnterPostcodeController.onPageLoad(0).url
-  private val httpPathPOST: String = controllers.trustees.individual.address.routes.EnterPostcodeController.onSubmit(0).url
+  private val httpPathGET: String = controllers.trustees.company.address.routes.EnterPostcodeController.onPageLoad(0).url
+  private val httpPathPOST: String = controllers.trustees.company.address.routes.EnterPostcodeController.onSubmit(0).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq("ZZ11ZZ")

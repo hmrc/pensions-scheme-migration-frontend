@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.trustees.individual.address
+package controllers.trustees.company.address
 
 import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.trustees.individual.address.AddressId
+import identifiers.trustees.company.address.AddressId
 import matchers.JsonMatchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -50,8 +50,8 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = controllers.trustees.individual.address.routes.ConfirmAddressController.onPageLoad(0).url
-  private val httpPathPOST: String = controllers.trustees.individual.address.routes.ConfirmAddressController.onSubmit(0).url
+  private val httpPathGET: String = controllers.trustees.company.address.routes.ConfirmAddressController.onPageLoad(0).url
+  private val httpPathPOST: String = controllers.trustees.company.address.routes.ConfirmAddressController.onSubmit(0).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "line1" -> Seq("1"),

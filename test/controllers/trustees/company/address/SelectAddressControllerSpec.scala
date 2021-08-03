@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package controllers.trustees.individual.address
+package controllers.trustees.company.address
 
 import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import identifiers.trustees.individual.address.EnterPostCodeId
+import identifiers.trustees.company.address.EnterPostCodeId
 import matchers.JsonMatchers
 import models.TolerantAddress
 import org.mockito.Matchers.any
@@ -48,8 +48,8 @@ class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = controllers.trustees.individual.address.routes.SelectAddressController.onPageLoad(0).url
-  private val httpPathPOST: String = controllers.trustees.individual.address.routes.SelectAddressController.onSubmit(0).url
+  private val httpPathGET: String = controllers.trustees.company.address.routes.SelectAddressController.onPageLoad(0).url
+  private val httpPathPOST: String = controllers.trustees.company.address.routes.SelectAddressController.onSubmit(0).url
 
   private val seqAddresses = Seq(
     TolerantAddress(Some("1"),Some("1"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")),

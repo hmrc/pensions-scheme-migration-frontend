@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package controllers.trustees.individual.address
+package controllers.trustees.company.address
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.company.CompanyDetailsId
 import matchers.JsonMatchers
-import models.PersonName
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -32,7 +31,7 @@ import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.ua
-import utils.UserAnswers
+import utils.{Data, UserAnswers}
 
 import scala.concurrent.Future
 
@@ -42,16 +41,14 @@ class WhatYouWillNeedControllerSpec
     with JsonMatchers
     with TryValues {
 
-  private val personName: PersonName =
-    PersonName("Jane", "Doe")
   private val userAnswers: UserAnswers =
-    ua.set(TrusteeNameId(0), personName).success.value
+    ua.set(CompanyDetailsId(0), Data.establisherCompanyDetails).success.value
   private val templateToBeRendered: String =
-    "trustees/individual/address/whatYouWillNeed.njk"
+    "trustees/company/address/whatYouWillNeed.njk"
   private def json: JsObject =
     Json.obj(
-      "name"        -> "Jane Doe",
-      "continueUrl" -> controllers.trustees.individual.address.routes.EnterPostcodeController.onPageLoad(0).url,
+      "name"        -> Data.establisherCompanyDetails.companyName,
+      "continueUrl" -> controllers.trustees.company.address.routes.EnterPostcodeController.onPageLoad(0).url,
       "schemeName"  -> "Test scheme name"
     )
 
