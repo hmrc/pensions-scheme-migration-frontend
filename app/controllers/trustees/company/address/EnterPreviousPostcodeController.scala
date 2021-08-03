@@ -51,7 +51,7 @@ class EnterPreviousPostcodeController @Inject()(val appConfig: AppConfig,
                                                val renderer: Renderer
                                               )(implicit val ec: ExecutionContext) extends PostcodeController with I18nSupport with NunjucksSupport {
 
-  def form: Form[String] = formProvider("trusteeEnterPreviousPostcode.required", "trusteeEnterPreviousPostcode.invalid")
+  def form: Form[String] = formProvider("trusteeCompanyEnterPreviousPostcode.required", "trusteeCompanyEnterPreviousPostcode.invalid")
 
   def formWithError(messageKey: String): Form[String] = {
     form.withError("value", s"messages__error__postcode_$messageKey")
