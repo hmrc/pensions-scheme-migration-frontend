@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.establishers.company.contact
+package controllers.trustees.company.contacts
 
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.EmailFormProvider
-import identifiers.establishers.company.CompanyDetailsId
-import identifiers.establishers.company.contact.EnterEmailId
+import identifiers.trustees.company.CompanyDetailsId
+import identifiers.trustees.company.contacts.EnterEmailId
 import matchers.JsonMatchers
 import models.{CompanyDetails, NormalMode}
 import org.mockito.ArgumentCaptor

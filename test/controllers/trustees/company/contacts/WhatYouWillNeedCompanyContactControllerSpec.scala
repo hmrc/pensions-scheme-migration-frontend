@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package controllers.establishers.company.contact
+package controllers.trustees.company.contacts
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import identifiers.establishers.company.CompanyDetailsId
+import identifiers.trustees.company.CompanyDetailsId
 import matchers.JsonMatchers
 import models.{CompanyDetails, NormalMode}
 import org.mockito.ArgumentCaptor
@@ -48,7 +48,7 @@ class WhatYouWillNeedCompanyContactControllerSpec
   private def json: JsObject =
     Json.obj(
       "name"        -> company.companyName,
-      "continueUrl" -> controllers.establishers.company.contact.routes.EnterEmailController.onPageLoad(0, NormalMode).url,
+      "continueUrl" -> controllers.trustees.company.contacts.routes.EnterEmailController.onPageLoad(0, NormalMode).url,
       "schemeName"  -> schemeName
     )
 
