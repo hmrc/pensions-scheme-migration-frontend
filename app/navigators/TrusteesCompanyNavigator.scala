@@ -16,11 +16,14 @@
 
 package navigators
 
+import controllers.trustees.company.contacts.routes._
 import controllers.routes._
 import controllers.trustees.routes._
 import identifiers._
 import identifiers.trustees.company.CompanyDetailsId
 import models.requests.DataRequest
+import models.{Mode, NormalMode}
+import identifiers.trustees.company.contacts.{EnterEmailId, EnterPhoneId}
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
 
@@ -32,12 +35,17 @@ class TrusteesCompanyNavigator
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case CompanyDetailsId(_) => AddTrusteeController.onPageLoad()
+    case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
+    case EnterPhoneId(index) => cyaContactDetails(index)
 
   }
 
   override protected def editRouteMap(ua: UserAnswers)
                                      (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case CompanyDetailsId(_) => IndexController.onPageLoad()
+    case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
+    case EnterPhoneId(index) => cyaContactDetails(index)
   }
 
+  private def cyaContactDetails(index:Int): Call = controllers.trustees.company.contacts.routes.CheckYourAnswersController.onPageLoad(index)
 }
