@@ -21,6 +21,7 @@ import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
+import identifiers.trustees.company.{contacts => companyContact}
 import identifiers.trustees.individual.details._
 import utils.UserAnswers
 
@@ -73,4 +74,12 @@ trait DataCompletionTrustees extends DataCompletion {
         isAnswerComplete(TrusteeKindId(index))
       )
     ).getOrElse(false)
+
+  def isTrusteeCompanyContactDetailsCompleted(index: Int): Option[Boolean] =
+    isComplete(
+      Seq(
+        isAnswerComplete(companyContact.EnterEmailId(index)),
+        isAnswerComplete(companyContact.EnterPhoneId(index))
+      )
+    )
 }
