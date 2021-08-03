@@ -29,8 +29,6 @@ import identifiers.trustees.TrusteeKindId
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.contact.{EnterEmailId => TrusteeEmailId, EnterPhoneId => TrusteePhoneId}
 import identifiers.trustees.individual.details.{TrusteeDOBId, TrusteeNINOId, TrusteeUTRId}
-//import identifiers.trustees.company.CompanyDetailsId
-//import identifiers.trustees.company.contacts.EnterPhoneId
 import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind
 import models.{EntitySpoke, _}
