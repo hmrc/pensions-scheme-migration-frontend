@@ -18,7 +18,7 @@ package controllers.trustees.company.contacts
 
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import helpers.{CYAHelper, EstablisherCompanyContactDetailsCYAHelper}
+import helpers.{CYAHelper, EstablisherCompanyContactDetailsCYAHelper, TrusteeCompanyContactDetailsCYAHelper}
 import identifiers.beforeYouStart.SchemeNameId
 import models.Index
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -36,7 +36,7 @@ class CheckYourAnswersController @Inject()(
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            cyaHelper: EstablisherCompanyContactDetailsCYAHelper,
+                                            cyaHelper: TrusteeCompanyContactDetailsCYAHelper,
                                             val controllerComponents: MessagesControllerComponents,
                                             renderer: Renderer
                                           )(implicit val ec: ExecutionContext)
