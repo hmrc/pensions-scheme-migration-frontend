@@ -171,7 +171,6 @@ messages__schemeTaskList__contactDetails_changeLink = Change contact details for
 
 
 messages__individual = the individual
-messages__company = the company
 messages__establisher = the establisher
 messages__company = the company
 messages__trustee = the trustee
