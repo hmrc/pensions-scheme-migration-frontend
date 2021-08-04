@@ -51,7 +51,7 @@ trait CommonAddressYearsController extends FrontendBaseController
                      implicit request: DataRequest[AnyContent],
                      ec: ExecutionContext): Future[Result] = {
     val filledForm = request.userAnswers.get(addressYearsId).fold(form)(form.fill)
-    renderer.render(viewTemplate, json(schemeName, entityType, entityName, filledForm)).map(Ok(_))
+    renderer.render(viewTemplate, json(schemeName, entityName, entityType, filledForm)).map(Ok(_))
   }
 
   protected def post(schemeName: Option[String],
@@ -66,7 +66,7 @@ trait CommonAddressYearsController extends FrontendBaseController
       .bindFromRequest()
       .fold(
         formWithErrors => {
-          renderer.render(viewTemplate, json(schemeName, entityType, entityName, formWithErrors)).map(BadRequest(_))
+          renderer.render(viewTemplate, json(schemeName, entityName, entityType, formWithErrors)).map(BadRequest(_))
         },
         value =>
           for {
