@@ -18,25 +18,25 @@ package identifiers.trustees.company.address
 
 import identifiers.TypedIdentifier
 import identifiers.trustees.TrusteesId
-import play.api.libs.json.{Format, Json, JsPath}
+import play.api.libs.json.{Format, JsPath, Json}
 import utils.UserAnswers
 
-case class AddressYearsId(index: Int) extends TypedIdentifier[Boolean] {
-  override def path: JsPath = TrusteesId(index).path \ AddressYearsId.toString
+case class TradingTimeId(index: Int) extends TypedIdentifier[Boolean] {
+  override def path: JsPath = TrusteesId(index).path \ TradingTimeId.toString
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): UserAnswers = {
     value match {
-      case Some(true) => userAnswers
-        .removeAll(Set(TradingTimeId(index), PreviousAddressId(index), PreviousAddressListId(index), EnterPreviousPostCodeId(index)))
+      case Some(false) => userAnswers
+        .removeAll(Set(PreviousAddressId(index), PreviousAddressListId(index), EnterPreviousPostCodeId(index)))
       case _ => super.cleanup(value, userAnswers)
     }
   }
 }
 
-object AddressYearsId {
-  override lazy val toString: String = "addressYears"
+object TradingTimeId {
+  override lazy val toString: String = "tradingTime"
 
-  implicit lazy val formats: Format[AddressYearsId] =
-    Json.format[AddressYearsId]
+  implicit lazy val formats: Format[TradingTimeId] =
+    Json.format[TradingTimeId]
 }
 

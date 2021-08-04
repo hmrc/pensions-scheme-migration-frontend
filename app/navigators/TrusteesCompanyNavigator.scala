@@ -16,11 +16,15 @@
 
 package navigators
 
+import controllers.trustees.company.address.routes.TradingTimeController
+import controllers.trustees.company.address.routes.EnterPreviousPostcodeController
 import controllers.routes._
 import controllers.trustees.routes._
 import controllers.trustees.company.details.{routes => detailsRoutes}
 import controllers.trustees.company.address.routes.{SelectAddressController, EnterPreviousPostcodeController, SelectPreviousAddressController}
 import identifiers._
+import identifiers.trustees.company.address.AddressYearsId
+import identifiers.trustees.company.address.TradingTimeId
 import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.details._
 import identifiers.trustees.company.address._
@@ -50,8 +54,13 @@ class TrusteesCompanyNavigator
     case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index)
     case AddressListId(index) => addressYears(index, NormalMode)
     case AddressId(index) => addressYears(index, NormalMode)
+    //case AddressYearsId(index) =>
+    //  if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else EnterPreviousPostcodeController.onPageLoad(index)
     case AddressYearsId(index) =>
-      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else EnterPreviousPostcodeController.onPageLoad(index)
+      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else TradingTimeController.onPageLoad(index)
+    case TradingTimeId(index) =>
+      if (ua.get(TradingTimeId(index)).contains(true)) EnterPreviousPostcodeController.onPageLoad(index) else cyaAddress(index)
+
     case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index)
     case PreviousAddressListId(index) => cyaAddress(index)
     case PreviousAddressId(index) => cyaAddress(index)

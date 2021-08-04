@@ -18,6 +18,7 @@ package helpers.cya.trustees.company
 
 import helpers.cya.CYAHelper
 import helpers.cya.CYAHelper.getCompanyName
+import identifiers.trustees.company.address.{AddressYearsId, TradingTimeId}
 import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.address.{AddressYearsId, PreviousAddressId, AddressId}
 import models.Index
@@ -58,6 +59,19 @@ class TrusteeAddressCYAHelper
       )
     )
 
+    val seqTradingTime = if (ua.get(AddressYearsId(index)).contains(false)) {
+      Seq(
+        answerOrAddRow(
+          TradingTimeId(index),
+          Message("tradingTime.title", trusteeName).resolve,
+          Some(controllers.trustees.company.address.routes.TradingTimeController.onPageLoad(index).url),
+          Some(msg"messages__visuallyhidden__establisherTradingTime".withArgs(trusteeName)), answerBooleanTransform
+        )
+      )
+    } else {
+      Nil
+    }
+
     val seqRowPreviousAddress = if (ua.get(AddressYearsId(index)).contains(true)) {
       Nil
     } else {
@@ -71,7 +85,8 @@ class TrusteeAddressCYAHelper
       )
     }
 
-    val rowsWithoutDynamicIndices = seqRowAddressAndYears ++ seqRowPreviousAddress
+    val rowsWithoutDynamicIndices =  seqRowAddressAndYears ++ seqTradingTime ++ seqRowPreviousAddress
     rowsWithDynamicIndices(rowsWithoutDynamicIndices)
+
   }
 }
