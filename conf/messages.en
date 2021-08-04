@@ -221,6 +221,18 @@ messages__schemeTaskList__sectionDeclaration_incomplete = You must complete ever
 messages__schemeTaskList__sectionDeclaration_incomplete_v1 = You need to agree to a declaration if you make any changes to this scheme.
 messages__schemeTaskList__sectionDeclaration_incomplete_v2 = You can only see the declaration when you have made any changes.
 
+messages__BeforeYouStart__title = Before you start
+messages__BeforeYouStart__lede = Before you can add your scheme to the Managing Pension Schemes service you will need to enter some additional information to complete the required scheme record.
+messages__BeforeYouStart__lede2 = The amount of information needed will depend on how much was supplied to the Pension Schemes Online service.
+messages__BeforeYouStart__lede3 = On the next page you will see the ‘scheme details overview’. This will show you what further information you need to supply. You can also change or add to any of the information already supplied.
+messages__BeforeYouStart__list_heading = Depending on the scheme, you will need some or all of the following information:
+messages__BeforeYouStart__item1 = the pension scheme type
+messages__BeforeYouStart__item2 = the country the scheme was established in
+messages__BeforeYouStart__item3 = membership details, including how many members the scheme has at the moment, and how many you expect the scheme to have in the next 12 months
+messages__BeforeYouStart__item4 = details of how the scheme provides benefits, for example ‘Defined Benefits’
+messages__BeforeYouStart__item5 = Establisher and Trustee details and contact information, (possibly including dates of birth, Unique Taxpayer References, or reason why they do not have one, National Insurance numbers, VAT registration numbers, employer PAYE references)
+return.to.link = Return to {0}
+
 currentMembers.title = How many members does {0} currently have?
 currentMembers.error.required = Select how many members {0} currently has
 futureMembers.title = How many scheme members do you expect to have in 12 monthsʼ time?
