@@ -36,7 +36,7 @@ import viewmodels.Message
 
 class TrusteeCompanyContactDetailsCYAHelperSpec extends WordSpec with MustMatchers with TryValues with Enumerable.Implicits {
 
-  val establisherCompanyContactDetailsCYAHelper = new EstablisherCompanyContactDetailsCYAHelper
+  val trusteeCompanyContactDetailsCYAHelper = new TrusteeCompanyContactDetailsCYAHelper
 
   private def dataRequest(ua: UserAnswers) = DataRequest[AnyContent](request = fakeRequest, userAnswers = ua,
     psaId = PsaId(psaId), lock = MigrationLock(pstr = pstr, credId = credId, psaId = psaId), viewOnly = false)
@@ -44,7 +44,7 @@ class TrusteeCompanyContactDetailsCYAHelperSpec extends WordSpec with MustMatche
   private val company: CompanyDetails = CompanyDetails("test",false)
 
   // scalastyle:off magic.number
-  "EstablisherCompanyContactDetailsCYAHelper" must {
+  "TrusteeCompanyContactDetailsCYAHelper" must {
     "return all rows with correct change link, value and visually hidden text" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, schemeName)
@@ -52,7 +52,7 @@ class TrusteeCompanyContactDetailsCYAHelperSpec extends WordSpec with MustMatche
         .setOrException(EnterEmailId(0), "test@test.com")
         .setOrException(EnterPhoneId(0), "123")
 
-      val result = establisherCompanyContactDetailsCYAHelper.contactDetailsRows(0)(dataRequest(ua), messages)
+      val result = trusteeCompanyContactDetailsCYAHelper.contactDetailsRows(0)(dataRequest(ua), messages)
 
       result.head mustBe Row(
         key = Key(msg"${Message("messages__enterEmail", company.companyName).resolve}", classes = Seq("govuk-!-width-one-half")),
