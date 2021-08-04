@@ -25,6 +25,7 @@ import org.scalatest.prop.TableFor3
 import play.api.mvc.Call
 import utils.Data.{establisherCompanyDetails, ua}
 import utils.{Enumerable, UserAnswers}
+import identifiers.trustees.company.contacts.{EnterEmailId, EnterPhoneId}
 
 class TrusteesCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour with Enumerable.Implicits with TryValues {
 
@@ -35,17 +36,27 @@ class TrusteesCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour with
   private val detailsUa: UserAnswers =
     ua.set(CompanyDetailsId(0), establisherCompanyDetails).success.value
 
+  private def enterPhonePage(mode:Mode): Call =
+    controllers.trustees.company.contacts.routes.EnterPhoneController.onPageLoad(index, mode)
+
+  private val cyaContact: Call =
+    controllers.trustees.company.contacts.routes.CheckYourAnswersController.onPageLoad(index)
+
   "TrusteesCompanyNavigator" when {
     def navigation: TableFor3[Identifier, UserAnswers, Call] =
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
-        row(CompanyDetailsId(index))(addTrusteePage)
+        row(CompanyDetailsId(index))(addTrusteePage),
+        row(EnterEmailId(index))(enterPhonePage(NormalMode), Some(detailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
+        row(EnterPhoneId(index))(cyaContact, Some(detailsUa.set(EnterPhoneId(index), "1234").success.value))
       )
 
     def editNavigation: TableFor3[Identifier, UserAnswers, Call] =
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
-        row(CompanyDetailsId(index))(controllers.routes.IndexController.onPageLoad())
+        row(CompanyDetailsId(index))(controllers.routes.IndexController.onPageLoad()),
+        row(EnterEmailId(index))(cyaContact, Some(detailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
+        row(EnterPhoneId(index))(cyaContact, Some(detailsUa.set(EnterPhoneId(index), "1234").success.value))
       )
 
     "in NormalMode" must {
