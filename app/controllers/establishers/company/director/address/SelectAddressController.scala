@@ -81,7 +81,7 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
           form => Json.obj(
             "form" -> form,
             "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
-            "entityType" -> msg("establisherEntityTypeIndividual"),
+            "entityType" -> msg("messages__director"),
             "entityName" -> name,
             "enterManuallyUrl" -> controllers.establishers.company.director.address.routes.ConfirmAddressController.onPageLoad(establisherIndex, directorIndex, mode).url,
             "schemeName" -> schemeName

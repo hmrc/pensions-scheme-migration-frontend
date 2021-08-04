@@ -26,7 +26,7 @@ import identifiers.establishers.company.director.details.DirectorDOBId
 import models.{Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 
@@ -57,7 +57,8 @@ class DirectorDOBController @Inject()(
             get(
               dobId        = DirectorDOBId(establisherIndex, directorIndex),
               personNameId = DirectorNameId(establisherIndex, directorIndex),
-              schemeName   = schemeName
+              schemeName   = schemeName,
+              entityType   = Messages("messages__director"),
             )
         }
     }
@@ -71,6 +72,7 @@ class DirectorDOBController @Inject()(
               dobId        = DirectorDOBId(establisherIndex, directorIndex),
               personNameId = DirectorNameId(establisherIndex, directorIndex),
               schemeName   = schemeName,
+              entityType   = Messages("messages__director"),
               mode         = mode
             )
         }

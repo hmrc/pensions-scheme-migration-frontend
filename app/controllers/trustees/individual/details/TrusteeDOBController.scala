@@ -26,7 +26,7 @@ import identifiers.trustees.individual.details.TrusteeDOBId
 import models.{Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 
@@ -58,7 +58,8 @@ class TrusteeDOBController @Inject()(
             get(
               dobId        = TrusteeDOBId(index),
               personNameId = TrusteeNameId(index),
-              schemeName   = schemeName
+              schemeName   = schemeName,
+              entityType   = Messages("messages__individual")
             )
         }
     }
@@ -72,6 +73,7 @@ class TrusteeDOBController @Inject()(
               dobId        = TrusteeDOBId(index),
               personNameId = TrusteeNameId(index),
               schemeName   = schemeName,
+              entityType   = Messages("messages__individual"),
               mode         = mode
             )
         }

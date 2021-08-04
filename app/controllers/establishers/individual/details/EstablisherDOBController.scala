@@ -26,7 +26,7 @@ import identifiers.establishers.individual.details.EstablisherDOBId
 import models.{Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 
@@ -58,7 +58,8 @@ class EstablisherDOBController @Inject()(
             get(
               dobId        = EstablisherDOBId(index),
               personNameId = EstablisherNameId(index),
-              schemeName   = schemeName
+              schemeName   = schemeName,
+              entityType   = Messages("messages__individual")
             )
         }
     }
@@ -72,6 +73,7 @@ class EstablisherDOBController @Inject()(
               dobId        = EstablisherDOBId(index),
               personNameId = EstablisherNameId(index),
               schemeName   = schemeName,
+              entityType   = Messages("messages__individual"),
               mode         = mode
             )
         }

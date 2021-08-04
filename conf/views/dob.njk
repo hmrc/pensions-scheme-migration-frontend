@@ -7,7 +7,7 @@
 {% from "govuk/components/error-summary/macro.njk"  import govukErrorSummary %}
 
 {% block pageTitle %}
-    {{ title(messages("messages__dob__title", messages("messages__individual"))) }}
+    {{ title(messages("messages__dob__title", entityType)) }}
 {% endblock %}
 
 {% block mainContent %}
