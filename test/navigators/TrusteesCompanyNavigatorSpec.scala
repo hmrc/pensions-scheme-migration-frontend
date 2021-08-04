@@ -19,7 +19,7 @@ package navigators
 import base.SpecBase
 import controllers.trustees.company.details.{routes => detailsRoutes}
 import identifiers.trustees.company.CompanyDetailsId
-import identifiers.trustees.company.address._
+import identifiers.trustees.company.address.{TradingTimeId, AddressYearsId, _}
 import identifiers.trustees.company.details._
 import identifiers.{Identifier, TypedIdentifier}
 import models._
@@ -28,7 +28,7 @@ import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes
 import play.api.mvc.Call
 import utils.Data.{establisherCompanyDetails, ua}
-import utils.{Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable}
 
 
 class TrusteesCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour with Enumerable.Implicits with TryValues {
@@ -75,6 +75,7 @@ class TrusteesCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour with
   private def addressYears(mode:Mode): Call =
     controllers.trustees.company.address.routes.AddressYearsController.onPageLoad(index)
 
+  private def tradingTime: Call = controllers.trustees.company.address.routes.TradingTimeController.onPageLoad(index)
 
   "TrusteesCompanyNavigator" when {
     def navigation: TableFor3[Identifier, UserAnswers, Call] =
@@ -99,8 +100,11 @@ class TrusteesCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour with
         row(AddressListId(index))(addressYears(NormalMode), addressUAWithValue(AddressListId(index), 0)),
         row(AddressId(index))(addressYears(NormalMode), addressUAWithValue(AddressId(index), address)),
 
-        row(AddressYearsId(index))(cyaAddress, addressUAWithValue(AddressYearsId(index), true)),
-        row(AddressYearsId(index))(enterPreviousPostcode(NormalMode), addressUAWithValue(AddressYearsId(index), false)),
+        row(AddressYearsId(index))(cyaAddress, uaWithValue(AddressYearsId(index), true)),
+        row(AddressYearsId(index))(tradingTime, uaWithValue(AddressYearsId(index), false)),
+
+        row(TradingTimeId(index))(cyaAddress, uaWithValue(TradingTimeId(index), false)),
+        row(TradingTimeId(index))(enterPreviousPostcode(NormalMode), uaWithValue(TradingTimeId(index), true)),
 
         row(EnterPreviousPostCodeId(index))(selectPreviousAddress(NormalMode), addressUAWithValue(EnterPreviousPostCodeId(index), seqAddresses)),
         row(PreviousAddressListId(index))(cyaAddress, addressUAWithValue(PreviousAddressListId(index), 0)),

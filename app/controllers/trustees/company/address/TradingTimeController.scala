@@ -19,14 +19,14 @@ package controllers.trustees.company.address
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import forms.establishers.address.TradingTimeFormProvider
+import forms.address.TradingTimeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.address.TradingTimeId
 import models.Index
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{MessagesApi, Messages, I18nSupport}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer

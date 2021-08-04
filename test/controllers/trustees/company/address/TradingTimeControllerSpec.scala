@@ -18,7 +18,7 @@ package controllers.trustees.company.address
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import forms.establishers.address.TradingTimeFormProvider
+import forms.address.TradingTimeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.address.TradingTimeId
@@ -35,7 +35,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{Data, Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable, Data}
 
 import scala.concurrent.Future
 

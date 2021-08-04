@@ -16,18 +16,14 @@
 
 package navigators
 
-import controllers.trustees.company.address.routes.TradingTimeController
-import controllers.trustees.company.address.routes.EnterPreviousPostcodeController
 import controllers.routes._
 import controllers.trustees.routes._
 import controllers.trustees.company.details.{routes => detailsRoutes}
-import controllers.trustees.company.address.routes.{SelectAddressController, EnterPreviousPostcodeController, SelectPreviousAddressController}
+import controllers.trustees.company.address.routes.{TradingTimeController, SelectAddressController, EnterPreviousPostcodeController, SelectPreviousAddressController}
 import identifiers._
-import identifiers.trustees.company.address.AddressYearsId
-import identifiers.trustees.company.address.TradingTimeId
 import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.details._
-import identifiers.trustees.company.address._
+import identifiers.trustees.company.address.{AddressYearsId, TradingTimeId, _}
 import models.{Mode, Index, CheckMode, NormalMode}
 import models.requests.DataRequest
 import play.api.mvc.{Call, AnyContent}
@@ -54,8 +50,7 @@ class TrusteesCompanyNavigator
     case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index)
     case AddressListId(index) => addressYears(index, NormalMode)
     case AddressId(index) => addressYears(index, NormalMode)
-    //case AddressYearsId(index) =>
-    //  if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else EnterPreviousPostcodeController.onPageLoad(index)
+
     case AddressYearsId(index) =>
       if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else TradingTimeController.onPageLoad(index)
     case TradingTimeId(index) =>

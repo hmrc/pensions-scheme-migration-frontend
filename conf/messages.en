@@ -844,6 +844,6 @@ messages__havePAYE__cya__visuallyHidden = whether {0} has an employer PAYE refer
 messages__paye__cya__visuallyHidden = the employer PAYE reference for {0}
 
 tradingTime.title = Has {0} been trading for at least 1 year?
-establisherTradingTime.error.required = Select yes if the company has been trading for at least 1 year
+companyTradingTime.error.required = Select yes if the company has been trading for at least 1 year
 messages__visuallyhidden__establisherTradingTime = whether {0} has been trading for at least 1 year
 

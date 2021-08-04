@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.establishers.address
+package forms.address
 
 import forms.mappings.Mappings
 import play.api.data.Form
@@ -25,6 +25,6 @@ class TradingTimeFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Boolean] =
     Form(
-      "value" -> boolean("establisherTradingTime.error.required")
+      "value" -> boolean("companyTradingTime.error.required")
     )
 }
