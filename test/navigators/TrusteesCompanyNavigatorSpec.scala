@@ -19,13 +19,13 @@ package navigators
 import base.SpecBase
 import identifiers.Identifier
 import identifiers.trustees.company.CompanyDetailsId
+import identifiers.trustees.company.contacts.{EnterEmailId, EnterPhoneId}
 import models._
 import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
 import play.api.mvc.Call
 import utils.Data.{trusteeCompanyDetails, ua}
 import utils.{Enumerable, UserAnswers}
-import identifiers.trustees.company.contacts.{EnterEmailId, EnterPhoneId}
 
 class TrusteesCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour with Enumerable.Implicits with TryValues {
 
@@ -49,13 +49,14 @@ class TrusteesCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour with
         row(CompanyDetailsId(index))(addTrusteePage),
         row(EnterEmailId(index))(enterPhonePage(NormalMode), Some(detailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
         row(EnterPhoneId(index))(cyaContact, Some(detailsUa.set(EnterPhoneId(index), "1234").success.value))
+
       )
 
     def editNavigation: TableFor3[Identifier, UserAnswers, Call] =
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
         row(CompanyDetailsId(index))(controllers.routes.IndexController.onPageLoad()),
-        row(EnterEmailId(index))(cyaContact, Some(detailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
+        row(EnterEmailId(index))(enterPhonePage(NormalMode), Some(detailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
         row(EnterPhoneId(index))(cyaContact, Some(detailsUa.set(EnterPhoneId(index), "1234").success.value))
       )
 
