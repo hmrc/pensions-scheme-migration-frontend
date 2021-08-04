@@ -23,7 +23,7 @@ import models._
 import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
 import play.api.mvc.Call
-import utils.Data.{establisherCompanyDetails, ua}
+import utils.Data.{trusteeCompanyDetails, ua}
 import utils.{Enumerable, UserAnswers}
 import identifiers.trustees.company.contacts.{EnterEmailId, EnterPhoneId}
 
@@ -34,7 +34,7 @@ class TrusteesCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour with
 
   private val addTrusteePage: Call = controllers.trustees.routes.AddTrusteeController.onPageLoad()
   private val detailsUa: UserAnswers =
-    ua.set(CompanyDetailsId(0), establisherCompanyDetails).success.value
+    ua.set(CompanyDetailsId(0), trusteeCompanyDetails).success.value
 
   private def enterPhonePage(mode:Mode): Call =
     controllers.trustees.company.contacts.routes.EnterPhoneController.onPageLoad(index, mode)
