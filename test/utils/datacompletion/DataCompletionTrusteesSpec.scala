@@ -21,6 +21,7 @@ import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.details._
 import models.trustees.TrusteeKind
+import identifiers.trustees.company.{contacts => companyContact}
 import models.{CompanyDetails, ReferenceValue}
 import org.scalatest.{MustMatchers, OptionValues, TryValues, WordSpec}
 import utils.{Enumerable, UserAnswers}
@@ -115,6 +116,29 @@ class DataCompletionTrusteesSpec
 
         ua.isTrusteeCompanyComplete(1) mustBe false
       }
+    }
+  }
+
+  "isTrusteeCompanyContactDetailsCompleted" must {
+    "return true when all answers are present" in {
+      val ua =
+        UserAnswers()
+          .set(companyContact.EnterEmailId(0), "test@test.com").success.value
+          .set(companyContact.EnterPhoneId(0), "123").success.value
+
+      ua.isTrusteeCompanyContactDetailsCompleted(0).value mustBe true
+    }
+
+    "return false when some answer is missing" in {
+      val ua =
+        UserAnswers()
+          .set(companyContact.EnterEmailId(0), "test@test.com").success.value
+
+      ua.isTrusteeCompanyContactDetailsCompleted(0).value mustBe false
+    }
+
+    "return None when no answer is present" in {
+      UserAnswers().isTrusteeCompanyContactDetailsCompleted(0) mustBe None
     }
   }
 }
