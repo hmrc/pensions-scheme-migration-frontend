@@ -20,11 +20,12 @@ import identifiers.trustees.TrusteeKindId
 import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.details._
 import identifiers.trustees.individual.TrusteeNameId
-import identifiers.trustees.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
+import identifiers.trustees.individual.address.{AddressYearsId, PreviousAddressId, AddressId}
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.company.{contacts => companyContact}
 import identifiers.trustees.individual.details._
 import utils.UserAnswers
+import identifiers.trustees.company.address.{TradingTimeId, AddressYearsId => CompanyAddressYearsId, PreviousAddressId => CompanyPreviousAddressId, AddressId => CompanyAddressId}
 
 trait DataCompletionTrustees extends DataCompletion {
 
@@ -60,6 +61,7 @@ trait DataCompletionTrustees extends DataCompletion {
       )
     )
   }
+
   def isTrusteeIndividualContactDetailsCompleted(index: Int): Option[Boolean] =
     isComplete(
       Seq(
@@ -83,6 +85,27 @@ trait DataCompletionTrustees extends DataCompletion {
         isAnswerComplete(HaveUTRId(index), CompanyUTRId(index), Some(NoUTRReasonId(index))),
         isAnswerComplete(HaveVATId(index), VATId(index), None),
         isAnswerComplete(HavePAYEId(index), PAYEId(index), None)
+      )
+    )
+  }
+
+  def isTrusteeCompanyAddressCompleted(
+    index: Int,
+    userAnswers: UserAnswers
+  ): Option[Boolean] = {
+
+    val previousAddress = (userAnswers.get(CompanyAddressYearsId(index)), userAnswers.get(TradingTimeId(index))) match {
+      case (Some(true), _) => Some(true)
+      case (Some(false), Some(true)) => isAnswerComplete(CompanyPreviousAddressId(index))
+      case (Some(false), Some(false)) => Some(true)
+      case _ => None
+    }
+
+    isComplete(
+      Seq(
+        isAnswerComplete(CompanyAddressId(index)),
+        isAnswerComplete(CompanyAddressYearsId(index)),
+        previousAddress
       )
     )
   }

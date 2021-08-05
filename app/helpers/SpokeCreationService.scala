@@ -17,15 +17,18 @@
 package helpers
 
 import controllers.establishers.routes._
-import helpers.spokes.establishers.company.{EstablisherCompanyAddress, EstablisherCompanyContactDetails, EstablisherCompanyDetails}
+import helpers.spokes.establishers.company.{EstablisherCompanyDetails, EstablisherCompanyContactDetails, EstablisherCompanyAddress}
 import helpers.spokes.establishers.individual._
+import helpers.spokes.trustees.company.{TrusteeCompanyDetails, TrusteeCompanyAddress}
+import helpers.spokes.trustees.individual.{TrusteeIndividualAddress, TrusteeIndividualDetails, TrusteeIndividualContactDetails}
+import helpers.spokes.{BeforeYouStartSpoke, AboutMembersSpoke, Spoke, BenefitsAndInsuranceSpoke}
 import helpers.spokes.trustees.individual.{TrusteeIndividualAddress, TrusteeIndividualContactDetails, TrusteeIndividualDetails}
 import helpers.spokes.trustees.company.{TrusteeCompanyContactDetails, TrusteeCompanyDetails}
 import helpers.spokes.{AboutMembersSpoke, BeforeYouStartSpoke, BenefitsAndInsuranceSpoke, Spoke}
 import models.Index._
-import models.{EntitySpoke, Index, TaskListLink}
+import models.{TaskListLink, EntitySpoke, Index}
 import play.api.i18n.Messages
-import utils.{Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable}
 
 class SpokeCreationService extends Enumerable.Implicits {
 
@@ -124,10 +127,9 @@ class SpokeCreationService extends Enumerable.Implicits {
   def getTrusteeCompanySpokes(answers: UserAnswers, name: String, index: Index)
     (implicit messages: Messages): Seq[EntitySpoke] = {
     Seq(
-      createSpoke(answers, TrusteeCompanyDetails(index, answers), name)
-    )
-    Seq(
-    createSpoke(answers, TrusteeCompanyContactDetails(index, answers), name))
+      createSpoke(answers, TrusteeCompanyDetails(index, answers), name),
+      createSpoke(answers, TrusteeCompanyAddress(index, answers), name),
+      createSpoke(answers, TrusteeCompanyContactDetails(index, answers), name))
   }
 
   def declarationSpoke(implicit messages: Messages): Seq[EntitySpoke] =

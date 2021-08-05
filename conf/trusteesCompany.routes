@@ -56,6 +56,40 @@ POST        /:index/company/change/enter-employer-paye-reference                
 
 GET         /:index/company/check-your-answers-details                              controllers.trustees.company.details.CheckYourAnswersController.onPageLoad(index: Index)
 
+
+
+
+
+
+GET         /:index/company/addresses/what-you-will-need                          controllers.trustees.company.address.WhatYouWillNeedController.onPageLoad(index: Index)
+
+GET         /:index/company/addresses/postcode                                    controllers.trustees.company.address.EnterPostcodeController.onPageLoad(index: Index)
+POST        /:index/company/addresses/postcode                                    controllers.trustees.company.address.EnterPostcodeController.onSubmit(index: Index)
+
+GET         /:index/company/addresses/address-results                             controllers.trustees.company.address.SelectAddressController.onPageLoad(index: Index)
+POST        /:index/company/addresses/address-results                             controllers.trustees.company.address.SelectAddressController.onSubmit(index: Index)
+
+GET         /:index/company/addresses/address-manual                              controllers.trustees.company.address.ConfirmAddressController.onPageLoad(index: Index)
+POST        /:index/company/addresses/address-manual                              controllers.trustees.company.address.ConfirmAddressController.onSubmit(index: Index)
+
+GET         /:index/company/addresses/check-your-answers                          controllers.trustees.company.address.CheckYourAnswersController.onPageLoad(index: Index)
+
+GET         /:index/company/addresses/address-years                              controllers.trustees.company.address.AddressYearsController.onPageLoad(index: Index)
+POST        /:index/company/addresses/address-years                              controllers.trustees.company.address.AddressYearsController.onSubmit(index: Index)
+
+GET         /:index/company/addresses/address-previous                           controllers.trustees.company.address.EnterPreviousPostcodeController.onPageLoad(index: Index)
+POST        /:index/company/addresses/address-previous                           controllers.trustees.company.address.EnterPreviousPostcodeController.onSubmit(index: Index)
+
+GET         /:index/company/addresses/address-previous-results                   controllers.trustees.company.address.SelectPreviousAddressController.onPageLoad(index: Index)
+POST        /:index/company/addresses/address-previous-results                   controllers.trustees.company.address.SelectPreviousAddressController.onSubmit(index: Index)
+
+GET         /:index/company/addresses/address-previous-manual                    controllers.trustees.company.address.ConfirmPreviousAddressController.onPageLoad(index: Index)
+POST        /:index/company/addresses/address-previous-manual                    controllers.trustees.company.address.ConfirmPreviousAddressController.onSubmit(index: Index)
+
+GET         /:index/company/addresses/company-exists-years                       controllers.trustees.company.address.TradingTimeController.onPageLoad(index: Index)
+POST        /:index/company/addresses/company-exists-years                       controllers.trustees.company.address.TradingTimeController.onSubmit(index: Index)
+
+
 GET         /:index/company/contact-details/what-you-will-need                        controllers.trustees.company.contacts.WhatYouWillNeedCompanyContactController.onPageLoad(index: Index)
 GET         /:index/company/enter-email-address                                       controllers.trustees.company.contacts.EnterEmailController.onPageLoad(index: Index, mode: Mode = NormalMode)
 POST        /:index/company/enter-email-address                                       controllers.trustees.company.contacts.EnterEmailController.onSubmit(index: Index, mode: Mode = NormalMode)

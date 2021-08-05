@@ -177,13 +177,13 @@ class SpokeCreationServiceSpec
           isCompleted = None
         ),
           EntitySpoke(
-          link = TaskListLink(
-            text = "Add address for test",
-            target = controllers.establishers.company.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
-            visuallyHiddenText = None
+            link = TaskListLink(
+              text = "Add address for test",
+              target = controllers.establishers.company.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = None
           ),
-          isCompleted = None
-        ),
           EntitySpoke(
             link = TaskListLink(
               text = "Add contact details for test",
@@ -362,7 +362,23 @@ class SpokeCreationServiceSpec
             visuallyHiddenText = None
           ),
           isCompleted = None
-        )
+        ),
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Add address for test",
+              target = controllers.trustees.company.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = None
+          ),
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Add contact details for test",
+              target = controllers.trustees.company.contacts.routes.WhatYouWillNeedCompanyContactController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = None
+          )
         )
 
       val result =
@@ -393,6 +409,22 @@ class SpokeCreationServiceSpec
             visuallyHiddenText = None
           ),
           isCompleted = Some(false)
+        ),
+        EntitySpoke(
+          link = TaskListLink(
+            text = "Add address for test",
+            target = controllers.trustees.company.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
+            visuallyHiddenText = None
+          ),
+          isCompleted = None
+        ),
+        EntitySpoke(
+          link = TaskListLink(
+            text = "Add contact details for test",
+            target = controllers.trustees.company.contacts.routes.WhatYouWillNeedCompanyContactController.onPageLoad(0).url,
+            visuallyHiddenText = None
+          ),
+          isCompleted = None
         )
       )
 
@@ -429,6 +461,22 @@ class SpokeCreationServiceSpec
             visuallyHiddenText = None
           ),
           isCompleted = Some(true)
+        ),
+        EntitySpoke(
+          link = TaskListLink(
+            text = "Add address for test",
+            target = controllers.trustees.company.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
+            visuallyHiddenText = None
+          ),
+          isCompleted = None
+        ),
+        EntitySpoke(
+          link = TaskListLink(
+            text = "Add contact details for test",
+            target = controllers.trustees.company.contacts.routes.WhatYouWillNeedCompanyContactController.onPageLoad(0).url,
+            visuallyHiddenText = None
+          ),
+          isCompleted = None
         )
       )
 
@@ -439,35 +487,6 @@ class SpokeCreationServiceSpec
         index = 0
       )
     result mustBe expectedSpoke
-  }
-
-  "getTrusteeCompanySpokes" must {
-    "display all the spokes with appropriate links and incomplete status when no data is returned from TPSS" in {
-      val userAnswers =
-        ua
-          .set(TrusteeKindId(0), TrusteeKind.Company).success.value
-          .set(CompanyDetailsId(0), CompanyDetails("test",false)).success.value
-
-      val expectedSpoke =
-        Seq(
-          EntitySpoke(
-            link = TaskListLink(
-              text = "Add contact details for test",
-              target = controllers.trustees.company.contacts.routes.WhatYouWillNeedCompanyContactController.onPageLoad(0).url,
-              visuallyHiddenText = None
-            ),
-            isCompleted = None
-          )
-        )
-
-      val result =
-        spokeCreationService.getTrusteeCompanySpokes(
-          answers = userAnswers,
-          name = "test",
-          index = 0
-        )
-      result mustBe expectedSpoke
-    }
   }
 
   "declarationSpoke" must {

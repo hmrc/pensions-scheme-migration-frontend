@@ -16,17 +16,18 @@
 
 package navigators
 
-import controllers.trustees.company.contacts.routes._
 import controllers.routes._
-import controllers.trustees.routes._
+import controllers.trustees.company.address.routes.{EnterPreviousPostcodeController, SelectAddressController, SelectPreviousAddressController, TradingTimeController}
+import controllers.trustees.company.contacts.routes._
 import controllers.trustees.company.details.{routes => detailsRoutes}
+import controllers.trustees.routes._
 import identifiers._
 import identifiers.trustees.company.CompanyDetailsId
-import identifiers.trustees.company.details._
-import models.{CheckMode, Index, Mode, NormalMode}
-import models.requests.DataRequest
-import models.{Mode, NormalMode}
+import identifiers.trustees.company.address.{AddressYearsId, TradingTimeId, _}
 import identifiers.trustees.company.contacts.{EnterEmailId, EnterPhoneId}
+import identifiers.trustees.company.details._
+import models.requests.DataRequest
+import models.{CheckMode, Index, Mode, NormalMode}
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
 
@@ -48,6 +49,19 @@ class TrusteesCompanyNavigator
     case VATId(index) => detailsRoutes.HavePAYEController.onPageLoad(index, NormalMode)
     case HavePAYEId(index) => payeRoutes(index, ua, NormalMode)
     case PAYEId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+    case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index)
+    case AddressListId(index) => addressYears(index, NormalMode)
+    case AddressId(index) => addressYears(index, NormalMode)
+
+    case AddressYearsId(index) =>
+      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else TradingTimeController.onPageLoad(index)
+    case TradingTimeId(index) =>
+      if (ua.get(TradingTimeId(index)).contains(true)) EnterPreviousPostcodeController.onPageLoad(index) else cyaAddress(index)
+
+    case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index)
+    case PreviousAddressListId(index) => cyaAddress(index)
+    case PreviousAddressId(index) => cyaAddress(index)
+
     case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
     case EnterPhoneId(index) => cyaContactDetails(index)
 
@@ -113,5 +127,9 @@ class TrusteesCompanyNavigator
       case Some(false) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
       case None => controllers.routes.TaskListController.onPageLoad()
     }
+
+  private def cyaAddress(index:Int): Call = controllers.trustees.company.address.routes.CheckYourAnswersController.onPageLoad(index)
+  private def addressYears(index:Int, mode:Mode): Call = controllers.trustees.company.address.routes.AddressYearsController.onPageLoad(index)
+
   private def cyaContactDetails(index:Int): Call = controllers.trustees.company.contacts.routes.CheckYourAnswersController.onPageLoad(index)
 }

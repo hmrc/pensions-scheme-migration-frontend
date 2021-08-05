@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.establishers.company.address
+package controllers.trustees.company.address
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.address.TradingTimeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.company.CompanyDetailsId
-import identifiers.establishers.company.address.TradingTimeId
+import identifiers.trustees.company.CompanyDetailsId
+import identifiers.trustees.company.address.TradingTimeId
 import matchers.JsonMatchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -44,8 +44,8 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
   private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(CompanyDetailsId(0), Data.establisherCompanyDetails))
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
-  private val httpPathGET: String = controllers.establishers.company.address.routes.TradingTimeController.onPageLoad(0).url
-  private val httpPathPOST: String = controllers.establishers.company.address.routes.TradingTimeController.onSubmit(0).url
+  private val httpPathGET: String = controllers.trustees.company.address.routes.TradingTimeController.onPageLoad(0).url
+  private val httpPathPOST: String = controllers.trustees.company.address.routes.TradingTimeController.onSubmit(0).url
   private val form: Form[Boolean] = new TradingTimeFormProvider()()
 
   private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>

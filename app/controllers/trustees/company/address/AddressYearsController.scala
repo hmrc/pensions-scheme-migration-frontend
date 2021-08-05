@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package controllers.trustees.individual.address
+package controllers.trustees.company.address
 
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.trustees.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.trustees.individual.TrusteeNameId
-import identifiers.trustees.individual.address.AddressYearsId
+import identifiers.trustees.company.CompanyDetailsId
+import identifiers.trustees.company.address.AddressYearsId
 import models.Index
 import navigators.CompoundNavigator
 import play.api.data.Form
@@ -50,42 +50,42 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
   extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
   private def form: Form[Boolean] =
-    formProvider("trusteeAddressYears.error.required")
+    formProvider("trusteeCompanyAddressYears.error.required")
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      (TrusteeNameId(index) and SchemeNameId).retrieve.right.map { case trusteeName ~ schemeName =>
+      (CompanyDetailsId(index) and SchemeNameId).retrieve.right.map { case companyDetails ~ schemeName =>
         val preparedForm = request.userAnswers.get(AddressYearsId(index)) match {
           case Some(value) => form.fill(value)
           case None        => form
         }
         val json = Json.obj(
           "schemeName" -> schemeName,
-          "entityName" -> trusteeName.fullName,
-          "entityType" -> Messages("trusteeEntityTypeIndividual"),
+          "entityName" -> companyDetails.companyName,
+          "entityType" -> Messages("messages__company"),
           "form" -> preparedForm,
           "radios" -> Radios.yesNo (preparedForm("value"))
         )
-        renderer.render("trustees/individual/address/addressYears.njk", json).map(Ok(_))
+        renderer.render("trustees/company/address/addressYears.njk", json).map(Ok(_))
       }
     }
 
   def onSubmit(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      (TrusteeNameId(index) and SchemeNameId).retrieve.right.map { case trusteeName ~ schemeName =>
+      (CompanyDetailsId(index) and SchemeNameId).retrieve.right.map { case companyDetails ~ schemeName =>
         form
           .bindFromRequest()
           .fold(
             formWithErrors => {
               val json = Json.obj(
                 "schemeName" -> schemeName,
-                "entityName" -> trusteeName.fullName,
-                "entityType" -> Messages("trusteeEntityTypeIndividual"),
+                "entityName" -> companyDetails.companyName,
+                "entityType" -> Messages("messages__company"),
                 "form" -> formWithErrors,
                 "radios" -> Radios.yesNo(form("value"))
               )
 
-              renderer.render("trustees/individual/address/addressYears.njk", json).map(BadRequest(_))
+              renderer.render("trustees/company/address/addressYears.njk", json).map(BadRequest(_))
             },
             value => {
               val updatedUA = request.userAnswers.setOrException(AddressYearsId(index), value)

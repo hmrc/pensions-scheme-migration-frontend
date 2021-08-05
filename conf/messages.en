@@ -174,7 +174,6 @@ messages__schemeTaskList__trusteeContactDetails_changeLink = Change contact deta
 
 
 messages__individual = the individual
-messages__company = the company
 messages__establisher = the establisher
 messages__company = the company
 messages__trustee = the trustee
@@ -773,10 +772,14 @@ trusteeEnterPostcode.invalid = Enter a real postcode
 trusteeEnterPreviousPostcode.required = Enter the individual’s previous postcode
 trusteeEnterPreviousPostcode.invalid = Enter a real postcode
 
+trusteeCompanyEnterPreviousPostcode.required = Enter the company’s previous postcode
+trusteeCompanyEnterPreviousPostcode.invalid = Enter a real postcode
+
 trusteeSelectAddress.required = Select an address
 
 trusteeAddressYears.title = Has {0} used this address for at least 1 year?
 trusteeAddressYears.error.required = Select yes if the individual has used this address for more than 1 year
+trusteeCompanyAddressYears.error.required = Select yes if the company has used this address for more than 1 year
 messages__visuallyhidden__trusteeAddressYears = whether {0} has used this address for at least 1 year
 
 trusteeEntityTypeIndividual = the individual
@@ -789,6 +792,7 @@ messages__schemeTaskList__companyDetails_changeLink = Change details for {0}
 
 messages__trusteeAddress__whatYouWillNeed_h1 = Address for {0}
 messages__trusteeAddress__whatYouWillNeed_title = The trustee’s address
+messages__trusteeCompanyAddress__whatYouWillNeed_title = The company’s address
 messages__trusteeAddress__whatYouWillNeed_p = You will need to tell us {0}’s:
 messages__trusteeAddress__whatYouWillNeed_li_1 = current address
 messages__trusteeAddress__whatYouWillNeed_li_2 = previous address if {0} has used the current address for less than 1 year
@@ -861,6 +865,6 @@ messages__havePAYE__cya__visuallyHidden = whether {0} has an employer PAYE refer
 messages__paye__cya__visuallyHidden = the employer PAYE reference for {0}
 
 tradingTime.title = Has {0} been trading for at least 1 year?
-establisherTradingTime.error.required = Select yes if the company has been trading for at least 1 year
+companyTradingTime.error.required = Select yes if the company has been trading for at least 1 year
 messages__visuallyhidden__establisherTradingTime = whether {0} has been trading for at least 1 year
 
