@@ -72,17 +72,17 @@ class TrusteeAddressCYAHelper
       Nil
     }
 
-    val seqRowPreviousAddress = if (ua.get(AddressYearsId(index)).contains(true)) {
-      Nil
-    } else {
-      Seq(
-        answerOrAddRow(
-          PreviousAddressId(index),
-          Message("messages__trusteePreviousAddress").resolve,
-          Some(controllers.trustees.company.address.routes.EnterPreviousPostcodeController.onPageLoad(index).url),
-          Some(msg"messages__visuallyHidden__previousAddress".withArgs(trusteeName)), answerAddressTransform
+    val seqRowPreviousAddress =(ua.get(AddressYearsId(index)), ua.get(TradingTimeId(index))) match {
+      case (Some(false), Some(true)) =>
+        Seq(
+          answerOrAddRow(
+            PreviousAddressId(index),
+            Message("messages__trusteePreviousAddress").resolve,
+            Some(controllers.trustees.company.address.routes.EnterPreviousPostcodeController.onPageLoad(index).url),
+            Some(msg"messages__visuallyHidden__previousAddress".withArgs(trusteeName)), answerAddressTransform
+          )
         )
-      )
+      case _ => Nil
     }
 
     val rowsWithoutDynamicIndices =  seqRowAddressAndYears ++ seqTradingTime ++ seqRowPreviousAddress
