@@ -434,7 +434,7 @@ messages__companyDetails__whatYouWillNeed_p = You will need to tell us {0}’s:
 messages__companyDetails__whatYouWillNeed_li_1 = contact email address
 messages__companyDetails__whatYouWillNeed_li_2 = contact phone number
 
-messages__trusteeCompanyContactDetails__whatYouWillNeed_title = The trustee’s contact details
+messages__trusteeCompanyContactDetails__whatYouWillNeed_title = The company’s contact details
 messages__trusteeCompanyContactDetails__whatYouWillNeed_h1 = Contact details for {0}
 messages__companyDetails__whatYouWillNeed_p = You will need to tell us {0}’s:
 messages__companyDetails__whatYouWillNeed_li_1 = contact email address
