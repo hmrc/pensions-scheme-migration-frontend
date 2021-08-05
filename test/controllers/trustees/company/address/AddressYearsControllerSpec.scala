@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.establishers.company.address
+package controllers.trustees.company.address
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import forms.address.TradingTimeFormProvider
+import forms.trustees.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.company.CompanyDetailsId
-import identifiers.establishers.company.address.TradingTimeId
+import identifiers.trustees.company.CompanyDetailsId
+import identifiers.trustees.company.address.AddressYearsId
 import matchers.JsonMatchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -35,18 +35,18 @@ import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{UserAnswers, Enumerable, Data}
+import utils.{Data, Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 
-class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(CompanyDetailsId(0), Data.establisherCompanyDetails))
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
-  private val httpPathGET: String = controllers.establishers.company.address.routes.TradingTimeController.onPageLoad(0).url
-  private val httpPathPOST: String = controllers.establishers.company.address.routes.TradingTimeController.onSubmit(0).url
-  private val form: Form[Boolean] = new TradingTimeFormProvider()()
+  private val httpPathGET: String = controllers.trustees.company.address.routes.AddressYearsController.onPageLoad(0).url
+  private val httpPathPOST: String = controllers.trustees.company.address.routes.AddressYearsController.onSubmit(0).url
+  private val form: Form[Boolean] = new AddressYearsFormProvider()("required")
 
   private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>
     Json.obj(
@@ -68,7 +68,7 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
-  "TradingTime Controller" must {
+  "AddressYears Controller" must {
 
     "Return OK and the correct view for a GET" in {
       val ua: UserAnswers = UserAnswers()
@@ -83,7 +83,7 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       verify(mockRenderer, times(1))
-        .render(Matchers.eq("address/tradingTime.njk"), jsonCaptor.capture())(any())
+        .render(Matchers.eq("trustees/company/address/addressYears.njk"), jsonCaptor.capture())(any())
 
       (jsonCaptor.getValue \ "schemeName").toOption.map(_.as[String]) mustBe Some(Data.schemeName)
     }
@@ -92,7 +92,7 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, Data.schemeName)
         .setOrException(CompanyDetailsId(0), Data.establisherCompanyDetails)
-        .setOrException(TradingTimeId(0), true)
+        .setOrException(AddressYearsId(0), true)
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
@@ -103,7 +103,7 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       verify(mockRenderer, times(1))
-        .render(Matchers.eq("address/tradingTime.njk"), jsonCaptor.capture())(any())
+        .render(Matchers.eq("trustees/company/address/addressYears.njk"), jsonCaptor.capture())(any())
 
       jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(true)))
     }

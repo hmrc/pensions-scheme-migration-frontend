@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-package forms.trustees.address
+package identifiers.trustees.company.address
 
-import forms.behaviours.BooleanFieldBehaviours
-import play.api.data.FormError
+import identifiers.TypedIdentifier
+import identifiers.trustees.TrusteesId
+import play.api.libs.json.{Format, JsPath, Json}
 
-class AddressYearsFormProviderSpec extends BooleanFieldBehaviours {
+case class AddressListId(index: Int) extends TypedIdentifier[Int] {
+  override def path: JsPath = TrusteesId(index).path \ AddressListId.toString
+}
 
-  val requiredKey = "trusteeAddressYears.error.required"
+object AddressListId {
+  override lazy val toString: String = "addressResults"
 
-  val form = new AddressYearsFormProvider()(requiredKey)
-
-  ".value" must  {
-
-    val fieldName = "value"
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-  }
+  implicit lazy val formats: Format[AddressListId] =
+    Json.format[AddressListId]
 }

@@ -152,8 +152,12 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
               case TrusteeCompanyDetailsId(_) =>
                 Some(TaskListEntitySection(
                   isCompleted = None,
-                  spokeCreationService.getTrusteeCompanySpokes(userAnswers, trustee.name, trustee.index),
-                  Some(trustee.name))
+                  entities = spokeCreationService.getTrusteeCompanySpokes(
+                    userAnswers,
+                    trustee.name,
+                    trustee.index
+                  ),
+                  header = Some(trustee.name))
                 )
 
               case _ =>

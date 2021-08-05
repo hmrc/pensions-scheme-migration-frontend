@@ -14,17 +14,21 @@
  * limitations under the License.
  */
 
-package forms.establishers.address
+package identifiers.trustees.company.address
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import identifiers.TypedIdentifier
+import identifiers.trustees.TrusteesId
+import models.Address
+import play.api.libs.json.{Format, JsPath, Json}
 
-import javax.inject.Inject
+case class AddressId(index: Int) extends TypedIdentifier[Address] {
+  override def path: JsPath =
+    TrusteesId(index).path \ AddressId.toString
+}
 
-class TradingTimeFormProvider @Inject() extends Mappings {
+object AddressId {
+  override lazy val toString: String = "address"
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("establisherTradingTime.error.required")
-    )
+  implicit lazy val formats: Format[AddressId] =
+    Json.format[AddressId]
 }

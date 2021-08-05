@@ -23,8 +23,8 @@ import javax.inject.Inject
 
 class AddressYearsFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
+  def apply(requiredKey:String): Form[Boolean] =
     Form(
-      "value" -> boolean("trusteeAddressYears.error.required")
+      "value" -> boolean(requiredKey)
     )
 }
