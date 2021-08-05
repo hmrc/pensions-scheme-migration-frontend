@@ -18,7 +18,7 @@ package controllers.benefitsAndInsurance
 
 import controllers.Retrievals
 import controllers.actions._
-import helpers.{BenefitsAndInsuranceCYAHelper, CYAHelper}
+import helpers.cya.{BenefitsAndInsuranceCYAHelper, CYAHelper}
 import identifiers.beforeYouStart.SchemeNameId
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json

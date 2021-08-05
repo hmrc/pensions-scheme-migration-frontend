@@ -18,7 +18,7 @@ package controllers.aboutMembership
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import helpers.AboutCYAHelper
+import helpers.cya.AboutCYAHelper
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any

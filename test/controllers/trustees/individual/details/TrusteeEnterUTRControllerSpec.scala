@@ -62,7 +62,7 @@ class TrusteeEnterUTRControllerSpec
   private val commonJson: JsObject =
     Json.obj(
       "pageTitle"     -> "What is the individual’s UTR?",
-      "pageHeading"     -> "What is the UTR for Jane Doe?",
+      "pageHeading"     -> "What is Jane Doe’s UTR?",
       "schemeName"    -> "Test scheme name",
       "legendClass"   -> "govuk-visually-hidden",
       "paragraphs"    -> Json.arr(

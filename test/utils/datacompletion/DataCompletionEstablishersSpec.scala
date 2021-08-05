@@ -80,8 +80,8 @@ class DataCompletionEstablishersSpec
             .set(EstablisherHasUTRId(0), false).success.value
             .set(EstablisherNoUTRReasonId(0), "Reason").success.value
 
-        ua1.isEstablisherIndividualDetailsCompleted(0) mustBe true
-        ua2.isEstablisherIndividualDetailsCompleted(0) mustBe true
+        ua1.isEstablisherIndividualDetailsCompleted(0) mustBe Some(true)
+        ua2.isEstablisherIndividualDetailsCompleted(0) mustBe Some(true)
       }
 
       "return false when some answer is missing" in {
@@ -89,7 +89,7 @@ class DataCompletionEstablishersSpec
           UserAnswers()
             .set(EstablisherDOBId(0), LocalDate.parse("2001-01-01")).success.value
 
-        ua.isEstablisherIndividualDetailsCompleted(0) mustBe false
+        ua.isEstablisherIndividualDetailsCompleted(0) mustBe Some(false)
 
       }
     }
@@ -163,7 +163,7 @@ class DataCompletionEstablishersSpec
           UserAnswers()
             .set(HaveCompanyNumberId(0), false).success.value
 
-        ua.isEstablisherIndividualDetailsCompleted(0) mustBe false
+        ua.isEstablisherIndividualDetailsCompleted(0) mustBe None
 
       }
     }

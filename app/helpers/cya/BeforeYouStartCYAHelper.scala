@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.cya
 
 import controllers.beforeYouStartSpoke.routes
+import helpers.CountriesHelper
 import identifiers.beforeYouStart._
 import models.SchemeType
 import models.SchemeType.Other

@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.cya.trustees.individual
 
 import controllers.trustees.individual.details.routes
-import helpers.CYAHelper.getName
+import helpers.cya.CYAHelper
+import helpers.cya.CYAHelper.getName
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.details._
 import models.requests.DataRequest

@@ -18,7 +18,7 @@ package controllers.establishers.individual.details
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import helpers.EstablisherDetailsCYAHelper
+import helpers.cya.establishers.individual.EstablisherDetailsCYAHelper
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.details._
 import matchers.JsonMatchers

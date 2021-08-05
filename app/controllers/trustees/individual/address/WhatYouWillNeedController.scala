@@ -19,7 +19,7 @@ package controllers.trustees.individual.address
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.trustees.individual.address.routes._
-import helpers.MandatoryAnswerMissingException
+import helpers.cya.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.individual.TrusteeNameId
 import models.Index

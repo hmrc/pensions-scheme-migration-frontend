@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.cya.trustees.company
 
-import controllers.establishers.company.details.routes
-import helpers.CYAHelper.getCompanyName
-import identifiers.establishers.company.CompanyDetailsId
-import identifiers.establishers.company.details._
+import controllers.trustees.company.details.routes
+import helpers.cya.CYAHelper
+import helpers.cya.CYAHelper.getCompanyName
+import identifiers.trustees.company.CompanyDetailsId
+import identifiers.trustees.company.details._
 import models.requests.DataRequest
 import models.{CheckMode, Index}
 import play.api.i18n.Messages
@@ -29,7 +30,7 @@ import uk.gov.hmrc.viewmodels.SummaryList.Row
 import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 
-class EstablisherCompanyDetailsCYAHelper
+class TrusteeCompanyDetailsCYAHelper
   extends CYAHelper
     with Enumerable.Implicits {
 

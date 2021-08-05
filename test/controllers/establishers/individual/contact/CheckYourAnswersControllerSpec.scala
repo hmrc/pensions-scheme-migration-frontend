@@ -18,7 +18,7 @@ package controllers.establishers.individual.contact
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import helpers.EstablisherContactDetailsCYAHelper
+import helpers.cya.establishers.individual.EstablisherContactDetailsCYAHelper
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
 import matchers.JsonMatchers
