@@ -33,7 +33,7 @@ class TrusteeCompanyContactDetailsCYAHelper
   extends CYAHelper
     with Enumerable.Implicits {
 
-  def getCompanyName(id: CompanyDetailsId): String = ???
+  def getCompanyName(id: CompanyDetailsId): _root_.scala.Predef.String = ???
 
   def contactDetailsRows(
                           index: Index

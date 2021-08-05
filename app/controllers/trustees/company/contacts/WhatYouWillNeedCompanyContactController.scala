@@ -19,7 +19,7 @@ package controllers.trustees.company.contacts
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.trustees.company.contacts.routes.EnterEmailController
-import helpers.MandatoryAnswerMissingException
+import helpers.cya.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.company.CompanyDetailsId
 import models.{Index, NormalMode}
