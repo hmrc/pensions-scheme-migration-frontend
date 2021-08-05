@@ -18,6 +18,7 @@ package utils.datacompletion
 
 import identifiers.trustees.TrusteeKindId
 import identifiers.trustees.company.CompanyDetailsId
+import identifiers.trustees.company.details._
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
@@ -37,14 +38,14 @@ trait DataCompletionTrustees extends DataCompletion {
       )
     ).getOrElse(false)
 
-  def isTrusteeIndividualDetailsCompleted(index: Int): Boolean =
+  def isTrusteeIndividualDetailsCompleted(index: Int): Option[Boolean] =
     isComplete(
       Seq(
         isAnswerComplete(TrusteeDOBId(index)),
         isAnswerComplete(TrusteeHasNINOId(index), TrusteeNINOId(index), Some(TrusteeNoNINOReasonId(index))),
         isAnswerComplete(TrusteeHasUTRId(index), TrusteeUTRId(index), Some(TrusteeNoUTRReasonId(index)))
       )
-    ).getOrElse(false)
+    )
 
   def isTrusteeIndividualAddressCompleted(
                                            index: Int,
@@ -74,6 +75,17 @@ trait DataCompletionTrustees extends DataCompletion {
         isAnswerComplete(TrusteeKindId(index))
       )
     ).getOrElse(false)
+
+  def isTrusteeCompanyDetailsCompleted(index: Int): Option[Boolean] = {
+    isComplete(
+      Seq(
+        isAnswerComplete(HaveCompanyNumberId(index), CompanyNumberId(index), Some(NoCompanyNumberReasonId(index))),
+        isAnswerComplete(HaveUTRId(index), CompanyUTRId(index), Some(NoUTRReasonId(index))),
+        isAnswerComplete(HaveVATId(index), VATId(index), None),
+        isAnswerComplete(HavePAYEId(index), PAYEId(index), None)
+      )
+    )
+  }
 
   def isTrusteeCompanyContactDetailsCompleted(index: Int): Option[Boolean] =
     isComplete(

@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.cya.establishers.company
 
 import controllers.establishers.company.contact.routes
-import helpers.CYAHelper.getCompanyName
+import helpers.cya.CYAHelper
+import helpers.cya.CYAHelper.getCompanyName
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.contact.{EnterEmailId, EnterPhoneId}
 import models.requests.DataRequest

@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.cya.establishers.individual
 
 import controllers.establishers.individual.details.routes
-import helpers.CYAHelper.getName
+import helpers.cya.CYAHelper
+import helpers.cya.CYAHelper.getName
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.details._
 import models.requests.DataRequest

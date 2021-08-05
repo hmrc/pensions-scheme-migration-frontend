@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.cya.trustees.individual
 
-import controllers.establishers.individual.contact.routes
-import helpers.CYAHelper.getName
-import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
+import controllers.trustees.individual.contact.routes
+import helpers.cya.CYAHelper
+import helpers.cya.CYAHelper.getName
+import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import models.requests.DataRequest
 import models.{CheckMode, Index}
 import play.api.i18n.Messages
@@ -29,7 +30,7 @@ import uk.gov.hmrc.viewmodels.SummaryList.Row
 import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 
-class EstablisherContactDetailsCYAHelper
+class TrusteeContactDetailsCYAHelper
   extends CYAHelper
     with Enumerable.Implicits {
 
@@ -41,21 +42,21 @@ class EstablisherContactDetailsCYAHelper
                         ): Seq[Row] = {
     implicit val ua: UserAnswers =
       request.userAnswers
-    val establisherName: String =
-      getName(EstablisherNameId(index))
+    val trusteeName: String =
+      getName(TrusteeNameId(index))
 
     val rowsWithoutDynamicIndices = Seq(
       Some(answerOrAddRow(
         id = EnterEmailId(index),
-        message = Message("messages__enterEmail", establisherName).resolve,
+        message = Message("messages__enterEmail", trusteeName).resolve,
         url = Some(routes.EnterEmailController.onPageLoad(index, CheckMode).url),
-        visuallyHiddenText = Some(msg"messages__enterEmail__cya__visuallyHidden".withArgs(establisherName))
+        visuallyHiddenText = Some(msg"messages__enterEmail__cya__visuallyHidden".withArgs(trusteeName))
       )),
       Some(answerOrAddRow(
         id = EnterPhoneId(index),
-        message = Message("messages__enterPhone", establisherName).resolve,
+        message = Message("messages__enterPhone", trusteeName).resolve,
         url = Some(routes.EnterPhoneController.onPageLoad(index, CheckMode).url),
-        visuallyHiddenText = Some(msg"messages__enterPhone__cya__visuallyHidden".withArgs(establisherName))
+        visuallyHiddenText = Some(msg"messages__enterPhone__cya__visuallyHidden".withArgs(trusteeName))
       ))).flatten
 
     rowsWithDynamicIndices(rowsWithoutDynamicIndices)

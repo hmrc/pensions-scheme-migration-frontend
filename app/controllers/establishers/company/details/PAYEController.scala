@@ -70,7 +70,8 @@ class PAYEController @Inject()(
               form          = form(name(index)),
               schemeName    = schemeName,
               legendClass   = "govuk-visually-hidden",
-              paragraphText = Seq(Message("messages__paye__p"))
+              paragraphText = Seq(Message("messages__paye__p", name(index))),
+              hintText = Some(Message("messages__paye__hint"))
             )
         }
     }
@@ -88,8 +89,9 @@ class PAYEController @Inject()(
               form          = form(name(index)),
               schemeName    = schemeName,
               legendClass   = "govuk-visually-hidden",
-              paragraphText = Seq(Message("messages__paye__p")),
-              mode          = mode
+              paragraphText = Seq(Message("messages__paye__p", name(index))),
+              mode          = mode,
+              hintText = Some(Message("messages__paye__hint"))
             )
         }
     }

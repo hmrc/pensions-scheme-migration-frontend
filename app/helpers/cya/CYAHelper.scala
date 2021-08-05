@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.cya
 
 import identifiers.TypedIdentifier
-import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
 import models._
+import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}

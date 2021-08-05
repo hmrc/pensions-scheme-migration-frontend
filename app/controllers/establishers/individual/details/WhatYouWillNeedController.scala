@@ -19,7 +19,7 @@ package controllers.establishers.individual.details
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.establishers.individual.details.routes._
-import helpers.MandatoryAnswerMissingException
+import helpers.cya.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import models.{Index, NormalMode}

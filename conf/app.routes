@@ -30,6 +30,8 @@ POST        /before-you-start/pension-advisor                      controllers.b
 
 GET         /before-you-start/check-your-answers                   controllers.beforeYouStartSpoke.CheckYourAnswersController.onPageLoad
 
+GET         /what-you-will-need-before-start                         controllers.BeforeYouStartController.onPageLoad
+
 GET         /members/membership                                    controllers.aboutMembership.CurrentMembersController.onPageLoad
 POST        /members/membership                                    controllers.aboutMembership.CurrentMembersController.onSubmit
 

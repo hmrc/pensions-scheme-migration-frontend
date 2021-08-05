@@ -18,6 +18,7 @@ package helpers
 
 import base.SpecBase._
 import controllers.establishers.individual.contact.routes
+import helpers.cya.establishers.individual.EstablisherContactDetailsCYAHelper
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
