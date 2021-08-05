@@ -63,7 +63,8 @@ class DirectorDOBControllerSpec
   private val commonJson: JsObject =
     Json.obj(
       "name"       -> "Jane Doe",
-      "schemeName" -> "Test scheme name"
+      "schemeName" -> "Test scheme name",
+      "entityType" -> "the director"
     )
 
   private val formData: LocalDate =

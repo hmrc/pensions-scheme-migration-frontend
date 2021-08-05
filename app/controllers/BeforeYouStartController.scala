@@ -18,23 +18,16 @@ package controllers
 
 import config.AppConfig
 import connectors.MinimalDetailsConnector
-import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import controllers.establishers.company.details.routes.HaveCompanyNumberController
-import helpers.MandatoryAnswerMissingException
-import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.company.CompanyDetailsId
-import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.Message
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class BeforeYouStartController @Inject()(
                                            appConfig : AppConfig,

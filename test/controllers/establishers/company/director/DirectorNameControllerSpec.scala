@@ -20,7 +20,6 @@ import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.PersonNameFormProvider
 import identifiers.establishers.company.director.DirectorNameId
-import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
 import models.{Index, NormalMode, PersonName}
 import org.mockito.Matchers.any
