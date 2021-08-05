@@ -17,11 +17,10 @@
 package utils.datacompletion
 
 import identifiers.trustees.TrusteeKindId
-import identifiers.trustees.company.CompanyDetailsId
+import identifiers.trustees.company.{CompanyDetailsId, contacts => companyContact}
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.details._
 import models.trustees.TrusteeKind
-import identifiers.trustees.company.{contacts => companyContact}
 import models.{CompanyDetails, ReferenceValue}
 import org.scalatest.{MustMatchers, OptionValues, TryValues, WordSpec}
 import utils.{Enumerable, UserAnswers}
