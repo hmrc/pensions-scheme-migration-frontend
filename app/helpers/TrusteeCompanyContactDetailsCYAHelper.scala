@@ -17,7 +17,7 @@
 package helpers
 
 import controllers.trustees.company.contacts.routes
-import helpers.CYAHelper.getCompanyName
+import helpers.cya.CYAHelper
 import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.contacts.{EnterEmailId, EnterPhoneId}
 import models.requests.DataRequest
@@ -32,6 +32,8 @@ import viewmodels.Message
 class TrusteeCompanyContactDetailsCYAHelper
   extends CYAHelper
     with Enumerable.Implicits {
+
+  def getCompanyName(id: CompanyDetailsId): String = ???
 
   def contactDetailsRows(
                           index: Index
