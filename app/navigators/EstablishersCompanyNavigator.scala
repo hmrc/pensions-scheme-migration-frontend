@@ -18,21 +18,31 @@ package navigators
 
 import controllers.establishers.company.address.routes._
 import controllers.establishers.company.contact.routes._
+import config.AppConfig
+import controllers.establishers.company.address.routes._
 import controllers.establishers.company.details.{routes => detailsRoutes}
 import controllers.establishers.routes._
 import controllers.routes._
 import identifiers._
-import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address._
 import identifiers.establishers.company.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.company.details._
 import identifiers.establishers.individual.EstablisherNameId
+import identifiers.establishers.company.{AddCompanyDirectorsId, CompanyDetailsId}
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode, NormalMode}
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
+import models.{Mode, NormalMode}
+import play.api.mvc.{AnyContent, Call}
+import utils.{Enumerable, UserAnswers}
+import models.{Mode, NormalMode}
+import play.api.mvc.{AnyContent, Call}
+import utils.{Enumerable, UserAnswers}
 
-class EstablishersCompanyNavigator
+import javax.inject.Inject
+
+class EstablishersCompanyNavigator@Inject()(config: AppConfig)
   extends Navigator
     with Enumerable.Implicits {
 
@@ -63,6 +73,8 @@ class EstablishersCompanyNavigator
     case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index)
     case PreviousAddressListId(index) => cyaAddress(index)
     case PreviousAddressId(index) => cyaAddress(index)
+    case AddCompanyDirectorsId(index) =>
+      addDirectors(index, ua)
 
   }
 
@@ -85,7 +97,24 @@ class EstablishersCompanyNavigator
 
   private def cyaAddress(index:Int): Call = controllers.establishers.company.address.routes.CheckYourAnswersController.onPageLoad(index)
   private def addressYears(index:Int, mode:Mode): Call = controllers.establishers.company.address.routes.AddressYearsController.onPageLoad(index)
+  private def addDirectors(index: Int, answers: UserAnswers): Call = {
+    if (answers.allDirectorsAfterDelete(index).isEmpty) {
+      controllers.establishers.company.director.routes.DirectorNameController
+        .onPageLoad(index, answers.allDirectors(index).size, NormalMode)
+    } else if (answers.allDirectorsAfterDelete(index).length < config.maxDirectors) {
+      answers.get(AddCompanyDirectorsId(index)).map { addCompanyDirectors =>
+        if (addCompanyDirectors) {
+          controllers.establishers.company.director.routes.DirectorNameController
+            .onPageLoad(index, answers.allDirectors(index).size, NormalMode)
+        } else {
+          controllers.routes.TaskListController.onPageLoad()
+        }
+      }.getOrElse(controllers.routes.TaskListController.onPageLoad())
 
+    }else {
+      controllers.establishers.company.routes.OtherDirectorsController.onPageLoad(index,NormalMode)
+    }
+  }
   private def companyNumberRoutes(
                                   index: Index,
                                   answers: UserAnswers,

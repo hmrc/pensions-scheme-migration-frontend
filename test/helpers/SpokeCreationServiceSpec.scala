@@ -23,6 +23,7 @@ import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.contact.EnterPhoneId
 import identifiers.establishers.company.details.{CompanyNumberId, HaveCompanyNumberId}
+import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressId
 import identifiers.trustees.TrusteeKindId
@@ -191,6 +192,14 @@ class SpokeCreationServiceSpec
               visuallyHiddenText = None
             ),
             isCompleted = None
+          ),
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Add directors for test",
+              target = controllers.establishers.company.director.details.routes.WhatYouWillNeedController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            Some(false)
           )
         )
 
@@ -239,6 +248,70 @@ class SpokeCreationServiceSpec
             visuallyHiddenText = None
           ),
           isCompleted = Some(false)
+        ),
+        EntitySpoke(
+          link = TaskListLink(
+            text = "Add directors for test",
+            target = controllers.establishers.company.director.details.routes.WhatYouWillNeedController.onPageLoad(0).url,
+            visuallyHiddenText = None
+          ),
+          isCompleted = Some(false)
+        )
+      )
+
+    val result =
+      spokeCreationService.getEstablisherCompanySpokes(
+        answers = userAnswers,
+        name = "test",
+        index = 0
+      )
+    result mustBe expectedSpoke
+  }
+
+  "display all the spokes with appropriate links and change  link should display when data is returned from TPSS for director" in {
+    val userAnswers =
+      ua
+        .set(EstablisherKindId(0), EstablisherKind.Company).success.value
+        .set(CompanyDetailsId(0), CompanyDetails("test",false)).success.value
+        .set(DirectorNameId(0,0), PersonName("Jane", "Doe")).success.value
+        .setOrException(HaveCompanyNumberId(0), true)
+        .setOrException(CompanyNumberId(0), ReferenceValue("12345678"))
+        .setOrException(AddressId(0), Data.address)
+        .setOrException(EnterPhoneId(0), "1234567890")
+
+    val expectedSpoke =
+      Seq(
+        EntitySpoke(
+          link = TaskListLink(
+            text = "Change details for test",
+            target = controllers.establishers.company.details.routes.CheckYourAnswersController.onPageLoad(0).url,
+            visuallyHiddenText = None
+          ),
+          isCompleted = Some(false)
+        ),
+        EntitySpoke(
+          link = TaskListLink(
+            text = "Change address for test",
+            target = controllers.establishers.company.address.routes.CheckYourAnswersController.onPageLoad(0).url,
+            visuallyHiddenText = None
+          ),
+          isCompleted = Some(false)
+        ),
+        EntitySpoke(
+          link = TaskListLink(
+            text = "Change contact details for test",
+            target = controllers.establishers.company.contact.routes.CheckYourAnswersController.onPageLoad(0).url,
+            visuallyHiddenText = None
+          ),
+          isCompleted = Some(false)
+        ),
+        EntitySpoke(
+          link = TaskListLink(
+            text = "Change directors for test",
+            target = controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(0,NormalMode).url,
+            visuallyHiddenText = None
+          ),
+          Some(false)
         )
       )
 

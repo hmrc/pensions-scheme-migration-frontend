@@ -22,7 +22,7 @@ import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.HasReferenceNumberFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
-import identifiers.establishers.company.details.{HaveUTRId, HaveVATId}
+import identifiers.establishers.company.details.HaveVATId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import navigators.CompoundNavigator

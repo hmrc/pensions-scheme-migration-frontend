@@ -22,9 +22,7 @@ import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.UTRFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
-import identifiers.establishers.company.details.{CompanyUTRId, UTRId}
-import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.details.EstablisherUTRId
+import identifiers.establishers.company.details.CompanyUTRId
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
 import navigators.CompoundNavigator

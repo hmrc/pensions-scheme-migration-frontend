@@ -23,8 +23,6 @@ import forms.HasReferenceNumberFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.details.HaveUTRId
-import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.details.EstablisherHasUTRId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import navigators.CompoundNavigator

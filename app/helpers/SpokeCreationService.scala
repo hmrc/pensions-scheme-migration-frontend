@@ -17,18 +17,15 @@
 package helpers
 
 import controllers.establishers.routes._
-import helpers.spokes.establishers.company.{EstablisherCompanyDetails, EstablisherCompanyContactDetails, EstablisherCompanyAddress}
+import helpers.spokes.establishers.company.{EstablisherCompanyAddress, EstablisherCompanyContactDetails, EstablisherCompanyDetails, EstablisherCompanyDirectorDetails}
 import helpers.spokes.establishers.individual._
-import helpers.spokes.trustees.company.{TrusteeCompanyDetails, TrusteeCompanyAddress}
-import helpers.spokes.trustees.individual.{TrusteeIndividualAddress, TrusteeIndividualDetails, TrusteeIndividualContactDetails}
-import helpers.spokes.{BeforeYouStartSpoke, AboutMembersSpoke, Spoke, BenefitsAndInsuranceSpoke}
+import helpers.spokes.trustees.company.{TrusteeCompanyAddress, TrusteeCompanyContactDetails, TrusteeCompanyDetails}
 import helpers.spokes.trustees.individual.{TrusteeIndividualAddress, TrusteeIndividualContactDetails, TrusteeIndividualDetails}
-import helpers.spokes.trustees.company.{TrusteeCompanyContactDetails, TrusteeCompanyDetails}
 import helpers.spokes.{AboutMembersSpoke, BeforeYouStartSpoke, BenefitsAndInsuranceSpoke, Spoke}
 import models.Index._
-import models.{TaskListLink, EntitySpoke, Index}
+import models.{Entity, EntitySpoke, Index, TaskListLink}
 import play.api.i18n.Messages
-import utils.{UserAnswers, Enumerable}
+import utils.{Enumerable, UserAnswers}
 
 class SpokeCreationService extends Enumerable.Implicits {
 
@@ -86,8 +83,24 @@ class SpokeCreationService extends Enumerable.Implicits {
     Seq(
       createSpoke(answers, EstablisherCompanyDetails(index, answers), name),
       createSpoke(answers, EstablisherCompanyAddress(index, answers), name),
-      createSpoke(answers, EstablisherCompanyContactDetails(index, answers), name)
+      createSpoke(answers, EstablisherCompanyContactDetails(index, answers), name),
+      createDirectorSpoke(answers.allDirectorsAfterDelete(indexToInt(index)),EstablisherCompanyDirectorDetails(index, answers), name)
     )
+  }
+
+  def createDirectorSpoke(entityList: Seq[Entity[_]],
+                          spoke: Spoke,
+                          name: String)(implicit messages: Messages): EntitySpoke = {
+    val isComplete: Option[Boolean] = {
+      (entityList.isEmpty) match {
+        case (false) =>
+          Some(entityList.forall(_.isCompleted))
+        case (true) =>
+          Some(false)
+        case _ => None
+      }
+    }
+      EntitySpoke(spoke.changeLink(name), isComplete)
   }
 
   def getAddTrusteeHeaderSpokes(answers: UserAnswers, viewOnly: Boolean)

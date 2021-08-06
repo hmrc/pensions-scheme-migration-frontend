@@ -97,3 +97,16 @@ GET         /:index/company/change/enter-phone-number                           
 POST        /:index/company/change/enter-phone-number                                 controllers.establishers.company.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = CheckMode)
 
 GET         /:index/company/contact-details/check-your-answers                        controllers.establishers.company.contact.CheckYourAnswersController.onPageLoad(index: Index)
+
+GET         /:index/company/list-of-directors                                    controllers.establishers.company.AddCompanyDirectorsController.onPageLoad(index: Index,mode: Mode = NormalMode)
+POST        /:index/company/list-of-directors                                    controllers.establishers.company.AddCompanyDirectorsController.onSubmit(index: Index,mode: Mode = NormalMode)
+GET         /:index/change/company/list-of-directors                             controllers.establishers.company.AddCompanyDirectorsController.onPageLoad(index: Index,mode: Mode = CheckMode)
+POST        /:index/change/company/list-of-directors                             controllers.establishers.company.AddCompanyDirectorsController.onSubmit(index: Index,mode: Mode = CheckMode)
+
+GET         /:index/company/other-directors                                      controllers.establishers.company.OtherDirectorsController.onPageLoad(index:Index,mode:Mode=NormalMode)
+POST        /:index/company/other-directors                                      controllers.establishers.company.OtherDirectorsController.onSubmit(index:Index,mode:Mode=NormalMode)
+GET         /:index/change/company/other-directors                               controllers.establishers.company.OtherDirectorsController.onPageLoad(index:Index,mode:Mode=CheckMode)
+POST        /:index/change/company/other-directors                               controllers.establishers.company.OtherDirectorsController.onSubmit(index:Index,mode:Mode=CheckMode)
+
+
+->          /                                                                         establishersCompanyDirector.Routes

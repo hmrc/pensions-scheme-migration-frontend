@@ -17,8 +17,8 @@
 package controllers.establishers.individual.address
 
 import connectors.cache.UserAnswersCacheConnector
-import controllers.Retrievals
 import controllers.actions._
+import controllers.address.CommonAddressYearsController
 import forms.establishers.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
@@ -26,28 +26,25 @@ import identifiers.establishers.individual.address.AddressYearsId
 import models.Index
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.Json
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Enumerable
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
-                                       userAnswersCacheConnector: UserAnswersCacheConnector,
+                                       val userAnswersCacheConnector: UserAnswersCacheConnector,
                                        authenticate: AuthAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
-                                       navigator: CompoundNavigator,
+                                       val navigator: CompoundNavigator,
                                        formProvider: AddressYearsFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer)(implicit ec: ExecutionContext)
-  extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
+                                       val renderer: Renderer)(implicit ec: ExecutionContext)
+  extends CommonAddressYearsController
+  with Enumerable.Implicits {
 
   private def form: Form[Boolean] =
     formProvider()
@@ -55,45 +52,14 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       (EstablisherNameId(index) and SchemeNameId).retrieve.right.map { case establisherName ~ schemeName =>
-        val preparedForm = request.userAnswers.get(AddressYearsId(index)) match {
-          case Some(value) => form.fill(value)
-          case None        => form
-        }
-        val json = Json.obj(
-          "schemeName" -> schemeName,
-          "entityName" -> establisherName.fullName,
-          "entityType" -> Messages("establisherEntityTypeIndividual"),
-          "form" -> preparedForm,
-          "radios" -> Radios.yesNo (preparedForm("value"))
-        )
-        renderer.render("establishers/individual/address/addressYears.njk", json).map(Ok(_))
+        get(Some(schemeName), establisherName.fullName, Messages("establisherEntityTypeIndividual"), form, AddressYearsId(index))
       }
     }
 
   def onSubmit(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       (EstablisherNameId(index) and SchemeNameId).retrieve.right.map { case establisherName ~ schemeName =>
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => {
-              val json = Json.obj(
-                "schemeName" -> schemeName,
-                "entityName" -> establisherName.fullName,
-                "entityType" -> Messages("establisherEntityTypeIndividual"),
-                "form" -> formWithErrors,
-                "radios" -> Radios.yesNo(form("value"))
-              )
-
-              renderer.render("establishers/individual/address/addressYears.njk", json).map(BadRequest(_))
-            },
-            value => {
-              val updatedUA = request.userAnswers.setOrException(AddressYearsId(index), value)
-              userAnswersCacheConnector.save(request.lock, updatedUA.data).map { _ =>
-                Redirect(navigator.nextPage(AddressYearsId(index), updatedUA))
-              }
-            }
-          )
+        post(Some(schemeName), establisherName.fullName, Messages("establisherEntityTypeIndividual"), form, AddressYearsId(index))
         }
     }
 

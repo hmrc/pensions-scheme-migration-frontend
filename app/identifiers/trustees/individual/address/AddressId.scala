@@ -19,7 +19,7 @@ package identifiers.trustees.individual.address
 import identifiers.TypedIdentifier
 import identifiers.trustees.TrusteesId
 import models.Address
-import play.api.libs.json.{Format, JsPath, Json}
+import play.api.libs.json.{Format, Json, JsPath}
 
 case class AddressId(index: Int) extends TypedIdentifier[Address] {
   override def path: JsPath =

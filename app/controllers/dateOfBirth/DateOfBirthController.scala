@@ -53,7 +53,8 @@ trait DateOfBirthController
   protected def get(
                      dobId: TypedIdentifier[LocalDate],
                      personNameId: TypedIdentifier[PersonName],
-                     schemeName: String
+                     schemeName: String,
+                     entityType: String
                    )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     val preparedForm: Form[LocalDate] =
@@ -70,7 +71,8 @@ trait DateOfBirthController
             "form"       -> preparedForm,
             "date"       -> DateInput.localDate(preparedForm("date")),
             "name"       -> personName.fullName,
-            "schemeName" -> schemeName
+            "schemeName" -> schemeName,
+            "entityType" -> entityType
           )
         ).map(Ok(_))
     }
@@ -80,6 +82,7 @@ trait DateOfBirthController
                       dobId: TypedIdentifier[LocalDate],
                       personNameId: TypedIdentifier[PersonName],
                       schemeName: String,
+                      entityType: String,
                       mode: Mode
                     )(implicit request: DataRequest[AnyContent]): Future[Result] =
 
@@ -98,7 +101,8 @@ trait DateOfBirthController
                 "form"       -> formWithErrorsDayIdCorrection,
                 "date"       -> DateInput.localDate(formWithErrorsDayIdCorrection("date")),
                 "name"       -> personName.fullName,
-                "schemeName" -> schemeName
+                "schemeName" -> schemeName,
+                "entityType" -> entityType
               )
             ).map(BadRequest(_))
         }

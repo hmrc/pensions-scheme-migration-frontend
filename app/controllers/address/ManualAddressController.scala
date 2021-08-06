@@ -23,7 +23,7 @@ import helpers.CountriesHelper
 import identifiers.TypedIdentifier
 import models.AddressConfiguration.AddressConfiguration
 import models.requests.DataRequest
-import models.{Address, AddressConfiguration}
+import models.{Address, AddressConfiguration, Mode, NormalMode}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages}
@@ -77,7 +77,8 @@ trait ManualAddressController
   protected def post(schemeName: Option[String],
                      entityName: String,
                      addressPage: TypedIdentifier[Address],
-                     addressLocation: AddressConfiguration)(
+                     addressLocation: AddressConfiguration,
+                     mode: Option[Mode] = None)(
     implicit request: DataRequest[AnyContent],
     ec: ExecutionContext
   ): Future[Result] = {
@@ -92,7 +93,8 @@ trait ManualAddressController
             updatedAnswers <- Future.fromTry(request.userAnswers.set(addressPage, value))
             _ <- userAnswersCacheConnector.save(request.lock,updatedAnswers.data)
           } yield {
-            Redirect(navigator.nextPage(addressPage, updatedAnswers))
+            val finalMode = mode.getOrElse(NormalMode)
+            Redirect(navigator.nextPage(addressPage, updatedAnswers, finalMode))
         }
       )
   }

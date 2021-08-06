@@ -20,6 +20,8 @@ import config.AppConfig
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
+import models.requests.DataRequest
+import models.{Mode, NormalMode, TolerantAddress}
 import forms.FormsHelper.formWithError
 import identifiers.TypedIdentifier
 import models.TolerantAddress
@@ -58,7 +60,7 @@ trait PostcodeController extends FrontendBaseController with Retrievals {
     renderer.render(viewTemplate, prepareJson(json(form))).map(Ok(_))
   }
 
-  def post(formToJson: Form[String] => JsObject, postcodeId: TypedIdentifier[Seq[TolerantAddress]], errorMessage: String)
+  def post(formToJson: Form[String] => JsObject, postcodeId: TypedIdentifier[Seq[TolerantAddress]], errorMessage: String,mode: Option[Mode] = None)
           (implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
     form.bindFromRequest().fold(
       formWithErrors =>
@@ -73,7 +75,11 @@ trait PostcodeController extends FrontendBaseController with Retrievals {
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(postcodeId, addresses))
                 _ <- userAnswersCacheConnector.save(request.lock,updatedAnswers.data)
-              } yield Redirect(navigator.nextPage(postcodeId, updatedAnswers))
+              } yield
+                {
+                  val finalMode = mode.getOrElse(NormalMode)
+                  Redirect(navigator.nextPage(postcodeId, updatedAnswers, finalMode))
+                }
           }
     )
   }

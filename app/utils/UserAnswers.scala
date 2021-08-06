@@ -18,6 +18,7 @@ package utils
 
 import identifiers.TypedIdentifier
 import identifiers.establishers.company.CompanyDetailsId
+import identifiers.establishers.company.director.{DirectorNameId, IsNewDirectorId}
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.{EstablisherKindId, EstablishersId, IsEstablisherNewId}
 import identifiers.trustees.company.{CompanyDetailsId => TrusteeCompanyDetailsId}
@@ -155,6 +156,7 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
         Nil
     }
   }
+
 
   //scalastyle:off method.length
   def readEstablishers: Reads[Seq[Establisher[_]]] = new Reads[Seq[Establisher[_]]] {
@@ -299,12 +301,49 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
       case JsSuccess(i, _) => i
     })
   }
+  private def traverse[A](seq: Seq[JsResult[A]]): JsResult[Seq[A]] = {
+    seq match {
+      case s if s.forall(_.isSuccess) =>
+        JsSuccess(seq.foldLeft(Seq.empty[A]) {
+          case (m, JsSuccess(n, _)) =>
+            m :+ n
+          case (m, _) =>
+            m
+        })
+      case s =>
+        s.collect {
+          case e@JsError(_) =>
+            e
+        }.reduceLeft(JsError.merge)
+    }
+  }
 
-  //def getAllRecursive[A](path: JsPath)(implicit rds: Reads[A]): Option[Seq[A]] = {
-  //  JsLens.fromPath(path)
-  //    .getAll(json)
-  //    .flatMap(a => traverse(a.map(Json.fromJson[A]))).asOpt
-  //}
+  def allDirectorsAfterDelete(establisherIndex: Int): Seq[DirectorEntity] = {
+    allDirectors(establisherIndex).filterNot(_.isDeleted)
+  }
+
+  def getAllRecursive[A](path: JsPath)(implicit rds: Reads[A]): Option[Seq[A]] = {
+    JsLens.fromPath(path)
+      .getAll(data)
+      .flatMap(a => traverse(a.map(Json.fromJson[A]))).asOpt
+  }
+
+  def allDirectors(establisherIndex: Int): Seq[DirectorEntity] =
+    getAllRecursive[PersonName](DirectorNameId.collectionPath(establisherIndex)).map {
+      details =>
+        for ((director, directorIndex) <- details.zipWithIndex) yield {
+          val isComplete = isDirectorComplete(establisherIndex, directorIndex)
+          val isNew = get(IsNewDirectorId(establisherIndex, directorIndex)).getOrElse(false)
+          DirectorEntity(
+            DirectorNameId(establisherIndex, directorIndex),
+            director.fullName,
+            director.isDeleted,
+            isComplete,
+            isNew,
+            details.count(!_.isDeleted)
+          )
+        }
+    }.getOrElse(Seq.empty)
 }
 
 case object UnrecognisedEstablisherKindException extends Exception

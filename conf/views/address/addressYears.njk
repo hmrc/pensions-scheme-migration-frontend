@@ -8,7 +8,7 @@
 {% from "macros/returnLink.njk"                    import returnLink %}
 
 {% block pageTitle %}
-  {{ title(messages("trusteeAddressYears.title", entityType), form.errors) }}
+  {{ title(messages("addressYears.title", entityType), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -33,9 +33,9 @@
             name: 'value',
             fieldset: {
               legend: {
-                text: messages('trusteeAddressYears.title', entityName),
-                isPageHeading: false,
-                classes: "govuk-fieldset__legend--xl"
+                text: messages('addressYears.title', entityName),
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--xl govuk-!-margin-bottom-8"
               }
             },
             items: radios,

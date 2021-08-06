@@ -41,7 +41,7 @@ class EstablisherNameControllerSpec extends ControllerSpecBase with NunjucksSupp
   private val index: Index = Index(0)
   private val personName: PersonName = PersonName("Jane", "Doe")
   private val userAnswers: Option[UserAnswers] = ua.set(EstablisherNameId(0), personName).toOption
-  private val templateToBeRendered = "establishers/individual/establisherName.njk"
+  private val templateToBeRendered = "personName.njk"
   private val form: Form[PersonName] = new PersonNameFormProvider()("messages__error__establisher")
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -63,7 +63,8 @@ class EstablisherNameControllerSpec extends ControllerSpecBase with NunjucksSupp
   private val jsonToPassToTemplate: Form[PersonName] => JsObject = form =>
     Json.obj(
       "form" -> form,
-      "schemeName" -> schemeName
+      "schemeName" -> schemeName,
+      "entityType" -> "establisher"
     )
 
   override def beforeEach: Unit = {

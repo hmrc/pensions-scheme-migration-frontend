@@ -19,12 +19,10 @@ package controllers.establishers.company.details
 import connectors.cache.UserAnswersCacheConnector
 import controllers.EnterReferenceValueController
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import forms.{CompanyNumberFormProvider, NINOFormProvider}
+import forms.CompanyNumberFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.details.CompanyNumberId
-import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.details.EstablisherNINOId
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
 import navigators.CompoundNavigator

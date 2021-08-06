@@ -90,4 +90,58 @@ class AddToListHelper {
       case _ => messages("kind.company")
     }
 
+  def mapDirectorToTable[A <: Entity[_]](dirctors: Seq[A])
+                                        (implicit messages: Messages): Table =
+    directorTable(
+      entities = dirctors
+    )
+
+  private def directorTable[A <: Entity[_]](entities: Seq[A])
+                                           (implicit messages: Messages): Table = {
+    val rows = entities.map { data =>
+      Seq(
+        Cell(
+          content = Literal(data.name),
+          classes = Seq("govuk-!-width-one-half")
+        )
+      ) ++
+        data.editLink.fold[Seq[Cell]](
+          Nil
+        )(
+          editLink =>
+            Seq(
+              Cell(
+                content = link(
+                  id = s"change-${data.index}",
+                  text = "site.change",
+                  url = editLink, name = data.name
+                ),
+                classes = Seq("govuk-!-width-one-quarter")
+              )
+            )
+        )++
+        data.deleteLink.fold[Seq[Cell]](
+          Nil
+        )(
+          delLink =>
+            Seq(
+              Cell(
+                content = link(
+                  id = s"remove-${data.index}",
+                  text = "site.remove",
+                  url = delLink, name = data.name
+                ),
+                classes = Seq("govuk-!-width-one-quarter")
+              )
+            )
+        )
+    }
+
+    Table(
+      ( Nil ),
+      rows = rows,
+      attributes = Map("role" -> "table")
+    )
+  }
+
 }

@@ -23,8 +23,6 @@ import forms.ReasonFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.details.NoCompanyNumberReasonId
-import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.details.EstablisherNoNINOReasonId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import navigators.CompoundNavigator

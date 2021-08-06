@@ -17,9 +17,8 @@
 package forms.address
 
 import forms.mappings.Mappings
-import play.api.data.Form
-
 import javax.inject.Inject
+import play.api.data.Form
 
 class AddressListFormProvider @Inject() extends Mappings {
 

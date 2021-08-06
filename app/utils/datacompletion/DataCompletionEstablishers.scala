@@ -17,15 +17,15 @@
 package utils.datacompletion
 
 import identifiers.establishers.EstablisherKindId
-import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address.{TradingTimeId, AddressId => CompanyAddressId, AddressYearsId => CompanyAddressYearsId, PreviousAddressId => CompanyPreviousAddressId}
 import identifiers.establishers.company.details._
+import identifiers.establishers.company.director.{address => directorAddress}
+import identifiers.establishers.company.director.{contact => directorContact}
+import identifiers.establishers.company.director.details._
+import identifiers.establishers.company.{CompanyDetailsId, contact => companyContact}
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.address.{AddressYearsId, PreviousAddressId, AddressId}
-import identifiers.establishers.company.address.{TradingTimeId, AddressYearsId => CompanyAddressYearsId,
-  PreviousAddressId => CompanyPreviousAddressId, AddressId => CompanyAddressId}
+import identifiers.establishers.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
-import identifiers.establishers.company.{contact => companyContact}
 import identifiers.establishers.individual.details._
 import utils.UserAnswers
 
@@ -111,6 +111,33 @@ trait DataCompletionEstablishers extends DataCompletion {
         isAnswerComplete(EstablisherKindId(index))
       )
     ).getOrElse(false)
+
+  def isDirectorComplete(estIndex: Int, dirIndex: Int): Boolean =
+    isComplete(Seq(
+      isDirectorDetailsComplete(estIndex, dirIndex),
+      isDirectorAddressComplete(estIndex, dirIndex),
+      isContactDetailsComplete(directorContact.EnterEmailId(estIndex, dirIndex), directorContact.EnterPhoneId(estIndex, dirIndex))
+      )
+    ).getOrElse(false)
+
+  def isDirectorDetailsComplete(estIndex: Int, dirIndex: Int): Option[Boolean]  =
+    isComplete(Seq(
+      isAnswerComplete(DirectorDOBId(estIndex, dirIndex)),
+      isAnswerComplete(DirectorHasNINOId(estIndex, dirIndex), DirectorNINOId(estIndex, dirIndex), Some(DirectorNoNINOReasonId(estIndex, dirIndex))),
+      isAnswerComplete(DirectorHasUTRId(estIndex, dirIndex), DirectorEnterUTRId(estIndex, dirIndex), Some(DirectorNoUTRReasonId(estIndex, dirIndex)))
+    ))
+
+  def isDirectorAddressComplete(estIndex: Int,
+                                 dirIndex: Int): Option[Boolean] = {
+    val atAddressMoreThanOneYear = self.get(directorAddress.AddressYearsId(estIndex, dirIndex)).contains(true)
+    isComplete(
+      Seq(
+        isAnswerComplete(directorAddress.AddressId(estIndex, dirIndex)),
+        isAnswerComplete(directorAddress.AddressYearsId(estIndex, dirIndex)),
+        if (atAddressMoreThanOneYear) Some(true) else isAnswerComplete(directorAddress.PreviousAddressId(estIndex, dirIndex))
+      )
+    )
+  }
 
   def isEstablisherCompanyContactDetailsCompleted(index: Int): Option[Boolean] =
     isComplete(
