@@ -17,17 +17,19 @@
 package navigators
 
 import controllers.routes._
-import controllers.trustees.routes._
+import controllers.trustees.company.address.routes.{EnterPreviousPostcodeController, SelectAddressController, SelectPreviousAddressController, TradingTimeController}
+import controllers.trustees.company.contacts.routes._
 import controllers.trustees.company.details.{routes => detailsRoutes}
-import controllers.trustees.company.address.routes.{TradingTimeController, SelectAddressController, EnterPreviousPostcodeController, SelectPreviousAddressController}
+import controllers.trustees.routes._
 import identifiers._
 import identifiers.trustees.company.CompanyDetailsId
-import identifiers.trustees.company.details._
 import identifiers.trustees.company.address.{AddressYearsId, TradingTimeId, _}
-import models.{Mode, Index, CheckMode, NormalMode}
+import identifiers.trustees.company.contacts.{EnterEmailId, EnterPhoneId}
+import identifiers.trustees.company.details._
 import models.requests.DataRequest
-import play.api.mvc.{Call, AnyContent}
-import utils.{UserAnswers, Enumerable}
+import models.{CheckMode, Index, Mode, NormalMode}
+import play.api.mvc.{AnyContent, Call}
+import utils.{Enumerable, UserAnswers}
 
 class TrusteesCompanyNavigator
   extends Navigator
@@ -60,6 +62,9 @@ class TrusteesCompanyNavigator
     case PreviousAddressListId(index) => cyaAddress(index)
     case PreviousAddressId(index) => cyaAddress(index)
 
+    case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
+    case EnterPhoneId(index) => cyaContactDetails(index)
+
   }
 
   override protected def editRouteMap(ua: UserAnswers)
@@ -75,6 +80,8 @@ class TrusteesCompanyNavigator
     case VATId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
     case HavePAYEId(index) => payeRoutes(index, ua, CheckMode)
     case PAYEId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+    case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
+    case EnterPhoneId(index) => cyaContactDetails(index)
   }
 
   private def companyNumberRoutes(
@@ -124,4 +131,5 @@ class TrusteesCompanyNavigator
   private def cyaAddress(index:Int): Call = controllers.trustees.company.address.routes.CheckYourAnswersController.onPageLoad(index)
   private def addressYears(index:Int, mode:Mode): Call = controllers.trustees.company.address.routes.AddressYearsController.onPageLoad(index)
 
+  private def cyaContactDetails(index:Int): Call = controllers.trustees.company.contacts.routes.CheckYourAnswersController.onPageLoad(index)
 }

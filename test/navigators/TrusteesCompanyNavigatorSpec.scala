@@ -19,7 +19,8 @@ package navigators
 import base.SpecBase
 import controllers.trustees.company.details.{routes => detailsRoutes}
 import identifiers.trustees.company.CompanyDetailsId
-import identifiers.trustees.company.address.{TradingTimeId, AddressYearsId, _}
+import identifiers.trustees.company.address.{AddressYearsId, TradingTimeId, _}
+import identifiers.trustees.company.contacts.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.company.details._
 import identifiers.{Identifier, TypedIdentifier}
 import models._
@@ -27,8 +28,8 @@ import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes
 import play.api.mvc.Call
-import utils.Data.{establisherCompanyDetails, ua}
-import utils.{UserAnswers, Enumerable}
+import utils.Data.{establisherCompanyDetails, trusteeCompanyDetails, ua}
+import utils.{Enumerable, UserAnswers}
 
 
 class TrusteesCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour with Enumerable.Implicits with TryValues {
@@ -76,6 +77,13 @@ class TrusteesCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour with
     controllers.trustees.company.address.routes.AddressYearsController.onPageLoad(index)
 
   private def tradingTime: Call = controllers.trustees.company.address.routes.TradingTimeController.onPageLoad(index)
+    ua.set(CompanyDetailsId(0), trusteeCompanyDetails).success.value
+
+  private def enterPhonePage(mode:Mode): Call =
+    controllers.trustees.company.contacts.routes.EnterPhoneController.onPageLoad(index, mode)
+
+  private val cyaContact: Call =
+    controllers.trustees.company.contacts.routes.CheckYourAnswersController.onPageLoad(index)
 
   "TrusteesCompanyNavigator" when {
     def navigation: TableFor3[Identifier, UserAnswers, Call] =
@@ -108,7 +116,10 @@ class TrusteesCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour with
 
         row(EnterPreviousPostCodeId(index))(selectPreviousAddress(NormalMode), addressUAWithValue(EnterPreviousPostCodeId(index), seqAddresses)),
         row(PreviousAddressListId(index))(cyaAddress, addressUAWithValue(PreviousAddressListId(index), 0)),
-        row(PreviousAddressId(index))(cyaAddress, addressUAWithValue(PreviousAddressId(index), address))
+        row(PreviousAddressId(index))(cyaAddress, addressUAWithValue(PreviousAddressId(index), address)),
+        row(EnterEmailId(index))(enterPhonePage(NormalMode), Some(detailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
+        row(EnterPhoneId(index))(cyaContact, Some(detailsUa.set(EnterPhoneId(index), "1234").success.value))
+
       )
 
     def editNavigation: TableFor3[Identifier, UserAnswers, Call] =
@@ -128,7 +139,8 @@ class TrusteesCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour with
         row(VATId(index))(cyaDetails),
         row(HavePAYEId(index))(paye(CheckMode), uaWithValue(HavePAYEId(index), true)),
         row(HavePAYEId(index))(cyaDetails, uaWithValue(HavePAYEId(index), false)),
-        row(PAYEId(index))(cyaDetails)
+        row(EnterEmailId(index))(enterPhonePage(NormalMode), Some(detailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
+        row(EnterPhoneId(index))(cyaContact, Some(detailsUa.set(EnterPhoneId(index), "1234").success.value))
       )
 
     "in NormalMode" must {

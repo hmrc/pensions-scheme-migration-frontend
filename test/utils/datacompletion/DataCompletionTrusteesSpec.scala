@@ -17,6 +17,7 @@
 package utils.datacompletion
 
 import identifiers.trustees.TrusteeKindId
+import identifiers.trustees.company.{CompanyDetailsId, contacts => companyContact}
 import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.details._
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
@@ -160,6 +161,29 @@ class DataCompletionTrusteesSpec
         ua.isTrusteeCompanyDetailsCompleted(0) mustBe Some(false)
 
       }
+    }
+  }
+
+  "isTrusteeCompanyContactDetailsCompleted" must {
+    "return true when all answers are present" in {
+      val ua =
+        UserAnswers()
+          .set(companyContact.EnterEmailId(0), "test@test.com").success.value
+          .set(companyContact.EnterPhoneId(0), "123").success.value
+
+      ua.isTrusteeCompanyContactDetailsCompleted(0).value mustBe true
+    }
+
+    "return false when some answer is missing" in {
+      val ua =
+        UserAnswers()
+          .set(companyContact.EnterEmailId(0), "test@test.com").success.value
+
+      ua.isTrusteeCompanyContactDetailsCompleted(0).value mustBe false
+    }
+
+    "return None when no answer is present" in {
+      UserAnswers().isTrusteeCompanyContactDetailsCompleted(0) mustBe None
     }
   }
 }
