@@ -114,32 +114,30 @@ class EstablisherCompanyDirectorDetailsCYAHelper
             visuallyHiddenText = Some(msg"messages__whyNoUTR__cya__visuallyHidden".withArgs(directorName))
           )
       },
-      ua.get(AddressId(establisherIndex, directorIndex)) map {
-        _ =>
-          answerOrAddRow(
+      Some( answerOrAddRow(
             id                  = AddressId(establisherIndex, directorIndex),
             message             = Message("messages__establisherAddress__whatYouWillNeed_h1", directorName).resolve,
             url                 = Some(controllers.establishers.company.director.address.routes.EnterPostcodeController.onPageLoad(establisherIndex, directorIndex,  CheckMode).url),
             visuallyHiddenText  = Some(msg"messages__visuallyHidden__address".withArgs(directorName)), answerAddressTransform
-          )
-      },
-      ua.get(AddressYearsId(establisherIndex, directorIndex)) map {
-        _ =>
-          answerOrAddRow(
+          ))
+     ,
+      Some(
+        answerOrAddRow(
             id                  = AddressYearsId(establisherIndex, directorIndex),
             message             = Message("addressYears.title", directorName).resolve,
             url                 = Some(controllers.establishers.company.director.address.routes.AddressYearsController.onPageLoad(establisherIndex, directorIndex, CheckMode).url),
             visuallyHiddenText  = Some(msg"messages__visuallyhidden__addressYears".withArgs(directorName)), answerBooleanTransform
-          )
-      },
-      ua.get(PreviousAddressId(establisherIndex, directorIndex)) map {
-        _ =>
-          answerOrAddRow(
-            id                  = PreviousAddressId(establisherIndex, directorIndex),
-            message             = Message("messages__establisherPreviousAddress").resolve,
-            url                 = Some(controllers.establishers.company.director.address.routes.EnterPreviousPostcodeController.onPageLoad(establisherIndex, directorIndex,  CheckMode).url),
-            visuallyHiddenText  = Some(msg"messages__visuallyHidden__previousAddress".withArgs(directorName)), answerAddressTransform
-          )
+          ))
+      ,
+      if (ua.get(AddressYearsId(establisherIndex, directorIndex)).contains(false)) {
+           Some( answerOrAddRow(
+              id = PreviousAddressId(establisherIndex, directorIndex),
+              message = Message("messages__establisherPreviousAddress").resolve,
+              url = Some(controllers.establishers.company.director.address.routes.EnterPreviousPostcodeController.onPageLoad(establisherIndex, directorIndex, CheckMode).url),
+              visuallyHiddenText = Some(msg"messages__visuallyHidden__previousAddress".withArgs(directorName)), answerAddressTransform
+            ))
+      }else{
+        None
       },
       Some(answerOrAddRow(
         id                  = EnterEmailId(establisherIndex, directorIndex),
