@@ -57,7 +57,7 @@ class PAYEControllerSpec extends ControllerSpecBase with NunjucksSupport with Js
       "pageTitle"     -> messages("messages__paye", messages("messages__company")),
       "pageHeading"     -> messages("messages__paye", company.companyName),
       "schemeName"    -> schemeName,
-      "paragraphs" -> Json.arr(messages("messages__paye__p")),
+      "paragraphs" -> Json.arr(messages("messages__paye__p", company.companyName)),
       "legendClass"   -> "govuk-visually-hidden",
       "isPageHeading" -> false
     )

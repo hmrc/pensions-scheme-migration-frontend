@@ -18,7 +18,7 @@ package controllers.establishers.company.contact
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import helpers.EstablisherCompanyContactDetailsCYAHelper
+import helpers.cya.establishers.company.EstablisherCompanyContactDetailsCYAHelper
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.contact.{EnterEmailId, EnterPhoneId}
 import matchers.JsonMatchers

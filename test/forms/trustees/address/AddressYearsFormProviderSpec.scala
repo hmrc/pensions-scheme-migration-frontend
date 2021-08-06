@@ -23,7 +23,7 @@ class AddressYearsFormProviderSpec extends BooleanFieldBehaviours {
 
   val requiredKey = "trusteeAddressYears.error.required"
 
-  val form = new AddressYearsFormProvider()()
+  val form = new AddressYearsFormProvider()(requiredKey)
 
   ".value" must  {
 

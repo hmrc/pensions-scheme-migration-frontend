@@ -41,14 +41,14 @@ trait DataCompletionEstablishers extends DataCompletion {
       )
     ).getOrElse(false)
 
-  def isEstablisherIndividualDetailsCompleted(index: Int): Boolean =
+  def isEstablisherIndividualDetailsCompleted(index: Int): Option[Boolean] =
     isComplete(
       Seq(
         isAnswerComplete(EstablisherDOBId(index)),
         isAnswerComplete(EstablisherHasNINOId(index), EstablisherNINOId(index), Some(EstablisherNoNINOReasonId(index))),
         isAnswerComplete(EstablisherHasUTRId(index), EstablisherUTRId(index), Some(EstablisherNoUTRReasonId(index)))
       )
-    ).getOrElse(false)
+    )
 
   def isEstablisherIndividualAddressCompleted(
     index: Int,

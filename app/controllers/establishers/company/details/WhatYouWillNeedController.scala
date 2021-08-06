@@ -19,7 +19,7 @@ package controllers.establishers.company.details
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.establishers.company.details.routes.HaveCompanyNumberController
-import helpers.MandatoryAnswerMissingException
+import helpers.cya.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
 import models.{Index, NormalMode}

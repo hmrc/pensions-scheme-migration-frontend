@@ -17,6 +17,7 @@
 package helpers
 
 import base.SpecBase._
+import helpers.cya.BenefitsAndInsuranceCYAHelper
 import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId}
 import identifiers.benefitsAndInsurance._
 import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}

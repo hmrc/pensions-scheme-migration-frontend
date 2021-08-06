@@ -17,7 +17,8 @@
 package helpers
 
 import controllers.establishers.company.director.routes
-import helpers.CYAHelper.getName
+import helpers.cya.CYAHelper
+import helpers.cya.CYAHelper.getName
 import identifiers.establishers.company.director._
 import identifiers.establishers.company.director.address.{AddressId, AddressYearsId, PreviousAddressId}
 import identifiers.establishers.company.director.contact.{EnterEmailId, EnterPhoneId}
@@ -129,15 +130,15 @@ class EstablisherCompanyDirectorDetailsCYAHelper
             visuallyHiddenText  = Some(msg"messages__visuallyhidden__addressYears".withArgs(directorName)), answerBooleanTransform
           ))
       ,
-      if (ua.get(AddressYearsId(establisherIndex, directorIndex)).contains(false)) {
-           Some( answerOrAddRow(
-              id = PreviousAddressId(establisherIndex, directorIndex),
-              message = Message("messages__establisherPreviousAddress").resolve,
-              url = Some(controllers.establishers.company.director.address.routes.EnterPreviousPostcodeController.onPageLoad(establisherIndex, directorIndex, CheckMode).url),
-              visuallyHiddenText = Some(msg"messages__visuallyHidden__previousAddress".withArgs(directorName)), answerAddressTransform
-            ))
-      }else{
+      if (ua.get(AddressYearsId(establisherIndex, directorIndex)).contains(true)) {
         None
+      }else{
+        Some( answerOrAddRow(
+          id = PreviousAddressId(establisherIndex, directorIndex),
+          message = Message("messages__establisherPreviousAddress").resolve,
+          url = Some(controllers.establishers.company.director.address.routes.EnterPreviousPostcodeController.onPageLoad(establisherIndex, directorIndex, CheckMode).url),
+          visuallyHiddenText = Some(msg"messages__visuallyHidden__previousAddress".withArgs(directorName)), answerAddressTransform
+        ))
       },
       Some(answerOrAddRow(
         id                  = EnterEmailId(establisherIndex, directorIndex),

@@ -18,7 +18,7 @@ package controllers.establishers.company.details
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import helpers.EstablisherCompanyDetailsCYAHelper
+import helpers.cya.establishers.company.EstablisherCompanyDetailsCYAHelper
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any

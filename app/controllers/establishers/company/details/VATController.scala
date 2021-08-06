@@ -70,7 +70,7 @@ class VATController @Inject()(
               form          = form(name(index)),
               schemeName    = schemeName,
               legendClass   = "govuk-visually-hidden",
-              paragraphText = Seq(Message("messages__vat__p"))
+              paragraphText = Seq(Message("messages__vat__p", name(index)))
             )
         }
     }
@@ -88,7 +88,7 @@ class VATController @Inject()(
               form          = form(name(index)),
               schemeName    = schemeName,
               legendClass   = "govuk-visually-hidden",
-              paragraphText = Seq(Message("messages__vat__p")),
+              paragraphText = Seq(Message("messages__vat__p", name(index))),
               mode          = mode
             )
         }

@@ -18,7 +18,8 @@ package controllers.establishers.company.director.details
 
 import controllers.Retrievals
 import controllers.actions._
-import helpers.{CYAHelper, EstablisherCompanyDirectorDetailsCYAHelper}
+import helpers.EstablisherCompanyDirectorDetailsCYAHelper
+import helpers.cya.CYAHelper
 import identifiers.beforeYouStart.SchemeNameId
 import models._
 import play.api.i18n.{I18nSupport, MessagesApi}

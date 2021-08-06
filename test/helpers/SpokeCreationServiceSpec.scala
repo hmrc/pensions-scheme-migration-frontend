@@ -27,6 +27,8 @@ import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressId
 import identifiers.trustees.TrusteeKindId
+import identifiers.trustees.{company => trusteeCompany}
+import identifiers.trustees.company.{details => trusteeCompanyDetails}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.contact.{EnterEmailId => TrusteeEmailId, EnterPhoneId => TrusteePhoneId}
 import identifiers.trustees.individual.details.{TrusteeDOBId, TrusteeNINOId, TrusteeUTRId}
@@ -129,7 +131,7 @@ class SpokeCreationServiceSpec
               target = routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
-            isCompleted = Some(false)
+            isCompleted = None
           ),
           EntitySpoke(
             link = TaskListLink(
@@ -176,13 +178,13 @@ class SpokeCreationServiceSpec
           isCompleted = None
         ),
           EntitySpoke(
-          link = TaskListLink(
-            text = "Add address for test",
-            target = controllers.establishers.company.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
-            visuallyHiddenText = None
+            link = TaskListLink(
+              text = "Add address for test",
+              target = controllers.establishers.company.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = None
           ),
-          isCompleted = None
-        ),
           EntitySpoke(
             link = TaskListLink(
               text = "Add contact details for test",
@@ -197,7 +199,7 @@ class SpokeCreationServiceSpec
               target = controllers.establishers.company.director.details.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
-            isCompleted = None
+            Some(false)
           )
         )
 
@@ -253,7 +255,7 @@ class SpokeCreationServiceSpec
             target = controllers.establishers.company.director.details.routes.WhatYouWillNeedController.onPageLoad(0).url,
             visuallyHiddenText = None
           ),
-          isCompleted = None
+          isCompleted = Some(false)
         )
       )
 
@@ -309,7 +311,7 @@ class SpokeCreationServiceSpec
             target = controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(0,NormalMode).url,
             visuallyHiddenText = None
           ),
-          isCompleted = None
+          Some(false)
         )
       )
 
@@ -339,7 +341,7 @@ class SpokeCreationServiceSpec
               target = controllers.trustees.individual.details.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
-            isCompleted = Some(false)
+            isCompleted = None
           ),
           EntitySpoke(
             link = TaskListLink(
@@ -416,6 +418,148 @@ class SpokeCreationServiceSpec
         )
       result mustBe expectedSpoke
     }
+  }
+
+  "getTrusteeCompanySpokes" must {
+    "display all the spokes with appropriate links and incomplete status when no data is returned from TPSS" in {
+      val userAnswers =
+        ua
+          .set(TrusteeKindId(0), TrusteeKind.Company).success.value
+          .set(trusteeCompany.CompanyDetailsId(0), CompanyDetails("test",false)).success.value
+
+      val expectedSpoke =
+        Seq(EntitySpoke(
+          link = TaskListLink(
+            text = "Add details for test",
+            target = controllers.trustees.company.details.routes.WhatYouWillNeedController.onPageLoad(0).url,
+            visuallyHiddenText = None
+          ),
+          isCompleted = None
+        ),
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Add address for test",
+              target = controllers.trustees.company.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = None
+          ),
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Add contact details for test",
+              target = controllers.trustees.company.contacts.routes.WhatYouWillNeedCompanyContactController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = None
+          )
+        )
+
+      val result =
+        spokeCreationService.getTrusteeCompanySpokes(
+          answers = userAnswers,
+          name = "test",
+          index = 0
+        )
+      result mustBe expectedSpoke
+    }
+  }
+
+  "display all the spokes with appropriate links and incomplete status when data is returned from TPSS for trustee company spokes" in {
+    val userAnswers =
+      ua
+        .set(TrusteeKindId(0), TrusteeKind.Company).success.value
+        .set(trusteeCompany.CompanyDetailsId(0), CompanyDetails("test",false)).success.value
+        .setOrException(trusteeCompanyDetails.HaveCompanyNumberId(0), true)
+        .setOrException(trusteeCompanyDetails.CompanyNumberId(0), ReferenceValue("12345678"))
+
+
+    val expectedSpoke =
+      Seq(
+        EntitySpoke(
+          link = TaskListLink(
+            text = "Change details for test",
+            target = controllers.trustees.company.details.routes.CheckYourAnswersController.onPageLoad(0).url,
+            visuallyHiddenText = None
+          ),
+          isCompleted = Some(false)
+        ),
+        EntitySpoke(
+          link = TaskListLink(
+            text = "Add address for test",
+            target = controllers.trustees.company.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
+            visuallyHiddenText = None
+          ),
+          isCompleted = None
+        ),
+        EntitySpoke(
+          link = TaskListLink(
+            text = "Add contact details for test",
+            target = controllers.trustees.company.contacts.routes.WhatYouWillNeedCompanyContactController.onPageLoad(0).url,
+            visuallyHiddenText = None
+          ),
+          isCompleted = None
+        )
+      )
+
+    val result =
+      spokeCreationService.getTrusteeCompanySpokes(
+        answers = userAnswers,
+        name = "test",
+        index = 0
+      )
+    result mustBe expectedSpoke
+  }
+
+  "display all the spokes with appropriate links and complete status when data is returned from TPSS for trustee company spokes" in {
+    val userAnswers =
+      ua
+        .set(EstablisherKindId(0), EstablisherKind.Company).success.value
+        .set(CompanyDetailsId(0), CompanyDetails("test",false)).success.value
+        .set(trusteeCompanyDetails.HaveCompanyNumberId(0), true).success.value
+        .set(trusteeCompanyDetails.CompanyNumberId(0), ReferenceValue("AB123456C")).success.value
+        .set(trusteeCompanyDetails.HaveUTRId(0), true).success.value
+        .set(trusteeCompanyDetails.CompanyUTRId(0), ReferenceValue("1234567890")).success.value
+        .set(trusteeCompanyDetails.HaveVATId(0), true).success.value
+        .set(trusteeCompanyDetails.VATId(0), ReferenceValue("123456789")).success.value
+        .set(trusteeCompanyDetails.HavePAYEId(0), true).success.value
+        .set(trusteeCompanyDetails.PAYEId(0), ReferenceValue("12345678")).success.value
+
+
+    val expectedSpoke =
+      Seq(
+        EntitySpoke(
+          link = TaskListLink(
+            text = "Change details for test",
+            target = controllers.trustees.company.details.routes.CheckYourAnswersController.onPageLoad(0).url,
+            visuallyHiddenText = None
+          ),
+          isCompleted = Some(true)
+        ),
+        EntitySpoke(
+          link = TaskListLink(
+            text = "Add address for test",
+            target = controllers.trustees.company.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
+            visuallyHiddenText = None
+          ),
+          isCompleted = None
+        ),
+        EntitySpoke(
+          link = TaskListLink(
+            text = "Add contact details for test",
+            target = controllers.trustees.company.contacts.routes.WhatYouWillNeedCompanyContactController.onPageLoad(0).url,
+            visuallyHiddenText = None
+          ),
+          isCompleted = None
+        )
+      )
+
+    val result =
+      spokeCreationService.getTrusteeCompanySpokes(
+        answers = userAnswers,
+        name = "test",
+        index = 0
+      )
+    result mustBe expectedSpoke
   }
 
   "declarationSpoke" must {

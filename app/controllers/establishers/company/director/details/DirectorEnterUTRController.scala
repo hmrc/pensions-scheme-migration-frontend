@@ -63,7 +63,7 @@ class DirectorEnterUTRController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             get(
-              pageTitle = Message("messages__enterUTR_title", Message("messages__director")),
+              pageTitle = Message("messages__enterUTR", Message("messages__director")),
               pageHeading = Message("messages__enterUTR", name(establisherIndex, directorIndex)),
               isPageHeading = false,
               id = DirectorEnterUTRId(establisherIndex, directorIndex),
@@ -81,7 +81,7 @@ class DirectorEnterUTRController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             post(
-              pageTitle = Message("messages__enterUTR_title", Message("messages__director")),
+              pageTitle = Message("messages__enterUTR", Message("messages__director")),
               pageHeading = Message("messages__enterUTR", name(establisherIndex, directorIndex)),
               isPageHeading = false,
               id = DirectorEnterUTRId(establisherIndex, directorIndex),

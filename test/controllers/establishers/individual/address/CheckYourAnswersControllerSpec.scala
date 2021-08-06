@@ -18,7 +18,7 @@ package controllers.establishers.individual.address
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import helpers.EstablisherAddressCYAHelper
+import helpers.cya.establishers.individual.EstablisherAddressCYAHelper
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any

@@ -19,7 +19,7 @@ package controllers.establishers.company.director.details
 import controllers.Retrievals
 import controllers.actions._
 import controllers.establishers.company.director.routes._
-import helpers.MandatoryAnswerMissingException
+import helpers.cya.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}

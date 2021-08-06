@@ -46,7 +46,7 @@ class EstablishersCompanyNavigatorSpec
   private val addEstablisherPage: Call = controllers.establishers.routes.AddEstablisherController.onPageLoad()
   private val detailsUa: UserAnswers =
     ua.set(CompanyDetailsId(0), establisherCompanyDetails).success.value
-  private def addressUAWithValue[A](idType:TypedIdentifier[A], idValue:A)(implicit writes: Writes[A]) =
+  private def uaWithValue[A](idType:TypedIdentifier[A], idValue:A)(implicit writes: Writes[A]) =
     detailsUa.set(idType, idValue).toOption
 
   private val seqAddresses = Seq(
@@ -111,33 +111,33 @@ class EstablishersCompanyNavigatorSpec
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
          row(CompanyDetailsId(index))(addEstablisherPage),
-        row(HaveCompanyNumberId(index))(companyNumber(), addressUAWithValue(HaveCompanyNumberId(index), true)),
-        row(HaveCompanyNumberId(index))(noCompanyNumber(), addressUAWithValue(HaveCompanyNumberId(index), false)),
+        row(HaveCompanyNumberId(index))(companyNumber(), uaWithValue(HaveCompanyNumberId(index), true)),
+        row(HaveCompanyNumberId(index))(noCompanyNumber(), uaWithValue(HaveCompanyNumberId(index), false)),
         row(CompanyNumberId(index))(haveUtr()),
         row(NoCompanyNumberReasonId(index))(haveUtr()),
-        row(HaveUTRId(index))(utr(), addressUAWithValue(HaveUTRId(index), true)),
-        row(HaveUTRId(index))(noUtr(), addressUAWithValue(HaveUTRId(index), false)),
+        row(HaveUTRId(index))(utr(), uaWithValue(HaveUTRId(index), true)),
+        row(HaveUTRId(index))(noUtr(), uaWithValue(HaveUTRId(index), false)),
         row(CompanyUTRId(index))(haveVat()),
         row(NoUTRReasonId(index))(haveVat()),
-        row(HaveVATId(index))(vat(), addressUAWithValue(HaveVATId(index), true)),
-        row(HaveVATId(index))(havePaye(), addressUAWithValue(HaveVATId(index), false)),
+        row(HaveVATId(index))(vat(), uaWithValue(HaveVATId(index), true)),
+        row(HaveVATId(index))(havePaye(), uaWithValue(HaveVATId(index), false)),
         row(VATId(index))(havePaye()),
-        row(HavePAYEId(index))(paye(), addressUAWithValue(HavePAYEId(index), true)),
-        row(HavePAYEId(index))(cyaDetails, addressUAWithValue(HavePAYEId(index), false)),
+        row(HavePAYEId(index))(paye(), uaWithValue(HavePAYEId(index), true)),
+        row(HavePAYEId(index))(cyaDetails, uaWithValue(HavePAYEId(index), false)),
         row(PAYEId(index))(cyaDetails),
-        row(EnterPostCodeId(index))(selectAddress, addressUAWithValue(EnterPostCodeId(index), seqAddresses)),
-        row(AddressListId(index))(addressYears, addressUAWithValue(AddressListId(index), 0)),
-        row(AddressId(index))(addressYears, addressUAWithValue(AddressId(index), address)),
+        row(EnterPostCodeId(index))(selectAddress, uaWithValue(EnterPostCodeId(index), seqAddresses)),
+        row(AddressListId(index))(addressYears, uaWithValue(AddressListId(index), 0)),
+        row(AddressId(index))(addressYears, uaWithValue(AddressId(index), address)),
 
-        row(AddressYearsId(index))(cyaAddress, addressUAWithValue(AddressYearsId(index), true)),
-        row(AddressYearsId(index))(tradingTime, addressUAWithValue(AddressYearsId(index), false)),
+        row(AddressYearsId(index))(cyaAddress, uaWithValue(AddressYearsId(index), true)),
+        row(AddressYearsId(index))(tradingTime, uaWithValue(AddressYearsId(index), false)),
 
-        row(TradingTimeId(index))(cyaAddress, addressUAWithValue(TradingTimeId(index), false)),
-        row(TradingTimeId(index))(enterPreviousPostcode, addressUAWithValue(TradingTimeId(index), true)),
+        row(TradingTimeId(index))(cyaAddress, uaWithValue(TradingTimeId(index), false)),
+        row(TradingTimeId(index))(enterPreviousPostcode, uaWithValue(TradingTimeId(index), true)),
 
-        row(EnterPreviousPostCodeId(index))(selectPreviousAddress, addressUAWithValue(EnterPreviousPostCodeId(index), seqAddresses)),
-        row(PreviousAddressListId(index))(cyaAddress, addressUAWithValue(PreviousAddressListId(index), 0)),
-        row(PreviousAddressId(index))(cyaAddress, addressUAWithValue(PreviousAddressId(index), address)),
+        row(EnterPreviousPostCodeId(index))(selectPreviousAddress, uaWithValue(EnterPreviousPostCodeId(index), seqAddresses)),
+        row(PreviousAddressListId(index))(cyaAddress, uaWithValue(PreviousAddressListId(index), 0)),
+        row(PreviousAddressId(index))(cyaAddress, uaWithValue(PreviousAddressId(index), address)),
         row(EnterEmailId(index))(enterPhonePage(NormalMode), Some(detailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
         row(EnterPhoneId(index))(cyaContact, Some(detailsUa.set(EnterPhoneId(index), "1234").success.value)),
         row(AddCompanyDirectorsId(index))(directorNamePage(NormalMode,0), Some(detailsUa.set(CompanyDetailsId(index), company).success.value)),
@@ -148,19 +148,19 @@ class EstablishersCompanyNavigatorSpec
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
         row(CompanyDetailsId(index))(controllers.routes.IndexController.onPageLoad()),
-        row(HaveCompanyNumberId(index))(companyNumber(CheckMode), addressUAWithValue(HaveCompanyNumberId(index), true)),
-        row(HaveCompanyNumberId(index))(noCompanyNumber(CheckMode), addressUAWithValue(HaveCompanyNumberId(index), false)),
+        row(HaveCompanyNumberId(index))(companyNumber(CheckMode), uaWithValue(HaveCompanyNumberId(index), true)),
+        row(HaveCompanyNumberId(index))(noCompanyNumber(CheckMode), uaWithValue(HaveCompanyNumberId(index), false)),
         row(CompanyNumberId(index))(cyaDetails),
         row(NoCompanyNumberReasonId(index))(cyaDetails),
-        row(HaveUTRId(index))(utr(CheckMode), addressUAWithValue(HaveUTRId(index), true)),
-        row(HaveUTRId(index))(noUtr(CheckMode), addressUAWithValue(HaveUTRId(index), false)),
+        row(HaveUTRId(index))(utr(CheckMode), uaWithValue(HaveUTRId(index), true)),
+        row(HaveUTRId(index))(noUtr(CheckMode), uaWithValue(HaveUTRId(index), false)),
         row(CompanyUTRId(index))(cyaDetails),
         row(NoUTRReasonId(index))(cyaDetails),
-        row(HaveVATId(index))(vat(CheckMode), addressUAWithValue(HaveVATId(index), true)),
-        row(HaveVATId(index))(havePaye(CheckMode), addressUAWithValue(HaveVATId(index), false)),
+        row(HaveVATId(index))(vat(CheckMode), uaWithValue(HaveVATId(index), true)),
+        row(HaveVATId(index))(havePaye(CheckMode), uaWithValue(HaveVATId(index), false)),
         row(VATId(index))(cyaDetails),
-        row(HavePAYEId(index))(paye(CheckMode), addressUAWithValue(HavePAYEId(index), true)),
-        row(HavePAYEId(index))(cyaDetails, addressUAWithValue(HavePAYEId(index), false)),
+        row(HavePAYEId(index))(paye(CheckMode), uaWithValue(HavePAYEId(index), true)),
+        row(HavePAYEId(index))(cyaDetails, uaWithValue(HavePAYEId(index), false)),
         row(PAYEId(index))(cyaDetails),
         row(EnterEmailId(index))(cyaContact, Some(detailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
         row(EnterPhoneId(index))(cyaContact, Some(detailsUa.set(EnterPhoneId(index), "1234").success.value))

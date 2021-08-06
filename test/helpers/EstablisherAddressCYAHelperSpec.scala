@@ -17,6 +17,7 @@
 package helpers
 
 import base.SpecBase._
+import helpers.cya.establishers.individual.EstablisherAddressCYAHelper
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{AddressId, AddressYearsId, PreviousAddressId}

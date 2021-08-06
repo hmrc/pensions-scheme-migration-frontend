@@ -18,6 +18,7 @@ package helpers
 
 import base.SpecBase._
 import controllers.establishers.company.details.routes
+import helpers.cya.establishers.company.EstablisherCompanyDetailsCYAHelper
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.details._
