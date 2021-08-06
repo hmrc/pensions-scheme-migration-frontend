@@ -6,7 +6,16 @@
 {% from "govuk/components/error-summary/macro.njk"  import govukErrorSummary %}
 {% from "govuk/components/input/macro.njk"          import govukInput %}
 
-{% if paragraphs|length %}
+{% if paragraphs|length and hintText  %}
+    {% set hint  %}
+     {% for paragraph in paragraphs %}
+        <p class="govuk-body govuk-!-font-weight-regular">
+            {{ paragraph }}
+        </p>
+        {% endfor %}
+           {{hintText}}
+    {% endset %}
+{% elif paragraphs|length %}
     {% set hint  %}
      {% for paragraph in paragraphs %}
         <p class="govuk-body govuk-!-font-weight-regular">
@@ -14,11 +23,13 @@
         </p>
         {% endfor %}
     {% endset %}
-     {% elif hintText %}
+{% elif hintText %}
          {% set hint  %}
           {{hintText}}
          {% endset %}
-      {% endif %}
+{% endif %}
+
+
 {% block pageTitle %}
     {{ title(pageTitle, form.errors) }}
 {% endblock %}

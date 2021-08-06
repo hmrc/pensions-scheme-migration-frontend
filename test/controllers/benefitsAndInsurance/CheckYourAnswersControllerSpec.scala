@@ -18,7 +18,7 @@ package controllers.benefitsAndInsurance
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import helpers.BenefitsAndInsuranceCYAHelper
+import helpers.cya.BenefitsAndInsuranceCYAHelper
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any

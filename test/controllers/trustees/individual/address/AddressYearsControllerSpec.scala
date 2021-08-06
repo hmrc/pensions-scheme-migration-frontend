@@ -46,7 +46,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
   private val httpPathGET: String = controllers.trustees.individual.address.routes.AddressYearsController.onPageLoad(0).url
   private val httpPathPOST: String = controllers.trustees.individual.address.routes.AddressYearsController.onSubmit(0).url
-  private val form: Form[Boolean] = new AddressYearsFormProvider()()
+  private val form: Form[Boolean] = new AddressYearsFormProvider()("required")
 
   private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>
     Json.obj(

@@ -18,6 +18,7 @@ package helpers
 
 import base.SpecBase
 import controllers.beforeYouStartSpoke.routes
+import helpers.cya.BeforeYouStartCYAHelper
 import identifiers.beforeYouStart._
 import models.SchemeType
 import org.scalatest.{MustMatchers, TryValues}

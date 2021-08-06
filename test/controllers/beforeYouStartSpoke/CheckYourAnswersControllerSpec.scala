@@ -18,7 +18,7 @@ package controllers.beforeYouStartSpoke
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import helpers.BeforeYouStartCYAHelper
+import helpers.cya.BeforeYouStartCYAHelper
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any

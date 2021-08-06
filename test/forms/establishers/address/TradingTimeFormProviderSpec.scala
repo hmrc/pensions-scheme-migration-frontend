@@ -16,12 +16,13 @@
 
 package forms.establishers.address
 
+import forms.address.TradingTimeFormProvider
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
 class TradingTimeFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "establisherTradingTime.error.required"
+  val requiredKey = "companyTradingTime.error.required"
 
   val form = new TradingTimeFormProvider()()
 

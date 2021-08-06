@@ -1,3 +1,104 @@
 
 GET         /:index/company/name                                                      controllers.trustees.company.CompanyDetailsController.onPageLoad(index: Index)
 POST        /:index/company/name                                                      controllers.trustees.company.CompanyDetailsController.onSubmit(index: Index)
+
+GET         /:index/company/details                                                 controllers.trustees.company.details.WhatYouWillNeedController.onPageLoad(index: Index)
+
+GET         /:index/company/company-number                                     controllers.trustees.company.details.HaveCompanyNumberController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/company-number                                     controllers.trustees.company.details.HaveCompanyNumberController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/company-number                              controllers.trustees.company.details.HaveCompanyNumberController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/company-number                              controllers.trustees.company.details.HaveCompanyNumberController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/company/enter-company-number                                          controllers.trustees.company.details.CompanyNumberController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/enter-company-number                                          controllers.trustees.company.details.CompanyNumberController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/enter-company-number                                   controllers.trustees.company.details.CompanyNumberController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/enter-company-number                                   controllers.trustees.company.details.CompanyNumberController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/company/reason-for-no-company-number                            controllers.trustees.company.details.NoCompanyNumberReasonController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/reason-for-no-company-number                            controllers.trustees.company.details.NoCompanyNumberReasonController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/reason-for-no-company-number                     controllers.trustees.company.details.NoCompanyNumberReasonController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/reason-for-no-company-number                     controllers.trustees.company.details.NoCompanyNumberReasonController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/company/have-unique-taxpayer-reference                          controllers.trustees.company.details.HaveUTRController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/have-unique-taxpayer-reference                          controllers.trustees.company.details.HaveUTRController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/have-unique-taxpayer-reference                   controllers.trustees.company.details.HaveUTRController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/have-unique-taxpayer-reference                   controllers.trustees.company.details.HaveUTRController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/company/enter-unique-taxpayer-reference                         controllers.trustees.company.details.UTRController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/enter-unique-taxpayer-reference                         controllers.trustees.company.details.UTRController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/enter-unique-taxpayer-reference                  controllers.trustees.company.details.UTRController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/enter-unique-taxpayer-reference                  controllers.trustees.company.details.UTRController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/company/reason-for-no-unique-taxpayer-reference                 controllers.trustees.company.details.NoUTRReasonController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/reason-for-no-unique-taxpayer-reference                 controllers.trustees.company.details.NoUTRReasonController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/reason-for-no-unique-taxpayer-reference          controllers.trustees.company.details.NoUTRReasonController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/reason-for-no-unique-taxpayer-reference          controllers.trustees.company.details.NoUTRReasonController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/company/is-vat-registered                                       controllers.trustees.company.details.HaveVATController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/is-vat-registered                                       controllers.trustees.company.details.HaveVATController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/is-vat-registered                                controllers.trustees.company.details.HaveVATController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/is-vat-registered                                controllers.trustees.company.details.HaveVATController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/company/vat-registration-number                                 controllers.trustees.company.details.VATController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/vat-registration-number                                 controllers.trustees.company.details.VATController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/vat-registration-number                          controllers.trustees.company.details.VATController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/vat-registration-number                          controllers.trustees.company.details.VATController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/company/have-employer-paye-reference                                        controllers.trustees.company.details.HavePAYEController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/have-employer-paye-reference                                        controllers.trustees.company.details.HavePAYEController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/have-employer-paye-reference                                 controllers.trustees.company.details.HavePAYEController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/have-employer-paye-reference                                 controllers.trustees.company.details.HavePAYEController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/company/enter-employer-paye-reference                                       controllers.trustees.company.details.PAYEController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/enter-employer-paye-reference                                       controllers.trustees.company.details.PAYEController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/enter-employer-paye-reference                                controllers.trustees.company.details.PAYEController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/enter-employer-paye-reference                                controllers.trustees.company.details.PAYEController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/company/check-your-answers-details                              controllers.trustees.company.details.CheckYourAnswersController.onPageLoad(index: Index)
+
+
+
+
+
+
+GET         /:index/company/addresses/what-you-will-need                          controllers.trustees.company.address.WhatYouWillNeedController.onPageLoad(index: Index)
+
+GET         /:index/company/addresses/postcode                                    controllers.trustees.company.address.EnterPostcodeController.onPageLoad(index: Index)
+POST        /:index/company/addresses/postcode                                    controllers.trustees.company.address.EnterPostcodeController.onSubmit(index: Index)
+
+GET         /:index/company/addresses/address-results                             controllers.trustees.company.address.SelectAddressController.onPageLoad(index: Index)
+POST        /:index/company/addresses/address-results                             controllers.trustees.company.address.SelectAddressController.onSubmit(index: Index)
+
+GET         /:index/company/addresses/address-manual                              controllers.trustees.company.address.ConfirmAddressController.onPageLoad(index: Index)
+POST        /:index/company/addresses/address-manual                              controllers.trustees.company.address.ConfirmAddressController.onSubmit(index: Index)
+
+GET         /:index/company/addresses/check-your-answers                          controllers.trustees.company.address.CheckYourAnswersController.onPageLoad(index: Index)
+
+GET         /:index/company/addresses/address-years                              controllers.trustees.company.address.AddressYearsController.onPageLoad(index: Index)
+POST        /:index/company/addresses/address-years                              controllers.trustees.company.address.AddressYearsController.onSubmit(index: Index)
+
+GET         /:index/company/addresses/address-previous                           controllers.trustees.company.address.EnterPreviousPostcodeController.onPageLoad(index: Index)
+POST        /:index/company/addresses/address-previous                           controllers.trustees.company.address.EnterPreviousPostcodeController.onSubmit(index: Index)
+
+GET         /:index/company/addresses/address-previous-results                   controllers.trustees.company.address.SelectPreviousAddressController.onPageLoad(index: Index)
+POST        /:index/company/addresses/address-previous-results                   controllers.trustees.company.address.SelectPreviousAddressController.onSubmit(index: Index)
+
+GET         /:index/company/addresses/address-previous-manual                    controllers.trustees.company.address.ConfirmPreviousAddressController.onPageLoad(index: Index)
+POST        /:index/company/addresses/address-previous-manual                    controllers.trustees.company.address.ConfirmPreviousAddressController.onSubmit(index: Index)
+
+GET         /:index/company/addresses/company-exists-years                       controllers.trustees.company.address.TradingTimeController.onPageLoad(index: Index)
+POST        /:index/company/addresses/company-exists-years                       controllers.trustees.company.address.TradingTimeController.onSubmit(index: Index)
+
+
+GET         /:index/company/contact-details/what-you-will-need                        controllers.trustees.company.contacts.WhatYouWillNeedCompanyContactController.onPageLoad(index: Index)
+GET         /:index/company/enter-email-address                                       controllers.trustees.company.contacts.EnterEmailController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/enter-email-address                                       controllers.trustees.company.contacts.EnterEmailController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/enter-email-address                                controllers.trustees.company.contacts.EnterEmailController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/enter-email-address                                controllers.trustees.company.contacts.EnterEmailController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/company/enter-phone-number                                        controllers.trustees.company.contacts.EnterPhoneController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/enter-phone-number                                        controllers.trustees.company.contacts.EnterPhoneController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/enter-phone-number                                 controllers.trustees.company.contacts.EnterPhoneController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/enter-phone-number                                 controllers.trustees.company.contacts.EnterPhoneController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/company/contact-details/check-your-answers                        controllers.trustees.company.contacts.CheckYourAnswersController.onPageLoad(index: Index)

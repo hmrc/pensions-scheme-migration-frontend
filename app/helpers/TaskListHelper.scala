@@ -17,6 +17,7 @@
 package helpers
 
 import com.google.inject.Inject
+import helpers.cya.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.{HaveAnyTrusteesId, SchemeNameId, SchemeTypeId}
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
@@ -151,8 +152,12 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
               case TrusteeCompanyDetailsId(_) =>
                 Some(TaskListEntitySection(
                   isCompleted = None,
-                  spokeCreationService.getTrusteeCompanySpokes(userAnswers, trustee.name, trustee.index),
-                  Some(trustee.name))
+                  entities = spokeCreationService.getTrusteeCompanySpokes(
+                    userAnswers,
+                    trustee.name,
+                    trustee.index
+                  ),
+                  header = Some(trustee.name))
                 )
 
               case _ =>
