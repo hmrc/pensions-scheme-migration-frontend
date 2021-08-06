@@ -58,7 +58,7 @@ class DirectorDOBController @Inject()(
               dobId        = DirectorDOBId(establisherIndex, directorIndex),
               personNameId = DirectorNameId(establisherIndex, directorIndex),
               schemeName   = schemeName,
-              entityType   = Messages("messages__director"),
+              entityType   = Messages("messages__director")
             )
         }
     }
