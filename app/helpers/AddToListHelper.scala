@@ -20,6 +20,7 @@ import identifiers.establishers.individual.EstablisherNameId
 import identifiers.trustees.individual.TrusteeNameId
 import models.Entity
 import play.api.i18n.Messages
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.viewmodels.Table.Cell
 import uk.gov.hmrc.viewmodels.Text.Literal
 import uk.gov.hmrc.viewmodels.{Html, MessageInterpolators, Table}
@@ -141,6 +142,19 @@ class AddToListHelper {
       ( Nil ),
       rows = rows,
       attributes = Map("role" -> "table")
+    )
+  }
+
+   def directorsItemList[A <: Entity[_]](entities: Seq[A])
+                                           (implicit messages: Messages): JsValue  = {
+
+    Json.toJson(
+      entities.map { data =>
+        Map("name" -> data.name,
+          "changeUrl" ->   data.editLink.getOrElse("#"),
+          "removeUrl" ->   data.deleteLink.getOrElse("#")
+        )
+      }
     )
   }
 

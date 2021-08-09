@@ -76,12 +76,12 @@ class AddCompanyDirectorsController @Inject()(
       implicit request =>
 
         val directors = request.userAnswers.allDirectorsAfterDelete(index)
-        val table        = helper.mapDirectorToTable(directors)
+        val itemList=   helper.directorsItemList(directors)
         renderer.render(
           template = "establishers/company/addDirector.njk",
           ctx = Json.obj(
             "form"       -> form,
-            "table"      -> table,
+            "itemList"      -> itemList,
             "radios"     -> Radios.yesNo(form("value")),
             "schemeName" -> existingSchemeName,
             "directorSize" -> directors.size ,
