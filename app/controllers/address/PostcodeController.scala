@@ -60,7 +60,7 @@ trait PostcodeController extends FrontendBaseController with Retrievals {
     renderer.render(viewTemplate, prepareJson(json(form))).map(Ok(_))
   }
 
-  def post(formToJson: Form[String] => JsObject, postcodeId: TypedIdentifier[Seq[TolerantAddress]], errorMessage: String,mode: Option[Mode] = None)
+  def post(formToJson: Form[String] => JsObject, postcodeId: TypedIdentifier[Seq[TolerantAddress]], errorMessage: String, mode: Option[Mode] = None)
           (implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
     form.bindFromRequest().fold(
       formWithErrors =>
