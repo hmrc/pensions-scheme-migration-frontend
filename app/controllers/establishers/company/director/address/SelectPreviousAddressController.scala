@@ -65,7 +65,7 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
     (authenticate andThen getData andThen requireData).async { implicit request =>
         val addressPages: AddressPages = AddressPages(EnterPreviousPostCodeId(establisherIndex, directorIndex), PreviousAddressListId(establisherIndex, directorIndex), PreviousAddressId(establisherIndex, directorIndex))
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.right.map(post(_, addressPages))
+        getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.right.map(post(_, addressPages, Some(mode)))
       }
     }
 
