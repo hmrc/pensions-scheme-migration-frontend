@@ -33,7 +33,7 @@ import play.api.Application
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
@@ -75,7 +75,11 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with Nunjucks
   //private val form: Form[Boolean] = new ConfirmDeleteDirectorFormProvider()(directorName.fullName)
   private val formProvider = new AddCompanyDirectorsFormProvider()
   private val form         = formProvider()
-  val table: Table = Table(head = Nil, rows = Nil)
+  val itemList: JsValue = Json.obj(
+     "name" -> directorName.fullName,
+        "changeUrl" ->  "controllers.establishers.company.director.details.routes.CheckYourAnswersController.onPageLoad(0, 0)",
+        "removeUrl" ->   "controllers.establishers.company.director.routes.ConfirmDeleteDirectorController.onPageLoad(0, 0)"
+      )
   private val mockHelper: AddToListHelper = mock[AddToListHelper]
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -98,7 +102,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with Nunjucks
   private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>
     Json.obj(
       "form" -> form,
-      "table" -> table,
+      "itemList" -> itemList,
       "radios" -> Radios.yesNo(form("value")),
       "schemeName" -> schemeName,
       "directorSize" -> 1,
@@ -110,7 +114,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with Nunjucks
     reset(mockAppConfig)
     when(mockAppConfig.maxDirectors).thenReturn(10)
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-    when(mockHelper.mapDirectorToTable(any())(any())).thenReturn(table)
+    when(mockHelper.directorsItemList(any())(any())).thenReturn(itemList)
 
   }
 

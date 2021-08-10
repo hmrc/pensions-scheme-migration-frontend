@@ -884,8 +884,8 @@ messages__directors__whatYouWillNeed__item6 = previous address if they have used
 messages__directors__whatYouWillNeed__item7 = contact email address
 messages__directors__whatYouWillNeed__item8 = contact phone number
 
-messages__director__name = Director's name
-messages__director__name__cya__visuallyHidden =the director name {0}
+messages__director__name = Director’s name
+messages__director__name__cya__visuallyHidden = the director’s name {0}
 messages__addDirector_radio_label = Do you want to add another director?
 messages__confirmDeleteDirectors__title = Are you sure you want to delete this director?
 messages__addCompanyDirectors_lede = You must tell us about all your directors. You can add up to 10 using the digital service.
