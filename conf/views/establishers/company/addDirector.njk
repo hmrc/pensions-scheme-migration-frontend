@@ -40,33 +40,30 @@
                                       attributes: {id: "submit"}
                                      }) }}
                 {% else %}
+
                         <div class="govuk-form-group">
-                          <ul class="hmrc-add-to-a-list hmrc-add-to-a-list--short">
-                            {# loop through items in  the itemList #}
-                            {% for item in itemList %}
-                            <li class="hmrc-add-to-a-list__contents">
-                              <span class="hmrc-add-to-a-list__identifier hmrc-add-to-a-list__identifier--light">
-                                {{ item.name }}
-                              </span>
-                              <span class="hmrc-add-to-a-list__change">
-                                <a class="govuk-link" href="{{ item.changeUrl }}">
-                                  <span aria-hidden="true">{{messages('site.change')}}</span>
-                                  <span class="govuk-visually-hidden">{{messages('site.change')}} {{ item.name }}</span>
-                                </a>
-                              </span>
-                              <span class="hmrc-add-to-a-list__remove">
-                                <a class="govuk-link" href="{{ item.removeUrl }}">
-                                  <span aria-hidden="true">{{messages('site.remove')}}</span>
-                                  <span class="govuk-visually-hidden">{{messages('site.remove')}} {{ item.name }}</span>
-                                </a>
-                              </span>
-                            </li>
-
-                            {% endfor %}
-                            {# end loop #}
-                          </ul>
+                          <dl class="hmrc-add-to-a-list hmrc-add-to-a-list--short">
+                              {% for item in itemList %}
+                                <div class="hmrc-add-to-a-list__contents">
+                                  <dt class="hmrc-add-to-a-list__identifier hmrc-add-to-a-list__identifier--light">
+                                     {{ item.name }}
+                                  </dt>
+                                  <dd class="hmrc-add-to-a-list__change">
+                                    <a class="govuk-link" href="{{ item.changeUrl }}">
+                                      <span aria-hidden="true">{{messages('site.change')}}</span>
+                                      <span class="govuk-visually-hidden">{{messages('site.change')}} {{ item.name }}</span>
+                                    </a>
+                                  </dd>
+                                  <dd class="hmrc-add-to-a-list__remove">
+                                    <a class="govuk-link" href="{{ item.removeUrl }}">
+                                      <span aria-hidden="true">{{messages('site.remove')}}</span>
+                                      <span class="govuk-visually-hidden">{{messages('site.remove')}} {{ item.name }}</span>
+                                    </a>
+                                  </dd>
+                                </div>
+                               {% endfor %}
+                            </dl>
                         </div>
-
                         {%if directorSize < maxDirectors %}
                             {{ govukRadios({
                                 classes: "govuk-radios--inline",
