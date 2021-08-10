@@ -35,6 +35,7 @@ import renderer.Renderer
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.CountryOptions
+import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -55,21 +56,31 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
 
   override def form: Form[Int] = formProvider("establisherSelectAddress.required")
 
-  def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
-    retrieve(SchemeNameId) { schemeName =>
-      getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.right.map(get)
-    }
+  def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
+    (authenticate andThen getData andThen requireData).async {
+      implicit request =>
+      retrieve(SchemeNameId) { schemeName =>
+        getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.right.map(get)
+      }
   }
 
   def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-        val addressPages: AddressPages = AddressPages(EnterPreviousPostCodeId(establisherIndex, directorIndex), PreviousAddressListId(establisherIndex, directorIndex), PreviousAddressId(establisherIndex, directorIndex))
+
+        val addressPages: AddressPages = AddressPages(
+          EnterPreviousPostCodeId(establisherIndex, directorIndex),
+          PreviousAddressListId(establisherIndex, directorIndex),
+          PreviousAddressId(establisherIndex, directorIndex))
+
       retrieve(SchemeNameId) { schemeName =>
         getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.right.map(post(_, addressPages, Some(mode)))
       }
     }
 
-  def getFormToJson(schemeName:String, establisherIndex: Index, directorIndex: Index, mode: Mode) : Retrieval[Form[Int] => JsObject] =
+  def getFormToJson(schemeName:String,
+                    establisherIndex: Index,
+                    directorIndex: Index,
+                    mode: Mode): Retrieval[Form[Int] => JsObject] =
     Retrieval(
       implicit request =>
         EnterPreviousPostCodeId(establisherIndex, directorIndex).retrieve.right.map { addresses =>
@@ -83,7 +94,7 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
             "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
             "entityType" -> msg("messages__director"),
             "entityName" -> name,
-            "enterManuallyUrl" -> controllers.establishers.company.director.address.routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, directorIndex, mode).url,
+            "enterManuallyUrl" -> routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, directorIndex, mode).url,
             "schemeName" -> schemeName,
             "h1MessageKey" -> "previousAddressList.title"
           )

@@ -157,7 +157,7 @@ class EstablishersCompanyNavigatorSpec
         row(CompanyUTRId(index))(cyaDetails),
         row(NoUTRReasonId(index))(cyaDetails),
         row(HaveVATId(index))(vat(CheckMode), uaWithValue(HaveVATId(index), true)),
-        row(HaveVATId(index))(havePaye(CheckMode), uaWithValue(HaveVATId(index), false)),
+        row(HaveVATId(index))(cyaDetails, uaWithValue(HaveVATId(index), false)),
         row(VATId(index))(cyaDetails),
         row(HavePAYEId(index))(paye(CheckMode), uaWithValue(HavePAYEId(index), true)),
         row(HavePAYEId(index))(cyaDetails, uaWithValue(HavePAYEId(index), false)),

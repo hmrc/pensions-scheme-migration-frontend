@@ -145,7 +145,8 @@ class EstablishersCompanyNavigator@Inject()(config: AppConfig)
                                  ): Call =
     answers.get(HaveVATId(index)) match {
       case Some(true) => detailsRoutes.VATController.onPageLoad(index, mode)
-      case Some(false) => detailsRoutes.HavePAYEController.onPageLoad(index, mode)
+      case Some(false) if mode == NormalMode => detailsRoutes.HavePAYEController.onPageLoad(index, mode)
+      case Some(false) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
       case None => controllers.routes.TaskListController.onPageLoad()
     }
 
