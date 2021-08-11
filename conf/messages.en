@@ -898,3 +898,20 @@ messages__addCompanyDirectors_at_maximum = You have added the maximum number of 
 messages__addCompanyDirectorsOrPartners_tell_us_if_you_have_more = You can tell us on the next page if you have more to add.
 messages__addCompanyDirectors_add_director = Add a director
 messages__alreadyDeleted__director_title = You have already deleted this director
+
+messages__migrationLink__header = Pension schemes registered on the Pension Schemes Online service
+messages__migrationLink__viewSchemesLink = View pension schemes registered on the Pension Schemes Online service
+messages__migrationLink__viewRacDacsLink = View RAC/DACs registered on the Pension Schemes Online service
+messages__migrationLink__addSchemesLink = Add pension schemes registered on the Pension Schemes Online service
+messages__migrationLink__addRacDacsLink = Add RAC/DACs registered on the Pension Schemes Online service
+
+messages__cannotAdd__pension_scheme = pension scheme
+messages__cannotAdd__scheme = scheme
+messages__cannotAdd__racdac = RAC/DAC
+messages__cannotAdd__title = You cannot add a {0} from the Pension Schemes Online service until spring 2022
+messages__cannotAdd__p = Select continue to view the list of {0}s registered on the Pension Schemes Online service. The list should only show active {1}s.
+messages__cannotAdd__list_head_link = Contact HMRC for help
+messages__cannotAdd__list_head = if you:
+messages__cannotAdd__li_1 = cannot see listed all the {0}s that you have registered on the Pension Schemes Online service
+messages__cannotAdd__li_2 = can see {0}s listed that you do not recognise
+messages__cannotAdd__li_3 = can see {0}s listed that are no longer active and should be wound up

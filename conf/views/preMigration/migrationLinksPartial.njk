@@ -1,0 +1,16 @@
+<div class="card" id="transfer-schemes">
+    <div class="card-body">
+        <h2 class="card-heading">
+            {{ messages("messages__migrationLink__header") }}
+        </h2>
+    </div>
+    <div class="card-action">
+        <ul>
+            {% for link in links %}
+                <li>
+                    <a id="{{ link.id }}" href="{{ link.url }}">{{ link.linkText }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
