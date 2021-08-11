@@ -74,3 +74,6 @@ POST        /benefits-and-finance/address-manual                   controllers.b
 
 
 GET         /success                                               controllers.SuccessController.onPageLoad
+
+GET         /no-pension-schemes-registered                         controllers.preMigration.NotRegisterController.onPageLoadScheme
+GET         /no-rac-dacs-registered                                controllers.preMigration.NotRegisterController.onPageLoadRacDac
