@@ -17,10 +17,10 @@
 package helpers
 
 import base.SpecBase
-import identifiers.beforeYouStart.{HaveAnyTrusteesId, SchemeTypeId}
+import identifiers.beforeYouStart.SchemeTypeId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.{EstablisherKindId, IsEstablisherNewId}
+import identifiers.establishers.{IsEstablisherNewId, EstablisherKindId}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId}
 import models._
@@ -30,8 +30,8 @@ import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.MustMatchers
 import org.scalatestplus.mockito.MockitoSugar
-import utils.Data.{completeUserAnswers, schemeName, ua}
-import utils.{Enumerable, UserAnswers}
+import utils.Data.{schemeName, completeUserAnswers, ua}
+import utils.{UserAnswers, Enumerable}
 import viewmodels.{Message, TaskListEntitySection}
 
 class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar with Enumerable.Implicits {
@@ -110,16 +110,6 @@ class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar wi
       helper.addTrusteeHeader(false) mustBe None
     }
 
-    "shuld be none if have any trustees question answered as no and scheme type is body corporate" in {
-      val trusteeHeaderSpokes = Seq(EntitySpoke(TaskListLink(messages("messages__schemeTaskList__sectionTrustees_change_link"),
-        controllers.trustees.routes.AddTrusteeController.onPageLoad.url), None))
-      when(mockSpokeCreationService.getAddTrusteeHeaderSpokes(any(), any())(any())).thenReturn(trusteeHeaderSpokes)
-      val userAnswers: UserAnswers = ua
-        .setOrException(HaveAnyTrusteesId, false)
-        .setOrException(SchemeTypeId, SchemeType.BodyCorporate)
-      helper.addTrusteeHeader(false)(userAnswers, implicitly) mustBe None
-    }
-
     "show a section with the spoke returned by service where scheme type is single trust" in {
       val trusteeHeaderSpokes = Seq(EntitySpoke(TaskListLink(messages("messages__schemeTaskList__sectionTrustees_change_link"),
         controllers.trustees.routes.AddTrusteeController.onPageLoad.url), None))
@@ -192,23 +182,12 @@ class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar wi
       helper.trusteesSection(userAnswers, messages) mustBe expectedSection
     }
 
-    "return None if scheme type is body corporate and have any trustees is answered as no" in {
-      val userAnswers = ua
-          .setOrException(TrusteeKindId(0), TrusteeKind.Individual)
-          .setOrException(TrusteeNameId(0), PersonName("a", "b"))
-          .setOrException(IsTrusteeNewId(0), true)
-          .setOrException(SchemeTypeId, SchemeType.BodyCorporate)
-          .setOrException(HaveAnyTrusteesId, false)
-      helper.trusteesSection(userAnswers, messages) mustBe None
-    }
-
-    "return trustees if scheme type is body corporate and have any trustees is answered as yes" in {
+    "return trustees if scheme type is body corporate" in {
       val userAnswers = ua
         .setOrException(TrusteeKindId(0), TrusteeKind.Individual)
         .setOrException(TrusteeNameId(0), PersonName("a", "b"))
         .setOrException(IsTrusteeNewId(0), true)
         .setOrException(SchemeTypeId, SchemeType.BodyCorporate)
-        .setOrException(HaveAnyTrusteesId, true)
       helper.trusteesSection(userAnswers, messages).isDefined mustBe true
     }
   }
