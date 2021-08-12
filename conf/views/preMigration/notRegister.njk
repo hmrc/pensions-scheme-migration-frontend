@@ -6,7 +6,7 @@
 
 
 {% block pageTitle %}
-  {{ title(messages("messages_noschemesregister_title", param1)) }}
+  {{ title(messages("messages_notRegister_title", param1)) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -14,12 +14,12 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
 
-        <h1 class="govuk-heading-xl">{{ messages("messages_noschemesregister_title", param1) }}</h1>
+        <h1 class="govuk-heading-xl">{{ messages("messages_notRegister_title", param1) }}</h1>
 
-        <p class="govuk-body">{{ messages("messages__noschemesregister__p1", param1, param1) }}</p>
+        <p class="govuk-body">{{ messages("messages_notRegister_p1", param1, param1) }}</p>
         <p class="govuk-body">
             <a href="{{ contactHmrcUrl }}" class="govuk-link">{{ messages("messages_contact_hmrc_link") }}</a>
-            {{ messages("messages__noschemesregister__p2",param1) }}
+            {{ messages("messages_notRegister_p2",param1) }}
          </p>
 
            <p class="govuk-body"><a id="return_to_psa" href="{{ returnUrl }}" class="govuk-link">{{ messages("return.to.link", psaName) }}</a></p>
