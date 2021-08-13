@@ -1,0 +1,3 @@
+
+GET         /:index/partnership/name                                                    controllers.establishers.partnership.PartnershipDetailsController.onPageLoad(index: Index)
+POST        /:index/partnership/name                                                    controllers.establishers.partnership.PartnershipDetailsController.onSubmit(index: Index)
