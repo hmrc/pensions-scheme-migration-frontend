@@ -22,7 +22,7 @@ import connectors.{DelimitedAdminException, MinimalDetailsConnector}
 import controllers.actions.{AuthAction, DataRetrievalAction}
 import forms.ListSchemesFormProvider
 import models.requests.OptionalDataRequest
-import models.{Index, SchemeDetails}
+import models.{Index, Items}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
@@ -55,7 +55,7 @@ class ListOfSchemesController @Inject()(
   private val form: Form[String] = formProvider()
 
   private def renderView(
-                          schemeDetails: List[SchemeDetails],
+                          schemeDetails: List[Items],
                           numberOfSchemes: Int,
                           pageNumber: Int,
                           numberOfPages: Int,
@@ -71,7 +71,6 @@ class ListOfSchemesController @Inject()(
         val json: JsObject = Json.obj(
          
             "form" -> form,
-            "schemes" -> schemeDetails,
             "psaName" -> md.name,
             "numberOfSchemes" -> numberOfSchemes,
             "pagination" -> pagination,
@@ -84,12 +83,11 @@ class ListOfSchemesController @Inject()(
             ),
             "numberOfPages" -> numberOfPages,
             "noResultsMessageKey" -> noResultsMessageKey,
-             "clearLinkUrl" -> controllers.preMigration.routes.ListOfSchemesController.onPageLoad().url,
-          
-        )
+            "clearLinkUrl" -> controllers.preMigration.routes.ListOfSchemesController.onPageLoad().url,
+            "schemesCount" -> schemeDetails.size,
+            "returnUrl" -> appConfig.psaOverviewUrl.url
+        ) ++  (if (schemeDetails.nonEmpty) Json.obj("schemes" -> schemeSearchService.mapToTable(schemeDetails)) else Json.obj())
 
-        println("\n\n >>>>>>>>>>>> "+Json.prettyPrint(json))
-        
       renderer.render("preMigration/listOfSchemes.njk", json)
         .map(body => if (form.hasErrors) BadRequest(body) else Ok(body))
 
@@ -118,7 +116,6 @@ class ListOfSchemesController @Inject()(
       val numberOfPages: Int =
         paginationService.divide(numberOfSchemes, pagination)
 
-
       renderView(
         schemeDetails = selectPageOfResults(searchResult, pageNumber, numberOfPages),
         numberOfSchemes = numberOfSchemes,
@@ -131,10 +128,10 @@ class ListOfSchemesController @Inject()(
   }
 
   private def selectPageOfResults(
-                                   searchResult: List[SchemeDetails],
+                                   searchResult: List[Items],
                                    pageNumber: Int,
                                    numberOfPages: Int
-                                 ): List[SchemeDetails] = {
+                                 ): List[Items] = {
     pageNumber match {
       case 1 => searchResult.take(pagination)
       case p if p <= numberOfPages =>

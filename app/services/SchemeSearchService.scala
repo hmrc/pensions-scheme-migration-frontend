@@ -17,10 +17,16 @@
 package services
 
 import com.google.inject.Inject
-import models.{ListOfSchemes, SchemeDetails}
+import models.{Entity, Items, ListOfLegacySchemes}
+import play.api.i18n.Messages
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.viewmodels.Table.Cell
+import uk.gov.hmrc.viewmodels.Text.Literal
+import uk.gov.hmrc.viewmodels.{Html, MessageInterpolators, Table}
 import utils.SchemeFuzzyMatcher
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import scala.concurrent.{ExecutionContext, Future}
 
 class SchemeSearchService @Inject()(fuzzyMatching: SchemeFuzzyMatcher) {
@@ -28,23 +34,23 @@ class SchemeSearchService @Inject()(fuzzyMatching: SchemeFuzzyMatcher) {
   private val pstrRegex = "^[0-9]{8}[A-Za-z]{2}$".r
 
   private val filterSchemesByPstrOrSchemeName
-  : (String, List[SchemeDetails]) => List[SchemeDetails] =
+  : (String, List[Items]) => List[Items] =
     (searchText, list) => {
       searchText match {
         case _ if pstrRegex.findFirstIn(searchText).isDefined =>
-          list.filter(_.pstr.exists(_ == searchText))
+          list.filter(_.pstr.equalsIgnoreCase(searchText))
         case _ =>
           list.flatMap { schemeDetail =>
-            val isMatch = fuzzyMatching.doFuzzyMatching(searchText, schemeDetail.name)
+            val isMatch = fuzzyMatching.doFuzzyMatching(searchText, schemeDetail.schemeName)
             if (isMatch) Some(schemeDetail) else None
           }
       }
     }
 
-  def search(psaId: String, searchText: Option[String])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[SchemeDetails]] = {
-    val listOfSchemes = ListOfSchemes("2", Some(List(
-      SchemeDetails("scheme 1", None, "1111"),
-      SchemeDetails("scheme 2", None, "2222")
+  def search(psaId: String, searchText: Option[String])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[Items]] = {
+    val listOfSchemes = ListOfLegacySchemes(2, Some(List(
+      Items("11111111AB", "2020-01-01", false, "scheme 1", "2020-12-12", None),
+      Items("22222222AB", "2021-01-01", false, "scheme 2", "2021-12-12", None)
     )))
 
 //    listSchemesConnector.getListOfSchemes(psaId).map {
@@ -60,11 +66,31 @@ class SchemeSearchService @Inject()(fuzzyMatching: SchemeFuzzyMatcher) {
 
 
     val filterSearchResults =
-          searchText.fold[List[SchemeDetails] => List[SchemeDetails]](identity)(
-            st => filterSchemesByPstrOrSchemeName(st, _: List[SchemeDetails])
+          searchText.fold[List[Items] => List[Items]](identity)(
+            st => filterSchemesByPstrOrSchemeName(st, _: List[Items])
           )
 
-    Future.successful(filterSearchResults(listOfSchemes.schemeDetails.getOrElse(List.empty[SchemeDetails])))
+    Future.successful(filterSearchResults(listOfSchemes.items.getOrElse(List.empty[Items])))
+  }
+
+  def mapToTable(schemeDetails: List[Items]): Table = {
+      val head = Seq(
+        Cell(msg"messages__listSchemes__column_schemeName"),
+        Cell(msg"messages__listSchemes__column_pstr"),
+        Cell(msg"messages__listSchemes__column_regDate")
+      )
+
+    val formatter: String => String = date => LocalDate.parse(date).format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
+
+    val rows = schemeDetails.map { data =>
+      Seq(Cell(Literal(data.schemeName), Seq("govuk-!-width-one-quarter")),
+        Cell(Literal(data.pstr), Seq("govuk-!-width-one-quarter")),
+        Cell(Literal(formatter(data.schemeOpenDate)), Seq("govuk-!-width-one-half"))
+        )
+    }
+
+    Table(head, rows, attributes = Map("role" -> "table"))
+
   }
 
 }

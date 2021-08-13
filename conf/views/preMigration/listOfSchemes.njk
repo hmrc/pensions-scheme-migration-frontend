@@ -6,6 +6,7 @@
 {% from "macros/returnLink.njk"                    import returnLink %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/button/macro.njk"        import govukButton %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
 
 {% block pageTitle %}
     {{ pageTitle }}
@@ -32,12 +33,12 @@
 
                 {{ csrf() | safe }}
 
-                {% if schemes.size >= appConfig.minimumSchemeSearchResults or not form.value.value %}
+                {% if schemes.size >= appConfig.minimumSchemeSearchResults or form.value %}
                     {{ govukInput({
                                        label: {
                                            text: messages('messages__listSchemes__searchText_label'),
                                            isPageHeading: false,
-                                           classes: "govuk-label--l"
+                                           classes: "govuk-label--m"
                                        },
                                        id: "value",
                                        name: "value",
@@ -50,7 +51,7 @@
                                        text: messages("messages__listSchemes__search_submit")
                                    }) }}
                 {% endif %}
-{{ form | dump }}
+
                 {% if form.value.value %}
                     <p>
                         <a id="clear-search-link" href="{{ clearLinkUrl }}">{{ messages("messages__listSchemes__searchText_clearlink") }}</a>
@@ -62,17 +63,17 @@
 
 
     {% if form.value.value %}
-                {% if schemes.nonEmpty %}
+                {% if schemesCount > 0 %}
                     <div class="grid-row">
                         <div class="column-two-thirds">
                             <p class="govuk-margin-top-5 govuk-margin-bottom-0">
-                                @{
-                                    {% if schemes.size == 1 %}
+
+                                    {% if schemesCount == 1 %}
                                        {{ messages("messages__listSchemes__search_result") }}
                                     {% else %}
-                                       {{ messages("messages__listSchemes__search_multipleResults", schemes.size) }}
+                                       {{ messages("messages__listSchemes__search_multipleResults", schemesCount) }}
                                     {% endif %}
-                                }
+
                             </p>
                         </div>
                     </div>
@@ -90,8 +91,8 @@
                 </div>
      {% endif %}
 
-     {% if schemes.nonEmpty %}
-              {{  schemes }}
+     {% if schemes %}
+              {{ govukTable(schemes) }}
      {% endif %}
 
     <p class="govuk-body"><a id="return_to_psa" href="{{ returnUrl }}" class="govuk-link">{{ messages("return.to.link", psaName) }}</a></p>

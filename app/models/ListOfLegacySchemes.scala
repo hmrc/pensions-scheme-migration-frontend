@@ -18,15 +18,15 @@ package models
 
 import play.api.libs.json.{Format, Json}
 
-case class SchemeDetails(name: String, openDate: Option[String], pstr: String)
+case class Items(pstr: String, declarationDate: String, racDac: Boolean, schemeName: String, schemeOpenDate: String,
+                 policyNo: Option[String])
 
-object SchemeDetails {
-  implicit val format: Format[SchemeDetails] = Json.format[SchemeDetails]
+object Items {
+  implicit val format: Format[Items] = Json.format[Items]
 }
 
-case class ListOfSchemes(totalSchemesRegistered: String,
-                         schemeDetails: Option[List[SchemeDetails]] = None)
+case class ListOfLegacySchemes(totalResults: Int, items: Option[List[Items]] = None)
 
-object ListOfSchemes {
-  implicit val format: Format[ListOfSchemes] = Json.format[ListOfSchemes]
+object ListOfLegacySchemes {
+  implicit val format: Format[ListOfLegacySchemes] = Json.format[ListOfLegacySchemes]
 }
