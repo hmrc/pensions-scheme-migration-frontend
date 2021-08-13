@@ -17,8 +17,8 @@
 package connectors
 
 import com.google.inject.{ImplementedBy, Inject, Singleton}
-import config.{AppConfig, FrontendAppConfig}
-import models.{ListOfLegacySchemes, ListOfSchemes}
+import config.AppConfig
+import models.ListOfLegacySchemes
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsResultException, JsSuccess, Json}
@@ -45,12 +45,12 @@ class ListOfSchemesConnectorImpl @Inject()(
 
   def getListOfSchemes(psaId: String)
                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[HttpResponse, ListOfLegacySchemes]] = {
-    val (url, schemeHc) = (config.listOfSchemesUrl, hc.withExtraHeaders("idType" -> "psaid", "idValue" -> psaId))
+    val (url, schemeHc) = (config.listOfSchemesUrl, hc.withExtraHeaders("psaId" -> psaId))
 
     http.GET[HttpResponse](url)(implicitly, schemeHc, implicitly).map { response =>
       response.status match {
-        case OK => val json = Json.parse(response.body)
-          json.validate[ListOfLegacySchemes] match {
+        case OK =>
+            Json.parse(response.body).validate[ListOfLegacySchemes] match {
             case JsSuccess(value, _) => Right(value)
             case JsError(errors) => throw JsResultException(errors)
           }
@@ -68,3 +68,4 @@ class ListOfSchemesConnectorImpl @Inject()(
 
 sealed trait ListOfSchemesException extends Exception
 case class AncillaryPsaException() extends ListOfSchemesException
+case class InternalServerErrorException() extends ListOfSchemesException
