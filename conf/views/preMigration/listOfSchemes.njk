@@ -4,6 +4,8 @@
 {% from "govuk/components/input/macro.njk"         import govukInput %}
 {% from "macros/title.njk"                         import title %}
 {% from "macros/returnLink.njk"                    import returnLink %}
+{% from "macros/navigationLink.njk"                import navigationLink %}
+{% from "macros/pageNumberLink.njk"                import pageNumberLink %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
@@ -63,15 +65,15 @@
 
 
     {% if form.value.value %}
-                {% if schemesCount > 0 %}
+                {% if numberOfSchemes > 0 %}
                     <div class="grid-row">
                         <div class="column-two-thirds">
                             <p class="govuk-margin-top-5 govuk-margin-bottom-0">
 
-                                    {% if schemesCount == 1 %}
+                                    {% if numberOfSchemes == 1 %}
                                        {{ messages("messages__listSchemes__search_result") }}
                                     {% else %}
-                                       {{ messages("messages__listSchemes__search_multipleResults", schemesCount) }}
+                                       {{ messages("messages__listSchemes__search_multipleResults", numberOfSchemes) }}
                                     {% endif %}
 
                             </p>
@@ -95,6 +97,38 @@
               {{ govukTable(schemes) }}
      {% endif %}
 
-    <p class="govuk-body"><a id="return_to_psa" href="{{ returnUrl }}" class="govuk-link">{{ messages("return.to.link", psaName) }}</a></p>
+     {% if(numberOfSchemes > pagination) %}
+                <div class="grid-row">
+                    <div class="column-two-thirds">
+                        <p class="govuk-margin-top-5" id="pagination-text">
+                            {{paginationText}}
+                        </p>
+                        <nav class="govuk-margin-top-5" aria-label="page">
+                            {% if(pageNumber > 1) %}
+
+                              {{navigationLink(messages("messages__schemesOverview__pagination__first"),"1")}}
+                              {{navigationLink(messages("messages__schemesOverview__pagination__prev"),(pageNumber-1))}}
+
+                            {% endif %}
+
+                            {% for  pageNumber  in pageNumberLinks   %}
+
+                                {{pageNumberLink(pageNumber,numberOfPages)}}
+
+                            {% endfor %}
+
+                            {% if(pageNumber < numberOfPages) %}
+
+                             {{navigationLink(messages("messages__schemesOverview__pagination__next"),(pageNumber+1))}}
+                             {{navigationLink(messages("messages__schemesOverview__pagination__last"),(numberOfPages))}}
+
+                           {% endif %}
+                        </nav>
+                    </div>
+                </div>
+            {% endif %}
+
+
+        <p class="govuk-body"><a id="return_to_psa" href="{{ returnUrl }}" class="govuk-link">{{ messages("return.to.link", psaName) }}</a></p>
 
 {% endblock %}

@@ -935,3 +935,15 @@ messages__listSchemes__search_required = Enter an SRN or a PSTR
 messages__listSchemes__search_result = 1 result found
 messages__listSchemes__search_multipleResults = {0} results found
 messages__listSchemes__search_result_title = Search results for your pension schemes
+
+messages__schemesOverview__pagination__text = Showing {0} to {1} of {2} schemes
+messages__schemesOverview__pagination__prev = Prev
+messages__schemesOverview__pagination__next = Next
+messages__schemesOverview__pagination__prev__ariaLabel = Previous page
+messages__schemesOverview__pagination__next__ariaLabel = Next page
+messages__schemesOverview__pagination__first = First
+messages__schemesOverview__pagination__last = Last
+messages__schemesOverview__pagination__first__ariaLabel = First page
+messages__schemesOverview__pagination__last__ariaLabel = Last page
+messages__schemesOverview__pagination__pageNumber__ariaLabel = page {0} of {1}
+messages__schemesOverview__pagination__pageNumberCurrent__ariaLabel = current page, page {0} of {1}

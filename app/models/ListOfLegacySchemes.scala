@@ -25,7 +25,8 @@ object Items {
   implicit val format: Format[Items] = Json.format[Items]
 }
 
-case class ListOfLegacySchemes(totalResults: Int, items: Option[List[Items]] = None)
+case class ListOfLegacySchemes(totalResults: Int,
+                               items: Option[List[Items]] = None)
 
 object ListOfLegacySchemes {
   implicit val format: Format[ListOfLegacySchemes] = Json.format[ListOfLegacySchemes]

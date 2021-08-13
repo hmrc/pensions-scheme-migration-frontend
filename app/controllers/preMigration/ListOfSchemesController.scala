@@ -24,7 +24,7 @@ import forms.ListSchemesFormProvider
 import models.requests.OptionalDataRequest
 import models.{Index, Items}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import renderer.Renderer
@@ -53,7 +53,7 @@ class ListOfSchemesController @Inject()(
   private val pagination: Int = appConfig.listSchemePagination
 
   private val form: Form[String] = formProvider()
-
+  private val msgPrefix:String ="messages__schemesOverview__pagination__"
   private def renderView(
                           schemeDetails: List[Items],
                           numberOfSchemes: Int,
@@ -84,8 +84,10 @@ class ListOfSchemesController @Inject()(
             "numberOfPages" -> numberOfPages,
             "noResultsMessageKey" -> noResultsMessageKey,
             "clearLinkUrl" -> controllers.preMigration.routes.ListOfSchemesController.onPageLoad().url,
-            "schemesCount" -> schemeDetails.size,
-            "returnUrl" -> appConfig.psaOverviewUrl.url
+            "schemesCount" -> schemeDetails.size,"schemesCount" -> schemeDetails.size,
+            "returnUrl" -> appConfig.psaOverviewUrl.url,
+            "paginationText" ->paginationText(pageNumber,pagination,numberOfSchemes,numberOfPages),
+
         ) ++  (if (schemeDetails.nonEmpty) Json.obj("schemes" -> schemeSearchService.mapToTable(schemeDetails)) else Json.obj())
 
       renderer.render("preMigration/listOfSchemes.njk", json)
@@ -96,6 +98,14 @@ class ListOfSchemesController @Inject()(
         Future.successful(Redirect(appConfig.psaDelimitedUrl))
     }
 
+  private  def paginationText(pageNumber:Int,pagination:Int,numberOfSchemes:Int,numberOfPages:Int)(implicit messages: Messages):String={
+    messages(
+      s"${msgPrefix}text",
+      if (pageNumber == 1) pageNumber else ((pageNumber * pagination) - pagination) + 1,
+      if (pageNumber == numberOfPages) numberOfSchemes else pageNumber * pagination,
+      numberOfSchemes
+    )
+  }
   private def searchAndRenderView(
                                    form: Form[String],
                                    pageNumber: Int,
