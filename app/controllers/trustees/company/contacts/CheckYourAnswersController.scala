@@ -18,8 +18,8 @@ package controllers.trustees.company.contacts
 
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import helpers.TrusteeCompanyContactDetailsCYAHelper
 import helpers.cya.CYAHelper
+import helpers.cya.trustees.company.TrusteeCompanyContactDetailsCYAHelper
 import identifiers.beforeYouStart.SchemeNameId
 import models.Index
 import play.api.i18n.{I18nSupport, MessagesApi}

@@ -1,0 +1,100 @@
+{% extends "includes/layout.njk" %}
+
+{% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
+{% from "govuk/components/input/macro.njk"         import govukInput %}
+{% from "macros/title.njk"                         import title %}
+{% from "macros/returnLink.njk"                    import returnLink %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/button/macro.njk"        import govukButton %}
+
+{% block pageTitle %}
+    {{ pageTitle }}
+{% endblock %}
+
+{% block mainContent %}
+
+   <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            {% if form.errors.length > 0 %}
+                {{ govukErrorSummary({
+                    "titleText": messages("error.summary.title"),
+                    "errorList": form.errors
+                }) }}
+            {% endif %}
+
+            <h1 class="govuk-heading-xl">{{ messages("messages__listSchemes__title") }}</h1>
+
+            <form method="post"
+                  autocomplete="off"
+                  action="{{ submitUrl }}"
+                  novalidate>
+
+                {{ csrf() | safe }}
+
+                {% if schemes.size >= appConfig.minimumSchemeSearchResults or not form.value.value %}
+                    {{ govukInput({
+                                       label: {
+                                           text: messages('messages__listSchemes__searchText_label'),
+                                           isPageHeading: false,
+                                           classes: "govuk-label--xl govuk-!-margin-bottom-8"
+                                       },
+                                       id: "value",
+                                       name: "value",
+                                       value: form.value.value,
+                                       classes: "govuk-input--width-10",
+                                       errorMessage: form.value.error
+                                   }) }}
+
+                    {{ govukButton({
+                                       attributes: {id: "search"},
+                                       text: messages("messages__listSchemes__search_submit")
+                                   }) }}
+                {% endif %}
+{{ form | dump }}
+                {% if form.value.value %}
+                    <p>
+                        <a id="clear-search-link" href="#">{{ messages("messages__listSchemes__searchText_clearlink") }}</a>
+                    </p>
+                {% endif %}
+            </form>
+        </div>
+   </div>
+
+
+    {% if form.value.value %}
+                {% if schemes.nonEmpty %}
+                    <div class="grid-row">
+                        <div class="column-two-thirds">
+                            <p class="govuk-margin-top-5 govuk-margin-bottom-0">
+                                @{
+                                    {% if schemes.size == 1 %}
+                                       {{ messages("messages__listSchemes__search_result") }}
+                                    {% else %}
+                                       {{ messages("messages__listSchemes__search_multipleResults", schemes.size) }}
+                                    {% endif %}
+                                }
+                            </p>
+                        </div>
+                    </div>
+                {% endif %}
+
+    {% endif %}
+
+
+
+     {% if noResultsMessageKey %}
+                <div class="grid-row">
+                    <div class="column-two-thirds">
+                        <p id="noSchemes">{{ messages(noResultsMessageKey) }}</p>
+                    </div>
+                </div>
+     {% endif %}
+
+     {% if schemes.nonEmpty %}
+              {{  schemes }}
+     {% endif %}
+
+    <p class="govuk-body"><a id="return_to_psa" href="{{ returnUrl }}" class="govuk-link">{{ messages("return.to.link", psaName) }}</a></p>
+
+{% endblock %}

@@ -18,7 +18,7 @@ package controllers.trustees.company.contacts
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import helpers.TrusteeCompanyContactDetailsCYAHelper
+import helpers.cya.trustees.company.TrusteeCompanyContactDetailsCYAHelper
 import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.contacts.{EnterEmailId, EnterPhoneId}
 import matchers.JsonMatchers

@@ -58,6 +58,11 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val pensionsAdministratorUrl = s"${servicesConfig.baseUrl("pension-administrator")}"
   lazy val getPSAEmail: String = s"$pensionsAdministratorUrl${config.get[String]("urls.get-psa-email")}"
   lazy val getPSAName: String = s"$pensionsAdministratorUrl${config.get[String]("urls.get-psa-name")}"
+  lazy val getPSAMinDetails: String = s"$pensionsAdministratorUrl${config.get[String]("urls.get-psa-min-details")}"
+
+  lazy val psaUpdateContactDetailsUrl: String = loadConfig("urls.psaUpdateContactDetails")
+  lazy val deceasedContactHmrcUrl: String = loadConfig("urls.deceasedContactHmrc")
+  lazy val psaDelimitedUrl: String = loadConfig("urls.psaDelimited")
 
   lazy val schemesMigrationViewOnly: String = config.get[String]("urls.schemes-migration-view-only")
   lazy val racDacMigrationViewOnly: String = config.get[String]("urls.rac-dacs-migration-view-only")
@@ -83,4 +88,5 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val serviceSignOut: String = s"${config.get[String](path = "urls.logout")}"
   lazy val validCountryCodes: Seq[String] = s"${config.get[String](path = "validCountryCodes")}".split(",").toSeq
   lazy val maxDirectors: Int = loadConfig("company.maxDirectors").toInt
+  lazy val listSchemePagination: Int = loadConfig("listSchemePagination").toInt
 }

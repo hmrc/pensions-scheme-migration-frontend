@@ -78,3 +78,9 @@ GET         /migration-tile                                         controllers.
 GET         /cannot-add-pension-scheme                              controllers.preMigration.CannotAddController.onPageLoadScheme
 GET         /cannot-add-racdac                                      controllers.preMigration.CannotAddController.onPageLoadRacDac
 GET         /what-you-will-need-before-start                        controllers.preMigration.BeforeYouStartController.onPageLoad
+
+
+GET         /your-pension-schemes                                   controllers.preMigration.ListOfSchemesController.onPageLoad
+POST        /your-pension-schemes                                   controllers.preMigration.ListOfSchemesController.onSearch
+GET         /your-pension-schemes/page/:pageNumber                  controllers.preMigration.ListOfSchemesController.onPageLoadWithPageNumber(pageNumber: Int)
+
