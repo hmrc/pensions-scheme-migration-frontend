@@ -83,7 +83,8 @@ class ListOfSchemesController @Inject()(
               numberOfPages
             ),
             "numberOfPages" -> numberOfPages,
-            "noResultsMessageKey" -> noResultsMessageKey
+            "noResultsMessageKey" -> noResultsMessageKey,
+             "clearLinkUrl" -> controllers.preMigration.routes.ListOfSchemesController.onPageLoad().url,
           
         )
 

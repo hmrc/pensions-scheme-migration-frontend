@@ -37,12 +37,11 @@
                                        label: {
                                            text: messages('messages__listSchemes__searchText_label'),
                                            isPageHeading: false,
-                                           classes: "govuk-label--xl govuk-!-margin-bottom-8"
+                                           classes: "govuk-label--l"
                                        },
                                        id: "value",
                                        name: "value",
                                        value: form.value.value,
-                                       classes: "govuk-input--width-10",
                                        errorMessage: form.value.error
                                    }) }}
 
@@ -54,7 +53,7 @@
 {{ form | dump }}
                 {% if form.value.value %}
                     <p>
-                        <a id="clear-search-link" href="#">{{ messages("messages__listSchemes__searchText_clearlink") }}</a>
+                        <a id="clear-search-link" href="{{ clearLinkUrl }}">{{ messages("messages__listSchemes__searchText_clearlink") }}</a>
                     </p>
                 {% endif %}
             </form>
