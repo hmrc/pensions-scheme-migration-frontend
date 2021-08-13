@@ -431,6 +431,7 @@ messages__alreadyDeleted__p2 = This page no longer exists.
 
 establisherEntityTypeIndividual = the individual
 establisherEntityTypeCompany = the company
+establisherEntityTypePartnership = the partnership
 
 messages__establisherAddress__whatYouWillNeed_title = The establisher’s address
 messages__establisherAddress__whatYouWillNeed_h1 = Address for {0}
