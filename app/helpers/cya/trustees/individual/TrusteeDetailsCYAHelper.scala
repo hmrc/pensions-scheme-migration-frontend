@@ -42,7 +42,7 @@ class TrusteeDetailsCYAHelper
     
     val trusteeName: String = getName(TrusteeNameId(index))
 
-    Seq(
+    val rowsWithoutDynamicIndices = Seq(
       Some(answerOrAddRow(
         id                 = TrusteeDOBId(index),
         message            = Message("messages__dob__title", trusteeName).resolve,
@@ -103,5 +103,6 @@ class TrusteeDetailsCYAHelper
           )
       }
     ).flatten
+    rowsWithDynamicIndices(rowsWithoutDynamicIndices)
   }
 }
