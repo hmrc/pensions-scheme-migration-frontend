@@ -83,7 +83,9 @@ GET         /what-you-will-need-before-start                        controllers.
 GET         /your-pension-schemes                                   controllers.preMigration.ListOfSchemesController.onPageLoad(migrationType: MigrationType = Scheme)
 POST        /your-pension-schemes                                   controllers.preMigration.ListOfSchemesController.onSearch(migrationType: MigrationType = Scheme)
 GET         /your-pension-schemes/page/:pageNumber                  controllers.preMigration.ListOfSchemesController.onPageLoadWithPageNumber(pageNumber: Int, migrationType: MigrationType = Scheme)
+POST        /your-pension-schemes/page/:pageNumber                  controllers.preMigration.ListOfSchemesController.onSearchWithPageNumber(pageNumber: Int, migrationType: MigrationType = Scheme)
 GET         /racdac/your-pension-schemes                            controllers.preMigration.ListOfSchemesController.onPageLoad(migrationType: MigrationType = RacDac)
 POST        /racdac/your-pension-schemes                            controllers.preMigration.ListOfSchemesController.onSearch(migrationType: MigrationType = RacDac)
 GET         /racdac/your-pension-schemes/page/:pageNumber           controllers.preMigration.ListOfSchemesController.onPageLoadWithPageNumber(pageNumber: Int, migrationType: MigrationType = RacDac)
+POST        /racdac/your-pension-schemes/page/:pageNumber           controllers.preMigration.ListOfSchemesController.onSearchWithPageNumber(pageNumber: Int, migrationType: MigrationType = RacDac)
 

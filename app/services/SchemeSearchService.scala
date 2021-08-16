@@ -36,7 +36,7 @@ class SchemeSearchService @Inject()(fuzzyMatching: SchemeFuzzyMatcher,listOfSche
 
   private val filterSchemesByPstrOrSchemeName
   : (String, List[Items]) => List[Items] =
-    (searchText, list) => {
+    (searchText, list) =>
       searchText match {
         case _ if pstrRegex.findFirstIn(searchText).isDefined =>
           list.filter(_.pstr.equalsIgnoreCase(searchText))
@@ -45,11 +45,9 @@ class SchemeSearchService @Inject()(fuzzyMatching: SchemeFuzzyMatcher,listOfSche
             val isMatch = fuzzyMatching.doFuzzyMatching(searchText, schemeDetail.schemeName)
             if (isMatch) Some(schemeDetail) else None
           }
-      }
     }
 
-  def search(psaId: String, searchText: Option[String], isRacDac: Boolean)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[Items]] = {
-    println(s"\n\n >>>>>>>>>>>>>> enter search")
+  def search(psaId: String, searchText: Option[String], isRacDac: Boolean)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[Items]] =
     listOfSchemesConnector.getListOfSchemes(psaId).map {
         case Right(listOfSchemes) =>
 
@@ -58,19 +56,11 @@ class SchemeSearchService @Inject()(fuzzyMatching: SchemeFuzzyMatcher,listOfSche
               st => filterSchemesByPstrOrSchemeName(st, _: List[Items])
             )
 
-          println(s"\n\n >>>>>>>>>>>>>> listOfSchemes $listOfSchemes")
-          println(s"\n\n >>>>>>>>>>>>>> filtered 1 ${listOfSchemes.items.getOrElse(Nil).filter(_.racDac == isRacDac)}")
-          println(s"\n\n >>>>>>>>>>>>>> filtered 2 ${filterSearchResults(listOfSchemes.items.getOrElse(Nil).filter(_.racDac == isRacDac))}")
-
-
-
           filterSearchResults(listOfSchemes.items.getOrElse(Nil).filter(_.racDac == isRacDac))
         case _ =>
-          println(s"\n\n >>>>>>>>>>>>>> emptyyyyyy")
           List.empty[Items]
       }
 
-  }
 
   def mapToTable(schemeDetails: List[Items], isRacDac: Boolean): Table = {
       val head =

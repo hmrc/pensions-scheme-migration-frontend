@@ -53,8 +53,10 @@ class ListOfSchemesController @Inject()(
 
   private val pagination: Int = appConfig.listSchemePagination
 
-  private val form: Form[String] = formProvider()
-  private val msgPrefix:String ="messages__listOfSchemes__pagination__"
+  private def form(migrationType: MigrationType)
+                  (implicit messages: Messages): Form[String] = formProvider(messages("messages__listSchemes__search_required", typeOfList(migrationType)))
+
+  private val msgPrefix:String ="messages__listSchemes__pagination__"
   private def typeOfList(migrationType: MigrationType)(implicit messages: Messages):String =
     if(isRacDac(migrationType)) messages("messages__racdac") else messages("messages__pension_scheme")
 
@@ -90,7 +92,6 @@ class ListOfSchemesController @Inject()(
             "numberOfPages" -> numberOfPages,
             "noResultsMessageKey" -> noResultsMessageKey,
             "clearLinkUrl" -> routes.ListOfSchemesController.onPageLoad(migrationType).url,
-            "continueUrl" -> routes.ListOfSchemesController.onSearch(migrationType).url,
             "returnUrl" -> appConfig.psaOverviewUrl.url,
             "paginationText" -> paginationText(pageNumber,pagination,numberOfSchemes,numberOfPages),
             "typeOfList" -> typeOfList(migrationType)
@@ -117,7 +118,7 @@ class ListOfSchemesController @Inject()(
                                  (implicit messages: Messages): Option[String] =
     (searchText.isDefined, searchResult.isEmpty) match {
       case (true, true) =>
-        Some(messages("messages__listSchemes__search_noMatches"))
+        Some(messages("messages__listSchemes__search_noMatches", typeOfList(migrationType)))
       case (false, true) => Some(messages("messages__listSchemes__noSchemes", typeOfList(migrationType)))
       case _ => None
     }
@@ -129,8 +130,6 @@ class ListOfSchemesController @Inject()(
                                    migrationType: MigrationType
                                  )(implicit request: OptionalDataRequest[AnyContent]): Future[Result] = {
     schemeSearchService.search(request.psaId.id, searchText, isRacDac(migrationType)).flatMap { searchResult =>
-
-println(s"\n\n >>>>>>>>>>>>>> searchResult $searchResult")
 
       val numberOfSchemes: Int = searchResult.length
 
@@ -169,25 +168,36 @@ println(s"\n\n >>>>>>>>>>>>>> searchResult $searchResult")
 
   def onPageLoad(migrationType: MigrationType): Action[AnyContent] = (authenticate andThen getData).async {
     implicit request =>
-      searchAndRenderView(form, pageNumber = 1, searchText = None, migrationType)
+      searchAndRenderView(form(migrationType), pageNumber = 1, searchText = None, migrationType)
   }
 
   def onPageLoadWithPageNumber(pageNumber: Index, migrationType: MigrationType): Action[AnyContent] =
     (authenticate andThen getData).async { implicit request =>
-      searchAndRenderView(form, pageNumber, searchText = None, migrationType)
+      searchAndRenderView(form(migrationType), pageNumber, searchText = None, migrationType)
     }
 
   def onSearch(migrationType: MigrationType): Action[AnyContent] = (authenticate andThen getData).async {
     implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          (formWithErrors: Form[String]) =>
-            searchAndRenderView(formWithErrors, pageNumber = 1, searchText = None, migrationType),
-          value =>
-            searchAndRenderView(form.fill(value), pageNumber = 1, searchText = Some(value), migrationType)
-        )
+      search(migrationType)
   }
+
+  def onSearchWithPageNumber(pageNumber: Index, migrationType: MigrationType): Action[AnyContent] = (authenticate andThen getData).async {
+    implicit request =>
+      search(migrationType)
+  }
+
+  private def search(migrationType: MigrationType)(implicit request: OptionalDataRequest[AnyContent]): Future[Result] = {
+    form(migrationType)
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[String]) =>
+          searchAndRenderView(formWithErrors, pageNumber = 1, searchText = None, migrationType),
+        value =>
+          searchAndRenderView(form(migrationType).fill(value), pageNumber = 1, searchText = Some(value), migrationType)
+      )
+  }
+
+
 
 }
 

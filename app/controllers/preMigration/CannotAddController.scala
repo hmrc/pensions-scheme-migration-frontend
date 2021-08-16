@@ -18,6 +18,7 @@ package controllers.preMigration
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import models.{RacDac, Scheme}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -41,7 +42,7 @@ class CannotAddController @Inject()(val appConfig: AppConfig,
     val json: JsObject = Json.obj(
       "param1" -> msg"messages__pension_scheme",
       "param2" -> msg"messages__scheme",
-      "continueUrl" -> controllers.routes.IndexController.onPageLoad().url,
+      "continueUrl" -> routes.ListOfSchemesController.onPageLoad(Scheme).url,
       "contactHmrcUrl" -> appConfig.contactHmrcUrl
     )
 
@@ -53,7 +54,7 @@ class CannotAddController @Inject()(val appConfig: AppConfig,
     val json: JsObject = Json.obj(
       "param1" -> msg"messages__racdac",
       "param2" -> msg"messages__racdac",
-      "continueUrl" -> controllers.routes.IndexController.onPageLoad().url,
+      "continueUrl" -> routes.ListOfSchemesController.onPageLoad(RacDac).url,
       "contactHmrcUrl" -> appConfig.contactHmrcUrl
     )
 

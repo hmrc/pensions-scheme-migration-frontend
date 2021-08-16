@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 class ListSchemesFormProvider @Inject()() extends Mappings {
 
-  def apply(): Form[String] = Form(
-    "value" -> text("messages__listSchemes__search_required")
+  def apply(errorMessage: String): Form[String] = Form(
+    "value" -> text(errorMessage)
   )
 }
