@@ -17,6 +17,7 @@
 package controllers.preMigration
 
 import config.AppConfig
+import connectors.ListOfSchemesConnector
 import controllers.actions.AuthAction
 import models.{RacDac, Scheme}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -27,37 +28,53 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class CannotAddController @Inject()(val appConfig: AppConfig,
                                     override val messagesApi: MessagesApi,
                                     authenticate: AuthAction,
                                     val controllerComponents: MessagesControllerComponents,
+                                    listOfSchemesConnector: ListOfSchemesConnector,
                                     renderer: Renderer
                                     )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with I18nSupport {
 
   def onPageLoadScheme: Action[AnyContent] = authenticate.async { implicit request =>
+    listOfSchemesConnector.getListOfSchemes(request.psaId.id).flatMap {
+      case Right(list) =>
+        if (list.items.getOrElse(Nil).exists(!_.racDac)) {
 
-    val json: JsObject = Json.obj(
-      "param1" -> msg"messages__pension_scheme",
-      "param2" -> msg"messages__scheme",
-      "continueUrl" -> routes.ListOfSchemesController.onPageLoad(Scheme).url,
-      "contactHmrcUrl" -> appConfig.contactHmrcUrl
-    )
+          val json: JsObject = Json.obj(
+            "param1" -> msg"messages__pension_scheme",
+            "param2" -> msg"messages__scheme",
+            "continueUrl" -> routes.ListOfSchemesController.onPageLoad(Scheme).url,
+            "contactHmrcUrl" -> appConfig.contactHmrcUrl
+          )
 
-    renderer.render("preMigration/cannotAdd.njk", json).map(Ok(_))
+          renderer.render("preMigration/cannotAdd.njk", json).map(Ok(_))
+        } else {
+          Future.successful(Redirect(routes.NotRegisterController.onPageLoadScheme()))
+        }
+      case _ => Future.successful(Redirect(routes.NotRegisterController.onPageLoadScheme()))
+    }
   }
 
   def onPageLoadRacDac: Action[AnyContent] = authenticate.async { implicit request =>
+    listOfSchemesConnector.getListOfSchemes(request.psaId.id).flatMap {
+      case Right(list) =>
+        if (list.items.getOrElse(Nil).exists(_.racDac)) {
+          val json: JsObject = Json.obj(
+            "param1" -> msg"messages__racdac",
+            "param2" -> msg"messages__racdac",
+            "continueUrl" -> routes.ListOfSchemesController.onPageLoad(RacDac).url,
+            "contactHmrcUrl" -> appConfig.contactHmrcUrl
+          )
 
-    val json: JsObject = Json.obj(
-      "param1" -> msg"messages__racdac",
-      "param2" -> msg"messages__racdac",
-      "continueUrl" -> routes.ListOfSchemesController.onPageLoad(RacDac).url,
-      "contactHmrcUrl" -> appConfig.contactHmrcUrl
-    )
-
-    renderer.render("preMigration/cannotAdd.njk", json).map(Ok(_))
+          renderer.render("preMigration/cannotAdd.njk", json).map(Ok(_))
+        } else {
+          Future.successful(Redirect(routes.NotRegisterController.onPageLoadRacDac()))
+        }
+      case _ => Future.successful(Redirect(routes.NotRegisterController.onPageLoadRacDac()))
+    }
   }
 }
