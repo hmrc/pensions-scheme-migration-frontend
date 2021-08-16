@@ -21,8 +21,9 @@ import config.AppConfig
 import connectors.{DelimitedAdminException, MinimalDetailsConnector}
 import controllers.actions.{AuthAction, DataRetrievalAction}
 import forms.ListSchemesFormProvider
+import models.MigrationType.isRacDac
 import models.requests.OptionalDataRequest
-import models.{Index, Items}
+import models.{Index, Items, MigrationType}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
@@ -53,14 +54,18 @@ class ListOfSchemesController @Inject()(
   private val pagination: Int = appConfig.listSchemePagination
 
   private val form: Form[String] = formProvider()
-  private val msgPrefix:String ="messages__schemesOverview__pagination__"
+  private val msgPrefix:String ="messages__listOfSchemes__pagination__"
+  private def typeOfList(migrationType: MigrationType)(implicit messages: Messages):String =
+    if(isRacDac(migrationType)) messages("messages__racdac") else messages("messages__pension_scheme")
+
   private def renderView(
                           schemeDetails: List[Items],
                           numberOfSchemes: Int,
                           pageNumber: Int,
                           numberOfPages: Int,
                           noResultsMessageKey: Option[String],
-                          form: Form[String]
+                          form: Form[String],
+                          migrationType: MigrationType
                         )(implicit hc: HeaderCarrier,
                           request: OptionalDataRequest[AnyContent]): Future[Result] =
     minimalDetailsConnector.getPSADetails(request.psaId.id).flatMap {
@@ -81,14 +86,15 @@ class ListOfSchemesController @Inject()(
               pagination,
               numberOfPages
             ),
+            "racDac" -> isRacDac(migrationType),
             "numberOfPages" -> numberOfPages,
             "noResultsMessageKey" -> noResultsMessageKey,
-            "clearLinkUrl" -> controllers.preMigration.routes.ListOfSchemesController.onPageLoad().url,
-            "schemesCount" -> schemeDetails.size,"schemesCount" -> schemeDetails.size,
+            "clearLinkUrl" -> routes.ListOfSchemesController.onPageLoad(migrationType).url,
+            "continueUrl" -> routes.ListOfSchemesController.onSearch(migrationType).url,
             "returnUrl" -> appConfig.psaOverviewUrl.url,
-            "paginationText" ->paginationText(pageNumber,pagination,numberOfSchemes,numberOfPages),
-
-        ) ++  (if (schemeDetails.nonEmpty) Json.obj("schemes" -> schemeSearchService.mapToTable(schemeDetails)) else Json.obj())
+            "paginationText" -> paginationText(pageNumber,pagination,numberOfSchemes,numberOfPages),
+            "typeOfList" -> typeOfList(migrationType)
+        ) ++  (if (schemeDetails.nonEmpty) Json.obj("schemes" -> schemeSearchService.mapToTable(schemeDetails, isRacDac(migrationType))) else Json.obj())
 
       renderer.render("preMigration/listOfSchemes.njk", json)
         .map(body => if (form.hasErrors) BadRequest(body) else Ok(body))
@@ -106,20 +112,25 @@ class ListOfSchemesController @Inject()(
       numberOfSchemes
     )
   }
+
+  private def noResultsMessageKey(searchText: Option[String], searchResult: List[Items], migrationType: MigrationType)
+                                 (implicit messages: Messages): Option[String] =
+    (searchText.isDefined, searchResult.isEmpty) match {
+      case (true, true) =>
+        Some(messages("messages__listSchemes__search_noMatches"))
+      case (false, true) => Some(messages("messages__listSchemes__noSchemes", typeOfList(migrationType)))
+      case _ => None
+    }
+
   private def searchAndRenderView(
                                    form: Form[String],
                                    pageNumber: Int,
-                                   searchText: Option[String]
+                                   searchText: Option[String],
+                                   migrationType: MigrationType
                                  )(implicit request: OptionalDataRequest[AnyContent]): Future[Result] = {
-    schemeSearchService.search(request.psaId.id, searchText).flatMap { searchResult =>
+    schemeSearchService.search(request.psaId.id, searchText, isRacDac(migrationType)).flatMap { searchResult =>
 
-      val noResultsMessageKey =
-        (searchText.isDefined, searchResult.isEmpty) match {
-          case (true, true) =>
-            Some("messages__listSchemes__search_noMatches")
-          case (false, true) => Some("messages__listSchemes__noSchemes")
-          case _ => None
-        }
+println(s"\n\n >>>>>>>>>>>>>> searchResult $searchResult")
 
       val numberOfSchemes: Int = searchResult.length
 
@@ -127,12 +138,13 @@ class ListOfSchemesController @Inject()(
         paginationService.divide(numberOfSchemes, pagination)
 
       renderView(
-        schemeDetails = selectPageOfResults(searchResult, pageNumber, numberOfPages),
-        numberOfSchemes = numberOfSchemes,
-        pageNumber = pageNumber,
-        numberOfPages = numberOfPages,
-        noResultsMessageKey = noResultsMessageKey,
-        form = form
+        selectPageOfResults(searchResult, pageNumber, numberOfPages),
+        numberOfSchemes,
+        pageNumber,
+        numberOfPages,
+        noResultsMessageKey(searchText, searchResult, migrationType),
+        form,
+        migrationType
       )
     }
   }
@@ -155,42 +167,28 @@ class ListOfSchemesController @Inject()(
     }
   }
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData).async {
+  def onPageLoad(migrationType: MigrationType): Action[AnyContent] = (authenticate andThen getData).async {
     implicit request =>
-      searchAndRenderView(searchText = None, pageNumber = 1, form = form)
+      searchAndRenderView(form, pageNumber = 1, searchText = None, migrationType)
   }
 
-  def onPageLoadWithPageNumber(pageNumber: Index): Action[AnyContent] =
+  def onPageLoadWithPageNumber(pageNumber: Index, migrationType: MigrationType): Action[AnyContent] =
     (authenticate andThen getData).async { implicit request =>
-      searchAndRenderView(
-        searchText = None,
-        pageNumber = pageNumber,
-        form = form
-      )
+      searchAndRenderView(form, pageNumber, searchText = None, migrationType)
     }
 
-  def onSearch: Action[AnyContent] = (authenticate andThen getData).async {
+  def onSearch(migrationType: MigrationType): Action[AnyContent] = (authenticate andThen getData).async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
           (formWithErrors: Form[String]) =>
-            searchAndRenderView(
-              searchText = None,
-              pageNumber = 1,
-              form = formWithErrors
-            ),
-          value => {
-            searchAndRenderView(
-              searchText = Some(value),
-              pageNumber = 1,
-              form = form.fill(value)
-            )
-          }
+            searchAndRenderView(formWithErrors, pageNumber = 1, searchText = None, migrationType),
+          value =>
+            searchAndRenderView(form.fill(value), pageNumber = 1, searchText = Some(value), migrationType)
         )
   }
 
- // case object UnknownPageNumberException extends Exception("User has tried to select an invalid search result page number by hanging url")
 }
 
 

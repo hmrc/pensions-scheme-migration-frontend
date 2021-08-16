@@ -38,15 +38,15 @@ class CannotAddControllerSpec extends ControllerSpecBase with NunjucksSupport wi
   private val templateToBeRendered: String = "preMigration/cannotAdd.njk"
 
   private def schemeJson: JsObject = Json.obj(
-    "param1" -> msg"messages__cannotAdd__pension_scheme",
-    "param2" -> msg"messages__cannotAdd__scheme",
+    "param1" -> msg"messages__pension_scheme",
+    "param2" -> msg"messages__scheme",
     "continueUrl" -> controllers.routes.IndexController.onPageLoad().url,
     "contactHmrcUrl" -> appConfig.contactHmrcUrl
   )
 
   val racDacJson: JsObject = Json.obj(
-    "param1" -> msg"messages__cannotAdd__racdac",
-    "param2" -> msg"messages__cannotAdd__racdac",
+    "param1" -> msg"messages__racdac",
+    "param2" -> msg"messages__racdac",
     "continueUrl" -> controllers.routes.IndexController.onPageLoad().url,
     "contactHmrcUrl" -> appConfig.contactHmrcUrl
   )

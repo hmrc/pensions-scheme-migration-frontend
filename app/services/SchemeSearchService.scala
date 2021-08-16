@@ -48,23 +48,39 @@ class SchemeSearchService @Inject()(fuzzyMatching: SchemeFuzzyMatcher,listOfSche
       }
     }
 
-  def search(psaId: String, searchText: Option[String])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[Items]] = {
-
+  def search(psaId: String, searchText: Option[String], isRacDac: Boolean)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[Items]] = {
+    println(s"\n\n >>>>>>>>>>>>>> enter search")
     listOfSchemesConnector.getListOfSchemes(psaId).map {
         case Right(listOfSchemes) =>
+
           val filterSearchResults =
             searchText.fold[List[Items] => List[Items]](identity)(
               st => filterSchemesByPstrOrSchemeName(st, _: List[Items])
             )
 
-          filterSearchResults(listOfSchemes.items.getOrElse(List.empty[Items]))
-        case _ => List.empty[Items]
+          println(s"\n\n >>>>>>>>>>>>>> listOfSchemes $listOfSchemes")
+          println(s"\n\n >>>>>>>>>>>>>> filtered 1 ${listOfSchemes.items.getOrElse(Nil).filter(_.racDac == isRacDac)}")
+          println(s"\n\n >>>>>>>>>>>>>> filtered 2 ${filterSearchResults(listOfSchemes.items.getOrElse(Nil).filter(_.racDac == isRacDac))}")
+
+
+
+          filterSearchResults(listOfSchemes.items.getOrElse(Nil).filter(_.racDac == isRacDac))
+        case _ =>
+          println(s"\n\n >>>>>>>>>>>>>> emptyyyyyy")
+          List.empty[Items]
       }
 
   }
 
-  def mapToTable(schemeDetails: List[Items]): Table = {
-      val head = Seq(
+  def mapToTable(schemeDetails: List[Items], isRacDac: Boolean): Table = {
+      val head =
+        if(isRacDac)
+          Seq(
+            Cell(msg"messages__listSchemes__column_racDacName"),
+            Cell(msg"messages__listSchemes__column_pstr")
+          )
+          else
+        Seq(
         Cell(msg"messages__listSchemes__column_schemeName"),
         Cell(msg"messages__listSchemes__column_pstr"),
         Cell(msg"messages__listSchemes__column_regDate")
@@ -74,9 +90,8 @@ class SchemeSearchService @Inject()(fuzzyMatching: SchemeFuzzyMatcher,listOfSche
 
     val rows = schemeDetails.map { data =>
       Seq(Cell(Literal(data.schemeName), Seq("govuk-!-width-one-quarter")),
-        Cell(Literal(data.pstr), Seq("govuk-!-width-one-quarter")),
-        Cell(Literal(formatter(data.schemeOpenDate)), Seq("govuk-!-width-one-half"))
-        )
+        Cell(Literal(data.pstr), Seq("govuk-!-width-one-quarter"))) ++
+        (if(isRacDac) Nil else Seq(Cell(Literal(formatter(data.schemeOpenDate)), Seq("govuk-!-width-one-half"))))
     }
 
     Table(head, rows, attributes = Map("role" -> "table"))

@@ -9,12 +9,21 @@
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% set heading  %}
     {%  if(form.value.value | length )%}
-         {{ messages("messages__listSchemes__search_result_title") }}
+         {{ messages("messages__listSchemes__search_result_title", typeOfList) }}
     {% else %}
-         {{ messages("messages__listSchemes__title") }}
+         {{ messages("messages__listSchemes__title", typeOfList) }}
+    {% endif %}
+{% endset %}
+
+{% set searchLabel  %}
+    {%  if racDac %}
+         {{ messages("messages__listSchemes__searchText_label_racDac") }}
+    {% else %}
+         {{ messages("messages__listSchemes__searchText_label_scheme") }}
     {% endif %}
 {% endset %}
 
@@ -56,7 +65,7 @@
                 {% if schemes.size >= appConfig.minimumSchemeSearchResults or form.value %}
                     {{ govukInput({
                                        label: {
-                                           text: messages('messages__listSchemes__searchText_label'),
+                                           text: searchLabel,
                                            isPageHeading: false,
                                            classes: "govuk-label--m"
                                        },
@@ -67,6 +76,7 @@
                                    }) }}
 
                     {{ govukButton({
+                                       href: continueUrl,
                                        attributes: {id: "search"},
                                        text: buttonContent
                                    }) }}
@@ -76,6 +86,11 @@
                     <p>
                         <a id="clear-search-link" href="{{ clearLinkUrl }}">{{ messages("messages__listSchemes__searchText_clearlink") }}</a>
                     </p>
+                {% elif racDac %}
+
+                  {{ govukInsetText({
+                         text: messages("messages__listSchemes__racDacOffset")
+                  }) }}
                 {% endif %}
             </form>
         </div>
@@ -124,8 +139,8 @@
                         <nav class="govuk-margin-top-5" aria-label="page">
                             {% if(pageNumber > 1) %}
 
-                              {{navigationLink(messages("messages__schemesOverview__pagination__first"),"1")}}
-                              {{navigationLink(messages("messages__schemesOverview__pagination__prev"),(pageNumber-1))}}
+                              {{navigationLink(messages("messages__listSchemes__pagination__first"),"1")}}
+                              {{navigationLink(messages("messages__listSchemes__pagination__prev"),(pageNumber-1))}}
 
                             {% endif %}
 
@@ -137,8 +152,8 @@
 
                             {% if(pageNumber < numberOfPages) %}
 
-                             {{navigationLink(messages("messages__schemesOverview__pagination__next"),(pageNumber+1))}}
-                             {{navigationLink(messages("messages__schemesOverview__pagination__last"),(numberOfPages))}}
+                             {{navigationLink(messages("messages__listSchemes__pagination__next"),(pageNumber+1))}}
+                             {{navigationLink(messages("messages__listSchemes__pagination__last"),(numberOfPages))}}
 
                            {% endif %}
                         </nav>
