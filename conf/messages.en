@@ -916,8 +916,8 @@ messages__cannotAdd__li_1 = cannot see listed all the {0}s that you have registe
 messages__cannotAdd__li_2 = can see {0}s listed that you do not recognise
 messages__cannotAdd__li_3 = can see {0}s listed that are no longer active and should be wound up
 
-messages__listSchemes__title = Add a pension scheme from the Pension Schemes Online service
-messages__listSchemes__noSchemes = You have no schemes to add from the Pension Schemes Online service
+messages__listSchemes__title = List of pension schemes on the Pension Schemes Online service
+messages__listSchemes__noSchemes = You have no schemes from the Pension Schemes Online service
 messages__listSchemes__registerNewScheme = Register a new scheme
 messages__listSchemes__column_schemeName = Scheme name
 messages__listSchemes__column_pstr = PSTR
@@ -934,7 +934,7 @@ messages__listSchemes__search_again = Search again
 messages__listSchemes__search_required = Enter an SRN or a PSTR
 messages__listSchemes__search_result = 1 result found
 messages__listSchemes__search_multipleResults = {0} results found
-messages__listSchemes__search_result_title = Search results for your pension schemes
+messages__listSchemes__search_result_title = Search results for List of pension schemes on the Pension Schemes Online service
 
 messages__schemesOverview__pagination__text = Showing {0} to {1} of {2} schemes
 messages__schemesOverview__pagination__prev = Prev
