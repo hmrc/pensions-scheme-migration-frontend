@@ -33,7 +33,7 @@ import viewmodels.Message
 class EstablisherDetailsCYAHelper
   extends CYAHelper
     with Enumerable.Implicits {
-
+  //scalastyle:off method.length
   def detailsRows(
                    index: Index
                  )(

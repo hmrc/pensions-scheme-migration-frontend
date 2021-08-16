@@ -36,6 +36,7 @@ class EstablisherCompanyDirectorDetailsCYAHelper
   extends CYAHelper
     with Enumerable.Implicits {
 
+  //scalastyle:off method.length
   def detailsRows(
                    establisherIndex: Index, directorIndex: Index
                  )(
