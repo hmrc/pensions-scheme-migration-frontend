@@ -18,7 +18,7 @@ package navigators
 
 import config.AppConfig
 import controllers.establishers.partnership.address.routes._
-import controllers.establishers.partnership.routes._
+import controllers.establishers.routes.AddEstablisherController
 import controllers.routes.IndexController
 import identifiers._
 import identifiers.establishers.partnership.PartnershipDetailsId
@@ -37,7 +37,7 @@ class EstablishersPartnershipNavigator@Inject()(config: AppConfig)
   //scalastyle:off cyclomatic.complexity
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
-    case PartnershipDetailsId(index) => PartnershipDetailsController.onPageLoad(index)
+    case PartnershipDetailsId(index) => AddEstablisherController.onPageLoad()
     case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index)
     case AddressListId(index) => addressYears(index, NormalMode)
     case AddressId(index) => addressYears(index, NormalMode)

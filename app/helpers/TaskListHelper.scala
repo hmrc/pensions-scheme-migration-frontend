@@ -21,6 +21,7 @@ import helpers.cya.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.{HaveAnyTrusteesId, SchemeNameId, SchemeTypeId}
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
+import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.trustees.company.{CompanyDetailsId => TrusteeCompanyDetailsId}
 import identifiers.trustees.individual.TrusteeNameId
 import models.SchemeType
@@ -116,6 +117,17 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
               Some(TaskListEntitySection(
                 isCompleted = None,
                 entities = spokeCreationService.getEstablisherCompanySpokes(
+                  answers = userAnswers,
+                  name = establisher.name,
+                  index = establisher.index
+                ),
+                header = Some(establisher.name))
+              )
+
+            case PartnershipDetailsId(_) =>
+              Some(TaskListEntitySection(
+                isCompleted = None,
+                entities = spokeCreationService.getEstablisherPartnershipSpokes(
                   answers = userAnswers,
                   name = establisher.name,
                   index = establisher.index
