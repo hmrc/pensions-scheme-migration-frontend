@@ -16,17 +16,30 @@
 
 package navigators
 
+import base.SpecBase
 import identifiers.Identifier
+import controllers.establishers.partnership.PartnershipDetailsController
 import identifiers.establishers.partnership.PartnershipDetailsId
-import models.requests.DataRequest
-import play.api.mvc.{AnyContent, Call}
+import models.NormalMode
+import org.scalatest.prop.TableFor3
+import play.api.mvc.Call
 import utils.UserAnswers
 
-class EstablishersPartnershipNavigator extends Navigator {
+class EstablishersPartnershipNavigatorSpec
+  extends SpecBase
+    with NavigatorBehaviour {
 
-  override protected def routeMap(ua: UserAnswers)
-                                 (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
+  private val navigator: CompoundNavigator = injector.instanceOf[CompoundNavigator]
 
-    case PartnershipDetailsId => PartnershipDetailsController.onPageLoad()
+  "AboutNavigator" when {
+    def navigation: TableFor3[Identifier, UserAnswers, Call] =
+      Table(
+        ("Id", "UserAnswers", "Next Page"),
+        row(PartnershipDetailsId)(PartnershipDetailsController.onPageLoad()),
+      )
+
+    "in NormalMode" must {
+      behave like navigatorWithRoutesForMode(NormalMode)(navigator, navigation)
+    }
   }
 }
