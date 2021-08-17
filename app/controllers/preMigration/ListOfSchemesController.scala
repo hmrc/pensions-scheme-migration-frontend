@@ -19,10 +19,10 @@ package controllers.preMigration
 import com.google.inject.Inject
 import config.AppConfig
 import connectors.{DelimitedAdminException, MinimalDetailsConnector}
-import controllers.actions.{AuthAction, DataRetrievalAction}
+import controllers.actions.AuthAction
 import forms.ListSchemesFormProvider
 import models.MigrationType.isRacDac
-import models.requests.OptionalDataRequest
+import models.requests.AuthenticatedRequest
 import models.{Index, Items, MigrationType}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -40,7 +40,6 @@ class ListOfSchemesController @Inject()(
                                        val appConfig: AppConfig,
                                        override val messagesApi: MessagesApi,
                                        authenticate: AuthAction,
-                                       getData: DataRetrievalAction,
                                        minimalDetailsConnector: MinimalDetailsConnector,
                                        val controllerComponents: MessagesControllerComponents,
                                        paginationService: PaginationService,
@@ -69,7 +68,7 @@ class ListOfSchemesController @Inject()(
                           form: Form[String],
                           migrationType: MigrationType
                         )(implicit hc: HeaderCarrier,
-                          request: OptionalDataRequest[AnyContent]): Future[Result] =
+                          request: AuthenticatedRequest[AnyContent]): Future[Result] =
     minimalDetailsConnector.getPSADetails(request.psaId.id).flatMap {
       case md if md.deceasedFlag => Future.successful(Redirect(appConfig.deceasedContactHmrcUrl))
       case md if md.rlsFlag => Future.successful(Redirect(appConfig.psaUpdateContactDetailsUrl))
@@ -92,7 +91,7 @@ class ListOfSchemesController @Inject()(
             "numberOfPages" -> numberOfPages,
             "noResultsMessageKey" -> noResultsMessageKey,
             "clearLinkUrl" -> routes.ListOfSchemesController.onPageLoad(migrationType).url,
-            "returnUrl" -> appConfig.psaOverviewUrl.url,
+            "returnUrl" -> appConfig.psaOverviewUrl,
             "paginationText" -> paginationText(pageNumber,pagination,numberOfSchemes,numberOfPages),
             "typeOfList" -> typeOfList(migrationType)
         ) ++  (if (schemeDetails.nonEmpty) Json.obj("schemes" -> schemeSearchService.mapToTable(schemeDetails, isRacDac(migrationType))) else Json.obj())
@@ -128,7 +127,7 @@ class ListOfSchemesController @Inject()(
                                    pageNumber: Int,
                                    searchText: Option[String],
                                    migrationType: MigrationType
-                                 )(implicit request: OptionalDataRequest[AnyContent]): Future[Result] = {
+                                 )(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {
     schemeSearchService.search(request.psaId.id, searchText, isRacDac(migrationType)).flatMap { searchResult =>
 
       val numberOfSchemes: Int = searchResult.length
@@ -166,27 +165,27 @@ class ListOfSchemesController @Inject()(
     }
   }
 
-  def onPageLoad(migrationType: MigrationType): Action[AnyContent] = (authenticate andThen getData).async {
+  def onPageLoad(migrationType: MigrationType): Action[AnyContent] = (authenticate).async {
     implicit request =>
       searchAndRenderView(form(migrationType), pageNumber = 1, searchText = None, migrationType)
   }
 
   def onPageLoadWithPageNumber(pageNumber: Index, migrationType: MigrationType): Action[AnyContent] =
-    (authenticate andThen getData).async { implicit request =>
+    (authenticate).async { implicit request =>
       searchAndRenderView(form(migrationType), pageNumber, searchText = None, migrationType)
     }
 
-  def onSearch(migrationType: MigrationType): Action[AnyContent] = (authenticate andThen getData).async {
+  def onSearch(migrationType: MigrationType): Action[AnyContent] = (authenticate).async {
     implicit request =>
       search(migrationType)
   }
 
-  def onSearchWithPageNumber(pageNumber: Index, migrationType: MigrationType): Action[AnyContent] = (authenticate andThen getData).async {
+  def onSearchWithPageNumber(pageNumber: Index, migrationType: MigrationType): Action[AnyContent] = (authenticate).async {
     implicit request =>
       search(migrationType)
   }
 
-  private def search(migrationType: MigrationType)(implicit request: OptionalDataRequest[AnyContent]): Future[Result] = {
+  private def search(migrationType: MigrationType)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {
     form(migrationType)
       .bindFromRequest()
       .fold(

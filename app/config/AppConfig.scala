@@ -45,7 +45,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val pensionPractitionerGovUkLink: String = loadConfig("urls.pensionPractitionerGovUkLink")
 
   lazy val registerSchemeAdministratorUrl: String = loadConfig("urls.registerSchemeAdministrator")
-  lazy val psaOverviewUrl: Call = Call("GET", loadConfig("urls.psaOverview"))
+  lazy val psaOverviewUrl: String =  loadConfig("urls.psaOverview")
   lazy val migrationUrl: String = servicesConfig.baseUrl("pensions-scheme-migration")
   lazy val lockUrl: String = s"$migrationUrl${config.get[String](path = "urls.lock")}"
   lazy val lockByUserUrl: String = s"$migrationUrl${config.get[String](path = "urls.lockByUser")}"

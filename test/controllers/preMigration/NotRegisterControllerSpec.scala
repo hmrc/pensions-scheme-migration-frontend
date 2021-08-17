@@ -44,14 +44,14 @@ class NotRegisterControllerSpec extends ControllerSpecBase with NunjucksSupport 
     "param1" -> msg"messages__pension_scheme",
     "psaName" -> psaName,
     "contactHmrcUrl" -> appConfig.contactHmrcUrl,
-    "returnUrl" -> appConfig.psaOverviewUrl.url
+    "returnUrl" -> appConfig.psaOverviewUrl
   )
 
   val racDacJson: JsObject = Json.obj(
     "param1" -> msg"messages__racdac",
     "psaName" -> psaName,
     "contactHmrcUrl" -> appConfig.contactHmrcUrl,
-    "returnUrl" -> appConfig.psaOverviewUrl.url
+    "returnUrl" -> appConfig.psaOverviewUrl
   )
 
   private def controller(): NotRegisterController =

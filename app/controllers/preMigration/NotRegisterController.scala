@@ -63,7 +63,7 @@ class NotRegisterController @Inject()(val appConfig: AppConfig,
       "param1" -> msg"messages__pension_scheme",
       "psaName" -> psaName,
       "contactHmrcUrl" -> appConfig.contactHmrcUrl,
-      "returnUrl" -> appConfig.psaOverviewUrl.url
+      "returnUrl" -> appConfig.psaOverviewUrl
     )
   }
 
@@ -72,7 +72,7 @@ class NotRegisterController @Inject()(val appConfig: AppConfig,
       "param1" -> msg"messages__racdac",
       "psaName" -> psaName,
       "contactHmrcUrl" -> appConfig.contactHmrcUrl,
-      "returnUrl" -> appConfig.psaOverviewUrl.url
+      "returnUrl" -> appConfig.psaOverviewUrl
     )
   }
 }
