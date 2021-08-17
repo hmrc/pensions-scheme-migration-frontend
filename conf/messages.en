@@ -191,6 +191,7 @@ messages__hasNINO__cya = National Insurance number
 
 messages__enterNINO_title = What is {0}’s National Insurance number?
 messages__enterNINO = What is the National Insurance number for {0}?
+messages__enterNINO__cya_visuallyHidden = the National Insurance number for {0}?
 messages__enterNINO__hint = For example, QQ 12 34 56 C
 messages__error__common_nino = Enter a National Insurance number
 messages__error__common_nino_invalid = Enter {0}’s National Insurance number in the correct format
@@ -206,6 +207,7 @@ messages__hasUTR__cya__visuallyHidden = whether {0} has a Unique Taxpayer Refere
 messages__hasUTR__cya = UTR
 
 messages__enterUTR = What is {0}’s UTR?
+messages__enterUTR__cya_visuallyHidden = the UTR for {0}
 messages__UTR__p1 = If the UTR is 13 numbers, only enter the last 10.
 messages__UTR__p2 = If there is a letter ‘K’ at the end of the number, do not enter it.
 messages__utr__hint = For example, 12345 67890
@@ -431,7 +433,6 @@ messages__alreadyDeleted__p2 = This page no longer exists.
 
 establisherEntityTypeIndividual = the individual
 establisherEntityTypeCompany = the company
-establisherEntityTypePartnership = the partnership
 
 messages__establisherAddress__whatYouWillNeed_title = The establisher’s address
 messages__establisherAddress__whatYouWillNeed_h1 = Address for {0}
@@ -899,6 +900,23 @@ messages__addCompanyDirectors_at_maximum = You have added the maximum number of 
 messages__addCompanyDirectorsOrPartners_tell_us_if_you_have_more = You can tell us on the next page if you have more to add.
 messages__addCompanyDirectors_add_director = Add a director
 messages__alreadyDeleted__director_title = You have already deleted this director
+
+messages__migrationLink__header = Pension schemes registered on the Pension Schemes Online service
+messages__migrationLink__viewSchemesLink = View pension schemes registered on the Pension Schemes Online service
+messages__migrationLink__viewRacDacsLink = View RAC/DACs registered on the Pension Schemes Online service
+messages__migrationLink__addSchemesLink = Add pension schemes registered on the Pension Schemes Online service
+messages__migrationLink__addRacDacsLink = Add RAC/DACs registered on the Pension Schemes Online service
+
+messages__cannotAdd__pension_scheme = pension scheme
+messages__cannotAdd__scheme = scheme
+messages__cannotAdd__racdac = RAC/DAC
+messages__cannotAdd__title = You cannot add a {0} from the Pension Schemes Online service until spring 2022
+messages__cannotAdd__p = Select continue to view the list of {0}s registered on the Pension Schemes Online service. The list should only show active {1}s.
+messages__cannotAdd__list_head_link = Contact HMRC for help
+messages__cannotAdd__list_head = if you:
+messages__cannotAdd__li_1 = cannot see listed all the {0}s that you have registered on the Pension Schemes Online service
+messages__cannotAdd__li_2 = can see {0}s listed that you do not recognise
+messages__cannotAdd__li_3 = can see {0}s listed that are no longer active and should be wound up
 
 messages__partnershipName__title = What is the partnership’s name?
 messages__error__partnership_name = Enter the partnership’s name
