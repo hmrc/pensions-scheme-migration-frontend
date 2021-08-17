@@ -20,6 +20,7 @@ import base.SpecBase
 import identifiers.beforeYouStart.{HaveAnyTrusteesId, SchemeTypeId}
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
+import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.{EstablisherKindId, IsEstablisherNewId}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId}
@@ -141,11 +142,14 @@ class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar wi
                 _.set(IsEstablisherNewId(1), true).flatMap(
                   _.set(EstablisherKindId(2), EstablisherKind.Company).flatMap(
                     _.set(CompanyDetailsId(2), CompanyDetails("test company", true)).flatMap(
-                      _.set(IsEstablisherNewId(2), true)
+                      _.set(IsEstablisherNewId(2), true).flatMap(
+                        _.set(EstablisherKindId(3), EstablisherKind.Partnership).flatMap(
+                        _.set(PartnershipDetailsId(3), PartnershipDetails("test partnership", true)).flatMap(
+                          _.set(IsEstablisherNewId(3), true)
                     )
                   )
                 )
-              ))))).get
+              )))))))).get
       helper.establishersSection(userAnswers, messages) mustBe Nil
     }
 
@@ -158,11 +162,14 @@ class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar wi
                 _.set(IsEstablisherNewId(1), true).flatMap(
                   _.set(EstablisherKindId(2), EstablisherKind.Company).flatMap(
                     _.set(CompanyDetailsId(2), CompanyDetails("test company")).flatMap(
-                      _.set(IsEstablisherNewId(2), true)
-              )))))))).get
+                      _.set(IsEstablisherNewId(2), true).flatMap(
+                        _.set(EstablisherKindId(3), EstablisherKind.Partnership).flatMap(
+                        _.set(PartnershipDetailsId(3), PartnershipDetails("test partnership")).flatMap(
+                          _.set(IsEstablisherNewId(3), true)
+              ))))))))))).get
 
       val expectedSection =  Seq(TaskListEntitySection(None, null, Some("c d")),
-        TaskListEntitySection(None, null, Some("test company")))
+        TaskListEntitySection(None, null, Some("test company")), TaskListEntitySection(None, null, Some("test partnership")))
       helper.establishersSection(userAnswers, messages) mustBe expectedSection
     }
   }

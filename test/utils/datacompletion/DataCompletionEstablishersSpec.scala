@@ -26,8 +26,9 @@ import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.individual.details._
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.company.director.{contact => directorContact}
+import identifiers.establishers.partnership.{PartnershipDetailsId, address => partnershipAddress}
 import models.establishers.EstablisherKind
-import models.{CompanyDetails, PersonName, ReferenceValue}
+import models.{CompanyDetails, PartnershipDetails, PersonName, ReferenceValue}
 import org.scalatest.{MustMatchers, OptionValues, TryValues, WordSpec}
 import utils.{Data, Enumerable, UserAnswers}
 
@@ -237,6 +238,7 @@ class DataCompletionEstablishersSpec
         UserAnswers().isEstablisherCompanyContactDetailsCompleted(0) mustBe None
       }
     }
+
     "Director completion status should be returned correctly" when {
       "isDirectorComplete" must {
         "return true when all answers are present" in {
@@ -321,7 +323,7 @@ class DataCompletionEstablishersSpec
 
   "Director Address completion status should be returned correctly" when {
 
-  "isDirectorAddressComplete" must {
+    "isDirectorAddressComplete" must {
       "return true when all answers are present" in {
         val ua1 =
           UserAnswers()
@@ -344,7 +346,67 @@ class DataCompletionEstablishersSpec
             .setOrException(directorAddress.AddressId(0, 0), Data.address)
             .setOrException(directorAddress.AddressYearsId(0, 0), false)
 
-        ua.isDirectorAddressComplete(0,0) mustBe Some(false)
+        ua.isDirectorAddressComplete(0, 0) mustBe Some(false)
+      }
+    }
+
+    "Establisher Partnership completion status should be returned correctly" when {
+      "isEstablisherPartnershipComplete" must {
+        "return true when all answers are present" in {
+          val ua =
+            UserAnswers()
+              .set(EstablisherKindId(0), EstablisherKind.Partnership).success.value
+              .set(PartnershipDetailsId(0), PartnershipDetails("test partnership")).success.value
+
+          ua.isEstablisherPartnershipComplete(0) mustBe true
+        }
+
+        "return false when some answer is missing" in {
+          val ua =
+            UserAnswers()
+              .set(EstablisherKindId(0), EstablisherKind.Partnership).success.value
+              .set(PartnershipDetailsId(0), PartnershipDetails("test partnership")).success.value
+              .set(EstablisherKindId(1), EstablisherKind.Partnership).success.value
+
+          ua.isEstablisherPartnershipComplete(1) mustBe false
+        }
+      }
+
+      "isEstablisherPartnershipAddressCompleted" must {
+        "return true when all answers are present" in {
+          val ua1 =
+            UserAnswers()
+              .setOrException(partnershipAddress.AddressId(0), Data.address)
+              .setOrException(partnershipAddress.AddressYearsId(0), true)
+
+          val ua2 =
+            UserAnswers()
+              .setOrException(partnershipAddress.AddressId(0), Data.address)
+              .setOrException(partnershipAddress.AddressYearsId(0), false)
+              .setOrException(partnershipAddress.TradingTimeId(0), true)
+              .setOrException(partnershipAddress.PreviousAddressId(0), Data.address)
+
+          ua1.isEstablisherPartnershipAddressCompleted(0, ua1) mustBe Some(true)
+          ua2.isEstablisherPartnershipAddressCompleted(0, ua2) mustBe Some(true)
+        }
+
+        "return false when some answer is missing" in {
+          val ua1 =
+            UserAnswers()
+              .setOrException(partnershipAddress.AddressId(0), Data.address)
+              .setOrException(partnershipAddress.AddressYearsId(0), false)
+
+          val ua2 =
+            UserAnswers()
+              .setOrException(partnershipAddress.AddressId(0), Data.address)
+
+          ua1.isEstablisherPartnershipAddressCompleted(0, ua1) mustBe Some(false)
+          ua2.isEstablisherPartnershipAddressCompleted(0, ua2) mustBe Some(false)
+        }
+
+        "return None when no answers present" in {
+          UserAnswers().isEstablisherPartnershipAddressCompleted(0, UserAnswers()) mustBe None
+        }
       }
     }
   }
