@@ -19,7 +19,7 @@ package utils.datacompletion
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.company.address.{TradingTimeId, AddressId => CompanyAddressId, AddressYearsId => CompanyAddressYearsId, PreviousAddressId => CompanyPreviousAddressId}
 import identifiers.establishers.company.details._
-import identifiers.establishers.partnership.address.{TradingTimeId => PartnershipTradingTimeId, AddressId => PartnershipAddressId, AddressYearsId => PartnershipAddressYearsId, PreviousAddressId => PartnershipPreviousAddressId}
+import identifiers.establishers.partnership.address.{AddressId => PartnershipAddressId, AddressYearsId => PartnershipAddressYearsId, PreviousAddressId => PartnershipPreviousAddressId, TradingTimeId => PartnershipTradingTimeId}
 import identifiers.establishers.company.director.{address => directorAddress}
 import identifiers.establishers.company.director.{contact => directorContact}
 import identifiers.establishers.company.director.details._
@@ -28,6 +28,7 @@ import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.individual.details._
+import identifiers.establishers.partnership.PartnershipDetailsId
 import utils.UserAnswers
 
 trait DataCompletionEstablishers extends DataCompletion {
@@ -96,6 +97,14 @@ trait DataCompletionEstablishers extends DataCompletion {
       )
     )
   }
+  def isEstablisherPartnershipComplete(index: Int): Boolean =
+    isComplete(
+      Seq(
+        isAnswerComplete(PartnershipDetailsId(index)),
+        isAnswerComplete(EstablisherKindId(index))
+      )
+    ).getOrElse(false)
+
 
   def isEstablisherPartnershipAddressCompleted(
                                                 index: Int,

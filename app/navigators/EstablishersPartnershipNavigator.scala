@@ -54,6 +54,6 @@ class EstablishersPartnershipNavigator@Inject()(config: AppConfig)
    case PartnershipDetailsId(_) => IndexController.onPageLoad()
   }
 
-  private def cyaAddress(index:Int): Call = controllers.establishers.company.address.routes.CheckYourAnswersController.onPageLoad(index)
-  private def addressYears(index:Int, mode:Mode): Call = controllers.establishers.company.address.routes.AddressYearsController.onPageLoad(index)
+  private def cyaAddress(index:Int): Call = controllers.establishers.partnership.address.routes.CheckYourAnswersController.onPageLoad(index)
+  private def addressYears(index:Int, mode:Mode): Call = controllers.establishers.partnership.address.routes.AddressYearsController.onPageLoad(index)
 }
