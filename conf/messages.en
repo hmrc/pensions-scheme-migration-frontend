@@ -917,3 +917,10 @@ messages__cannotAdd__list_head = if you:
 messages__cannotAdd__li_1 = cannot see listed all the {0}s that you have registered on the Pension Schemes Online service
 messages__cannotAdd__li_2 = can see {0}s listed that you do not recognise
 messages__cannotAdd__li_3 = can see {0}s listed that are no longer active and should be wound up
+messages_contact_hmrc_link= Contact HMRC
+messages_notRegister_title= No {0}s registered on the Pension Schemes Online service
+messages_notRegister_racDac= RAC/DAC
+messages_notRegister_pension_scheme= pension scheme
+messages_notRegister_p1 = You cannot view or add a {0} from Pension Schemes Online because you do not have any active {1}s registered on that service.
+messages_notRegister_p2 = if you do have {0}s registered on the Pension Schemes Online service and are seeing this page in error.
+
