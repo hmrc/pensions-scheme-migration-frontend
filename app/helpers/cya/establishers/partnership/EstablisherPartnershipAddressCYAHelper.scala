@@ -19,7 +19,7 @@ package helpers.cya.establishers.partnership
 import helpers.cya.CYAHelper
 import helpers.cya.CYAHelper.getPartnershipName
 import identifiers.establishers.partnership.PartnershipDetailsId
-import identifiers.establishers.partnership.address.{AddressId, AddressYearsId, PreviousAddressId}
+import identifiers.establishers.partnership.address.{AddressId, AddressYearsId, PreviousAddressId, TradingTimeId}
 import models.Index
 import models.requests.DataRequest
 import play.api.i18n.Messages
@@ -57,21 +57,33 @@ class EstablisherPartnershipAddressCYAHelper
         Some(msg"messages__visuallyhidden__addressYears".withArgs(establisherName)), answerBooleanTransform
       )
     )
-
-    val seqRowPreviousAddress = if (ua.get(AddressYearsId(index)).contains(true)) {
-      Nil
-    } else {
+    val seqTradingTime = if (ua.get(AddressYearsId(index)).contains(false)) {
       Seq(
         answerOrAddRow(
-          PreviousAddressId(index),
-          Message("messages__establisherPreviousAddress").resolve,
-          Some(controllers.establishers.partnership.address.routes.EnterPreviousPostcodeController.onPageLoad(index).url),
-          Some(msg"messages__visuallyHidden__previousAddress".withArgs(establisherName)), answerAddressTransform
+          TradingTimeId(index),
+          Message("tradingTime.title", establisherName).resolve,
+          Some(controllers.establishers.partnership.address.routes.TradingTimeController.onPageLoad(index).url),
+          Some(msg"messages__visuallyhidden__establisherTradingTime".withArgs(establisherName)), answerBooleanTransform
         )
       )
+    } else {
+      Nil
     }
 
-    val rowsWithoutDynamicIndices = seqRowAddressAndYears ++ seqRowPreviousAddress
+    val seqRowPreviousAddress =(ua.get(AddressYearsId(index)), ua.get(TradingTimeId(index))) match {
+      case (Some(false), Some(true)) =>
+        Seq(
+          answerOrAddRow(
+            PreviousAddressId(index),
+            Message("messages__establisherPreviousAddress").resolve,
+            Some(controllers.establishers.partnership.address.routes.EnterPreviousPostcodeController.onPageLoad(index).url),
+            Some(msg"messages__visuallyHidden__previousAddress".withArgs(establisherName)), answerAddressTransform
+          )
+        )
+      case _ => Nil
+    }
+
+    val rowsWithoutDynamicIndices = seqRowAddressAndYears ++ seqTradingTime ++ seqRowPreviousAddress
     rowsWithDynamicIndices(rowsWithoutDynamicIndices)
   }
 }
