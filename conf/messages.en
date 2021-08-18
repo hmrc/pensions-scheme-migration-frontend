@@ -922,3 +922,10 @@ messages__partnershipName__title = What is the partnership’s name?
 messages__error__partnership_name = Enter the partnership’s name
 messages__error__partnership_name_length = The partnership name cannot be more than 160 characters
 messages__error__partnership_name_invalid = The partnership name contains invalid characters
+
+messages__partnershipDetails__whatYouWillNeed_h1 = {0}’s details
+messages__partnershipDetails__whatYouWillNeed_list1_head = You will need to tell us {0}’s:
+messages__partnershipDetails__whatYouWillNeed_li1_1 = Unique Taxpayer Reference (UTR), or reason why it does not have one
+messages__partnershipDetails__whatYouWillNeed_list2_head = If {0} has them, you will also need to tell us their:
+messages__partnershipDetails__whatYouWillNeed_li2_1 = VAT registration number
+messages__partnershipDetails__whatYouWillNeed_li2_2 = employer PAYE reference (you can tell us any employer PAYE reference if {0} has more than one)
