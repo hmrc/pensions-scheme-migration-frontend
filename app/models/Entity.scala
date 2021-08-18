@@ -97,7 +97,7 @@ case class EstablisherPartnershipEntity(id: PartnershipDetailsId, name: String, 
 
   override def deleteLink: Option[String] = {
     if (noOfRecords > 1)
-      Some(ConfirmDeleteEstablisherController.onPageLoad(id.index, EstablisherKind.Company).url)
+      Some(ConfirmDeleteEstablisherController.onPageLoad(id.index, EstablisherKind.Partnership).url)
     else
       None
   }

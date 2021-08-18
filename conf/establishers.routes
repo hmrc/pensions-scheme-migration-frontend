@@ -7,11 +7,15 @@ POST        /:index/company/delete-establisher           controllers.establisher
 GET         /:index/individual/delete-establisher        controllers.establishers.ConfirmDeleteEstablisherController.onPageLoad(index: Index, establisherKind: EstablisherKind = EstablisherKind.Individual)
 POST        /:index/individual/delete-establisher        controllers.establishers.ConfirmDeleteEstablisherController.onSubmit(index: Index, establisherKind: EstablisherKind = EstablisherKind.Individual)
 
+GET         /:index/partnership/delete-establisher        controllers.establishers.ConfirmDeleteEstablisherController.onPageLoad(index: Index, establisherKind: EstablisherKind = EstablisherKind.Partnership)
+POST        /:index/partnership/delete-establisher        controllers.establishers.ConfirmDeleteEstablisherController.onSubmit(index: Index, establisherKind: EstablisherKind = EstablisherKind.Partnership)
+
 GET         /:index/establisher-type                     controllers.establishers.EstablisherKindController.onPageLoad(index:Index)
 POST        /:index/establisher-type                     controllers.establishers.EstablisherKindController.onSubmit(index:Index)
 
 GET         /:index/individual/already-deleted           controllers.establishers.AlreadyDeletedController.onPageLoad(index: Index, establisherKind: EstablisherKind = EstablisherKind.Individual)
 GET         /:index/company/already-deleted              controllers.establishers.AlreadyDeletedController.onPageLoad(index: Index, establisherKind: EstablisherKind = EstablisherKind.Company)
+GET         /:index/partnership/already-deleted          controllers.establishers.AlreadyDeletedController.onPageLoad(index: Index, establisherKind: EstablisherKind = EstablisherKind.Partnership)
 
 ->          /                                            establishersIndividual.Routes
 ->          /                                            establishersCompany.Routes
