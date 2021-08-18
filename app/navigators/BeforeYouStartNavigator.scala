@@ -18,36 +18,23 @@ package navigators
 
 import controllers.beforeYouStartSpoke.routes._
 import identifiers._
-import identifiers.beforeYouStart.{EstablishedCountryId, HaveAnyTrusteesId, SchemeTypeId, WorkingKnowledgeId}
-import models.SchemeType
+import identifiers.beforeYouStart.{SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
 import models.requests.DataRequest
-import play.api.mvc.{AnyContent, Call}
+import play.api.mvc.{Call, AnyContent}
 import utils.UserAnswers
 
 class BeforeYouStartNavigator extends Navigator {
 
-  import BeforeYouStartNavigator._
-
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
-    case SchemeTypeId if trusteeQuestionRequired(ua.get(SchemeTypeId)) =>
-      HaveAnyTrusteesController.onPageLoad()
-    case SchemeTypeId | EstablishedCountryId | WorkingKnowledgeId | HaveAnyTrusteesId =>
+    case SchemeTypeId | EstablishedCountryId | WorkingKnowledgeId =>
       CheckYourAnswersController.onPageLoad()
   }
 
   override protected def editRouteMap(ua: UserAnswers)
                                      (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
-    case SchemeTypeId | EstablishedCountryId | WorkingKnowledgeId | HaveAnyTrusteesId =>
+    case SchemeTypeId | EstablishedCountryId | WorkingKnowledgeId =>
       CheckYourAnswersController.onPageLoad()
   }
 }
 
-object BeforeYouStartNavigator {
-  private def trusteeQuestionRequired(schemeType:Option[SchemeType]):Boolean = {
-    schemeType match {
-      case None => false
-      case Some(st) => st == SchemeType.BodyCorporate || st == SchemeType.GroupLifeDeath
-    }
-  }
-}

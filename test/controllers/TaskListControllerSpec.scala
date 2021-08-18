@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import helpers.TaskListHelper
 import matchers.JsonMatchers
-import models.{EntitySpoke, TaskListLink}
+import models.{TaskListLink, EntitySpoke}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -63,7 +63,7 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
     addEstablisherHeader = Some(testSection),
     addTrusteeHeader = Some(testSection),
     establishers = Seq(testSection),
-    trustees = Some(Seq(testSection)),
+    trustees = Seq(testSection),
     declaration = Some(testSection)
   )
 
