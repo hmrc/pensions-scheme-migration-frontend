@@ -19,7 +19,7 @@ package controllers.establishers.partnership.address
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import forms.address.TradingTimeFormProvider
+import forms.establishers.partnership.address.PartnershipTradingTimeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.address.TradingTimeId
@@ -44,7 +44,7 @@ class TradingTimeController @Inject()(override val messagesApi: MessagesApi,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        navigator: CompoundNavigator,
-                                       formProvider: TradingTimeFormProvider,
+                                       formProvider: PartnershipTradingTimeFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer)(implicit ec: ExecutionContext)
   extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
