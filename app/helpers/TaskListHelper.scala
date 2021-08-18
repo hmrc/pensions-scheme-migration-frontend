@@ -120,7 +120,7 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
     }
   }
 
-  protected[helpers] def trusteesSection(implicit userAnswers: UserAnswers, messages: Messages): Option[Seq[TaskListEntitySection]] = {
+  protected[helpers] def trusteesSection(implicit userAnswers: UserAnswers, messages: Messages): Seq[TaskListEntitySection] = {
     val section = userAnswers.allTrustees.flatMap {
       trustee =>
         if (trustee.isDeleted)
@@ -154,7 +154,7 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
               throw new RuntimeException("Unknown section id:" + trustee.id)
           }
     }
-    Some(section)
+    section
   }
 
   def declarationEnabled(implicit userAnswers: UserAnswers): Boolean =
