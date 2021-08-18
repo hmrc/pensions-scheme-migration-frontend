@@ -18,7 +18,7 @@ package controllers.establishers.partnership.details
 
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import controllers.establishers.partnership.details.HaveUTRController
+import controllers.establishers.partnership.details.routes.HaveUTRController
 import helpers.cya.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
@@ -55,7 +55,7 @@ class WhatYouWillNeedController @Inject()(
               template = "establishers/partnership/details/whatYouWillNeed.njk",
               ctx = Json.obj(
                 "name"        -> details.partnershipName,
-                "pageTitle" -> Messages("messages__establisherDetails__whatYouWillNeed_title"),
+                "pageTitle" -> Messages("messages__parrtnershipDetails__whatYouWillNeed_title"),
                 "continueUrl" -> HaveUTRController.onPageLoad(index, NormalMode).url,
                 "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )

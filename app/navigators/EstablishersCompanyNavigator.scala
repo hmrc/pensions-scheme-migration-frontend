@@ -16,10 +16,9 @@
 
 package navigators
 
-import controllers.establishers.company.address.routes._
-import controllers.establishers.company.contact.routes._
 import config.AppConfig
 import controllers.establishers.company.address.routes._
+import controllers.establishers.company.contact.routes._
 import controllers.establishers.company.details.{routes => detailsRoutes}
 import controllers.establishers.routes._
 import controllers.routes._
@@ -27,16 +26,10 @@ import identifiers._
 import identifiers.establishers.company.address._
 import identifiers.establishers.company.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.company.details._
-import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.company.{AddCompanyDirectorsId, CompanyDetailsId}
+import identifiers.establishers.individual.EstablisherNameId
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode, NormalMode}
-import play.api.mvc.{AnyContent, Call}
-import utils.{Enumerable, UserAnswers}
-import models.{Mode, NormalMode}
-import play.api.mvc.{AnyContent, Call}
-import utils.{Enumerable, UserAnswers}
-import models.{Mode, NormalMode}
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
 
@@ -84,12 +77,12 @@ class EstablishersCompanyNavigator@Inject()(config: AppConfig)
     case HaveCompanyNumberId(index) => companyNumberRoutes(index, ua, CheckMode)
     case CompanyNumberId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
     case NoCompanyNumberReasonId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
-    case HaveUTRId(index) => utrRoutes(index, ua, CheckMode)
-    case CompanyUTRId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
-    case NoUTRReasonId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
-    case HaveVATId(index) => vatRoutes(index, ua, CheckMode)
-    case VATId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
-    case HavePAYEId(index) => payeRoutes(index, ua, CheckMode)
+    case HaveUTRId(index) => utrRoutes(index, ua, NormalMode)
+    case CompanyUTRId(index) => detailsRoutes.HaveVATController.onPageLoad(index, NormalMode)
+    case NoUTRReasonId(index) => detailsRoutes.HaveVATController.onPageLoad(index, NormalMode)
+    case HaveVATId(index) => vatRoutes(index, ua, NormalMode)
+    case VATId(index) => detailsRoutes.HavePAYEController.onPageLoad(index, NormalMode)
+    case HavePAYEId(index) => payeRoutes(index, ua, NormalMode)
     case PAYEId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
     case EnterEmailId(index) => cyaContactDetails(index)
     case EnterPhoneId(index) => cyaContactDetails(index)
