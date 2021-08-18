@@ -20,7 +20,7 @@ import base.SpecBase._
 import helpers.cya.establishers.partnership.EstablisherPartnershipAddressCYAHelper
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
-import identifiers.establishers.partnership.address.{AddressId, AddressYearsId, PreviousAddressId}
+import identifiers.establishers.partnership.address.{AddressId, AddressYearsId, PreviousAddressId, TradingTimeId}
 import models.requests.DataRequest
 import models.{Address, MigrationLock, PartnershipDetails}
 import org.scalatest.{MustMatchers, TryValues, WordSpec}
@@ -77,6 +77,7 @@ class EstablisherPartnershipAddressCYAHelperSpec extends WordSpec with MustMatch
         .setOrException(PartnershipDetailsId(0), establisherPartnershipName)
         .setOrException(AddressId(0), establisherAddress)
         .setOrException(AddressYearsId(0), false)
+        .setOrException(TradingTimeId(0), true)
         .setOrException(PreviousAddressId(0), establisherPreviousAddress)
 
       val result = establisherPartnershipAddressCYAHelper.rows(0)(dataRequest(ua), messages)
@@ -94,11 +95,18 @@ class EstablisherPartnershipAddressCYAHelperSpec extends WordSpec with MustMatch
             Messages("messages__visuallyhidden__addressYears", establisherPartnershipName.partnershipName))),
           attributes = Map("id" -> "cya-0-1-change"))))
 
-      result(2) mustBe summaryListRowHtml(key = messages("messages__establisherPreviousAddress"),
+      result(2) mustBe summaryListRow(key = Messages("tradingTime.title", establisherPartnershipName.partnershipName), valueMsgKey = "booleanAnswer.true",
+        Some(Link(text = Messages("site.change"),
+          target = controllers.establishers.partnership.address.routes.TradingTimeController.onPageLoad(0).url,
+          visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
+            Messages("messages__visuallyhidden__establisherTradingTime", establisherPartnershipName.partnershipName))),
+          attributes = Map("id" -> "cya-0-2-change"))))
+
+      result(3) mustBe summaryListRowHtml(key = messages("messages__establisherPreviousAddress"),
         value = answerAddressTransform(establisherPreviousAddress), Some(Link(text = Messages("site.change"),
           target = controllers.establishers.partnership.address.routes.EnterPreviousPostcodeController.onPageLoad(0).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__previousAddress", establisherPartnershipName.partnershipName))),
-          attributes = Map("id" -> "cya-0-2-change"))))
+          attributes = Map("id" -> "cya-0-3-change"))))
     }
   }
 }
