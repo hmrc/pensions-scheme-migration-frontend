@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.preMigration
 
 import config.AppConfig
 import connectors.MinimalDetailsConnector
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.Json
@@ -49,7 +50,7 @@ class BeforeYouStartController @Inject()(
       implicit request =>
         minimalDetailsConnector.getPSAName.flatMap { psaName =>
             renderer.render(
-              template = "beforeYouStart.njk",
+              template = "preMigration/beforeYouStart.njk",
               ctx = Json.obj(
                 "pageTitle" -> Messages("messages__BeforeYouStart__title"),
                 "continueUrl" -> controllers.routes.TaskListController.onPageLoad().url,
