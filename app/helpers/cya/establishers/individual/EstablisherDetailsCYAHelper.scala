@@ -45,7 +45,7 @@ class EstablisherDetailsCYAHelper
     val establisherName: String =
       getName(EstablisherNameId(index))
 
-    Seq(
+    val rowsWithoutDynamicIndices = Seq(
       Some(answerOrAddRow(
         id                 = EstablisherDOBId(index),
         message            = Message("messages__dob__title", establisherName).resolve,
@@ -57,7 +57,7 @@ class EstablisherDetailsCYAHelper
         id                 = EstablisherHasNINOId(index),
         message            = Message("messages__hasNINO", establisherName).resolve,
         url                = Some(routes.EstablisherHasNINOController.onPageLoad(index, CheckMode).url),
-        visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(establisherName)),
+        visuallyHiddenText = Some(msg"messages__hasNINO__cya__visuallyHidden".withArgs(establisherName)),
         answerTransform    = answerBooleanTransform
       )),
       ua.get(EstablisherNINOId(index)) map {
@@ -66,7 +66,7 @@ class EstablisherDetailsCYAHelper
             id                 = EstablisherNINOId(index),
             message            = Message("messages__hasNINO__cya", establisherName),
             url                = Some(routes.EstablisherEnterNINOController.onPageLoad(index, CheckMode).url),
-            visuallyHiddenText = Some(msg"messages__hasNINO__cya__visuallyHidden".withArgs(establisherName)),
+            visuallyHiddenText = Some(msg"messages__enterNINO__cya_visuallyHidden".withArgs(establisherName)),
             answerTransform    = referenceValueTransform
           )
       },
@@ -92,7 +92,7 @@ class EstablisherDetailsCYAHelper
             id                 = EstablisherUTRId(index),
             message            = Message("messages__hasUTR__cya", establisherName),
             url                = Some(routes.EstablisherEnterUTRController.onPageLoad(index, CheckMode).url),
-            visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(establisherName)),
+            visuallyHiddenText = Some(msg"messages__enterUTR__cya_visuallyHidden".withArgs(establisherName)),
             answerTransform    = referenceValueTransform
           )
       },
@@ -106,5 +106,6 @@ class EstablisherDetailsCYAHelper
           )
       }
     ).flatten
+    rowsWithDynamicIndices(rowsWithoutDynamicIndices)
   }
 }

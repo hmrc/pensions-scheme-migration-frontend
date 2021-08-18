@@ -47,13 +47,13 @@ class EstablisherCompanyDirectorDetailsCYAHelper
     val directorName: String =
       getName(DirectorNameId(establisherIndex,directorIndex))
 
-    Seq(
+    val rowsWithoutDynamicIndices = Seq(
       Some(answerOrAddRow(
         id                 = DirectorNameId(establisherIndex, directorIndex),
         message            = Message("messages__director__name").resolve,
         url                = Some(routes.DirectorNameController.onPageLoad(establisherIndex,directorIndex, CheckMode).url),
         visuallyHiddenText = Some(msg"messages__director__name__cya__visuallyHidden".withArgs(directorName)),
-        answerTransform    =answerPersonNameTransform
+        answerTransform    = answerPersonNameTransform
       )),
 
       Some(answerOrAddRow(
@@ -153,5 +153,6 @@ class EstablisherCompanyDirectorDetailsCYAHelper
         visuallyHiddenText  = Some(msg"messages__enterPhone__cya__visuallyHidden".withArgs(directorName))
       ))
     ).flatten
+    rowsWithDynamicIndices(rowsWithoutDynamicIndices)
   }
 }

@@ -191,6 +191,7 @@ messages__hasNINO__cya = National Insurance number
 
 messages__enterNINO_title = What is {0}’s National Insurance number?
 messages__enterNINO = What is the National Insurance number for {0}?
+messages__enterNINO__cya_visuallyHidden = the National Insurance number for {0}?
 messages__enterNINO__hint = For example, QQ 12 34 56 C
 messages__error__common_nino = Enter a National Insurance number
 messages__error__common_nino_invalid = Enter {0}’s National Insurance number in the correct format
@@ -206,6 +207,7 @@ messages__hasUTR__cya__visuallyHidden = whether {0} has a Unique Taxpayer Refere
 messages__hasUTR__cya = UTR
 
 messages__enterUTR = What is {0}’s UTR?
+messages__enterUTR__cya_visuallyHidden = the UTR for {0}
 messages__UTR__p1 = If the UTR is 13 numbers, only enter the last 10.
 messages__UTR__p2 = If there is a letter ‘K’ at the end of the number, do not enter it.
 messages__utr__hint = For example, 12345 67890
