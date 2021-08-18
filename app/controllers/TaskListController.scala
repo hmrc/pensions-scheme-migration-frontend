@@ -16,6 +16,7 @@
 
 package controllers
 
+import connectors.ListOfSchemesConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AuthAction, DataRetrievalAction}
 import helpers.TaskListHelper
@@ -46,7 +47,6 @@ class TaskListController @Inject()(
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData).async {
     implicit request =>
 
-
       (request.userAnswers, request.lock) match {
         case (_, None) =>
           Future.successful(Redirect(controllers.routes.IndexController.onPageLoad())) //TODO Change to list of schemes page once implemented
@@ -60,7 +60,6 @@ class TaskListController @Inject()(
           userAnswersCacheConnector.save(lock, userAnswers.data).flatMap { _ =>
             renderView
           }
-
       }
   }
 
