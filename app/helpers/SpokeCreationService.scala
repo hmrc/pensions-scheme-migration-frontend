@@ -93,7 +93,7 @@ class SpokeCreationService extends Enumerable.Implicits {
                                  (implicit messages: Messages): Seq[EntitySpoke] = {
     Seq(
       //createSpoke(answers, EstablisherPartnershipDetails(index, answers), name),
-      createSpoke(answers, EstablisherPartnershipAddress(index, answers), name),
+      createSpoke(answers, EstablisherPartnershipAddress(index, answers), name)
       //createSpoke(answers, EstablisherPartnershipContactDetails(index, answers), name),
     )
   }
