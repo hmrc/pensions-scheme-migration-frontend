@@ -16,12 +16,11 @@
 
 package controllers
 
-import connectors.ListOfSchemesConnector
 import connectors.cache.UserAnswersCacheConnector
-import controllers.actions.{AuthAction, DataRetrievalAction}
+import controllers.actions.{DataRetrievalAction, AuthAction}
 import helpers.TaskListHelper
 import models.requests.OptionalDataRequest
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import renderer.Renderer
