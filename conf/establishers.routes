@@ -15,4 +15,5 @@ GET         /:index/company/already-deleted              controllers.establisher
 
 ->          /                                            establishersIndividual.Routes
 ->          /                                            establishersCompany.Routes
+->          /                                            establishersPartnership.Routes
 
