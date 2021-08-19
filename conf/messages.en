@@ -901,6 +901,10 @@ messages__addCompanyDirectorsOrPartners_tell_us_if_you_have_more = You can tell 
 messages__addCompanyDirectors_add_director = Add a director
 messages__alreadyDeleted__director_title = You have already deleted this director
 
+messages__partnershipName__title = What is the partnership’s name?
+messages__error__partnership_name = Enter the partnership’s name
+messages__error__partnership_name_length = The partnership name cannot be more than 160 characters
+messages__error__partnership_name_invalid = The partnership name contains invalid characters
 
 messages__migrationLink__header = Pension schemes registered on the Pension Schemes Online service
 messages__migrationLink__viewSchemesLink = View pension schemes registered on the Pension Schemes Online service
