@@ -19,13 +19,12 @@ package helpers.cya
 import controllers.beforeYouStartSpoke.routes
 import helpers.CountriesHelper
 import identifiers.beforeYouStart._
-import models.SchemeType
 import models.SchemeType.Other
 import models.requests.DataRequest
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.viewmodels.MessageInterpolators
-import uk.gov.hmrc.viewmodels.SummaryList.{Key, Row, Value}
+import uk.gov.hmrc.viewmodels.SummaryList.{Value, Row, Key}
 import utils.UserAnswers
 import viewmodels.Message
 
@@ -63,19 +62,6 @@ class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
       answerRow(messages("messages__cya__scheme_name"), schemeName),
       schemeTypeRow)
 
-    val seqRowAnyTrusteesQuestion = if (schemeTypeAnswer.contains(SchemeType.BodyCorporate) || schemeTypeAnswer.contains(SchemeType.GroupLifeDeath)) {
-      Seq(
-          answerOrAddRow(
-          HaveAnyTrusteesId,
-          Message("haveAnyTrustees.h1", schemeName).resolve,
-            Some(routes.HaveAnyTrusteesController.onPageLoad().url),
-          Some(msg"messages__visuallyhidden__haveAnyTrustees"), answerBooleanTransform
-        )
-      )
-    } else {
-      Nil
-    }
-
     val seqRowCountryWorkingKnowledge = Seq(
       answerRow(messages("messages__cya__country", schemeName),
         messages(s"country.${CYAHelper.getAnswer(EstablishedCountryId)}"),
@@ -89,7 +75,7 @@ class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
         answerTransform = Some(booleanToContent)
       )
     )
-    val beforeYouStart = seqRowSchemeNameAndType ++ seqRowAnyTrusteesQuestion ++ seqRowCountryWorkingKnowledge
+    val beforeYouStart = seqRowSchemeNameAndType ++ seqRowCountryWorkingKnowledge
 
       rowsWithDynamicIndices(beforeYouStart)
   }

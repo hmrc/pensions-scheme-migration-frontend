@@ -19,9 +19,6 @@ GET         /logout                                                controllers.L
 GET         /before-you-start/scheme-type                          controllers.beforeYouStartSpoke.SchemeTypeController.onPageLoad
 POST        /before-you-start/scheme-type                          controllers.beforeYouStartSpoke.SchemeTypeController.onSubmit
 
-GET         /before-you-start/have-any-trustees                 controllers.beforeYouStartSpoke.HaveAnyTrusteesController.onPageLoad
-POST        /before-you-start/have-any-trustees                 controllers.beforeYouStartSpoke.HaveAnyTrusteesController.onSubmit
-
 GET         /before-you-start/country                              controllers.beforeYouStartSpoke.EstablishedCountryController.onPageLoad
 POST        /before-you-start/country                              controllers.beforeYouStartSpoke.EstablishedCountryController.onSubmit
 
@@ -29,8 +26,6 @@ GET         /before-you-start/pension-advisor                      controllers.b
 POST        /before-you-start/pension-advisor                      controllers.beforeYouStartSpoke.WorkingKnowledgeController.onSubmit
 
 GET         /before-you-start/check-your-answers                   controllers.beforeYouStartSpoke.CheckYourAnswersController.onPageLoad
-
-GET         /what-you-will-need-before-start                         controllers.BeforeYouStartController.onPageLoad
 
 GET         /members/membership                                    controllers.aboutMembership.CurrentMembersController.onPageLoad
 POST        /members/membership                                    controllers.aboutMembership.CurrentMembersController.onSubmit
@@ -74,3 +69,12 @@ POST        /benefits-and-finance/address-manual                   controllers.b
 
 
 GET         /success                                               controllers.SuccessController.onPageLoad
+
+
+GET         /migration-tile                                         controllers.preMigration.MigrationTilePartialController.migrationPartial
+GET         /cannot-add-pension-scheme                              controllers.preMigration.CannotAddController.onPageLoadScheme
+GET         /cannot-add-racdac                                      controllers.preMigration.CannotAddController.onPageLoadRacDac
+GET         /what-you-will-need-before-start                        controllers.preMigration.BeforeYouStartController.onPageLoad
+
+GET         /no-pension-schemes-registered                         controllers.preMigration.NotRegisterController.onPageLoadScheme
+GET         /no-rac-dacs-registered                                controllers.preMigration.NotRegisterController.onPageLoadRacDac

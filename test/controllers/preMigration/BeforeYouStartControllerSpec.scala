@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.preMigration
+
 import connectors.MinimalDetailsConnector
+import controllers.ControllerSpecBase
 import controllers.actions._
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
@@ -35,7 +37,7 @@ import scala.concurrent.Future
 
 class BeforeYouStartControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with MockitoSugar {
   private val psaName: String = "Nigel"
-  private val templateToBeRendered: String = "beforeYouStart.njk"
+  private val templateToBeRendered: String = "preMigration/beforeYouStart.njk"
   private val mockMinimalDetailsConnector: MinimalDetailsConnector = mock[MinimalDetailsConnector]
   private def json: JsObject =
     Json.obj(

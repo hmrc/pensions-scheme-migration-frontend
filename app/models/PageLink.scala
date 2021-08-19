@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package identifiers.beforeYouStart
+package models
 
-import identifiers.TypedIdentifier
-import identifiers.trustees.TrusteesId
-import utils.UserAnswers
+import play.api.i18n.Messages
+import play.api.libs.json.{OWrites, __}
+import uk.gov.hmrc.viewmodels.Text
+import play.api.libs.functional.syntax._
 
-case object HaveAnyTrusteesId extends TypedIdentifier[Boolean] {
-  override def toString: String = "haveAnyTrustees"
+case class PageLink(id: String, url: String, linkText: Text, hiddenText: Option[Text] = None)
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): UserAnswers = {
-    value match {
-      case Some(false) =>
-        userAnswers.remove(TrusteesId.collectionPath)
-      case _ => super.cleanup(value, userAnswers)
-    }
-  }
+object PageLink {
+
+  implicit def writes(implicit messages: Messages): OWrites[PageLink] = (
+    (__ \ "id").write[String] and
+      (__ \ "url").write[String] and
+      (__ \ "linkText").write[Text] and
+      (__ \ "hiddenText").writeNullable[Text]
+    ) { link => (link.id, link.url, link.linkText, link.hiddenText) }
 }

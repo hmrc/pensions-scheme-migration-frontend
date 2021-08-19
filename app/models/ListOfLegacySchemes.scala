@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package forms.beforeYouStart
+package models
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import play.api.libs.json.{Format, Json}
 
-import javax.inject.Inject
+case class Items(pstr: String, declarationDate: String, racDac: Boolean, schemeName: String, schemeOpenDate: String,
+                 policyNo: Option[String])
 
-class HaveAnyTrusteesFormProvider @Inject() extends Mappings {
+object Items {
+  implicit val format: Format[Items] = Json.format[Items]
+}
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("haveAnyTrustees.error.required")
-    )
+case class ListOfLegacySchemes(totalResults: Int,
+                               items: Option[List[Items]] = None)
+
+object ListOfLegacySchemes {
+  implicit val format: Format[ListOfLegacySchemes] = Json.format[ListOfLegacySchemes]
 }
