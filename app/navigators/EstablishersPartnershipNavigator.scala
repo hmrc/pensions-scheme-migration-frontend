@@ -26,7 +26,7 @@ import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.address._
 import identifiers.establishers.partnership.details.{HavePAYEId, HaveUTRId, HaveVATId, NoUTRReasonId, PAYEId, PartnershipUTRId, VATId}
 import models.requests.DataRequest
-import models.{Index, Mode, NormalMode}
+import models.{CheckMode, Index, Mode, NormalMode}
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
 
@@ -61,11 +61,12 @@ class EstablishersPartnershipNavigator@Inject()(config: AppConfig)
 
  override protected def editRouteMap(ua: UserAnswers)(implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
    case PartnershipDetailsId(_) => IndexController.onPageLoad()
-   case HaveUTRId(index) => utrRoutes(index, ua, NormalMode)
-   case NoUTRReasonId(index) => detailsRoutes.HaveVATController.onPageLoad(index, NormalMode)
-   case HaveVATId(index) => vatRoutes(index, ua, NormalMode)
-   case VATId(index) => detailsRoutes.HavePAYEController.onPageLoad(index, NormalMode)
-   case HavePAYEId(index) => payeRoutes(index, ua, NormalMode)
+   case HaveUTRId(index) => utrRoutes(index, ua, CheckMode)
+   case PartnershipUTRId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+   case NoUTRReasonId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+   case HaveVATId(index) => vatRoutes(index, ua, CheckMode)
+   case VATId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+   case HavePAYEId(index) => payeRoutes(index, ua, CheckMode)
    case PAYEId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
   }
 
