@@ -18,9 +18,9 @@ package navigators
 
 import base.SpecBase
 import controllers.beforeYouStartSpoke.routes._
-import identifiers.beforeYouStart.{EstablishedCountryId, HaveAnyTrusteesId, SchemeTypeId, WorkingKnowledgeId}
+import identifiers.beforeYouStart.{SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
 import identifiers.{Identifier, TypedIdentifier}
-import models.{NormalMode, SchemeType}
+import models.{SchemeType, NormalMode}
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes
 import play.api.mvc.Call
@@ -39,9 +39,8 @@ class BeforeYouStartNavigatorSpec
       Table(
         ("Id", "UserAnswers", "Next Page"),
         row(SchemeTypeId)(CheckYourAnswersController.onPageLoad()),
-        row(SchemeTypeId)(HaveAnyTrusteesController.onPageLoad(), uaWithValue(SchemeTypeId, SchemeType.BodyCorporate)),
-        row(SchemeTypeId)(HaveAnyTrusteesController.onPageLoad(), uaWithValue(SchemeTypeId, SchemeType.GroupLifeDeath)),
-        row(HaveAnyTrusteesId)(CheckYourAnswersController.onPageLoad()),
+        row(SchemeTypeId)(CheckYourAnswersController.onPageLoad(), uaWithValue(SchemeTypeId, SchemeType.BodyCorporate)),
+        row(SchemeTypeId)(CheckYourAnswersController.onPageLoad(), uaWithValue(SchemeTypeId, SchemeType.GroupLifeDeath)),
         row(EstablishedCountryId)(CheckYourAnswersController.onPageLoad()),
         row(WorkingKnowledgeId)(CheckYourAnswersController.onPageLoad())
       )

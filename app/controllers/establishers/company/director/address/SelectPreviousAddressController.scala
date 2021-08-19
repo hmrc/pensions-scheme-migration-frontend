@@ -20,22 +20,21 @@ import config.AppConfig
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
-import controllers.address.{AddressListController, AddressPages}
+import controllers.address.{AddressPages, AddressListController}
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.address.{EnterPreviousPostCodeId, PreviousAddressId, PreviousAddressListId}
-import models.{Index, Mode}
+import models.{Mode, Index}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.CountryOptions
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
