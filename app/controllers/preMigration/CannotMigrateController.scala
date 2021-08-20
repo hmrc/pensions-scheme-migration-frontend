@@ -36,16 +36,13 @@ class CannotMigrateController @Inject()(val appConfig: AppConfig,
                                     )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with I18nSupport {
 
-  def onPageLoadScheme: Action[AnyContent] = authenticate.async { implicit request =>
+  def onPageLoad: Action[AnyContent] = authenticate.async { implicit request =>
 
-    val json: JsObject = Json.obj(
-      "param1" -> msg"messages__pension_scheme",
-      "param2" -> msg"messages__scheme",
-      "continueUrl" -> appConfig.psaOverviewUrl,
-      "contactHmrcUrl" -> appConfig.contactHmrcUrl
-    )
-
-    renderer.render("preMigration/cannotMigrate.njk", json).map(Ok(_))
+        val json: JsObject = Json.obj(
+          "param1" -> msg"messages__administrator__overview",
+          "returnUrl" -> appConfig.psaOverviewUrl
+        )
+      renderer.render("preMigration/cannotMigrate.njk", json).map(Ok(_))
 
   }
 }

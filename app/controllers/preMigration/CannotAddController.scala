@@ -60,7 +60,7 @@ class CannotAddController @Inject()(val appConfig: AppConfig,
       case _ => Future.successful(Redirect(routes.NotRegisterController.onPageLoadScheme()))
     } recoverWith {
       case _: AncillaryPsaException =>
-        Future.successful(Redirect(routes.CannotMigrateController.onPageLoadScheme()))
+        Future.successful(Redirect(routes.CannotMigrateController.onPageLoad()))
     }
   }
 
@@ -82,7 +82,7 @@ class CannotAddController @Inject()(val appConfig: AppConfig,
       case _ => Future.successful(Redirect(routes.NotRegisterController.onPageLoadRacDac()))
     } recoverWith {
       case _: AncillaryPsaException =>
-        Future.successful(Redirect(routes.CannotMigrateController.onPageLoadScheme()))
+        Future.successful(Redirect(routes.CannotMigrateController.onPageLoad()))
     }
   }
 }

@@ -38,23 +38,20 @@ class CannotMigrateControllerSpec extends ControllerSpecBase with NunjucksSuppor
   private val templateToBeRendered: String = "preMigration/cannotMigrate.njk"
 
   private def schemeJson: JsObject = Json.obj(
-
-    "param1" -> msg"messages__pension_scheme",
-    "param2" -> msg"messages__scheme",
-    "continueUrl" -> appConfig.psaOverviewUrl.url,
-    "contactHmrcUrl" -> appConfig.contactHmrcUrl
+    "param1" -> msg"messages__administrator__overview",
+    "returnUrl" -> appConfig.psaOverviewUrl
   )
 
   private def controller(): CannotMigrateController =
     new CannotMigrateController(appConfig, messagesApi, new FakeAuthAction(), controllerComponents, new Renderer(mockAppConfig, mockRenderer))
 
   "CannotMigrateController" must {
-    "return OK and the correct view for a GET for scheme" in {
+    "return OK and the correct view for a GET" in {
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result: Future[Result] = controller().onPageLoadScheme()(fakeDataRequest())
+      val result: Future[Result] = controller().onPageLoad()(fakeDataRequest())
 
       status(result) mustBe OK
 

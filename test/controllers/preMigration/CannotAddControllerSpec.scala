@@ -16,7 +16,7 @@
 
 package controllers.preMigration
 
-import connectors.ListOfSchemesConnector
+import connectors.{AncillaryPsaException, ListOfSchemesConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import matchers.JsonMatchers
@@ -25,6 +25,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.TryValues
+import org.scalatest.concurrent.ScalaFutures.whenReady
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
@@ -39,6 +40,7 @@ class CannotAddControllerSpec extends ControllerSpecBase with NunjucksSupport wi
 
   private val templateToBeRendered: String = "preMigration/cannotAdd.njk"
   private val mockListOfSchemesConnector:ListOfSchemesConnector= mock[ListOfSchemesConnector];
+  private val mockAncillaryPsaException:AncillaryPsaException= mock[AncillaryPsaException];
   private val schemeDetail = Items("10000678RE", "2020-10-10", racDac = false, "abcdefghi", "2020-12-12", None)
   private val racDacDetail = Items("10000678RF", "2020-10-10", racDac = true, "abcdefghi", "2020-12-12", Some("12345678"))
 

@@ -1,11 +1,10 @@
 {% extends "includes/layout.njk" %}
 
 {% from "macros/title.njk"                         import title %}
-{% from "macros/returnLink.njk"                    import returnLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% block pageTitle %}
-  {{ title(messages("messages__cannotAdd__title", param1)) }}
+  {{ title(messages("messages__cannotMigrate__title")) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -13,25 +12,14 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
 
-        <h1 class="govuk-heading-xl">{{ messages("messages__cannotAdd__title", param1) }}</h1>
+        <h1 class="govuk-heading-xl">{{ messages("messages__cannotMigrate__title") }}</h1>
 
-             <p class="govuk-body">{{ messages("messages__cannotAdd__p", param1, param2) }}</p>
-
-             <p class="govuk-body">
-                <a href="{{ contactHmrcUrl }}" class="govuk-link">{{ messages("messages__cannotAdd__list_head_link") }}</a>
-                {{ messages("messages__cannotAdd__list_head") }}
-             </p>
-
-             <ul class="govuk-list govuk-list--bullet">
-                <li>{{ messages("messages__cannotAdd__li_1", param2) }}</li>
-                <li>{{ messages("messages__cannotAdd__li_2", param2) }}</li>
-                <li>{{ messages("messages__cannotAdd__li_3", param2) }}</li>
-             </ul>
+             <p class="govuk-body">{{ messages("messages__cannotMigrate__p") }}</p>
 
              {{ govukButton({
-                href: continueUrl,
+                href: returnUrl,
                 attributes: {id: "submit"},
-                text: messages("site.continue")
+                text: messages("site.return_to",param1)
              }) }}
 
       </div>
