@@ -14,47 +14,55 @@
  * limitations under the License.
  */
 
-package controllers.beforeYouStartSpoke
+package controllers.establishers.partnership.address
 
+import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import forms.beforeYouStart.HaveAnyTrusteesFormProvider
-import identifiers.beforeYouStart.{HaveAnyTrusteesId, SchemeNameId}
+import identifiers.beforeYouStart.SchemeNameId
+import identifiers.establishers.partnership.PartnershipDetailsId
+import identifiers.establishers.partnership.address.PreviousAddressId
 import matchers.JsonMatchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, Matchers}
 import play.api.Application
-import play.api.data.Form
+import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
+import play.api.libs.json.Reads._
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.viewmodels.Radios
-import utils.Data.{schemeName, ua}
 import utils.{Data, Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 
-class HaveAnyTrusteesControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+
+  private val mockAddressLookupConnector = mock[AddressLookupConnector]
+
+  val extraModules: Seq[GuiceableModule] = Seq(
+    bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
+  )
+
+  private val ua: UserAnswers =
+    Data.ua.setOrException(PartnershipDetailsId(0), Data.establisherPartnershipDetails)
 
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
-  private val httpPathGET: String = controllers.beforeYouStartSpoke.routes.HaveAnyTrusteesController.onPageLoad().url
-  private val httpPathPOST: String = controllers.beforeYouStartSpoke.routes.HaveAnyTrusteesController.onSubmit().url
-  private val form: Form[Boolean] = new HaveAnyTrusteesFormProvider()()
-
-  private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>
-    Json.obj(
-      "form" -> form,
-      "schemeName" -> schemeName,
-      "radios" -> Radios.yesNo(form("value"))
-    )
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
+  private val httpPathGET: String = controllers.establishers.partnership.address.routes.ConfirmPreviousAddressController.onPageLoad(0).url
+  private val httpPathPOST: String = controllers.establishers.partnership.address.routes.ConfirmPreviousAddressController.onSubmit(0).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
-    "value" -> Seq("true")
+    "line1" -> Seq("1"),
+    "line2" -> Seq("2"),
+    "line3" -> Seq("3"),
+    "line4" -> Seq("4"),
+    "postcode" -> Seq("ZZ1 1ZZ"),
+    "country" -> Seq("GB")
   )
 
   private val valuesInvalid: Map[String, Seq[String]] = Map(
@@ -64,31 +72,15 @@ class HaveAnyTrusteesControllerSpec extends ControllerSpecBase with NunjucksSupp
   override def beforeEach: Unit = {
     super.beforeEach
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+    when(mockAppConfig.validCountryCodes).thenReturn(Seq("GB"))
   }
 
-  "HaveAnyTrustees Controller" must {
+  "ConfirmPreviousAddress Controller" must {
 
     "Return OK and the correct view for a GET" in {
-      val ua: UserAnswers = UserAnswers().setOrException(SchemeNameId, Data.schemeName)
-      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
-
-      status(result) mustEqual OK
-
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
-
-      verify(mockRenderer, times(1))
-        .render(Matchers.eq("beforeYouStart/haveAnyTrustees.njk"), jsonCaptor.capture())(any())
-
-      (jsonCaptor.getValue \ "schemeName").toOption.map(_.as[String]) mustBe Some(Data.schemeName)
-    }
-
-    "return OK and the correct view for a GET when the question has previously been answered" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, Data.schemeName)
-        .setOrException(HaveAnyTrusteesId, true)
-
+        .setOrException(PartnershipDetailsId(0), Data.establisherPartnershipDetails)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
       val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
@@ -98,9 +90,9 @@ class HaveAnyTrusteesControllerSpec extends ControllerSpecBase with NunjucksSupp
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       verify(mockRenderer, times(1))
-        .render(Matchers.eq("beforeYouStart/haveAnyTrustees.njk"), jsonCaptor.capture())(any())
+        .render(Matchers.eq("address/manualAddress.njk"), jsonCaptor.capture())(any())
 
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(true)))
+      (jsonCaptor.getValue \ "schemeName").toOption.map(_.as[String]) mustBe Some(Data.schemeName)
     }
 
     "redirect to Session Expired page for a GET when there is no data" in {
@@ -117,26 +109,29 @@ class HaveAnyTrusteesControllerSpec extends ControllerSpecBase with NunjucksSupp
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
 
-      val expectedJson = Json.obj()
-
       when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
-        .thenReturn(routes.CheckYourAnswersController.onPageLoad())
+        .thenReturn(routes.CheckYourAnswersController.onPageLoad(0))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
-
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
-
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad(0).url)
 
-      verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptor.capture)(any(), any())
+      verify(mockUserAnswersCacheConnector, times(1)).save(any(),jsonCaptor.capture())(any(), any())
+      val expectedJson = Json.obj(
+          "addressLine1" -> "1",
+          "addressLine2" -> "2",
+          "addressLine3" -> "3",
+          "addressLine4" -> "4",
+          "postcode" -> "ZZ1 1ZZ",
+          "country" -> "GB"
+        )
 
-      jsonCaptor.getValue must containJson(expectedJson)
-
-      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad().url)
+      (jsonCaptor.getValue \ "establishers" \ 0 \ PreviousAddressId.toString).get mustBe expectedJson
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

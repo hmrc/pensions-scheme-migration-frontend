@@ -23,9 +23,10 @@ import forms.establishers.ConfirmDeleteEstablisherFormProvider
 import identifiers.establishers.ConfirmDeleteEstablisherId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
+import identifiers.establishers.partnership.PartnershipDetailsId
 import models._
 import models.establishers.EstablisherKind
-import models.establishers.EstablisherKind.{Company, Individual}
+import models.establishers.EstablisherKind.{Company, Individual, Partnership}
 import models.requests.DataRequest
 import navigators.CompoundNavigator
 import play.api.data.Form
@@ -83,6 +84,8 @@ class ConfirmDeleteEstablisherController @Inject()(override val messagesApi: Mes
         DeletableEstablisher(details.fullName, details.isDeleted))
       case Company => userAnswers.get(CompanyDetailsId(index)).map(details =>
         DeletableEstablisher(details.companyName, details.isDeleted))
+      case Partnership => userAnswers.get(PartnershipDetailsId(index)).map(details =>
+        DeletableEstablisher(details.partnershipName, details.isDeleted))
       case _ => None
     }
   }
@@ -95,11 +98,15 @@ class ConfirmDeleteEstablisherController @Inject()(override val messagesApi: Mes
         establisherKind match {
           case Individual =>
             EstablisherNameId(establisherIndex).retrieve.right.map { establisherDetails =>
-              updateEstablisherKind(establisherDetails.fullName, establisherKind, establisherIndex, Some(establisherDetails), None)
+              updateEstablisherKind(establisherDetails.fullName, establisherKind, establisherIndex, Some(establisherDetails), None,None)
             }
           case Company =>
             CompanyDetailsId(establisherIndex).retrieve.right.map { establisherDetails =>
-              updateEstablisherKind(establisherDetails.companyName, establisherKind, establisherIndex, None, Some(establisherDetails))
+              updateEstablisherKind(establisherDetails.companyName, establisherKind, establisherIndex, None, Some(establisherDetails),None)
+            }
+          case Partnership =>
+            PartnershipDetailsId(establisherIndex).retrieve.right.map { partnershipDetails =>
+              updateEstablisherKind(partnershipDetails.partnershipName, establisherKind, establisherIndex, None, None,Some(partnershipDetails))
             }
           case _ =>
             Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
@@ -110,7 +117,8 @@ class ConfirmDeleteEstablisherController @Inject()(override val messagesApi: Mes
                                     establisherKind: EstablisherKind,
                                     establisherIndex: Index,
                                     establisherName: Option[PersonName],
-                                    companyDetails: Option[CompanyDetails])(implicit request: DataRequest[AnyContent])
+                                    companyDetails: Option[CompanyDetails],
+                                    partnershipDetails: Option[PartnershipDetails])(implicit request: DataRequest[AnyContent])
   : Future[Result] = {
     form(name).bindFromRequest().fold(
       (formWithErrors: Form[_]) => {
@@ -134,6 +142,9 @@ class ConfirmDeleteEstablisherController @Inject()(override val messagesApi: Mes
             case Company => companyDetails.fold(Try(request.userAnswers))(
               company => request.userAnswers.set(CompanyDetailsId(establisherIndex),
                 company.copy (isDeleted = true)))
+            case Partnership => partnershipDetails.fold(Try(request.userAnswers))(
+              partnership => request.userAnswers.set(PartnershipDetailsId(establisherIndex),
+                partnership.copy (isDeleted = true)))
             case _ => Try(request.userAnswers)
           }
         } else {

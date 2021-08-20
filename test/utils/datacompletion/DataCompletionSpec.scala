@@ -16,14 +16,14 @@
 
 package utils.datacompletion
 
-import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
-import identifiers.beforeYouStart.{EstablishedCountryId, SchemeNameId, SchemeTypeId, WorkingKnowledgeId}
+import identifiers.aboutMembership.{FutureMembersId, CurrentMembersId}
+import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
 import identifiers.benefitsAndInsurance._
 import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
-import models.{Members, SchemeType}
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
-import utils.Data.{address, insurerName, insurerPolicyNo, ua}
-import utils.{Enumerable, UserAnswers}
+import models.{SchemeType, Members}
+import org.scalatest.{OptionValues, MustMatchers, WordSpec}
+import utils.Data.{address, ua, insurerName, insurerPolicyNo}
+import utils.{UserAnswers, Enumerable}
 
 class DataCompletionSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
 
@@ -89,15 +89,6 @@ class DataCompletionSpec extends WordSpec with MustMatchers with OptionValues wi
         val answers = UserAnswers().set(SchemeNameId, "name").flatMap(
           _.set(SchemeTypeId, SchemeType.SingleTrust).flatMap(
             _.set(EstablishedCountryId, "GB"))).get
-        answers.isBeforeYouStartCompleted mustBe false
-      }
-
-      "return false when all answers are complete except any trustees question where applicable" in {
-        val answers = UserAnswers().set(SchemeNameId, "name").flatMap(
-          _.set(SchemeTypeId, SchemeType.BodyCorporate).flatMap(
-            _.set(EstablishedCountryId, "GB").flatMap(
-              _.set(WorkingKnowledgeId, true)
-            ))).get
         answers.isBeforeYouStartCompleted mustBe false
       }
 

@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package identifiers.beforeYouStart
+package identifiers.establishers.partnership.address
 
 import identifiers.TypedIdentifier
-import identifiers.trustees.TrusteesId
-import utils.UserAnswers
+import identifiers.establishers.EstablishersId
+import play.api.libs.json.{Format, JsPath, Json}
 
-case object HaveAnyTrusteesId extends TypedIdentifier[Boolean] {
-  override def toString: String = "haveAnyTrustees"
+case class AddressListId(index: Int) extends TypedIdentifier[Int] {
+  override def path: JsPath = EstablishersId(index).path \ AddressListId.toString
+}
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): UserAnswers = {
-    value match {
-      case Some(false) =>
-        userAnswers.remove(TrusteesId.collectionPath)
-      case _ => super.cleanup(value, userAnswers)
-    }
-  }
+object AddressListId {
+  override lazy val toString: String = "addressResults"
+
+  implicit lazy val formats: Format[AddressListId] =
+    Json.format[AddressListId]
 }

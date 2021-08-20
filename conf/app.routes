@@ -19,9 +19,6 @@ GET         /logout                                                controllers.L
 GET         /before-you-start/scheme-type                          controllers.beforeYouStartSpoke.SchemeTypeController.onPageLoad
 POST        /before-you-start/scheme-type                          controllers.beforeYouStartSpoke.SchemeTypeController.onSubmit
 
-GET         /before-you-start/have-any-trustees                 controllers.beforeYouStartSpoke.HaveAnyTrusteesController.onPageLoad
-POST        /before-you-start/have-any-trustees                 controllers.beforeYouStartSpoke.HaveAnyTrusteesController.onSubmit
-
 GET         /before-you-start/country                              controllers.beforeYouStartSpoke.EstablishedCountryController.onPageLoad
 POST        /before-you-start/country                              controllers.beforeYouStartSpoke.EstablishedCountryController.onSubmit
 
@@ -92,3 +89,6 @@ POST        /racdac/your-pension-schemes                            controllers.
 GET         /racdac/your-pension-schemes/page/:pageNumber           controllers.preMigration.ListOfSchemesController.onPageLoadWithPageNumber(pageNumber: Int, migrationType: MigrationType = RacDac)
 POST        /racdac/your-pension-schemes/page/:pageNumber           controllers.preMigration.ListOfSchemesController.onSearchWithPageNumber(pageNumber: Int, migrationType: MigrationType = RacDac)
 
+
+GET         /no-pension-schemes-registered                         controllers.preMigration.NotRegisterController.onPageLoadScheme
+GET         /no-rac-dacs-registered                                controllers.preMigration.NotRegisterController.onPageLoadRacDac

@@ -22,9 +22,10 @@ import forms.establishers.ConfirmDeleteEstablisherFormProvider
 import identifiers.establishers.ConfirmDeleteEstablisherId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
+import identifiers.establishers.partnership.PartnershipDetailsId
 import matchers.JsonMatchers
 import models.establishers.EstablisherKind
-import models.{CompanyDetails, Index, PersonName}
+import models.{CompanyDetails, Index, PartnershipDetails, PersonName}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, Matchers}
@@ -43,9 +44,11 @@ import scala.concurrent.Future
 class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
   private val individualName: String = "Jane Doe"
   private val companyName: String = "test company"
+  private val partnershipName: String = "test partnership"
   private val index: Index = Index(0)
   private val userAnswersIndividual: Option[UserAnswers] = ua.set(EstablisherNameId(0), PersonName("Jane", "Doe")).toOption
   private val userAnswersCompany: Option[UserAnswers] = ua.set(CompanyDetailsId(0), CompanyDetails(companyName)).toOption
+  private val userAnswersPartnership: Option[UserAnswers] = ua.set(PartnershipDetailsId(0), PartnershipDetails(partnershipName)).toOption
   private val templateToBeRendered = "delete.njk"
   private val form: Form[Boolean] = new ConfirmDeleteEstablisherFormProvider()(individualName)
 
@@ -112,6 +115,20 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Nun
       jsonCaptor.getValue must containJson(jsonToPassToTemplate(EstablisherKind.Company, companyName)(form))
     }
 
+    "return OK and the correct view for a GET when establisher is a partnership" in {
+      val form = new ConfirmDeleteEstablisherFormProvider()(partnershipName)
+      mutableFakeDataRetrievalAction.setDataToReturn(userAnswersPartnership)
+
+      val result = route(application, httpGETRequest(httpPathGET(EstablisherKind.Partnership))).value
+
+      status(result) mustEqual OK
+
+      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+
+      templateCaptor.getValue mustEqual templateToBeRendered
+      jsonCaptor.getValue must containJson(jsonToPassToTemplate(EstablisherKind.Partnership, partnershipName)(form))
+    }
+
     "redirect to Session Expired page for a GET when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
@@ -135,6 +152,7 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Nun
       val result = route(application, httpPOSTRequest(httpPathPOST(EstablisherKind.Individual), valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
+
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptor.capture)(any(), any())
       jsonCaptor.getValue must containJson(expectedJson)
       redirectLocation(result) mustBe Some(routes.AddEstablisherController.onPageLoad().url)
@@ -151,6 +169,25 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Nun
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswersCompany)
 
       val result = route(application, httpPOSTRequest(httpPathPOST(EstablisherKind.Company), valuesValid)).value
+
+      status(result) mustEqual SEE_OTHER
+
+      verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptor.capture)(any(), any())
+      jsonCaptor.getValue must containJson(expectedJson)
+      redirectLocation(result) mustBe Some(routes.AddEstablisherController.onPageLoad().url)
+    }
+
+    "Save data to user answers and redirect to next page when valid data is submitted for Partnership" in {
+      val expectedJson = Json.obj()
+
+      when(mockCompoundNavigator.nextPage(Matchers.eq(ConfirmDeleteEstablisherId), any(), any())(any()))
+        .thenReturn(routes.AddEstablisherController.onPageLoad())
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
+        .thenReturn(Future.successful(Json.obj()))
+
+      mutableFakeDataRetrievalAction.setDataToReturn(userAnswersPartnership)
+
+      val result = route(application, httpPOSTRequest(httpPathPOST(EstablisherKind.Partnership), valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 

@@ -167,6 +167,12 @@ object CYAHelper {
     ua.get(id)
       .getOrElse(throw MandatoryAnswerMissingException)
       .companyName
+
+  def getPartnershipName(id: TypedIdentifier[PartnershipDetails])
+                    (implicit ua: UserAnswers, rds: Reads[PartnershipDetails]): String =
+    ua.get(id)
+      .getOrElse(throw MandatoryAnswerMissingException)
+      .partnershipName
 }
 
 case object MandatoryAnswerMissingException

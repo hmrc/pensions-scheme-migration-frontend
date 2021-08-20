@@ -26,6 +26,8 @@ import identifiers.establishers.company.details.{CompanyNumberId, HaveCompanyNum
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressId
+import identifiers.establishers.individual.address.{AddressId => PartnershipAddressId}
+import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.trustees.TrusteeKindId
 import identifiers.trustees.{company => trusteeCompany}
 import identifiers.trustees.company.{details => trusteeCompanyDetails}
@@ -324,7 +326,60 @@ class SpokeCreationServiceSpec
     result mustBe expectedSpoke
   }
 
+  "getEstablisherPartnershipSpokes" must {
+    "display all the spokes with appropriate links and incomplete status when no data is returned from TPSS" in {
+      val userAnswers =
+        ua
+          .set(EstablisherKindId(0), EstablisherKind.Partnership).success.value
+          .set(PartnershipDetailsId(0), PartnershipDetails("test",false)).success.value
 
+      val expectedSpoke =
+        Seq(
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Add address for test",
+              target = controllers.establishers.partnership.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = None
+          )
+        )
+
+      val result =
+        spokeCreationService.getEstablisherPartnershipSpokes(
+          answers = userAnswers,
+          name = "test",
+          index = 0
+        )
+      result mustBe expectedSpoke
+    }
+  }
+  "display all the spokes with appropriate links and incomplete status when data is returned from TPSS for partnership address spoke" in {
+    val userAnswers =
+      ua
+        .set(EstablisherKindId(0), EstablisherKind.Partnership).success.value
+        .setOrException(PartnershipAddressId(0), Data.address)
+
+    val expectedSpoke =
+      Seq(
+        EntitySpoke(
+          link = TaskListLink(
+            text = "Change address for test",
+            target = controllers.establishers.partnership.address.routes.CheckYourAnswersController.onPageLoad(0).url,
+            visuallyHiddenText = None
+          ),
+          isCompleted = Some(false)
+        )
+      )
+
+    val result =
+      spokeCreationService.getEstablisherPartnershipSpokes(
+        answers = userAnswers,
+        name = "test",
+        index = 0
+      )
+    result mustBe expectedSpoke
+  }
 
   "getTrusteesIndividualSpokes" must {
     "display all the spokes with appropriate links and incomplete status when no data is returned from TPSS" in {

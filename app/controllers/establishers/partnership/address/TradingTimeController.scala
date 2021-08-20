@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package controllers.beforeYouStartSpoke
+package controllers.establishers.partnership.address
 
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import forms.beforeYouStart.HaveAnyTrusteesFormProvider
-import identifiers.beforeYouStart.{HaveAnyTrusteesId, SchemeNameId}
+import forms.establishers.partnership.address.PartnershipTradingTimeFormProvider
+import identifiers.beforeYouStart.SchemeNameId
+import identifiers.establishers.partnership.PartnershipDetailsId
+import identifiers.establishers.partnership.address.TradingTimeId
+import models.Index
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -35,13 +38,13 @@ import utils.Enumerable
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class HaveAnyTrusteesController @Inject()(override val messagesApi: MessagesApi,
+class TradingTimeController @Inject()(override val messagesApi: MessagesApi,
                                        userAnswersCacheConnector: UserAnswersCacheConnector,
                                        authenticate: AuthAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        navigator: CompoundNavigator,
-                                       formProvider: HaveAnyTrusteesFormProvider,
+                                       formProvider: PartnershipTradingTimeFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer)(implicit ec: ExecutionContext)
   extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
@@ -49,41 +52,45 @@ class HaveAnyTrusteesController @Inject()(override val messagesApi: MessagesApi,
   private def form: Form[Boolean] =
     formProvider()
 
-  def onPageLoad: Action[AnyContent] =
+  def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      SchemeNameId.retrieve.right.map { schemeName =>
-        val preparedForm = request.userAnswers.get(HaveAnyTrusteesId) match {
+      (PartnershipDetailsId(index) and SchemeNameId).retrieve.right.map { case partnershipDetails ~ schemeName =>
+        val preparedForm = request.userAnswers.get(TradingTimeId(index)) match {
           case Some(value) => form.fill(value)
           case None        => form
         }
         val json = Json.obj(
           "schemeName" -> schemeName,
+          "entityName" -> partnershipDetails.partnershipName,
+          "entityType" -> Messages("establisherEntityTypePartnership"),
           "form" -> preparedForm,
           "radios" -> Radios.yesNo (preparedForm("value"))
         )
-        renderer.render("beforeYouStart/haveAnyTrustees.njk", json).map(Ok(_))
+        renderer.render("address/tradingTime.njk", json).map(Ok(_))
       }
     }
 
-  def onSubmit: Action[AnyContent] =
+  def onSubmit(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      SchemeNameId.retrieve.right.map { schemeName =>
+      (PartnershipDetailsId(index) and SchemeNameId).retrieve.right.map { case partnershipDetails ~ schemeName =>
         form
           .bindFromRequest()
           .fold(
             formWithErrors => {
               val json = Json.obj(
                 "schemeName" -> schemeName,
+                "entityName" -> partnershipDetails.partnershipName,
+                "entityType" -> Messages("establisherEntityTypePartnership"),
                 "form" -> formWithErrors,
                 "radios" -> Radios.yesNo(form("value"))
               )
 
-              renderer.render("beforeYouStart/haveAnyTrustees.njk", json).map(BadRequest(_))
+              renderer.render("address/tradingTime.njk", json).map(BadRequest(_))
             },
             value => {
-              val updatedUA = request.userAnswers.setOrException(HaveAnyTrusteesId, value)
+              val updatedUA = request.userAnswers.setOrException(TradingTimeId(index), value)
               userAnswersCacheConnector.save(request.lock, updatedUA.data).map { _ =>
-                Redirect(navigator.nextPage(HaveAnyTrusteesId, updatedUA))
+                Redirect(navigator.nextPage(TradingTimeId(index), updatedUA))
               }
             }
           )

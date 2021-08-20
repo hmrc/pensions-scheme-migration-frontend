@@ -17,7 +17,7 @@
 package utils
 
 import base.SpecBase.fakeRequest
-import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
+import identifiers.aboutMembership.{FutureMembersId, CurrentMembersId}
 import identifiers.beforeYouStart._
 import identifiers.benefitsAndInsurance._
 import models._
@@ -40,6 +40,7 @@ object Data {
   val company: CompanyDetails = CompanyDetails("ABC Ltd")
   val establisherIndividualName = PersonName("test", "name")
   val establisherCompanyDetails = CompanyDetails("test company")
+  val establisherPartnershipDetails = PartnershipDetails("test partnership")
   val trusteeIndividualName = PersonName("test", "name")
   val trusteeCompanyDetails = CompanyDetails("test company")
   val ua: UserAnswers = UserAnswers().setOrException(SchemeNameId, Data.schemeName)
@@ -64,7 +65,6 @@ object Data {
     .setOrException(BenefitsInsuranceNameId, insurerName)
     .setOrException(BenefitsInsurancePolicyId, insurerPolicyNo)
     .setOrException(InsurerAddressId, address)
-    .setOrException(HaveAnyTrusteesId, false)
 
   implicit val request: DataRequest[AnyContent] =
     DataRequest(
