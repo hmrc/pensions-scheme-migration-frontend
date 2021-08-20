@@ -18,7 +18,7 @@ package controllers.preMigration
 
 import com.google.inject.Inject
 import config.AppConfig
-import connectors.{DelimitedAdminException, MinimalDetailsConnector}
+import connectors.{AncillaryPsaException, DelimitedAdminException, MinimalDetailsConnector}
 import controllers.actions.AuthAction
 import forms.ListSchemesFormProvider
 import models.MigrationType.isRacDac
@@ -144,6 +144,9 @@ class ListOfSchemesController @Inject()(
         form,
         migrationType
       )
+    } recoverWith {
+      case _: AncillaryPsaException =>
+        Future.successful(Redirect(routes.CannotMigrateController.onPageLoad()))
     }
   }
 
