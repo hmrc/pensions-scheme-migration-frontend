@@ -18,10 +18,12 @@ package controllers.establishers
 
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
+import identifiers.establishers.partnership.PartnershipDetailsId
 import models.Index
 import models.establishers.EstablisherKind
-import models.establishers.EstablisherKind.Individual
+import models.establishers.EstablisherKind.{Company, Individual, Partnership}
 import models.requests.DataRequest
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
@@ -64,6 +66,8 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
   : Either[Future[Result], String] = {
     establisherKind match {
       case Individual => EstablisherNameId(index).retrieve.right.map(_.fullName)
+      case Company => CompanyDetailsId(index).retrieve.right.map(_.companyName)
+      case Partnership => PartnershipDetailsId(index).retrieve.right.map(_.partnershipName)
       case _ => Right("Unimplemented functionality")
     }
   }
