@@ -28,7 +28,6 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 
 import javax.inject.Inject
-import scala.concurrent.Future.never.recoverWith
 import scala.concurrent.{ExecutionContext, Future}
 
 class CannotAddController @Inject()(val appConfig: AppConfig,
@@ -59,8 +58,7 @@ class CannotAddController @Inject()(val appConfig: AppConfig,
           Future.successful(Redirect(routes.NotRegisterController.onPageLoadScheme()))
         }
       case _ => Future.successful(Redirect(routes.NotRegisterController.onPageLoadScheme()))
-    }
-    recoverWith {
+    } recoverWith {
       case _: AncillaryPsaException =>
         Future.successful(Redirect(routes.CannotMigrateController.onPageLoadScheme()))
     }
@@ -82,10 +80,9 @@ class CannotAddController @Inject()(val appConfig: AppConfig,
           Future.successful(Redirect(routes.NotRegisterController.onPageLoadRacDac()))
         }
       case _ => Future.successful(Redirect(routes.NotRegisterController.onPageLoadRacDac()))
+    } recoverWith {
+      case _: AncillaryPsaException =>
+        Future.successful(Redirect(routes.CannotMigrateController.onPageLoadScheme()))
     }
-  }
-  recoverWith {
-    case _: AncillaryPsaException =>
-      Future.successful(Redirect(routes.CannotMigrateController.onPageLoadScheme()))
   }
 }
