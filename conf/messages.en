@@ -18,7 +18,7 @@ site.month.capitalized = Month
 site.year.capitalized = Year
 
 site.signOut = Sign out
-site.service_name = Migrating pension schemes
+site.service_name = Managing pension schemes
 site.back = Back
 site.save_and_continue = Save and continue
 site.continue = Continue
@@ -964,3 +964,9 @@ messages__listSchemes__pagination__first__ariaLabel = First page
 messages__listSchemes__pagination__last__ariaLabel = Last page
 messages__listSchemes__pagination__pageNumber__ariaLabel = page {0} of {1}
 messages__listSchemes__pagination__pageNumberCurrent__ariaLabel = current page, page {0} of {1}
+
+pageNotFound404.title = Page not found
+pageNotFound404.heading = Page not found
+pageNotFound404.p1 = If you typed the web address, check it is correct.
+pageNotFound404.p2 = If you pasted the web address, check you copied the entire address.
+viewYourSchemes = View your pension schemes
