@@ -58,7 +58,7 @@ class HavePAYEControllerSpec extends ControllerSpecBase with NunjucksSupport wit
       "schemeName"    -> schemeName,
       "paragraphs"    -> Json.arr(messages("messages__havePAYE__hint")),
       "legendClass"   -> "govuk-visually-hidden",
-      "isPageHeading" -> false
+      "isPageHeading" -> true
     )
 
   private def controller(dataRetrievalAction: DataRetrievalAction): HavePAYEController =

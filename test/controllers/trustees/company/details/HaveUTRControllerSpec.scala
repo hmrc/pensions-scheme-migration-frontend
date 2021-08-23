@@ -58,7 +58,7 @@ class HaveUTRControllerSpec extends ControllerSpecBase with NunjucksSupport with
       "schemeName"    -> schemeName,
       "paragraphs"    -> Json.arr(messages("messages__UTR__p")),
       "legendClass"   -> "govuk-visually-hidden",
-      "isPageHeading" -> false
+      "isPageHeading" -> true
     )
 
   private def controller(dataRetrievalAction: DataRetrievalAction): HaveUTRController =

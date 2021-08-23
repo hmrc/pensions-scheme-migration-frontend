@@ -69,7 +69,7 @@ class DirectorHasUTRController @Inject()(
             get(
               pageTitle     = Message("messages__hasUTR", Message("messages__director")),
               pageHeading     = Message("messages__hasUTR", name(establisherIndex,directorIndex)),
-              isPageHeading = false,
+              isPageHeading = true,
               id            = DirectorHasUTRId(establisherIndex, directorIndex),
               form          = form(establisherIndex,directorIndex),
               schemeName    = schemeName,
@@ -87,7 +87,7 @@ class DirectorHasUTRController @Inject()(
             post(
               pageTitle     = Message("messages__hasUTR", Message("messages__director")),
               pageHeading     = Message("messages__hasUTR", name(establisherIndex,directorIndex)),
-              isPageHeading = false,
+              isPageHeading = true,
               id            = DirectorHasUTRId(establisherIndex, directorIndex),
               form          = form(establisherIndex,directorIndex),
               schemeName    = schemeName,

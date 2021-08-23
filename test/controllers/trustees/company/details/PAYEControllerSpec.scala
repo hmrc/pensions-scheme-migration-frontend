@@ -59,7 +59,7 @@ class PAYEControllerSpec extends ControllerSpecBase with NunjucksSupport with Js
       "schemeName"    -> schemeName,
       "paragraphs" -> Json.arr(messages("messages__paye__p", company.companyName)),
       "legendClass"   -> "govuk-visually-hidden",
-      "isPageHeading" -> false
+      "isPageHeading" -> true
     )
 
   private def controller(dataRetrievalAction: DataRetrievalAction): PAYEController =

@@ -65,7 +65,7 @@ class VATController @Inject()(
             get(
               pageTitle     = Message("messages__vat", Message("messages__partnership")),
               pageHeading     = Message("messages__vat", name(index)),
-              isPageHeading = false,
+              isPageHeading = true,
               id            = VATId(index),
               form          = form(name(index)),
               schemeName    = schemeName,
@@ -83,7 +83,7 @@ class VATController @Inject()(
             post(
               pageTitle     = Message("messages__vat", Message("messages__partnership")),
               pageHeading     = Message("messages__vat", name(index)),
-              isPageHeading = false,
+              isPageHeading = true,
               id            = VATId(index),
               form          = form(name(index)),
               schemeName    = schemeName,

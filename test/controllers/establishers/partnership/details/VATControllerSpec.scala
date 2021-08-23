@@ -59,7 +59,7 @@ class VATControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
       "schemeName"    -> schemeName,
       "paragraphs"      -> Json.arr(messages("messages__vat__p", establisherPartnershipDetails.partnershipName)),
       "legendClass"   -> "govuk-visually-hidden",
-      "isPageHeading" -> false
+      "isPageHeading" -> true
     )
 
   private def controller(dataRetrievalAction: DataRetrievalAction): VATController =

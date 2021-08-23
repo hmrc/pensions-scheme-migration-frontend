@@ -65,7 +65,7 @@ class HavePAYEController @Inject()(
             get(
               pageTitle     = Message("messages__havePAYE", Message("messages__partnership")),
               pageHeading     = Message("messages__havePAYE", name(index)),
-              isPageHeading = false,
+              isPageHeading = true,
               id            = HavePAYEId(index),
               form          = form(index),
               schemeName    = schemeName,
@@ -84,7 +84,7 @@ class HavePAYEController @Inject()(
             post(
               pageTitle     = Message("messages__havePAYE", Message("messages__partnership")),
               pageHeading     = Message("messages__havePAYE", name(index)),
-              isPageHeading = false,
+              isPageHeading = true,
               id            = HavePAYEId(index),
               form          = form(index),
               schemeName    = schemeName,

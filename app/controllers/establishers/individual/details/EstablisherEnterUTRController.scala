@@ -65,7 +65,7 @@ class EstablisherEnterUTRController @Inject()(
             get(
               pageTitle     = Message("messages__enterUTR", Message("messages__individual")),
               pageHeading     = Message("messages__enterUTR", name(index)),
-              isPageHeading = false,
+              isPageHeading = true,
               id            = EstablisherUTRId(index),
               form          = form,
               schemeName    = schemeName,
@@ -83,7 +83,7 @@ class EstablisherEnterUTRController @Inject()(
             post(
               pageTitle     = Message("messages__enterUTR", Message("messages__individual")),
               pageHeading     = Message("messages__enterUTR", name(index)),
-              isPageHeading = false,
+              isPageHeading = true,
               id            = EstablisherUTRId(index),
               form          = form,
               schemeName    = schemeName,
