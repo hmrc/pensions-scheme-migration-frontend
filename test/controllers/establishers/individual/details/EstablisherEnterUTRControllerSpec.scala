@@ -69,7 +69,7 @@ class EstablisherEnterUTRControllerSpec
         "If the UTR is 13 numbers, only enter the last 10.",
         "If there is a letter ‘K’ at the end of the number, do not enter it."
       ),
-      "isPageHeading" -> false
+      "isPageHeading" -> true
     )
   private val formData: ReferenceValue =
     ReferenceValue(value = "1234567890")

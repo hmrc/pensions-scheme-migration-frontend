@@ -70,7 +70,7 @@ class TrusteeHasUTRController @Inject()(
             get(
               pageTitle     = Message("messages__hasUTR", Message("messages__individual")),
               pageHeading     = Message("messages__hasUTR", name(index)),
-              isPageHeading = false,
+              isPageHeading = true,
               id            = TrusteeHasUTRId(index),
               form          = form(index),
               schemeName    = schemeName,
@@ -89,7 +89,7 @@ class TrusteeHasUTRController @Inject()(
             post(
               pageTitle     = Message("messages__hasUTR", Message("messages__individual")),
               pageHeading     = Message("messages__hasUTR", name(index)),
-              isPageHeading = false,
+              isPageHeading = true,
               id            = TrusteeHasUTRId(index),
               form          = form(index),
               schemeName    = schemeName,

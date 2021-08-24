@@ -16,10 +16,9 @@
 
 package navigators
 
-import controllers.establishers.company.address.routes._
-import controllers.establishers.company.contact.routes._
 import config.AppConfig
 import controllers.establishers.company.address.routes._
+import controllers.establishers.company.contact.routes._
 import controllers.establishers.company.details.{routes => detailsRoutes}
 import controllers.establishers.routes._
 import controllers.routes._
@@ -27,16 +26,10 @@ import identifiers._
 import identifiers.establishers.company.address._
 import identifiers.establishers.company.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.company.details._
-import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.company.{AddCompanyDirectorsId, CompanyDetailsId}
+import identifiers.establishers.individual.EstablisherNameId
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode, NormalMode}
-import play.api.mvc.{AnyContent, Call}
-import utils.{Enumerable, UserAnswers}
-import models.{Mode, NormalMode}
-import play.api.mvc.{AnyContent, Call}
-import utils.{Enumerable, UserAnswers}
-import models.{Mode, NormalMode}
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
 

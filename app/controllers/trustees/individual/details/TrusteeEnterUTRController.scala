@@ -65,7 +65,7 @@ class TrusteeEnterUTRController @Inject()(
             get(
               pageTitle     = Message("messages__enterUTR", Message("messages__individual")),
               pageHeading     = Message("messages__enterUTR", name(index)),
-              isPageHeading = false,
+              isPageHeading = true,
               id            = TrusteeUTRId(index),
               form          = form,
               schemeName    = schemeName,
@@ -83,7 +83,7 @@ class TrusteeEnterUTRController @Inject()(
             post(
               pageTitle     = Message("messages__enterUTR", Message("messages__individual")),
               pageHeading     = Message("messages__enterUTR", name(index)),
-              isPageHeading = false,
+              isPageHeading = true,
               id            = TrusteeUTRId(index),
               form          = form,
               schemeName    = schemeName,
