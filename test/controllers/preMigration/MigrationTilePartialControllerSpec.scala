@@ -39,7 +39,7 @@ class MigrationTilePartialControllerSpec extends ControllerSpecBase with Nunjuck
   private val templateToBeRendered: String = "preMigration/migrationLinksPartial.njk"
 
   val links: Seq[PageLink] = Seq(
-    PageLink("view-schemes", appConfig.schemesMigrationViewOnly, msg"messages__migrationLink__viewSchemesLink"),
+    PageLink("view-pension-schemes", appConfig.schemesMigrationViewOnly, msg"messages__migrationLink__viewSchemesLink"),
     PageLink("view-rac-dacs", appConfig.racDacMigrationViewOnly, msg"messages__migrationLink__viewRacDacsLink")
   )
 

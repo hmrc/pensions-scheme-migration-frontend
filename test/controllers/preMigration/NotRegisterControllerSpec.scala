@@ -41,17 +41,17 @@ class NotRegisterControllerSpec extends ControllerSpecBase with NunjucksSupport 
   private val mockMinimalDetailsConnector: MinimalDetailsConnector = mock[MinimalDetailsConnector]
 
   private def schemeJson: JsObject = Json.obj(
-    "param1" -> msg"messages_notRegister_pension_scheme",
+    "param1" -> msg"messages__pension_scheme",
     "psaName" -> psaName,
     "contactHmrcUrl" -> appConfig.contactHmrcUrl,
-    "returnUrl" -> appConfig.psaOverviewUrl.url
+    "returnUrl" -> appConfig.psaOverviewUrl
   )
 
   val racDacJson: JsObject = Json.obj(
-    "param1" -> msg"messages_notRegister_racDac",
+    "param1" -> msg"messages__racdac",
     "psaName" -> psaName,
     "contactHmrcUrl" -> appConfig.contactHmrcUrl,
-    "returnUrl" -> appConfig.psaOverviewUrl.url
+    "returnUrl" -> appConfig.psaOverviewUrl
   )
 
   private def controller(): NotRegisterController =

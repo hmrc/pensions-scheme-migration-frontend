@@ -51,7 +51,7 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector,
 
     } recover {
 
-      case _: NoActiveSession =>              Redirect(config.loginUrl, Map("continue" -> Seq(config.psaOverviewUrl.url)))
+      case _: NoActiveSession =>              Redirect(config.loginUrl, Map("continue" -> Seq(config.psaOverviewUrl)))
       case _: InsufficientEnrolments =>       Redirect(UnauthorisedController.onPageLoad())
       case _: InsufficientConfidenceLevel =>  Redirect(UnauthorisedController.onPageLoad())
       case _: UnsupportedAuthProvider =>      Redirect(UnauthorisedController.onPageLoad())

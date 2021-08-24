@@ -73,8 +73,22 @@ GET         /success                                               controllers.S
 
 GET         /migration-tile                                         controllers.preMigration.MigrationTilePartialController.migrationPartial
 GET         /cannot-add-pension-scheme                              controllers.preMigration.CannotAddController.onPageLoadScheme
-GET         /cannot-add-racdac                                      controllers.preMigration.CannotAddController.onPageLoadRacDac
+GET         /cannot-add-rac-dac                                      controllers.preMigration.CannotAddController.onPageLoadRacDac
 GET         /what-you-will-need-before-start                        controllers.preMigration.BeforeYouStartController.onPageLoad
+
+GET         /no-pension-schemes-registered                         controllers.preMigration.NotRegisterController.onPageLoadScheme
+GET         /no-rac-dacs-registered                                controllers.preMigration.NotRegisterController.onPageLoadRacDac
+
+
+GET         /list-pension-schemes                                   controllers.preMigration.ListOfSchemesController.onPageLoad(migrationType: MigrationType = Scheme)
+POST        /list-pension-schemes                                   controllers.preMigration.ListOfSchemesController.onSearch(migrationType: MigrationType = Scheme)
+GET         /list-pension-schemes/page/:pageNumber                  controllers.preMigration.ListOfSchemesController.onPageLoadWithPageNumber(pageNumber: Int, migrationType: MigrationType = Scheme)
+POST        /list-pension-schemes/page/:pageNumber                  controllers.preMigration.ListOfSchemesController.onSearchWithPageNumber(pageNumber: Int, migrationType: MigrationType = Scheme)
+GET         /list-rac-dacs                                          controllers.preMigration.ListOfSchemesController.onPageLoad(migrationType: MigrationType = RacDac)
+POST        /list-rac-dacs                                          controllers.preMigration.ListOfSchemesController.onSearch(migrationType: MigrationType = RacDac)
+GET         /list-rac-dacs/page/:pageNumber                         controllers.preMigration.ListOfSchemesController.onPageLoadWithPageNumber(pageNumber: Int, migrationType: MigrationType = RacDac)
+POST        /list-rac-dacs/page/:pageNumber                         controllers.preMigration.ListOfSchemesController.onSearchWithPageNumber(pageNumber: Int, migrationType: MigrationType = RacDac)
+
 
 GET         /no-pension-schemes-registered                         controllers.preMigration.NotRegisterController.onPageLoadScheme
 GET         /no-rac-dacs-registered                                controllers.preMigration.NotRegisterController.onPageLoadRacDac
