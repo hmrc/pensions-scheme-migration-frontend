@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-package forms.beforeYouStart
+package identifiers.establishers.partnership.address
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import identifiers.TypedIdentifier
+import identifiers.establishers.EstablishersId
+import models.TolerantAddress
+import play.api.libs.json.{Format, JsPath, Json}
 
-import javax.inject.Inject
-
-class HaveAnyTrusteesFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("haveAnyTrustees.error.required")
-    )
+case class EnterPreviousPostCodeId(index: Int) extends TypedIdentifier[Seq[TolerantAddress]] {
+  override def path: JsPath =
+    EstablishersId(index).path \ EnterPreviousPostCodeId.toString
 }
+
+object EnterPreviousPostCodeId {
+  override lazy val toString: String = "previousAddresses"
+
+  implicit lazy val formats: Format[EnterPreviousPostCodeId] =
+    Json.format[EnterPreviousPostCodeId]
+}
+
+

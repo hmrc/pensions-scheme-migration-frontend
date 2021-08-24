@@ -84,7 +84,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   private def getConfigString(key: String) = servicesConfig.getConfString(key, throw new Exception(s"Could not find " +
     s"config '$key'"))
 
-  lazy val managePensionsSchemeOverviewUrl: String = "Test"
+  lazy val managePensionsSchemeOverviewUrl: String = Call("GET", loadConfig("urls.manage-pensions-frontend.schemesOverview")).url
   lazy val managePensionsSchemeSummaryUrl: String = "Test"
   lazy val serviceSignOut: String = s"${config.get[String](path = "urls.logout")}"
   lazy val validCountryCodes: Seq[String] = s"${config.get[String](path = "validCountryCodes")}".split(",").toSeq

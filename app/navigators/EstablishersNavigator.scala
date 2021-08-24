@@ -22,6 +22,7 @@ import controllers.establishers.individual.contact.routes._
 import controllers.establishers.individual.details.routes._
 import controllers.establishers.individual.routes._
 import controllers.establishers.routes._
+import controllers.establishers.partnership.routes._
 import controllers.routes._
 import identifiers._
 import identifiers.establishers._
@@ -90,6 +91,7 @@ class EstablishersNavigator
     ua.get(EstablisherKindId(index)) match {
       case Some(EstablisherKind.Individual) => EstablisherNameController.onPageLoad(index)
       case Some(EstablisherKind.Company) => CompanyDetailsController.onPageLoad(index)
+      case Some(EstablisherKind.Partnership) => PartnershipDetailsController.onPageLoad(index)
       case _ => IndexController.onPageLoad()
     }
 

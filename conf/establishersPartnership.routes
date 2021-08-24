@@ -1,0 +1,30 @@
+GET         /:index/partnership/name                                                  controllers.establishers.partnership.PartnershipDetailsController.onPageLoad(index: Index)
+POST        /:index/partnership/name                                                  controllers.establishers.partnership.PartnershipDetailsController.onSubmit(index: Index)
+
+GET         /:index/partnership/addresses/what-you-will-need                          controllers.establishers.partnership.address.WhatYouWillNeedController.onPageLoad(index: Index)
+
+GET         /:index/partnership/addresses/postcode                                    controllers.establishers.partnership.address.EnterPostcodeController.onPageLoad(index: Index)
+POST        /:index/partnership/addresses/postcode                                    controllers.establishers.partnership.address.EnterPostcodeController.onSubmit(index: Index)
+
+GET         /:index/partnership/addresses/address-results                             controllers.establishers.partnership.address.SelectAddressController.onPageLoad(index: Index)
+POST        /:index/partnership/addresses/address-results                             controllers.establishers.partnership.address.SelectAddressController.onSubmit(index: Index)
+
+GET         /:index/partnership/addresses/address-manual                              controllers.establishers.partnership.address.ConfirmAddressController.onPageLoad(index: Index)
+POST        /:index/partnership/addresses/address-manual                              controllers.establishers.partnership.address.ConfirmAddressController.onSubmit(index: Index)
+
+GET         /:index/partnership/addresses/check-your-answers                          controllers.establishers.partnership.address.CheckYourAnswersController.onPageLoad(index: Index)
+
+GET         /:index/partnership/addresses/address-years                              controllers.establishers.partnership.address.AddressYearsController.onPageLoad(index: Index)
+POST        /:index/partnership/addresses/address-years                              controllers.establishers.partnership.address.AddressYearsController.onSubmit(index: Index)
+
+GET         /:index/partnership/addresses/partnership-exists-years                   controllers.establishers.partnership.address.TradingTimeController.onPageLoad(index: Index)
+POST        /:index/partnership/addresses/partnership-exists-years                   controllers.establishers.partnership.address.TradingTimeController.onSubmit(index: Index)
+
+GET         /:index/partnership/addresses/address-previous                           controllers.establishers.partnership.address.EnterPreviousPostcodeController.onPageLoad(index: Index)
+POST        /:index/partnership/addresses/address-previous                           controllers.establishers.partnership.address.EnterPreviousPostcodeController.onSubmit(index: Index)
+
+GET         /:index/partnership/addresses/address-previous-results                   controllers.establishers.partnership.address.SelectPreviousAddressController.onPageLoad(index: Index)
+POST        /:index/partnership/addresses/address-previous-results                   controllers.establishers.partnership.address.SelectPreviousAddressController.onSubmit(index: Index)
+
+GET         /:index/partnership/addresses/address-previous-manual                    controllers.establishers.partnership.address.ConfirmPreviousAddressController.onPageLoad(index: Index)
+POST        /:index/partnership/addresses/address-previous-manual                    controllers.establishers.partnership.address.ConfirmPreviousAddressController.onSubmit(index: Index)

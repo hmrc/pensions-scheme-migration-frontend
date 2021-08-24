@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 
-package forms.beforeYouStart
+package identifiers.establishers.partnership.address
 
-import forms.behaviours.BooleanFieldBehaviours
-import play.api.data.FormError
+import identifiers.TypedIdentifier
+import identifiers.establishers.EstablishersId
+import play.api.libs.json.{Format, JsPath, Json}
 
-class HaveAnyTrusteesFormProviderSpec extends BooleanFieldBehaviours {
+case class PreviousAddressListId(index: Int) extends TypedIdentifier[Int] {
+  override def path: JsPath =
+    EstablishersId(index).path \ PreviousAddressListId.toString
+}
 
-  val requiredKey = "haveAnyTrustees.error.required"
+object PreviousAddressListId {
+  override lazy val toString: String = "previousAddressList"
 
-  val form = new HaveAnyTrusteesFormProvider()()
-
-  ".value" must  {
-
-    val fieldName = "value"
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-  }
+  implicit lazy val formats: Format[PreviousAddressListId] =
+    Json.format[PreviousAddressListId]
 }
