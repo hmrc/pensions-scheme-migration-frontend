@@ -43,7 +43,7 @@ class MigrationTilePartialController @Inject()(
   def migrationPartial: Action[AnyContent] = authenticate.async { implicit request =>
 
     val links: Seq[PageLink] = Seq(
-      PageLink("view-schemes", appConfig.schemesMigrationViewOnly, msg"messages__migrationLink__viewSchemesLink"),
+      PageLink("view-pension-schemes", appConfig.schemesMigrationViewOnly, msg"messages__migrationLink__viewSchemesLink"),
       PageLink("view-rac-dacs", appConfig.racDacMigrationViewOnly, msg"messages__migrationLink__viewRacDacsLink")
     )
 

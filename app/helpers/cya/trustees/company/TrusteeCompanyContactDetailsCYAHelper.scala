@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.cya.trustees.company
 
 import controllers.trustees.company.contacts.routes
 import helpers.cya.CYAHelper

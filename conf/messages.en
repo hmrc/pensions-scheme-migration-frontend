@@ -18,7 +18,7 @@ site.month.capitalized = Month
 site.year.capitalized = Year
 
 site.signOut = Sign out
-site.service_name = Migrating pension schemes
+site.service_name = Managing pension schemes
 site.back = Back
 site.save_and_continue = Save and continue
 site.continue = Continue
@@ -913,9 +913,9 @@ messages__migrationLink__viewRacDacsLink = View RAC/DACs registered on the Pensi
 messages__migrationLink__addSchemesLink = Add pension schemes registered on the Pension Schemes Online service
 messages__migrationLink__addRacDacsLink = Add RAC/DACs registered on the Pension Schemes Online service
 
-messages__cannotAdd__pension_scheme = pension scheme
-messages__cannotAdd__scheme = scheme
-messages__cannotAdd__racdac = RAC/DAC
+messages__pension_scheme = pension scheme
+messages__scheme = scheme
+messages__racdac = RAC/DAC
 messages__cannotAdd__title = You cannot add a {0} from the Pension Schemes Online service until spring 2022
 messages__cannotAdd__p = Select continue to view the list of {0}s registered on the Pension Schemes Online service. The list should only show active {1}s.
 messages__cannotAdd__list_head_link = Contact HMRC for help
@@ -923,12 +923,13 @@ messages__cannotAdd__list_head = if you:
 messages__cannotAdd__li_1 = cannot see listed all the {0}s that you have registered on the Pension Schemes Online service
 messages__cannotAdd__li_2 = can see {0}s listed that you do not recognise
 messages__cannotAdd__li_3 = can see {0}s listed that are no longer active and should be wound up
+
 messages_contact_hmrc_link= Contact HMRC
 messages_notRegister_title= No {0}s registered on the Pension Schemes Online service
-messages_notRegister_racDac= RAC/DAC
-messages_notRegister_pension_scheme= pension scheme
+messages__pension_scheme= pension scheme
 messages_notRegister_p1 = You cannot view or add a {0} from Pension Schemes Online because you do not have any active {1}s registered on that service.
 messages_notRegister_p2 = if you do have {0}s registered on the Pension Schemes Online service and are seeing this page in error.
+messages_notRegister_pension_scheme= pension scheme
 
 messages__partnershipName__title = What is the partnership’s name?
 messages__error__partnership_name = Enter the partnership’s name
@@ -942,3 +943,49 @@ messages__partnershipDetails__whatYouWillNeed_li1_1 = Unique Taxpayer Reference 
 messages__partnershipDetails__whatYouWillNeed_list2_head = If {0} has them, you will also need to tell us their:
 messages__partnershipDetails__whatYouWillNeed_li2_1 = VAT registration number
 messages__partnershipDetails__whatYouWillNeed_li2_2 = employer PAYE reference (you can tell us any employer PAYE reference if {0} has more than one)
+
+messages__listSchemes__title = List of {0}s on the Pension Schemes Online service
+messages__listSchemes__noSchemes = You have no {0}s from the Pension Schemes Online service
+messages__listSchemes__registerNewScheme = Register a new scheme
+messages__listSchemes__column_schemeName = Scheme name
+messages__listSchemes__column_racDacName = RAC/DAC name
+messages__listSchemes__column_pstr = PSTR
+messages__listSchemes__column_regDate = Date of scheme registration
+messages__listSchemes__schemeName__screen_reader = The scheme name is: {0}
+
+messages__listSchemes__PSTR__screen_reader = {0}’s Pension Scheme Tax Reference number is {1}
+messages__listSchemes__status__screen_reader = {0}’s status is {1}
+messages__listSchemes__searchText_label_scheme = Search for a scheme by scheme name or PSTR
+messages__listSchemes__searchText_label_racDac = Search for a RAC/DAC by name or PSTR
+messages__listSchemes__searchText_clearlink = Clear Search
+messages__listSchemes__search_noMatches = We did not find any {0}s that match what you searched for.
+messages__listSchemes__search_submit = Search
+messages__listSchemes__search_again = Search again
+messages__listSchemes__search_required = Enter a PSTR or {0} name
+messages__listSchemes__search_result = 1 result found
+messages__listSchemes__search_multipleResults = {0} results found
+messages__listSchemes__search_result_title = Search results for list of {0}s on the Pension Schemes Online service
+messages__listSchemes__racDacOffset = If a RAC/DAC is no longer active, then you should wind it up on the Pension Schemes Online service.
+
+messages__listSchemes__pagination__text = Showing {0} to {1} of {2} schemes
+messages__listSchemes__pagination__prev = Prev
+messages__listSchemes__pagination__next = Next
+messages__listSchemes__pagination__prev__ariaLabel = Previous page
+messages__listSchemes__pagination__next__ariaLabel = Next page
+messages__listSchemes__pagination__first = First
+messages__listSchemes__pagination__last = Last
+messages__listSchemes__pagination__first__ariaLabel = First page
+messages__listSchemes__pagination__last__ariaLabel = Last page
+messages__listSchemes__pagination__pageNumber__ariaLabel = page {0} of {1}
+messages__listSchemes__pagination__pageNumberCurrent__ariaLabel = current page, page {0} of {1}
+
+messages__cannotMigrate__title = You cannot add pension schemes from the Pension Schemes Online service
+messages__cannotMigrate__p = You must use your organisation’s ’master’ ID for the Managing Pension Schemes service to be able to add pension schemes from the Pension Schemes Online service.
+messages__administrator__overview = administrator overview
+
+pageNotFound404.title = Page not found
+pageNotFound404.heading = Page not found
+pageNotFound404.p1 = If you typed the web address, check it is correct.
+pageNotFound404.p2 = If you pasted the web address, check you copied the entire address.
+viewYourSchemes = View your pension schemes
+

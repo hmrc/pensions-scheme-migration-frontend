@@ -16,7 +16,6 @@
 
 package controllers.preMigration
 
-import connectors.MinimalDetailsConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import matchers.JsonMatchers
@@ -31,29 +30,24 @@ import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import utils.UserAnswers
 
 import scala.concurrent.Future
 
-class BeforeYouStartControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with MockitoSugar {
-  private val psaName: String = "Nigel"
-  private val templateToBeRendered: String = "preMigration/beforeYouStart.njk"
-  private val mockMinimalDetailsConnector: MinimalDetailsConnector = mock[MinimalDetailsConnector]
-  private def json: JsObject =
-    Json.obj(
-      "continueUrl" -> controllers.routes.TaskListController.onPageLoad().url,
-      "psaName" -> psaName,
-      "returnUrl" -> appConfig.psaOverviewUrl
-    )
+class CannotMigrateControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with MockitoSugar {
 
-  private def controller(): BeforeYouStartController =
-    new BeforeYouStartController(appConfig,messagesApi, new FakeAuthAction(), new FakeDataRetrievalAction(Some(UserAnswers())),
-      new DataRequiredActionImpl, mockMinimalDetailsConnector, controllerComponents, new Renderer(mockAppConfig, mockRenderer))
+  private val templateToBeRendered: String = "preMigration/cannotMigrate.njk"
 
-  "BeforeYouStartController" must {
+  private def schemeJson: JsObject = Json.obj(
+    "param1" -> msg"messages__administrator__overview",
+    "returnUrl" -> appConfig.psaOverviewUrl
+  )
+
+  private def controller(): CannotMigrateController =
+    new CannotMigrateController(appConfig, messagesApi, new FakeAuthAction(), controllerComponents, new Renderer(mockAppConfig, mockRenderer))
+
+  "CannotMigrateController" must {
     "return OK and the correct view for a GET" in {
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-      when(mockMinimalDetailsConnector.getPSAName(any(),any())).thenReturn(Future.successful(psaName))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -65,7 +59,9 @@ class BeforeYouStartControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
       templateCaptor.getValue mustEqual templateToBeRendered
 
-      jsonCaptor.getValue must containJson(json)
+      jsonCaptor.getValue must containJson(schemeJson)
     }
+
+
   }
 }
