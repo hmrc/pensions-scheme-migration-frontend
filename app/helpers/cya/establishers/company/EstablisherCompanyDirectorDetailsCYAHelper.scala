@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.cya.establishers.company
 
 import controllers.establishers.company.director.routes
 import helpers.cya.CYAHelper
@@ -22,7 +22,7 @@ import helpers.cya.CYAHelper.getName
 import identifiers.establishers.company.director._
 import identifiers.establishers.company.director.address.{AddressId, AddressYearsId, PreviousAddressId}
 import identifiers.establishers.company.director.contact.{EnterEmailId, EnterPhoneId}
-import identifiers.establishers.company.director.details.{DirectorDOBId, DirectorEnterUTRId, DirectorHasNINOId, DirectorHasUTRId, DirectorNINOId, DirectorNoNINOReasonId, DirectorNoUTRReasonId}
+import identifiers.establishers.company.director.details._
 import models.requests.DataRequest
 import models.{CheckMode, Index}
 import play.api.i18n.Messages

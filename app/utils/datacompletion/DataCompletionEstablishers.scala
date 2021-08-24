@@ -17,9 +17,10 @@
 package utils.datacompletion
 
 import identifiers.establishers.EstablisherKindId
-import identifiers.establishers.company.address.{TradingTimeId, AddressId => CompanyAddressId, AddressYearsId => CompanyAddressYearsId, PreviousAddressId => CompanyPreviousAddressId}
+import identifiers.establishers.company.{address => companyAddress}
 import identifiers.establishers.company.details._
-import identifiers.establishers.partnership.address.{AddressId => PartnershipAddressId, AddressYearsId => PartnershipAddressYearsId, PreviousAddressId => PartnershipPreviousAddressId, TradingTimeId => PartnershipTradingTimeId}
+import identifiers.establishers.partnership.{details => partnershipDetails}
+import identifiers.establishers.partnership.{address => partnershipAddress}
 import identifiers.establishers.company.director.{address => directorAddress}
 import identifiers.establishers.company.director.{contact => directorContact}
 import identifiers.establishers.company.director.details._
@@ -82,17 +83,17 @@ trait DataCompletionEstablishers extends DataCompletion {
                                             userAnswers: UserAnswers
                                           ): Option[Boolean] = {
 
-    val previousAddress = (userAnswers.get(CompanyAddressYearsId(index)), userAnswers.get(TradingTimeId(index))) match {
+    val previousAddress = (userAnswers.get(companyAddress.AddressYearsId(index)), userAnswers.get(companyAddress.TradingTimeId(index))) match {
       case (Some(true), _) => Some(true)
-      case (Some(false), Some(true)) => isAnswerComplete(CompanyPreviousAddressId(index))
+      case (Some(false), Some(true)) => isAnswerComplete(companyAddress.PreviousAddressId(index))
       case (Some(false), Some(false)) => Some(true)
       case _ => None
     }
 
     isComplete(
       Seq(
-        isAnswerComplete(CompanyAddressId(index)),
-        isAnswerComplete(CompanyAddressYearsId(index)),
+        isAnswerComplete(companyAddress.AddressId(index)),
+        isAnswerComplete(companyAddress.AddressYearsId(index)),
         previousAddress
       )
     )
@@ -111,18 +112,28 @@ trait DataCompletionEstablishers extends DataCompletion {
                                                 userAnswers: UserAnswers
                                               ): Option[Boolean] = {
 
-    val previousAddress = (userAnswers.get(PartnershipAddressYearsId(index)), userAnswers.get(PartnershipTradingTimeId(index))) match {
+    val previousAddress = (userAnswers.get(partnershipAddress.AddressYearsId(index)), userAnswers.get(partnershipAddress.TradingTimeId(index))) match {
       case (Some(true), _) => Some(true)
-      case (Some(false), Some(true)) => isAnswerComplete(PartnershipPreviousAddressId(index))
+      case (Some(false), Some(true)) => isAnswerComplete(partnershipAddress.PreviousAddressId(index))
       case (Some(false), Some(false)) => Some(true)
       case _ => None
     }
 
     isComplete(
       Seq(
-        isAnswerComplete(PartnershipAddressId(index)),
-        isAnswerComplete(PartnershipAddressYearsId(index)),
+        isAnswerComplete(partnershipAddress.AddressId(index)),
+        isAnswerComplete(partnershipAddress.AddressYearsId(index)),
         previousAddress
+      )
+    )
+  }
+
+  def isEstablisherPartnershipDetailsCompleted(index: Int): Option[Boolean] = {
+    isComplete(
+      Seq(
+        isAnswerComplete(partnershipDetails.HaveUTRId(index), partnershipDetails.PartnershipUTRId(index), Some(partnershipDetails.NoUTRReasonId(index))),
+        isAnswerComplete(partnershipDetails.HaveVATId(index),partnershipDetails.VATId(index),None),
+        isAnswerComplete(partnershipDetails.HavePAYEId(index),partnershipDetails.PAYEId(index),None)
       )
     )
   }

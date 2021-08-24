@@ -70,7 +70,7 @@ class DirectorHasUTRControllerSpec
         "It might be called ‘reference’, ‘UTR’ or ‘official use’."
       ),
       "legendClass"   -> "govuk-visually-hidden",
-      "isPageHeading" -> false
+      "isPageHeading" -> true
     )
   private def controller(
                           dataRetrievalAction: DataRetrievalAction

@@ -65,7 +65,7 @@ class PAYEController @Inject()(
             get(
               pageTitle     = Message("messages__paye", Message("messages__company")),
               pageHeading     = Message("messages__paye", name(index)),
-              isPageHeading = false,
+              isPageHeading = true,
               id            = PAYEId(index),
               form          = form(name(index)),
               schemeName    = schemeName,
@@ -84,7 +84,7 @@ class PAYEController @Inject()(
             post(
               pageTitle     = Message("messages__paye", Message("messages__company")),
               pageHeading     = Message("messages__paye", name(index)),
-              isPageHeading = false,
+              isPageHeading = true,
               id            = PAYEId(index),
               form          = form(name(index)),
               schemeName    = schemeName,

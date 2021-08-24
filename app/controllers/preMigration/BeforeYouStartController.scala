@@ -55,7 +55,7 @@ class BeforeYouStartController @Inject()(
                 "pageTitle" -> Messages("messages__BeforeYouStart__title"),
                 "continueUrl" -> controllers.routes.TaskListController.onPageLoad().url,
                 "psaName" -> psaName,
-                "returnUrl" -> appConfig.psaOverviewUrl.url
+                "returnUrl" -> appConfig.psaOverviewUrl
               )
             ).map(Ok(_))
         }

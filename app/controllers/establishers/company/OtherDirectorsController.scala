@@ -61,7 +61,7 @@ HasReferenceValueController {
             get(
               pageTitle = Message("messages__otherDirectors__title"),
               pageHeading = Message("messages__otherDirectors__heading"),
-              isPageHeading = false,
+              isPageHeading = true,
               id = OtherDirectorsId(index),
               form = form,
               schemeName = schemeName,
@@ -79,7 +79,7 @@ HasReferenceValueController {
             post(
               pageTitle = Message("messages__otherDirectors__title"),
               pageHeading = Message("messages__otherDirectors__heading"),
-              isPageHeading = false,
+              isPageHeading = true,
               id = OtherDirectorsId(index),
               form = form,
               schemeName = schemeName,
