@@ -965,6 +965,10 @@ messages__listSchemes__pagination__last__ariaLabel = Last page
 messages__listSchemes__pagination__pageNumber__ariaLabel = page {0} of {1}
 messages__listSchemes__pagination__pageNumberCurrent__ariaLabel = current page, page {0} of {1}
 
+messages__cannotMigrate__title = You cannot add pension schemes from the Pension Schemes Online service
+messages__cannotMigrate__p = You must use your organisation’s ’master’ ID for the Managing Pension Schemes service to be able to add pension schemes from the Pension Schemes Online service.
+messages__administrator__overview = administrator overview
+
 pageNotFound404.title = Page not found
 pageNotFound404.heading = Page not found
 pageNotFound404.p1 = If you typed the web address, check it is correct.

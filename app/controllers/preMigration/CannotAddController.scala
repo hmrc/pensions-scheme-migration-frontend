@@ -17,7 +17,7 @@
 package controllers.preMigration
 
 import config.AppConfig
-import connectors.ListOfSchemesConnector
+import connectors.{AncillaryPsaException, ListOfSchemesConnector}
 import controllers.actions.AuthAction
 import models.{RacDac, Scheme}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -40,8 +40,10 @@ class CannotAddController @Inject()(val appConfig: AppConfig,
   FrontendBaseController with I18nSupport {
 
   def onPageLoadScheme: Action[AnyContent] = authenticate.async { implicit request =>
+
     listOfSchemesConnector.getListOfSchemes(request.psaId.id).flatMap {
       case Right(list) =>
+
         if (list.items.getOrElse(Nil).exists(!_.racDac)) {
 
           val json: JsObject = Json.obj(
@@ -56,6 +58,9 @@ class CannotAddController @Inject()(val appConfig: AppConfig,
           Future.successful(Redirect(routes.NotRegisterController.onPageLoadScheme()))
         }
       case _ => Future.successful(Redirect(routes.NotRegisterController.onPageLoadScheme()))
+    } recoverWith {
+      case _: AncillaryPsaException =>
+        Future.successful(Redirect(routes.CannotMigrateController.onPageLoad()))
     }
   }
 
@@ -75,6 +80,9 @@ class CannotAddController @Inject()(val appConfig: AppConfig,
           Future.successful(Redirect(routes.NotRegisterController.onPageLoadRacDac()))
         }
       case _ => Future.successful(Redirect(routes.NotRegisterController.onPageLoadRacDac()))
+    } recoverWith {
+      case _: AncillaryPsaException =>
+        Future.successful(Redirect(routes.CannotMigrateController.onPageLoad()))
     }
   }
 }

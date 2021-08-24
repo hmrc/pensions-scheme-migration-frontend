@@ -1,0 +1,28 @@
+{% extends "includes/layout.njk" %}
+
+{% from "macros/title.njk"                         import title %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block pageTitle %}
+  {{ title(messages("messages__cannotMigrate__title")) }}
+{% endblock %}
+
+{% block mainContent %}
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">{{ messages("messages__cannotMigrate__title") }}</h1>
+
+             <p class="govuk-body">{{ messages("messages__cannotMigrate__p") }}</p>
+
+             {{ govukButton({
+                href: returnUrl,
+                attributes: {id: "submit"},
+                text: messages("site.return_to",param1)
+             }) }}
+
+      </div>
+    </div>
+
+{% endblock %}
