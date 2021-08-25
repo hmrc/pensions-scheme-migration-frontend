@@ -28,6 +28,7 @@ import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressId
 import identifiers.establishers.individual.address.{AddressId => PartnershipAddressId}
 import identifiers.establishers.partnership.PartnershipDetailsId
+import identifiers.establishers.partnership.details.{HaveUTRId, PartnershipUTRId}
 import identifiers.trustees.TrusteeKindId
 import identifiers.trustees.{company => trusteeCompany}
 import identifiers.trustees.company.{details => trusteeCompanyDetails}
@@ -338,6 +339,14 @@ class SpokeCreationServiceSpec
         Seq(
           EntitySpoke(
             link = TaskListLink(
+              text = "Add details for test",
+              target = controllers.establishers.partnership.details.routes.WhatYouWillNeedController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = None
+          ),
+          EntitySpoke(
+            link = TaskListLink(
               text = "Add address for test",
               target = controllers.establishers.partnership.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
@@ -359,10 +368,21 @@ class SpokeCreationServiceSpec
     val userAnswers =
       ua
         .set(EstablisherKindId(0), EstablisherKind.Partnership).success.value
+        .set(PartnershipDetailsId(0), PartnershipDetails("test",false)).success.value
+        .setOrException(HaveUTRId(0), true)
+        .setOrException(PartnershipUTRId(0), ReferenceValue("12345678"))
         .setOrException(PartnershipAddressId(0), Data.address)
 
     val expectedSpoke =
       Seq(
+        EntitySpoke(
+          link = TaskListLink(
+            text = "Change details for test",
+            target = controllers.establishers.partnership.details.routes.CheckYourAnswersController.onPageLoad(0).url,
+            visuallyHiddenText = None
+          ),
+          isCompleted = Some(false)
+        ),
         EntitySpoke(
           link = TaskListLink(
             text = "Change address for test",

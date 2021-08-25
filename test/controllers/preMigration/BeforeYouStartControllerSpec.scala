@@ -43,7 +43,7 @@ class BeforeYouStartControllerSpec extends ControllerSpecBase with NunjucksSuppo
     Json.obj(
       "continueUrl" -> controllers.routes.TaskListController.onPageLoad().url,
       "psaName" -> psaName,
-      "returnUrl" -> appConfig.psaOverviewUrl.url
+      "returnUrl" -> appConfig.psaOverviewUrl
     )
 
   private def controller(): BeforeYouStartController =

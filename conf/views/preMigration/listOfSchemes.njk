@@ -1,0 +1,167 @@
+{% extends "includes/layout.njk" %}
+
+{% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
+{% from "govuk/components/input/macro.njk"         import govukInput %}
+{% from "macros/title.njk"                         import title %}
+{% from "macros/returnLink.njk"                    import returnLink %}
+{% from "macros/navigationLink.njk"                import navigationLink %}
+{% from "macros/pageNumberLink.njk"                import pageNumberLink %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/button/macro.njk"        import govukButton %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+{% set heading  %}
+    {%  if(form.value.value | length )%}
+         {{ messages("messages__listSchemes__search_result_title", typeOfList) }}
+    {% else %}
+         {{ messages("messages__listSchemes__title", typeOfList) }}
+    {% endif %}
+{% endset %}
+
+{% set searchLabel  %}
+    {%  if racDac %}
+         {{ messages("messages__listSchemes__searchText_label_racDac") }}
+    {% else %}
+         {{ messages("messages__listSchemes__searchText_label_scheme") }}
+    {% endif %}
+{% endset %}
+
+{% block pageTitle %}
+    {{ heading }}
+{% endblock %}
+
+{% set buttonContent  %}
+   {% if(form.value.value | length) %}
+        {{ messages("messages__listSchemes__search_again") }}
+     {% else %}
+       {{ messages("messages__listSchemes__search_submit") }}
+    {% endif %}
+{% endset %}
+
+
+
+{% block mainContent %}
+
+   <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            {% if form.errors.length > 0 %}
+                {{ govukErrorSummary({
+                    "titleText": messages("error.summary.title"),
+                    "errorList": form.errors
+                }) }}
+            {% endif %}
+
+            <h1 class="govuk-heading-xl">{{ heading }}</h1>
+
+            <form method="post"
+                  autocomplete="off"
+                  action="{{ submitUrl }}"
+                  novalidate>
+
+                {{ csrf() | safe }}
+
+                {% if schemes.size >= appConfig.minimumSchemeSearchResults or form.value %}
+                    {{ govukInput({
+                                       label: {
+                                           text: searchLabel,
+                                           isPageHeading: false,
+                                           classes: "govuk-label--m"
+                                       },
+                                       id: "value",
+                                       name: "value",
+                                       value: form.value.value,
+                                       errorMessage: form.value.error
+                                   }) }}
+
+                    {{ govukButton({
+
+                                       attributes: {id: "search"},
+                                       text: buttonContent
+                                   }) }}
+                {% endif %}
+
+                {% if form.value.value %}
+                    <p>
+                        <a id="clear-search-link" href="{{ clearLinkUrl }}">{{ messages("messages__listSchemes__searchText_clearlink") }}</a>
+                    </p>
+                {% elif racDac %}
+
+                  {{ govukInsetText({
+                         text: messages("messages__listSchemes__racDacOffset")
+                  }) }}
+                {% endif %}
+            </form>
+        </div>
+   </div>
+
+
+    {% if form.value.value %}
+                {% if numberOfSchemes > 0 %}
+                    <div class="grid-row">
+                        <div class="column-two-thirds">
+                            <p class="govuk-margin-top-5 govuk-margin-bottom-0">
+
+                                    {% if numberOfSchemes == 1 %}
+                                       {{ messages("messages__listSchemes__search_result") }}
+                                    {% else %}
+                                       {{ messages("messages__listSchemes__search_multipleResults", numberOfSchemes) }}
+                                    {% endif %}
+
+                            </p>
+                        </div>
+                    </div>
+                {% endif %}
+
+    {% endif %}
+
+
+
+     {% if noResultsMessageKey %}
+                <div class="grid-row">
+                    <div class="column-two-thirds">
+                        <p id="noSchemes">{{ messages(noResultsMessageKey) }}</p>
+                    </div>
+                </div>
+     {% endif %}
+
+     {% if schemes %}
+              {{ govukTable(schemes) }}
+     {% endif %}
+
+     {% if(numberOfSchemes > pagination) %}
+                <div class="grid-row">
+                    <div class="column-two-thirds">
+                        <p class="govuk-margin-top-5" id="pagination-text">
+                            {{paginationText}}
+                        </p>
+                        <nav class="govuk-margin-top-5" aria-label="page">
+                            {% if(pageNumber > 1) %}
+
+                              {{navigationLink(messages("messages__listSchemes__pagination__first"),"1")}}
+                              {{navigationLink(messages("messages__listSchemes__pagination__prev"),(pageNumber-1))}}
+
+                            {% endif %}
+
+                            {% for  pageNumber  in pageNumberLinks   %}
+
+                                {{pageNumberLink(pageNumber,numberOfPages)}}
+
+                            {% endfor %}
+
+                            {% if(pageNumber < numberOfPages) %}
+
+                             {{navigationLink(messages("messages__listSchemes__pagination__next"),(pageNumber+1))}}
+                             {{navigationLink(messages("messages__listSchemes__pagination__last"),(numberOfPages))}}
+
+                           {% endif %}
+                        </nav>
+                    </div>
+                </div>
+            {% endif %}
+
+
+        <p class="govuk-body"><a id="return_to_psa" href="{{ returnUrl }}" class="govuk-link">{{ messages("return.to.link", psaName) }}</a></p>
+
+{% endblock %}

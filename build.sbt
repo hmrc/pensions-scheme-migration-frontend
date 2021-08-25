@@ -26,7 +26,10 @@ lazy val microservice = Project(appName, file("."))
       "models.trustees.TrusteeKind",
       "models.Mode",
       "models.CheckMode",
-      "models.NormalMode"
+      "models.NormalMode",
+      "models.MigrationType",
+      "models.Scheme",
+      "models.RacDac"
     ),
       // concatenate js
       Concat.groups := Seq(

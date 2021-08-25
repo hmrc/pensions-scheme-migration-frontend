@@ -1,0 +1,16 @@
+{% macro pageNumberLink(linkNumber,numberOfPages) %}
+{%- set baseId = "pageNumber-"  -%}
+{%- set id = baseId+linkNumber  -%}
+{%- set baseUrl = "/migrate-pension-scheme/list-pension-schemes/page/"  -%}
+{%- set url = baseUrl+linkNumber  -%}
+{%- set ariaLabelLink = messages("messages__listSchemes__pagination__pageNumber__ariaLabel", linkNumber, numberOfPages) -%}
+{%- set ariaLabelLinkCurrent = messages("messages__listSchemes__pagination__pageNumberCurrent__ariaLabel", linkNumber, numberOfPages) -%}
+{% set cssClass  %}
+    {% if(linkNumber == pageNumber) %}
+        """aria-current="page" aria-label="{{ariaLabelLinkCurrent}}""""
+    {% else %}
+        """aria-label="{{ariaLabelLink}}""""
+    {% endif %}
+{% endset %}
+  <span class="nav-item"><a id="{{id}}" href="{{url}}" {{cssClass}}>{{linkNumber}}</a></span>
+{% endmacro %}

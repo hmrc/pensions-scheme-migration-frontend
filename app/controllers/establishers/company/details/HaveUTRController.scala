@@ -70,7 +70,7 @@ class HaveUTRController @Inject()(
             get(
               pageTitle     = Message("messages__hasUTR", Message("messages__company")),
               pageHeading     = Message("messages__hasUTR", name(index)),
-              isPageHeading = false,
+              isPageHeading = true,
               id            = HaveUTRId(index),
               form          = form(index),
               schemeName    = schemeName,
@@ -89,7 +89,7 @@ class HaveUTRController @Inject()(
             post(
               pageTitle     = Message("messages__hasUTR", Message("messages__company")),
               pageHeading     = Message("messages__hasUTR", name(index)),
-              isPageHeading = false,
+              isPageHeading = true,
               id            = HaveUTRId(index),
               form          = form(index),
               schemeName    = schemeName,

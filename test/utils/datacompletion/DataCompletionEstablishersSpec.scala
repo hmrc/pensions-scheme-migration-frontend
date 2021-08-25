@@ -27,6 +27,7 @@ import identifiers.establishers.individual.details._
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.company.director.{contact => directorContact}
 import identifiers.establishers.partnership.{PartnershipDetailsId, address => partnershipAddress}
+import identifiers.establishers.partnership.{details => partnershipDetails}
 import models.establishers.EstablisherKind
 import models.{CompanyDetails, PartnershipDetails, PersonName, ReferenceValue}
 import org.scalatest.{OptionValues, TryValues}
@@ -169,7 +170,7 @@ class DataCompletionEstablishersSpec
           UserAnswers()
             .set(HaveCompanyNumberId(0), false).success.value
 
-        ua.isEstablisherIndividualDetailsCompleted(0) mustBe None
+        ua.isEstablisherCompanyDetailsCompleted(0) mustBe Some(false)
 
       }
     }
@@ -372,6 +373,40 @@ class DataCompletionEstablishersSpec
               .set(EstablisherKindId(1), EstablisherKind.Partnership).success.value
 
           ua.isEstablisherPartnershipComplete(1) mustBe false
+        }
+      }
+
+      "isEstablisherPartnershipDetailsCompleted" must {
+        "return true when all answers are present" in {
+
+          val ua1 =
+            UserAnswers()
+              .set(partnershipDetails.HaveUTRId(0), true).success.value
+              .set(partnershipDetails.PartnershipUTRId(0), ReferenceValue("1234567890")).success.value
+              .set(partnershipDetails.HaveVATId(0), true).success.value
+              .set(partnershipDetails.VATId(0), ReferenceValue("123456789")).success.value
+              .set(partnershipDetails.HavePAYEId(0), true).success.value
+              .set(partnershipDetails.PAYEId(0), ReferenceValue("12345678")).success.value
+
+          val ua2 =
+            UserAnswers()
+              .set(partnershipDetails.HaveUTRId(0), false).success.value
+              .set(partnershipDetails.NoUTRReasonId(0), "Reason").success.value
+              .set(partnershipDetails.HaveVATId(0), false).success.value
+              .set(partnershipDetails.HavePAYEId(0), false).success.value
+
+
+          ua1.isEstablisherPartnershipDetailsCompleted(0) mustBe Some(true)
+          ua2.isEstablisherPartnershipDetailsCompleted(0) mustBe Some(true)
+        }
+
+        "return false when some answer is missing" in {
+          val ua =
+            UserAnswers()
+              .set(partnershipDetails.HaveUTRId(0), false).success.value
+
+          ua.isEstablisherPartnershipDetailsCompleted(0) mustBe Some(false)
+
         }
       }
 

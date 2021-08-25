@@ -18,7 +18,7 @@ package controllers.establishers.company.director.details
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import helpers.EstablisherCompanyDirectorDetailsCYAHelper
+import helpers.cya.establishers.company.EstablisherCompanyDirectorDetailsCYAHelper
 import identifiers.establishers.company.director._
 import identifiers.establishers.company.director.details.{DirectorDOBId, DirectorEnterUTRId, DirectorHasNINOId, DirectorHasUTRId, DirectorNINOId, DirectorNoNINOReasonId, DirectorNoUTRReasonId}
 import matchers.JsonMatchers

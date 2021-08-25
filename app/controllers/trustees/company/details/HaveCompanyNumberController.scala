@@ -65,7 +65,7 @@ class HaveCompanyNumberController @Inject()(
             get(
               pageTitle     = Message("messages__haveCompanyNumber", Message("messages__company")),
               pageHeading     = Message("messages__haveCompanyNumber", name(index)),
-              isPageHeading = false,
+              isPageHeading = true,
               id            = HaveCompanyNumberId(index),
               form          = form(index),
               schemeName    = schemeName,
@@ -83,7 +83,7 @@ class HaveCompanyNumberController @Inject()(
             post(
               pageTitle     = Message("messages__haveCompanyNumber", Message("messages__company")),
               pageHeading     = Message("messages__haveCompanyNumber", name(index)),
-              isPageHeading = false,
+              isPageHeading = true,
               id            = HaveCompanyNumberId(index),
               form          = form(index),
               schemeName    = schemeName,

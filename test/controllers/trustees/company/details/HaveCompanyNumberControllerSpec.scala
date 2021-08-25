@@ -58,7 +58,7 @@ class HaveCompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSu
       "schemeName"    -> schemeName,
       "paragraphs"    -> Json.arr(messages("messages__haveCompanyNumber__p")),
       "legendClass"   -> "govuk-label--xl",
-      "isPageHeading" -> false
+      "isPageHeading" -> true
     )
 
   private def controller(dataRetrievalAction: DataRetrievalAction): HaveCompanyNumberController =

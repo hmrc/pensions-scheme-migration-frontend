@@ -72,7 +72,7 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase
         "You do not have to add them now. We may contact you if we need this information."
       ),
       "legendClass"   -> "govuk-visually-hidden",
-      "isPageHeading" -> false
+      "isPageHeading" -> true
     )
 
   override def beforeEach: Unit = {

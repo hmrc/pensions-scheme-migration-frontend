@@ -45,7 +45,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val pensionPractitionerGovUkLink: String = loadConfig("urls.pensionPractitionerGovUkLink")
 
   lazy val registerSchemeAdministratorUrl: String = loadConfig("urls.registerSchemeAdministrator")
-  lazy val psaOverviewUrl: Call = Call("GET", loadConfig("urls.psaOverview"))
+  lazy val psaOverviewUrl: String =  loadConfig("urls.psaOverview")
   lazy val migrationUrl: String = servicesConfig.baseUrl("pensions-scheme-migration")
   lazy val lockUrl: String = s"$migrationUrl${config.get[String](path = "urls.lock")}"
   lazy val lockByUserUrl: String = s"$migrationUrl${config.get[String](path = "urls.lockByUser")}"
@@ -59,6 +59,11 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val pensionsAdministratorUrl = s"${servicesConfig.baseUrl("pension-administrator")}"
   lazy val getPSAEmail: String = s"$pensionsAdministratorUrl${config.get[String]("urls.get-psa-email")}"
   lazy val getPSAName: String = s"$pensionsAdministratorUrl${config.get[String]("urls.get-psa-name")}"
+  lazy val getPSAMinDetails: String = s"$pensionsAdministratorUrl${config.get[String]("urls.get-psa-min-details")}"
+
+  lazy val psaUpdateContactDetailsUrl: String = loadConfig("urls.psaUpdateContactDetails")
+  lazy val deceasedContactHmrcUrl: String = loadConfig("urls.deceasedContactHmrc")
+  lazy val psaDelimitedUrl: String = loadConfig("urls.psaDelimited")
 
   lazy val schemesMigrationViewOnly: String = config.get[String]("urls.schemes-migration-view-only")
   lazy val racDacMigrationViewOnly: String = config.get[String]("urls.rac-dacs-migration-view-only")
@@ -79,9 +84,10 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   private def getConfigString(key: String) = servicesConfig.getConfString(key, throw new Exception(s"Could not find " +
     s"config '$key'"))
 
-  lazy val managePensionsSchemeOverviewUrl: String = "Test"
+  lazy val managePensionsSchemeOverviewUrl: String = Call("GET", loadConfig("urls.manage-pensions-frontend.schemesOverview")).url
   lazy val managePensionsSchemeSummaryUrl: String = "Test"
   lazy val serviceSignOut: String = s"${config.get[String](path = "urls.logout")}"
   lazy val validCountryCodes: Seq[String] = s"${config.get[String](path = "validCountryCodes")}".split(",").toSeq
   lazy val maxDirectors: Int = loadConfig("company.maxDirectors").toInt
+  lazy val listSchemePagination: Int = loadConfig("listSchemePagination").toInt
 }
