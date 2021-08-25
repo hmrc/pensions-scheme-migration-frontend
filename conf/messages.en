@@ -166,6 +166,8 @@ messages__schemeTaskList__details_addLink = Add details for {0}
 messages__schemeTaskList__details_changeLink = Change details for {0}
 messages__schemeTaskList__directors_addLink = Add directors for {0}
 messages__schemeTaskList__directors_changeLink = Change directors for {0}
+messages__schemeTaskList__partners_addLink = Add partners for {0}
+messages__schemeTaskList__partners_changeLink = Change partners for {0}
 messages__schemeTaskList__establisherAddress_addLink = Add address for {0}
 messages__schemeTaskList__establisherAddress_changeLink = Change address for {0}
 messages__schemeTaskList__contactDetails_addLink = Add contact details for {0}
@@ -180,6 +182,7 @@ messages__establisher = the establisher
 messages__director = the director
 messages__company = the company
 messages__partnership = the partnership
+messages__partner = the partner
 messages__trustee = the trustee
 messages__dob__title = What is {0}’s date of birth?
 messages__dob__h1 = What is the date of birth for {0}?
@@ -325,7 +328,7 @@ benefitsInsurancePolicy.error.required = Enter the policy number of the insuranc
 benefitsInsurancePolicy.error.length = Policy number must be fewer than 56 characters
 benefitsInsurancePolicy.visuallyHidden = the policy number with the insurance company that secures the scheme benefits
 
-addressList.title = What is the address for {0}?
+addressList.title = What is {0}’s address?
 addressList.noInsuranceName.title = What is the address of the insurance company that secures the scheme benefits?
 addressList.select = Select the address from the list below, or
 addressList.visuallyHidden = the address of the insurance company that secures the scheme benefits
@@ -399,6 +402,7 @@ addEstablisher.type.header.hiddenText = Type of establisher
 addEstablisher.hiddenText.removeLink.header = Remove establisher link
 
 messages__addCompanyDirectors__error__required = Select yes if you want to add another director
+messages__addPartners__error__required = Select yes if you want to add another partner
 
 messages__error__trustees = trustee’s
 messages__error__director = director’s
@@ -426,6 +430,7 @@ messages__establisherDetails__whatYouWillNeed_li_3 = Unique Taxpayer Reference (
 messages__confirmDeleteEstablisher__title = Are you sure you want to delete this establisher?
 messages__confirmDeleteEstablisher__companyHint = This will delete any establishers you have added.
 messages__confirmDeleteDirectors__companyHint = This will delete any directors you have added.
+messages__confirmDeletePartners__companyHint = This will delete any partners you have added.
 messages__confirmDeleteEstablisher__partnershipHint = This will delete any partners you have added.
 messages__delete__heading = Are you sure you want to remove {0}?
 messages__alreadyDeleted__title = You have already deleted {0}
@@ -898,7 +903,7 @@ messages__otherDirectors__heading=Do you need to tell us about other directors?
 messages__otherDirectors__lede=You do not have to add them now. We may contact you if we need this information.
 messages__otherDirectors__error__required = Select yes if you need to tell us about other directors
 messages__addCompanyDirectors_at_maximum = You have added the maximum number of directors.
-messages__addCompanyDirectorsOrPartners_tell_us_if_you_have_more = You can tell us on the next page if you have more to add.
+messages__addDirectorsOrPartners_tell_us_if_you_have_more = You can tell us on the next page if you have more to add.
 messages__addCompanyDirectors_add_director = Add a director
 messages__alreadyDeleted__director_title = You have already deleted this director
 
@@ -906,6 +911,31 @@ messages__partnershipName__title = What is the partnership’s name?
 messages__error__partnership_name = Enter the partnership’s name
 messages__error__partnership_name_length = The partnership name cannot be more than 160 characters
 messages__error__partnership_name_invalid = The partnership name contains invalid characters
+
+messages__partners__title = Partners
+messages__partners__whatYouWillNeedPartners__p1 = For every partner associated with the partnership you’re registering, you will need to tell us the partner’s:
+messages__partners__whatYouWillNeed__item1 = name
+messages__partners__whatYouWillNeed__item2 = date of birth
+messages__partners__whatYouWillNeed__item3 = National Insurance number, or reason why they do not have one
+messages__partners__whatYouWillNeed__item4 = Unique Taxpayer Reference (UTR), or reason why they do not have one
+messages__partners__whatYouWillNeed__item5 = current address
+messages__partners__whatYouWillNeed__item6 = previous address if they have used their current address for less than 1 year
+messages__partners__whatYouWillNeed__item7 = contact email address
+messages__partners__whatYouWillNeed__item8 = contact phone number
+
+messages__partner__name = Partner’s name
+messages__partner__name__cya__visuallyHidden = the partner’s name {0}
+messages__addPartner_radio_label = Do you want to add another partner?
+messages__confirmDeletePartners__title = Are you sure you want to delete this partner?
+messages__addPartners_lede = You must tell us about all your partners. You can add up to 10 using the digital service.
+
+messages__otherPartners__title=Do you need to tell us about other partners?
+messages__otherPartners__heading=Do you need to tell us about other partners?
+messages__otherPartners__lede=You do not have to add them now. We may contact you if we need this information.
+messages__otherPartners__error__required = Select yes if you need to tell us about other partners
+messages__addPartners_at_maximum = You have added the maximum number of partners.
+messages__addPartners_add_partner = Add a partner
+messages__alreadyDeleted__partner_title = You have already deleted this partner
 
 messages__migrationLink__header = Pension schemes registered on the Pension Schemes Online service
 messages__migrationLink__viewSchemesLink = View pension schemes registered on the Pension Schemes Online service

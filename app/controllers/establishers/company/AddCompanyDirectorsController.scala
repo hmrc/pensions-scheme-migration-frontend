@@ -76,7 +76,7 @@ class AddCompanyDirectorsController @Inject()(
       implicit request =>
 
         val directors = request.userAnswers.allDirectorsAfterDelete(index)
-        val itemList=   helper.directorsItemList(directors)
+        val itemList=   helper.directorsOrPartnersItemList(directors)
         renderer.render(
           template = "establishers/company/addDirector.njk",
           ctx = Json.obj(
@@ -95,7 +95,7 @@ class AddCompanyDirectorsController @Inject()(
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         val directors = request.userAnswers.allDirectorsAfterDelete(index)
-        val itemList=   helper.directorsItemList(directors)
+        val itemList=   helper.directorsOrPartnersItemList(directors)
         if (directors.isEmpty || directors.lengthCompare(config.maxDirectors) >= 0) {
           Future.successful(Redirect(
             navigator.nextPage(

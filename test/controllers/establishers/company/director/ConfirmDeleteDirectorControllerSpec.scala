@@ -18,7 +18,7 @@ package controllers.establishers.company.director
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import forms.establishers.company.director.ConfirmDeleteDirectorFormProvider
+import forms.establishers.ConfirmDeleteEstablisherFormProvider
 import identifiers.establishers.company.director.{ConfirmDeleteDirectorId, DirectorNameId}
 import matchers.JsonMatchers
 import models.{Index, NormalMode, PersonName}
@@ -43,7 +43,7 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Nunjuc
   private val dirIndex: Index = Index(0)
   private val userAnswersDirector: Option[UserAnswers] = ua.set(DirectorNameId(establisherIndex,dirIndex), PersonName("Jane", "Doe")).toOption
   private val templateToBeRendered = "delete.njk"
-  private val form: Form[Boolean] = new ConfirmDeleteDirectorFormProvider()(directorName)
+  private val form: Form[Boolean] = new ConfirmDeleteEstablisherFormProvider()(directorName)
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 

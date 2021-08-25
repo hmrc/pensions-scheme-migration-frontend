@@ -67,3 +67,15 @@ POST        /:index/partnership/addresses/address-previous-results              
 
 GET         /:index/partnership/addresses/address-previous-manual                     controllers.establishers.partnership.address.ConfirmPreviousAddressController.onPageLoad(index: Index)
 POST        /:index/partnership/addresses/address-previous-manual                     controllers.establishers.partnership.address.ConfirmPreviousAddressController.onSubmit(index: Index)
+
+GET         /:index/partnership/list-of-partners                                      controllers.establishers.partnership.AddPartnersController.onPageLoad(index: Index,mode: Mode = NormalMode)
+POST        /:index/partnership/list-of-partners                                      controllers.establishers.partnership.AddPartnersController.onSubmit(index: Index,mode: Mode = NormalMode)
+GET         /:index/change/partnership/list-of-partners                               controllers.establishers.partnership.AddPartnersController.onPageLoad(index: Index,mode: Mode = CheckMode)
+POST        /:index/change/partnership/list-of-partners                               controllers.establishers.partnership.AddPartnersController.onSubmit(index: Index,mode: Mode = CheckMode)
+
+GET         /:index/partnership/other-partners                                        controllers.establishers.partnership.OtherPartnersController.onPageLoad(index:Index,mode:Mode=NormalMode)
+POST        /:index/partnership/other-partners                                        controllers.establishers.partnership.OtherPartnersController.onSubmit(index:Index,mode:Mode=NormalMode)
+GET         /:index/change/partnership/other-partners                                 controllers.establishers.partnership.OtherPartnersController.onPageLoad(index:Index,mode:Mode=CheckMode)
+POST        /:index/change/partnership/other-partners                                 controllers.establishers.partnership.OtherPartnersController.onSubmit(index:Index,mode:Mode=CheckMode)
+
+->          /                                                                           establishersPartner.Routes

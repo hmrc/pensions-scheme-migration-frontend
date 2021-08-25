@@ -21,6 +21,7 @@ import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.director.{DirectorNameId, IsNewDirectorId}
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
+import identifiers.establishers.partnership.partner.{IsNewPartnerId, PartnerNameId}
 import identifiers.establishers.{EstablisherKindId, EstablishersId, IsEstablisherNewId}
 import identifiers.trustees.company.{CompanyDetailsId => TrusteeCompanyDetailsId}
 import identifiers.trustees.individual.TrusteeNameId
@@ -355,7 +356,30 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
           )
         }
     }.getOrElse(Seq.empty)
-}
+
+
+def allPartnersAfterDelete(establisherIndex: Int): Seq[PartnerEntity] = {
+  allPartners(establisherIndex).filterNot(_.isDeleted)
+  }
+
+
+  def allPartners(establisherIndex: Int): Seq[PartnerEntity] =
+    getAllRecursive[PersonName](PartnerNameId.collectionPath(establisherIndex)).map {
+      details =>
+        for ((partner, partnerIndex) <- details.zipWithIndex) yield {
+          val isComplete = isPartnerComplete(establisherIndex, partnerIndex)
+          val isNew = get(IsNewPartnerId(establisherIndex, partnerIndex)).getOrElse(false)
+          PartnerEntity(
+            PartnerNameId(establisherIndex, partnerIndex),
+            partner.fullName,
+            partner.isDeleted,
+            isComplete,
+            isNew,
+            details.count(!_.isDeleted)
+          )
+        }
+    }.getOrElse(Seq.empty)
+  }
 
 case object UnrecognisedEstablisherKindException extends Exception
 
