@@ -21,7 +21,6 @@ import connectors.cache.{CurrentPstrCacheConnector, LockCacheConnector, UserAnsw
 import models.MigrationLock
 import models.requests.{AuthenticatedRequest, OptionalDataRequest}
 import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.mockito.MockitoSugar
 import play.api.libs.json.{JsResultException, Json}

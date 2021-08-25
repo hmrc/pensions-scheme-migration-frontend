@@ -19,12 +19,10 @@ package controllers.establishers.company.details
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.establishers.company.CompanyDetailsId
-import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
-import models.{CompanyDetails, Index, NormalMode, PersonName}
+import models.{CompanyDetails, Index, NormalMode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.TryValues
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result

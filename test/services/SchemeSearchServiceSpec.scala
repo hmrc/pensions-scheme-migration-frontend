@@ -19,16 +19,14 @@ package services
 import base.SpecBase
 import connectors.ListOfSchemesConnector
 import models.{Items, ListOfLegacySchemes}
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.{ArgumentMatchers, MockitoSugar}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
-import org.mockito.MockitoSugar
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, Table}
 import uk.gov.hmrc.viewmodels.Table.Cell
 import uk.gov.hmrc.viewmodels.Text.Literal
+import uk.gov.hmrc.viewmodels.{MessageInterpolators, Table}
 import utils.Data._
 import utils.SchemeFuzzyMatcher
 

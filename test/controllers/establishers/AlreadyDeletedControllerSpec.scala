@@ -27,7 +27,6 @@ import models.establishers.EstablisherKind
 import models.{CompanyDetails, Index, PartnershipDetails, PersonName}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
 import play.api.Application
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
