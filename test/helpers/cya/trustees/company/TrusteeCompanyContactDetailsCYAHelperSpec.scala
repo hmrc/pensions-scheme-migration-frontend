@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.cya.trustees.company
 
 import base.SpecBase._
 import controllers.trustees.company.contacts.routes
-import helpers.cya.trustees.company.TrusteeCompanyContactDetailsCYAHelper
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.contacts.{EnterEmailId, EnterPhoneId}
