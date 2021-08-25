@@ -169,9 +169,6 @@ class TaskListHelperSpec extends SpecBase with Matchers with MockitoSugar with E
                         _.set(PartnershipDetailsId(3), PartnershipDetails("test partnership")).flatMap(
                           _.set(IsEstablisherNewId(3), true)
               ))))))))))).get
-      println("helper:"+helper)
-      println("userAnswers:"+userAnswers)
-      println("0essage:"+messages)
       val expectedSection =  Seq(TaskListEntitySection(None, Nil, Some("c d")),
         TaskListEntitySection(None, Nil, Some("test company")), TaskListEntitySection(None, Nil, Some("test partnership")))
       helper.establishersSection(userAnswers, messages) mustBe expectedSection
