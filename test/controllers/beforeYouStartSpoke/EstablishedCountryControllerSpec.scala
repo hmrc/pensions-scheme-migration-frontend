@@ -22,9 +22,9 @@ import forms.beforeYouStart.EstablishedCountryFormProvider
 import helpers.CountriesHelper
 import identifiers.beforeYouStart.EstablishedCountryId
 import matchers.JsonMatchers
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
-import org.mockito.{ArgumentCaptor, Matchers}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers, Matchers}
 import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
@@ -123,7 +123,7 @@ class EstablishedCountryControllerSpec extends ControllerSpecBase with NunjucksS
 
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(EstablishedCountryId), any(), any())(any()))
+      when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(EstablishedCountryId), any(), any())(any()))
         .thenReturn(routes.CheckYourAnswersController.onPageLoad())
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))

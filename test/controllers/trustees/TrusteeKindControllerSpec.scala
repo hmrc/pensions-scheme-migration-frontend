@@ -24,9 +24,9 @@ import identifiers.trustees.individual.TrusteeNameId
 import matchers.JsonMatchers
 import models.trustees.TrusteeKind
 import models.{Index, PersonName}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
-import org.mockito.{ArgumentCaptor, Matchers}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers, Matchers}
 import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
@@ -106,7 +106,7 @@ class TrusteeKindControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(TrusteeKindId(0)), any(), any())(any()))
+      when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(TrusteeKindId(0)), any(), any())(any()))
         .thenReturn(controllers.trustees.individual.routes.TrusteeNameController.onPageLoad(0))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))

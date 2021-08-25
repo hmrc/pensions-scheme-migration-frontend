@@ -24,9 +24,9 @@ import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
 import models.establishers.EstablisherKind
 import models.{Index, PersonName}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
-import org.mockito.{ArgumentCaptor, Matchers}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers, Matchers}
 import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
@@ -106,7 +106,7 @@ class EstablisherKindControllerSpec extends ControllerSpecBase with NunjucksSupp
 
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(EstablisherKindId(0)), any(), any())(any()))
+      when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(EstablisherKindId(0)), any(), any())(any()))
         .thenReturn(controllers.establishers.individual.routes.EstablisherNameController.onPageLoad(0))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))

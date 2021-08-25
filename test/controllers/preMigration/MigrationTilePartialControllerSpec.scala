@@ -21,10 +21,10 @@ import controllers.actions._
 import matchers.JsonMatchers
 import models.PageLink
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.TryValues
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}

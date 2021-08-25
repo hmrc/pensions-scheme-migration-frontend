@@ -29,14 +29,17 @@ import identifiers.establishers.company.director.{contact => directorContact}
 import identifiers.establishers.partnership.{PartnershipDetailsId, address => partnershipAddress}
 import models.establishers.EstablisherKind
 import models.{CompanyDetails, PartnershipDetails, PersonName, ReferenceValue}
-import org.scalatest.{MustMatchers, OptionValues, TryValues, WordSpec}
+import org.scalatest.{OptionValues, TryValues}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+
 import utils.{Data, Enumerable, UserAnswers}
 
 import java.time.LocalDate
 
 class DataCompletionEstablishersSpec
-  extends WordSpec
-    with MustMatchers
+  extends AnyWordSpec
+    with Matchers
     with OptionValues
     with TryValues
     with Enumerable.Implicits {

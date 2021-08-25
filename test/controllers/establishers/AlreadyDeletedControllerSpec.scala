@@ -26,7 +26,7 @@ import matchers.JsonMatchers
 import models.establishers.EstablisherKind
 import models.{CompanyDetails, Index, PartnershipDetails, PersonName}
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import play.api.Application
 import play.api.libs.json.{JsObject, Json}

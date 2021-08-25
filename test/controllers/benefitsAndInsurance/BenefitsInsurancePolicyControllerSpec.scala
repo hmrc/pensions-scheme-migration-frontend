@@ -22,9 +22,9 @@ import forms.benefitsAndInsurance.BenefitsInsurancePolicyFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.BenefitsInsurancePolicyId
 import matchers.JsonMatchers
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
-import org.mockito.{ArgumentCaptor, Matchers}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers, Matchers}
 import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.Reads._
@@ -79,7 +79,7 @@ class BenefitsInsurancePolicyControllerSpec extends ControllerSpecBase with Nunj
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       verify(mockRenderer, times(1))
-        .render(Matchers.eq("benefitsAndInsurance/benefitsInsurancePolicy.njk"), jsonCaptor.capture())(any())
+        .render(ArgumentMatchers.eq("benefitsAndInsurance/benefitsInsurancePolicy.njk"), jsonCaptor.capture())(any())
 
       (jsonCaptor.getValue \ "schemeName").toOption.map(_.as[String]) mustBe Some(Data.schemeName)
     }
@@ -98,7 +98,7 @@ class BenefitsInsurancePolicyControllerSpec extends ControllerSpecBase with Nunj
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       verify(mockRenderer, times(1))
-        .render(Matchers.eq("benefitsAndInsurance/benefitsInsurancePolicy.njk"), jsonCaptor.capture())(any())
+        .render(ArgumentMatchers.eq("benefitsAndInsurance/benefitsInsurancePolicy.njk"), jsonCaptor.capture())(any())
 
       jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(insurerPolicyNo)))
     }

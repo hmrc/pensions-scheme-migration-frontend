@@ -20,10 +20,10 @@ import base.SpecBase
 import connectors.cache.{CurrentPstrCacheConnector, LockCacheConnector, UserAnswersCacheConnector}
 import models.MigrationLock
 import models.requests.{AuthenticatedRequest, OptionalDataRequest}
-import org.mockito.Matchers._
+import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.libs.json.{JsResultException, Json}
 import uk.gov.hmrc.domain.PsaId
 import utils.Data.psaId

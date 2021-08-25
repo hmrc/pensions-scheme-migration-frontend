@@ -60,7 +60,7 @@ class NotRegisterController @Inject()(val appConfig: AppConfig,
 
   private def schemeJson(psaName: String)(implicit messages: Messages):JsObject = {
     Json.obj(
-      "param1" -> msg"messages_notRegister_pension_scheme",
+      "param1" -> msg"messages_notRegister_pension_scheme".resolve,
       "psaName" -> psaName,
       "contactHmrcUrl" -> appConfig.contactHmrcUrl,
       "returnUrl" -> appConfig.psaOverviewUrl.url
@@ -69,7 +69,7 @@ class NotRegisterController @Inject()(val appConfig: AppConfig,
 
   private def racDacJson(psaName: String)(implicit messages: Messages):JsObject = {
     Json.obj(
-      "param1" -> msg"messages_notRegister_racDac",
+      "param1" -> msg"messages_notRegister_racDac".resolve,
       "psaName" -> psaName,
       "contactHmrcUrl" -> appConfig.contactHmrcUrl,
       "returnUrl" -> appConfig.psaOverviewUrl.url

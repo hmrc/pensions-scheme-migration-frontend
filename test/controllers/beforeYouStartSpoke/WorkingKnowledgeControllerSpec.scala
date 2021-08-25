@@ -21,9 +21,9 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import forms.beforeYouStart.WorkingKnowledgeFormProvider
 import identifiers.beforeYouStart.WorkingKnowledgeId
 import matchers.JsonMatchers
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
-import org.mockito.{ArgumentCaptor, Matchers}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers, Matchers}
 import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
@@ -121,7 +121,7 @@ class WorkingKnowledgeControllerSpec extends ControllerSpecBase with NunjucksSup
 
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(WorkingKnowledgeId), any(), any())(any()))
+      when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(WorkingKnowledgeId), any(), any())(any()))
         .thenReturn(routes.CheckYourAnswersController.onPageLoad())
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))

@@ -18,7 +18,7 @@ package controllers
 
 import connectors.cache.LockCacheConnector
 import controllers.actions.FakeAuthAction
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import play.api.mvc.Results
 import play.api.test.Helpers._

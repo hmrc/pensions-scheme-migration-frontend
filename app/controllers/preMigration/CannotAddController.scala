@@ -39,8 +39,8 @@ class CannotAddController @Inject()(val appConfig: AppConfig,
   def onPageLoadScheme: Action[AnyContent] = authenticate.async { implicit request =>
 
     val json: JsObject = Json.obj(
-      "param1" -> msg"messages__cannotAdd__pension_scheme",
-      "param2" -> msg"messages__cannotAdd__scheme",
+      "param1" -> msg"messages__cannotAdd__pension_scheme".resolve,
+      "param2" -> msg"messages__cannotAdd__scheme".resolve,
       "continueUrl" -> controllers.routes.IndexController.onPageLoad().url,
       "contactHmrcUrl" -> appConfig.contactHmrcUrl
     )
@@ -51,8 +51,8 @@ class CannotAddController @Inject()(val appConfig: AppConfig,
   def onPageLoadRacDac: Action[AnyContent] = authenticate.async { implicit request =>
 
     val json: JsObject = Json.obj(
-      "param1" -> msg"messages__cannotAdd__racdac",
-      "param2" -> msg"messages__cannotAdd__racdac",
+      "param1" -> msg"messages__cannotAdd__racdac".resolve,
+      "param2" -> msg"messages__cannotAdd__racdac".resolve,
       "continueUrl" -> controllers.routes.IndexController.onPageLoad().url,
       "contactHmrcUrl" -> appConfig.contactHmrcUrl
     )

@@ -21,10 +21,10 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.TryValues
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
@@ -41,14 +41,14 @@ class NotRegisterControllerSpec extends ControllerSpecBase with NunjucksSupport 
   private val mockMinimalDetailsConnector: MinimalDetailsConnector = mock[MinimalDetailsConnector]
 
   private def schemeJson: JsObject = Json.obj(
-    "param1" -> msg"messages_notRegister_pension_scheme",
+    "param1" -> msg"messages_notRegister_pension_scheme".resolve,
     "psaName" -> psaName,
     "contactHmrcUrl" -> appConfig.contactHmrcUrl,
     "returnUrl" -> appConfig.psaOverviewUrl.url
   )
 
   val racDacJson: JsObject = Json.obj(
-    "param1" -> msg"messages_notRegister_racDac",
+    "param1" -> msg"messages_notRegister_racDac".resolve,
     "psaName" -> psaName,
     "contactHmrcUrl" -> appConfig.contactHmrcUrl,
     "returnUrl" -> appConfig.psaOverviewUrl.url

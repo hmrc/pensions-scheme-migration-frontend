@@ -23,9 +23,9 @@ import helpers.CountriesHelper
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.InsurerAddressId
 import matchers.JsonMatchers
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
-import org.mockito.{ArgumentCaptor, Matchers}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers, Matchers}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -86,7 +86,7 @@ class InsurerConfirmAddressControllerSpec extends ControllerSpecBase with Nunjuc
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       verify(mockRenderer, times(1))
-        .render(Matchers.eq("address/manualAddress.njk"), jsonCaptor.capture())(any())
+        .render(ArgumentMatchers.eq("address/manualAddress.njk"), jsonCaptor.capture())(any())
 
       (jsonCaptor.getValue \ "schemeName").toOption.map(_.as[String]) mustBe Some(Data.schemeName)
     }

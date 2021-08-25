@@ -21,10 +21,10 @@ import helpers.TaskListHelper
 import matchers.JsonMatchers
 import models.{TaskListLink, EntitySpoke}
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule

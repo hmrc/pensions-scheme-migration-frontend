@@ -22,7 +22,7 @@ import identifiers.trustees.company.CompanyDetailsId
 import matchers.JsonMatchers
 import models.{CompanyDetails, Index, NormalMode}
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.TryValues
 import play.api.libs.json.{JsObject, Json}

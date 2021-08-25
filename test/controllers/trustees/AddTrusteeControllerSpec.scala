@@ -25,9 +25,9 @@ import identifiers.trustees.{AddTrusteeId, IsTrusteeNewId, TrusteeKindId}
 import matchers.JsonMatchers
 import models.PersonName
 import models.trustees.TrusteeKind
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
-import org.mockito.{ArgumentCaptor, Matchers}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers, Matchers}
 import play.api.Application
 import play.api.data.Form
 import play.api.inject.bind
@@ -118,7 +118,7 @@ class AddTrusteeControllerSpec extends ControllerSpecBase with NunjucksSupport w
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(AddTrusteeId(Some(true))), any(), any())(any()))
+      when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(AddTrusteeId(Some(true))), any(), any())(any()))
         .thenReturn(routes.AddTrusteeController.onPageLoad())
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)

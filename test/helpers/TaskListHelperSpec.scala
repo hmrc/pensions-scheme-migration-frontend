@@ -27,15 +27,14 @@ import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId}
 import models._
 import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import org.scalatest.MustMatchers
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.any
+import org.mockito.MockitoSugar
+import org.scalatest.matchers.must.Matchers
 import utils.Data.{completeUserAnswers, schemeName, ua}
 import utils.{Enumerable, UserAnswers}
 import viewmodels.{Message, TaskListEntitySection}
 
-class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar with Enumerable.Implicits {
+class TaskListHelperSpec extends SpecBase with Matchers with MockitoSugar with Enumerable.Implicits {
 
   private val mockSpokeCreationService = mock[SpokeCreationService]
   private val helper = new TaskListHelper(mockSpokeCreationService)
@@ -157,7 +156,9 @@ class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar wi
                         _.set(PartnershipDetailsId(3), PartnershipDetails("test partnership")).flatMap(
                           _.set(IsEstablisherNewId(3), true)
               ))))))))))).get
-
+      println("helper:"+helper)
+      println("userAnswers:"+userAnswers)
+      println("0essage:"+messages)
       val expectedSection =  Seq(TaskListEntitySection(None, null, Some("c d")),
         TaskListEntitySection(None, null, Some("test company")), TaskListEntitySection(None, null, Some("test partnership")))
       helper.establishersSection(userAnswers, messages) mustBe expectedSection
