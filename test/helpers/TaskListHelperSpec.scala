@@ -21,6 +21,7 @@ import identifiers.beforeYouStart.SchemeTypeId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
+import identifiers.trustees.partnership.{PartnershipDetailsId => TrusteePartnershipDetailsId}
 import identifiers.establishers.{EstablisherKindId, IsEstablisherNewId}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId}
@@ -171,7 +172,11 @@ class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar wi
           _.set(IsTrusteeNewId(0), true).flatMap(
             _.set(TrusteeKindId(1), TrusteeKind.Individual).flatMap(
               _.set(TrusteeNameId(1), PersonName("c", "d", true)).flatMap(
-                _.set(IsTrusteeNewId(1), true)
+                _.set(IsTrusteeNewId(1), true).flatMap(
+                  _.set(TrusteeKindId(2), TrusteeKind.Partnership).flatMap(
+                    _.set(TrusteePartnershipDetailsId(2), PartnershipDetails("ab partnership", true))
+                  )
+                )
               ))))).get
       helper.trusteesSection(userAnswers, messages) mustBe Nil
     }
@@ -182,10 +187,13 @@ class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar wi
           _.set(IsTrusteeNewId(0), true).flatMap(
             _.set(TrusteeKindId(1), TrusteeKind.Individual).flatMap(
               _.set(TrusteeNameId(1), PersonName("c", "d")).flatMap(
-                _.set(IsTrusteeNewId(1), true)
-              ))))).get
+                _.set(IsTrusteeNewId(1), true).flatMap(
+                  _.set(TrusteeKindId(2), TrusteeKind.Partnership).flatMap(
+                    _.set(TrusteePartnershipDetailsId(2), PartnershipDetails("ab partnership"))
+              ))))))).get
 
-      val expectedSection =  Seq(TaskListEntitySection(None, null, Some("c d")))
+      val expectedSection =  Seq(TaskListEntitySection(None, null, Some("c d")),
+        TaskListEntitySection(None, null, Some("ab partnership")))
       helper.trusteesSection(userAnswers, messages) mustBe expectedSection
     }
   }
