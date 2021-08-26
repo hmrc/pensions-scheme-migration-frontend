@@ -17,17 +17,17 @@
 package utils.datacompletion
 
 import identifiers.trustees.TrusteeKindId
-import identifiers.trustees.company.{CompanyDetailsId, contacts => companyContact}
-import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.details._
+import identifiers.trustees.company.{CompanyDetailsId, contacts => companyContact}
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.details._
+import identifiers.trustees.partnership.PartnershipDetailsId
 import models.trustees.TrusteeKind
-import models.{CompanyDetails, ReferenceValue}
-import org.scalatest.{OptionValues, TryValues}
-import utils.{Enumerable, UserAnswers}
+import models.{CompanyDetails, PartnershipDetails, ReferenceValue}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.{OptionValues, TryValues}
+import utils.{Enumerable, UserAnswers}
 
 import java.time.LocalDate
 
@@ -164,28 +164,53 @@ class DataCompletionTrusteesSpec
 
       }
     }
+
+    "isTrusteeCompanyContactDetailsCompleted" must {
+      "return true when all answers are present" in {
+        val ua =
+          UserAnswers()
+            .set(companyContact.EnterEmailId(0), "test@test.com").success.value
+            .set(companyContact.EnterPhoneId(0), "123").success.value
+
+        ua.isTrusteeCompanyContactDetailsCompleted(0).value mustBe true
+      }
+
+      "return false when some answer is missing" in {
+        val ua =
+          UserAnswers()
+            .set(companyContact.EnterEmailId(0), "test@test.com").success.value
+
+        ua.isTrusteeCompanyContactDetailsCompleted(0).value mustBe false
+      }
+
+      "return None when no answer is present" in {
+        UserAnswers().isTrusteeCompanyContactDetailsCompleted(0) mustBe None
+      }
+    }
   }
 
-  "isTrusteeCompanyContactDetailsCompleted" must {
-    "return true when all answers are present" in {
-      val ua =
-        UserAnswers()
-          .set(companyContact.EnterEmailId(0), "test@test.com").success.value
-          .set(companyContact.EnterPhoneId(0), "123").success.value
+  "Trustee Partnership completion status should be returned correctly" when {
+    "isTrusteePartnershipComplete" must {
+      "return true when all answers are present" in {
+        val ua =
+          UserAnswers()
+            .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
+            .set(PartnershipDetailsId(0), PartnershipDetails("test partnership")).success.value
 
-      ua.isTrusteeCompanyContactDetailsCompleted(0).value mustBe true
-    }
+        ua.isTrusteePartnershipComplete(0) mustBe true
+      }
 
-    "return false when some answer is missing" in {
-      val ua =
-        UserAnswers()
-          .set(companyContact.EnterEmailId(0), "test@test.com").success.value
+      "return false when some answer is missing" in {
+        val ua =
+          UserAnswers()
+            .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
+            .set(PartnershipDetailsId(0), PartnershipDetails("test partnership")).success.value
+            .set(TrusteeKindId(1), TrusteeKind.Partnership).success.value
 
-      ua.isTrusteeCompanyContactDetailsCompleted(0).value mustBe false
-    }
-
-    "return None when no answer is present" in {
-      UserAnswers().isTrusteeCompanyContactDetailsCompleted(0) mustBe None
+        ua.isTrusteeCompanyComplete(1) mustBe false
+      }
     }
   }
+
+
 }

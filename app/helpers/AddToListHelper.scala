@@ -21,6 +21,7 @@ import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.company.{CompanyDetailsId => TrusteeCompanyDetailsId}
+import identifiers.trustees.partnership.{PartnershipDetailsId => TrusteePartnershipDetailsId}
 import models.Entity
 import play.api.i18n.Messages
 import play.api.libs.json.{JsValue, Json}
@@ -94,6 +95,7 @@ class AddToListHelper {
       case CompanyDetailsId(_) => messages("kind.company")
       case TrusteeCompanyDetailsId(_) => messages("kind.company")
       case PartnershipDetailsId(_) => messages("kind.partnership")
+      case TrusteePartnershipDetailsId(_) => messages("kind.partnership")
     }
 
   def mapDirectorToTable[A <: Entity[_]](dirctors: Seq[A])
