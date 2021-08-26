@@ -19,7 +19,7 @@ package controllers.actions
 import base.SpecBase
 import controllers.routes
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.mvc._
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.authorise.Predicate

@@ -18,7 +18,7 @@ package connectors.cache
 
 import identifiers.TypedIdentifier
 import models.MigrationLock
-import org.scalatest.Matchers
+import org.scalatest.matchers.should.Matchers
 import play.api.libs.json._
 import play.api.mvc.Result
 import play.api.mvc.Results._

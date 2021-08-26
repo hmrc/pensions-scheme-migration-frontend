@@ -24,14 +24,16 @@ import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.details._
 import models.trustees.TrusteeKind
 import models.{CompanyDetails, ReferenceValue}
-import org.scalatest.{MustMatchers, OptionValues, TryValues, WordSpec}
+import org.scalatest.{OptionValues, TryValues}
 import utils.{Enumerable, UserAnswers}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 import java.time.LocalDate
 
 class DataCompletionTrusteesSpec
-  extends WordSpec
-    with MustMatchers
+  extends AnyWordSpec
+    with Matchers
     with OptionValues
     with TryValues
     with Enumerable.Implicits {

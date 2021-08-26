@@ -18,12 +18,11 @@ package services
 
 import com.google.inject.Inject
 import connectors.ListOfSchemesConnector
-import models.{Entity, Items, ListOfLegacySchemes}
-import play.api.i18n.Messages
+import models.Items
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.viewmodels.Table.Cell
 import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{Html, MessageInterpolators, Table}
+import uk.gov.hmrc.viewmodels.{MessageInterpolators, Table}
 import utils.SchemeFuzzyMatcher
 
 import java.time.LocalDate

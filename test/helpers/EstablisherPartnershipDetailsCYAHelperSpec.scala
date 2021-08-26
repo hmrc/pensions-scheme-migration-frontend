@@ -24,7 +24,9 @@ import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.details._
 import models.requests.DataRequest
 import models.{CheckMode, MigrationLock, ReferenceValue}
-import org.scalatest.{MustMatchers, TryValues, WordSpec}
+import org.scalatest.TryValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.domain.PsaId
@@ -35,7 +37,7 @@ import utils.Data.{establisherPartnershipDetails, credId, psaId, pstr, schemeNam
 import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 
-class EstablisherPartnershipDetailsCYAHelperSpec extends WordSpec with MustMatchers with TryValues with Enumerable.Implicits {
+class EstablisherPartnershipDetailsCYAHelperSpec extends AnyWordSpec with Matchers with TryValues with Enumerable.Implicits {
 
   val cyaHelper = new EstablisherPartnershipDetailsCYAHelper
 

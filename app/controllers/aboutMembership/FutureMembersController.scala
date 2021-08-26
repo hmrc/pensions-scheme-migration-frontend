@@ -63,7 +63,7 @@ class FutureMembersController @Inject()(override val messagesApi: MessagesApi,
         val json = Json.obj(
           "form" -> preparedForm,
           "schemeName" -> schemeName,
-          "titleMessage" -> msg"futureMembers.title",
+          "titleMessage" -> msg"futureMembers.title".resolve,
           "radios" -> Members.radios(preparedForm)
         )
 
@@ -79,7 +79,7 @@ class FutureMembersController @Inject()(override val messagesApi: MessagesApi,
             val json = Json.obj(
               "form" -> formWithErrors,
               "schemeName" -> schemeName,
-              "titleMessage" -> msg"futureMembers.title",
+              "titleMessage" -> msg"futureMembers.title".resolve,
               "radios" -> Members.radios(formWithErrors)
             )
 

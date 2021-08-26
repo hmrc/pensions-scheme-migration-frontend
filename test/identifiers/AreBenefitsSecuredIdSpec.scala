@@ -19,12 +19,13 @@ package identifiers
 import base.SpecBase
 import identifiers.benefitsAndInsurance._
 import models.Address
-import org.scalatest.{MustMatchers, OptionValues}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 import utils.{Enumerable, UserAnswers}
 
-class AreBenefitsSecuredIdSpec extends SpecBase with MustMatchers with ScalaCheckPropertyChecks with OptionValues with Enumerable.Implicits {
+class AreBenefitsSecuredIdSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks with OptionValues with Enumerable.Implicits {
 
   "Cleanup" when {
 

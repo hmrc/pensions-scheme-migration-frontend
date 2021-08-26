@@ -21,21 +21,21 @@ import identifiers.beforeYouStart.SchemeTypeId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
-import identifiers.establishers.{EstablisherKindId, IsEstablisherNewId}
+import identifiers.establishers.{IsEstablisherNewId, EstablisherKindId}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId}
 import models._
 import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import org.scalatest.MustMatchers
-import org.scalatestplus.mockito.MockitoSugar
-import utils.Data.{completeUserAnswers, schemeName, ua}
-import utils.{Enumerable, UserAnswers}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.MockitoSugar
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.matchers.must.Matchers
+import utils.Data.{schemeName, completeUserAnswers, ua}
+import utils.{UserAnswers, Enumerable}
 import viewmodels.{Message, TaskListEntitySection}
 
-class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar with Enumerable.Implicits {
+class TaskListHelperSpec extends SpecBase with Matchers with MockitoSugar with Enumerable.Implicits with BeforeAndAfterEach {
 
   private val mockSpokeCreationService = mock[SpokeCreationService]
   private val helper = new TaskListHelper(mockSpokeCreationService)
@@ -55,9 +55,21 @@ class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar wi
   private val expectedDeclarationSpoke = EntitySpoke(TaskListLink(declarationLinkText,
     controllers.routes.DeclarationController.onPageLoad().url), Some(false))
   implicit val userAnswers: UserAnswers = ua
+
+  override def beforeEach: Unit = {
+    reset(mockSpokeCreationService)
+    when(mockSpokeCreationService.getAddTrusteeHeaderSpokes(any(), any())(any())).thenReturn(Nil)
+    when(mockSpokeCreationService.getTrusteeIndividualSpokes(any(), any(), any())(any())).thenReturn(Nil)
+    when(mockSpokeCreationService.getTrusteeCompanySpokes(any(), any(), any())(any())).thenReturn(Nil)
+    when(mockSpokeCreationService.getAddEstablisherHeaderSpokes(any(), any())(any())).thenReturn(Nil)
+    when(mockSpokeCreationService.getBeforeYouStartSpoke(any(), any())(any())).thenReturn(Nil)
+    when(mockSpokeCreationService.getEstablisherIndividualSpokes(any(), any(), any())(any())).thenReturn(Nil)
+    when(mockSpokeCreationService.getEstablisherCompanySpokes(any(), any(), any())(any())).thenReturn(Nil)
+    when(mockSpokeCreationService.getEstablisherPartnershipSpokes(any(), any(), any())(any())).thenReturn(Nil)
+  }
+
   "h1" must {
     "display appropriate heading" in {
-
       helper.taskList(false).h1 mustBe schemeName
     }
   }
@@ -157,9 +169,8 @@ class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar wi
                         _.set(PartnershipDetailsId(3), PartnershipDetails("test partnership")).flatMap(
                           _.set(IsEstablisherNewId(3), true)
               ))))))))))).get
-
-      val expectedSection =  Seq(TaskListEntitySection(None, null, Some("c d")),
-        TaskListEntitySection(None, null, Some("test company")), TaskListEntitySection(None, null, Some("test partnership")))
+      val expectedSection =  Seq(TaskListEntitySection(None, Nil, Some("c d")),
+        TaskListEntitySection(None, Nil, Some("test company")), TaskListEntitySection(None, Nil, Some("test partnership")))
       helper.establishersSection(userAnswers, messages) mustBe expectedSection
     }
   }
@@ -185,7 +196,7 @@ class TaskListHelperSpec extends SpecBase with MustMatchers with MockitoSugar wi
                 _.set(IsTrusteeNewId(1), true)
               ))))).get
 
-      val expectedSection =  Seq(TaskListEntitySection(None, null, Some("c d")))
+      val expectedSection =  Seq(TaskListEntitySection(None, Nil, Some("c d")))
       helper.trusteesSection(userAnswers, messages) mustBe expectedSection
     }
   }

@@ -23,9 +23,8 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address.TradingTimeId
 import matchers.JsonMatchers
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{times, verify, when}
-import org.mockito.{ArgumentCaptor, Matchers}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
@@ -35,7 +34,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{UserAnswers, Enumerable, Data}
+import utils.{Data, Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 
@@ -83,7 +82,7 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       verify(mockRenderer, times(1))
-        .render(Matchers.eq("address/tradingTime.njk"), jsonCaptor.capture())(any())
+        .render(ArgumentMatchers.eq("address/tradingTime.njk"), jsonCaptor.capture())(any())
 
       (jsonCaptor.getValue \ "schemeName").toOption.map(_.as[String]) mustBe Some(Data.schemeName)
     }
@@ -103,7 +102,7 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       verify(mockRenderer, times(1))
-        .render(Matchers.eq("address/tradingTime.njk"), jsonCaptor.capture())(any())
+        .render(ArgumentMatchers.eq("address/tradingTime.njk"), jsonCaptor.capture())(any())
 
       jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(true)))
     }

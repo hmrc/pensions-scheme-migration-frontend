@@ -23,11 +23,9 @@ import forms.ListSchemesFormProvider
 import matchers.JsonMatchers
 import models.MigrationType.isRacDac
 import models.{Items, MigrationType, MinPSA, Scheme}
-import org.mockito.{ArgumentCaptor, Matchers}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.{ArgumentCaptor, ArgumentMatchers, MockitoSugar}
 import org.scalatest.TryValues
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
@@ -242,7 +240,7 @@ class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSuppor
     "return OK and the correct view when there are schemes without pagination and search on non empty string" in {
       when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(minimalPSA()))
       val searchText = "pstr1"
-      when(mockSchemeSearchService.search(any(), Matchers.eq(Some(searchText)),any())(any(), any())).thenReturn(Future.successful(fullSchemes))
+      when(mockSchemeSearchService.search(any(), ArgumentMatchers.eq(Some(searchText)),any())(any(), any())).thenReturn(Future.successful(fullSchemes))
 
       val numberOfPages =
         paginationService.divide(fullSchemes.length, pagination)
@@ -263,7 +261,7 @@ class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
     "return BADREQUEST and error when no value is entered into search" in {
       when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(minimalPSA()))
-      when(mockSchemeSearchService.search(any(), Matchers.eq(None),any())(any(), any())).thenReturn(Future.successful(fullSchemes))
+      when(mockSchemeSearchService.search(any(), ArgumentMatchers.eq(None),any())(any(), any())).thenReturn(Future.successful(fullSchemes))
 
       val numberOfPages = paginationService.divide(fullSchemes.length, pagination)
 
@@ -285,7 +283,7 @@ class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSuppor
     "return OK and the correct view with correct no matches message when unrecognised format is entered into search" in {
       when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(minimalPSA()))
       val incorrectSearchText = "24000001IN"
-      when(mockSchemeSearchService.search(any(), Matchers.eq(Some(incorrectSearchText)),any())(any(), any())).thenReturn(Future.successful(Nil))
+      when(mockSchemeSearchService.search(any(), ArgumentMatchers.eq(Some(incorrectSearchText)),any())(any(), any())).thenReturn(Future.successful(Nil))
 
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])

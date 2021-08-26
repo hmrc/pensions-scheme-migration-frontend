@@ -19,11 +19,9 @@ package controllers.preMigration
 import controllers.ControllerSpecBase
 import controllers.actions._
 import matchers.JsonMatchers
-import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.{ArgumentCaptor, MockitoSugar}
 import org.scalatest.TryValues
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
@@ -38,7 +36,7 @@ class CannotMigrateControllerSpec extends ControllerSpecBase with NunjucksSuppor
   private val templateToBeRendered: String = "preMigration/cannotMigrate.njk"
 
   private def schemeJson: JsObject = Json.obj(
-    "param1" -> msg"messages__administrator__overview",
+    "param1" -> msg"messages__administrator__overview".resolve,
     "returnUrl" -> appConfig.psaOverviewUrl
   )
 
