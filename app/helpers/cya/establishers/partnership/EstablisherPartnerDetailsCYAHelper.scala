@@ -75,7 +75,7 @@ class EstablisherPartnerDetailsCYAHelper
         _ =>
           answerOrAddRow(
             id                 = PartnerNINOId(establisherIndex, partnerIndex),
-            message            = Message("messages__hasNINO__cya", partnerName),
+            message            = Message("messages__enterNINO__cya", partnerName),
             url                = Some(controllers.establishers.partnership.partner.details.routes.PartnerEnterNINOController.onPageLoad(establisherIndex, partnerIndex, CheckMode).url),
             visuallyHiddenText = Some(msg"messages__hasNINO__cya__visuallyHidden".withArgs(partnerName)),
             answerTransform    = referenceValueTransform
@@ -92,7 +92,7 @@ class EstablisherPartnerDetailsCYAHelper
       },
       Some(answerOrAddRow(
         id                 = PartnerHasUTRId(establisherIndex, partnerIndex),
-        message            = Message("messages__hasUTR", partnerName).resolve,
+        message            = Message("messages__hasUTR__cya_label", partnerName).resolve,
         url                = Some(controllers.establishers.partnership.partner.details.routes.PartnerHasUTRController.onPageLoad(establisherIndex, partnerIndex,CheckMode).url),
         visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(partnerName)),
         answerTransform    = answerBooleanTransform
@@ -101,7 +101,7 @@ class EstablisherPartnerDetailsCYAHelper
         _ =>
           answerOrAddRow(
             id                 = PartnerEnterUTRId(establisherIndex, partnerIndex),
-            message            = Message("messages__hasUTR__cya", partnerName),
+            message            = Message("messages__enterUTR__cya_label", partnerName),
             url                = Some(controllers.establishers.partnership.partner.details.routes.PartnerEnterUTRController.onPageLoad(establisherIndex, partnerIndex,CheckMode).url),
             visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(partnerName)),
             answerTransform    = referenceValueTransform
@@ -118,7 +118,7 @@ class EstablisherPartnerDetailsCYAHelper
       },
       Some( answerOrAddRow(
             id                  = AddressId(establisherIndex, partnerIndex),
-            message             = Message("messages__establisherAddress__whatYouWillNeed_h1", partnerName).resolve,
+            message             = Message("addressList_cya_label", partnerName).resolve,
             url                 = Some(controllers.establishers.partnership.partner.address.routes.EnterPostcodeController.onPageLoad(establisherIndex, partnerIndex,  CheckMode).url),
             visuallyHiddenText  = Some(msg"messages__visuallyHidden__address".withArgs(partnerName)), answerAddressTransform
           ))
@@ -136,20 +136,20 @@ class EstablisherPartnerDetailsCYAHelper
       }else{
         Some( answerOrAddRow(
           id = PreviousAddressId(establisherIndex, partnerIndex),
-          message = Message("messages__establisherPreviousAddress").resolve,
+          message = Message("previousAddressList_cya_label", partnerName).resolve,
           url = Some(controllers.establishers.partnership.partner.address.routes.EnterPreviousPostcodeController.onPageLoad(establisherIndex, partnerIndex, CheckMode).url),
           visuallyHiddenText = Some(msg"messages__visuallyHidden__previousAddress".withArgs(partnerName)), answerAddressTransform
         ))
       },
       Some(answerOrAddRow(
         id                  = EnterEmailId(establisherIndex, partnerIndex),
-        message             = Message("messages__enterEmail", partnerName).resolve,
+        message             = Message("messages__enterEmail_cya_label", partnerName).resolve,
         url                 = Some(controllers.establishers.partnership.partner.contact.routes.EnterEmailController.onPageLoad(establisherIndex, partnerIndex,CheckMode).url),
         visuallyHiddenText  = Some(msg"messages__enterEmail__cya__visuallyHidden".withArgs(partnerName))
       )),
       Some(answerOrAddRow(
         id                  = EnterPhoneId(establisherIndex, partnerIndex),
-        message             = Message("messages__enterPhone", partnerName).resolve,
+        message             = Message("messages__enterPhone_cya_label", partnerName).resolve,
         url                 = Some(controllers.establishers.partnership.partner.contact.routes.EnterPhoneNumberController.onPageLoad(establisherIndex, partnerIndex, CheckMode).url),
         visuallyHiddenText  = Some(msg"messages__enterPhone__cya__visuallyHidden".withArgs(partnerName))
       ))

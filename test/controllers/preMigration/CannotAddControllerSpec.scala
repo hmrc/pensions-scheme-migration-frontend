@@ -21,12 +21,9 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import matchers.JsonMatchers
 import models.{Items, ListOfLegacySchemes, RacDac, Scheme}
-import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.{ArgumentCaptor, MockitoSugar}
 import org.scalatest.TryValues
-import org.scalatest.concurrent.ScalaFutures.whenReady
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
@@ -49,15 +46,15 @@ class CannotAddControllerSpec extends ControllerSpecBase with NunjucksSupport wi
   private val expectedResponseWithPensionOnly = ListOfLegacySchemes(1, Some(List(schemeDetail)))
   private val expectedResponseWithEmpty = ListOfLegacySchemes(1, None)
   private def schemeJson: JsObject = Json.obj(
-    "param1" -> msg"messages__pension_scheme",
-    "param2" -> msg"messages__scheme",
+    "param1" -> msg"messages__pension_scheme".resolve,
+    "param2" -> msg"messages__scheme".resolve,
     "continueUrl" -> routes.ListOfSchemesController.onPageLoad(Scheme).url,
     "contactHmrcUrl" -> appConfig.contactHmrcUrl
   )
 
   val racDacJson: JsObject = Json.obj(
-    "param1" -> msg"messages__racdac",
-    "param2" -> msg"messages__racdac",
+    "param1" -> msg"messages__racdac".resolve,
+    "param2" -> msg"messages__racdac".resolve,
     "continueUrl" -> routes.ListOfSchemesController.onPageLoad(RacDac).url,
     "contactHmrcUrl" -> appConfig.contactHmrcUrl
   )

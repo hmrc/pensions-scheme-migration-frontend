@@ -65,7 +65,7 @@ class PartnerNoUTRReasonController @Inject()(override val messagesApi: MessagesA
           schemeName =>
             get(
               pageTitle     = Message("messages__whyNoUTR_title", Message("messages__partner")),
-              pageHeading     = Message("messages__whyNoUTR",  name(establisherIndex,partnerIndex)),
+              pageHeading     = Message("messages__whyNoUTR_title",  name(establisherIndex,partnerIndex)),
               isPageHeading = true,
               id            = PartnerNoUTRReasonId(establisherIndex,partnerIndex),
               form          = form(establisherIndex,partnerIndex),
@@ -81,7 +81,7 @@ class PartnerNoUTRReasonController @Inject()(override val messagesApi: MessagesA
           schemeName =>
             post(
               pageTitle     = Message("messages__whyNoUTR_title", Message("messages__partner")),
-              pageHeading     = Message("messages__whyNoUTR",name(establisherIndex,partnerIndex)),
+              pageHeading     = Message("messages__whyNoUTR_title",name(establisherIndex,partnerIndex)),
               isPageHeading = true,
               id            = PartnerNoUTRReasonId(establisherIndex,partnerIndex),
               form          = form(establisherIndex,partnerIndex),

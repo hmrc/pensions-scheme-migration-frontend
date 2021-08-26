@@ -50,8 +50,8 @@ class ConfirmPreviousAddressController @Inject()(override val messagesApi: Messa
   with Retrievals with I18nSupport with NunjucksSupport {
 
   override protected val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__partner")
-  override protected val h1MessageKey: String = "previousAddress.title"
-  override protected val pageTitleMessageKey: String = "previousAddress.title"
+  override protected val h1MessageKey: String = "previousAddressList_pageHeading"
+  override protected val pageTitleMessageKey: String = "previousAddressList_pageHeading"
 
   def form(implicit messages: Messages): Form[Address] = formProvider()
 

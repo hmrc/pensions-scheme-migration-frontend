@@ -26,9 +26,8 @@ import identifiers.establishers.company.{AddCompanyDirectorsId, CompanyDetailsId
 import matchers.JsonMatchers
 import models.establishers.EstablisherKind
 import models.{CompanyDetails, NormalMode, PersonName}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
-import org.mockito.{ArgumentCaptor, Matchers}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
 import play.api.inject.bind
@@ -37,7 +36,7 @@ import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.viewmodels.{Radios, Table}
+import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{company, schemeName, ua}
 import utils.{Enumerable, UserAnswers}
 
@@ -149,7 +148,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with Nunjucks
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(AddCompanyDirectorsId(0)), any(), any())(any()))
+      when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(AddCompanyDirectorsId(0)), any(), any())(any()))
         .thenReturn(routes.AddCompanyDirectorsController.onPageLoad(0,NormalMode))
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)

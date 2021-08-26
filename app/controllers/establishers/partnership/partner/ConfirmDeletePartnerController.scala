@@ -59,7 +59,7 @@ class ConfirmDeletePartnerController @Inject()(override val messagesApi: Message
           } else {
             val json = Json.obj(
               "form" -> form(partner.fullName),
-              "titleMessage" -> msg"messages__confirmDeletePartners__title",
+              "titleMessage" -> msg"messages__confirmDeletePartners__title".resolve,
               "name" -> partner.fullName,
               "hint" ->  Some(Messages(s"messages__confirmDeletePartners__partnershipHint")),
               "radios" -> Radios.yesNo(formProvider(partner.fullName)(implicitly)("value")),
@@ -83,7 +83,7 @@ class ConfirmDeletePartnerController @Inject()(override val messagesApi: Message
             (formWithErrors: Form[_]) => {
               val json = Json.obj(
                 "form" -> formWithErrors,
-                "titleMessage" -> msg"messages__confirmDeletePartners__title",
+                "titleMessage" -> msg"messages__confirmDeletePartners__title".resolve,
                 "name" ->  partner.fullName,
                 "hint" -> Some(Messages(s"messages__confirmDeletePartners__partnershipHint")),
                 "radios" -> Radios.yesNo(formProvider(partner.fullName)(implicitly)("value")),

@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.cya.trustees.company
 
 import base.SpecBase._
 import controllers.trustees.company.contacts.routes
-import helpers.cya.trustees.company.TrusteeCompanyContactDetailsCYAHelper
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.contacts.{EnterEmailId, EnterPhoneId}
 import models.requests.DataRequest
 import models.{CheckMode, CompanyDetails, MigrationLock}
-import org.scalatest.{MustMatchers, TryValues, WordSpec}
+import org.scalatest.TryValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.domain.PsaId
@@ -35,7 +36,7 @@ import utils.Data.{credId, psaId, pstr, schemeName}
 import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 
-class TrusteeCompanyContactDetailsCYAHelperSpec extends WordSpec with MustMatchers with TryValues with Enumerable.Implicits {
+class TrusteeCompanyContactDetailsCYAHelperSpec extends AnyWordSpec with Matchers with TryValues with Enumerable.Implicits {
 
   val trusteeCompanyContactDetailsCYAHelper = new TrusteeCompanyContactDetailsCYAHelper
 
