@@ -22,9 +22,8 @@ import forms.PersonNameFormProvider
 import identifiers.establishers.company.director.DirectorNameId
 import matchers.JsonMatchers
 import models.{Index, NormalMode, PersonName}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{times, verify, when}
-import org.mockito.{ArgumentCaptor, Matchers}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
@@ -125,7 +124,7 @@ class DirectorNameControllerSpec extends ControllerSpecBase with NunjucksSupport
 
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(DirectorNameId(index,directorIndex)), any(), any())(any()))
+      when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(DirectorNameId(index,directorIndex)), any(), any())(any()))
         .thenReturn(controllers.establishers.company.director.details.routes.DirectorDOBController.onPageLoad(index,directorIndex,NormalMode))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))

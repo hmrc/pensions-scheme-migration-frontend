@@ -23,7 +23,9 @@ import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
 import models.requests.DataRequest
 import models.{Address, MigrationLock, PersonName}
-import org.scalatest.{MustMatchers, TryValues, WordSpec}
+import org.scalatest.TryValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.domain.PsaId
@@ -33,7 +35,7 @@ import uk.gov.hmrc.viewmodels.{Html, SummaryList, Text}
 import utils.Data.{credId, psaId, pstr, schemeName}
 import utils.{Enumerable, UserAnswers}
 
-class TrusteeAddressCYAHelperSpec extends WordSpec with MustMatchers with TryValues with Enumerable.Implicits {
+class TrusteeAddressCYAHelperSpec extends AnyWordSpec with Matchers with TryValues with Enumerable.Implicits {
 
   val trusteeAddressCYAHelper = new TrusteeAddressCYAHelper
 

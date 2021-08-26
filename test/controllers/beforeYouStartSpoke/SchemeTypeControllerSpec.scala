@@ -22,9 +22,8 @@ import forms.beforeYouStart.SchemeTypeFormProvider
 import identifiers.beforeYouStart.SchemeTypeId
 import matchers.JsonMatchers
 import models.SchemeType
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{times, verify, when}
-import org.mockito.{ArgumentCaptor, Matchers}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
@@ -121,7 +120,7 @@ class SchemeTypeControllerSpec extends ControllerSpecBase with NunjucksSupport w
 
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(SchemeTypeId), any(), any())(any()))
+      when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(SchemeTypeId), any(), any())(any()))
         .thenReturn(routes.CheckYourAnswersController.onPageLoad())
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))

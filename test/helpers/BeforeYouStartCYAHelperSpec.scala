@@ -21,7 +21,8 @@ import controllers.beforeYouStartSpoke.routes
 import helpers.cya.BeforeYouStartCYAHelper
 import identifiers.beforeYouStart._
 import models.SchemeType
-import org.scalatest.{MustMatchers, TryValues}
+import org.scalatest.TryValues
+import org.scalatest.matchers.must.Matchers
 import play.api.i18n.Messages
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels.Text.{Literal, Message}
@@ -31,7 +32,7 @@ import utils.{CountryOptions, Enumerable, InputOption, UserAnswers}
 
 class BeforeYouStartCYAHelperSpec
   extends SpecBase
-    with MustMatchers
+    with Matchers
     with TryValues
     with Enumerable.Implicits {
 

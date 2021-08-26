@@ -65,7 +65,7 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
             } else {
               val json = Json.obj(
                 "form" -> form(trustee.name),
-                "titleMessage" -> msg"messages__confirmDeleteTrustee__title",
+                "titleMessage" -> msg"messages__confirmDeleteTrustee__title".resolve,
                 "name" -> trustee.name,
                 "hint" -> getHintText(trusteeKind),
                 "radios" -> Radios.yesNo(formProvider(trustee.name)(implicitly)("value")),
@@ -124,7 +124,7 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
       (formWithErrors: Form[_]) => {
         val json = Json.obj(
           "form" -> formWithErrors,
-          "titleMessage" -> msg"messages__confirmDeleteTrustee__title",
+          "titleMessage" -> msg"messages__confirmDeleteTrustee__title".resolve,
           "name" -> name,
           "hint" -> getHintText(trusteeKind),
           "radios" -> Radios.yesNo(formProvider(name)(implicitly)("value")),

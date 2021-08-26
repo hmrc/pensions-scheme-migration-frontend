@@ -18,12 +18,13 @@ package identifiers.establishers.individual.details
 
 import base.SpecBase
 import models.ReferenceValue
-import org.scalatest.{MustMatchers, TryValues}
+import org.scalatest.TryValues
+import org.scalatest.matchers.must.Matchers
 import utils.{Enumerable, UserAnswers}
 
 class EstablisherHasNINOIdSpec
   extends SpecBase
-    with MustMatchers
+    with Matchers
     with TryValues
     with Enumerable.Implicits {
 

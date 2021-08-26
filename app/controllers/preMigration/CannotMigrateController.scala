@@ -39,7 +39,7 @@ class CannotMigrateController @Inject()(val appConfig: AppConfig,
   def onPageLoad: Action[AnyContent] = authenticate.async { implicit request =>
 
         val json: JsObject = Json.obj(
-          "param1" -> msg"messages__administrator__overview",
+          "param1" -> msg"messages__administrator__overview".resolve,
           "returnUrl" -> appConfig.psaOverviewUrl
         )
       renderer.render("preMigration/cannotMigrate.njk", json).map(Ok(_))

@@ -18,12 +18,14 @@ package utils
 
 import identifiers.beforeYouStart.SchemeNameId
 import org.scalatest._
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.{JsPath, JsString, Json}
 import utils.Data._
 
 class UserAnswersSpec
-  extends WordSpec
-    with MustMatchers
+  extends AnyWordSpec
+    with Matchers
     with OptionValues
     with RecoverMethods
     with TryValues {

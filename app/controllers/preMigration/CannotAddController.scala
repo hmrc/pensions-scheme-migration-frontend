@@ -47,8 +47,8 @@ class CannotAddController @Inject()(val appConfig: AppConfig,
         if (list.items.getOrElse(Nil).exists(!_.racDac)) {
 
           val json: JsObject = Json.obj(
-            "param1" -> msg"messages__pension_scheme",
-            "param2" -> msg"messages__scheme",
+            "param1" -> msg"messages__pension_scheme".resolve,
+            "param2" -> msg"messages__scheme".resolve,
             "continueUrl" -> routes.ListOfSchemesController.onPageLoad(Scheme).url,
             "contactHmrcUrl" -> appConfig.contactHmrcUrl
           )
@@ -69,8 +69,8 @@ class CannotAddController @Inject()(val appConfig: AppConfig,
       case Right(list) =>
         if (list.items.getOrElse(Nil).exists(_.racDac)) {
           val json: JsObject = Json.obj(
-            "param1" -> msg"messages__racdac",
-            "param2" -> msg"messages__racdac",
+            "param1" -> msg"messages__racdac".resolve,
+            "param2" -> msg"messages__racdac".resolve,
             "continueUrl" -> routes.ListOfSchemesController.onPageLoad(RacDac).url,
             "contactHmrcUrl" -> appConfig.contactHmrcUrl
           )

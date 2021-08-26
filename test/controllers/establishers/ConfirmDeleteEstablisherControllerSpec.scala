@@ -26,9 +26,8 @@ import identifiers.establishers.partnership.PartnershipDetailsId
 import matchers.JsonMatchers
 import models.establishers.EstablisherKind
 import models.{CompanyDetails, Index, PartnershipDetails, PersonName}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{times, verify, when}
-import org.mockito.{ArgumentCaptor, Matchers}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
@@ -142,7 +141,7 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Nun
     "Save data to user answers and redirect to next page when valid data is submitted for Individual" in {
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(ConfirmDeleteEstablisherId), any(), any())(any()))
+      when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(ConfirmDeleteEstablisherId), any(), any())(any()))
         .thenReturn(routes.AddEstablisherController.onPageLoad())
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
@@ -161,7 +160,7 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Nun
     "Save data to user answers and redirect to next page when valid data is submitted for Company" in {
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(ConfirmDeleteEstablisherId), any(), any())(any()))
+      when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(ConfirmDeleteEstablisherId), any(), any())(any()))
         .thenReturn(routes.AddEstablisherController.onPageLoad())
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
@@ -180,7 +179,7 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Nun
     "Save data to user answers and redirect to next page when valid data is submitted for Partnership" in {
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(ConfirmDeleteEstablisherId), any(), any())(any()))
+      when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(ConfirmDeleteEstablisherId), any(), any())(any()))
         .thenReturn(routes.AddEstablisherController.onPageLoad())
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))

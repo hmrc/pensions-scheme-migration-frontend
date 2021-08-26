@@ -19,10 +19,10 @@ package services
 import base.SpecBase
 import connectors.cache.{CurrentPstrCacheConnector, LockCacheConnector}
 import models.requests.AuthenticatedRequest
-import org.mockito.Matchers
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.mvc.Results.Ok
@@ -48,7 +48,7 @@ class LockingServiceSpec extends SpecBase with MockitoSugar {
 
        val request : AuthenticatedRequest[AnyContent] = AuthenticatedRequest(fakeRequest, "", PsaId(psaId))
        when(mockSchemeCacheConnector.save(any())(any(),any())).thenReturn(Future.successful(Json.obj()))
-       when(mockLockCacheConnector.getLockOnScheme(Matchers.eq(pstr))(any(),any())).thenReturn(Future.successful(Some(migrationLock)))
+       when(mockLockCacheConnector.getLockOnScheme(ArgumentMatchers.eq(pstr))(any(),any())).thenReturn(Future.successful(Some(migrationLock)))
        redirectLocation(service.initialLockSetupAndRedirect(pstr,request)) mustBe Some(controllers.routes.IndexController.onPageLoad().url)
        }
      }
@@ -57,7 +57,7 @@ class LockingServiceSpec extends SpecBase with MockitoSugar {
 
     val request : AuthenticatedRequest[AnyContent] = AuthenticatedRequest(fakeRequest, credId, PsaId(psaId))
     when(mockSchemeCacheConnector.save(any())(any(),any())).thenReturn(Future.successful(Json.obj()))
-    when(mockLockCacheConnector.getLockOnScheme(Matchers.eq(pstr))(any(),any())).thenReturn(Future.successful(Some(migrationLock)))
+    when(mockLockCacheConnector.getLockOnScheme(ArgumentMatchers.eq(pstr))(any(),any())).thenReturn(Future.successful(Some(migrationLock)))
     redirectLocation(service.initialLockSetupAndRedirect(pstr,request)) mustBe Some(controllers.routes.TaskListController.onPageLoad().url)
   }
 
@@ -65,7 +65,7 @@ class LockingServiceSpec extends SpecBase with MockitoSugar {
 
     val request : AuthenticatedRequest[AnyContent] = AuthenticatedRequest(fakeRequest, credId, PsaId(psaId))
     when(mockLockCacheConnector.removeLockByUser(any(),any())).thenReturn(Future.successful(Ok))
-    when(mockLockCacheConnector.setLock(Matchers.eq(migrationLock))(any(),any())).thenReturn(Future.successful(Json.obj()))
+    when(mockLockCacheConnector.setLock(ArgumentMatchers.eq(migrationLock))(any(),any())).thenReturn(Future.successful(Json.obj()))
     redirectLocation(service.initialLockSetupAndRedirect(pstr,request)) mustBe Some(controllers.routes.TaskListController.onPageLoad().url)
   }
 
