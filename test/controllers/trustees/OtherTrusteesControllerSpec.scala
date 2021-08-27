@@ -21,7 +21,6 @@ import controllers.actions.{DataRetrievalAction, FakeAuthAction, DataRequiredAct
 import forms.HasReferenceNumberFormProvider
 import identifiers.trustees.OtherTrusteesId
 import matchers.JsonMatchers
-import models.NormalMode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
@@ -102,7 +101,7 @@ class OtherTrusteesControllerSpec extends ControllerSpecBase
 
       val result: Future[Result] =
         controller(getData)
-          .onPageLoad(NormalMode)(fakeDataRequest(ua))
+          .onPageLoad(fakeDataRequest(ua))
 
       status(result) mustBe OK
 
@@ -133,7 +132,7 @@ class OtherTrusteesControllerSpec extends ControllerSpecBase
 
       val result: Future[Result] =
         controller(getData)
-          .onPageLoad(NormalMode)(fakeDataRequest(userAnswers))
+          .onPageLoad(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
 
@@ -164,7 +163,7 @@ class OtherTrusteesControllerSpec extends ControllerSpecBase
 
       val result: Future[Result] =
         controller(getData)
-          .onPageLoad(NormalMode)(fakeDataRequest(userAnswers))
+          .onPageLoad(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
 
@@ -191,7 +190,7 @@ class OtherTrusteesControllerSpec extends ControllerSpecBase
 
       val result: Future[Result] =
         controller(getData)
-          .onSubmit(NormalMode)(request)
+          .onSubmit(request)
 
       status(result) mustBe SEE_OTHER
 
@@ -217,7 +216,7 @@ class OtherTrusteesControllerSpec extends ControllerSpecBase
 
       val result: Future[Result] =
         controller(getData)
-          .onSubmit(NormalMode)(request)
+          .onSubmit(request)
 
       val boundForm = form.bind(Map("value" -> "invalid value"))
 

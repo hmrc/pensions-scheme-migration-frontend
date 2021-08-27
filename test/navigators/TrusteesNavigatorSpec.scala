@@ -23,7 +23,7 @@ import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address._
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.details._
-import identifiers.trustees.{AddTrusteeId, TrusteeKindId, OtherTrusteesId}
+import identifiers.trustees.{OtherTrusteesId, AddTrusteeId, TrusteeKindId}
 import identifiers.{Identifier, TypedIdentifier}
 import models.trustees.TrusteeKind
 import models.{PersonName, Mode, Index, NormalMode, _}
@@ -54,7 +54,7 @@ class TrusteesNavigatorSpec
   private def trusteePhonePage(mode: Mode): Call = controllers.trustees.individual.contact.routes.EnterPhoneController.onPageLoad(index, mode)
   private val addTrusteePage: Call = controllers.trustees.routes.AddTrusteeController.onPageLoad()
   private val taskListPage: Call = controllers.routes.TaskListController.onPageLoad()
-  private val otherTrusteesPage: Call = controllers.trustees.routes.OtherTrusteesController.onPageLoad(NormalMode)
+  private val otherTrusteesPage: Call = controllers.trustees.routes.OtherTrusteesController.onPageLoad
   private val trusteeKindPage: Call = routes.TrusteeKindController.onPageLoad(index)
   private val indexPage: Call = controllers.routes.IndexController.onPageLoad()
   private def hasNinoPage(mode: Mode): Call =

@@ -22,8 +22,8 @@ import controllers.actions._
 import forms.HasReferenceNumberFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.OtherTrusteesId
+import models.NormalMode
 import models.requests.DataRequest
-import models.Mode
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -49,7 +49,7 @@ class OtherTrusteesController @Inject()(
   private def form()(implicit request: DataRequest[AnyContent]): Form[Boolean] =
     formProvider(errorMsg = Message("messages__otherTrustees__error__required"))
 
-  def onPageLoad(mode: Mode): Action[AnyContent] =
+  def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         SchemeNameId.retrieve.right.map {
@@ -67,7 +67,7 @@ class OtherTrusteesController @Inject()(
         }
     }
 
-  def onSubmit(mode: Mode): Action[AnyContent] =
+  def onSubmit: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         SchemeNameId.retrieve.right.map {
@@ -81,7 +81,7 @@ class OtherTrusteesController @Inject()(
               schemeName = schemeName,
               paragraphText = Seq(Message("messages__otherTrustees__lede")),
               legendClass = "govuk-visually-hidden",
-              mode = mode
+              mode = NormalMode
             )
         }
     }

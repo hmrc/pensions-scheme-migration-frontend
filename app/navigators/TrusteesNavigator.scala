@@ -16,7 +16,6 @@
 
 package navigators
 
-import config.AppConfig
 import controllers.routes._
 import controllers.trustees.individual.address.routes.{SelectAddressController, EnterPreviousPostcodeController, SelectPreviousAddressController}
 import controllers.trustees.individual.contact.routes._
@@ -35,9 +34,7 @@ import models.{Mode, Index, CheckMode, NormalMode}
 import play.api.mvc.{Call, AnyContent}
 import utils.{UserAnswers, Enumerable}
 
-import javax.inject.Inject
-
-class TrusteesNavigator @Inject()(config: AppConfig)
+class TrusteesNavigator
   extends Navigator
     with Enumerable.Implicits {
 
@@ -107,7 +104,7 @@ class TrusteesNavigator @Inject()(config: AppConfig)
       value match {
         case Some(false) => TaskListController.onPageLoad()
         case Some(true) => TrusteeKindController.onPageLoad(answers.trusteesCount)
-        case None => controllers.trustees.routes.OtherTrusteesController.onPageLoad(NormalMode)
+        case None => controllers.trustees.routes.OtherTrusteesController.onPageLoad
       }
 
   private def trusteeHasNino(
