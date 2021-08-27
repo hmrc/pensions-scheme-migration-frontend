@@ -67,9 +67,13 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
     implicit request =>
       val trustees = request.userAnswers.allTrusteesAfterDelete
       val table = helper.mapTrusteesToTable(trustees)
-
-      formProvider(trustees).bindFromRequest().fold(
-        formWithErrors => {
+      val formWithErrors = formProvider(trustees).bindFromRequest()
+      (formWithErrors.value, trustees.length) match {
+        case (None, numberOfTrustees) if numberOfTrustees >= config.maxTrustees =>
+          Future.successful(Redirect(navigator.nextPage(AddTrusteeId(None), request.userAnswers)))
+        case (Some(v), _) if formWithErrors.errors.isEmpty =>
+          Future.successful(Redirect(navigator.nextPage(AddTrusteeId(v), request.userAnswers)))
+        case _ =>
           val json: JsObject = Json.obj(
             "form" -> formWithErrors,
             "table" -> table,
@@ -78,11 +82,7 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
             "trusteeSize" -> trustees.size,
             "maxTrustees" -> config.maxTrustees
           )
-          renderer.render("trustees/addTrustee.njk", json).map(BadRequest(_))},
-        value =>
-          Future.successful(Redirect(navigator.nextPage(AddTrusteeId(value), request.userAnswers)))
-      )
+          renderer.render("trustees/addTrustee.njk", json).map(BadRequest(_))
+      }
   }
-
-
 }

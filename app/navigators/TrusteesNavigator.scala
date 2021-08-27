@@ -16,8 +16,9 @@
 
 package navigators
 
+import config.AppConfig
 import controllers.routes._
-import controllers.trustees.individual.address.routes.{EnterPreviousPostcodeController, SelectAddressController, SelectPreviousAddressController}
+import controllers.trustees.individual.address.routes.{SelectAddressController, EnterPreviousPostcodeController, SelectPreviousAddressController}
 import controllers.trustees.individual.contact.routes._
 import controllers.trustees.individual.details.routes._
 import controllers.trustees.individual.routes._
@@ -30,11 +31,13 @@ import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.details._
 import models.requests.DataRequest
 import models.trustees.TrusteeKind
-import models.{CheckMode, Index, Mode, NormalMode}
-import play.api.mvc.{AnyContent, Call}
-import utils.{Enumerable, UserAnswers}
+import models.{Mode, Index, CheckMode, NormalMode}
+import play.api.mvc.{Call, AnyContent}
+import utils.{UserAnswers, Enumerable}
 
-class TrusteesNavigator
+import javax.inject.Inject
+
+class TrusteesNavigator @Inject()(config: AppConfig)
   extends Navigator
     with Enumerable.Implicits {
 
@@ -100,12 +103,17 @@ class TrusteesNavigator
   private def addTrusteeRoutes(
                                     value: Option[Boolean],
                                     answers: UserAnswers
-                                  ): Call =
-    value match {
-      case Some(false) => TaskListController.onPageLoad()
-      case Some(true) => TrusteeKindController.onPageLoad(answers.trusteesCount)
-      case None => IndexController.onPageLoad()
+                                  ): Call = {
+    if (answers.allTrusteesAfterDelete.length < config.maxTrustees) {
+      value match {
+        case Some(false) => TaskListController.onPageLoad()
+        case Some(true) => TrusteeKindController.onPageLoad(answers.trusteesCount)
+        case None => IndexController.onPageLoad()
+      }
+    } else {
+      controllers.trustees.routes.OtherTrusteesController.onPageLoad(NormalMode)
     }
+  }
 
   private def trusteeHasNino(
                                   index: Index,
