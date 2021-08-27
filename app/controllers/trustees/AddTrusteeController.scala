@@ -22,14 +22,16 @@ import controllers.actions._
 import forms.trustees.AddTrusteeFormProvider
 import helpers.AddToListHelper
 import identifiers.trustees.AddTrusteeId
+import models.requests.DataRequest
 import navigators.CompoundNavigator
 import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.Radios
+import utils.UserAnswers
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -65,14 +67,15 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
 
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
+      def navNextPage(v: Option[Boolean]):Future[Result] =
+        Future.successful(Redirect(navigator.nextPage(AddTrusteeId(v), request.userAnswers)))
+
       val trustees = request.userAnswers.allTrusteesAfterDelete
       val table = helper.mapTrusteesToTable(trustees)
       val formWithErrors = formProvider(trustees).bindFromRequest()
       (formWithErrors.value, trustees.length) match {
-        case (None, numberOfTrustees) if numberOfTrustees >= config.maxTrustees =>
-          Future.successful(Redirect(navigator.nextPage(AddTrusteeId(None), request.userAnswers)))
-        case (Some(v), _) if formWithErrors.errors.isEmpty =>
-          Future.successful(Redirect(navigator.nextPage(AddTrusteeId(v), request.userAnswers)))
+        case (None, numberOfTrustees) if numberOfTrustees >= config.maxTrustees => navNextPage(None)
+        case (Some(v), _) if formWithErrors.errors.isEmpty => navNextPage(v)
         case _ =>
           val json: JsObject = Json.obj(
             "form" -> formWithErrors,
