@@ -73,9 +73,10 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
       val trustees = request.userAnswers.allTrusteesAfterDelete
       val table = helper.mapTrusteesToTable(trustees)
       val formWithErrors = formProvider(trustees).bindFromRequest()
+
       (formWithErrors.value, trustees.length) match {
-        case (None, numberOfTrustees) if numberOfTrustees >= config.maxTrustees => navNextPage(None)
-        case (Some(v), _) if formWithErrors.errors.isEmpty => navNextPage(v)
+        case (Some(v), _) => navNextPage(v)
+        case (_, numberOfTrustees) if numberOfTrustees >= config.maxTrustees => navNextPage(None)
         case _ =>
           val json: JsObject = Json.obj(
             "form" -> formWithErrors,
