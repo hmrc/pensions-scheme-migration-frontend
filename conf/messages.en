@@ -944,6 +944,12 @@ messages__partnershipDetails__whatYouWillNeed_list2_head = If {0} has them, you 
 messages__partnershipDetails__whatYouWillNeed_li2_1 = VAT registration number
 messages__partnershipDetails__whatYouWillNeed_li2_2 = employer PAYE reference (you can tell us any employer PAYE reference if {0} has more than one)
 
+messages__trusteePartnershipDetails__whatYouWillNeed_title  = Membership details
+messages__trusteePartnershipDetails__whatYouWillNeed_list1_head  = You will need to tell us how many members:
+messages__trusteePartnershipDetails__whatYouWillNeed_li_1  = the scheme has at the moment
+messages__trusteePartnershipDetails__whatYouWillNeed_li_2  = you expect the scheme to have in the next 12 months
+
+
 messages__listSchemes__title = List of {0}s on the Pension Schemes Online service
 messages__listSchemes__noSchemes = You have no {0}s from the Pension Schemes Online service
 messages__listSchemes__registerNewScheme = Register a new scheme
