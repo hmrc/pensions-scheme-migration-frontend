@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.establishers.partnership.details
+package controllers.trustees.partnership.details
 
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import controllers.establishers.partnership.details.routes.HaveUTRController
 import helpers.cya.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.partnership.PartnershipDetailsId
+import identifiers.trustees.partnership.PartnershipDetailsId
+import javax.inject.Inject
 import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.Json
@@ -29,8 +29,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import controllers.trustees.partnership.details.routes.HaveUTRController
 
-import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class WhatYouWillNeedController @Inject()(
@@ -52,7 +52,7 @@ class WhatYouWillNeedController @Inject()(
         PartnershipDetailsId(index).retrieve.right.map {
           details =>
             renderer.render(
-              template = "establishers/partnership/details/whatYouWillNeed.njk",
+              template = "trustees/partnership/details/whatYouWillNeed.njk",
               ctx = Json.obj(
                 "name"        -> details.partnershipName,
                 "pageTitle" -> Messages("messages__partnershipDetails__whatYouWillNeed_title"),

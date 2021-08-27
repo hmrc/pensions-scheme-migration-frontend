@@ -985,7 +985,7 @@ messages__error__partnership_name = Enter the partnership’s name
 messages__error__partnership_name_length = The partnership name cannot be more than 160 characters
 messages__error__partnership_name_invalid = The partnership name contains invalid characters
 
-messages__parrtnershipDetails__whatYouWillNeed_title  = The partnership’s details
+messages__partnershipDetails__whatYouWillNeed_title  = The partnership’s details
 messages__partnershipDetails__whatYouWillNeed_h1 = {0}’s details
 messages__partnershipDetails__whatYouWillNeed_list1_head = You will need to tell us {0}’s:
 messages__partnershipDetails__whatYouWillNeed_li1_1 = Unique Taxpayer Reference (UTR), or reason why it does not have one
