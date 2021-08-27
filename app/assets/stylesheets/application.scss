@@ -6,6 +6,7 @@ $hmrc-assets-path: "/migrate-pension-scheme/assets/lib/hmrc-frontend/hmrc/assets
 @import "lib/hmrc-frontend/hmrc/components/page-heading/page-heading";
 @import "_task-list.scss";
 @import "lib/hmrc-frontend/hmrc/components/add-to-a-list/add-to-a-list";
+@import "_timeout-dialog.scss";
 .js-visible {
     display: none;
 }
