@@ -16,13 +16,14 @@
 
 package controllers.trustees
 
+import config.AppConfig
 import controllers.Retrievals
 import controllers.actions._
 import forms.trustees.AddTrusteeFormProvider
 import helpers.AddToListHelper
 import identifiers.trustees.AddTrusteeId
 import navigators.CompoundNavigator
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -40,6 +41,7 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
                                          requireData: DataRequiredAction,
                                          formProvider: AddTrusteeFormProvider,
                                          helper: AddToListHelper,
+                                         config: AppConfig,
                                          val controllerComponents: MessagesControllerComponents,
                                          renderer: Renderer
                                         )(implicit val ec: ExecutionContext)
@@ -54,7 +56,9 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
           "form" -> formProvider(trustees),
           "table" -> table,
           "radios" -> Radios.yesNo(formProvider(trustees)("value")),
-          "schemeName" -> existingSchemeName
+          "schemeName" -> existingSchemeName,
+          "trusteeSize" -> trustees.size,
+          "maxTrustees" -> config.maxTrustees
         )
         renderer.render("trustees/addTrustee.njk", json).map(Ok(_))
     }
@@ -70,7 +74,9 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
             "form" -> formWithErrors,
             "table" -> table,
             "radios" -> Radios.yesNo(formWithErrors("value")),
-            "schemeName" -> existingSchemeName
+            "schemeName" -> existingSchemeName,
+            "trusteeSize" -> trustees.size,
+            "maxTrustees" -> config.maxTrustees
           )
           renderer.render("trustees/addTrustee.njk", json).map(BadRequest(_))},
         value =>

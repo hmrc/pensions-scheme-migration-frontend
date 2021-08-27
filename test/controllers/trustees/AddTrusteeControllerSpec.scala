@@ -21,7 +21,7 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import forms.trustees.ConfirmDeleteTrusteeFormProvider
 import helpers.AddToListHelper
 import identifiers.trustees.individual.TrusteeNameId
-import identifiers.trustees.{AddTrusteeId, IsTrusteeNewId, TrusteeKindId}
+import identifiers.trustees.{IsTrusteeNewId, AddTrusteeId, TrusteeKindId}
 import matchers.JsonMatchers
 import models.PersonName
 import models.trustees.TrusteeKind
@@ -35,9 +35,9 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.viewmodels.{Radios, Table}
+import uk.gov.hmrc.viewmodels.{Table, Radios}
 import utils.Data.{schemeName, ua}
-import utils.{Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable}
 
 import scala.concurrent.Future
 
@@ -72,25 +72,34 @@ class AddTrusteeControllerSpec extends ControllerSpecBase with NunjucksSupport w
     "value" -> Seq("invalid")
   )
 
-  private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>
-    Json.obj(
-      "form" -> form,
-      "table" -> table,
-      "radios" -> Radios.yesNo(form("value")),
-      "schemeName" -> schemeName
-    )
+  private val maxTrustees = 5
+
+  private def jsonToPassToTemplate(userAnswers:Option[UserAnswers]): Form[Boolean] => JsObject = {
+        val countOfTrustees = userAnswers.map(_.allTrusteesAfterDelete.size).getOrElse(0)
+      form =>
+        Json.obj(
+          "form" -> form,
+          "table" -> table,
+          "radios" -> Radios.yesNo(form("value")),
+          "schemeName" -> schemeName,
+          "trusteeSize" -> countOfTrustees,
+          "maxTrustees" -> maxTrustees
+        )
+   }
 
   override def beforeEach: Unit = {
     super.beforeEach
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
     when(mockHelper.mapTrusteesToTable(any())(any())).thenReturn(table)
+    when(mockAppConfig.maxTrustees).thenReturn(maxTrustees)
   }
 
 
   "AddTrusteeController" must {
 
-    "return OK and the correct view for a GET" in {
-      mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
+    "return OK and the correct view for a GET, passing the correct no of trustees and max trustees into template" in {
+      val ua = userAnswers.map(_.setOrException(TrusteeNameId(1), PersonName("Bill", "Bloggs")))
+      mutableFakeDataRetrievalAction.setDataToReturn(ua)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -102,7 +111,7 @@ class AddTrusteeControllerSpec extends ControllerSpecBase with NunjucksSupport w
 
       templateCaptor.getValue mustEqual templateToBeRendered
 
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form))
+      jsonCaptor.getValue must containJson(jsonToPassToTemplate(ua)(form))
     }
 
     "redirect to Session Expired page for a GET when there is no data" in {
