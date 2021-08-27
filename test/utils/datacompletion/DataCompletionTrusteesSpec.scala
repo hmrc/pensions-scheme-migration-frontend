@@ -17,22 +17,23 @@
 package utils.datacompletion
 
 import identifiers.trustees.TrusteeKindId
-import identifiers.trustees.company.{CompanyDetailsId, contacts => companyContact}
-import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.details._
+import identifiers.trustees.company.{CompanyDetailsId, contacts => companyContact}
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.details._
 import identifiers.trustees.partnership.PartnershipDetailsId
 import models.trustees.TrusteeKind
 import models.{CompanyDetails, PartnershipDetails, ReferenceValue}
-import org.scalatest.{MustMatchers, OptionValues, TryValues, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.{OptionValues, TryValues}
 import utils.{Enumerable, UserAnswers}
 
 import java.time.LocalDate
 
 class DataCompletionTrusteesSpec
-  extends WordSpec
-    with MustMatchers
+  extends AnyWordSpec
+    with Matchers
     with OptionValues
     with TryValues
     with Enumerable.Implicits {

@@ -21,11 +21,13 @@ import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId, EstablishedCountr
 import identifiers.benefitsAndInsurance._
 import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
 import models.{SchemeType, Members}
-import org.scalatest.{OptionValues, MustMatchers, WordSpec}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import utils.Data.{address, ua, insurerName, insurerPolicyNo}
 import utils.{UserAnswers, Enumerable}
 
-class DataCompletionSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
+class DataCompletionSpec extends AnyWordSpec with Matchers with OptionValues with Enumerable.Implicits {
 
   private val uaBenefitsSectionNoPolicyDetails = ua
     .setOrException(IsInvestmentRegulatedId, true)

@@ -18,13 +18,12 @@ package controllers.establishers.company.director
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import forms.establishers.company.director.ConfirmDeleteDirectorFormProvider
+import forms.establishers.ConfirmDeleteEstablisherFormProvider
 import identifiers.establishers.company.director.{ConfirmDeleteDirectorId, DirectorNameId}
 import matchers.JsonMatchers
 import models.{Index, NormalMode, PersonName}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{times, verify, when}
-import org.mockito.{ArgumentCaptor, Matchers}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
@@ -43,7 +42,7 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Nunjuc
   private val dirIndex: Index = Index(0)
   private val userAnswersDirector: Option[UserAnswers] = ua.set(DirectorNameId(establisherIndex,dirIndex), PersonName("Jane", "Doe")).toOption
   private val templateToBeRendered = "delete.njk"
-  private val form: Form[Boolean] = new ConfirmDeleteDirectorFormProvider()(directorName)
+  private val form: Form[Boolean] = new ConfirmDeleteEstablisherFormProvider()(directorName)
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 
@@ -97,7 +96,7 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Nunjuc
     "Save data to user answers and redirect to next page when valid data is submitted for director" in {
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(ConfirmDeleteDirectorId(dirIndex)), any(), any())(any()))
+      when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(ConfirmDeleteDirectorId(dirIndex)), any(), any())(any()))
         .thenReturn(controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(establisherIndex,NormalMode))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))

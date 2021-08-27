@@ -19,7 +19,6 @@ package controllers.trustees.company.details
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import helpers.cya.CYAHelper
-import helpers.cya.establishers.company.EstablisherCompanyDetailsCYAHelper
 import helpers.cya.trustees.company.TrusteeCompanyDetailsCYAHelper
 import identifiers.beforeYouStart.SchemeNameId
 import models.Index

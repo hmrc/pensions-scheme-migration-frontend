@@ -166,6 +166,8 @@ messages__schemeTaskList__details_addLink = Add details for {0}
 messages__schemeTaskList__details_changeLink = Change details for {0}
 messages__schemeTaskList__directors_addLink = Add directors for {0}
 messages__schemeTaskList__directors_changeLink = Change directors for {0}
+messages__schemeTaskList__partners_addLink = Add partners for {0}
+messages__schemeTaskList__partners_changeLink = Change partners for {0}
 messages__schemeTaskList__establisherAddress_addLink = Add address for {0}
 messages__schemeTaskList__establisherAddress_changeLink = Change address for {0}
 messages__schemeTaskList__contactDetails_addLink = Add contact details for {0}
@@ -180,9 +182,10 @@ messages__establisher = the establisher
 messages__director = the director
 messages__company = the company
 messages__partnership = the partnership
+messages__partner = the partner
 messages__trustee = the trustee
 messages__dob__title = What is {0}’s date of birth?
-messages__dob__h1 = What is the date of birth for {0}?
+messages__dob__h1 = {0}’s date of birth
 messages__dob__cya__visuallyHidden = the date of birth for {0}
 
 messages__hasNINO = Does {0} have a National Insurance number?
@@ -192,6 +195,7 @@ messages__hasNINO__cya = National Insurance number
 
 messages__enterNINO_title = What is {0}’s National Insurance number?
 messages__enterNINO = What is the National Insurance number for {0}?
+messages__enterNINO__cya = {0}’s National Insurance number
 messages__enterNINO__cya_visuallyHidden = the National Insurance number for {0}?
 messages__enterNINO__hint = For example, QQ 12 34 56 C
 messages__error__common_nino = Enter a National Insurance number
@@ -202,17 +206,21 @@ messages__reason__error_ninoRequired = Enter a reason why {0} does not have a NI
 messages__whyNoNINO__cya__visuallyHidden = the reason why {0} does not have a National Insurance number
 
 messages__hasUTR = Does {0} have a Unique Taxpayer Reference (UTR)?
+messages__hasUTR_pageTitle = Does {0} have a Unique Taxpayer Reference?
 messages__UTR__p = This is a 10-digit or 13-digit number. You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.
 messages__genericHasUtr__error__required = Select yes if {0} has a Unique Taxpayer Reference
 messages__hasUTR__cya__visuallyHidden = whether {0} has a Unique Taxpayer Reference
 messages__hasUTR__cya = UTR
+messages__hasUTR__cya_label = Does {0} have a UTR?
 
 messages__enterUTR = What is {0}’s UTR?
+messages__enterUTR_pageTitle = What is {0}’s Unique Taxpayer Reference?
 messages__enterUTR__cya_visuallyHidden = the UTR for {0}
 messages__UTR__p1 = If the UTR is 13 numbers, only enter the last 10.
 messages__UTR__p2 = If there is a letter ‘K’ at the end of the number, do not enter it.
 messages__utr__hint = For example, 12345 67890
 messages__utr__checkyouranswerslabel = Unique Taxpayer Reference (UTR)
+messages__enterUTR__cya_label = {0}’s UTR
 
 messages__utr__error_required = Enter a Unique Taxpayer Reference (UTR)
 messages__utr__error_maxLength = Enter a UTR in the correct format
@@ -325,12 +333,15 @@ benefitsInsurancePolicy.error.required = Enter the policy number of the insuranc
 benefitsInsurancePolicy.error.length = Policy number must be fewer than 56 characters
 benefitsInsurancePolicy.visuallyHidden = the policy number with the insurance company that secures the scheme benefits
 
-addressList.title = What is the address for {0}?
+addressList.title = What is {0}’s address?
+addressList_cya_label = {0}’s address
 addressList.noInsuranceName.title = What is the address of the insurance company that secures the scheme benefits?
 addressList.select = Select the address from the list below, or
 addressList.visuallyHidden = the address of the insurance company that secures the scheme benefits
 
 previousAddressList.title = What was the previous address for {0}?
+previousAddressList_cya_label = {0}’s previous address
+previousAddressList_pageHeading = What was {0}’s previous address?
 
 postcode.label = Postcode
 postcode.title = What is {0}’s postcode?
@@ -399,6 +410,7 @@ addEstablisher.type.header.hiddenText = Type of establisher
 addEstablisher.hiddenText.removeLink.header = Remove establisher link
 
 messages__addCompanyDirectors__error__required = Select yes if you want to add another director
+messages__addPartners__error__required = Select yes if you want to add another partner
 
 messages__error__trustees = trustee’s
 messages__error__director = director’s
@@ -426,6 +438,7 @@ messages__establisherDetails__whatYouWillNeed_li_3 = Unique Taxpayer Reference (
 messages__confirmDeleteEstablisher__title = Are you sure you want to delete this establisher?
 messages__confirmDeleteEstablisher__companyHint = This will delete any establishers you have added.
 messages__confirmDeleteDirectors__companyHint = This will delete any directors you have added.
+messages__confirmDeletePartners__companyHint = This will delete any partners you have added.
 messages__confirmDeleteEstablisher__partnershipHint = This will delete any partners you have added.
 messages__delete__heading = Are you sure you want to remove {0}?
 messages__alreadyDeleted__title = You have already deleted {0}
@@ -465,6 +478,7 @@ messages__companyDetails__whatYouWillNeed_li_2 = contact phone number
 
 messages__establisherPreviousAddress = Previous address
 previousAddress.title = What was the previous address for {0}?
+previousAddress.title = What was the previous address for {0}?
 messages__visuallyHidden__previousAddress = the previous address for {0}
 
 establisherEnterPostcode.required = Enter a postcode
@@ -484,12 +498,16 @@ messages__visuallyHidden__address = the address for {0}
 messages__enterEmail__error_invalid = Enter an email address in the correct format, like name@example.com
 messages__enterEmail__error_required = Enter an email address for {0}
 messages__enterEmail = What is the email address for {0}?
+messages__enterEmail_pageHeading = What is {0}’s email address?
+messages__enterEmail_cya_label = {0}’s email address
 messages__contact_details__hint = We will only use this to contact {0} about pension scheme administration.
 messages__enterEmail__cya__visuallyHidden = the email address for {0}
 
 messages__enterPhone__error_required = Enter a phone number for {0}
 messages__enterPhone__error_invalid = Enter a phone number in the correct format
 messages__enterPhone = What is the phone number for {0}?
+messages__enterPhone_pageHeading = What is {0}’s phone number?
+messages__enterPhone_cya_label = {0}’s phone number
 messages__enterPhone__cya__visuallyHidden = the phone number for {0}
 
 messages__schemeTaskList__trusteeIndividualContactDetails_addLink = Add contact details for {0}
@@ -898,7 +916,7 @@ messages__otherDirectors__heading=Do you need to tell us about other directors?
 messages__otherDirectors__lede=You do not have to add them now. We may contact you if we need this information.
 messages__otherDirectors__error__required = Select yes if you need to tell us about other directors
 messages__addCompanyDirectors_at_maximum = You have added the maximum number of directors.
-messages__addCompanyDirectorsOrPartners_tell_us_if_you_have_more = You can tell us on the next page if you have more to add.
+messages__addDirectorsOrPartners_tell_us_if_you_have_more = You can tell us on the next page if you have more to add.
 messages__addCompanyDirectors_add_director = Add a director
 messages__alreadyDeleted__director_title = You have already deleted this director
 
@@ -906,6 +924,31 @@ messages__partnershipName__title = What is the partnership’s name?
 messages__error__partnership_name = Enter the partnership’s name
 messages__error__partnership_name_length = The partnership name cannot be more than 160 characters
 messages__error__partnership_name_invalid = The partnership name contains invalid characters
+
+messages__partners__title = Partners
+messages__partners__whatYouWillNeedPartners__p1 = For every partner associated with the partnership you’re registering, you will need to tell us the partner’s:
+messages__partners__whatYouWillNeed__item1 = name
+messages__partners__whatYouWillNeed__item2 = date of birth
+messages__partners__whatYouWillNeed__item3 = National Insurance number, or reason why they do not have one
+messages__partners__whatYouWillNeed__item4 = Unique Taxpayer Reference (UTR), or reason why they do not have one
+messages__partners__whatYouWillNeed__item5 = current address
+messages__partners__whatYouWillNeed__item6 = previous address if they have used their current address for less than 1 year
+messages__partners__whatYouWillNeed__item7 = contact email address
+messages__partners__whatYouWillNeed__item8 = contact phone number
+
+messages__partner__name = The partner’s name
+messages__partner__name__cya__visuallyHidden = the partner’s name {0}
+messages__addPartner_radio_label = Do you want to add another partner?
+messages__confirmDeletePartners__title = Are you sure you want to delete this partner?
+messages__addPartners_lede = You must tell us about all yourdob partners. You can add up to 10 using the digital service.
+
+messages__otherPartners__title=Do you need to tell us about other partners?
+messages__otherPartners__heading=Do you need to tell us about other partners?
+messages__otherPartners__lede=You do not have to add them now. We may contact you if we need this information.
+messages__otherPartners__error__required = Select yes if you need to tell us about other partners
+messages__addPartners_at_maximum = You have added the maximum number of partners.
+messages__addPartners_add_partner = Add a partner
+messages__alreadyDeleted__partner_title = You have already deleted this partner
 
 messages__migrationLink__header = Pension schemes registered on the Pension Schemes Online service
 messages__migrationLink__viewSchemesLink = View pension schemes registered on the Pension Schemes Online service

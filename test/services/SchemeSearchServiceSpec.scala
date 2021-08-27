@@ -19,16 +19,14 @@ package services
 import base.SpecBase
 import connectors.ListOfSchemesConnector
 import models.{Items, ListOfLegacySchemes}
-import org.mockito.Matchers
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
+import org.mockito.{ArgumentMatchers, MockitoSugar}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, Table}
 import uk.gov.hmrc.viewmodels.Table.Cell
 import uk.gov.hmrc.viewmodels.Text.Literal
+import uk.gov.hmrc.viewmodels.{MessageInterpolators, Table}
 import utils.Data._
 import utils.SchemeFuzzyMatcher
 
@@ -46,7 +44,7 @@ class SchemeSearchServiceSpec extends SpecBase with MockitoSugar with ScalaFutur
 
     "return correct list of scheme details with search on correct pstr" in {
 
-      when(mockListOfSchemesConnector.getListOfSchemes(Matchers.eq(psaId))(any(), any()))
+      when(mockListOfSchemesConnector.getListOfSchemes(ArgumentMatchers.eq(psaId))(any(), any()))
         .thenReturn(Future.successful(Right(listOfSchemes)))
 
       whenReady(schemeSearchService.search(psaId, Some(pstr1), isRacDac = isRacDacFalse)) { result =>
@@ -55,7 +53,7 @@ class SchemeSearchServiceSpec extends SpecBase with MockitoSugar with ScalaFutur
     }
     "return correct list of scheme details with search on correct pstr with rac dac" in {
 
-      when(mockListOfSchemesConnector.getListOfSchemes(Matchers.eq(psaId))(any(), any()))
+      when(mockListOfSchemesConnector.getListOfSchemes(ArgumentMatchers.eq(psaId))(any(), any()))
         .thenReturn(Future.successful(Right(listOfSchemes)))
 
       whenReady(schemeSearchService.search(psaId, Some(pstr2), isRacDac = isRacDacTrue)) { result =>
@@ -65,7 +63,7 @@ class SchemeSearchServiceSpec extends SpecBase with MockitoSugar with ScalaFutur
 
     "return empty list for correct format pstr but no match" in {
       val emptyList = ListOfLegacySchemes(0, None)
-      when(mockListOfSchemesConnector.getListOfSchemes(Matchers.eq(psaId))(any(), any()))
+      when(mockListOfSchemesConnector.getListOfSchemes(ArgumentMatchers.eq(psaId))(any(), any()))
         .thenReturn(Future.successful(Right(emptyList)))
 
       whenReady(schemeSearchService.search(psaId, Some("S2400000016"), isRacDac = isRacDacFalse)) { result =>
@@ -75,7 +73,7 @@ class SchemeSearchServiceSpec extends SpecBase with MockitoSugar with ScalaFutur
 
     "return empty list for correct format pstr but no match with rac dac" in {
       val emptyList = ListOfLegacySchemes(0, None)
-      when(mockListOfSchemesConnector.getListOfSchemes(Matchers.eq(psaId))(any(), any()))
+      when(mockListOfSchemesConnector.getListOfSchemes(ArgumentMatchers.eq(psaId))(any(), any()))
         .thenReturn(Future.successful(Right(emptyList)))
 
       whenReady(schemeSearchService.search(psaId, Some("S2400000016"), isRacDac = isRacDacTrue)) { result =>
@@ -84,8 +82,8 @@ class SchemeSearchServiceSpec extends SpecBase with MockitoSugar with ScalaFutur
     }
 
     "return correct list of scheme details with search on scheme name" in {
-      when(mockFuzzyMatching.doFuzzyMatching(any(), any())).thenReturn(true).thenReturn(false)
-      when(mockListOfSchemesConnector.getListOfSchemes(Matchers.eq(psaId))(any(), any()))
+      when(mockFuzzyMatching.doFuzzyMatching(any(), any())).thenReturn(true)
+      when(mockListOfSchemesConnector.getListOfSchemes(ArgumentMatchers.eq(psaId))(any(), any()))
         .thenReturn(Future.successful(Right(listOfSchemes)))
 
       whenReady(schemeSearchService.search(psaId, Some("scheme-1"),isRacDac = isRacDacFalse)) { result =>
@@ -94,8 +92,8 @@ class SchemeSearchServiceSpec extends SpecBase with MockitoSugar with ScalaFutur
     }
 
     "return correct list of scheme details with search on scheme name with rac dac" in {
-      when(mockFuzzyMatching.doFuzzyMatching(any(), any())).thenReturn(true).thenReturn(false)
-      when(mockListOfSchemesConnector.getListOfSchemes(Matchers.eq(psaId))(any(), any()))
+      when(mockFuzzyMatching.doFuzzyMatching(any(), any())).thenReturn(true)
+      when(mockListOfSchemesConnector.getListOfSchemes(ArgumentMatchers.eq(psaId))(any(), any()))
         .thenReturn(Future.successful(Right(listOfSchemes)))
 
       whenReady(schemeSearchService.search(psaId, Some("scheme-1"),isRacDac = isRacDacTrue)) { result =>
@@ -106,7 +104,7 @@ class SchemeSearchServiceSpec extends SpecBase with MockitoSugar with ScalaFutur
     "return empty list when fuzzy matching fails" in {
       when(mockFuzzyMatching.doFuzzyMatching(any(), any())).thenReturn(false)
       val emptyList = ListOfLegacySchemes(0, None)
-      when(mockListOfSchemesConnector.getListOfSchemes(Matchers.eq(psaId))(any(), any()))
+      when(mockListOfSchemesConnector.getListOfSchemes(ArgumentMatchers.eq(psaId))(any(), any()))
         .thenReturn(Future.successful(Right(emptyList)))
 
       whenReady(schemeSearchService.search(psaId, Some("no matching"),isRacDac = isRacDacFalse)) { result =>

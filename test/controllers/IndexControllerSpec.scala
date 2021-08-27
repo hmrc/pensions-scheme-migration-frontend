@@ -19,8 +19,7 @@ package controllers
 import controllers.actions.MutableFakeDataRetrievalAction
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.libs.json.JsObject
 import play.api.test.Helpers._

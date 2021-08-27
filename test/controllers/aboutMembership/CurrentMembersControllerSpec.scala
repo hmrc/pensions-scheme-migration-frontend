@@ -22,9 +22,8 @@ import forms.aboutMembership.MembersFormProvider
 import identifiers.aboutMembership.CurrentMembersId
 import matchers.JsonMatchers
 import models.Members
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{times, verify, when}
-import org.mockito.{ArgumentCaptor, Matchers}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
@@ -123,7 +122,7 @@ class CurrentMembersControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(CurrentMembersId), any(), any())(any()))
+      when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(CurrentMembersId), any(), any())(any()))
         .thenReturn(routes.CheckYourAnswersController.onPageLoad())
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))

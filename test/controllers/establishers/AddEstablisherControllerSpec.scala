@@ -25,9 +25,8 @@ import identifiers.establishers.{AddEstablisherId, EstablisherKindId, IsEstablis
 import matchers.JsonMatchers
 import models.PersonName
 import models.establishers.EstablisherKind
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{times, verify, when}
-import org.mockito.{ArgumentCaptor, Matchers}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
 import play.api.inject.bind
@@ -118,7 +117,7 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(AddEstablisherId(Some(true))), any(), any())(any()))
+      when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(AddEstablisherId(Some(true))), any(), any())(any()))
         .thenReturn(routes.AddEstablisherController.onPageLoad())
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)

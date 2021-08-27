@@ -19,7 +19,7 @@ package controllers.establishers.company.director
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import forms.establishers.company.director.ConfirmDeleteDirectorFormProvider
+import forms.establishers.ConfirmDeleteEstablisherFormProvider
 import identifiers.establishers.company.director.{ConfirmDeleteDirectorId, DirectorNameId}
 import models.Index
 import navigators.CompoundNavigator
@@ -42,7 +42,7 @@ class ConfirmDeleteDirectorController @Inject()(override val messagesApi: Messag
                                                  authenticate: AuthAction,
                                                  getData: DataRetrievalAction,
                                                  requireData: DataRequiredAction,
-                                                 formProvider: ConfirmDeleteDirectorFormProvider,
+                                                 formProvider: ConfirmDeleteEstablisherFormProvider,
                                                  val controllerComponents: MessagesControllerComponents,
                                                  userAnswersCacheConnector: UserAnswersCacheConnector,
                                                  renderer: Renderer
@@ -59,7 +59,7 @@ class ConfirmDeleteDirectorController @Inject()(override val messagesApi: Messag
           } else {
             val json = Json.obj(
               "form" -> form(director.fullName),
-              "titleMessage" -> msg"messages__confirmDeleteDirectors__title",
+              "titleMessage" -> msg"messages__confirmDeleteDirectors__title".resolve,
               "name" -> director.fullName,
               "hint" ->  Some(Messages(s"messages__confirmDeleteDirectors__companyHint")),
               "radios" -> Radios.yesNo(formProvider(director.fullName)(implicitly)("value")),
@@ -83,7 +83,7 @@ class ConfirmDeleteDirectorController @Inject()(override val messagesApi: Messag
             (formWithErrors: Form[_]) => {
               val json = Json.obj(
                 "form" -> formWithErrors,
-                "titleMessage" -> msg"messages__confirmDeleteDirectors__title",
+                "titleMessage" -> msg"messages__confirmDeleteDirectors__title".resolve,
                 "name" ->  director.fullName,
                 "hint" -> Some(Messages(s"messages__confirmDeleteDirectors__companyHint")),
                 "radios" -> Radios.yesNo(formProvider(director.fullName)(implicitly)("value")),

@@ -24,9 +24,8 @@ import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.address.AddressYearsId
 import matchers.JsonMatchers
 import models.{CheckMode, NormalMode, PersonName}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{times, verify, when}
-import org.mockito.{ArgumentCaptor, Matchers}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
@@ -86,7 +85,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       verify(mockRenderer, times(1))
-        .render(Matchers.eq("address/addressYears.njk"), jsonCaptor.capture())(any())
+        .render(ArgumentMatchers.eq("address/addressYears.njk"), jsonCaptor.capture())(any())
 
       (jsonCaptor.getValue \ "schemeName").toOption.map(_.as[String]) mustBe Some(Data.schemeName)
     }
@@ -106,7 +105,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       verify(mockRenderer, times(1))
-        .render(Matchers.eq("address/addressYears.njk"), jsonCaptor.capture())(any())
+        .render(ArgumentMatchers.eq("address/addressYears.njk"), jsonCaptor.capture())(any())
 
       jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(true)))
     }

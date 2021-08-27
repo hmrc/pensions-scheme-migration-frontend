@@ -19,7 +19,7 @@ package navigators
 import base.SpecBase
 import identifiers.Identifier
 import models.Mode
-import org.scalatest.MustMatchers
+import org.scalatest.matchers.must.Matchers
 import org.scalatest.prop.TableFor3
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.mvc.Call
@@ -28,7 +28,7 @@ import utils.UserAnswers
 
 trait NavigatorBehaviour
   extends SpecBase
-    with MustMatchers
+    with Matchers
     with ScalaCheckPropertyChecks {
 
   protected def row(id: Identifier)
