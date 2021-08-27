@@ -21,8 +21,8 @@ import controllers.EnterReferenceValueController
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.PAYEFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.partnership.PartnershipDetailsId
-import identifiers.establishers.partnership.details.PAYEId
+import identifiers.trustees.partnership.PartnershipDetailsId
+import identifiers.trustees.partnership.details.PAYEId
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}

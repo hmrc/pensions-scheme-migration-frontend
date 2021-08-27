@@ -21,8 +21,8 @@ import controllers.ReasonController
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.ReasonFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.partnership.PartnershipDetailsId
-import identifiers.establishers.partnership.details.NoUTRReasonId
+import identifiers.trustees.partnership.PartnershipDetailsId
+import identifiers.trustees.partnership.details.NoUTRReasonId
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}

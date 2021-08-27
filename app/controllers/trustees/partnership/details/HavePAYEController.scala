@@ -21,8 +21,8 @@ import controllers.HasReferenceValueController
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.HasReferenceNumberFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.partnership.PartnershipDetailsId
-import identifiers.establishers.partnership.details.HavePAYEId
+import identifiers.trustees.partnership.PartnershipDetailsId
+import identifiers.trustees.partnership.details.HavePAYEId
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
