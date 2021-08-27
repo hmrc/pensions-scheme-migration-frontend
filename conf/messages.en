@@ -502,7 +502,6 @@ messages__enterEmail_pageHeading = What is {0}’s email address?
 messages__enterEmail_cya_label = {0}’s email address
 messages__contact_details__hint = We will only use this to contact {0} about pension scheme administration.
 messages__enterEmail__cya__visuallyHidden = the email address for {0}
-messages__email_cya = {0}’s email address
 
 messages__enterPhone__error_required = Enter a phone number for {0}
 messages__enterPhone__error_invalid = Enter a phone number in the correct format
@@ -510,7 +509,6 @@ messages__enterPhone = What is the phone number for {0}?
 messages__enterPhone_pageHeading = What is {0}’s phone number?
 messages__enterPhone_cya_label = {0}’s phone number
 messages__enterPhone__cya__visuallyHidden = the phone number for {0}
-messages__phone_cya = {0}’s phone number
 
 messages__schemeTaskList__trusteeIndividualContactDetails_addLink = Add contact details for {0}
 messages__schemeTaskList__trusteeIndividualContactDetails_changeLink = Change contact details for {0}
