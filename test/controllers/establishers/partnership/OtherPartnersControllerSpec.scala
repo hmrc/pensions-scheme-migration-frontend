@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.establishers.company
+package controllers.establishers.partnership
 
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.HasReferenceNumberFormProvider
-import identifiers.establishers.company.OtherDirectorsId
-import identifiers.establishers.company.director.DirectorNameId
+import identifiers.establishers.partnership.OtherPartnersId
+import identifiers.establishers.partnership.partner.PartnerNameId
 import matchers.JsonMatchers
 import models.{NormalMode, PersonName}
 import org.mockito.ArgumentCaptor
@@ -42,7 +42,7 @@ import viewmodels.Message
 
 import scala.concurrent.Future
 
-class OtherDirectorsControllerSpec extends ControllerSpecBase
+class OtherPartnersControllerSpec extends ControllerSpecBase
   with NunjucksSupport
   with JsonMatchers
   with TryValues
@@ -56,23 +56,20 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase
   private val personName: PersonName =
     PersonName("Jane", "Doe")
   private val userAnswers: UserAnswers =
-    ua.set(DirectorNameId(0,0), personName).success.value
+    ua.set(PartnerNameId(0,0), personName).success.value
 
   private val templateToBeRendered: String =
     "hasReferenceValueWithHint.njk"
   private val form: Form[Boolean] =
-    formProvider("Select yes if you need to tell us about other directors")
+    formProvider("Select yes if you need to tell us about other partners")
 
 
   private val commonJson: JsObject =
-
-
-
     Json.obj(
-      "pageTitle"     -> Message("messages__otherDirectors__title"),
-      "pageHeading"     -> Message("messages__otherDirectors__heading"),
+      "pageTitle"     -> Message("messages__otherPartners__title"),
+      "pageHeading"     -> Message("messages__otherPartners__heading"),
       "schemeName"    -> schemeName,
-      "paragraphs"    -> Seq(Message("messages__otherDirectors__lede")),
+      "paragraphs"    -> Seq(Message("messages__otherPartners__lede")),
       "legendClass"   -> "govuk-visually-hidden",
       "isPageHeading" -> true
     )
@@ -86,8 +83,8 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase
 
   private def controller(
                           dataRetrievalAction: DataRetrievalAction
-                        ): OtherDirectorsController =
-    new OtherDirectorsController(
+                        ): OtherPartnersController =
+    new OtherPartnersController(
       messagesApi               = messagesApi,
       navigator                 = new FakeNavigator(desiredRoute = onwardRoute),
       authenticate              = new FakeAuthAction(),
@@ -99,7 +96,7 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase
       renderer                  = new Renderer(mockAppConfig, mockRenderer)
     )
 
-  "OtherDirectorsController" must {
+  "OtherPartnersController" must {
 
     "return OK and the correct view for a GET" in{
 
@@ -133,7 +130,7 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase
 
       val ua =
         userAnswers
-          .set(OtherDirectorsId(0), true).success.value
+          .set(OtherPartnersId(0), true).success.value
 
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
 
@@ -164,7 +161,7 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase
 
       val ua =
         userAnswers
-          .set(OtherDirectorsId(0), false).success.value
+          .set(OtherPartnersId(0), false).success.value
 
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
 

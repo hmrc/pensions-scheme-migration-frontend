@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.cya.establisher.partnership
 
 import base.SpecBase._
 import controllers.establishers.partnership.details.routes
@@ -33,7 +33,7 @@ import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels.Text.Literal
 import uk.gov.hmrc.viewmodels.{Html, MessageInterpolators}
-import utils.Data.{establisherPartnershipDetails, credId, psaId, pstr, schemeName}
+import utils.Data.{credId, establisherPartnershipDetails, psaId, pstr, schemeName}
 import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 

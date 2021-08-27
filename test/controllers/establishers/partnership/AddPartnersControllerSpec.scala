@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package controllers.establishers.company
+package controllers.establishers.partnership
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import forms.establishers.company.director.AddCompanyDirectorsFormProvider
+import forms.establishers.partnership.partner.AddPartnersFormProvider
 import helpers.AddToListHelper
 import identifiers.establishers.EstablisherKindId
-import identifiers.establishers.company.director.{DirectorNameId, IsNewDirectorId}
-import identifiers.establishers.company.{AddCompanyDirectorsId, CompanyDetailsId}
+import identifiers.establishers.partnership.partner.{IsNewPartnerId, PartnerNameId}
+import identifiers.establishers.partnership.{AddPartnersId, PartnershipDetailsId}
 import matchers.JsonMatchers
 import models.establishers.EstablisherKind
-import models.{CompanyDetails, NormalMode, PersonName}
+import models.{NormalMode, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -37,47 +37,47 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
-import utils.Data.{company, schemeName, ua}
+import utils.Data.{establisherPartnershipDetails, schemeName, ua}
 import utils.{Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 
-class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
-  private val directorName: PersonName =
+class AddPartnersControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+  private val partnerName: PersonName =
     PersonName("Jane", "Doe")
   private val userAnswers: Option[UserAnswers] =
-   ua.set(EstablisherKindId(0), EstablisherKind.Company).flatMap(
-     _.set(CompanyDetailsId(0), CompanyDetails(company.companyName)).flatMap(
-        _.set(DirectorNameId(0,0), directorName).flatMap(
-          _.set(IsNewDirectorId(0,0), true)
+   ua.set(EstablisherKindId(0), EstablisherKind.Partnership).flatMap(
+     _.set(PartnershipDetailsId(0), establisherPartnershipDetails).flatMap(
+        _.set(PartnerNameId(0,0), partnerName).flatMap(
+          _.set(IsNewPartnerId(0,0), true)
      ))).toOption
 
   private def validData() = {
-    ua.set(EstablisherKindId(1), EstablisherKind.Company).flatMap(
-      _.set(CompanyDetailsId(1), CompanyDetails(company.companyName)).flatMap(
-        _.set(DirectorNameId(1,1), directorName).flatMap(
-        _.set(DirectorNameId(1,2), directorName).flatMap(
-        _.set(DirectorNameId(1,3), directorName).flatMap(
-        _.set(DirectorNameId(1,4), directorName).flatMap(
-        _.set(DirectorNameId(1,5), directorName).flatMap(
-        _.set(DirectorNameId(1,6), directorName).flatMap(
-        _.set(DirectorNameId(1,7), directorName).flatMap(
-        _.set(DirectorNameId(1,8), directorName).flatMap(
-        _.set(DirectorNameId(1,9), directorName).flatMap(
-          _.set(DirectorNameId(1,10), directorName).flatMap(
-          _.set(IsNewDirectorId(1,1), false)
+    ua.set(EstablisherKindId(1), EstablisherKind.Partnership).flatMap(
+      _.set(PartnershipDetailsId(1), establisherPartnershipDetails).flatMap(
+        _.set(PartnerNameId(1,1), partnerName).flatMap(
+        _.set(PartnerNameId(1,2), partnerName).flatMap(
+        _.set(PartnerNameId(1,3), partnerName).flatMap(
+        _.set(PartnerNameId(1,4), partnerName).flatMap(
+        _.set(PartnerNameId(1,5), partnerName).flatMap(
+        _.set(PartnerNameId(1,6), partnerName).flatMap(
+        _.set(PartnerNameId(1,7), partnerName).flatMap(
+        _.set(PartnerNameId(1,8), partnerName).flatMap(
+        _.set(PartnerNameId(1,9), partnerName).flatMap(
+          _.set(PartnerNameId(1,10), partnerName).flatMap(
+          _.set(IsNewPartnerId(1,1), false)
         )))))))))))).toOption
   }
 
-  private val templateToBeRendered = "establishers/company/addDirector.njk"
+  private val templateToBeRendered = "establishers/partnership/addPartner.njk"
 
-  //private val form: Form[Boolean] = new ConfirmDeleteEstablisherFormProvider()(directorName.fullName)
-  private val formProvider = new AddCompanyDirectorsFormProvider()
+  //private val form: Form[Boolean] = new ConfirmDeleteEstablisherFormProvider()(partnerName.fullName)
+  private val formProvider = new AddPartnersFormProvider()
   private val form         = formProvider()
   val itemList: JsValue = Json.obj(
-     "name" -> directorName.fullName,
-        "changeUrl" ->  "controllers.establishers.company.director.details.routes.CheckYourAnswersController.onPageLoad(0, 0)",
-        "removeUrl" ->   "controllers.establishers.company.director.routes.ConfirmDeleteDirectorController.onPageLoad(0, 0)"
+     "name" -> partnerName.fullName,
+        "changeUrl" ->  "controllers.establishers.partnership.partner.details.routes.CheckYourAnswersController.onPageLoad(0, 0)",
+        "removeUrl" ->   "controllers.establishers.partnership.partner.routes.ConfirmDeletePartnerController.onPageLoad(0, 0)"
       )
   private val mockHelper: AddToListHelper = mock[AddToListHelper]
 
@@ -87,8 +87,8 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with Nunjucks
   )
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
-  private def httpPathGET: String = controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(0,NormalMode).url
-  private def httpPathPOST: String = controllers.establishers.company.routes.AddCompanyDirectorsController.onSubmit(0,NormalMode).url
+  private def httpPathGET: String = controllers.establishers.partnership.routes.AddPartnersController.onPageLoad(0,NormalMode).url
+  private def httpPathPOST: String = controllers.establishers.partnership.routes.AddPartnersController.onSubmit(0,NormalMode).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq("true")
@@ -104,21 +104,21 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with Nunjucks
       "itemList" -> itemList,
       "radios" -> Radios.yesNo(form("value")),
       "schemeName" -> schemeName,
-      "directorSize" -> 1,
-      "maxDirectors" -> mockAppConfig.maxDirectors
+      "partnerSize" -> 1,
+      "maxPartners" -> mockAppConfig.maxPartners
     )
 
   override def beforeEach: Unit = {
     super.beforeEach
     reset(mockAppConfig)
-    when(mockAppConfig.maxDirectors).thenReturn(10)
+    when(mockAppConfig.maxPartners).thenReturn(10)
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
     when(mockHelper.directorsOrPartnersItemList(any())).thenReturn(itemList)
 
   }
 
 
-  "AddCompanyDirectorsController" must {
+  "AddPartnersController" must {
 
     "return OK and the correct view for a GET" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
@@ -148,8 +148,8 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with Nunjucks
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
 
-      when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(AddCompanyDirectorsId(0)), any(), any())(any()))
-        .thenReturn(routes.AddCompanyDirectorsController.onPageLoad(0,NormalMode))
+      when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(AddPartnersId(0)), any(), any())(any()))
+        .thenReturn(routes.AddPartnersController.onPageLoad(0,NormalMode))
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
@@ -157,10 +157,10 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with Nunjucks
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result) mustBe Some(routes.AddCompanyDirectorsController.onPageLoad(0,NormalMode).url)
+      redirectLocation(result) mustBe Some(routes.AddPartnersController.onPageLoad(0,NormalMode).url)
     }
 
-    "redirect to the next page when maximum directors exist and the user submits" in {
+    "redirect to the next page when maximum partners exist and the user submits" in {
       mutableFakeDataRetrievalAction.setDataToReturn(validData)
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 

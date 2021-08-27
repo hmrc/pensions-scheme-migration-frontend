@@ -84,7 +84,7 @@ class PartnerEnterNINOController @Inject()(
           schemeName =>
             post(
               pageTitle     = Message("messages__enterNINO_title", Message("messages__partner")),
-              pageHeading     = Message("messages__enterNINO", name(establisherIndex, partnerIndex)),
+              pageHeading     = Message("messages__enterNINO_title", name(establisherIndex, partnerIndex)),
               isPageHeading = true,
               id            = PartnerNINOId(establisherIndex, partnerIndex),
               form          = form(establisherIndex, partnerIndex),

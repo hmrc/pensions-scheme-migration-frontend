@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package controllers.establishers.company
+package controllers.establishers.partnership.partner.details
 
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
-import forms.HasReferenceNumberFormProvider
-import identifiers.establishers.company.OtherDirectorsId
-import identifiers.establishers.company.director.DirectorNameId
+import forms.NINOFormProvider
+import identifiers.establishers.partnership.partner.PartnerNameId
+import identifiers.establishers.partnership.partner.details.PartnerNINOId
 import matchers.JsonMatchers
-import models.{NormalMode, PersonName}
+import models.{NormalMode, PersonName, ReferenceValue}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -31,51 +31,44 @@ import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Result}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{status, _}
+import play.api.test.Helpers._
 import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.viewmodels.Radios
-import utils.Data.{schemeName, ua}
+import utils.Data.ua
 import utils.{FakeNavigator, UserAnswers}
-import viewmodels.Message
 
 import scala.concurrent.Future
 
-class OtherDirectorsControllerSpec extends ControllerSpecBase
-  with NunjucksSupport
-  with JsonMatchers
-  with TryValues
-  with BeforeAndAfterEach{
-
-  private val onwardRoute: Call =
-    controllers.routes.IndexController.onPageLoad()
-  private val formProvider: HasReferenceNumberFormProvider =
-    new HasReferenceNumberFormProvider()
+class PartnerEnterNINOControllerSpec
+  extends ControllerSpecBase
+    with NunjucksSupport
+    with JsonMatchers
+    with TryValues
+    with BeforeAndAfterEach {
 
   private val personName: PersonName =
     PersonName("Jane", "Doe")
+  private val formProvider: NINOFormProvider =
+    new NINOFormProvider()
+  private val form: Form[ReferenceValue] =
+    formProvider(personName.fullName)
+  private val onwardRoute: Call =
+    controllers.routes.IndexController.onPageLoad()
   private val userAnswers: UserAnswers =
-    ua.set(DirectorNameId(0,0), personName).success.value
-
+    ua.set(PartnerNameId(0,0), personName).success.value
   private val templateToBeRendered: String =
-    "hasReferenceValueWithHint.njk"
-  private val form: Form[Boolean] =
-    formProvider("Select yes if you need to tell us about other directors")
-
-
+    "enterReferenceValueWithHint.njk"
   private val commonJson: JsObject =
-
-
-
     Json.obj(
-      "pageTitle"     -> Message("messages__otherDirectors__title"),
-      "pageHeading"     -> Message("messages__otherDirectors__heading"),
-      "schemeName"    -> schemeName,
-      "paragraphs"    -> Seq(Message("messages__otherDirectors__lede")),
-      "legendClass"   -> "govuk-visually-hidden",
+      "pageTitle"     -> "What is the partner’s National Insurance number?",
+      "pageHeading"     -> "What is Jane Doe’s National Insurance number?",
+      "schemeName"    -> "Test scheme name",
+      "legendClass"   -> "govuk-label--xl",
       "isPageHeading" -> true
     )
+  private val formData: ReferenceValue =
+    ReferenceValue(value = "AB123456C")
 
   override def beforeEach: Unit = {
     reset(
@@ -86,8 +79,8 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase
 
   private def controller(
                           dataRetrievalAction: DataRetrievalAction
-                        ): OtherDirectorsController =
-    new OtherDirectorsController(
+                        ): PartnerEnterNINOController =
+    new PartnerEnterNINOController(
       messagesApi               = messagesApi,
       navigator                 = new FakeNavigator(desiredRoute = onwardRoute),
       authenticate              = new FakeAuthAction(),
@@ -99,51 +92,20 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase
       renderer                  = new Renderer(mockAppConfig, mockRenderer)
     )
 
-  "OtherDirectorsController" must {
+  "PartnerEnterNINOController" must {
+    "return OK and the correct view for a GET" in {
+      when(mockRenderer.render(any(), any())(any()))
+        .thenReturn(Future.successful(Html("")))
 
-    "return OK and the correct view for a GET" in{
+      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+
+      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
-
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       val result: Future[Result] =
         controller(getData)
-          .onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
-
-      status(result) mustBe OK
-
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual  templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("radios" -> Radios.yesNo(form("value")))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
-    }
-
-    "populate the view correctly on a GET when the question has previously been answered Yes" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
-      val ua =
-        userAnswers
-          .set(OtherDirectorsId(0), true).success.value
-
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val getData = new FakeDataRetrievalAction(Some(ua))
-
-      val result: Future[Result] =
-        controller(getData)
-          .onPageLoad(0,NormalMode)(fakeDataRequest(userAnswers))
+          .onPageLoad(0,0, NormalMode)(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
 
@@ -153,18 +115,18 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase
       templateCaptor.getValue mustEqual templateToBeRendered
 
       val json: JsObject =
-        Json.obj("radios" -> Radios.yesNo(form.fill(true).apply("value")))
+        Json.obj("form" -> form)
 
       jsonCaptor.getValue must containJson(commonJson ++ json)
     }
 
-    "populate the view correctly on a GET when the question has previously been answered No" in {
+    "populate the view correctly on a GET when the question has previously been answered" in {
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
       val ua =
         userAnswers
-          .set(OtherDirectorsId(0), false).success.value
+          .set(PartnerNINOId(0,0), formData).success.value
 
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
 
@@ -174,7 +136,7 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase
 
       val result: Future[Result] =
         controller(getData)
-          .onPageLoad(0,NormalMode)(fakeDataRequest(userAnswers))
+          .onPageLoad(0,0, NormalMode)(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
 
@@ -184,7 +146,7 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase
       templateCaptor.getValue mustEqual templateToBeRendered
 
       val json: JsObject =
-        Json.obj("radios" -> Radios.yesNo(form.fill(false).apply("value")))
+        Json.obj("form" -> form.fill(formData))
 
       jsonCaptor.getValue must containJson(commonJson ++ json)
     }
@@ -195,13 +157,13 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase
 
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
         fakeRequest
-          .withFormUrlEncodedBody(("value", "true"))
+          .withFormUrlEncodedBody("value" -> "AB123456C")
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
       val result: Future[Result] =
         controller(getData)
-          .onSubmit(0,NormalMode)(request)
+          .onSubmit(0,0, NormalMode)(request)
 
       status(result) mustBe SEE_OTHER
 
@@ -215,9 +177,9 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val request =
+      val request: FakeRequest[AnyContentAsFormUrlEncoded] =
         fakeRequest
-          .withFormUrlEncodedBody(("value", "invalid value"))
+          .withFormUrlEncodedBody("value" -> "invalid value")
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
@@ -227,7 +189,7 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase
 
       val result: Future[Result] =
         controller(getData)
-          .onSubmit(0,NormalMode)(request)
+          .onSubmit(0,0, NormalMode)(request)
 
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
@@ -239,15 +201,12 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase
       templateCaptor.getValue mustEqual templateToBeRendered
 
       val json: JsObject =
-        Json.obj("radios" -> Radios.yesNo(boundForm.apply("value")))
+        Json.obj("form" -> Json.toJson(boundForm))
 
       jsonCaptor.getValue must containJson(commonJson ++ json)
 
       verify(mockUserAnswersCacheConnector, times(0))
         .save(any(), any())(any(), any())
     }
-
-
   }
-
 }

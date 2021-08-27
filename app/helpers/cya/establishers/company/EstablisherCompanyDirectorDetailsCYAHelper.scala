@@ -58,7 +58,7 @@ class EstablisherCompanyDirectorDetailsCYAHelper
       )),
 
       Some(answerOrAddRow(
-        id                 =DirectorDOBId(establisherIndex, directorIndex),
+        id                 = DirectorDOBId(establisherIndex, directorIndex),
         message            = Message("messages__dob__h1", directorName).resolve,
         url                = Some(controllers.establishers.company.director.details.routes.DirectorDOBController.onPageLoad(establisherIndex,directorIndex,CheckMode).url),
         visuallyHiddenText = Some(msg"messages__dob__cya__visuallyHidden".withArgs(directorName)),
@@ -68,14 +68,14 @@ class EstablisherCompanyDirectorDetailsCYAHelper
         id                 = DirectorHasNINOId(establisherIndex, directorIndex),
         message            = Message("messages__hasNINO", directorName).resolve,
         url                = Some(controllers.establishers.company.director.details.routes.DirectorHasNINOController.onPageLoad(establisherIndex, directorIndex, CheckMode).url),
-        visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(directorName)),
+        visuallyHiddenText = Some(msg"messages__hasNINO__cya__visuallyHidden".withArgs(directorName)),
         answerTransform    = answerBooleanTransform
       )),
       ua.get(DirectorNINOId(establisherIndex, directorIndex)) map {
         _ =>
           answerOrAddRow(
             id                 = DirectorNINOId(establisherIndex, directorIndex),
-            message            = Message("messages__hasNINO__cya", directorName),
+            message            = Message("messages__enterNINO__cya", directorName),
             url                = Some(controllers.establishers.company.director.details.routes.DirectorEnterNINOController.onPageLoad(establisherIndex, directorIndex, CheckMode).url),
             visuallyHiddenText = Some(msg"messages__hasNINO__cya__visuallyHidden".withArgs(directorName)),
             answerTransform    = referenceValueTransform
@@ -92,7 +92,7 @@ class EstablisherCompanyDirectorDetailsCYAHelper
       },
       Some(answerOrAddRow(
         id                 = DirectorHasUTRId(establisherIndex, directorIndex),
-        message            = Message("messages__hasUTR", directorName).resolve,
+        message            = Message("messages__hasUTR__cya_label", directorName).resolve,
         url                = Some(controllers.establishers.company.director.details.routes.DirectorHasUTRController.onPageLoad(establisherIndex, directorIndex,CheckMode).url),
         visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(directorName)),
         answerTransform    = answerBooleanTransform
@@ -101,7 +101,7 @@ class EstablisherCompanyDirectorDetailsCYAHelper
         _ =>
           answerOrAddRow(
             id                 = DirectorEnterUTRId(establisherIndex, directorIndex),
-            message            = Message("messages__hasUTR__cya", directorName),
+            message            = Message("messages__enterUTR__cya_label", directorName),
             url                = Some(controllers.establishers.company.director.details.routes.DirectorEnterUTRController.onPageLoad(establisherIndex, directorIndex,CheckMode).url),
             visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(directorName)),
             answerTransform    = referenceValueTransform
@@ -118,7 +118,7 @@ class EstablisherCompanyDirectorDetailsCYAHelper
       },
       Some( answerOrAddRow(
             id                  = AddressId(establisherIndex, directorIndex),
-            message             = Message("messages__establisherAddress__whatYouWillNeed_h1", directorName).resolve,
+            message             = Message("addressList_cya_label", directorName).resolve,
             url                 = Some(controllers.establishers.company.director.address.routes.EnterPostcodeController.onPageLoad(establisherIndex, directorIndex,  CheckMode).url),
             visuallyHiddenText  = Some(msg"messages__visuallyHidden__address".withArgs(directorName)), answerAddressTransform
           ))
@@ -136,20 +136,20 @@ class EstablisherCompanyDirectorDetailsCYAHelper
       }else{
         Some( answerOrAddRow(
           id = PreviousAddressId(establisherIndex, directorIndex),
-          message = Message("messages__establisherPreviousAddress").resolve,
+          message = Message("previousAddressList_cya_label").resolve,
           url = Some(controllers.establishers.company.director.address.routes.EnterPreviousPostcodeController.onPageLoad(establisherIndex, directorIndex, CheckMode).url),
           visuallyHiddenText = Some(msg"messages__visuallyHidden__previousAddress".withArgs(directorName)), answerAddressTransform
         ))
       },
       Some(answerOrAddRow(
         id                  = EnterEmailId(establisherIndex, directorIndex),
-        message             = Message("messages__enterEmail", directorName).resolve,
+        message             = Message("messages__enterEmail_cya_label", directorName).resolve,
         url                 = Some(controllers.establishers.company.director.contact.routes.EnterEmailController.onPageLoad(establisherIndex, directorIndex,CheckMode).url),
         visuallyHiddenText  = Some(msg"messages__enterEmail__cya__visuallyHidden".withArgs(directorName))
       )),
       Some(answerOrAddRow(
         id                  = EnterPhoneId(establisherIndex, directorIndex),
-        message             = Message("messages__enterPhone", directorName).resolve,
+        message             = Message("messages__enterPhone_cya_label", directorName).resolve,
         url                 = Some(controllers.establishers.company.director.contact.routes.EnterPhoneNumberController.onPageLoad(establisherIndex, directorIndex, CheckMode).url),
         visuallyHiddenText  = Some(msg"messages__enterPhone__cya__visuallyHidden".withArgs(directorName))
       ))
