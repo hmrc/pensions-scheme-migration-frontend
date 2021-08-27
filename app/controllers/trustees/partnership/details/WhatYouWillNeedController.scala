@@ -55,7 +55,7 @@ class WhatYouWillNeedController @Inject()(
               ctx = Json.obj(
                 "name"        -> details.partnershipName,
                 "pageTitle" -> Messages("messages__trusteePartnershipDetails__whatYouWillNeed_title"),
-                "continueUrl" -> HaveUTRController.onPageLoad(index, NormalMode).url,
+                "continueUrl" -> controllers.trustees.partnership.details.HaveUTRController.onPageLoad(index, NormalMode).url,
                 "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )
             ).map(Ok(_))

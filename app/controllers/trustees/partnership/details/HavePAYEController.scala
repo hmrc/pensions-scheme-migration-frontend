@@ -21,8 +21,9 @@ import controllers.HasReferenceValueController
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.HasReferenceNumberFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.trustees.partnership.PartnershipDetailsId
-import identifiers.trustees.partnership.details.HaveUTRId
+import identifiers.establishers.partnership.PartnershipDetailsId
+import identifiers.establishers.partnership.details.HavePAYEId
+import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import navigators.CompoundNavigator
@@ -32,34 +33,28 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import viewmodels.Message
 
-import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class HaveUTRController @Inject()(
-                                   override val messagesApi: MessagesApi,
-                                   val navigator: CompoundNavigator,
-                                   authenticate: AuthAction,
-                                   getData: DataRetrievalAction,
-                                   requireData: DataRequiredAction,
-                                   formProvider: HasReferenceNumberFormProvider,
-                                   val controllerComponents: MessagesControllerComponents,
-                                   val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                   val renderer: Renderer
-                                 )(implicit val executionContext: ExecutionContext)
+class HavePAYEController @Inject()(
+                                              override val messagesApi: MessagesApi,
+                                              val navigator: CompoundNavigator,
+                                              authenticate: AuthAction,
+                                              getData: DataRetrievalAction,
+                                              requireData: DataRequiredAction,
+                                              formProvider: HasReferenceNumberFormProvider,
+                                              val controllerComponents: MessagesControllerComponents,
+                                              val userAnswersCacheConnector: UserAnswersCacheConnector,
+                                              val renderer: Renderer
+                                            )(implicit val executionContext: ExecutionContext)
   extends HasReferenceValueController {
 
   private def name(index: Index)
                   (implicit request: DataRequest[AnyContent]): String =
-    request
-      .userAnswers
-      .get(PartnershipDetailsId(index))
-      .fold("messages__trusteePartnership")(_.partnershipName)
+    request.userAnswers.get(PartnershipDetailsId(index)).fold("messages__partnership")(_.partnershipName)
 
   private def form(index: Index)
                   (implicit request: DataRequest[AnyContent]): Form[Boolean] =
-    formProvider(
-      errorMsg = Message("messages__genericHasUtr__error__required", name(index))
-    )
+    formProvider(Message("messages__genericHavePaye__error__required", name(index)))
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
@@ -68,13 +63,13 @@ class HaveUTRController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             get(
-              pageTitle     = Message("messages__hasUTR", Message("messages__trusteePartnership")),
-              pageHeading     = Message("messages__hasUTR", name(index)),
+              pageTitle     = Message("messages__havePAYE", Message("messages__partnership")),
+              pageHeading     = Message("messages__havePAYE", name(index)),
               isPageHeading = true,
-              id            = HaveUTRId(index),
+              id            = HavePAYEId(index),
               form          = form(index),
               schemeName    = schemeName,
-              paragraphText = Seq(Message("messages__UTR__p")),
+              paragraphText = Seq(Message("messages__havePAYE__hint")),
               legendClass   = "govuk-visually-hidden"
             )
         }
@@ -87,13 +82,13 @@ class HaveUTRController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             post(
-              pageTitle     = Message("messages__hasUTR", Message("messages__trusteePartnership")),
-              pageHeading     = Message("messages__hasUTR", name(index)),
+              pageTitle     = Message("messages__havePAYE", Message("messages__partnership")),
+              pageHeading     = Message("messages__havePAYE", name(index)),
               isPageHeading = true,
-              id            = HaveUTRId(index),
+              id            = HavePAYEId(index),
               form          = form(index),
               schemeName    = schemeName,
-              paragraphText = Seq(Message("messages__UTR__p")),
+              paragraphText = Seq(Message("messages__havePAYE__hint")),
               legendClass   = "govuk-visually-hidden",
               mode          = mode
             )
