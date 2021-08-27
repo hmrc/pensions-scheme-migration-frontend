@@ -20,11 +20,12 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.establishers.company.director.ConfirmDeleteDirectorFormProvider
-import identifiers.establishers.company.director.{ConfirmDeleteDirectorId, DirectorNameId}
+import identifiers.establishers.company.OtherDirectorsId
+import identifiers.establishers.company.director.{DirectorNameId, ConfirmDeleteDirectorId}
 import models.Index
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{MessagesApi, Messages, I18nSupport}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -100,8 +101,9 @@ class ConfirmDeleteDirectorController @Inject()(override val messagesApi: Messag
                 Try(request.userAnswers)
               }
               Future.fromTry(deletionResult).flatMap { answers =>
-                userAnswersCacheConnector.save(request.lock, answers.data).map { _ =>
-                  Redirect(navigator.nextPage(ConfirmDeleteDirectorId(establisherIndex), answers))
+                val updatedUA = answers.remove(OtherDirectorsId(establisherIndex))
+                userAnswersCacheConnector.save(request.lock, updatedUA.data).map { _ =>
+                  Redirect(navigator.nextPage(ConfirmDeleteDirectorId(establisherIndex), updatedUA))
                 }
               }
             }
