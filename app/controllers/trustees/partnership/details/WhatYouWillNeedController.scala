@@ -29,6 +29,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import controllers.trustees.partnership.details.routes.HaveUTRController
 
 import scala.concurrent.ExecutionContext
 
@@ -55,7 +56,7 @@ class WhatYouWillNeedController @Inject()(
               ctx = Json.obj(
                 "name"        -> details.partnershipName,
                 "pageTitle" -> Messages("messages__trusteePartnershipDetails__whatYouWillNeed_title"),
-                "continueUrl" -> controllers.trustees.partnership.details.HaveUTRController.onPageLoad(index, NormalMode).url,
+                "continueUrl" -> HaveUTRController.onPageLoad(index, NormalMode).url,
                 "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )
             ).map(Ok(_))
