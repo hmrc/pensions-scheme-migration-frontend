@@ -989,3 +989,7 @@ pageNotFound404.p1 = If you typed the web address, check it is correct.
 pageNotFound404.p2 = If you pasted the web address, check you copied the entire address.
 viewYourSchemes = View your pension schemes
 
+messages__otherTrustees__title=Do you need to tell us about other trustees?
+messages__otherTrustees__heading=Do you need to tell us about other trustees?
+messages__otherTrustees__lede=You do not have to add them now. We may contact you if we need this information.
+messages__otherTrustees__error__required = Select yes if you need to tell us about other trustees
