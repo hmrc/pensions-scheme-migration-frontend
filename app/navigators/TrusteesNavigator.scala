@@ -103,17 +103,12 @@ class TrusteesNavigator @Inject()(config: AppConfig)
   private def addTrusteeRoutes(
                                     value: Option[Boolean],
                                     answers: UserAnswers
-                                  ): Call = {
-    if (answers.allTrusteesAfterDelete.length < config.maxTrustees) {
+                                  ): Call =
       value match {
         case Some(false) => TaskListController.onPageLoad()
         case Some(true) => TrusteeKindController.onPageLoad(answers.trusteesCount)
-        case None => IndexController.onPageLoad()
+        case None => controllers.trustees.routes.OtherTrusteesController.onPageLoad(NormalMode)
       }
-    } else {
-      controllers.trustees.routes.OtherTrusteesController.onPageLoad(NormalMode)
-    }
-  }
 
   private def trusteeHasNino(
                                   index: Index,

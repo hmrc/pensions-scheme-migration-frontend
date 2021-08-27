@@ -54,6 +54,7 @@ class TrusteesNavigatorSpec
   private def trusteePhonePage(mode: Mode): Call = controllers.trustees.individual.contact.routes.EnterPhoneController.onPageLoad(index, mode)
   private val addTrusteePage: Call = controllers.trustees.routes.AddTrusteeController.onPageLoad()
   private val taskListPage: Call = controllers.routes.TaskListController.onPageLoad()
+  private val otherTrusteesPage: Call = controllers.trustees.routes.OtherTrusteesController.onPageLoad(NormalMode)
   private val trusteeKindPage: Call = routes.TrusteeKindController.onPageLoad(index)
   private val indexPage: Call = controllers.routes.IndexController.onPageLoad()
   private def hasNinoPage(mode: Mode): Call =
@@ -110,6 +111,7 @@ class TrusteesNavigatorSpec
         row(TrusteeNameId(index))(addTrusteePage),
         row(AddTrusteeId(Some(true)))(trusteeKindPage),
         row(AddTrusteeId(Some(false)))(taskListPage),
+        row(AddTrusteeId(None))(otherTrusteesPage),
         row(TrusteeDOBId(index))(hasNinoPage(NormalMode), Some(detailsUa.set(TrusteeDOBId(index), LocalDate.parse("2000-01-01")).success.value)),
         row(TrusteeHasNINOId(index))(enterNinoPage(NormalMode), Some(detailsUa.set(TrusteeHasNINOId(index), true).success.value)),
         row(TrusteeHasNINOId(index))(noNinoPage(NormalMode), Some(detailsUa.set(TrusteeHasNINOId(index), false).success.value)),
