@@ -65,7 +65,7 @@ class TrusteesNavigator @Inject()(config: AppConfig)
     case PreviousAddressId(index) => cyaAddress(index)
     case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
     case EnterPhoneId(index) => cyaContactDetails(index)
-
+    case OtherTrusteesId => TaskListController.onPageLoad()
   }
 
   override protected def editRouteMap(ua: UserAnswers)

@@ -23,16 +23,16 @@ import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address._
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.details._
-import identifiers.trustees.{AddTrusteeId, TrusteeKindId}
+import identifiers.trustees.{AddTrusteeId, TrusteeKindId, OtherTrusteesId}
 import identifiers.{Identifier, TypedIdentifier}
 import models.trustees.TrusteeKind
-import models.{Index, Mode, NormalMode, PersonName, _}
+import models.{PersonName, Mode, Index, NormalMode, _}
 import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes
 import play.api.mvc.Call
 import utils.Data.ua
-import utils.{Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable}
 
 import java.time.LocalDate
 
@@ -131,8 +131,8 @@ class TrusteesNavigatorSpec
         row(PreviousAddressListId(index))(cyaAddress, addressUAWithValue(PreviousAddressListId(index), 0)),
         row(PreviousAddressId(index))(cyaAddress, addressUAWithValue(PreviousAddressId(index), address)),
           row(EnterEmailId(index))(trusteePhonePage(NormalMode), Some(indvDetailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
-        row(EnterPhoneId(index))(cyaContact, Some(indvDetailsUa.set(EnterPhoneId(index), "123").success.value))
-
+        row(EnterPhoneId(index))(cyaContact, Some(indvDetailsUa.set(EnterPhoneId(index), "123").success.value)),
+        row(OtherTrusteesId)(taskListPage)
       )
 
     def editNavigation: TableFor3[Identifier, UserAnswers, Call] =
