@@ -48,7 +48,10 @@ class EnterPostcodeController @Inject()(val appConfig: AppConfig,
                                         requireData: DataRequiredAction,
                                         formProvider: PostcodeFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
-                                        val renderer: Renderer)(implicit val ec: ExecutionContext) extends PostcodeController with I18nSupport with NunjucksSupport {
+                                        val renderer: Renderer)
+                                       (implicit val ec: ExecutionContext)
+  extends PostcodeController
+  with I18nSupport with NunjucksSupport {
 
   def form: Form[String] = formProvider("establisherEnterPostcode.required", "establisherEnterPostcode.invalid")
 
@@ -63,15 +66,18 @@ class EnterPostcodeController @Inject()(val appConfig: AppConfig,
       }
     }
 
-  def onSubmit(establisherIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async{
+  def onSubmit(establisherIndex: Index, partnerIndex: Index, mode: Mode):
+  Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        post(getFormToJson(schemeName, establisherIndex, partnerIndex, mode), EnterPostCodeId(establisherIndex, partnerIndex), "establisherEnterPostcode.invalid", Some(mode))
+        post(getFormToJson(schemeName, establisherIndex, partnerIndex, mode),
+          EnterPostCodeId(establisherIndex, partnerIndex), "establisherEnterPostcode.invalid", Some(mode))
       }
   }
 
 
-  def getFormToJson(schemeName:String, establisherIndex: Index, partnerIndex: Index, mode: Mode)(implicit request:DataRequest[AnyContent]): Form[String] => JsObject = {
+  def getFormToJson(schemeName: String, establisherIndex: Index, partnerIndex: Index, mode: Mode)
+                   (implicit request: DataRequest[AnyContent]): Form[String] => JsObject = {
     form => {
       val msg = request2Messages(request)
       val name = request.userAnswers.get(PartnerNameId(establisherIndex, partnerIndex)).map(_.fullName).getOrElse("messages__partner")
@@ -79,7 +85,7 @@ class EnterPostcodeController @Inject()(val appConfig: AppConfig,
         "entityType" -> msg("messages__partner"),
         "entityName" -> name,
         "form" -> form,
-        "enterManuallyUrl" -> controllers.establishers.partnership.partner.address.routes.ConfirmAddressController.onPageLoad(establisherIndex, partnerIndex, mode).url,
+        "enterManuallyUrl" -> routes.ConfirmAddressController.onPageLoad(establisherIndex, partnerIndex, mode).url,
         "schemeName" -> schemeName
       )
     }
