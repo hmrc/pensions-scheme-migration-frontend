@@ -25,7 +25,6 @@ import matchers.JsonMatchers
 import models.{Index, NormalMode, ReferenceValue}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
@@ -47,7 +46,6 @@ class UTRControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
   private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(index), establisherPartnershipDetails).success.value
 
   private val formProvider: UTRFormProvider = new UTRFormProvider()
-  private val form: Form[ReferenceValue] = formProvider()
   private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
   private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
 

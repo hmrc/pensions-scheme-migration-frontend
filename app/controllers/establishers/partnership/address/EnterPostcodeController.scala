@@ -80,7 +80,7 @@ class EnterPostcodeController @Inject()(val appConfig: AppConfig,
         "entityType" -> msg("establisherEntityTypePartnership"),
         "entityName" -> name,
         "form" -> form,
-        "enterManuallyUrl" -> controllers.establishers.partnership.address.routes.ConfirmAddressController.onPageLoad(index).url,
+        "enterManuallyUrl" -> routes.ConfirmAddressController.onPageLoad(index).url,
         "schemeName" -> schemeName
       )
     }

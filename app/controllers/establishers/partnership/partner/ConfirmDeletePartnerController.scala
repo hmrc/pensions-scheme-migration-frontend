@@ -109,6 +109,5 @@ class ConfirmDeletePartnerController @Inject()(override val messagesApi: Message
           )
         }
     }
-
-
 }
+

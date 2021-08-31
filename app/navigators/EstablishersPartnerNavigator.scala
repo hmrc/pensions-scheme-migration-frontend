@@ -36,81 +36,81 @@ class EstablishersPartnerNavigator
   //scalastyle:off cyclomatic.complexity
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
-    case PartnerNameId(establisherIndex, partnerIndex) => PartnerDOBController.onPageLoad(establisherIndex,partnerIndex, NormalMode)
-    case PartnerDOBId(establisherIndex, partnerIndex) => PartnerHasNINOController.onPageLoad(establisherIndex,partnerIndex, NormalMode)
-    case PartnerHasNINOId(establisherIndex, partnerIndex) => partnerHasNino(establisherIndex, partnerIndex, ua, NormalMode)
-    case PartnerNINOId(establisherIndex, partnerIndex) => hassUTR(establisherIndex, partnerIndex,NormalMode)
-    case PartnerNoNINOReasonId(establisherIndex, partnerIndex) => hassUTR(establisherIndex, partnerIndex,NormalMode)
-    case PartnerHasUTRId(establisherIndex, partnerIndex) => establisherHasUtr(establisherIndex, partnerIndex, ua, NormalMode)
-    case PartnerEnterUTRId(establisherIndex, partnerIndex) => postcode(establisherIndex, partnerIndex, NormalMode)
-    case PartnerNoUTRReasonId(establisherIndex, partnerIndex) => postcode(establisherIndex, partnerIndex, NormalMode)
-    case AddressId(establisherIndex, partnerIndex) => addressYears(establisherIndex, partnerIndex, NormalMode)
-    case AddressListId(establisherIndex, partnerIndex) => addressYears(establisherIndex, partnerIndex, NormalMode)
-    case AddressYearsId(establisherIndex, partnerIndex) =>
-      if (ua.get(AddressYearsId(establisherIndex, partnerIndex)).contains(true)) email(establisherIndex, partnerIndex, NormalMode)
-      else prevPostcode(establisherIndex, partnerIndex, NormalMode)
-    case EnterPostCodeId(establisherIndex, partnerIndex) => selectAddress(establisherIndex, partnerIndex, NormalMode)
-    case EnterPreviousPostCodeId(establisherIndex, partnerIndex) => selectPrevAddress(establisherIndex, partnerIndex, NormalMode)
-    case PreviousAddressId(establisherIndex, partnerIndex) => email(establisherIndex, partnerIndex, NormalMode)
-    case PreviousAddressListId(establisherIndex, partnerIndex) => email(establisherIndex, partnerIndex, NormalMode)
-    case EnterEmailId(establisherIndex, partnerIndex) => EnterPhoneNumberController.onPageLoad(establisherIndex, partnerIndex, NormalMode)
-    case EnterPhoneId(establisherIndex, partnerIndex) =>cyaDetails(establisherIndex,partnerIndex)
-    case ConfirmDeletePartnerId(establisherIndex) => controllers.establishers.partnership.routes.AddPartnersController.onPageLoad(establisherIndex,NormalMode)
+    case PartnerNameId(estIndex, partnerIndex) => PartnerDOBController.onPageLoad(estIndex,partnerIndex, NormalMode)
+    case PartnerDOBId(estIndex, partnerIndex) => PartnerHasNINOController.onPageLoad(estIndex,partnerIndex, NormalMode)
+    case PartnerHasNINOId(estIndex, partnerIndex) => partnerHasNino(estIndex, partnerIndex, ua, NormalMode)
+    case PartnerNINOId(estIndex, partnerIndex) => hassUTR(estIndex, partnerIndex,NormalMode)
+    case PartnerNoNINOReasonId(estIndex, partnerIndex) => hassUTR(estIndex, partnerIndex,NormalMode)
+    case PartnerHasUTRId(estIndex, partnerIndex) => establisherHasUtr(estIndex, partnerIndex, ua, NormalMode)
+    case PartnerEnterUTRId(estIndex, partnerIndex) => postcode(estIndex, partnerIndex, NormalMode)
+    case PartnerNoUTRReasonId(estIndex, partnerIndex) => postcode(estIndex, partnerIndex, NormalMode)
+    case AddressId(estIndex, partnerIndex) => addressYears(estIndex, partnerIndex, NormalMode)
+    case AddressListId(estIndex, partnerIndex) => addressYears(estIndex, partnerIndex, NormalMode)
+    case AddressYearsId(estIndex, partnerIndex) =>
+      if (ua.get(AddressYearsId(estIndex, partnerIndex)).contains(true)) email(estIndex, partnerIndex, NormalMode)
+      else prevPostcode(estIndex, partnerIndex, NormalMode)
+    case EnterPostCodeId(estIndex, partnerIndex) => selectAddress(estIndex, partnerIndex, NormalMode)
+    case EnterPreviousPostCodeId(estIndex, partnerIndex) => selectPrevAddress(estIndex, partnerIndex, NormalMode)
+    case PreviousAddressId(estIndex, partnerIndex) => email(estIndex, partnerIndex, NormalMode)
+    case PreviousAddressListId(estIndex, partnerIndex) => email(estIndex, partnerIndex, NormalMode)
+    case EnterEmailId(estIndex, partnerIndex) => EnterPhoneNumberController.onPageLoad(estIndex, partnerIndex, NormalMode)
+    case EnterPhoneId(estIndex, partnerIndex) =>cyaDetails(estIndex,partnerIndex)
+    case ConfirmDeletePartnerId(estIndex) => controllers.establishers.partnership.routes.AddPartnersController.onPageLoad(estIndex,NormalMode)
   }
 
   override protected def editRouteMap(ua: UserAnswers)
                                      (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
-    case PartnerNameId(establisherIndex, partnerIndex) => cyaDetails(establisherIndex,partnerIndex)
-    case PartnerDOBId(establisherIndex,partnerIndex) => cyaDetails(establisherIndex,partnerIndex)
-    case PartnerHasNINOId(establisherIndex, partnerIndex) => partnerHasNino(establisherIndex, partnerIndex, ua, CheckMode)
-    case PartnerNINOId(establisherIndex, partnerIndex) => cyaDetails(establisherIndex,partnerIndex)
-    case PartnerNoNINOReasonId(establisherIndex, partnerIndex) => cyaDetails(establisherIndex,partnerIndex)
-    case PartnerHasUTRId(establisherIndex, partnerIndex) => establisherHasUtr(establisherIndex, partnerIndex, ua, CheckMode)
-    case PartnerEnterUTRId(establisherIndex, partnerIndex) => cyaDetails(establisherIndex,partnerIndex)
-    case PartnerNoUTRReasonId(establisherIndex, partnerIndex) => cyaDetails(establisherIndex,partnerIndex)
-    case AddressId(establisherIndex, partnerIndex) => cyaDetails(establisherIndex,partnerIndex)
-    case AddressListId(establisherIndex, partnerIndex) => cyaDetails(establisherIndex,partnerIndex)
-    case AddressYearsId(establisherIndex, partnerIndex) =>
-      if (ua.get(AddressYearsId(establisherIndex, partnerIndex)).contains(true)) cyaDetails(establisherIndex,partnerIndex)
-      else prevPostcode(establisherIndex, partnerIndex, CheckMode)
-    case EnterPostCodeId(establisherIndex, partnerIndex) => selectAddress(establisherIndex, partnerIndex, CheckMode)
-    case EnterPreviousPostCodeId(establisherIndex, partnerIndex) => selectPrevAddress(establisherIndex, partnerIndex, CheckMode)
-    case PreviousAddressId(establisherIndex, partnerIndex) => cyaDetails(establisherIndex,partnerIndex)
-    case PreviousAddressListId(establisherIndex, partnerIndex) => cyaDetails(establisherIndex,partnerIndex)
-    case EnterEmailId(establisherIndex, partnerIndex) => cyaDetails(establisherIndex,partnerIndex)
-    case EnterPhoneId(establisherIndex, partnerIndex) => cyaDetails(establisherIndex,partnerIndex)
+    case PartnerNameId(estIndex, partnerIndex) => cyaDetails(estIndex,partnerIndex)
+    case PartnerDOBId(estIndex,partnerIndex) => cyaDetails(estIndex,partnerIndex)
+    case PartnerHasNINOId(estIndex, partnerIndex) => partnerHasNino(estIndex, partnerIndex, ua, CheckMode)
+    case PartnerNINOId(estIndex, partnerIndex) => cyaDetails(estIndex,partnerIndex)
+    case PartnerNoNINOReasonId(estIndex, partnerIndex) => cyaDetails(estIndex,partnerIndex)
+    case PartnerHasUTRId(estIndex, partnerIndex) => establisherHasUtr(estIndex, partnerIndex, ua, CheckMode)
+    case PartnerEnterUTRId(estIndex, partnerIndex) => cyaDetails(estIndex,partnerIndex)
+    case PartnerNoUTRReasonId(estIndex, partnerIndex) => cyaDetails(estIndex,partnerIndex)
+    case AddressId(estIndex, partnerIndex) => cyaDetails(estIndex,partnerIndex)
+    case AddressListId(estIndex, partnerIndex) => cyaDetails(estIndex,partnerIndex)
+    case AddressYearsId(estIndex, partnerIndex) =>
+      if (ua.get(AddressYearsId(estIndex, partnerIndex)).contains(true)) cyaDetails(estIndex,partnerIndex)
+      else prevPostcode(estIndex, partnerIndex, CheckMode)
+    case EnterPostCodeId(estIndex, partnerIndex) => selectAddress(estIndex, partnerIndex, CheckMode)
+    case EnterPreviousPostCodeId(estIndex, partnerIndex) => selectPrevAddress(estIndex, partnerIndex, CheckMode)
+    case PreviousAddressId(estIndex, partnerIndex) => cyaDetails(estIndex,partnerIndex)
+    case PreviousAddressListId(estIndex, partnerIndex) => cyaDetails(estIndex,partnerIndex)
+    case EnterEmailId(estIndex, partnerIndex) => cyaDetails(estIndex,partnerIndex)
+    case EnterPhoneId(estIndex, partnerIndex) => cyaDetails(estIndex,partnerIndex)
   }
 
-  private def cyaDetails(establisherIndex:Int,partnerIndex:Int): Call = CheckYourAnswersController.onPageLoad(establisherIndex,partnerIndex)
-  private def hassUTR(establisherIndex:Int,partnerIndex:Int,mode: Mode): Call = PartnerHasUTRController.onPageLoad(establisherIndex, partnerIndex, mode)
-  private def addressYears(establisherIndex:Int,partnerIndex:Int,mode: Mode): Call = AddressYearsController.onPageLoad(establisherIndex, partnerIndex, mode)
-  private def email(establisherIndex:Int,partnerIndex:Int,mode: Mode): Call = EnterEmailController.onPageLoad(establisherIndex, partnerIndex, mode)
-  private def postcode(establisherIndex:Int,partnerIndex:Int,mode: Mode): Call = EnterPostcodeController.onPageLoad(establisherIndex, partnerIndex, mode)
-  private def prevPostcode(establisherIndex:Int,partnerIndex:Int,mode: Mode): Call = EnterPreviousPostcodeController.onPageLoad(establisherIndex, partnerIndex, mode)
-  private def selectAddress(establisherIndex:Int,partnerIndex:Int,mode: Mode): Call = SelectAddressController.onPageLoad(establisherIndex, partnerIndex, mode)
-  private def selectPrevAddress(establisherIndex:Int,partnerIndex:Int,mode: Mode): Call = SelectPreviousAddressController.onPageLoad(establisherIndex, partnerIndex, mode)
+  private def cyaDetails(estIndex:Int,partnerIndex:Int): Call = CheckYourAnswersController.onPageLoad(estIndex,partnerIndex)
+  private def hassUTR(estIndex:Int,partnerIndex:Int,mode: Mode): Call = PartnerHasUTRController.onPageLoad(estIndex, partnerIndex, mode)
+  private def addressYears(estIndex:Int,partnerIndex:Int,mode: Mode): Call = AddressYearsController.onPageLoad(estIndex, partnerIndex, mode)
+  private def email(estIndex:Int,partnerIndex:Int,mode: Mode): Call = EnterEmailController.onPageLoad(estIndex, partnerIndex, mode)
+  private def postcode(estIndex:Int,partnerIndex:Int,mode: Mode): Call = EnterPostcodeController.onPageLoad(estIndex, partnerIndex, mode)
+  private def prevPostcode(estIndex:Int,partnerIndex:Int,mode: Mode): Call = EnterPreviousPostcodeController.onPageLoad(estIndex, partnerIndex, mode)
+  private def selectAddress(estIndex:Int,partnerIndex:Int,mode: Mode): Call = SelectAddressController.onPageLoad(estIndex, partnerIndex, mode)
+  private def selectPrevAddress(estIndex:Int,partnerIndex:Int,mode: Mode): Call = SelectPreviousAddressController.onPageLoad(estIndex, partnerIndex, mode)
 
   private def partnerHasNino(
-                                  establisherIndex:Index,
+                                  estIndex:Index,
                                   partnerIndex:Index,
                                   answers: UserAnswers,
                                   mode: Mode
                                 ): Call =
-    answers.get(PartnerHasNINOId(establisherIndex,partnerIndex)) match {
-      case Some(true) => PartnerEnterNINOController.onPageLoad(establisherIndex,partnerIndex, mode)
-      case Some(false) => PartnerNoNINOReasonController.onPageLoad(establisherIndex,partnerIndex, mode)
+    answers.get(PartnerHasNINOId(estIndex,partnerIndex)) match {
+      case Some(true) => PartnerEnterNINOController.onPageLoad(estIndex,partnerIndex, mode)
+      case Some(false) => PartnerNoNINOReasonController.onPageLoad(estIndex,partnerIndex, mode)
       case None => controllers.routes.TaskListController.onPageLoad()
     }
 
   private def establisherHasUtr(
-                                 establisherIndex:Index,
+                                 estIndex:Index,
                                  partnerIndex:Index,
                                  answers: UserAnswers,
                                  mode: Mode
                                ): Call =
-    answers.get(PartnerHasUTRId(establisherIndex,partnerIndex)) match {
-      case Some(true) => PartnerEnterUTRController.onPageLoad(establisherIndex,partnerIndex, mode)
-      case Some(false) => PartnerNoUTRReasonController.onPageLoad(establisherIndex,partnerIndex, mode)
+    answers.get(PartnerHasUTRId(estIndex,partnerIndex)) match {
+      case Some(true) => PartnerEnterUTRController.onPageLoad(estIndex,partnerIndex, mode)
+      case Some(false) => PartnerNoUTRReasonController.onPageLoad(estIndex,partnerIndex, mode)
       case None => controllers.routes.TaskListController.onPageLoad()
     }
 

@@ -27,7 +27,8 @@ case class AddressYearsId(index: Int) extends TypedIdentifier[Boolean] {
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): UserAnswers = {
     value match {
       case Some(true) => userAnswers
-        .removeAll(Set(TradingTimeId(index), PreviousAddressId(index), PreviousAddressListId(index), EnterPreviousPostCodeId(index)))
+        .removeAll(Set(TradingTimeId(index), PreviousAddressId(index),
+          PreviousAddressListId(index), EnterPreviousPostCodeId(index)))
       case _ => super.cleanup(value, userAnswers)
     }
   }

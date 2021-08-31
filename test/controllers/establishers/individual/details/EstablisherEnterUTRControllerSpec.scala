@@ -66,8 +66,8 @@ class EstablisherEnterUTRControllerSpec
       "schemeName"    -> "Test scheme name",
       "legendClass"   -> "govuk-visually-hidden",
       "paragraphs"    -> Json.arr(
-        "If the UTR is 13 numbers, only enter the last 10.",
-        "If there is a letter ‘K’ at the end of the number, do not enter it."
+        "This is a 10-digit or 13-digit number. It may also start or end with the letter ‘k’.",
+        "You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’."
       ),
       "isPageHeading" -> true
     )

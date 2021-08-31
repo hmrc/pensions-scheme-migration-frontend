@@ -20,7 +20,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import helpers.cya.establishers.partnership.EstablisherPartnerDetailsCYAHelper
 import identifiers.establishers.partnership.partner._
-import identifiers.establishers.partnership.partner.details.{PartnerDOBId, PartnerEnterUTRId, PartnerHasNINOId, PartnerHasUTRId, PartnerNINOId, PartnerNoNINOReasonId, PartnerNoUTRReasonId}
+import identifiers.establishers.partnership.partner.details._
 import matchers.JsonMatchers
 import models.requests.DataRequest
 import models.{PersonName, ReferenceValue}

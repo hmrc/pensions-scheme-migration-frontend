@@ -29,7 +29,6 @@ import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.Reads._
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers._
