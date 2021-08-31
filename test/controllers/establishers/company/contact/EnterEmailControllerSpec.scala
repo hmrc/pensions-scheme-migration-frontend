@@ -24,7 +24,7 @@ import identifiers.establishers.company.contact.EnterEmailId
 import matchers.JsonMatchers
 import models.{CompanyDetails, NormalMode}
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.i18n.Messages

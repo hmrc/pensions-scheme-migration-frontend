@@ -24,9 +24,8 @@ import identifiers.trustees.individual.TrusteeNameId
 import matchers.JsonMatchers
 import models.trustees.TrusteeKind
 import models.{Index, PersonName}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{times, verify, when}
-import org.mockito.{ArgumentCaptor, Matchers}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
@@ -110,7 +109,7 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with Nunjuck
 
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(Matchers.eq(ConfirmDeleteTrusteeId), any(), any())(any()))
+      when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(ConfirmDeleteTrusteeId), any(), any())(any()))
         .thenReturn(routes.AddTrusteeController.onPageLoad())
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))

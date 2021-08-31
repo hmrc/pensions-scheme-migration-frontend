@@ -23,6 +23,7 @@ import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.trustees.company.{CompanyDetailsId => TrusteeCompanyDetailsId}
+import identifiers.trustees.partnership.{PartnershipDetailsId => TrusteePartnershipDetailsId}
 import identifiers.trustees.individual.TrusteeNameId
 import play.api.i18n.Messages
 import utils.UserAnswers
@@ -155,6 +156,17 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
               Some(TaskListEntitySection(
                 isCompleted = None,
                 entities = spokeCreationService.getTrusteeCompanySpokes(
+                  userAnswers,
+                  trustee.name,
+                  trustee.index
+                ),
+                header = Some(trustee.name))
+              )
+
+            case TrusteePartnershipDetailsId(_) =>
+              Some(TaskListEntitySection(
+                isCompleted = None,
+                entities = spokeCreationService.getTrusteePartnershipSpokes(
                   userAnswers,
                   trustee.name,
                   trustee.index

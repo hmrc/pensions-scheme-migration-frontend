@@ -24,7 +24,9 @@ import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.contact.{EnterEmailId, EnterPhoneId}
 import models.requests.DataRequest
 import models.{CheckMode, CompanyDetails, MigrationLock}
-import org.scalatest.{MustMatchers, TryValues, WordSpec}
+import org.scalatest.TryValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.domain.PsaId
@@ -35,7 +37,7 @@ import utils.Data.{credId, psaId, pstr, schemeName}
 import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 
-class EstablisherCompanyContactDetailsCYAHelperSpec extends WordSpec with MustMatchers with TryValues with Enumerable.Implicits {
+class EstablisherCompanyContactDetailsCYAHelperSpec extends AnyWordSpec with Matchers with TryValues with Enumerable.Implicits {
 
   val establisherCompanyContactDetailsCYAHelper = new EstablisherCompanyContactDetailsCYAHelper
 

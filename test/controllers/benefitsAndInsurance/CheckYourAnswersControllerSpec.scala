@@ -21,8 +21,7 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import helpers.cya.BenefitsAndInsuranceCYAHelper
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule

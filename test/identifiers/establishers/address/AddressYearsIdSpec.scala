@@ -18,12 +18,13 @@ package identifiers.establishers.address
 
 import base.SpecBase
 import identifiers.establishers.individual.address.{AddressYearsId, EnterPreviousPostCodeId, PreviousAddressId, PreviousAddressListId}
-import org.scalatest.{MustMatchers, OptionValues}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 import utils.{Data, Enumerable, UserAnswers}
 
-class AddressYearsIdSpec extends SpecBase with MustMatchers with ScalaCheckPropertyChecks with OptionValues with Enumerable.Implicits {
+class AddressYearsIdSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks with OptionValues with Enumerable.Implicits {
 
   "Cleanup" when {
 

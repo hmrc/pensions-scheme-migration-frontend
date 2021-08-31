@@ -38,7 +38,8 @@ import identifiers.trustees.individual.details.{TrusteeDOBId, TrusteeNINOId, Tru
 import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind
 import models.{EntitySpoke, _}
-import org.scalatest.{MustMatchers, OptionValues, TryValues}
+import org.scalatest.{OptionValues, TryValues}
+import org.scalatest.matchers.must.Matchers
 import utils.Data.{schemeName, ua}
 import utils.{Data, Enumerable}
 import viewmodels.Message
@@ -47,7 +48,7 @@ import java.time.LocalDate
 
 class SpokeCreationServiceSpec
   extends SpecBase
-    with MustMatchers
+    with Matchers
     with OptionValues
     with TryValues
     with Enumerable.Implicits {

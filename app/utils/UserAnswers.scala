@@ -23,6 +23,7 @@ import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.{EstablisherKindId, EstablishersId, IsEstablisherNewId}
 import identifiers.trustees.company.{CompanyDetailsId => TrusteeCompanyDetailsId}
+import identifiers.trustees.partnership.{PartnershipDetailsId => TrusteePartnershipDetailsId}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId, TrusteesId}
 import models._
@@ -270,6 +271,15 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
         (false)(identity), noOfRecords)
     )
 
+    private def readsPartnership(index: Int): Reads[Trustee[_]] = (
+      (JsPath \ TrusteePartnershipDetailsId.toString).read[PartnershipDetails] and
+        (JsPath \ IsTrusteeNewId.toString).readNullable[Boolean]
+      ) ((details, isNew) =>
+      TrusteePartnershipEntity(TrusteePartnershipDetailsId(index),
+        details.partnershipName, details.isDeleted, isTrusteePartnershipComplete(index), isNew.fold
+        (false)(identity), noOfRecords)
+    )
+
     override def reads(json: JsValue): JsResult[Seq[Trustee[_]]] = {
       json \ TrusteesId.toString match {
         case JsDefined(JsArray(trustees)) =>
@@ -278,6 +288,7 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
             val readsForTrusteeKind = trusteeKind match {
               case Some(TrusteeKind.Individual.toString) => readsIndividual(index)
               case Some(TrusteeKind.Company.toString) => readsCompany(index)
+              case Some(TrusteeKind.Partnership.toString) => readsPartnership(index)
               case _ => throw UnrecognisedTrusteeKindException
             }
             readsForTrusteeKind.reads(jsValue)

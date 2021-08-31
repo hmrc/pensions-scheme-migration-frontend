@@ -22,8 +22,7 @@ import identifiers.establishers.company.director.DirectorNameId
 import matchers.JsonMatchers
 import models.{Index, NormalMode, PersonName}
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._

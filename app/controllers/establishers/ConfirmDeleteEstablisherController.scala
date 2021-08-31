@@ -65,7 +65,7 @@ class ConfirmDeleteEstablisherController @Inject()(override val messagesApi: Mes
             } else {
               val json = Json.obj(
                 "form" -> form(establisher.name),
-                "titleMessage" -> msg"messages__confirmDeleteEstablisher__title",
+                "titleMessage" -> msg"messages__confirmDeleteEstablisher__title".resolve,
                 "name" -> establisher.name,
                 "hint" -> getHintText(establisherKind),
                 "radios" -> Radios.yesNo(formProvider(establisher.name)(implicitly)("value")),
@@ -124,7 +124,7 @@ class ConfirmDeleteEstablisherController @Inject()(override val messagesApi: Mes
       (formWithErrors: Form[_]) => {
         val json = Json.obj(
           "form" -> formWithErrors,
-          "titleMessage" -> msg"messages__confirmDeleteEstablisher__title",
+          "titleMessage" -> msg"messages__confirmDeleteEstablisher__title".resolve,
           "name" -> name,
           "hint" -> getHintText(establisherKind),
           "radios" -> Radios.yesNo(formProvider(name)(implicitly)("value")),
