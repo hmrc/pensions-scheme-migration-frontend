@@ -27,6 +27,7 @@ import identifiers.trustees.individual.details._
 import utils.UserAnswers
 import identifiers.trustees.company.address.{TradingTimeId, AddressId => CompanyAddressId, AddressYearsId => CompanyAddressYearsId, PreviousAddressId => CompanyPreviousAddressId}
 import identifiers.trustees.partnership.PartnershipDetailsId
+import identifiers.trustees.partnership.{details => partnershipDetails}
 
 trait DataCompletionTrustees extends DataCompletion {
 
@@ -127,4 +128,14 @@ trait DataCompletionTrustees extends DataCompletion {
         isAnswerComplete(TrusteeKindId(index))
       )
     ).getOrElse(false)
+
+  def isTrusteePartnershipDetailsCompleted(index: Int): Option[Boolean] = {
+    isComplete(
+      Seq(
+        isAnswerComplete(partnershipDetails.HaveUTRId(index), partnershipDetails.PartnershipUTRId(index), Some(partnershipDetails.NoUTRReasonId(index))),
+        isAnswerComplete(partnershipDetails.HaveVATId(index),partnershipDetails.VATId(index),None),
+        isAnswerComplete(partnershipDetails.HavePAYEId(index),partnershipDetails.PAYEId(index),None)
+      )
+    )
+  }
 }
