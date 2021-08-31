@@ -14,48 +14,45 @@
  * limitations under the License.
  */
 
-package controllers.establishers.company.address
+package controllers.trustees.partnership.address
 
+import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import forms.address.TradingTimeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.company.CompanyDetailsId
-import identifiers.establishers.company.address.TradingTimeId
 import matchers.JsonMatchers
+import models.TolerantAddress
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
-import play.api.data.Form
+import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.viewmodels.Radios
-import utils.Data.{schemeName, ua}
+import utils.Data.ua
 import utils.{Data, Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 
-class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class EnterPostcodeControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
-  private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(CompanyDetailsId(0), Data.establisherCompanyDetails))
+  private val mockAddressLookupConnector = mock[AddressLookupConnector]
+
+  val extraModules: Seq[GuiceableModule] = Seq(
+    bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
+  )
+
+  private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
-  private val httpPathGET: String = controllers.establishers.company.address.routes.TradingTimeController.onPageLoad(0).url
-  private val httpPathPOST: String = controllers.establishers.company.address.routes.TradingTimeController.onSubmit(0).url
-  private val form: Form[Boolean] = new TradingTimeFormProvider()("")
-
-  private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>
-    Json.obj(
-      "form" -> form,
-      "schemeName" -> schemeName,
-      "radios" -> Radios.yesNo(form("value"))
-    )
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
+  private val httpPathGET: String = controllers.trustees.partnership.address.routes.EnterPostcodeController.onPageLoad(0).url
+  private val httpPathPOST: String = controllers.trustees.partnership.address.routes.EnterPostcodeController.onSubmit(0).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
-    "value" -> Seq("true")
+    "value" -> Seq("ZZ11ZZ")
   )
 
   private val valuesInvalid: Map[String, Seq[String]] = Map(
@@ -67,12 +64,10 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
-  "TradingTime Controller" must {
+  "EnterPostcode Controller" must {
 
     "Return OK and the correct view for a GET" in {
-      val ua: UserAnswers = UserAnswers()
-        .setOrException(SchemeNameId, Data.schemeName)
-        .setOrException(CompanyDetailsId(0), Data.establisherCompanyDetails)
+      val ua: UserAnswers = UserAnswers().setOrException(SchemeNameId, Data.schemeName)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
       val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
@@ -82,29 +77,9 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       verify(mockRenderer, times(1))
-        .render(ArgumentMatchers.eq("address/tradingTime.njk"), jsonCaptor.capture())(any())
+        .render(ArgumentMatchers.eq("address/postcode.njk"), jsonCaptor.capture())(any())
 
       (jsonCaptor.getValue \ "schemeName").toOption.map(_.as[String]) mustBe Some(Data.schemeName)
-    }
-
-    "return OK and the correct view for a GET when the question has previously been answered" in {
-      val ua: UserAnswers = UserAnswers()
-        .setOrException(SchemeNameId, Data.schemeName)
-        .setOrException(CompanyDetailsId(0), Data.establisherCompanyDetails)
-        .setOrException(TradingTimeId(0), true)
-
-      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
-
-      status(result) mustEqual OK
-
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
-
-      verify(mockRenderer, times(1))
-        .render(ArgumentMatchers.eq("address/tradingTime.njk"), jsonCaptor.capture())(any())
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(true)))
     }
 
     "redirect to Session Expired page for a GET when there is no data" in {
@@ -120,26 +95,20 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
-
-      val expectedJson = Json.obj()
+      val seqAddresses = Seq(TolerantAddress(Some("a"),Some("b"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")))
 
       when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
         .thenReturn(routes.CheckYourAnswersController.onPageLoad(0))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
+      when(mockAddressLookupConnector.addressLookupByPostCode(any())(any(), any()))
+        .thenReturn(Future.successful(seqAddresses))
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
-
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
-
-      verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptor.capture)(any(), any())
-
-      jsonCaptor.getValue must containJson(expectedJson)
-
       redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad(0).url)
     }
 

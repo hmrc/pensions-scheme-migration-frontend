@@ -17,9 +17,12 @@
 package navigators
 
 import controllers.routes._
+import controllers.trustees.partnership.address.routes._
 import controllers.trustees.routes._
 import identifiers._
 import identifiers.trustees.partnership.PartnershipDetailsId
+import identifiers.trustees.partnership.address.{EnterPostCodeId,
+  AddressListId, AddressYearsId, TradingTimeId, EnterPreviousPostCodeId, PreviousAddressListId, PreviousAddressId, AddressId}
 import models.requests.DataRequest
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
@@ -32,10 +35,23 @@ class TrusteesPartnershipNavigator
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case PartnershipDetailsId(_) => AddTrusteeController.onPageLoad()
+    case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index)
+    case AddressListId(index) => addressYears(index)
+    case AddressId(index) => addressYears(index)
+    case AddressYearsId(index) =>
+      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else TradingTimeController.onPageLoad(index)
+    case TradingTimeId(index) =>
+      if (ua.get(TradingTimeId(index)).contains(true)) EnterPreviousPostcodeController.onPageLoad(index) else cyaAddress(index)
+    case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index)
+    case PreviousAddressListId(index) => cyaAddress(index)
+    case PreviousAddressId(index) => cyaAddress(index)
   }
 
   override protected def editRouteMap(ua: UserAnswers)
                                      (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case PartnershipDetailsId(_) => IndexController.onPageLoad()
   }
+
+  private def cyaAddress(index:Int): Call = controllers.trustees.partnership.address.routes.CheckYourAnswersController.onPageLoad(index)
+  private def addressYears(index:Int): Call = controllers.trustees.partnership.address.routes.AddressYearsController.onPageLoad(index)
 }

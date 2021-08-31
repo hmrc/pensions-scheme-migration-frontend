@@ -17,12 +17,15 @@
 package navigators
 
 import base.SpecBase
-import identifiers.Identifier
 import identifiers.trustees.partnership.PartnershipDetailsId
+import identifiers.trustees.partnership.address._
+import identifiers.{Identifier, TypedIdentifier}
 import models._
 import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
+import play.api.libs.json.Writes
 import play.api.mvc.Call
+import utils.Data.{trusteePartnershipDetails, ua}
 import utils.{Enumerable, UserAnswers}
 
 
@@ -32,12 +35,55 @@ class TrusteesPartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour 
   private val index: Index = Index(0)
 
   private val addTrusteePage: Call = controllers.trustees.routes.AddTrusteeController.onPageLoad()
+  private val detailsUa: UserAnswers =
+    ua.set(PartnershipDetailsId(0), trusteePartnershipDetails).success.value
+  private def addressUAWithValue[A](idType:TypedIdentifier[A], idValue:A)(implicit writes: Writes[A]) =
+    detailsUa.set(idType, idValue).toOption
+  val address = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
+
+  private val seqAddresses = Seq(
+    TolerantAddress(Some("1"),Some("1"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")),
+    TolerantAddress(Some("2"),Some("2"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")),
+  )
+
+  private def uaWithValue[A](idType:TypedIdentifier[A], idValue:A)(implicit writes: Writes[A]) =
+    detailsUa.set(idType, idValue).toOption
+
+  private def enterPreviousPostcode: Call =
+    controllers.trustees.partnership.address.routes.EnterPreviousPostcodeController.onPageLoad(index)
+
+  private def selectAddress: Call =
+    controllers.trustees.partnership.address.routes.SelectAddressController.onPageLoad(index)
+
+  private def selectPreviousAddress: Call =
+    controllers.trustees.partnership.address.routes.SelectPreviousAddressController.onPageLoad(index)
+
+  private def addressYears: Call =
+    controllers.trustees.partnership.address.routes.AddressYearsController.onPageLoad(index)
+
+  private def tradingTime: Call = controllers.trustees.company.address.routes.TradingTimeController.onPageLoad(index)
+
+  private val cyaAddress: Call =
+    controllers.trustees.partnership.address.routes.CheckYourAnswersController.onPageLoad(index)
 
   "TrusteesPartnershipNavigator" when {
     def navigation: TableFor3[Identifier, UserAnswers, Call] =
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
-        row(PartnershipDetailsId(index))(addTrusteePage)
+        row(PartnershipDetailsId(index))(addTrusteePage),
+          row(EnterPostCodeId(index))(selectAddress, addressUAWithValue(EnterPostCodeId(index), seqAddresses)),
+        row(AddressListId(index))(addressYears, addressUAWithValue(AddressListId(index), 0)),
+        row(AddressId(index))(addressYears, addressUAWithValue(AddressId(index), address)),
+
+        row(AddressYearsId(index))(cyaAddress, uaWithValue(AddressYearsId(index), true)),
+        row(AddressYearsId(index))(tradingTime, uaWithValue(AddressYearsId(index), false)),
+
+        row(TradingTimeId(index))(cyaAddress, uaWithValue(TradingTimeId(index), false)),
+        row(TradingTimeId(index))(enterPreviousPostcode, uaWithValue(TradingTimeId(index), true)),
+
+        row(EnterPreviousPostCodeId(index))(selectPreviousAddress, addressUAWithValue(EnterPreviousPostCodeId(index), seqAddresses)),
+        row(PreviousAddressListId(index))(cyaAddress, addressUAWithValue(PreviousAddressListId(index), 0)),
+        row(PreviousAddressId(index))(cyaAddress, addressUAWithValue(PreviousAddressId(index), address)),
       )
 
     def editNavigation: TableFor3[Identifier, UserAnswers, Call] =

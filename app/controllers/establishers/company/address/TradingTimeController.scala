@@ -50,7 +50,7 @@ class TradingTimeController @Inject()(override val messagesApi: MessagesApi,
   extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
   private def form: Form[Boolean] =
-    formProvider()
+    formProvider("companyTradingTime.error.required")
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>

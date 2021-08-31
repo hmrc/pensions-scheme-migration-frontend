@@ -14,26 +14,23 @@
  * limitations under the License.
  */
 
-package forms.establishers.address
+package identifiers.trustees.partnership.address
 
-import forms.address.TradingTimeFormProvider
-import forms.behaviours.BooleanFieldBehaviours
-import play.api.data.FormError
+import identifiers.TypedIdentifier
+import identifiers.trustees.TrusteesId
+import models.TolerantAddress
+import play.api.libs.json.{Format, JsPath, Json}
 
-class TradingTimeFormProviderSpec extends BooleanFieldBehaviours {
-
-  val requiredKey = "companyTradingTime.error.required"
-
-  val form = new TradingTimeFormProvider()(requiredKey)
-
-  ".value" must  {
-
-    val fieldName = "value"
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-  }
+case class EnterPreviousPostCodeId(index: Int) extends TypedIdentifier[Seq[TolerantAddress]] {
+  override def path: JsPath =
+    TrusteesId(index).path \ EnterPreviousPostCodeId.toString
 }
+
+object EnterPreviousPostCodeId {
+  override lazy val toString: String = "previousAddresses"
+
+  implicit lazy val formats: Format[EnterPreviousPostCodeId] =
+    Json.format[EnterPreviousPostCodeId]
+}
+
+

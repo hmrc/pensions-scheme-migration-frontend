@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package controllers.trustees.company.address
+package controllers.trustees.partnership.address
 
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.address.TradingTimeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.trustees.company.CompanyDetailsId
-import identifiers.trustees.company.address.TradingTimeId
+import identifiers.trustees.partnership.address.TradingTimeId
+import identifiers.trustees.partnership.PartnershipDetailsId
 import models.Index
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{MessagesApi, Messages, I18nSupport}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -50,19 +50,19 @@ class TradingTimeController @Inject()(override val messagesApi: MessagesApi,
   extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
   private def form: Form[Boolean] =
-    formProvider("companyTradingTime.error.required")
+    formProvider("partnershipTradingTime.error.required")
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      (CompanyDetailsId(index) and SchemeNameId).retrieve.right.map { case companyDetails ~ schemeName =>
+      (PartnershipDetailsId(index) and SchemeNameId).retrieve.right.map { case partnershipDetails ~ schemeName =>
         val preparedForm = request.userAnswers.get(TradingTimeId(index)) match {
           case Some(value) => form.fill(value)
           case None        => form
         }
         val json = Json.obj(
           "schemeName" -> schemeName,
-          "entityName" -> companyDetails.companyName,
-          "entityType" -> Messages("messages__company"),
+          "entityName" -> partnershipDetails.partnershipName,
+          "entityType" -> Messages("messages__partnership"),
           "form" -> preparedForm,
           "radios" -> Radios.yesNo (preparedForm("value"))
         )
@@ -72,15 +72,15 @@ class TradingTimeController @Inject()(override val messagesApi: MessagesApi,
 
   def onSubmit(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      (CompanyDetailsId(index) and SchemeNameId).retrieve.right.map { case companyDetails ~ schemeName =>
+      (PartnershipDetailsId(index) and SchemeNameId).retrieve.right.map { case partnershipDetails ~ schemeName =>
         form
           .bindFromRequest()
           .fold(
             formWithErrors => {
               val json = Json.obj(
                 "schemeName" -> schemeName,
-                "entityName" -> companyDetails.companyName,
-                "entityType" -> Messages("messages__company"),
+                "entityName" -> partnershipDetails.partnershipName,
+                "entityType" -> Messages("messages__partnership"),
                 "form" -> formWithErrors,
                 "radios" -> Radios.yesNo(form("value"))
               )

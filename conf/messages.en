@@ -781,12 +781,15 @@ trusteeEnterPreviousPostcode.required = Enter the individual’s previous postco
 trusteeEnterPreviousPostcode.invalid = Enter a real postcode
 
 trusteeCompanyEnterPreviousPostcode.required = Enter the company’s previous postcode
-trusteeCompanyEnterPreviousPostcode.invalid = Enter a real postcode
+
+trusteePartnershipEnterPreviousPostcode.required = Enter the partnership’s previous postcode
+trusteeEnterPreviousPostcode.invalid = Enter a real postcode
 
 trusteeSelectAddress.required = Select an address
 
 trusteeAddressYears.error.required = Select yes if the individual has used this address for more than 1 year
 trusteeCompanyAddressYears.error.required = Select yes if the company has used this address for more than 1 year
+trusteePartnershipAddressYears.error.required = Select yes if the partnership has used this address for more than 1 year
 messages__visuallyhidden__trusteeAddressYears = whether {0} has used this address for at least 1 year
 
 trusteeEntityTypeIndividual = the individual
@@ -803,6 +806,8 @@ messages__trusteeCompanyAddress__whatYouWillNeed_title = The company’s address
 messages__trusteeAddress__whatYouWillNeed_p = You will need to tell us {0}’s:
 messages__trusteeAddress__whatYouWillNeed_li_1 = current address
 messages__trusteeAddress__whatYouWillNeed_li_2 = previous address if {0} has used the current address for less than 1 year
+
+messages__trusteePartnershipAddress__whatYouWillNeed_title = The partnership’s address
 
 messages__trusteeIndividualContactDetails__whatYouWillNeed_title = The trustee’s contact details
 messages__trusteeIndividualContactDetails__whatYouWillNeed_h1 = Contact details for {0}
@@ -874,7 +879,7 @@ messages__paye__cya__visuallyHidden = the employer PAYE reference for {0}
 tradingTime.title = Has {0} been trading for at least 1 year?
 companyTradingTime.error.required = Select yes if the company has been trading for at least 1 year
 partnershipTradingTime.error.required = Select yes if the partnership has been trading for at least 1 year
-messages__visuallyhidden__establisherTradingTime = whether {0} has been trading for at least 1 year
+messages__visuallyhidden__TradingTime = whether {0} has been trading for at least 1 year
 
 messages__directors__title = Directors
 messages__directors__whatYouWillNeedDirectors__p1 = For every director associated with the company you’re registering, you will need to tell us the director’s:

@@ -20,6 +20,8 @@ import identifiers.trustees.TrusteeKindId
 import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.details._
 import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.partnership.address.{AddressYearsId => PartnershipAddressYearsId,
+  TradingTimeId => PartnershipTradingTimeId, PreviousAddressId => PartnershipPreviousAddressId, AddressId => PartnershipAddressId}
 import identifiers.trustees.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.company.{contacts => companyContact}
@@ -127,4 +129,26 @@ trait DataCompletionTrustees extends DataCompletion {
         isAnswerComplete(TrusteeKindId(index))
       )
     ).getOrElse(false)
+
+  def isTrusteePartnershipAddressCompleted(
+                                        index: Int,
+                                        userAnswers: UserAnswers
+                                      ): Option[Boolean] = {
+
+    val previousAddress = (userAnswers.get(PartnershipAddressYearsId(index)),
+      userAnswers.get(PartnershipTradingTimeId(index))) match {
+      case (Some(true), _) => Some(true)
+      case (Some(false), Some(true)) => isAnswerComplete(PartnershipPreviousAddressId(index))
+      case (Some(false), Some(false)) => Some(true)
+      case _ => None
+    }
+
+    isComplete(
+      Seq(
+        isAnswerComplete(PartnershipAddressId(index)),
+        isAnswerComplete(PartnershipAddressYearsId(index)),
+        previousAddress
+      )
+    )
+  }
 }

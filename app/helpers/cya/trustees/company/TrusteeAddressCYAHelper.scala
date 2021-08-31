@@ -65,7 +65,7 @@ class TrusteeAddressCYAHelper
           TradingTimeId(index),
           Message("tradingTime.title", trusteeName).resolve,
           Some(controllers.trustees.company.address.routes.TradingTimeController.onPageLoad(index).url),
-          Some(msg"messages__visuallyhidden__establisherTradingTime".withArgs(trusteeName)), answerBooleanTransform
+          Some(msg"messages__visuallyhidden__TradingTime".withArgs(trusteeName)), answerBooleanTransform
         )
       )
     } else {

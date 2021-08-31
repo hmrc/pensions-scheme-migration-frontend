@@ -14,26 +14,21 @@
  * limitations under the License.
  */
 
-package forms.establishers.address
+package identifiers.trustees.partnership.address
 
-import forms.address.TradingTimeFormProvider
-import forms.behaviours.BooleanFieldBehaviours
-import play.api.data.FormError
+import identifiers.TypedIdentifier
+import identifiers.trustees.TrusteesId
+import models.Address
+import play.api.libs.json.{Format, JsPath, Json}
 
-class TradingTimeFormProviderSpec extends BooleanFieldBehaviours {
+case class AddressId(index: Int) extends TypedIdentifier[Address] {
+  override def path: JsPath =
+    TrusteesId(index).path \ AddressId.toString
+}
 
-  val requiredKey = "companyTradingTime.error.required"
+object AddressId {
+  override lazy val toString: String = "address"
 
-  val form = new TradingTimeFormProvider()(requiredKey)
-
-  ".value" must  {
-
-    val fieldName = "value"
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-  }
+  implicit lazy val formats: Format[AddressId] =
+    Json.format[AddressId]
 }

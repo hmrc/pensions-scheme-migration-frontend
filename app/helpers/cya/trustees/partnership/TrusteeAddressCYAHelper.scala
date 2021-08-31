@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package helpers.cya.establishers.partnership
+package helpers.cya.trustees.partnership
 
 import helpers.cya.CYAHelper
 import helpers.cya.CYAHelper.getPartnershipName
-import identifiers.establishers.partnership.PartnershipDetailsId
-import identifiers.establishers.partnership.address.{AddressId, AddressYearsId, PreviousAddressId, TradingTimeId}
+import identifiers.trustees.partnership.address.{AddressId, AddressYearsId, PreviousAddressId, TradingTimeId}
+import identifiers.trustees.partnership.PartnershipDetailsId
 import models.Index
 import models.requests.DataRequest
 import play.api.i18n.Messages
@@ -29,7 +29,7 @@ import uk.gov.hmrc.viewmodels.SummaryList.Row
 import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 
-class EstablisherPartnershipAddressCYAHelper
+class TrusteeAddressCYAHelper
   extends CYAHelper
     with Enumerable.Implicits {
 
@@ -40,30 +40,31 @@ class EstablisherPartnershipAddressCYAHelper
                  ): Seq[Row] = {
     implicit val ua: UserAnswers =
       request.userAnswers
-    val establisherName: String =
-    getPartnershipName(PartnershipDetailsId(index))
+    val trusteeName: String =
+      getPartnershipName(PartnershipDetailsId(index))
 
     val seqRowAddressAndYears = Seq(
       answerOrAddRow(
         AddressId(index),
-        Message("messages__establisherAddress__whatYouWillNeed_h1", establisherName).resolve,
-        Some(controllers.establishers.partnership.address.routes.EnterPostcodeController.onPageLoad(index).url),
-        Some(msg"messages__visuallyHidden__address".withArgs(establisherName)), answerAddressTransform
+        Message("messages__trusteeAddress__whatYouWillNeed_h1", trusteeName).resolve,
+        Some(controllers.trustees.partnership.address.routes.EnterPostcodeController.onPageLoad(index).url),
+        Some(msg"messages__visuallyHidden__address".withArgs(trusteeName)), answerAddressTransform
       ),
       answerOrAddRow(
         AddressYearsId(index),
-        Message("addressYears.title", establisherName).resolve,
-        Some(controllers.establishers.partnership.address.routes.AddressYearsController.onPageLoad(index).url),
-        Some(msg"messages__visuallyhidden__addressYears".withArgs(establisherName)), answerBooleanTransform
+        Message("addressYears.title", trusteeName).resolve,
+        Some(controllers.trustees.partnership.address.routes.AddressYearsController.onPageLoad(index).url),
+        Some(msg"messages__visuallyhidden__trusteeAddressYears".withArgs(trusteeName)), answerBooleanTransform
       )
     )
+
     val seqTradingTime = if (ua.get(AddressYearsId(index)).contains(false)) {
       Seq(
         answerOrAddRow(
           TradingTimeId(index),
-          Message("tradingTime.title", establisherName).resolve,
-          Some(controllers.establishers.partnership.address.routes.TradingTimeController.onPageLoad(index).url),
-          Some(msg"messages__visuallyhidden__TradingTime".withArgs(establisherName)), answerBooleanTransform
+          Message("tradingTime.title", trusteeName).resolve,
+          Some(controllers.trustees.partnership.address.routes.TradingTimeController.onPageLoad(index).url),
+          Some(msg"messages__visuallyhidden__TradingTime".withArgs(trusteeName)), answerBooleanTransform
         )
       )
     } else {
@@ -75,15 +76,16 @@ class EstablisherPartnershipAddressCYAHelper
         Seq(
           answerOrAddRow(
             PreviousAddressId(index),
-            Message("messages__establisherPreviousAddress").resolve,
-            Some(controllers.establishers.partnership.address.routes.EnterPreviousPostcodeController.onPageLoad(index).url),
-            Some(msg"messages__visuallyHidden__previousAddress".withArgs(establisherName)), answerAddressTransform
+            Message("messages__trusteePreviousAddress").resolve,
+            Some(controllers.trustees.partnership.address.routes.EnterPreviousPostcodeController.onPageLoad(index).url),
+            Some(msg"messages__visuallyHidden__previousAddress".withArgs(trusteeName)), answerAddressTransform
           )
         )
       case _ => Nil
     }
 
-    val rowsWithoutDynamicIndices = seqRowAddressAndYears ++ seqTradingTime ++ seqRowPreviousAddress
+    val rowsWithoutDynamicIndices =  seqRowAddressAndYears ++ seqTradingTime ++ seqRowPreviousAddress
     rowsWithDynamicIndices(rowsWithoutDynamicIndices)
+
   }
 }

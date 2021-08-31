@@ -62,6 +62,7 @@ trait CommonAddressYearsController extends FrontendBaseController
                      mode: Option[Mode] = None)(
                       implicit request: DataRequest[AnyContent],
                       ec: ExecutionContext): Future[Result] = {
+    println("\n\n\n 1...")
     form
       .bindFromRequest()
       .fold(

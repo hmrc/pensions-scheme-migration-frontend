@@ -64,7 +64,7 @@ class EstablisherCompanyAddressCYAHelper
           TradingTimeId(index),
           Message("tradingTime.title", establisherName).resolve,
           Some(controllers.establishers.company.address.routes.TradingTimeController.onPageLoad(index).url),
-          Some(msg"messages__visuallyhidden__establisherTradingTime".withArgs(establisherName)), answerBooleanTransform
+          Some(msg"messages__visuallyhidden__TradingTime".withArgs(establisherName)), answerBooleanTransform
         )
       )
     } else {

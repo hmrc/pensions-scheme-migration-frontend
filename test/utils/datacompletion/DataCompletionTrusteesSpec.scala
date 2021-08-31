@@ -22,12 +22,13 @@ import identifiers.trustees.company.{CompanyDetailsId, contacts => companyContac
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.details._
 import identifiers.trustees.partnership.PartnershipDetailsId
+import identifiers.trustees.partnership.address.{AddressId, AddressYearsId, PreviousAddressId, TradingTimeId}
 import models.trustees.TrusteeKind
 import models.{CompanyDetails, PartnershipDetails, ReferenceValue}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.{OptionValues, TryValues}
-import utils.{Enumerable, UserAnswers}
+import utils.{Data, Enumerable, UserAnswers}
 
 import java.time.LocalDate
 
@@ -206,6 +207,66 @@ class DataCompletionTrusteesSpec
             .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
             .set(PartnershipDetailsId(0), PartnershipDetails("test partnership")).success.value
             .set(TrusteeKindId(1), TrusteeKind.Partnership).success.value
+
+        ua.isTrusteeCompanyComplete(1) mustBe false
+      }
+    }
+
+    "isTrusteePartnershipAddressCompleted" must {
+      "return true when address is complete and address years is true" in {
+        val ua =
+          UserAnswers()
+            .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
+            .set(PartnershipDetailsId(0), PartnershipDetails("test partnership")).success.value
+            .set(AddressId(0), Data.address).success.value
+            .set(AddressYearsId(0), true).success.value
+
+        ua.isTrusteePartnershipAddressCompleted(0, ua) mustBe true
+      }
+
+      "return true when address is complete and address years is false and trading time is false" in {
+        val ua =
+          UserAnswers()
+            .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
+            .set(PartnershipDetailsId(0), PartnershipDetails("test partnership")).success.value
+            .set(AddressId(0), Data.address).success.value
+            .set(AddressYearsId(0), false).success.value
+            .set(TradingTimeId(0), false).success.value
+
+        ua.isTrusteePartnershipAddressCompleted(0, ua) mustBe true
+      }
+
+      "return true when address is complete and previous address is complete" in {
+        val ua =
+          UserAnswers()
+            .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
+            .set(PartnershipDetailsId(0), PartnershipDetails("test partnership")).success.value
+            .set(AddressId(0), Data.address).success.value
+            .set(AddressYearsId(0), false).success.value
+            .set(TradingTimeId(0), true).success.value
+            .set(PreviousAddressId(0), Data.address).success.value
+
+        ua.isTrusteePartnershipAddressCompleted(0, ua) mustBe true
+      }
+
+      "return false when address is complete but no address years is present" in {
+        val ua =
+          UserAnswers()
+            .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
+            .set(PartnershipDetailsId(0), PartnershipDetails("test partnership")).success.value
+            .set(AddressId(0), Data.address).success.value
+
+        ua.isTrusteeCompanyComplete(1) mustBe false
+      }
+
+      "return false when address is complete but no previous address is present" in {
+        val ua =
+          UserAnswers()
+            .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
+            .set(PartnershipDetailsId(0), PartnershipDetails("test partnership")).success.value
+            .set(AddressId(0), Data.address).success.value
+            .set(AddressYearsId(0), false).success.value
+            .set(TradingTimeId(0), true).success.value
 
         ua.isTrusteeCompanyComplete(1) mustBe false
       }

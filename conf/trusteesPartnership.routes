@@ -1,3 +1,31 @@
 
 GET         /:index/partnership/name                                                      controllers.trustees.partnership.PartnershipDetailsController.onPageLoad(index: Index)
 POST        /:index/partnership/name                                                      controllers.trustees.partnership.PartnershipDetailsController.onSubmit(index: Index)
+
+GET         /:index/partnership/address                          controllers.trustees.partnership.address.WhatYouWillNeedController.onPageLoad(index: Index)
+
+GET         /:index/partnership/enter-postcode                                    controllers.trustees.partnership.address.EnterPostcodeController.onPageLoad(index: Index)
+POST        /:index/partnership/enter-postcode                                    controllers.trustees.partnership.address.EnterPostcodeController.onSubmit(index: Index)
+
+GET         /:index/partnership/address-results                             controllers.trustees.partnership.address.SelectAddressController.onPageLoad(index: Index)
+POST        /:index/partnership/address-results                             controllers.trustees.partnership.address.SelectAddressController.onSubmit(index: Index)
+
+GET         /:index/partnership/confirm-address                              controllers.trustees.partnership.address.ConfirmAddressController.onPageLoad(index: Index)
+POST        /:index/partnership/confirm-address                              controllers.trustees.partnership.address.ConfirmAddressController.onSubmit(index: Index)
+
+GET         /:index/partnership/check-your-answers-address                          controllers.trustees.partnership.address.CheckYourAnswersController.onPageLoad(index: Index)
+
+GET         /:index/partnership/time-at-address                              controllers.trustees.partnership.address.AddressYearsController.onPageLoad(index: Index)
+POST        /:index/partnership/time-at-address                              controllers.trustees.partnership.address.AddressYearsController.onSubmit(index: Index)
+
+GET         /:index/partnership/enter-previous-postcode                           controllers.trustees.partnership.address.EnterPreviousPostcodeController.onPageLoad(index: Index)
+POST        /:index/partnership/enter-previous-postcode                           controllers.trustees.partnership.address.EnterPreviousPostcodeController.onSubmit(index: Index)
+
+GET         /:index/partnership/previous-address-results                   controllers.trustees.partnership.address.SelectPreviousAddressController.onPageLoad(index: Index)
+POST        /:index/partnership/previous-address-results                   controllers.trustees.partnership.address.SelectPreviousAddressController.onSubmit(index: Index)
+
+GET         /:index/partnership/confirm-previous-address                    controllers.trustees.partnership.address.ConfirmPreviousAddressController.onPageLoad(index: Index)
+POST        /:index/partnership/confirm-previous-address                    controllers.trustees.partnership.address.ConfirmPreviousAddressController.onSubmit(index: Index)
+
+GET         /:index/partnership/trading-time                       controllers.trustees.partnership.address.TradingTimeController.onPageLoad(index: Index)
+POST        /:index/partnership/trading-time                       controllers.trustees.partnership.address.TradingTimeController.onSubmit(index: Index)

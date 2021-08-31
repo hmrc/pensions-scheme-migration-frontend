@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.trustees.company.address
+package controllers.trustees.partnership.address
 
 import config.AppConfig
 import connectors.AddressLookupConnector
@@ -23,8 +23,8 @@ import controllers.actions._
 import controllers.address.PostcodeController
 import forms.address.PostcodeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.trustees.company.CompanyDetailsId
-import identifiers.trustees.company.address.EnterPreviousPostCodeId
+import identifiers.trustees.partnership.address.EnterPreviousPostCodeId
+import identifiers.trustees.partnership.PartnershipDetailsId
 import models.requests.DataRequest
 import models.{Index, Mode, NormalMode}
 import navigators.CompoundNavigator
@@ -51,7 +51,7 @@ class EnterPreviousPostcodeController @Inject()(val appConfig: AppConfig,
                                                val renderer: Renderer
                                               )(implicit val ec: ExecutionContext) extends PostcodeController with I18nSupport with NunjucksSupport {
 
-  def form: Form[String] = formProvider("trusteeCompanyEnterPreviousPostcode.required", "trusteeEnterPreviousPostcode.invalid")
+  def form: Form[String] = formProvider("trusteePartnershipEnterPreviousPostcode.required", "trusteeEnterPreviousPostcode.invalid")
 
   def formWithError(messageKey: String): Form[String] = {
     form.withError("value", s"messages__error__postcode_$messageKey")
@@ -75,12 +75,12 @@ class EnterPreviousPostcodeController @Inject()(val appConfig: AppConfig,
   def getFormToJson(schemeName:String, index: Index, mode: Mode)(implicit request:DataRequest[AnyContent]): Form[String] => JsObject = {
     form => {
       val msg = request2Messages(request)
-      val name = request.userAnswers.get(CompanyDetailsId(index)).map(_.companyName).getOrElse(msg("messages__company"))
+      val name = request.userAnswers.get(PartnershipDetailsId(index)).map(_.partnershipName).getOrElse(msg("messages__partnership"))
       Json.obj(
-        "entityType" -> msg("messages__company"),
+        "entityType" -> msg("messages__partnership"),
         "entityName" -> name,
         "form" -> form,
-        "enterManuallyUrl" -> controllers.trustees.company.address.routes.ConfirmPreviousAddressController.onPageLoad(index).url,
+        "enterManuallyUrl" -> controllers.trustees.partnership.address.routes.ConfirmPreviousAddressController.onPageLoad(index).url,
         "schemeName" -> schemeName,
         "h1MessageKey" -> "previousPostcode.title"
       )

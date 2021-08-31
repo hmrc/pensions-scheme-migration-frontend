@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.establishers.company.address
+package controllers.trustees.partnership.address
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import forms.address.TradingTimeFormProvider
+import forms.trustees.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.company.CompanyDetailsId
-import identifiers.establishers.company.address.TradingTimeId
+import identifiers.trustees.partnership.PartnershipDetailsId
+import identifiers.trustees.partnership.address.AddressYearsId
 import matchers.JsonMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
@@ -38,14 +38,14 @@ import utils.{Data, Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 
-class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
-  private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(CompanyDetailsId(0), Data.establisherCompanyDetails))
+  private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(PartnershipDetailsId(0), Data.trusteePartnershipDetails))
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
-  private val httpPathGET: String = controllers.establishers.company.address.routes.TradingTimeController.onPageLoad(0).url
-  private val httpPathPOST: String = controllers.establishers.company.address.routes.TradingTimeController.onSubmit(0).url
-  private val form: Form[Boolean] = new TradingTimeFormProvider()("")
+  private val httpPathGET: String = controllers.trustees.partnership.address.routes.AddressYearsController.onPageLoad(0).url
+  private val httpPathPOST: String = controllers.trustees.partnership.address.routes.AddressYearsController.onSubmit(0).url
+  private val form: Form[Boolean] = new AddressYearsFormProvider()("")
 
   private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>
     Json.obj(
@@ -67,12 +67,12 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
-  "TradingTime Controller" must {
+  "AddressYears Controller" must {
 
     "Return OK and the correct view for a GET" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, Data.schemeName)
-        .setOrException(CompanyDetailsId(0), Data.establisherCompanyDetails)
+        .setOrException(PartnershipDetailsId(0), Data.trusteePartnershipDetails)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
       val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
@@ -82,7 +82,7 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       verify(mockRenderer, times(1))
-        .render(ArgumentMatchers.eq("address/tradingTime.njk"), jsonCaptor.capture())(any())
+        .render(ArgumentMatchers.eq("address/addressYears.njk"), jsonCaptor.capture())(any())
 
       (jsonCaptor.getValue \ "schemeName").toOption.map(_.as[String]) mustBe Some(Data.schemeName)
     }
@@ -90,8 +90,8 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
     "return OK and the correct view for a GET when the question has previously been answered" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, Data.schemeName)
-        .setOrException(CompanyDetailsId(0), Data.establisherCompanyDetails)
-        .setOrException(TradingTimeId(0), true)
+        .setOrException(PartnershipDetailsId(0), Data.trusteePartnershipDetails)
+        .setOrException(AddressYearsId(0), true)
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
@@ -102,7 +102,7 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       verify(mockRenderer, times(1))
-        .render(ArgumentMatchers.eq("address/tradingTime.njk"), jsonCaptor.capture())(any())
+        .render(ArgumentMatchers.eq("address/addressYears.njk"), jsonCaptor.capture())(any())
 
       jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(true)))
     }

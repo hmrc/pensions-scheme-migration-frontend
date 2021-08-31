@@ -32,6 +32,7 @@ import identifiers.establishers.partnership.details.{HaveUTRId, PartnershipUTRId
 import identifiers.trustees.TrusteeKindId
 import identifiers.trustees.{company => trusteeCompany}
 import identifiers.trustees.company.{details => trusteeCompanyDetails}
+import identifiers.trustees.partnership.address.{AddressId => TrusteePartnershipAddressId, AddressYearsId => TrusteePartnershipAddressYearsId}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.contact.{EnterEmailId => TrusteeEmailId, EnterPhoneId => TrusteePhoneId}
 import identifiers.trustees.individual.details.{TrusteeDOBId, TrusteeNINOId, TrusteeUTRId}
@@ -534,6 +535,64 @@ class SpokeCreationServiceSpec
         spokeCreationService.getTrusteeCompanySpokes(
           answers = userAnswers,
           name = "test",
+          index = 0
+        )
+      result mustBe expectedSpoke
+    }
+  }
+
+  "getTrusteePartnershipSpokes" must {
+    "display all the spokes with appropriate links and incomplete status when no data is returned from TPSS" in {
+      val userAnswers =
+        ua
+          .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
+          .set(TrusteeNameId(0), PersonName("a", "b")).success.value
+
+      val expectedSpoke =
+        Seq(
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Add address for a b",
+              target = controllers.trustees.partnership.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = None
+          )
+        )
+
+      val result =
+        spokeCreationService.getTrusteePartnershipSpokes(
+          answers = userAnswers,
+          name = "a b",
+          index = 0
+        )
+      result mustBe expectedSpoke
+    }
+
+    "display all the spokes with appropriate links and complete status when the complete address data is returned from TPSS" in {
+      val userAnswers =
+        ua
+          .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
+          .set(TrusteeNameId(0), PersonName("a", "b")).success.value
+          .set(TrusteePartnershipAddressId(0), Data.address).success.value
+          .set(TrusteePartnershipAddressYearsId(0), true).success.value
+
+      val expectedSpoke =
+        Seq(
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Change address for a b",
+              target = controllers.trustees.partnership.address.routes.CheckYourAnswersController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = None
+          )
+        )
+
+      val result =
+        spokeCreationService.getTrusteePartnershipSpokes(
+          answers = userAnswers,
+          name = "a b",
           index = 0
         )
       result mustBe expectedSpoke
