@@ -52,15 +52,15 @@ class OtherTrusteesControllerSpec extends ControllerSpecBase
   private val templateToBeRendered: String =
     "hasReferenceValueWithHint.njk"
   private val form: Form[Boolean] =
-    formProvider("Select yes if you need to tell us about other trustees")
+    formProvider(messages("messages__otherTrustees__error__required"))
 
   private val commonJson: JsObject =
     Json.obj(
-      "pageTitle"     -> "Do you need to tell us about other trustees?",
-      "pageHeading"     -> "Do you need to tell us about other trustees?",
+      "pageTitle"     -> messages("messages__otherTrustees__title"),
+      "pageHeading"     -> messages("messages__otherTrustees__heading"),
       "schemeName"    -> schemeName,
       "paragraphs"    -> Json.arr(
-        "You do not have to add them now. We may contact you if we need this information."
+        messages("messages__otherTrustees__lede")
       ),
       "legendClass"   -> "govuk-visually-hidden",
       "isPageHeading" -> true
