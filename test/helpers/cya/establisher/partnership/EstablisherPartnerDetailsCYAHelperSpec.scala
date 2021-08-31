@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package helpers.cya.establisher.company
+package helpers.cya.establisher.partnership
 
 import base.SpecBase._
-import controllers.establishers.company.director.address.{routes => addressRoutes}
-import controllers.establishers.company.director.contact.{routes => contactRoutes}
-import controllers.establishers.company.director.details.{routes => detailsRoutes}
-import controllers.establishers.company.director.routes
-import helpers.cya.establishers.company.EstablisherCompanyDirectorDetailsCYAHelper
+import controllers.establishers.partnership.partner.address.{routes => addressRoutes}
+import controllers.establishers.partnership.partner.contact.{routes => contactRoutes}
+import controllers.establishers.partnership.partner.details.{routes => detailsRoutes}
+import controllers.establishers.partnership.partner.routes
+import helpers.cya.establishers.partnership.EstablisherPartnerDetailsCYAHelper
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.company.director.DirectorNameId
-import identifiers.establishers.company.director.address.{AddressId, AddressYearsId, PreviousAddressId}
-import identifiers.establishers.company.director.contact.{EnterEmailId, EnterPhoneId}
-import identifiers.establishers.company.director.details._
+import identifiers.establishers.partnership.partner.PartnerNameId
+import identifiers.establishers.partnership.partner.address.{AddressId, AddressYearsId, PreviousAddressId}
+import identifiers.establishers.partnership.partner.contact.{EnterEmailId, EnterPhoneId}
+import identifiers.establishers.partnership.partner.details._
 import models._
 import models.requests.DataRequest
 import org.scalatest.TryValues
@@ -44,14 +44,14 @@ import viewmodels.Message
 
 import java.time.LocalDate
 
-class EstablisherCompanyDirectorDetailsCYAHelperSpec extends AnyWordSpec with Matchers with TryValues with Enumerable.Implicits {
+class EstablisherPartnerDetailsCYAHelperSpec extends AnyWordSpec with Matchers with TryValues with Enumerable.Implicits {
 
-  val cyaHelper = new EstablisherCompanyDirectorDetailsCYAHelper
+  val cyaHelper = new EstablisherPartnerDetailsCYAHelper
 
   private val personName: PersonName = PersonName("Jane", "Doe")
-  private val directorName: String = personName.fullName
-  private val directorAddress = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
-  private val directorPreviousAddress = Address("prevaddr1", "prevaddr2", None, None, Some("ZZ11ZZ"), "GB")
+  private val partnerName: String = personName.fullName
+  private val partnerAddress = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
+  private val partnerPreviousAddress = Address("prevaddr1", "prevaddr2", None, None, Some("ZZ11ZZ"), "GB")
   private val formData: LocalDate =
     LocalDate.parse("2000-01-01")
 
@@ -83,17 +83,17 @@ class EstablisherCompanyDirectorDetailsCYAHelperSpec extends AnyWordSpec with Ma
     psaId = PsaId(psaId), lock = MigrationLock(pstr = pstr, credId = credId, psaId = psaId), viewOnly = false)
 
   // scalastyle:off magic.number
-  "EstablisherCompanyDirectorDetailsCYAHelper" must {
+  "EstablisherPartnerDetailsCYAHelper" must {
     "return all rows with correct change links, values and visually hidden text when user has answered yes for all questions" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, schemeName)
-        .setOrException(DirectorNameId(0, 0), personName)
-        .setOrException(DirectorDOBId(0, 0), formData)
-        .setOrException(DirectorHasNINOId(0, 0), true)
-        .setOrException(DirectorHasUTRId(0, 0), true)
-        .setOrException(DirectorNINOId(0, 0), ReferenceValue("AB123456C"))
-        .setOrException(DirectorEnterUTRId(0, 0), ReferenceValue("1234567890"))
-        .setOrException(AddressId(0, 0), directorAddress)
+        .setOrException(PartnerNameId(0, 0), personName)
+        .setOrException(PartnerDOBId(0, 0), formData)
+        .setOrException(PartnerHasNINOId(0, 0), true)
+        .setOrException(PartnerHasUTRId(0, 0), true)
+        .setOrException(PartnerNINOId(0, 0), ReferenceValue("AB123456C"))
+        .setOrException(PartnerEnterUTRId(0, 0), ReferenceValue("1234567890"))
+        .setOrException(AddressId(0, 0), partnerAddress)
         .setOrException(AddressYearsId(0, 0), true)
         .setOrException(EnterEmailId(0, 0), "test@test.com")
         .setOrException(EnterPhoneId(0, 0), "123")
@@ -101,110 +101,110 @@ class EstablisherCompanyDirectorDetailsCYAHelperSpec extends AnyWordSpec with Ma
       val result = cyaHelper.detailsRows(0, 0)(dataRequest(ua), messages)
 
       result.head mustBe Row(
-        key = Key(msg"${Message("messages__director__name", directorName).resolve}", classes = Seq("govuk-!-width-one-half")),
-        value = Value(msg"${Message(directorName).resolve}"),
+        key = Key(msg"${Message("messages__partner__name", partnerName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        value = Value(msg"${Message(partnerName).resolve}"),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
-          href = routes.DirectorNameController.onPageLoad(0, 0, CheckMode).url,
+          href = routes.PartnerNameController.onPageLoad(0, 0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__director__name__cya__visuallyHidden", directorName))),
+            Messages("messages__partner__name__cya__visuallyHidden", partnerName))),
           attributes = Map("id" -> "cya-0-0-change")
         ))
       )
 
       result(1) mustBe Row(
-        key = Key(msg"${Message("messages__dob__h1", directorName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__dob__h1", partnerName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(Literal("1-1-2000")),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
-          href = detailsRoutes.DirectorDOBController.onPageLoad(0, 0, CheckMode).url,
+          href = detailsRoutes.PartnerDOBController.onPageLoad(0, 0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__dob__cya__visuallyHidden", directorName))),
+            Messages("messages__dob__cya__visuallyHidden", partnerName))),
           attributes = Map("id" -> "cya-0-1-change")
         ))
       )
 
 
-      result(2) mustBe summaryListRow(key = Messages("messages__hasNINO", directorName),
+      result(2) mustBe summaryListRow(key = Messages("messages__hasNINO", partnerName),
         valueMsgKey = "booleanAnswer.true",
         Some(Link(text = Messages("site.change"),
-          target = detailsRoutes.DirectorHasNINOController.onPageLoad(0, 0, CheckMode).url,
+          target = detailsRoutes.PartnerHasNINOController.onPageLoad(0, 0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__hasNINO__cya__visuallyHidden", directorName))),
+            Messages("messages__hasNINO__cya__visuallyHidden", partnerName))),
           attributes = Map("id" -> "cya-0-2-change")
         ))
       )
 
       result(3) mustBe Row(
-        key = Key(msg"${Message("messages__enterNINO__cya", directorName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__enterNINO__cya", partnerName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(msg"AB123456C"),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
-          href = detailsRoutes.DirectorEnterNINOController.onPageLoad(0, 0, CheckMode).url,
+          href = detailsRoutes.PartnerEnterNINOController.onPageLoad(0, 0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__hasNINO__cya__visuallyHidden", directorName))),
+            Messages("messages__hasNINO__cya__visuallyHidden", partnerName))),
           attributes = Map("id" -> "cya-0-3-change")
         ))
       )
 
-      result(4) mustBe summaryListRow(key = Messages("messages__hasUTR__cya_label", directorName),
+      result(4) mustBe summaryListRow(key = Messages("messages__hasUTR__cya_label", partnerName),
         valueMsgKey = "booleanAnswer.true",
         Some(Link(text = Messages("site.change"),
-          target = detailsRoutes.DirectorHasUTRController.onPageLoad(0, 0, CheckMode).url,
+          target = detailsRoutes.PartnerHasUTRController.onPageLoad(0, 0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__hasUTR__cya__visuallyHidden", directorName))),
+            Messages("messages__hasUTR__cya__visuallyHidden", partnerName))),
           attributes = Map("id" -> "cya-0-4-change")
         ))
       )
 
       result(5) mustBe Row(
-        key = Key(msg"${Message("messages__enterUTR__cya_label", directorName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__enterUTR__cya_label", partnerName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(msg"1234567890"),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
-          href = detailsRoutes.DirectorEnterUTRController.onPageLoad(0, 0, CheckMode).url,
+          href = detailsRoutes.PartnerEnterUTRController.onPageLoad(0, 0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__hasUTR__cya__visuallyHidden", directorName))),
+            Messages("messages__hasUTR__cya__visuallyHidden", partnerName))),
           attributes = Map("id" -> "cya-0-5-change")
         ))
       )
 
-      result(6) mustBe summaryListRowHtml(key = messages("addressList_cya_label", directorName),
-        value = answerAddressTransform(directorAddress), Some(Link(text = Messages("site.change"),
+      result(6) mustBe summaryListRowHtml(key = messages("addressList_cya_label", partnerName),
+        value = answerAddressTransform(partnerAddress), Some(Link(text = Messages("site.change"),
           target = addressRoutes.EnterPostcodeController.onPageLoad(0, 0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__visuallyHidden__address", directorName))),
+            Messages("messages__visuallyHidden__address", partnerName))),
           attributes = Map("id" -> "cya-0-6-change")))
       )
 
-      result(7) mustBe summaryListRow(key = messages("addressYears.title", directorName), valueMsgKey = "booleanAnswer.true",
+      result(7) mustBe summaryListRow(key = messages("addressYears.title", partnerName), valueMsgKey = "booleanAnswer.true",
         Some(Link(text = Messages("site.change"),
           target = addressRoutes.AddressYearsController.onPageLoad(0, 0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__visuallyhidden__addressYears", directorName))),
+            Messages("messages__visuallyhidden__addressYears", partnerName))),
           attributes = Map("id" -> "cya-0-7-change")))
       )
 
       result(8) mustBe Row(
-        key = Key(msg"${Message("messages__enterEmail_cya_label", directorName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__enterEmail_cya_label", partnerName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(Literal("test@test.com")),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
           href = contactRoutes.EnterEmailController.onPageLoad(0, 0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__enterEmail__cya__visuallyHidden", directorName))),
+            Messages("messages__enterEmail__cya__visuallyHidden", partnerName))),
           attributes = Map("id" -> "cya-0-8-change")
         ))
       )
 
       result(9) mustBe Row(
-        key = Key(msg"${Message("messages__enterPhone_cya_label", directorName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__enterPhone_cya_label", partnerName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(Literal("123")),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
           href = contactRoutes.EnterPhoneNumberController.onPageLoad(0, 0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__enterPhone__cya__visuallyHidden", directorName))),
+            Messages("messages__enterPhone__cya__visuallyHidden", partnerName))),
           attributes = Map("id" -> "cya-0-9-change")
         ))
       )
@@ -214,135 +214,135 @@ class EstablisherCompanyDirectorDetailsCYAHelperSpec extends AnyWordSpec with Ma
     "return all rows with correct change links, values and visually hidden text when user has answered no for all questions" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, schemeName)
-        .setOrException(DirectorNameId(0, 0), personName)
-        .setOrException(DirectorDOBId(0, 0), formData)
-        .setOrException(DirectorHasNINOId(0, 0), false)
-        .setOrException(DirectorHasUTRId(0, 0), false)
-        .setOrException(DirectorNoNINOReasonId(0, 0), "test")
-        .setOrException(DirectorNoUTRReasonId(0, 0), "test")
-        .setOrException(AddressId(0, 0), directorAddress)
+        .setOrException(PartnerNameId(0, 0), personName)
+        .setOrException(PartnerDOBId(0, 0), formData)
+        .setOrException(PartnerHasNINOId(0, 0), false)
+        .setOrException(PartnerHasUTRId(0, 0), false)
+        .setOrException(PartnerNoNINOReasonId(0, 0), "test")
+        .setOrException(PartnerNoUTRReasonId(0, 0), "test")
+        .setOrException(AddressId(0, 0), partnerAddress)
         .setOrException(AddressYearsId(0, 0), false)
-        .setOrException(PreviousAddressId(0, 0), directorPreviousAddress)
+        .setOrException(PreviousAddressId(0, 0), partnerPreviousAddress)
         .setOrException(EnterEmailId(0, 0), "test@test.com")
         .setOrException(EnterPhoneId(0, 0), "123")
 
       val result = cyaHelper.detailsRows(0, 0)(dataRequest(ua), messages)
 
       result.head mustBe Row(
-        key = Key(msg"${Message("messages__director__name", directorName).resolve}", classes = Seq("govuk-!-width-one-half")),
-        value = Value(msg"${Message(directorName).resolve}"),
+        key = Key(msg"${Message("messages__partner__name", partnerName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        value = Value(msg"${Message(partnerName).resolve}"),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
-          href = routes.DirectorNameController.onPageLoad(0, 0, CheckMode).url,
+          href = routes.PartnerNameController.onPageLoad(0, 0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__director__name__cya__visuallyHidden", directorName))),
+            Messages("messages__partner__name__cya__visuallyHidden", partnerName))),
           attributes = Map("id" -> "cya-0-0-change")
         ))
       )
 
       result(1) mustBe Row(
-        key = Key(msg"${Message("messages__dob__h1", directorName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__dob__h1", partnerName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(Literal("1-1-2000")),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
-          href = detailsRoutes.DirectorDOBController.onPageLoad(0, 0, CheckMode).url,
+          href = detailsRoutes.PartnerDOBController.onPageLoad(0, 0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__dob__cya__visuallyHidden", directorName))),
+            Messages("messages__dob__cya__visuallyHidden", partnerName))),
           attributes = Map("id" -> "cya-0-1-change")
         ))
       )
 
 
-      result(2) mustBe summaryListRow(key = Messages("messages__hasNINO", directorName),
+      result(2) mustBe summaryListRow(key = Messages("messages__hasNINO", partnerName),
         valueMsgKey = "booleanAnswer.false",
         Some(Link(text = Messages("site.change"),
-          target = detailsRoutes.DirectorHasNINOController.onPageLoad(0, 0, CheckMode).url,
+          target = detailsRoutes.PartnerHasNINOController.onPageLoad(0, 0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__hasNINO__cya__visuallyHidden", directorName))),
+            Messages("messages__hasNINO__cya__visuallyHidden", partnerName))),
           attributes = Map("id" -> "cya-0-2-change")
         ))
       )
 
       result(3) mustBe Row(
-        key = Key(msg"${Message("messages__whyNoNINO", directorName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__whyNoNINO", partnerName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(Literal("test")),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
-          href = detailsRoutes.DirectorNoNINOReasonController.onPageLoad(0, 0, CheckMode).url,
+          href = detailsRoutes.PartnerNoNINOReasonController.onPageLoad(0, 0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__whyNoNINO__cya__visuallyHidden", directorName))),
+            Messages("messages__whyNoNINO__cya__visuallyHidden", partnerName))),
           attributes = Map("id" -> "cya-0-3-change")
         ))
       )
 
 
-      result(4) mustBe summaryListRow(key = Messages("messages__hasUTR__cya_label", directorName),
+      result(4) mustBe summaryListRow(key = Messages("messages__hasUTR__cya_label", partnerName),
         valueMsgKey = "booleanAnswer.false",
         Some(Link(text = Messages("site.change"),
-          target = detailsRoutes.DirectorHasUTRController.onPageLoad(0, 0, CheckMode).url,
+          target = detailsRoutes.PartnerHasUTRController.onPageLoad(0, 0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__hasUTR__cya__visuallyHidden", directorName))),
+            Messages("messages__hasUTR__cya__visuallyHidden", partnerName))),
           attributes = Map("id" -> "cya-0-4-change")
         ))
       )
 
       result(5) mustBe Row(
-        key = Key(msg"${Message("messages__whyNoUTR", directorName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__whyNoUTR", partnerName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(Literal("test")),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
-          href = detailsRoutes.DirectorNoUTRReasonController.onPageLoad(0, 0, CheckMode).url,
+          href = detailsRoutes.PartnerNoUTRReasonController.onPageLoad(0, 0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__whyNoUTR__cya__visuallyHidden", directorName))),
+            Messages("messages__whyNoUTR__cya__visuallyHidden", partnerName))),
           attributes = Map("id" -> "cya-0-5-change")
         ))
       )
 
-      result(6) mustBe summaryListRowHtml(key = messages("addressList_cya_label", directorName),
-        value = answerAddressTransform(directorAddress), Some(Link(text = Messages("site.change"),
+      result(6) mustBe summaryListRowHtml(key = messages("addressList_cya_label", partnerName),
+        value = answerAddressTransform(partnerAddress), Some(Link(text = Messages("site.change"),
           target = addressRoutes.EnterPostcodeController.onPageLoad(0, 0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__visuallyHidden__address", directorName))),
+            Messages("messages__visuallyHidden__address", partnerName))),
           attributes = Map("id" -> "cya-0-6-change")))
       )
 
-      result(7) mustBe summaryListRow(key = messages("addressYears.title", directorName), valueMsgKey = "booleanAnswer.false",
+      result(7) mustBe summaryListRow(key = messages("addressYears.title", partnerName), valueMsgKey = "booleanAnswer.false",
         Some(Link(text = Messages("site.change"),
           target = addressRoutes.AddressYearsController.onPageLoad(0, 0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__visuallyhidden__addressYears", directorName))),
+            Messages("messages__visuallyhidden__addressYears", partnerName))),
           attributes = Map("id" -> "cya-0-7-change")))
       )
 
 
-      result(8) mustBe summaryListRowHtml(key = messages("previousAddressList_cya_label", directorName),
-        value = answerAddressTransform(directorPreviousAddress), Some(Link(text = Messages("site.change"),
+      result(8) mustBe summaryListRowHtml(key = messages("previousAddressList_cya_label", partnerName),
+        value = answerAddressTransform(partnerPreviousAddress), Some(Link(text = Messages("site.change"),
           target = addressRoutes.EnterPreviousPostcodeController.onPageLoad(0, 0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__visuallyHidden__previousAddress", directorName))),
+            Messages("messages__visuallyHidden__previousAddress", partnerName))),
           attributes = Map("id" -> "cya-0-8-change")))
       )
 
       result(9) mustBe Row(
-        key = Key(msg"${Message("messages__enterEmail_cya_label", directorName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__enterEmail_cya_label", partnerName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(Literal("test@test.com")),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
           href = contactRoutes.EnterEmailController.onPageLoad(0, 0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__enterEmail__cya__visuallyHidden", directorName))),
+            Messages("messages__enterEmail__cya__visuallyHidden", partnerName))),
           attributes = Map("id" -> "cya-0-9-change")
         ))
       )
 
       result(10) mustBe Row(
-        key = Key(msg"${Message("messages__enterPhone_cya_label", directorName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__enterPhone_cya_label", partnerName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(Literal("123")),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
           href = contactRoutes.EnterPhoneNumberController.onPageLoad(0, 0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__enterPhone__cya__visuallyHidden", directorName))),
+            Messages("messages__enterPhone__cya__visuallyHidden", partnerName))),
           attributes = Map("id" -> "cya-0-10-change")
         ))
       )

@@ -68,7 +68,7 @@ class EstablisherPartnerDetailsCYAHelper
         id                 = PartnerHasNINOId(establisherIndex, partnerIndex),
         message            = Message("messages__hasNINO", partnerName).resolve,
         url                = Some(controllers.establishers.partnership.partner.details.routes.PartnerHasNINOController.onPageLoad(establisherIndex, partnerIndex, CheckMode).url),
-        visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(partnerName)),
+        visuallyHiddenText = Some(msg"messages__hasNINO__cya__visuallyHidden".withArgs(partnerName)),
         answerTransform    = answerBooleanTransform
       )),
       ua.get(PartnerNINOId(establisherIndex, partnerIndex)) map {

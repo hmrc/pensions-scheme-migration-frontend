@@ -136,7 +136,7 @@ class EstablisherCompanyDirectorDetailsCYAHelper
       }else{
         Some( answerOrAddRow(
           id = PreviousAddressId(establisherIndex, directorIndex),
-          message = Message("previousAddressList_cya_label").resolve,
+          message = Message("previousAddressList_cya_label", directorName).resolve,
           url = Some(controllers.establishers.company.director.address.routes.EnterPreviousPostcodeController.onPageLoad(establisherIndex, directorIndex, CheckMode).url),
           visuallyHiddenText = Some(msg"messages__visuallyHidden__previousAddress".withArgs(directorName)), answerAddressTransform
         ))
