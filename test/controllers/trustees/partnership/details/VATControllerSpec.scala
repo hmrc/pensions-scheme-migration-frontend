@@ -34,7 +34,7 @@ import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import utils.Data.{establisherPartnershipDetails, schemeName, ua}
+import utils.Data.{trusteePartnershipDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.Message
 
@@ -44,19 +44,19 @@ class VATControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
 
   private val index: Index = Index(0)
   private val referenceValue: ReferenceValue = ReferenceValue("123456789")
-  private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(index), establisherPartnershipDetails).success.value
+  private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(index), trusteePartnershipDetails).success.value
 
   private val formProvider: VATFormProvider = new VATFormProvider()
-  private val form: Form[ReferenceValue] = formProvider(Message("messages__haveVAT__error", establisherPartnershipDetails.partnershipName))
+  private val form: Form[ReferenceValue] = formProvider(Message("messages__haveVAT__error", trusteePartnershipDetails.partnershipName))
   private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
   private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
 
   private val commonJson: JsObject =
     Json.obj(
       "pageTitle"     -> messages("messages__vat", messages("messages__partnership")),
-      "pageHeading"     -> messages("messages__vat", establisherPartnershipDetails.partnershipName),
+      "pageHeading"     -> messages("messages__vat", trusteePartnershipDetails.partnershipName),
       "schemeName"    -> schemeName,
-      "paragraphs"      -> Json.arr(messages("messages__vat__p", establisherPartnershipDetails.partnershipName)),
+      "paragraphs"      -> Json.arr(messages("messages__vat__p", trusteePartnershipDetails.partnershipName)),
       "legendClass"   -> "govuk-visually-hidden",
       "isPageHeading" -> true
     )

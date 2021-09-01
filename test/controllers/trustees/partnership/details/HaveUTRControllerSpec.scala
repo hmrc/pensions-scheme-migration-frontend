@@ -20,12 +20,10 @@ import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.HasReferenceNumberFormProvider
 import identifiers.trustees.partnership.PartnershipDetailsId
-import identifiers.establishers.partnership.details.HaveUTRId
+import identifiers.trustees.partnership.details.HaveUTRId
 import matchers.JsonMatchers
 import models.{Index, NormalMode}
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
