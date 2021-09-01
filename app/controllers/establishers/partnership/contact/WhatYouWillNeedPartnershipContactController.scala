@@ -16,31 +16,9 @@
 
 package controllers.establishers.partnership.contact
 
-import controllers.ControllerSpecBase
-import org.scalatest.matchers.must.Matchers
-import play.api.test.Helpers._
+class WhatYouWillNeedPartnershipContactController {
 
-class WhatYouWillNeedPartnershipContactControllerSpec
-  extends ControllerSpecBase
-    with Matchers {
+  def onPageLoad() = ???
 
-  private val templateToBeRendered: String = ""
-
-    private def controller: WhatYouWillNeedPartnershipContactController = {
-      new WhatYouWillNeedPartnershipContactController(
-      )
-    }
-
-    "WhatYouWillNeedPartnershipContactController" must {
-
-      "return OK and the correct view for a GET" in {
-
-        val result = controller.onPageLoad()
-
-//        status(result) mustBe OK
-
-      }
-
-    }
 
 }
