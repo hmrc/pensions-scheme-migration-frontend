@@ -98,13 +98,13 @@ class AddToListHelper {
       case TrusteePartnershipDetailsId(_) => messages("kind.partnership")
     }
 
-  def mapDirectorToTable[A <: Entity[_]](dirctors: Seq[A])
+  def mapDirectorOrPartnerToTable[A <: Entity[_]](directorsOrPartners: Seq[A])
                                         (implicit messages: Messages): Table =
-    directorTable(
-      entities = dirctors
+    directorOrPartnerTable(
+      entities = directorsOrPartners
     )
 
-  private def directorTable[A <: Entity[_]](entities: Seq[A])
+  private def directorOrPartnerTable[A <: Entity[_]](entities: Seq[A])
                                            (implicit messages: Messages): Table = {
     val rows = entities.map { data =>
       Seq(
@@ -152,8 +152,7 @@ class AddToListHelper {
     )
   }
 
-   def directorsItemList[A <: Entity[_]](entities: Seq[A])
-                                           (implicit messages: Messages): JsValue  = {
+   def directorsOrPartnersItemList[A <: Entity[_]](entities: Seq[A]): JsValue  = {
 
     Json.toJson(
       entities.map { data =>
@@ -164,5 +163,4 @@ class AddToListHelper {
       }
     )
   }
-
 }
