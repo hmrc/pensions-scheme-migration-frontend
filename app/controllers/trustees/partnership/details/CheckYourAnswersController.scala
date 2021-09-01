@@ -19,7 +19,7 @@ package controllers.trustees.partnership.details
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import helpers.cya.CYAHelper
-import helpers.cya.establishers.partnership.EstablisherPartnershipDetailsCYAHelper
+import helpers.cya.trustees.partnership.TrusteePartnershipDetailsCYAHelper
 import identifiers.beforeYouStart.SchemeNameId
 import javax.inject.Inject
 import models.Index
@@ -37,7 +37,7 @@ class CheckYourAnswersController @Inject()(
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            cyaHelper: EstablisherPartnershipDetailsCYAHelper,
+                                            cyaHelper: TrusteePartnershipDetailsCYAHelper,
                                             val controllerComponents: MessagesControllerComponents,
                                             renderer: Renderer
                                           )(implicit val ec: ExecutionContext)
