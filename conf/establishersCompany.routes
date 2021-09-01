@@ -6,8 +6,8 @@ GET         /:index/company/details                                             
 
 GET         /:index/company/have-company-number                                     controllers.establishers.company.details.HaveCompanyNumberController.onPageLoad(index: Index, mode: Mode = NormalMode)
 POST        /:index/company/have-company-number                                     controllers.establishers.company.details.HaveCompanyNumberController.onSubmit(index: Index, mode: Mode = NormalMode)
-GET         /:index/company/have-change/company-number                              controllers.establishers.company.details.HaveCompanyNumberController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/company/have-change/company-number                              controllers.establishers.company.details.HaveCompanyNumberController.onSubmit(index: Index, mode: Mode = CheckMode)
+GET         /:index/company/change/have-company-number                              controllers.establishers.company.details.HaveCompanyNumberController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/have-company-number                              controllers.establishers.company.details.HaveCompanyNumberController.onSubmit(index: Index, mode: Mode = CheckMode)
 
 GET         /:index/company/company-number                                          controllers.establishers.company.details.CompanyNumberController.onPageLoad(index: Index, mode: Mode = NormalMode)
 POST        /:index/company/company-number                                          controllers.establishers.company.details.CompanyNumberController.onSubmit(index: Index, mode: Mode = NormalMode)
@@ -39,74 +39,74 @@ POST        /:index/company/is-registered-for-vat                               
 GET         /:index/company/change/is-registered-for-vat                            controllers.establishers.company.details.HaveVATController.onPageLoad(index: Index, mode: Mode = CheckMode)
 POST        /:index/company/change/is-registered-for-vat                            controllers.establishers.company.details.HaveVATController.onSubmit(index: Index, mode: Mode = CheckMode)
 
-GET         /:index/company/enter-vat                                               controllers.establishers.company.details.VATController.onPageLoad(index: Index, mode: Mode = NormalMode)
-POST        /:index/company/enter-vat                                               controllers.establishers.company.details.VATController.onSubmit(index: Index, mode: Mode = NormalMode)
-GET         /:index/company/change/enter-vat                                        controllers.establishers.company.details.VATController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/company/change/enter-vat                                        controllers.establishers.company.details.VATController.onSubmit(index: Index, mode: Mode = CheckMode)
+GET         /:index/company/enter-vat-registration-number                           controllers.establishers.company.details.VATController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/enter-vat-registration-number                           controllers.establishers.company.details.VATController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/enter-vat-registration-number                    controllers.establishers.company.details.VATController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/enter-vat-registration-number                    controllers.establishers.company.details.VATController.onSubmit(index: Index, mode: Mode = CheckMode)
 
-GET         /:index/company/have-paye-number                                        controllers.establishers.company.details.HavePAYEController.onPageLoad(index: Index, mode: Mode = NormalMode)
-POST        /:index/company/have-paye-number                                        controllers.establishers.company.details.HavePAYEController.onSubmit(index: Index, mode: Mode = NormalMode)
-GET         /:index/company/change/have-paye-number                                 controllers.establishers.company.details.HavePAYEController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/company/change/have-paye-number                                 controllers.establishers.company.details.HavePAYEController.onSubmit(index: Index, mode: Mode = CheckMode)
+GET         /:index/company/have-employer-paye-reference                            controllers.establishers.company.details.HavePAYEController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/have-employer-paye-reference                            controllers.establishers.company.details.HavePAYEController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/have-employer-paye-reference                     controllers.establishers.company.details.HavePAYEController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/have-employer-paye-reference                     controllers.establishers.company.details.HavePAYEController.onSubmit(index: Index, mode: Mode = CheckMode)
 
-GET         /:index/company/enter-paye-number                                       controllers.establishers.company.details.PAYEController.onPageLoad(index: Index, mode: Mode = NormalMode)
-POST        /:index/company/enter-paye-number                                       controllers.establishers.company.details.PAYEController.onSubmit(index: Index, mode: Mode = NormalMode)
-GET         /:index/company/change/enter-paye-number                                controllers.establishers.company.details.PAYEController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/company/change/enter-paye-number                                controllers.establishers.company.details.PAYEController.onSubmit(index: Index, mode: Mode = CheckMode)
+GET         /:index/company/enter-employer-paye-reference                           controllers.establishers.company.details.PAYEController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/enter-employer-paye-reference                           controllers.establishers.company.details.PAYEController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/enter-employer-paye-reference                    controllers.establishers.company.details.PAYEController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/enter-employer-paye-reference                    controllers.establishers.company.details.PAYEController.onSubmit(index: Index, mode: Mode = CheckMode)
 
-GET         /:index/company/details/check-your-answers                              controllers.establishers.company.details.CheckYourAnswersController.onPageLoad(index: Index)
+GET         /:index/company/details/check-your-answers-details                      controllers.establishers.company.details.CheckYourAnswersController.onPageLoad(index: Index)
 
-GET         /:index/company/addresses/what-you-will-need                          controllers.establishers.company.address.WhatYouWillNeedController.onPageLoad(index: Index)
+GET         /:index/company/address                                                 controllers.establishers.company.address.WhatYouWillNeedController.onPageLoad(index: Index)
 
-GET         /:index/company/addresses/postcode                                    controllers.establishers.company.address.EnterPostcodeController.onPageLoad(index: Index)
-POST        /:index/company/addresses/postcode                                    controllers.establishers.company.address.EnterPostcodeController.onSubmit(index: Index)
+GET         /:index/company/enter-postcode                                          controllers.establishers.company.address.EnterPostcodeController.onPageLoad(index: Index)
+POST        /:index/company/enter-postcode                                          controllers.establishers.company.address.EnterPostcodeController.onSubmit(index: Index)
 
-GET         /:index/company/addresses/address-results                             controllers.establishers.company.address.SelectAddressController.onPageLoad(index: Index)
-POST        /:index/company/addresses/address-results                             controllers.establishers.company.address.SelectAddressController.onSubmit(index: Index)
+GET         /:index/company/address-results                                         controllers.establishers.company.address.SelectAddressController.onPageLoad(index: Index)
+POST        /:index/company/address-results                                         controllers.establishers.company.address.SelectAddressController.onSubmit(index: Index)
 
-GET         /:index/company/addresses/address-manual                              controllers.establishers.company.address.ConfirmAddressController.onPageLoad(index: Index)
-POST        /:index/company/addresses/address-manual                              controllers.establishers.company.address.ConfirmAddressController.onSubmit(index: Index)
+GET         /:index/company/confirm-address                                         controllers.establishers.company.address.ConfirmAddressController.onPageLoad(index: Index)
+POST        /:index/company/confirm-address                                         controllers.establishers.company.address.ConfirmAddressController.onSubmit(index: Index)
 
-GET         /:index/company/addresses/check-your-answers                          controllers.establishers.company.address.CheckYourAnswersController.onPageLoad(index: Index)
+GET         /:index/company/check-your-answers-address                              controllers.establishers.company.address.CheckYourAnswersController.onPageLoad(index: Index)
 
-GET         /:index/company/addresses/address-years                              controllers.establishers.company.address.AddressYearsController.onPageLoad(index: Index)
-POST        /:index/company/addresses/address-years                              controllers.establishers.company.address.AddressYearsController.onSubmit(index: Index)
+GET         /:index/company/time-at-address                                         controllers.establishers.company.address.AddressYearsController.onPageLoad(index: Index)
+POST        /:index/company/time-at-address                                         controllers.establishers.company.address.AddressYearsController.onSubmit(index: Index)
 
-GET         /:index/company/addresses/company-exists-years                              controllers.establishers.company.address.TradingTimeController.onPageLoad(index: Index)
-POST        /:index/company/addresses/company-exists-years                              controllers.establishers.company.address.TradingTimeController.onSubmit(index: Index)
+GET         /:index/company/trading-time                                            controllers.establishers.company.address.TradingTimeController.onPageLoad(index: Index)
+POST        /:index/company/trading-time                                            controllers.establishers.company.address.TradingTimeController.onSubmit(index: Index)
 
-GET         /:index/company/addresses/address-previous                           controllers.establishers.company.address.EnterPreviousPostcodeController.onPageLoad(index: Index)
-POST        /:index/company/addresses/address-previous                           controllers.establishers.company.address.EnterPreviousPostcodeController.onSubmit(index: Index)
+GET         /:index/company/enter-previous-postcode                                 controllers.establishers.company.address.EnterPreviousPostcodeController.onPageLoad(index: Index)
+POST        /:index/company/enter-previous-postcode                                 controllers.establishers.company.address.EnterPreviousPostcodeController.onSubmit(index: Index)
 
-GET         /:index/company/addresses/address-previous-results                   controllers.establishers.company.address.SelectPreviousAddressController.onPageLoad(index: Index)
-POST        /:index/company/addresses/address-previous-results                   controllers.establishers.company.address.SelectPreviousAddressController.onSubmit(index: Index)
+GET         /:index/company/previous-address-results                                controllers.establishers.company.address.SelectPreviousAddressController.onPageLoad(index: Index)
+POST        /:index/company/previous-address-results                                controllers.establishers.company.address.SelectPreviousAddressController.onSubmit(index: Index)
 
-GET         /:index/company/addresses/address-previous-manual                    controllers.establishers.company.address.ConfirmPreviousAddressController.onPageLoad(index: Index)
-POST        /:index/company/addresses/address-previous-manual                    controllers.establishers.company.address.ConfirmPreviousAddressController.onSubmit(index: Index)
+GET         /:index/company/confirm-previous-address                                controllers.establishers.company.address.ConfirmPreviousAddressController.onPageLoad(index: Index)
+POST        /:index/company/confirm-previous-address                                controllers.establishers.company.address.ConfirmPreviousAddressController.onSubmit(index: Index)
 
-GET         /:index/company/contact-details/what-you-will-need                        controllers.establishers.company.contact.WhatYouWillNeedCompanyContactController.onPageLoad(index: Index)
+GET         /:index/company/contact-details                                         controllers.establishers.company.contact.WhatYouWillNeedCompanyContactController.onPageLoad(index: Index)
 
-GET         /:index/company/enter-email-address                                       controllers.establishers.company.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = NormalMode)
-POST        /:index/company/enter-email-address                                       controllers.establishers.company.contact.EnterEmailController.onSubmit(index: Index, mode: Mode = NormalMode)
-GET         /:index/company/change/enter-email-address                                controllers.establishers.company.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/company/change/enter-email-address                                controllers.establishers.company.contact.EnterEmailController.onSubmit(index: Index, mode: Mode = CheckMode)
+GET         /:index/company/enter-email-address                                     controllers.establishers.company.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/enter-email-address                                     controllers.establishers.company.contact.EnterEmailController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/enter-email-address                              controllers.establishers.company.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/enter-email-address                              controllers.establishers.company.contact.EnterEmailController.onSubmit(index: Index, mode: Mode = CheckMode)
 
-GET         /:index/company/enter-phone-number                                        controllers.establishers.company.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = NormalMode)
-POST        /:index/company/enter-phone-number                                        controllers.establishers.company.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = NormalMode)
-GET         /:index/company/change/enter-phone-number                                 controllers.establishers.company.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/company/change/enter-phone-number                                 controllers.establishers.company.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = CheckMode)
+GET         /:index/company/enter-phone-number                                      controllers.establishers.company.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/enter-phone-number                                      controllers.establishers.company.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/enter-phone-number                               controllers.establishers.company.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/enter-phone-number                               controllers.establishers.company.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = CheckMode)
 
-GET         /:index/company/contact-details/check-your-answers                        controllers.establishers.company.contact.CheckYourAnswersController.onPageLoad(index: Index)
+GET         /:index/company/contact-details/check-your-answers-contact-details      controllers.establishers.company.contact.CheckYourAnswersController.onPageLoad(index: Index)
 
-GET         /:index/company/list-of-directors                                    controllers.establishers.company.AddCompanyDirectorsController.onPageLoad(index: Index,mode: Mode = NormalMode)
-POST        /:index/company/list-of-directors                                    controllers.establishers.company.AddCompanyDirectorsController.onSubmit(index: Index,mode: Mode = NormalMode)
-GET         /:index/change/company/list-of-directors                             controllers.establishers.company.AddCompanyDirectorsController.onPageLoad(index: Index,mode: Mode = CheckMode)
-POST        /:index/change/company/list-of-directors                             controllers.establishers.company.AddCompanyDirectorsController.onSubmit(index: Index,mode: Mode = CheckMode)
+GET         /:index/company/list-of-directors                                       controllers.establishers.company.AddCompanyDirectorsController.onPageLoad(index: Index,mode: Mode = NormalMode)
+POST        /:index/company/list-of-directors                                       controllers.establishers.company.AddCompanyDirectorsController.onSubmit(index: Index,mode: Mode = NormalMode)
+GET         /:index/change/company/list-of-directors                                controllers.establishers.company.AddCompanyDirectorsController.onPageLoad(index: Index,mode: Mode = CheckMode)
+POST        /:index/change/company/list-of-directors                                controllers.establishers.company.AddCompanyDirectorsController.onSubmit(index: Index,mode: Mode = CheckMode)
 
-GET         /:index/company/other-directors                                      controllers.establishers.company.OtherDirectorsController.onPageLoad(index:Index,mode:Mode=NormalMode)
-POST        /:index/company/other-directors                                      controllers.establishers.company.OtherDirectorsController.onSubmit(index:Index,mode:Mode=NormalMode)
-GET         /:index/change/company/other-directors                               controllers.establishers.company.OtherDirectorsController.onPageLoad(index:Index,mode:Mode=CheckMode)
-POST        /:index/change/company/other-directors                               controllers.establishers.company.OtherDirectorsController.onSubmit(index:Index,mode:Mode=CheckMode)
+GET         /:index/company/other-directors                                         controllers.establishers.company.OtherDirectorsController.onPageLoad(index:Index,mode:Mode=NormalMode)
+POST        /:index/company/other-directors                                         controllers.establishers.company.OtherDirectorsController.onSubmit(index:Index,mode:Mode=NormalMode)
+GET         /:index/change/company/other-directors                                  controllers.establishers.company.OtherDirectorsController.onPageLoad(index:Index,mode:Mode=CheckMode)
+POST        /:index/change/company/other-directors                                  controllers.establishers.company.OtherDirectorsController.onSubmit(index:Index,mode:Mode=CheckMode)
 
 
-->          /                                                                         establishersCompanyDirector.Routes
+->          /                                                                        establishersCompanyDirector.Routes

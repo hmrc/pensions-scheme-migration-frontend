@@ -55,21 +55,23 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
 
   override def form: Form[Int] = formProvider("selectAddress.required")
 
-  def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
-    retrieve(SchemeNameId) { schemeName =>
-      getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.right.map(get)
+  def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
+    (authenticate andThen getData andThen requireData).async { implicit request =>
+      retrieve(SchemeNameId) { schemeName =>
+        getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.right.map(get)
+      }
     }
-  }
 
   def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-        val addressPages: AddressPages = AddressPages(EnterPostCodeId(establisherIndex, directorIndex), AddressListId(establisherIndex, directorIndex), AddressId(establisherIndex, directorIndex))
+      val addressPages: AddressPages = AddressPages(EnterPostCodeId(establisherIndex, directorIndex),
+        AddressListId(establisherIndex, directorIndex), AddressId(establisherIndex, directorIndex))
       retrieve(SchemeNameId) { schemeName =>
         getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.right.map(post(_, addressPages, Some(mode)))
       }
     }
 
-  def getFormToJson(schemeName:String, establisherIndex: Index, directorIndex: Index, mode: Mode) : Retrieval[Form[Int] => JsObject] =
+  def getFormToJson(schemeName: String, establisherIndex: Index, directorIndex: Index, mode: Mode): Retrieval[Form[Int] => JsObject] =
     Retrieval(
       implicit request =>
         EnterPostCodeId(establisherIndex, directorIndex).retrieve.right.map { addresses =>
@@ -78,14 +80,15 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
 
           val name = request.userAnswers.get(DirectorNameId(establisherIndex, directorIndex)).map(_.fullName).getOrElse(msg("messages__director"))
 
-          form => Json.obj(
-            "form" -> form,
-            "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
-            "entityType" -> msg("messages__director"),
-            "entityName" -> name,
-            "enterManuallyUrl" -> controllers.establishers.company.director.address.routes.ConfirmAddressController.onPageLoad(establisherIndex, directorIndex, mode).url,
-            "schemeName" -> schemeName
-          )
+          form =>
+            Json.obj(
+              "form" -> form,
+              "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
+              "entityType" -> msg("messages__director"),
+              "entityName" -> name,
+              "enterManuallyUrl" -> routes.ConfirmAddressController.onPageLoad(establisherIndex, directorIndex, mode).url,
+              "schemeName" -> schemeName
+            )
         }
     )
 }

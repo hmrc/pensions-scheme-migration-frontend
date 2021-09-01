@@ -17,9 +17,9 @@
 package helpers
 
 import controllers.establishers.routes._
-import helpers.spokes.establishers.company.{EstablisherCompanyAddress, EstablisherCompanyContactDetails, EstablisherCompanyDetails, EstablisherCompanyDirectorDetails}
+import helpers.spokes.establishers.company._
 import helpers.spokes.establishers.individual._
-import helpers.spokes.establishers.partnership.{EstablisherPartnershipAddress, EstablisherPartnershipDetails}
+import helpers.spokes.establishers.partnership.{EstablisherPartnershipAddress, EstablisherPartnershipDetails, EstablisherPartnerDetails}
 import helpers.spokes.trustees.company.{TrusteeCompanyAddress, TrusteeCompanyContactDetails, TrusteeCompanyDetails}
 import helpers.spokes.trustees.individual.{TrusteeIndividualAddress, TrusteeIndividualContactDetails, TrusteeIndividualDetails}
 import helpers.spokes.trustees.partnership.TrusteePartnershipAddress
@@ -94,7 +94,8 @@ class SpokeCreationService extends Enumerable.Implicits {
                                  (implicit messages: Messages): Seq[EntitySpoke] = {
     Seq(
       createSpoke(answers, EstablisherPartnershipDetails(index, answers), name),
-      createSpoke(answers, EstablisherPartnershipAddress(index, answers), name)
+      createSpoke(answers, EstablisherPartnershipAddress(index, answers), name),
+      createPartnerSpoke(answers.allPartnersAfterDelete(indexToInt(index)),EstablisherPartnerDetails(index, answers), name)
     )
   }
 
@@ -107,10 +108,23 @@ class SpokeCreationService extends Enumerable.Implicits {
           Some(entityList.forall(_.isCompleted))
         case (true) =>
           Some(false)
-        case _ => None
       }
     }
       EntitySpoke(spoke.changeLink(name), isComplete)
+  }
+
+  def createPartnerSpoke(entityList: Seq[Entity[_]],
+                          spoke: Spoke,
+                          name: String)(implicit messages: Messages): EntitySpoke = {
+    val isComplete: Option[Boolean] = {
+      (entityList.isEmpty) match {
+        case (false) =>
+          Some(entityList.forall(_.isCompleted))
+        case (true) =>
+          Some(false)
+      }
+    }
+    EntitySpoke(spoke.changeLink(name), isComplete)
   }
 
   def getAddTrusteeHeaderSpokes(answers: UserAnswers, viewOnly: Boolean)

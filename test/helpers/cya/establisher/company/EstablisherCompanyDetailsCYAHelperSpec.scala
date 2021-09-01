@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.cya.establisher.company
 
 import base.SpecBase._
 import controllers.establishers.company.details.routes

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.cya.establisher.partnership
 
 import base.SpecBase._
 import helpers.cya.establishers.partnership.EstablisherPartnershipAddressCYAHelper

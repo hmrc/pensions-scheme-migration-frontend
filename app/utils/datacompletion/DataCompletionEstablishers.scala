@@ -23,6 +23,8 @@ import identifiers.establishers.partnership.{details => partnershipDetails}
 import identifiers.establishers.partnership.{address => partnershipAddress}
 import identifiers.establishers.company.director.{address => directorAddress}
 import identifiers.establishers.company.director.{contact => directorContact}
+import identifiers.establishers.partnership.partner.{address => partnerAddress}
+import identifiers.establishers.partnership.partner.{contact => partnerContact}
 import identifiers.establishers.company.director.details._
 import identifiers.establishers.company.{CompanyDetailsId, contact => companyContact}
 import identifiers.establishers.individual.EstablisherNameId
@@ -30,6 +32,7 @@ import identifiers.establishers.individual.address.{AddressId, AddressYearsId, P
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.individual.details._
 import identifiers.establishers.partnership.PartnershipDetailsId
+import identifiers.establishers.partnership.partner.details._
 import utils.UserAnswers
 
 trait DataCompletionEstablishers extends DataCompletion {
@@ -188,4 +191,31 @@ trait DataCompletionEstablishers extends DataCompletion {
         isAnswerComplete(companyContact.EnterPhoneId(index))
       )
     )
+
+  def isPartnerComplete(estIndex: Int, dirIndex: Int): Boolean =
+    isComplete(Seq(
+      isPartnerDetailsComplete(estIndex, dirIndex),
+      isPartnerAddressComplete(estIndex, dirIndex),
+      isContactDetailsComplete(partnerContact.EnterEmailId(estIndex, dirIndex), partnerContact.EnterPhoneId(estIndex, dirIndex))
+    )
+    ).getOrElse(false)
+
+  def isPartnerDetailsComplete(estIndex: Int, dirIndex: Int): Option[Boolean]  =
+    isComplete(Seq(
+      isAnswerComplete(PartnerDOBId(estIndex, dirIndex)),
+      isAnswerComplete(PartnerHasNINOId(estIndex, dirIndex), PartnerNINOId(estIndex, dirIndex), Some(PartnerNoNINOReasonId(estIndex, dirIndex))),
+      isAnswerComplete(PartnerHasUTRId(estIndex, dirIndex), PartnerEnterUTRId(estIndex, dirIndex), Some(PartnerNoUTRReasonId(estIndex, dirIndex)))
+    ))
+
+  def isPartnerAddressComplete(estIndex: Int,
+                                dirIndex: Int): Option[Boolean] = {
+    val atAddressMoreThanOneYear = self.get(partnerAddress.AddressYearsId(estIndex, dirIndex)).contains(true)
+    isComplete(
+      Seq(
+        isAnswerComplete(partnerAddress.AddressId(estIndex, dirIndex)),
+        isAnswerComplete(partnerAddress.AddressYearsId(estIndex, dirIndex)),
+        if (atAddressMoreThanOneYear) Some(true) else isAnswerComplete(partnerAddress.PreviousAddressId(estIndex, dirIndex))
+      )
+    )
+  }
 }

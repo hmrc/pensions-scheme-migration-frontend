@@ -80,7 +80,7 @@ class EnterPreviousPostcodeController @Inject()(val appConfig: AppConfig,
         "entityType" -> msg("establisherEntityTypePartnership"),
         "entityName" -> name,
         "form" -> form,
-        "enterManuallyUrl" -> controllers.establishers.partnership.address.routes.ConfirmPreviousAddressController.onPageLoad(index).url,
+        "enterManuallyUrl" -> routes.ConfirmPreviousAddressController.onPageLoad(index).url,
         "schemeName" -> schemeName,
         "h1MessageKey" -> "previousPostcode.title"
       )
