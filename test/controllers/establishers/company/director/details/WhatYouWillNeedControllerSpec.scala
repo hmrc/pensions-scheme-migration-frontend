@@ -49,7 +49,7 @@ class WhatYouWillNeedControllerSpec
     "establishers/company/director/whatYouWillNeed.njk"
   private val json: JsObject =
     Json.obj(
-      "continueUrl" -> "/migrate-pension-scheme/establisher/1/company/director/1/name",
+      "continueUrl" -> "/add-pension-scheme/establisher/1/company/director/1/name",
       "schemeName"  -> "Test scheme name"
     )
 

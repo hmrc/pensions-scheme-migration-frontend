@@ -7,8 +7,8 @@ POST        /:index/partnership/delete-trustee           controllers.trustees.Co
 GET         /:index/company/delete-trustee           controllers.trustees.ConfirmDeleteTrusteeController.onPageLoad(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Company)
 POST        /:index/company/delete-trustee           controllers.trustees.ConfirmDeleteTrusteeController.onSubmit(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Company)
 
-GET         /:index/individual/delete-trustee        controllers.trustees.ConfirmDeleteTrusteeController.onPageLoad(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Individual)
-POST        /:index/individual/delete-trustee        controllers.trustees.ConfirmDeleteTrusteeController.onSubmit(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Individual)
+GET         /:index/individual/confirm-delete        controllers.trustees.ConfirmDeleteTrusteeController.onPageLoad(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Individual)
+POST        /:index/individual/confirm-delete       controllers.trustees.ConfirmDeleteTrusteeController.onSubmit(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Individual)
 
 GET         /:index/trustee-type                     controllers.trustees.TrusteeKindController.onPageLoad(index:Index)
 POST        /:index/trustee-type                     controllers.trustees.TrusteeKindController.onSubmit(index:Index)

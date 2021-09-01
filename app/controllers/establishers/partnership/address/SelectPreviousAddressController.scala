@@ -83,7 +83,7 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
             "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
             "entityType" -> msg("establisherEntityTypePartnership"),
             "entityName" -> name,
-            "enterManuallyUrl" -> controllers.establishers.partnership.address.routes.ConfirmPreviousAddressController.onPageLoad(index).url,
+            "enterManuallyUrl" -> routes.ConfirmPreviousAddressController.onPageLoad(index).url,
             "schemeName" -> schemeName,
             "h1MessageKey" -> "previousAddressList.title"
           )

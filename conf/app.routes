@@ -16,59 +16,58 @@ GET         /task-list                                             controllers.T
 
 GET         /logout                                                controllers.LogoutController.onPageLoad
 
-GET         /before-you-start/scheme-type                          controllers.beforeYouStartSpoke.SchemeTypeController.onPageLoad
-POST        /before-you-start/scheme-type                          controllers.beforeYouStartSpoke.SchemeTypeController.onSubmit
+GET         /scheme-type                                           controllers.beforeYouStartSpoke.SchemeTypeController.onPageLoad
+POST        /scheme-type                                           controllers.beforeYouStartSpoke.SchemeTypeController.onSubmit
 
-GET         /before-you-start/country                              controllers.beforeYouStartSpoke.EstablishedCountryController.onPageLoad
-POST        /before-you-start/country                              controllers.beforeYouStartSpoke.EstablishedCountryController.onSubmit
+GET         /country-established-in                                controllers.beforeYouStartSpoke.EstablishedCountryController.onPageLoad
+POST        /country-established-in                                controllers.beforeYouStartSpoke.EstablishedCountryController.onSubmit
 
-GET         /before-you-start/pension-advisor                      controllers.beforeYouStartSpoke.WorkingKnowledgeController.onPageLoad
-POST        /before-you-start/pension-advisor                      controllers.beforeYouStartSpoke.WorkingKnowledgeController.onSubmit
+GET         /having-pensions-working-knowledge                     controllers.beforeYouStartSpoke.WorkingKnowledgeController.onPageLoad
+POST        /having-pensions-working-knowledge                     controllers.beforeYouStartSpoke.WorkingKnowledgeController.onSubmit
 
-GET         /before-you-start/check-your-answers                   controllers.beforeYouStartSpoke.CheckYourAnswersController.onPageLoad
+GET         /check-your-answers-basic-scheme-details               controllers.beforeYouStartSpoke.CheckYourAnswersController.onPageLoad
 
-GET         /members/membership                                    controllers.aboutMembership.CurrentMembersController.onPageLoad
-POST        /members/membership                                    controllers.aboutMembership.CurrentMembersController.onSubmit
+GET         /current-scheme-members                                controllers.aboutMembership.CurrentMembersController.onPageLoad
+POST        /current-scheme-members                                controllers.aboutMembership.CurrentMembersController.onSubmit
 
-GET         /members/membership-future                             controllers.aboutMembership.FutureMembersController.onPageLoad
-POST        /members/membership-future                             controllers.aboutMembership.FutureMembersController.onSubmit
+GET         /future-scheme-members                                 controllers.aboutMembership.FutureMembersController.onPageLoad
+POST        /future-scheme-members                                 controllers.aboutMembership.FutureMembersController.onSubmit
 
-GET         /benefits-and-finance/secured-benefits                 controllers.benefitsAndInsurance.AreBenefitsSecuredController.onPageLoad
-POST        /benefits-and-finance/secured-benefits                 controllers.benefitsAndInsurance.AreBenefitsSecuredController.onSubmit
+GET         /benefits-secured-by-insurance                         controllers.benefitsAndInsurance.AreBenefitsSecuredController.onPageLoad
+POST        /benefits-secured-by-insurance                         controllers.benefitsAndInsurance.AreBenefitsSecuredController.onSubmit
 
-GET         /benefits-and-finance/benefits-insurance-name          controllers.benefitsAndInsurance.BenefitsInsuranceNameController.onPageLoad
-POST        /benefits-and-finance/benefits-insurance-name          controllers.benefitsAndInsurance.BenefitsInsuranceNameController.onSubmit
+GET         /insurance-company-name                                controllers.benefitsAndInsurance.BenefitsInsuranceNameController.onPageLoad
+POST        /insurance-company-name                                controllers.benefitsAndInsurance.BenefitsInsuranceNameController.onSubmit
 
-GET         /benefits-and-finance/benefits                         controllers.benefitsAndInsurance.HowProvideBenefitsController.onPageLoad
-POST        /benefits-and-finance/benefits                         controllers.benefitsAndInsurance.HowProvideBenefitsController.onSubmit
+GET         /type-of-benefits                                      controllers.benefitsAndInsurance.HowProvideBenefitsController.onPageLoad
+POST        /type-of-benefits                                      controllers.benefitsAndInsurance.HowProvideBenefitsController.onSubmit
 
-GET         /benefits-and-finance/benefits-type                    controllers.benefitsAndInsurance.BenefitsTypeController.onPageLoad
-POST        /benefits-and-finance/benefits-type                    controllers.benefitsAndInsurance.BenefitsTypeController.onSubmit
+GET         /money-purchase-benefits                               controllers.benefitsAndInsurance.BenefitsTypeController.onPageLoad
+POST        /money-purchase-benefits                               controllers.benefitsAndInsurance.BenefitsTypeController.onSubmit
 
-GET         /benefits-and-finance/benefits-insurance-policy        controllers.benefitsAndInsurance.BenefitsInsurancePolicyController.onPageLoad
-POST        /benefits-and-finance/benefits-insurance-policy        controllers.benefitsAndInsurance.BenefitsInsurancePolicyController.onSubmit
+GET         /insurance-policy-number                               controllers.benefitsAndInsurance.BenefitsInsurancePolicyController.onPageLoad
+POST        /insurance-policy-number                               controllers.benefitsAndInsurance.BenefitsInsurancePolicyController.onSubmit
 
-GET         /benefits-and-finance/check-your-answers               controllers.benefitsAndInsurance.CheckYourAnswersController.onPageLoad
+GET         /check-your-answers-benefits-insurance                 controllers.benefitsAndInsurance.CheckYourAnswersController.onPageLoad
 
+GET         /check-your-answers-members                            controllers.aboutMembership.CheckYourAnswersController.onPageLoad
 
-GET         /members/check-your-answers                            controllers.aboutMembership.CheckYourAnswersController.onPageLoad
-
-GET         /benefits-and-finance/what-you-will-need               controllers.benefitsAndInsurance.WhatYouWillNeedController.onPageLoad
+GET         /what-you-will-need-benefits-insurance                controllers.benefitsAndInsurance.WhatYouWillNeedController.onPageLoad
 
 GET         /declaration                                           controllers.DeclarationController.onPageLoad
 GET         /submit-declaration                                    controllers.DeclarationController.onSubmit
 
-GET         /benefits-and-finance/postcode                         controllers.benefitsAndInsurance.InsurerEnterPostcodeController.onPageLoad
-POST        /benefits-and-finance/postcode                         controllers.benefitsAndInsurance.InsurerEnterPostcodeController.onSubmit
+GET         /insurance-postcode                                    controllers.benefitsAndInsurance.InsurerEnterPostcodeController.onPageLoad
+POST        /insurance-postcode                                    controllers.benefitsAndInsurance.InsurerEnterPostcodeController.onSubmit
 
-GET         /benefits-and-finance/address-results                  controllers.benefitsAndInsurance.InsurerSelectAddressController.onPageLoad
-POST        /benefits-and-finance/address-results                  controllers.benefitsAndInsurance.InsurerSelectAddressController.onSubmit
+GET         /insurance-address-results                             controllers.benefitsAndInsurance.InsurerSelectAddressController.onPageLoad
+POST        /insurance-address-results                             controllers.benefitsAndInsurance.InsurerSelectAddressController.onSubmit
 
-GET         /benefits-and-finance/address-manual                   controllers.benefitsAndInsurance.InsurerConfirmAddressController.onPageLoad
-POST        /benefits-and-finance/address-manual                   controllers.benefitsAndInsurance.InsurerConfirmAddressController.onSubmit
+GET         /insurance-confirm-address                             controllers.benefitsAndInsurance.InsurerConfirmAddressController.onPageLoad
+POST        /insurance-confirm-address                             controllers.benefitsAndInsurance.InsurerConfirmAddressController.onSubmit
 
 
-GET         /success                                               controllers.SuccessController.onPageLoad
+GET         /confirmation                                          controllers.SuccessController.onPageLoad
 
 
 GET         /migration-tile                                         controllers.preMigration.MigrationTilePartialController.migrationPartial

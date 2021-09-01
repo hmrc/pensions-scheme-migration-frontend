@@ -48,7 +48,7 @@ class WhatYouWillNeedControllerSpec
   private val json: JsObject =
     Json.obj(
       "name"        -> "Jane Doe",
-      "continueUrl" -> "/migrate-pension-scheme/trustee/1/individual/date-of-birth",
+      "continueUrl" -> "/add-pension-scheme/trustee/1/individual/date-of-birth",
       "schemeName"  -> "Test scheme name"
     )
 

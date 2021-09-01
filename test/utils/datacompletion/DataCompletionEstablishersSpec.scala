@@ -20,6 +20,9 @@ import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.company.details._
 import identifiers.establishers.company.director.details._
 import identifiers.establishers.company.director.{address => directorAddress}
+import identifiers.establishers.partnership.partner.details._
+import identifiers.establishers.partnership.partner.{address => partnerAddress}
+import identifiers.establishers.partnership.partner.{contact => partnerContact}
 import identifiers.establishers.company.{CompanyDetailsId, contact => companyContact}
 import identifiers.establishers.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
@@ -444,6 +447,117 @@ class DataCompletionEstablishersSpec
 
         "return None when no answers present" in {
           UserAnswers().isEstablisherPartnershipAddressCompleted(0, UserAnswers()) mustBe None
+        }
+      }
+
+      "Partner completion status should be returned correctly" when {
+        "isPartnerComplete" must {
+          "return true when all answers are present" in {
+            val ua1 =
+              UserAnswers()
+                .set(PartnerDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
+                .set(PartnerHasNINOId(0, 0), true).success.value
+                .set(PartnerNINOId(0, 0), ReferenceValue("1234567890")).success.value
+                .set(PartnerHasUTRId(0, 0), true).success.value
+                .set(PartnerEnterUTRId(0, 0), ReferenceValue("123456789")).success.value
+                .setOrException(partnerAddress.AddressId(0, 0), Data.address)
+                .setOrException(partnerAddress.AddressYearsId(0, 0), true)
+                .set(partnerContact.EnterEmailId(0, 0), "test@test.com").success.value
+                .set(partnerContact.EnterPhoneId(0, 0), "123").success.value
+
+            val ua2 =
+              UserAnswers()
+                .set(PartnerDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
+                .set(PartnerHasNINOId(0, 0), false).success.value
+                .set(PartnerNoNINOReasonId(0, 0), "Reason").success.value
+                .set(PartnerHasUTRId(0, 0), false).success.value
+                .set(PartnerNoUTRReasonId(0, 0), "Reason").success.value
+                .setOrException(partnerAddress.AddressId(0, 0), Data.address)
+                .setOrException(partnerAddress.AddressYearsId(0, 0), false)
+                .setOrException(partnerAddress.PreviousAddressId(0, 0), Data.address)
+                .set(partnerContact.EnterEmailId(0, 0), "test@test.com").success.value
+                .set(partnerContact.EnterPhoneId(0, 0), "123").success.value
+
+            ua1.isPartnerComplete(0, 0) mustBe true
+            ua2.isPartnerComplete(0, 0) mustBe true
+          }
+
+          "return false when some answer is missing" in {
+            val ua =
+              UserAnswers()
+                .set(PartnerDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
+                .set(PartnerHasNINOId(0, 0), false).success.value
+                .set(PartnerHasUTRId(0, 0), false).success.value
+                .setOrException(partnerAddress.AddressId(0, 0), Data.address)
+                .setOrException(partnerAddress.AddressYearsId(0, 0), false)
+
+            ua.isPartnerComplete(0,0) mustBe false
+          }
+        }
+      }
+    }
+
+    "Partner Details completion status should be returned correctly" when {
+      "isPartnerDetailsComplete" must {
+        "return true when all answers are present" in {
+          val ua1 =
+            UserAnswers()
+              .set(PartnerDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
+              .set(PartnerHasNINOId(0, 0), true).success.value
+              .set(PartnerNINOId(0, 0), ReferenceValue("1234567890")).success.value
+              .set(PartnerHasUTRId(0, 0), true).success.value
+              .set(PartnerEnterUTRId(0, 0), ReferenceValue("123456789")).success.value
+
+          val ua2 =
+            UserAnswers()
+              .set(PartnerDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
+              .set(PartnerHasNINOId(0, 0), false).success.value
+              .set(PartnerNoNINOReasonId(0, 0), "Reason").success.value
+              .set(PartnerHasUTRId(0, 0), false).success.value
+              .set(PartnerNoUTRReasonId(0, 0), "Reason").success.value
+
+          ua1.isPartnerDetailsComplete(0, 0) mustBe Some(true)
+          ua2.isPartnerDetailsComplete(0, 0) mustBe Some(true)
+        }
+
+        "return false when some answer is missing" in {
+          val ua =
+            UserAnswers()
+              .set(PartnerDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
+              .set(PartnerHasNINOId(0, 0), false).success.value
+              .set(PartnerHasUTRId(0, 0), false).success.value
+
+          ua.isPartnerDetailsComplete(0,0) mustBe Some(false)
+        }
+      }
+    }
+
+    "Partner Address completion status should be returned correctly" when {
+
+      "isPartnerAddressComplete" must {
+        "return true when all answers are present" in {
+          val ua1 =
+            UserAnswers()
+              .setOrException(partnerAddress.AddressId(0, 0), Data.address)
+              .setOrException(partnerAddress.AddressYearsId(0, 0), true)
+
+          val ua2 =
+            UserAnswers()
+              .setOrException(partnerAddress.AddressId(0, 0), Data.address)
+              .setOrException(partnerAddress.AddressYearsId(0, 0), false)
+              .setOrException(partnerAddress.PreviousAddressId(0, 0), Data.address)
+
+          ua1.isPartnerAddressComplete(0, 0) mustBe Some(true)
+          ua2.isPartnerAddressComplete(0, 0) mustBe Some(true)
+        }
+
+        "return false when some answer is missing" in {
+          val ua =
+            UserAnswers()
+              .setOrException(partnerAddress.AddressId(0, 0), Data.address)
+              .setOrException(partnerAddress.AddressYearsId(0, 0), false)
+
+          ua.isPartnerAddressComplete(0, 0) mustBe Some(false)
         }
       }
     }
