@@ -1,6 +1,6 @@
 {% macro navigationLink(linkText,pageNumber) %}
 {%- set id = linkText.toLowerCase  -%}
-{%- set baseUrl = "/migrate-pension-scheme/list-pension-schemes/page/"  -%}
+{%- set baseUrl = "/add-pension-scheme/list-pension-schemes/page/"  -%}
 {%- set url = baseUrl+pageNumber  -%}
 {%- set ariaLabel = messages("messages__listSchemes__pagination__{{linkText.toLowerCase}}__ariaLabel")  -%}
   <span class="nav-item"><a id="{{id}}" href="{{url}}" aria-label="{{ariaLabel}}">{{linkText}}</a></span>
