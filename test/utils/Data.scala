@@ -43,6 +43,8 @@ object Data {
   val establisherPartnershipDetails = PartnershipDetails("test partnership")
   val trusteeIndividualName = PersonName("test", "name")
   val trusteeCompanyDetails = CompanyDetails("test company")
+  val email = "test@test.com"
+  val phone = "1234567890"
   val ua: UserAnswers = UserAnswers().setOrException(SchemeNameId, Data.schemeName)
 
 
