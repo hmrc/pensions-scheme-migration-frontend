@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.cya.establisher.individual
 
 import base.SpecBase._
 import helpers.cya.establishers.individual.EstablisherAddressCYAHelper

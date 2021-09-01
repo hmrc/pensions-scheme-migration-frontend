@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package forms.establishers.company.director
+package identifiers.establishers.partnership.partner.details
 
-import forms.mappings.Mappings
-import play.api.data.Form
-import play.api.i18n.Messages
-import viewmodels.Message
+import identifiers.TypedIdentifier
+import identifiers.establishers.EstablishersId
+import play.api.libs.json.JsPath
 
-import javax.inject.Inject
+case class PartnerNoNINOReasonId(establisherIndex: Int, partnerIndex: Int) extends TypedIdentifier[String] {
+  override def path: JsPath = EstablishersId(establisherIndex).path \ "partner" \ partnerIndex \ PartnerNoNINOReasonId.toString
+}
 
-class ConfirmDeleteDirectorFormProvider @Inject() extends Mappings {
-
-  def apply(name: String)(implicit messages: Messages): Form[Boolean] =
-    Form(
-      "value" -> boolean(Message("messages__confirmDelete__error_required", name))
-    )
+object PartnerNoNINOReasonId {
+  override def toString: String = "noNinoReason"
 }

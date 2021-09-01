@@ -1,0 +1,49 @@
+{% extends "includes/layout.njk" %}
+
+{% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
+{% from "macros/title.njk"                         import title %}
+{% from "macros/returnLink.njk"                    import returnLink %}
+{% from "govuk/components/button/macro.njk"        import govukButton %}
+
+{% block pageTitle %}
+    {{ messages("messages__partners__pagetitle") }}
+{% endblock %}
+
+{% block mainContent %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">
+                {{ messages("messages__partners__title") }}
+            </h1>
+
+            <p class="govuk-body">
+                {{ messages("messages__partners__whatYouWillNeedPartners__p1") }}
+            </p>
+
+            <ul class="govuk-list govuk-list--bullet">
+                <li>{{ messages("messages__partners__whatYouWillNeed__item1") }}</li>
+                <li>{{ messages("messages__partners__whatYouWillNeed__item2") }}</li>
+                <li>{{ messages("messages__partners__whatYouWillNeed__item3") }}</li>
+                <li>{{ messages("messages__partners__whatYouWillNeed__item4") }}</li>
+                <li>{{ messages("messages__partners__whatYouWillNeed__item5") }}</li>
+                <li>{{ messages("messages__partners__whatYouWillNeed__item6") }}</li>
+                <li>{{ messages("messages__partners__whatYouWillNeed__item7") }}</li>
+                <li>{{ messages("messages__partners__whatYouWillNeed__item8") }}</li>
+            </ul>
+
+            <div class="govuk-inset-text">
+                You will need to tell us details for at least two partners.
+            </div>
+
+            {{ govukButton({
+                href: continueUrl,
+                attributes: {id: "submit"},
+                text: messages("site.continue")
+            }) }}
+        </div>
+    </div>
+
+    {{ returnLink(schemeName) }}
+
+{% endblock %}

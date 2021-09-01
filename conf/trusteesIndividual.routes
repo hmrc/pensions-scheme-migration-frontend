@@ -38,43 +38,43 @@ POST        /:index/individual/reason-for-no-unique-taxpayer-reference          
 GET         /:index/individual/change/reason-for-no-unique-taxpayer-reference        controllers.trustees.individual.details.TrusteeNoUTRReasonController.onPageLoad(index: Index, mode: Mode = CheckMode)
 POST        /:index/individual/change/reason-for-no-unique-taxpayer-reference        controllers.trustees.individual.details.TrusteeNoUTRReasonController.onSubmit(index: Index, mode: Mode = CheckMode)
 
-GET         /:index/individual/check-your-answers                                    controllers.trustees.individual.details.CheckYourAnswersController.onPageLoad(index: Index)
+GET         /:index/individual/check-your-answers-details                           controllers.trustees.individual.details.CheckYourAnswersController.onPageLoad(index: Index)
 
-GET         /:index/individual/addresses/what-you-will-need                          controllers.trustees.individual.address.WhatYouWillNeedController.onPageLoad(index: Index)
+GET         /:index/individual/address                                              controllers.trustees.individual.address.WhatYouWillNeedController.onPageLoad(index: Index)
 
-GET         /:index/individual/addresses/postcode                                    controllers.trustees.individual.address.EnterPostcodeController.onPageLoad(index: Index)
-POST        /:index/individual/addresses/postcode                                    controllers.trustees.individual.address.EnterPostcodeController.onSubmit(index: Index)
+GET         /:index/individual/enter-postcode                                       controllers.trustees.individual.address.EnterPostcodeController.onPageLoad(index: Index)
+POST        /:index/individual/enter-postcode                                       controllers.trustees.individual.address.EnterPostcodeController.onSubmit(index: Index)
 
-GET         /:index/individual/addresses/address-results                             controllers.trustees.individual.address.SelectAddressController.onPageLoad(index: Index)
-POST        /:index/individual/addresses/address-results                             controllers.trustees.individual.address.SelectAddressController.onSubmit(index: Index)
+GET         /:index/individual/address-results                                      controllers.trustees.individual.address.SelectAddressController.onPageLoad(index: Index)
+POST        /:index/individual/address-results                                      controllers.trustees.individual.address.SelectAddressController.onSubmit(index: Index)
 
-GET         /:index/individual/addresses/address-manual                              controllers.trustees.individual.address.ConfirmAddressController.onPageLoad(index: Index)
-POST        /:index/individual/addresses/address-manual                              controllers.trustees.individual.address.ConfirmAddressController.onSubmit(index: Index)
+GET         /:index/individual/confirm-address                                      controllers.trustees.individual.address.ConfirmAddressController.onPageLoad(index: Index)
+POST        /:index/individual/confirm-address                                      controllers.trustees.individual.address.ConfirmAddressController.onSubmit(index: Index)
 
-GET         /:index/individual/addresses/check-your-answers                          controllers.trustees.individual.address.CheckYourAnswersController.onPageLoad(index: Index)
+GET         /:index/individual/check-your-answers-address                           controllers.trustees.individual.address.CheckYourAnswersController.onPageLoad(index: Index)
 
-GET         /:index/individual/addresses/address-years                              controllers.trustees.individual.address.AddressYearsController.onPageLoad(index: Index)
-POST        /:index/individual/addresses/address-years                              controllers.trustees.individual.address.AddressYearsController.onSubmit(index: Index)
+GET         /:index/individual/time-at-address                                      controllers.trustees.individual.address.AddressYearsController.onPageLoad(index: Index)
+POST        /:index/individual/time-at-address                                      controllers.trustees.individual.address.AddressYearsController.onSubmit(index: Index)
 
-GET         /:index/individual/addresses/address-previous                           controllers.trustees.individual.address.EnterPreviousPostcodeController.onPageLoad(index: Index)
-POST        /:index/individual/addresses/address-previous                           controllers.trustees.individual.address.EnterPreviousPostcodeController.onSubmit(index: Index)
+GET         /:index/individual/enter-previous-postcode                              controllers.trustees.individual.address.EnterPreviousPostcodeController.onPageLoad(index: Index)
+POST        /:index/individual/enter-previous-postcode                              controllers.trustees.individual.address.EnterPreviousPostcodeController.onSubmit(index: Index)
 
-GET         /:index/individual/addresses/address-previous-results                   controllers.trustees.individual.address.SelectPreviousAddressController.onPageLoad(index: Index)
-POST        /:index/individual/addresses/address-previous-results                   controllers.trustees.individual.address.SelectPreviousAddressController.onSubmit(index: Index)
+GET         /:index/individual/previous-address-results                             controllers.trustees.individual.address.SelectPreviousAddressController.onPageLoad(index: Index)
+POST        /:index/individual/previous-address-results                             controllers.trustees.individual.address.SelectPreviousAddressController.onSubmit(index: Index)
 
-GET         /:index/individual/addresses/address-previous-manual                    controllers.trustees.individual.address.ConfirmPreviousAddressController.onPageLoad(index: Index)
-POST        /:index/individual/addresses/address-previous-manual                    controllers.trustees.individual.address.ConfirmPreviousAddressController.onSubmit(index: Index)
+GET         /:index/individual/confirm-previous-address                             controllers.trustees.individual.address.ConfirmPreviousAddressController.onPageLoad(index: Index)
+POST        /:index/individual/confirm-previous-address                             controllers.trustees.individual.address.ConfirmPreviousAddressController.onSubmit(index: Index)
 
-GET         /:index/individual/contact-details/what-you-will-need                    controllers.trustees.individual.contact.WhatYouWillNeedController.onPageLoad(index: Index)
+GET         /:index/individual/contact-details                                      controllers.trustees.individual.contact.WhatYouWillNeedController.onPageLoad(index: Index)
 
-GET         /:index/individual/enter-email-address                                       controllers.trustees.individual.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = NormalMode)
-POST        /:index/individual/enter-email-address                                       controllers.trustees.individual.contact.EnterEmailController.onSubmit(index: Index, mode: Mode = NormalMode)
-GET         /:index/individual/change/enter-email-address                                controllers.trustees.individual.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/individual/change/enter-email-address                                controllers.trustees.individual.contact.EnterEmailController.onSubmit(index: Index, mode: Mode = CheckMode)
+GET         /:index/individual/enter-email-address                                  controllers.trustees.individual.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/individual/enter-email-address                                  controllers.trustees.individual.contact.EnterEmailController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/individual/change/enter-email-address                           controllers.trustees.individual.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/individual/change/enter-email-address                           controllers.trustees.individual.contact.EnterEmailController.onSubmit(index: Index, mode: Mode = CheckMode)
 
-GET         /:index/individual/enter-phone-number                                       controllers.trustees.individual.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = NormalMode)
-POST        /:index/individual/enter-phone-number                                       controllers.trustees.individual.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = NormalMode)
-GET         /:index/individual/change/enter-phone-number                                controllers.trustees.individual.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/individual/change/enter-phone-number                               controllers.trustees.individual.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = CheckMode)
+GET         /:index/individual/enter-phone-number                                   controllers.trustees.individual.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/individual/enter-phone-number                                   controllers.trustees.individual.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/individual/change/enter-phone-number                            controllers.trustees.individual.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/individual/change/enter-phone-number                            controllers.trustees.individual.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = CheckMode)
 
-GET         /:index/individual/contact-details/check-your-answers                          controllers.trustees.individual.contact.CheckYourAnswersController.onPageLoad(index: Index)
+GET         /:index/individual/check-your-answers-contact-details                    controllers.trustees.individual.contact.CheckYourAnswersController.onPageLoad(index: Index)

@@ -21,7 +21,7 @@ import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.PartnershipDetailsFormProvider
 import identifiers.establishers.partnership.PartnershipDetailsId
-import models.{PartnershipDetails, Index}
+import models.{Index, PartnershipDetails}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -85,3 +85,4 @@ class PartnershipDetailsController @Inject()(
         )
     }
 }
+
