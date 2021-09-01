@@ -585,7 +585,7 @@ class SpokeCreationServiceSpec
               target = controllers.trustees.partnership.address.routes.CheckYourAnswersController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
-            isCompleted = None
+            isCompleted = Some(true)
           )
         )
 

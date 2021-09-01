@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package forms.trustees.address
+package forms.address
 
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
 class AddressYearsFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "trusteeAddressYears.error.required"
+  val requiredKey = "individualAddressYears.error.required"
 
   val form = new AddressYearsFormProvider()(requiredKey)
 

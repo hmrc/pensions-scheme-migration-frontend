@@ -17,84 +17,51 @@
 package controllers.trustees.partnership.address
 
 import connectors.cache.UserAnswersCacheConnector
-import controllers.Retrievals
 import controllers.actions._
+import controllers.address.CommonTradingTimeController
 import forms.address.TradingTimeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.trustees.partnership.address.TradingTimeId
 import identifiers.trustees.partnership.PartnershipDetailsId
+import identifiers.trustees.partnership.address.TradingTimeId
 import models.Index
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.Json
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Enumerable
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class TradingTimeController @Inject()(override val messagesApi: MessagesApi,
-                                       userAnswersCacheConnector: UserAnswersCacheConnector,
-                                       authenticate: AuthAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       navigator: CompoundNavigator,
-                                       formProvider: TradingTimeFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer)(implicit ec: ExecutionContext)
-  extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
+                                      val userAnswersCacheConnector: UserAnswersCacheConnector,
+                                      authenticate: AuthAction,
+                                      getData: DataRetrievalAction,
+                                      requireData: DataRequiredAction,
+                                      val navigator: CompoundNavigator,
+                                      formProvider: TradingTimeFormProvider,
+                                      val controllerComponents: MessagesControllerComponents,
+                                      val renderer: Renderer)(implicit ec: ExecutionContext)
+  extends CommonTradingTimeController
+    with Enumerable.Implicits {
 
   private def form: Form[Boolean] =
     formProvider("partnershipTradingTime.error.required")
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      (PartnershipDetailsId(index) and SchemeNameId).retrieve.right.map { case partnershipDetails ~ schemeName =>
-        val preparedForm = request.userAnswers.get(TradingTimeId(index)) match {
-          case Some(value) => form.fill(value)
-          case None        => form
-        }
-        val json = Json.obj(
-          "schemeName" -> schemeName,
-          "entityName" -> partnershipDetails.partnershipName,
-          "entityType" -> Messages("messages__partnership"),
-          "form" -> preparedForm,
-          "radios" -> Radios.yesNo (preparedForm("value"))
-        )
-        renderer.render("address/tradingTime.njk", json).map(Ok(_))
+      (PartnershipDetailsId(index) and SchemeNameId).retrieve.right.map {
+        case partnershipDetails ~ schemeName =>
+          get(Some(schemeName), partnershipDetails.partnershipName, Messages("messages__partnership"), form, TradingTimeId(index))
       }
     }
 
   def onSubmit(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      (PartnershipDetailsId(index) and SchemeNameId).retrieve.right.map { case partnershipDetails ~ schemeName =>
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => {
-              val json = Json.obj(
-                "schemeName" -> schemeName,
-                "entityName" -> partnershipDetails.partnershipName,
-                "entityType" -> Messages("messages__partnership"),
-                "form" -> formWithErrors,
-                "radios" -> Radios.yesNo(form("value"))
-              )
-
-              renderer.render("address/tradingTime.njk", json).map(BadRequest(_))
-            },
-            value => {
-              val updatedUA = request.userAnswers.setOrException(TradingTimeId(index), value)
-              userAnswersCacheConnector.save(request.lock, updatedUA.data).map { _ =>
-                Redirect(navigator.nextPage(TradingTimeId(index), updatedUA))
-              }
-            }
-          )
-        }
+      (PartnershipDetailsId(index) and SchemeNameId).retrieve.right.map {
+        case partnershipDetails ~ schemeName =>
+          post(Some(schemeName), partnershipDetails.partnershipName, Messages("messages__partnership"), form, TradingTimeId(index))
+      }
     }
-
 }

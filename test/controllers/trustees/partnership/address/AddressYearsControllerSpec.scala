@@ -18,7 +18,7 @@ package controllers.trustees.partnership.address
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import forms.trustees.address.AddressYearsFormProvider
+import forms.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.partnership.PartnershipDetailsId
 import identifiers.trustees.partnership.address.AddressYearsId

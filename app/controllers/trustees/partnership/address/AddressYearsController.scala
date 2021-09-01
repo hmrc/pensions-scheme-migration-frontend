@@ -19,10 +19,10 @@ package controllers.trustees.partnership.address
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.CommonAddressYearsController
-import forms.trustees.address.AddressYearsFormProvider
+import forms.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.trustees.partnership.address.AddressYearsId
 import identifiers.trustees.partnership.PartnershipDetailsId
+import identifiers.trustees.partnership.address.AddressYearsId
 import models.Index
 import navigators.CompoundNavigator
 import play.api.data.Form
@@ -47,7 +47,7 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
     with Enumerable.Implicits {
 
   private def form: Form[Boolean] =
-    formProvider("trusteePartnershipAddressYears.error.required")
+    formProvider("partnershipAddressYears.error.required")
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>

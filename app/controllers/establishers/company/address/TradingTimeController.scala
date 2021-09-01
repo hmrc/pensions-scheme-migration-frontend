@@ -17,8 +17,8 @@
 package controllers.establishers.company.address
 
 import connectors.cache.UserAnswersCacheConnector
-import controllers.Retrievals
 import controllers.actions._
+import controllers.address.CommonTradingTimeController
 import forms.address.TradingTimeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
@@ -26,75 +26,42 @@ import identifiers.establishers.company.address.TradingTimeId
 import models.Index
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{MessagesApi, Messages, I18nSupport}
-import play.api.libs.json.Json
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Enumerable
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class TradingTimeController @Inject()(override val messagesApi: MessagesApi,
-                                       userAnswersCacheConnector: UserAnswersCacheConnector,
-                                       authenticate: AuthAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       navigator: CompoundNavigator,
-                                       formProvider: TradingTimeFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer)(implicit ec: ExecutionContext)
-  extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
+                                      val userAnswersCacheConnector: UserAnswersCacheConnector,
+                                      authenticate: AuthAction,
+                                      getData: DataRetrievalAction,
+                                      requireData: DataRequiredAction,
+                                      val navigator: CompoundNavigator,
+                                      formProvider: TradingTimeFormProvider,
+                                      val controllerComponents: MessagesControllerComponents,
+                                      val renderer: Renderer)(implicit ec: ExecutionContext)
+  extends CommonTradingTimeController
+    with Enumerable.Implicits {
 
   private def form: Form[Boolean] =
     formProvider("companyTradingTime.error.required")
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      (CompanyDetailsId(index) and SchemeNameId).retrieve.right.map { case companyDetails ~ schemeName =>
-        val preparedForm = request.userAnswers.get(TradingTimeId(index)) match {
-          case Some(value) => form.fill(value)
-          case None        => form
-        }
-        val json = Json.obj(
-          "schemeName" -> schemeName,
-          "entityName" -> companyDetails.companyName,
-          "entityType" -> Messages("establisherEntityTypeCompany"),
-          "form" -> preparedForm,
-          "radios" -> Radios.yesNo (preparedForm("value"))
-        )
-        renderer.render("address/tradingTime.njk", json).map(Ok(_))
+      (CompanyDetailsId(index) and SchemeNameId).retrieve.right.map {
+        case companyDetails ~ schemeName =>
+          get(Some(schemeName), companyDetails.companyName, Messages("messages__company"), form, TradingTimeId(index))
       }
     }
 
   def onSubmit(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      (CompanyDetailsId(index) and SchemeNameId).retrieve.right.map { case companyDetails ~ schemeName =>
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => {
-              val json = Json.obj(
-                "schemeName" -> schemeName,
-                "entityName" -> companyDetails.companyName,
-                "entityType" -> Messages("establisherEntityTypeCompany"),
-                "form" -> formWithErrors,
-                "radios" -> Radios.yesNo(form("value"))
-              )
-
-              renderer.render("address/tradingTime.njk", json).map(BadRequest(_))
-            },
-            value => {
-              val updatedUA = request.userAnswers.setOrException(TradingTimeId(index), value)
-              userAnswersCacheConnector.save(request.lock, updatedUA.data).map { _ =>
-                Redirect(navigator.nextPage(TradingTimeId(index), updatedUA))
-              }
-            }
-          )
-        }
+      (CompanyDetailsId(index) and SchemeNameId).retrieve.right.map {
+        case companyDetails ~ schemeName =>
+          post(Some(schemeName), companyDetails.companyName, Messages("messages__company"), form, TradingTimeId(index))
+      }
     }
-
 }

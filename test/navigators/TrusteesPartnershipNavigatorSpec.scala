@@ -61,7 +61,7 @@ class TrusteesPartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour 
   private def addressYears: Call =
     controllers.trustees.partnership.address.routes.AddressYearsController.onPageLoad(index)
 
-  private def tradingTime: Call = controllers.trustees.company.address.routes.TradingTimeController.onPageLoad(index)
+  private def tradingTime: Call = controllers.trustees.partnership.address.routes.TradingTimeController.onPageLoad(index)
 
   private val cyaAddress: Call =
     controllers.trustees.partnership.address.routes.CheckYourAnswersController.onPageLoad(index)

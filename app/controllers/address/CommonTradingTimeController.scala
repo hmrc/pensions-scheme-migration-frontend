@@ -33,7 +33,7 @@ import uk.gov.hmrc.viewmodels.Radios
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait CommonAddressYearsController extends FrontendBaseController
+trait CommonTradingTimeController extends FrontendBaseController
   with Retrievals
   with I18nSupport
   with NunjucksSupport {
@@ -41,16 +41,16 @@ trait CommonAddressYearsController extends FrontendBaseController
   protected def renderer: Renderer
   protected def userAnswersCacheConnector: UserAnswersCacheConnector
   protected def navigator: CompoundNavigator
-  protected def viewTemplate = "address/addressYears.njk"
+  protected def viewTemplate = "address/tradingTime.njk"
 
   protected def get(schemeName: Option[String],
                     entityName: String,
                     entityType : String,
                     form : Form[Boolean],
-                    addressYearsId : TypedIdentifier[Boolean])(
+                    tradingTimeId : TypedIdentifier[Boolean])(
                      implicit request: DataRequest[AnyContent],
                      ec: ExecutionContext): Future[Result] = {
-    val filledForm = request.userAnswers.get(addressYearsId).fold(form)(form.fill)
+    val filledForm = request.userAnswers.get(tradingTimeId).fold(form)(form.fill)
     renderer.render(viewTemplate, json(schemeName, entityName, entityType, filledForm)).map(Ok(_))
   }
 
@@ -58,7 +58,7 @@ trait CommonAddressYearsController extends FrontendBaseController
                      entityName: String,
                      entityType : String,
                      form : Form[Boolean],
-                     addressYearsId : TypedIdentifier[Boolean],
+                     tradingTimeId : TypedIdentifier[Boolean],
                      mode: Option[Mode] = None)(
                       implicit request: DataRequest[AnyContent],
                       ec: ExecutionContext): Future[Result] = {
@@ -70,11 +70,11 @@ trait CommonAddressYearsController extends FrontendBaseController
         },
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(addressYearsId, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(tradingTimeId, value))
             _ <- userAnswersCacheConnector.save(request.lock,updatedAnswers.data)
           } yield {
             val finalMode = mode.getOrElse(NormalMode)
-            Redirect(navigator.nextPage(addressYearsId, updatedAnswers, finalMode))
+            Redirect(navigator.nextPage(tradingTimeId, updatedAnswers, finalMode))
           }
       )
   }

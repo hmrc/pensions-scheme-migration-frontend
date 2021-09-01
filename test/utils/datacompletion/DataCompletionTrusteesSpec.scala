@@ -221,7 +221,7 @@ class DataCompletionTrusteesSpec
             .set(AddressId(0), Data.address).success.value
             .set(AddressYearsId(0), true).success.value
 
-        ua.isTrusteePartnershipAddressCompleted(0, ua) mustBe true
+        ua.isTrusteePartnershipAddressCompleted(0, ua).value mustBe true
       }
 
       "return true when address is complete and address years is false and trading time is false" in {
@@ -233,7 +233,7 @@ class DataCompletionTrusteesSpec
             .set(AddressYearsId(0), false).success.value
             .set(TradingTimeId(0), false).success.value
 
-        ua.isTrusteePartnershipAddressCompleted(0, ua) mustBe true
+        ua.isTrusteePartnershipAddressCompleted(0, ua).value mustBe true
       }
 
       "return true when address is complete and previous address is complete" in {
@@ -246,7 +246,7 @@ class DataCompletionTrusteesSpec
             .set(TradingTimeId(0), true).success.value
             .set(PreviousAddressId(0), Data.address).success.value
 
-        ua.isTrusteePartnershipAddressCompleted(0, ua) mustBe true
+        ua.isTrusteePartnershipAddressCompleted(0, ua).value mustBe true
       }
 
       "return false when address is complete but no address years is present" in {
@@ -256,7 +256,7 @@ class DataCompletionTrusteesSpec
             .set(PartnershipDetailsId(0), PartnershipDetails("test partnership")).success.value
             .set(AddressId(0), Data.address).success.value
 
-        ua.isTrusteeCompanyComplete(1) mustBe false
+        ua.isTrusteePartnershipAddressCompleted(0, ua).value mustBe false
       }
 
       "return false when address is complete but no previous address is present" in {
@@ -268,7 +268,7 @@ class DataCompletionTrusteesSpec
             .set(AddressYearsId(0), false).success.value
             .set(TradingTimeId(0), true).success.value
 
-        ua.isTrusteeCompanyComplete(1) mustBe false
+        ua.isTrusteePartnershipAddressCompleted(0, ua).value mustBe false
       }
     }
   }

@@ -53,7 +53,7 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
                                         val renderer: Renderer)(implicit val ec: ExecutionContext) extends AddressListController with I18nSupport
   with NunjucksSupport with Retrievals {
 
-  override def form: Form[Int] = formProvider("establisherSelectAddress.required")
+  override def form: Form[Int] = formProvider("selectAddress.required")
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
     retrieve(SchemeNameId) { schemeName =>

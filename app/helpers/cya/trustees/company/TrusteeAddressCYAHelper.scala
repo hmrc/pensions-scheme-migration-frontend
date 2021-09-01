@@ -55,7 +55,7 @@ class TrusteeAddressCYAHelper
         AddressYearsId(index),
         Message("addressYears.title", trusteeName).resolve,
         Some(controllers.trustees.company.address.routes.AddressYearsController.onPageLoad(index).url),
-        Some(msg"messages__visuallyhidden__trusteeAddressYears".withArgs(trusteeName)), answerBooleanTransform
+        Some(msg"messages__visuallyhidden__addressYears".withArgs(trusteeName)), answerBooleanTransform
       )
     )
 

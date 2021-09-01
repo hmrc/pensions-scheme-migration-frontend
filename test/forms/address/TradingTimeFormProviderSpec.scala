@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package forms.establishers.address
+package forms.address
 
-import forms.address.TradingTimeFormProvider
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 

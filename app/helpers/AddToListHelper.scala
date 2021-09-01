@@ -152,8 +152,7 @@ class AddToListHelper {
     )
   }
 
-   def directorsItemList[A <: Entity[_]](entities: Seq[A])
-                                           (implicit messages: Messages): JsValue  = {
+   def directorsItemList[A <: Entity[_]](entities: Seq[A]): JsValue  = {
 
     Json.toJson(
       entities.map { data =>
