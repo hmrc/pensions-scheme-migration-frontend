@@ -57,9 +57,9 @@ trait SpecBase
 
   def countryOptions: CountryOptions = injector.instanceOf[CountryOptions]
 
-  def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
-
   def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "/foo")
+
+  def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
 
   implicit def fakeDataRequest(ua: UserAnswers = UserAnswers(Json.obj())): DataRequest[AnyContent] =
     DataRequest(

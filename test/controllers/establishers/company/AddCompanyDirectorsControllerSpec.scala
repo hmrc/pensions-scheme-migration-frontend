@@ -71,7 +71,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with Nunjucks
 
   private val templateToBeRendered = "establishers/company/addDirector.njk"
 
-  //private val form: Form[Boolean] = new ConfirmDeleteDirectorFormProvider()(directorName.fullName)
+  //private val form: Form[Boolean] = new ConfirmDeleteEstablisherFormProvider()(directorName.fullName)
   private val formProvider = new AddCompanyDirectorsFormProvider()
   private val form         = formProvider()
   val itemList: JsValue = Json.obj(
@@ -113,7 +113,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with Nunjucks
     reset(mockAppConfig)
     when(mockAppConfig.maxDirectors).thenReturn(10)
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-    when(mockHelper.directorsItemList(any())(any())).thenReturn(itemList)
+    when(mockHelper.directorsOrPartnersItemList(any())).thenReturn(itemList)
 
   }
 

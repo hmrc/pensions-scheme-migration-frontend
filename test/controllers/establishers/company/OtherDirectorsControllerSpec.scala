@@ -38,6 +38,7 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
+import viewmodels.Message
 
 import scala.concurrent.Future
 
@@ -64,13 +65,14 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase
 
 
   private val commonJson: JsObject =
+
+
+
     Json.obj(
-      "pageTitle"     -> "Do you need to tell us about other directors?",
-      "pageHeading"     -> "Do you need to tell us about other directors?",
+      "pageTitle"     -> Message("messages__otherDirectors__title"),
+      "pageHeading"     -> Message("messages__otherDirectors__heading"),
       "schemeName"    -> schemeName,
-      "paragraphs"    -> Json.arr(
-        "You do not have to add them now. We may contact you if we need this information."
-      ),
+      "paragraphs"    -> Seq(Message("messages__otherDirectors__lede")),
       "legendClass"   -> "govuk-visually-hidden",
       "isPageHeading" -> true
     )

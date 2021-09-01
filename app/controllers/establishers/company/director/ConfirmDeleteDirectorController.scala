@@ -19,8 +19,8 @@ package controllers.establishers.company.director
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import forms.establishers.company.director.ConfirmDeleteDirectorFormProvider
 import identifiers.establishers.company.OtherDirectorsId
+import forms.establishers.ConfirmDeleteEstablisherFormProvider
 import identifiers.establishers.company.director.{DirectorNameId, ConfirmDeleteDirectorId}
 import models.Index
 import navigators.CompoundNavigator
@@ -43,7 +43,7 @@ class ConfirmDeleteDirectorController @Inject()(override val messagesApi: Messag
                                                  authenticate: AuthAction,
                                                  getData: DataRetrievalAction,
                                                  requireData: DataRequiredAction,
-                                                 formProvider: ConfirmDeleteDirectorFormProvider,
+                                                 formProvider: ConfirmDeleteEstablisherFormProvider,
                                                  val controllerComponents: MessagesControllerComponents,
                                                  userAnswersCacheConnector: UserAnswersCacheConnector,
                                                  renderer: Renderer
