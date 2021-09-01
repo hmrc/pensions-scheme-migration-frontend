@@ -78,7 +78,7 @@ class CheckYourAnswersControllerSpec
   val commonJson: JsObject =
     Json.obj(
       "schemeName" -> "Test scheme name",
-      "submitUrl"  -> "/migrate-pension-scheme/task-list"
+      "submitUrl"  -> "/add-pension-scheme/task-list"
     )
 
   private def jsonToPassToTemplate(answers: Seq[SummaryList.Row]): JsObject =
