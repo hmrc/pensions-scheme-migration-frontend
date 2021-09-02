@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.cya.trustees.individual
 
 import base.SpecBase._
-import helpers.cya.establishers.partnership.EstablisherPartnershipAddressCYAHelper
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.partnership.PartnershipDetailsId
-import identifiers.establishers.partnership.address.{AddressId, AddressYearsId, PreviousAddressId, TradingTimeId}
+import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
 import models.requests.DataRequest
-import models.{Address, MigrationLock, PartnershipDetails}
+import models.{Address, MigrationLock, PersonName}
 import org.scalatest.TryValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -35,16 +34,16 @@ import uk.gov.hmrc.viewmodels.{Html, SummaryList, Text}
 import utils.Data.{credId, psaId, pstr, schemeName}
 import utils.{Enumerable, UserAnswers}
 
-class EstablisherPartnershipAddressCYAHelperSpec extends AnyWordSpec with Matchers with TryValues with Enumerable.Implicits {
+class TrusteeAddressCYAHelperSpec extends AnyWordSpec with Matchers with TryValues with Enumerable.Implicits {
 
-  val establisherPartnershipAddressCYAHelper = new EstablisherPartnershipAddressCYAHelper
+  val trusteeAddressCYAHelper = new TrusteeAddressCYAHelper
 
   private def dataRequest(ua: UserAnswers) = DataRequest[AnyContent](request = fakeRequest, userAnswers = ua,
     psaId = PsaId(psaId), lock = MigrationLock(pstr = pstr, credId = credId, psaId = psaId), viewOnly = false)
 
-  private val establisherPartnershipName = PartnershipDetails("test partnership")
-  private val establisherAddress = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
-  private val establisherPreviousAddress = Address("prevaddr1", "prevaddr2", None, None, Some("ZZ11ZZ"), "GB")
+  private val trusteeName = PersonName("test", "trustee")
+  private val trusteeAddress = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
+  private val trusteePreviousAddress = Address("prevaddr1", "prevaddr2", None, None, Some("ZZ11ZZ"), "GB")
 
   case class Link(text: String, target: String, visuallyHiddenText: Option[Text] = None,
     attributes: Map[String, String] = Map.empty)
@@ -72,43 +71,35 @@ class EstablisherPartnershipAddressCYAHelperSpec extends AnyWordSpec with Matche
   private def answerAddressTransform(addr: Address)(implicit messages: Messages): Html = addressAnswer(addr)
 
   // scalastyle:off magic.number
-  "EstablisherAddressCYAHelper" must {
+  "TrusteeAddressCYAHelper" must {
     "return all rows with correct change link, value and visually hidden text" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, schemeName)
-        .setOrException(PartnershipDetailsId(0), establisherPartnershipName)
-        .setOrException(AddressId(0), establisherAddress)
+        .setOrException(TrusteeNameId(0), trusteeName)
+        .setOrException(AddressId(0), trusteeAddress)
         .setOrException(AddressYearsId(0), false)
-        .setOrException(TradingTimeId(0), true)
-        .setOrException(PreviousAddressId(0), establisherPreviousAddress)
+        .setOrException(PreviousAddressId(0), trusteePreviousAddress)
 
-      val result = establisherPartnershipAddressCYAHelper.rows(0)(dataRequest(ua), messages)
+      val result = trusteeAddressCYAHelper.rows(0)(dataRequest(ua), messages)
 
-      result.head mustBe summaryListRowHtml(key = messages("messages__establisherAddress__whatYouWillNeed_h1", establisherPartnershipName.partnershipName),
-        value = answerAddressTransform(establisherAddress), Some(Link(text = Messages("site.change"),
-          target = controllers.establishers.partnership.address.routes.EnterPostcodeController.onPageLoad(0).url,
-          visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__address", establisherPartnershipName.partnershipName))),
+      result.head mustBe summaryListRowHtml(key = messages("messages__trusteeAddress__whatYouWillNeed_h1", trusteeName.fullName),
+        value = answerAddressTransform(trusteeAddress), Some(Link(text = Messages("site.change"),
+          target = controllers.trustees.individual.address.routes.EnterPostcodeController.onPageLoad(0).url,
+          visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__address", trusteeName.fullName))),
           attributes = Map("id" -> "cya-0-0-change"))))
 
-      result(1) mustBe summaryListRow(key = Messages("addressYears.title", establisherPartnershipName.partnershipName), valueMsgKey = "booleanAnswer.false",
+      result(1) mustBe summaryListRow(key = Messages("addressYears.title", trusteeName.fullName), valueMsgKey = "booleanAnswer.false",
         Some(Link(text = Messages("site.change"),
-          target = controllers.establishers.partnership.address.routes.AddressYearsController.onPageLoad(0).url,
+          target = controllers.trustees.individual.address.routes.AddressYearsController.onPageLoad(0).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__visuallyhidden__addressYears", establisherPartnershipName.partnershipName))),
+            Messages("messages__visuallyhidden__trusteeAddressYears", trusteeName.fullName))),
           attributes = Map("id" -> "cya-0-1-change"))))
 
-      result(2) mustBe summaryListRow(key = Messages("tradingTime.title", establisherPartnershipName.partnershipName), valueMsgKey = "booleanAnswer.true",
-        Some(Link(text = Messages("site.change"),
-          target = controllers.establishers.partnership.address.routes.TradingTimeController.onPageLoad(0).url,
-          visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__visuallyhidden__establisherTradingTime", establisherPartnershipName.partnershipName))),
+      result(2) mustBe summaryListRowHtml(key = messages("messages__trusteePreviousAddress"),
+        value = answerAddressTransform(trusteePreviousAddress), Some(Link(text = Messages("site.change"),
+          target = controllers.trustees.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(0).url,
+          visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__previousAddress", trusteeName.fullName))),
           attributes = Map("id" -> "cya-0-2-change"))))
-
-      result(3) mustBe summaryListRowHtml(key = messages("messages__establisherPreviousAddress"),
-        value = answerAddressTransform(establisherPreviousAddress), Some(Link(text = Messages("site.change"),
-          target = controllers.establishers.partnership.address.routes.EnterPreviousPostcodeController.onPageLoad(0).url,
-          visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__previousAddress", establisherPartnershipName.partnershipName))),
-          attributes = Map("id" -> "cya-0-3-change"))))
     }
   }
 }

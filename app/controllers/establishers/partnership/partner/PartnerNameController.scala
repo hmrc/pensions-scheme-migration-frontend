@@ -87,5 +87,5 @@ class PartnerNameController @Inject()(
               Redirect(navigator.nextPage(PartnerNameId(establisherIndex, partnerIndex), updatedAnswers, mode))
         )
     }
-
 }
+
