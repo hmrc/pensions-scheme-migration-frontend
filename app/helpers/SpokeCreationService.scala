@@ -19,7 +19,7 @@ package helpers
 import controllers.establishers.routes._
 import helpers.spokes.establishers.company._
 import helpers.spokes.establishers.individual._
-import helpers.spokes.establishers.partnership.{EstablisherPartnershipAddress, EstablisherPartnershipDetails, EstablisherPartnerDetails}
+//import helpers.spokes.establishers.partnership.{EstablisherPartnershipAddress, EstablisherPartnershipDetails, EstablisherPartnerDetails}
 import helpers.spokes.trustees.company.{TrusteeCompanyAddress, TrusteeCompanyContactDetails, TrusteeCompanyDetails}
 import helpers.spokes.trustees.individual.{TrusteeIndividualAddress, TrusteeIndividualContactDetails, TrusteeIndividualDetails}
 import helpers.spokes.{AboutMembersSpoke, BeforeYouStartSpoke, BenefitsAndInsuranceSpoke, Spoke}
@@ -89,14 +89,14 @@ class SpokeCreationService extends Enumerable.Implicits {
     )
   }
 
-  def getEstablisherPartnershipSpokes(answers: UserAnswers, name: String, index: Index)
-                                 (implicit messages: Messages): Seq[EntitySpoke] = {
-    Seq(
-      createSpoke(answers, EstablisherPartnershipDetails(index, answers), name),
-      createSpoke(answers, EstablisherPartnershipAddress(index, answers), name),
-      createPartnerSpoke(answers.allPartnersAfterDelete(indexToInt(index)),EstablisherPartnerDetails(index, answers), name)
-    )
-  }
+//  def getEstablisherPartnershipSpokes(answers: UserAnswers, name: String, index: Index)
+//                                     (implicit messages: Messages): Seq[EntitySpoke] = {
+//    Seq(
+//      createSpoke(answers, EstablisherPartnershipDetails(index, answers), name),
+//      createSpoke(answers, EstablisherPartnershipAddress(index, answers), name),
+//      createPartnerSpoke(answers.allPartnersAfterDelete(indexToInt(index)),EstablisherPartnerDetails(index, answers), name)
+//    )
+//  }
 
   def createDirectorSpoke(entityList: Seq[Entity[_]],
                           spoke: Spoke,
