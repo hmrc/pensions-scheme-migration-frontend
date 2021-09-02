@@ -20,8 +20,8 @@ import identifiers.TypedIdentifier
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.director.{DirectorNameId, IsNewDirectorId}
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.partnership.PartnershipDetailsId
-import identifiers.establishers.partnership.partner.{IsNewPartnerId, PartnerNameId}
+//import identifiers.establishers.partnership.PartnershipDetailsId
+//import identifiers.establishers.partnership.partner.{IsNewPartnerId, PartnerNameId}
 import identifiers.establishers.{EstablisherKindId, EstablishersId, IsEstablisherNewId}
 import identifiers.trustees.company.{CompanyDetailsId => TrusteeCompanyDetailsId}
 import identifiers.trustees.partnership.{PartnershipDetailsId => TrusteePartnershipDetailsId}
@@ -192,14 +192,14 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
         (false)(identity), noOfRecords)
     )
 
-    private def readsPartnership(index: Int): Reads[Establisher[_]] = (
-      (JsPath \ PartnershipDetailsId.toString).read[PartnershipDetails] and
-        (JsPath \ IsEstablisherNewId.toString).readNullable[Boolean]
-      ) ((details, isNew) =>
-      EstablisherPartnershipEntity(PartnershipDetailsId(index),
-        details.partnershipName, details.isDeleted, isEstablisherPartnershipComplete(index), isNew.fold
-        (false)(identity), noOfRecords)
-    )
+//    private def readsPartnership(index: Int): Reads[Establisher[_]] = (
+//      (JsPath \ PartnershipDetailsId.toString).read[PartnershipDetails] and
+//        (JsPath \ IsEstablisherNewId.toString).readNullable[Boolean]
+//      ) ((details, isNew) =>
+//      EstablisherPartnershipEntity(PartnershipDetailsId(index),
+//        details.partnershipName, details.isDeleted, isEstablisherPartnershipComplete(index), isNew.fold
+//        (false)(identity), noOfRecords)
+//    )
 
     override def reads(json: JsValue): JsResult[Seq[Establisher[_]]] = {
       json \ EstablishersId.toString match {
@@ -209,7 +209,7 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
             val readsForEstablisherKind = establisherKind match {
               case Some(EstablisherKind.Individual.toString) => readsIndividual(index)
               case Some(EstablisherKind.Company.toString) => readsCompany(index)
-              case Some(EstablisherKind.Partnership.toString) => readsPartnership(index)
+              //case Some(EstablisherKind.Partnership.toString) => readsPartnership(index)
               case _ => throw UnrecognisedEstablisherKindException
             }
             readsForEstablisherKind.reads(jsValue)
@@ -369,31 +369,32 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
     }.getOrElse(Seq.empty)
 
 
-def allPartnersAfterDelete(establisherIndex: Int): Seq[PartnerEntity] = {
-  allPartners(establisherIndex).filterNot(_.isDeleted)
-  }
-
-
-  def allPartners(establisherIndex: Int): Seq[PartnerEntity] =
-    getAllRecursive[PersonName](PartnerNameId.collectionPath(establisherIndex)).map {
-      details =>
-        for ((partner, partnerIndex) <- details.zipWithIndex) yield {
-          val isComplete = isPartnerComplete(establisherIndex, partnerIndex)
-          val isNew = get(IsNewPartnerId(establisherIndex, partnerIndex)).getOrElse(false)
-          PartnerEntity(
-            PartnerNameId(establisherIndex, partnerIndex),
-            partner.fullName,
-            partner.isDeleted,
-            isComplete,
-            isNew,
-            details.count(!_.isDeleted)
-          )
-        }
-    }.getOrElse(Seq.empty)
-  }
+//def allPartnersAfterDelete(establisherIndex: Int): Seq[PartnerEntity] = {
+//  allPartners(establisherIndex).filterNot(_.isDeleted)
+//  }
+//
+//
+//  def allPartners(establisherIndex: Int): Seq[PartnerEntity] =
+//    getAllRecursive[PersonName](PartnerNameId.collectionPath(establisherIndex)).map {
+//      details =>
+//        for ((partner, partnerIndex) <- details.zipWithIndex) yield {
+//          val isComplete = isPartnerComplete(establisherIndex, partnerIndex)
+//          val isNew = get(IsNewPartnerId(establisherIndex, partnerIndex)).getOrElse(false)
+//          PartnerEntity(
+//            PartnerNameId(establisherIndex, partnerIndex),
+//            partner.fullName,
+//            partner.isDeleted,
+//            isComplete,
+//            isNew,
+//            details.count(!_.isDeleted)
+//          )
+//        }
+//    }.getOrElse(Seq.empty)
+ }
 
 case object UnrecognisedEstablisherKindException extends Exception
 
 case object UnrecognisedTrusteeKindException extends Exception
+
 
 
