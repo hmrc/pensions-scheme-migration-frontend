@@ -5,7 +5,7 @@ if (document.querySelector('#country') != null) {
     accessibleAutocomplete({
         element: document.getElementById('country'),
         id: 'country',
-        source: '/migrate-pension-scheme/assets/javascripts/autocomplete/location-autocomplete-graph.json'
+        source: '/add-pension-scheme/assets/javascripts/autocomplete/location-autocomplete-graph.json'
     })
 
     accessibleAutocomplete.enhanceSelectElement({

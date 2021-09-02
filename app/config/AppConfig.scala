@@ -91,5 +91,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val CountdownInSeconds: String = s"${config.get[String](path = "session.CountdownInSeconds")}"
   lazy val validCountryCodes: Seq[String] = s"${config.get[String](path = "validCountryCodes")}".split(",").toSeq
   lazy val maxDirectors: Int = loadConfig("company.maxDirectors").toInt
+  lazy val maxPartners: Int = loadConfig("maxPartners").toInt
   lazy val listSchemePagination: Int = loadConfig("listSchemePagination").toInt
 }

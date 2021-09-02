@@ -12,7 +12,7 @@
 {% endset %}
 
 {% block pageTitle %}
-    {{ title(messages("messages__enterPhone", entityType), form.errors) }}
+    {{ title(messages("messages__enterPhone_pageHeading", entityType), form.errors) }}
 {% endblock %}
 
 
@@ -38,7 +38,7 @@
 
                 {{ govukInput({
                     label: {
-                        text: messages('messages__enterPhone', entityName),
+                        text: messages('messages__enterPhone_pageHeading', entityName),
                         isPageHeading: true,
                         classes: "govuk-label--xl govuk-!-margin-bottom-8"
                     },
