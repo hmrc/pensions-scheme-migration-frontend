@@ -55,37 +55,40 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
 
   override def form: Form[Int] = formProvider("establisherSelectAddress.required")
 
-  def onPageLoad(establisherIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
-    retrieve(SchemeNameId) { schemeName =>
-      getFormToJson(schemeName, establisherIndex, partnerIndex, mode).retrieve.right.map(get)
-    }
-  }
-
-  def onSubmit(establisherIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(estIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-        val addressPages: AddressPages = AddressPages(EnterPostCodeId(establisherIndex, partnerIndex), AddressListId(establisherIndex, partnerIndex), AddressId(establisherIndex, partnerIndex))
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, establisherIndex, partnerIndex, mode).retrieve.right.map(post(_, addressPages, Some(mode)))
+        getFormToJson(schemeName, estIndex, partnerIndex, mode).retrieve.right.map(get)
       }
     }
 
-  def getFormToJson(schemeName:String, establisherIndex: Index, partnerIndex: Index, mode: Mode) : Retrieval[Form[Int] => JsObject] =
+  def onSubmit(estIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
+    (authenticate andThen getData andThen requireData).async { implicit request =>
+      val addressPages: AddressPages = AddressPages(EnterPostCodeId(estIndex, partnerIndex),
+        AddressListId(estIndex, partnerIndex), AddressId(estIndex, partnerIndex))
+      retrieve(SchemeNameId) { schemeName =>
+        getFormToJson(schemeName, estIndex, partnerIndex, mode).retrieve.right.map(post(_, addressPages, Some(mode)))
+      }
+    }
+
+  def getFormToJson(schemeName: String, estIndex: Index, partnerIndex: Index, mode: Mode): Retrieval[Form[Int] => JsObject] =
     Retrieval(
       implicit request =>
-        EnterPostCodeId(establisherIndex, partnerIndex).retrieve.right.map { addresses =>
+        EnterPostCodeId(estIndex, partnerIndex).retrieve.right.map { addresses =>
 
           val msg = request2Messages(request)
 
-          val name = request.userAnswers.get(PartnerNameId(establisherIndex, partnerIndex)).map(_.fullName).getOrElse(msg("messages__partner"))
+          val name = request.userAnswers.get(PartnerNameId(estIndex, partnerIndex)).map(_.fullName).getOrElse(msg("messages__partner"))
 
-          form => Json.obj(
-            "form" -> form,
-            "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
-            "entityType" -> msg("messages__partner"),
-            "entityName" -> name,
-            "enterManuallyUrl" -> controllers.establishers.partnership.partner.address.routes.ConfirmAddressController.onPageLoad(establisherIndex, partnerIndex, mode).url,
-            "schemeName" -> schemeName
-          )
+          form =>
+            Json.obj(
+              "form" -> form,
+              "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
+              "entityType" -> msg("messages__partner"),
+              "entityName" -> name,
+              "enterManuallyUrl" -> routes.ConfirmAddressController.onPageLoad(estIndex, partnerIndex, mode).url,
+              "schemeName" -> schemeName
+            )
         }
     )
 }

@@ -49,7 +49,7 @@ class EnterPreviousPostcodeController @Inject()(val appConfig: AppConfig,
                                                 formProvider: PostcodeFormProvider,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 val renderer: Renderer
-                                              )(implicit val ec: ExecutionContext) extends PostcodeController with I18nSupport with NunjucksSupport {
+                                               )(implicit val ec: ExecutionContext) extends PostcodeController with I18nSupport with NunjucksSupport {
 
   def form: Form[String] = formProvider("establisherEnterPreviousPostcode.required", "establisherEnterPreviousPostcode.invalid")
 
@@ -64,15 +64,17 @@ class EnterPreviousPostcodeController @Inject()(val appConfig: AppConfig,
       }
     }
 
-  def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async{
+  def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        post(getFormToJson(schemeName, establisherIndex, directorIndex, mode), EnterPreviousPostCodeId(establisherIndex, directorIndex), "establisherEnterPostcode.invalid", Some(mode))
+        post(getFormToJson(schemeName, establisherIndex, directorIndex, mode),
+          EnterPreviousPostCodeId(establisherIndex, directorIndex), "establisherEnterPostcode.invalid", Some(mode))
       }
   }
 
 
-  def getFormToJson(schemeName:String, establisherIndex: Index, directorIndex: Index, mode: Mode)(implicit request:DataRequest[AnyContent]): Form[String] => JsObject = {
+  def getFormToJson(schemeName: String, establisherIndex: Index, directorIndex: Index, mode: Mode)
+                   (implicit request: DataRequest[AnyContent]): Form[String] => JsObject = {
     form => {
       val msg = request2Messages(request)
       val name = request.userAnswers.get(DirectorNameId(establisherIndex, directorIndex)).map(_.fullName).getOrElse(msg("messages__director"))
@@ -80,7 +82,7 @@ class EnterPreviousPostcodeController @Inject()(val appConfig: AppConfig,
         "entityType" -> msg("messages__director"),
         "entityName" -> name,
         "form" -> form,
-        "enterManuallyUrl" -> controllers.establishers.company.director.address.routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, directorIndex, mode).url,
+        "enterManuallyUrl" -> routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, directorIndex, mode).url,
         "schemeName" -> schemeName,
         "h1MessageKey" -> "previousPostcode.title"
       )

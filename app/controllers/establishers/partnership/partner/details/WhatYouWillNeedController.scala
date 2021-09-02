@@ -58,3 +58,4 @@ class WhatYouWillNeedController @Inject()(override val messagesApi: MessagesApi,
         ).map(Ok(_))
     }
 }
+

@@ -25,9 +25,7 @@ import matchers.JsonMatchers
 import models.{Index, NormalMode, ReferenceValue}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
-import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Result}
 import play.api.test.FakeRequest
@@ -37,7 +35,6 @@ import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.{establisherPartnershipDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
-import viewmodels.Message
 
 import scala.concurrent.Future
 
@@ -48,7 +45,6 @@ class PAYEControllerSpec extends ControllerSpecBase with NunjucksSupport with Js
   private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(index), establisherPartnershipDetails).success.value
 
   private val formProvider: PAYEFormProvider = new PAYEFormProvider()
-  private val form: Form[ReferenceValue] = formProvider(Message("messages__havePAYE__error", establisherPartnershipDetails.partnershipName))
   private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
   private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
 

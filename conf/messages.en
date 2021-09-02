@@ -1,5 +1,5 @@
 service.name = Migrating pension schemes
-service.homePageUrl = /migrate-pension-scheme
+service.homePageUrl = /add-pension-scheme
 service.text = This is your new service
 
 phaseBanner.1 = This is a new service – your
@@ -216,8 +216,8 @@ messages__hasUTR__cya_label = Does {0} have a UTR?
 messages__enterUTR = What is {0}’s UTR?
 messages__enterUTR_pageTitle = What is {0}’s Unique Taxpayer Reference?
 messages__enterUTR__cya_visuallyHidden = the UTR for {0}
-messages__UTR__p1 = If the UTR is 13 numbers, only enter the last 10.
-messages__UTR__p2 = If there is a letter ‘K’ at the end of the number, do not enter it.
+messages__UTR__p1 = This is a 10-digit or 13-digit number. It may also start or end with the letter ‘k’.
+messages__UTR__p2 = You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.
 messages__utr__hint = For example, 12345 67890
 messages__utr__checkyouranswerslabel = Unique Taxpayer Reference (UTR)
 messages__enterUTR__cya_label = {0}’s UTR
@@ -925,6 +925,7 @@ messages__error__partnership_name = Enter the partnership’s name
 messages__error__partnership_name_length = The partnership name cannot be more than 160 characters
 messages__error__partnership_name_invalid = The partnership name contains invalid characters
 
+messages__partners__pagetitle = Partners - Managing Pension Schemes - GOV.UK
 messages__partners__title = Partners
 messages__partners__whatYouWillNeedPartners__p1 = For every partner associated with the partnership you’re registering, you will need to tell us the partner’s:
 messages__partners__whatYouWillNeed__item1 = name
@@ -937,7 +938,7 @@ messages__partners__whatYouWillNeed__item7 = contact email address
 messages__partners__whatYouWillNeed__item8 = contact phone number
 
 messages__partner__name = The partner’s name
-messages__partner__name__cya__visuallyHidden = the partner’s name {0}
+messages__partner__name__cya__visuallyHidden = the name of the partner
 messages__addPartner_radio_label = Do you want to add another partner?
 messages__confirmDeletePartners__title = Are you sure you want to delete this partner?
 messages__addPartners_lede = You must tell us about all yourdob partners. You can add up to 10 using the digital service.

@@ -27,6 +27,7 @@ import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressId
 import identifiers.establishers.individual.address.{AddressId => PartnershipAddressId}
+import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.details.{HaveUTRId, PartnershipUTRId}
 import identifiers.trustees.TrusteeKindId
@@ -352,6 +353,14 @@ class SpokeCreationServiceSpec
               visuallyHiddenText = None
             ),
             isCompleted = None
+          ),
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Add partners for test",
+              target = controllers.establishers.partnership.partner.details.routes.WhatYouWillNeedController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            Some(false)
           )
         )
 
@@ -372,6 +381,7 @@ class SpokeCreationServiceSpec
         .setOrException(HaveUTRId(0), true)
         .setOrException(PartnershipUTRId(0), ReferenceValue("12345678"))
         .setOrException(PartnershipAddressId(0), Data.address)
+        .set(PartnerNameId(0,0), PersonName("Jane", "Doe")).success.value
 
     val expectedSpoke =
       Seq(
@@ -390,6 +400,14 @@ class SpokeCreationServiceSpec
             visuallyHiddenText = None
           ),
           isCompleted = Some(false)
+        ),
+        EntitySpoke(
+          link = TaskListLink(
+            text = "Change partners for test",
+            target = controllers.establishers.partnership.routes.AddPartnersController.onPageLoad(0,NormalMode).url,
+            visuallyHiddenText = None
+          ),
+          Some(false)
         )
       )
 
