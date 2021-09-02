@@ -28,9 +28,6 @@ case class EnterPhoneId(index: Int) extends TypedIdentifier[String] {
 object EnterPhoneId {
   override lazy val toString: String ="partnershipPhone"
 
-  def collectionPath(index: Int): JsPath =
-    TrusteesId(index).path \ EnterPhoneId.toString
-
   implicit lazy val formats: Format[EnterPhoneId] =
     Json.format[EnterPhoneId]
 }

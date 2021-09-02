@@ -49,7 +49,7 @@ class EnterEmailControllerSpec extends ControllerSpecBase
   private val formProvider: EmailFormProvider = new EmailFormProvider()
   private val form = formProvider("")
   private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
-  private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(0), Data.establisherPartnershipDetails).success.value
+  private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(0), Data.partnershipDetails).success.value
   private val templateToBeRendered: String = "email.njk"
 
   private val commonJson: JsObject =

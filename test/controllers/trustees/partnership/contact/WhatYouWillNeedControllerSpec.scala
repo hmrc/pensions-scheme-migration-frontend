@@ -41,7 +41,7 @@ class WhatYouWillNeedControllerSpec
     with JsonMatchers
     with TryValues {
 
-  private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(0), Data.establisherPartnershipDetails).success.value
+  private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(0), Data.partnershipDetails).success.value
   private val templateToBeRendered: String = "whatYouWillNeedContact.njk"
   private def json: JsObject =
     Json.obj(
