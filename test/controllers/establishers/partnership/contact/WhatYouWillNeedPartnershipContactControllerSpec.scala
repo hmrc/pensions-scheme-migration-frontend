@@ -17,30 +17,70 @@
 package controllers.establishers.partnership.contact
 
 import controllers.ControllerSpecBase
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
+import matchers.JsonMatchers.containJson
+import models.NormalMode
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.any
 import org.scalatest.matchers.must.Matchers
+import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
+import play.twirl.api.Html
+import renderer.Renderer
+import utils.Data.schemeName
+import utils.{Data, UserAnswers}
+
+import scala.concurrent.Future
 
 class WhatYouWillNeedPartnershipContactControllerSpec
   extends ControllerSpecBase
     with Matchers {
 
-  private val templateToBeRendered: String = ""
+  private val userAnswers: UserAnswers = Data.ua
+  private val templateToBeRendered: String = "whatYouWillNeedContact.njk"
 
-    private def controller: WhatYouWillNeedPartnershipContactController = {
-      new WhatYouWillNeedPartnershipContactController(
-      )
-    }
+  private def json: JsObject =
+    Json.obj(
+      "name"        -> establishers.partnership.partnershipName,
+      "continueUrl" -> controllers.establishers.company.contact.routes.EnterEmailController.onPageLoad(0, NormalMode).url,
+      "schemeName"  -> schemeName
+    )
+
+  private def createController(
+                          dataRetrievalAction: DataRetrievalAction
+                        ): WhatYouWillNeedPartnershipContactController = {
+    new WhatYouWillNeedPartnershipContactController(
+      authenticate         = new FakeAuthAction(),
+      getData              = dataRetrievalAction,
+      requireData          = new DataRequiredActionImpl,
+      controllerComponents = controllerComponents,
+      renderer             = new Renderer(mockAppConfig, mockRenderer)
+    )
+  }
 
     "WhatYouWillNeedPartnershipContactController" must {
 
       "return OK and the correct view for a GET" in {
 
-        val result = controller.onPageLoad()
+        when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-//        status(result) mustBe OK
+        val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+        val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+
+        val getData = new FakeDataRetrievalAction(Some(userAnswers))
+
+        val result = createController(getData).onPageLoad(0)(fakeDataRequest(userAnswers))
+
+        status(result) mustBe OK
+
+        verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+
+        templateCaptor.getValue mustEqual templateToBeRendered
+
+        jsonCaptor.getValue must containJson(json)
 
       }
 
     }
 
-}
+  }
