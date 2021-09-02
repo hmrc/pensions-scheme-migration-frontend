@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+/*
 package controllers.establishers.partnership.address
 
 import connectors.cache.UserAnswersCacheConnector
@@ -65,3 +66,4 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
       }
     }
 }
+*/
