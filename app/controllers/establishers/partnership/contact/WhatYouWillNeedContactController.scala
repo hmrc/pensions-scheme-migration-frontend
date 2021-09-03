@@ -18,7 +18,7 @@ package controllers.establishers.partnership.contact
 
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import controllers.establishers.partnership.contact
+import controllers.establishers.partnership.contact.EnterEmailController
 import helpers.cya.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
@@ -34,7 +34,7 @@ import viewmodels.Message
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class WhatYouWillNeedPartnershipContactController @Inject()(
+class WhatYouWillNeedContactController @Inject()(
                                                              authenticate: AuthAction,
                                                              getData: DataRetrievalAction,
                                                              requireData: DataRequiredAction,
