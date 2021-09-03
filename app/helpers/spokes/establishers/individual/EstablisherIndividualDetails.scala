@@ -18,7 +18,7 @@ package helpers.spokes.establishers.individual
 
 import controllers.establishers.individual.details.routes._
 import helpers.spokes.Spoke
-import models.{Index, TaskListLink}
+import models.{TaskListLink, Index, NormalMode}
 import play.api.i18n.Messages
 import utils.UserAnswers
 
@@ -33,7 +33,8 @@ case class EstablisherIndividualDetails(
     if (completeFlag(answers).getOrElse(false))
       (s"${messageKeyPrefix}changeLink", CheckYourAnswersController.onPageLoad(index).url)
     else
-      (s"${messageKeyPrefix}addLink", WhatYouWillNeedController.onPageLoad(index).url)
+      (s"${messageKeyPrefix}addLink", controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, NormalMode, "details").url)
+      //(s"${messageKeyPrefix}addLink", WhatYouWillNeedController.onPageLoad(index).url)
 
   override def changeLink(name: String)
                          (implicit messages: Messages): TaskListLink =

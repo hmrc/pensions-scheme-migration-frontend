@@ -51,7 +51,7 @@ class EstablishersNavigator@Inject()(config: AppConfig)
     case EstablisherNameId(_) => AddEstablisherController.onPageLoad()
     case AddEstablisherId(value) => addEstablisherRoutes(value, ua)
     case ConfirmDeleteEstablisherId => AddEstablisherController.onPageLoad()
-    case EstablisherDOBId(index) => EstablisherHasNINOController.onPageLoad(index, NormalMode)
+    case EstablisherDOBId(index) => controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, NormalMode, "have-national-insurance-number")
     case EstablisherHasNINOId(index) => establisherHasNino(index, ua, NormalMode)
     case EstablisherNINOId(index) => EstablisherHasUTRController.onPageLoad(index, NormalMode)
     case EstablisherNoNINOReasonId(index) => EstablisherHasUTRController.onPageLoad(index, NormalMode)
@@ -113,7 +113,7 @@ class EstablishersNavigator@Inject()(config: AppConfig)
                                      ua: UserAnswers
                                    ): Call =
     ua.get(EstablisherKindId(index)) match {
-      case Some(EstablisherKind.Individual) => EstablisherNameController.onPageLoad(index)
+      case Some(EstablisherKind.Individual) => controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, NormalMode, "name")
       case Some(EstablisherKind.Company) => CompanyDetailsController.onPageLoad(index)
       case Some(EstablisherKind.Partnership) => PartnershipDetailsController.onPageLoad(index)
       case _ => IndexController.onPageLoad()

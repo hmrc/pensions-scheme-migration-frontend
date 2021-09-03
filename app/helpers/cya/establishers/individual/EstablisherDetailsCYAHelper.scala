@@ -49,14 +49,14 @@ class EstablisherDetailsCYAHelper
       Some(answerOrAddRow(
         id                 = EstablisherDOBId(index),
         message            = Message("messages__dob__title", establisherName).resolve,
-        url                = Some(routes.EstablisherDOBController.onPageLoad(index, CheckMode).url),
+        url                = Some(controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, CheckMode, "date-of-birth").url),
         visuallyHiddenText = Some(msg"messages__dob__cya__visuallyHidden".withArgs(establisherName)),
         answerTransform = answerDateTransform
       )),
       Some(answerOrAddRow(
         id                 = EstablisherHasNINOId(index),
         message            = Message("messages__hasNINO", establisherName).resolve,
-        url                = Some(routes.EstablisherHasNINOController.onPageLoad(index, CheckMode).url),
+        url                = Some(controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, CheckMode, "have-national-insurance-number").url),
         visuallyHiddenText = Some(msg"messages__hasNINO__cya__visuallyHidden".withArgs(establisherName)),
         answerTransform    = answerBooleanTransform
       )),
