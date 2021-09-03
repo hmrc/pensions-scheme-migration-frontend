@@ -43,6 +43,9 @@ class EstablisherIndividualController @Inject()(
   def onSubmit(index: Index, mode:Mode, page: String): Action[AnyContent] = {
     page match {
       case "name" => establisherNameController.onSubmit(index)
+      case "date-of-birth" => establisherDOBController.onSubmit(index, mode)
+      case "have-national-insurance-number" => establisherHasNINOController.onSubmit(index, mode)
+      case _ => throw new RuntimeException("No route")
     }
   }
 
