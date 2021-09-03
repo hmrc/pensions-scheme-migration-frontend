@@ -21,7 +21,7 @@ import identifiers.trustees.company.details._
 import identifiers.trustees.company.{CompanyDetailsId, contacts => companyContact}
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.details._
-import identifiers.trustees.partnership.PartnershipDetailsId
+import identifiers.trustees.partnership.{PartnershipDetailsId, contact => partnershipContact}
 import models.trustees.TrusteeKind
 import models.{CompanyDetails, PartnershipDetails, ReferenceValue}
 import org.scalatest.matchers.must.Matchers
@@ -207,10 +207,31 @@ class DataCompletionTrusteesSpec
             .set(PartnershipDetailsId(0), PartnershipDetails("test partnership")).success.value
             .set(TrusteeKindId(1), TrusteeKind.Partnership).success.value
 
-        ua.isTrusteeCompanyComplete(1) mustBe false
+        ua.isTrusteePartnershipComplete(1) mustBe false
       }
     }
   }
 
+  "isTrusteePartnershipContactDetailsCompleted" must {
+    "return true when all answers are present" in {
+      val ua =
+        UserAnswers()
+          .set(partnershipContact.EnterEmailId(0), "test@test.com").success.value
+          .set(partnershipContact.EnterPhoneId(0), "123").success.value
 
+      ua.isTrusteePartnershipContactDetailsCompleted(0).value mustBe true
+    }
+
+    "return false when some answer is missing" in {
+      val ua =
+        UserAnswers()
+          .set(partnershipContact.EnterEmailId(0), "test@test.com").success.value
+
+      ua.isTrusteePartnershipContactDetailsCompleted(0).value mustBe false
+    }
+
+    "return None when no answer is present" in {
+      UserAnswers().isTrusteePartnershipContactDetailsCompleted(0) mustBe None
+    }
+  }
 }

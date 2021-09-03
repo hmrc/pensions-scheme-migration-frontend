@@ -464,10 +464,10 @@ messages__individualContactDetails__whatYouWillNeed_li_1 = contact email address
 messages__individualContactDetails__whatYouWillNeed_li_2 = contact phone number
 
 messages__establisherCompanyContactDetails__whatYouWillNeed_title = The establisher’s contact details
-messages__establisherCompanyContactDetails__whatYouWillNeed_h1 = Contact details for {0}
-messages__companyDetails__whatYouWillNeed_p = You will need to tell us {0}’s:
-messages__companyDetails__whatYouWillNeed_li_1 = contact email address
-messages__companyDetails__whatYouWillNeed_li_2 = contact phone number
+messages__contactDetails__whatYouWillNeed_h1 = {0}’s contact details
+messages__contactDetails__whatYouWillNeed_p = You will need to tell us {0}’s:
+messages__contactDetails__whatYouWillNeed_li_1 = contact email address
+messages__contactDetails__whatYouWillNeed_li_2 = contact phone number
 
 messages__trusteeCompanyContactDetails__whatYouWillNeed_title = The company’s contact details
 messages__trusteeCompanyContactDetails__whatYouWillNeed_h1 = Contact details for {0}
@@ -1039,3 +1039,5 @@ messages__otherTrustees__lede=You do not have to add them now. We may contact yo
 messages__otherTrustees__error__required = Select yes if you need to tell us about other trustees
 
 messages__addTrustees_at_maximum = You have added the maximum number of trustees.
+
+messages__trusteePartnershipContactDetails__whatYouWillNeed_title = The partnership’s contact details
