@@ -35,6 +35,7 @@ import models.requests.DataRequest
 import models.{Mode, Index, CheckMode, NormalMode}
 import play.api.mvc.{Call, AnyContent}
 import utils.{UserAnswers, Enumerable}
+import helpers.routes.EstablishersIndividualRoutes._
 
 import javax.inject.Inject
 
@@ -49,13 +50,10 @@ class EstablishersNavigator@Inject()(config: AppConfig)
     case EstablisherNameId(_) => AddEstablisherController.onPageLoad()
     case AddEstablisherId(value) => addEstablisherRoutes(value, ua)
     case ConfirmDeleteEstablisherId => AddEstablisherController.onPageLoad()
-    case EstablisherDOBId(index) =>
-      controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, NormalMode, "have-national-insurance-number")
+    case EstablisherDOBId(index) => haveNationalInsuranceNumberRoute(index, NormalMode)
     case EstablisherHasNINOId(index) => establisherHasNino(index, ua, NormalMode)
-    case EstablisherNINOId(index) =>
-      controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, NormalMode, "have-unique-taxpayer-reference")
-    case EstablisherNoNINOReasonId(index) =>
-      controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, NormalMode, "have-unique-taxpayer-reference")
+    case EstablisherNINOId(index) => haveNationalInsuranceNumberRoute(index, NormalMode)
+    case EstablisherNoNINOReasonId(index) => haveUniqueTaxpayerReferenceRoute(index, NormalMode)
     case EstablisherHasUTRId(index) => establisherHasUtr(index, ua, NormalMode)
     case EstablisherUTRId(index) => cyaDetails(index)
     case EstablisherNoUTRReasonId(index) => cyaDetails(index)
@@ -69,8 +67,7 @@ class EstablishersNavigator@Inject()(config: AppConfig)
     case PreviousAddressId(index) => cyaAddress(index)
     case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
     case EnterPhoneId(index) => cyaContactDetails(index)
-    case AddPartnersId(index) =>
-      addPartners(index, ua)
+    case AddPartnersId(index) => addPartners(index, ua)
   }
 
   override protected def editRouteMap(ua: UserAnswers)
@@ -87,8 +84,7 @@ class EstablishersNavigator@Inject()(config: AppConfig)
   }
 
   private def cyaAddress(index:Int): Call = controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
-  private def cyaDetails(index:Int): Call =
-    controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, NormalMode, "check-your-answers-details")
+  private def cyaDetails(index:Int): Call = cyaRoute(index, NormalMode)
   private def cyaContactDetails(index:Int): Call = controllers.establishers.individual.contact.routes.CheckYourAnswersController.onPageLoad(index)
   private def addressYears(index:Int, mode:Mode): Call = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index)
 
@@ -115,7 +111,7 @@ class EstablishersNavigator@Inject()(config: AppConfig)
                                      ua: UserAnswers
                                    ): Call =
     ua.get(EstablisherKindId(index)) match {
-      case Some(EstablisherKind.Individual) => controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, NormalMode, "name")
+      case Some(EstablisherKind.Individual) => nameRoute(index, NormalMode)
       case Some(EstablisherKind.Company) => CompanyDetailsController.onPageLoad(index)
       case Some(EstablisherKind.Partnership) => PartnershipDetailsController.onPageLoad(index)
       case _ => IndexController.onPageLoad()
@@ -137,10 +133,8 @@ class EstablishersNavigator@Inject()(config: AppConfig)
                                   mode: Mode
                                 ): Call =
     answers.get(EstablisherHasNINOId(index)) match {
-      case Some(true) =>
-        controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, mode, "enter-national-insurance-number")
-      case Some(false) =>
-        controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, mode, "reason-for-no-national-insurance-number")
+      case Some(true) => enterNationaInsuranceNumberRoute(index, mode)
+      case Some(false) => reasonForNoNationalInsuranceNumberRoute(index, mode)
       case None => controllers.routes.TaskListController.onPageLoad()
     }
 
@@ -150,10 +144,8 @@ class EstablishersNavigator@Inject()(config: AppConfig)
                                  mode: Mode
                                ): Call =
     answers.get(EstablisherHasUTRId(index)) match {
-      case Some(true) =>
-        controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, mode, "enter-unique-taxpayer-reference")
-      case Some(false) =>
-        controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, mode, "reason-for-no-unique-taxpayer-reference")
+      case Some(true) => enterUniqueTaxpayerReferenceRoute(index, mode)
+      case Some(false) => reasonForNoUniqueTaxpayerReferenceRoute(index, mode)
       case None => controllers.routes.TaskListController.onPageLoad()
     }
 }

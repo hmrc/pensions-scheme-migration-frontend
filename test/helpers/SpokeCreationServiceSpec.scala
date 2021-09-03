@@ -17,8 +17,8 @@
 package helpers
 
 import base.SpecBase
-import controllers.establishers.individual.details.routes
-import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}
+import helpers.routes.EstablishersIndividualRoutes
+import identifiers.beforeYouStart.{SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.contact.EnterPhoneId
@@ -26,12 +26,11 @@ import identifiers.establishers.company.details.{CompanyNumberId, HaveCompanyNum
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressId
-import identifiers.establishers.individual.address.{AddressId => PartnershipAddressId}
+import identifiers.establishers.partnership.address.{AddressId => PartnershipAddressId}
 import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
-import identifiers.establishers.partnership.details.{HaveUTRId, PartnershipUTRId}
-import identifiers.trustees.TrusteeKindId
-import identifiers.trustees.{company => trusteeCompany}
+import identifiers.establishers.partnership.details.{PartnershipUTRId, HaveUTRId}
+import identifiers.trustees.{TrusteeKindId, company => trusteeCompany}
 import identifiers.trustees.company.{details => trusteeCompanyDetails}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.contact.{EnterEmailId => TrusteeEmailId, EnterPhoneId => TrusteePhoneId}
@@ -42,7 +41,7 @@ import models.{EntitySpoke, _}
 import org.scalatest.{OptionValues, TryValues}
 import org.scalatest.matchers.must.Matchers
 import utils.Data.{schemeName, ua}
-import utils.{Data, Enumerable}
+import utils.{Enumerable, Data}
 import viewmodels.Message
 
 import java.time.LocalDate
@@ -133,7 +132,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = TaskListLink(
               text = "Add details for a b",
-              target = routes.WhatYouWillNeedController.onPageLoad(0).url,
+              target = EstablishersIndividualRoutes.detailsRoute(0, NormalMode).url,
               visuallyHiddenText = None
             ),
             isCompleted = None
