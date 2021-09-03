@@ -23,7 +23,7 @@ import controllers.establishers.individual.contact.routes._
 import controllers.establishers.individual.details.routes._
 import controllers.establishers.individual.routes._
 import controllers.establishers.routes._
-//import controllers.establishers.partnership.routes._
+import controllers.establishers.partnership.routes._
 import controllers.routes._
 import identifiers._
 import identifiers.establishers._
@@ -31,6 +31,7 @@ import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address._
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.individual.details._
+import identifiers.establishers.partnership.AddPartnersId
 import models.establishers.EstablisherKind
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode, NormalMode}
@@ -67,8 +68,8 @@ class EstablishersNavigator@Inject()(config: AppConfig)
     case PreviousAddressId(index) => cyaAddress(index)
     case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
     case EnterPhoneId(index) => cyaContactDetails(index)
-    //case AddPartnersId(index) =>
-      //addPartners(index, ua)
+    case AddPartnersId(index) =>
+      addPartners(index, ua)
   }
 
   override protected def editRouteMap(ua: UserAnswers)
@@ -89,24 +90,24 @@ class EstablishersNavigator@Inject()(config: AppConfig)
   private def cyaContactDetails(index:Int): Call = controllers.establishers.individual.contact.routes.CheckYourAnswersController.onPageLoad(index)
   private def addressYears(index:Int, mode:Mode): Call = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index)
 
-//  private def addPartners(index: Int, answers: UserAnswers): Call = {
-//    if (answers.allPartnersAfterDelete(index).isEmpty) {
-//      controllers.establishers.partnership.partner.routes.PartnerNameController
-//        .onPageLoad(index, answers.allPartners(index).size, NormalMode)
-//    } else if (answers.allPartnersAfterDelete(index).length < config.maxPartners) {
-//      answers.get(AddPartnersId(index)).map { addPartners =>
-//        if (addPartners) {
-//          controllers.establishers.partnership.partner.routes.PartnerNameController
-//            .onPageLoad(index, answers.allPartners(index).size, NormalMode)
-//        } else {
-//          controllers.routes.TaskListController.onPageLoad()
-//        }
-//      }.getOrElse(controllers.routes.TaskListController.onPageLoad())
-//
-//    }else {
-//      controllers.establishers.partnership.routes.OtherPartnersController.onPageLoad(index,NormalMode)
-//    }
-//  }
+  private def addPartners(index: Int, answers: UserAnswers): Call = {
+    if (answers.allPartnersAfterDelete(index).isEmpty) {
+      controllers.establishers.partnership.partner.routes.PartnerNameController
+        .onPageLoad(index, answers.allPartners(index).size, NormalMode)
+    } else if (answers.allPartnersAfterDelete(index).length < config.maxPartners) {
+      answers.get(AddPartnersId(index)).map { addPartners =>
+        if (addPartners) {
+          controllers.establishers.partnership.partner.routes.PartnerNameController
+            .onPageLoad(index, answers.allPartners(index).size, NormalMode)
+        } else {
+          controllers.routes.TaskListController.onPageLoad()
+        }
+      }.getOrElse(controllers.routes.TaskListController.onPageLoad())
+
+    }else {
+      controllers.establishers.partnership.routes.OtherPartnersController.onPageLoad(index,NormalMode)
+    }
+  }
   private def establisherKindRoutes(
                                      index: Index,
                                      ua: UserAnswers
@@ -114,7 +115,7 @@ class EstablishersNavigator@Inject()(config: AppConfig)
     ua.get(EstablisherKindId(index)) match {
       case Some(EstablisherKind.Individual) => EstablisherNameController.onPageLoad(index)
       case Some(EstablisherKind.Company) => CompanyDetailsController.onPageLoad(index)
-      //case Some(EstablisherKind.Partnership) => PartnershipDetailsController.onPageLoad(index)
+      case Some(EstablisherKind.Partnership) => PartnershipDetailsController.onPageLoad(index)
       case _ => IndexController.onPageLoad()
     }
 
