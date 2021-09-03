@@ -18,7 +18,7 @@ package controllers.establishers.partnership.contact
 
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import controllers.establishers.partnership.contact.routes.EnterEmailController
+import controllers.establishers.partnership.contact
 import helpers.cya.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
