@@ -5,31 +5,6 @@ GET         /:index/individual/change/:page                                     
 POST        /:index/individual/:page                                                    controllers.establishers.individual.EstablisherIndividualController.onSubmit(index:Index, mode:Mode = NormalMode, page:String)
 POST        /:index/individual/change/:page                                             controllers.establishers.individual.EstablisherIndividualController.onSubmit(index:Index, mode:Mode = CheckMode, page:String)
 
-GET         /:index/iindividual/have-unique-taxpayer-reference                           controllers.establishers.individual.details.EstablisherHasUTRController.onPageLoad(index: Index, mode: Mode = NormalMode)
-POST        /:index/iindividual/have-unique-taxpayer-reference                           controllers.establishers.individual.details.EstablisherHasUTRController.onSubmit(index: Index, mode: Mode = NormalMode)
-GET         /:index/iindividual/change/have-unique-taxpayer-reference                    controllers.establishers.individual.details.EstablisherHasUTRController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/iindividual/change/have-unique-taxpayer-reference                    controllers.establishers.individual.details.EstablisherHasUTRController.onSubmit(index: Index, mode: Mode = CheckMode)
-
-GET         /:index/iindividual/enter-unique-taxpayer-reference                          controllers.establishers.individual.details.EstablisherEnterUTRController.onPageLoad(index: Index, mode: Mode = NormalMode)
-POST        /:index/iindividual/enter-unique-taxpayer-reference                          controllers.establishers.individual.details.EstablisherEnterUTRController.onSubmit(index: Index, mode: Mode = NormalMode)
-GET         /:index/iindividual/change/enter-unique-taxpayer-reference                   controllers.establishers.individual.details.EstablisherEnterUTRController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/iindividual/change/enter-unique-taxpayer-reference                   controllers.establishers.individual.details.EstablisherEnterUTRController.onSubmit(index: Index, mode: Mode = CheckMode)
-
-GET         /:index/iindividual/enter-national-insurance-number                          controllers.establishers.individual.details.EstablisherEnterNINOController.onPageLoad(index: Index, mode: Mode = NormalMode)
-POST        /:index/iindividual/enter-national-insurance-number                          controllers.establishers.individual.details.EstablisherEnterNINOController.onSubmit(index: Index, mode: Mode = NormalMode)
-GET         /:index/iindividual/change/enter-national-insurance-number                   controllers.establishers.individual.details.EstablisherEnterNINOController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/iindividual/change/enter-national-insurance-number                   controllers.establishers.individual.details.EstablisherEnterNINOController.onSubmit(index: Index, mode: Mode = CheckMode)
-
-GET         /:index/iindividual/reason-for-no-national-insurance-number                  controllers.establishers.individual.details.EstablisherNoNINOReasonController.onPageLoad(index: Index, mode: Mode = NormalMode)
-POST        /:index/iindividual/reason-for-no-national-insurance-number                  controllers.establishers.individual.details.EstablisherNoNINOReasonController.onSubmit(index: Index, mode: Mode = NormalMode)
-GET         /:index/iindividual/change/reason-for-no-national-insurance-number           controllers.establishers.individual.details.EstablisherNoNINOReasonController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/iindividual/change/reason-for-no-national-insurance-number           controllers.establishers.individual.details.EstablisherNoNINOReasonController.onSubmit(index: Index, mode: Mode = CheckMode)
-
-GET         /:index/iindividual/reason-for-no-unique-taxpayer-reference                  controllers.establishers.individual.details.EstablisherNoUTRReasonController.onPageLoad(index: Index, mode: Mode = NormalMode)
-POST        /:index/iindividual/reason-for-no-unique-taxpayer-reference                  controllers.establishers.individual.details.EstablisherNoUTRReasonController.onSubmit(index: Index, mode: Mode = NormalMode)
-GET         /:index/iindividual/change/reason-for-no-unique-taxpayer-reference           controllers.establishers.individual.details.EstablisherNoUTRReasonController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/iindividual/change/reason-for-no-unique-taxpayer-reference           controllers.establishers.individual.details.EstablisherNoUTRReasonController.onSubmit(index: Index, mode: Mode = CheckMode)
-
 GET         /:index/iindividual/check-your-answers-details                               controllers.establishers.individual.details.CheckYourAnswersController.onPageLoad(index: Index)
 
 GET         /:index/iindividual/address                                                  controllers.establishers.individual.address.WhatYouWillNeedController.onPageLoad(index: Index)

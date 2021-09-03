@@ -16,7 +16,7 @@
 
 package controllers.establishers.individual
 
-import controllers.establishers.individual.details.{EstablisherDOBController, WhatYouWillNeedController, EstablisherHasNINOController}
+import controllers.establishers.individual.details._
 import models.{Mode, Index}
 import play.api.mvc.{Action, AnyContent}
 
@@ -27,7 +27,12 @@ class EstablisherIndividualController @Inject()(
   establisherNameController: EstablisherNameController,
   whatYouWillNeedController: WhatYouWillNeedController,
   establisherDOBController:EstablisherDOBController,
-  establisherHasNINOController:EstablisherHasNINOController
+  establisherHasNINOController:EstablisherHasNINOController,
+  establisherHasUTRController:EstablisherHasUTRController,
+  establisherEnterUTRController:EstablisherEnterUTRController,
+  establisherEnterNINOController:EstablisherEnterNINOController,
+  establisherNoNINOReasonController:EstablisherNoNINOReasonController,
+  establisherNoUTRReasonController:EstablisherNoUTRReasonController
                                          )(implicit val executionContext: ExecutionContext) {
 
   def onPageLoad(index: Index, mode:Mode, page: String): Action[AnyContent] = {
@@ -36,6 +41,11 @@ class EstablisherIndividualController @Inject()(
       case "details" => whatYouWillNeedController.onPageLoad(index)
       case "date-of-birth" => establisherDOBController.onPageLoad(index, mode)
       case "have-national-insurance-number" => establisherHasNINOController.onPageLoad(index, mode)
+      case "have-unique-taxpayer-reference" => establisherHasUTRController.onPageLoad(index, mode)
+      case "enter-unique-taxpayer-reference" => establisherEnterUTRController.onPageLoad(index, mode)
+      case "enter-national-insurance-number" => establisherEnterNINOController.onPageLoad(index, mode)
+      case "reason-for-no-national-insurance-number" => establisherNoNINOReasonController.onPageLoad(index, mode)
+      case "reason-for-no-unique-taxpayer-reference" => establisherNoUTRReasonController.onPageLoad(index, mode)
       case _ => throw new RuntimeException("No route")
     }
   }
@@ -45,6 +55,11 @@ class EstablisherIndividualController @Inject()(
       case "name" => establisherNameController.onSubmit(index)
       case "date-of-birth" => establisherDOBController.onSubmit(index, mode)
       case "have-national-insurance-number" => establisherHasNINOController.onSubmit(index, mode)
+      case "have-unique-taxpayer-reference" => establisherHasUTRController.onSubmit(index, mode)
+      case "enter-unique-taxpayer-reference" => establisherEnterUTRController.onSubmit(index, mode)
+      case "enter-national-insurance-number" => establisherEnterNINOController.onSubmit(index, mode)
+      case "reason-for-no-national-insurance-number" => establisherNoNINOReasonController.onSubmit(index, mode)
+      case "reason-for-no-unique-taxpayer-reference" => establisherNoUTRReasonController.onSubmit(index, mode)
       case _ => throw new RuntimeException("No route")
     }
   }

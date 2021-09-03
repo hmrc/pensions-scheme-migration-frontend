@@ -65,7 +65,7 @@ class EstablisherDetailsCYAHelper
           answerOrAddRow(
             id                 = EstablisherNINOId(index),
             message            = Message("messages__hasNINO__cya", establisherName),
-            url                = Some(routes.EstablisherEnterNINOController.onPageLoad(index, CheckMode).url),
+            url                = Some(controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, CheckMode, "enter-unique-taxpayer-reference").url),
             visuallyHiddenText = Some(msg"messages__enterNINO__cya_visuallyHidden".withArgs(establisherName)),
             answerTransform    = referenceValueTransform
           )
@@ -75,14 +75,14 @@ class EstablisherDetailsCYAHelper
           answerOrAddRow(
             id                 = EstablisherNoNINOReasonId(index),
             message            = Message("messages__whyNoNINO", establisherName),
-            url                = Some(routes.EstablisherNoNINOReasonController.onPageLoad(index, CheckMode).url),
+            url                = Some(controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, CheckMode, "reason-for-no-national-insurance-number").url),
             visuallyHiddenText = Some(msg"messages__whyNoNINO__cya__visuallyHidden".withArgs(establisherName))
           )
       },
       Some(answerOrAddRow(
         id                 = EstablisherHasUTRId(index),
         message            = Message("messages__hasUTR", establisherName).resolve,
-        url                = Some(routes.EstablisherHasUTRController.onPageLoad(index, CheckMode).url),
+        url                = Some(controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, CheckMode, "have-unique-taxpayer-reference").url),
         visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(establisherName)),
         answerTransform    = answerBooleanTransform
       )),
@@ -91,7 +91,7 @@ class EstablisherDetailsCYAHelper
           answerOrAddRow(
             id                 = EstablisherUTRId(index),
             message            = Message("messages__hasUTR__cya", establisherName),
-            url                = Some(routes.EstablisherEnterUTRController.onPageLoad(index, CheckMode).url),
+            url                = Some(controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, CheckMode, "enter-unique-taxpayer-reference").url),
             visuallyHiddenText = Some(msg"messages__enterUTR__cya_visuallyHidden".withArgs(establisherName)),
             answerTransform    = referenceValueTransform
           )
@@ -101,7 +101,7 @@ class EstablisherDetailsCYAHelper
           answerOrAddRow(
             id                 = EstablisherNoUTRReasonId(index),
             message            = Message("messages__whyNoUTR", establisherName),
-            url                = Some(routes.EstablisherNoUTRReasonController.onPageLoad(index, CheckMode).url),
+            url                = Some(controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, CheckMode, "reason-for-no-unique-taxpayer-reference").url),
             visuallyHiddenText = Some(msg"messages__whyNoUTR__cya__visuallyHidden".withArgs(establisherName))
           )
       }

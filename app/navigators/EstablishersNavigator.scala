@@ -20,8 +20,6 @@ import config.AppConfig
 import controllers.establishers.company.routes.CompanyDetailsController
 import controllers.establishers.individual.address.routes._
 import controllers.establishers.individual.contact.routes._
-import controllers.establishers.individual.details.routes._
-import controllers.establishers.individual.routes._
 import controllers.establishers.routes._
 import controllers.establishers.partnership.routes._
 import controllers.routes._
@@ -34,9 +32,9 @@ import identifiers.establishers.individual.details._
 import identifiers.establishers.partnership.AddPartnersId
 import models.establishers.EstablisherKind
 import models.requests.DataRequest
-import models.{CheckMode, Index, Mode, NormalMode}
-import play.api.mvc.{AnyContent, Call}
-import utils.{Enumerable, UserAnswers}
+import models.{Mode, Index, CheckMode, NormalMode}
+import play.api.mvc.{Call, AnyContent}
+import utils.{UserAnswers, Enumerable}
 
 import javax.inject.Inject
 
@@ -51,10 +49,13 @@ class EstablishersNavigator@Inject()(config: AppConfig)
     case EstablisherNameId(_) => AddEstablisherController.onPageLoad()
     case AddEstablisherId(value) => addEstablisherRoutes(value, ua)
     case ConfirmDeleteEstablisherId => AddEstablisherController.onPageLoad()
-    case EstablisherDOBId(index) => controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, NormalMode, "have-national-insurance-number")
+    case EstablisherDOBId(index) =>
+      controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, NormalMode, "have-national-insurance-number")
     case EstablisherHasNINOId(index) => establisherHasNino(index, ua, NormalMode)
-    case EstablisherNINOId(index) => EstablisherHasUTRController.onPageLoad(index, NormalMode)
-    case EstablisherNoNINOReasonId(index) => EstablisherHasUTRController.onPageLoad(index, NormalMode)
+    case EstablisherNINOId(index) =>
+      controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, NormalMode, "have-unique-taxpayer-reference")
+    case EstablisherNoNINOReasonId(index) =>
+      controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, NormalMode, "have-unique-taxpayer-reference")
     case EstablisherHasUTRId(index) => establisherHasUtr(index, ua, NormalMode)
     case EstablisherUTRId(index) => cyaDetails(index)
     case EstablisherNoUTRReasonId(index) => cyaDetails(index)
@@ -135,8 +136,10 @@ class EstablishersNavigator@Inject()(config: AppConfig)
                                   mode: Mode
                                 ): Call =
     answers.get(EstablisherHasNINOId(index)) match {
-      case Some(true) => EstablisherEnterNINOController.onPageLoad(index, mode)
-      case Some(false) => EstablisherNoNINOReasonController.onPageLoad(index, mode)
+      case Some(true) =>
+        controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, mode, "enter-national-insurance-number")
+      case Some(false) =>
+        controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, mode, "reason-for-no-national-insurance-number")
       case None => controllers.routes.TaskListController.onPageLoad()
     }
 
@@ -146,8 +149,10 @@ class EstablishersNavigator@Inject()(config: AppConfig)
                                  mode: Mode
                                ): Call =
     answers.get(EstablisherHasUTRId(index)) match {
-      case Some(true) => EstablisherEnterUTRController.onPageLoad(index, mode)
-      case Some(false) => EstablisherNoUTRReasonController.onPageLoad(index, mode)
+      case Some(true) =>
+        controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, mode, "enter-unique-taxpayer-reference")
+      case Some(false) =>
+        controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, mode, "reason-for-no-unique-taxpayer-reference")
       case None => controllers.routes.TaskListController.onPageLoad()
     }
 }
