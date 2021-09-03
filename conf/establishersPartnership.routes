@@ -68,16 +68,16 @@ POST        /:index/partnership/addresses/address-previous-results              
 GET         /:index/partnership/addresses/address-previous-manual                     controllers.establishers.partnership.address.ConfirmPreviousAddressController.onPageLoad(index: Index)
 POST        /:index/partnership/addresses/address-previous-manual                     controllers.establishers.partnership.address.ConfirmPreviousAddressController.onSubmit(index: Index)
 
-GET         /:index/company/partnership-details/what-you-will-need                    controllers.establishers.company.partnership.WhatYouWillNeedCompanyPartnershipController.onPageLoad(index: Index)
+GET         /:index/partnership/partnership-details/contact-details                      controllers.establishers.partnership.contact.WhatYouWillNeedCompanyPartnershipController.onPageLoad(index: Index)
 
-GET         /:index/company/enter-email-address                                       controllers.establishers.company.partnership.EnterEmailController.onPageLoad(index: Index, mode: Mode = NormalMode)
-POST        /:index/company/enter-email-address                                       controllers.establishers.company.partnership.EnterEmailController.onSubmit(index: Index, mode: Mode = NormalMode)
-GET         /:index/company/change/enter-email-address                                controllers.establishers.company.partnership.EnterEmailController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/company/change/enter-email-address                                controllers.establishers.company.partnership.EnterEmailController.onSubmit(index: Index, mode: Mode = CheckMode)
+GET         /:index/partnership/enter-email-address                                      controllers.establishers.partnership.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/partnership/enter-email-address                                      controllers.establishers.partnership.contact.EnterEmailController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/partnership/change/enter-email-address                               controllers.establishers.partnership.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/partnership/change/enter-email-address                               controllers.establishers.partnership.contact.EnterEmailController.onSubmit(index: Index, mode: Mode = CheckMode)
 
-GET         /:index/company/enter-phone-number                                        controllers.establishers.company.partnership.EnterPhoneController.onPageLoad(index: Index, mode: Mode = NormalMode)
-POST        /:index/company/enter-phone-number                                        controllers.establishers.company.partnership.EnterPhoneController.onSubmit(index: Index, mode: Mode = NormalMode)
-GET         /:index/company/change/enter-phone-number                                 controllers.establishers.company.partnership.EnterPhoneController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/company/change/enter-phone-number                                 controllers.establishers.company.partnership.EnterPhoneController.onSubmit(index: Index, mode: Mode = CheckMode)
+GET         /:index/partnership/enter-phone-number                                       controllers.establishers.partnership.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/partnership/enter-phone-number                                       controllers.establishers.partnership.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/partnership/change/enter-phone-number                                controllers.establishers.partnership.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/partnership/change/enter-phone-number                                controllers.establishers.partnership.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = CheckMode)
 
-GET         /:index/company/partnership-details/check-your-answers                    controllers.establishers.company.partnership.CheckYourAnswersController.onPageLoad(index: Index)
+GET         /:index/partnership/partnership-details/check-your-answers-contact-details   controllers.establishers.partnership.contact.CheckYourAnswersController.onPageLoad(index: Index)
