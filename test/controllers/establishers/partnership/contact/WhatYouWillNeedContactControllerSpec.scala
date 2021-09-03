@@ -32,7 +32,7 @@ import utils.{Data, UserAnswers}
 
 import scala.concurrent.Future
 
-class WhatYouWillNeedPartnershipContactControllerSpec
+class WhatYouWillNeedContactControllerSpec
   extends ControllerSpecBase
     with Matchers {
 
@@ -48,8 +48,8 @@ class WhatYouWillNeedPartnershipContactControllerSpec
 
   private def createController(
                           dataRetrievalAction: DataRetrievalAction
-                        ): WhatYouWillNeedPartnershipContactController = {
-    new WhatYouWillNeedPartnershipContactController(
+                        ): WhatYouWillNeedContactController = {
+    new WhatYouWillNeedContactController(
       authenticate         = new FakeAuthAction(),
       getData              = dataRetrievalAction,
       requireData          = new DataRequiredActionImpl,
