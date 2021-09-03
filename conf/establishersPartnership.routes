@@ -68,7 +68,7 @@ POST        /:index/partnership/addresses/address-previous-results              
 GET         /:index/partnership/addresses/address-previous-manual                     controllers.establishers.partnership.address.ConfirmPreviousAddressController.onPageLoad(index: Index)
 POST        /:index/partnership/addresses/address-previous-manual                     controllers.establishers.partnership.address.ConfirmPreviousAddressController.onSubmit(index: Index)
 
-GET         /:index/partnership/partnership-details/contact-details                      controllers.establishers.partnership.contact.WhatYouWillNeedCompanyPartnershipController.onPageLoad(index: Index)
+GET         /:index/partnership/partnership-details/contact-details                      controllers.establishers.partnership.contact.WhatYouWillNeedContactController.onPageLoad(index: Index)
 
 GET         /:index/partnership/enter-email-address                                      controllers.establishers.partnership.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = NormalMode)
 POST        /:index/partnership/enter-email-address                                      controllers.establishers.partnership.contact.EnterEmailController.onSubmit(index: Index, mode: Mode = NormalMode)

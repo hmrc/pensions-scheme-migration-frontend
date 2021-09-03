@@ -18,7 +18,7 @@ package controllers.establishers.partnership.contact
 
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import controllers.establishers.partnership.contact.EnterEmailController
+import controllers.establishers.partnership.contact.routes.EnterEmailController
 import helpers.cya.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
@@ -47,20 +47,20 @@ class WhatYouWillNeedContactController @Inject()(
     with NunjucksSupport {
 
   def onPageLoad(index: Index): Action[AnyContent] = {
-    (authenticate andThen getData andThen requireData).apply {
-      implicit request =>       PartnershipDetailsId(index).retrieve.right.map {
-        details =>
-          renderer.render(
-            template = "whatYouWillNeedContact.njk",
-            ctx = Json.obj(
-              "titleValue"-> (Message("messages__establisherPartnershipContactDetails__whatYouWillNeed_title")).resolve,
-              "name"        -> details.partnershipDetails,
-              "continueUrl" -> EnterEmailController.onPageLoad(index, NormalMode).url,
-              "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
-            )
-          ).map(Ok(_))
+    (authenticate andThen getData andThen requireData).async {
+      implicit request =>
+        PartnershipDetailsId(index).retrieve.right.map {
+          details =>
+            renderer.render(
+              template = "whatYouWillNeedContact.njk",
+              ctx = Json.obj(
+                "titleValue" -> (Message("messages__establisherPartnershipContactDetails__whatYouWillNeed_title")).resolve,
+                "name" -> details.partnershipName,
+                "continueUrl" -> EnterEmailController.onPageLoad(index, NormalMode).url,
+                "schemeName" -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
+              )
+            ).map(Ok(_))
+        }
     }
   }
-
-
 }

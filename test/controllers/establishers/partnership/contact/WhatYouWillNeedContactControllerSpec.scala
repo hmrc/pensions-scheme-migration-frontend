@@ -19,7 +19,7 @@ package controllers.establishers.partnership.contact
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import matchers.JsonMatchers.containJson
-import models.NormalMode
+import models.{NormalMode, PartnershipDetails}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.matchers.must.Matchers
@@ -36,12 +36,13 @@ class WhatYouWillNeedContactControllerSpec
   extends ControllerSpecBase
     with Matchers {
 
+  private val partnership: PartnershipDetails = PartnershipDetails("test")
   private val userAnswers: UserAnswers = Data.ua
   private val templateToBeRendered: String = "whatYouWillNeedContact.njk"
 
   private def json: JsObject =
     Json.obj(
-      "name"        -> establishers.partnership.partnershipName,
+      "name"        -> partnership.partnershipName,
       "continueUrl" -> controllers.establishers.company.contact.routes.EnterEmailController.onPageLoad(0, NormalMode).url,
       "schemeName"  -> schemeName
     )
