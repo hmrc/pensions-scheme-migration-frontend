@@ -52,6 +52,18 @@ object EstablishersIndividualRoutes {
   def dateOfBirthRoute(index:Index, mode:Mode):Call =
     EstablisherIndividualController.onPageLoad(index, mode, "date-of-birth")
 
-  def cyaRoute(index:Index, mode:Mode):Call =
+  def cyaDetailsRoute(index:Index, mode:Mode):Call =
     EstablisherIndividualController.onPageLoad(index, mode, "check-your-answers-details")
+
+  def contactRoute(index:Index, mode:Mode):Call =
+    EstablisherIndividualController.onPageLoad(index, mode, "contact-details")
+
+  def emailRoute(index:Index, mode:Mode):Call =
+    EstablisherIndividualController.onPageLoad(index, mode, "enter-email-address")
+
+  def phoneNumberRoute(index:Index, mode:Mode):Call =
+    EstablisherIndividualController.onPageLoad(index, mode, "enter-phone-number")
+
+  def cyaContactRoute(index:Index, mode:Mode):Call =
+    EstablisherIndividualController.onPageLoad(index, mode, "check-your-answers-contact-details")
 }

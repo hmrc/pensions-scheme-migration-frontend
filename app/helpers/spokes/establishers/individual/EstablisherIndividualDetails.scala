@@ -16,7 +16,7 @@
 
 package helpers.spokes.establishers.individual
 
-import helpers.routes.EstablishersIndividualRoutes.{cyaRoute, detailsRoute}
+import helpers.routes.EstablishersIndividualRoutes.{cyaDetailsRoute, detailsRoute}
 import helpers.spokes.Spoke
 import models.{TaskListLink, Index, NormalMode}
 import play.api.i18n.Messages
@@ -31,7 +31,7 @@ case class EstablisherIndividualDetails(
   val linkKeyAndRoute: (String, String) =
     if (completeFlag(answers).getOrElse(false))
       (s"${messageKeyPrefix}changeLink",
-        cyaRoute(index, NormalMode).url)
+        cyaDetailsRoute(index, NormalMode).url)
     else
       (s"${messageKeyPrefix}addLink", detailsRoute(index, NormalMode).url)
 

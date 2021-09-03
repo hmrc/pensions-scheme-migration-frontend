@@ -19,10 +19,10 @@ package navigators
 import config.AppConfig
 import controllers.establishers.company.routes.CompanyDetailsController
 import controllers.establishers.individual.address.routes._
-import controllers.establishers.individual.contact.routes._
-import controllers.establishers.routes._
 import controllers.establishers.partnership.routes._
+import controllers.establishers.routes._
 import controllers.routes._
+import helpers.routes.EstablishersIndividualRoutes._
 import identifiers._
 import identifiers.establishers._
 import identifiers.establishers.individual.EstablisherNameId
@@ -32,10 +32,9 @@ import identifiers.establishers.individual.details._
 import identifiers.establishers.partnership.AddPartnersId
 import models.establishers.EstablisherKind
 import models.requests.DataRequest
-import models.{Mode, Index, CheckMode, NormalMode}
-import play.api.mvc.{Call, AnyContent}
-import utils.{UserAnswers, Enumerable}
-import helpers.routes.EstablishersIndividualRoutes._
+import models.{CheckMode, Index, Mode, NormalMode}
+import play.api.mvc.{AnyContent, Call}
+import utils.{Enumerable, UserAnswers}
 
 import javax.inject.Inject
 
@@ -65,7 +64,7 @@ class EstablishersNavigator@Inject()(config: AppConfig)
     case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index)
     case PreviousAddressListId(index) => cyaAddress(index)
     case PreviousAddressId(index) => cyaAddress(index)
-    case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
+    case EnterEmailId(index) => phoneNumberRoute(index, NormalMode)
     case EnterPhoneId(index) => cyaContactDetails(index)
     case AddPartnersId(index) => addPartners(index, ua)
   }
@@ -84,8 +83,8 @@ class EstablishersNavigator@Inject()(config: AppConfig)
   }
 
   private def cyaAddress(index:Int): Call = controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
-  private def cyaDetails(index:Int): Call = cyaRoute(index, NormalMode)
-  private def cyaContactDetails(index:Int): Call = controllers.establishers.individual.contact.routes.CheckYourAnswersController.onPageLoad(index)
+  private def cyaDetails(index:Int): Call = cyaDetailsRoute(index, NormalMode)
+  private def cyaContactDetails(index:Int): Call = cyaContactRoute(index, NormalMode)
   private def addressYears(index:Int, mode:Mode): Call = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index)
 
   private def addPartners(index: Int, answers: UserAnswers): Call = {

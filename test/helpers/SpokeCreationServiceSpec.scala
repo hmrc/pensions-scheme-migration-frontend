@@ -18,7 +18,8 @@ package helpers
 
 import base.SpecBase
 import helpers.routes.EstablishersIndividualRoutes
-import identifiers.beforeYouStart.{SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
+import helpers.routes.EstablishersIndividualRoutes.contactRoute
+import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.contact.EnterPhoneId
@@ -29,7 +30,7 @@ import identifiers.establishers.individual.address.AddressId
 import identifiers.establishers.partnership.address.{AddressId => PartnershipAddressId}
 import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
-import identifiers.establishers.partnership.details.{PartnershipUTRId, HaveUTRId}
+import identifiers.establishers.partnership.details.{HaveUTRId, PartnershipUTRId}
 import identifiers.trustees.{TrusteeKindId, company => trusteeCompany}
 import identifiers.trustees.company.{details => trusteeCompanyDetails}
 import identifiers.trustees.individual.TrusteeNameId
@@ -41,7 +42,7 @@ import models.{EntitySpoke, _}
 import org.scalatest.{OptionValues, TryValues}
 import org.scalatest.matchers.must.Matchers
 import utils.Data.{schemeName, ua}
-import utils.{Enumerable, Data}
+import utils.{Data, Enumerable}
 import viewmodels.Message
 
 import java.time.LocalDate
@@ -148,7 +149,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = TaskListLink(
               text = "Add contact details for a b",
-              target = controllers.establishers.individual.contact.routes.WhatYouWillNeedController.onPageLoad(0).url,
+              target = contactRoute(0, NormalMode).url,
               visuallyHiddenText = None
             ),
             isCompleted = None

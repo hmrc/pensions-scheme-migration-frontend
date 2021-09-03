@@ -81,10 +81,10 @@ class EstablishersNavigatorSpec
     controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index)
 
   private def enterPhonePage(mode:Mode): Call =
-    controllers.establishers.individual.contact.routes.EnterPhoneController.onPageLoad(index, mode)
+    phoneNumberRoute(index, mode)
 
   private val cyaContact: Call =
-    controllers.establishers.individual.contact.routes.CheckYourAnswersController.onPageLoad(index)
+    cyaContactRoute(index, NormalMode)
 
   "EstablishersNavigator" when {
     def navigation: TableFor3[Identifier, UserAnswers, Call] =
@@ -103,8 +103,8 @@ class EstablishersNavigatorSpec
         row(EstablisherNoNINOReasonId(index))(haveUniqueTaxpayerReferenceRoute(index, NormalMode), Some(detailsUa.set(EstablisherNoNINOReasonId(index), "Reason").success.value)),
         row(EstablisherHasUTRId(index))(enterUniqueTaxpayerReferenceRoute(index, NormalMode), Some(detailsUa.set(EstablisherHasUTRId(index), true).success.value)),
         row(EstablisherHasUTRId(index))(reasonForNoUniqueTaxpayerReferenceRoute(index, NormalMode), Some(detailsUa.set(EstablisherHasUTRId(index), false).success.value)),
-        row(EstablisherUTRId(index))(cyaRoute(index, NormalMode), Some(detailsUa.set(EstablisherUTRId(index), ReferenceValue("1234567890")).success.value)),
-        row(EstablisherNoUTRReasonId(index))(cyaRoute(index, NormalMode), Some(detailsUa.set(EstablisherNoUTRReasonId(index), "Reason").success.value)),
+        row(EstablisherUTRId(index))(cyaDetailsRoute(index, NormalMode), Some(detailsUa.set(EstablisherUTRId(index), ReferenceValue("1234567890")).success.value)),
+        row(EstablisherNoUTRReasonId(index))(cyaDetailsRoute(index, NormalMode), Some(detailsUa.set(EstablisherNoUTRReasonId(index), "Reason").success.value)),
         row(EnterPostCodeId(index))(selectAddress(NormalMode), addressUAWithValue(EnterPostCodeId(index), seqAddresses)),
         row(AddressListId(index))(addressYears(NormalMode), addressUAWithValue(AddressListId(index), 0)),
         row(AddressId(index))(addressYears(NormalMode), addressUAWithValue(AddressId(index), address)),
@@ -122,15 +122,15 @@ class EstablishersNavigatorSpec
     def editNavigation: TableFor3[Identifier, UserAnswers, Call] =
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
-        row(EstablisherDOBId(index))(cyaRoute(index, NormalMode), Some(detailsUa.set(EstablisherDOBId(index), LocalDate.parse("2000-01-01")).success.value)),
+        row(EstablisherDOBId(index))(cyaDetailsRoute(index, NormalMode), Some(detailsUa.set(EstablisherDOBId(index), LocalDate.parse("2000-01-01")).success.value)),
         row(EstablisherHasNINOId(index))(enterNationaInsuranceNumberRoute(index, CheckMode), Some(detailsUa.set(EstablisherHasNINOId(index), true).success.value)),
         row(EstablisherHasNINOId(index))(reasonForNoNationalInsuranceNumberRoute(index, CheckMode), Some(detailsUa.set(EstablisherHasNINOId(index), false).success.value)),
-        row(EstablisherNINOId(index))(cyaRoute(index, NormalMode), Some(detailsUa.set(EstablisherNINOId(index), ReferenceValue("AB123456C")).success.value)),
-        row(EstablisherNoNINOReasonId(index))(cyaRoute(index, NormalMode), Some(detailsUa.set(EstablisherNoNINOReasonId(index), "Reason").success.value)),
+        row(EstablisherNINOId(index))(cyaDetailsRoute(index, NormalMode), Some(detailsUa.set(EstablisherNINOId(index), ReferenceValue("AB123456C")).success.value)),
+        row(EstablisherNoNINOReasonId(index))(cyaDetailsRoute(index, NormalMode), Some(detailsUa.set(EstablisherNoNINOReasonId(index), "Reason").success.value)),
         row(EstablisherHasUTRId(index))(enterUniqueTaxpayerReferenceRoute(index, CheckMode), Some(detailsUa.set(EstablisherHasUTRId(index), true).success.value)),
         row(EstablisherHasUTRId(index))(reasonForNoUniqueTaxpayerReferenceRoute(index, CheckMode), Some(detailsUa.set(EstablisherHasUTRId(index), false).success.value)),
-        row(EstablisherUTRId(index))(cyaRoute(index, NormalMode), Some(detailsUa.set(EstablisherUTRId(index), ReferenceValue("1234567890")).success.value)),
-        row(EstablisherNoUTRReasonId(index))(cyaRoute(index, NormalMode), Some(detailsUa.set(EstablisherNoUTRReasonId(index), "Reason").success.value)),
+        row(EstablisherUTRId(index))(cyaDetailsRoute(index, NormalMode), Some(detailsUa.set(EstablisherUTRId(index), ReferenceValue("1234567890")).success.value)),
+        row(EstablisherNoUTRReasonId(index))(cyaDetailsRoute(index, NormalMode), Some(detailsUa.set(EstablisherNoUTRReasonId(index), "Reason").success.value)),
         row(EnterEmailId(index))(cyaContact, Some(detailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
         row(EnterPhoneId(index))(cyaContact, Some(detailsUa.set(EnterPhoneId(index), "1234").success.value))
       )

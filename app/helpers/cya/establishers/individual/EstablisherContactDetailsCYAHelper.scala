@@ -16,9 +16,9 @@
 
 package helpers.cya.establishers.individual
 
-import controllers.establishers.individual.contact.routes
 import helpers.cya.CYAHelper
 import helpers.cya.CYAHelper.getName
+import helpers.routes.EstablishersIndividualRoutes.{emailRoute, phoneNumberRoute}
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
 import models.requests.DataRequest
@@ -49,13 +49,13 @@ class EstablisherContactDetailsCYAHelper
       Some(answerOrAddRow(
         id = EnterEmailId(index),
         message = Message("messages__enterEmail", establisherName).resolve,
-        url = Some(routes.EnterEmailController.onPageLoad(index, CheckMode).url),
+        url = Some(emailRoute(index, CheckMode).url),
         visuallyHiddenText = Some(msg"messages__enterEmail__cya__visuallyHidden".withArgs(establisherName))
       )),
       Some(answerOrAddRow(
         id = EnterPhoneId(index),
         message = Message("messages__enterPhone", establisherName).resolve,
-        url = Some(routes.EnterPhoneController.onPageLoad(index, CheckMode).url),
+        url = Some(phoneNumberRoute(index, CheckMode).url),
         visuallyHiddenText = Some(msg"messages__enterPhone__cya__visuallyHidden".withArgs(establisherName))
       ))).flatten
 

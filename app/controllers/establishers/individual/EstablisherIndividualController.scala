@@ -17,7 +17,8 @@
 package controllers.establishers.individual
 
 import controllers.establishers.individual.details._
-import models.{Mode, Index}
+import controllers.trustees.individual.{contact => contact}
+import models.{Index, Mode}
 import play.api.mvc.{Action, AnyContent}
 
 import javax.inject.Inject
@@ -33,7 +34,11 @@ class EstablisherIndividualController @Inject()(
   establisherEnterNINOController:EstablisherEnterNINOController,
   establisherNoNINOReasonController:EstablisherNoNINOReasonController,
   establisherNoUTRReasonController:EstablisherNoUTRReasonController,
-  checkYourAnswersController:CheckYourAnswersController
+  checkYourAnswersController:CheckYourAnswersController,
+  whatYouWillNeedContactController: contact.WhatYouWillNeedController,
+  enterEmailController: contact.EnterEmailController,
+  enterPhoneController: contact.EnterPhoneController,
+  checkYourAnswersContactController: contact.CheckYourAnswersController
                                          )(implicit val executionContext: ExecutionContext) {
 
   def onPageLoad(index: Index, mode:Mode, page: String): Action[AnyContent] = {
@@ -48,6 +53,10 @@ class EstablisherIndividualController @Inject()(
       case "reason-for-no-national-insurance-number" => establisherNoNINOReasonController.onPageLoad(index, mode)
       case "reason-for-no-unique-taxpayer-reference" => establisherNoUTRReasonController.onPageLoad(index, mode)
       case "check-your-answers-details" => checkYourAnswersController.onPageLoad(index)
+      case "contact-details" => whatYouWillNeedContactController.onPageLoad(index)
+      case "enter-email-address" => enterEmailController.onPageLoad(index, mode)
+      case "enter-phone-number" => enterPhoneController.onPageLoad(index, mode)
+      case "check-your-answers-contact-details" => checkYourAnswersContactController.onPageLoad(index)
       case _ => throw new RuntimeException("No route")
     }
   }
@@ -62,6 +71,8 @@ class EstablisherIndividualController @Inject()(
       case "enter-national-insurance-number" => establisherEnterNINOController.onSubmit(index, mode)
       case "reason-for-no-national-insurance-number" => establisherNoNINOReasonController.onSubmit(index, mode)
       case "reason-for-no-unique-taxpayer-reference" => establisherNoUTRReasonController.onSubmit(index, mode)
+      case "enter-email-address" => enterEmailController.onSubmit(index, mode)
+      case "enter-phone-number" => enterPhoneController.onSubmit(index, mode)
       case _ => throw new RuntimeException("No route")
     }
   }

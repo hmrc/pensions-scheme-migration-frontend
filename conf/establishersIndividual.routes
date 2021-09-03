@@ -29,17 +29,3 @@ POST        /:index/iindividual/previous-address-results                        
 
 GET         /:index/iindividual/confirm-previous-address                                 controllers.establishers.individual.address.ConfirmPreviousAddressController.onPageLoad(index: Index)
 POST        /:index/iindividual/confirm-previous-address                                 controllers.establishers.individual.address.ConfirmPreviousAddressController.onSubmit(index: Index)
-
-GET         /:index/iindividual/contact-details                                          controllers.establishers.individual.contact.WhatYouWillNeedController.onPageLoad(index: Index)
-
-GET         /:index/iindividual/enter-email-address                                      controllers.establishers.individual.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = NormalMode)
-POST        /:index/iindividual/enter-email-address                                      controllers.establishers.individual.contact.EnterEmailController.onSubmit(index: Index, mode: Mode = NormalMode)
-GET         /:index/iindividual/change/enter-email-address                               controllers.establishers.individual.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/iindividual/change/enter-email-address                               controllers.establishers.individual.contact.EnterEmailController.onSubmit(index: Index, mode: Mode = CheckMode)
-
-GET         /:index/iindividual/enter-phone-number                                       controllers.establishers.individual.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = NormalMode)
-POST        /:index/iindividual/enter-phone-number                                       controllers.establishers.individual.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = NormalMode)
-GET         /:index/iindividual/change/enter-phone-number                                controllers.establishers.individual.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/iindividual/change/enter-phone-number                                controllers.establishers.individual.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = CheckMode)
-
-GET         /:index/iindividual/check-your-answers-contact-details                       controllers.establishers.individual.contact.CheckYourAnswersController.onPageLoad(index: Index)
