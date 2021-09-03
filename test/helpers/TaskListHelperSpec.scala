@@ -22,6 +22,7 @@ import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.{EstablisherKindId, IsEstablisherNewId}
 import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.partnership.PartnershipDetailsId
 import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId}
 import models._
 import models.establishers.EstablisherKind
@@ -183,7 +184,13 @@ class TaskListHelperSpec extends SpecBase with Matchers with MockitoSugar with E
           _.set(IsTrusteeNewId(0), true).flatMap(
             _.set(TrusteeKindId(1), TrusteeKind.Individual).flatMap(
               _.set(TrusteeNameId(1), PersonName("c", "d", true)).flatMap(
-                _.set(IsTrusteeNewId(1), true)
+                _.set(IsTrusteeNewId(1), true).flatMap(
+                  _.set(TrusteeKindId(2), TrusteeKind.Partnership).flatMap(
+                  _.set(PartnershipDetailsId(2), PartnershipDetails("test partnership", true)).flatMap(
+                   _.set(IsTrusteeNewId(2), true)
+                  )
+                  )
+                  )
               ))))).get
       helper.trusteesSection(userAnswers, messages) mustBe Nil
     }
@@ -194,7 +201,13 @@ class TaskListHelperSpec extends SpecBase with Matchers with MockitoSugar with E
           _.set(IsTrusteeNewId(0), true).flatMap(
             _.set(TrusteeKindId(1), TrusteeKind.Individual).flatMap(
               _.set(TrusteeNameId(1), PersonName("c", "d")).flatMap(
-                _.set(IsTrusteeNewId(1), true)
+                _.set(IsTrusteeNewId(1), true).flatMap(
+                  _.set(TrusteeKindId(2), TrusteeKind.Partnership).flatMap(
+                    _.set(PartnershipDetailsId(2), PartnershipDetails("test partnership", true)).flatMap(
+                      _.set(IsTrusteeNewId(2), true)
+                    )
+                  )
+                )
               ))))).get
 
       val expectedSection =  Seq(TaskListEntitySection(None, Nil, Some("c d")))

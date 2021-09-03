@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.establishers.company.contact
+package controllers.trustees.partnership.contact
 
 import controllers.Retrievals
+import controllers.trustees.partnership.contact.routes.EnterEmailController
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import controllers.establishers.company.contact.routes.EnterEmailController
 import helpers.cya.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.company.CompanyDetailsId
+import identifiers.trustees.partnership.PartnershipDetailsId
 import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -34,7 +34,7 @@ import viewmodels.Message
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class WhatYouWillNeedCompanyContactController @Inject()(
+class WhatYouWillNeedController @Inject()(
                                            override val messagesApi: MessagesApi,
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
@@ -50,16 +50,16 @@ class WhatYouWillNeedCompanyContactController @Inject()(
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        CompanyDetailsId(index).retrieve.right.map {
+        PartnershipDetailsId(index).retrieve.right.map {
           details =>
             renderer.render(
               template = "whatYouWillNeedContact.njk",
               ctx = Json.obj(
-                "titleValue"-> (Message("messages__establisherCompanyContactDetails__whatYouWillNeed_title")).resolve,
-                "name"        -> details.companyName,
-                "entityType" -> Message("messages__company"),
+                "titleValue" -> Message("messages__trusteePartnershipContactDetails__whatYouWillNeed_title"),
+                "name" -> details.partnershipName,
+                "entityType" -> Message("messages__partnership"),
                 "continueUrl" -> EnterEmailController.onPageLoad(index, NormalMode).url,
-                "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
+                "schemeName" -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )
             ).map(Ok(_))
         }
