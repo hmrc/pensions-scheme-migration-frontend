@@ -26,11 +26,12 @@ import identifiers.establishers.company.details.{CompanyNumberId, HaveCompanyNum
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressId
-import identifiers.trustees.company.{details => trusteeCompanyDetails}
-import identifiers.trustees.partnership.address.{AddressId => TrusteePartnershipAddressId, AddressYearsId => TrusteePartnershipAddressYearsId}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.contact.{EnterEmailId => TrusteeEmailId, EnterPhoneId => TrusteePhoneId}
 import identifiers.trustees.individual.details.{TrusteeDOBId, TrusteeNINOId, TrusteeUTRId}
+import identifiers.trustees.company.{details => trusteeCompanyDetails}
+import identifiers.trustees.partnership.address.{AddressId => TrusteePartnershipAddressId, AddressYearsId => TrusteePartnershipAddressYearsId}
+import identifiers.trustees.partnership.contact.{EnterEmailId => TrusteePartnershipEmailId, EnterPhoneId => TrusteePartnershipPhoneId}
 import identifiers.trustees.{TrusteeKindId, company => trusteeCompany}
 import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind
@@ -554,64 +555,6 @@ class SpokeCreationServiceSpec
     }
   }
 
-  "getTrusteePartnershipSpokes" must {
-    "display all the spokes with appropriate links and incomplete status when no data is returned from TPSS" in {
-      val userAnswers =
-        ua
-          .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
-          .set(TrusteeNameId(0), PersonName("a", "b")).success.value
-
-      val expectedSpoke =
-        Seq(
-          EntitySpoke(
-            link = TaskListLink(
-              text = "Add address for a b",
-              target = controllers.trustees.partnership.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
-              visuallyHiddenText = None
-            ),
-            isCompleted = None
-          )
-        )
-
-      val result =
-        spokeCreationService.getTrusteePartnershipSpokes(
-          answers = userAnswers,
-          name = "a b",
-          index = 0
-        )
-      result mustBe expectedSpoke
-    }
-
-    "display all the spokes with appropriate links and complete status when the complete address data is returned from TPSS" in {
-      val userAnswers =
-        ua
-          .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
-          .set(TrusteeNameId(0), PersonName("a", "b")).success.value
-          .set(TrusteePartnershipAddressId(0), Data.address).success.value
-          .set(TrusteePartnershipAddressYearsId(0), true).success.value
-
-      val expectedSpoke =
-        Seq(
-          EntitySpoke(
-            link = TaskListLink(
-              text = "Change address for a b",
-              target = controllers.trustees.partnership.address.routes.CheckYourAnswersController.onPageLoad(0).url,
-              visuallyHiddenText = None
-            ),
-            isCompleted = Some(true)
-          )
-        )
-
-      val result =
-        spokeCreationService.getTrusteePartnershipSpokes(
-          answers = userAnswers,
-          name = "a b",
-          index = 0
-        )
-      result mustBe expectedSpoke
-    }
-  }
-
   "display all the spokes with appropriate links and incomplete status when data is returned from TPSS for trustee company spokes" in {
     val userAnswers =
       ua
@@ -708,6 +651,83 @@ class SpokeCreationServiceSpec
         index = 0
       )
     result mustBe expectedSpoke
+  }
+
+  "getTrusteePartnershipSpokes" must {
+    "display all the spokes with appropriate links and incomplete status when no data is returned from TPSS" in {
+      val userAnswers =
+        ua
+          .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
+          .set(TrusteeNameId(0), PersonName("a", "b")).success.value
+
+      val expectedSpoke =
+        Seq(
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Add address for a b",
+              target = controllers.trustees.partnership.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = None
+          )
+          ,
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Add contact details for a b",
+              target = controllers.trustees.partnership.contact.routes.WhatYouWillNeedController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = None
+          )
+        )
+
+      val result =
+        spokeCreationService.getTrusteePartnershipSpokes(
+          answers = userAnswers,
+          name = "a b",
+          index = 0
+        )
+      result mustBe expectedSpoke
+    }
+
+    "display all the spokes with appropriate links and complete status when the complete address data is returned from TPSS" in {
+      val userAnswers =
+        ua
+          .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
+          .set(TrusteeNameId(0), PersonName("a", "b")).success.value
+          .set(TrusteePartnershipAddressId(0), Data.address).success.value
+          .set(TrusteePartnershipAddressYearsId(0), true).success.value
+          .set(TrusteePartnershipEmailId(0), "test@test.com").success.value
+          .set(TrusteePartnershipPhoneId(0), "1234").success.value
+
+      val expectedSpoke =
+        Seq(
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Change address for a b",
+              target = controllers.trustees.partnership.address.routes.CheckYourAnswersController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = Some(true)
+          ),
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Change contact details for a b",
+              target = controllers.trustees.partnership.contact.routes.CheckYourAnswersController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = Some(true)
+          )
+        )
+
+      val result =
+        spokeCreationService.getTrusteePartnershipSpokes(
+          answers = userAnswers,
+          name = "a b",
+          index = 0
+        )
+      result mustBe expectedSpoke
+    }
   }
 
   "declarationSpoke" must {

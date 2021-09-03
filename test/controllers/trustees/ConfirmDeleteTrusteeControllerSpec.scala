@@ -19,22 +19,22 @@ package controllers.trustees
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.trustees.ConfirmDeleteTrusteeFormProvider
-import identifiers.trustees.ConfirmDeleteTrusteeId
+import identifiers.trustees.{ConfirmDeleteTrusteeId, OtherTrusteesId}
 import identifiers.trustees.individual.TrusteeNameId
 import matchers.JsonMatchers
 import models.trustees.TrusteeKind
-import models.{Index, PersonName}
+import models.{PersonName, Index}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, Json, JsValue}
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable}
 
 import scala.concurrent.Future
 
@@ -80,9 +80,11 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with Nunjuck
   "ConfirmDeleteTrusteeController" must {
 
     "return OK and the correct view for a GET" in {
+
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+
 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
@@ -105,7 +107,7 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with Nunjuck
       redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
     }
 
-    "Save data to user answers and redirect to next page when valid data is submitted" in {
+    "Save data to user answers and redirect to next page when valid data is submitted and remove other trustee id" in {
 
       val expectedJson = Json.obj()
 
@@ -114,7 +116,7 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with Nunjuck
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
-      mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
+      mutableFakeDataRetrievalAction.setDataToReturn(userAnswers.map(_.setOrException(OtherTrusteesId, true)))
 
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -127,6 +129,15 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with Nunjuck
       jsonCaptor.getValue must containJson(expectedJson)
 
       redirectLocation(result) mustBe Some(routes.AddTrusteeController.onPageLoad().url)
+
+      val jsonCaptorUA = ArgumentCaptor.forClass(classOf[JsValue])
+      verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptorUA.capture())(any(), any())
+      val actualUA = {
+        val jsValue:JsValue = jsonCaptorUA.getValue
+        UserAnswers(jsValue.as[JsObject])
+      }
+      actualUA.get(OtherTrusteesId) mustBe None
+
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

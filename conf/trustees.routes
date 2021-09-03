@@ -17,6 +17,12 @@ GET         /:index/individual/already-deleted           controllers.trustees.Al
 GET         /:index/company/already-deleted              controllers.trustees.AlreadyDeletedController.onPageLoad(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Company)
 GET         /:index/partnership/already-deleted              controllers.trustees.AlreadyDeletedController.onPageLoad(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Partnership)
 
+GET         /other-trustees                                      controllers.trustees.OtherTrusteesController.onPageLoad
+POST        /other-trustees                                      controllers.trustees.OtherTrusteesController.onSubmit
+GET         /change/other-trustees                               controllers.trustees.OtherTrusteesController.onPageLoad
+POST        /change/other-trustees                               controllers.trustees.OtherTrusteesController.onSubmit
+
+
 ->          /                                            trusteesIndividual.Routes
 ->          /                                            trusteesCompany.Routes
 ->          /                                            trusteesPartnership.Routes

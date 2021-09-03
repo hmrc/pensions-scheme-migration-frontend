@@ -29,3 +29,17 @@ POST        /:index/partnership/confirm-previous-address                    cont
 
 GET         /:index/partnership/trading-time                       controllers.trustees.partnership.address.TradingTimeController.onPageLoad(index: Index)
 POST        /:index/partnership/trading-time                       controllers.trustees.partnership.address.TradingTimeController.onSubmit(index: Index)
+
+GET         /:index/partnership/contact-details                                           controllers.trustees.partnership.contact.WhatYouWillNeedController.onPageLoad(index: Index)
+
+GET         /:index/partnership/enter-email-address                                       controllers.trustees.partnership.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/partnership/enter-email-address                                       controllers.trustees.partnership.contact.EnterEmailController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/partnership/change/enter-email-address                                controllers.trustees.partnership.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/partnership/change/enter-email-address                                controllers.trustees.partnership.contact.EnterEmailController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/partnership/enter-phone-number                                        controllers.trustees.partnership.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/partnership/enter-phone-number                                        controllers.trustees.partnership.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/partnership/change/enter-phone-number                                 controllers.trustees.partnership.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/partnership/change/enter-phone-number                                 controllers.trustees.partnership.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/partnership/check-your-answers-contact-details                        controllers.trustees.partnership.contact.CheckYourAnswersController.onPageLoad(index: Index)
