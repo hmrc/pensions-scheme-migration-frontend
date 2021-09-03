@@ -35,7 +35,7 @@ import utils.{Enumerable, UserAnswers}
 
 import javax.inject.Inject
 
-class EstablishersCompanyNavigator@Inject()(config: AppConfig)
+class EstablishersCompanyNavigator @Inject()(config: AppConfig)
   extends Navigator
     with Enumerable.Implicits {
 
