@@ -16,18 +16,17 @@
 
 package helpers.cya.establishers.individual
 
-import controllers.establishers.individual.details.routes
 import helpers.cya.CYAHelper
 import helpers.cya.CYAHelper.getName
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.details._
 import models.requests.DataRequest
-import models.{CheckMode, Index}
+import models.{Index, CheckMode}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.SummaryList.Row
-import utils.{Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable}
 import viewmodels.Message
 
 class EstablisherDetailsCYAHelper

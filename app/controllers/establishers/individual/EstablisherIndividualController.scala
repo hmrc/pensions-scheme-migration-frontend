@@ -32,7 +32,8 @@ class EstablisherIndividualController @Inject()(
   establisherEnterUTRController:EstablisherEnterUTRController,
   establisherEnterNINOController:EstablisherEnterNINOController,
   establisherNoNINOReasonController:EstablisherNoNINOReasonController,
-  establisherNoUTRReasonController:EstablisherNoUTRReasonController
+  establisherNoUTRReasonController:EstablisherNoUTRReasonController,
+  checkYourAnswersController:CheckYourAnswersController
                                          )(implicit val executionContext: ExecutionContext) {
 
   def onPageLoad(index: Index, mode:Mode, page: String): Action[AnyContent] = {
@@ -46,6 +47,7 @@ class EstablisherIndividualController @Inject()(
       case "enter-national-insurance-number" => establisherEnterNINOController.onPageLoad(index, mode)
       case "reason-for-no-national-insurance-number" => establisherNoNINOReasonController.onPageLoad(index, mode)
       case "reason-for-no-unique-taxpayer-reference" => establisherNoUTRReasonController.onPageLoad(index, mode)
+      case "check-your-answers-details" => checkYourAnswersController.onPageLoad(index)
       case _ => throw new RuntimeException("No route")
     }
   }

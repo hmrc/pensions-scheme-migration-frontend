@@ -5,8 +5,6 @@ GET         /:index/individual/change/:page                                     
 POST        /:index/individual/:page                                                    controllers.establishers.individual.EstablisherIndividualController.onSubmit(index:Index, mode:Mode = NormalMode, page:String)
 POST        /:index/individual/change/:page                                             controllers.establishers.individual.EstablisherIndividualController.onSubmit(index:Index, mode:Mode = CheckMode, page:String)
 
-GET         /:index/iindividual/check-your-answers-details                               controllers.establishers.individual.details.CheckYourAnswersController.onPageLoad(index: Index)
-
 GET         /:index/iindividual/address                                                  controllers.establishers.individual.address.WhatYouWillNeedController.onPageLoad(index: Index)
 
 GET         /:index/iindividual/enter-postcode                                           controllers.establishers.individual.address.EnterPostcodeController.onPageLoad(index: Index)
