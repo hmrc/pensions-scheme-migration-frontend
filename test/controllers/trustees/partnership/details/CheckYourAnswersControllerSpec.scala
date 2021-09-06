@@ -18,7 +18,7 @@ package controllers.trustees.partnership.details
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import helpers.cya.establishers.partnership.EstablisherPartnershipDetailsCYAHelper
+import helpers.cya.trustees.partnership.TrusteePartnershipDetailsCYAHelper
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -40,10 +40,10 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 
   private val templateToBeRendered = "check-your-answers.njk"
-  private val mockCyaHelper: EstablisherPartnershipDetailsCYAHelper = mock[EstablisherPartnershipDetailsCYAHelper]
+  private val mockCyaHelper: TrusteePartnershipDetailsCYAHelper = mock[TrusteePartnershipDetailsCYAHelper]
   private def httpPathGET: String = routes.CheckYourAnswersController.onPageLoad(0).url
   val extraModules: Seq[GuiceableModule] = Seq(
-    bind[EstablisherPartnershipDetailsCYAHelper].toInstance(mockCyaHelper)
+    bind[TrusteePartnershipDetailsCYAHelper].toInstance(mockCyaHelper)
   )
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
   private val rows = Seq(
