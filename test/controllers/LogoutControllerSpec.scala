@@ -27,7 +27,7 @@ import scala.concurrent.Future
 
 
 class LogoutControllerSpec extends ControllerSpecBase with Results {
-  private val unauthorisedUrl = "/migrate-pension-scheme/unauthorised"
+  private val unauthorisedUrl = "/add-pension-scheme/unauthorised"
   private val mockAuthConnector: AuthConnector = mock[AuthConnector]
   private val mockLockCacheConnector = mock[LockCacheConnector]
   def logoutController: LogoutController =
