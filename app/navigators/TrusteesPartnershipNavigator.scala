@@ -17,10 +17,13 @@
 package navigators
 
 import controllers.routes._
+import controllers.trustees.partnership.address.routes._
 import controllers.trustees.routes._
 import controllers.trustees.partnership.contact.routes._
 import identifiers._
 import identifiers.trustees.partnership.PartnershipDetailsId
+import identifiers.trustees.partnership.address.{EnterPostCodeId,
+  AddressListId, AddressYearsId, TradingTimeId, EnterPreviousPostCodeId, PreviousAddressListId, PreviousAddressId, AddressId}
 import identifiers.trustees.partnership.contact.{EnterEmailId, EnterPhoneId}
 import models.NormalMode
 import models.requests.DataRequest
@@ -35,6 +38,16 @@ class TrusteesPartnershipNavigator
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case PartnershipDetailsId(_) => AddTrusteeController.onPageLoad()
+    case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index)
+    case AddressListId(index) => addressYears(index)
+    case AddressId(index) => addressYears(index)
+    case AddressYearsId(index) =>
+      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else TradingTimeController.onPageLoad(index)
+    case TradingTimeId(index) =>
+      if (ua.get(TradingTimeId(index)).contains(true)) EnterPreviousPostcodeController.onPageLoad(index) else cyaAddress(index)
+    case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index)
+    case PreviousAddressListId(index) => cyaAddress(index)
+    case PreviousAddressId(index) => cyaAddress(index)
     case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
     case EnterPhoneId(index) => cyaContactDetails(index)
   }
@@ -46,5 +59,7 @@ class TrusteesPartnershipNavigator
     case EnterPhoneId(index) => cyaContactDetails(index)
   }
 
+  private def cyaAddress(index:Int): Call = controllers.trustees.partnership.address.routes.CheckYourAnswersController.onPageLoad(index)
+  private def addressYears(index:Int): Call = controllers.trustees.partnership.address.routes.AddressYearsController.onPageLoad(index)
   private def cyaContactDetails(index:Int): Call = controllers.trustees.partnership.contact.routes.CheckYourAnswersController.onPageLoad(index)
 }

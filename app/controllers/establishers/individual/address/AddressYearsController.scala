@@ -19,7 +19,7 @@ package controllers.establishers.individual.address
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.CommonAddressYearsController
-import forms.establishers.address.AddressYearsFormProvider
+import forms.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressYearsId
@@ -47,7 +47,7 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
   with Enumerable.Implicits {
 
   private def form: Form[Boolean] =
-    formProvider()
+    formProvider("individualAddressYears.error.required")
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>

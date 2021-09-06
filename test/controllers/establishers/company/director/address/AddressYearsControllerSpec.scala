@@ -18,7 +18,7 @@ package controllers.establishers.company.director.address
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import forms.establishers.address.AddressYearsFormProvider
+import forms.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.address.AddressYearsId
@@ -48,7 +48,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
   private val httpPathGET: String = controllers.establishers.company.director.address.routes.AddressYearsController.onPageLoad(0, 0, NormalMode).url
   private val httpPathGETCheck: String = controllers.establishers.company.director.address.routes.AddressYearsController.onPageLoad(0, 0, CheckMode).url
   private val httpPathPOST: String = controllers.establishers.company.director.address.routes.AddressYearsController.onSubmit(0, 0, NormalMode).url
-  private val form: Form[Boolean] = new AddressYearsFormProvider()()
+  private val form: Form[Boolean] = new AddressYearsFormProvider()("")
 
   private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>
     Json.obj(
