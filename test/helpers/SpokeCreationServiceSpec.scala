@@ -383,16 +383,7 @@ class SpokeCreationServiceSpec
     }
 
     "display all the spokes with appropriate links and incomplete status when data is returned from TPSS for partnership address spoke" in {
-      val userAnswers =
-        ua
-          .set(EstablisherKindId(0), EstablisherKind.Partnership).success.value
-          .set(EstablisherPartnershipDetailsId(0), PartnershipDetails("test", false)).success.value
-          .setOrException(HaveUTRId(0), true)
-          .setOrException(PartnershipUTRId(0), ReferenceValue("12345678"))
-          .setOrException(PartnershipAddressId(0), Data.address)
-          .set(PartnerNameId(0, 0), PersonName("Jane", "Doe")).success.value
 
-      "display all the spokes with appropriate links and incomplete status when data is returned from TPSS for partnership address spoke" in {
         val userAnswers =
           ua
             .set(EstablisherKindId(0), EstablisherKind.Partnership).success.value
@@ -444,9 +435,7 @@ class SpokeCreationServiceSpec
             index = 0
           )
         result mustBe expectedSpoke
-      }
     }
-
   }
 
   "getTrusteesIndividualSpokes" must {
@@ -633,19 +622,6 @@ class SpokeCreationServiceSpec
     }
 
     "display all the spokes with appropriate links and complete status when data is returned from TPSS for trustee company spokes" in {
-      val userAnswers =
-        ua
-          .set(EstablisherKindId(0), EstablisherKind.Company).success.value
-          .set(CompanyDetailsId(0), CompanyDetails("test", false)).success.value
-          .set(trusteeCompanyDetails.HaveCompanyNumberId(0), true).success.value
-          .set(trusteeCompanyDetails.CompanyNumberId(0), ReferenceValue("AB123456C")).success.value
-          .set(trusteeCompanyDetails.HaveUTRId(0), true).success.value
-          .set(trusteeCompanyDetails.CompanyUTRId(0), ReferenceValue("1234567890")).success.value
-          .set(trusteeCompanyDetails.HaveVATId(0), true).success.value
-          .set(trusteeCompanyDetails.VATId(0), ReferenceValue("123456789")).success.value
-          .set(trusteeCompanyDetails.HavePAYEId(0), true).success.value
-          .set(trusteeCompanyDetails.PAYEId(0), ReferenceValue("12345678")).success.value
-      "display all the spokes with appropriate links and complete status when data is returned from TPSS for trustee company spokes" in {
         val userAnswers =
           ua
             .set(EstablisherKindId(0), EstablisherKind.Company).success.value
@@ -696,7 +672,6 @@ class SpokeCreationServiceSpec
           )
         result mustBe expectedSpoke
       }
-    }
   }
 
   "getTrusteePartnershipSpokes" must {
