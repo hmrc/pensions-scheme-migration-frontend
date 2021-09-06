@@ -52,7 +52,7 @@ class WhatYouWillNeedContactController @Inject()(
         PartnershipDetailsId(index).retrieve.right.map {
           details =>
             renderer.render(
-              template = "whatYouWillNeedEstablisherPartnershipContact.njk",
+              template = "establishers/partnership/contact/whatYouWillNeedPartnershipContact.njk",
               ctx = Json.obj(
                 "titleValue" -> (Message("messages__establisherPartnershipContactDetails__whatYouWillNeed_title")).resolve,
                 "name" -> details.partnershipName,
