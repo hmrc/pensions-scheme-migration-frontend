@@ -401,33 +401,6 @@ class SpokeCreationServiceSpec
             .setOrException(PartnershipUTRId(0), ReferenceValue("12345678"))
             .setOrException(PartnershipAddressId(0), Data.address)
 
-        //val expectedSpoke =
-        //  Seq(
-        //    EntitySpoke(
-        //      link = TaskListLink(
-        //        text = "Change details for test",
-        //        target = controllers.establishers.partnership.details.routes.CheckYourAnswersController.onPageLoad(0).url,
-        //        visuallyHiddenText = None
-        //      ),
-        //      isCompleted = Some(false)
-        //    ),
-        //    EntitySpoke(
-        //      link = TaskListLink(
-        //        text = "Change address for test",
-        //        target = controllers.establishers.partnership.address.routes.CheckYourAnswersController.onPageLoad(0).url,
-        //        visuallyHiddenText = None
-        //      ),
-        //      isCompleted = Some(false)
-        //    ),
-        //    EntitySpoke(
-        //      link = TaskListLink(
-        //        text = "Change partners for test",
-        //        target = controllers.establishers.partnership.routes.AddPartnersController.onPageLoad(0,NormalMode).url,
-        //        visuallyHiddenText = None
-        //      ),
-        //      Some(false)
-        //    )
-        //  )
         val expectedSpoke =
         Seq(
           EntitySpoke(
@@ -453,6 +426,14 @@ class SpokeCreationServiceSpec
               visuallyHiddenText = None
             ),
             isCompleted = Some(false)
+          ),
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Change partners for test",
+              target = controllers.establishers.partnership.routes.AddPartnersController.onPageLoad(0,NormalMode).url,
+              visuallyHiddenText = None
+            ),
+            Some(false)
           )
         )
 
