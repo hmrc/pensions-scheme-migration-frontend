@@ -41,7 +41,7 @@ class WhatYouWillNeedContactControllerSpec
 
   private val partnership: PartnershipDetails = PartnershipDetails("test")
   private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(0), partnership).success.value
-  private val templateToBeRendered: String = "whatYouWillNeedContact.njk"
+  private val templateToBeRendered: String = "whatYouWillNeedEstablisherPartnershipContact.njk"
 
   private def json: JsObject =
     Json.obj(
