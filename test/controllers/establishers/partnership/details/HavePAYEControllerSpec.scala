@@ -34,7 +34,7 @@ import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import utils.Data.{establisherPartnershipDetails, schemeName, ua}
+import utils.Data.{partnershipDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.Message
 
@@ -43,17 +43,17 @@ import scala.concurrent.Future
 class HavePAYEControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with BeforeAndAfterEach {
 
   private val index: Index = Index(0)
-  private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(index), establisherPartnershipDetails).success.value
+  private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(index), partnershipDetails).success.value
 
   private val formProvider: HasReferenceNumberFormProvider = new HasReferenceNumberFormProvider()
-  private val form: Form[Boolean] = formProvider(Message("messages__genericHavePaye__error__required", establisherPartnershipDetails.partnershipName))
+  private val form: Form[Boolean] = formProvider(Message("messages__genericHavePaye__error__required", partnershipDetails.partnershipName))
   private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
   private val templateToBeRendered: String = "hasReferenceValueWithHint.njk"
 
   private val commonJson: JsObject =
     Json.obj(
       "pageTitle"     -> messages("messages__havePAYE", messages("messages__partnership")),
-      "pageHeading"     -> messages("messages__havePAYE", establisherPartnershipDetails.partnershipName),
+      "pageHeading"     -> messages("messages__havePAYE", partnershipDetails.partnershipName),
       "schemeName"    -> schemeName,
       "paragraphs"    -> Json.arr(messages("messages__havePAYE__hint")),
       "legendClass"   -> "govuk-visually-hidden",

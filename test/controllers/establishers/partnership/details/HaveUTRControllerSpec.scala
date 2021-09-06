@@ -34,7 +34,7 @@ import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import utils.Data.{establisherPartnershipDetails, schemeName, ua}
+import utils.Data.{partnershipDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.Message
 
@@ -43,17 +43,17 @@ import scala.concurrent.Future
 class HaveUTRControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with BeforeAndAfterEach {
 
   private val index: Index = Index(0)
-  private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(index), establisherPartnershipDetails).success.value
+  private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(index), partnershipDetails).success.value
 
   private val formProvider: HasReferenceNumberFormProvider = new HasReferenceNumberFormProvider()
-  private val form: Form[Boolean] = formProvider(Message("messages__genericHasUtr__error__required", establisherPartnershipDetails.partnershipName))
+  private val form: Form[Boolean] = formProvider(Message("messages__genericHasUtr__error__required", partnershipDetails.partnershipName))
   private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
   private val templateToBeRendered: String = "hasReferenceValueWithHint.njk"
 
   private val commonJson: JsObject =
     Json.obj(
       "pageTitle"     -> messages("messages__hasUTR", messages("messages__partnership")),
-      "pageHeading"     -> messages("messages__hasUTR", establisherPartnershipDetails.partnershipName),
+      "pageHeading"     -> messages("messages__hasUTR", partnershipDetails.partnershipName),
       "schemeName"    -> schemeName,
       "paragraphs"    -> Json.arr(messages("messages__UTR__p")),
       "legendClass"   -> "govuk-visually-hidden",

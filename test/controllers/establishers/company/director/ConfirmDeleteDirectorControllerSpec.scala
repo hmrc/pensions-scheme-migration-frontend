@@ -18,21 +18,22 @@ package controllers.establishers.company.director
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
+import identifiers.establishers.company.OtherDirectorsId
 import forms.establishers.ConfirmDeleteEstablisherFormProvider
-import identifiers.establishers.company.director.{ConfirmDeleteDirectorId, DirectorNameId}
+import identifiers.establishers.company.director.{DirectorNameId, ConfirmDeleteDirectorId}
 import matchers.JsonMatchers
-import models.{Index, NormalMode, PersonName}
+import models.{PersonName, Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, Json, JsValue}
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable}
 
 import scala.concurrent.Future
 
@@ -40,7 +41,9 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Nunjuc
   private val directorName: String = "Jane Doe"
   private val establisherIndex: Index = Index(0)
   private val dirIndex: Index = Index(0)
-  private val userAnswersDirector: Option[UserAnswers] = ua.set(DirectorNameId(establisherIndex,dirIndex), PersonName("Jane", "Doe")).toOption
+  private val userAnswersDirector: Option[UserAnswers] = ua
+    .set(DirectorNameId(establisherIndex,dirIndex), PersonName("Jane", "Doe")).toOption
+
   private val templateToBeRendered = "delete.njk"
   private val form: Form[Boolean] = new ConfirmDeleteEstablisherFormProvider()(directorName)
 
@@ -48,8 +51,10 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Nunjuc
 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
-  private def httpPathGET(directorIndex: Index): String = controllers.establishers.company.director.routes.ConfirmDeleteDirectorController.onPageLoad(establisherIndex,directorIndex).url
-  private def httpPathPOST(directorIndex: Index): String =controllers.establishers.company.director.routes.ConfirmDeleteDirectorController.onSubmit(establisherIndex,directorIndex).url
+  private def httpPathGET(directorIndex: Index): String =
+    controllers.establishers.company.director.routes.ConfirmDeleteDirectorController.onPageLoad(establisherIndex,directorIndex).url
+  private def httpPathPOST(directorIndex: Index): String =
+    controllers.establishers.company.director.routes.ConfirmDeleteDirectorController.onSubmit(establisherIndex,directorIndex).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq("true")
@@ -101,7 +106,9 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Nunjuc
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
-      mutableFakeDataRetrievalAction.setDataToReturn(userAnswersDirector)
+      val userAnswers = userAnswersDirector.map(_.setOrException(OtherDirectorsId(establisherIndex), true))
+
+      mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
       val result = route(application, httpPOSTRequest(httpPathPOST(dirIndex), valuesValid)).value
 
@@ -109,6 +116,14 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Nunjuc
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptor.capture)(any(), any())
       jsonCaptor.getValue must containJson(expectedJson)
       redirectLocation(result) mustBe Some(controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(establisherIndex,NormalMode).url)
+
+      val jsonCaptorUA = ArgumentCaptor.forClass(classOf[JsValue])
+      verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptorUA.capture())(any(), any())
+      val actualUA = {
+        val jsValue:JsValue = jsonCaptorUA.getValue
+        UserAnswers(jsValue.as[JsObject])
+      }
+      actualUA.get(OtherDirectorsId(establisherIndex)) mustBe None
     }
 
 

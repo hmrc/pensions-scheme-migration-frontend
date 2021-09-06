@@ -33,7 +33,7 @@ import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels.Text.Literal
 import uk.gov.hmrc.viewmodels.{Html, MessageInterpolators}
-import utils.Data.{credId, establisherPartnershipDetails, psaId, pstr, schemeName}
+import utils.Data.{credId, partnershipDetails, psaId, pstr, schemeName}
 import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 
@@ -49,7 +49,7 @@ class EstablisherPartnershipDetailsCYAHelperSpec extends AnyWordSpec with Matche
     "return all rows with correct change links, values and visually hidden text when user has answered yes for all questions" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, schemeName)
-        .setOrException(PartnershipDetailsId(0), establisherPartnershipDetails)
+        .setOrException(PartnershipDetailsId(0), partnershipDetails)
         .setOrException(HaveUTRId(0), true)
         .setOrException(HaveVATId(0), true)
         .setOrException(HavePAYEId(0), true)
@@ -60,73 +60,73 @@ class EstablisherPartnershipDetailsCYAHelperSpec extends AnyWordSpec with Matche
       val result = cyaHelper.detailsRows(0)(dataRequest(ua), messages)
 
       result.head mustBe Row(
-        key = Key(msg"${Message("messages__hasUTR", establisherPartnershipDetails.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__hasUTR", partnershipDetails.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(Literal("Yes")),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
           href = routes.HaveUTRController.onPageLoad(0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__hasUTR__cya__visuallyHidden", establisherPartnershipDetails.partnershipName))),
+            Messages("messages__hasUTR__cya__visuallyHidden", partnershipDetails.partnershipName))),
           attributes = Map("id" -> "cya-0-0-change")
         ))
       )
 
       result(1) mustBe Row(
-        key = Key(msg"${Message("messages__enterUTR", establisherPartnershipDetails.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__enterUTR", partnershipDetails.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(msg"12345678"),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
           href = routes.UTRController.onPageLoad(0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__enterUTR__cya__visuallyHidden", establisherPartnershipDetails.partnershipName))),
+            Messages("messages__enterUTR__cya__visuallyHidden", partnershipDetails.partnershipName))),
           attributes = Map("id" -> "cya-0-1-change")
         ))
       )
 
       result(2) mustBe Row(
-        key = Key(msg"${Message("messages__haveVAT", establisherPartnershipDetails.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__haveVAT", partnershipDetails.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(Literal("Yes")),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
           href = routes.HaveVATController.onPageLoad(0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__haveVAT__cya__visuallyHidden", establisherPartnershipDetails.partnershipName))),
+            Messages("messages__haveVAT__cya__visuallyHidden", partnershipDetails.partnershipName))),
           attributes = Map("id" -> "cya-0-2-change")
         ))
       )
 
       result(3) mustBe Row(
-        key = Key(msg"${Message("messages__vat", establisherPartnershipDetails.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__vat", partnershipDetails.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(msg"12345678"),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
           href = routes.VATController.onPageLoad(0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__vat__cya__visuallyHidden", establisherPartnershipDetails.partnershipName))),
+            Messages("messages__vat__cya__visuallyHidden", partnershipDetails.partnershipName))),
           attributes = Map("id" -> "cya-0-3-change")
         ))
       )
 
       result(4) mustBe Row(
-        key = Key(msg"${Message("messages__havePAYE", establisherPartnershipDetails.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__havePAYE", partnershipDetails.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(Literal("Yes")),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
           href = routes.HavePAYEController.onPageLoad(0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__havePAYE__cya__visuallyHidden", establisherPartnershipDetails.partnershipName))),
+            Messages("messages__havePAYE__cya__visuallyHidden", partnershipDetails.partnershipName))),
           attributes = Map("id" -> "cya-0-4-change")
         ))
       )
 
       result(5) mustBe Row(
-        key = Key(msg"${Message("messages__paye", establisherPartnershipDetails.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__paye", partnershipDetails.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(msg"12345678"),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
           href = routes.PAYEController.onPageLoad(0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__paye__cya__visuallyHidden", establisherPartnershipDetails.partnershipName))),
+            Messages("messages__paye__cya__visuallyHidden", partnershipDetails.partnershipName))),
           attributes = Map("id" -> "cya-0-5-change")
         ))
       )
@@ -136,7 +136,7 @@ class EstablisherPartnershipDetailsCYAHelperSpec extends AnyWordSpec with Matche
     "return all rows with correct change links, values and visually hidden text when user has answered no for all questions" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, schemeName)
-        .setOrException(PartnershipDetailsId(0), establisherPartnershipDetails)
+        .setOrException(PartnershipDetailsId(0), partnershipDetails)
         .setOrException(HaveUTRId(0), false)
         .setOrException(HaveVATId(0), false)
         .setOrException(HavePAYEId(0), false)
@@ -145,49 +145,49 @@ class EstablisherPartnershipDetailsCYAHelperSpec extends AnyWordSpec with Matche
       val result = cyaHelper.detailsRows(0)(dataRequest(ua), messages)
 
       result.head mustBe Row(
-        key = Key(msg"${Message("messages__hasUTR", establisherPartnershipDetails.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__hasUTR", partnershipDetails.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(Literal("No")),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
           href = routes.HaveUTRController.onPageLoad(0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__hasUTR__cya__visuallyHidden", establisherPartnershipDetails.partnershipName))),
+            Messages("messages__hasUTR__cya__visuallyHidden", partnershipDetails.partnershipName))),
           attributes = Map("id" -> "cya-0-0-change")
         ))
       )
 
       result(1) mustBe Row(
-        key = Key(msg"${Message("messages__whyNoUTR", establisherPartnershipDetails.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__whyNoUTR", partnershipDetails.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(Literal("reason-utr")),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
           href = routes.NoUTRReasonController.onPageLoad(0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__whyNoUTR__cya__visuallyHidden", establisherPartnershipDetails.partnershipName))),
+            Messages("messages__whyNoUTR__cya__visuallyHidden", partnershipDetails.partnershipName))),
           attributes = Map("id" -> "cya-0-1-change")
         ))
       )
 
       result(2) mustBe Row(
-        key = Key(msg"${Message("messages__haveVAT", establisherPartnershipDetails.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__haveVAT", partnershipDetails.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(Literal("No")),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
           href = routes.HaveVATController.onPageLoad(0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__haveVAT__cya__visuallyHidden", establisherPartnershipDetails.partnershipName))),
+            Messages("messages__haveVAT__cya__visuallyHidden", partnershipDetails.partnershipName))),
           attributes = Map("id" -> "cya-0-2-change")
         ))
       )
 
       result(3) mustBe Row(
-        key = Key(msg"${Message("messages__havePAYE", establisherPartnershipDetails.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__havePAYE", partnershipDetails.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(Literal("No")),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
           href = routes.HavePAYEController.onPageLoad(0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__havePAYE__cya__visuallyHidden", establisherPartnershipDetails.partnershipName))),
+            Messages("messages__havePAYE__cya__visuallyHidden", partnershipDetails.partnershipName))),
           attributes = Map("id" -> "cya-0-3-change")
         ))
       )

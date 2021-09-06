@@ -37,7 +37,7 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
-import utils.Data.{establisherPartnershipDetails, schemeName, ua}
+import utils.Data.{partnershipDetails, schemeName, ua}
 import utils.{Enumerable, UserAnswers}
 
 import scala.concurrent.Future
@@ -47,14 +47,14 @@ class AddPartnersControllerSpec extends ControllerSpecBase with NunjucksSupport 
     PersonName("Jane", "Doe")
   private val userAnswers: Option[UserAnswers] =
    ua.set(EstablisherKindId(0), EstablisherKind.Partnership).flatMap(
-     _.set(PartnershipDetailsId(0), establisherPartnershipDetails).flatMap(
+     _.set(PartnershipDetailsId(0), partnershipDetails).flatMap(
         _.set(PartnerNameId(0,0), partnerName).flatMap(
           _.set(IsNewPartnerId(0,0), true)
      ))).toOption
 
   private def validData() = {
     ua.set(EstablisherKindId(1), EstablisherKind.Partnership).flatMap(
-      _.set(PartnershipDetailsId(1), establisherPartnershipDetails).flatMap(
+      _.set(PartnershipDetailsId(1), partnershipDetails).flatMap(
         _.set(PartnerNameId(1,1), partnerName).flatMap(
         _.set(PartnerNameId(1,2), partnerName).flatMap(
         _.set(PartnerNameId(1,3), partnerName).flatMap(
