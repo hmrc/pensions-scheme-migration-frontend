@@ -141,7 +141,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = TaskListLink(
               text = "Add address for a b",
-              target = controllers.establishers.individual.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
+              target =  EstablishersIndividualRoutes.wywnAddressRoute(0, NormalMode).url,
               visuallyHiddenText = None
             ),
             isCompleted = None

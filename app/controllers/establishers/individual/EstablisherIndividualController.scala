@@ -17,8 +17,8 @@
 package controllers.establishers.individual
 
 import controllers.establishers.individual.details._
-import controllers.trustees.individual.{contact => contact}
-import models.{Index, Mode}
+import controllers.trustees.individual.{address, contact}
+import models.{Mode, Index}
 import play.api.mvc.{Action, AnyContent}
 
 import javax.inject.Inject
@@ -26,22 +26,28 @@ import scala.concurrent.ExecutionContext
 
 class EstablisherIndividualController @Inject()(
   establisherNameController: EstablisherNameController,
-  whatYouWillNeedController: WhatYouWillNeedController,
-  establisherDOBController:EstablisherDOBController,
-  establisherHasNINOController:EstablisherHasNINOController,
-  establisherHasUTRController:EstablisherHasUTRController,
-  establisherEnterUTRController:EstablisherEnterUTRController,
-  establisherEnterNINOController:EstablisherEnterNINOController,
-  establisherNoNINOReasonController:EstablisherNoNINOReasonController,
-  establisherNoUTRReasonController:EstablisherNoUTRReasonController,
-  checkYourAnswersController:CheckYourAnswersController,
+  whatYouWillNeedController: WhatYouWillNeedController, establisherDOBController: EstablisherDOBController,
+  establisherHasNINOController: EstablisherHasNINOController, establisherHasUTRController: EstablisherHasUTRController,
+  establisherEnterUTRController: EstablisherEnterUTRController,
+  establisherEnterNINOController: EstablisherEnterNINOController,
+  establisherNoNINOReasonController: EstablisherNoNINOReasonController,
+  establisherNoUTRReasonController: EstablisherNoUTRReasonController,
+  checkYourAnswersController: CheckYourAnswersController,
   whatYouWillNeedContactController: contact.WhatYouWillNeedController,
-  enterEmailController: contact.EnterEmailController,
-  enterPhoneController: contact.EnterPhoneController,
-  checkYourAnswersContactController: contact.CheckYourAnswersController
-                                         )(implicit val executionContext: ExecutionContext) {
+  enterEmailController: contact.EnterEmailController, enterPhoneController: contact.EnterPhoneController,
+  checkYourAnswersContactController: contact.CheckYourAnswersController,
+  whatYouWillNeedAddressController: address.WhatYouWillNeedController,
+  enterPostcodeController: address.EnterPostcodeController, selectAddressController: address.SelectAddressController,
+  confirmAddressController: address.ConfirmAddressController,
+  checkYourAnswersAddressController: address.CheckYourAnswersController,
+  addressYearsController: address.AddressYearsController,
+  enterPreviousPostcodeController: address.EnterPreviousPostcodeController,
+  selectPreviousAddressController: address.SelectPreviousAddressController,
+  confirmPreviousAddressController: address.ConfirmPreviousAddressController)
+  (implicit val executionContext: ExecutionContext) {
 
-  def onPageLoad(index: Index, mode:Mode, page: String): Action[AnyContent] = {
+  //scalastyle:off cyclomatic.complexity
+  def onPageLoad(index: Index, mode: Mode, page: String): Action[AnyContent] = {
     page match {
       case "name" => establisherNameController.onPageLoad(index)
       case "details" => whatYouWillNeedController.onPageLoad(index)
@@ -57,11 +63,21 @@ class EstablisherIndividualController @Inject()(
       case "enter-email-address" => enterEmailController.onPageLoad(index, mode)
       case "enter-phone-number" => enterPhoneController.onPageLoad(index, mode)
       case "check-your-answers-contact-details" => checkYourAnswersContactController.onPageLoad(index)
+      case "address" => whatYouWillNeedAddressController.onPageLoad(index)
+      case "enter-postcode" => enterPostcodeController.onPageLoad(index)
+      case "address-results" => selectAddressController.onPageLoad(index)
+      case "confirm-address" => confirmAddressController.onPageLoad(index)
+      case "check-your-answers-address" => checkYourAnswersAddressController.onPageLoad(index)
+      case "time-at-address" => addressYearsController.onPageLoad(index)
+      case "enter-previous-postcode" => enterPreviousPostcodeController.onPageLoad(index)
+      case "previous-address-results" => selectPreviousAddressController.onPageLoad(index)
+      case "confirm-previous-address" => confirmPreviousAddressController.onPageLoad(index)
       case _ => throw new RuntimeException("No route")
     }
   }
 
-  def onSubmit(index: Index, mode:Mode, page: String): Action[AnyContent] = {
+  //scalastyle:off cyclomatic.complexity
+  def onSubmit(index: Index, mode: Mode, page: String): Action[AnyContent] = {
     page match {
       case "name" => establisherNameController.onSubmit(index)
       case "date-of-birth" => establisherDOBController.onSubmit(index, mode)
@@ -73,6 +89,13 @@ class EstablisherIndividualController @Inject()(
       case "reason-for-no-unique-taxpayer-reference" => establisherNoUTRReasonController.onSubmit(index, mode)
       case "enter-email-address" => enterEmailController.onSubmit(index, mode)
       case "enter-phone-number" => enterPhoneController.onSubmit(index, mode)
+      case "enter-postcode" => enterPostcodeController.onSubmit(index)
+      case "address-results" => selectAddressController.onSubmit(index)
+      case "confirm-address" => confirmAddressController.onSubmit(index)
+      case "time-at-address" => addressYearsController.onSubmit(index)
+      case "enter-previous-postcode" => enterPreviousPostcodeController.onSubmit(index)
+      case "previous-address-results" => selectPreviousAddressController.onSubmit(index)
+      case "confirm-previous-address" => confirmPreviousAddressController.onSubmit(index)
       case _ => throw new RuntimeException("No route")
     }
   }

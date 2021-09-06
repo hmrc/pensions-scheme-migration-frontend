@@ -18,6 +18,7 @@ package navigators
 
 import base.SpecBase
 import controllers.establishers.routes
+import helpers.routes.EstablishersIndividualRoutes
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address._
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
@@ -65,20 +66,18 @@ class EstablishersNavigatorSpec
 
   val address = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
 
-  private val cyaAddress: Call =
-    controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
+  private val cyaAddress: Call = EstablishersIndividualRoutes.cyaAddressRoute(index, NormalMode)
 
   private def enterPreviousPostcode(mode:Mode): Call =
-    controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index)
+    EstablishersIndividualRoutes.enterPreviousPostcodeRoute( index, NormalMode)
 
-  private def selectAddress(mode:Mode): Call =
-    controllers.establishers.individual.address.routes.SelectAddressController.onPageLoad(index)
+  private def selectAddress(mode:Mode): Call = {
+    EstablishersIndividualRoutes.selectAddressRoute(index, NormalMode)
+  }
 
-  private def selectPreviousAddress(mode:Mode): Call =
-    controllers.establishers.individual.address.routes.SelectPreviousAddressController.onPageLoad(index)
+  private def selectPreviousAddress(mode:Mode): Call = EstablishersIndividualRoutes.previousAddressResultsRoute(index, NormalMode)
 
-  private def addressYears(mode:Mode): Call =
-    controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index)
+  private def addressYears(mode:Mode): Call = EstablishersIndividualRoutes.timeAtAddressRoute(index, NormalMode)
 
   private def enterPhonePage(mode:Mode): Call =
     phoneNumberRoute(index, mode)

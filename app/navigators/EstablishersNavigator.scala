@@ -18,10 +18,10 @@ package navigators
 
 import config.AppConfig
 import controllers.establishers.company.routes.CompanyDetailsController
-import controllers.establishers.individual.address.routes._
 import controllers.establishers.partnership.routes._
 import controllers.establishers.routes._
 import controllers.routes._
+import helpers.routes.EstablishersIndividualRoutes
 import helpers.routes.EstablishersIndividualRoutes._
 import identifiers._
 import identifiers.establishers._
@@ -32,9 +32,9 @@ import identifiers.establishers.individual.details._
 import identifiers.establishers.partnership.AddPartnersId
 import models.establishers.EstablisherKind
 import models.requests.DataRequest
-import models.{CheckMode, Index, Mode, NormalMode}
-import play.api.mvc.{AnyContent, Call}
-import utils.{Enumerable, UserAnswers}
+import models.{Mode, Index, CheckMode, NormalMode}
+import play.api.mvc.{Call, AnyContent}
+import utils.{UserAnswers, Enumerable}
 
 import javax.inject.Inject
 
@@ -56,12 +56,12 @@ class EstablishersNavigator@Inject()(config: AppConfig)
     case EstablisherHasUTRId(index) => establisherHasUtr(index, ua, NormalMode)
     case EstablisherUTRId(index) => cyaDetails(index)
     case EstablisherNoUTRReasonId(index) => cyaDetails(index)
-    case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index)
+    case EnterPostCodeId(index) => EstablishersIndividualRoutes.selectAddressRoute(index, NormalMode)
     case AddressListId(index) => addressYears(index, NormalMode)
     case AddressId(index) => addressYears(index, NormalMode)
     case AddressYearsId(index) =>
-      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else EnterPreviousPostcodeController.onPageLoad(index)
-    case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index)
+      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else EstablishersIndividualRoutes.enterPreviousPostcodeRoute(index, NormalMode)
+    case EnterPreviousPostCodeId(index) => EstablishersIndividualRoutes.previousAddressResultsRoute(index, NormalMode)
     case PreviousAddressListId(index) => cyaAddress(index)
     case PreviousAddressId(index) => cyaAddress(index)
     case EnterEmailId(index) => phoneNumberRoute(index, NormalMode)
@@ -82,10 +82,10 @@ class EstablishersNavigator@Inject()(config: AppConfig)
     case EnterPhoneId(index) => cyaContactDetails(index)
   }
 
-  private def cyaAddress(index:Int): Call = controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
+  private def cyaAddress(index:Int): Call = EstablishersIndividualRoutes.cyaAddressRoute(index, NormalMode)
   private def cyaDetails(index:Int): Call = cyaDetailsRoute(index, NormalMode)
   private def cyaContactDetails(index:Int): Call = cyaContactRoute(index, NormalMode)
-  private def addressYears(index:Int, mode:Mode): Call = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index)
+  private def addressYears(index:Int, mode:Mode): Call =EstablishersIndividualRoutes.timeAtAddressRoute(index, NormalMode)
 
   private def addPartners(index: Int, answers: UserAnswers): Call = {
     if (answers.allPartnersAfterDelete(index).isEmpty) {

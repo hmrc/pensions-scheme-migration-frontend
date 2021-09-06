@@ -18,9 +18,10 @@ package controllers.establishers.individual.address
 
 import controllers.ControllerSpecBase
 import controllers.actions._
+import helpers.routes.EstablishersIndividualRoutes
 import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
-import models.PersonName
+import models.{PersonName, NormalMode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
@@ -50,7 +51,7 @@ class WhatYouWillNeedControllerSpec
   private def json: JsObject =
     Json.obj(
       "name"        -> "Jane Doe",
-      "continueUrl" -> controllers.establishers.individual.address.routes.EnterPostcodeController.onPageLoad(0).url,
+      "continueUrl" -> EstablishersIndividualRoutes.enterPostcodeRoute(0, NormalMode).url,
       "schemeName"  -> "Test scheme name"
     )
 
