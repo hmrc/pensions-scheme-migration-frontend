@@ -24,6 +24,13 @@ import play.api.mvc.{Action, AnyContent}
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
+/*
+  This controller is a short-term fix for an issue the Plat UI team are looking into
+  which means that our code is running out of routes.
+  A lot of controllers are injected into this controller. If this fix becomes a longer-term
+  fix then we should probably split this into separate services to reduce the number.
+ */
+
 class EstablisherIndividualController @Inject()(
   establisherNameController: EstablisherNameController,
   whatYouWillNeedController: WhatYouWillNeedController, establisherDOBController: EstablisherDOBController,
