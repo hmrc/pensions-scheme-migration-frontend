@@ -14,17 +14,25 @@
  * limitations under the License.
  */
 
-package forms.trustees.address
+package forms.address
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-import javax.inject.Inject
+class TradingTimeFormProviderSpec extends BooleanFieldBehaviours {
 
-class AddressYearsFormProvider @Inject() extends Mappings {
+  val requiredKey = "companyTradingTime.error.required"
 
-  def apply(requiredKey:String): Form[Boolean] =
-    Form(
-      "value" -> boolean(requiredKey)
+  val form = new TradingTimeFormProvider()(requiredKey)
+
+  ".value" must  {
+
+    val fieldName = "value"
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
     )
+  }
 }

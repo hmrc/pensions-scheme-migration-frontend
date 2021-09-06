@@ -18,7 +18,7 @@ package controllers.establishers.partnership.address
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import forms.establishers.partnership.address.PartnershipTradingTimeFormProvider
+import forms.address.TradingTimeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.address.TradingTimeId
@@ -45,7 +45,7 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
   private val httpPathGET: String = controllers.establishers.partnership.address.routes.TradingTimeController.onPageLoad(0).url
   private val httpPathPOST: String = controllers.establishers.partnership.address.routes.TradingTimeController.onSubmit(0).url
-  private val form: Form[Boolean] = new PartnershipTradingTimeFormProvider()()
+  private val form: Form[Boolean] = new TradingTimeFormProvider()("")
 
   private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>
     Json.obj(
@@ -165,3 +165,4 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
   }
 
 }
+

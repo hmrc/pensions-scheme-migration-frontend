@@ -18,7 +18,7 @@ package controllers.trustees.company.address
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import forms.trustees.address.AddressYearsFormProvider
+import forms.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.address.AddressYearsId
@@ -40,7 +40,7 @@ import scala.concurrent.Future
 
 class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
-  private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(CompanyDetailsId(0), Data.establisherCompanyDetails))
+  private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(CompanyDetailsId(0), Data.trusteeCompanyDetails))
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
   private val httpPathGET: String = controllers.trustees.company.address.routes.AddressYearsController.onPageLoad(0).url
@@ -72,7 +72,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
     "Return OK and the correct view for a GET" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, Data.schemeName)
-        .setOrException(CompanyDetailsId(0), Data.establisherCompanyDetails)
+        .setOrException(CompanyDetailsId(0), Data.trusteeCompanyDetails)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
       val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
@@ -82,7 +82,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       verify(mockRenderer, times(1))
-        .render(ArgumentMatchers.eq("trustees/company/address/addressYears.njk"), jsonCaptor.capture())(any())
+        .render(ArgumentMatchers.eq("address/addressYears.njk"), jsonCaptor.capture())(any())
 
       (jsonCaptor.getValue \ "schemeName").toOption.map(_.as[String]) mustBe Some(Data.schemeName)
     }
@@ -90,7 +90,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
     "return OK and the correct view for a GET when the question has previously been answered" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, Data.schemeName)
-        .setOrException(CompanyDetailsId(0), Data.establisherCompanyDetails)
+        .setOrException(CompanyDetailsId(0), Data.trusteeCompanyDetails)
         .setOrException(AddressYearsId(0), true)
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
@@ -102,7 +102,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       verify(mockRenderer, times(1))
-        .render(ArgumentMatchers.eq("trustees/company/address/addressYears.njk"), jsonCaptor.capture())(any())
+        .render(ArgumentMatchers.eq("address/addressYears.njk"), jsonCaptor.capture())(any())
 
       jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(true)))
     }

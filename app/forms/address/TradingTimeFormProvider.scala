@@ -23,8 +23,8 @@ import javax.inject.Inject
 
 class TradingTimeFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
+  def apply(requiredKey: String): Form[Boolean] =
     Form(
-      "value" -> boolean("companyTradingTime.error.required")
+      "value" -> boolean(requiredKey)
     )
 }

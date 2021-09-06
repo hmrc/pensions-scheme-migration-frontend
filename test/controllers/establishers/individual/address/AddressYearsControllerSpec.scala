@@ -18,9 +18,9 @@ package controllers.establishers.individual.address
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import forms.establishers.address.AddressYearsFormProvider
-import helpers.routes.EstablishersIndividualRoutes
+import forms.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
+import helpers.routes.EstablishersIndividualRoutes
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressYearsId
 import matchers.JsonMatchers
@@ -47,7 +47,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
   private val httpPathGET: String = EstablishersIndividualRoutes.timeAtAddressRoute(0, NormalMode).url
   private val httpPathPOST: String = EstablishersIndividualRoutes.timeAtAddressPOSTRoute(0, NormalMode).url
-  private val form: Form[Boolean] = new AddressYearsFormProvider()()
+  private val form: Form[Boolean] = new AddressYearsFormProvider()("")
 
   private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>
     Json.obj(
