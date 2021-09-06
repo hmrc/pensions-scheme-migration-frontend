@@ -22,14 +22,15 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.PostcodeController
 import forms.address.PostcodeFormProvider
+import helpers.routes.EstablishersIndividualRoutes
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.EnterPostCodeId
 import models.requests.DataRequest
-import models.{Index, Mode, NormalMode}
+import models.{Mode, Index, NormalMode}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -80,7 +81,7 @@ class EnterPostcodeController @Inject()(val appConfig: AppConfig,
         "entityType" -> msg("establisherEntityTypeIndividual"),
         "entityName" -> name,
         "form" -> form,
-        "enterManuallyUrl" -> controllers.establishers.individual.address.routes.ConfirmAddressController.onPageLoad(index).url,
+        "enterManuallyUrl" -> EstablishersIndividualRoutes.confirmAddressRoute(index, NormalMode).url,
         "schemeName" -> schemeName
       )
     }

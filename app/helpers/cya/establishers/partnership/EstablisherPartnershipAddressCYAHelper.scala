@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-/*
 package helpers.cya.establishers.partnership
 
 import helpers.cya.CYAHelper
@@ -88,4 +87,4 @@ class EstablisherPartnershipAddressCYAHelper
     rowsWithDynamicIndices(rowsWithoutDynamicIndices)
   }
 }
-*/
+

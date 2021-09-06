@@ -19,17 +19,24 @@ package utils.datacompletion
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.company.details._
 import identifiers.establishers.company.director.details._
-import identifiers.establishers.company.director.{address => directorAddress, contact => directorContact}
+import identifiers.establishers.company.director.{address => directorAddress}
+import identifiers.establishers.partnership.partner.details._
+import identifiers.establishers.partnership.partner.{address => partnerAddress}
+import identifiers.establishers.partnership.partner.{contact => partnerContact}
 import identifiers.establishers.company.{CompanyDetailsId, contact => companyContact}
-import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.individual.details._
+import identifiers.establishers.individual.EstablisherNameId
+import identifiers.establishers.company.director.{contact => directorContact}
+import identifiers.establishers.partnership.{PartnershipDetailsId, address => partnershipAddress}
+import identifiers.establishers.partnership.{details => partnershipDetails}
 import models.establishers.EstablisherKind
-import models.{CompanyDetails, PersonName, ReferenceValue}
+import models.{CompanyDetails, PartnershipDetails, PersonName, ReferenceValue}
+import org.scalatest.{OptionValues, TryValues}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.{OptionValues, TryValues}
+
 import utils.{Data, Enumerable, UserAnswers}
 
 import java.time.LocalDate
@@ -350,209 +357,209 @@ class DataCompletionEstablishersSpec
       }
     }
 
-//    "Establisher Partnership completion status should be returned correctly" when {
-//      "isEstablisherPartnershipComplete" must {
-//        "return true when all answers are present" in {
-//          val ua =
-//            UserAnswers()
-//              .set(EstablisherKindId(0), EstablisherKind.Partnership).success.value
-//              .set(PartnershipDetailsId(0), PartnershipDetails("test partnership")).success.value
-//
-//          ua.isEstablisherPartnershipComplete(0) mustBe true
-//        }
-//
-//        "return false when some answer is missing" in {
-//          val ua =
-//            UserAnswers()
-//              .set(EstablisherKindId(0), EstablisherKind.Partnership).success.value
-//              .set(PartnershipDetailsId(0), PartnershipDetails("test partnership")).success.value
-//              .set(EstablisherKindId(1), EstablisherKind.Partnership).success.value
-//
-//          ua.isEstablisherPartnershipComplete(1) mustBe false
-//        }
-//      }
-//
-//      "isEstablisherPartnershipDetailsCompleted" must {
-//        "return true when all answers are present" in {
-//
-//          val ua1 =
-//            UserAnswers()
-//              .set(partnershipDetails.HaveUTRId(0), true).success.value
-//              .set(partnershipDetails.PartnershipUTRId(0), ReferenceValue("1234567890")).success.value
-//              .set(partnershipDetails.HaveVATId(0), true).success.value
-//              .set(partnershipDetails.VATId(0), ReferenceValue("123456789")).success.value
-//              .set(partnershipDetails.HavePAYEId(0), true).success.value
-//              .set(partnershipDetails.PAYEId(0), ReferenceValue("12345678")).success.value
-//
-//          val ua2 =
-//            UserAnswers()
-//              .set(partnershipDetails.HaveUTRId(0), false).success.value
-//              .set(partnershipDetails.NoUTRReasonId(0), "Reason").success.value
-//              .set(partnershipDetails.HaveVATId(0), false).success.value
-//              .set(partnershipDetails.HavePAYEId(0), false).success.value
-//
-//
-//          ua1.isEstablisherPartnershipDetailsCompleted(0) mustBe Some(true)
-//          ua2.isEstablisherPartnershipDetailsCompleted(0) mustBe Some(true)
-//        }
-//
-//        "return false when some answer is missing" in {
-//          val ua =
-//            UserAnswers()
-//              .set(partnershipDetails.HaveUTRId(0), false).success.value
-//
-//          ua.isEstablisherPartnershipDetailsCompleted(0) mustBe Some(false)
-//
-//        }
-//      }
-//
-//      "isEstablisherPartnershipAddressCompleted" must {
-//        "return true when all answers are present" in {
-//          val ua1 =
-//            UserAnswers()
-//              .setOrException(partnershipAddress.AddressId(0), Data.address)
-//              .setOrException(partnershipAddress.AddressYearsId(0), true)
-//
-//          val ua2 =
-//            UserAnswers()
-//              .setOrException(partnershipAddress.AddressId(0), Data.address)
-//              .setOrException(partnershipAddress.AddressYearsId(0), false)
-//              .setOrException(partnershipAddress.TradingTimeId(0), true)
-//              .setOrException(partnershipAddress.PreviousAddressId(0), Data.address)
-//
-//          ua1.isEstablisherPartnershipAddressCompleted(0, ua1) mustBe Some(true)
-//          ua2.isEstablisherPartnershipAddressCompleted(0, ua2) mustBe Some(true)
-//        }
-//
-//        "return false when some answer is missing" in {
-//          val ua1 =
-//            UserAnswers()
-//              .setOrException(partnershipAddress.AddressId(0), Data.address)
-//              .setOrException(partnershipAddress.AddressYearsId(0), false)
-//
-//          val ua2 =
-//            UserAnswers()
-//              .setOrException(partnershipAddress.AddressId(0), Data.address)
-//
-//          ua1.isEstablisherPartnershipAddressCompleted(0, ua1) mustBe Some(false)
-//          ua2.isEstablisherPartnershipAddressCompleted(0, ua2) mustBe Some(false)
-//        }
-//
-//        "return None when no answers present" in {
-//          UserAnswers().isEstablisherPartnershipAddressCompleted(0, UserAnswers()) mustBe None
-//        }
-//      }
-//
-//      "Partner completion status should be returned correctly" when {
-//        "isPartnerComplete" must {
-//          "return true when all answers are present" in {
-//            val ua1 =
-//              UserAnswers()
-//                .set(PartnerDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
-//                .set(PartnerHasNINOId(0, 0), true).success.value
-//                .set(PartnerNINOId(0, 0), ReferenceValue("1234567890")).success.value
-//                .set(PartnerHasUTRId(0, 0), true).success.value
-//                .set(PartnerEnterUTRId(0, 0), ReferenceValue("123456789")).success.value
-//                .setOrException(partnerAddress.AddressId(0, 0), Data.address)
-//                .setOrException(partnerAddress.AddressYearsId(0, 0), true)
-//                .set(partnerContact.EnterEmailId(0, 0), "test@test.com").success.value
-//                .set(partnerContact.EnterPhoneId(0, 0), "123").success.value
-//
-//            val ua2 =
-//              UserAnswers()
-//                .set(PartnerDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
-//                .set(PartnerHasNINOId(0, 0), false).success.value
-//                .set(PartnerNoNINOReasonId(0, 0), "Reason").success.value
-//                .set(PartnerHasUTRId(0, 0), false).success.value
-//                .set(PartnerNoUTRReasonId(0, 0), "Reason").success.value
-//                .setOrException(partnerAddress.AddressId(0, 0), Data.address)
-//                .setOrException(partnerAddress.AddressYearsId(0, 0), false)
-//                .setOrException(partnerAddress.PreviousAddressId(0, 0), Data.address)
-//                .set(partnerContact.EnterEmailId(0, 0), "test@test.com").success.value
-//                .set(partnerContact.EnterPhoneId(0, 0), "123").success.value
-//
-//            ua1.isPartnerComplete(0, 0) mustBe true
-//            ua2.isPartnerComplete(0, 0) mustBe true
-//          }
-//
-//          "return false when some answer is missing" in {
-//            val ua =
-//              UserAnswers()
-//                .set(PartnerDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
-//                .set(PartnerHasNINOId(0, 0), false).success.value
-//                .set(PartnerHasUTRId(0, 0), false).success.value
-//                .setOrException(partnerAddress.AddressId(0, 0), Data.address)
-//                .setOrException(partnerAddress.AddressYearsId(0, 0), false)
-//
-//            ua.isPartnerComplete(0,0) mustBe false
-//          }
-//        }
-//      }
-//    }
-//
-//    "Partner Details completion status should be returned correctly" when {
-//      "isPartnerDetailsComplete" must {
-//        "return true when all answers are present" in {
-//          val ua1 =
-//            UserAnswers()
-//              .set(PartnerDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
-//              .set(PartnerHasNINOId(0, 0), true).success.value
-//              .set(PartnerNINOId(0, 0), ReferenceValue("1234567890")).success.value
-//              .set(PartnerHasUTRId(0, 0), true).success.value
-//              .set(PartnerEnterUTRId(0, 0), ReferenceValue("123456789")).success.value
-//
-//          val ua2 =
-//            UserAnswers()
-//              .set(PartnerDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
-//              .set(PartnerHasNINOId(0, 0), false).success.value
-//              .set(PartnerNoNINOReasonId(0, 0), "Reason").success.value
-//              .set(PartnerHasUTRId(0, 0), false).success.value
-//              .set(PartnerNoUTRReasonId(0, 0), "Reason").success.value
-//
-//          ua1.isPartnerDetailsComplete(0, 0) mustBe Some(true)
-//          ua2.isPartnerDetailsComplete(0, 0) mustBe Some(true)
-//        }
-//
-//        "return false when some answer is missing" in {
-//          val ua =
-//            UserAnswers()
-//              .set(PartnerDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
-//              .set(PartnerHasNINOId(0, 0), false).success.value
-//              .set(PartnerHasUTRId(0, 0), false).success.value
-//
-//          ua.isPartnerDetailsComplete(0,0) mustBe Some(false)
-//        }
-//      }
-//    }
-//
-//    "Partner Address completion status should be returned correctly" when {
-//
-//      "isPartnerAddressComplete" must {
-//        "return true when all answers are present" in {
-//          val ua1 =
-//            UserAnswers()
-//              .setOrException(partnerAddress.AddressId(0, 0), Data.address)
-//              .setOrException(partnerAddress.AddressYearsId(0, 0), true)
-//
-//          val ua2 =
-//            UserAnswers()
-//              .setOrException(partnerAddress.AddressId(0, 0), Data.address)
-//              .setOrException(partnerAddress.AddressYearsId(0, 0), false)
-//              .setOrException(partnerAddress.PreviousAddressId(0, 0), Data.address)
-//
-//          ua1.isPartnerAddressComplete(0, 0) mustBe Some(true)
-//          ua2.isPartnerAddressComplete(0, 0) mustBe Some(true)
-//        }
-//
-//        "return false when some answer is missing" in {
-//          val ua =
-//            UserAnswers()
-//              .setOrException(partnerAddress.AddressId(0, 0), Data.address)
-//              .setOrException(partnerAddress.AddressYearsId(0, 0), false)
-//
-//          ua.isPartnerAddressComplete(0, 0) mustBe Some(false)
-//        }
-//      }
-//    }
+    "Establisher Partnership completion status should be returned correctly" when {
+      "isEstablisherPartnershipComplete" must {
+        "return true when all answers are present" in {
+          val ua =
+            UserAnswers()
+              .set(EstablisherKindId(0), EstablisherKind.Partnership).success.value
+              .set(PartnershipDetailsId(0), PartnershipDetails("test partnership")).success.value
+
+          ua.isEstablisherPartnershipComplete(0) mustBe true
+        }
+
+        "return false when some answer is missing" in {
+          val ua =
+            UserAnswers()
+              .set(EstablisherKindId(0), EstablisherKind.Partnership).success.value
+              .set(PartnershipDetailsId(0), PartnershipDetails("test partnership")).success.value
+              .set(EstablisherKindId(1), EstablisherKind.Partnership).success.value
+
+          ua.isEstablisherPartnershipComplete(1) mustBe false
+        }
+      }
+
+      "isEstablisherPartnershipDetailsCompleted" must {
+        "return true when all answers are present" in {
+
+          val ua1 =
+            UserAnswers()
+              .set(partnershipDetails.HaveUTRId(0), true).success.value
+              .set(partnershipDetails.PartnershipUTRId(0), ReferenceValue("1234567890")).success.value
+              .set(partnershipDetails.HaveVATId(0), true).success.value
+              .set(partnershipDetails.VATId(0), ReferenceValue("123456789")).success.value
+              .set(partnershipDetails.HavePAYEId(0), true).success.value
+              .set(partnershipDetails.PAYEId(0), ReferenceValue("12345678")).success.value
+
+          val ua2 =
+            UserAnswers()
+              .set(partnershipDetails.HaveUTRId(0), false).success.value
+              .set(partnershipDetails.NoUTRReasonId(0), "Reason").success.value
+              .set(partnershipDetails.HaveVATId(0), false).success.value
+              .set(partnershipDetails.HavePAYEId(0), false).success.value
+
+
+          ua1.isEstablisherPartnershipDetailsCompleted(0) mustBe Some(true)
+          ua2.isEstablisherPartnershipDetailsCompleted(0) mustBe Some(true)
+        }
+
+        "return false when some answer is missing" in {
+          val ua =
+            UserAnswers()
+              .set(partnershipDetails.HaveUTRId(0), false).success.value
+
+          ua.isEstablisherPartnershipDetailsCompleted(0) mustBe Some(false)
+
+        }
+      }
+
+      "isEstablisherPartnershipAddressCompleted" must {
+        "return true when all answers are present" in {
+          val ua1 =
+            UserAnswers()
+              .setOrException(partnershipAddress.AddressId(0), Data.address)
+              .setOrException(partnershipAddress.AddressYearsId(0), true)
+
+          val ua2 =
+            UserAnswers()
+              .setOrException(partnershipAddress.AddressId(0), Data.address)
+              .setOrException(partnershipAddress.AddressYearsId(0), false)
+              .setOrException(partnershipAddress.TradingTimeId(0), true)
+              .setOrException(partnershipAddress.PreviousAddressId(0), Data.address)
+
+          ua1.isEstablisherPartnershipAddressCompleted(0, ua1) mustBe Some(true)
+          ua2.isEstablisherPartnershipAddressCompleted(0, ua2) mustBe Some(true)
+        }
+
+        "return false when some answer is missing" in {
+          val ua1 =
+            UserAnswers()
+              .setOrException(partnershipAddress.AddressId(0), Data.address)
+              .setOrException(partnershipAddress.AddressYearsId(0), false)
+
+          val ua2 =
+            UserAnswers()
+              .setOrException(partnershipAddress.AddressId(0), Data.address)
+
+          ua1.isEstablisherPartnershipAddressCompleted(0, ua1) mustBe Some(false)
+          ua2.isEstablisherPartnershipAddressCompleted(0, ua2) mustBe Some(false)
+        }
+
+        "return None when no answers present" in {
+          UserAnswers().isEstablisherPartnershipAddressCompleted(0, UserAnswers()) mustBe None
+        }
+      }
+
+      "Partner completion status should be returned correctly" when {
+        "isPartnerComplete" must {
+          "return true when all answers are present" in {
+            val ua1 =
+              UserAnswers()
+                .set(PartnerDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
+                .set(PartnerHasNINOId(0, 0), true).success.value
+                .set(PartnerNINOId(0, 0), ReferenceValue("1234567890")).success.value
+                .set(PartnerHasUTRId(0, 0), true).success.value
+                .set(PartnerEnterUTRId(0, 0), ReferenceValue("123456789")).success.value
+                .setOrException(partnerAddress.AddressId(0, 0), Data.address)
+                .setOrException(partnerAddress.AddressYearsId(0, 0), true)
+                .set(partnerContact.EnterEmailId(0, 0), "test@test.com").success.value
+                .set(partnerContact.EnterPhoneId(0, 0), "123").success.value
+
+            val ua2 =
+              UserAnswers()
+                .set(PartnerDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
+                .set(PartnerHasNINOId(0, 0), false).success.value
+                .set(PartnerNoNINOReasonId(0, 0), "Reason").success.value
+                .set(PartnerHasUTRId(0, 0), false).success.value
+                .set(PartnerNoUTRReasonId(0, 0), "Reason").success.value
+                .setOrException(partnerAddress.AddressId(0, 0), Data.address)
+                .setOrException(partnerAddress.AddressYearsId(0, 0), false)
+                .setOrException(partnerAddress.PreviousAddressId(0, 0), Data.address)
+                .set(partnerContact.EnterEmailId(0, 0), "test@test.com").success.value
+                .set(partnerContact.EnterPhoneId(0, 0), "123").success.value
+
+            ua1.isPartnerComplete(0, 0) mustBe true
+            ua2.isPartnerComplete(0, 0) mustBe true
+          }
+
+          "return false when some answer is missing" in {
+            val ua =
+              UserAnswers()
+                .set(PartnerDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
+                .set(PartnerHasNINOId(0, 0), false).success.value
+                .set(PartnerHasUTRId(0, 0), false).success.value
+                .setOrException(partnerAddress.AddressId(0, 0), Data.address)
+                .setOrException(partnerAddress.AddressYearsId(0, 0), false)
+
+            ua.isPartnerComplete(0,0) mustBe false
+          }
+        }
+      }
+    }
+
+    "Partner Details completion status should be returned correctly" when {
+      "isPartnerDetailsComplete" must {
+        "return true when all answers are present" in {
+          val ua1 =
+            UserAnswers()
+              .set(PartnerDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
+              .set(PartnerHasNINOId(0, 0), true).success.value
+              .set(PartnerNINOId(0, 0), ReferenceValue("1234567890")).success.value
+              .set(PartnerHasUTRId(0, 0), true).success.value
+              .set(PartnerEnterUTRId(0, 0), ReferenceValue("123456789")).success.value
+
+          val ua2 =
+            UserAnswers()
+              .set(PartnerDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
+              .set(PartnerHasNINOId(0, 0), false).success.value
+              .set(PartnerNoNINOReasonId(0, 0), "Reason").success.value
+              .set(PartnerHasUTRId(0, 0), false).success.value
+              .set(PartnerNoUTRReasonId(0, 0), "Reason").success.value
+
+          ua1.isPartnerDetailsComplete(0, 0) mustBe Some(true)
+          ua2.isPartnerDetailsComplete(0, 0) mustBe Some(true)
+        }
+
+        "return false when some answer is missing" in {
+          val ua =
+            UserAnswers()
+              .set(PartnerDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
+              .set(PartnerHasNINOId(0, 0), false).success.value
+              .set(PartnerHasUTRId(0, 0), false).success.value
+
+          ua.isPartnerDetailsComplete(0,0) mustBe Some(false)
+        }
+      }
+    }
+
+    "Partner Address completion status should be returned correctly" when {
+
+      "isPartnerAddressComplete" must {
+        "return true when all answers are present" in {
+          val ua1 =
+            UserAnswers()
+              .setOrException(partnerAddress.AddressId(0, 0), Data.address)
+              .setOrException(partnerAddress.AddressYearsId(0, 0), true)
+
+          val ua2 =
+            UserAnswers()
+              .setOrException(partnerAddress.AddressId(0, 0), Data.address)
+              .setOrException(partnerAddress.AddressYearsId(0, 0), false)
+              .setOrException(partnerAddress.PreviousAddressId(0, 0), Data.address)
+
+          ua1.isPartnerAddressComplete(0, 0) mustBe Some(true)
+          ua2.isPartnerAddressComplete(0, 0) mustBe Some(true)
+        }
+
+        "return false when some answer is missing" in {
+          val ua =
+            UserAnswers()
+              .setOrException(partnerAddress.AddressId(0, 0), Data.address)
+              .setOrException(partnerAddress.AddressYearsId(0, 0), false)
+
+          ua.isPartnerAddressComplete(0, 0) mustBe Some(false)
+        }
+      }
+    }
   }
 }

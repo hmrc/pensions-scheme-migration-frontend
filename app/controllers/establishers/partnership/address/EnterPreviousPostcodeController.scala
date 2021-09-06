@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-/*
 package controllers.establishers.partnership.address
 
 import config.AppConfig
@@ -88,4 +87,4 @@ class EnterPreviousPostcodeController @Inject()(val appConfig: AppConfig,
     }
   }
 }
-*/
+

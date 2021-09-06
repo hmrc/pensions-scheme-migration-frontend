@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-/*
 package controllers.establishers.partnership.address
 
 import connectors.cache.UserAnswersCacheConnector
@@ -66,4 +65,4 @@ class TradingTimeController @Inject()(override val messagesApi: MessagesApi,
       }
     }
 }
-*/
+

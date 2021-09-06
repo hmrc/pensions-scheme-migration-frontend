@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-/*
 package controllers.establishers.partnership.partner.address
 
 import config.AppConfig
@@ -93,4 +92,4 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
         }
     )
 }
-*/
+

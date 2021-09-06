@@ -16,12 +16,11 @@
 
 package helpers.spokes.establishers.individual
 
-import controllers.establishers.individual.details.routes._
+import helpers.routes.EstablishersIndividualRoutes.{cyaDetailsRoute, detailsRoute}
 import helpers.spokes.Spoke
-import models.{Index, TaskListLink}
+import models.{TaskListLink, Index, NormalMode}
 import play.api.i18n.Messages
 import utils.UserAnswers
-
 
 case class EstablisherIndividualDetails(
                                          index: Index,
@@ -31,9 +30,10 @@ case class EstablisherIndividualDetails(
 
   val linkKeyAndRoute: (String, String) =
     if (completeFlag(answers).getOrElse(false))
-      (s"${messageKeyPrefix}changeLink", CheckYourAnswersController.onPageLoad(index).url)
+      (s"${messageKeyPrefix}changeLink",
+        cyaDetailsRoute(index, NormalMode).url)
     else
-      (s"${messageKeyPrefix}addLink", WhatYouWillNeedController.onPageLoad(index).url)
+      (s"${messageKeyPrefix}addLink", detailsRoute(index, NormalMode).url)
 
   override def changeLink(name: String)
                          (implicit messages: Messages): TaskListLink =

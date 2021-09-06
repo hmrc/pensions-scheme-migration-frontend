@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-/*
 package helpers.cya.establisher.partnership
 
 import base.SpecBase._
@@ -114,4 +113,4 @@ class EstablisherPartnershipAddressCYAHelperSpec extends AnyWordSpec with Matche
   }
 }
 
-*/
+
