@@ -80,7 +80,7 @@ POST        /:index/change/partnership/other-partners                           
 
 ->          /                                                                           establishersPartner.Routes
 
-GET         /:index/partnership/contact-details                                        controllers.establishers.partnership.contact.WhatYouWillNeedContactController.onPageLoad(index: Index)
+GET         /:index/partnership/contact-details                                          controllers.establishers.partnership.contact.WhatYouWillNeedController.onPageLoad(index: Index)
 
 GET         /:index/partnership/enter-email-address                                      controllers.establishers.partnership.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = NormalMode)
 POST        /:index/partnership/enter-email-address                                      controllers.establishers.partnership.contact.EnterEmailController.onSubmit(index: Index, mode: Mode = NormalMode)

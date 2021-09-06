@@ -32,7 +32,7 @@ index: Index,
     if (completeFlag(answers).isDefined)
       (s"${messageKeyPrefix}changeLink", CheckYourAnswersController.onPageLoad(index).url)
     else
-      (s"${messageKeyPrefix}addLink", WhatYouWillNeedContactController.onPageLoad(index).url)
+      (s"${messageKeyPrefix}addLink", WhatYouWillNeedController.onPageLoad(index).url)
   }
   override def changeLink(name: String)
                          (implicit messages: Messages): TaskListLink =

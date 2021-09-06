@@ -34,13 +34,13 @@ import viewmodels.Message
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class WhatYouWillNeedContactController @Inject()(
+class WhatYouWillNeedController @Inject()(
                                                              authenticate: AuthAction,
                                                              getData: DataRetrievalAction,
                                                              requireData: DataRequiredAction,
                                                              val renderer: Renderer,
                                                              val controllerComponents: MessagesControllerComponents
-                                                           ) (implicit val ec: ExecutionContext)
+                                                           )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
     with Retrievals

@@ -34,7 +34,7 @@ import utils.UserAnswers
 
 import scala.concurrent.Future
 
-class WhatYouWillNeedContactControllerSpec
+class WhatYouWillNeedControllerSpec
   extends ControllerSpecBase
     with JsonMatchers
     with TryValues {
@@ -52,8 +52,8 @@ class WhatYouWillNeedContactControllerSpec
 
   private def createController(
                           dataRetrievalAction: DataRetrievalAction
-                        ): WhatYouWillNeedContactController = {
-    new WhatYouWillNeedContactController(
+                        ): WhatYouWillNeedController = {
+    new WhatYouWillNeedController(
       authenticate         = new FakeAuthAction(),
       getData              = dataRetrievalAction,
       requireData          = new DataRequiredActionImpl,

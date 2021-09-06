@@ -359,7 +359,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = TaskListLink(
               text = "Add contact details for test",
-              target = controllers.establishers.partnership.contact.routes.WhatYouWillNeedContactController.onPageLoad(0).url,
+              target = controllers.establishers.partnership.contact.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
             isCompleted = None
