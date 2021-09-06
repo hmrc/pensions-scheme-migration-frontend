@@ -469,6 +469,12 @@ messages__contactDetails__whatYouWillNeed_p = You will need to tell us {0}’s:
 messages__contactDetails__whatYouWillNeed_li_1 = contact email address
 messages__contactDetails__whatYouWillNeed_li_2 = contact phone number
 
+messages__establisherPartnershipContactDetails__whatYouWillNeed_title = The partnership’s contact details
+messages__establisherPartnershipContactDetails__whatYouWillNeed_h1 = {0}’s contact details
+messages__partnershipDetails__whatYouWillNeed_p = You will need to tell us the partnership’s:
+messages__partnershipDetails__whatYouWillNeed_li_1 = contact email address
+messages__partnershipDetails__whatYouWillNeed_li_2 = contact phone number
+
 messages__trusteeCompanyContactDetails__whatYouWillNeed_title = The company’s contact details
 messages__trusteeCompanyContactDetails__whatYouWillNeed_h1 = Contact details for {0}
 messages__companyDetails__whatYouWillNeed_p = You will need to tell us {0}’s:
@@ -495,6 +501,7 @@ messages__visuallyHidden__address = the address for {0}
 
 messages__enterEmail__error_invalid = Enter an email address in the correct format, like name@example.com
 messages__enterEmail__error_required = Enter an email address for {0}
+messages__enterEmail__type__error_required = Enter {0}’s email address
 messages__enterEmail = What is the email address for {0}?
 messages__enterEmail_pageHeading = What is {0}’s email address?
 messages__enterEmail_cya_label = {0}’s email address
@@ -502,7 +509,8 @@ messages__contact_details__hint = We will only use this to contact {0} about pen
 messages__enterEmail__cya__visuallyHidden = the email address for {0}
 
 messages__enterPhone__error_required = Enter a phone number for {0}
-messages__enterPhone__error_invalid = Enter a phone number in the correct format
+messages__enterPhone__type__error_required = Enter {0}’s phone number
+messages__enterPhone__error_invalid = Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192
 messages__enterPhone = What is the phone number for {0}?
 messages__enterPhone_pageHeading = What is {0}’s phone number?
 messages__enterPhone_cya_label = {0}’s phone number

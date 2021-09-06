@@ -21,9 +21,11 @@ import controllers.establishers.partnership.address.routes._
 import controllers.establishers.routes.AddEstablisherController
 import controllers.routes.IndexController
 import controllers.establishers.partnership.details.{routes => detailsRoutes}
+import controllers.establishers.partnership.contact.routes.EnterPhoneController
 import identifiers._
 import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.address._
+import identifiers.establishers.partnership.contact._
 import identifiers.establishers.partnership.details.{HavePAYEId, HaveUTRId, HaveVATId, NoUTRReasonId, PAYEId, PartnershipUTRId, VATId}
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode, NormalMode}
@@ -40,6 +42,8 @@ class EstablishersPartnershipNavigator@Inject()(config: AppConfig)
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case PartnershipDetailsId(index) => AddEstablisherController.onPageLoad()
+    case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
+    case EnterPhoneId(index) => cyaContactDetails(index)
     case HaveUTRId(index) => utrRoutes(index, ua, NormalMode)
     case PartnershipUTRId(index) => detailsRoutes.HaveVATController.onPageLoad(index, NormalMode)
     case NoUTRReasonId(index) => detailsRoutes.HaveVATController.onPageLoad(index, NormalMode)
@@ -68,6 +72,8 @@ class EstablishersPartnershipNavigator@Inject()(config: AppConfig)
    case VATId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
    case HavePAYEId(index) => payeRoutes(index, ua, CheckMode)
    case PAYEId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+   case EnterEmailId(index) => cyaContactDetails(index)
+   case EnterPhoneId(index) => cyaContactDetails(index)
   }
 
   private def cyaAddress(index:Int): Call = controllers.establishers.partnership.address.routes.CheckYourAnswersController.onPageLoad(index)
@@ -83,6 +89,8 @@ class EstablishersPartnershipNavigator@Inject()(config: AppConfig)
       case Some(false) => detailsRoutes.NoUTRReasonController.onPageLoad(index, mode)
       case None => controllers.routes.TaskListController.onPageLoad()
     }
+
+  private def cyaContactDetails(index:Int): Call = controllers.establishers.partnership.contact.routes.CheckYourAnswersController.onPageLoad(index)
 
   private def vatRoutes(
                          index: Index,
