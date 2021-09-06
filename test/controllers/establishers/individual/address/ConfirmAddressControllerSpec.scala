@@ -19,22 +19,23 @@ package controllers.establishers.individual.address
 import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
+import helpers.routes.EstablishersIndividualRoutes
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.address.AddressId
 import matchers.JsonMatchers
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.Reads._
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
-import utils.{Data, Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable, Data}
 
 import scala.concurrent.Future
 
@@ -49,8 +50,8 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = controllers.establishers.individual.address.routes.ConfirmAddressController.onPageLoad(0).url
-  private val httpPathPOST: String = controllers.establishers.individual.address.routes.ConfirmAddressController.onSubmit(0).url
+  private val httpPathGET: String = EstablishersIndividualRoutes.confirmAddressRoute(0, NormalMode).url
+  private val httpPathPOST: String = EstablishersIndividualRoutes.confirmAddressRoute(0, NormalMode).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "line1" -> Seq("1"),
@@ -104,7 +105,7 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
     "Save data to user answers and redirect to next page when valid data is submitted" in {
 
       when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
-        .thenReturn(routes.CheckYourAnswersController.onPageLoad(0))
+        .thenReturn(EstablishersIndividualRoutes.cyaAddressRoute(0, NormalMode))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -113,7 +114,7 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad(0).url)
+      redirectLocation(result) mustBe Some(EstablishersIndividualRoutes.cyaAddressRoute(0, NormalMode).url)
 
       verify(mockUserAnswersCacheConnector, times(1)).save(any(),jsonCaptor.capture())(any(), any())
       val expectedJson = Json.obj(
