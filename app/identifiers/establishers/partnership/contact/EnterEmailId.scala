@@ -29,9 +29,6 @@ object EnterEmailId {
   override lazy val toString: String =
     "partnershipEmail"
 
-  def collectionPath(index: Int): JsPath =
-    EstablishersId(index).path \ EnterEmailId.toString
-
   implicit lazy val formats: Format[EnterEmailId] =
     Json.format[EnterEmailId]
 }
