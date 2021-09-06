@@ -14,16 +14,24 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">
-                {{ messages("messages__trusteePartnershipDetails__whatYouWillNeed_h1", name) }}
+                {{ messages("messages__partnershipDetails__whatYouWillNeed_h1", name) }}
             </h1>
 
             <p class="govuk-body">
-                {{ messages("messages__trusteePartnershipDetails__whatYouWillNeed_list1_head", name) }}
+                {{ messages("messages__partnershipDetails__whatYouWillNeed_list1_head", name) }}
             </p>
 
             <ul class="govuk-list govuk-list--bullet">
-                <li>{{ messages("messages__trusteePartnershipDetails__whatYouWillNeed_li1_1") }}</li>
-                <li>{{ messages("messages__trusteePartnershipDetails__whatYouWillNeed_li1_2") }}</li>
+                <li>{{ messages("messages__partnershipDetails__whatYouWillNeed_li1_1") }}</li>
+            </ul>
+
+            <p class="govuk-body">
+                {{ messages("messages__partnershipDetails__whatYouWillNeed_list2_head", name) }}
+            </p>
+
+            <ul class="govuk-list govuk-list--bullet">
+                <li>{{ messages("messages__partnershipDetails__whatYouWillNeed_li2_1") }}</li>
+                <li>{{ messages("messages__partnershipDetails__whatYouWillNeed_li2_2", name) }}</li>
             </ul>
 
             {{ govukButton({
