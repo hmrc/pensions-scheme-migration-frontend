@@ -28,6 +28,7 @@ import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressId
 import identifiers.establishers.partnership.address.{AddressId => PartnershipAddressId}
+import identifiers.establishers.partnership.contact.EnterEmailId
 import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.details.{PartnershipUTRId, HaveUTRId}
 import identifiers.establishers.partnership.{PartnershipDetailsId => EstablisherPartnershipDetailsId}
@@ -382,17 +383,18 @@ class SpokeCreationServiceSpec
       result mustBe expectedSpoke
     }
 
-    "display all the spokes with appropriate links and incomplete status when data is returned from TPSS for partnership address spoke" in {
+    "display all the spokes with appropriate links and incomplete status when data is returned from TPSS" in {
+      val userAnswers =
+        ua
+          .set(EstablisherKindId(0), EstablisherKind.Partnership).success.value
+          .set(EstablisherPartnershipDetailsId(0), PartnershipDetails("test", false)).success.value
+          .setOrException(HaveUTRId(0), true)
+          .setOrException(PartnershipUTRId(0), ReferenceValue("12345678"))
+          .setOrException(PartnershipAddressId(0), Data.address)
+          .setOrException(EnterEmailId(0), "11")
+          .set(PartnerNameId(0,0), PersonName("Jane", "Doe")).success.value
 
-        val userAnswers =
-          ua
-            .set(EstablisherKindId(0), EstablisherKind.Partnership).success.value
-            .set(EstablisherPartnershipDetailsId(0), PartnershipDetails("test", false)).success.value
-            .setOrException(HaveUTRId(0), true)
-            .setOrException(PartnershipUTRId(0), ReferenceValue("12345678"))
-            .setOrException(PartnershipAddressId(0), Data.address)
-
-        val expectedSpoke =
+      val expectedSpoke =
         Seq(
           EntitySpoke(
             link = TaskListLink(
@@ -428,13 +430,13 @@ class SpokeCreationServiceSpec
           )
         )
 
-        val result =
-          spokeCreationService.getEstablisherPartnershipSpokes(
-            answers = userAnswers,
-            name = "test",
-            index = 0
-          )
-        result mustBe expectedSpoke
+      val result =
+        spokeCreationService.getEstablisherPartnershipSpokes(
+          answers = userAnswers,
+          name = "test",
+          index = 0
+        )
+      result mustBe expectedSpoke
     }
   }
 
@@ -742,4 +744,5 @@ class SpokeCreationServiceSpec
     }
   }
 }
+
 
