@@ -41,8 +41,8 @@
                                      }) }}
                 {% else %}
 
-                        <div class="govuk-form-group">
-                          <dl class="hmrc-add-to-a-list hmrc-add-to-a-list--short">
+                        <div class="govuk-form-group govuk-!-margin-bottom-7">
+                          <dl class="hmrc-add-to-a-list hmrc-add-to-a-list--short ">
                               {% for item in itemList %}
                                 <div class="hmrc-add-to-a-list__contents">
                                   <dt class="hmrc-add-to-a-list__identifier hmrc-add-to-a-list__identifier--light">
@@ -82,7 +82,7 @@
                             }) }}
                         {% else %}
                             <p class="govuk-body govuk-!-font-weight-regular">{{ messages('messages__addCompanyDirectors_at_maximum') }}</p>
-                            <p class="govuk-body govuk-!-font-weight-regular">{{ messages('messages__addCompanyDirectorsOrPartners_tell_us_if_you_have_more') }}</p>
+                            <p class="govuk-body govuk-!-font-weight-regular">{{ messages('messages__addCompanyDirectorsPartnersOrTrustees_tell_us_if_you_have_more') }}</p>
                         {% endif %}
                         {{ govukButton({
                             text: messages("site.save_and_continue"),

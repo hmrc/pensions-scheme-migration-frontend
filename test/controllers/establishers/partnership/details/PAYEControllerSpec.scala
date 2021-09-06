@@ -25,9 +25,7 @@ import matchers.JsonMatchers
 import models.{Index, NormalMode, ReferenceValue}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
-import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Result}
 import play.api.test.FakeRequest
@@ -35,9 +33,8 @@ import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import utils.Data.{establisherPartnershipDetails, schemeName, ua}
+import utils.Data.{partnershipDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
-import viewmodels.Message
 
 import scala.concurrent.Future
 
@@ -45,19 +42,18 @@ class PAYEControllerSpec extends ControllerSpecBase with NunjucksSupport with Js
 
   private val index: Index = Index(0)
   private val referenceValue: ReferenceValue = ReferenceValue("12345678")
-  private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(index), establisherPartnershipDetails).success.value
+  private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(index), partnershipDetails).success.value
 
   private val formProvider: PAYEFormProvider = new PAYEFormProvider()
-  private val form: Form[ReferenceValue] = formProvider(Message("messages__havePAYE__error", establisherPartnershipDetails.partnershipName))
   private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
   private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
 
   private val commonJson: JsObject =
     Json.obj(
       "pageTitle"     -> messages("messages__paye", messages("messages__partnership")),
-      "pageHeading"     -> messages("messages__paye", establisherPartnershipDetails.partnershipName),
+      "pageHeading"     -> messages("messages__paye", partnershipDetails.partnershipName),
       "schemeName"    -> schemeName,
-      "paragraphs" -> Json.arr(messages("messages__paye__p", establisherPartnershipDetails.partnershipName)),
+      "paragraphs" -> Json.arr(messages("messages__paye__p", partnershipDetails.partnershipName)),
       "legendClass"   -> "govuk-visually-hidden",
       "isPageHeading" -> true
     )

@@ -19,11 +19,12 @@ package controllers.establishers
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.establishers.EstablisherKindFormProvider
+import helpers.routes.EstablishersIndividualRoutes
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
 import models.establishers.EstablisherKind
-import models.{Index, PersonName}
+import models.{PersonName, Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -33,7 +34,7 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
-import utils.{Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable}
 
 import scala.concurrent.Future
 
@@ -106,7 +107,7 @@ class EstablisherKindControllerSpec extends ControllerSpecBase with NunjucksSupp
       val expectedJson = Json.obj()
 
       when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(EstablisherKindId(0)), any(), any())(any()))
-        .thenReturn(controllers.establishers.individual.routes.EstablisherNameController.onPageLoad(0))
+        .thenReturn(EstablishersIndividualRoutes.nameRoute(0, NormalMode))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -122,7 +123,7 @@ class EstablisherKindControllerSpec extends ControllerSpecBase with NunjucksSupp
 
       jsonCaptor.getValue must containJson(expectedJson)
 
-      redirectLocation(result) mustBe Some(controllers.establishers.individual.routes.EstablisherNameController.onPageLoad(0).url)
+      redirectLocation(result) mustBe Some(EstablishersIndividualRoutes.nameRoute(0, NormalMode).url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

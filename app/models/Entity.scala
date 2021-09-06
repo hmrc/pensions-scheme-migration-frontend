@@ -21,6 +21,7 @@ import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
+import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.trustees.company.{CompanyDetailsId => TrusteeCompanyDetailsId}
 import identifiers.trustees.partnership.{PartnershipDetailsId => TrusteePartnershipDetailsId}
 import identifiers.trustees.individual.TrusteeNameId
@@ -217,6 +218,35 @@ object DirectorEntity {
 }
 
 sealed trait Director[T] extends Entity[T]
+
+case class PartnerEntity(id: PartnerNameId, name: String, isDeleted: Boolean,
+                          isCompleted: Boolean, isNewEntity: Boolean, noOfRecords: Int) extends Partner[PartnerNameId] {
+  override def editLink: Option[String] = (isNewEntity, isCompleted) match {
+    case (false, _) => Some(controllers.establishers.partnership.partner.details.routes.CheckYourAnswersController
+      .onPageLoad(
+        id.establisherIndex, id.partnerIndex).url)
+    case (_, true) => Some(controllers.establishers.partnership.partner.details.routes.CheckYourAnswersController
+      .onPageLoad(
+        id.establisherIndex, id.partnerIndex).url)
+    case (_, false) => Some(controllers.establishers.partnership.partner.routes.PartnerNameController.onPageLoad(
+      id.establisherIndex, id.partnerIndex, CheckMode).url)
+  }
+
+  override def deleteLink: Option[String] = {
+    if (noOfRecords >= 1)
+      Some(controllers.establishers.partnership.partner.routes.ConfirmDeletePartnerController.onPageLoad(id.establisherIndex, id.partnerIndex).url)
+    else
+      None
+  }
+
+  override def index: Int = id.partnerIndex
+}
+
+object PartnerEntity {
+  implicit lazy val formats: Format[PartnerEntity] = Json.format[PartnerEntity]
+}
+
+sealed trait Partner[T] extends Entity[T]
 
 
 

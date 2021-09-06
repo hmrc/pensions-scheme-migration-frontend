@@ -41,7 +41,7 @@ class WhatYouWillNeedControllerSpec
     with TryValues {
 
   private val userAnswers: UserAnswers =
-    ua.set(PartnershipDetailsId(0), Data.establisherPartnershipDetails).success.value
+    ua.set(PartnershipDetailsId(0), Data.partnershipDetails).success.value
   private val templateToBeRendered: String =
     "establishers/partnership/address/whatYouWillNeed.njk"
   private def json: JsObject =

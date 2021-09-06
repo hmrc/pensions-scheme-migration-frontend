@@ -16,15 +16,16 @@
 
 package controllers.trustees
 
+import config.AppConfig
 import controllers.Retrievals
 import controllers.actions._
 import forms.trustees.AddTrusteeFormProvider
 import helpers.AddToListHelper
 import identifiers.trustees.AddTrusteeId
 import navigators.CompoundNavigator
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -40,6 +41,7 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
                                          requireData: DataRequiredAction,
                                          formProvider: AddTrusteeFormProvider,
                                          helper: AddToListHelper,
+                                         config: AppConfig,
                                          val controllerComponents: MessagesControllerComponents,
                                          renderer: Renderer
                                         )(implicit val ec: ExecutionContext)
@@ -54,29 +56,35 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
           "form" -> formProvider(trustees),
           "table" -> table,
           "radios" -> Radios.yesNo(formProvider(trustees)("value")),
-          "schemeName" -> existingSchemeName
+          "schemeName" -> existingSchemeName,
+          "trusteeSize" -> trustees.size,
+          "maxTrustees" -> config.maxTrustees
         )
         renderer.render("trustees/addTrustee.njk", json).map(Ok(_))
     }
 
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
+      def navNextPage(v: Option[Boolean]):Future[Result] =
+        Future.successful(Redirect(navigator.nextPage(AddTrusteeId(v), request.userAnswers)))
+
       val trustees = request.userAnswers.allTrusteesAfterDelete
       val table = helper.mapTrusteesToTable(trustees)
+      val formWithErrors = formProvider(trustees).bindFromRequest()
 
-      formProvider(trustees).bindFromRequest().fold(
-        formWithErrors => {
+      (formWithErrors.value, trustees.length) match {
+        case (Some(v), _) => navNextPage(v)
+        case (_, numberOfTrustees) if numberOfTrustees >= config.maxTrustees => navNextPage(None)
+        case _ =>
           val json: JsObject = Json.obj(
             "form" -> formWithErrors,
             "table" -> table,
             "radios" -> Radios.yesNo(formWithErrors("value")),
-            "schemeName" -> existingSchemeName
+            "schemeName" -> existingSchemeName,
+            "trusteeSize" -> trustees.size,
+            "maxTrustees" -> config.maxTrustees
           )
-          renderer.render("trustees/addTrustee.njk", json).map(BadRequest(_))},
-        value =>
-          Future.successful(Redirect(navigator.nextPage(AddTrusteeId(value), request.userAnswers)))
-      )
+          renderer.render("trustees/addTrustee.njk", json).map(BadRequest(_))
+      }
   }
-
-
 }

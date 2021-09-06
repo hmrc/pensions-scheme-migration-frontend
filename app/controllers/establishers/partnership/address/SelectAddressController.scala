@@ -83,7 +83,7 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
             "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
             "entityType" -> msg("establisherEntityTypePartnership"),
             "entityName" -> name,
-            "enterManuallyUrl" -> controllers.establishers.partnership.address.routes.ConfirmAddressController.onPageLoad(index).url,
+            "enterManuallyUrl" -> routes.ConfirmAddressController.onPageLoad(index).url,
             "schemeName" -> schemeName
           )
         }

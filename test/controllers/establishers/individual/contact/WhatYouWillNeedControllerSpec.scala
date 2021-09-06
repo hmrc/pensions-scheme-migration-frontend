@@ -18,6 +18,7 @@ package controllers.establishers.individual.contact
 
 import controllers.ControllerSpecBase
 import controllers.actions._
+import helpers.routes.EstablishersIndividualRoutes.emailRoute
 import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
 import models.{NormalMode, PersonName}
@@ -47,7 +48,7 @@ class WhatYouWillNeedControllerSpec
   private def json: JsObject =
     Json.obj(
       "name"        -> personName.fullName,
-      "continueUrl" -> controllers.establishers.individual.contact.routes.EnterEmailController.onPageLoad(0, NormalMode).url,
+      "continueUrl" -> emailRoute(0, NormalMode).url,
       "schemeName"  -> schemeName
     )
 

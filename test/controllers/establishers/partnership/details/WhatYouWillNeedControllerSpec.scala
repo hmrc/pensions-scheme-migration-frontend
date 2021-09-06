@@ -30,7 +30,7 @@ import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import utils.Data.{establisherPartnershipDetails, ua}
+import utils.Data.{partnershipDetails, ua}
 import utils.UserAnswers
 
 import scala.concurrent.Future
@@ -38,11 +38,11 @@ import scala.concurrent.Future
 class WhatYouWillNeedControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues {
 
   private val index: Index = Index(0)
-  private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(0), establisherPartnershipDetails).success.value
+  private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(0), partnershipDetails).success.value
   private val templateToBeRendered: String = "establishers/partnership/details/whatYouWillNeed.njk"
   private def json: JsObject =
     Json.obj(
-      "name"        -> establisherPartnershipDetails.partnershipName,
+      "name"        -> partnershipDetails.partnershipName,
       "continueUrl" -> routes.HaveUTRController.onPageLoad(index, NormalMode).url,
       "schemeName"  -> "Test scheme name"
     )

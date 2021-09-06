@@ -14,6 +14,12 @@
 {% block head %}
     {% block pageHead %}{% endblock %}
 
+    {{ hmrcTimeoutDialog({
+        timeout:config.timeout ,
+        countdown: config.countdown,
+        keepAliveUrl: routes.controllers.LogoutController.keepAlive().url,
+        signOutUrl: routes.controllers.LogoutController.onPageLoad().url
+    }) }}
     {{ trackingSnippet({
         nonce: config.nonce,
         url: config.trackingSnippetUrl,
@@ -32,12 +38,12 @@
 
 {% block header %}
     {{ hmrcHeader({
-        homepageUrl: "/migrate-pension-scheme",
+        homepageUrl: "/add-pension-scheme",
         serviceName: messages("site.service_name"),
         serviceUrl: config.managePensionsSchemeOverviewUrl,
         containerClasses: "govuk-width-container",
         assetsPath: "/assets",
-        signOutHref: "/"
+        signOutHref: routes.controllers.LogoutController.onPageLoad().url
     }) }}
 {% endblock %}
 

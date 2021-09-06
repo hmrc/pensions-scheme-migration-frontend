@@ -20,17 +20,17 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.trustees.ConfirmDeleteTrusteeFormProvider
-import identifiers.trustees.ConfirmDeleteTrusteeId
+import identifiers.trustees.{ConfirmDeleteTrusteeId, OtherTrusteesId}
 import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.partnership.PartnershipDetailsId
 import models._
 import models.requests.DataRequest
 import models.trustees.TrusteeKind
-import models.trustees.TrusteeKind.{Company, Individual, Partnership}
+import models.trustees.TrusteeKind.{Company, Partnership, Individual}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{MessagesApi, Messages, I18nSupport}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import renderer.Renderer
@@ -149,8 +149,9 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
           Try(request.userAnswers)
         }
         Future.fromTry(deletionResult).flatMap { answers =>
-          userAnswersCacheConnector.save(request.lock, answers.data).map { _ =>
-            Redirect(navigator.nextPage(ConfirmDeleteTrusteeId, answers))
+          val updatedUA = answers.remove(OtherTrusteesId)
+          userAnswersCacheConnector.save(request.lock, updatedUA.data).map { _ =>
+            Redirect(navigator.nextPage(ConfirmDeleteTrusteeId, updatedUA))
           }
         }
       }
