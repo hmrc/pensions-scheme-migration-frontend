@@ -17,8 +17,8 @@
 package helpers.cya.establisher.individual
 
 import base.SpecBase._
-import controllers.establishers.individual.contact.routes
 import helpers.cya.establishers.individual.EstablisherContactDetailsCYAHelper
+import helpers.routes.EstablishersIndividualRoutes.{emailRoute, phoneNumberRoute}
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
@@ -62,7 +62,7 @@ class EstablisherContactDetailsCYAHelperSpec extends AnyWordSpec with Matchers w
         value = Value(Literal("test@test.com")),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
-          href = routes.EnterEmailController.onPageLoad(0, CheckMode).url,
+          href = emailRoute(0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
             Messages("messages__enterEmail__cya__visuallyHidden", establisherName.fullName))),
           attributes = Map("id" -> "cya-0-0-change")
@@ -74,7 +74,7 @@ class EstablisherContactDetailsCYAHelperSpec extends AnyWordSpec with Matchers w
         value = Value(Literal("123")),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
-          href = routes.EnterPhoneController.onPageLoad(0, CheckMode).url,
+          href = phoneNumberRoute(0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
             Messages("messages__enterPhone__cya__visuallyHidden", establisherName.fullName))),
           attributes = Map("id" -> "cya-0-1-change")

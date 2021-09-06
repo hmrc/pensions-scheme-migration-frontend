@@ -18,8 +18,8 @@ package controllers.establishers.individual.contact
 
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import controllers.establishers.individual.contact.routes.EnterEmailController
 import helpers.cya.MandatoryAnswerMissingException
+import helpers.routes.EstablishersIndividualRoutes.emailRoute
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import models.{Index, NormalMode}
@@ -55,7 +55,7 @@ class WhatYouWillNeedController @Inject()(
               template = "establishers/individual/contact/whatYouWillNeed.njk",
               ctx = Json.obj(
                 "name"        -> personName.fullName,
-                "continueUrl" -> EnterEmailController.onPageLoad(index, NormalMode).url,
+                "continueUrl" -> emailRoute(0, NormalMode).url,
                 "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )
             ).map(Ok(_))

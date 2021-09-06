@@ -17,7 +17,7 @@
 package navigators
 
 import controllers.routes._
-import controllers.trustees.individual.address.routes.{EnterPreviousPostcodeController, SelectAddressController, SelectPreviousAddressController}
+import controllers.trustees.individual.address.routes.{SelectAddressController, EnterPreviousPostcodeController, SelectPreviousAddressController}
 import controllers.trustees.individual.contact.routes._
 import controllers.trustees.individual.details.routes._
 import controllers.trustees.individual.routes._
@@ -30,9 +30,9 @@ import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.details._
 import models.requests.DataRequest
 import models.trustees.TrusteeKind
-import models.{CheckMode, Index, Mode, NormalMode}
-import play.api.mvc.{AnyContent, Call}
-import utils.{Enumerable, UserAnswers}
+import models.{Mode, Index, CheckMode, NormalMode}
+import play.api.mvc.{Call, AnyContent}
+import utils.{UserAnswers, Enumerable}
 
 class TrusteesNavigator
   extends Navigator
@@ -62,7 +62,7 @@ class TrusteesNavigator
     case PreviousAddressId(index) => cyaAddress(index)
     case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
     case EnterPhoneId(index) => cyaContactDetails(index)
-
+    case OtherTrusteesId => TaskListController.onPageLoad()
   }
 
   override protected def editRouteMap(ua: UserAnswers)
@@ -101,11 +101,11 @@ class TrusteesNavigator
                                     value: Option[Boolean],
                                     answers: UserAnswers
                                   ): Call =
-    value match {
-      case Some(false) => TaskListController.onPageLoad()
-      case Some(true) => TrusteeKindController.onPageLoad(answers.trusteesCount)
-      case None => IndexController.onPageLoad()
-    }
+      value match {
+        case Some(false) => TaskListController.onPageLoad()
+        case Some(true) => TrusteeKindController.onPageLoad(answers.trusteesCount)
+        case None => controllers.trustees.routes.OtherTrusteesController.onPageLoad
+      }
 
   private def trusteeHasNino(
                                   index: Index,

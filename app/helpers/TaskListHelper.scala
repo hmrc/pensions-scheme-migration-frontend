@@ -116,16 +116,16 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
                 header = Some(establisher.name))
               )
 
-//            case PartnershipDetailsId(_) =>
-//              Some(TaskListEntitySection(
-//                isCompleted = None,
-//                entities = spokeCreationService.getEstablisherPartnershipSpokes(
-//                  answers = userAnswers,
-//                  name = establisher.name,
-//                  index = establisher.index
-//                ),
-//                header = Some(establisher.name))
-//              )
+            case PartnershipDetailsId(_) =>
+              Some(TaskListEntitySection(
+                isCompleted = None,
+                entities = spokeCreationService.getEstablisherPartnershipSpokes(
+                  answers = userAnswers,
+                  name = establisher.name,
+                  index = establisher.index
+                ),
+                header = Some(establisher.name))
+              )
 
             case _ =>
               throw new RuntimeException("Unknown section id:" + establisher.id)

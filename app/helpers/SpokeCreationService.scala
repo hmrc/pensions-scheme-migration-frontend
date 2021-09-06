@@ -19,15 +19,15 @@ package helpers
 import controllers.establishers.routes._
 import helpers.spokes.establishers.company._
 import helpers.spokes.establishers.individual._
-//import helpers.spokes.establishers.partnership.{EstablisherPartnershipAddress, EstablisherPartnershipDetails, EstablisherPartnerDetails}
-import helpers.spokes.trustees.company.{TrusteeCompanyAddress, TrusteeCompanyContactDetails, TrusteeCompanyDetails}
-import helpers.spokes.trustees.individual.{TrusteeIndividualAddress, TrusteeIndividualContactDetails, TrusteeIndividualDetails}
-import helpers.spokes.trustees.partnership.TrusteePartnershipDetails
-import helpers.spokes.{AboutMembersSpoke, BeforeYouStartSpoke, BenefitsAndInsuranceSpoke, Spoke}
+import helpers.spokes.establishers.partnership.{EstablisherPartnershipAddress, EstablisherPartnershipDetails, EstablisherPartnerDetails}
+import helpers.spokes.trustees.company.{TrusteeCompanyContactDetails, TrusteeCompanyAddress, TrusteeCompanyDetails}
+import helpers.spokes.trustees.individual.{TrusteeIndividualAddress, TrusteeIndividualDetails, TrusteeIndividualContactDetails}
+import helpers.spokes.trustees.partnership.{TrusteePartnershipDetails, TrusteePartnershipContactDetails}
+import helpers.spokes.{BeforeYouStartSpoke, AboutMembersSpoke, Spoke, BenefitsAndInsuranceSpoke}
 import models.Index._
-import models.{Entity, EntitySpoke, Index, TaskListLink}
+import models.{Entity, TaskListLink, EntitySpoke, Index}
 import play.api.i18n.Messages
-import utils.{Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable}
 
 class SpokeCreationService extends Enumerable.Implicits {
 
@@ -81,23 +81,23 @@ class SpokeCreationService extends Enumerable.Implicits {
   }
 
   def getEstablisherCompanySpokes(answers: UserAnswers, name: String, index: Index)
-                                    (implicit messages: Messages): Seq[EntitySpoke] = {
+                                 (implicit messages: Messages): Seq[EntitySpoke] = {
     Seq(
       createSpoke(answers, EstablisherCompanyDetails(index, answers), name),
       createSpoke(answers, EstablisherCompanyAddress(index, answers), name),
       createSpoke(answers, EstablisherCompanyContactDetails(index, answers), name),
-      createDirectorSpoke(answers.allDirectorsAfterDelete(indexToInt(index)),EstablisherCompanyDirectorDetails(index, answers), name)
+      createDirectorSpoke(answers.allDirectorsAfterDelete(indexToInt(index)), EstablisherCompanyDirectorDetails(index, answers), name)
     )
   }
 
-//  def getEstablisherPartnershipSpokes(answers: UserAnswers, name: String, index: Index)
-//                                     (implicit messages: Messages): Seq[EntitySpoke] = {
-//    Seq(
-//      createSpoke(answers, EstablisherPartnershipDetails(index, answers), name),
-//      createSpoke(answers, EstablisherPartnershipAddress(index, answers), name),
-//      createPartnerSpoke(answers.allPartnersAfterDelete(indexToInt(index)),EstablisherPartnerDetails(index, answers), name)
-//    )
-//  }
+  def getEstablisherPartnershipSpokes(answers: UserAnswers, name: String, index: Index)
+                                 (implicit messages: Messages): Seq[EntitySpoke] = {
+    Seq(
+      createSpoke(answers, EstablisherPartnershipDetails(index, answers), name),
+      createSpoke(answers, EstablisherPartnershipAddress(index, answers), name),
+      createPartnerSpoke(answers.allPartnersAfterDelete(indexToInt(index)),EstablisherPartnerDetails(index, answers), name)
+    )
+  }
 
   def createDirectorSpoke(entityList: Seq[Entity[_]],
                           spoke: Spoke,
@@ -110,7 +110,7 @@ class SpokeCreationService extends Enumerable.Implicits {
           Some(false)
       }
     }
-      EntitySpoke(spoke.changeLink(name), isComplete)
+    EntitySpoke(spoke.changeLink(name), isComplete)
   }
 
   def createPartnerSpoke(entityList: Seq[Entity[_]],
@@ -153,7 +153,7 @@ class SpokeCreationService extends Enumerable.Implicits {
       )
 
   def getTrusteeIndividualSpokes(answers: UserAnswers, name: String, index: Index)
-    (implicit messages: Messages): Seq[EntitySpoke] = {
+                                (implicit messages: Messages): Seq[EntitySpoke] = {
     Seq(
       createSpoke(answers, TrusteeIndividualDetails(index, answers), name),
       createSpoke(answers, TrusteeIndividualAddress(index, answers), name),
@@ -162,7 +162,7 @@ class SpokeCreationService extends Enumerable.Implicits {
   }
 
   def getTrusteeCompanySpokes(answers: UserAnswers, name: String, index: Index)
-    (implicit messages: Messages): Seq[EntitySpoke] = {
+                             (implicit messages: Messages): Seq[EntitySpoke] = {
     Seq(
       createSpoke(answers, TrusteeCompanyDetails(index, answers), name),
       createSpoke(answers, TrusteeCompanyAddress(index, answers), name),
@@ -172,7 +172,8 @@ class SpokeCreationService extends Enumerable.Implicits {
   def getTrusteePartnershipSpokes(answers: UserAnswers, name: String, index: Index)
                              (implicit messages: Messages): Seq[EntitySpoke] = {
     Seq(
-      createSpoke(answers, TrusteePartnershipDetails(index, answers), name)
+      createSpoke(answers, TrusteePartnershipDetails(index, answers), name),
+      createSpoke(answers, TrusteePartnershipContactDetails(index, answers), name)
     )
   }
 

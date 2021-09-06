@@ -23,6 +23,7 @@ import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.company.{contacts => companyContact}
+import identifiers.trustees.partnership.{contact => partnershipContact}
 import identifiers.trustees.individual.details._
 import utils.UserAnswers
 import identifiers.trustees.company.address.{TradingTimeId, AddressId => CompanyAddressId, AddressYearsId => CompanyAddressYearsId, PreviousAddressId => CompanyPreviousAddressId}
@@ -138,4 +139,12 @@ trait DataCompletionTrustees extends DataCompletion {
       )
     )
   }
+
+  def isTrusteePartnershipContactDetailsCompleted(index: Int): Option[Boolean] =
+    isComplete(
+      Seq(
+        isAnswerComplete(partnershipContact.EnterEmailId(index)),
+        isAnswerComplete(partnershipContact.EnterPhoneId(index))
+      )
+    )
 }

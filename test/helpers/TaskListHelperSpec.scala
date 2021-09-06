@@ -20,8 +20,10 @@ import base.SpecBase
 import identifiers.beforeYouStart.SchemeTypeId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.{EstablisherKindId, IsEstablisherNewId}
+import identifiers.establishers.{IsEstablisherNewId, EstablisherKindId}
 import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.partnership.{PartnershipDetailsId => TrusteePartnershipDetailsId}
+import identifiers.establishers.partnership.{PartnershipDetailsId => EstablisherPartnershipDetailsId}
 import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId}
 import models._
 import models.establishers.EstablisherKind
@@ -30,8 +32,8 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.must.Matchers
-import utils.Data.{completeUserAnswers, schemeName, ua}
-import utils.{Enumerable, UserAnswers}
+import utils.Data.{schemeName, completeUserAnswers, ua}
+import utils.{UserAnswers, Enumerable}
 import viewmodels.{Message, TaskListEntitySection}
 
 class TaskListHelperSpec extends SpecBase with Matchers with MockitoSugar with Enumerable.Implicits with BeforeAndAfterEach {
@@ -64,7 +66,7 @@ class TaskListHelperSpec extends SpecBase with Matchers with MockitoSugar with E
     when(mockSpokeCreationService.getBeforeYouStartSpoke(any(), any())(any())).thenReturn(Nil)
     when(mockSpokeCreationService.getEstablisherIndividualSpokes(any(), any(), any())(any())).thenReturn(Nil)
     when(mockSpokeCreationService.getEstablisherCompanySpokes(any(), any(), any())(any())).thenReturn(Nil)
-    //when(mockSpokeCreationService.getEstablisherPartnershipSpokes(any(), any(), any())(any())).thenReturn(Nil)
+    when(mockSpokeCreationService.getEstablisherPartnershipSpokes(any(), any(), any())(any())).thenReturn(Nil)
   }
 
   "h1" must {
@@ -143,13 +145,13 @@ class TaskListHelperSpec extends SpecBase with Matchers with MockitoSugar with E
                 _.set(IsEstablisherNewId(1), true).flatMap(
                   _.set(EstablisherKindId(2), EstablisherKind.Company).flatMap(
                     _.set(CompanyDetailsId(2), CompanyDetails("test company", true)).flatMap(
-                      _.set(IsEstablisherNewId(2), true)//.flatMap(
-                        //_.set(EstablisherKindId(3), EstablisherKind.Partnership).flatMap(
-                        //_.set(PartnershipDetailsId(3), PartnershipDetails("test partnership", true)).flatMap(
-                         // _.set(IsEstablisherNewId(3), true)
-                    //)
-                  //)
-                //)
+                      _.set(IsEstablisherNewId(2), true).flatMap(
+                        _.set(EstablisherKindId(3), EstablisherKind.Partnership).flatMap(
+                        _.set(EstablisherPartnershipDetailsId(3), PartnershipDetails("test partnership", true)).flatMap(
+                          _.set(IsEstablisherNewId(3), true)
+                    )
+                  )
+                )
               )))))))).get
       helper.establishersSection(userAnswers, messages) mustBe Nil
     }
@@ -163,15 +165,13 @@ class TaskListHelperSpec extends SpecBase with Matchers with MockitoSugar with E
                 _.set(IsEstablisherNewId(1), true).flatMap(
                   _.set(EstablisherKindId(2), EstablisherKind.Company).flatMap(
                     _.set(CompanyDetailsId(2), CompanyDetails("test company")).flatMap(
-                      _.set(IsEstablisherNewId(2), true)//.flatMap(
-                        //_.set(EstablisherKindId(3), EstablisherKind.Partnership).flatMap(
-                        //_.set(PartnershipDetailsId(3), PartnershipDetails("test partnership")).flatMap(
-                        //  _.set(IsEstablisherNewId(3), true)
-              //)))
-                        )))))))).get
+                      _.set(IsEstablisherNewId(2), true).flatMap(
+                        _.set(EstablisherKindId(3), EstablisherKind.Partnership).flatMap(
+                        _.set(EstablisherPartnershipDetailsId(3), PartnershipDetails("test partnership")).flatMap(
+                          _.set(IsEstablisherNewId(3), true)
+              ))))))))))).get
       val expectedSection =  Seq(TaskListEntitySection(None, Nil, Some("c d")),
-        TaskListEntitySection(None, Nil, Some("test company")))
-        //, TaskListEntitySection(None, Nil, Some("test partnership")))
+        TaskListEntitySection(None, Nil, Some("test company")), TaskListEntitySection(None, Nil, Some("test partnership")))
       helper.establishersSection(userAnswers, messages) mustBe expectedSection
     }
   }
@@ -183,7 +183,13 @@ class TaskListHelperSpec extends SpecBase with Matchers with MockitoSugar with E
           _.set(IsTrusteeNewId(0), true).flatMap(
             _.set(TrusteeKindId(1), TrusteeKind.Individual).flatMap(
               _.set(TrusteeNameId(1), PersonName("c", "d", true)).flatMap(
-                _.set(IsTrusteeNewId(1), true)
+                _.set(IsTrusteeNewId(1), true).flatMap(
+                  _.set(TrusteeKindId(2), TrusteeKind.Partnership).flatMap(
+                  _.set(TrusteePartnershipDetailsId(2), PartnershipDetails("test partnership", true)).flatMap(
+                   _.set(IsTrusteeNewId(2), true)
+                  )
+                  )
+                  )
               ))))).get
       helper.trusteesSection(userAnswers, messages) mustBe Nil
     }
@@ -194,7 +200,13 @@ class TaskListHelperSpec extends SpecBase with Matchers with MockitoSugar with E
           _.set(IsTrusteeNewId(0), true).flatMap(
             _.set(TrusteeKindId(1), TrusteeKind.Individual).flatMap(
               _.set(TrusteeNameId(1), PersonName("c", "d")).flatMap(
-                _.set(IsTrusteeNewId(1), true)
+                _.set(IsTrusteeNewId(1), true).flatMap(
+                  _.set(TrusteeKindId(2), TrusteeKind.Partnership).flatMap(
+                    _.set(TrusteePartnershipDetailsId(2), PartnershipDetails("test partnership", true)).flatMap(
+                      _.set(IsTrusteeNewId(2), true)
+                    )
+                  )
+                )
               ))))).get
 
       val expectedSection =  Seq(TaskListEntitySection(None, Nil, Some("c d")))
