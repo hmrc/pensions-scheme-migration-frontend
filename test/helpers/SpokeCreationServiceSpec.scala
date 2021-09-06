@@ -677,6 +677,14 @@ class SpokeCreationServiceSpec
               visuallyHiddenText = None
             ),
             isCompleted = None
+          ),
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Add contact details for test",
+              target = controllers.trustees.partnership.contact.routes.WhatYouWillNeedController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = None
           )
         )
 
@@ -709,7 +717,16 @@ class SpokeCreationServiceSpec
               visuallyHiddenText = None
             ),
             isCompleted = Some(true)
-          ))
+          ),
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Add contact details for test",
+              target = controllers.trustees.partnership.contact.routes.WhatYouWillNeedController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = None
+          )
+        )
 
       val result =
         spokeCreationService.getTrusteePartnershipSpokes(
