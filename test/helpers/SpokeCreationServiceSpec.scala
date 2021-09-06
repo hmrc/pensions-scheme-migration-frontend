@@ -16,10 +16,12 @@
 
 package helpers
 
+import java.time.LocalDate
+
 import base.SpecBase
 import helpers.routes.EstablishersIndividualRoutes
 import helpers.routes.EstablishersIndividualRoutes.contactRoute
-import identifiers.beforeYouStart.{SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
+import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.contact.EnterPhoneId
@@ -28,25 +30,24 @@ import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressId
 import identifiers.establishers.partnership.address.{AddressId => PartnershipAddressId}
+import identifiers.establishers.partnership.details.{HaveUTRId, PartnershipUTRId}
 import identifiers.establishers.partnership.partner.PartnerNameId
-import identifiers.establishers.partnership.details.{PartnershipUTRId, HaveUTRId}
 import identifiers.establishers.partnership.{PartnershipDetailsId => EstablisherPartnershipDetailsId}
 import identifiers.trustees.company.{details => trusteeCompanyDetails}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.contact.{EnterEmailId => TrusteeEmailId, EnterPhoneId => TrusteePhoneId}
 import identifiers.trustees.individual.details.{TrusteeDOBId, TrusteeNINOId, TrusteeUTRId}
-import identifiers.trustees.partnership.{PartnershipDetailsId => TrusteePartnershipDetailsId, contact => TrusteePartnershipContact}
+import identifiers.trustees.partnership.details.{HavePAYEId => TrusteeHavePAYEId, HaveVATId => TrusteeHaveVATId, PAYEId => TrusteePAYEId, VATId => TrusteeVATId, HaveUTRId => TrusteeHaveUTRId, PartnershipUTRId => TrusteePartnershipUTRId}
+import identifiers.trustees.partnership.{PartnershipDetailsId => TrusteePartnershipDetailsId}
 import identifiers.trustees.{TrusteeKindId, company => trusteeCompany}
 import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind
 import models.{EntitySpoke, _}
-import org.scalatest.{OptionValues, TryValues}
 import org.scalatest.matchers.must.Matchers
+import org.scalatest.{OptionValues, TryValues}
 import utils.Data.{schemeName, ua}
-import utils.{Enumerable, Data}
+import utils.{Data, Enumerable}
 import viewmodels.Message
-
-import java.time.LocalDate
 
 class SpokeCreationServiceSpec
   extends SpecBase
@@ -366,7 +367,7 @@ class SpokeCreationServiceSpec
         )
 
       val result =
-        spokeCreationService.getEstablisherPartnershipSpokes(
+      spokeCreationService.getEstablisherPartnershipSpokes(
           answers = userAnswers,
           name = "test",
           index = 0
@@ -423,6 +424,7 @@ class SpokeCreationServiceSpec
 
   "getTrusteesIndividualSpokes" must {
     "display all the spokes with appropriate links and incomplete status when no data is returned from TPSS" in {
+
       val userAnswers =
         ua
           .set(TrusteeKindId(0), TrusteeKind.Individual).success.value
@@ -658,22 +660,25 @@ class SpokeCreationServiceSpec
   }
 
   "getTrusteePartnershipSpokes" must {
+
     "display all the spokes with appropriate links and incomplete status when no data is returned from TPSS" in {
+
       val userAnswers =
         ua
           .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
-          .set(TrusteePartnershipDetailsId(0), PartnershipDetails("test", false)).success.value
+          .set(TrusteePartnershipDetailsId(0), PartnershipDetails("test",false)).success.value
 
       val expectedSpoke =
         Seq(
           EntitySpoke(
             link = TaskListLink(
-              text = "Add contact details for test",
-              target = controllers.trustees.partnership.contact.routes.WhatYouWillNeedController.onPageLoad(0).url,
+              text = "Add details for test",
+              target = controllers.trustees.partnership.details.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
             isCompleted = None
-          ))
+          )
+        )
 
       val result =
         spokeCreationService.getTrusteePartnershipSpokes(
@@ -683,21 +688,24 @@ class SpokeCreationServiceSpec
         )
       result mustBe expectedSpoke
     }
-
     "display all the spokes with appropriate links and complete status when data is returned from TPSS" in {
       val userAnswers =
         ua
           .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
           .set(TrusteePartnershipDetailsId(0), PartnershipDetails("test", false)).success.value
-          .set(TrusteePartnershipContact.EnterEmailId(0), "test@test.com").success.value
-          .set(TrusteePartnershipContact.EnterPhoneId(0), "1234").success.value
+          .set(TrusteeHaveUTRId(0), true).success.value
+          .set(TrusteeUTRId(0), ReferenceValue("1234567890")).success.value
+          .set(TrusteeHaveVATId(0), true).success.value
+          .set(TrusteeVATId(0), ReferenceValue("123456789")).success.value
+          .set(TrusteeHavePAYEId(0), true).success.value
+          .set(TrusteePAYEId(0), ReferenceValue("12345678")).success.value
 
       val expectedSpoke =
         Seq(
           EntitySpoke(
             link = TaskListLink(
-              text = "Change contact details for test",
-              target = controllers.trustees.partnership.contact.routes.CheckYourAnswersController.onPageLoad(0).url,
+              text = "Change details for test",
+              target = controllers.trustees.partnership.details.routes.CheckYourAnswersController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
             isCompleted = Some(true)

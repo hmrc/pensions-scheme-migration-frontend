@@ -172,8 +172,7 @@ class SpokeCreationService extends Enumerable.Implicits {
   def getTrusteePartnershipSpokes(answers: UserAnswers, name: String, index: Index)
                              (implicit messages: Messages): Seq[EntitySpoke] = {
     Seq(
-      createSpoke(answers, TrusteePartnershipDetails(index, answers), name),
-      createSpoke(answers, TrusteePartnershipContactDetails(index, answers), name)
+      createSpoke(answers, TrusteePartnershipDetails(index, answers), name)
     )
   }
 
