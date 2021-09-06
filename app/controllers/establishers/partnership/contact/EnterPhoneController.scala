@@ -56,7 +56,7 @@ class EnterPhoneController @Inject()(
       .fold(Message("messages__partnership"))(_.partnershipName)
 
   private def form(index: Index)(implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Message("messages__enterPhone__error_required", name(index)))
+    formProvider(Message("messages__enterPhone__type__error_required", Message("messages__partnership").resolve))
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
