@@ -18,32 +18,35 @@ package controllers.establishers.partnership.contact
 
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
-import matchers.JsonMatchers.containJson
+import identifiers.establishers.partnership.PartnershipDetailsId
+import matchers.JsonMatchers
 import models.{NormalMode, PartnershipDetails}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.scalatest.matchers.must.Matchers
+import org.scalatest.TryValues
 import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import renderer.Renderer
-import utils.Data.schemeName
-import utils.{Data, UserAnswers}
+import utils.Data.{schemeName, ua}
+import utils.UserAnswers
 
 import scala.concurrent.Future
 
 class WhatYouWillNeedContactControllerSpec
   extends ControllerSpecBase
-    with Matchers {
+    with JsonMatchers
+    with TryValues {
 
   private val partnership: PartnershipDetails = PartnershipDetails("test")
-  private val userAnswers: UserAnswers = Data.ua
+  private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(0), partnership).success.value
   private val templateToBeRendered: String = "whatYouWillNeedContact.njk"
 
   private def json: JsObject =
     Json.obj(
       "name"        -> partnership.partnershipName,
-      "continueUrl" -> controllers.establishers.company.contact.routes.EnterEmailController.onPageLoad(0, NormalMode).url,
+      "continueUrl" -> controllers.establishers.partnership.contact.routes.EnterEmailController.onPageLoad(0, NormalMode).url,
       "schemeName"  -> schemeName
     )
 
@@ -62,7 +65,6 @@ class WhatYouWillNeedContactControllerSpec
     "WhatYouWillNeedPartnershipContactController" must {
 
       "return OK and the correct view for a GET" in {
-
         when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
         val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -70,7 +72,7 @@ class WhatYouWillNeedContactControllerSpec
 
         val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
-        val result = createController(getData).onPageLoad(0)(fakeDataRequest(userAnswers))
+        val result: Future[Result] = createController(getData).onPageLoad(0)(fakeDataRequest(userAnswers))
 
         status(result) mustBe OK
 

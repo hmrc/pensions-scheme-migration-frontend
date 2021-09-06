@@ -18,6 +18,7 @@ package helpers
 
 import base.SpecBase
 import controllers.establishers.individual.details.routes
+import helpers.spokes.establishers.partnership.EstablisherPartnershipContactDetails
 import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.company.CompanyDetailsId
@@ -352,6 +353,14 @@ class SpokeCreationServiceSpec
               visuallyHiddenText = None
             ),
             isCompleted = None
+          ),
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Add contact details for test",
+              target = controllers.establishers.partnership.contact.routes.WhatYouWillNeedContactController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = None
           )
         )
 
@@ -387,6 +396,14 @@ class SpokeCreationServiceSpec
             link = TaskListLink(
               text = "Change address for test",
               target = controllers.establishers.partnership.address.routes.CheckYourAnswersController.onPageLoad(0).url,
+              visuallyHiddenText = None
+            ),
+            isCompleted = Some(false)
+          ),
+          EntitySpoke(
+            link = TaskListLink(
+              text = "Change contact details for test",
+              target = controllers.establishers.partnership.contact.routes.CheckYourAnswersController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
             isCompleted = Some(false)
