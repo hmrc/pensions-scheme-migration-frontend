@@ -19,8 +19,8 @@ package controllers.trustees.partnership.contact
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.EmailFormProvider
-import identifiers.trustees.partnership.contact.EnterEmailId
 import identifiers.trustees.partnership.PartnershipDetailsId
+import identifiers.trustees.partnership.contact.EnterEmailId
 import matchers.JsonMatchers
 import models.NormalMode
 import org.mockito.ArgumentCaptor

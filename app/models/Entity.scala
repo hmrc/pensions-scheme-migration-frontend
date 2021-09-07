@@ -45,11 +45,6 @@ sealed trait Entity[ID] {
   def index: Int
 }
 
-object Entity {
-  implicit lazy val formats: Format[Entity[_]] = Json.format[Entity[_]]
-}
-
-
 case class EstablisherIndividualEntity(
                                         id: EstablisherNameId,
                                         name: String,

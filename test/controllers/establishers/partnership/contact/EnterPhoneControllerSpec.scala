@@ -22,7 +22,7 @@ import forms.PhoneFormProvider
 import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.contact.EnterPhoneId
 import matchers.JsonMatchers
-import models.{PartnershipDetails, NormalMode}
+import models.{NormalMode, PartnershipDetails}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}

@@ -17,25 +17,25 @@
 package controllers.trustees.individual.details
 
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRetrievalAction, FakeAuthAction, DataRequiredActionImpl, FakeDataRetrievalAction}
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.HasReferenceNumberFormProvider
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.details.TrusteeHasNINOId
 import matchers.JsonMatchers
-import models.{PersonName, NormalMode}
+import models.{NormalMode, PersonName}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Call, AnyContentAsFormUrlEncoded, Result}
+import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
-import uk.gov.hmrc.viewmodels.{Radios, NunjucksSupport}
+import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import utils.Data.ua
-import utils.{UserAnswers, FakeNavigator}
+import utils.{FakeNavigator, UserAnswers}
 
 import scala.concurrent.Future
 

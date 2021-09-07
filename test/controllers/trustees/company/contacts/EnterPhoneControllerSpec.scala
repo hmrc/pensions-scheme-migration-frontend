@@ -25,7 +25,6 @@ import matchers.JsonMatchers
 import models.{CompanyDetails, NormalMode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
@@ -46,7 +45,7 @@ class EnterPhoneControllerSpec extends ControllerSpecBase
   with TryValues
   with BeforeAndAfterEach {
 
-  private val company: CompanyDetails = CompanyDetails("test",false)
+  private val company: CompanyDetails = CompanyDetails("test")
   private val phone = "777"
   private val formProvider: PhoneFormProvider = new PhoneFormProvider()
   private val form = formProvider("")

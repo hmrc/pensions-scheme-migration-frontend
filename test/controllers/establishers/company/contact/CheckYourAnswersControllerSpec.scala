@@ -48,7 +48,7 @@ class CheckYourAnswersControllerSpec
 
   private val cyaHelper = new EstablisherCompanyContactDetailsCYAHelper
   private val uaEmailPhone: UserAnswers = ua
-    .set(CompanyDetailsId(0), CompanyDetails("test",false)).success.value
+    .set(CompanyDetailsId(0), CompanyDetails("test")).success.value
     .set(EnterEmailId(0), "test@test.com").success.value
     .set(EnterPhoneId(0), "11111").success.value
 

@@ -22,7 +22,7 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import helpers.routes.EstablishersIndividualRoutes
 import identifiers.beforeYouStart.SchemeNameId
 import matchers.JsonMatchers
-import models.{TolerantAddress, NormalMode}
+import models.{NormalMode, TolerantAddress}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -34,7 +34,7 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
-import utils.{UserAnswers, Enumerable, Data}
+import utils.{Data, Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 

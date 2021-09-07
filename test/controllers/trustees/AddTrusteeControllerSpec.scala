@@ -21,7 +21,7 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import forms.trustees.ConfirmDeleteTrusteeFormProvider
 import helpers.AddToListHelper
 import identifiers.trustees.individual.TrusteeNameId
-import identifiers.trustees.{IsTrusteeNewId, AddTrusteeId, TrusteeKindId}
+import identifiers.trustees.{AddTrusteeId, IsTrusteeNewId, TrusteeKindId}
 import matchers.JsonMatchers
 import models.PersonName
 import models.trustees.TrusteeKind
@@ -35,9 +35,9 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.viewmodels.{Table, Radios}
+import uk.gov.hmrc.viewmodels.{Radios, Table}
 import utils.Data.{schemeName, ua}
-import utils.{UserAnswers, Enumerable}
+import utils.{Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 

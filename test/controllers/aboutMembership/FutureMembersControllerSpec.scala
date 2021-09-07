@@ -44,8 +44,8 @@ class FutureMembersControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
-  private def httpPathGET: String = controllers.aboutMembership.routes.FutureMembersController.onPageLoad.url
-  private def httpPathPOST: String = controllers.aboutMembership.routes.FutureMembersController.onSubmit.url
+  private def httpPathGET: String = controllers.aboutMembership.routes.FutureMembersController.onPageLoad().url
+  private def httpPathPOST: String = controllers.aboutMembership.routes.FutureMembersController.onSubmit().url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq(Members.One.toString)

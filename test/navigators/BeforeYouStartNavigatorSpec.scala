@@ -18,9 +18,9 @@ package navigators
 
 import base.SpecBase
 import controllers.beforeYouStartSpoke.routes._
-import identifiers.beforeYouStart.{SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
+import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}
 import identifiers.{Identifier, TypedIdentifier}
-import models.{SchemeType, NormalMode}
+import models.{CheckMode, NormalMode, SchemeType}
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes
 import play.api.mvc.Call
@@ -47,6 +47,10 @@ class BeforeYouStartNavigatorSpec
 
     "in NormalMode" must {
       behave like navigatorWithRoutesForMode(NormalMode)(navigator, navigation)
+    }
+
+    "in CheckMode" must {
+      behave like navigatorWithRoutesForMode(CheckMode)(navigator, navigation)
     }
   }
 }

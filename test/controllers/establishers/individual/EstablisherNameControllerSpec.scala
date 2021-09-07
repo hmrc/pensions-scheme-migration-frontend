@@ -22,7 +22,7 @@ import forms.PersonNameFormProvider
 import helpers.routes.EstablishersIndividualRoutes
 import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
-import models.{PersonName, Index, NormalMode}
+import models.{Index, NormalMode, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -32,7 +32,7 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
-import utils.{UserAnswers, Enumerable}
+import utils.{Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 

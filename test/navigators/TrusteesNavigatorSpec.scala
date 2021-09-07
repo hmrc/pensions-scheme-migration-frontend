@@ -23,16 +23,16 @@ import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address._
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.details._
-import identifiers.trustees.{OtherTrusteesId, AddTrusteeId, TrusteeKindId}
+import identifiers.trustees.{AddTrusteeId, OtherTrusteesId, TrusteeKindId}
 import identifiers.{Identifier, TypedIdentifier}
 import models.trustees.TrusteeKind
-import models.{PersonName, Mode, Index, NormalMode, _}
+import models._
 import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes
 import play.api.mvc.Call
 import utils.Data.ua
-import utils.{UserAnswers, Enumerable}
+import utils.{Enumerable, UserAnswers}
 
 import java.time.LocalDate
 
@@ -56,7 +56,6 @@ class TrusteesNavigatorSpec
   private val taskListPage: Call = controllers.routes.TaskListController.onPageLoad()
   private val otherTrusteesPage: Call = controllers.trustees.routes.OtherTrusteesController.onPageLoad
   private val trusteeKindPage: Call = routes.TrusteeKindController.onPageLoad(index)
-  private val indexPage: Call = controllers.routes.IndexController.onPageLoad()
   private def hasNinoPage(mode: Mode): Call =
     detailsRoutes.TrusteeHasNINOController.onPageLoad(index, mode)
   private def enterNinoPage(mode: Mode): Call =

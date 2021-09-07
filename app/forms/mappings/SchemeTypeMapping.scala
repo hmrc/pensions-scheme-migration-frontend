@@ -59,7 +59,7 @@ trait SchemeTypeMapping
           mappings.apply(key)
       }
     }
-
+    // scalastyle:off magic.number
     tuple(
       "type" -> text(requiredTypeKey)
         .verifying(schemeTypeConstraint(invalidTypeKey)),
@@ -75,5 +75,6 @@ trait SchemeTypeMapping
           )
       )
     ).transform(toSchemeType, fromSchemeType)
+    // scalastyle:on magic.number
   }
 }

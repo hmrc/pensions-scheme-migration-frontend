@@ -46,7 +46,8 @@ class SchemeSearchService @Inject()(fuzzyMatching: SchemeFuzzyMatcher,listOfSche
           }
     }
 
-  def search(psaId: String, searchText: Option[String], isRacDac: Boolean)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[Items]] =
+  def search(psaId: String, searchText: Option[String], isRacDac: Boolean)
+            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[Items]] =
     listOfSchemesConnector.getListOfSchemes(psaId).map {
         case Right(listOfSchemes) =>
 
