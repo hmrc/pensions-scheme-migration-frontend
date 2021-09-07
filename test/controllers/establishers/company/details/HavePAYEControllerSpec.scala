@@ -17,7 +17,7 @@
 package controllers.establishers.company.details
 
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
+import controllers.actions._
 import forms.HasReferenceNumberFormProvider
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.details.HavePAYEId

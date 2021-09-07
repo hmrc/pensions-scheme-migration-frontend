@@ -59,7 +59,14 @@ class CannotAddControllerSpec extends ControllerSpecBase with NunjucksSupport wi
   )
 
   private def controller(): CannotAddController =
-    new CannotAddController(appConfig, messagesApi, new FakeAuthAction(), controllerComponents,mockListOfSchemesConnector, new Renderer(mockAppConfig, mockRenderer))
+    new CannotAddController(
+                             appConfig,
+                             messagesApi,
+                             new FakeAuthAction(),
+                             controllerComponents,
+                             mockListOfSchemesConnector,
+                             new Renderer(mockAppConfig, mockRenderer)
+                            )
 
   "CannotAddController" must {
     "return OK and the correct view for a GET for scheme" in {

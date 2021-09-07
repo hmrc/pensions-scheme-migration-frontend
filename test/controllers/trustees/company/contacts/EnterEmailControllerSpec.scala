@@ -45,7 +45,7 @@ class EnterEmailControllerSpec extends ControllerSpecBase
   with TryValues
   with BeforeAndAfterEach {
 
-  private val company: CompanyDetails = CompanyDetails("test",false)
+  private val company: CompanyDetails = CompanyDetails("test")
   private val email = "test@test.com"
   private val formProvider: EmailFormProvider = new EmailFormProvider()
   private val form = formProvider("")

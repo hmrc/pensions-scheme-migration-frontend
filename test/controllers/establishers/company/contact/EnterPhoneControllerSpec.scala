@@ -45,7 +45,7 @@ class EnterPhoneControllerSpec extends ControllerSpecBase
   with TryValues
   with BeforeAndAfterEach {
 
-  private val company: CompanyDetails = CompanyDetails("test",false)
+  private val company: CompanyDetails = CompanyDetails("test")
   private val phone = "777"
   private val formProvider: PhoneFormProvider = new PhoneFormProvider()
   private val form = formProvider("")

@@ -44,7 +44,7 @@ class EstablisherCompanyContactDetailsCYAHelperSpec extends AnyWordSpec with Mat
   private def dataRequest(ua: UserAnswers) = DataRequest[AnyContent](request = fakeRequest, userAnswers = ua,
     psaId = PsaId(psaId), lock = MigrationLock(pstr = pstr, credId = credId, psaId = psaId), viewOnly = false)
 
-  private val company: CompanyDetails = CompanyDetails("test",false)
+  private val company: CompanyDetails = CompanyDetails("test")
 
   // scalastyle:off magic.number
   "EstablisherCompanyContactDetailsCYAHelper" must {
