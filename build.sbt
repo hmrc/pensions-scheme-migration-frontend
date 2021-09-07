@@ -58,9 +58,10 @@ pipelineStages in Assets := Seq(concat, uglify)
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;.*models.*;.*repositories.*;" +
       ".*BuildInfo.*;.*javascript.*;.*Routes.*;.*GuiceInjector;.*UserAnswersCacheConnector;" +
       ".*ControllerConfiguration;.*LanguageSwitchController;.*TestMongoController;.*LanguageSelect.*;.*TestMongoPage.*;.*ErrorTemplate.*",
-    ScoverageKeys.coverageMinimum := 65,
+    ScoverageKeys.coverageMinimum := 80,
     ScoverageKeys.coverageFailOnMinimum := true,
-    ScoverageKeys.coverageHighlighting := true
+    ScoverageKeys.coverageHighlighting := true,
+    scalacOptions ++= Seq("-Xfatal-warnings", "-feature")
   )
   .settings(
     scalacOptions ++= Seq(/*"-Xfatal-warnings",*/ "-feature"),

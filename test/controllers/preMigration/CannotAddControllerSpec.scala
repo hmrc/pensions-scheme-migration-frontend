@@ -16,7 +16,7 @@
 
 package controllers.preMigration
 
-import connectors.{AncillaryPsaException, ListOfSchemesConnector}
+import connectors.ListOfSchemesConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import matchers.JsonMatchers
@@ -37,7 +37,6 @@ class CannotAddControllerSpec extends ControllerSpecBase with NunjucksSupport wi
 
   private val templateToBeRendered: String = "preMigration/cannotAdd.njk"
   private val mockListOfSchemesConnector:ListOfSchemesConnector= mock[ListOfSchemesConnector];
-  private val mockAncillaryPsaException:AncillaryPsaException= mock[AncillaryPsaException];
   private val schemeDetail = Items("10000678RE", "2020-10-10", racDac = false, "abcdefghi", "2020-12-12", None)
   private val racDacDetail = Items("10000678RF", "2020-10-10", racDac = true, "abcdefghi", "2020-12-12", Some("12345678"))
 

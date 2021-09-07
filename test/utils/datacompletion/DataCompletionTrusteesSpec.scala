@@ -18,13 +18,14 @@ package utils.datacompletion
 
 import identifiers.trustees.TrusteeKindId
 import identifiers.trustees.company.details._
-import identifiers.trustees.company.{CompanyDetailsId, contacts => companyContact}
+import identifiers.trustees.company.{CompanyDetailsId, address => companyAddress, contacts => companyContact}
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.details._
-import identifiers.trustees.partnership.{PartnershipDetailsId, contact => partnershipContact}
+import identifiers.trustees.individual.{TrusteeNameId, address => individualAddress}
 import identifiers.trustees.partnership.address.{AddressId, AddressYearsId, PreviousAddressId, TradingTimeId}
+import identifiers.trustees.partnership.{PartnershipDetailsId, contact => partnershipContact}
 import models.trustees.TrusteeKind
-import models.{CompanyDetails, PartnershipDetails, ReferenceValue}
+import models.{CompanyDetails, PartnershipDetails, PersonName, ReferenceValue}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.{OptionValues, TryValues}
@@ -40,6 +41,26 @@ class DataCompletionTrusteesSpec
     with Enumerable.Implicits {
 
   "Trustee Individual completion status should be returned correctly" when {
+    "isTrusteeIndividualComplete" must {
+      "return true when all answers are present" in {
+        val ua =
+          UserAnswers()
+            .set(TrusteeKindId(0), TrusteeKind.Individual).success.value
+            .set(TrusteeNameId(0), PersonName("a", "b")).success.value
+
+        ua.isTrusteeIndividualComplete(0) mustBe true
+      }
+
+      "return false when some answer is missing" in {
+        val ua =
+          UserAnswers()
+            .set(TrusteeKindId(0), TrusteeKind.Individual).success.value
+            .set(TrusteeNameId(0), PersonName("a", "b")).success.value
+            .set(TrusteeKindId(1), TrusteeKind.Individual).success.value
+
+        ua.isTrusteeIndividualComplete(1) mustBe false
+      }
+    }
 
     "isTrusteeIndividualDetailsCompleted" must {
       "return true when all answers are present" in {
@@ -72,6 +93,42 @@ class DataCompletionTrusteesSpec
 
         ua.isTrusteeIndividualDetailsCompleted(0) mustBe Some(false)
 
+      }
+    }
+
+    "isTrusteeIndividualAddressCompleted" must {
+      "return true when all answers are present" in {
+        val ua1 =
+          UserAnswers()
+            .setOrException(individualAddress.AddressId(0), Data.address)
+            .setOrException(individualAddress.AddressYearsId(0), true)
+
+        val ua2 =
+          UserAnswers()
+            .setOrException(individualAddress.AddressId(0), Data.address)
+            .setOrException(individualAddress.AddressYearsId(0), false)
+            .setOrException(individualAddress.PreviousAddressId(0), Data.address)
+
+        ua1.isTrusteeIndividualAddressCompleted(0, ua1) mustBe Some(true)
+        ua2.isTrusteeIndividualAddressCompleted(0, ua2) mustBe Some(true)
+      }
+
+      "return false when some answer is missing" in {
+        val ua1 =
+          UserAnswers()
+            .setOrException(individualAddress.AddressId(0), Data.address)
+            .setOrException(individualAddress.AddressYearsId(0), false)
+
+        val ua2 =
+          UserAnswers()
+            .setOrException(individualAddress.AddressId(0), Data.address)
+
+        ua1.isTrusteeIndividualAddressCompleted(0, ua1) mustBe Some(false)
+        ua2.isTrusteeIndividualAddressCompleted(0, ua2) mustBe Some(false)
+      }
+
+      "return None when no answers present" in {
+        UserAnswers().isTrusteeIndividualAddressCompleted(0, UserAnswers()) mustBe None
       }
     }
 
@@ -163,6 +220,66 @@ class DataCompletionTrusteesSpec
 
         ua.isTrusteeCompanyDetailsCompleted(0) mustBe Some(false)
 
+      }
+    }
+
+    "isTrusteeCompanyAddressCompleted" must {
+      "return true when address is complete and address years is true" in {
+        val ua =
+          UserAnswers()
+            .set(TrusteeKindId(0), TrusteeKind.Company).success.value
+            .set(CompanyDetailsId(0), CompanyDetails("test company")).success.value
+            .set(companyAddress.AddressId(0), Data.address).success.value
+            .set(companyAddress.AddressYearsId(0), true).success.value
+
+        ua.isTrusteeCompanyAddressCompleted(0, ua).value mustBe true
+      }
+
+      "return true when address is complete and address years is false and trading time is false" in {
+        val ua =
+          UserAnswers()
+            .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
+            .set(CompanyDetailsId(0), CompanyDetails("test company")).success.value
+            .set(companyAddress.AddressId(0), Data.address).success.value
+            .set(companyAddress.AddressYearsId(0), false).success.value
+            .set(companyAddress.TradingTimeId(0), false).success.value
+
+        ua.isTrusteeCompanyAddressCompleted(0, ua).value mustBe true
+      }
+
+      "return true when address is complete and previous address is complete" in {
+        val ua =
+          UserAnswers()
+            .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
+            .set(CompanyDetailsId(0), CompanyDetails("test company")).success.value
+            .set(companyAddress.AddressId(0), Data.address).success.value
+            .set(companyAddress.AddressYearsId(0), false).success.value
+            .set(companyAddress.TradingTimeId(0), true).success.value
+            .set(companyAddress.PreviousAddressId(0), Data.address).success.value
+
+        ua.isTrusteeCompanyAddressCompleted(0, ua).value mustBe true
+      }
+
+      "return false when address is complete but no address years is present" in {
+        val ua =
+          UserAnswers()
+            .set(TrusteeKindId(0), TrusteeKind.Company).success.value
+            .set(CompanyDetailsId(0), CompanyDetails("test company")).success.value
+            .set(companyAddress.AddressId(0), Data.address).success.value
+
+        ua.isTrusteeCompanyAddressCompleted(0, ua).value mustBe false
+      }
+
+      "return false when address is complete but no previous address is present" in {
+        val ua =
+          UserAnswers()
+            .set(TrusteeKindId(0), TrusteeKind.Company).success.value
+            .set(CompanyDetailsId(0), CompanyDetails("test company")).success.value
+            .set(companyAddress.AddressId(0), Data.address).success.value
+            .set(companyAddress.AddressYearsId(0), false).success.value
+            .set(companyAddress.TradingTimeId(0), true).success.value
+
+        ua.isTrusteeCompanyAddressCompleted(0, ua).value mustBe false
       }
     }
 
@@ -271,28 +388,28 @@ class DataCompletionTrusteesSpec
         ua.isTrusteePartnershipAddressCompleted(0, ua).value mustBe false
       }
     }
-  }
 
-  "isTrusteePartnershipContactDetailsCompleted" must {
-    "return true when all answers are present" in {
-      val ua =
-        UserAnswers()
-          .set(partnershipContact.EnterEmailId(0), "test@test.com").success.value
-          .set(partnershipContact.EnterPhoneId(0), "123").success.value
+    "isTrusteePartnershipContactDetailsCompleted" must {
+      "return true when all answers are present" in {
+        val ua =
+          UserAnswers()
+            .set(partnershipContact.EnterEmailId(0), "test@test.com").success.value
+            .set(partnershipContact.EnterPhoneId(0), "123").success.value
 
-      ua.isTrusteePartnershipContactDetailsCompleted(0).value mustBe true
-    }
+        ua.isTrusteePartnershipContactDetailsCompleted(0).value mustBe true
+      }
 
-    "return false when some answer is missing" in {
-      val ua =
-        UserAnswers()
-          .set(partnershipContact.EnterEmailId(0), "test@test.com").success.value
+      "return false when some answer is missing" in {
+        val ua =
+          UserAnswers()
+            .set(partnershipContact.EnterEmailId(0), "test@test.com").success.value
 
-      ua.isTrusteePartnershipContactDetailsCompleted(0).value mustBe false
-    }
+        ua.isTrusteePartnershipContactDetailsCompleted(0).value mustBe false
+      }
 
-    "return None when no answer is present" in {
-      UserAnswers().isTrusteePartnershipContactDetailsCompleted(0) mustBe None
+      "return None when no answer is present" in {
+        UserAnswers().isTrusteePartnershipContactDetailsCompleted(0) mustBe None
+      }
     }
   }
 }

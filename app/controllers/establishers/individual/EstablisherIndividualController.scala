@@ -17,8 +17,7 @@
 package controllers.establishers.individual
 
 import controllers.establishers.individual.details._
-import controllers.trustees.individual.{address, contact}
-import models.{Mode, Index}
+import models.{Index, Mode}
 import play.api.mvc.{Action, AnyContent}
 
 import javax.inject.Inject

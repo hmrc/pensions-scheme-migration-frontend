@@ -20,7 +20,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import helpers.cya.establishers.company.EstablisherCompanyDirectorDetailsCYAHelper
 import identifiers.establishers.company.director._
-import identifiers.establishers.company.director.details.{DirectorDOBId, DirectorEnterUTRId, DirectorHasNINOId, DirectorHasUTRId, DirectorNINOId, DirectorNoNINOReasonId, DirectorNoUTRReasonId}
+import identifiers.establishers.company.director.details._
 import matchers.JsonMatchers
 import models.requests.DataRequest
 import models.{PersonName, ReferenceValue}

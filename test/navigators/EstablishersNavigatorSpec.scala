@@ -23,16 +23,16 @@ import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address._
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.individual.details._
-import identifiers.establishers.{AddEstablisherId, EstablisherKindId}
+import identifiers.establishers.{AddEstablisherId, ConfirmDeleteEstablisherId, EstablisherKindId}
 import identifiers.{Identifier, TypedIdentifier}
 import models.establishers.EstablisherKind
-import models.{CheckMode, PersonName, NormalMode, Mode, ReferenceValue, Index, _}
+import models.{CheckMode, Index, Mode, NormalMode, PersonName, ReferenceValue, _}
 import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes
 import play.api.mvc.Call
 import utils.Data.ua
-import utils.{UserAnswers, Enumerable}
+import utils.{Enumerable, UserAnswers}
 import helpers.routes.EstablishersIndividualRoutes._
 
 import java.time.LocalDate
@@ -52,7 +52,6 @@ class EstablishersNavigatorSpec
   private val addEstablisherPage: Call = controllers.establishers.routes.AddEstablisherController.onPageLoad()
   private val taskListPage: Call = controllers.routes.TaskListController.onPageLoad()
   private val establisherKindPage: Call = routes.EstablisherKindController.onPageLoad(index)
-  private val indexPage: Call = controllers.routes.IndexController.onPageLoad()
   private val detailsUa: UserAnswers =
     ua.set(EstablisherNameId(0), PersonName("Jane", "Doe")).success.value
 
@@ -95,6 +94,7 @@ class EstablishersNavigatorSpec
         row(EstablisherNameId(index))(addEstablisherPage),
         row(AddEstablisherId(Some(true)))(establisherKindPage),
         row(AddEstablisherId(Some(false)))(taskListPage),
+        row(ConfirmDeleteEstablisherId)(addEstablisherPage),
         row(EstablisherDOBId(index))(haveNationalInsuranceNumberRoute(index, NormalMode), Some(detailsUa.set(EstablisherDOBId(index), LocalDate.parse("2000-01-01")).success.value)),
         row(EstablisherHasNINOId(index))(enterNationaInsuranceNumberRoute(index, NormalMode), Some(detailsUa.set(EstablisherHasNINOId(index), true).success.value)),
         row(EstablisherHasNINOId(index))(reasonForNoNationalInsuranceNumberRoute(index, NormalMode), Some(detailsUa.set(EstablisherHasNINOId(index), false).success.value)),

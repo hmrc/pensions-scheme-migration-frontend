@@ -19,10 +19,8 @@ package services
 import base.SpecBase
 import connectors.cache.{CurrentPstrCacheConnector, LockCacheConnector}
 import models.requests.AuthenticatedRequest
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.mockito.MockitoSugar
+import org.mockito.{ArgumentMatchers, MockitoSugar}
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.mvc.Results.Ok

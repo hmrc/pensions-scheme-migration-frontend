@@ -43,7 +43,8 @@ object Radios extends NunjucksSupport {
     }
   }
 
-  final case class Item(id: String, text: Text, value: String, checked: Boolean, hint: Option[Hint] = None, conditional: Option[Conditional] = None, classes: Seq[String] = Seq.empty,
+  final case class Item(id: String, text: Text, value: String, checked: Boolean, hint: Option[Hint] = None,
+                        conditional: Option[Conditional] = None, classes: Seq[String] = Seq.empty,
                         label: Option[LabelClasses] = None)
 
   object Item {
