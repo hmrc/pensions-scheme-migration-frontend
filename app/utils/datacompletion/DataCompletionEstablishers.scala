@@ -21,6 +21,7 @@ import identifiers.establishers.company.{address => companyAddress}
 import identifiers.establishers.company.details._
 import identifiers.establishers.partnership.{details => partnershipDetails}
 import identifiers.establishers.partnership.{address => partnershipAddress}
+import identifiers.establishers.partnership.{contact => partnershipContact}
 import identifiers.establishers.company.director.{address => directorAddress}
 import identifiers.establishers.company.director.{contact => directorContact}
 import identifiers.establishers.partnership.partner.{address => partnerAddress}
@@ -218,4 +219,12 @@ trait DataCompletionEstablishers extends DataCompletion {
       )
     )
   }
+
+  def isEstablisherPartnershipContactDetailsCompleted(index: Int): Option[Boolean] =
+    isComplete(
+      Seq(
+        isAnswerComplete(partnershipContact.EnterEmailId(index)),
+        isAnswerComplete(partnershipContact.EnterPhoneId(index))
+      )
+    )
 }

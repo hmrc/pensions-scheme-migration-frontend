@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-package forms.establishers.partnership.address
+package identifiers.establishers.partnership.contact
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import identifiers.TypedIdentifier
+import identifiers.establishers.EstablishersId
+import play.api.libs.json.{Format, JsPath, Json}
 
-import javax.inject.Inject
-
-class PartnershipTradingTimeFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("partnershipTradingTime.error.required")
-    )
+case class EnterEmailId(index: Int) extends TypedIdentifier[String] {
+  override def path: JsPath =
+    EstablishersId(index).path \ EnterEmailId.toString
 }
+
+object EnterEmailId {
+  override lazy val toString: String =
+    "partnershipEmail"
+
+  implicit lazy val formats: Format[EnterEmailId] =
+    Json.format[EnterEmailId]
+}
+
+

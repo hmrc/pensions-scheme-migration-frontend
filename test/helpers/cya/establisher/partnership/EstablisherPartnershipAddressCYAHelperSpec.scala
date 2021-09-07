@@ -101,7 +101,7 @@ class EstablisherPartnershipAddressCYAHelperSpec extends AnyWordSpec with Matche
         Some(Link(text = Messages("site.change"),
           target = controllers.establishers.partnership.address.routes.TradingTimeController.onPageLoad(0).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__visuallyhidden__establisherTradingTime", establisherPartnershipName.partnershipName))),
+            Messages("messages__visuallyhidden__TradingTime", establisherPartnershipName.partnershipName))),
           attributes = Map("id" -> "cya-0-2-change"))))
 
       result(3) mustBe summaryListRowHtml(key = messages("messages__establisherPreviousAddress"),
@@ -112,3 +112,5 @@ class EstablisherPartnershipAddressCYAHelperSpec extends AnyWordSpec with Matche
     }
   }
 }
+
+

@@ -87,6 +87,8 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val managePensionsSchemeOverviewUrl: String = Call("GET", loadConfig("urls.manage-pensions-frontend.schemesOverview")).url
   lazy val managePensionsSchemeSummaryUrl: String = "Test"
   lazy val serviceSignOut: String = s"${config.get[String](path = "urls.logout")}"
+  lazy val timeoutSeconds: String = s"${config.get[String](path = "session.timeoutSeconds")}"
+  lazy val CountdownInSeconds: String = s"${config.get[String](path = "session.CountdownInSeconds")}"
   lazy val validCountryCodes: Seq[String] = s"${config.get[String](path = "validCountryCodes")}".split(",").toSeq
   lazy val maxDirectors: Int = loadConfig("company.maxDirectors").toInt
   lazy val maxTrustees: Int = loadConfig("company.maxTrustees").toInt

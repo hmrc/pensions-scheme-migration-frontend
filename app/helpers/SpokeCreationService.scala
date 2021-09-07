@@ -24,6 +24,13 @@ import helpers.spokes.trustees.company.{TrusteeCompanyContactDetails, TrusteeCom
 import helpers.spokes.trustees.individual.{TrusteeIndividualAddress, TrusteeIndividualDetails, TrusteeIndividualContactDetails}
 import helpers.spokes.trustees.partnership.{TrusteePartnershipDetails, TrusteePartnershipContactDetails}
 import helpers.spokes.{BeforeYouStartSpoke, AboutMembersSpoke, Spoke, BenefitsAndInsuranceSpoke}
+import helpers.spokes.establishers.partnership._
+import helpers.spokes.establishers.partnership.{EstablisherPartnershipAddress, EstablisherPartnershipDetails, EstablisherPartnerDetails}
+import helpers.spokes.trustees.company.{TrusteeCompanyAddress, TrusteeCompanyContactDetails, TrusteeCompanyDetails}
+import helpers.spokes.trustees.individual.{TrusteeIndividualAddress, TrusteeIndividualContactDetails, TrusteeIndividualDetails}
+import helpers.spokes.trustees.partnership.TrusteePartnershipAddress
+import helpers.spokes.trustees.partnership.TrusteePartnershipContactDetails
+import helpers.spokes.{AboutMembersSpoke, BeforeYouStartSpoke, BenefitsAndInsuranceSpoke, Spoke}
 import models.Index._
 import models.{Entity, TaskListLink, EntitySpoke, Index}
 import play.api.i18n.Messages
@@ -95,6 +102,7 @@ class SpokeCreationService extends Enumerable.Implicits {
     Seq(
       createSpoke(answers, EstablisherPartnershipDetails(index, answers), name),
       createSpoke(answers, EstablisherPartnershipAddress(index, answers), name),
+      createSpoke(answers, EstablisherPartnershipContactDetails(index, answers), name),
       createPartnerSpoke(answers.allPartnersAfterDelete(indexToInt(index)),EstablisherPartnerDetails(index, answers), name)
     )
   }
@@ -173,6 +181,7 @@ class SpokeCreationService extends Enumerable.Implicits {
                              (implicit messages: Messages): Seq[EntitySpoke] = {
     Seq(
       createSpoke(answers, TrusteePartnershipDetails(index, answers), name),
+      createSpoke(answers, TrusteePartnershipAddress(index, answers), name),
       createSpoke(answers, TrusteePartnershipContactDetails(index, answers), name)
     )
   }

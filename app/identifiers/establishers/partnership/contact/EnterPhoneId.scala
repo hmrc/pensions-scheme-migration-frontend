@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-package forms.trustees.address
+package identifiers.establishers.partnership.contact
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import identifiers.TypedIdentifier
+import identifiers.establishers.EstablishersId
+import play.api.libs.json.{Format, JsPath, Json}
 
-import javax.inject.Inject
-
-class AddressYearsFormProvider @Inject() extends Mappings {
-
-  def apply(requiredKey:String): Form[Boolean] =
-    Form(
-      "value" -> boolean(requiredKey)
-    )
+case class EnterPhoneId(index: Int) extends TypedIdentifier[String] {
+  override def path: JsPath =
+    EstablishersId(index).path \ EnterPhoneId.toString
 }
+
+object EnterPhoneId {
+  override lazy val toString: String =
+    "partnershipPhone"
+
+  implicit lazy val formats: Format[EnterPhoneId] =
+    Json.format[EnterPhoneId]
+}
+
+

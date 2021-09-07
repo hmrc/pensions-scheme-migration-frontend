@@ -79,3 +79,17 @@ GET         /:index/change/partnership/other-partners                           
 POST        /:index/change/partnership/other-partners                                 controllers.establishers.partnership.OtherPartnersController.onSubmit(index:Index,mode:Mode=CheckMode)
 
 ->          /                                                                           establishersPartner.Routes
+
+GET         /:index/partnership/contact-details                                          controllers.establishers.partnership.contact.WhatYouWillNeedController.onPageLoad(index: Index)
+
+GET         /:index/partnership/enter-email-address                                      controllers.establishers.partnership.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/partnership/enter-email-address                                      controllers.establishers.partnership.contact.EnterEmailController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/partnership/change/enter-email-address                               controllers.establishers.partnership.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/partnership/change/enter-email-address                               controllers.establishers.partnership.contact.EnterEmailController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/partnership/enter-phone-number                                       controllers.establishers.partnership.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/partnership/enter-phone-number                                       controllers.establishers.partnership.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/partnership/change/enter-phone-number                                controllers.establishers.partnership.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/partnership/change/enter-phone-number                                controllers.establishers.partnership.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/partnership/check-your-answers-contact-details                       controllers.establishers.partnership.contact.CheckYourAnswersController.onPageLoad(index: Index)

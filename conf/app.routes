@@ -14,7 +14,8 @@ GET         /you-need-to-register                                  controllers.Y
 GET         /index                                                 controllers.IndexController.onPageLoad
 GET         /task-list                                             controllers.TaskListController.onPageLoad
 
-GET         /logout                                                controllers.LogoutController.onPageLoad
+GET         /sign-out                                              controllers.LogoutController.onPageLoad
+GET         /keep-alive                                            controllers.LogoutController.keepAlive
 
 GET         /scheme-type                                           controllers.beforeYouStartSpoke.SchemeTypeController.onPageLoad
 POST        /scheme-type                                           controllers.beforeYouStartSpoke.SchemeTypeController.onSubmit
