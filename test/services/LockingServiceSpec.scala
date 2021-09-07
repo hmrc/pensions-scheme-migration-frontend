@@ -38,11 +38,10 @@ class LockingServiceSpec extends SpecBase with MockitoSugar {
   private implicit lazy val hc: HeaderCarrier = HeaderCarrier()
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-  val service=new LockingService(mockLockCacheConnector,mockSchemeCacheConnector)
+  val service = new LockingService(mockLockCacheConnector,mockSchemeCacheConnector)
 
   "initialLockSetupAndRedirect" must {
-
-     " Redirect to Locked Page if scheme is locked by diffrent user" in {
+     " Redirect to Locked Page if scheme is locked by different user" in {
 
        val request : AuthenticatedRequest[AnyContent] = AuthenticatedRequest(fakeRequest, "", PsaId(psaId))
        when(mockSchemeCacheConnector.save(any())(any(),any())).thenReturn(Future.successful(Json.obj()))
