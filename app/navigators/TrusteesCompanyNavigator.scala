@@ -17,7 +17,8 @@
 package navigators
 
 import controllers.routes._
-import controllers.trustees.company.address.routes.{EnterPreviousPostcodeController, SelectAddressController, SelectPreviousAddressController, TradingTimeController}
+import controllers.trustees.company.address.routes.{EnterPreviousPostcodeController,
+  SelectAddressController, SelectPreviousAddressController, TradingTimeController}
 import controllers.trustees.company.contacts.routes._
 import controllers.trustees.company.details.{routes => detailsRoutes}
 import controllers.trustees.routes._

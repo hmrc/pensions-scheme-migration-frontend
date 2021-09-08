@@ -25,9 +25,7 @@ import matchers.JsonMatchers
 import models.{Index, NormalMode, ReferenceValue}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
-import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Result}
 import play.api.test.FakeRequest
@@ -37,7 +35,6 @@ import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.{company, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
-import viewmodels.Message
 
 import scala.concurrent.Future
 
@@ -48,7 +45,6 @@ class CompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSuppor
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(index), company).success.value
 
   private val formProvider: CompanyNumberFormProvider = new CompanyNumberFormProvider()
-  private val form: Form[ReferenceValue] = formProvider(Message("messages__haveCompanyNumber__error", company.companyName))
   private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
   private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
 
@@ -126,7 +122,6 @@ class CompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSuppor
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
 
       val result: Future[Result] = controller(getData).onSubmit(0, NormalMode)(request)
-      val boundForm = form.bind(Map("value" -> "invalid value"))
 
       status(result) mustBe BAD_REQUEST
 

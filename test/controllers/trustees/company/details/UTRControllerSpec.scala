@@ -25,9 +25,7 @@ import matchers.JsonMatchers
 import models.{Index, NormalMode, ReferenceValue}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
-import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Result}
 import play.api.test.FakeRequest
@@ -47,7 +45,6 @@ class UTRControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(index), company).success.value
 
   private val formProvider: UTRFormProvider = new UTRFormProvider()
-  private val form: Form[ReferenceValue] = formProvider()
   private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
   private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
 
@@ -125,7 +122,6 @@ class UTRControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
 
       val result: Future[Result] = controller(getData).onSubmit(0, NormalMode)(request)
-      val boundForm = form.bind(Map("value" -> "invalid value"))
 
       status(result) mustBe BAD_REQUEST
 

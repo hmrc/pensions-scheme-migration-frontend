@@ -20,8 +20,8 @@ import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.address.TradingTimeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.trustees.partnership.address.TradingTimeId
 import identifiers.trustees.partnership.PartnershipDetailsId
+import identifiers.trustees.partnership.address.TradingTimeId
 import matchers.JsonMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}

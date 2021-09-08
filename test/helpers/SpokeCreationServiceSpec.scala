@@ -28,8 +28,8 @@ import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressId
 import identifiers.establishers.partnership.address.{AddressId => PartnershipAddressId}
-import identifiers.establishers.partnership.details.{HaveUTRId, PartnershipUTRId}
 import identifiers.establishers.partnership.contact.EnterEmailId
+import identifiers.establishers.partnership.details.{HaveUTRId, PartnershipUTRId}
 import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.{PartnershipDetailsId => EstablisherPartnershipDetailsId}
 import identifiers.trustees.company.{details => trusteeCompanyDetails}
@@ -40,11 +40,10 @@ import identifiers.trustees.partnership.details.{HavePAYEId => TrusteeHavePAYEId
 import identifiers.trustees.partnership.{PartnershipDetailsId => TrusteePartnershipDetailsId}
 import identifiers.trustees.partnership.address.{AddressId => TrusteePartnershipAddressId, AddressYearsId => TrusteePartnershipAddressYearsId}
 import identifiers.trustees.partnership.contact.{EnterEmailId => TrusteePartnershipEmailId, EnterPhoneId => TrusteePartnershipPhoneId}
-import identifiers.trustees.partnership.{contact => TrusteePartnershipContact, PartnershipDetailsId => TrusteePartnershipDetailsId}
 import identifiers.trustees.{TrusteeKindId, company => trusteeCompany}
+import models._
 import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind
-import models._
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
 import utils.Data.{schemeName, ua}
@@ -446,7 +445,6 @@ class SpokeCreationServiceSpec
 
   "getTrusteesIndividualSpokes" must {
     "display all the spokes with appropriate links and incomplete status when no data is returned from TPSS" in {
-
       val userAnswers =
         ua
           .set(TrusteeKindId(0), TrusteeKind.Individual).success.value
@@ -544,7 +542,7 @@ class SpokeCreationServiceSpec
       val userAnswers =
         ua
           .set(TrusteeKindId(0), TrusteeKind.Company).success.value
-          .set(trusteeCompany.CompanyDetailsId(0), CompanyDetails("test", false)).success.value
+          .set(trusteeCompany.CompanyDetailsId(0), CompanyDetails("test")).success.value
 
       val expectedSpoke =
         Seq(EntitySpoke(
@@ -586,7 +584,7 @@ class SpokeCreationServiceSpec
     val userAnswers =
       ua
         .set(TrusteeKindId(0), TrusteeKind.Company).success.value
-        .set(trusteeCompany.CompanyDetailsId(0), CompanyDetails("test", false)).success.value
+        .set(trusteeCompany.CompanyDetailsId(0), CompanyDetails("test")).success.value
         .setOrException(trusteeCompanyDetails.HaveCompanyNumberId(0), true)
         .setOrException(trusteeCompanyDetails.CompanyNumberId(0), ReferenceValue("12345678"))
 
@@ -628,19 +626,19 @@ class SpokeCreationServiceSpec
     result mustBe expectedSpoke
   }
 
-    "display all the spokes with appropriate links and complete status when data is returned from TPSS for trustee company spokes" in {
-      val userAnswers =
-        ua
-          .set(EstablisherKindId(0), EstablisherKind.Company).success.value
-          .set(CompanyDetailsId(0), CompanyDetails("test", false)).success.value
-          .set(trusteeCompanyDetails.HaveCompanyNumberId(0), true).success.value
-          .set(trusteeCompanyDetails.CompanyNumberId(0), ReferenceValue("AB123456C")).success.value
-          .set(trusteeCompanyDetails.HaveUTRId(0), true).success.value
-          .set(trusteeCompanyDetails.CompanyUTRId(0), ReferenceValue("1234567890")).success.value
-          .set(trusteeCompanyDetails.HaveVATId(0), true).success.value
-          .set(trusteeCompanyDetails.VATId(0), ReferenceValue("123456789")).success.value
-          .set(trusteeCompanyDetails.HavePAYEId(0), true).success.value
-          .set(trusteeCompanyDetails.PAYEId(0), ReferenceValue("12345678")).success.value
+  "display all the spokes with appropriate links and complete status when data is returned from TPSS for trustee company spokes" in {
+    val userAnswers =
+      ua
+        .set(EstablisherKindId(0), EstablisherKind.Company).success.value
+        .set(CompanyDetailsId(0), CompanyDetails("test")).success.value
+        .set(trusteeCompanyDetails.HaveCompanyNumberId(0), true).success.value
+        .set(trusteeCompanyDetails.CompanyNumberId(0), ReferenceValue("AB123456C")).success.value
+        .set(trusteeCompanyDetails.HaveUTRId(0), true).success.value
+        .set(trusteeCompanyDetails.CompanyUTRId(0), ReferenceValue("1234567890")).success.value
+        .set(trusteeCompanyDetails.HaveVATId(0), true).success.value
+        .set(trusteeCompanyDetails.VATId(0), ReferenceValue("123456789")).success.value
+        .set(trusteeCompanyDetails.HavePAYEId(0), true).success.value
+        .set(trusteeCompanyDetails.PAYEId(0), ReferenceValue("12345678")).success.value
 
 
       val expectedSpoke =

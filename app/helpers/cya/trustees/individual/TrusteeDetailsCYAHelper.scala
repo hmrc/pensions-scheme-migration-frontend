@@ -37,9 +37,7 @@ class TrusteeDetailsCYAHelper
   def detailsRows(index: Index)
                  (implicit request: DataRequest[AnyContent],
                    messages: Messages): Seq[Row] = {
-    
     implicit val ua: UserAnswers = request.userAnswers
-    
     val trusteeName: String = getName(TrusteeNameId(index))
 
     val rowsWithoutDynamicIndices = Seq(

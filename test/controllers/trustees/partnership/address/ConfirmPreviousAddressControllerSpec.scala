@@ -20,8 +20,8 @@ import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.trustees.partnership.address.PreviousAddressId
 import identifiers.trustees.partnership.PartnershipDetailsId
+import identifiers.trustees.partnership.address.PreviousAddressId
 import matchers.JsonMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}

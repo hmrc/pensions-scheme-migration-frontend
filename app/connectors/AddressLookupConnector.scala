@@ -51,9 +51,8 @@ class AddressLookupConnector @Inject()(http: HttpClient, config: AppConfig) {
   private val logger = Logger(classOf[AddressLookupConnector])
 
   private def logExceptions: PartialFunction[Throwable, Future[Seq[TolerantAddress]]] = {
-    case t: Throwable => {
+    case t: Throwable =>
       logger.error("Exception in AddressLookup", t)
       Future.failed(t)
-    }
   }
 }

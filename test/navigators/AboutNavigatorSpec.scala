@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.aboutMembership.routes._
 import identifiers.Identifier
 import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import org.scalatest.prop.TableFor3
 import play.api.mvc.Call
 import utils.UserAnswers
@@ -41,6 +41,10 @@ class AboutNavigatorSpec
 
     "in NormalMode" must {
       behave like navigatorWithRoutesForMode(NormalMode)(navigator, navigation)
+    }
+
+    "in CheckMode" must {
+      behave like navigatorWithRoutesForMode(CheckMode)(navigator, navigation)
     }
   }
 }

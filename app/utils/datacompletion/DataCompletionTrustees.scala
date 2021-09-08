@@ -28,7 +28,8 @@ import identifiers.trustees.company.{contacts => companyContact}
 import identifiers.trustees.partnership.{contact => partnershipContact}
 import identifiers.trustees.individual.details._
 import utils.UserAnswers
-import identifiers.trustees.company.address.{TradingTimeId, AddressId => CompanyAddressId, AddressYearsId => CompanyAddressYearsId, PreviousAddressId => CompanyPreviousAddressId}
+import identifiers.trustees.company.address.{TradingTimeId, AddressId => CompanyAddressId,
+  AddressYearsId => CompanyAddressYearsId, PreviousAddressId => CompanyPreviousAddressId}
 import identifiers.trustees.partnership.PartnershipDetailsId
 import identifiers.trustees.partnership.{details => partnershipDetails}
 

@@ -17,7 +17,7 @@
 package identifiers.establishers.address
 
 import base.SpecBase
-import identifiers.establishers.individual.address.{AddressYearsId, EnterPreviousPostCodeId, PreviousAddressId, PreviousAddressListId}
+import identifiers.establishers.individual.address._
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
