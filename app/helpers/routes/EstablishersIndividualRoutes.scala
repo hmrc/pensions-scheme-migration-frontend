@@ -24,9 +24,6 @@ object EstablishersIndividualRoutes {
 
 
 
-  def cyaDetailsRoute(index: Index, mode: Mode): Call =
-    controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index)
-    //EstablisherIndividualController.onPageLoad(index, mode, "check-your-answers-details")
 
   def contactRoute(index: Index, mode: Mode): Call =
     controllers.establishers.individual.contact.routes.WhatYouWillNeedController.onPageLoad(index)

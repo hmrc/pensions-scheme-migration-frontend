@@ -83,7 +83,7 @@ class EstablishersNavigator@Inject()(config: AppConfig)
   }
 
   private def cyaAddress(index:Int): Call = EstablishersIndividualRoutes.cyaAddressRoute(index, NormalMode)
-  private def cyaDetails(index:Int): Call = cyaDetailsRoute(index, NormalMode)
+  private def cyaDetails(index:Int): Call = controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index)
   private def cyaContactDetails(index:Int): Call = cyaContactRoute(index, NormalMode)
   private def addressYears(index:Int, mode:Mode): Call =EstablishersIndividualRoutes.timeAtAddressRoute(index, NormalMode)
 
