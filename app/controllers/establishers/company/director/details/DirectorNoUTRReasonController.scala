@@ -64,7 +64,7 @@ class DirectorNoUTRReasonController @Inject()(override val messagesApi: Messages
         SchemeNameId.retrieve.right.map {
           schemeName =>
             get(
-              pageTitle     = Message("messages__whyNoUTR_title", Message("messages__director")),
+              pageTitle     = Message("messages__whyNoUTR", Message("messages__director")),
               pageHeading     = Message("messages__whyNoUTR",  name(establisherIndex,directorIndex)),
               isPageHeading = true,
               id            = DirectorNoUTRReasonId(establisherIndex,directorIndex),
@@ -80,7 +80,7 @@ class DirectorNoUTRReasonController @Inject()(override val messagesApi: Messages
         SchemeNameId.retrieve.right.map {
           schemeName =>
             post(
-              pageTitle     = Message("messages__whyNoUTR_title", Message("messages__director")),
+              pageTitle     = Message("messages__whyNoUTR", Message("messages__director")),
               pageHeading     = Message("messages__whyNoUTR",name(establisherIndex,directorIndex)),
               isPageHeading = true,
               id            = DirectorNoUTRReasonId(establisherIndex,directorIndex),

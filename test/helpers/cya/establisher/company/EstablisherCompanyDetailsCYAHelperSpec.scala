@@ -74,7 +74,7 @@ class EstablisherCompanyDetailsCYAHelperSpec extends AnyWordSpec with Matchers w
       )
 
       result(1) mustBe Row(
-        key = Key(msg"${Message("messages__companyNumber", company.companyName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__companyNumber__cya", company.companyName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(msg"12345678"),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
@@ -98,7 +98,7 @@ class EstablisherCompanyDetailsCYAHelperSpec extends AnyWordSpec with Matchers w
       )
 
       result(3) mustBe Row(
-        key = Key(msg"${Message("messages__enterUTR", company.companyName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__utr__cya_label", company.companyName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(msg"12345678"),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
@@ -122,7 +122,7 @@ class EstablisherCompanyDetailsCYAHelperSpec extends AnyWordSpec with Matchers w
       )
 
       result(5) mustBe Row(
-        key = Key(msg"${Message("messages__vat", company.companyName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__vat__cya", company.companyName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(msg"12345678"),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
@@ -146,7 +146,7 @@ class EstablisherCompanyDetailsCYAHelperSpec extends AnyWordSpec with Matchers w
       )
 
       result(7) mustBe Row(
-        key = Key(msg"${Message("messages__paye", company.companyName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__paye_cya", company.companyName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(msg"12345678"),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),

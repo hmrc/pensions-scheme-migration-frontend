@@ -67,7 +67,7 @@ class EstablisherCompanyDetailsCYAHelper
 
         answerOrAddRow(
           id = CompanyNumberId(index),
-          message = Message("messages__companyNumber", companyName),
+          message = Message("messages__companyNumber__cya", companyName),
           url = Some(routes.CompanyNumberController.onPageLoad(index, CheckMode).url),
           visuallyHiddenText = Some(msg"messages__companyNumber__cya__visuallyHidden".withArgs(companyName)),
           answerTransform = referenceValueTransform
@@ -94,7 +94,7 @@ class EstablisherCompanyDetailsCYAHelper
         answerRow(message, Message(booleanToText(true)), url, visuallyHidden),
         answerOrAddRow(
           id = CompanyUTRId(index),
-          message = Message("messages__enterUTR", companyName),
+          message = Message("messages__utr__cya_label", companyName),
           url = Some(routes.UTRController.onPageLoad(index, CheckMode).url),
           visuallyHiddenText = Some(msg"messages__enterUTR__cya__visuallyHidden".withArgs(companyName)),
           answerTransform = referenceValueTransform
@@ -122,7 +122,7 @@ class EstablisherCompanyDetailsCYAHelper
         answerRow(message, Message(booleanToText(true)), url, visuallyHidden),
         answerOrAddRow(
           id = VATId(index),
-          message = Message("messages__vat", companyName),
+          message = Message("messages__vat__cya", companyName),
           url = Some(routes.VATController.onPageLoad(index, CheckMode).url),
           visuallyHiddenText = Some(msg"messages__vat__cya__visuallyHidden".withArgs(companyName)),
           answerTransform = referenceValueTransform
@@ -144,7 +144,7 @@ class EstablisherCompanyDetailsCYAHelper
         answerRow(message, Message(booleanToText(true)), url, visuallyHidden),
         answerOrAddRow(
           id = PAYEId(index),
-          message = Message("messages__paye", companyName),
+          message = Message("messages__paye_cya", companyName),
           url = Some(routes.PAYEController.onPageLoad(index, CheckMode).url),
           visuallyHiddenText = Some(msg"messages__paye__cya__visuallyHidden".withArgs(companyName)),
           answerTransform = referenceValueTransform

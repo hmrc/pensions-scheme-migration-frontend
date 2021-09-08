@@ -34,7 +34,7 @@ site.not_entered = Not entered
 site.view = View
 site.hidden-delete = Delete {0}
 site.hidden-edit = Change {0}
-site.title.suffix = - Managing pension schemes - GOV.UK
+site.title.suffix = - Managing Pension Schemes - GOV.UK
 site.return.to = Return to {0}
 site.agree_and_submit = Agree and submit
 site.printThisPage = Print this page
@@ -181,6 +181,7 @@ messages__individual = the individual
 messages__establisher = the establisher
 messages__director = the director
 messages__company = the company
+messages__title_company = The company
 messages__partnership = the partnership
 messages__partner = the partner
 messages__trustee = the trustee
@@ -219,7 +220,7 @@ messages__enterUTR__cya_visuallyHidden = the UTR for {0}
 messages__UTR__p1 = This is a 10-digit or 13-digit number. It may also start or end with the letter ‘k’.
 messages__UTR__p2 = You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.
 messages__utr__hint = For example, 12345 67890
-messages__utr__checkyouranswerslabel = Unique Taxpayer Reference (UTR)
+messages__utr__cya_label = Unique Taxpayer Reference (UTR)
 messages__enterUTR__cya_label = {0}’s UTR
 
 messages__utr__error_required = Enter a Unique Taxpayer Reference (UTR)
@@ -228,7 +229,6 @@ messages__utr__error_invalid = Enter a Unique Taxpayer Reference (UTR) in the co
 
 messages__reason__error_maxLength = Reason must be 160 characters or less
 messages__reason__error_invalid = Reason must only include letters, numbers and punctuation marks
-messages__whyNoUTR_title = Why does {0} not have a Unique Taxpayer Reference?
 messages__whyNoUTR = Why does {0} not have a UTR?
 messages__reason__error_utrRequired = Enter a reason why {0} does not have a UTR
 messages__whyNoUTR__cya__visuallyHidden = the reason why {0} does not have a UTR
@@ -427,6 +427,7 @@ messages__individualName__title = What is the individual’s name?
 messages__confirmDelete__error_required = Select yes if you want to delete {0}
 messages__name_title = What is the {0}’s name?
 
+messages__details__whatYouWillNeed_title = {0}’s details
 messages__establisherDetails__whatYouWillNeed_title = The establisher’s details
 messages__trusteeDetails__whatYouWillNeed_title = The trustee’s details
 messages__establisherDetails__whatYouWillNeed_h1 = Details for {0}
@@ -856,13 +857,13 @@ messages__companyDetails__whatYouWillNeed_li2_1 = VAT registration number
 messages__companyDetails__whatYouWillNeed_li2_2 = employer PAYE reference (you can tell us any employer PAYE reference if {0} has more than one)
 
 messages__haveCompanyNumber = Does {0} have a company number?
-messages__haveCompanyNumber__p = You can find this have any trusteeson the company’s certificate of incorporation or on any official letters from Companies House.
+messages__haveCompanyNumber__p = You can find this on the company’s certificate of incorporation or on any official letters from Companies House.
 messages__haveCompanyNumber__error = Select yes if the company has a company number
 messages__error__company_number_required = Enter the company number for {0}
 messages__error__company_number_invalid = Enter a company number in the correct format
 
 messages__companyNumber = What is {0}’s company number?
-messages__companyNumber__hint = For example, 01234567 or 'AB123456'
+messages__companyNumber__hint = This is issued by Companies House. It is 8 characters, typically 8 numbers or a combination of 2 letters followed by 6 numbers. For example, AB123456.
 
 messages__whyNoCompanyNumber = Why does {0} not have a company number?
 messages__reason__error_companyNumber_required = Enter a reason why the company does not have a company number
@@ -875,22 +876,25 @@ messages__havePAYE__hint = This is a 3 digit tax office number, a forward slash,
 messages__genericHavePaye__error__required = Select yes if {0} has an employer PAYE reference
 
 messages__vat = What is {0}’s VAT registration number?
-messages__vat__p = This is 9 numbers, sometimes with ‘GB’ at the start, for example 123456789 or GB123456789. You can find it on the VAT registration certificate for {0}.
+messages__vat__p = This is 9 numbers, sometimes with ‘GB’ at the start, for example 123456789 or GB123456789. You can find it on {0}’s VAT registration certificate..
 messages__vat__error_invalid = Enter {0}’s VAT registration number in the correct format
 messages__vat__error_required = Enter a VAT registration number
 
 messages__paye = What is {0}’s employer PAYE reference?
-messages__paye__p = You can tell us any employer PAYE reference if {0} has more then one.
+messages__paye_cya = Employer PAYE reference
+messages__paye__p = You can tell us any employer PAYE reference if {0} has more than one.
 messages__paye__hint = For example, 123/AB456
 messages__paye__error_invalid = Enter {0}’s employer PAYE reference in the correct format
 messages__paye__error_length = Enter {0}’s employer PAYE reference using 16 characters or less
 messages__paye__error_required = Enter an employer PAYE reference
 
 messages__haveCompanyNumber__cya__visuallyHidden = whether {0} has a company number
+messages__companyNumber__cya = Company Number
 messages__companyNumber__cya__visuallyHidden = {0}’s company number
 messages__whyNoCompanyNumber__cya__visuallyHidden = the reason why {0} does not have a company number
 messages__enterUTR__cya__visuallyHidden = the UTR for {0}
 messages__haveVAT__cya__visuallyHidden = whether {0} is registered for VAT
+messages__vat__cya = VAT registration number
 messages__vat__cya__visuallyHidden = the VAT registration number for {0}
 messages__havePAYE__cya__visuallyHidden = whether {0} has an employer PAYE reference
 messages__paye__cya__visuallyHidden = the employer PAYE reference for {0}
@@ -931,7 +935,6 @@ messages__error__partnership_name = Enter the partnership’s name
 messages__error__partnership_name_length = The partnership name cannot be more than 160 characters
 messages__error__partnership_name_invalid = The partnership name contains invalid characters
 
-messages__partners__pagetitle = Partners - Managing Pension Schemes - GOV.UK
 messages__partners__title = Partners
 messages__partners__whatYouWillNeedPartners__p1 = For every partner associated with the partnership you’re registering, you will need to tell us the partner’s:
 messages__partners__whatYouWillNeed__item1 = name
