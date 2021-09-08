@@ -23,6 +23,7 @@ case class TaskList(
                                   h1: String,
                                   beforeYouStart: TaskListEntitySection,
                                   about: TaskListEntitySection,
+                                  workingKnowledge: Option[TaskListEntitySection],
                                   addEstablisherHeader: Option[TaskListEntitySection],
                                   addTrusteeHeader: Option[TaskListEntitySection],
                                   establishers: Seq[TaskListEntitySection],

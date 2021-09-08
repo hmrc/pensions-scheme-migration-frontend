@@ -93,6 +93,15 @@ class TaskListHelperSpec extends SpecBase with Matchers with MockitoSugar with E
     }
   }
 
+  "workingKnowledgeSection " must {
+    "return correct the correct entity section when do you have working knowledge is false" in {
+      when(mockSpokeCreationService.aboutSpokes(any(), any())(any())).thenReturn(Seq(expectedMembershipDetailsSpoke))
+      val expectedAboutSection = TaskListEntitySection(None, Seq(expectedMembershipDetailsSpoke), aboutHeader)
+
+      helper.aboutSection mustBe expectedAboutSection
+    }
+  }
+
   "addEstablishersHeaderSection" must {
     "show no establishers message if viewOnly and no establishers found" in {
       val expectedSection = Some(TaskListEntitySection(None, Nil, None, messages("messages__schemeTaskList__sectionEstablishers_no_establishers")))

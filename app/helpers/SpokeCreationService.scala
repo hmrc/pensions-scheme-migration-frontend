@@ -20,12 +20,12 @@ import controllers.establishers.routes._
 import helpers.spokes.establishers.company._
 import helpers.spokes.establishers.individual._
 import helpers.spokes.establishers.partnership._
-import helpers.spokes.establishers.partnership.{EstablisherPartnershipAddress, EstablisherPartnershipDetails, EstablisherPartnerDetails}
+import helpers.spokes.establishers.partnership.{EstablisherPartnerDetails, EstablisherPartnershipAddress, EstablisherPartnershipDetails}
 import helpers.spokes.trustees.company.{TrusteeCompanyAddress, TrusteeCompanyContactDetails, TrusteeCompanyDetails}
 import helpers.spokes.trustees.individual.{TrusteeIndividualAddress, TrusteeIndividualContactDetails, TrusteeIndividualDetails}
 import helpers.spokes.trustees.partnership.TrusteePartnershipAddress
 import helpers.spokes.trustees.partnership.TrusteePartnershipContactDetails
-import helpers.spokes.{AboutMembersSpoke, BeforeYouStartSpoke, BenefitsAndInsuranceSpoke, Spoke}
+import helpers.spokes.{AboutMembersSpoke, BeforeYouStartSpoke, BenefitsAndInsuranceSpoke, Spoke, WorkingKnowlegedSpoke}
 import models.Index._
 import models.{Entity, EntitySpoke, Index, TaskListLink}
 import play.api.i18n.Messages
@@ -46,6 +46,11 @@ class SpokeCreationService extends Enumerable.Implicits {
     Seq(
       createSpoke(answers, AboutMembersSpoke, name),
       createSpoke(answers, BenefitsAndInsuranceSpoke, name)
+    )
+  def workingKnowledgeSpoke(answers: UserAnswers, name: String)
+                 (implicit messages: Messages): Seq[EntitySpoke] =
+    Seq(
+      createSpoke(answers, WorkingKnowlegedSpoke, name)
     )
 
   def getAddEstablisherHeaderSpokes(answers: UserAnswers, viewOnly: Boolean)

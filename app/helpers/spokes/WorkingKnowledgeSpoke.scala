@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-package forms
+package helpers.spokes
 
-import forms.mappings.{Constraints, Mappings}
-import play.api.data.Form
+import models.TaskListLink
+import play.api.i18n.Messages
+import utils.UserAnswers
 
-import javax.inject.Inject
+case object WorkingKnowlegedSpoke extends Spoke {
 
-class PhoneFormProvider @Inject() extends Mappings with Constraints {
+  override def changeLink(name: String)(implicit messages: Messages): TaskListLink =
+    TaskListLink(
+      messages("messages__schemeTaskList__details_changeLink", name),
+      controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad.url
+    )
 
-  def apply(keyRequired: String,invalidKey: Option[String]=Option("messages__enterPhone__error_invalid")): Form[String] = Form(
-    "value" -> text(keyRequired)
-      .verifying(
-          phoneNumber(invalidKey.getOrElse("messages__enterPhone__error_invalid"))
-      )
-  )
-
+  override def completeFlag(answers: UserAnswers): Option[Boolean] = Some(answers.isBeforeYouStartCompleted) //TODO
 }
+
+
+

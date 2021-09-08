@@ -18,7 +18,7 @@ package helpers
 
 import com.google.inject.Inject
 import helpers.cya.MandatoryAnswerMissingException
-import identifiers.beforeYouStart.SchemeNameId
+import identifiers.beforeYouStart.{SchemeNameId, WorkingKnowledgeId}
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
@@ -40,6 +40,7 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
       getSchemeName,
       beforeYouStartSection,
       aboutSection,
+      workingKnowledgeSection,
       addEstablisherHeader(viewOnly),
       addTrusteeHeader(viewOnly),
       establishersSection,
@@ -58,6 +59,18 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
       spokeCreationService.aboutSpokes(userAnswers, getSchemeName),
       Some(messages("messages__schemeTaskList__about_scheme_header", getSchemeName))
     )
+
+  private[helpers] def workingKnowledgeSection(implicit userAnswers: UserAnswers, messages: Messages): Option[TaskListEntitySection] = {
+    userAnswers.get(WorkingKnowledgeId) match {
+      case Some(false) =>
+        Some(TaskListEntitySection(None,
+          spokeCreationService.workingKnowledgeSpoke(userAnswers, getSchemeName),
+          Some(messages("messages__schemeTaskList__working_knowledge_header"))
+        ))
+      case _ =>
+        None
+    }
+  }
 
   private[helpers] def addEstablisherHeader(viewOnly: Boolean)
                                            (implicit userAnswers: UserAnswers, messages: Messages): Option[TaskListEntitySection] =

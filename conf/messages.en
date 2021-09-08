@@ -182,6 +182,7 @@ messages__establisher = the establisher
 messages__director = the director
 messages__company = the company
 messages__partnership = the partnership
+messages__pension__adviser = the pension adviser
 messages__partner = the partner
 messages__trustee = the trustee
 messages__dob__title = What is {0}’s date of birth?
@@ -372,6 +373,7 @@ insurerEnterPostcode.invalid = Enter a real postcode
 
 insurerSelectAddress.required = Select the address of the insurance company that secures the scheme benefits
 
+address.manual.title = Enter {0}’s address
 address.title = Enter an address
 address.line1 = Address line 1
 address.line2 = Address line 2
@@ -1047,3 +1049,28 @@ messages__otherTrustees__error__required = Select yes if you need to tell us abo
 messages__addTrustees_at_maximum = You have added the maximum number of trustees.
 
 messages__trusteePartnershipContactDetails__whatYouWillNeed_title = The partnership’s contact details
+
+messages__what_you_will_need_wk__title = Working knowledge of pensions and pensions tax legislation
+messages__what_you_will_need_wk__h1 = Working knowledge of pensions and pensions tax legislation
+messages__what_you_will_need_wk__lede = There must be a person or company associated with the scheme that has working knowledge of pensions and pensions tax legislation. You will need to tell us their:
+messages__what_you_will_need_wk__item_1 = name
+messages__what_you_will_need_wk__item_2 = email address
+messages__what_you_will_need_wk__item_3 = phone number
+messages__what_you_will_need_wk__item_4 = address
+
+messages__adviserName__title = Who has working knowledge of pensions and pensions tax legislation?
+messages__adviserName__heading = Who has working knowledge of pensions and pensions tax legislation?
+messages__adviserName__hint = Name of person or company
+messages__adviserName__name_label = The name of the adviser
+
+messages__adviserName__length = Enter a name using less than 108 letters
+messages__adviserName__invalid = Enter a name using only letters
+messages__adviserName__blank = Enter the name of who has working knowledge of pensions
+messages__error__common__email__required = Enter an email address
+messages__error__common__phone__required = Enter a phone number
+messages__phone__invalid = Enter a phone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192
+messages__adviser__enterPostcode__invalid = Enter a postcode in the correct format.
+messages__adviser__enterPostcode__no__results = Postcode cannot be found
+
+messages__adviser__name__cya = Who is the person with working knowledge of pensions and pensions tax legislation?
+messages__adviser__name__cya__visuallyHidden = who the person is that has working knowledge of pensions and pensions tax legislation

@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package forms
+package identifiers.adviser
 
-import forms.mappings.{Constraints, Mappings}
-import play.api.data.Form
+import identifiers.TypedIdentifier
 
-import javax.inject.Inject
-
-class PhoneFormProvider @Inject() extends Mappings with Constraints {
-
-  def apply(keyRequired: String,invalidKey: Option[String]=Option("messages__enterPhone__error_invalid")): Form[String] = Form(
-    "value" -> text(keyRequired)
-      .verifying(
-          phoneNumber(invalidKey.getOrElse("messages__enterPhone__error_invalid"))
-      )
-  )
-
+case object AdviserNameId extends TypedIdentifier[String] {
+  override def toString: String = "adviserName"
 }
+
+
+
+

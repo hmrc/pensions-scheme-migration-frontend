@@ -94,3 +94,34 @@ POST        /list-rac-dacs/page/:pageNumber                         controllers.
 
 GET         /no-pension-schemes-registered                         controllers.preMigration.NotRegisterController.onPageLoadScheme
 GET         /no-rac-dacs-registered                                controllers.preMigration.NotRegisterController.onPageLoadRacDac
+
+
+GET         /what-you-will-need-for-working-knowledge               controllers.adviser.WhatYouWillNeedController.onPageLoad
+
+GET         /who-has-working-knowledge                               controllers.adviser.AdviserNameController.onPageLoad(mode: Mode = NormalMode)
+POST        /who-has-working-knowledge                               controllers.adviser.AdviserNameController.onSubmit(mode: Mode = NormalMode)
+GET         /change/who-has-working-knowledge                        controllers.adviser.AdviserNameController.onPageLoad(mode: Mode= CheckMode)
+POST        /change/who-has-working-knowledge                        controllers.adviser.AdviserNameController.onSubmit(mode: Mode= CheckMode)
+
+GET         /adviser-email-address                                   controllers.adviser.EnterEmailController.onPageLoad(mode: Mode = NormalMode)
+POST        /adviser-email-address                                   controllers.adviser.EnterEmailController.onSubmit(mode: Mode = NormalMode)
+GET         /change/adviser-email-address                            controllers.adviser.EnterEmailController.onPageLoad(mode: Mode = CheckMode)
+POST        /change/adviser-email-address                            controllers.adviser.EnterEmailController.onSubmit(mode: Mode = CheckMode)
+
+GET         /adviser-phone-number                                    controllers.adviser.EnterPhoneController.onPageLoad(mode: Mode = NormalMode)
+POST        /adviser-phone-number                                    controllers.adviser.EnterPhoneController.onSubmit(mode: Mode = NormalMode)
+GET         /change/adviser-phone-number                             controllers.adviser.EnterPhoneController.onPageLoad(mode: Mode = CheckMode)
+POST        /change/adviser-phone-number                             controllers.adviser.EnterPhoneController.onSubmit(mode: Mode = CheckMode)
+
+GET         /adviser-postcode                                        controllers.adviser.EnterPostcodeController.onPageLoad(mode: Mode = NormalMode)
+POST        /adviser-postcode                                        controllers.adviser.EnterPostcodeController.onSubmit(mode: Mode = NormalMode)
+GET         /change/adviser-postcode                                 controllers.adviser.EnterPostcodeController.onPageLoad(mode: Mode = CheckMode)
+POST        /change/adviser-postcode                                 controllers.adviser.EnterPostcodeController.onSubmit(mode: Mode = CheckMode)
+
+GET         /adviser-address-results                                 controllers.adviser.SelectAddressController.onPageLoad(mode: Mode = NormalMode)
+POST        /adviser-address-results                                 controllers.adviser.SelectAddressController.onSubmit(mode: Mode = NormalMode)
+
+GET         /confirm-adviser-address                                 controllers.adviser.ConfirmAddressController.onPageLoad
+POST        /confirm-adviser-address                                 controllers.adviser.ConfirmAddressController.onSubmit
+
+GET         /check-adviser-answers                                   controllers.adviser.CheckYourAnswersController.onPageLoad

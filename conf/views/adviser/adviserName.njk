@@ -1,0 +1,62 @@
+{% extends "includes/layout.njk" %}
+
+{% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
+{% from "govuk/components/input/macro.njk"         import govukInput %}
+{% from "govuk/components/button/macro.njk"        import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "macros/title.njk"                         import title %}
+{% from "macros/returnLink.njk"                    import returnLink %}
+
+{% block pageTitle %}
+    {{ title(messages("messages__adviserName__title"), form.errors) }}
+{% endblock %}
+
+{% set hint  %}
+    <p class="govuk-body govuk-!-font-weight-regular">
+        {{ messages("messages__adviserName__hint") }}
+    </p>
+{% endset %}
+
+{% block mainContent %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            {% if form.errors.length > 0 %}
+                {{ govukErrorSummary({
+                    "titleText": messages("error.summary.title"),
+                    "errorList": form.errors
+                }) }}
+            {% endif %}
+
+            <form method="post" autocomplete="off" novalidate>
+
+                {{ csrf() | safe }}
+
+                {{ govukInput({
+                    label: {
+                        text: messages("messages__adviserName__heading"),
+                        isPageHeading: true,
+                        classes: "govuk-label--xl govuk-!-margin-bottom-8"
+                    },
+                    id: "adviserName",
+                    name: "adviserName",
+                    value: form.adviserName.value,
+                    classes: "govuk-input--width-20",
+                    errorMessage: form.adviserName.error,
+                    hint: {html: hint}
+                }) }}
+
+                {{ govukButton({
+                    text: messages("site.save_and_continue"),
+                    attributes: {id: "submit"}
+                }) }}
+
+            </form>
+
+        </div>
+    </div>
+
+    {{ returnLink(schemeName) }}
+
+{% endblock %}
