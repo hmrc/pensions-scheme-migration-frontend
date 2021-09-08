@@ -19,12 +19,10 @@ package controllers.establishers.individual.address
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.address.AddressYearsFormProvider
-import helpers.routes.EstablishersIndividualRoutes
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressYearsId
 import matchers.JsonMatchers
-import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -45,8 +43,8 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
   private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(EstablisherNameId(0), Data.establisherIndividualName))
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
-  private val httpPathGET: String = EstablishersIndividualRoutes.timeAtAddressRoute(0, NormalMode).url
-  private val httpPathPOST: String = EstablishersIndividualRoutes.timeAtAddressPOSTRoute(0, NormalMode).url
+  private val httpPathGET: String = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(0).url
+  private val httpPathPOST: String = controllers.establishers.individual.address.routes.AddressYearsController.onSubmit(0).url
   private val form: Form[Boolean] = new AddressYearsFormProvider()("")
 
   private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>

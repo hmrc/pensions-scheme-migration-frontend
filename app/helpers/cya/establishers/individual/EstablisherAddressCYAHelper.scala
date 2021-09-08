@@ -18,10 +18,9 @@ package helpers.cya.establishers.individual
 
 import helpers.cya.CYAHelper
 import helpers.cya.CYAHelper.getName
-import helpers.routes.EstablishersIndividualRoutes
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{AddressYearsId, PreviousAddressId, AddressId}
-import models.{Index, NormalMode}
+import models.Index
 import models.requests.DataRequest
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
@@ -54,7 +53,7 @@ class EstablisherAddressCYAHelper
       answerOrAddRow(
         AddressYearsId(index),
         Message("addressYears.title", establisherName).resolve,
-        Some(EstablishersIndividualRoutes.timeAtAddressRoute(index, NormalMode).url),
+        Some(controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index).url),
         Some(msg"messages__visuallyhidden__addressYears".withArgs(establisherName)), answerBooleanTransform
       )
     )
@@ -66,7 +65,7 @@ class EstablisherAddressCYAHelper
         answerOrAddRow(
           PreviousAddressId(index),
           Message("messages__establisherPreviousAddress").resolve,
-          Some(EstablishersIndividualRoutes.enterPreviousPostcodeRoute(index, NormalMode).url),
+          Some(controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index).url),
           Some(msg"messages__visuallyHidden__previousAddress".withArgs(establisherName)), answerAddressTransform
         )
       )

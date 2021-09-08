@@ -18,12 +18,11 @@ package helpers.cya.establisher.individual
 
 import base.SpecBase._
 import helpers.cya.establishers.individual.EstablisherAddressCYAHelper
-import helpers.routes.EstablishersIndividualRoutes
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{AddressYearsId, PreviousAddressId, AddressId}
 import models.requests.DataRequest
-import models.{PersonName, Address, MigrationLock, NormalMode}
+import models.{PersonName, Address, MigrationLock}
 import org.scalatest.TryValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -92,14 +91,14 @@ class EstablisherAddressCYAHelperSpec extends AnyWordSpec with Matchers with Try
 
       result(1) mustBe summaryListRow(key = Messages("addressYears.title", establisherName.fullName), valueMsgKey = "booleanAnswer.false",
         Some(Link(text = Messages("site.change"),
-          target = EstablishersIndividualRoutes.timeAtAddressRoute(0, NormalMode).url,
+          target = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(0).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
             Messages("messages__visuallyhidden__addressYears", establisherName.fullName))),
           attributes = Map("id" -> "cya-0-1-change"))))
 
       result(2) mustBe summaryListRowHtml(key = messages("messages__establisherPreviousAddress"),
         value = answerAddressTransform(establisherPreviousAddress), Some(Link(text = Messages("site.change"),
-          target = EstablishersIndividualRoutes.enterPreviousPostcodeRoute(0, NormalMode).url,
+          target = controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(0).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__previousAddress", establisherName.fullName))),
           attributes = Map("id" -> "cya-0-2-change"))))
     }

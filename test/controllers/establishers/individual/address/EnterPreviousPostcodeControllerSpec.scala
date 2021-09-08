@@ -19,10 +19,9 @@ package controllers.establishers.individual.address
 import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import helpers.routes.EstablishersIndividualRoutes
 import identifiers.beforeYouStart.SchemeNameId
 import matchers.JsonMatchers
-import models.{TolerantAddress, NormalMode}
+import models.TolerantAddress
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -49,8 +48,8 @@ class EnterPreviousPostcodeControllerSpec extends ControllerSpecBase with Nunjuc
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = EstablishersIndividualRoutes.enterPreviousPostcodeRoute(0, NormalMode).url
-  private val httpPathPOST: String = EstablishersIndividualRoutes.enterPreviousPostcodePOSTRoute(0, NormalMode).url
+  private val httpPathGET: String = controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(0).url
+  private val httpPathPOST: String = controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onSubmit(0).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq("ZZ11ZZ")

@@ -21,7 +21,6 @@ import controllers.establishers.company.routes.CompanyDetailsController
 import controllers.establishers.partnership.routes._
 import controllers.establishers.routes._
 import controllers.routes._
-import helpers.routes.EstablishersIndividualRoutes
 import identifiers._
 import identifiers.establishers._
 import identifiers.establishers.individual.EstablisherNameId
@@ -59,8 +58,8 @@ class EstablishersNavigator@Inject()(config: AppConfig)
     case AddressListId(index) => addressYears(index, NormalMode)
     case AddressId(index) => addressYears(index, NormalMode)
     case AddressYearsId(index) =>
-      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else EstablishersIndividualRoutes.enterPreviousPostcodeRoute(index, NormalMode)
-    case EnterPreviousPostCodeId(index) => EstablishersIndividualRoutes.previousAddressResultsRoute(index, NormalMode)
+      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index)
+    case EnterPreviousPostCodeId(index) => controllers.establishers.individual.address.routes.SelectPreviousAddressController.onPageLoad(index)
     case PreviousAddressListId(index) => cyaAddress(index)
     case PreviousAddressId(index) => cyaAddress(index)
     case EnterEmailId(index) => controllers.establishers.individual.contact.routes.EnterPhoneController.onPageLoad(index, NormalMode)
@@ -84,7 +83,7 @@ class EstablishersNavigator@Inject()(config: AppConfig)
   private def cyaAddress(index:Int): Call = controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
   private def cyaDetails(index:Int): Call = controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index)
   private def cyaContactDetails(index:Int): Call = controllers.establishers.individual.contact.routes.CheckYourAnswersController.onPageLoad(index)
-  private def addressYears(index:Int, mode:Mode): Call =EstablishersIndividualRoutes.timeAtAddressRoute(index, NormalMode)
+  private def addressYears(index:Int, mode:Mode): Call =controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index)
 
   private def addPartners(index: Int, answers: UserAnswers): Call = {
     if (answers.allPartnersAfterDelete(index).isEmpty) {
