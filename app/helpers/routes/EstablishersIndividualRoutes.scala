@@ -22,90 +22,107 @@ import controllers.establishers.individual.routes._
 
 object EstablishersIndividualRoutes {
 
-  def detailsRoute(index: Index, mode: Mode): Call = EstablisherIndividualController.onPageLoad(index, mode, "details")
+  def enterNationaInsuranceNumberRoute(index: Index, mode: Mode): Call =
+    controllers.establishers.individual.details.routes.EstablisherEnterNINOController.onPageLoad(index, mode)
+    //EstablisherIndividualController.onPageLoad(index, mode, "enter-national-insurance-number")
 
-  def nameRoute(index: Index, mode: Mode): Call = EstablisherIndividualController.onPageLoad(index, mode, "name")
+  def haveUniqueTaxpayerReferenceRoute(index: Index, mode: Mode): Call =
+    controllers.establishers.individual.details.routes.EstablisherHasUTRController.onPageLoad(index, mode)
+    //EstablisherIndividualController.onPageLoad(index, mode, "have-unique-taxpayer-reference")
 
-  def namePOSTRoute(index: Index, mode: Mode): Call = EstablisherIndividualController.onSubmit(index, mode, "name")
+  def reasonForNoNationalInsuranceNumberRoute(index: Index, mode: Mode): Call =
+    controllers.establishers.individual.details.routes.EstablisherNoNINOReasonController.onPageLoad(index, mode)
+    //EstablisherIndividualController.onPageLoad(index, mode, "reason-for-no-national-insurance-number")
 
-  def enterUniqueTaxpayerReferenceRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
-    .onPageLoad(index, mode, "enter-unique-taxpayer-reference")
+  def reasonForNoUniqueTaxpayerReferenceRoute(index: Index, mode: Mode): Call =
+    controllers.establishers.individual.details.routes.EstablisherNoUTRReasonController.onPageLoad(index, mode)
+    //EstablisherIndividualController.onPageLoad(index, mode, "reason-for-no-unique-taxpayer-reference")
 
-  def enterNationaInsuranceNumberRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
-    .onPageLoad(index, mode, "enter-national-insurance-number")
+  def haveNationalInsuranceNumberRoute(index: Index, mode: Mode): Call =
+    controllers.establishers.individual.details.routes.EstablisherHasNINOController.onPageLoad(index, mode)
+    //EstablisherIndividualController.onPageLoad(index, mode, "have-national-insurance-number")
 
-  def haveUniqueTaxpayerReferenceRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
-    .onPageLoad(index, mode, "have-unique-taxpayer-reference")
+  def dateOfBirthRoute(index: Index, mode: Mode): Call =
+    controllers.establishers.individual.details.routes.EstablisherDOBController.onPageLoad(index, mode)
+    //EstablisherIndividualController.onPageLoad(index, mode, "date-of-birth")
 
-  def reasonForNoNationalInsuranceNumberRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
-    .onPageLoad(index, mode, "reason-for-no-national-insurance-number")
+  def cyaDetailsRoute(index: Index, mode: Mode): Call =
+    controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index)
+    //EstablisherIndividualController.onPageLoad(index, mode, "check-your-answers-details")
 
-  def reasonForNoUniqueTaxpayerReferenceRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
-    .onPageLoad(index, mode, "reason-for-no-unique-taxpayer-reference")
+  def contactRoute(index: Index, mode: Mode): Call =
+    controllers.establishers.individual.contact.routes.WhatYouWillNeedController.onPageLoad(index)
+    //EstablisherIndividualController.onPageLoad(index, mode, "contact-details")
 
-  def haveNationalInsuranceNumberRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
-    .onPageLoad(index, mode, "have-national-insurance-number")
+  def emailRoute(index: Index, mode: Mode): Call =
+    controllers.establishers.individual.contact.routes.EnterEmailController.onPageLoad(index, mode)
+    //EstablisherIndividualController.onPageLoad(index, mode, "enter-email-address")
 
-  def dateOfBirthRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
-    .onPageLoad(index, mode, "date-of-birth")
+  def phoneNumberRoute(index: Index, mode: Mode): Call =
+    controllers.establishers.individual.contact.routes.EnterPhoneController.onPageLoad(index, mode)
+    //EstablisherIndividualController.onPageLoad(index, mode, "enter-phone-number")
 
-  def cyaDetailsRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
-    .onPageLoad(index, mode, "check-your-answers-details")
+  def cyaContactRoute(index: Index, mode: Mode): Call =
+    controllers.establishers.individual.contact.routes.CheckYourAnswersController.onPageLoad(index)
+    //EstablisherIndividualController.onPageLoad(index, mode, "check-your-answers-contact-details")
 
-  def contactRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
-    .onPageLoad(index, mode, "contact-details")
+  def wywnAddressRoute(index: Index, mode: Mode): Call =
+    controllers.establishers.individual.address.routes.WhatYouWillNeedController.onPageLoad(index)
+    //EstablisherIndividualController.onPageLoad(index, mode, "address")
 
-  def emailRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
-    .onPageLoad(index, mode, "enter-email-address")
+  def enterPostcodeRoute(index: Index, mode: Mode): Call =
+    controllers.establishers.individual.address.routes.EnterPostcodeController.onPageLoad(index)
+    //EstablisherIndividualController.onPageLoad(index, mode, "enter-postcode")
 
-  def phoneNumberRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
-    .onPageLoad(index, mode, "enter-phone-number")
+  def enterPostcodePOSTRoute(index: Index, mode: Mode): Call =
+    controllers.establishers.individual.address.routes.EnterPostcodeController.onSubmit(index: Index)
+    //EstablisherIndividualController.onSubmit(index, mode, "enter-postcode")
 
-  def cyaContactRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
-    .onPageLoad(index, mode, "check-your-answers-contact-details")
+  def selectAddressRoute(index: Index, mode: Mode): Call =
+    controllers.establishers.individual.address.routes.SelectAddressController.onPageLoad(index)
+    //EstablisherIndividualController.onPageLoad(index, mode, "address-results")
 
-  def wywnAddressRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
-    .onPageLoad(index, mode, "address")
+  def selectAddressPOSTRoute(index: Index, mode: Mode): Call =
+    controllers.establishers.individual.address.routes.SelectAddressController.onSubmit(index: Index)
+    //EstablisherIndividualController.onSubmit(index, mode, "address-results")
 
-  def enterPostcodeRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
-    .onPageLoad(index, mode, "enter-postcode")
+  def confirmAddressRoute(index: Index, mode: Mode): Call =
+    controllers.establishers.individual.address.routes.ConfirmAddressController.onPageLoad(index)
+    //EstablisherIndividualController.onPageLoad(index, mode, "confirm-address")
 
-  def enterPostcodePOSTRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
-    .onSubmit(index, mode, "enter-postcode")
+  def cyaAddressRoute(index: Index, mode: Mode): Call =
+    controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
+    //EstablisherIndividualController.onPageLoad(index, mode, "check-your-answers-address")
 
-  def selectAddressRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
-    .onPageLoad(index, mode, "address-results")
+  def timeAtAddressRoute(index: Index, mode: Mode): Call =
+    controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index)
+    //EstablisherIndividualController.onPageLoad(index, mode, "time-at-address")
 
-  def selectAddressPOSTRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
-    .onSubmit(index, mode, "address-results")
+  def timeAtAddressPOSTRoute(index: Index, mode: Mode): Call =
+    controllers.establishers.individual.address.routes.AddressYearsController.onSubmit(index: Index)
+    //EstablisherIndividualController.onSubmit(index, mode, "time-at-address")
 
-  def confirmAddressRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
-    .onPageLoad(index, mode, "confirm-address")
+  def enterPreviousPostcodeRoute(index: Index, mode: Mode): Call =
+    controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index)
+    //EstablisherIndividualController.onPageLoad(index, mode, "enter-previous-postcode")
 
-  def cyaAddressRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
-    .onPageLoad(index, mode, "check-your-answers-address")
+  def enterPreviousPostcodePOSTRoute(index: Index, mode: Mode): Call =
+    controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onSubmit(index: Index)
+    //EstablisherIndividualController.onSubmit(index, mode, "enter-previous-postcode")
 
-  def timeAtAddressRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
-    .onPageLoad(index, mode, "time-at-address")
+  def previousAddressResultsRoute(index: Index, mode: Mode): Call =
+    controllers.establishers.individual.address.routes.SelectPreviousAddressController.onPageLoad(index)
+    //EstablisherIndividualController.onPageLoad(index, mode, "previous-address-results")
 
-  def timeAtAddressPOSTRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
-    .onSubmit(index, mode, "time-at-address")
+  def previousAddressResultsPOSTRoute(index: Index, mode: Mode): Call =
+    controllers.establishers.individual.address.routes.SelectPreviousAddressController.onSubmit(index: Index)
+    //EstablisherIndividualController.onSubmit(index, mode, "previous-address-results")
 
-  def enterPreviousPostcodeRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
-    .onPageLoad(index, mode, "enter-previous-postcode")
+  def confirmPreviousAddressRoute(index: Index, mode: Mode): Call =
+    controllers.establishers.individual.address.routes.ConfirmPreviousAddressController.onPageLoad(index)
+    //EstablisherIndividualController.onPageLoad(index, mode, "confirm-previous-address")
 
-  def enterPreviousPostcodePOSTRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
-    .onSubmit(index, mode, "enter-previous-postcode")
-
-  def previousAddressResultsRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
-    .onPageLoad(index, mode, "previous-address-results")
-
-  def previousAddressResultsPOSTRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
-    .onSubmit(index, mode, "previous-address-results")
-
-  def confirmPreviousAddressRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
-    .onPageLoad(index, mode, "confirm-previous-address")
-
-  def confirmPreviousAddressPOSTRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
-    .onSubmit(index, mode, "confirm-previous-address")
+  def confirmPreviousAddressPOSTRoute(index: Index, mode: Mode): Call =
+    controllers.establishers.individual.address.routes.ConfirmPreviousAddressController.onSubmit(index: Index)
+    //EstablisherIndividualController.onSubmit(index, mode, "confirm-previous-address")
 }

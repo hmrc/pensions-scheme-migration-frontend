@@ -110,7 +110,7 @@ class EstablishersNavigator@Inject()(config: AppConfig)
                                      ua: UserAnswers
                                    ): Call =
     ua.get(EstablisherKindId(index)) match {
-      case Some(EstablisherKind.Individual) => nameRoute(index, NormalMode)
+      case Some(EstablisherKind.Individual) => controllers.establishers.individual.routes.EstablisherNameController.onPageLoad(index)
       case Some(EstablisherKind.Company) => CompanyDetailsController.onPageLoad(index)
       case Some(EstablisherKind.Partnership) => PartnershipDetailsController.onPageLoad(index)
       case _ => IndexController.onPageLoad()
@@ -143,7 +143,7 @@ class EstablishersNavigator@Inject()(config: AppConfig)
                                  mode: Mode
                                ): Call =
     answers.get(EstablisherHasUTRId(index)) match {
-      case Some(true) => enterUniqueTaxpayerReferenceRoute(index, mode)
+      case Some(true) => controllers.establishers.individual.details.routes.EstablisherHasUTRController.onPageLoad(index, mode)
       case Some(false) => reasonForNoUniqueTaxpayerReferenceRoute(index, mode)
       case None => controllers.routes.TaskListController.onPageLoad()
     }

@@ -19,10 +19,9 @@ package controllers.establishers.individual
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.PersonNameFormProvider
-import helpers.routes.EstablishersIndividualRoutes
 import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
-import models.{Index, NormalMode, PersonName}
+import models.{PersonName, Index}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -32,7 +31,7 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
-import utils.{Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable}
 
 import scala.concurrent.Future
 
@@ -48,8 +47,8 @@ class EstablisherNameControllerSpec extends ControllerSpecBase with NunjucksSupp
 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
-  private def httpPathGET: String = EstablishersIndividualRoutes.nameRoute(index, NormalMode).url
-  private def httpPathPOST: String = EstablishersIndividualRoutes.namePOSTRoute(index, NormalMode).url
+  private def httpPathGET: String = controllers.establishers.individual.routes.EstablisherNameController.onPageLoad(index).url
+  private def httpPathPOST: String = controllers.establishers.individual.routes.EstablisherNameController.onSubmit(index).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "firstName" -> Seq("Jane"),

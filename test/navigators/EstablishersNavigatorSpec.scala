@@ -26,13 +26,13 @@ import identifiers.establishers.individual.details._
 import identifiers.establishers.{AddEstablisherId, ConfirmDeleteEstablisherId, EstablisherKindId}
 import identifiers.{Identifier, TypedIdentifier}
 import models.establishers.EstablisherKind
-import models.{CheckMode, Index, Mode, NormalMode, PersonName, ReferenceValue, _}
+import models.{CheckMode, PersonName, NormalMode, Mode, ReferenceValue, Index, _}
 import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes
 import play.api.mvc.Call
 import utils.Data.ua
-import utils.{Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable}
 import helpers.routes.EstablishersIndividualRoutes._
 
 import java.time.LocalDate
@@ -46,7 +46,7 @@ class EstablishersNavigatorSpec
   private val navigator: CompoundNavigator = injector.instanceOf[CompoundNavigator]
   private val index: Index = Index(0)
   private val uaWithEstablisherKind: EstablisherKind => UserAnswers = kind => UserAnswers().set(EstablisherKindId(index), kind).get
-  private val establisherNamePage: Call = nameRoute(index, NormalMode)
+  private val establisherNamePage: Call = controllers.establishers.individual.routes.EstablisherNameController.onPageLoad(index)
   private val companyDetailsPage: Call = controllers.establishers.company.routes.CompanyDetailsController.onPageLoad(index)
   private val partnershipDetailsPage: Call = controllers.establishers.partnership.routes.PartnershipDetailsController.onPageLoad(index)
   private val addEstablisherPage: Call = controllers.establishers.routes.AddEstablisherController.onPageLoad()
@@ -100,7 +100,7 @@ class EstablishersNavigatorSpec
         row(EstablisherHasNINOId(index))(reasonForNoNationalInsuranceNumberRoute(index, NormalMode), Some(detailsUa.set(EstablisherHasNINOId(index), false).success.value)),
         row(EstablisherNINOId(index))(haveNationalInsuranceNumberRoute(index, NormalMode), Some(detailsUa.set(EstablisherNINOId(index), ReferenceValue("AB123456C")).success.value)),
         row(EstablisherNoNINOReasonId(index))(haveUniqueTaxpayerReferenceRoute(index, NormalMode), Some(detailsUa.set(EstablisherNoNINOReasonId(index), "Reason").success.value)),
-        row(EstablisherHasUTRId(index))(enterUniqueTaxpayerReferenceRoute(index, NormalMode), Some(detailsUa.set(EstablisherHasUTRId(index), true).success.value)),
+        row(EstablisherHasUTRId(index))(controllers.establishers.individual.details.routes.EstablisherHasUTRController.onPageLoad(index, NormalMode), Some(detailsUa.set(EstablisherHasUTRId(index), true).success.value)),
         row(EstablisherHasUTRId(index))(reasonForNoUniqueTaxpayerReferenceRoute(index, NormalMode), Some(detailsUa.set(EstablisherHasUTRId(index), false).success.value)),
         row(EstablisherUTRId(index))(cyaDetailsRoute(index, NormalMode), Some(detailsUa.set(EstablisherUTRId(index), ReferenceValue("1234567890")).success.value)),
         row(EstablisherNoUTRReasonId(index))(cyaDetailsRoute(index, NormalMode), Some(detailsUa.set(EstablisherNoUTRReasonId(index), "Reason").success.value)),
@@ -126,7 +126,7 @@ class EstablishersNavigatorSpec
         row(EstablisherHasNINOId(index))(reasonForNoNationalInsuranceNumberRoute(index, CheckMode), Some(detailsUa.set(EstablisherHasNINOId(index), false).success.value)),
         row(EstablisherNINOId(index))(cyaDetailsRoute(index, NormalMode), Some(detailsUa.set(EstablisherNINOId(index), ReferenceValue("AB123456C")).success.value)),
         row(EstablisherNoNINOReasonId(index))(cyaDetailsRoute(index, NormalMode), Some(detailsUa.set(EstablisherNoNINOReasonId(index), "Reason").success.value)),
-        row(EstablisherHasUTRId(index))(enterUniqueTaxpayerReferenceRoute(index, CheckMode), Some(detailsUa.set(EstablisherHasUTRId(index), true).success.value)),
+        row(EstablisherHasUTRId(index))(controllers.establishers.individual.details.routes.EstablisherHasUTRController.onPageLoad(index, CheckMode), Some(detailsUa.set(EstablisherHasUTRId(index), true).success.value)),
         row(EstablisherHasUTRId(index))(reasonForNoUniqueTaxpayerReferenceRoute(index, CheckMode), Some(detailsUa.set(EstablisherHasUTRId(index), false).success.value)),
         row(EstablisherUTRId(index))(cyaDetailsRoute(index, NormalMode), Some(detailsUa.set(EstablisherUTRId(index), ReferenceValue("1234567890")).success.value)),
         row(EstablisherNoUTRReasonId(index))(cyaDetailsRoute(index, NormalMode), Some(detailsUa.set(EstablisherNoUTRReasonId(index), "Reason").success.value)),

@@ -54,7 +54,7 @@ class WhatYouWillNeedController @Inject()(
               template = "establishers/individual/details/whatYouWillNeed.njk",
               ctx = Json.obj(
                 "name"        -> personName.fullName,
-                "continueUrl" -> controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, NormalMode, "date-of-birth").url,
+                "continueUrl" -> controllers.establishers.individual.details.routes.EstablisherDOBController.onPageLoad(index, NormalMode).url,
                 "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )
             ).map(Ok(_))

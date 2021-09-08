@@ -136,7 +136,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = TaskListLink(
               text = "Add details for a b",
-              target = EstablishersIndividualRoutes.detailsRoute(0, NormalMode).url,
+              target = controllers.establishers.individual.details.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
             isCompleted = None

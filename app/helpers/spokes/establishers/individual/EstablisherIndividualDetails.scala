@@ -16,7 +16,7 @@
 
 package helpers.spokes.establishers.individual
 
-import helpers.routes.EstablishersIndividualRoutes.{cyaDetailsRoute, detailsRoute}
+import helpers.routes.EstablishersIndividualRoutes.cyaDetailsRoute
 import helpers.spokes.Spoke
 import models.{TaskListLink, Index, NormalMode}
 import play.api.i18n.Messages
@@ -33,7 +33,7 @@ case class EstablisherIndividualDetails(
       (s"${messageKeyPrefix}changeLink",
         cyaDetailsRoute(index, NormalMode).url)
     else
-      (s"${messageKeyPrefix}addLink", detailsRoute(index, NormalMode).url)
+      (s"${messageKeyPrefix}addLink", controllers.establishers.individual.details.routes.WhatYouWillNeedController.onPageLoad(index).url)
 
   override def changeLink(name: String)
                          (implicit messages: Messages): TaskListLink =
