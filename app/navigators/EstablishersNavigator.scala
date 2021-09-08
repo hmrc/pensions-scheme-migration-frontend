@@ -52,7 +52,7 @@ class EstablishersNavigator@Inject()(config: AppConfig)
     case EstablisherDOBId(index) => haveNationalInsuranceNumberRoute(index, NormalMode)
     case EstablisherHasNINOId(index) => establisherHasNino(index, ua, NormalMode)
     case EstablisherNINOId(index) => haveNationalInsuranceNumberRoute(index, NormalMode)
-    case EstablisherNoNINOReasonId(index) => haveUniqueTaxpayerReferenceRoute(index, NormalMode)
+    case EstablisherNoNINOReasonId(index) => controllers.establishers.individual.details.routes.EstablisherHasUTRController.onPageLoad(index, NormalMode)
     case EstablisherHasUTRId(index) => establisherHasUtr(index, ua, NormalMode)
     case EstablisherUTRId(index) => cyaDetails(index)
     case EstablisherNoUTRReasonId(index) => cyaDetails(index)
@@ -132,7 +132,7 @@ class EstablishersNavigator@Inject()(config: AppConfig)
                                   mode: Mode
                                 ): Call =
     answers.get(EstablisherHasNINOId(index)) match {
-      case Some(true) => enterNationaInsuranceNumberRoute(index, mode)
+      case Some(true) => controllers.establishers.individual.details.routes.EstablisherEnterNINOController.onPageLoad(index, mode)
       case Some(false) => reasonForNoNationalInsuranceNumberRoute(index, mode)
       case None => controllers.routes.TaskListController.onPageLoad()
     }

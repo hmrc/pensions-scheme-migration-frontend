@@ -83,7 +83,7 @@ class EstablisherDetailsCYAHelper
       Some(answerOrAddRow(
         id                 = EstablisherHasUTRId(index),
         message            = Message("messages__hasUTR", establisherName).resolve,
-        url                = Some(haveUniqueTaxpayerReferenceRoute(index, CheckMode).url),
+        url                = Some(controllers.establishers.individual.details.routes.EstablisherHasUTRController.onPageLoad(index, CheckMode).url),
         visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(establisherName)),
         answerTransform    = answerBooleanTransform
       )),

@@ -22,13 +22,6 @@ import controllers.establishers.individual.routes._
 
 object EstablishersIndividualRoutes {
 
-  def enterNationaInsuranceNumberRoute(index: Index, mode: Mode): Call =
-    controllers.establishers.individual.details.routes.EstablisherEnterNINOController.onPageLoad(index, mode)
-    //EstablisherIndividualController.onPageLoad(index, mode, "enter-national-insurance-number")
-
-  def haveUniqueTaxpayerReferenceRoute(index: Index, mode: Mode): Call =
-    controllers.establishers.individual.details.routes.EstablisherHasUTRController.onPageLoad(index, mode)
-    //EstablisherIndividualController.onPageLoad(index, mode, "have-unique-taxpayer-reference")
 
   def reasonForNoNationalInsuranceNumberRoute(index: Index, mode: Mode): Call =
     controllers.establishers.individual.details.routes.EstablisherNoNINOReasonController.onPageLoad(index, mode)
