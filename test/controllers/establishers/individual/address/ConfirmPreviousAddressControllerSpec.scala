@@ -35,7 +35,7 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.{Data, Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable, Data}
 
 import scala.concurrent.Future
 
@@ -110,7 +110,7 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with Nunju
     "Save data to user answers and redirect to next page when valid data is submitted" in {
 
       when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
-        .thenReturn(EstablishersIndividualRoutes.cyaAddressRoute(0, NormalMode))
+        .thenReturn(controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(0))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -119,7 +119,7 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with Nunju
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(EstablishersIndividualRoutes.cyaAddressRoute(0, NormalMode).url)
+      redirectLocation(result) mustBe Some(controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(0).url)
 
       verify(mockUserAnswersCacheConnector, times(1)).save(any(),jsonCaptor.capture())(any(), any())
       val expectedJson = Json.obj(

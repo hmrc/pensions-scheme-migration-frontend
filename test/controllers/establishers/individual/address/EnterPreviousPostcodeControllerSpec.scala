@@ -22,7 +22,7 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import helpers.routes.EstablishersIndividualRoutes
 import identifiers.beforeYouStart.SchemeNameId
 import matchers.JsonMatchers
-import models.{NormalMode, TolerantAddress}
+import models.{TolerantAddress, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -34,7 +34,7 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
-import utils.{Data, Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable, Data}
 
 import scala.concurrent.Future
 
@@ -99,7 +99,7 @@ class EnterPreviousPostcodeControllerSpec extends ControllerSpecBase with Nunjuc
       val seqAddresses = Seq(TolerantAddress(Some("a"),Some("b"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")))
 
       when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
-        .thenReturn(EstablishersIndividualRoutes.cyaAddressRoute(0, NormalMode))
+        .thenReturn(controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(0))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
       when(mockAddressLookupConnector.addressLookupByPostCode(any())(any(), any()))
@@ -110,7 +110,7 @@ class EnterPreviousPostcodeControllerSpec extends ControllerSpecBase with Nunjuc
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(EstablishersIndividualRoutes.cyaAddressRoute(0, NormalMode).url)
+      redirectLocation(result) mustBe Some(controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(0).url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

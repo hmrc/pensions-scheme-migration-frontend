@@ -18,38 +18,8 @@ package helpers.routes
 
 import models.{Mode, Index}
 import play.api.mvc.Call
-import controllers.establishers.individual.routes._
 
 object EstablishersIndividualRoutes {
-
-
-  def wywnAddressRoute(index: Index, mode: Mode): Call =
-    controllers.establishers.individual.address.routes.WhatYouWillNeedController.onPageLoad(index)
-    //EstablisherIndividualController.onPageLoad(index, mode, "address")
-
-  def enterPostcodeRoute(index: Index, mode: Mode): Call =
-    controllers.establishers.individual.address.routes.EnterPostcodeController.onPageLoad(index)
-    //EstablisherIndividualController.onPageLoad(index, mode, "enter-postcode")
-
-  def enterPostcodePOSTRoute(index: Index, mode: Mode): Call =
-    controllers.establishers.individual.address.routes.EnterPostcodeController.onSubmit(index: Index)
-    //EstablisherIndividualController.onSubmit(index, mode, "enter-postcode")
-
-  def selectAddressRoute(index: Index, mode: Mode): Call =
-    controllers.establishers.individual.address.routes.SelectAddressController.onPageLoad(index)
-    //EstablisherIndividualController.onPageLoad(index, mode, "address-results")
-
-  def selectAddressPOSTRoute(index: Index, mode: Mode): Call =
-    controllers.establishers.individual.address.routes.SelectAddressController.onSubmit(index: Index)
-    //EstablisherIndividualController.onSubmit(index, mode, "address-results")
-
-  def confirmAddressRoute(index: Index, mode: Mode): Call =
-    controllers.establishers.individual.address.routes.ConfirmAddressController.onPageLoad(index)
-    //EstablisherIndividualController.onPageLoad(index, mode, "confirm-address")
-
-  def cyaAddressRoute(index: Index, mode: Mode): Call =
-    controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
-    //EstablisherIndividualController.onPageLoad(index, mode, "check-your-answers-address")
 
   def timeAtAddressRoute(index: Index, mode: Mode): Call =
     controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index)

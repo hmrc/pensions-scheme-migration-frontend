@@ -17,7 +17,6 @@
 package helpers
 
 import base.SpecBase
-import helpers.routes.EstablishersIndividualRoutes
 import identifiers.beforeYouStart.{SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.company.CompanyDetailsId
@@ -143,7 +142,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = TaskListLink(
               text = "Add address for a b",
-              target = EstablishersIndividualRoutes.wywnAddressRoute(0, NormalMode).url,
+              target = controllers.establishers.individual.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
             isCompleted = None

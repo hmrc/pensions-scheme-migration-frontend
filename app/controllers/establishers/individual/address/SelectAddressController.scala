@@ -22,7 +22,6 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.{AddressPages, AddressListController}
 import forms.address.AddressListFormProvider
-import helpers.routes.EstablishersIndividualRoutes
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{EnterPostCodeId, AddressListId, AddressId}
@@ -84,7 +83,7 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
             "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
             "entityType" -> msg("establisherEntityTypeIndividual"),
             "entityName" -> name,
-            "enterManuallyUrl" -> EstablishersIndividualRoutes.confirmAddressRoute(index, NormalMode).url,
+            "enterManuallyUrl" -> controllers.establishers.individual.address.routes.ConfirmAddressController.onPageLoad(index).url,
             "schemeName" -> schemeName
           )
         }

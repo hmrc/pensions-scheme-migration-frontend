@@ -64,13 +64,13 @@ class EstablishersNavigatorSpec
 
   val address = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
 
-  private val cyaAddress: Call = EstablishersIndividualRoutes.cyaAddressRoute(index, NormalMode)
+  private val cyaAddress: Call = controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
 
   private def enterPreviousPostcode(mode:Mode): Call =
     EstablishersIndividualRoutes.enterPreviousPostcodeRoute( index, NormalMode)
 
   private def selectAddress(mode:Mode): Call = {
-    EstablishersIndividualRoutes.selectAddressRoute(index, NormalMode)
+    controllers.establishers.individual.address.routes.SelectAddressController.onPageLoad(index)
   }
 
   private def selectPreviousAddress(mode:Mode): Call = EstablishersIndividualRoutes.previousAddressResultsRoute(index, NormalMode)

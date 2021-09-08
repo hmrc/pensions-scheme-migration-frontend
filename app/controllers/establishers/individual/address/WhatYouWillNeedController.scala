@@ -19,10 +19,9 @@ package controllers.establishers.individual.address
 import controllers.Retrievals
 import controllers.actions.{DataRetrievalAction, DataRequiredAction, AuthAction}
 import helpers.cya.MandatoryAnswerMissingException
-import helpers.routes.EstablishersIndividualRoutes
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
-import models.{Index, NormalMode}
+import models.Index
 import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -55,7 +54,7 @@ class WhatYouWillNeedController @Inject()(
               template = "establishers/individual/address/whatYouWillNeed.njk",
               ctx = Json.obj(
                 "name"        -> personName.fullName,
-                "continueUrl" -> EstablishersIndividualRoutes.enterPostcodeRoute(index, NormalMode).url,
+                "continueUrl" -> controllers.establishers.individual.address.routes.EnterPostcodeController.onPageLoad(index).url,
                 "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )
             ).map(Ok(_))

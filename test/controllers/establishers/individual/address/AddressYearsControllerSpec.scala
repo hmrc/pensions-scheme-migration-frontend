@@ -36,7 +36,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{Data, Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable, Data}
 
 import scala.concurrent.Future
 
@@ -126,7 +126,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
       val expectedJson = Json.obj()
 
       when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
-        .thenReturn( EstablishersIndividualRoutes.cyaAddressRoute(0, NormalMode))
+        .thenReturn( controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(0))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -142,7 +142,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
 
       jsonCaptor.getValue must containJson(expectedJson)
 
-      redirectLocation(result) mustBe Some( EstablishersIndividualRoutes.cyaAddressRoute(0, NormalMode).url)
+      redirectLocation(result) mustBe Some( controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(0).url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

@@ -86,7 +86,7 @@ class EstablisherAddressCYAHelperSpec extends AnyWordSpec with Matchers with Try
 
       result.head mustBe summaryListRowHtml(key = messages("messages__establisherAddress__whatYouWillNeed_h1", establisherName.fullName),
         value = answerAddressTransform(establisherAddress), Some(Link(text = Messages("site.change"),
-          target = EstablishersIndividualRoutes.enterPostcodeRoute(0, NormalMode).url,
+          target = controllers.establishers.individual.address.routes.EnterPostcodeController.onPageLoad(0).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__address", establisherName.fullName))),
           attributes = Map("id" -> "cya-0-0-change"))))
 
