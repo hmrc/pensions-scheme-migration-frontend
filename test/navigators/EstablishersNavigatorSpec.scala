@@ -33,7 +33,6 @@ import play.api.libs.json.Writes
 import play.api.mvc.Call
 import utils.Data.ua
 import utils.{UserAnswers, Enumerable}
-import helpers.routes.EstablishersIndividualRoutes._
 
 import java.time.LocalDate
 
@@ -79,10 +78,10 @@ class EstablishersNavigatorSpec
   private def addressYears(mode:Mode): Call = EstablishersIndividualRoutes.timeAtAddressRoute(index, NormalMode)
 
   private def enterPhonePage(mode:Mode): Call =
-    phoneNumberRoute(index, mode)
+    controllers.establishers.individual.contact.routes.EnterPhoneController.onPageLoad(index, mode)
 
   private val cyaContact: Call =
-    cyaContactRoute(index, NormalMode)
+    controllers.establishers.individual.contact.routes.CheckYourAnswersController.onPageLoad(index)
 
   "EstablishersNavigator" when {
     def navigation: TableFor3[Identifier, UserAnswers, Call] =

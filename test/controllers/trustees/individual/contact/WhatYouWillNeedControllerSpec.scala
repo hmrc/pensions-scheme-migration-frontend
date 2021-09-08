@@ -20,7 +20,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.trustees.individual.TrusteeNameId
 import matchers.JsonMatchers
-import models.{NormalMode, PersonName}
+import models.{PersonName, NormalMode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues

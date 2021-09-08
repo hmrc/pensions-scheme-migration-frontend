@@ -23,24 +23,6 @@ import controllers.establishers.individual.routes._
 object EstablishersIndividualRoutes {
 
 
-
-
-  def contactRoute(index: Index, mode: Mode): Call =
-    controllers.establishers.individual.contact.routes.WhatYouWillNeedController.onPageLoad(index)
-    //EstablisherIndividualController.onPageLoad(index, mode, "contact-details")
-
-  def emailRoute(index: Index, mode: Mode): Call =
-    controllers.establishers.individual.contact.routes.EnterEmailController.onPageLoad(index, mode)
-    //EstablisherIndividualController.onPageLoad(index, mode, "enter-email-address")
-
-  def phoneNumberRoute(index: Index, mode: Mode): Call =
-    controllers.establishers.individual.contact.routes.EnterPhoneController.onPageLoad(index, mode)
-    //EstablisherIndividualController.onPageLoad(index, mode, "enter-phone-number")
-
-  def cyaContactRoute(index: Index, mode: Mode): Call =
-    controllers.establishers.individual.contact.routes.CheckYourAnswersController.onPageLoad(index)
-    //EstablisherIndividualController.onPageLoad(index, mode, "check-your-answers-contact-details")
-
   def wywnAddressRoute(index: Index, mode: Mode): Call =
     controllers.establishers.individual.address.routes.WhatYouWillNeedController.onPageLoad(index)
     //EstablisherIndividualController.onPageLoad(index, mode, "address")

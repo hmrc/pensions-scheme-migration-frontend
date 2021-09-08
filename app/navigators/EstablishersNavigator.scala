@@ -22,7 +22,6 @@ import controllers.establishers.partnership.routes._
 import controllers.establishers.routes._
 import controllers.routes._
 import helpers.routes.EstablishersIndividualRoutes
-import helpers.routes.EstablishersIndividualRoutes._
 import identifiers._
 import identifiers.establishers._
 import identifiers.establishers.individual.EstablisherNameId
@@ -64,7 +63,7 @@ class EstablishersNavigator@Inject()(config: AppConfig)
     case EnterPreviousPostCodeId(index) => EstablishersIndividualRoutes.previousAddressResultsRoute(index, NormalMode)
     case PreviousAddressListId(index) => cyaAddress(index)
     case PreviousAddressId(index) => cyaAddress(index)
-    case EnterEmailId(index) => phoneNumberRoute(index, NormalMode)
+    case EnterEmailId(index) => controllers.establishers.individual.contact.routes.EnterPhoneController.onPageLoad(index, NormalMode)
     case EnterPhoneId(index) => cyaContactDetails(index)
     case AddPartnersId(index) => addPartners(index, ua)
   }
@@ -84,7 +83,7 @@ class EstablishersNavigator@Inject()(config: AppConfig)
 
   private def cyaAddress(index:Int): Call = EstablishersIndividualRoutes.cyaAddressRoute(index, NormalMode)
   private def cyaDetails(index:Int): Call = controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index)
-  private def cyaContactDetails(index:Int): Call = cyaContactRoute(index, NormalMode)
+  private def cyaContactDetails(index:Int): Call = controllers.establishers.individual.contact.routes.CheckYourAnswersController.onPageLoad(index)
   private def addressYears(index:Int, mode:Mode): Call =EstablishersIndividualRoutes.timeAtAddressRoute(index, NormalMode)
 
   private def addPartners(index: Int, answers: UserAnswers): Call = {
