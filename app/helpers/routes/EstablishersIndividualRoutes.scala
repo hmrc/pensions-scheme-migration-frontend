@@ -23,21 +23,6 @@ import controllers.establishers.individual.routes._
 object EstablishersIndividualRoutes {
 
 
-  def reasonForNoNationalInsuranceNumberRoute(index: Index, mode: Mode): Call =
-    controllers.establishers.individual.details.routes.EstablisherNoNINOReasonController.onPageLoad(index, mode)
-    //EstablisherIndividualController.onPageLoad(index, mode, "reason-for-no-national-insurance-number")
-
-  def reasonForNoUniqueTaxpayerReferenceRoute(index: Index, mode: Mode): Call =
-    controllers.establishers.individual.details.routes.EstablisherNoUTRReasonController.onPageLoad(index, mode)
-    //EstablisherIndividualController.onPageLoad(index, mode, "reason-for-no-unique-taxpayer-reference")
-
-  def haveNationalInsuranceNumberRoute(index: Index, mode: Mode): Call =
-    controllers.establishers.individual.details.routes.EstablisherHasNINOController.onPageLoad(index, mode)
-    //EstablisherIndividualController.onPageLoad(index, mode, "have-national-insurance-number")
-
-  def dateOfBirthRoute(index: Index, mode: Mode): Call =
-    controllers.establishers.individual.details.routes.EstablisherDOBController.onPageLoad(index, mode)
-    //EstablisherIndividualController.onPageLoad(index, mode, "date-of-birth")
 
   def cyaDetailsRoute(index: Index, mode: Mode): Call =
     controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index)

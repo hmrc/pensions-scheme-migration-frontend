@@ -49,9 +49,9 @@ class EstablishersNavigator@Inject()(config: AppConfig)
     case EstablisherNameId(_) => AddEstablisherController.onPageLoad()
     case AddEstablisherId(value) => addEstablisherRoutes(value, ua)
     case ConfirmDeleteEstablisherId => AddEstablisherController.onPageLoad()
-    case EstablisherDOBId(index) => haveNationalInsuranceNumberRoute(index, NormalMode)
+    case EstablisherDOBId(index) => controllers.establishers.individual.details.routes.EstablisherHasNINOController.onPageLoad(index, NormalMode)
     case EstablisherHasNINOId(index) => establisherHasNino(index, ua, NormalMode)
-    case EstablisherNINOId(index) => haveNationalInsuranceNumberRoute(index, NormalMode)
+    case EstablisherNINOId(index) => controllers.establishers.individual.details.routes.EstablisherHasNINOController.onPageLoad(index, NormalMode)
     case EstablisherNoNINOReasonId(index) => controllers.establishers.individual.details.routes.EstablisherHasUTRController.onPageLoad(index, NormalMode)
     case EstablisherHasUTRId(index) => establisherHasUtr(index, ua, NormalMode)
     case EstablisherUTRId(index) => cyaDetails(index)
@@ -133,7 +133,7 @@ class EstablishersNavigator@Inject()(config: AppConfig)
                                 ): Call =
     answers.get(EstablisherHasNINOId(index)) match {
       case Some(true) => controllers.establishers.individual.details.routes.EstablisherEnterNINOController.onPageLoad(index, mode)
-      case Some(false) => reasonForNoNationalInsuranceNumberRoute(index, mode)
+      case Some(false) => controllers.establishers.individual.details.routes.EstablisherNoNINOReasonController.onPageLoad(index, mode)
       case None => controllers.routes.TaskListController.onPageLoad()
     }
 
@@ -144,7 +144,7 @@ class EstablishersNavigator@Inject()(config: AppConfig)
                                ): Call =
     answers.get(EstablisherHasUTRId(index)) match {
       case Some(true) => controllers.establishers.individual.details.routes.EstablisherHasUTRController.onPageLoad(index, mode)
-      case Some(false) => reasonForNoUniqueTaxpayerReferenceRoute(index, mode)
+      case Some(false) => controllers.establishers.individual.details.routes.EstablisherNoUTRReasonController.onPageLoad(index, mode)
       case None => controllers.routes.TaskListController.onPageLoad()
     }
 }

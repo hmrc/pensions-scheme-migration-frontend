@@ -18,7 +18,6 @@ package helpers.cya.establishers.individual
 
 import helpers.cya.CYAHelper
 import helpers.cya.CYAHelper.getName
-import helpers.routes.EstablishersIndividualRoutes
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.details._
 import models.requests.DataRequest
@@ -29,7 +28,6 @@ import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.SummaryList.Row
 import utils.{UserAnswers, Enumerable}
 import viewmodels.Message
-import EstablishersIndividualRoutes._
 
 class EstablisherDetailsCYAHelper
   extends CYAHelper
@@ -50,14 +48,14 @@ class EstablisherDetailsCYAHelper
       Some(answerOrAddRow(
         id                 = EstablisherDOBId(index),
         message            = Message("messages__dob__title", establisherName).resolve,
-        url                = Some(dateOfBirthRoute(index, CheckMode).url),
+        url                = Some(controllers.establishers.individual.details.routes.EstablisherDOBController.onPageLoad(index, CheckMode).url),
         visuallyHiddenText = Some(msg"messages__dob__cya__visuallyHidden".withArgs(establisherName)),
         answerTransform = answerDateTransform
       )),
       Some(answerOrAddRow(
         id                 = EstablisherHasNINOId(index),
         message            = Message("messages__hasNINO", establisherName).resolve,
-        url                = Some(haveNationalInsuranceNumberRoute(index, CheckMode).url),
+        url                = Some(controllers.establishers.individual.details.routes.EstablisherHasNINOController.onPageLoad(index, CheckMode).url),
         visuallyHiddenText = Some(msg"messages__hasNINO__cya__visuallyHidden".withArgs(establisherName)),
         answerTransform    = answerBooleanTransform
       )),
@@ -76,7 +74,7 @@ class EstablisherDetailsCYAHelper
           answerOrAddRow(
             id                 = EstablisherNoNINOReasonId(index),
             message            = Message("messages__whyNoNINO", establisherName),
-            url                = Some(reasonForNoNationalInsuranceNumberRoute(index, CheckMode).url),
+            url                = Some(controllers.establishers.individual.details.routes.EstablisherNoNINOReasonController.onPageLoad(index, CheckMode).url),
             visuallyHiddenText = Some(msg"messages__whyNoNINO__cya__visuallyHidden".withArgs(establisherName))
           )
       },
@@ -102,7 +100,7 @@ class EstablisherDetailsCYAHelper
           answerOrAddRow(
             id                 = EstablisherNoUTRReasonId(index),
             message            = Message("messages__whyNoUTR", establisherName),
-            url                = Some(reasonForNoUniqueTaxpayerReferenceRoute(index, CheckMode).url),
+            url                = Some(controllers.establishers.individual.details.routes.EstablisherNoUTRReasonController.onPageLoad(index, CheckMode).url),
             visuallyHiddenText = Some(msg"messages__whyNoUTR__cya__visuallyHidden".withArgs(establisherName))
           )
       }
