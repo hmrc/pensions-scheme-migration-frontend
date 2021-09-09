@@ -19,7 +19,7 @@ package helpers
 import base.SpecBase
 import helpers.routes.EstablishersIndividualRoutes
 import helpers.routes.EstablishersIndividualRoutes.contactRoute
-import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}
+import identifiers.beforeYouStart.{SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.contact.EnterPhoneId
@@ -28,7 +28,7 @@ import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressId
 import identifiers.establishers.partnership.address.{AddressId => PartnershipAddressId}
-import identifiers.establishers.partnership.details.{HaveUTRId, PartnershipUTRId}
+import identifiers.establishers.partnership.details.{PartnershipUTRId, HaveUTRId}
 import identifiers.establishers.partnership.contact.EnterEmailId
 import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.{PartnershipDetailsId => EstablisherPartnershipDetailsId}
@@ -36,9 +36,8 @@ import identifiers.trustees.company.{details => trusteeCompanyDetails}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.contact.{EnterEmailId => TrusteeEmailId, EnterPhoneId => TrusteePhoneId}
 import identifiers.trustees.individual.details.{TrusteeDOBId, TrusteeNINOId, TrusteeUTRId}
-import identifiers.trustees.partnership.address.{AddressId => TrusteePartnershipAddressId, AddressYearsId => TrusteePartnershipAddressYearsId}
+import identifiers.trustees.partnership.address.{AddressYearsId => TrusteePartnershipAddressYearsId, AddressId => TrusteePartnershipAddressId}
 import identifiers.trustees.partnership.contact.{EnterEmailId => TrusteePartnershipEmailId, EnterPhoneId => TrusteePartnershipPhoneId}
-import identifiers.trustees.partnership.{contact => TrusteePartnershipContact, PartnershipDetailsId => TrusteePartnershipDetailsId}
 import identifiers.trustees.{TrusteeKindId, company => trusteeCompany}
 import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind
@@ -46,7 +45,7 @@ import models._
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
 import utils.Data.{schemeName, ua}
-import utils.{Data, Enumerable}
+import utils.{Enumerable, Data}
 import viewmodels.Message
 
 import java.time.LocalDate
