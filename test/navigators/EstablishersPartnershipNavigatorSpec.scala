@@ -80,8 +80,8 @@ class EstablishersPartnershipNavigatorSpec
         ("Id", "Next Page", "UserAnswers (Optional)"),
         row(PartnershipDetailsId(index))(addEstablisherPage),
 
-//        row(EnterEmailId(index))(controllers.establishers.partnership.contact.routes.EnterPhoneController.onPageLoad(index, NormalMode)),
-//        row(EnterPhoneId(index))(controllers.establishers.partnership.contact.routes.CheckYourAnswersController.onPageLoad(index)),
+        row(EnterEmailId(index))(controllers.establishers.partnership.contact.routes.EnterPhoneController.onPageLoad(index, NormalMode)),
+        row(EnterPhoneId(index))(controllers.establishers.partnership.contact.routes.CheckYourAnswersController.onPageLoad(index)),
 
         row(HaveUTRId(index))(utr(), uaWithValue(HaveUTRId(index), true)),
         row(HaveUTRId(index))(noUtr(), uaWithValue(HaveUTRId(index), false)),
@@ -114,7 +114,7 @@ class EstablishersPartnershipNavigatorSpec
         ("Id", "Next Page", "UserAnswers (Optional)"),
         row(PartnershipDetailsId(index))(controllers.routes.IndexController.onPageLoad()),
 
-        row(EnterEmailId(index))(controllers.establishers.partnership.contact.routes.EnterPhoneController.onPageLoad(index, CheckMode)),
+        row(EnterEmailId(index))(controllers.establishers.partnership.contact.routes.CheckYourAnswersController.onPageLoad(index)),
         row(EnterPhoneId(index))(controllers.establishers.partnership.contact.routes.CheckYourAnswersController.onPageLoad(index)),
 
         row(HaveUTRId(index))(utr(CheckMode), uaWithValue(HaveUTRId(index), true)),
