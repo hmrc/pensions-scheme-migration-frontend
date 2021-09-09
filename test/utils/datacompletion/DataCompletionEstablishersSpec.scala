@@ -24,6 +24,7 @@ import identifiers.establishers.partnership.partner.details._
 import identifiers.establishers.partnership.partner.{address => partnerAddress}
 import identifiers.establishers.partnership.partner.{contact => partnerContact}
 import identifiers.establishers.company.{CompanyDetailsId, contact => companyContact}
+import identifiers.establishers.partnership.{contact => partnershipContact}
 import identifiers.establishers.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.individual.details._
@@ -287,46 +288,46 @@ class DataCompletionEstablishersSpec
               .setOrException(directorAddress.AddressId(0, 0), Data.address)
               .setOrException(directorAddress.AddressYearsId(0, 0), false)
 
-          ua.isDirectorComplete(0,0) mustBe false
+          ua.isDirectorComplete(0, 0) mustBe false
         }
       }
     }
   }
 
-    "Director Details completion status should be returned correctly" when {
-      "isDirectorDetailsComplete" must {
-        "return true when all answers are present" in {
-          val ua1 =
-            UserAnswers()
-              .set(DirectorDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
-              .set(DirectorHasNINOId(0, 0), true).success.value
-              .set(DirectorNINOId(0, 0), ReferenceValue("1234567890")).success.value
-              .set(DirectorHasUTRId(0, 0), true).success.value
-              .set(DirectorEnterUTRId(0, 0), ReferenceValue("123456789")).success.value
+  "Director Details completion status should be returned correctly" when {
+    "isDirectorDetailsComplete" must {
+      "return true when all answers are present" in {
+        val ua1 =
+          UserAnswers()
+            .set(DirectorDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
+            .set(DirectorHasNINOId(0, 0), true).success.value
+            .set(DirectorNINOId(0, 0), ReferenceValue("1234567890")).success.value
+            .set(DirectorHasUTRId(0, 0), true).success.value
+            .set(DirectorEnterUTRId(0, 0), ReferenceValue("123456789")).success.value
 
-          val ua2 =
-            UserAnswers()
-              .set(DirectorDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
-              .set(DirectorHasNINOId(0, 0), false).success.value
-              .set(DirectorNoNINOReasonId(0, 0), "Reason").success.value
-              .set(DirectorHasUTRId(0, 0), false).success.value
-              .set(DirectorNoUTRReasonId(0, 0), "Reason").success.value
+        val ua2 =
+          UserAnswers()
+            .set(DirectorDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
+            .set(DirectorHasNINOId(0, 0), false).success.value
+            .set(DirectorNoNINOReasonId(0, 0), "Reason").success.value
+            .set(DirectorHasUTRId(0, 0), false).success.value
+            .set(DirectorNoUTRReasonId(0, 0), "Reason").success.value
 
-          ua1.isDirectorDetailsComplete(0, 0) mustBe Some(true)
-          ua2.isDirectorDetailsComplete(0, 0) mustBe Some(true)
-        }
+        ua1.isDirectorDetailsComplete(0, 0) mustBe Some(true)
+        ua2.isDirectorDetailsComplete(0, 0) mustBe Some(true)
+      }
 
-        "return false when some answer is missing" in {
-          val ua =
-            UserAnswers()
-              .set(DirectorDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
-              .set(DirectorHasNINOId(0, 0), false).success.value
-              .set(DirectorHasUTRId(0, 0), false).success.value
+      "return false when some answer is missing" in {
+        val ua =
+          UserAnswers()
+            .set(DirectorDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
+            .set(DirectorHasNINOId(0, 0), false).success.value
+            .set(DirectorHasUTRId(0, 0), false).success.value
 
-          ua.isDirectorDetailsComplete(0,0) mustBe Some(false)
-        }
+        ua.isDirectorDetailsComplete(0, 0) mustBe Some(false)
       }
     }
+  }
 
   "Director Address completion status should be returned correctly" when {
 
@@ -491,7 +492,7 @@ class DataCompletionEstablishersSpec
                 .setOrException(partnerAddress.AddressId(0, 0), Data.address)
                 .setOrException(partnerAddress.AddressYearsId(0, 0), false)
 
-            ua.isPartnerComplete(0,0) mustBe false
+            ua.isPartnerComplete(0, 0) mustBe false
           }
         }
       }
@@ -527,7 +528,7 @@ class DataCompletionEstablishersSpec
               .set(PartnerHasNINOId(0, 0), false).success.value
               .set(PartnerHasUTRId(0, 0), false).success.value
 
-          ua.isPartnerDetailsComplete(0,0) mustBe Some(false)
+          ua.isPartnerDetailsComplete(0, 0) mustBe Some(false)
         }
       }
     }
@@ -562,4 +563,30 @@ class DataCompletionEstablishersSpec
       }
     }
   }
+
+  "Establisher Partnership completion status should be returned correctly" when {
+    "isEstablisherPartnershipContactDetailsCompleted" must {
+      "return true when all answers are present" in {
+        val ua =
+          UserAnswers()
+            .set(partnershipContact.EnterEmailId(0), "test@test.com").success.value
+            .set(partnershipContact.EnterPhoneId(0), "123").success.value
+
+        ua.isEstablisherPartnershipContactDetailsCompleted(0).value mustBe true
+      }
+
+      "return false when some answer is missing" in {
+        val ua =
+          UserAnswers()
+            .set(partnershipContact.EnterEmailId(0), "test@test.com").success.value
+
+        ua.isEstablisherPartnershipContactDetailsCompleted(0).value mustBe false
+      }
+
+      "return None when no answer is present" in {
+        UserAnswers().isEstablisherPartnershipContactDetailsCompleted(0) mustBe None
+      }
+    }
+  }
+
 }
