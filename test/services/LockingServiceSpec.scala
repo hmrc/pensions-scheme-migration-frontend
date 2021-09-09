@@ -19,10 +19,8 @@ package services
 import base.SpecBase
 import connectors.cache.{CurrentPstrCacheConnector, LockCacheConnector}
 import models.requests.AuthenticatedRequest
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.mockito.MockitoSugar
+import org.mockito.{ArgumentMatchers, MockitoSugar}
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.mvc.Results.Ok
@@ -40,11 +38,10 @@ class LockingServiceSpec extends SpecBase with MockitoSugar {
   private implicit lazy val hc: HeaderCarrier = HeaderCarrier()
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-  val service=new LockingService(mockLockCacheConnector,mockSchemeCacheConnector)
+  val service = new LockingService(mockLockCacheConnector,mockSchemeCacheConnector)
 
   "initialLockSetupAndRedirect" must {
-
-     " Redirect to Locked Page if scheme is locked by diffrent user" in {
+     " Redirect to Locked Page if scheme is locked by different user" in {
 
        val request : AuthenticatedRequest[AnyContent] = AuthenticatedRequest(fakeRequest, "", PsaId(psaId))
        when(mockSchemeCacheConnector.save(any())(any(),any())).thenReturn(Future.successful(Json.obj()))

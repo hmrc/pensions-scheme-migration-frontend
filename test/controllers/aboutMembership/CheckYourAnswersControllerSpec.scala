@@ -45,7 +45,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
   private val templateToBeRendered = "check-your-answers.njk"
 
-  private def httpPathGET: String = controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad.url
+  private def httpPathGET: String = controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad().url
 
   private val rows = Seq(
     Row(

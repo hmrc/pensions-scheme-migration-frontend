@@ -19,8 +19,8 @@ package controllers.trustees.partnership.contact
 import controllers.ControllerSpecBase
 import controllers.actions._
 import helpers.cya.trustees.partnership.TrusteeContactDetailsCYAHelper
-import identifiers.trustees.partnership.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.partnership.PartnershipDetailsId
+import identifiers.trustees.partnership.contact.{EnterEmailId, EnterPhoneId}
 import matchers.JsonMatchers
 import models.requests.DataRequest
 import org.mockito.ArgumentCaptor

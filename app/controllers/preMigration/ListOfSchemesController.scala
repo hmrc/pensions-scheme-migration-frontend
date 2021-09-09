@@ -75,7 +75,6 @@ class ListOfSchemesController @Inject()(
       case md =>
 
         val json: JsObject = Json.obj(
-         
             "form" -> form,
             "psaName" -> md.name,
             "numberOfSchemes" -> numberOfSchemes,

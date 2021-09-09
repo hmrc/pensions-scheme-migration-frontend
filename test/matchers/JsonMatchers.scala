@@ -33,7 +33,7 @@ trait JsonMatchers {
     }
   }
 
-  def containJson(expectedJson: JsObject) = new JsonContains(expectedJson)
+  def containJson(expectedJson: JsObject): JsonContains = new JsonContains(expectedJson)
 }
 
 object JsonMatchers extends JsonMatchers

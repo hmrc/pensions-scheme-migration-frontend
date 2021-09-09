@@ -17,10 +17,9 @@
 package connectors.cache
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import models.MigrationLock
 import org.scalatest.matchers.must.Matchers._
-import org.scalatest.{OptionValues, RecoverMethods}
 import org.scalatest.wordspec.AsyncWordSpec
+import org.scalatest.{OptionValues, RecoverMethods}
 import play.api.http.Status
 import play.api.libs.json.Json
 import play.api.mvc.Results._
@@ -35,8 +34,6 @@ class CurrentPstrCacheConnectorSpec extends AsyncWordSpec with WireMockHelper wi
 
   private lazy val connector: CurrentPstrCacheConnector = injector.instanceOf[CurrentPstrCacheConnector]
   private val dataCacheUrl = "/pensions-scheme-migration/scheme-data"
-  private val pstr = "pstr"
-  private val lock: MigrationLock = MigrationLock(pstr, "credId", "psaId")
 
   ".fetch" must {
 

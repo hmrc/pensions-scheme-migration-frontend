@@ -21,7 +21,7 @@ import controllers.actions._
 import helpers.routes.EstablishersIndividualRoutes
 import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
-import models.{PersonName, NormalMode}
+import models.{NormalMode, PersonName}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues

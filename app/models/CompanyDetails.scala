@@ -30,7 +30,7 @@ object CompanyDetails {
   implicit val writes: Writes[CompanyDetails] = Json.writes[CompanyDetails]
 
   def applyDelete(companyName: String): CompanyDetails = {
-    CompanyDetails(companyName, false)
+    CompanyDetails(companyName)
   }
 
   def unapplyDelete(companyDetails: CompanyDetails): Option[String] = {

@@ -41,7 +41,7 @@ class WhatYouWillNeedCompanyContactControllerSpec
     with JsonMatchers
     with TryValues {
 
-  private val company: CompanyDetails = CompanyDetails("test",false)
+  private val company: CompanyDetails = CompanyDetails("test")
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(0), company).success.value
   private val templateToBeRendered: String = "whatYouWillNeedContact.njk"
   private def json: JsObject =

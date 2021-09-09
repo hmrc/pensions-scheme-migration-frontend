@@ -28,8 +28,8 @@ import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressId
 import identifiers.establishers.partnership.address.{AddressId => PartnershipAddressId}
-import identifiers.establishers.partnership.details.{PartnershipUTRId, HaveUTRId}
 import identifiers.establishers.partnership.contact.EnterEmailId
+import identifiers.establishers.partnership.details.{HaveUTRId, PartnershipUTRId}
 import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.{PartnershipDetailsId => EstablisherPartnershipDetailsId}
 import identifiers.trustees.company.{details => trusteeCompanyDetails}
@@ -39,9 +39,9 @@ import identifiers.trustees.individual.details.{TrusteeDOBId, TrusteeNINOId, Tru
 import identifiers.trustees.partnership.address.{AddressYearsId => TrusteePartnershipAddressYearsId, AddressId => TrusteePartnershipAddressId}
 import identifiers.trustees.partnership.contact.{EnterEmailId => TrusteePartnershipEmailId, EnterPhoneId => TrusteePartnershipPhoneId}
 import identifiers.trustees.{TrusteeKindId, company => trusteeCompany}
+import models._
 import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind
-import models._
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
 import utils.Data.{schemeName, ua}
@@ -174,7 +174,7 @@ class SpokeCreationServiceSpec
       val userAnswers =
         ua
           .set(EstablisherKindId(0), EstablisherKind.Company).success.value
-          .set(CompanyDetailsId(0), CompanyDetails("test",false)).success.value
+          .set(CompanyDetailsId(0), CompanyDetails("test")).success.value
 
       val expectedSpoke =
         Seq(EntitySpoke(
@@ -224,7 +224,7 @@ class SpokeCreationServiceSpec
     val userAnswers =
       ua
         .set(EstablisherKindId(0), EstablisherKind.Company).success.value
-        .set(CompanyDetailsId(0), CompanyDetails("test",false)).success.value
+        .set(CompanyDetailsId(0), CompanyDetails("test")).success.value
         .setOrException(HaveCompanyNumberId(0), true)
         .setOrException(CompanyNumberId(0), ReferenceValue("12345678"))
         .setOrException(AddressId(0), Data.address)
@@ -279,7 +279,7 @@ class SpokeCreationServiceSpec
     val userAnswers =
       ua
         .set(EstablisherKindId(0), EstablisherKind.Company).success.value
-        .set(CompanyDetailsId(0), CompanyDetails("test",false)).success.value
+        .set(CompanyDetailsId(0), CompanyDetails("test")).success.value
         .set(DirectorNameId(0,0), PersonName("Jane", "Doe")).success.value
         .setOrException(HaveCompanyNumberId(0), true)
         .setOrException(CompanyNumberId(0), ReferenceValue("12345678"))
@@ -540,7 +540,7 @@ class SpokeCreationServiceSpec
       val userAnswers =
         ua
           .set(TrusteeKindId(0), TrusteeKind.Company).success.value
-          .set(trusteeCompany.CompanyDetailsId(0), CompanyDetails("test",false)).success.value
+          .set(trusteeCompany.CompanyDetailsId(0), CompanyDetails("test")).success.value
 
       val expectedSpoke =
         Seq(EntitySpoke(
@@ -582,7 +582,7 @@ class SpokeCreationServiceSpec
     val userAnswers =
       ua
         .set(TrusteeKindId(0), TrusteeKind.Company).success.value
-        .set(trusteeCompany.CompanyDetailsId(0), CompanyDetails("test",false)).success.value
+        .set(trusteeCompany.CompanyDetailsId(0), CompanyDetails("test")).success.value
         .setOrException(trusteeCompanyDetails.HaveCompanyNumberId(0), true)
         .setOrException(trusteeCompanyDetails.CompanyNumberId(0), ReferenceValue("12345678"))
 
@@ -628,7 +628,7 @@ class SpokeCreationServiceSpec
     val userAnswers =
       ua
         .set(EstablisherKindId(0), EstablisherKind.Company).success.value
-        .set(CompanyDetailsId(0), CompanyDetails("test",false)).success.value
+        .set(CompanyDetailsId(0), CompanyDetails("test")).success.value
         .set(trusteeCompanyDetails.HaveCompanyNumberId(0), true).success.value
         .set(trusteeCompanyDetails.CompanyNumberId(0), ReferenceValue("AB123456C")).success.value
         .set(trusteeCompanyDetails.HaveUTRId(0), true).success.value

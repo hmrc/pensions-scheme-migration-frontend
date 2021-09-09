@@ -44,10 +44,10 @@ import scala.concurrent.Future
 class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
   private val establisherName: String = "Jane Doe"
   private val userAnswers: Option[UserAnswers] = ua.set(EstablisherKindId(0), EstablisherKind.Individual).flatMap(
-    _.set(EstablisherNameId(0), PersonName("a", "b", true)).flatMap(
+    _.set(EstablisherNameId(0), PersonName("a", "b", isDeleted = true)).flatMap(
       _.set(IsEstablisherNewId(0), true).flatMap(
         _.set(EstablisherKindId(1), EstablisherKind.Individual).flatMap(
-          _.set(EstablisherNameId(1), PersonName("c", "d", true)).flatMap(
+          _.set(EstablisherNameId(1), PersonName("c", "d", isDeleted = true)).flatMap(
             _.set(IsEstablisherNewId(1), true)
           ))))).toOption
   private val templateToBeRendered = "establishers/addEstablisher.njk"

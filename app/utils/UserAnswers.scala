@@ -24,8 +24,8 @@ import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.partner.{IsNewPartnerId, PartnerNameId}
 import identifiers.establishers.{EstablisherKindId, EstablishersId, IsEstablisherNewId}
 import identifiers.trustees.company.{CompanyDetailsId => TrusteeCompanyDetailsId}
-import identifiers.trustees.partnership.{PartnershipDetailsId => TrusteePartnershipDetailsId}
 import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.partnership.{PartnershipDetailsId => TrusteePartnershipDetailsId}
 import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId, TrusteesId}
 import models._
 import models.establishers.EstablisherKind
