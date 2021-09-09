@@ -296,8 +296,8 @@ class DataCompletionEstablishersSpec
 
   "Director Details completion status should be returned correctly" when {
     "isDirectorDetailsComplete" must {
-      "return true when all answers are present" in {
-        val ua1 =
+      "return true when all answers are present and director has nino and utr" in {
+        val ua =
           UserAnswers()
             .set(DirectorDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
             .set(DirectorHasNINOId(0, 0), true).success.value
@@ -305,7 +305,12 @@ class DataCompletionEstablishersSpec
             .set(DirectorHasUTRId(0, 0), true).success.value
             .set(DirectorEnterUTRId(0, 0), ReferenceValue("123456789")).success.value
 
-        val ua2 =
+        ua.isDirectorDetailsComplete(0, 0) mustBe Some(true)
+      }
+
+      "return true when all answers are present and director has no nino or utr" in {
+
+        val ua =
           UserAnswers()
             .set(DirectorDOBId(0, 0), LocalDate.parse("2001-01-01")).success.value
             .set(DirectorHasNINOId(0, 0), false).success.value
@@ -313,8 +318,7 @@ class DataCompletionEstablishersSpec
             .set(DirectorHasUTRId(0, 0), false).success.value
             .set(DirectorNoUTRReasonId(0, 0), "Reason").success.value
 
-        ua1.isDirectorDetailsComplete(0, 0) mustBe Some(true)
-        ua2.isDirectorDetailsComplete(0, 0) mustBe Some(true)
+        ua.isDirectorDetailsComplete(0, 0) mustBe Some(true)
       }
 
       "return false when some answer is missing" in {
