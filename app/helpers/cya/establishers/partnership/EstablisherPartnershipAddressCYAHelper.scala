@@ -75,7 +75,7 @@ class EstablisherPartnershipAddressCYAHelper
         Seq(
           answerOrAddRow(
             PreviousAddressId(index),
-            Message("messages__establisherPreviousAddress").resolve,
+            Message("messages__establisherPreviousAddress", establisherName).resolve,
             Some(controllers.establishers.partnership.address.routes.EnterPreviousPostcodeController.onPageLoad(index).url),
             Some(msg"messages__visuallyHidden__previousAddress".withArgs(establisherName)), answerAddressTransform
           )

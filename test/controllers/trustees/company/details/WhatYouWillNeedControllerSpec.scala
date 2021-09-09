@@ -40,7 +40,7 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase with NunjucksSupp
   private val index: Index = Index(0)
   private val companyName: CompanyDetails = CompanyDetails("ABC Ltd")
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(0), companyName).success.value
-  private val templateToBeRendered: String = "whatYouWillNeedCompanyDetails.njk"
+  private val templateToBeRendered: String = "whatYouWillNeedDetails.njk"
   private def json: JsObject =
     Json.obj(
       "name"        -> companyName.companyName,

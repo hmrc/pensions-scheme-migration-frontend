@@ -35,12 +35,12 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class WhatYouWillNeedController @Inject()(
-                                                             authenticate: AuthAction,
-                                                             getData: DataRetrievalAction,
-                                                             requireData: DataRequiredAction,
-                                                             val renderer: Renderer,
-                                                             val controllerComponents: MessagesControllerComponents
-                                                           )(implicit val ec: ExecutionContext)
+                                           authenticate: AuthAction,
+                                           getData: DataRetrievalAction,
+                                           requireData: DataRequiredAction,
+                                           val renderer: Renderer,
+                                           val controllerComponents: MessagesControllerComponents
+                                         )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
     with Retrievals
@@ -52,10 +52,11 @@ class WhatYouWillNeedController @Inject()(
         PartnershipDetailsId(index).retrieve.right.map {
           details =>
             renderer.render(
-              template = "establishers/partnership/contact/whatYouWillNeedPartnershipContact.njk",
+              template = "whatYouWillNeedContact.njk",
               ctx = Json.obj(
-                "titleValue" -> (Message("messages__establisherPartnershipContactDetails__whatYouWillNeed_title")).resolve,
                 "name" -> details.partnershipName,
+                "pageHeading" -> Message("messages__title_partnership"),
+                "entityType" -> Message("messages__partnership"),
                 "continueUrl" -> EnterEmailController.onPageLoad(index, NormalMode).url,
                 "schemeName" -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )

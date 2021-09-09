@@ -24,6 +24,7 @@ import models.{Index, NormalMode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
+import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
@@ -43,6 +44,7 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase with NunjucksSupp
   private def json: JsObject =
     Json.obj(
       "name"        -> partnershipDetails.partnershipName,
+      "pageTitle" -> Messages("messages__parrtnershipDetails__whatYouWillNeed_title"),
       "continueUrl" -> routes.HaveUTRController.onPageLoad(index, NormalMode).url,
       "schemeName"  -> "Test scheme name"
     )

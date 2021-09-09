@@ -52,7 +52,7 @@ class WhatYouWillNeedController @Inject()(
         CompanyDetailsId(index).retrieve.right.map {
           details =>
             renderer.render(
-              template = "whatYouWillNeedCompanyDetails.njk",
+              template = "whatYouWillNeedDetails.njk",
               ctx = Json.obj(
                 "name"        -> details.companyName,
                 "pageTitle" -> Messages("messages__trusteeDetails__whatYouWillNeed_title"),

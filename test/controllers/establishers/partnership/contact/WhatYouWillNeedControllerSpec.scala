@@ -31,6 +31,7 @@ import play.twirl.api.Html
 import renderer.Renderer
 import utils.Data.{schemeName, ua}
 import utils.UserAnswers
+import viewmodels.Message
 
 import scala.concurrent.Future
 
@@ -41,49 +42,51 @@ class WhatYouWillNeedControllerSpec
 
   private val partnership: PartnershipDetails = PartnershipDetails("test")
   private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(0), partnership).success.value
-  private val templateToBeRendered: String = "establishers/partnership/contact/whatYouWillNeedPartnershipContact.njk"
+  private val templateToBeRendered: String = "whatYouWillNeedContact.njk"
 
   private def json: JsObject =
     Json.obj(
-      "name"        -> partnership.partnershipName,
-      "continueUrl" -> controllers.establishers.partnership.contact.routes.EnterEmailController.onPageLoad(0, NormalMode).url,
-      "schemeName"  -> schemeName
+      "name" -> partnership.partnershipName,
+      "pageHeading" -> Message("messages__title_partnership"),
+      "entityType" -> Message("messages__partnership"),
+      "continueUrl" -> routes.EnterEmailController.onPageLoad(0, NormalMode).url,
+      "schemeName" -> schemeName
     )
 
   private def createController(
-                          dataRetrievalAction: DataRetrievalAction
-                        ): WhatYouWillNeedController = {
+                                dataRetrievalAction: DataRetrievalAction
+                              ): WhatYouWillNeedController = {
     new WhatYouWillNeedController(
-      authenticate         = new FakeAuthAction(),
-      getData              = dataRetrievalAction,
-      requireData          = new DataRequiredActionImpl,
+      authenticate = new FakeAuthAction(),
+      getData = dataRetrievalAction,
+      requireData = new DataRequiredActionImpl,
       controllerComponents = controllerComponents,
-      renderer             = new Renderer(mockAppConfig, mockRenderer)
+      renderer = new Renderer(mockAppConfig, mockRenderer)
     )
   }
 
-    "WhatYouWillNeedPartnershipContactController" must {
+  "WhatYouWillNeedPartnershipContactController" must {
 
-      "return OK and the correct view for a GET" in {
-        when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+    "return OK and the correct view for a GET" in {
+      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-        val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-        val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
-        val getData = new FakeDataRetrievalAction(Some(userAnswers))
+      val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
-        val result: Future[Result] = createController(getData).onPageLoad(0)(fakeDataRequest(userAnswers))
+      val result: Future[Result] = createController(getData).onPageLoad(0)(fakeDataRequest(userAnswers))
 
-        status(result) mustBe OK
+      status(result) mustBe OK
 
-        verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-        templateCaptor.getValue mustEqual templateToBeRendered
+      templateCaptor.getValue mustEqual templateToBeRendered
 
-        jsonCaptor.getValue must containJson(json)
-
-      }
+      jsonCaptor.getValue must containJson(json)
 
     }
 
   }
+
+}

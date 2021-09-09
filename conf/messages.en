@@ -184,6 +184,7 @@ messages__director = the director
 messages__company = the company
 messages__title_company = The company
 messages__partnership = the partnership
+messages__title_partnership = The partnership
 messages__partner = the partner
 messages__trustee = the trustee
 messages__dob__title = What is {0}’s date of birth?
@@ -456,8 +457,6 @@ messages__address__whatYouWillNeed_p = You will need to tell us {0}’s:
 messages__address__whatYouWillNeed_li_1 = current address
 messages__address__whatYouWillNeed_li_2 = previous address if {0} has used this address for less than 1 year
 
-messages__partnershipAddress__whatYouWillNeed_title = The partnership’s address
-
 messages__establisherIndividualContactDetails__whatYouWillNeed_title = The establisher’s contact details
 messages__establisherIndividualContactDetails__whatYouWillNeed_h1 = Contact details for {0}
 messages__individualContactDetails__whatYouWillNeed_p = You will need to tell us {0}’s:
@@ -469,11 +468,6 @@ messages__contactDetails__whatYouWillNeed_p = You will need to tell us {0}’s:
 messages__contactDetails__whatYouWillNeed_li_1 = contact email address
 messages__contactDetails__whatYouWillNeed_li_2 = contact phone number
 
-messages__establisherPartnershipContactDetails__whatYouWillNeed_title = The partnership’s contact details
-messages__establisherPartnershipContactDetails__whatYouWillNeed_h1 = {0}’s contact details
-messages__partnershipDetails__whatYouWillNeed_p = You will need to tell us the partnership’s:
-messages__partnershipDetails__whatYouWillNeed_li_1 = contact email address
-messages__partnershipDetails__whatYouWillNeed_li_2 = contact phone number
 
 messages__trusteeCompanyContactDetails__whatYouWillNeed_title = The company’s contact details
 messages__trusteeCompanyContactDetails__whatYouWillNeed_h1 = Contact details for {0}
@@ -482,7 +476,7 @@ messages__companyDetails__whatYouWillNeed_li_1 = contact email address
 messages__companyDetails__whatYouWillNeed_li_2 = contact phone number
 
 
-messages__establisherPreviousAddress = Previous address
+messages__establisherPreviousAddress = {0}’s previous address
 previousAddress.title = Enter {0}’s previous address
 messages__visuallyHidden__previousAddress = the previous address for {0}
 
@@ -874,7 +868,7 @@ messages__havePAYE__hint = This is a 3 digit tax office number, a forward slash,
 messages__genericHavePaye__error__required = Select yes if {0} has an employer PAYE reference
 
 messages__vat = What is {0}’s VAT registration number?
-messages__vat__p = This is 9 numbers, sometimes with ‘GB’ at the start, for example 123456789 or GB123456789. You can find it on {0}’s VAT registration certificate..
+messages__vat__p = This is 9 numbers, sometimes with ‘GB’ at the start, for example 123456789 or GB123456789. You can find it on {0}’s VAT registration certificate.
 messages__vat__error_invalid = Enter {0}’s VAT registration number in the correct format
 messages__vat__error_required = Enter a VAT registration number
 
@@ -927,11 +921,6 @@ messages__addCompanyDirectors_at_maximum = You have added the maximum number of 
 messages__addCompanyDirectorsPartnersOrTrustees_tell_us_if_you_have_more = You can tell us on the next page if you have more to add.
 messages__addCompanyDirectors_add_director = Add a director
 messages__alreadyDeleted__director_title = You have already deleted this director
-
-messages__partnershipName__title = What is the partnership’s name?
-messages__error__partnership_name = Enter the partnership’s name
-messages__error__partnership_name_length = The partnership name cannot be more than 160 characters
-messages__error__partnership_name_invalid = The partnership name contains invalid characters
 
 messages__partners__title = Partners
 messages__partners__whatYouWillNeedPartners__p1 = For every partner associated with the partnership you’re registering, you will need to tell us the partner’s:
@@ -1047,4 +1036,3 @@ messages__otherTrustees__error__required = Select yes if you need to tell us abo
 
 messages__addTrustees_at_maximum = You have added the maximum number of trustees.
 
-messages__trusteePartnershipContactDetails__whatYouWillNeed_title = The partnership’s contact details

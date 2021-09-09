@@ -34,6 +34,7 @@ import uk.gov.hmrc.viewmodels.Text.{Literal, Message => GovUKMsg}
 import uk.gov.hmrc.viewmodels.{Html, SummaryList, Text}
 import utils.Data.{credId, psaId, pstr, schemeName}
 import utils.{Enumerable, UserAnswers}
+import viewmodels.Message
 
 class EstablisherCompanyAddressCYAHelperSpec extends AnyWordSpec with Matchers with TryValues with Enumerable.Implicits {
 
@@ -104,7 +105,7 @@ class EstablisherCompanyAddressCYAHelperSpec extends AnyWordSpec with Matchers w
             Messages("messages__visuallyhidden__TradingTime", establisherCompanyName.companyName))),
           attributes = Map("id" -> "cya-0-2-change"))))
 
-      result(3) mustBe summaryListRowHtml(key = messages("messages__establisherPreviousAddress"),
+      result(3) mustBe summaryListRowHtml(key = Message("messages__establisherPreviousAddress", establisherCompanyName.companyName).resolve,
         value = answerAddressTransform(establisherPreviousAddress), Some(Link(text = Messages("site.change"),
           target = controllers.establishers.company.address.routes.EnterPreviousPostcodeController.onPageLoad(0).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__previousAddress",
