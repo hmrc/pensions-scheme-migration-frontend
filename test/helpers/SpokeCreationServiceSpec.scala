@@ -338,7 +338,7 @@ class SpokeCreationServiceSpec
       val userAnswers =
         ua
           .set(EstablisherKindId(0), EstablisherKind.Partnership).success.value
-          .set(EstablisherPartnershipDetailsId(0), PartnershipDetails("test", false)).success.value
+          .set(EstablisherPartnershipDetailsId(0), PartnershipDetails("test")).success.value
 
       val expectedSpoke =
         Seq(
@@ -389,7 +389,7 @@ class SpokeCreationServiceSpec
       val userAnswers =
         ua
           .set(EstablisherKindId(0), EstablisherKind.Partnership).success.value
-          .set(EstablisherPartnershipDetailsId(0), PartnershipDetails("test", false)).success.value
+          .set(EstablisherPartnershipDetailsId(0), PartnershipDetails("test")).success.value
           .setOrException(HaveUTRId(0), true)
           .setOrException(PartnershipUTRId(0), ReferenceValue("12345678"))
           .setOrException(PartnershipAddressId(0), Data.address)
