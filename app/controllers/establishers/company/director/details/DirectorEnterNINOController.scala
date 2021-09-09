@@ -66,7 +66,7 @@ class DirectorEnterNINOController @Inject()(
           schemeName =>
             get(
               pageTitle     = Message("messages__enterNINO_title", Message("messages__director")),
-              pageHeading     = Message("messages__enterNINO", name(establisherIndex, directorIndex)),
+              pageHeading     = Message("messages__enterNINO_title", name(establisherIndex, directorIndex)),
               isPageHeading = true,
               id            = DirectorNINOId(establisherIndex, directorIndex),
               form          = form(establisherIndex, directorIndex),
@@ -84,7 +84,7 @@ class DirectorEnterNINOController @Inject()(
           schemeName =>
             post(
               pageTitle     = Message("messages__enterNINO_title", Message("messages__director")),
-              pageHeading     = Message("messages__enterNINO", name(establisherIndex, directorIndex)),
+              pageHeading     = Message("messages__enterNINO_title", name(establisherIndex, directorIndex)),
               isPageHeading = true,
               id            = DirectorNINOId(establisherIndex, directorIndex),
               form          = form(establisherIndex, directorIndex),

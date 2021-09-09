@@ -20,9 +20,10 @@ import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.beforeYouStart.SchemeNameId
+import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.address.AddressId
 import matchers.JsonMatchers
-import models.NormalMode
+import models.{NormalMode, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -46,7 +47,8 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
     bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
   )
 
-  private val userAnswers: Option[UserAnswers] = Some(ua)
+  private val personName: PersonName = PersonName("Jane", "Doe")
+  private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(DirectorNameId(0,0), personName))
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
   private val httpPathGET: String = controllers.establishers.company.director.address.routes.ConfirmAddressController.onPageLoad(0, 0, NormalMode).url
@@ -74,7 +76,10 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
   "ConfirmAddress Controller" must {
 
     "Return OK and the correct view for a GET" in {
-      val ua: UserAnswers = UserAnswers().setOrException(SchemeNameId, Data.schemeName)
+      val ua: UserAnswers = UserAnswers()
+        .setOrException(SchemeNameId, Data.schemeName)
+        .setOrException(DirectorNameId(0, 0), personName)
+
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
       val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value

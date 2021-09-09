@@ -55,15 +55,15 @@ class DirectorEnterNINOControllerSpec
   private val onwardRoute: Call =
     controllers.routes.IndexController.onPageLoad()
   private val userAnswers: UserAnswers =
-    ua.set(DirectorNameId(0,0), personName).success.value
+    ua.set(DirectorNameId(0, 0), personName).success.value
   private val templateToBeRendered: String =
     "enterReferenceValueWithHint.njk"
   private val commonJson: JsObject =
     Json.obj(
-      "pageTitle"     -> "What is the director’s National Insurance number?",
-      "pageHeading"     -> "What is the National Insurance number for Jane Doe?",
-      "schemeName"    -> "Test scheme name",
-      "legendClass"   -> "govuk-label--xl",
+      "pageTitle" -> "What is the director’s National Insurance number?",
+      "pageHeading" -> "What is Jane Doe’s National Insurance number?",
+      "schemeName" -> "Test scheme name",
+      "legendClass" -> "govuk-label--xl",
       "isPageHeading" -> true
     )
   private val formData: ReferenceValue =
@@ -80,15 +80,15 @@ class DirectorEnterNINOControllerSpec
                           dataRetrievalAction: DataRetrievalAction
                         ): DirectorEnterNINOController =
     new DirectorEnterNINOController(
-      messagesApi               = messagesApi,
-      navigator                 = new FakeNavigator(desiredRoute = onwardRoute),
-      authenticate              = new FakeAuthAction(),
-      getData                   = dataRetrievalAction,
-      requireData               = new DataRequiredActionImpl,
-      formProvider              = formProvider,
-      controllerComponents      = controllerComponents,
+      messagesApi = messagesApi,
+      navigator = new FakeNavigator(desiredRoute = onwardRoute),
+      authenticate = new FakeAuthAction(),
+      getData = dataRetrievalAction,
+      requireData = new DataRequiredActionImpl,
+      formProvider = formProvider,
+      controllerComponents = controllerComponents,
       userAnswersCacheConnector = mockUserAnswersCacheConnector,
-      renderer                  = new Renderer(mockAppConfig, mockRenderer)
+      renderer = new Renderer(mockAppConfig, mockRenderer)
     )
 
   "DirectorEnterNINOController" must {
@@ -104,7 +104,7 @@ class DirectorEnterNINOControllerSpec
 
       val result: Future[Result] =
         controller(getData)
-          .onPageLoad(0,0, NormalMode)(fakeDataRequest(userAnswers))
+          .onPageLoad(0, 0, NormalMode)(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
 
@@ -125,7 +125,7 @@ class DirectorEnterNINOControllerSpec
 
       val ua =
         userAnswers
-          .set(DirectorNINOId(0,0), formData).success.value
+          .set(DirectorNINOId(0, 0), formData).success.value
 
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
 
@@ -135,7 +135,7 @@ class DirectorEnterNINOControllerSpec
 
       val result: Future[Result] =
         controller(getData)
-          .onPageLoad(0,0, NormalMode)(fakeDataRequest(userAnswers))
+          .onPageLoad(0, 0, NormalMode)(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
 
@@ -162,7 +162,7 @@ class DirectorEnterNINOControllerSpec
 
       val result: Future[Result] =
         controller(getData)
-          .onSubmit(0,0, NormalMode)(request)
+          .onSubmit(0, 0, NormalMode)(request)
 
       status(result) mustBe SEE_OTHER
 
@@ -188,7 +188,7 @@ class DirectorEnterNINOControllerSpec
 
       val result: Future[Result] =
         controller(getData)
-          .onSubmit(0,0, NormalMode)(request)
+          .onSubmit(0, 0, NormalMode)(request)
 
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
