@@ -16,7 +16,6 @@
 
 package navigators
 
-import config.AppConfig
 import controllers.establishers.partnership.address.routes._
 import controllers.establishers.routes.AddEstablisherController
 import controllers.routes.IndexController
@@ -34,7 +33,7 @@ import utils.{Enumerable, UserAnswers}
 
 import javax.inject.Inject
 
-class EstablishersPartnershipNavigator@Inject()(config: AppConfig)
+class EstablishersPartnershipNavigator@Inject()()
   extends Navigator
     with Enumerable.Implicits {
 
