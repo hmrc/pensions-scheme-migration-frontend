@@ -17,10 +17,10 @@
 package helpers
 
 import base.SpecBase
-import identifiers.beforeYouStart.SchemeTypeId
+import identifiers.beforeYouStart.{SchemeTypeId, WorkingKnowledgeId}
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.{IsEstablisherNewId, EstablisherKindId}
+import identifiers.establishers.{EstablisherKindId, IsEstablisherNewId}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.partnership.{PartnershipDetailsId => TrusteePartnershipDetailsId}
 import identifiers.establishers.partnership.{PartnershipDetailsId => EstablisherPartnershipDetailsId}
@@ -32,8 +32,8 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.must.Matchers
-import utils.Data.{schemeName, completeUserAnswers, ua}
-import utils.{UserAnswers, Enumerable}
+import utils.Data.{completeUserAnswers, schemeName, ua}
+import utils.{Enumerable, UserAnswers}
 import viewmodels.{Message, TaskListEntitySection}
 
 class TaskListHelperSpec extends SpecBase with Matchers with MockitoSugar with Enumerable.Implicits with BeforeAndAfterEach {
@@ -43,8 +43,10 @@ class TaskListHelperSpec extends SpecBase with Matchers with MockitoSugar with E
   private val beforeYouStartLinkText = messages("messages__schemeTaskList__before_you_start_link_text", schemeName)
   private val membershipDetailsLinkText = messages("messages__schemeTaskList__about_members_link_text", schemeName)
   private val declarationLinkText = messages("messages__schemeTaskList__declaration_link")
+  private val workingKnowledgeAddLinkText = messages("messages__schemeTaskList__add_details_wk")
   private val beforeYouStartHeader = Some(Message("messages__schemeTaskList__before_you_start_header"))
   private val aboutHeader = Some(Message("messages__schemeTaskList__about_scheme_header", schemeName))
+  private val workingKnowledgeHeader = Some(Message("messages__schemeTaskList__working_knowledge_header"))
   private val declarationHeader = Some("messages__schemeTaskList__sectionDeclaration_header")
   private val declarationP1 = List("messages__schemeTaskList__sectionDeclaration_incomplete_v1",
     "messages__schemeTaskList__sectionDeclaration_incomplete_v2")
@@ -55,6 +57,8 @@ class TaskListHelperSpec extends SpecBase with Matchers with MockitoSugar with E
     controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad().url), Some(false))
   private val expectedDeclarationSpoke = EntitySpoke(TaskListLink(declarationLinkText,
     controllers.routes.DeclarationController.onPageLoad().url), Some(false))
+  private val expectedworkingKnowledgeSpoke = EntitySpoke(TaskListLink(workingKnowledgeAddLinkText,
+    controllers.adviser.routes.WhatYouWillNeedController.onPageLoad().url), None)
   implicit val userAnswers: UserAnswers = ua
 
   override def beforeEach: Unit = {
@@ -95,10 +99,15 @@ class TaskListHelperSpec extends SpecBase with Matchers with MockitoSugar with E
 
   "workingKnowledgeSection " must {
     "return correct the correct entity section when do you have working knowledge is false" in {
-      when(mockSpokeCreationService.aboutSpokes(any(), any())(any())).thenReturn(Seq(expectedMembershipDetailsSpoke))
-      val expectedAboutSection = TaskListEntitySection(None, Seq(expectedMembershipDetailsSpoke), aboutHeader)
+      val userAnswers = ua.set(WorkingKnowledgeId, false).get
+      when(mockSpokeCreationService.workingKnowledgeSpoke(any())(any())).thenReturn(Seq(expectedworkingKnowledgeSpoke))
+      val expectedAboutSection = Some(TaskListEntitySection(None, Seq(expectedworkingKnowledgeSpoke), workingKnowledgeHeader))
 
-      helper.aboutSection mustBe expectedAboutSection
+      helper.workingKnowledgeSection(userAnswers,messages) mustBe expectedAboutSection
+    }
+    "return correct the correct entity section when do you have working knowledge is true" in {
+      val userAnswers = ua.set(WorkingKnowledgeId, false).get
+      helper.workingKnowledgeSection(userAnswers,messages) mustBe None
     }
   }
 

@@ -25,10 +25,10 @@ case object WorkingKnowlegedSpoke extends Spoke {
   override def changeLink(name: String)(implicit messages: Messages): TaskListLink =
     TaskListLink(
       messages("messages__schemeTaskList__details_changeLink", name),
-      controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad.url
+      controllers.adviser.routes.CheckYourAnswersController.onPageLoad.url
     )
 
-  override def completeFlag(answers: UserAnswers): Option[Boolean] = Some(answers.isBeforeYouStartCompleted) //TODO
+  override def completeFlag(answers: UserAnswers): Option[Boolean] = answers.isAdviserCompleted
 }
 
 

@@ -59,6 +59,7 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
     h1 = schemeName,
     beforeYouStart = testSection,
     about = testSection,
+    workingKnowledge = Some(testSection),
     addEstablisherHeader = Some(testSection),
     addTrusteeHeader = Some(testSection),
     establishers = Seq(testSection),

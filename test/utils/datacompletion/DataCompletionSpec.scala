@@ -16,16 +16,18 @@
 
 package utils.datacompletion
 
-import identifiers.aboutMembership.{FutureMembersId, CurrentMembersId}
-import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
+import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
+import identifiers.adviser.{AddressId, AdviserNameId, EnterEmailId, EnterPhoneId}
+import identifiers.beforeYouStart.{EstablishedCountryId, SchemeNameId, SchemeTypeId, WorkingKnowledgeId}
 import identifiers.benefitsAndInsurance._
 import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
-import models.{SchemeType, Members}
+import models.{Members, SchemeType}
 import org.scalatest.OptionValues
+import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import utils.Data.{address, ua, insurerName, insurerPolicyNo}
-import utils.{UserAnswers, Enumerable}
+import utils.Data.{address, insurerName, insurerPolicyNo, ua}
+import utils.{Data, Enumerable, UserAnswers}
 
 class DataCompletionSpec extends AnyWordSpec with Matchers with OptionValues with Enumerable.Implicits {
 
@@ -154,6 +156,31 @@ class DataCompletionSpec extends AnyWordSpec with Matchers with OptionValues wit
           .setOrException(HowProvideBenefitsId, BenefitsProvisionType.DefinedBenefitsOnly)
           .setOrException(AreBenefitsSecuredId, false)
           .isBenefitsAndInsuranceCompleted mustBe Some(true)
+      }
+
+    }
+
+    "isAdviserCompleted" must {
+      "return true when all the answers are completed" in {
+        val userAnswers = ua
+          .set(AdviserNameId, "test").success.value
+          .set(EnterEmailId, Data.email).success.value
+          .set(EnterPhoneId, Data.phone).success.value
+          .set(AddressId, Data.address).success.value
+
+        userAnswers.isAdviserCompleted.value mustBe true
+      }
+      "return false when all answers not completed" in {
+        val userAnswers = ua
+          .set(AdviserNameId, "test").success.value
+          .set(EnterEmailId, Data.email).success.value
+          .set(EnterPhoneId, Data.phone).success.value
+
+        userAnswers.isAdviserCompleted.value mustBe false
+      }
+
+      "return None when there is no data" in {
+        ua.isAdviserCompleted mustBe None
       }
 
     }

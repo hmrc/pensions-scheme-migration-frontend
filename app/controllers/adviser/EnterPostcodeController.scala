@@ -54,7 +54,7 @@ class EnterPostcodeController @Inject()(val appConfig: AppConfig,
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      retrieve(AdviserNameId) { schemeName =>
+      retrieve(SchemeNameId) { schemeName =>
         get(getFormToJson(schemeName, mode))
       }
     }

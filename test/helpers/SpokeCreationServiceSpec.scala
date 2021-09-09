@@ -19,6 +19,7 @@ package helpers
 import base.SpecBase
 import helpers.routes.EstablishersIndividualRoutes
 import helpers.routes.EstablishersIndividualRoutes.contactRoute
+import identifiers.adviser.{AdviserNameId, AddressId => adviserAddressId, EnterEmailId => adviserEnterEmailId, EnterPhoneId => adviserEnterPhoneId}
 import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.company.CompanyDetailsId
@@ -90,6 +91,39 @@ class SpokeCreationServiceSpec
       }
 
     }
+  }
+
+  "workingKnowledgeSpoke" must {
+    "display the spoke with link to wyn page with in complete status if the spoke is in progress" in {
+      val expectedSpoke =
+        Seq(EntitySpoke(
+          TaskListLink(Message("messages__schemeTaskList__add_details_wk"),
+            controllers.adviser.routes.WhatYouWillNeedController.onPageLoad.url, None),
+          isCompleted = None
+        ))
+      val result = spokeCreationService.workingKnowledgeSpoke(ua)
+
+      result mustBe expectedSpoke
+    }
+    "display the spoke with link to cya page with complete status if the spoke is in progress" in {
+      val userAnswers =
+        ua
+          .set(AdviserNameId, "test").success.value
+          .set(adviserEnterEmailId, Data.email).success.value
+          .set(adviserEnterPhoneId, Data.phone).success.value
+          .set(adviserAddressId, Data.address).success.value
+
+      val expectedSpoke =
+        Seq(EntitySpoke(
+          TaskListLink(Message("messages__schemeTaskList__details_changeLink","test"),
+            controllers.adviser.routes.CheckYourAnswersController.onPageLoad.url,None),
+          isCompleted = Some(true)
+        ))
+      val result = spokeCreationService.workingKnowledgeSpoke(userAnswers)
+
+      result mustBe expectedSpoke
+    }
+
   }
 
   "getAddEstablisherHeaderSpokes" must {

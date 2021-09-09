@@ -64,7 +64,7 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
     userAnswers.get(WorkingKnowledgeId) match {
       case Some(false) =>
         Some(TaskListEntitySection(None,
-          spokeCreationService.workingKnowledgeSpoke(userAnswers, getSchemeName),
+          spokeCreationService.workingKnowledgeSpoke(userAnswers),
           Some(messages("messages__schemeTaskList__working_knowledge_header"))
         ))
       case _ =>
