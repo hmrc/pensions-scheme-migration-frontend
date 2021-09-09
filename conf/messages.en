@@ -179,6 +179,7 @@ messages__schemeTaskList__trusteeContactDetails_changeLink = Change contact deta
 
 messages__individual = the individual
 messages__establisher = the establisher
+messages__title_establisher = The establisher
 messages__director = the director
 messages__company = the company
 messages__title_company = The company
@@ -339,9 +340,8 @@ addressList.noInsuranceName.title = What is the address of the insurance company
 addressList.select = Select the address from the list below, or
 addressList.visuallyHidden = the address of the insurance company that secures the scheme benefits
 
-previousAddressList.title = What was the previous address for {0}?
+previousAddressList.title = What was {0}’s previous address?
 previousAddressList_cya_label = {0}’s previous address
-previousAddressList_pageHeading = What was {0}’s previous address?
 
 postcode.label = Postcode
 postcode.title = What is {0}’s postcode?
@@ -372,7 +372,7 @@ insurerEnterPostcode.invalid = Enter a real postcode
 
 insurerSelectAddress.required = Select the address of the insurance company that secures the scheme benefits
 
-address.title = Enter an address
+address.title = Enter {0}’s address
 address.line1 = Address line 1
 address.line2 = Address line 2
 address.line3 = Address line 3 (optional)
@@ -450,11 +450,11 @@ establisherEntityTypeIndividual = the individual
 establisherEntityTypeCompany = the company
 establisherEntityTypePartnership = the partnership
 
-messages__establisherAddress__whatYouWillNeed_title = The establisher’s address
-messages__establisherAddress__whatYouWillNeed_h1 = Address for {0}
-messages__establisherAddress__whatYouWillNeed_p = You will need to tell us {0}’s:
-messages__establisherAddress__whatYouWillNeed_li_1 = current address
-messages__establisherAddress__whatYouWillNeed_li_2 = previous address if {0} has used the current address for less than 1 year
+messages__address__whatYouWillNeed_title = {0}’s address
+messages__address__whatYouWillNeed_h1 = {0}’s address
+messages__address__whatYouWillNeed_p = You will need to tell us {0}’s:
+messages__address__whatYouWillNeed_li_1 = current address
+messages__address__whatYouWillNeed_li_2 = previous address if {0} has used this address for less than 1 year
 
 messages__partnershipAddress__whatYouWillNeed_title = The partnership’s address
 
@@ -464,7 +464,6 @@ messages__individualContactDetails__whatYouWillNeed_p = You will need to tell us
 messages__individualContactDetails__whatYouWillNeed_li_1 = contact email address
 messages__individualContactDetails__whatYouWillNeed_li_2 = contact phone number
 
-messages__establisherCompanyContactDetails__whatYouWillNeed_title = The establisher’s contact details
 messages__contactDetails__whatYouWillNeed_h1 = {0}’s contact details
 messages__contactDetails__whatYouWillNeed_p = You will need to tell us {0}’s:
 messages__contactDetails__whatYouWillNeed_li_1 = contact email address
@@ -484,8 +483,7 @@ messages__companyDetails__whatYouWillNeed_li_2 = contact phone number
 
 
 messages__establisherPreviousAddress = Previous address
-previousAddress.title = What was the previous address for {0}?
-previousAddress.title = What was the previous address for {0}?
+previousAddress.title = Enter {0}’s previous address
 messages__visuallyHidden__previousAddress = the previous address for {0}
 
 enterPostcode.required = Enter a postcode

@@ -84,7 +84,7 @@ class EstablisherPartnershipAddressCYAHelperSpec extends AnyWordSpec with Matche
 
       val result = establisherPartnershipAddressCYAHelper.rows(0)(dataRequest(ua), messages)
 
-      result.head mustBe summaryListRowHtml(key = messages("messages__establisherAddress__whatYouWillNeed_h1", establisherPartnershipName.partnershipName),
+      result.head mustBe summaryListRowHtml(key = messages("messages__address__whatYouWillNeed_h1", establisherPartnershipName.partnershipName),
         value = answerAddressTransform(establisherAddress), Some(Link(text = Messages("site.change"),
           target = controllers.establishers.partnership.address.routes.EnterPostcodeController.onPageLoad(0).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__address", establisherPartnershipName.partnershipName))),

@@ -55,8 +55,8 @@ class WhatYouWillNeedCompanyContactController @Inject()(
             renderer.render(
               template = "whatYouWillNeedContact.njk",
               ctx = Json.obj(
-                "titleValue"-> (Message("messages__establisherCompanyContactDetails__whatYouWillNeed_title")).resolve,
                 "name"        -> details.companyName,
+                "pageHeading" -> Message("messages__title_company"),
                 "entityType" -> Message("messages__company"),
                 "continueUrl" -> EnterEmailController.onPageLoad(index, NormalMode).url,
                 "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
