@@ -87,7 +87,7 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with Nunju
 
       status(result) mustEqual OK
 
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       verify(mockRenderer, times(1))
         .render(ArgumentMatchers.eq("address/manualAddress.njk"), jsonCaptor.capture())(any())
@@ -115,7 +115,7 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with Nunju
         .thenReturn(Future.successful(Json.obj()))
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER

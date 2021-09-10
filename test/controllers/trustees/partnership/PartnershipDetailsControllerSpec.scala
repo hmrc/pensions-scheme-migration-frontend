@@ -75,8 +75,8 @@ class PartnershipDetailsControllerSpec extends ControllerSpecBase
       renderer = new Renderer(mockAppConfig, mockRenderer)
     )
 
-  private val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-  private val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+  private val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+  private val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
   "PartnershipDetailsController" must {
     "return OK and the correct view for a GET" in {

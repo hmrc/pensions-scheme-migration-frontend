@@ -126,8 +126,8 @@ class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSuppor
       when(mockSchemeSearchService.search(any(), any(),any())(any(), any())).thenReturn(Future.successful(Nil))
       val numberOfPages = paginationService.divide(emptySchemes.length, pagination)
 
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = controller.onPageLoad(Scheme)(fakeRequest)
 
@@ -170,8 +170,8 @@ class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
       val numberOfPages = paginationService.divide(fullSchemes.length, pagination)
 
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = controller.onPageLoad(Scheme)(fakeRequest)
 
@@ -195,8 +195,8 @@ class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
       when(mockAppConfig.listSchemePagination) thenReturn pagination
 
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = controller.onPageLoad(Scheme)(fakeRequest)
 
@@ -222,8 +222,8 @@ class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
       when(mockAppConfig.listSchemePagination) thenReturn pagination
 
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = controller.onPageLoadWithPageNumber(pageNumber = pageNumber,Scheme)(fakeRequest)
 
@@ -245,8 +245,8 @@ class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSuppor
       val numberOfPages =
         paginationService.divide(fullSchemes.length, pagination)
 
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", searchText))
       val result = controller.onSearch(Scheme)(postRequest)
@@ -265,8 +265,8 @@ class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
       val numberOfPages = paginationService.divide(fullSchemes.length, pagination)
 
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", ""))
       val result = controller.onSearch(Scheme)(postRequest)
@@ -285,8 +285,8 @@ class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSuppor
       val incorrectSearchText = "24000001IN"
       when(mockSchemeSearchService.search(any(), ArgumentMatchers.eq(Some(incorrectSearchText)),any())(any(), any())).thenReturn(Future.successful(Nil))
 
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", incorrectSearchText))
       val result = controller.onSearch(Scheme)(postRequest)

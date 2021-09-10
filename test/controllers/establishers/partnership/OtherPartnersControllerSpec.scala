@@ -100,8 +100,8 @@ class OtherPartnersControllerSpec extends ControllerSpecBase
     "return OK and the correct view for a GET" in{
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
@@ -131,9 +131,9 @@ class OtherPartnersControllerSpec extends ControllerSpecBase
         userAnswers
           .set(OtherPartnersId(0), true).success.value
 
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val getData = new FakeDataRetrievalAction(Some(ua))
 
@@ -162,9 +162,9 @@ class OtherPartnersControllerSpec extends ControllerSpecBase
         userAnswers
           .set(OtherPartnersId(0), false).success.value
 
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val getData = new FakeDataRetrievalAction(Some(ua))
 
@@ -217,9 +217,9 @@ class OtherPartnersControllerSpec extends ControllerSpecBase
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
       val result: Future[Result] =
         controller(getData)
