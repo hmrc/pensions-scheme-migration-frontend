@@ -76,8 +76,8 @@ class TrusteeNameControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
     "return OK and the correct view for a GET" in {
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
@@ -94,9 +94,9 @@ class TrusteeNameControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
@@ -130,7 +130,7 @@ class TrusteeNameControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 

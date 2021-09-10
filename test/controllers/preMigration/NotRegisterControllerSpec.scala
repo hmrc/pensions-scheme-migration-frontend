@@ -60,8 +60,8 @@ class NotRegisterControllerSpec extends ControllerSpecBase with NunjucksSupport 
     "return OK and the correct view for a GET for scheme" in {
       when(mockMinimalDetailsConnector.getPSAName(any(),any())).thenReturn(Future.successful(psaName))
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result: Future[Result] = controller().onPageLoadScheme()(fakeDataRequest())
 
@@ -77,8 +77,8 @@ class NotRegisterControllerSpec extends ControllerSpecBase with NunjucksSupport 
     "return OK and the correct view for a GET for rac dac" in {
       when(mockMinimalDetailsConnector.getPSAName(any(),any())).thenReturn(Future.successful(psaName))
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result: Future[Result] = controller().onPageLoadRacDac()(fakeDataRequest())
 
