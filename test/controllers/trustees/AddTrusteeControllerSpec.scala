@@ -100,8 +100,8 @@ class AddTrusteeControllerSpec extends ControllerSpecBase with NunjucksSupport w
     "return OK and the correct view for a GET, passing the correct no of trustees and max trustees into template" in {
       val ua = userAnswers.map(_.setOrException(TrusteeNameId(1), PersonName("Bill", "Bloggs")))
       mutableFakeDataRetrievalAction.setDataToReturn(ua)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
