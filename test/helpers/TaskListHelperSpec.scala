@@ -106,7 +106,7 @@ class TaskListHelperSpec extends SpecBase with Matchers with MockitoSugar with E
       helper.workingKnowledgeSection(userAnswers,messages) mustBe expectedAboutSection
     }
     "return correct the correct entity section when do you have working knowledge is true" in {
-      val userAnswers = ua.set(WorkingKnowledgeId, false).get
+      val userAnswers = ua.set(WorkingKnowledgeId, true).get
       helper.workingKnowledgeSection(userAnswers,messages) mustBe None
     }
   }
