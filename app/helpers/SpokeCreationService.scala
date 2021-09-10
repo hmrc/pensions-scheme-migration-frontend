@@ -19,17 +19,15 @@ package helpers
 import controllers.establishers.routes._
 import helpers.spokes.establishers.company._
 import helpers.spokes.establishers.individual._
-import helpers.spokes.establishers.partnership._
-import helpers.spokes.establishers.partnership.{EstablisherPartnershipAddress, EstablisherPartnershipDetails, EstablisherPartnerDetails}
-import helpers.spokes.trustees.company.{TrusteeCompanyAddress, TrusteeCompanyContactDetails, TrusteeCompanyDetails}
-import helpers.spokes.trustees.individual.{TrusteeIndividualAddress, TrusteeIndividualContactDetails, TrusteeIndividualDetails}
-import helpers.spokes.trustees.partnership.TrusteePartnershipAddress
-import helpers.spokes.trustees.partnership.TrusteePartnershipContactDetails
-import helpers.spokes.{AboutMembersSpoke, BeforeYouStartSpoke, BenefitsAndInsuranceSpoke, Spoke}
+import helpers.spokes.establishers.partnership.{EstablisherPartnershipAddress, EstablisherPartnershipDetails, EstablisherPartnerDetails, _}
+import helpers.spokes.trustees.company.{TrusteeCompanyContactDetails, TrusteeCompanyAddress, TrusteeCompanyDetails}
+import helpers.spokes.trustees.individual.{TrusteeIndividualAddress, TrusteeIndividualDetails, TrusteeIndividualContactDetails}
+import helpers.spokes.trustees.partnership.{TrusteePartnershipAddress, TrusteePartnershipContactDetails}
+import helpers.spokes.{BeforeYouStartSpoke, AboutMembersSpoke, Spoke, BenefitsAndInsuranceSpoke}
 import models.Index._
-import models.{Entity, EntitySpoke, Index, TaskListLink}
+import models.{Entity, TaskListLink, EntitySpoke, Index}
 import play.api.i18n.Messages
-import utils.{Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable}
 
 class SpokeCreationService extends Enumerable.Implicits {
 
@@ -105,28 +103,14 @@ class SpokeCreationService extends Enumerable.Implicits {
   def createDirectorSpoke(entityList: Seq[Entity[_]],
                           spoke: Spoke,
                           name: String)(implicit messages: Messages): EntitySpoke = {
-    val isComplete: Option[Boolean] = {
-      (entityList.isEmpty) match {
-        case (false) =>
-          Some(entityList.forall(_.isCompleted))
-        case (true) =>
-          Some(false)
-      }
-    }
+    val isComplete: Option[Boolean] = Some(entityList.nonEmpty && entityList.forall(_.isCompleted))
     EntitySpoke(spoke.changeLink(name), isComplete)
   }
 
   def createPartnerSpoke(entityList: Seq[Entity[_]],
                           spoke: Spoke,
                           name: String)(implicit messages: Messages): EntitySpoke = {
-    val isComplete: Option[Boolean] = {
-      (entityList.isEmpty) match {
-        case (false) =>
-          Some(entityList.forall(_.isCompleted))
-        case (true) =>
-          Some(false)
-      }
-    }
+    val isComplete: Option[Boolean] = Some(entityList.nonEmpty && entityList.forall(_.isCompleted))
     EntitySpoke(spoke.changeLink(name), isComplete)
   }
 
