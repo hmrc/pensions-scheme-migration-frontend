@@ -178,6 +178,7 @@ messages__schemeTaskList__trusteeContactDetails_changeLink = Change contact deta
 
 
 messages__individual = the individual
+messages__title_individual = The individual
 messages__establisher = the establisher
 messages__title_establisher = The establisher
 messages__director = the director
@@ -194,7 +195,6 @@ messages__dob__cya__visuallyHidden = the date of birth for {0}
 messages__hasNINO = Does {0} have a National Insurance number?
 messages__genericHasNino__error__required = Select yes if {0} has a National Insurance number
 messages__hasNINO__cya__visuallyHidden = whether {0} has a National Insurance number
-messages__hasNINO__cya = National Insurance number
 
 messages__enterNINO_title = What is {0}’s National Insurance number?
 messages__enterNINO = What is the National Insurance number for {0}?
@@ -209,20 +209,15 @@ messages__reason__error_ninoRequired = Enter a reason why {0} does not have a NI
 messages__whyNoNINO__cya__visuallyHidden = the reason why {0} does not have a National Insurance number
 
 messages__hasUTR = Does {0} have a Unique Taxpayer Reference (UTR)?
-messages__hasUTR_pageTitle = Does {0} have a Unique Taxpayer Reference?
 messages__UTR__p = This is a 10-digit or 13-digit number. You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.
 messages__genericHasUtr__error__required = Select yes if {0} has a Unique Taxpayer Reference
 messages__hasUTR__cya__visuallyHidden = whether {0} has a Unique Taxpayer Reference
-messages__hasUTR__cya = UTR
-messages__hasUTR__cya_label = Does {0} have a UTR?
 
 messages__enterUTR = What is {0}’s UTR?
-messages__enterUTR_pageTitle = What is {0}’s Unique Taxpayer Reference?
 messages__enterUTR__cya_visuallyHidden = the UTR for {0}
 messages__UTR__p1 = This is a 10-digit or 13-digit number. It may also start or end with the letter ‘k’.
 messages__UTR__p2 = You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.
 messages__utr__hint = For example, 12345 67890
-messages__utr__cya_label = Unique Taxpayer Reference (UTR)
 messages__enterUTR__cya_label = {0}’s UTR
 
 messages__utr__error_required = Enter a Unique Taxpayer Reference (UTR)
@@ -426,16 +421,14 @@ messages__error__last_name_invalid = Name must only include letters and punctuat
 messages__individualName__title = What is the individual’s name?
 
 messages__confirmDelete__error_required = Select yes if you want to delete {0}
-messages__name_title = What is the {0}’s name?
+messages__name_title = What is {0}’s name?
 
 messages__details__whatYouWillNeed_title = {0}’s details
-messages__establisherDetails__whatYouWillNeed_title = The establisher’s details
-messages__trusteeDetails__whatYouWillNeed_title = The trustee’s details
-messages__establisherDetails__whatYouWillNeed_h1 = Details for {0}
-messages__establisherDetails__whatYouWillNeed_p = You will need to tell us {0}’s:
-messages__establisherDetails__whatYouWillNeed_li_1 = date of birth
-messages__establisherDetails__whatYouWillNeed_li_2 = National Insurance number, or reason why they do not have one
-messages__establisherDetails__whatYouWillNeed_li_3 = Unique Taxpayer Reference (UTR), or reason why they do not have one
+messages__details__whatYouWillNeed_h1 = Details for {0}
+messages__details__whatYouWillNeed_p = You will need to tell us {0}’s:
+messages__details__whatYouWillNeed_li_1 = date of birth
+messages__details__whatYouWillNeed_li_2 = National Insurance number, or reason why they do not have one
+messages__details__whatYouWillNeed_li_3 = Unique Taxpayer Reference (UTR), or reason why they do not have one
 
 messages__confirmDeleteEstablisher__title = Are you sure you want to delete this establisher?
 messages__confirmDeleteEstablisher__companyHint = This will delete any establishers you have added.
@@ -873,7 +866,7 @@ messages__vat__error_invalid = Enter {0}’s VAT registration number in the corr
 messages__vat__error_required = Enter a VAT registration number
 
 messages__paye = What is {0}’s employer PAYE reference?
-messages__paye_cya = Employer PAYE reference
+messages__paye_cya = {0}’s Employer PAYE reference
 messages__paye__p = You can tell us any employer PAYE reference if {0} has more than one.
 messages__paye__hint = For example, 123/AB456
 messages__paye__error_invalid = Enter {0}’s employer PAYE reference in the correct format
@@ -886,7 +879,7 @@ messages__companyNumber__cya__visuallyHidden = {0}’s company number
 messages__whyNoCompanyNumber__cya__visuallyHidden = the reason why {0} does not have a company number
 messages__enterUTR__cya__visuallyHidden = the UTR for {0}
 messages__haveVAT__cya__visuallyHidden = whether {0} is registered for VAT
-messages__vat__cya = VAT registration number
+messages__vat__cya = {0}’s VAT registration number
 messages__vat__cya__visuallyHidden = the VAT registration number for {0}
 messages__havePAYE__cya__visuallyHidden = whether {0} has an employer PAYE reference
 messages__paye__cya__visuallyHidden = the employer PAYE reference for {0}

@@ -94,7 +94,7 @@ class EstablisherCompanyDetailsCYAHelper
         answerRow(message, Message(booleanToText(true)), url, visuallyHidden),
         answerOrAddRow(
           id = CompanyUTRId(index),
-          message = Message("messages__utr__cya_label", companyName),
+          message = Message("messages__enterUTR__cya_label", companyName),
           url = Some(routes.UTRController.onPageLoad(index, CheckMode).url),
           visuallyHiddenText = Some(msg"messages__enterUTR__cya__visuallyHidden".withArgs(companyName)),
           answerTransform = referenceValueTransform

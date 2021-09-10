@@ -97,7 +97,7 @@ class EstablisherAddressCYAHelperSpec extends AnyWordSpec with Matchers with Try
             Messages("messages__visuallyhidden__addressYears", establisherName.fullName))),
           attributes = Map("id" -> "cya-0-1-change"))))
 
-      result(2) mustBe summaryListRowHtml(key = messages("messages__establisherPreviousAddress"),
+      result(2) mustBe summaryListRowHtml(key = messages("messages__establisherPreviousAddress", establisherName.fullName),
         value = answerAddressTransform(establisherPreviousAddress), Some(Link(text = Messages("site.change"),
           target = EstablishersIndividualRoutes.enterPreviousPostcodeRoute(0, NormalMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__previousAddress", establisherName.fullName))),

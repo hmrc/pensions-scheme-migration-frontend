@@ -147,7 +147,7 @@ class EstablisherPartnerDetailsCYAHelperSpec extends AnyWordSpec with Matchers w
         ))
       )
 
-      result(4) mustBe summaryListRow(key = Messages("messages__hasUTR__cya_label", partnerName),
+      result(4) mustBe summaryListRow(key = Messages("messages__hasUTR", partnerName),
         valueMsgKey = "booleanAnswer.true",
         Some(Link(text = Messages("site.change"),
           target = detailsRoutes.PartnerHasUTRController.onPageLoad(0, 0, CheckMode).url,
@@ -276,7 +276,7 @@ class EstablisherPartnerDetailsCYAHelperSpec extends AnyWordSpec with Matchers w
       )
 
 
-      result(4) mustBe summaryListRow(key = Messages("messages__hasUTR__cya_label", partnerName),
+      result(4) mustBe summaryListRow(key = Messages("messages__hasUTR", partnerName),
         valueMsgKey = "booleanAnswer.false",
         Some(Link(text = Messages("site.change"),
           target = detailsRoutes.PartnerHasUTRController.onPageLoad(0, 0, CheckMode).url,

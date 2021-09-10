@@ -21,6 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import helpers.routes.EstablishersIndividualRoutes
 import identifiers.beforeYouStart.SchemeNameId
+import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressId
 import matchers.JsonMatchers
 import models.NormalMode
@@ -34,7 +35,6 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.Data.ua
 import utils.{Data, Enumerable, UserAnswers}
 
 import scala.concurrent.Future
@@ -46,6 +46,9 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
   val extraModules: Seq[GuiceableModule] = Seq(
     bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
   )
+
+  private val ua: UserAnswers =
+    Data.ua.setOrException(EstablisherNameId(0), Data.establisherIndividualName)
 
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -75,7 +78,9 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
   "ConfirmAddress Controller" must {
 
     "Return OK and the correct view for a GET" in {
-      val ua: UserAnswers = UserAnswers().setOrException(SchemeNameId, Data.schemeName)
+      val ua: UserAnswers = UserAnswers()
+        .setOrException(SchemeNameId, Data.schemeName)
+        .setOrException(EstablisherNameId(0), Data.establisherIndividualName)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
       val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value

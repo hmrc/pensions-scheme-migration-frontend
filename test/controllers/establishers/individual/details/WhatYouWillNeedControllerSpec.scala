@@ -24,6 +24,7 @@ import models.PersonName
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
+import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
@@ -46,10 +47,11 @@ class WhatYouWillNeedControllerSpec
   private val userAnswers: UserAnswers =
     ua.set(EstablisherNameId(0), personName).success.value
   private val templateToBeRendered: String =
-    "establishers/individual/details/whatYouWillNeed.njk"
+    "details/whatYouWillNeedIndividualDetails.njk"
   private val json: JsObject =
     Json.obj(
       "name"        -> "Jane Doe",
+      "entityType" -> Messages("messages__title_individual"),
       "continueUrl" -> "/add-pension-scheme/establisher/1/individual/date-of-birth",
       "schemeName"  -> "Test scheme name"
     )

@@ -64,7 +64,7 @@ class EstablisherPartnershipDetailsCYAHelper
         answerRow(message, Message(booleanToText(true)), url, visuallyHidden),
         answerOrAddRow(
           id = PartnershipUTRId(index),
-          message = Message("messages__utr__cya_label", partnershipName),
+          message = Message("messages__enterUTR__cya_label", partnershipName),
           url = Some(routes.UTRController.onPageLoad(index, CheckMode).url),
           visuallyHiddenText = Some(msg"messages__enterUTR__cya__visuallyHidden".withArgs(partnershipName)),
           answerTransform = referenceValueTransform

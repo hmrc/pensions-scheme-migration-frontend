@@ -59,7 +59,7 @@ class TrusteeDetailsCYAHelper
         _ =>
           answerOrAddRow(
             id                 = TrusteeNINOId(index),
-            message            = Message("messages__hasNINO__cya", trusteeName),
+            message            = Message("messages__enterNINO__cya", trusteeName),
             url                = Some(routes.TrusteeEnterNINOController.onPageLoad(index, CheckMode).url),
             visuallyHiddenText = Some(msg"messages__hasNINO__cya__visuallyHidden".withArgs(trusteeName)),
             answerTransform    = referenceValueTransform
@@ -85,7 +85,7 @@ class TrusteeDetailsCYAHelper
         _ =>
           answerOrAddRow(
             id                 = TrusteeUTRId(index),
-            message            = Message("messages__hasUTR__cya", trusteeName),
+            message            = Message("messages__enterUTR__cya_label", trusteeName),
             url                = Some(routes.TrusteeEnterUTRController.onPageLoad(index, CheckMode).url),
             visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(trusteeName)),
             answerTransform    = referenceValueTransform

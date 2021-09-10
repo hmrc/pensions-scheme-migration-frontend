@@ -65,7 +65,7 @@ class EstablisherDetailsCYAHelper
         _ =>
           answerOrAddRow(
             id                 = EstablisherNINOId(index),
-            message            = Message("messages__hasNINO__cya", establisherName),
+            message            = Message("messages__enterNINO__cya", establisherName),
             url                = Some(enterUniqueTaxpayerReferenceRoute(index, CheckMode).url),
             visuallyHiddenText = Some(msg"messages__enterNINO__cya_visuallyHidden".withArgs(establisherName)),
             answerTransform    = referenceValueTransform
@@ -91,7 +91,7 @@ class EstablisherDetailsCYAHelper
         _ =>
           answerOrAddRow(
             id                 = EstablisherUTRId(index),
-            message            = Message("messages__hasUTR__cya", establisherName),
+            message            = Message("messages__enterUTR__cya_label", establisherName),
             url                = Some(enterUniqueTaxpayerReferenceRoute(index, CheckMode).url),
             visuallyHiddenText = Some(msg"messages__enterUTR__cya_visuallyHidden".withArgs(establisherName)),
             answerTransform    = referenceValueTransform

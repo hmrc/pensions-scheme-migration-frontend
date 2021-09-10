@@ -60,7 +60,7 @@ class PartnerEnterUTRControllerSpec
     "enterReferenceValueWithHint.njk"
   private val commonJson: JsObject =
     Json.obj(
-      "pageTitle"     -> "What is the partner’s Unique Taxpayer Reference?",
+      "pageTitle"     -> "What is the partner’s UTR?",
       "pageHeading"     -> "What is Jane Doe’s UTR?",
       "schemeName"    -> "Test scheme name",
       "legendClass"   -> "govuk-visually-hidden",
