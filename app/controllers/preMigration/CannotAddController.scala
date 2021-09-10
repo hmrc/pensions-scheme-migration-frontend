@@ -55,9 +55,9 @@ class CannotAddController @Inject()(val appConfig: AppConfig,
 
           renderer.render("preMigration/cannotAdd.njk", json).map(Ok(_))
         } else {
-          Future.successful(Redirect(routes.NotRegisterController.onPageLoadScheme()))
+          Future.successful(Redirect(controllers.routes.TaskListController.onPageLoad().url))
         }
-      case _ => Future.successful(Redirect(routes.NotRegisterController.onPageLoadScheme()))
+      case _ => Future.successful(Redirect(controllers.routes.TaskListController.onPageLoad().url))
     } recoverWith {
       case _: AncillaryPsaException =>
         Future.successful(Redirect(routes.CannotMigrateController.onPageLoad()))
@@ -77,9 +77,9 @@ class CannotAddController @Inject()(val appConfig: AppConfig,
 
           renderer.render("preMigration/cannotAdd.njk", json).map(Ok(_))
         } else {
-          Future.successful(Redirect(routes.NotRegisterController.onPageLoadRacDac()))
+          Future.successful(Redirect(controllers.routes.TaskListController.onPageLoad().url))
         }
-      case _ => Future.successful(Redirect(routes.NotRegisterController.onPageLoadRacDac()))
+      case _ => Future.successful(Redirect(controllers.routes.TaskListController.onPageLoad().url))
     } recoverWith {
       case _: AncillaryPsaException =>
         Future.successful(Redirect(routes.CannotMigrateController.onPageLoad()))
