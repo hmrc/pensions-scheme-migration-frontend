@@ -69,8 +69,8 @@ class AlreadyDeletedControllerSpec extends ControllerSpecBase with NunjucksSuppo
       def httpPathGET: String = controllers.establishers.routes.AlreadyDeletedController.onPageLoad(index, individualKind).url
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
@@ -101,8 +101,8 @@ class AlreadyDeletedControllerSpec extends ControllerSpecBase with NunjucksSuppo
       def httpPathGET: String = controllers.establishers.routes.AlreadyDeletedController.onPageLoad(index, companyKind).url
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
@@ -133,8 +133,8 @@ class AlreadyDeletedControllerSpec extends ControllerSpecBase with NunjucksSuppo
       val userAnswers: Option[UserAnswers] = ua.set(PartnershipDetailsId(0), partnershipName).toOption
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, httpGETRequest(httpPathGET)).value
 

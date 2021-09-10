@@ -56,7 +56,7 @@ class TransferAllController @Inject()( appConfig: AppConfig,
           "returnUrl" -> appConfig.psaOverviewUrl,
           "radios" -> Radios.yesNo(form("value"))
         )
-        renderer.render("beforeYouStart/transferAll.njk", json).map(Ok(_))
+        renderer.render("racdac/transferAll.njk", json).map(Ok(_))
       }
   }
 
@@ -70,7 +70,7 @@ class TransferAllController @Inject()( appConfig: AppConfig,
             "returnUrl" -> appConfig.psaOverviewUrl,
             "radios" -> Radios.yesNo(formWithErrors("value"))
           )
-          renderer.render("beforeYouStart/transferAll.njk", json).map(BadRequest(_))
+          renderer.render("racdac/transferAll.njk", json).map(BadRequest(_))
         }, {
           case true =>
             Future.successful(Redirect(controllers.preMigration.routes.ListOfSchemesController.onPageLoad(RacDac)))

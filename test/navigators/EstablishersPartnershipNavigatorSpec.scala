@@ -21,7 +21,8 @@ import controllers.establishers.partnership.address.{routes => addressRoutes}
 import controllers.establishers.partnership.details.{routes => detailsRoutes}
 import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.address._
-import identifiers.establishers.partnership.details.{HavePAYEId, HaveUTRId, HaveVATId, NoUTRReasonId, PAYEId, PartnershipUTRId, VATId}
+import identifiers.establishers.partnership.contact.{EnterEmailId, EnterPhoneId}
+import identifiers.establishers.partnership.details._
 import identifiers.{Identifier, TypedIdentifier}
 import models._
 import org.scalatest.TryValues
@@ -78,6 +79,10 @@ class EstablishersPartnershipNavigatorSpec
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
         row(PartnershipDetailsId(index))(addEstablisherPage),
+
+        row(EnterEmailId(index))(controllers.establishers.partnership.contact.routes.EnterPhoneController.onPageLoad(index, NormalMode)),
+        row(EnterPhoneId(index))(controllers.establishers.partnership.contact.routes.CheckYourAnswersController.onPageLoad(index)),
+
         row(HaveUTRId(index))(utr(), uaWithValue(HaveUTRId(index), true)),
         row(HaveUTRId(index))(noUtr(), uaWithValue(HaveUTRId(index), false)),
         row(PartnershipUTRId(index))(haveVat()),
@@ -108,6 +113,10 @@ class EstablishersPartnershipNavigatorSpec
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
         row(PartnershipDetailsId(index))(controllers.routes.IndexController.onPageLoad()),
+
+        row(EnterEmailId(index))(controllers.establishers.partnership.contact.routes.CheckYourAnswersController.onPageLoad(index)),
+        row(EnterPhoneId(index))(controllers.establishers.partnership.contact.routes.CheckYourAnswersController.onPageLoad(index)),
+
         row(HaveUTRId(index))(utr(CheckMode), uaWithValue(HaveUTRId(index), true)),
         row(HaveUTRId(index))(noUtr(CheckMode), uaWithValue(HaveUTRId(index), false)),
         row(PartnershipUTRId(index))(cyaDetails),

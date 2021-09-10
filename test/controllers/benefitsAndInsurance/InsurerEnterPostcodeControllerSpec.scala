@@ -75,7 +75,7 @@ class InsurerEnterPostcodeControllerSpec extends ControllerSpecBase with Nunjuck
 
       status(result) mustEqual OK
 
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       verify(mockRenderer, times(1))
         .render(ArgumentMatchers.eq("address/postcode.njk"), jsonCaptor.capture())(any())
