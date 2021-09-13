@@ -43,7 +43,7 @@ class TrusteeDetailsCYAHelper
     val rowsWithoutDynamicIndices = Seq(
       Some(answerOrAddRow(
         id                 = TrusteeDOBId(index),
-        message            = Message("messages__dob__title", trusteeName).resolve,
+        message            = Message("messages__dob__h1", trusteeName).resolve,
         url                = Some(routes.TrusteeDOBController.onPageLoad(index, CheckMode).url),
         visuallyHiddenText = Some(msg"messages__dob__cya__visuallyHidden".withArgs(trusteeName)),
         answerTransform = answerDateTransform

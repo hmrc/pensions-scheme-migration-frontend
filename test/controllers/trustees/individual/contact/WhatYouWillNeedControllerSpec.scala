@@ -32,6 +32,7 @@ import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.UserAnswers
+import viewmodels.Message
 
 import scala.concurrent.Future
 
@@ -43,24 +44,27 @@ class WhatYouWillNeedControllerSpec
 
   private val personName: PersonName = PersonName("Jane", "Doe")
   private val userAnswers: UserAnswers = ua.set(TrusteeNameId(0), personName).success.value
-  private val templateToBeRendered: String = "trustees/individual/contact/whatYouWillNeed.njk"
+  private val templateToBeRendered: String = "whatYouWillNeedContact.njk"
+
   private def json: JsObject =
     Json.obj(
-      "name"        -> personName.fullName,
+      "name" -> personName.fullName,
+      "pageHeading" -> Message("messages__title_individual"),
+      "entityType" -> Message("messages__individual"),
       "continueUrl" -> controllers.trustees.individual.contact.routes.EnterEmailController.onPageLoad(0, NormalMode).url,
-      "schemeName"  -> schemeName
+      "schemeName" -> schemeName
     )
 
   private def controller(
                           dataRetrievalAction: DataRetrievalAction
                         ): WhatYouWillNeedController =
     new WhatYouWillNeedController(
-      messagesApi          = messagesApi,
-      authenticate         = new FakeAuthAction(),
-      getData              = dataRetrievalAction,
-      requireData          = new DataRequiredActionImpl,
+      messagesApi = messagesApi,
+      authenticate = new FakeAuthAction(),
+      getData = dataRetrievalAction,
+      requireData = new DataRequiredActionImpl,
       controllerComponents = controllerComponents,
-      renderer             = new Renderer(mockAppConfig, mockRenderer)
+      renderer = new Renderer(mockAppConfig, mockRenderer)
     )
 
   "WhatYouWillNeedController" must {

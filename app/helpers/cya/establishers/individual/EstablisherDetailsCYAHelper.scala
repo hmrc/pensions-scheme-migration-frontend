@@ -49,7 +49,7 @@ class EstablisherDetailsCYAHelper
     val rowsWithoutDynamicIndices = Seq(
       Some(answerOrAddRow(
         id                 = EstablisherDOBId(index),
-        message            = Message("messages__dob__title", establisherName).resolve,
+        message            = Message("messages__dob__h1", establisherName).resolve,
         url                = Some(dateOfBirthRoute(index, CheckMode).url),
         visuallyHiddenText = Some(msg"messages__dob__cya__visuallyHidden".withArgs(establisherName)),
         answerTransform = answerDateTransform

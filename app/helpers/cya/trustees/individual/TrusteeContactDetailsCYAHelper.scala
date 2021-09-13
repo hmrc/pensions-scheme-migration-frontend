@@ -48,13 +48,13 @@ class TrusteeContactDetailsCYAHelper
     val rowsWithoutDynamicIndices = Seq(
       Some(answerOrAddRow(
         id = EnterEmailId(index),
-        message = Message("messages__enterEmail", trusteeName).resolve,
+        message = Message("messages__enterEmail_cya_label", trusteeName).resolve,
         url = Some(routes.EnterEmailController.onPageLoad(index, CheckMode).url),
         visuallyHiddenText = Some(msg"messages__enterEmail__cya__visuallyHidden".withArgs(trusteeName))
       )),
       Some(answerOrAddRow(
         id = EnterPhoneId(index),
-        message = Message("messages__enterPhone", trusteeName).resolve,
+        message = Message("messages__enterPhone_cya_label", trusteeName).resolve,
         url = Some(routes.EnterPhoneController.onPageLoad(index, CheckMode).url),
         visuallyHiddenText = Some(msg"messages__enterPhone__cya__visuallyHidden".withArgs(trusteeName))
       ))).flatten

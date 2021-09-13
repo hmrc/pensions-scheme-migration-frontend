@@ -95,7 +95,7 @@ class TrusteeAddressCYAHelperSpec extends AnyWordSpec with Matchers with TryValu
             Messages("messages__visuallyhidden__addressYears", trusteeName.fullName))),
           attributes = Map("id" -> "cya-0-1-change"))))
 
-      result(2) mustBe summaryListRowHtml(key = messages("messages__previousAddress"),
+      result(2) mustBe summaryListRowHtml(key = messages("messages__previousAddress", trusteeName.fullName),
         value = answerAddressTransform(trusteePreviousAddress), Some(Link(text = Messages("site.change"),
           target = controllers.trustees.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(0).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__previousAddress", trusteeName.fullName))),

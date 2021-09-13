@@ -64,7 +64,7 @@ class TrusteeAddressCYAHelper
       Seq(
         answerOrAddRow(
           PreviousAddressId(index),
-          Message("messages__previousAddress").resolve,
+          Message("messages__previousAddress", trusteeName).resolve,
           Some(controllers.trustees.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index).url),
           Some(msg"messages__visuallyHidden__previousAddress".withArgs(trusteeName)), answerAddressTransform
         )
