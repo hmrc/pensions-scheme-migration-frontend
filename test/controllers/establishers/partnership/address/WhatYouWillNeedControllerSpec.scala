@@ -23,6 +23,7 @@ import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
+import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
@@ -48,6 +49,7 @@ class WhatYouWillNeedControllerSpec
   private def json: JsObject =
     Json.obj(
       "name" -> "test partnership",
+      "entityType" -> Messages("messages__title_partnership"),
       "continueUrl" -> routes.EnterPostcodeController.onPageLoad(0).url,
       "schemeName" -> "Test scheme name"
     )

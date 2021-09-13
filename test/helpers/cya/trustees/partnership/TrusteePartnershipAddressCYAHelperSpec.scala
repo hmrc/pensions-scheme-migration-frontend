@@ -104,7 +104,7 @@ class TrusteePartnershipAddressCYAHelperSpec extends AnyWordSpec with Matchers w
             Messages("messages__visuallyhidden__TradingTime", trusteePartnershipName.partnershipName))),
           attributes = Map("id" -> "cya-0-2-change"))))
 
-      result(3) mustBe summaryListRowHtml(key = messages("messages__previousAddress"),
+      result(3) mustBe summaryListRowHtml(key = messages("messages__previousAddress", trusteePartnershipName.partnershipName),
         value = answerAddressTransform(trusteePreviousAddress), Some(Link(text = Messages("site.change"),
           target = controllers.trustees.partnership.address.routes.EnterPreviousPostcodeController.onPageLoad(0).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__previousAddress",
