@@ -68,7 +68,7 @@ class HaveUTRController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             get(
-              pageTitle     = Message("messages__hasUTR", Message("messages__trusteePartnership")),
+              pageTitle     = Message("messages__hasUTR", Message("messages__partnership")),
               pageHeading     = Message("messages__hasUTR", name(index)),
               isPageHeading = true,
               id            = HaveUTRId(index),

@@ -52,7 +52,7 @@ class HaveUTRControllerSpec extends ControllerSpecBase with NunjucksSupport with
 
   private val commonJson: JsObject =
     Json.obj(
-      "pageTitle"     -> messages("messages__hasUTR", messages("messages__trusteePartnership")),
+      "pageTitle"     -> messages("messages__hasUTR", messages("messages__partnership")),
       "pageHeading"     -> messages("messages__hasUTR", trusteePartnershipDetails.partnershipName),
       "schemeName"    -> schemeName,
       "paragraphs"    -> Json.arr(messages("messages__UTR__p")),
