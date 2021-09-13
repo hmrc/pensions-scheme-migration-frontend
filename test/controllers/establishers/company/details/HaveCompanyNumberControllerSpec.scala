@@ -34,7 +34,7 @@ import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import utils.Data.{company, schemeName, ua}
+import utils.Data.{companyDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.Message
 
@@ -43,17 +43,17 @@ import scala.concurrent.Future
 class HaveCompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with BeforeAndAfterEach {
 
   private val index: Index = Index(0)
-  private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(index), company).success.value
+  private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(index), companyDetails).success.value
 
   private val formProvider: HasReferenceNumberFormProvider = new HasReferenceNumberFormProvider()
-  private val form: Form[Boolean] = formProvider(Message("messages__haveCompanyNumber__error", company.companyName))
+  private val form: Form[Boolean] = formProvider(Message("messages__haveCompanyNumber__error", companyDetails.companyName))
   private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
   private val templateToBeRendered: String = "hasReferenceValueWithHint.njk"
 
   private val commonJson: JsObject =
     Json.obj(
       "pageTitle"     -> messages("messages__haveCompanyNumber", messages("messages__company")),
-      "pageHeading"     -> messages("messages__haveCompanyNumber", company.companyName),
+      "pageHeading"     -> messages("messages__haveCompanyNumber", companyDetails.companyName),
       "schemeName"    -> schemeName,
       "paragraphs"    -> Json.arr(messages("messages__haveCompanyNumber__p")),
       "legendClass"   -> "govuk-label--xl",

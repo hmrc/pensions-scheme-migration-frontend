@@ -469,7 +469,7 @@ messages__companyDetails__whatYouWillNeed_li_1 = contact email address
 messages__companyDetails__whatYouWillNeed_li_2 = contact phone number
 
 
-messages__establisherPreviousAddress = {0}’s previous address
+messages__previousAddress = {0}’s previous address
 previousAddress.title = Enter {0}’s previous address
 messages__visuallyHidden__previousAddress = the previous address for {0}
 
@@ -782,8 +782,6 @@ messages__confirmDeleteTrustee__title = Are you sure you want to delete this tru
 
 messages__schemeTaskList__trusteeIndividualAddress_addLink = Add address for {0}
 
-messages__trusteePreviousAddress = Previous address
-
 individualEnterPreviousPostcode.required = Enter the individual’s previous postcode
 trusteeEnterPreviousPostcode.invalid = Enter a real postcode
 
@@ -804,13 +802,6 @@ messages__schemeTaskList__trusteeIndividualAddress_changeLink = Change address f
 
 messages__schemeTaskList__companyDetails_addLink = Add details for {0}
 messages__schemeTaskList__companyDetails_changeLink = Change details for {0}
-
-messages__trusteeAddress__whatYouWillNeed_h1 = Address for {0}
-messages__trusteeAddress__whatYouWillNeed_title = The trustee’s address
-messages__trusteeCompanyAddress__whatYouWillNeed_title = The company’s address
-messages__trusteeAddress__whatYouWillNeed_p = You will need to tell us {0}’s:
-messages__trusteeAddress__whatYouWillNeed_li_1 = current address
-messages__trusteeAddress__whatYouWillNeed_li_2 = previous address if {0} has used the current address for less than 1 year
 
 messages__trusteePartnershipAddress__whatYouWillNeed_title = The partnership’s address
 
@@ -874,7 +865,7 @@ messages__paye__error_length = Enter {0}’s employer PAYE reference using 16 ch
 messages__paye__error_required = Enter an employer PAYE reference
 
 messages__haveCompanyNumber__cya__visuallyHidden = whether {0} has a company number
-messages__companyNumber__cya = Company Number
+messages__companyNumber__cya = {0}’s company number
 messages__companyNumber__cya__visuallyHidden = {0}’s company number
 messages__whyNoCompanyNumber__cya__visuallyHidden = the reason why {0} does not have a company number
 messages__enterUTR__cya__visuallyHidden = the UTR for {0}

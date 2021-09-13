@@ -65,7 +65,7 @@ class EstablisherAddressCYAHelper
       Seq(
         answerOrAddRow(
           PreviousAddressId(index),
-          Message("messages__establisherPreviousAddress", establisherName).resolve,
+          Message("messages__previousAddress", establisherName).resolve,
           Some(EstablishersIndividualRoutes.enterPreviousPostcodeRoute(index, NormalMode).url),
           Some(msg"messages__visuallyHidden__previousAddress".withArgs(establisherName)), answerAddressTransform
         )

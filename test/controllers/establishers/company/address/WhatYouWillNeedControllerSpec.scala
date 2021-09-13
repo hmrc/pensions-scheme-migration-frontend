@@ -42,7 +42,7 @@ class WhatYouWillNeedControllerSpec
     with TryValues {
 
   private val userAnswers: UserAnswers =
-    ua.set(CompanyDetailsId(0), Data.establisherCompanyDetails).success.value
+    ua.set(CompanyDetailsId(0), Data.companyDetails).success.value
   private val templateToBeRendered: String =
     "address/whatYouWillNeed.njk"
 

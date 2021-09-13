@@ -46,7 +46,7 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
   )
 
   private val ua: UserAnswers =
-    Data.ua.setOrException(CompanyDetailsId(0), Data.establisherCompanyDetails)
+    Data.ua.setOrException(CompanyDetailsId(0), Data.companyDetails)
 
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -78,7 +78,7 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
     "Return OK and the correct view for a GET" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, Data.schemeName)
-        .setOrException(CompanyDetailsId(0), Data.establisherCompanyDetails)
+        .setOrException(CompanyDetailsId(0), Data.companyDetails)
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 

@@ -41,12 +41,12 @@ class WhatYouWillNeedControllerSpec
     with TryValues {
 
   private val userAnswers: UserAnswers =
-    ua.set(PartnershipDetailsId(0), Data.trusteePartnershipDetails).success.value
+    ua.set(PartnershipDetailsId(0), Data.partnershipDetails).success.value
   private val templateToBeRendered: String =
     "trustees/partnership/address/whatYouWillNeed.njk"
   private def json: JsObject =
     Json.obj(
-      "name"        -> Data.trusteePartnershipDetails.partnershipName,
+      "name"        -> Data.partnershipDetails.partnershipName,
       "continueUrl" -> controllers.trustees.partnership.address.routes.EnterPostcodeController.onPageLoad(0).url,
       "schemeName"  -> "Test scheme name"
     )
