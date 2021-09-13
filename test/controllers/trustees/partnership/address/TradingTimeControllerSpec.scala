@@ -79,7 +79,7 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
       status(result) mustEqual OK
 
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       verify(mockRenderer, times(1))
         .render(ArgumentMatchers.eq("address/tradingTime.njk"), jsonCaptor.capture())(any())
@@ -99,7 +99,7 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
       status(result) mustEqual OK
 
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       verify(mockRenderer, times(1))
         .render(ArgumentMatchers.eq("address/tradingTime.njk"), jsonCaptor.capture())(any())
@@ -130,7 +130,7 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 

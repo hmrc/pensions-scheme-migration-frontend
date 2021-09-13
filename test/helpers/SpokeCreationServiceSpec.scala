@@ -19,7 +19,7 @@ package helpers
 import base.SpecBase
 import helpers.routes.EstablishersIndividualRoutes
 import helpers.routes.EstablishersIndividualRoutes.contactRoute
-import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}
+import identifiers.beforeYouStart.{SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.contact.EnterPhoneId
@@ -36,7 +36,7 @@ import identifiers.trustees.company.{details => trusteeCompanyDetails}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.contact.{EnterEmailId => TrusteeEmailId, EnterPhoneId => TrusteePhoneId}
 import identifiers.trustees.individual.details.{TrusteeDOBId, TrusteeNINOId, TrusteeUTRId}
-import identifiers.trustees.partnership.address.{AddressId => TrusteePartnershipAddressId, AddressYearsId => TrusteePartnershipAddressYearsId}
+import identifiers.trustees.partnership.address.{AddressYearsId => TrusteePartnershipAddressYearsId, AddressId => TrusteePartnershipAddressId}
 import identifiers.trustees.partnership.contact.{EnterEmailId => TrusteePartnershipEmailId, EnterPhoneId => TrusteePartnershipPhoneId}
 import identifiers.trustees.{TrusteeKindId, company => trusteeCompany}
 import models._
@@ -45,7 +45,7 @@ import models.trustees.TrusteeKind
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
 import utils.Data.{schemeName, ua}
-import utils.{Data, Enumerable}
+import utils.{Enumerable, Data}
 import viewmodels.Message
 
 import java.time.LocalDate
@@ -337,7 +337,7 @@ class SpokeCreationServiceSpec
       val userAnswers =
         ua
           .set(EstablisherKindId(0), EstablisherKind.Partnership).success.value
-          .set(EstablisherPartnershipDetailsId(0), PartnershipDetails("test", false)).success.value
+          .set(EstablisherPartnershipDetailsId(0), PartnershipDetails("test")).success.value
 
       val expectedSpoke =
         Seq(
@@ -388,7 +388,7 @@ class SpokeCreationServiceSpec
       val userAnswers =
         ua
           .set(EstablisherKindId(0), EstablisherKind.Partnership).success.value
-          .set(EstablisherPartnershipDetailsId(0), PartnershipDetails("test", false)).success.value
+          .set(EstablisherPartnershipDetailsId(0), PartnershipDetails("test")).success.value
           .setOrException(HaveUTRId(0), true)
           .setOrException(PartnershipUTRId(0), ReferenceValue("12345678"))
           .setOrException(PartnershipAddressId(0), Data.address)
