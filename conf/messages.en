@@ -174,8 +174,6 @@ messages__schemeTaskList__contactDetails_changeLink = Change contact details for
 messages__schemeTaskList__trusteeContactDetails_addLink = Add contact details for {0}
 messages__schemeTaskList__trusteeContactDetails_changeLink = Change contact details for {0}
 
-
-
 messages__individual = the individual
 messages__title_individual = The individual
 messages__establisher = the establisher
@@ -187,6 +185,7 @@ messages__partnership = the partnership
 messages__title_partnership = The partnership
 messages__partner = the partner
 messages__trustee = the trustee
+messages__the_scheme = the scheme
 messages__dob__title = What is {0}’s date of birth?
 messages__dob__h1 = {0}’s date of birth
 messages__dob__cya__visuallyHidden = the date of birth for {0}
@@ -309,7 +308,7 @@ benefitsType.h1 = What type of money purchase benefits does {0} provide?
 benefitsType.visuallyHidden = the type of money purchase benefits {0} provides
 benefitsType.error.required = Select what type of money purchase benefits the scheme provides
 
-areBenefitsSecured.title = Are any of the scheme benefits secured by a contract of insurance or annuity?
+areBenefitsSecured.title = Are any of the schemeʼs benefits secured by a contract of insurance or annuity?
 areBenefitsSecured.h1 = Are any of {0}ʼs benefits secured by a contract of insurance or annuity?
 areBenefitsSecured.error.required = Select yes if any of the scheme benefits are secured by a contract of insurance or annuity
 areBenefitsSecured.p1 = Benefits can be secured by a contract of insurance or an annuity contract by an insurance company that provides administration services to the scheme.
