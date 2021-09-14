@@ -1,0 +1,39 @@
+{% extends "includes/layout.njk" %}
+
+{% from "macros/title.njk"                         import title %}
+{% from "macros/returnLink.njk"                    import returnLink %}
+{% from "govuk/components/button/macro.njk"        import govukButton %}
+
+{% block pageTitle %}
+  {{ title(messages("messages__declaration__title")) }}
+{% endblock %}
+
+{% block mainContent %}
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">
+          {{ messages("messages__declaration__title") }}
+        </h1>
+
+        <p class="govuk-body">
+          {{ messages("messages__declaration__declare") }}
+        </p>
+        <ul class="govuk-list govuk-list--bullet">
+
+            <li>{{ messages("messages__declaration__statement4") }}</li>
+            <li>{{ messages("messages__declaration__statement5") }}</li>
+            <li>{{ messages("messages__declaration__statement6") }}</li>
+
+        </ul>
+          {{ govukButton({
+              text: messages("site.save_and_continue"),
+              attributes: {id: "submit"}
+          }) }}
+      </div>
+    </div>
+
+    {{ returnLink(schemeName) }}
+
+{% endblock %}
