@@ -1,0 +1,2 @@
+GET         /declaration                                           controllers.racDac.RacDacDeclarationController.onPageLoad
+GET         /submit-declaration                                    controllers.racDac.RacDacDeclarationController.onSubmit
