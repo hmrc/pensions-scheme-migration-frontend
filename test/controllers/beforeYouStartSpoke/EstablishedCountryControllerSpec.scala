@@ -74,8 +74,8 @@ class EstablishedCountryControllerSpec extends ControllerSpecBase with NunjucksS
 
     "return OK and the correct view for a GET" in {
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
@@ -93,9 +93,9 @@ class EstablishedCountryControllerSpec extends ControllerSpecBase with NunjucksS
 
       mutableFakeDataRetrievalAction.setDataToReturn(Option(userAnswers))
 
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
@@ -129,7 +129,7 @@ class EstablishedCountryControllerSpec extends ControllerSpecBase with NunjucksS
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 

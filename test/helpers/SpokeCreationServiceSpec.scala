@@ -19,7 +19,7 @@ package helpers
 import base.SpecBase
 import helpers.routes.EstablishersIndividualRoutes
 import helpers.routes.EstablishersIndividualRoutes.contactRoute
-import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}
+import identifiers.beforeYouStart.{SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.contact.EnterPhoneId
@@ -39,6 +39,7 @@ import identifiers.trustees.individual.details.{TrusteeDOBId, TrusteeNINOId, Tru
 import identifiers.trustees.partnership.details.{HavePAYEId => TrusteeHavePAYEId, HaveVATId => TrusteeHaveVATId, PAYEId => TrusteePAYEId, VATId => TrusteeVATId, HaveUTRId => TrusteeHaveUTRId, PartnershipUTRId => TrusteePartnershipUTRId}
 import identifiers.trustees.partnership.{PartnershipDetailsId => TrusteePartnershipDetailsId}
 import identifiers.trustees.partnership.address.{AddressId => TrusteePartnershipAddressId, AddressYearsId => TrusteePartnershipAddressYearsId}
+import identifiers.trustees.partnership.address.{AddressYearsId => TrusteePartnershipAddressYearsId, AddressId => TrusteePartnershipAddressId}
 import identifiers.trustees.partnership.contact.{EnterEmailId => TrusteePartnershipEmailId, EnterPhoneId => TrusteePartnershipPhoneId}
 import identifiers.trustees.{TrusteeKindId, company => trusteeCompany}
 import models._
@@ -47,7 +48,7 @@ import models.trustees.TrusteeKind
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
 import utils.Data.{schemeName, ua}
-import utils.{Data, Enumerable}
+import utils.{Enumerable, Data}
 import viewmodels.Message
 
 import java.time.LocalDate
@@ -176,7 +177,7 @@ class SpokeCreationServiceSpec
       val userAnswers =
         ua
           .set(EstablisherKindId(0), EstablisherKind.Company).success.value
-          .set(CompanyDetailsId(0), CompanyDetails("test",false)).success.value
+          .set(CompanyDetailsId(0), CompanyDetails("test")).success.value
 
       val expectedSpoke =
         Seq(EntitySpoke(
@@ -226,7 +227,7 @@ class SpokeCreationServiceSpec
     val userAnswers =
       ua
         .set(EstablisherKindId(0), EstablisherKind.Company).success.value
-        .set(CompanyDetailsId(0), CompanyDetails("test",false)).success.value
+        .set(CompanyDetailsId(0), CompanyDetails("test")).success.value
         .setOrException(HaveCompanyNumberId(0), true)
         .setOrException(CompanyNumberId(0), ReferenceValue("12345678"))
         .setOrException(AddressId(0), Data.address)
@@ -281,7 +282,7 @@ class SpokeCreationServiceSpec
     val userAnswers =
       ua
         .set(EstablisherKindId(0), EstablisherKind.Company).success.value
-        .set(CompanyDetailsId(0), CompanyDetails("test",false)).success.value
+        .set(CompanyDetailsId(0), CompanyDetails("test")).success.value
         .set(DirectorNameId(0,0), PersonName("Jane", "Doe")).success.value
         .setOrException(HaveCompanyNumberId(0), true)
         .setOrException(CompanyNumberId(0), ReferenceValue("12345678"))
@@ -339,7 +340,7 @@ class SpokeCreationServiceSpec
       val userAnswers =
         ua
           .set(EstablisherKindId(0), EstablisherKind.Partnership).success.value
-          .set(EstablisherPartnershipDetailsId(0), PartnershipDetails("test", false)).success.value
+          .set(EstablisherPartnershipDetailsId(0), PartnershipDetails("test")).success.value
 
       val expectedSpoke =
         Seq(
@@ -390,7 +391,7 @@ class SpokeCreationServiceSpec
       val userAnswers =
         ua
           .set(EstablisherKindId(0), EstablisherKind.Partnership).success.value
-          .set(EstablisherPartnershipDetailsId(0), PartnershipDetails("test", false)).success.value
+          .set(EstablisherPartnershipDetailsId(0), PartnershipDetails("test")).success.value
           .setOrException(HaveUTRId(0), true)
           .setOrException(PartnershipUTRId(0), ReferenceValue("12345678"))
           .setOrException(PartnershipAddressId(0), Data.address)

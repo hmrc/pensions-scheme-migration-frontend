@@ -100,8 +100,8 @@ class TrusteeEnterUTRControllerSpec
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
@@ -123,9 +123,9 @@ class TrusteeEnterUTRControllerSpec
 
       val ua = userAnswers.set(TrusteeUTRId(0), formData).success.value
 
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val getData = new FakeDataRetrievalAction(Some(ua))
 
@@ -169,9 +169,9 @@ class TrusteeEnterUTRControllerSpec
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
       val result: Future[Result] = controller(getData).onSubmit(0, NormalMode)(request)
 
