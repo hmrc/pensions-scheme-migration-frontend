@@ -36,12 +36,12 @@ class TrusteesPartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour 
   private val navigator: CompoundNavigator = injector.instanceOf[CompoundNavigator]
   private val index: Index = Index(0)
 
-  private def utr(mode: Mode = NormalMode): Call = detailsRoutes.UTRController.onPageLoad(index, mode)
+  private def utr(mode: Mode): Call = detailsRoutes.UTRController.onPageLoad(index, mode)
   private def noUtr(mode: Mode = NormalMode): Call = detailsRoutes.NoUTRReasonController.onPageLoad(index, mode)
   private def haveVat(mode: Mode = NormalMode): Call = detailsRoutes.HaveVATController.onPageLoad(index, mode)
-  private def vat(mode: Mode = NormalMode): Call = detailsRoutes.VATController.onPageLoad(index, mode)
+  private def vat(mode: Mode): Call = detailsRoutes.VATController.onPageLoad(index, mode)
   private def havePaye(mode: Mode = NormalMode): Call = detailsRoutes.HavePAYEController.onPageLoad(index, mode)
-  private def paye(mode: Mode = NormalMode): Call = detailsRoutes.PAYEController.onPageLoad(index, mode)
+  private def paye(mode: Mode): Call = detailsRoutes.PAYEController.onPageLoad(index, mode)
   private val cyaDetails: Call = detailsRoutes.CheckYourAnswersController.onPageLoad(index)
 
 
