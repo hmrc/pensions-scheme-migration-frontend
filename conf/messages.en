@@ -1070,7 +1070,7 @@ messages__adviserName__blank = Enter the name of who has working knowledge of pe
 messages__error__common__email__required = Enter an email address
 messages__error__common__phone__required = Enter a phone number
 messages__phone__invalid = Enter a phone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192
-messages__adviser__enterPostcode__invalid = Enter a postcode in the correct format.
+messages__adviser__enterPostcode__invalid = Enter a postcode in the correct format
 messages__adviser__enterPostcode__no__results = Postcode cannot be found
 
 messages__adviser__name__cya = Who is the person with working knowledge of pensions and pensions tax legislation?
