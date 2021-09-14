@@ -41,7 +41,6 @@ import matchers.JsonMatchers
 import models.{Index, NormalMode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
@@ -51,7 +50,7 @@ import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import utils.Data.{trusteePartnershipDetails, schemeName, ua}
+import utils.Data.{schemeName, trusteePartnershipDetails, ua}
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.Message
 
@@ -61,6 +60,9 @@ class HavePAYEControllerSpec extends ControllerSpecBase with NunjucksSupport wit
 
   private val index: Index = Index(0)
   private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(index), trusteePartnershipDetails).success.value
+
+  private val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+  private val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
   private val formProvider: HasReferenceNumberFormProvider = new HasReferenceNumberFormProvider()
   private val form: Form[Boolean] = formProvider(Message("messages__genericHavePaye__error__required", trusteePartnershipDetails.partnershipName))
@@ -87,8 +89,6 @@ class HavePAYEControllerSpec extends ControllerSpecBase with NunjucksSupport wit
     "return OK and the correct view for a GET" in {
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
       val result: Future[Result] = controller(getData).onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
@@ -107,8 +107,7 @@ class HavePAYEControllerSpec extends ControllerSpecBase with NunjucksSupport wit
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
       val ua = userAnswers.set(HavePAYEId(0), true).success.value
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+
       val getData = new FakeDataRetrievalAction(Some(ua))
 
       val result: Future[Result] = controller(getData).onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
@@ -139,8 +138,6 @@ class HavePAYEControllerSpec extends ControllerSpecBase with NunjucksSupport wit
 
       val request = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
 
       val result: Future[Result] = controller(getData).onSubmit(0, NormalMode)(request)
       val boundForm = form.bind(Map("value" -> "invalid value"))

@@ -17,18 +17,17 @@
 package navigators
 
 import base.SpecBase
+import controllers.trustees.partnership.details.{routes => detailsRoutes}
 import identifiers.trustees.partnership.PartnershipDetailsId
 import identifiers.trustees.partnership.address._
+import identifiers.trustees.partnership.details._
 import identifiers.{Identifier, TypedIdentifier}
-import controllers.trustees.partnership.details.{routes => detailsRoutes}
-import identifiers.trustees.partnership.details.{HavePAYEId, HaveUTRId, HaveVATId, NoUTRReasonId, PAYEId, PartnershipUTRId, VATId}
 import models._
 import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes
 import play.api.mvc.Call
 import utils.Data.{trusteePartnershipDetails, ua}
-import utils.Data.{partnershipDetails, ua}
 import utils.{Enumerable, UserAnswers}
 
 

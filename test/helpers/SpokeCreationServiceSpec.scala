@@ -16,10 +16,12 @@
 
 package helpers
 
+import java.time.LocalDate
+
 import base.SpecBase
 import helpers.routes.EstablishersIndividualRoutes
 import helpers.routes.EstablishersIndividualRoutes.contactRoute
-import identifiers.beforeYouStart.{SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
+import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.contact.EnterPhoneId
@@ -36,11 +38,10 @@ import identifiers.trustees.company.{details => trusteeCompanyDetails}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.contact.{EnterEmailId => TrusteeEmailId, EnterPhoneId => TrusteePhoneId}
 import identifiers.trustees.individual.details.{TrusteeDOBId, TrusteeNINOId, TrusteeUTRId}
-import identifiers.trustees.partnership.details.{HavePAYEId => TrusteeHavePAYEId, HaveVATId => TrusteeHaveVATId, PAYEId => TrusteePAYEId, VATId => TrusteeVATId, HaveUTRId => TrusteeHaveUTRId, PartnershipUTRId => TrusteePartnershipUTRId}
-import identifiers.trustees.partnership.{PartnershipDetailsId => TrusteePartnershipDetailsId}
 import identifiers.trustees.partnership.address.{AddressId => TrusteePartnershipAddressId, AddressYearsId => TrusteePartnershipAddressYearsId}
-import identifiers.trustees.partnership.address.{AddressYearsId => TrusteePartnershipAddressYearsId, AddressId => TrusteePartnershipAddressId}
 import identifiers.trustees.partnership.contact.{EnterEmailId => TrusteePartnershipEmailId, EnterPhoneId => TrusteePartnershipPhoneId}
+import identifiers.trustees.partnership.details.{HavePAYEId => TrusteeHavePAYEId, HaveUTRId => TrusteeHaveUTRId, HaveVATId => TrusteeHaveVATId, PAYEId => TrusteePAYEId, VATId => TrusteeVATId}
+import identifiers.trustees.partnership.{PartnershipDetailsId => TrusteePartnershipDetailsId}
 import identifiers.trustees.{TrusteeKindId, company => trusteeCompany}
 import models._
 import models.establishers.EstablisherKind
@@ -48,10 +49,8 @@ import models.trustees.TrusteeKind
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
 import utils.Data.{schemeName, ua}
-import utils.{Enumerable, Data}
+import utils.{Data, Enumerable}
 import viewmodels.Message
-
-import java.time.LocalDate
 
 class SpokeCreationServiceSpec
   extends SpecBase

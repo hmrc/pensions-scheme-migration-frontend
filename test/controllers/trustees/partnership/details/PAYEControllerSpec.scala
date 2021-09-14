@@ -25,9 +25,7 @@ import matchers.JsonMatchers
 import models.{Index, NormalMode, ReferenceValue}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
-import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Result}
 import play.api.test.FakeRequest
@@ -37,7 +35,6 @@ import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.{schemeName, trusteePartnershipDetails, ua}
 import utils.{FakeNavigator, UserAnswers}
-import viewmodels.Message
 
 import scala.concurrent.Future
 
@@ -46,9 +43,9 @@ class PAYEControllerSpec extends ControllerSpecBase with NunjucksSupport with Js
   private val index: Index = Index(0)
   private val referenceValue: ReferenceValue = ReferenceValue("12345678")
   private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(index), trusteePartnershipDetails).success.value
-
+  private val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+  private val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
   private val formProvider: PAYEFormProvider = new PAYEFormProvider()
-  private val form: Form[ReferenceValue] = formProvider(Message("messages__havePAYE__error", trusteePartnershipDetails.partnershipName))
   private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
   private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
 
@@ -72,8 +69,6 @@ class PAYEControllerSpec extends ControllerSpecBase with NunjucksSupport with Js
     "return OK and the correct view for a GET" in {
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
       val result: Future[Result] = controller(getData).onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
@@ -91,8 +86,6 @@ class PAYEControllerSpec extends ControllerSpecBase with NunjucksSupport with Js
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
       val ua = userAnswers.set(PAYEId(0), referenceValue).success.value
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
       val getData = new FakeDataRetrievalAction(Some(ua))
 
       val result: Future[Result] = controller(getData).onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
@@ -122,8 +115,6 @@ class PAYEControllerSpec extends ControllerSpecBase with NunjucksSupport with Js
 
       val request = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
 
       val result: Future[Result] = controller(getData).onSubmit(0, NormalMode)(request)
 
