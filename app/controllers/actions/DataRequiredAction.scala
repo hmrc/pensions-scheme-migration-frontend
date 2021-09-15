@@ -17,7 +17,7 @@
 package controllers.actions
 
 import com.google.inject.{ImplementedBy, Inject}
-import controllers.routes
+import models.Scheme
 import models.requests.{DataRequest, OptionalDataRequest}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
@@ -31,8 +31,7 @@ class DataRequiredActionImpl @Inject()(implicit val executionContext: ExecutionC
       case (Some(data), Some(lock)) =>
         Future.successful(Right(DataRequest(request.request, data, request.psaId, lock, request.viewOnly)))
       case _ =>
-        //TODO Redirect user to list of schemes page (once implemented) to select a scheme, since their scheme selection could not be retrieved
-        Future.successful(Left(Redirect(routes.IndexController.onPageLoad())))
+        Future.successful(Left(Redirect(controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme))))
     }
 }
 

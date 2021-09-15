@@ -35,7 +35,7 @@ import uk.gov.hmrc.viewmodels.Table.Cell
 import uk.gov.hmrc.viewmodels.Text.Literal
 import uk.gov.hmrc.viewmodels.{Content, Html, MessageInterpolators, Table}
 import utils.SchemeFuzzyMatcher
-
+import controllers.preMigration.routes.ListOfSchemesController
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import scala.concurrent.{ExecutionContext, Future}
@@ -100,7 +100,7 @@ class SchemeSearchService @Inject()(val appConfig: AppConfig,
     val formatter: String => String = date => LocalDate.parse(date).format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
 
     val schemeName: Items => Content = data => if(viewOnly) Literal(data.schemeName) else Html(
-        s"""<a class=migrate-pstr-${data.pstr} href=${controllers.preMigration.routes.ListOfSchemesController.clickSchemeLink(data.pstr, isRacDac)}>${data.schemeName}</a>""".stripMargin)
+        s"""<a class=migrate-pstr-${data.pstr} href=${ListOfSchemesController.clickSchemeLink(data.pstr, isRacDac)}>${data.schemeName}</a>""".stripMargin)
 
     val rows = schemeDetails.map { data =>
       Seq(Cell(schemeName(data), Seq("govuk-!-width-one-quarter")),
@@ -224,20 +224,43 @@ class SchemeSearchService @Inject()(val appConfig: AppConfig,
                            hc: HeaderCarrier,
                            ec: ExecutionContext): Future[Result] =
 
-      search(request.psaId.id, searchText, isRacDac(migrationType)).flatMap { searchResult =>
+      search(request.psaId.id, None, isRacDac = true).flatMap { searchResult =>
 
         val numberOfSchemes: Int = searchResult.length
+        val numberOfPages: Int = paginationService.divide(numberOfSchemes, pagination)
+        val schemeDetails = selectPageOfResults(searchResult, pageNumber, numberOfPages)
 
-        val numberOfPages: Int =
-          paginationService.divide(numberOfSchemes, pagination)
+        minimalDetailsConnector.getPSADetails(request.psaId.id).flatMap {
+          case md if md.deceasedFlag => Future.successful(Redirect(appConfig.deceasedContactHmrcUrl))
+          case md if md.rlsFlag => Future.successful(Redirect(appConfig.psaUpdateContactDetailsUrl))
+          case md =>
 
-        renderView(
-          selectPageOfResults(searchResult, pageNumber, numberOfPages),
-          numberOfSchemes,
-          pageNumber,
-          numberOfPages,
-          form
-        )
+            val json: JsObject = Json.obj(
+              "form" -> form,
+              "psaName" -> md.name,
+              "numberOfSchemes" -> numberOfSchemes,
+              "pagination" -> pagination,
+              "pageNumber" -> pageNumber,
+              "pageNumberLinks" -> paginationService.pageNumberLinks(
+                pageNumber,
+                numberOfSchemes,
+                pagination,
+                numberOfPages
+              ),
+              "numberOfPages" -> numberOfPages,
+              "returnUrl" -> appConfig.psaOverviewUrl,
+              "paginationText" -> paginationText(pageNumber,pagination,numberOfSchemes,numberOfPages),
+              "schemes" -> mapToTable(schemeDetails, isRacDac = true, viewOnly = true)
+            )
+
+            renderer.render("racdac/racDacsBulkList.njk", json)
+              .map(body => if (form.hasErrors) BadRequest(body) else Ok(body))
+
+        } recoverWith {
+          case _: DelimitedAdminException =>
+            Future.successful(Redirect(appConfig.psaDelimitedUrl))
+        }
+
       } recoverWith {
         case _: AncillaryPsaException =>
           Future.successful(Redirect(routes.CannotMigrateController.onPageLoad()))

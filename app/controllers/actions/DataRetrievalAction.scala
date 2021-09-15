@@ -36,28 +36,25 @@ class DataRetrievalImpl @Inject()(dataConnector: UserAnswersCacheConnector,
   extends DataRetrievalAction {
 
   override protected def transform[A](request: AuthenticatedRequest[A]): Future[OptionalDataRequest[A]] = {
+
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-    println("\n\n >>>> 0")
+
     retrieveLock.flatMap {
+
       case Some(lock) =>
-        println("\n\n >>>> 1")
         lockCacheConnector.getLockOnScheme(lock.pstr).flatMap {
-          case None =>  println("\n\n >>>> 2")
+
+          case None =>
             lockCacheConnector.setLock(lock).flatMap { _ =>
-            fetchDataAndFormRequest(lock, viewOnly = false, request)
-          }
+              fetchDataAndFormRequest(lock, viewOnly = false, request)
+            }
+
           case Some(lockOnScheme) =>
-            println("\n\n >>>> 3")
             fetchDataAndFormRequest(lock, lock.credId != lockOnScheme.credId, request)
         }
+
       case _ =>
-        println("\n\n >>>> 4")
-        Future.successful(OptionalDataRequest(
-          request = request.request,
-          userAnswers = None,
-          psaId = request.psaId,
-          lock = None
-        ))
+        Future.successful(OptionalDataRequest(request.request,None,request.psaId,None))
 
     }
   }
@@ -65,24 +62,12 @@ class DataRetrievalImpl @Inject()(dataConnector: UserAnswersCacheConnector,
     private def fetchDataAndFormRequest[A](lock: MigrationLock, viewOnly: Boolean, request: AuthenticatedRequest[A])
                                           (implicit hc: HeaderCarrier): Future[OptionalDataRequest[A]] =
       dataConnector.fetch(lock.pstr) map {
+
       case None =>
-        println(s"\n\n >>>> 5    $lock")
-        OptionalDataRequest(
-          request = request.request,
-          userAnswers = None,
-          psaId = request.psaId,
-          lock = Some(lock),
-          viewOnly = viewOnly
-        )
+        OptionalDataRequest(request.request, None, request.psaId, Some(lock), viewOnly)
+
       case Some(data) =>
-        println("\n\n >>>> 6")
-        OptionalDataRequest(
-          request = request.request,
-          userAnswers = Some(UserAnswers(data.as[JsObject])),
-          psaId = request.psaId,
-          lock = Some(lock),
-          viewOnly = viewOnly
-        )
+        OptionalDataRequest(request.request, Some(UserAnswers(data.as[JsObject])), request.psaId, Some(lock), viewOnly)
     }
 
   private def retrieveLock(implicit hc: HeaderCarrier): Future[Option[MigrationLock]] =

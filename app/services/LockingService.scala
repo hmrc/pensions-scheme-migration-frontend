@@ -30,8 +30,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class LockingService @Inject()(lockCacheConnector: LockCacheConnector,
                                schemeCacheConnector: CurrentPstrCacheConnector){
 
-
-//TODO - Call on listOfSchemes when user selects a scheme
   def initialLockSetupAndRedirect(pstr: String, request: AuthenticatedRequest[_])
                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Result] = {
     val lock = MigrationLock(pstr, request.externalId, request.psaId.id)

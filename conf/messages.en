@@ -1005,8 +1005,9 @@ messages__listSchemes__schemeName__screen_reader = The scheme name is: {0}
 
 messages__listSchemes__PSTR__screen_reader = {0}’s Pension Scheme Tax Reference number is {1}
 messages__listSchemes__status__screen_reader = {0}’s status is {1}
-messages__listSchemes__searchText_label_scheme = Search for a scheme by scheme name or PSTR
-messages__listSchemes__searchText_label_racDac = Search for a RAC/DAC by name or PSTR
+messages__listSchemes__searchText_label_scheme = Search for a scheme by scheme name or complete PSTR
+messages__listSchemes__searchText_label_racDac = Search for a RAC/DAC by name or complete PSTR
+messages__listSchemes__searchText_label_hint = For example, 01234567QQ
 messages__listSchemes__searchText_clearlink = Clear Search
 messages__listSchemes__search_noMatches = We did not find any {0}s that match what you searched for.
 messages__listSchemes__search_submit = Search
@@ -1047,6 +1048,9 @@ messages__otherTrustees__error__required = Select yes if you need to tell us abo
 messages__addTrustees_at_maximum = You have added the maximum number of trustees.
 
 messages__trusteePartnershipContactDetails__whatYouWillNeed_title = The partnership’s contact details
+
+messages__transferAll__title = Do you want to add all your RAC/DACs from the Pension Schemes Online service?
+messages__transferAll__error = Select yes if you want to add all your RAC/DACs from the Pension Schemes Online service
 
 messages__racdac_bulk_list__title = List of RAC/DACs on the Pension Schemes Online service
 messages__racdac_bulk_list__error =  Select yes if you want to add all your RAC/DACs from the Pension Schemes Online service

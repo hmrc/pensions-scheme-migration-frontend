@@ -17,13 +17,17 @@
 package services
 
 import base.SpecBase
-import connectors.ListOfSchemesConnector
+import config.AppConfig
+import connectors.cache.FeatureToggleConnector
+import connectors.{ListOfSchemesConnector, MinimalDetailsConnector}
 import models.{Items, ListOfLegacySchemes}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentMatchers, MockitoSugar}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
+import renderer.Renderer
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import uk.gov.hmrc.viewmodels.Table.Cell
 import uk.gov.hmrc.viewmodels.Text.Literal
 import uk.gov.hmrc.viewmodels.{MessageInterpolators, Table}
@@ -36,9 +40,17 @@ class SchemeSearchServiceSpec extends SpecBase with MockitoSugar with ScalaFutur
 
   import SchemeSearchServiceSpec._
 
+  private val mockAppConfig = mock[AppConfig]
   private val mockFuzzyMatching = mock[SchemeFuzzyMatcher]
   private val mockListOfSchemesConnector = mock[ListOfSchemesConnector]
-  val schemeSearchService = new SchemeSearchService(mockFuzzyMatching, mockListOfSchemesConnector)
+  private val mockMinimalDetailsConnector: MinimalDetailsConnector = mock[MinimalDetailsConnector]
+  private val paginationService = new PaginationService
+  private val mockFeatureToggleConnector: FeatureToggleConnector = mock[FeatureToggleConnector]
+  private val mockRenderer: NunjucksRenderer = mock[NunjucksRenderer]
+  private val typeOfList:List[String]=List("pension scheme","RAC/DAC")
+
+  val schemeSearchService = new SchemeSearchService(mockAppConfig, mockFuzzyMatching, mockListOfSchemesConnector,
+    mockMinimalDetailsConnector, paginationService, mockFeatureToggleConnector, new Renderer(mockAppConfig, mockRenderer))
 
   "search" must {
 
@@ -130,7 +142,7 @@ class SchemeSearchServiceSpec extends SpecBase with MockitoSugar with ScalaFutur
 
       val t=Table(head, rows,  attributes = Map("role" -> "table"))
 
-      schemeSearchService.mapToTable(List(fullSchemes.head), isRacDac = isRacDacFalse)  mustBe t
+      schemeSearchService.mapToTable(List(fullSchemes.head), isRacDac = isRacDacFalse, viewOnly = true)  mustBe t
 
     }
     "return correct table of scheme details with rac dac" in {
@@ -145,7 +157,7 @@ class SchemeSearchServiceSpec extends SpecBase with MockitoSugar with ScalaFutur
 
       val t=Table(head, rows,  attributes = Map("role" -> "table"))
 
-      schemeSearchService.mapToTable(fullSchemes.tail, isRacDac = isRacDacTrue)  mustBe t
+      schemeSearchService.mapToTable(fullSchemes.tail, isRacDac = isRacDacTrue, viewOnly = true)  mustBe t
 
     }
 
