@@ -17,10 +17,11 @@
 package controllers
 
 import connectors.cache.UserAnswersCacheConnector
-import controllers.actions.{DataRetrievalAction, AuthAction}
+import controllers.actions.{AuthAction, DataRetrievalAction}
+import controllers.testonly.TestMongoController
 import helpers.TaskListHelper
 import models.requests.OptionalDataRequest
-import play.api.i18n.{MessagesApi, I18nSupport}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import renderer.Renderer
@@ -45,17 +46,20 @@ class TaskListController @Inject()(
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData).async {
     implicit request =>
-
+      println(s"\n\n >>>> xx0    ${request.userAnswers}    ${request.lock}")
       (request.userAnswers, request.lock) match {
         case (_, None) =>
+          println("\n\n >>>> xx1")
           Future.successful(Redirect(controllers.routes.IndexController.onPageLoad())) //TODO Change to list of schemes page once implemented
 
         case (Some(ua), _) =>
+          println("\n\n >>>> xx2")
           implicit val userAnswers: UserAnswers = ua
           renderView
 
         case (None, Some(lock)) =>
-          implicit val userAnswers: UserAnswers = UserAnswers(Json.obj()) //TODO once getSchemeDetails API is implemented, fetch data from API
+          println("\n\n >>>> xx3")
+          implicit val userAnswers: UserAnswers = UserAnswers(TestMongoController.data) //TODO once getSchemeDetails API is implemented, fetch data from API
           userAnswersCacheConnector.save(lock, userAnswers.data).flatMap { _ =>
             renderView
           }

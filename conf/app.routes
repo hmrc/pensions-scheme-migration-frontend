@@ -90,7 +90,7 @@ GET         /list-rac-dacs                                          controllers.
 POST        /list-rac-dacs                                          controllers.preMigration.ListOfSchemesController.onSearch(migrationType: MigrationType = RacDac)
 GET         /list-rac-dacs/page/:pageNumber                         controllers.preMigration.ListOfSchemesController.onPageLoadWithPageNumber(pageNumber: Int, migrationType: MigrationType = RacDac)
 POST        /list-rac-dacs/page/:pageNumber                         controllers.preMigration.ListOfSchemesController.onSearchWithPageNumber(pageNumber: Int, migrationType: MigrationType = RacDac)
-
+GET         /list-schemes-on-click/:pstr/:isRacDac                  controllers.preMigration.ListOfSchemesController.clickSchemeLink(pstr: String, isRacDac: Boolean)
 
 GET         /no-pension-schemes-registered                         controllers.preMigration.NotRegisterController.onPageLoadScheme
 GET         /no-rac-dacs-registered                                controllers.preMigration.NotRegisterController.onPageLoadRacDac

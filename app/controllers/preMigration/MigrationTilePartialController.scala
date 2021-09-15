@@ -17,7 +17,10 @@
 package controllers.preMigration
 
 import config.AppConfig
+import connectors.cache.FeatureToggleConnector
 import controllers.actions._
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.MigrationTransfer
 import models.PageLink
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -27,12 +30,13 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class MigrationTilePartialController @Inject()(
                                             appConfig: AppConfig,
                                             override val messagesApi: MessagesApi,
                                             authenticate: AuthAction,
+                                            featureToggleConnector: FeatureToggleConnector,
                                             val controllerComponents: MessagesControllerComponents,
                                             renderer: Renderer
                                           )(implicit ec: ExecutionContext)
@@ -41,16 +45,25 @@ class MigrationTilePartialController @Inject()(
     with NunjucksSupport {
 
   def migrationPartial: Action[AnyContent] = authenticate.async { implicit request =>
+    val links: Future[Seq[PageLink]] = featureToggleConnector.get(MigrationTransfer.asString).map {
+      case Enabled(_) =>
+        Seq(
+          PageLink("add-pension-schemes", appConfig.schemesMigrationTransfer, msg"messages__migrationLink__addSchemesLink"),
+          PageLink("add-rac-dacs", appConfig.racDacMigrationTransfer, msg"messages__migrationLink__addRacDacsLink")
+        )
+      case _ =>
+        Seq(
+          PageLink("view-pension-schemes", appConfig.schemesMigrationViewOnly, msg"messages__migrationLink__viewSchemesLink"),
+          PageLink("view-rac-dacs", appConfig.racDacMigrationViewOnly, msg"messages__migrationLink__viewRacDacsLink")
+        )
+    }
 
-    val links: Seq[PageLink] = Seq(
-      PageLink("view-pension-schemes", appConfig.schemesMigrationViewOnly, msg"messages__migrationLink__viewSchemesLink"),
-      PageLink("view-rac-dacs", appConfig.racDacMigrationViewOnly, msg"messages__migrationLink__viewRacDacsLink")
-    )
-
-    renderer.render(
-      template = "preMigration/migrationLinksPartial.njk",
-      ctx = Json.obj("links" -> Json.toJson(links))
-    ).map(Ok(_))
+    links.flatMap { migrationLinks =>
+      renderer.render(
+        template = "preMigration/migrationLinksPartial.njk",
+        ctx = Json.obj("links" -> Json.toJson(migrationLinks))
+      ).map(Ok(_))
+    }
   }
 
 }

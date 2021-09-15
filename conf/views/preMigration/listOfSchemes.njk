@@ -14,8 +14,10 @@
 {% set heading  %}
     {%  if(form.value.value | length )%}
          {{ messages("messages__listSchemes__search_result_title", typeOfList) }}
+    {% elif viewOnly %}
+        {{ messages("messages__listSchemes__title", typeOfList) }}
     {% else %}
-         {{ messages("messages__listSchemes__title", typeOfList) }}
+         {{ messages("messages__listSchemes__add_title", typeOfList) }}
     {% endif %}
 {% endset %}
 

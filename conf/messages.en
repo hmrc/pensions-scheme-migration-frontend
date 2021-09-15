@@ -994,6 +994,7 @@ messages__partnershipDetails__whatYouWillNeed_li2_1 = VAT registration number
 messages__partnershipDetails__whatYouWillNeed_li2_2 = employer PAYE reference (you can tell us any employer PAYE reference if {0} has more than one)
 
 messages__listSchemes__title = List of {0}s on the Pension Schemes Online service
+messages__listSchemes__add_title = Add a {0} from the Pension Schemes Online service
 messages__listSchemes__noSchemes = You have no {0}s from the Pension Schemes Online service
 messages__listSchemes__registerNewScheme = Register a new scheme
 messages__listSchemes__column_schemeName = Scheme name
@@ -1046,3 +1047,6 @@ messages__otherTrustees__error__required = Select yes if you need to tell us abo
 messages__addTrustees_at_maximum = You have added the maximum number of trustees.
 
 messages__trusteePartnershipContactDetails__whatYouWillNeed_title = The partnership’s contact details
+
+messages__racdac_bulk_list__title = List of RAC/DACs on the Pension Schemes Online service
+messages__racdac_bulk_list__error =  Select yes if you want to add all your RAC/DACs from the Pension Schemes Online service

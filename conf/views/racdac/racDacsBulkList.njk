@@ -1,0 +1,79 @@
+{% extends "includes/layout.njk" %}
+
+{% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
+{% from "govuk/components/input/macro.njk"         import govukInput %}
+{% from "macros/title.njk"                         import title %}
+{% from "macros/returnLink.njk"                    import returnLink %}
+{% from "macros/navigationLink.njk"                import navigationLink %}
+{% from "macros/pageNumberLink.njk"                import pageNumberLink %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/button/macro.njk"        import govukButton %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+
+{% block pageTitle %}
+    {{ messages("messages__listSchemes__title", messages("messages__racdac")) }}
+{% endblock %}
+
+
+
+{% block mainContent %}
+
+   <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            {% if form.errors.length > 0 %}
+                {{ govukErrorSummary({
+                    "titleText": messages("error.summary.title"),
+                    "errorList": form.errors
+                }) }}
+            {% endif %}
+
+            <h1 class="govuk-heading-xl">{{ messages("messages__listSchemes__title", messages("messages__racdac")) }}</h1>
+
+            <form method="post" autocomplete="off" novalidate>
+
+            {{ csrf() | safe }}
+
+             {% if schemes %}
+                      {{ govukTable(schemes) }}
+             {% endif %}
+
+             {% if(numberOfSchemes > pagination) %}
+                        <div class="grid-row">
+                            <div class="column-two-thirds">
+                                <p class="govuk-margin-top-5" id="pagination-text">
+                                    {{paginationText}}
+                                </p>
+                                <nav class="govuk-margin-top-5" aria-label="page">
+                                    {% if(pageNumber > 1) %}
+
+                                      {{navigationLink(messages("messages__listSchemes__pagination__first"),"1")}}
+                                      {{navigationLink(messages("messages__listSchemes__pagination__prev"),(pageNumber-1))}}
+
+                                    {% endif %}
+
+                                    {% for  pageNumber  in pageNumberLinks   %}
+
+                                        {{pageNumberLink(pageNumber,numberOfPages)}}
+
+                                    {% endfor %}
+
+                                    {% if(pageNumber < numberOfPages) %}
+
+                                     {{navigationLink(messages("messages__listSchemes__pagination__next"),(pageNumber+1))}}
+                                     {{navigationLink(messages("messages__listSchemes__pagination__last"),(numberOfPages))}}
+
+                                   {% endif %}
+                                </nav>
+                            </div>
+                        </div>
+             {% endif %}
+
+         </form>
+
+        <p class="govuk-body"><a id="return_to_psa" href="{{ returnUrl }}" class="govuk-link">{{ messages("return.to.link", psaName) }}</a></p>
+        </div>
+   </div>
+{% endblock %}

@@ -19,7 +19,7 @@ package controllers.preMigration
 import config.AppConfig
 import connectors.MinimalDetailsConnector
 import controllers.Retrievals
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AuthAction, DataRetrievalAction}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -35,7 +35,6 @@ class BeforeYouStartController @Inject()(
                                            override val messagesApi: MessagesApi,
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
                                            minimalDetailsConnector: MinimalDetailsConnector,
                                            val controllerComponents: MessagesControllerComponents,
                                            val renderer: Renderer
@@ -46,7 +45,7 @@ class BeforeYouStartController @Inject()(
     with NunjucksSupport {
 
   def onPageLoad: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData).async {
       implicit request =>
         minimalDetailsConnector.getPSAName.flatMap { psaName =>
             renderer.render(
