@@ -3,7 +3,7 @@
 {% from "macros/title.njk"                         import title %}
 {% from "macros/returnLink.njk"                    import returnLink %}
 {% from "govuk/components/button/macro.njk"        import govukButton %}
-{% from "govuk/components/" import  %}
+{% from "govuk/components/checkboxes/macro.njk"    import govukCheckboxes %}
 
 {% block pageTitle %}
   {{ title(messages("messages__declaration__title")) }}
@@ -28,9 +28,18 @@
             <li>{{ messages("messages__declaration__statement6") }}</li>
 
         </ul>
+
+          {{ govukCheckboxes({
+              items: [{
+                  value: "agree",
+                  text: "Agree",
+                  attributes: {id: "agree checkbox"}
+              }]
+          }) }}
+
           {{ govukButton({
               text: messages("site.save_and_continue"),
-              attributes: {id: "submit"}
+              attributes: {id: "save and continue"}
           }) }}
       </div>
     </div>
