@@ -14,64 +14,49 @@
  * limitations under the License.
  */
 
-package controllers.establishers.partnership.address
+package controllers.trustees.partnership.details
 
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
-import identifiers.establishers.partnership.PartnershipDetailsId
+import controllers.actions._
+import identifiers.trustees.partnership.PartnershipDetailsId
 import matchers.JsonMatchers
+import models.{Index, NormalMode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
-import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import utils.Data.ua
-import utils.{Data, UserAnswers}
+import utils.Data.{partnershipDetails, ua}
+import utils.UserAnswers
 
 import scala.concurrent.Future
 
-class WhatYouWillNeedControllerSpec
-  extends ControllerSpecBase
-    with NunjucksSupport
-    with JsonMatchers
-    with TryValues {
+class WhatYouWillNeedControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues {
 
-  private val userAnswers: UserAnswers =
-    ua.set(PartnershipDetailsId(0), Data.partnershipDetails).success.value
-  private val templateToBeRendered: String =
-    "address/whatYouWillNeed.njk"
-
+  private val index: Index = Index(0)
+  private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(0), partnershipDetails).success.value
+  private val templateToBeRendered: String = "trustees/partnership/details/whatYouWillNeed.njk"
   private def json: JsObject =
     Json.obj(
-      "name" -> "test partnership",
-      "entityType" -> Messages("messages__title_partnership"),
-      "continueUrl" -> routes.EnterPostcodeController.onPageLoad(0).url,
-      "schemeName" -> "Test scheme name"
+      "name"        -> partnershipDetails.partnershipName,
+      "continueUrl" -> routes.HaveUTRController.onPageLoad(index, NormalMode).url,
+      "schemeName"  -> "Test scheme name"
     )
 
-  private def controller(
-                          dataRetrievalAction: DataRetrievalAction
-                        ): WhatYouWillNeedController =
-    new WhatYouWillNeedController(
-      messagesApi = messagesApi,
-      authenticate = new FakeAuthAction(),
-      getData = dataRetrievalAction,
-      requireData = new DataRequiredActionImpl,
-      controllerComponents = controllerComponents,
-      renderer = new Renderer(mockAppConfig, mockRenderer)
-    )
+  private def controller(dataRetrievalAction: DataRetrievalAction): WhatYouWillNeedController =
+    new WhatYouWillNeedController(messagesApi, new FakeAuthAction(), dataRetrievalAction,
+      new DataRequiredActionImpl, controllerComponents, new Renderer(mockAppConfig, mockRenderer))
 
   "WhatYouWillNeedController" must {
     "return OK and the correct view for a GET" in {
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
       val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(userAnswers))
@@ -86,4 +71,3 @@ class WhatYouWillNeedControllerSpec
     }
   }
 }
-

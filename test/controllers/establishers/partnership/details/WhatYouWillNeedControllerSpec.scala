@@ -44,7 +44,7 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase with NunjucksSupp
   private def json: JsObject =
     Json.obj(
       "name"        -> partnershipDetails.partnershipName,
-      "pageTitle" -> Messages("messages__parrtnershipDetails__whatYouWillNeed_title"),
+      "pageTitle" -> Messages("messages__partnershipDetails__whatYouWillNeed_title"),
       "continueUrl" -> routes.HaveUTRController.onPageLoad(index, NormalMode).url,
       "schemeName"  -> "Test scheme name"
     )

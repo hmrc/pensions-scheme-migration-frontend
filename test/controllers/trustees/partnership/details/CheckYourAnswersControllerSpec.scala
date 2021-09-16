@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package controllers.establishers.individual.address
+package controllers.trustees.partnership.details
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import helpers.cya.establishers.individual.EstablisherAddressCYAHelper
-import helpers.routes.EstablishersIndividualRoutes
+import helpers.cya.trustees.partnership.TrusteePartnershipDetailsCYAHelper
 import matchers.JsonMatchers
-import models.NormalMode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
@@ -29,7 +27,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Value, Row, Key}
+import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels.Text.Literal
 import uk.gov.hmrc.viewmodels.{Html, NunjucksSupport}
 import utils.Data.{schemeName, ua}
@@ -42,10 +40,10 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 
   private val templateToBeRendered = "check-your-answers.njk"
-  private val mockCyaHelper: EstablisherAddressCYAHelper = mock[EstablisherAddressCYAHelper]
-  private def httpPathGET: String = EstablishersIndividualRoutes.cyaAddressRoute(0, NormalMode).url
+  private val mockCyaHelper: TrusteePartnershipDetailsCYAHelper = mock[TrusteePartnershipDetailsCYAHelper]
+  private def httpPathGET: String = routes.CheckYourAnswersController.onPageLoad(0).url
   val extraModules: Seq[GuiceableModule] = Seq(
-    bind[EstablisherAddressCYAHelper].toInstance(mockCyaHelper)
+    bind[TrusteePartnershipDetailsCYAHelper].toInstance(mockCyaHelper)
   )
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
   private val rows = Seq(
@@ -70,15 +68,15 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
   override def beforeEach: Unit = {
     super.beforeEach
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(play.twirl.api.Html("")))
-    when(mockCyaHelper.rows(any())(any(), any())).thenReturn(rows)
+    when(mockCyaHelper.detailsRows(any())(any(), any())).thenReturn(rows)
   }
 
   "CheckYourAnswers Controller" must {
 
     "return OK and the correct view for a GET" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, httpGETRequest(httpPathGET)).value
 

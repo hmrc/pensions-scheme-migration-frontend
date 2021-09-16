@@ -6,7 +6,7 @@
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 
 {% block pageTitle %}
-    {{ title(pageTitle) }}
+    {{ pageTitle }}
 {% endblock %}
 
 {% block mainContent %}
@@ -25,7 +25,7 @@
                 <li>{{ messages("messages__partnershipDetails__whatYouWillNeed_li1_1") }}</li>
             </ul>
 
-             <p class="govuk-body">
+            <p class="govuk-body">
                 {{ messages("messages__partnershipDetails__whatYouWillNeed_list2_head", name) }}
             </p>
 

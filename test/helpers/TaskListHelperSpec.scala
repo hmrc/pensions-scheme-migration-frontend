@@ -20,10 +20,10 @@ import base.SpecBase
 import identifiers.beforeYouStart.SchemeTypeId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.{IsEstablisherNewId, EstablisherKindId}
+import identifiers.establishers.partnership.{PartnershipDetailsId => EstablisherPartnershipDetailsId}
+import identifiers.establishers.{EstablisherKindId, IsEstablisherNewId}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.partnership.{PartnershipDetailsId => TrusteePartnershipDetailsId}
-import identifiers.establishers.partnership.{PartnershipDetailsId => EstablisherPartnershipDetailsId}
 import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId}
 import models._
 import models.establishers.EstablisherKind
@@ -32,8 +32,8 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.must.Matchers
-import utils.Data.{schemeName, completeUserAnswers, ua}
-import utils.{UserAnswers, Enumerable}
+import utils.Data.{completeUserAnswers, schemeName, ua}
+import utils.{Enumerable, UserAnswers}
 import viewmodels.{Message, TaskListEntitySection}
 
 class TaskListHelperSpec extends SpecBase with Matchers with MockitoSugar with Enumerable.Implicits with BeforeAndAfterEach {
