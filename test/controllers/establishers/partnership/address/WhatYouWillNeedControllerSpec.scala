@@ -17,7 +17,7 @@
 package controllers.establishers.partnership.address
 
 import controllers.ControllerSpecBase
-import controllers.actions._
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import identifiers.establishers.partnership.PartnershipDetailsId
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
@@ -83,3 +83,4 @@ class WhatYouWillNeedControllerSpec
     }
   }
 }
+

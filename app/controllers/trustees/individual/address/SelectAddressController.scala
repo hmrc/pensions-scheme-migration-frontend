@@ -20,15 +20,16 @@ import config.AppConfig
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
-import controllers.address.{AddressListController, AddressPages}
+import controllers.address.{AddressPages, AddressListController}
 import forms.address.AddressListFormProvider
+import helpers.routes.TrusteesIndividualRoutes
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.individual.TrusteeNameId
-import identifiers.trustees.individual.address.{AddressId, AddressListId, EnterPostCodeId}
-import models.{Index, Mode, NormalMode}
+import identifiers.trustees.individual.address.{EnterPostCodeId, AddressListId, AddressId}
+import models.{Mode, Index, NormalMode}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -83,7 +84,7 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
             "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
             "entityType" -> msg("trusteeEntityTypeIndividual"),
             "entityName" -> name,
-            "enterManuallyUrl" -> controllers.trustees.individual.address.routes.ConfirmAddressController.onPageLoad(index).url,
+            "enterManuallyUrl" -> TrusteesIndividualRoutes.confirmAddressRoute(index, mode).url,
             "schemeName" -> schemeName
           )
         }
