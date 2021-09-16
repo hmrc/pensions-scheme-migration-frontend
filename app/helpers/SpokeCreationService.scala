@@ -25,6 +25,7 @@ import helpers.spokes.trustees.company.{TrusteeCompanyAddress, TrusteeCompanyCon
 import helpers.spokes.trustees.individual.{TrusteeIndividualAddress, TrusteeIndividualContactDetails, TrusteeIndividualDetails}
 import helpers.spokes.trustees.partnership.TrusteePartnershipAddress
 import helpers.spokes.trustees.partnership.TrusteePartnershipContactDetails
+import helpers.spokes.trustees.partnership.TrusteePartnershipDetails
 import helpers.spokes.{AboutMembersSpoke, BeforeYouStartSpoke, BenefitsAndInsuranceSpoke, Spoke}
 import models.Index._
 import models.{Entity, EntitySpoke, Index, TaskListLink}
@@ -175,6 +176,7 @@ class SpokeCreationService extends Enumerable.Implicits {
   def getTrusteePartnershipSpokes(answers: UserAnswers, name: String, index: Index)
                              (implicit messages: Messages): Seq[EntitySpoke] = {
     Seq(
+      createSpoke(answers, TrusteePartnershipDetails(index, answers), name),
       createSpoke(answers, TrusteePartnershipAddress(index, answers), name),
       createSpoke(answers, TrusteePartnershipContactDetails(index, answers), name))
   }
