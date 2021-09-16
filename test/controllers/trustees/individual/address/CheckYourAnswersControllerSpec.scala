@@ -19,7 +19,9 @@ package controllers.trustees.individual.address
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import helpers.cya.trustees.individual.TrusteeAddressCYAHelper
+import helpers.routes.TrusteesIndividualRoutes
 import matchers.JsonMatchers
+import models.NormalMode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
@@ -27,7 +29,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
+import uk.gov.hmrc.viewmodels.SummaryList.{Action, Value, Row, Key}
 import uk.gov.hmrc.viewmodels.Text.Literal
 import uk.gov.hmrc.viewmodels.{Html, NunjucksSupport}
 import utils.Data.{schemeName, ua}
@@ -41,7 +43,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
 
   private val templateToBeRendered = "check-your-answers.njk"
   private val mockCyaHelper: TrusteeAddressCYAHelper = mock[TrusteeAddressCYAHelper]
-  private def httpPathGET: String = controllers.trustees.individual.address.routes.CheckYourAnswersController.onPageLoad(0).url
+  private def httpPathGET: String = TrusteesIndividualRoutes.cyaAddressRoute(0, NormalMode).url
   val extraModules: Seq[GuiceableModule] = Seq(
     bind[TrusteeAddressCYAHelper].toInstance(mockCyaHelper)
   )

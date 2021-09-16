@@ -18,15 +18,16 @@ package helpers.cya.trustees.individual
 
 import helpers.cya.CYAHelper
 import helpers.cya.CYAHelper.getName
+import helpers.routes.TrusteesIndividualRoutes
 import identifiers.trustees.individual.TrusteeNameId
-import identifiers.trustees.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
-import models.Index
+import identifiers.trustees.individual.address.{AddressYearsId, PreviousAddressId, AddressId}
+import models.{Index, NormalMode}
 import models.requests.DataRequest
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.SummaryList.Row
-import utils.{Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable}
 import viewmodels.Message
 
 class TrusteeAddressCYAHelper
@@ -47,13 +48,13 @@ class TrusteeAddressCYAHelper
       answerOrAddRow(
         AddressId(index),
         Message("messages__trusteeAddress__whatYouWillNeed_h1", trusteeName).resolve,
-        Some(controllers.trustees.individual.address.routes.EnterPostcodeController.onPageLoad(index).url),
+        Some(TrusteesIndividualRoutes.enterPostcodeRoute(index, NormalMode).url),
         Some(msg"messages__visuallyHidden__address".withArgs(trusteeName)), answerAddressTransform
       ),
       answerOrAddRow(
         AddressYearsId(index),
         Message("addressYears.title", trusteeName).resolve,
-        Some(controllers.trustees.individual.address.routes.AddressYearsController.onPageLoad(index).url),
+        Some(TrusteesIndividualRoutes.timeAtAddressRoute(index, NormalMode).url),
         Some(msg"messages__visuallyhidden__trusteeAddressYears".withArgs(trusteeName)), answerBooleanTransform
       )
     )
@@ -65,7 +66,7 @@ class TrusteeAddressCYAHelper
         answerOrAddRow(
           PreviousAddressId(index),
           Message("messages__trusteePreviousAddress").resolve,
-          Some(controllers.trustees.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index).url),
+          Some(TrusteesIndividualRoutes.enterPreviousPostcodeRoute(index, NormalMode).url),
           Some(msg"messages__visuallyHidden__previousAddress".withArgs(trusteeName)), answerAddressTransform
         )
       )
