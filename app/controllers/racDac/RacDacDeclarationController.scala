@@ -16,9 +16,12 @@
 
 package controllers.racDac
 
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import identifiers.beforeYouStart.SchemeNameId
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -35,14 +38,17 @@ class RacDacDeclarationController @Inject()(
                                      )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
-    {
+    with Retrievals {
 
-  def onPageLoad: Action[AnyContent] = Action.async { implicit request =>
-    renderer.render("racDac/declaration.njk").map(Ok(_))
+  def onPageLoad: Action[AnyContent] =
+    (authenticate andThen getData andThen requireData).async {
+      implicit request =>
+        SchemeNameId.retrieve.right.map {
+          schemeName =>
+            val json = Json.obj(
+              "schemeName" -> schemeName
+            )
+            renderer.render("racDac/declaration.njk", json).map(Ok(_))
+        }
   }
-
-  def onSubmit: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData) {
-      Redirect("")
-    }
 }
