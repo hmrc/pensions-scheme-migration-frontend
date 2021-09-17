@@ -47,7 +47,7 @@ class DeclarationController @Inject()(
           schemeName =>
             val json = Json.obj(
               "schemeName" -> schemeName,
-              "submitUrl" -> routes.DeclarationController.onSubmit().url
+              "submitUrl" -> controllers.racDac.routes.DeclarationController.onSubmit().url
             )
             renderer.render("racDac/declaration.njk", json).map(Ok(_))
         }
@@ -55,7 +55,7 @@ class DeclarationController @Inject()(
 
   def onSubmit: Action[AnyContent] =
     (authenticate andThen getData andThen requireData) {
-      Redirect(controllers.routes.IndexController.onPageLoad())
+      Redirect(controllers.routes.IndexController.onPageLoad().url)
   }
 
 }
