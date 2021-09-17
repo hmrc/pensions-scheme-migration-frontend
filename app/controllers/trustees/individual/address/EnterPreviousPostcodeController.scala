@@ -22,14 +22,15 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.PostcodeController
 import forms.address.PostcodeFormProvider
+import helpers.routes.TrusteesIndividualRoutes
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address.EnterPreviousPostCodeId
 import models.requests.DataRequest
-import models.{Index, Mode, NormalMode}
+import models.{Mode, Index, NormalMode}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -80,7 +81,7 @@ class EnterPreviousPostcodeController @Inject()(val appConfig: AppConfig,
         "entityType" -> msg("trusteeEntityTypeIndividual"),
         "entityName" -> name,
         "form" -> form,
-        "enterManuallyUrl" -> controllers.trustees.individual.address.routes.ConfirmPreviousAddressController.onPageLoad(index).url,
+        "enterManuallyUrl" -> TrusteesIndividualRoutes.confirmPreviousAddressRoute(index, mode).url,
         "schemeName" -> schemeName,
         "h1MessageKey" -> "previousPostcode.title"
       )

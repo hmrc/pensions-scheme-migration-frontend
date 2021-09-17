@@ -17,8 +17,9 @@
 package controllers.trustees.individual.details
 
 import controllers.Retrievals
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{DataRetrievalAction, DataRequiredAction, AuthAction}
 import helpers.cya.MandatoryAnswerMissingException
+import helpers.routes.TrusteesIndividualRoutes
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.individual.TrusteeNameId
 import models.{Index, NormalMode}
@@ -55,7 +56,7 @@ class WhatYouWillNeedController @Inject()(
               ctx = Json.obj(
                 "name"        -> personName.fullName,
                 "entityType" -> Messages("messages__title_individual"),
-                "continueUrl" -> routes.TrusteeDOBController.onPageLoad(index, NormalMode).url,
+                "continueUrl" -> TrusteesIndividualRoutes.dateOfBirthRoute(index, NormalMode).url,
                 "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )
             ).map(Ok(_))

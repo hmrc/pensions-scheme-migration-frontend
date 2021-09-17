@@ -18,11 +18,11 @@ package controllers.trustees.individual.address
 
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import controllers.trustees.individual.address.routes._
 import helpers.cya.MandatoryAnswerMissingException
+import helpers.routes.TrusteesIndividualRoutes
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.individual.TrusteeNameId
-import models.Index
+import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -56,8 +56,8 @@ class WhatYouWillNeedController @Inject()(
               ctx = Json.obj(
                 "name" -> personName.fullName,
                 "entityType" -> Messages("messages__title_individual"),
-                "continueUrl" -> EnterPostcodeController.onPageLoad(index).url,
-                "schemeName" -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
+                "continueUrl" -> TrusteesIndividualRoutes.enterPostcodeRoute(index, NormalMode).url,
+                "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )
             ).map(Ok(_))
         }

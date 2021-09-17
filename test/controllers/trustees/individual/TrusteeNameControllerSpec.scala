@@ -19,9 +19,10 @@ package controllers.trustees.individual
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.PersonNameFormProvider
+import helpers.routes.TrusteesIndividualRoutes
 import identifiers.trustees.individual.TrusteeNameId
 import matchers.JsonMatchers
-import models.{Index, PersonName}
+import models.{PersonName, Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -32,7 +33,7 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
-import utils.{Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable}
 
 import scala.concurrent.Future
 
@@ -48,8 +49,8 @@ class TrusteeNameControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
-  private def httpPathGET: String = controllers.trustees.individual.routes.TrusteeNameController.onPageLoad(index).url
-  private def httpPathPOST: String = controllers.trustees.individual.routes.TrusteeNameController.onSubmit(index).url
+  private def httpPathGET: String = TrusteesIndividualRoutes.nameRoute(index, NormalMode).url
+  private def httpPathPOST: String = TrusteesIndividualRoutes.namePOSTRoute(index, NormalMode).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "firstName" -> Seq("Jane"),

@@ -18,9 +18,10 @@ package controllers.trustees.individual.contact
 
 import controllers.ControllerSpecBase
 import controllers.actions._
+import helpers.routes.TrusteesIndividualRoutes
 import identifiers.trustees.individual.TrusteeNameId
 import matchers.JsonMatchers
-import models.{NormalMode, PersonName}
+import models.{PersonName, NormalMode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
@@ -51,8 +52,8 @@ class WhatYouWillNeedControllerSpec
       "name" -> personName.fullName,
       "pageHeading" -> Message("messages__title_individual"),
       "entityType" -> Message("messages__individual"),
-      "continueUrl" -> controllers.trustees.individual.contact.routes.EnterEmailController.onPageLoad(0, NormalMode).url,
-      "schemeName" -> schemeName
+      "continueUrl" -> TrusteesIndividualRoutes.emailRoute(0, NormalMode).url,
+      "schemeName"  -> schemeName
     )
 
   private def controller(

@@ -17,11 +17,12 @@
 package helpers.cya.trustees.individual
 
 import base.SpecBase._
+import helpers.routes.TrusteesIndividualRoutes
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.individual.TrusteeNameId
-import identifiers.trustees.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
+import identifiers.trustees.individual.address.{AddressYearsId, PreviousAddressId, AddressId}
 import models.requests.DataRequest
-import models.{Address, MigrationLock, PersonName}
+import models.{PersonName, Address, MigrationLock, NormalMode}
 import org.scalatest.TryValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -30,9 +31,9 @@ import play.api.mvc.AnyContent
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.viewmodels.SummaryList._
 import uk.gov.hmrc.viewmodels.Text.{Literal, Message => GovUKMsg}
-import uk.gov.hmrc.viewmodels.{Html, SummaryList, Text}
-import utils.Data.{credId, psaId, pstr, schemeName}
-import utils.{Enumerable, UserAnswers}
+import uk.gov.hmrc.viewmodels.{SummaryList, Html, Text}
+import utils.Data.{pstr, schemeName, psaId, credId}
+import utils.{UserAnswers, Enumerable}
 
 class TrusteeAddressCYAHelperSpec extends AnyWordSpec with Matchers with TryValues with Enumerable.Implicits {
 
@@ -82,22 +83,22 @@ class TrusteeAddressCYAHelperSpec extends AnyWordSpec with Matchers with TryValu
 
       val result = trusteeAddressCYAHelper.rows(0)(dataRequest(ua), messages)
 
-      result.head mustBe summaryListRowHtml(key = messages("messages__address__whatYouWillNeed_h1", trusteeName.fullName),
+      result.head mustBe summaryListRowHtml(key = Messages("messages__address__whatYouWillNeed_h1", trusteeName.fullName),
         value = answerAddressTransform(trusteeAddress), Some(Link(text = Messages("site.change"),
-          target = controllers.trustees.individual.address.routes.EnterPostcodeController.onPageLoad(0).url,
+          target = TrusteesIndividualRoutes.enterPostcodeRoute(0, NormalMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__address", trusteeName.fullName))),
           attributes = Map("id" -> "cya-0-0-change"))))
 
       result(1) mustBe summaryListRow(key = Messages("addressYears.title", trusteeName.fullName), valueMsgKey = "booleanAnswer.false",
         Some(Link(text = Messages("site.change"),
-          target = controllers.trustees.individual.address.routes.AddressYearsController.onPageLoad(0).url,
+          target = TrusteesIndividualRoutes.timeAtAddressRoute(0, NormalMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
             Messages("messages__visuallyhidden__addressYears", trusteeName.fullName))),
           attributes = Map("id" -> "cya-0-1-change"))))
 
-      result(2) mustBe summaryListRowHtml(key = messages("messages__previousAddress", trusteeName.fullName),
+      result(2) mustBe summaryListRowHtml(key = Messages("messages__previousAddress", trusteeName.fullName),
         value = answerAddressTransform(trusteePreviousAddress), Some(Link(text = Messages("site.change"),
-          target = controllers.trustees.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(0).url,
+          target = TrusteesIndividualRoutes.enterPreviousPostcodeRoute(0, NormalMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__previousAddress", trusteeName.fullName))),
           attributes = Map("id" -> "cya-0-2-change"))))
     }

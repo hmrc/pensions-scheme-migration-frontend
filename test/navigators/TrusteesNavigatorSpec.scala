@@ -17,13 +17,13 @@
 package navigators
 
 import base.SpecBase
-import controllers.trustees.individual.details.{routes => detailsRoutes}
 import controllers.trustees.routes
+import helpers.routes.TrusteesIndividualRoutes
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address._
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.details._
-import identifiers.trustees.{AddTrusteeId, OtherTrusteesId, TrusteeKindId}
+import identifiers.trustees.{OtherTrusteesId, AddTrusteeId, TrusteeKindId}
 import identifiers.{Identifier, TypedIdentifier}
 import models.trustees.TrusteeKind
 import models._
@@ -32,7 +32,7 @@ import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes
 import play.api.mvc.Call
 import utils.Data.ua
-import utils.{Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable}
 
 import java.time.LocalDate
 
@@ -48,30 +48,29 @@ class TrusteesNavigatorSpec
     ua.set(TrusteeNameId(0), PersonName("Jane", "Doe")).success.value
   private val uaWithTrusteeKind: TrusteeKind => UserAnswers = kind => UserAnswers().set(TrusteeKindId(index), kind).get
   private val indvDetailsUa: UserAnswers = uaWithTrusteeKind(TrusteeKind.Individual).set(TrusteeNameId(0), PersonName("Jane", "Doe")).success.value
-  private val trusteeNamePage: Call = controllers.trustees.individual.routes.TrusteeNameController.onPageLoad(index)
+  private val trusteeNamePage: Call = TrusteesIndividualRoutes.nameRoute(index, NormalMode)
   private val companyPage: Call = controllers.trustees.company.routes.CompanyDetailsController.onPageLoad(index)
   private val partnershipPage: Call = controllers.trustees.partnership.routes.PartnershipDetailsController.onPageLoad(index)
-  private def trusteePhonePage(mode: Mode): Call = controllers.trustees.individual.contact.routes.EnterPhoneController.onPageLoad(index, mode)
+  private def trusteePhonePage(mode: Mode): Call = TrusteesIndividualRoutes.phoneNumberRoute(index, mode)
   private val addTrusteePage: Call = controllers.trustees.routes.AddTrusteeController.onPageLoad()
   private val taskListPage: Call = controllers.routes.TaskListController.onPageLoad()
   private val otherTrusteesPage: Call = controllers.trustees.routes.OtherTrusteesController.onPageLoad
   private val trusteeKindPage: Call = routes.TrusteeKindController.onPageLoad(index)
-  private def hasNinoPage(mode: Mode): Call =
-    detailsRoutes.TrusteeHasNINOController.onPageLoad(index, mode)
+  private def hasNinoPage(mode: Mode): Call = TrusteesIndividualRoutes.haveNationalInsuranceNumberRoute(index, mode)
   private def enterNinoPage(mode: Mode): Call =
-    detailsRoutes.TrusteeEnterNINOController.onPageLoad(index, mode)
+    TrusteesIndividualRoutes.enterNationaInsuranceNumberRoute(index, mode)
   private def noNinoPage(mode: Mode): Call =
-    detailsRoutes.TrusteeNoNINOReasonController.onPageLoad(index, mode)
+    TrusteesIndividualRoutes.reasonForNoNationalInsuranceNumberRoute(index, mode)
   private def hasUtrPage(mode: Mode): Call =
-    detailsRoutes.TrusteeHasUTRController.onPageLoad(index, mode)
+    TrusteesIndividualRoutes.haveUniqueTaxpayerReferenceRoute(index, mode)
   private def enterUtrPage(mode: Mode): Call =
-    detailsRoutes.TrusteeEnterUTRController.onPageLoad(index, mode)
+    TrusteesIndividualRoutes.enterUniqueTaxpayerReferenceRoute(index, mode)
   private def noUtrPage(mode: Mode): Call =
-    detailsRoutes.TrusteeNoUTRReasonController.onPageLoad(index, mode)
+    TrusteesIndividualRoutes.reasonForNoUniqueTaxpayerReferenceRoute(index, mode)
   private val cya: Call =
-    detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+    TrusteesIndividualRoutes.cyaDetailsRoute(index, NormalMode)
   private val cyaContact: Call =
-    controllers.trustees.individual.contact.routes.CheckYourAnswersController.onPageLoad(index)
+    TrusteesIndividualRoutes.cyaContactRoute(index, NormalMode)
 
 
   private def addressUAWithValue[A](idType:TypedIdentifier[A], idValue:A)(implicit writes: Writes[A]) =
@@ -85,19 +84,19 @@ class TrusteesNavigatorSpec
   val address = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
 
   private val cyaAddress: Call =
-    controllers.trustees.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
+    TrusteesIndividualRoutes.cyaAddressRoute(index, NormalMode)
 
   private def enterPreviousPostcode(mode:Mode): Call =
-    controllers.trustees.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index)
+    TrusteesIndividualRoutes.enterPreviousPostcodeRoute(index, mode)
 
   private def selectAddress(mode:Mode): Call =
-    controllers.trustees.individual.address.routes.SelectAddressController.onPageLoad(index)
+    TrusteesIndividualRoutes.selectAddressRoute(index, mode)
 
   private def selectPreviousAddress(mode:Mode): Call =
-    controllers.trustees.individual.address.routes.SelectPreviousAddressController.onPageLoad(index)
+    TrusteesIndividualRoutes.previousAddressResultsRoute(index, mode)
 
   private def addressYears(mode:Mode): Call =
-    controllers.trustees.individual.address.routes.AddressYearsController.onPageLoad(index)
+    TrusteesIndividualRoutes.timeAtAddressRoute(index, mode)
 
 
   "TrusteesNavigator" when {
