@@ -102,6 +102,7 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
     when(mockAppConfig.psaOverviewUrl) thenReturn dummyUrl
     when(mockAppConfig.psaUpdateContactDetailsUrl).thenReturn(dummyUrl)
     when(mockAppConfig.deceasedContactHmrcUrl).thenReturn(dummyUrl)
+    when(mockFeatureToggleConnector.get(any())(any(), any()))
   }
 
   "search" must {
@@ -217,6 +218,7 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
   "searchAndRenderView" must {
     "return OK and the correct view when there are no schemes" in {
       when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(minimalPSA()))
+      when(mockListOfSchemesConnector.getListOfSchemes(any())(any(), any())).thenReturn(Future.successful(Right(emptySchemes)))
       val numberOfPages = paginationService.divide(0, pagination)
 
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
@@ -407,6 +409,7 @@ object SchemeSearchServiceSpec extends SpecBase with MockitoSugar with BeforeAnd
   private val isRacDacFalse: Boolean = false
   private val isRacDacTrue: Boolean = true
   def listOfSchemes: ListOfLegacySchemes = ListOfLegacySchemes(2, Some(fullSchemes))
+  def emptySchemes: ListOfLegacySchemes = ListOfLegacySchemes(0, None)
 
   def fullSchemes: List[Items] =
     List(

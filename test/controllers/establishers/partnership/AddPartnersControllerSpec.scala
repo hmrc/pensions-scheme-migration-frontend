@@ -143,7 +143,7 @@ class AddPartnersControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
@@ -166,7 +166,7 @@ class AddPartnersControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

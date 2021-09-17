@@ -77,7 +77,7 @@ GET         /rac-dac/cannot-add-rac-dac                                      con
 GET         /what-you-will-need-before-start                        controllers.preMigration.BeforeYouStartController.onPageLoad
 
 GET         /no-pension-schemes-registered                         controllers.preMigration.NotRegisterController.onPageLoadScheme
-GET         /no-rac-dacs-registered                                controllers.preMigration.NotRegisterController.onPageLoadRacDac
+GET         /rac-dac/no-rac-dacs-registered                                controllers.preMigration.NotRegisterController.onPageLoadRacDac
 
 GET         /list-pension-schemes                                   controllers.preMigration.ListOfSchemesController.onPageLoad(migrationType: MigrationType = Scheme)
 POST        /list-pension-schemes                                   controllers.preMigration.ListOfSchemesController.onSearch(migrationType: MigrationType = Scheme)
@@ -93,8 +93,8 @@ GET         /list-schemes-on-click/:pstr/:isRacDac                  controllers.
 GET         /no-pension-schemes-registered                         controllers.preMigration.NotRegisterController.onPageLoadScheme
 GET         /no-rac-dacs-registered                                controllers.preMigration.NotRegisterController.onPageLoadRacDac
 
-GET         /rac-dac/transfer-rac-dac-all                                   controllers.racdac.TransferAllController.onPageLoad
-POST        /rac-dac/transfer-rac-dac-all                                   controllers.racdac.TransferAllController.onSubmit
+GET         /rac-dac/add-all                                   controllers.racdac.TransferAllController.onPageLoad
+POST        /rac-dac/add-all                                   controllers.racdac.TransferAllController.onSubmit
 
-GET         /rac-dac/listofracdac                                    controllers.racdac.BulkListController.onPageLoad
-POST        /rac-dac/listofracdac                                   controllers.racdac.BulkListController.onSubmit
+GET         /rac-dac/list-rac-dacs-all                                    controllers.racdac.BulkListController.onPageLoad
+POST        /rac-dac/list-rac-dacs-all                                   controllers.racdac.BulkListController.onSubmit
