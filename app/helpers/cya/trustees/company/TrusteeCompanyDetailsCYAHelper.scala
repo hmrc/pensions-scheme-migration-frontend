@@ -144,7 +144,7 @@ class TrusteeCompanyDetailsCYAHelper
         answerRow(message, Message(booleanToText(true)), url, visuallyHidden),
         answerOrAddRow(
           id = PAYEId(index),
-          message = Message("messages__paye__cya", companyName),
+          message = Message("messages__paye_cya", companyName),
           url = Some(routes.PAYEController.onPageLoad(index, CheckMode).url),
           visuallyHiddenText = Some(msg"messages__paye__cya__visuallyHidden".withArgs(companyName)),
           answerTransform = referenceValueTransform

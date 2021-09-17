@@ -145,7 +145,7 @@ class TrusteeCompanyDetailsCYAHelperSpec extends AnyWordSpec with Matchers with 
       )
 
       result(7) mustBe Row(
-        key = Key(msg"${Message("messages__paye__cya", companyDetails.companyName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__paye_cya", companyDetails.companyName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(msg"12345678"),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),

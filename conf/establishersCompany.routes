@@ -9,10 +9,10 @@ POST        /:index/company/have-company-number                                 
 GET         /:index/company/change/have-company-number                              controllers.establishers.company.details.HaveCompanyNumberController.onPageLoad(index: Index, mode: Mode = CheckMode)
 POST        /:index/company/change/have-company-number                              controllers.establishers.company.details.HaveCompanyNumberController.onSubmit(index: Index, mode: Mode = CheckMode)
 
-GET         /:index/company/company-number                                          controllers.establishers.company.details.CompanyNumberController.onPageLoad(index: Index, mode: Mode = NormalMode)
-POST        /:index/company/company-number                                          controllers.establishers.company.details.CompanyNumberController.onSubmit(index: Index, mode: Mode = NormalMode)
-GET         /:index/company/change/company-number                                   controllers.establishers.company.details.CompanyNumberController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/company/change/company-number                                   controllers.establishers.company.details.CompanyNumberController.onSubmit(index: Index, mode: Mode = CheckMode)
+GET         /:index/company/enter-company-number                                          controllers.establishers.company.details.CompanyNumberController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/company/enter-company-number                                          controllers.establishers.company.details.CompanyNumberController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/company/change/enter-company-number                                   controllers.establishers.company.details.CompanyNumberController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/company/change/enter-company-number                                   controllers.establishers.company.details.CompanyNumberController.onSubmit(index: Index, mode: Mode = CheckMode)
 
 GET         /:index/company/reason-for-no-company-number                            controllers.establishers.company.details.NoCompanyNumberReasonController.onPageLoad(index: Index, mode: Mode = NormalMode)
 POST        /:index/company/reason-for-no-company-number                            controllers.establishers.company.details.NoCompanyNumberReasonController.onSubmit(index: Index, mode: Mode = NormalMode)
