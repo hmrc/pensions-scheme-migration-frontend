@@ -33,9 +33,10 @@ import renderer.Renderer
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.viewmodels.Table.Cell
 import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{Content, Html, MessageInterpolators, Table}
+import uk.gov.hmrc.viewmodels.{Content, Html, MessageInterpolators, Radios, Table}
 import utils.SchemeFuzzyMatcher
 import controllers.preMigration.routes.ListOfSchemesController
+
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import scala.concurrent.{ExecutionContext, Future}
@@ -53,8 +54,7 @@ class SchemeSearchService @Inject()(val appConfig: AppConfig,
   private val pagination: Int = appConfig.listSchemePagination
   private val pstrRegex = "^[0-9]{8}[A-Za-z]{2}$".r
 
-  private val filterSchemesByPstrOrSchemeName
-  : (String, List[Items]) => List[Items] =
+  private val filterSchemesByPstrOrSchemeName: (String, List[Items]) => List[Items] =
     (searchText, list) =>
       searchText match {
         case _ if pstrRegex.findFirstIn(searchText).isDefined =>
@@ -250,7 +250,8 @@ class SchemeSearchService @Inject()(val appConfig: AppConfig,
               "numberOfPages" -> numberOfPages,
               "returnUrl" -> appConfig.psaOverviewUrl,
               "paginationText" -> paginationText(pageNumber,pagination,numberOfSchemes,numberOfPages),
-              "schemes" -> mapToTable(schemeDetails, isRacDac = true, viewOnly = true)
+              "schemes" -> mapToTable(schemeDetails, isRacDac = true, viewOnly = true),
+              "radios" -> Radios.yesNo(form("value")),
             )
 
             renderer.render("racdac/racDacsBulkList.njk", json)

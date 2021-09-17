@@ -20,7 +20,7 @@ import connectors.cache.FeatureToggleConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import matchers.JsonMatchers
-import models.FeatureToggle.Enabled
+import models.FeatureToggle.{Disabled, Enabled}
 import models.FeatureToggleName.MigrationTransfer
 import models.PageLink
 import org.mockito.ArgumentCaptor

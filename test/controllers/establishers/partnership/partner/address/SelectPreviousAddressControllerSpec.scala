@@ -21,7 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.establishers.partnership.partner.address.EnterPreviousPostCodeId
 import matchers.JsonMatchers
-import models.{NormalMode, TolerantAddress}
+import models.{NormalMode, Scheme, TolerantAddress}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -86,16 +86,15 @@ class SelectPreviousAddressControllerSpec extends ControllerSpecBase with Nunjuc
       (jsonCaptor.getValue \ "schemeName").toOption.map(_.as[String]) mustBe Some(Data.schemeName)
     }
 
-    "redirect to Session Expired page for a GET when there is no data" in {
-      val ua: UserAnswers = UserAnswers()
+    "redirect back to list of schemes for a GET when there is no data" in {
 
-      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+      mutableFakeDataRetrievalAction.setDataToReturn(None)
 
       val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
@@ -125,14 +124,14 @@ class SelectPreviousAddressControllerSpec extends ControllerSpecBase with Nunjuc
       status(result) mustEqual BAD_REQUEST
     }
 
-    "redirect to Session Expired page for a POST when there is no data" in {
+    "redirect back to list of schemes for a POST when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
     }
   }
 

@@ -21,7 +21,7 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import forms.PersonNameFormProvider
 import identifiers.establishers.partnership.partner.PartnerNameId
 import matchers.JsonMatchers
-import models.{Index, NormalMode, PersonName}
+import models.{Index, NormalMode, PersonName, Scheme}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -110,14 +110,14 @@ class PartnerNameControllerSpec extends ControllerSpecBase with NunjucksSupport 
       jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(personName)))
     }
 
-    "redirect to Session Expired page for a GET when there is no data" in {
+    "redirect back to list of schemes for a GET when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
@@ -154,14 +154,14 @@ class PartnerNameControllerSpec extends ControllerSpecBase with NunjucksSupport 
       verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
     }
 
-    "redirect to Session Expired page for a POST when there is no data" in {
+    "redirect back to list of schemes for a POST when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
     }
   }
 }

@@ -1,7 +1,7 @@
 {% extends "includes/layout.njk" %}
 
 {% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
-{% from "govuk/components/input/macro.njk"         import govukInput %}
+{% from "govuk/components/radios/macro.njk"        import govukRadios %}
 {% from "macros/title.njk"                         import title %}
 {% from "macros/returnLink.njk"                    import returnLink %}
 {% from "macros/navigationLink.njk"                import navigationLink %}
@@ -70,6 +70,25 @@
                             </div>
                         </div>
              {% endif %}
+
+             {{ govukRadios({
+                                     classes: "govuk-radios--inline",
+                                     name: 'value',
+                                     fieldset: {
+                                         legend: {
+                                             text: messages('messages__racdac_bulk_list__radioLabel'),
+                                             isPageHeading: false,
+                                             classes: "govuk-fieldset__legend--s"
+                                         }
+                                     },
+                                     items: radios,
+                                     errorMessage: form.value.error
+             }) }}
+
+            {{ govukButton({
+                         text: messages("site.save_and_continue"),
+                         attributes: {id: "submit"}
+            }) }}
 
          </form>
 

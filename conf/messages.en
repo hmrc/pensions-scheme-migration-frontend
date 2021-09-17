@@ -1053,4 +1053,5 @@ messages__transferAll__title = Do you want to add all your RAC/DACs from the Pen
 messages__transferAll__error = Select yes if you want to add all your RAC/DACs from the Pension Schemes Online service
 
 messages__racdac_bulk_list__title = List of RAC/DACs on the Pension Schemes Online service
+messages__racdac_bulk_list__radioLabel = Do you want to continue adding all your RAC/DACs?
 messages__racdac_bulk_list__error =  Select yes if you want to add all your RAC/DACs from the Pension Schemes Online service
