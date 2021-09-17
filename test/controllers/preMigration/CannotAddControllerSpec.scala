@@ -91,14 +91,14 @@ class CannotAddControllerSpec extends ControllerSpecBase with NunjucksSupport wi
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.successful(Right(expectedResponseWithRacOnly)))
       val result: Future[Result] = controller().onPageLoadScheme()(fakeDataRequest())
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.TaskListController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.NotRegisterController.onPageLoadScheme().url)
     }
     "return OK and the correct view for a GET for scheme with Empty pension Scheme" in {
 
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.successful(Right(expectedResponseWithEmpty)))
       val result: Future[Result] = controller().onPageLoadScheme()(fakeDataRequest())
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.TaskListController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.NotRegisterController.onPageLoadScheme().url)
     }
 
     "return OK and the correct view for a GET for rac dac" in {
@@ -122,14 +122,14 @@ class CannotAddControllerSpec extends ControllerSpecBase with NunjucksSupport wi
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.successful(Right(expectedResponseWithPensionOnly)))
       val result: Future[Result] = controller().onPageLoadRacDac()(fakeDataRequest())
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.TaskListController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.NotRegisterController.onPageLoadRacDac().url)
     }
     "return OK and the correct view for a GET for rac Dac with empty list" in {
 
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.successful(Right(expectedResponseWithEmpty)))
       val result: Future[Result] = controller().onPageLoadRacDac()(fakeDataRequest())
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.TaskListController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.NotRegisterController.onPageLoadRacDac().url)
     }
   }
 }
