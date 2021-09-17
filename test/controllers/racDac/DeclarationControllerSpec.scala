@@ -22,11 +22,12 @@ import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
-import play.api.libs.json.JsObject
+import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.{Enumerable, UserAnswers}
+import utils.Data.{schemeName, ua}
+import utils.Enumerable
 
 import scala.concurrent.Future
 
@@ -38,9 +39,18 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
+  private val templateCaptor:ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+  private val jsonCaptor:ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+
   private def httpPathGET: String = controllers.racDac.routes.DeclarationController.onPageLoad().url
-  private val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-  private val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+  private def httpPathPOST: String = controllers.racDac.routes.DeclarationController.onSubmit().url
+
+
+  private val jsonToPassToTemplate: JsObject =
+    Json.obj(
+      "schemeName" -> schemeName,
+      "submitUrl" -> controllers.racDac.routes.DeclarationController.onSubmit().url
+    )
 
   override def beforeEach: Unit = {
     super.beforeEach
@@ -50,7 +60,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
   "RacDac DeclarationController" must {
 
     "return OK and the correct view for a GET" in {
-      mutableFakeDataRetrievalAction.setDataToReturn(Some(UserAnswers()))
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
@@ -59,7 +69,15 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       templateCaptor.getValue mustEqual templateToBeRendered
+
+      jsonCaptor.getValue must containJson(jsonToPassToTemplate)
     }
 
+    "redirect to next page when button is clicked" in {
+
+      val result = route(application, httpGETRequest(httpPathPOST)).value
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.routes.IndexController.onPageLoad().url)
+    }
   }
 }
