@@ -64,7 +64,7 @@ class CurrentMembersController @Inject()(override val messagesApi: MessagesApi,
         val json = Json.obj(
           "form" -> preparedForm,
           "schemeName" -> schemeName,
-          "entityType" -> Messages("messages__the_scheme"),
+          "pageHeading" -> msg"currentMembers.title".withArgs(Messages("messages__the_scheme")).resolve,
           "titleMessage" -> msg"currentMembers.title".withArgs(schemeName).resolve,
           "radios" -> Members.radios(preparedForm)
         )
@@ -81,7 +81,7 @@ class CurrentMembersController @Inject()(override val messagesApi: MessagesApi,
             val json = Json.obj(
               "form" -> formWithErrors,
               "schemeName" -> schemeName,
-              "entityType" -> Messages("messages__the_scheme"),
+              "pageHeading" -> msg"currentMembers.title".withArgs(Messages("messages__the_scheme")).resolve,
               "titleMessage" -> msg"currentMembers.title".withArgs(schemeName).resolve,
               "radios" -> Members.radios(formWithErrors)
             )

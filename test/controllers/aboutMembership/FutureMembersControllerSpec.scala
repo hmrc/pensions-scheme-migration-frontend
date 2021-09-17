@@ -59,7 +59,8 @@ class FutureMembersControllerSpec extends ControllerSpecBase with NunjucksSuppor
     Json.obj(
       "form" -> form,
       "schemeName" -> schemeName,
-      "titleMessage" -> messages("futureMembers.title", schemeName),
+      "pageHeading" -> messages("futureMembers.title"),
+      "titleMessage" -> messages("futureMembers.title"),
       "radios" -> Members.radios(form)
     )
 
