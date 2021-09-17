@@ -37,6 +37,7 @@ site.hidden-edit = Change {0}
 site.title.suffix = - Managing pension schemes - GOV.UK
 site.return.to = Return to {0}
 site.agree_and_submit = Agree and submit
+site.agree_and_continue = Agree and continue
 site.printThisPage = Print this page
 site.saveOrPrint = Save or print
 checkYourAnswers.title = Check your answers
