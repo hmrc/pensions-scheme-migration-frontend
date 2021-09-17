@@ -19,9 +19,11 @@ package controllers.trustees.individual.address
 import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
+import helpers.routes.TrusteesIndividualRoutes
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.individual.address.AddressId
 import matchers.JsonMatchers
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -48,8 +50,8 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = controllers.trustees.individual.address.routes.ConfirmAddressController.onPageLoad(0).url
-  private val httpPathPOST: String = controllers.trustees.individual.address.routes.ConfirmAddressController.onSubmit(0).url
+  private val httpPathGET: String = TrusteesIndividualRoutes.confirmAddressRoute(0, NormalMode).url
+  private val httpPathPOST: String = TrusteesIndividualRoutes.confirmAddressPOSTRoute(0, NormalMode).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "line1" -> Seq("1"),
@@ -102,7 +104,7 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
     "Save data to user answers and redirect to next page when valid data is submitted" in {
 
       when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
-        .thenReturn(routes.CheckYourAnswersController.onPageLoad(0))
+        .thenReturn(TrusteesIndividualRoutes.cyaAddressRoute(0, NormalMode))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -111,7 +113,7 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad(0).url)
+      redirectLocation(result) mustBe Some(TrusteesIndividualRoutes.cyaAddressRoute(0, NormalMode).url)
 
       verify(mockUserAnswersCacheConnector, times(1)).save(any(),jsonCaptor.capture())(any(), any())
       val expectedJson = Json.obj(

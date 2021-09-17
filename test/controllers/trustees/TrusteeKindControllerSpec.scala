@@ -19,11 +19,12 @@ package controllers.trustees
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.trustees.TrusteeKindFormProvider
+import helpers.routes.TrusteesIndividualRoutes
 import identifiers.trustees.TrusteeKindId
 import identifiers.trustees.individual.TrusteeNameId
 import matchers.JsonMatchers
 import models.trustees.TrusteeKind
-import models.{Index, PersonName}
+import models.{PersonName, Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -106,7 +107,7 @@ class TrusteeKindControllerSpec extends ControllerSpecBase with NunjucksSupport 
       val expectedJson = Json.obj()
 
       when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(TrusteeKindId(0)), any(), any())(any()))
-        .thenReturn(controllers.trustees.individual.routes.TrusteeNameController.onPageLoad(0))
+        .thenReturn(TrusteesIndividualRoutes.nameRoute(0, NormalMode))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -122,7 +123,7 @@ class TrusteeKindControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
       jsonCaptor.getValue must containJson(expectedJson)
 
-      redirectLocation(result) mustBe Some(controllers.trustees.individual.routes.TrusteeNameController.onPageLoad(0).url)
+      redirectLocation(result) mustBe Some(TrusteesIndividualRoutes.nameRoute(0, NormalMode).url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {
