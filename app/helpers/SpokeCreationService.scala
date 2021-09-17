@@ -19,13 +19,11 @@ package helpers
 import controllers.establishers.routes._
 import helpers.spokes.establishers.company._
 import helpers.spokes.establishers.individual._
-import helpers.spokes.establishers.partnership._
-import helpers.spokes.establishers.partnership.{EstablisherPartnerDetails, EstablisherPartnershipAddress, EstablisherPartnershipDetails}
+import helpers.spokes.establishers.partnership.{EstablisherPartnerDetails, EstablisherPartnershipAddress, EstablisherPartnershipDetails, _}
 import helpers.spokes.trustees.company.{TrusteeCompanyAddress, TrusteeCompanyContactDetails, TrusteeCompanyDetails}
 import helpers.spokes.trustees.individual.{TrusteeIndividualAddress, TrusteeIndividualContactDetails, TrusteeIndividualDetails}
-import helpers.spokes.trustees.partnership.TrusteePartnershipAddress
-import helpers.spokes.trustees.partnership.TrusteePartnershipContactDetails
-import helpers.spokes.{AboutMembersSpoke, BeforeYouStartSpoke, BenefitsAndInsuranceSpoke, Spoke, WorkingKnowlegedSpoke}
+import helpers.spokes.trustees.partnership.{TrusteePartnershipAddress, TrusteePartnershipContactDetails, TrusteePartnershipDetails}
+import helpers.spokes._
 import identifiers.adviser.AdviserNameId
 import models.Index._
 import models.{Entity, EntitySpoke, Index, TaskListLink}
@@ -197,6 +195,7 @@ class SpokeCreationService extends Enumerable.Implicits {
   def getTrusteePartnershipSpokes(answers: UserAnswers, name: String, index: Index)
                              (implicit messages: Messages): Seq[EntitySpoke] = {
     Seq(
+      createSpoke(answers, TrusteePartnershipDetails(index, answers), name),
       createSpoke(answers, TrusteePartnershipAddress(index, answers), name),
       createSpoke(answers, TrusteePartnershipContactDetails(index, answers), name))
   }

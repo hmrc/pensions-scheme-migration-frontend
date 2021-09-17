@@ -20,10 +20,10 @@ import base.SpecBase
 import identifiers.beforeYouStart.{SchemeTypeId, WorkingKnowledgeId}
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
+import identifiers.establishers.partnership.{PartnershipDetailsId => EstablisherPartnershipDetailsId}
 import identifiers.establishers.{EstablisherKindId, IsEstablisherNewId}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.partnership.{PartnershipDetailsId => TrusteePartnershipDetailsId}
-import identifiers.establishers.partnership.{PartnershipDetailsId => EstablisherPartnershipDetailsId}
 import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId}
 import models._
 import models.establishers.EstablisherKind

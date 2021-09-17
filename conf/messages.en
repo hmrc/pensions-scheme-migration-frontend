@@ -136,7 +136,7 @@ messages__schemeTaskList__persons_details__link_text = {0}’s details
 messages__schemeTaskList__about_members_link_psp = Membership details
 messages__schemeTaskList__about_benefits_and_insurance_link_psp = Benefits and insurance
 messages__schemeTaskList__completed = Completed
-messages__schemeTaskList__inProgress = Incomplete
+messages__schemeTaskList__incomplete = Incomplete
 messages__schemeTaskList__title = Pension scheme details
 messages__schemeTaskList__heading = Pension scheme details
 messages__schemeTaskList__about_link_text = Enter scheme details
@@ -153,7 +153,6 @@ messages__finish = Finish
 messages__schemeTaskList__status_visuallyHidden = This section is
 messages__schemeTaskList__heading = Scheme details
 messages__schemeTaskList__completed = Completed
-messages__schemeTaskList__inProgress = In progress
 messages__complete__returnToSchemeOverview = Save and return to Managing Pension Schemes
 
 messages__schemeTaskList__sectionEstablishers_header = Establishers
@@ -989,7 +988,7 @@ messages__error__partnership_name = Enter the partnership’s name
 messages__error__partnership_name_length = The partnership name cannot be more than 160 characters
 messages__error__partnership_name_invalid = The partnership name contains invalid characters
 
-messages__parrtnershipDetails__whatYouWillNeed_title  = The partnership’s details
+messages__partnershipDetails__whatYouWillNeed_title  = The partnership’s details
 messages__partnershipDetails__whatYouWillNeed_h1 = {0}’s details
 messages__partnershipDetails__whatYouWillNeed_list1_head = You will need to tell us {0}’s:
 messages__partnershipDetails__whatYouWillNeed_li1_1 = Unique Taxpayer Reference (UTR), or reason why it does not have one

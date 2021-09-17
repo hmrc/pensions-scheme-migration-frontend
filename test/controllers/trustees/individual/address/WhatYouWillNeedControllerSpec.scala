@@ -18,9 +18,10 @@ package controllers.trustees.individual.address
 
 import controllers.ControllerSpecBase
 import controllers.actions._
+import helpers.routes.TrusteesIndividualRoutes
 import identifiers.trustees.individual.TrusteeNameId
 import matchers.JsonMatchers
-import models.PersonName
+import models.{PersonName, NormalMode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
@@ -50,7 +51,7 @@ class WhatYouWillNeedControllerSpec
   private def json: JsObject =
     Json.obj(
       "name"        -> "Jane Doe",
-      "continueUrl" -> controllers.trustees.individual.address.routes.EnterPostcodeController.onPageLoad(0).url,
+      "continueUrl" -> TrusteesIndividualRoutes.enterPostcodeRoute(0, NormalMode).url,
       "schemeName"  -> "Test scheme name"
     )
 
@@ -70,8 +71,8 @@ class WhatYouWillNeedControllerSpec
     "return OK and the correct view for a GET" in {
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
       val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(userAnswers))

@@ -16,24 +16,25 @@
 
 package helpers.cya.trustees.individual
 
-import controllers.trustees.individual.details.routes
 import helpers.cya.CYAHelper
 import helpers.cya.CYAHelper.getName
+import helpers.routes.TrusteesIndividualRoutes
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.details._
 import models.requests.DataRequest
-import models.{CheckMode, Index}
+import models.{Index, CheckMode}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.SummaryList.Row
-import utils.{Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable}
 import viewmodels.Message
 
 class TrusteeDetailsCYAHelper
   extends CYAHelper
     with Enumerable.Implicits {
 
+  //scalastyle:off method.length
   def detailsRows(index: Index)
                  (implicit request: DataRequest[AnyContent],
                    messages: Messages): Seq[Row] = {
@@ -44,14 +45,14 @@ class TrusteeDetailsCYAHelper
       Some(answerOrAddRow(
         id                 = TrusteeDOBId(index),
         message            = Message("messages__dob__title", trusteeName).resolve,
-        url                = Some(routes.TrusteeDOBController.onPageLoad(index, CheckMode).url),
+        url                = Some(TrusteesIndividualRoutes.dateOfBirthRoute(index, CheckMode).url),
         visuallyHiddenText = Some(msg"messages__dob__cya__visuallyHidden".withArgs(trusteeName)),
         answerTransform = answerDateTransform
       )),
       Some(answerOrAddRow(
         id                 = TrusteeHasNINOId(index),
         message            = Message("messages__hasNINO", trusteeName).resolve,
-        url                = Some(routes.TrusteeHasNINOController.onPageLoad(index, CheckMode).url),
+        url                = Some(TrusteesIndividualRoutes.haveNationalInsuranceNumberRoute(index, CheckMode).url),
         visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(trusteeName)),
         answerTransform    = answerBooleanTransform
       )),
@@ -60,7 +61,7 @@ class TrusteeDetailsCYAHelper
           answerOrAddRow(
             id                 = TrusteeNINOId(index),
             message            = Message("messages__hasNINO__cya", trusteeName),
-            url                = Some(routes.TrusteeEnterNINOController.onPageLoad(index, CheckMode).url),
+            url                = Some(TrusteesIndividualRoutes.enterNationaInsuranceNumberRoute(index, CheckMode).url),
             visuallyHiddenText = Some(msg"messages__hasNINO__cya__visuallyHidden".withArgs(trusteeName)),
             answerTransform    = referenceValueTransform
           )
@@ -70,14 +71,14 @@ class TrusteeDetailsCYAHelper
           answerOrAddRow(
             id                 = TrusteeNoNINOReasonId(index),
             message            = Message("messages__whyNoNINO", trusteeName),
-            url                = Some(routes.TrusteeNoNINOReasonController.onPageLoad(index, CheckMode).url),
+            url                = Some(TrusteesIndividualRoutes.reasonForNoNationalInsuranceNumberRoute(index, CheckMode).url),
             visuallyHiddenText = Some(msg"messages__whyNoNINO__cya__visuallyHidden".withArgs(trusteeName))
           )
       },
       Some(answerOrAddRow(
         id                 = TrusteeHasUTRId(index),
         message            = Message("messages__hasUTR", trusteeName).resolve,
-        url                = Some(routes.TrusteeHasUTRController.onPageLoad(index, CheckMode).url),
+        url                = Some(TrusteesIndividualRoutes.haveUniqueTaxpayerReferenceRoute(index, CheckMode).url),
         visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(trusteeName)),
         answerTransform    = answerBooleanTransform
       )),
@@ -86,7 +87,7 @@ class TrusteeDetailsCYAHelper
           answerOrAddRow(
             id                 = TrusteeUTRId(index),
             message            = Message("messages__hasUTR__cya", trusteeName),
-            url                = Some(routes.TrusteeEnterUTRController.onPageLoad(index, CheckMode).url),
+            url                = Some(TrusteesIndividualRoutes.enterUniqueTaxpayerReferenceRoute(index, CheckMode).url),
             visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(trusteeName)),
             answerTransform    = referenceValueTransform
           )
@@ -96,7 +97,7 @@ class TrusteeDetailsCYAHelper
           answerOrAddRow(
             id                 = TrusteeNoUTRReasonId(index),
             message            = Message("messages__whyNoUTR", trusteeName),
-            url                = Some(routes.TrusteeNoUTRReasonController.onPageLoad(index, CheckMode).url),
+            url                = Some(TrusteesIndividualRoutes.reasonForNoUniqueTaxpayerReferenceRoute(index, CheckMode).url),
             visuallyHiddenText = Some(msg"messages__whyNoUTR__cya__visuallyHidden".withArgs(trusteeName))
           )
       }

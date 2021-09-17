@@ -81,8 +81,8 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Nunjuc
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
-  private val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-  private val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+  private val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+  private val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
   "ConfirmDeleteDirectorController" must {
 

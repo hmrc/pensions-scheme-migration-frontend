@@ -85,8 +85,8 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
 
     "return OK and the correct view for a GET when data present in userAnswers" in {
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
@@ -111,8 +111,8 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
     "retrieved data from API store it and return  OK" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
       mutableFakeDataRetrievalAction.setLockToReturn(Some(Data.migrationLock))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       when( mockUserAnswersCacheConnector.save(any(), any())(any(),any())).thenReturn(Future.successful(Json.obj()))
 
