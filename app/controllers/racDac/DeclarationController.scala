@@ -28,7 +28,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.ExecutionContext
 
-class RacDacDeclarationController @Inject()(
+class DeclarationController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        authenticate: AuthAction,
                                        getData: DataRetrievalAction,
@@ -46,9 +46,16 @@ class RacDacDeclarationController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             val json = Json.obj(
-              "schemeName" -> schemeName
+              "schemeName" -> schemeName,
+              "submitUrl" -> routes.DeclarationController.onSubmit().url
             )
             renderer.render("racDac/declaration.njk", json).map(Ok(_))
         }
   }
+
+  def onSubmit: Action[AnyContent] =
+    (authenticate andThen getData andThen requireData) {
+      Redirect(controllers.routes.IndexController.onPageLoad())
+  }
+
 }

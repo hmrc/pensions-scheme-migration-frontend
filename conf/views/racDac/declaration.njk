@@ -29,18 +29,12 @@
 
         </ul>
 
-          {{ govukCheckboxes({
-              items: [{
-                  value: "agree",
-                  text: "Agree",
-                  attributes: {id: "agree checkbox"}
-              }]
+          {{ govukButton({
+              href: submitUrl
+              text: messages("site.agree_and_submit"),
+              attributes: {id: "agree and submit"}
           }) }}
 
-          {{ govukButton({
-              text: messages("site.save_and_continue"),
-              attributes: {id: "save and continue"}
-          }) }}
       </div>
     </div>
 

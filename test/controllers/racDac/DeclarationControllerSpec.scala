@@ -30,7 +30,7 @@ import utils.{Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 
-class RacDacDeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val templateToBeRendered = "racDac/declaration.njk"
 
@@ -38,7 +38,7 @@ class RacDacDeclarationControllerSpec extends ControllerSpecBase with NunjucksSu
 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
-  private def httpPathGET: String = controllers.racDac.routes.RacDacDeclarationController.onPageLoad().url
+  private def httpPathGET: String = controllers.racDac.routes.DeclarationController.onPageLoad().url
   private val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
   private val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
