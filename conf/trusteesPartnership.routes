@@ -2,6 +2,45 @@
 GET         /:index/partnership/name                                                      controllers.trustees.partnership.PartnershipDetailsController.onPageLoad(index: Index)
 POST        /:index/partnership/name                                                      controllers.trustees.partnership.PartnershipDetailsController.onSubmit(index: Index)
 
+GET         /:index/partnership/details                                               controllers.trustees.partnership.details.WhatYouWillNeedController.onPageLoad(index: Index)
+
+GET         /:index/partnership/have-unique-taxpayer-reference                         controllers.trustees.partnership.details.HaveUTRController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/partnership/have-unique-taxpayer-reference                         controllers.trustees.partnership.details.HaveUTRController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/partnership/change/have-unique-taxpayer-reference                  controllers.trustees.partnership.details.HaveUTRController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/partnership/change/have-unique-taxpayer-reference                  controllers.trustees.partnership.details.HaveUTRController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/partnership/enter-unique-taxpayer-reference                        controllers.trustees.partnership.details.UTRController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/partnership/enter-unique-taxpayer-reference                        controllers.trustees.partnership.details.UTRController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/partnership/change/enter-unique-taxpayer-reference                 controllers.trustees.partnership.details.UTRController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/partnership/change/enter-unique-taxpayer-reference                 controllers.trustees.partnership.details.UTRController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/partnership/reason-for-no-unique-taxpayer-reference                controllers.trustees.partnership.details.NoUTRReasonController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/partnership/reason-for-no-unique-taxpayer-reference                controllers.trustees.partnership.details.NoUTRReasonController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/partnership/change/reason-for-no-unique-taxpayer-reference         controllers.trustees.partnership.details.NoUTRReasonController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/partnership/change/reason-for-no-unique-taxpayer-reference         controllers.trustees.partnership.details.NoUTRReasonController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/partnership/is-vat-registered                                      controllers.trustees.partnership.details.HaveVATController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/partnership/is-vat-registered                                      controllers.trustees.partnership.details.HaveVATController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/partnership/change/is-vat-registered                               controllers.trustees.partnership.details.HaveVATController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/partnership/change/is-vat-registered                               controllers.trustees.partnership.details.HaveVATController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/partnership/enter-vat-registration-number                          controllers.trustees.partnership.details.VATController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/partnership/enter-vat-registration-number                          controllers.trustees.partnership.details.VATController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/partnership/change/enter-vat-registration-number                   controllers.trustees.partnership.details.VATController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/partnership/change/enter-vat-registration-number                   controllers.trustees.partnership.details.VATController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/partnership/have-employer-paye-reference                           controllers.trustees.partnership.details.HavePAYEController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/partnership/have-employer-paye-reference                           controllers.trustees.partnership.details.HavePAYEController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/partnership/change/have-employer-paye-reference                    controllers.trustees.partnership.details.HavePAYEController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/partnership/change/have-employer-paye-reference                    controllers.trustees.partnership.details.HavePAYEController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/partnership/enter-employer-paye-reference                          controllers.trustees.partnership.details.PAYEController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/partnership/enter-employer-paye-reference                          controllers.trustees.partnership.details.PAYEController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/partnership/change/enter-employer-paye-reference                   controllers.trustees.partnership.details.PAYEController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/partnership/change/enter-employer-paye-reference                   controllers.trustees.partnership.details.PAYEController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/partnership/check-your-answers                                     controllers.trustees.partnership.details.CheckYourAnswersController.onPageLoad(index: Index)
+
 GET         /:index/partnership/address                          controllers.trustees.partnership.address.WhatYouWillNeedController.onPageLoad(index: Index)
 
 GET         /:index/partnership/enter-postcode                                    controllers.trustees.partnership.address.EnterPostcodeController.onPageLoad(index: Index)

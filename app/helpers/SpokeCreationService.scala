@@ -19,11 +19,11 @@ package helpers
 import controllers.establishers.routes._
 import helpers.spokes.establishers.company._
 import helpers.spokes.establishers.individual._
-import helpers.spokes.establishers.partnership.{EstablisherPartnershipAddress, EstablisherPartnershipDetails, EstablisherPartnerDetails, _}
+import helpers.spokes.establishers.partnership._
 import helpers.spokes.trustees.company.{TrusteeCompanyContactDetails, TrusteeCompanyAddress, TrusteeCompanyDetails}
 import helpers.spokes.trustees.individual.{TrusteeIndividualAddress, TrusteeIndividualDetails, TrusteeIndividualContactDetails}
-import helpers.spokes.trustees.partnership.{TrusteePartnershipAddress, TrusteePartnershipContactDetails}
 import helpers.spokes.{BeforeYouStartSpoke, AboutMembersSpoke, Spoke, BenefitsAndInsuranceSpoke}
+import helpers.spokes.trustees.partnership.{TrusteePartnershipAddress, TrusteePartnershipContactDetails, TrusteePartnershipDetails}
 import models.Index._
 import models.{Entity, TaskListLink, EntitySpoke, Index}
 import play.api.i18n.Messages
@@ -159,6 +159,7 @@ class SpokeCreationService extends Enumerable.Implicits {
   def getTrusteePartnershipSpokes(answers: UserAnswers, name: String, index: Index)
                              (implicit messages: Messages): Seq[EntitySpoke] = {
     Seq(
+      createSpoke(answers, TrusteePartnershipDetails(index, answers), name),
       createSpoke(answers, TrusteePartnershipAddress(index, answers), name),
       createSpoke(answers, TrusteePartnershipContactDetails(index, answers), name))
   }

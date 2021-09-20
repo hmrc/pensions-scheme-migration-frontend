@@ -18,6 +18,7 @@ package controllers.trustees.individual.contact
 
 import controllers.ControllerSpecBase
 import controllers.actions._
+import helpers.routes.TrusteesIndividualRoutes
 import identifiers.trustees.individual.TrusteeNameId
 import matchers.JsonMatchers
 import models.{PersonName, NormalMode}
@@ -47,7 +48,7 @@ class WhatYouWillNeedControllerSpec
   private def json: JsObject =
     Json.obj(
       "name"        -> personName.fullName,
-      "continueUrl" -> controllers.trustees.individual.contact.routes.EnterEmailController.onPageLoad(0, NormalMode).url,
+      "continueUrl" -> TrusteesIndividualRoutes.emailRoute(0, NormalMode).url,
       "schemeName"  -> schemeName
     )
 

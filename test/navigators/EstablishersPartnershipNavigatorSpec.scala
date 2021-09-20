@@ -126,7 +126,7 @@ class EstablishersPartnershipNavigatorSpec
         row(VATId(index))(cyaDetails),
         row(HavePAYEId(index))(paye(CheckMode), uaWithValue(HavePAYEId(index), true)),
         row(HavePAYEId(index))(cyaDetails, uaWithValue(HavePAYEId(index), false)),
-        row(PAYEId(index))(cyaDetails),
+        row(PAYEId(index))(cyaDetails)
       )
 
     "in NormalMode" must {
