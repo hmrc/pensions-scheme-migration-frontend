@@ -40,7 +40,8 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
   private def jsonToPassToTemplate: JsObject =
     Json.obj(
       "psaName" -> psaName,
-      "submitUrl" -> controllers.racDac.routes.DeclarationController.onSubmit().url
+      "submitUrl" -> controllers.racDac.routes.DeclarationController.onSubmit().url,
+      "returnUrl" -> appConfig.psaOverviewUrl
     )
 
   override def beforeEach: Unit = {
@@ -51,6 +52,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
   private def controller(): DeclarationController =
     new DeclarationController(
+      appConfig,
       messagesApi,
       new FakeAuthAction(),
       mockMinimalDetailsConnector,

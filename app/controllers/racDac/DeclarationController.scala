@@ -16,6 +16,7 @@
 
 package controllers.racDac
 
+import config.AppConfig
 import connectors.MinimalDetailsConnector
 import controllers.actions.AuthAction
 import javax.inject.Inject
@@ -28,6 +29,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import scala.concurrent.ExecutionContext
 
 class DeclarationController @Inject()(
+                                       appConfig: AppConfig,
                                        override val messagesApi: MessagesApi,
                                        authenticate: AuthAction,
                                        minimalDetailsConnector: MinimalDetailsConnector,
@@ -45,7 +47,8 @@ class DeclarationController @Inject()(
           psaName =>
             val json = Json.obj(
               "psaName" -> psaName,
-              "submitUrl" -> controllers.racDac.routes.DeclarationController.onSubmit().url
+              "submitUrl" -> controllers.racDac.routes.DeclarationController.onSubmit().url,
+              "returnUrl" -> appConfig.psaOverviewUrl
             )
             renderer.render("racDac/declaration.njk", json).map(Ok(_))
         }
