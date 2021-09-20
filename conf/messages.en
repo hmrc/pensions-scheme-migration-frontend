@@ -247,7 +247,7 @@ return.to.link = Return to {0}
 
 currentMembers.title = How many members does {0} currently have?
 currentMembers.error.required = Select how many members {0} currently has
-futureMembers.title = How many scheme members do you expect to have in 12 monthsʼ time?
+futureMembers.title = How many scheme members do you expect {0} to have in 12 monthsʼ time?
 futureMembers.error.required = Select how many scheme members you expect {0} to have in 12 monthsʼ time
 messages__visuallyhidden__currentMembers = how many members {0} has
 messages__visuallyhidden__futureMembers = how many scheme members you expect  to have in 12 monthsʼ time

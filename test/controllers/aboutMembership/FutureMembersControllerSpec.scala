@@ -26,6 +26,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
@@ -59,8 +60,8 @@ class FutureMembersControllerSpec extends ControllerSpecBase with NunjucksSuppor
     Json.obj(
       "form" -> form,
       "schemeName" -> schemeName,
-      "pageHeading" -> messages("futureMembers.title"),
-      "titleMessage" -> messages("futureMembers.title"),
+      "pageHeading" -> messages("futureMembers.title", Messages("messages__the_scheme")),
+      "titleMessage" -> messages("futureMembers.title", schemeName),
       "radios" -> Members.radios(form)
     )
 
