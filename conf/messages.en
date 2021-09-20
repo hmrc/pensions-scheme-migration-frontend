@@ -34,7 +34,7 @@ site.not_entered = Not entered
 site.view = View
 site.hidden-delete = Delete {0}
 site.hidden-edit = Change {0}
-site.title.suffix = - Managing pension schemes - GOV.UK
+site.title.suffix = - Managing Pension Schemes - GOV.UK
 site.return.to = Return to {0}
 site.agree_and_submit = Agree and submit
 site.agree_and_continue = Agree and continue
@@ -175,15 +175,18 @@ messages__schemeTaskList__contactDetails_changeLink = Change contact details for
 messages__schemeTaskList__trusteeContactDetails_addLink = Add contact details for {0}
 messages__schemeTaskList__trusteeContactDetails_changeLink = Change contact details for {0}
 
-
-
 messages__individual = the individual
+messages__title_individual = The individual
 messages__establisher = the establisher
+messages__title_establisher = The establisher
 messages__director = the director
 messages__company = the company
+messages__title_company = The company
 messages__partnership = the partnership
+messages__title_partnership = The partnership
 messages__partner = the partner
 messages__trustee = the trustee
+messages__the_scheme = the scheme
 messages__dob__title = What is {0}’s date of birth?
 messages__dob__h1 = {0}’s date of birth
 messages__dob__cya__visuallyHidden = the date of birth for {0}
@@ -191,7 +194,6 @@ messages__dob__cya__visuallyHidden = the date of birth for {0}
 messages__hasNINO = Does {0} have a National Insurance number?
 messages__genericHasNino__error__required = Select yes if {0} has a National Insurance number
 messages__hasNINO__cya__visuallyHidden = whether {0} has a National Insurance number
-messages__hasNINO__cya = National Insurance number
 
 messages__enterNINO_title = What is {0}’s National Insurance number?
 messages__enterNINO = What is the National Insurance number for {0}?
@@ -206,20 +208,15 @@ messages__reason__error_ninoRequired = Enter a reason why {0} does not have a NI
 messages__whyNoNINO__cya__visuallyHidden = the reason why {0} does not have a National Insurance number
 
 messages__hasUTR = Does {0} have a Unique Taxpayer Reference (UTR)?
-messages__hasUTR_pageTitle = Does {0} have a Unique Taxpayer Reference?
 messages__UTR__p = This is a 10-digit or 13-digit number. You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.
 messages__genericHasUtr__error__required = Select yes if {0} has a Unique Taxpayer Reference
 messages__hasUTR__cya__visuallyHidden = whether {0} has a Unique Taxpayer Reference
-messages__hasUTR__cya = UTR
-messages__hasUTR__cya_label = Does {0} have a UTR?
 
 messages__enterUTR = What is {0}’s UTR?
-messages__enterUTR_pageTitle = What is {0}’s Unique Taxpayer Reference?
 messages__enterUTR__cya_visuallyHidden = the UTR for {0}
 messages__UTR__p1 = This is a 10-digit or 13-digit number. It may also start or end with the letter ‘k’.
 messages__UTR__p2 = You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.
 messages__utr__hint = For example, 12345 67890
-messages__utr__checkyouranswerslabel = Unique Taxpayer Reference (UTR)
 messages__enterUTR__cya_label = {0}’s UTR
 
 messages__utr__error_required = Enter a Unique Taxpayer Reference (UTR)
@@ -228,7 +225,6 @@ messages__utr__error_invalid = Enter a Unique Taxpayer Reference (UTR) in the co
 
 messages__reason__error_maxLength = Reason must be 160 characters or less
 messages__reason__error_invalid = Reason must only include letters, numbers and punctuation marks
-messages__whyNoUTR_title = Why does {0} not have a Unique Taxpayer Reference?
 messages__whyNoUTR = Why does {0} not have a UTR?
 messages__reason__error_utrRequired = Enter a reason why {0} does not have a UTR
 messages__whyNoUTR__cya__visuallyHidden = the reason why {0} does not have a UTR
@@ -252,7 +248,7 @@ return.to.link = Return to {0}
 
 currentMembers.title = How many members does {0} currently have?
 currentMembers.error.required = Select how many members {0} currently has
-futureMembers.title = How many scheme members do you expect to have in 12 monthsʼ time?
+futureMembers.title = How many scheme members do you expect {0} to have in 12 monthsʼ time?
 futureMembers.error.required = Select how many scheme members you expect {0} to have in 12 monthsʼ time
 messages__visuallyhidden__currentMembers = how many members {0} has
 messages__visuallyhidden__futureMembers = how many scheme members you expect  to have in 12 monthsʼ time
@@ -319,7 +315,7 @@ benefitsType.h1 = What type of money purchase benefits does {0} provide?
 benefitsType.visuallyHidden = the type of money purchase benefits {0} provides
 benefitsType.error.required = Select what type of money purchase benefits the scheme provides
 
-areBenefitsSecured.title = Are any of the scheme benefits secured by a contract of insurance or annuity?
+areBenefitsSecured.title = Are any of the schemeʼs benefits secured by a contract of insurance or annuity?
 areBenefitsSecured.h1 = Are any of {0}ʼs benefits secured by a contract of insurance or annuity?
 areBenefitsSecured.error.required = Select yes if any of the scheme benefits are secured by a contract of insurance or annuity
 areBenefitsSecured.p1 = Benefits can be secured by a contract of insurance or an annuity contract by an insurance company that provides administration services to the scheme.
@@ -345,9 +341,8 @@ addressList.noInsuranceName.title = What is the address of the insurance company
 addressList.select = Select the address from the list below, or
 addressList.visuallyHidden = the address of the insurance company that secures the scheme benefits
 
-previousAddressList.title = What was the previous address for {0}?
+previousAddressList.title = What was {0}’s previous address?
 previousAddressList_cya_label = {0}’s previous address
-previousAddressList_pageHeading = What was {0}’s previous address?
 
 postcode.label = Postcode
 postcode.title = What is {0}’s postcode?
@@ -378,7 +373,7 @@ insurerEnterPostcode.invalid = Enter a real postcode
 
 insurerSelectAddress.required = Select the address of the insurance company that secures the scheme benefits
 
-address.title = Enter an address
+address.title = Enter {0}’s address
 address.line1 = Address line 1
 address.line2 = Address line 2
 address.line3 = Address line 3 (optional)
@@ -431,15 +426,14 @@ messages__error__last_name_invalid = Name must only include letters and punctuat
 messages__individualName__title = What is the individual’s name?
 
 messages__confirmDelete__error_required = Select yes if you want to delete {0}
-messages__name_title = What is the {0}’s name?
+messages__name_title = What is {0}’s name?
 
-messages__establisherDetails__whatYouWillNeed_title = The establisher’s details
-messages__trusteeDetails__whatYouWillNeed_title = The trustee’s details
-messages__establisherDetails__whatYouWillNeed_h1 = Details for {0}
-messages__establisherDetails__whatYouWillNeed_p = You will need to tell us {0}’s:
-messages__establisherDetails__whatYouWillNeed_li_1 = date of birth
-messages__establisherDetails__whatYouWillNeed_li_2 = National Insurance number, or reason why they do not have one
-messages__establisherDetails__whatYouWillNeed_li_3 = Unique Taxpayer Reference (UTR), or reason why they do not have one
+messages__details__whatYouWillNeed_title = {0}’s details
+messages__details__whatYouWillNeed_h1 = Details for {0}
+messages__details__whatYouWillNeed_p = You will need to tell us {0}’s:
+messages__details__whatYouWillNeed_li_1 = date of birth
+messages__details__whatYouWillNeed_li_2 = National Insurance number, or reason why they do not have one
+messages__details__whatYouWillNeed_li_3 = Unique Taxpayer Reference (UTR), or reason why they do not have one
 
 messages__confirmDeleteEstablisher__title = Are you sure you want to delete this establisher?
 messages__confirmDeleteEstablisher__companyHint = This will delete any establishers you have added.
@@ -455,13 +449,11 @@ establisherEntityTypeIndividual = the individual
 establisherEntityTypeCompany = the company
 establisherEntityTypePartnership = the partnership
 
-messages__establisherAddress__whatYouWillNeed_title = The establisher’s address
-messages__establisherAddress__whatYouWillNeed_h1 = Address for {0}
-messages__establisherAddress__whatYouWillNeed_p = You will need to tell us {0}’s:
-messages__establisherAddress__whatYouWillNeed_li_1 = current address
-messages__establisherAddress__whatYouWillNeed_li_2 = previous address if {0} has used the current address for less than 1 year
-
-messages__partnershipAddress__whatYouWillNeed_title = The partnership’s address
+messages__address__whatYouWillNeed_title = {0}’s address
+messages__address__whatYouWillNeed_h1 = {0}’s address
+messages__address__whatYouWillNeed_p = You will need to tell us {0}’s:
+messages__address__whatYouWillNeed_li_1 = current address
+messages__address__whatYouWillNeed_li_2 = previous address if {0} has used this address for less than 1 year
 
 messages__establisherIndividualContactDetails__whatYouWillNeed_title = The establisher’s contact details
 messages__establisherIndividualContactDetails__whatYouWillNeed_h1 = Contact details for {0}
@@ -469,17 +461,11 @@ messages__individualContactDetails__whatYouWillNeed_p = You will need to tell us
 messages__individualContactDetails__whatYouWillNeed_li_1 = contact email address
 messages__individualContactDetails__whatYouWillNeed_li_2 = contact phone number
 
-messages__establisherCompanyContactDetails__whatYouWillNeed_title = The establisher’s contact details
 messages__contactDetails__whatYouWillNeed_h1 = {0}’s contact details
 messages__contactDetails__whatYouWillNeed_p = You will need to tell us {0}’s:
 messages__contactDetails__whatYouWillNeed_li_1 = contact email address
 messages__contactDetails__whatYouWillNeed_li_2 = contact phone number
 
-messages__establisherPartnershipContactDetails__whatYouWillNeed_title = The partnership’s contact details
-messages__establisherPartnershipContactDetails__whatYouWillNeed_h1 = {0}’s contact details
-messages__partnershipDetails__whatYouWillNeed_p = You will need to tell us the partnership’s:
-messages__partnershipDetails__whatYouWillNeed_li_1 = contact email address
-messages__partnershipDetails__whatYouWillNeed_li_2 = contact phone number
 
 messages__trusteeCompanyContactDetails__whatYouWillNeed_title = The company’s contact details
 messages__trusteeCompanyContactDetails__whatYouWillNeed_h1 = Contact details for {0}
@@ -488,9 +474,8 @@ messages__companyDetails__whatYouWillNeed_li_1 = contact email address
 messages__companyDetails__whatYouWillNeed_li_2 = contact phone number
 
 
-messages__establisherPreviousAddress = Previous address
-previousAddress.title = What was the previous address for {0}?
-previousAddress.title = What was the previous address for {0}?
+messages__previousAddress = {0}’s previous address
+previousAddress.title = Enter {0}’s previous address
 messages__visuallyHidden__previousAddress = the previous address for {0}
 
 enterPostcode.required = Enter a postcode
@@ -802,8 +787,6 @@ messages__confirmDeleteTrustee__title = Are you sure you want to delete this tru
 
 messages__schemeTaskList__trusteeIndividualAddress_addLink = Add address for {0}
 
-messages__trusteePreviousAddress = Previous address
-
 individualEnterPreviousPostcode.required = Enter the individual’s previous postcode
 trusteeEnterPreviousPostcode.invalid = Enter a real postcode
 
@@ -824,13 +807,6 @@ messages__schemeTaskList__trusteeIndividualAddress_changeLink = Change address f
 
 messages__schemeTaskList__companyDetails_addLink = Add details for {0}
 messages__schemeTaskList__companyDetails_changeLink = Change details for {0}
-
-messages__trusteeAddress__whatYouWillNeed_h1 = Address for {0}
-messages__trusteeAddress__whatYouWillNeed_title = The trustee’s address
-messages__trusteeCompanyAddress__whatYouWillNeed_title = The company’s address
-messages__trusteeAddress__whatYouWillNeed_p = You will need to tell us {0}’s:
-messages__trusteeAddress__whatYouWillNeed_li_1 = current address
-messages__trusteeAddress__whatYouWillNeed_li_2 = previous address if {0} has used the current address for less than 1 year
 
 messages__trusteePartnershipAddress__whatYouWillNeed_title = The partnership’s address
 
@@ -862,13 +838,13 @@ messages__companyDetails__whatYouWillNeed_li2_1 = VAT registration number
 messages__companyDetails__whatYouWillNeed_li2_2 = employer PAYE reference (you can tell us any employer PAYE reference if {0} has more than one)
 
 messages__haveCompanyNumber = Does {0} have a company number?
-messages__haveCompanyNumber__p = You can find this have any trusteeson the company’s certificate of incorporation or on any official letters from Companies House.
+messages__haveCompanyNumber__p = You can find this on the company’s certificate of incorporation or on any official letters from Companies House.
 messages__haveCompanyNumber__error = Select yes if the company has a company number
 messages__error__company_number_required = Enter the company number for {0}
 messages__error__company_number_invalid = Enter a company number in the correct format
 
 messages__companyNumber = What is {0}’s company number?
-messages__companyNumber__hint = For example, 01234567 or 'AB123456'
+messages__companyNumber__hint = This is issued by Companies House. It is 8 characters, typically 8 numbers or a combination of 2 letters followed by 6 numbers. For example, AB123456.
 
 messages__whyNoCompanyNumber = Why does {0} not have a company number?
 messages__reason__error_companyNumber_required = Enter a reason why the company does not have a company number
@@ -881,22 +857,25 @@ messages__havePAYE__hint = This is a 3 digit tax office number, a forward slash,
 messages__genericHavePaye__error__required = Select yes if {0} has an employer PAYE reference
 
 messages__vat = What is {0}’s VAT registration number?
-messages__vat__p = This is 9 numbers, sometimes with ‘GB’ at the start, for example 123456789 or GB123456789. You can find it on the VAT registration certificate for {0}.
+messages__vat__p = This is 9 numbers, sometimes with ‘GB’ at the start, for example 123456789 or GB123456789. You can find it on {0}’s VAT registration certificate.
 messages__vat__error_invalid = Enter {0}’s VAT registration number in the correct format
 messages__vat__error_required = Enter a VAT registration number
 
 messages__paye = What is {0}’s employer PAYE reference?
-messages__paye__p = You can tell us any employer PAYE reference if {0} has more then one.
+messages__paye_cya = {0}’s Employer PAYE reference
+messages__paye__p = You can tell us any employer PAYE reference if {0} has more than one.
 messages__paye__hint = For example, 123/AB456
 messages__paye__error_invalid = Enter {0}’s employer PAYE reference in the correct format
 messages__paye__error_length = Enter {0}’s employer PAYE reference using 16 characters or less
 messages__paye__error_required = Enter an employer PAYE reference
 
 messages__haveCompanyNumber__cya__visuallyHidden = whether {0} has a company number
+messages__companyNumber__cya = {0}’s company number
 messages__companyNumber__cya__visuallyHidden = {0}’s company number
 messages__whyNoCompanyNumber__cya__visuallyHidden = the reason why {0} does not have a company number
 messages__enterUTR__cya__visuallyHidden = the UTR for {0}
 messages__haveVAT__cya__visuallyHidden = whether {0} is registered for VAT
+messages__vat__cya = {0}’s VAT registration number
 messages__vat__cya__visuallyHidden = the VAT registration number for {0}
 messages__havePAYE__cya__visuallyHidden = whether {0} has an employer PAYE reference
 messages__paye__cya__visuallyHidden = the employer PAYE reference for {0}
@@ -932,12 +911,6 @@ messages__addCompanyDirectorsPartnersOrTrustees_tell_us_if_you_have_more = You c
 messages__addCompanyDirectors_add_director = Add a director
 messages__alreadyDeleted__director_title = You have already deleted this director
 
-messages__partnershipName__title = What is the partnership’s name?
-messages__error__partnership_name = Enter the partnership’s name
-messages__error__partnership_name_length = The partnership name cannot be more than 160 characters
-messages__error__partnership_name_invalid = The partnership name contains invalid characters
-
-messages__partners__pagetitle = Partners - Managing Pension Schemes - GOV.UK
 messages__partners__title = Partners
 messages__partners__whatYouWillNeedPartners__p1 = For every partner associated with the partnership you’re registering, you will need to tell us the partner’s:
 messages__partners__whatYouWillNeed__item1 = name
@@ -953,7 +926,7 @@ messages__partner__name = The partner’s name
 messages__partner__name__cya__visuallyHidden = the name of the partner
 messages__addPartner_radio_label = Do you want to add another partner?
 messages__confirmDeletePartners__title = Are you sure you want to delete this partner?
-messages__addPartners_lede = You must tell us about all yourdob partners. You can add up to 10 using the digital service.
+messages__addPartners_lede = You must tell us about all your partners. You can add up to 10 using the digital service.
 
 messages__otherPartners__title=Do you need to tell us about other partners?
 messages__otherPartners__heading=Do you need to tell us about other partners?
@@ -1054,7 +1027,6 @@ messages__otherTrustees__error__required = Select yes if you need to tell us abo
 
 messages__addTrustees_at_maximum = You have added the maximum number of trustees.
 
-messages__trusteePartnershipContactDetails__whatYouWillNeed_title = The partnership’s contact details
 
 messages__transferAll__title = Do you want to add all your RAC/DACs from the Pension Schemes Online service?
 messages__transferAll__error = Select yes if you want to add all your RAC/DACs from the Pension Schemes Online service

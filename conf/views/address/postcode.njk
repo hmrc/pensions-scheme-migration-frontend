@@ -8,7 +8,7 @@
 {% from "macros/returnLink.njk"                    import returnLink %}
 
 {% block pageTitle %}
-  {{ title(messages(h1MessageKey, messages(entityType)), form.errors) }}
+  {{ title(messages(h1MessageKey, entityType), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}

@@ -47,7 +47,7 @@ class EstablisherAddressCYAHelper
     val seqRowAddressAndYears = Seq(
       answerOrAddRow(
         AddressId(index),
-        Message("messages__establisherAddress__whatYouWillNeed_h1", establisherName).resolve,
+        Message("messages__address__whatYouWillNeed_h1", establisherName).resolve,
         Some(EstablishersIndividualRoutes.enterPostcodeRoute(index, NormalMode).url),
         Some(msg"messages__visuallyHidden__address".withArgs(establisherName)), answerAddressTransform
       ),
@@ -65,7 +65,7 @@ class EstablisherAddressCYAHelper
       Seq(
         answerOrAddRow(
           PreviousAddressId(index),
-          Message("messages__establisherPreviousAddress").resolve,
+          Message("messages__previousAddress", establisherName).resolve,
           Some(EstablishersIndividualRoutes.enterPreviousPostcodeRoute(index, NormalMode).url),
           Some(msg"messages__visuallyHidden__previousAddress".withArgs(establisherName)), answerAddressTransform
         )

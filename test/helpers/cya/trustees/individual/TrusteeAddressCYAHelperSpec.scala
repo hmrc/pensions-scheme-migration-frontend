@@ -83,7 +83,7 @@ class TrusteeAddressCYAHelperSpec extends AnyWordSpec with Matchers with TryValu
 
       val result = trusteeAddressCYAHelper.rows(0)(dataRequest(ua), messages)
 
-      result.head mustBe summaryListRowHtml(key = messages("messages__trusteeAddress__whatYouWillNeed_h1", trusteeName.fullName),
+      result.head mustBe summaryListRowHtml(key = Messages("messages__address__whatYouWillNeed_h1", trusteeName.fullName),
         value = answerAddressTransform(trusteeAddress), Some(Link(text = Messages("site.change"),
           target = TrusteesIndividualRoutes.enterPostcodeRoute(0, NormalMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__address", trusteeName.fullName))),
@@ -96,7 +96,7 @@ class TrusteeAddressCYAHelperSpec extends AnyWordSpec with Matchers with TryValu
             Messages("messages__visuallyhidden__addressYears", trusteeName.fullName))),
           attributes = Map("id" -> "cya-0-1-change"))))
 
-      result(2) mustBe summaryListRowHtml(key = messages("messages__trusteePreviousAddress"),
+      result(2) mustBe summaryListRowHtml(key = Messages("messages__previousAddress", trusteeName.fullName),
         value = answerAddressTransform(trusteePreviousAddress), Some(Link(text = Messages("site.change"),
           target = TrusteesIndividualRoutes.enterPreviousPostcodeRoute(0, NormalMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__previousAddress", trusteeName.fullName))),

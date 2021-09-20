@@ -38,6 +38,10 @@
       </div>
     </div>
 
-    {{ returnLink(schemeName) }}
+    <p class="govuk-body">
+        <a href="{{ returnUrl }}" class="govuk-link">
+            {{ messages("site.return.to", psaName) }}
+        </a>
+    </p>
 
 {% endblock %}

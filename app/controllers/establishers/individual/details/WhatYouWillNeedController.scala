@@ -17,12 +17,12 @@
 package controllers.establishers.individual.details
 
 import controllers.Retrievals
-import controllers.actions.{DataRetrievalAction, DataRequiredAction, AuthAction}
+import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import helpers.cya.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import models.{Index, NormalMode}
-import play.api.i18n.{MessagesApi, I18nSupport}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -51,11 +51,12 @@ class WhatYouWillNeedController @Inject()(
         EstablisherNameId(index).retrieve.right.map {
           personName =>
             renderer.render(
-              template = "establishers/individual/details/whatYouWillNeed.njk",
+              template = "details/whatYouWillNeedIndividualDetails.njk",
               ctx = Json.obj(
-                "name"        -> personName.fullName,
+                "name" -> personName.fullName,
+                "entityType" -> Messages("messages__title_individual"),
                 "continueUrl" -> controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, NormalMode, "date-of-birth").url,
-                "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
+                "schemeName" -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )
             ).map(Ok(_))
         }

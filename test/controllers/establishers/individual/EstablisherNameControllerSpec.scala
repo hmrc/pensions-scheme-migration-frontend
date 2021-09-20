@@ -27,6 +27,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
@@ -64,7 +65,7 @@ class EstablisherNameControllerSpec extends ControllerSpecBase with NunjucksSupp
     Json.obj(
       "form" -> form,
       "schemeName" -> schemeName,
-      "entityType" -> "establisher"
+      "entityType" -> Messages("messages__individual")
     )
 
   override def beforeEach: Unit = {

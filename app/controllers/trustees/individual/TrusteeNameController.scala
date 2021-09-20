@@ -61,7 +61,7 @@ class TrusteeNameController @Inject()(
           ctx = Json.obj(
             "form"       -> request.userAnswers.get[PersonName](TrusteeNameId(index)).fold(form)(form.fill),
             "schemeName" -> existingSchemeName,
-            "entityType" -> "trustee"
+            "entityType" -> Messages("messages__trustee")
           )
         ).flatMap(view => Future.successful(Ok(view)))
     }
@@ -76,7 +76,7 @@ class TrusteeNameController @Inject()(
               ctx = Json.obj(
                 "form"       -> formWithErrors,
                 "schemeName" -> existingSchemeName,
-                "entityType" -> "trustee"
+                "entityType" -> Messages("messages__trustee")
               )
             ).map(BadRequest(_)),
           value =>

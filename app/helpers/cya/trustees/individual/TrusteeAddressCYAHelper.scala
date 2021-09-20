@@ -47,7 +47,7 @@ class TrusteeAddressCYAHelper
     val seqRowAddressAndYears = Seq(
       answerOrAddRow(
         AddressId(index),
-        Message("messages__trusteeAddress__whatYouWillNeed_h1", trusteeName).resolve,
+        Message("messages__address__whatYouWillNeed_h1", trusteeName).resolve,
         Some(TrusteesIndividualRoutes.enterPostcodeRoute(index, NormalMode).url),
         Some(msg"messages__visuallyHidden__address".withArgs(trusteeName)), answerAddressTransform
       ),
@@ -65,7 +65,7 @@ class TrusteeAddressCYAHelper
       Seq(
         answerOrAddRow(
           PreviousAddressId(index),
-          Message("messages__trusteePreviousAddress").resolve,
+          Message("messages__previousAddress", trusteeName).resolve,
           Some(TrusteesIndividualRoutes.enterPreviousPostcodeRoute(index, NormalMode).url),
           Some(msg"messages__visuallyHidden__previousAddress".withArgs(trusteeName)), answerAddressTransform
         )

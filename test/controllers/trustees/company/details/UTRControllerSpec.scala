@@ -33,7 +33,7 @@ import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import utils.Data.{company, schemeName, ua}
+import utils.Data.{companyDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
 
 import scala.concurrent.Future
@@ -42,7 +42,7 @@ class UTRControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
 
   private val index: Index = Index(0)
   private val referenceValue: ReferenceValue = ReferenceValue("1234567890")
-  private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(index), company).success.value
+  private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(index), companyDetails).success.value
 
   private val formProvider: UTRFormProvider = new UTRFormProvider()
   private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
@@ -51,7 +51,7 @@ class UTRControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
   private val commonJson: JsObject =
     Json.obj(
       "pageTitle"     -> messages("messages__enterUTR", messages("messages__company")),
-      "pageHeading"     -> messages("messages__enterUTR", company.companyName),
+      "pageHeading"     -> messages("messages__enterUTR", companyDetails.companyName),
       "schemeName"    -> schemeName,
       "paragraphs"      -> Json.arr(messages("messages__UTR__p1"), messages("messages__UTR__p2")),
       "legendClass"   -> "govuk-visually-hidden",

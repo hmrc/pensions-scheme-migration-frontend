@@ -71,7 +71,7 @@ class TrusteePartnershipDetailsCYAHelperSpec extends AnyWordSpec with Matchers w
       )
 
       result(1) mustBe Row(
-        key = Key(msg"${Message("messages__enterUTR", partnershipDetails.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__enterUTR__cya_label", partnershipDetails.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(msg"12345678"),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
@@ -95,7 +95,7 @@ class TrusteePartnershipDetailsCYAHelperSpec extends AnyWordSpec with Matchers w
       )
 
       result(3) mustBe Row(
-        key = Key(msg"${Message("messages__vat", partnershipDetails.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__vat__cya", partnershipDetails.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(msg"12345678"),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
@@ -119,7 +119,7 @@ class TrusteePartnershipDetailsCYAHelperSpec extends AnyWordSpec with Matchers w
       )
 
       result(5) mustBe Row(
-        key = Key(msg"${Message("messages__paye", partnershipDetails.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__paye_cya", partnershipDetails.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(msg"12345678"),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),

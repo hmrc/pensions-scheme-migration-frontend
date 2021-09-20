@@ -41,7 +41,7 @@ import scala.concurrent.Future
 
 class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
-  private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(PartnershipDetailsId(0), Data.trusteePartnershipDetails))
+  private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(PartnershipDetailsId(0), Data.partnershipDetails))
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
   private val httpPathGET: String = controllers.trustees.partnership.address.routes.TradingTimeController.onPageLoad(0).url
@@ -73,7 +73,7 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
     "Return OK and the correct view for a GET" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, Data.schemeName)
-        .setOrException(PartnershipDetailsId(0), Data.trusteePartnershipDetails)
+        .setOrException(PartnershipDetailsId(0), Data.partnershipDetails)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
       val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
@@ -91,7 +91,7 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
     "return OK and the correct view for a GET when the question has previously been answered" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, Data.schemeName)
-        .setOrException(PartnershipDetailsId(0), Data.trusteePartnershipDetails)
+        .setOrException(PartnershipDetailsId(0), Data.partnershipDetails)
         .setOrException(TradingTimeId(0), true)
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))

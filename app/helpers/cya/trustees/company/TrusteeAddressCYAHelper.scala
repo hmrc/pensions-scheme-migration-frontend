@@ -18,16 +18,15 @@ package helpers.cya.trustees.company
 
 import helpers.cya.CYAHelper
 import helpers.cya.CYAHelper.getCompanyName
-import identifiers.trustees.company.address.{AddressYearsId, TradingTimeId}
 import identifiers.trustees.company.CompanyDetailsId
-import identifiers.trustees.company.address.{AddressYearsId, PreviousAddressId, AddressId}
+import identifiers.trustees.company.address.{AddressId, AddressYearsId, PreviousAddressId, TradingTimeId}
 import models.Index
 import models.requests.DataRequest
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.SummaryList.Row
-import utils.{UserAnswers, Enumerable}
+import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 
 class TrusteeAddressCYAHelper
@@ -47,7 +46,7 @@ class TrusteeAddressCYAHelper
     val seqRowAddressAndYears = Seq(
       answerOrAddRow(
         AddressId(index),
-        Message("messages__trusteeAddress__whatYouWillNeed_h1", trusteeName).resolve,
+        Message("messages__address__whatYouWillNeed_h1", trusteeName).resolve,
         Some(controllers.trustees.company.address.routes.EnterPostcodeController.onPageLoad(index).url),
         Some(msg"messages__visuallyHidden__address".withArgs(trusteeName)), answerAddressTransform
       ),
@@ -77,7 +76,7 @@ class TrusteeAddressCYAHelper
         Seq(
           answerOrAddRow(
             PreviousAddressId(index),
-            Message("messages__trusteePreviousAddress").resolve,
+            Message("messages__previousAddress", trusteeName).resolve,
             Some(controllers.trustees.company.address.routes.EnterPreviousPostcodeController.onPageLoad(index).url),
             Some(msg"messages__visuallyHidden__previousAddress".withArgs(trusteeName)), answerAddressTransform
           )

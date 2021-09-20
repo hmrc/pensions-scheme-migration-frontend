@@ -57,7 +57,7 @@ class TrusteeCompanyContactDetailsCYAHelperSpec extends AnyWordSpec with Matcher
       val result = trusteeCompanyContactDetailsCYAHelper.contactDetailsRows(0)(dataRequest(ua), messages)
 
       result.head mustBe Row(
-        key = Key(msg"${Message("messages__enterEmail", company.companyName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__enterEmail_cya_label", company.companyName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(Literal("test@test.com")),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
@@ -69,7 +69,7 @@ class TrusteeCompanyContactDetailsCYAHelperSpec extends AnyWordSpec with Matcher
       )
 
       result(1) mustBe Row(
-        key = Key(msg"${Message("messages__enterPhone", company.companyName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__enterPhone_cya_label", company.companyName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(Literal("123")),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),

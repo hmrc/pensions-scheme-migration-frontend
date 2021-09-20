@@ -40,7 +40,7 @@ import scala.concurrent.Future
 
 class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
-  private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(CompanyDetailsId(0), Data.establisherCompanyDetails))
+  private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(CompanyDetailsId(0), Data.companyDetails))
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
   private val httpPathGET: String = controllers.establishers.company.address.routes.AddressYearsController.onPageLoad(0).url
@@ -72,7 +72,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
     "Return OK and the correct view for a GET" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, Data.schemeName)
-        .setOrException(CompanyDetailsId(0), Data.establisherCompanyDetails)
+        .setOrException(CompanyDetailsId(0), Data.companyDetails)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
       val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
@@ -90,7 +90,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
     "return OK and the correct view for a GET when the question has previously been answered" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, Data.schemeName)
-        .setOrException(CompanyDetailsId(0), Data.establisherCompanyDetails)
+        .setOrException(CompanyDetailsId(0), Data.companyDetails)
         .setOrException(AddressYearsId(0), true)
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))

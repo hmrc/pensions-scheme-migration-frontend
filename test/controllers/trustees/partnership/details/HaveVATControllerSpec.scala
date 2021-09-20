@@ -34,7 +34,7 @@ import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import utils.Data.{schemeName, trusteePartnershipDetails, ua}
+import utils.Data.{schemeName, partnershipDetails, ua}
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.Message
 
@@ -43,18 +43,18 @@ import scala.concurrent.Future
 class HaveVATControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with BeforeAndAfterEach {
 
   private val index: Index = Index(0)
-  private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(index), trusteePartnershipDetails).success.value
+  private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(index), partnershipDetails).success.value
   private val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
   private val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
   private val formProvider: HasReferenceNumberFormProvider = new HasReferenceNumberFormProvider()
-  private val form: Form[Boolean] = formProvider(Message("messages__genericHaveVat__error__required", trusteePartnershipDetails.partnershipName))
+  private val form: Form[Boolean] = formProvider(Message("messages__genericHaveVat__error__required", partnershipDetails.partnershipName))
   private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
   private val templateToBeRendered: String = "hasReferenceValue.njk"
 
   private val commonJson: JsObject =
     Json.obj(
       "pageTitle"     -> messages("messages__haveVAT", messages("messages__partnership")),
-      "pageHeading"     -> messages("messages__haveVAT", trusteePartnershipDetails.partnershipName),
+      "pageHeading"     -> messages("messages__haveVAT", partnershipDetails.partnershipName),
       "schemeName"    -> schemeName,
       "legendClass"   -> "govuk-visually-hidden",
       "isPageHeading" -> true

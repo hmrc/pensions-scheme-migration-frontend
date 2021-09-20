@@ -65,7 +65,7 @@ class TrusteeNoUTRReasonController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             get(
-              pageTitle     = Message("messages__whyNoUTR_title", Message("messages__individual")),
+              pageTitle     = Message("messages__whyNoUTR", Message("messages__individual")),
               pageHeading     = Message("messages__whyNoUTR", name(index)),
               isPageHeading = true,
               id            = TrusteeNoUTRReasonId(index),
@@ -81,7 +81,7 @@ class TrusteeNoUTRReasonController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             post(
-              pageTitle     = Message("messages__whyNoUTR_title", Message("messages__individual")),
+              pageTitle     = Message("messages__whyNoUTR", Message("messages__individual")),
               pageHeading     = Message("messages__whyNoUTR", name(index)),
               isPageHeading = true,
               id            = TrusteeNoUTRReasonId(index),

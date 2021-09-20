@@ -30,32 +30,23 @@ import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class EnterEmailController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            val navigator: CompoundNavigator,
-                                            authenticate: AuthAction,
-                                            getData: DataRetrievalAction,
-                                            requireData: DataRequiredAction,
-                                            formProvider: EmailFormProvider,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                            val renderer: Renderer
-                                          )(implicit val executionContext: ExecutionContext)
+                                      override val messagesApi: MessagesApi,
+                                      val navigator: CompoundNavigator,
+                                      authenticate: AuthAction,
+                                      getData: DataRetrievalAction,
+                                      requireData: DataRequiredAction,
+                                      formProvider: EmailFormProvider,
+                                      val controllerComponents: MessagesControllerComponents,
+                                      val userAnswersCacheConnector: UserAnswersCacheConnector,
+                                      val renderer: Renderer
+                                    )(implicit val executionContext: ExecutionContext)
   extends EmailAddressController {
-
-  private def name(index: Index)
-                  (implicit request: DataRequest[AnyContent]): String =
-    request
-      .userAnswers
-      .get(EstablisherNameId(index))
-      .fold("the establisher")(_.fullName)
-
-  private def form(index: Index)(implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Messages("messages__enterEmail__error_required", name(index)))
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
@@ -64,11 +55,11 @@ class EnterEmailController @Inject()(
           schemeName =>
             get(
               entityName = name(index),
-              entityType = Messages("messages__individual"),
-              id            = EnterEmailId(index),
-              form          = form(index),
-              schemeName    = schemeName,
-              paragraphText = Seq(Messages("messages__contact_details__hint", name(index)))
+              entityType = Message("messages__individual"),
+              id = EnterEmailId(index),
+              form = form(index),
+              schemeName = schemeName,
+              paragraphText = Seq(Message("messages__contact_details__hint", name(index)))
             )
         }
     }
@@ -80,13 +71,23 @@ class EnterEmailController @Inject()(
           schemeName =>
             post(
               entityName = name(index),
-              entityType = Messages("messages__individual"),
-              id            = EnterEmailId(index),
-              form          = form(index),
-              schemeName    = schemeName,
-              paragraphText = Seq(Messages("messages__contact_details__hint", name(index))),
-              mode          = mode
+              entityType = Message("messages__individual"),
+              id = EnterEmailId(index),
+              form = form(index),
+              schemeName = schemeName,
+              paragraphText = Seq(Message("messages__contact_details__hint", name(index))),
+              mode = mode
             )
         }
     }
+
+  private def form(index: Index)(implicit request: DataRequest[AnyContent]): Form[String] =
+    formProvider(Messages("messages__enterEmail__error_required", name(index)))
+
+  private def name(index: Index)
+                  (implicit request: DataRequest[AnyContent]): String =
+    request
+      .userAnswers
+      .get(EstablisherNameId(index))
+      .fold(Message("messages__individual"))(_.fullName)
 }

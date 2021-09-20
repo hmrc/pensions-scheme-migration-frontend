@@ -16,9 +16,9 @@
 
 package controllers.racdac
 
-import controllers.Retrievals
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import identifiers.beforeYouStart.SchemeNameId
+import config.AppConfig
+import connectors.MinimalDetailsConnector
+import controllers.actions.AuthAction
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -29,32 +29,33 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class DeclarationController @Inject()(
+                                       appConfig: AppConfig,
                                        override val messagesApi: MessagesApi,
                                        authenticate: AuthAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
+                                       minimalDetailsConnector: MinimalDetailsConnector,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer
                                      )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
-    with Retrievals {
+     {
 
   def onPageLoad: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    authenticate.async {
       implicit request =>
-        SchemeNameId.retrieve.right.map {
-          schemeName =>
+        minimalDetailsConnector.getPSAName.flatMap {
+          psaName =>
             val json = Json.obj(
-              "schemeName" -> schemeName,
-              "submitUrl" -> controllers.racdac.routes.DeclarationController.onSubmit().url
+              "psaName" -> psaName,
+              "submitUrl" -> routes.DeclarationController.onSubmit().url,
+              "returnUrl" -> appConfig.psaOverviewUrl
             )
             renderer.render("racdac/declaration.njk", json).map(Ok(_))
         }
   }
 
   def onSubmit: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData) {
+    authenticate {
       Redirect(controllers.routes.IndexController.onPageLoad().url)
   }
 

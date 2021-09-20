@@ -8,7 +8,7 @@
 {% from "macros/returnLink.njk"                    import returnLink %}
 
 {% block pageTitle %}
-  {{ title(messages("benefitsInsurancePolicy.title"), form.errors) }}
+  {{ title(messages("benefitsInsurancePolicy.h1", messages("benefitsInsuranceUnknown")), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}

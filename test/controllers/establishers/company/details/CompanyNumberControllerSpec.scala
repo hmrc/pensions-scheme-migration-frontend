@@ -33,7 +33,7 @@ import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import utils.Data.{company, schemeName, ua}
+import utils.Data.{companyDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
 
 import scala.concurrent.Future
@@ -42,7 +42,7 @@ class CompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
   private val index: Index = Index(0)
   private val referenceValue: ReferenceValue = ReferenceValue("12345678")
-  private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(index), company).success.value
+  private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(index), companyDetails).success.value
 
   private val formProvider: CompanyNumberFormProvider = new CompanyNumberFormProvider()
   private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
@@ -51,7 +51,7 @@ class CompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSuppor
   private val commonJson: JsObject =
     Json.obj(
       "pageTitle"     -> messages("messages__companyNumber", messages("messages__company")),
-      "pageHeading"     -> messages("messages__companyNumber", company.companyName),
+      "pageHeading"     -> messages("messages__companyNumber", companyDetails.companyName),
       "schemeName"    -> schemeName,
       "hintText"      -> messages("messages__companyNumber__hint"),
       "legendClass"   -> "govuk-label--xl",

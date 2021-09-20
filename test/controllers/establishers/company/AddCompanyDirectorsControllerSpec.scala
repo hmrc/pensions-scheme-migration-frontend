@@ -37,7 +37,7 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
-import utils.Data.{company, schemeName, ua}
+import utils.Data.{companyDetails, schemeName, ua}
 import utils.{Enumerable, UserAnswers}
 import models.Scheme
 import scala.concurrent.Future
@@ -47,14 +47,14 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with Nunjucks
     PersonName("Jane", "Doe")
   private val userAnswers: Option[UserAnswers] =
    ua.set(EstablisherKindId(0), EstablisherKind.Company).flatMap(
-     _.set(CompanyDetailsId(0), CompanyDetails(company.companyName)).flatMap(
+     _.set(CompanyDetailsId(0), CompanyDetails(companyDetails.companyName)).flatMap(
         _.set(DirectorNameId(0,0), directorName).flatMap(
           _.set(IsNewDirectorId(0,0), true)
      ))).toOption
 
   private def validData() = {
     ua.set(EstablisherKindId(1), EstablisherKind.Company).flatMap(
-      _.set(CompanyDetailsId(1), CompanyDetails(company.companyName)).flatMap(
+      _.set(CompanyDetailsId(1), CompanyDetails(companyDetails.companyName)).flatMap(
         _.set(DirectorNameId(1,1), directorName).flatMap(
         _.set(DirectorNameId(1,2), directorName).flatMap(
         _.set(DirectorNameId(1,3), directorName).flatMap(

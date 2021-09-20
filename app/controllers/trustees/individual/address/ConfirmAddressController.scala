@@ -23,6 +23,7 @@ import controllers.actions._
 import controllers.address.ManualAddressController
 import forms.address.AddressFormProvider
 import identifiers.beforeYouStart.SchemeNameId
+import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address.AddressId
 import models.{Address, AddressConfiguration, Index}
 import navigators.CompoundNavigator
@@ -50,17 +51,19 @@ class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
 
   def form(implicit messages: Messages): Form[Address] = formProvider()
 
+  override protected val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__individual")
+
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      SchemeNameId.retrieve.right.map { schemeName =>
-          get(Some(schemeName), Messages("address.title"), AddressId(index), AddressConfiguration.PostcodeFirst)
+      (TrusteeNameId(index) and SchemeNameId).retrieve.right.map { case trusteeName ~ schemeName =>
+          get(Some(schemeName), trusteeName.fullName, AddressId(index), AddressConfiguration.PostcodeFirst)
       }
     }
 
   def onSubmit(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      SchemeNameId.retrieve.right.map { schemeName =>
-        post(Some(schemeName), Messages("address.title"), AddressId(index), AddressConfiguration.PostcodeFirst)
+      (TrusteeNameId(index) and SchemeNameId).retrieve.right.map { case trusteeName ~ schemeName =>
+        post(Some(schemeName), trusteeName.fullName, AddressId(index), AddressConfiguration.PostcodeFirst)
       }
     }
 }
