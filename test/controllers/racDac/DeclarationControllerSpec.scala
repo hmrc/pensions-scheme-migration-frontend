@@ -16,17 +16,18 @@
 
 package controllers.racDac
 
+import connectors.MinimalDetailsConnector
 import controllers.ControllerSpecBase
-import controllers.actions.MutableFakeDataRetrievalAction
+import controllers.actions.FakeAuthAction
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import play.api.Application
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
+import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.Data.{schemeName, ua}
+import utils.Data.psaName
 import utils.Enumerable
 
 import scala.concurrent.Future
@@ -34,36 +35,37 @@ import scala.concurrent.Future
 class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val templateToBeRendered = "racDac/declaration.njk"
+  private val mockMinimalDetailsConnector: MinimalDetailsConnector = mock[MinimalDetailsConnector]
 
-  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
-
-  private val templateCaptor:ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-  private val jsonCaptor:ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-  private def httpPathGET: String = controllers.racDac.routes.DeclarationController.onPageLoad().url
-  private def httpPathPOST: String = controllers.racDac.routes.DeclarationController.onSubmit().url
-
-
-  private val jsonToPassToTemplate: JsObject =
+  private def jsonToPassToTemplate: JsObject =
     Json.obj(
-      "schemeName" -> schemeName,
-      "submitUrl" -> controllers.racDac.routes.DeclarationController.onSubmit().url
+      "psaName" -> psaName,
+      "submitUrl" -> controllers.racDac.routes.DeclarationController.onSubmit().url,
+      "returnUrl" -> appConfig.psaOverviewUrl
     )
 
   override def beforeEach: Unit = {
     super.beforeEach
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+    when(mockMinimalDetailsConnector.getPSAName(any(),any())).thenReturn(Future.successful(psaName))
   }
+
+  private def controller(): DeclarationController =
+    new DeclarationController(
+      appConfig,
+      messagesApi,
+      new FakeAuthAction(),
+      mockMinimalDetailsConnector,
+      controllerComponents,
+      new Renderer(mockAppConfig, mockRenderer)
+    )
 
   "RacDac DeclarationController" must {
 
     "return OK and the correct view for a GET" in {
-      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-
-      val result = route(application, httpGETRequest(httpPathGET)).value
-
+      val templateCaptor:ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor:ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+      val result = controller().onPageLoad()(fakeDataRequest())
       status(result) mustEqual OK
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
@@ -75,7 +77,8 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
     "redirect to next page when button is clicked" in {
 
-      val result = route(application, httpGETRequest(httpPathPOST)).value
+      val result = controller().onSubmit()(fakeDataRequest())
+
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.IndexController.onPageLoad().url)
     }
