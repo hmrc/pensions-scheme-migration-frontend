@@ -37,7 +37,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
   private val templateToBeRendered = "racDac/declaration.njk"
   private val mockMinimalDetailsConnector: MinimalDetailsConnector = mock[MinimalDetailsConnector]
 
-  private val jsonToPassToTemplate: JsObject =
+  private def jsonToPassToTemplate: JsObject =
     Json.obj(
       "psaName" -> psaName,
       "submitUrl" -> controllers.racDac.routes.DeclarationController.onSubmit().url
