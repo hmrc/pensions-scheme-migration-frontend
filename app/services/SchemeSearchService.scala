@@ -250,7 +250,7 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
               "returnUrl" -> appConfig.psaOverviewUrl,
               "paginationText" -> paginationText(pageNumber,pagination,numberOfSchemes,numberOfPages),
               "schemes" -> mapToTable(schemeDetails, isRacDac = true, viewOnly = true),
-              "radios" -> Radios.yesNo(form("value")),
+              "radios" -> Radios.yesNo(form("value"))
             )
             renderer.render("racdac/racDacsBulkList.njk", json)
               .map(body => if (form.hasErrors) BadRequest(body) else Ok(body))
