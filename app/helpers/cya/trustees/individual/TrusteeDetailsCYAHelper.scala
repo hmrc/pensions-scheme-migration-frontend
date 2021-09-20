@@ -53,7 +53,7 @@ class TrusteeDetailsCYAHelper
         id                 = TrusteeHasNINOId(index),
         message            = Message("messages__hasNINO", trusteeName).resolve,
         url                = Some(TrusteesIndividualRoutes.haveNationalInsuranceNumberRoute(index, CheckMode).url),
-        visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(trusteeName)),
+        visuallyHiddenText = Some(msg"messages__hasNINO__cya__visuallyHidden".withArgs(trusteeName)),
         answerTransform    = answerBooleanTransform
       )),
       ua.get(TrusteeNINOId(index)) map {
@@ -62,7 +62,7 @@ class TrusteeDetailsCYAHelper
             id                 = TrusteeNINOId(index),
             message            = Message("messages__hasNINO__cya", trusteeName),
             url                = Some(TrusteesIndividualRoutes.enterNationaInsuranceNumberRoute(index, CheckMode).url),
-            visuallyHiddenText = Some(msg"messages__hasNINO__cya__visuallyHidden".withArgs(trusteeName)),
+            visuallyHiddenText = Some(msg"messages__enterNINO__cya_visuallyHidden".withArgs(trusteeName)),
             answerTransform    = referenceValueTransform
           )
       },
@@ -88,7 +88,7 @@ class TrusteeDetailsCYAHelper
             id                 = TrusteeUTRId(index),
             message            = Message("messages__hasUTR__cya", trusteeName),
             url                = Some(TrusteesIndividualRoutes.enterUniqueTaxpayerReferenceRoute(index, CheckMode).url),
-            visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(trusteeName)),
+            visuallyHiddenText = Some(msg"messages__enterUTR__cya__visuallyHidden".withArgs(trusteeName)),
             answerTransform    = referenceValueTransform
           )
       },

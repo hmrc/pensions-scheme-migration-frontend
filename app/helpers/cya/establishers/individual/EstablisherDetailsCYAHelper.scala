@@ -66,7 +66,7 @@ class EstablisherDetailsCYAHelper
           answerOrAddRow(
             id                 = EstablisherNINOId(index),
             message            = Message("messages__hasNINO__cya", establisherName),
-            url                = Some(enterUniqueTaxpayerReferenceRoute(index, CheckMode).url),
+            url                = Some(enterNationaInsuranceNumberRoute(index, CheckMode).url),
             visuallyHiddenText = Some(msg"messages__enterNINO__cya_visuallyHidden".withArgs(establisherName)),
             answerTransform    = referenceValueTransform
           )

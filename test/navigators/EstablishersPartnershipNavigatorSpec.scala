@@ -19,10 +19,11 @@ package navigators
 import base.SpecBase
 import controllers.establishers.partnership.address.{routes => addressRoutes}
 import controllers.establishers.partnership.details.{routes => detailsRoutes}
+import controllers.establishers.partnership.contact.{routes => contactRoutes}
 import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.address._
 import identifiers.establishers.partnership.contact.{EnterEmailId, EnterPhoneId}
-import identifiers.establishers.partnership.details._
+import identifiers.establishers.partnership.details.{HavePAYEId, HaveUTRId, HaveVATId, NoUTRReasonId, PAYEId, PartnershipUTRId, VATId}
 import identifiers.{Identifier, TypedIdentifier}
 import models._
 import org.scalatest.TryValues
@@ -63,6 +64,8 @@ class EstablishersPartnershipNavigatorSpec
 
   private val cyaAddress: Call = addressRoutes.CheckYourAnswersController.onPageLoad(index)
 
+  private val cyaContact: Call = contactRoutes.CheckYourAnswersController.onPageLoad(index)
+
   private def enterPreviousPostcode: Call = addressRoutes.EnterPreviousPostcodeController.onPageLoad(index)
 
   private def tradingTime: Call = addressRoutes.TradingTimeController.onPageLoad(index)
@@ -73,16 +76,14 @@ class EstablishersPartnershipNavigatorSpec
 
   private def addressYears: Call = addressRoutes.AddressYearsController.onPageLoad(index)
 
+  private def enterPhone: Call = contactRoutes.EnterPhoneController.onPageLoad(index, NormalMode)
+
 
   "EstablishersPartnershipNavigator" when {
     def navigation: TableFor3[Identifier, UserAnswers, Call] =
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
         row(PartnershipDetailsId(index))(addEstablisherPage),
-
-        row(EnterEmailId(index))(controllers.establishers.partnership.contact.routes.EnterPhoneController.onPageLoad(index, NormalMode)),
-        row(EnterPhoneId(index))(controllers.establishers.partnership.contact.routes.CheckYourAnswersController.onPageLoad(index)),
-
         row(HaveUTRId(index))(utr(), uaWithValue(HaveUTRId(index), true)),
         row(HaveUTRId(index))(noUtr(), uaWithValue(HaveUTRId(index), false)),
         row(PartnershipUTRId(index))(haveVat()),
@@ -106,6 +107,8 @@ class EstablishersPartnershipNavigatorSpec
         row(EnterPreviousPostCodeId(index))(selectPreviousAddress, uaWithValue(EnterPreviousPostCodeId(index), seqAddresses)),
         row(PreviousAddressListId(index))(cyaAddress, uaWithValue(PreviousAddressListId(index), 0)),
         row(PreviousAddressId(index))(cyaAddress, uaWithValue(PreviousAddressId(index), address)),
+        row(EnterEmailId(index))(enterPhone),
+        row(EnterPhoneId(index))(cyaContact)
 
       )
 
@@ -113,10 +116,6 @@ class EstablishersPartnershipNavigatorSpec
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
         row(PartnershipDetailsId(index))(controllers.routes.IndexController.onPageLoad()),
-
-        row(EnterEmailId(index))(controllers.establishers.partnership.contact.routes.CheckYourAnswersController.onPageLoad(index)),
-        row(EnterPhoneId(index))(controllers.establishers.partnership.contact.routes.CheckYourAnswersController.onPageLoad(index)),
-
         row(HaveUTRId(index))(utr(CheckMode), uaWithValue(HaveUTRId(index), true)),
         row(HaveUTRId(index))(noUtr(CheckMode), uaWithValue(HaveUTRId(index), false)),
         row(PartnershipUTRId(index))(cyaDetails),
@@ -126,7 +125,9 @@ class EstablishersPartnershipNavigatorSpec
         row(VATId(index))(cyaDetails),
         row(HavePAYEId(index))(paye(CheckMode), uaWithValue(HavePAYEId(index), true)),
         row(HavePAYEId(index))(cyaDetails, uaWithValue(HavePAYEId(index), false)),
-        row(PAYEId(index))(cyaDetails)
+        row(PAYEId(index))(cyaDetails),
+        row(EnterEmailId(index))(cyaContact),
+        row(EnterPhoneId(index))(cyaContact),
       )
 
     "in NormalMode" must {
