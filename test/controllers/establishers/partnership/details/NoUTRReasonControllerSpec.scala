@@ -60,7 +60,7 @@ class NoUTRReasonControllerSpec
     "reason.njk"
   private val commonJson: JsObject =
     Json.obj(
-      "pageTitle"     -> Message("messages__whyNoUTR_title", Message("messages__partnership")),
+      "pageTitle"     -> Message("messages__whyNoUTR", Message("messages__partnership")),
       "pageHeading"     -> Message("messages__whyNoUTR", partnershipName),
       "schemeName"    -> Data.schemeName,
       "isPageHeading" -> true

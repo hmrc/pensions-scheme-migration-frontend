@@ -64,7 +64,7 @@ class EstablisherPartnershipDetailsCYAHelper
         answerRow(message, Message(booleanToText(true)), url, visuallyHidden),
         answerOrAddRow(
           id = PartnershipUTRId(index),
-          message = Message("messages__enterUTR", partnershipName),
+          message = Message("messages__enterUTR__cya_label", partnershipName),
           url = Some(routes.UTRController.onPageLoad(index, CheckMode).url),
           visuallyHiddenText = Some(msg"messages__enterUTR__cya__visuallyHidden".withArgs(partnershipName)),
           answerTransform = referenceValueTransform
@@ -92,7 +92,7 @@ class EstablisherPartnershipDetailsCYAHelper
         answerRow(message, Message(booleanToText(true)), url, visuallyHidden),
         answerOrAddRow(
           id = VATId(index),
-          message = Message("messages__vat", partnershipName),
+          message = Message("messages__vat__cya", partnershipName),
           url = Some(routes.VATController.onPageLoad(index, CheckMode).url),
           visuallyHiddenText = Some(msg"messages__vat__cya__visuallyHidden".withArgs(partnershipName)),
           answerTransform = referenceValueTransform
@@ -114,7 +114,7 @@ class EstablisherPartnershipDetailsCYAHelper
         answerRow(message, Message(booleanToText(true)), url, visuallyHidden),
         answerOrAddRow(
           id = PAYEId(index),
-          message = Message("messages__paye", partnershipName),
+          message = Message("messages__paye_cya", partnershipName),
           url = Some(routes.PAYEController.onPageLoad(index, CheckMode).url),
           visuallyHiddenText = Some(msg"messages__paye__cya__visuallyHidden".withArgs(partnershipName)),
           answerTransform = referenceValueTransform

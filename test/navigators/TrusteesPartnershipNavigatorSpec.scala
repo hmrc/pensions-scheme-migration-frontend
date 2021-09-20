@@ -28,7 +28,7 @@ import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes
 import play.api.mvc.Call
-import utils.Data.{trusteePartnershipDetails, ua}
+import utils.Data.{partnershipDetails, ua}
 import utils.{Enumerable, UserAnswers}
 
 
@@ -37,7 +37,7 @@ class TrusteesPartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour 
   private val navigator: CompoundNavigator = injector.instanceOf[CompoundNavigator]
   private val index: Index = Index(0)
   private val detailsUa: UserAnswers =
-    ua.set(PartnershipDetailsId(0), trusteePartnershipDetails).success.value
+    ua.set(PartnershipDetailsId(0), partnershipDetails).success.value
   private def uaWithValue[A](idType:TypedIdentifier[A], idValue:A)(implicit writes: Writes[A]) =
     detailsUa.set(idType, idValue).toOption
 

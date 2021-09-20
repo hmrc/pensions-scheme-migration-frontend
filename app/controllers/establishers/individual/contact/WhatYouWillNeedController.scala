@@ -29,6 +29,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -52,10 +53,12 @@ class WhatYouWillNeedController @Inject()(
         EstablisherNameId(index).retrieve.right.map {
           personName =>
             renderer.render(
-              template = "establishers/individual/contact/whatYouWillNeed.njk",
+              template = "whatYouWillNeedContact.njk",
               ctx = Json.obj(
                 "name"        -> personName.fullName,
-                "continueUrl" -> emailRoute(0, NormalMode).url,
+                "pageHeading" -> Message("messages__title_individual"),
+                "entityType" -> Message("messages__individual"),
+                "continueUrl" -> emailRoute(index, NormalMode).url,
                 "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )
             ).map(Ok(_))

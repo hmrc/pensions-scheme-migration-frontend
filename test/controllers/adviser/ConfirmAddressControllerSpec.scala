@@ -19,8 +19,8 @@ package controllers.adviser
 import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
+import identifiers.adviser.{AddressId, AdviserNameId}
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.adviser.AddressId
 import matchers.JsonMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
@@ -32,7 +32,6 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.Data.ua
 import utils.{Data, Enumerable, UserAnswers}
 
 import scala.concurrent.Future
@@ -44,6 +43,9 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
   val extraModules: Seq[GuiceableModule] = Seq(
     bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
   )
+
+  private val ua: UserAnswers =
+    Data.ua.setOrException(AdviserNameId, "test")
 
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -74,6 +76,7 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
     "Return OK and the correct view for a GET" in {
       val ua: UserAnswers = UserAnswers().setOrException(SchemeNameId, Data.schemeName)
+        .setOrException(AdviserNameId, "test")
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
       val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value

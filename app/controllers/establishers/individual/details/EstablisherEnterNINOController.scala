@@ -65,7 +65,7 @@ class EstablisherEnterNINOController @Inject()(
           schemeName =>
             get(
               pageTitle     = Message("messages__enterNINO_title", Message("messages__individual")),
-              pageHeading     = Message("messages__enterNINO", name(index)),
+              pageHeading     = Message("messages__enterNINO_title", name(index)),
               isPageHeading = true,
               id            = EstablisherNINOId(index),
               form          = form(index),
@@ -83,7 +83,7 @@ class EstablisherEnterNINOController @Inject()(
           schemeName =>
             post(
               pageTitle     = Message("messages__enterNINO_title", Message("messages__individual")),
-              pageHeading     = Message("messages__enterNINO", name(index)),
+              pageHeading     = Message("messages__enterNINO_title", name(index)),
               isPageHeading = true,
               id            = EstablisherNINOId(index),
               form          = form(index),

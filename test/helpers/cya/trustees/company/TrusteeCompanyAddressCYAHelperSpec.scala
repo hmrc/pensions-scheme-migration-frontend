@@ -83,7 +83,7 @@ class TrusteeCompanyAddressCYAHelperSpec extends AnyWordSpec with Matchers with 
 
       val result = trusteeCompanyAddressCYAHelper.rows(0)(dataRequest(ua), messages)
 
-      result.head mustBe summaryListRowHtml(key = messages("messages__trusteeAddress__whatYouWillNeed_h1", trusteeCompanyName.companyName),
+      result.head mustBe summaryListRowHtml(key = messages("messages__address__whatYouWillNeed_h1", trusteeCompanyName.companyName),
         value = answerAddressTransform(trusteeAddress), Some(Link(text = Messages("site.change"),
           target = controllers.trustees.company.address.routes.EnterPostcodeController.onPageLoad(0).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__address", trusteeCompanyName.companyName))),
@@ -103,7 +103,7 @@ class TrusteeCompanyAddressCYAHelperSpec extends AnyWordSpec with Matchers with 
             Messages("messages__visuallyhidden__TradingTime", trusteeCompanyName.companyName))),
           attributes = Map("id" -> "cya-0-2-change"))))
 
-      result(3) mustBe summaryListRowHtml(key = messages("messages__trusteePreviousAddress"),
+      result(3) mustBe summaryListRowHtml(key = messages("messages__previousAddress", trusteeCompanyName.companyName),
         value = answerAddressTransform(trusteePreviousAddress), Some(Link(text = Messages("site.change"),
           target = controllers.trustees.company.address.routes.EnterPreviousPostcodeController.onPageLoad(0).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__previousAddress",

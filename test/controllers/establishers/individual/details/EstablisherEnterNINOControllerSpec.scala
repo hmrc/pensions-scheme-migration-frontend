@@ -61,7 +61,7 @@ class EstablisherEnterNINOControllerSpec
   private val commonJson: JsObject =
     Json.obj(
       "pageTitle"     -> "What is the individual’s National Insurance number?",
-      "pageHeading"     -> "What is the National Insurance number for Jane Doe?",
+      "pageHeading"     -> "What is Jane Doe’s National Insurance number?",
       "schemeName"    -> "Test scheme name",
       "legendClass"   -> "govuk-label--xl",
       "isPageHeading" -> true

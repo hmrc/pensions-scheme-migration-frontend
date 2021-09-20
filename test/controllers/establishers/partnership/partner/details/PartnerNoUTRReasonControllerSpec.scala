@@ -60,8 +60,8 @@ class PartnerNoUTRReasonControllerSpec
     "reason.njk"
   private val commonJson: JsObject =
     Json.obj(
-      "pageTitle"     -> "Why does the partner not have a Unique Taxpayer Reference?",
-      "pageHeading"     -> "Why does Jane Doe not have a Unique Taxpayer Reference?",
+      "pageTitle"     -> "Why does the partner not have a UTR?",
+      "pageHeading"     -> "Why does Jane Doe not have a UTR?",
       "schemeName"    -> "Test scheme name",
       "isPageHeading" -> true
     )

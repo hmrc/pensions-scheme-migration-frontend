@@ -98,7 +98,7 @@ class EstablishersNavigatorSpec
         row(EstablisherDOBId(index))(haveNationalInsuranceNumberRoute(index, NormalMode), Some(detailsUa.set(EstablisherDOBId(index), LocalDate.parse("2000-01-01")).success.value)),
         row(EstablisherHasNINOId(index))(enterNationaInsuranceNumberRoute(index, NormalMode), Some(detailsUa.set(EstablisherHasNINOId(index), true).success.value)),
         row(EstablisherHasNINOId(index))(reasonForNoNationalInsuranceNumberRoute(index, NormalMode), Some(detailsUa.set(EstablisherHasNINOId(index), false).success.value)),
-        row(EstablisherNINOId(index))(haveNationalInsuranceNumberRoute(index, NormalMode), Some(detailsUa.set(EstablisherNINOId(index), ReferenceValue("AB123456C")).success.value)),
+        row(EstablisherNINOId(index))(haveUniqueTaxpayerReferenceRoute(index, NormalMode), Some(detailsUa.set(EstablisherNINOId(index), ReferenceValue("AB123456C")).success.value)),
         row(EstablisherNoNINOReasonId(index))(haveUniqueTaxpayerReferenceRoute(index, NormalMode), Some(detailsUa.set(EstablisherNoNINOReasonId(index), "Reason").success.value)),
         row(EstablisherHasUTRId(index))(enterUniqueTaxpayerReferenceRoute(index, NormalMode), Some(detailsUa.set(EstablisherHasUTRId(index), true).success.value)),
         row(EstablisherHasUTRId(index))(reasonForNoUniqueTaxpayerReferenceRoute(index, NormalMode), Some(detailsUa.set(EstablisherHasUTRId(index), false).success.value)),

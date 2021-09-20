@@ -33,7 +33,7 @@ import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import utils.Data.{schemeName, trusteePartnershipDetails, ua}
+import utils.Data.{schemeName, partnershipDetails, ua}
 import utils.{FakeNavigator, UserAnswers}
 
 import scala.concurrent.Future
@@ -42,7 +42,7 @@ class PAYEControllerSpec extends ControllerSpecBase with NunjucksSupport with Js
 
   private val index: Index = Index(0)
   private val referenceValue: ReferenceValue = ReferenceValue("12345678")
-  private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(index), trusteePartnershipDetails).success.value
+  private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(index), partnershipDetails).success.value
   private val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
   private val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
   private val formProvider: PAYEFormProvider = new PAYEFormProvider()
@@ -52,9 +52,9 @@ class PAYEControllerSpec extends ControllerSpecBase with NunjucksSupport with Js
   private val commonJson: JsObject =
     Json.obj(
       "pageTitle"     -> messages("messages__paye", messages("messages__partnership")),
-      "pageHeading"     -> messages("messages__paye", trusteePartnershipDetails.partnershipName),
+      "pageHeading"     -> messages("messages__paye", partnershipDetails.partnershipName),
       "schemeName"    -> schemeName,
-      "paragraphs" -> Json.arr(messages("messages__paye__p", trusteePartnershipDetails.partnershipName)),
+      "paragraphs" -> Json.arr(messages("messages__paye__p", partnershipDetails.partnershipName)),
       "legendClass"   -> "govuk-visually-hidden",
       "isPageHeading" -> true
     )

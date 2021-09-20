@@ -67,7 +67,7 @@ class PartnerHasUTRController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             get(
-              pageTitle     = Message("messages__hasUTR_pageTitle", Message("messages__partner")),
+              pageTitle     = Message("messages__hasUTR", Message("messages__partner")),
               pageHeading     = Message("messages__hasUTR", name(establisherIndex,partnerIndex)),
               isPageHeading = true,
               id            = PartnerHasUTRId(establisherIndex, partnerIndex),
@@ -85,7 +85,7 @@ class PartnerHasUTRController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             post(
-              pageTitle     = Message("messages__hasUTR_pageTitle", Message("messages__partner")),
+              pageTitle     = Message("messages__hasUTR", Message("messages__partner")),
               pageHeading     = Message("messages__hasUTR", name(establisherIndex,partnerIndex)),
               isPageHeading = true,
               id            = PartnerHasUTRId(establisherIndex, partnerIndex),

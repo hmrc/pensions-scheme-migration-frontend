@@ -22,7 +22,7 @@ import controllers.Retrievals
 import controllers.actions._
 import controllers.address.ManualAddressController
 import forms.address.AddressFormProvider
-import identifiers.adviser.AddressId
+import identifiers.adviser.{AddressId, AdviserNameId}
 import identifiers.beforeYouStart.SchemeNameId
 import models.{Address, AddressConfiguration}
 import navigators.CompoundNavigator
@@ -48,19 +48,21 @@ class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
                                         )(implicit ec: ExecutionContext) extends ManualAddressController
   with Retrievals with I18nSupport with NunjucksSupport {
 
+  override protected val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__pension__adviser")
+
   def form(implicit messages: Messages): Form[Address] = formProvider()
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      SchemeNameId.retrieve.right.map { schemeName =>
-        get(Some(schemeName), Messages("address.title"), AddressId, AddressConfiguration.PostcodeFirst)
+      (AdviserNameId and SchemeNameId).retrieve.right.map { case adviserName ~ schemeName =>
+        get(Some(schemeName), adviserName, AddressId, AddressConfiguration.PostcodeFirst)
       }
     }
 
   def onSubmit: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      SchemeNameId.retrieve.right.map { schemeName =>
-        post(Some(schemeName), Messages("address.title"), AddressId, AddressConfiguration.PostcodeFirst)
+      (AdviserNameId and SchemeNameId).retrieve.right.map { case adviserName ~ schemeName =>
+        post(Some(schemeName), adviserName, AddressId, AddressConfiguration.PostcodeFirst)
       }
     }
 }

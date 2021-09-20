@@ -46,7 +46,7 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with Nunju
   )
 
   private val ua: UserAnswers =
-    Data.ua.setOrException(PartnershipDetailsId(0), Data.trusteePartnershipDetails)
+    Data.ua.setOrException(PartnershipDetailsId(0), Data.partnershipDetails)
 
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -78,7 +78,7 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with Nunju
     "Return OK and the correct view for a GET" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, Data.schemeName)
-        .setOrException(PartnershipDetailsId(0), Data.trusteePartnershipDetails)
+        .setOrException(PartnershipDetailsId(0), Data.partnershipDetails)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
       val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value

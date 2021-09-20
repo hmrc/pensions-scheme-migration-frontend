@@ -23,7 +23,7 @@ import helpers.cya.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
 import models.Index
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -52,11 +52,12 @@ class WhatYouWillNeedController @Inject()(
         CompanyDetailsId(index).retrieve.right.map {
           personName =>
             renderer.render(
-              template = "establishers/company/address/whatYouWillNeed.njk",
+              template = "address/whatYouWillNeed.njk",
               ctx = Json.obj(
-                "name"        -> personName.companyName,
+                "name" -> personName.companyName,
+                "entityType" -> Messages("messages__title_company"),
                 "continueUrl" -> EnterPostcodeController.onPageLoad(index).url,
-                "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
+                "schemeName" -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )
             ).map(Ok(_))
         }

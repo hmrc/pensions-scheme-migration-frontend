@@ -58,7 +58,7 @@ class EstablisherContactDetailsCYAHelperSpec extends AnyWordSpec with Matchers w
       val result = establisherContactDetailsCYAHelper.contactDetailsRows(0)(dataRequest(ua), messages)
 
       result.head mustBe Row(
-        key = Key(msg"${Message("messages__enterEmail", establisherName.fullName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__enterEmail_cya_label", establisherName.fullName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(Literal("test@test.com")),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
@@ -70,7 +70,7 @@ class EstablisherContactDetailsCYAHelperSpec extends AnyWordSpec with Matchers w
       )
 
       result(1) mustBe Row(
-        key = Key(msg"${Message("messages__enterPhone", establisherName.fullName).resolve}", classes = Seq("govuk-!-width-one-half")),
+        key = Key(msg"${Message("messages__enterPhone_cya_label", establisherName.fullName).resolve}", classes = Seq("govuk-!-width-one-half")),
         value = Value(Literal("123")),
         actions = Seq(Action(
           content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),

@@ -23,6 +23,7 @@ import controllers.actions._
 import controllers.address.ManualAddressController
 import forms.address.AddressFormProvider
 import identifiers.beforeYouStart.SchemeNameId
+import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.address.AddressId
 import models.{Address, AddressConfiguration, Index, Mode}
 import navigators.CompoundNavigator
@@ -48,19 +49,21 @@ class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
 )(implicit ec: ExecutionContext) extends ManualAddressController
   with Retrievals with I18nSupport with NunjucksSupport {
 
+  override protected val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__director")
+
   def form(implicit messages: Messages): Form[Address] = formProvider()
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      SchemeNameId.retrieve.right.map { schemeName =>
-          get(Some(schemeName), Messages("address.title"), AddressId(establisherIndex, directorIndex), AddressConfiguration.PostcodeFirst)
+      (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.right.map { case directorName ~ schemeName =>
+          get(Some(schemeName), directorName.fullName, AddressId(establisherIndex, directorIndex), AddressConfiguration.PostcodeFirst)
       }
     }
 
   def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-      SchemeNameId.retrieve.right.map { schemeName =>
-        post(Some(schemeName), Messages("address.title"), AddressId(establisherIndex, directorIndex), AddressConfiguration.PostcodeFirst, Some(mode))
+      (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.right.map { case directorName ~ schemeName =>
+        post(Some(schemeName), directorName.fullName, AddressId(establisherIndex, directorIndex), AddressConfiguration.PostcodeFirst, Some(mode))
       }
     }
 }

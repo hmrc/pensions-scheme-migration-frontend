@@ -52,10 +52,10 @@ class WhatYouWillNeedController @Inject()(
         CompanyDetailsId(index).retrieve.right.map {
           details =>
             renderer.render(
-              template = "whatYouWillNeedCompanyDetails.njk",
+              template = "details/whatYouWillNeedCompanyDetails.njk",
               ctx = Json.obj(
                 "name"        -> details.companyName,
-                "pageTitle" -> Messages("messages__establisherDetails__whatYouWillNeed_title"),
+                "entityType" -> Messages("messages__title_company"),
                 "continueUrl" -> HaveCompanyNumberController.onPageLoad(index, NormalMode).url,
                 "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )

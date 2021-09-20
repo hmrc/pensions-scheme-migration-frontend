@@ -33,7 +33,7 @@ import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import utils.Data.{company, schemeName, ua}
+import utils.Data.{companyDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
 
 import scala.concurrent.Future
@@ -42,7 +42,7 @@ class PAYEControllerSpec extends ControllerSpecBase with NunjucksSupport with Js
 
   private val index: Index = Index(0)
   private val referenceValue: ReferenceValue = ReferenceValue("12345678")
-  private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(index), company).success.value
+  private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(index), companyDetails).success.value
 
   private val formProvider: PAYEFormProvider = new PAYEFormProvider()
   private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
@@ -51,9 +51,9 @@ class PAYEControllerSpec extends ControllerSpecBase with NunjucksSupport with Js
   private val commonJson: JsObject =
     Json.obj(
       "pageTitle"     -> messages("messages__paye", messages("messages__company")),
-      "pageHeading"     -> messages("messages__paye", company.companyName),
+      "pageHeading"     -> messages("messages__paye", companyDetails.companyName),
       "schemeName"    -> schemeName,
-      "paragraphs" -> Json.arr(messages("messages__paye__p", company.companyName)),
+      "paragraphs" -> Json.arr(messages("messages__paye__p", companyDetails.companyName)),
       "legendClass"   -> "govuk-visually-hidden",
       "isPageHeading" -> true
     )

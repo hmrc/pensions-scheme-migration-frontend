@@ -24,6 +24,7 @@ import models.{CompanyDetails, Index, NormalMode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
+import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
@@ -38,12 +39,13 @@ import scala.concurrent.Future
 class WhatYouWillNeedControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues {
 
   private val index: Index = Index(0)
-  private val companyName: CompanyDetails = CompanyDetails("ABC Ltd")
+  private val companyName: CompanyDetails = CompanyDetails("test company")
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(0), companyName).success.value
-  private val templateToBeRendered: String = "whatYouWillNeedCompanyDetails.njk"
+  private val templateToBeRendered: String = "details/whatYouWillNeedCompanyDetails.njk"
   private def json: JsObject =
     Json.obj(
       "name"        -> companyName.companyName,
+      "entityType" -> Messages("messages__title_company"),
       "continueUrl" -> routes.HaveCompanyNumberController.onPageLoad(index, NormalMode).url,
       "schemeName"  -> "Test scheme name"
     )
