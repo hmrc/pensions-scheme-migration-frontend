@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.racDac
+package controllers.racdac
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
@@ -42,14 +42,14 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
   private val templateCaptor:ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
   private val jsonCaptor:ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-  private def httpPathGET: String = controllers.racDac.routes.DeclarationController.onPageLoad().url
-  private def httpPathPOST: String = controllers.racDac.routes.DeclarationController.onSubmit().url
+  private def httpPathGET: String = controllers.racdac.routes.DeclarationController.onPageLoad().url
+  private def httpPathPOST: String = controllers.racdac.routes.DeclarationController.onSubmit().url
 
 
   private val jsonToPassToTemplate: JsObject =
     Json.obj(
       "schemeName" -> schemeName,
-      "submitUrl" -> controllers.racDac.routes.DeclarationController.onSubmit().url
+      "submitUrl" -> controllers.racdac.routes.DeclarationController.onSubmit().url
     )
 
   override def beforeEach: Unit = {

@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package controllers.racDac
+package controllers.racdac
 
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.beforeYouStart.SchemeNameId
-import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class DeclarationController @Inject()(
@@ -47,9 +47,9 @@ class DeclarationController @Inject()(
           schemeName =>
             val json = Json.obj(
               "schemeName" -> schemeName,
-              "submitUrl" -> controllers.racDac.routes.DeclarationController.onSubmit().url
+              "submitUrl" -> controllers.racdac.routes.DeclarationController.onSubmit().url
             )
-            renderer.render("racDac/declaration.njk", json).map(Ok(_))
+            renderer.render("racdac/declaration.njk", json).map(Ok(_))
         }
   }
 

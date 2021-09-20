@@ -51,8 +51,7 @@ class BulkListController @Inject()(
     implicit request =>
     form.bindFromRequest().fold(schemeSearchService.renderRacDacBulkView(_, pageNumber = 1),
         {case true =>
-        //TODO Replace line below with this one-  Future.successful(Redirect(controllers.racdac.routes.DeclarationController.onPageLoad()))
-          Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
+          Future.successful(Redirect(controllers.racdac.routes.DeclarationController.onPageLoad()))
         case _ =>
           Future.successful(Redirect(appConfig.psaOverviewUrl))
         }

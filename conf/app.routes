@@ -1,7 +1,6 @@
 # microservice specific routes
 ->          /establisher                                           establishers.Routes
 ->          /trustee                                               trustees.Routes
-->          /racdac                                                racDac.Routes
 
 GET         /language/:lang                                        controllers.LanguageSwitchController.switchToLanguage(lang: String)
 GET         /assets/*file                                          controllers.Assets.versioned(path = "/public", file: Asset)
@@ -99,3 +98,6 @@ POST        /rac-dac/add-all                                   controllers.racda
 
 GET         /rac-dac/list-rac-dacs-all                                    controllers.racdac.BulkListController.onPageLoad
 POST        /rac-dac/list-rac-dacs-all                                   controllers.racdac.BulkListController.onSubmit
+
+GET         /rac-dac/declaration                                           controllers.racdac.DeclarationController.onPageLoad
+GET         /rac-dac/submit-declaration                                    controllers.racdac.DeclarationController.onSubmit
