@@ -32,12 +32,16 @@
           {{ govukButton({
               href: submitUrl,
               text: messages("site.agree_and_continue"),
-              attributes: {id: "agree and continue"}
+              attributes: {id: "submit"}
           }) }}
 
       </div>
     </div>
 
-    {{ returnLink(schemeName) }}
+    <p class="govuk-body">
+        <a href="{{ returnUrl }}" class="govuk-link">
+            {{ messages("site.return.to", psaName) }}
+        </a>
+    </p>
 
 {% endblock %}

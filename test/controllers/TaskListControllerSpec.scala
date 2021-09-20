@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import helpers.TaskListHelper
 import matchers.JsonMatchers
-import models.{TaskListLink, EntitySpoke}
+import models.{EntitySpoke, Scheme, TaskListLink}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
@@ -99,12 +99,12 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
       jsonCaptor.getValue must containJson(json)
     }
 
-    "redirect to Tasklist if lock can not be retrieved " in {
+    "redirect to List of schemes if lock can not be retrieved " in {
       mutableFakeDataRetrievalAction.setLockToReturn(None)
       val result = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.IndexController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url)
 
     }
 

@@ -20,10 +20,9 @@ import connectors.MinimalDetailsConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import matchers.JsonMatchers
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
+import org.mockito.{ArgumentCaptor, MockitoSugar}
 import org.scalatest.TryValues
-import org.mockito.MockitoSugar
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
@@ -47,7 +46,7 @@ class BeforeYouStartControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
   private def controller(): BeforeYouStartController =
     new BeforeYouStartController(appConfig,messagesApi, new FakeAuthAction(), new FakeDataRetrievalAction(Some(UserAnswers())),
-      new DataRequiredActionImpl, mockMinimalDetailsConnector, controllerComponents, new Renderer(mockAppConfig, mockRenderer))
+      mockMinimalDetailsConnector, controllerComponents, new Renderer(mockAppConfig, mockRenderer))
 
   "BeforeYouStartController" must {
     "return OK and the correct view for a GET" in {

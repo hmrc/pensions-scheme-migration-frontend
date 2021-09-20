@@ -17,10 +17,12 @@
 package controllers
 
 import connectors.cache.UserAnswersCacheConnector
-import controllers.actions.{DataRetrievalAction, AuthAction}
+import controllers.actions.{AuthAction, DataRetrievalAction}
+import controllers.testonly.TestMongoController
 import helpers.TaskListHelper
+import models.Scheme
 import models.requests.OptionalDataRequest
-import play.api.i18n.{MessagesApi, I18nSupport}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import renderer.Renderer
@@ -45,17 +47,16 @@ class TaskListController @Inject()(
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData).async {
     implicit request =>
-
       (request.userAnswers, request.lock) match {
         case (_, None) =>
-          Future.successful(Redirect(controllers.routes.IndexController.onPageLoad())) //TODO Change to list of schemes page once implemented
+          Future.successful(Redirect(controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme)))
 
         case (Some(ua), _) =>
           implicit val userAnswers: UserAnswers = ua
           renderView
 
         case (None, Some(lock)) =>
-          implicit val userAnswers: UserAnswers = UserAnswers(Json.obj()) //TODO once getSchemeDetails API is implemented, fetch data from API
+          implicit val userAnswers: UserAnswers = UserAnswers(TestMongoController.data) //TODO once getSchemeDetails API is implemented, fetch data from API
           userAnswersCacheConnector.save(lock, userAnswers.data).flatMap { _ =>
             renderView
           }

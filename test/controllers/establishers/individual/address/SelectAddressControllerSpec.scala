@@ -34,7 +34,7 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.{Data, Enumerable, UserAnswers}
-
+import models.Scheme
 import scala.concurrent.Future
 
 class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
@@ -87,16 +87,14 @@ class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSuppor
       (jsonCaptor.getValue \ "schemeName").toOption.map(_.as[String]) mustBe Some(Data.schemeName)
     }
 
-    "redirect to Session Expired page for a GET when there is no data" in {
-      val ua: UserAnswers = UserAnswers()
-
-      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+    "redirect back to list of schemes for a GET when there is no data" in {
+      mutableFakeDataRetrievalAction.setDataToReturn(None)
 
       val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
@@ -126,14 +124,14 @@ class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSuppor
       status(result) mustEqual BAD_REQUEST
     }
 
-    "redirect to Session Expired page for a POST when there is no data" in {
+    "redirect back to list of schemes for a POST when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
     }
   }
 
