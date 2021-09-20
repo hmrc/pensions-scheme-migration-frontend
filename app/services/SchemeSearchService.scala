@@ -75,8 +75,8 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
             searchText.fold[List[Items] => List[Items]](identity)(
               st => filterSchemesByPstrOrSchemeName(st, _: List[Items])
             )
-
           filterSearchResults(listOfSchemes.items.getOrElse(Nil).filter(_.racDac == isRacDac))
+
         case _ =>
           List.empty[Items]
       }
@@ -134,8 +134,6 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
       case md if md.deceasedFlag => Future.successful(Redirect(appConfig.deceasedContactHmrcUrl))
       case md if md.rlsFlag => Future.successful(Redirect(appConfig.psaUpdateContactDetailsUrl))
       case md =>
-
-          println(s"\n\n >>>>>>>>>>>>>> pagination: $pagination")
 
         val json: JsObject = Json.obj(
           "form" -> form,
@@ -196,7 +194,6 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
                                    ec: ExecutionContext): Future[Result] =
     featureToggleConnector.get(MigrationTransfer.asString).flatMap { toggle =>
       search(request.psaId.id, searchText, isRacDac(migrationType)).flatMap { searchResult =>
-
         val numberOfSchemes: Int = searchResult.length
 
         val numberOfPages: Int =
@@ -255,7 +252,6 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
               "schemes" -> mapToTable(schemeDetails, isRacDac = true, viewOnly = true),
               "radios" -> Radios.yesNo(form("value")),
             )
-
             renderer.render("racdac/racDacsBulkList.njk", json)
               .map(body => if (form.hasErrors) BadRequest(body) else Ok(body))
 
@@ -273,7 +269,7 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
                                    searchResult: List[Items],
                                    pageNumber: Int,
                                    numberOfPages: Int
-                                 ): List[Items] = {
+                                 ): List[Items] =
     pageNumber match {
       case 1 => searchResult.take(pagination)
       case p if p <= numberOfPages =>
@@ -285,6 +281,5 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
 
       case _ => throw new Exception
     }
-  }
 
 }

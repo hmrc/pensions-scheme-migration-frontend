@@ -31,7 +31,7 @@ class PaginationService @Inject()() {
   def pageNumberLinks(currentPage: Int,
                       numberOfSchemes: Int,
                       pagination: Int,
-                      numberOfPages: Int): Seq[Int] = {
+                      numberOfPages: Int): Seq[Int] =
     if (numberOfSchemes < pagination) {
       Seq.empty
     } // build page links for numberOfPages if numberOfPages < max number of page links (5)
@@ -48,5 +48,4 @@ class PaginationService @Inject()() {
     else {
       Seq.range(numberOfPages - 4, numberOfPages + 1)
     }
-  }
 }

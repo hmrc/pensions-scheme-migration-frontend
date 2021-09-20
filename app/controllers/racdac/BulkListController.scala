@@ -42,16 +42,17 @@ class BulkListController @Inject()(
 
   val form: Form[Boolean] = formProvider()
 
-  def onPageLoad: Action[AnyContent] = (authenticate).async {
+  def onPageLoad: Action[AnyContent] = authenticate.async {
     implicit request =>
       schemeSearchService.renderRacDacBulkView(form, pageNumber = 1)
   }
 
   def onSubmit: Action[AnyContent] = authenticate.async {
     implicit request =>
-    form.bindFromRequest().fold(schemeSearchService.renderRacDacBulkView(_, pageNumber = 1),
-        {case true =>
-          Future.successful(Redirect(controllers.racdac.routes.DeclarationController.onPageLoad()))
+      form.bindFromRequest().fold(formWithErrors =>
+        schemeSearchService.renderRacDacBulkView(formWithErrors, pageNumber = 1),
+        { case true =>
+          Future.successful(Redirect(routes.DeclarationController.onPageLoad()))
         case _ =>
           Future.successful(Redirect(appConfig.psaOverviewUrl))
         }

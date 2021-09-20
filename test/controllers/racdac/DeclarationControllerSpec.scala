@@ -33,7 +33,7 @@ import scala.concurrent.Future
 
 class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
-  private val templateToBeRendered = "racDac/declaration.njk"
+  private val templateToBeRendered = "racdac/declaration.njk"
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 
