@@ -21,7 +21,7 @@ import javax.inject.Inject
 class PaginationService @Inject()() {
   def divide(numberOfSchemes: Int,
              pagination: Int): Int =
-    if (pagination > 0) {
+    if (pagination > 0 && numberOfSchemes > 0) {
       (BigDecimal(numberOfSchemes) / BigDecimal(pagination)).setScale(0, BigDecimal.RoundingMode.UP).toInt
     } else {
       0

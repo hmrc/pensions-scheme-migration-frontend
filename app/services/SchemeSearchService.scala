@@ -43,7 +43,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import play.api.mvc.Results._
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 
-class SchemeSearchService @Inject()(val appConfig: AppConfig,
+class SchemeSearchService @Inject()(appConfig: AppConfig,
                                     fuzzyMatching: SchemeFuzzyMatcher,
                                     listOfSchemesConnector:ListOfSchemesConnector,
                                     minimalDetailsConnector: MinimalDetailsConnector,
@@ -51,7 +51,7 @@ class SchemeSearchService @Inject()(val appConfig: AppConfig,
                                     featureToggleConnector: FeatureToggleConnector,
                                     renderer: Renderer) extends NunjucksSupport {
 
-  private val pagination: Int = appConfig.listSchemePagination
+  private def pagination: Int = appConfig.listSchemePagination
   private val pstrRegex = "^[0-9]{8}[A-Za-z]{2}$".r
 
   private val filterSchemesByPstrOrSchemeName: (String, List[Items]) => List[Items] =
@@ -135,6 +135,8 @@ class SchemeSearchService @Inject()(val appConfig: AppConfig,
       case md if md.rlsFlag => Future.successful(Redirect(appConfig.psaUpdateContactDetailsUrl))
       case md =>
 
+          println(s"\n\n >>>>>>>>>>>>>> pagination: $pagination")
+
         val json: JsObject = Json.obj(
           "form" -> form,
           "psaName" -> md.name,
@@ -152,7 +154,7 @@ class SchemeSearchService @Inject()(val appConfig: AppConfig,
           "noResultsMessageKey" -> noResultsMessageKey,
           "clearLinkUrl" -> routes.ListOfSchemesController.onPageLoad(migrationType).url,
           "returnUrl" -> appConfig.psaOverviewUrl,
-          "paginationText" -> paginationText(pageNumber,pagination,numberOfSchemes,numberOfPages),
+          "paginationText" -> paginationText(pageNumber, pagination, numberOfSchemes, numberOfPages),
           "typeOfList" -> typeOfList(migrationType),
           "viewOnly" -> viewOnly
         ) ++  (if (schemeDetails.nonEmpty) Json.obj("schemes" -> mapToTable(schemeDetails, isRacDac(migrationType), viewOnly)) else Json.obj())
