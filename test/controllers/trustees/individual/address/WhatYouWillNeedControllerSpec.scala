@@ -18,10 +18,9 @@ package controllers.trustees.individual.address
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import helpers.routes.TrusteesIndividualRoutes
 import identifiers.trustees.individual.TrusteeNameId
 import matchers.JsonMatchers
-import models.{PersonName, NormalMode}
+import models.PersonName
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
@@ -51,7 +50,7 @@ class WhatYouWillNeedControllerSpec
   private def json: JsObject =
     Json.obj(
       "name"        -> "Jane Doe",
-      "continueUrl" -> TrusteesIndividualRoutes.enterPostcodeRoute(0, NormalMode).url,
+      "continueUrl" -> controllers.trustees.individual.address.routes.EnterPostcodeController.onPageLoad(0).url,
       "schemeName"  -> "Test scheme name"
     )
 

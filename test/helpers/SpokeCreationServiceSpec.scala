@@ -18,7 +18,6 @@ package helpers
 
 import java.time.LocalDate
 import base.SpecBase
-import helpers.routes.TrusteesIndividualRoutes
 import identifiers.beforeYouStart.{SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.company.CompanyDetailsId
@@ -454,7 +453,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = TaskListLink(
               text = "Add details for a b",
-              target = TrusteesIndividualRoutes.detailsRoute(0, NormalMode).url,
+              target = controllers.trustees.individual.details.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
             isCompleted = None
@@ -462,7 +461,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = TaskListLink(
               text = "Add address for a b",
-              target = TrusteesIndividualRoutes.wywnAddressRoute(0, NormalMode).url,
+              target = controllers.trustees.individual.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
             isCompleted = None
@@ -470,7 +469,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = TaskListLink(
               text = "Add contact details for a b",
-              target = TrusteesIndividualRoutes.contactRoute(0, NormalMode).url,
+              target = controllers.trustees.individual.contact.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
             isCompleted = None
@@ -503,7 +502,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = TaskListLink(
               text = "Change details for a b",
-              target = TrusteesIndividualRoutes.cyaDetailsRoute(0, NormalMode).url,
+              target = controllers.trustees.individual.details.routes.CheckYourAnswersController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
             isCompleted = Some(true)
@@ -511,7 +510,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = TaskListLink(
               text = "Change address for a b",
-              target = TrusteesIndividualRoutes.cyaAddressRoute(0, NormalMode).url,
+              target = controllers.trustees.individual.address.routes.CheckYourAnswersController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
             isCompleted = Some(false)
@@ -519,7 +518,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = TaskListLink(
               text = "Change contact details for a b",
-              target = TrusteesIndividualRoutes.cyaContactRoute(0, NormalMode).url,
+              target = controllers.trustees.individual.contact.routes.CheckYourAnswersController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
             isCompleted = Some(true)

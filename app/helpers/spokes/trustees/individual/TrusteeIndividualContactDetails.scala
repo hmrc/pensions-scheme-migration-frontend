@@ -16,9 +16,9 @@
 
 package helpers.spokes.trustees.individual
 
-import helpers.routes.TrusteesIndividualRoutes
+import controllers.trustees.individual.contact.routes._
 import helpers.spokes.Spoke
-import models.{TaskListLink, Index, NormalMode}
+import models.{Index, TaskListLink}
 import play.api.i18n.Messages
 import utils.UserAnswers
 
@@ -30,9 +30,9 @@ index: Index,
   val messageKeyPrefix = "messages__schemeTaskList__trusteeIndividualContactDetails_"
   val linkKeyAndRoute: (String, String) = {
     if (completeFlag(answers).getOrElse(false))
-      (s"${messageKeyPrefix}changeLink", TrusteesIndividualRoutes.cyaContactRoute(index, NormalMode).url)
+      (s"${messageKeyPrefix}changeLink", CheckYourAnswersController.onPageLoad(index).url)
     else
-      (s"${messageKeyPrefix}addLink", TrusteesIndividualRoutes.contactRoute(index, NormalMode).url)
+      (s"${messageKeyPrefix}addLink", WhatYouWillNeedController.onPageLoad(index).url)
   }
   override def changeLink(name: String)
                          (implicit messages: Messages): TaskListLink =

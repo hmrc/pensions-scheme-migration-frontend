@@ -19,10 +19,9 @@ package controllers.trustees.individual.address
 import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import helpers.routes.TrusteesIndividualRoutes
 import identifiers.trustees.individual.address.EnterPreviousPostCodeId
 import matchers.JsonMatchers
-import models.{TolerantAddress, NormalMode}
+import models.TolerantAddress
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -33,7 +32,7 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.{UserAnswers, Enumerable, Data}
+import utils.{Data, Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 
@@ -47,8 +46,8 @@ class SelectPreviousAddressControllerSpec extends ControllerSpecBase with Nunjuc
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = TrusteesIndividualRoutes.previousAddressResultsRoute(0, NormalMode).url
-  private val httpPathPOST: String = TrusteesIndividualRoutes.previousAddressResultsPOSTRoute(0, NormalMode).url
+  private val httpPathGET: String = controllers.trustees.individual.address.routes.SelectPreviousAddressController.onPageLoad(0).url
+  private val httpPathPOST: String = controllers.trustees.individual.address.routes.SelectPreviousAddressController.onSubmit(0).url
 
   private val seqAddresses = Seq(
     TolerantAddress(Some("1"),Some("1"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")),
@@ -104,7 +103,7 @@ class SelectPreviousAddressControllerSpec extends ControllerSpecBase with Nunjuc
         .setOrException(EnterPreviousPostCodeId(0), seqAddresses)
 
       when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
-        .thenReturn(TrusteesIndividualRoutes.cyaAddressRoute(0, NormalMode))
+        .thenReturn(routes.CheckYourAnswersController.onPageLoad(0))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -113,7 +112,7 @@ class SelectPreviousAddressControllerSpec extends ControllerSpecBase with Nunjuc
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(TrusteesIndividualRoutes.cyaAddressRoute(0, NormalMode).url)
+      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad(0).url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {
