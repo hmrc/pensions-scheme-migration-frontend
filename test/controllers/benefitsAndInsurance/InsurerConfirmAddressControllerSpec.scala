@@ -21,7 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import helpers.CountriesHelper
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.benefitsAndInsurance.InsurerAddressId
+import identifiers.benefitsAndInsurance.{BenefitsInsuranceNameId, InsurerAddressId}
 import matchers.JsonMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
@@ -34,7 +34,7 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.Data.{countryCodes, ua}
+import utils.Data.countryCodes
 import utils.{Data, Enumerable, UserAnswers}
 
 import scala.concurrent.Future
@@ -46,6 +46,9 @@ class InsurerConfirmAddressControllerSpec extends ControllerSpecBase with Nunjuc
   val extraModules: Seq[GuiceableModule] = Seq(
     bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
   )
+
+  private val ua: UserAnswers =
+    Data.ua.setOrException(BenefitsInsuranceNameId, Data.insurerName)
 
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -75,7 +78,10 @@ class InsurerConfirmAddressControllerSpec extends ControllerSpecBase with Nunjuc
   "InsurerConfirmAddress Controller" must {
 
     "Return OK and the correct view for a GET" in {
-      val ua: UserAnswers = UserAnswers().setOrException(SchemeNameId, Data.schemeName)
+      val ua: UserAnswers = UserAnswers()
+        .setOrException(SchemeNameId, Data.schemeName)
+        .setOrException(BenefitsInsuranceNameId, Data.insurerName)
+
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
       val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value

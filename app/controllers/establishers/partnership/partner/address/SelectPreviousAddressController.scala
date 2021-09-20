@@ -95,7 +95,7 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
             "entityName" -> name,
             "enterManuallyUrl" -> routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, partnerIndex, mode).url,
             "schemeName" -> schemeName,
-            "h1MessageKey" -> "previousAddressList_pageHeading"
+            "h1MessageKey" -> "previousAddressList.title"
           )
         }
     )

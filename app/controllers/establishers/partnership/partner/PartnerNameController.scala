@@ -61,7 +61,7 @@ class PartnerNameController @Inject()(
           ctx = Json.obj(
             "form" -> request.userAnswers.get[PersonName](PartnerNameId(establisherIndex, partnerIndex)).fold(form)(form.fill),
             "schemeName" -> existingSchemeName,
-            "entityType" -> "partner"
+            "entityType" -> Messages("messages__partner")
           )
         ).flatMap( view => Future.successful(Ok(view)))
     }
@@ -76,7 +76,7 @@ class PartnerNameController @Inject()(
               ctx = Json.obj(
                 "form" -> formWithErrors,
                 "schemeName" -> existingSchemeName,
-                "entityType" -> "partner"
+                "entityType" -> Messages("messages__partner")
               )
             ).map(BadRequest(_)),
           value =>

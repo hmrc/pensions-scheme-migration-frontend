@@ -60,7 +60,7 @@ class PartnerHasUTRControllerSpec
     "hasReferenceValueWithHint.njk"
   private val commonJson: JsObject =
     Json.obj(
-      "pageTitle"     -> "Does the partner have a Unique Taxpayer Reference?",
+      "pageTitle"     -> "Does the partner have a Unique Taxpayer Reference (UTR)?",
       "pageHeading"     -> "Does Jane Doe have a Unique Taxpayer Reference (UTR)?",
       "schemeName"    -> "Test scheme name",
       "paragraphs"    -> Json.arr(

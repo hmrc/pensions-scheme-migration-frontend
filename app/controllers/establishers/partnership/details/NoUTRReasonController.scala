@@ -62,7 +62,7 @@ class NoUTRReasonController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             get(
-              pageTitle     = Message("messages__whyNoUTR_title", Message("messages__partnership")),
+              pageTitle     = Message("messages__whyNoUTR", Message("messages__partnership")),
               pageHeading     = Message("messages__whyNoUTR", name(index)),
               isPageHeading = true,
               id            = NoUTRReasonId(index),
@@ -78,7 +78,7 @@ class NoUTRReasonController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             post(
-              pageTitle     = Message("messages__whyNoUTR_title", Message("messages__partnership")),
+              pageTitle     = Message("messages__whyNoUTR", Message("messages__partnership")),
               pageHeading     = Message("messages__whyNoUTR", name(index)),
               isPageHeading = true,
               id            = NoUTRReasonId(index),

@@ -20,18 +20,18 @@ import base.SpecBase
 import controllers.establishers.company.address.{routes => addressRoutes}
 import controllers.establishers.company.details.{routes => detailsRoutes}
 import identifiers.establishers.EstablishersId
-import identifiers.establishers.company.{AddCompanyDirectorsId, CompanyDetailsId}
 import identifiers.establishers.company.address._
 import identifiers.establishers.company.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.company.details._
 import identifiers.establishers.company.director.DirectorNameId
+import identifiers.establishers.company.{AddCompanyDirectorsId, CompanyDetailsId}
 import identifiers.{Identifier, TypedIdentifier}
 import models._
 import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.{JsObject, Json, Writes}
 import play.api.mvc.Call
-import utils.Data.{company, establisherCompanyDetails, ua}
+import utils.Data.{companyDetails, ua}
 import utils.{Enumerable, UserAnswers}
 
 class EstablishersCompanyNavigatorSpec
@@ -45,7 +45,7 @@ class EstablishersCompanyNavigatorSpec
 
   private val addEstablisherPage: Call = controllers.establishers.routes.AddEstablisherController.onPageLoad()
   private val detailsUa: UserAnswers =
-    ua.set(CompanyDetailsId(0), establisherCompanyDetails).success.value
+    ua.set(CompanyDetailsId(0), companyDetails).success.value
   private def uaWithValue[A](idType:TypedIdentifier[A], idValue:A)(implicit writes: Writes[A]) =
     detailsUa.set(idType, idValue).toOption
 
@@ -140,7 +140,7 @@ class EstablishersCompanyNavigatorSpec
         row(PreviousAddressId(index))(cyaAddress, uaWithValue(PreviousAddressId(index), address)),
         row(EnterEmailId(index))(enterPhonePage(NormalMode), Some(detailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
         row(EnterPhoneId(index))(cyaContact, Some(detailsUa.set(EnterPhoneId(index), "1234").success.value)),
-        row(AddCompanyDirectorsId(index))(directorNamePage(NormalMode,0), Some(detailsUa.set(CompanyDetailsId(index), company).success.value)),
+        row(AddCompanyDirectorsId(index))(directorNamePage(NormalMode,0), Some(detailsUa.set(CompanyDetailsId(index), companyDetails).success.value)),
         row(AddCompanyDirectorsId(index))(otherDirectors(NormalMode,index), Some(addCompanyDirectorsMoreThanTen))
       )
 

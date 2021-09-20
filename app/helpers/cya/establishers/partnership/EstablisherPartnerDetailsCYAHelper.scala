@@ -95,7 +95,7 @@ class EstablisherPartnerDetailsCYAHelper
       },
       Some(answerOrAddRow(
         id                 = PartnerHasUTRId(establisherIndex, partnerIndex),
-        message            = Message("messages__hasUTR__cya_label", partnerName).resolve,
+        message            = Message("messages__hasUTR", partnerName).resolve,
         url                = Some(detailsRoutes.PartnerHasUTRController.onPageLoad(establisherIndex, partnerIndex,CheckMode).url),
         visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(partnerName)),
         answerTransform    = answerBooleanTransform

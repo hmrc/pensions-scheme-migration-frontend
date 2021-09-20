@@ -23,6 +23,7 @@ import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
+import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
@@ -41,26 +42,28 @@ class WhatYouWillNeedControllerSpec
     with TryValues {
 
   private val userAnswers: UserAnswers =
-    ua.set(PartnershipDetailsId(0), Data.trusteePartnershipDetails).success.value
+    ua.set(PartnershipDetailsId(0), Data.partnershipDetails).success.value
   private val templateToBeRendered: String =
-    "trustees/partnership/address/whatYouWillNeed.njk"
+    "address/whatYouWillNeed.njk"
+
   private def json: JsObject =
     Json.obj(
-      "name"        -> Data.trusteePartnershipDetails.partnershipName,
+      "name" -> Data.partnershipDetails.partnershipName,
+      "entityType" -> Messages("messages__title_partnership"),
       "continueUrl" -> controllers.trustees.partnership.address.routes.EnterPostcodeController.onPageLoad(0).url,
-      "schemeName"  -> "Test scheme name"
+      "schemeName" -> "Test scheme name"
     )
 
   private def controller(
                           dataRetrievalAction: DataRetrievalAction
                         ): WhatYouWillNeedController =
     new WhatYouWillNeedController(
-      messagesApi          = messagesApi,
-      authenticate         = new FakeAuthAction(),
-      getData              = dataRetrievalAction,
-      requireData          = new DataRequiredActionImpl,
+      messagesApi = messagesApi,
+      authenticate = new FakeAuthAction(),
+      getData = dataRetrievalAction,
+      requireData = new DataRequiredActionImpl,
       controllerComponents = controllerComponents,
-      renderer             = new Renderer(mockAppConfig, mockRenderer)
+      renderer = new Renderer(mockAppConfig, mockRenderer)
     )
 
   "WhatYouWillNeedController" must {

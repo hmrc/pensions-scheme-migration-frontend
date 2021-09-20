@@ -32,6 +32,7 @@ import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.UserAnswers
+import viewmodels.Message
 
 import scala.concurrent.Future
 
@@ -47,6 +48,8 @@ class WhatYouWillNeedCompanyContactControllerSpec
   private def json: JsObject =
     Json.obj(
       "name"        -> company.companyName,
+      "pageHeading" -> Message("messages__title_company"),
+      "entityType" -> Message("messages__company"),
       "continueUrl" -> controllers.establishers.company.contact.routes.EnterEmailController.onPageLoad(0, NormalMode).url,
       "schemeName"  -> schemeName
     )

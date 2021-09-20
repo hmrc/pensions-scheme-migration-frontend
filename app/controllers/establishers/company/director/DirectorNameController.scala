@@ -61,7 +61,7 @@ class DirectorNameController @Inject()(
           ctx = Json.obj(
             "form" -> request.userAnswers.get[PersonName](DirectorNameId(establisherIndex, directorIndex)).fold(form)(form.fill),
             "schemeName" -> existingSchemeName,
-            "entityType" -> "director"
+            "entityType" -> Messages("messages__director")
           )
         ).flatMap( view => Future.successful(Ok(view)))
     }
@@ -76,7 +76,7 @@ class DirectorNameController @Inject()(
               ctx = Json.obj(
                 "form" -> formWithErrors,
                 "schemeName" -> existingSchemeName,
-                "entityType" -> "director"
+                "entityType" -> Messages("messages__director")
               )
             ).map(BadRequest(_)),
           value =>

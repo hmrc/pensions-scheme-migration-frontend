@@ -23,6 +23,7 @@ import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
+import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
@@ -41,12 +42,13 @@ class WhatYouWillNeedControllerSpec
     with TryValues {
 
   private val userAnswers: UserAnswers =
-    ua.set(CompanyDetailsId(0), Data.establisherCompanyDetails).success.value
+    ua.set(CompanyDetailsId(0), Data.companyDetails).success.value
   private val templateToBeRendered: String =
-    "trustees/company/address/whatYouWillNeed.njk"
+    "address/whatYouWillNeed.njk"
   private def json: JsObject =
     Json.obj(
-      "name"        -> Data.establisherCompanyDetails.companyName,
+      "name"        -> Data.companyDetails.companyName,
+      "entityType" -> Messages("messages__title_company"),
       "continueUrl" -> controllers.trustees.company.address.routes.EnterPostcodeController.onPageLoad(0).url,
       "schemeName"  -> "Test scheme name"
     )

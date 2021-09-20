@@ -95,7 +95,7 @@ class EstablisherCompanyDirectorDetailsCYAHelper
       },
       Some(answerOrAddRow(
         id                 = DirectorHasUTRId(establisherIndex, directorIndex),
-        message            = Message("messages__hasUTR__cya_label", directorName).resolve,
+        message            = Message("messages__hasUTR", directorName).resolve,
         url                = Some(detailsRoutes.DirectorHasUTRController.onPageLoad(establisherIndex, directorIndex,CheckMode).url),
         visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(directorName)),
         answerTransform    = answerBooleanTransform

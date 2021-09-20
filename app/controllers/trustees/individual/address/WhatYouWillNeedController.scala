@@ -17,13 +17,13 @@
 package controllers.trustees.individual.address
 
 import controllers.Retrievals
-import controllers.actions.{DataRetrievalAction, DataRequiredAction, AuthAction}
+import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import helpers.cya.MandatoryAnswerMissingException
 import helpers.routes.TrusteesIndividualRoutes
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.individual.TrusteeNameId
 import models.{Index, NormalMode}
-import play.api.i18n.{MessagesApi, I18nSupport}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -52,9 +52,10 @@ class WhatYouWillNeedController @Inject()(
         TrusteeNameId(index).retrieve.right.map {
           personName =>
             renderer.render(
-              template = "trustees/individual/address/whatYouWillNeed.njk",
+              template = "address/whatYouWillNeed.njk",
               ctx = Json.obj(
-                "name"        -> personName.fullName,
+                "name" -> personName.fullName,
+                "entityType" -> Messages("messages__title_individual"),
                 "continueUrl" -> TrusteesIndividualRoutes.enterPostcodeRoute(index, NormalMode).url,
                 "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )

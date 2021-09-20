@@ -26,6 +26,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
@@ -60,6 +61,7 @@ class CurrentMembersControllerSpec extends ControllerSpecBase with NunjucksSuppo
     Json.obj(
       "form" -> form,
       "schemeName" -> schemeName,
+      "pageHeading" -> messages("currentMembers.title", Messages("messages__the_scheme")),
       "titleMessage" -> messages("currentMembers.title", schemeName),
       "radios" -> Members.radios(form)
     )

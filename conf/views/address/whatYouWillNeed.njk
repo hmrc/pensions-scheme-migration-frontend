@@ -6,7 +6,7 @@
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 
 {% block pageTitle %}
-    {{ messages("messages__establisherIndividualContactDetails__whatYouWillNeed_title") }}
+    {{ title(messages("messages__address__whatYouWillNeed_title", entityType)) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -14,16 +14,16 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">
-                {{ messages("messages__establisherIndividualContactDetails__whatYouWillNeed_h1", name) }}
+                {{ messages("messages__address__whatYouWillNeed_h1", name) }}
             </h1>
 
             <p class="govuk-body">
-                {{ messages("messages__individualContactDetails__whatYouWillNeed_p", name) }}
+                {{ messages("messages__address__whatYouWillNeed_p", name) }}
             </p>
 
             <ul class="govuk-list govuk-list--bullet">
-                <li>{{ messages("messages__individualContactDetails__whatYouWillNeed_li_1") }}</li>
-                <li>{{ messages("messages__individualContactDetails__whatYouWillNeed_li_2", name) }}</li>
+                <li>{{ messages("messages__address__whatYouWillNeed_li_1") }}</li>
+                <li>{{ messages("messages__address__whatYouWillNeed_li_2", name) }}</li>
             </ul>
 
             {{ govukButton({

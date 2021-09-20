@@ -50,18 +50,15 @@ class EstablisherNameController @Inject()(
     with Retrievals
     with NunjucksSupport {
 
-  private def form(implicit messages: Messages): Form[PersonName] =
-    formProvider("messages__error__establisher")
-
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         renderer.render(
           template = "personName.njk",
           ctx = Json.obj(
-            "form"       -> request.userAnswers.get[PersonName](EstablisherNameId(index)).fold(form)(form.fill),
+            "form" -> request.userAnswers.get[PersonName](EstablisherNameId(index)).fold(form)(form.fill),
             "schemeName" -> existingSchemeName,
-            "entityType" -> "establisher"
+            "entityType" -> Messages("messages__individual")
           )
         ).flatMap(view => Future.successful(Ok(view)))
     }
@@ -74,18 +71,21 @@ class EstablisherNameController @Inject()(
             renderer.render(
               template = "personName.njk",
               ctx = Json.obj(
-                "form"       -> formWithErrors,
+                "form" -> formWithErrors,
                 "schemeName" -> existingSchemeName,
-                "entityType" -> "establisher"
+                "entityType" -> Messages("messages__individual")
               )
             ).map(BadRequest(_)),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(EstablisherNameId(index), value))
-              _              <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+              _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
             } yield
               Redirect(navigator.nextPage(EstablisherNameId(index), updatedAnswers))
         )
     }
+
+  private def form(implicit messages: Messages): Form[PersonName] =
+    formProvider("messages__error__establisher")
 
 }
