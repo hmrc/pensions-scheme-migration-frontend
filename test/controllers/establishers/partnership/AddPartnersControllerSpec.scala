@@ -25,7 +25,7 @@ import identifiers.establishers.partnership.partner.{IsNewPartnerId, PartnerName
 import identifiers.establishers.partnership.{AddPartnersId, PartnershipDetailsId}
 import matchers.JsonMatchers
 import models.establishers.EstablisherKind
-import models.{NormalMode, PersonName}
+import models.{NormalMode, PersonName, Scheme}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -136,14 +136,14 @@ class AddPartnersControllerSpec extends ControllerSpecBase with NunjucksSupport 
       jsonCaptor.getValue must containJson(jsonToPassToTemplate(form))
     }
 
-    "redirect to Session Expired page for a GET when there is no data" in {
+    "redirect back to list of schemes for a GET when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
@@ -166,7 +166,7 @@ class AddPartnersControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {
@@ -180,14 +180,14 @@ class AddPartnersControllerSpec extends ControllerSpecBase with NunjucksSupport 
       verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
     }
 
-    "redirect to Session Expired page for a POST when there is no data" in {
+    "redirect back to list of schemes for a POST when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
     }
   }
 }

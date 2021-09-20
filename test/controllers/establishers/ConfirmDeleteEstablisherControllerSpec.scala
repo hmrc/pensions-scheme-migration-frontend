@@ -37,7 +37,7 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
-
+import models.Scheme
 import scala.concurrent.Future
 
 class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
@@ -135,7 +135,7 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Nun
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted for Individual" in {
@@ -205,14 +205,14 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Nun
       verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
     }
 
-    "redirect to Session Expired page for a POST when there is no data" in {
+    "redirect back to list of schemes for a POST when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
       val result = route(application, httpPOSTRequest(httpPathPOST(EstablisherKind.Individual), valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
     }
   }
 }

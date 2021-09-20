@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.racDac
+package controllers.racdac
 
 import connectors.MinimalDetailsConnector
 import controllers.ControllerSpecBase
@@ -34,13 +34,13 @@ import scala.concurrent.Future
 
 class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
-  private val templateToBeRendered = "racDac/declaration.njk"
+  private val templateToBeRendered = "racdac/declaration.njk"
   private val mockMinimalDetailsConnector: MinimalDetailsConnector = mock[MinimalDetailsConnector]
 
   private def jsonToPassToTemplate: JsObject =
     Json.obj(
       "psaName" -> psaName,
-      "submitUrl" -> controllers.racDac.routes.DeclarationController.onSubmit().url,
+      "submitUrl" -> routes.DeclarationController.onSubmit().url,
       "returnUrl" -> appConfig.psaOverviewUrl
     )
 

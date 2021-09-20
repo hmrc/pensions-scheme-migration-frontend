@@ -1,7 +1,6 @@
 # microservice specific routes
 ->          /establisher                                           establishers.Routes
 ->          /trustee                                               trustees.Routes
-->          /racdac                                                racDac.Routes
 
 GET         /language/:lang                                        controllers.LanguageSwitchController.switchToLanguage(lang: String)
 GET         /assets/*file                                          controllers.Assets.versioned(path = "/public", file: Asset)
@@ -68,30 +67,37 @@ POST        /insurance-address-results                             controllers.b
 GET         /insurance-confirm-address                             controllers.benefitsAndInsurance.InsurerConfirmAddressController.onPageLoad
 POST        /insurance-confirm-address                             controllers.benefitsAndInsurance.InsurerConfirmAddressController.onSubmit
 
-
 GET         /confirmation                                          controllers.SuccessController.onPageLoad
-
 
 GET         /migration-tile                                         controllers.preMigration.MigrationTilePartialController.migrationPartial
 GET         /cannot-add-pension-scheme                              controllers.preMigration.CannotAddController.onPageLoadScheme
 GET         /cannot-migrate                                         controllers.preMigration.CannotMigrateController.onPageLoad
 
-GET         /cannot-add-rac-dac                                      controllers.preMigration.CannotAddController.onPageLoadRacDac
+GET         /rac-dac/cannot-add-rac-dac                                      controllers.preMigration.CannotAddController.onPageLoadRacDac
 GET         /what-you-will-need-before-start                        controllers.preMigration.BeforeYouStartController.onPageLoad
 
 GET         /no-pension-schemes-registered                         controllers.preMigration.NotRegisterController.onPageLoadScheme
-GET         /no-rac-dacs-registered                                controllers.preMigration.NotRegisterController.onPageLoadRacDac
-
+GET         /rac-dac/no-rac-dacs-registered                                controllers.preMigration.NotRegisterController.onPageLoadRacDac
 
 GET         /list-pension-schemes                                   controllers.preMigration.ListOfSchemesController.onPageLoad(migrationType: MigrationType = Scheme)
 POST        /list-pension-schemes                                   controllers.preMigration.ListOfSchemesController.onSearch(migrationType: MigrationType = Scheme)
 GET         /list-pension-schemes/page/:pageNumber                  controllers.preMigration.ListOfSchemesController.onPageLoadWithPageNumber(pageNumber: Int, migrationType: MigrationType = Scheme)
 POST        /list-pension-schemes/page/:pageNumber                  controllers.preMigration.ListOfSchemesController.onSearchWithPageNumber(pageNumber: Int, migrationType: MigrationType = Scheme)
-GET         /list-rac-dacs                                          controllers.preMigration.ListOfSchemesController.onPageLoad(migrationType: MigrationType = RacDac)
-POST        /list-rac-dacs                                          controllers.preMigration.ListOfSchemesController.onSearch(migrationType: MigrationType = RacDac)
-GET         /list-rac-dacs/page/:pageNumber                         controllers.preMigration.ListOfSchemesController.onPageLoadWithPageNumber(pageNumber: Int, migrationType: MigrationType = RacDac)
-POST        /list-rac-dacs/page/:pageNumber                         controllers.preMigration.ListOfSchemesController.onSearchWithPageNumber(pageNumber: Int, migrationType: MigrationType = RacDac)
 
+GET         /rac-dac/list-rac-dacs                                          controllers.preMigration.ListOfSchemesController.onPageLoad(migrationType: MigrationType = RacDac)
+POST        /rac-dac/list-rac-dacs                                          controllers.preMigration.ListOfSchemesController.onSearch(migrationType: MigrationType = RacDac)
+GET         /rac-dac/list-rac-dacs/page/:pageNumber                         controllers.preMigration.ListOfSchemesController.onPageLoadWithPageNumber(pageNumber: Int, migrationType: MigrationType = RacDac)
+POST        /rac-dac/list-rac-dacs/page/:pageNumber                         controllers.preMigration.ListOfSchemesController.onSearchWithPageNumber(pageNumber: Int, migrationType: MigrationType = RacDac)
+GET         /list-schemes-on-click/:pstr/:isRacDac                  controllers.preMigration.ListOfSchemesController.clickSchemeLink(pstr: String, isRacDac: Boolean)
 
 GET         /no-pension-schemes-registered                         controllers.preMigration.NotRegisterController.onPageLoadScheme
 GET         /no-rac-dacs-registered                                controllers.preMigration.NotRegisterController.onPageLoadRacDac
+
+GET         /rac-dac/add-all                                   controllers.racdac.TransferAllController.onPageLoad
+POST        /rac-dac/add-all                                   controllers.racdac.TransferAllController.onSubmit
+
+GET         /rac-dac/list-rac-dacs-all                                    controllers.racdac.BulkListController.onPageLoad
+POST        /rac-dac/list-rac-dacs-all                                   controllers.racdac.BulkListController.onSubmit
+
+GET         /rac-dac/declaration                                           controllers.racdac.DeclarationController.onPageLoad
+GET         /rac-dac/submit-declaration                                    controllers.racdac.DeclarationController.onSubmit

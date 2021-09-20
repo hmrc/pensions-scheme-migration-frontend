@@ -21,7 +21,7 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import forms.beforeYouStart.SchemeTypeFormProvider
 import identifiers.beforeYouStart.SchemeTypeId
 import matchers.JsonMatchers
-import models.SchemeType
+import models.{Scheme, SchemeType}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -113,7 +113,7 @@ class SchemeTypeControllerSpec extends ControllerSpecBase with NunjucksSupport w
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
@@ -150,14 +150,14 @@ class SchemeTypeControllerSpec extends ControllerSpecBase with NunjucksSupport w
       verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
     }
 
-    "redirect to Session Expired page for a POST when there is no data" in {
+    "redirect back to list of schemes for a POST when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
     }
   }
 }

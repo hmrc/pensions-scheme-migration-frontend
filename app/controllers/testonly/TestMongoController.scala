@@ -35,7 +35,7 @@ package controllers.testonly
 import config.AppConfig
 import connectors.cache.{CurrentPstrCacheConnector, LockCacheConnector, UserAnswersCacheConnector}
 import models.MigrationLock
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc._
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -137,28 +137,7 @@ class TestMongoController @Inject()(
 
   def save(pstr: String): Action[AnyContent] = Action.async { implicit request =>
     val lock: MigrationLock = MigrationLock(pstr, "dummy cred", "A2100005")
-
-    val data: JsValue = Json.obj(
-      "establishers" -> Json.arr(
-        Json.obj("establisherDetails" -> Json.obj(
-          "firstName" -> "other",
-          "lastName" -> "xyz",
-          "isDeleted" -> false
-        ),
-          "establisherKind" -> "individual",
-          "isEstablisherNew" -> true,
-        "phone" -> "88",
-        "email" -> "s@s.com")),
-      "schemeName" -> "Migration scheme",
-      "schemeType" -> Json.obj(
-        "name" -> "other",
-        "schemeTypeDetails" -> "xyz"
-      ),
-      "schemeEstablishedCountry" -> "GB",
-      "investmentRegulated" -> true,
-      "occupationalPensionScheme" -> true
-    )
-
+    import TestMongoController.data
     userAnswersCacheConnector.save(lock, data).flatMap { response =>
       val json = Json.obj(
         "heading" -> "Save data",
@@ -233,4 +212,27 @@ class TestMongoController @Inject()(
 
   }
 
+}
+
+object TestMongoController {
+  val data: JsObject = Json.obj(
+    "establishers" -> Json.arr(
+      Json.obj("establisherDetails" -> Json.obj(
+        "firstName" -> "other",
+        "lastName" -> "xyz",
+        "isDeleted" -> false
+      ),
+        "establisherKind" -> "individual",
+        "isEstablisherNew" -> true,
+        "phone" -> "88",
+        "email" -> "s@s.com")),
+    "schemeName" -> "Migration scheme",
+    "schemeType" -> Json.obj(
+      "name" -> "other",
+      "schemeTypeDetails" -> "xyz"
+    ),
+    "schemeEstablishedCountry" -> "GB",
+    "investmentRegulated" -> true,
+    "occupationalPensionScheme" -> true
+  )
 }
