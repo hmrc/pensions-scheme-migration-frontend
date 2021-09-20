@@ -16,9 +16,8 @@
 
 package controllers.racDac
 
-import controllers.Retrievals
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import identifiers.beforeYouStart.SchemeNameId
+import connectors.MinimalDetailsConnector
+import controllers.actions.AuthAction
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -31,22 +30,21 @@ import scala.concurrent.ExecutionContext
 class DeclarationController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        authenticate: AuthAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
+                                       minimalDetailsConnector: MinimalDetailsConnector,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer
                                      )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
-    with Retrievals {
+     {
 
   def onPageLoad: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    authenticate.async {
       implicit request =>
-        SchemeNameId.retrieve.right.map {
-          schemeName =>
+        minimalDetailsConnector.getPSAName.flatMap {
+          psaName =>
             val json = Json.obj(
-              "schemeName" -> schemeName,
+              "psaName" -> psaName,
               "submitUrl" -> controllers.racDac.routes.DeclarationController.onSubmit().url
             )
             renderer.render("racDac/declaration.njk", json).map(Ok(_))
@@ -54,7 +52,7 @@ class DeclarationController @Inject()(
   }
 
   def onSubmit: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData) {
+    authenticate {
       Redirect(controllers.routes.IndexController.onPageLoad().url)
   }
 

@@ -33,6 +33,7 @@ object Data {
 
   val psaId: String = "A2100000"
   val pspId: String = "21000000"
+  val psaName: String = "Nigel Smith"
   val credId: String = "id"
   val pstr: String = "pstr"
   val migrationLock: MigrationLock = MigrationLock(pstr, credId, psaId)
