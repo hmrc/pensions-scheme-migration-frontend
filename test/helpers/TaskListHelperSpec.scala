@@ -17,7 +17,7 @@
 package helpers
 
 import base.SpecBase
-import identifiers.beforeYouStart.SchemeTypeId
+import identifiers.beforeYouStart.{SchemeTypeId, WorkingKnowledgeId}
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.partnership.{PartnershipDetailsId => EstablisherPartnershipDetailsId}
@@ -43,8 +43,10 @@ class TaskListHelperSpec extends SpecBase with Matchers with MockitoSugar with E
   private val beforeYouStartLinkText = messages("messages__schemeTaskList__before_you_start_link_text", schemeName)
   private val membershipDetailsLinkText = messages("messages__schemeTaskList__about_members_link_text", schemeName)
   private val declarationLinkText = messages("messages__schemeTaskList__declaration_link")
+  private val workingKnowledgeAddLinkText = messages("messages__schemeTaskList__add_details_wk")
   private val beforeYouStartHeader = Some(Message("messages__schemeTaskList__before_you_start_header"))
   private val aboutHeader = Some(Message("messages__schemeTaskList__about_scheme_header", schemeName))
+  private val workingKnowledgeHeader = Some(Message("messages__schemeTaskList__working_knowledge_header"))
   private val declarationHeader = Some("messages__schemeTaskList__sectionDeclaration_header")
   private val declarationP1 = List("messages__schemeTaskList__sectionDeclaration_incomplete_v1",
     "messages__schemeTaskList__sectionDeclaration_incomplete_v2")
@@ -55,6 +57,8 @@ class TaskListHelperSpec extends SpecBase with Matchers with MockitoSugar with E
     controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad().url), Some(false))
   private val expectedDeclarationSpoke = EntitySpoke(TaskListLink(declarationLinkText,
     controllers.routes.DeclarationController.onPageLoad().url), Some(false))
+  private val expectedworkingKnowledgeSpoke = EntitySpoke(TaskListLink(workingKnowledgeAddLinkText,
+    controllers.adviser.routes.WhatYouWillNeedController.onPageLoad().url), None)
   implicit val userAnswers: UserAnswers = ua
 
   override def beforeEach: Unit = {
@@ -90,6 +94,20 @@ class TaskListHelperSpec extends SpecBase with Matchers with MockitoSugar with E
       val expectedAboutSection = TaskListEntitySection(None, Seq(expectedMembershipDetailsSpoke), aboutHeader)
 
       helper.aboutSection mustBe expectedAboutSection
+    }
+  }
+
+  "workingKnowledgeSection " must {
+    "return correct the correct entity section when do you have working knowledge is false" in {
+      val userAnswers = ua.set(WorkingKnowledgeId, false).get
+      when(mockSpokeCreationService.workingKnowledgeSpoke(any())(any())).thenReturn(Seq(expectedworkingKnowledgeSpoke))
+      val expectedAboutSection = Some(TaskListEntitySection(None, Seq(expectedworkingKnowledgeSpoke), workingKnowledgeHeader))
+
+      helper.workingKnowledgeSection(userAnswers,messages) mustBe expectedAboutSection
+    }
+    "return correct the correct entity section when do you have working knowledge is true" in {
+      val userAnswers = ua.set(WorkingKnowledgeId, true).get
+      helper.workingKnowledgeSection(userAnswers,messages) mustBe None
     }
   }
 

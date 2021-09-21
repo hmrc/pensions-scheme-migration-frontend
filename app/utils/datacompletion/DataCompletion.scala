@@ -17,7 +17,8 @@
 package utils.datacompletion
 
 import identifiers._
-import identifiers.aboutMembership.{FutureMembersId, CurrentMembersId}
+import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
+import identifiers.adviser.{AddressId, AdviserNameId, EnterEmailId, EnterPhoneId}
 import identifiers.beforeYouStart._
 import identifiers.benefitsAndInsurance._
 import models.benefitsAndInsurance.BenefitsProvisionType.DefinedBenefitsOnly
@@ -107,4 +108,10 @@ trait DataCompletion {
       case (None, None) => None
       case _ => Some(false)
     }
+
+  def isAdviserCompleted: Option[Boolean] = isComplete(Seq(
+    isAnswerComplete(AdviserNameId),
+    isContactDetailsComplete(EnterEmailId,EnterPhoneId),
+    isAnswerComplete(AddressId)
+  ))
 }

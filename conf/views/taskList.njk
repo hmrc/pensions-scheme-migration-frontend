@@ -89,6 +89,36 @@
                     </ul>
                 </li>
 
+                <li>
+                    {% if taskSections.workingKnowledge.header %}
+                        <h3 id="section-workingKnowledge-header"
+                            class="app-task-list__section">
+                            {{ taskSections.workingKnowledge.header }}
+                        </h3>
+                    {% endif %}
+                        <ul class="app-task-list__items">
+                            {% for item in taskSections.workingKnowledge.entities %}
+                                <li class="app-task-list__item">
+                                    <span class="app-task-list__task-name">
+                                        <a id="section-workingKnowledge-link-{{ loop.index -1 }}"
+                                           class="app-task-list__task-name govuk-link"
+                                           href="{{ item.link.target }}"
+                                           {% if(item.isCompleted.nonEmpty) %} aria-describedby="section-workingKnowledge-status-{{ loop.index -1 }}" {% endif %}>
+                                            {{ messages(item.link.text) }}
+                                        </a>
+                                    </span>
+                                    <span class="app-task-list__tag {{ statusClass(item.isCompleted) }}"
+                                          id="section-workingKnowledge-status-{{ loop.index -1 }}">
+                                        <span class="govuk-visually-hidden">
+                                            {{ messages("messages__schemeTaskList__status_visuallyHidden") }}
+                                        </span>
+                                        {{ status(item.isCompleted) }}
+                                    </span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                </li>
+
                 <li id="Establishers">
                     <h2 id="section-establishers-header"
                         class="govuk-heading-l">

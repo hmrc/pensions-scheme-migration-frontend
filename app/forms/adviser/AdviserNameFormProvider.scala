@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package forms
+package forms.adviser
 
 import forms.mappings.{Constraints, Mappings}
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class PhoneFormProvider @Inject() extends Mappings with Constraints {
+class AdviserNameFormProvider @Inject() extends Mappings with Constraints {
+  val schemeNameMaxLength = 107
 
-  def apply(keyRequired: String,invalidKey: Option[String]=Option("messages__enterPhone__error_invalid")): Form[String] = Form(
-    "value" -> text(keyRequired)
-      .verifying(
-          phoneNumber(invalidKey.getOrElse("messages__enterPhone__error_invalid"))
-      )
+  def apply(): Form[String] = Form(
+    "adviserName" -> text("messages__adviserName__blank").
+      verifying(firstError(
+        maxLength(schemeNameMaxLength, "messages__adviserName__length"),
+        personOrOrganisationName("messages__adviserName__invalid")))
   )
-
 }

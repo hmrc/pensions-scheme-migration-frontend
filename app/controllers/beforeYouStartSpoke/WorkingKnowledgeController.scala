@@ -20,6 +20,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.beforeYouStart.WorkingKnowledgeFormProvider
+import identifiers.adviser._
 import identifiers.beforeYouStart.WorkingKnowledgeId
 import navigators.CompoundNavigator
 import play.api.data.Form
@@ -74,7 +75,17 @@ class WorkingKnowledgeController @Inject()(
         },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(WorkingKnowledgeId, value))
+              updatedAnswers <- {
+                val updatedUA = {
+                  if (!value) {
+                    request.userAnswers.removeAll(Set(EnterEmailId, EnterPhoneId, AdviserNameId,
+                      EnterPostCodeId, AddressListId, AddressId))
+                  }else{
+                    request.userAnswers
+                  }
+                }
+                  Future.fromTry(updatedUA.set(WorkingKnowledgeId, value))
+              }
               _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
             } yield Redirect(navigator.nextPage(WorkingKnowledgeId, updatedAnswers))
       )

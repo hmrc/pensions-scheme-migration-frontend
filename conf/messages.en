@@ -162,6 +162,7 @@ messages__schemeTaskList__sectionEstablishers_change_link = Change establishers
 messages__schemeTaskList__sectionEstablishers_view_link = View establishers
 messages__schemeTaskList__sectionEstablishers_no_establishers = No establishers
 
+messages__schemeTaskList__add_details_wk = Add a person or company that has working knowledge
 messages__schemeTaskList__details_addLink = Add details for {0}
 messages__schemeTaskList__details_changeLink = Change details for {0}
 messages__schemeTaskList__directors_addLink = Add directors for {0}
@@ -184,6 +185,7 @@ messages__company = the company
 messages__title_company = The company
 messages__partnership = the partnership
 messages__title_partnership = The partnership
+messages__pension__adviser = the pension adviser
 messages__partner = the partner
 messages__trustee = the trustee
 messages__the_scheme = the scheme
@@ -1034,3 +1036,28 @@ messages__transferAll__error = Select yes if you want to add all your RAC/DACs f
 messages__racdac_bulk_list__title = List of RAC/DACs on the Pension Schemes Online service
 messages__racdac_bulk_list__radioLabel = Do you want to continue adding all your RAC/DACs?
 messages__racdac_bulk_list__error =  Select yes if you want to add all your RAC/DACs from the Pension Schemes Online service
+
+messages__what_you_will_need_wk__title = Working knowledge of pensions and pensions tax legislation
+messages__what_you_will_need_wk__h1 = Working knowledge of pensions and pensions tax legislation
+messages__what_you_will_need_wk__lede = There must be a person or company associated with the scheme that has working knowledge of pensions and pensions tax legislation. You will need to tell us their:
+messages__what_you_will_need_wk__item_1 = name
+messages__what_you_will_need_wk__item_2 = email address
+messages__what_you_will_need_wk__item_3 = phone number
+messages__what_you_will_need_wk__item_4 = address
+
+messages__adviserName__title = Who has working knowledge of pensions and pensions tax legislation?
+messages__adviserName__heading = Who has working knowledge of pensions and pensions tax legislation?
+messages__adviserName__hint = Name of person or company
+messages__adviserName__name_label = The name of the adviser
+
+messages__adviserName__length = Enter a name using less than 108 letters
+messages__adviserName__invalid = Enter a name using only letters
+messages__adviserName__blank = Enter the name of who has working knowledge of pensions
+messages__error__common__email__required = Enter an email address
+messages__error__common__phone__required = Enter a phone number
+messages__phone__invalid = Enter a phone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192
+messages__adviser__enterPostcode__invalid = Enter a postcode in the correct format
+messages__adviser__enterPostcode__no__results = Postcode cannot be found
+
+messages__adviser__name__cya = Who is the person with working knowledge of pensions and pensions tax legislation?
+messages__adviser__name__cya__visuallyHidden = who the person is that has working knowledge of pensions and pensions tax legislation

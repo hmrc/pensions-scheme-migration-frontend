@@ -19,14 +19,12 @@ package helpers
 import controllers.establishers.routes._
 import helpers.spokes.establishers.company._
 import helpers.spokes.establishers.individual._
-import helpers.spokes.establishers.partnership._
-import helpers.spokes.establishers.partnership.{EstablisherPartnershipAddress, EstablisherPartnershipDetails, EstablisherPartnerDetails}
+import helpers.spokes.establishers.partnership.{EstablisherPartnerDetails, EstablisherPartnershipAddress, EstablisherPartnershipDetails, _}
 import helpers.spokes.trustees.company.{TrusteeCompanyAddress, TrusteeCompanyContactDetails, TrusteeCompanyDetails}
 import helpers.spokes.trustees.individual.{TrusteeIndividualAddress, TrusteeIndividualContactDetails, TrusteeIndividualDetails}
-import helpers.spokes.trustees.partnership.TrusteePartnershipAddress
-import helpers.spokes.trustees.partnership.TrusteePartnershipContactDetails
-import helpers.spokes.trustees.partnership.TrusteePartnershipDetails
-import helpers.spokes.{AboutMembersSpoke, BeforeYouStartSpoke, BenefitsAndInsuranceSpoke, Spoke}
+import helpers.spokes.trustees.partnership.{TrusteePartnershipAddress, TrusteePartnershipContactDetails, TrusteePartnershipDetails}
+import helpers.spokes._
+import identifiers.adviser.AdviserNameId
 import models.Index._
 import models.{Entity, EntitySpoke, Index, TaskListLink}
 import play.api.i18n.Messages
@@ -48,6 +46,27 @@ class SpokeCreationService extends Enumerable.Implicits {
       createSpoke(answers, AboutMembersSpoke, name),
       createSpoke(answers, BenefitsAndInsuranceSpoke, name)
     )
+
+  def workingKnowledgeSpoke(answers: UserAnswers)
+                           (implicit messages: Messages): Seq[EntitySpoke] = {
+    if (answers.get(AdviserNameId).isEmpty)
+      Seq(
+        EntitySpoke(
+          link = TaskListLink(
+            text = messages("messages__schemeTaskList__add_details_wk"),
+            target = controllers.adviser.routes.WhatYouWillNeedController.onPageLoad.url
+          ),
+          isCompleted = None
+        )
+      )
+    else
+      Seq(
+        EntitySpoke(
+          link = WorkingKnowlegedSpoke.changeLink(answers.get(AdviserNameId).getOrElse("")),
+          isCompleted = WorkingKnowlegedSpoke.completeFlag(answers)
+        )
+      )
+  }
 
   def getAddEstablisherHeaderSpokes(answers: UserAnswers, viewOnly: Boolean)
                                    (implicit messages: Messages): Seq[EntitySpoke] =
