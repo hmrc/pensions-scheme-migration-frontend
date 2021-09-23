@@ -57,6 +57,6 @@ class DeclarationController @Inject()(
 
   def onSubmit: Action[AnyContent] =
     (authenticate andThen getData andThen requireData) {
-      Redirect(routes.SuccessController.onPageLoad())
+      Redirect(routes.SchemeSuccessController.onPageLoad())
     }
 }

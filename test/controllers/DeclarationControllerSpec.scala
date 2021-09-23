@@ -79,7 +79,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
       val result = route(application, httpGETRequest(httpPathPOST)).value
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SuccessController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SchemeSuccessController.onPageLoad().url)
     }
 
   }
