@@ -1061,3 +1061,11 @@ messages__adviser__enterPostcode__no__results = Postcode cannot be found
 
 messages__adviser__name__cya = Who is the person with working knowledge of pensions and pensions tax legislation?
 messages__adviser__name__cya__visuallyHidden = who the person is that has working knowledge of pensions and pensions tax legislation
+
+messages__scheme__success__title = The pension scheme has been added from Pension Schemes Online
+messages__scheme__success__heading = The pension scheme {0} has been added from Pension Schemes Online
+messages__scheme__success__pstr__number = The PSTR number is {0}
+messages__scheme__success__detail__1 = The pension scheme has been added to your list of pension schemes.
+messages__scheme__success__detail__2 = to manage this pension scheme.
+messages__scheme__success__pension__scheme__link = View your list of pension schemes
+messages__what_happens_next = What happens next

@@ -67,7 +67,7 @@ POST        /insurance-address-results                             controllers.b
 GET         /insurance-confirm-address                             controllers.benefitsAndInsurance.InsurerConfirmAddressController.onPageLoad
 POST        /insurance-confirm-address                             controllers.benefitsAndInsurance.InsurerConfirmAddressController.onSubmit
 
-GET         /confirmation                                          controllers.SuccessController.onPageLoad
+GET         /confirmation                                          controllers.SchemeSuccessController.onPageLoad
 
 GET         /migration-tile                                         controllers.preMigration.MigrationTilePartialController.migrationPartial
 GET         /cannot-add-pension-scheme                              controllers.preMigration.CannotAddController.onPageLoadScheme
