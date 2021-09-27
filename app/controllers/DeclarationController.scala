@@ -79,7 +79,7 @@ class DeclarationController @Inject()(
     minimalDetailsConnector.getPSADetails(psaId) flatMap { minimalPsa =>
       emailConnector.sendEmail(
         emailAddress = minimalPsa.email,
-        templateName = appConfig.emailTemplateId,
+        templateName = appConfig.schemeConfirmationEmailTemplateId,
         params = Map("psaName" -> minimalPsa.name, "schemeName"-> schemeName),
         callbackUrl(psaId) //To be edited while implementing audit event
       )

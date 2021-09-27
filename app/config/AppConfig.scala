@@ -98,6 +98,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val maxPartners: Int = loadConfig("maxPartners").toInt
   lazy val listSchemePagination: Int = loadConfig("listSchemePagination").toInt
   lazy val emailApiUrl: String = s"${servicesConfig.baseUrl("email")}"
-  lazy val emailTemplateId: String = loadConfig("email.templateId")
+  lazy val schemeConfirmationEmailTemplateId: String = loadConfig("email.schemeConfirmationTemplateId")
   lazy val emailSendForce: Boolean = config.getOptional[Boolean]("email.force").getOrElse(false)
 }

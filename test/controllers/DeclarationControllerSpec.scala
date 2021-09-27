@@ -86,7 +86,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
     "redirect to next page when button is clicked" in {
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-      when(mockAppConfig.emailTemplateId).thenReturn("test template name")
+      when(mockAppConfig.schemeConfirmationEmailTemplateId).thenReturn("test template name")
       when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any()))
         .thenReturn(Future.successful(MinPSA("test@test.com", isPsaSuspended = false, Some(psaName), None, rlsFlag = false, deceasedFlag = false)))
       when(mockEmailConnector.sendEmail(any(), any(), any(), any())(any(),any())).thenReturn(Future.successful(EmailSent))
