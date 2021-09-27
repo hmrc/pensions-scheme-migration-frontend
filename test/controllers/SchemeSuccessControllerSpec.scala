@@ -58,7 +58,6 @@ class SchemeSuccessControllerSpec extends ControllerSpecBase with NunjucksSuppor
   private val name = PersonName("Jane", "Doe")
   private val userAnswers: Option[UserAnswers] = ua.set(EstablisherNameId(0), name).toOption
   private val templateToBeRendered = "schemeSuccess.njk"
-  private val mockMinimalDetailsConnector: MinimalDetailsConnector = mock[MinimalDetailsConnector]
   private val mockCurrentPstrCacheConnector: CurrentPstrCacheConnector = mock[CurrentPstrCacheConnector]
   private val mockLockCacheConnector: LockCacheConnector = mock[LockCacheConnector]
 
