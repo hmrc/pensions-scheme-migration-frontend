@@ -188,7 +188,7 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
         (JsPath \ IsEstablisherNewId.toString).readNullable[Boolean]
       ) ((details, isNew) =>
       EstablisherCompanyEntity(CompanyDetailsId(index),
-        details.companyName, details.isDeleted, isEstablisherCompanyComplete(index), isNew.fold
+        details.companyName, details.isDeleted, isEstablisherCompanyAndDirectorsComplete(index), isNew.fold
         (false)(identity), noOfRecords)
     )
 
@@ -197,7 +197,7 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
         (JsPath \ IsEstablisherNewId.toString).readNullable[Boolean]
       ) ((details, isNew) =>
       EstablisherPartnershipEntity(PartnershipDetailsId(index),
-        details.partnershipName, details.isDeleted, isEstablisherPartnershipComplete(index), isNew.fold
+        details.partnershipName, details.isDeleted, isEstablisherPartnershipAndPartnersComplete(index), isNew.fold
         (false)(identity), noOfRecords)
     )
 

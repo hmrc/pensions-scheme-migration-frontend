@@ -45,6 +45,6 @@ case class TrusteeIndividualAddress(
     )
 
   override def completeFlag(answers: UserAnswers): Option[Boolean] =
-    answers.isTrusteeIndividualAddressCompleted(index, answers)
+    answers.isTrusteeIndividualAddressComplete(index)
 }
 

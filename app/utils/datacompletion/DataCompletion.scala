@@ -21,6 +21,9 @@ import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
 import identifiers.adviser.{AddressId, AdviserNameId, EnterEmailId, EnterPhoneId}
 import identifiers.beforeYouStart._
 import identifiers.benefitsAndInsurance._
+import identifiers.trustees.OtherTrusteesId
+import models.Address
+import models.SchemeType.SingleTrust
 import models.benefitsAndInsurance.BenefitsProvisionType.DefinedBenefitsOnly
 import play.api.libs.json.Reads
 import utils.UserAnswers
@@ -44,11 +47,11 @@ trait DataCompletion {
       ).forall(identity)
   }
 
-  def isMembersCompleted: Option[Boolean] = isComplete(Seq(
+  def isMembersComplete: Option[Boolean] = isComplete(Seq(
     isAnswerComplete(CurrentMembersId),
     isAnswerComplete(FutureMembersId)))
 
-  def isBenefitsAndInsuranceCompleted: Option[Boolean] = {
+  def isBenefitsAndInsuranceComplete: Option[Boolean] = {
     val benefitsTypeCompletion =
       if (get(HowProvideBenefitsId).contains(DefinedBenefitsOnly)) {
         Nil
@@ -73,6 +76,30 @@ trait DataCompletion {
         ) ++ benefitsTypeCompletion ++ policyDetailsCompletion
       )
     }
+
+  def isWorkingKnowledgeComplete: Option[Boolean] = get(WorkingKnowledgeId) match {
+    case Some(false) => isAdviserComplete
+    case _ => get(WorkingKnowledgeId)
+  }
+
+  def isAdviserComplete: Option[Boolean] = isComplete(Seq(
+    isAnswerComplete(AdviserNameId),
+    isContactDetailsComplete(EnterEmailId,EnterPhoneId),
+    isAnswerComplete(AddressId)
+  ))
+
+  def isEstablishersSectionComplete: Boolean =
+    allEstablishersAfterDelete.nonEmpty && allEstablishersAfterDelete.forall(_.isCompleted)
+
+  def isTrusteesSectionComplete: Boolean = {
+    val isSingleOrMaster = get(SchemeTypeId).fold(false)(_.equals(SingleTrust))
+    val allTrustees = allTrusteesAfterDelete
+    val allTrusteesComplete = allTrustees.forall(_.isCompleted) && (allTrustees.size < 10 || get(OtherTrusteesId).isDefined)
+    if (isSingleOrMaster)
+      allTrustees.nonEmpty && allTrusteesComplete
+    else
+      allTrusteesComplete
+  }
 
   //GENERIC METHODS
   def isComplete(list: Seq[Option[Boolean]]): Option[Boolean] =
@@ -101,6 +128,23 @@ trait DataCompletion {
       case _ => Some(false)
     }
 
+  def isAddressComplete(currentAddressId: TypedIdentifier[Address],
+                        previousAddressId: TypedIdentifier[Address],
+                        timeAtAddress: TypedIdentifier[Boolean],
+                        tradingTime: Option[TypedIdentifier[Boolean]]
+                       ): Option[Boolean] =
+    (get(currentAddressId), get(timeAtAddress)) match {
+      case (Some(_), Some(true)) => Some(true)
+      case (None, _) => None
+      case (Some(_), Some(false)) =>
+        (get(previousAddressId), tradingTime) match {
+          case (Some(_), _) => Some(true)
+          case (_, Some(tradingTimeId)) => Some(!get(tradingTimeId).getOrElse(true))
+          case _ => Some(false)
+        }
+      case _ => Some(false)
+    }
+
   def isContactDetailsComplete(emailId: TypedIdentifier[String],
                                phoneId: TypedIdentifier[String]): Option[Boolean] =
     (get(emailId), get(phoneId)) match {
@@ -108,10 +152,4 @@ trait DataCompletion {
       case (None, None) => None
       case _ => Some(false)
     }
-
-  def isAdviserCompleted: Option[Boolean] = isComplete(Seq(
-    isAnswerComplete(AdviserNameId),
-    isContactDetailsComplete(EnterEmailId,EnterPhoneId),
-    isAnswerComplete(AddressId)
-  ))
 }

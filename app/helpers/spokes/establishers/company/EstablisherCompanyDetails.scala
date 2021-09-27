@@ -45,6 +45,6 @@ case class EstablisherCompanyDetails(
     )
 
   override def completeFlag(answers: UserAnswers): Option[Boolean] =
-    answers.isEstablisherCompanyDetailsCompleted(index)
+    answers.isEstablisherCompanyDetailsComplete(index)
 }
 
