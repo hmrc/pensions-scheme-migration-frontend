@@ -19,6 +19,7 @@ package controllers
 
 import base.SpecBase
 import config.AppConfig
+import connectors.{EmailConnector, MinimalDetailsConnector}
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import navigators.CompoundNavigator
@@ -57,6 +58,8 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach with MockitoSu
   protected val mockUserAnswersCacheConnector: UserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   protected val mockCompoundNavigator: CompoundNavigator = mock[CompoundNavigator]
   protected val mockRenderer: NunjucksRenderer = mock[NunjucksRenderer]
+  protected val mockMinimalDetailsConnector: MinimalDetailsConnector = mock[MinimalDetailsConnector]
+  protected val mockEmailConnector: EmailConnector = mock[EmailConnector]
 
   def modules: Seq[GuiceableModule] = Seq(
     bind[AuthAction].to[FakeAuthAction],

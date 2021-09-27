@@ -16,16 +16,20 @@
 
 package controllers
 
+import connectors.{EmailConnector, EmailSent, MinimalDetailsConnector}
 import controllers.actions.MutableFakeDataRetrievalAction
 import matchers.JsonMatchers
-import org.mockito.ArgumentCaptor
+import models.MinPSA
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
+import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.Data.{schemeName, ua}
+import utils.Data.{psaName, schemeName, ua}
 import utils.Enumerable
 
 import scala.concurrent.Future
@@ -36,7 +40,12 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
+  val extraModules: Seq[GuiceableModule] = Seq(
+    bind[EmailConnector].toInstance(mockEmailConnector),
+    bind[MinimalDetailsConnector].toInstance(mockMinimalDetailsConnector)
+  )
+
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
   private def httpPathGET: String = controllers.routes.DeclarationController.onPageLoad().url
   private def httpPathPOST: String = controllers.routes.DeclarationController.onSubmit().url
@@ -45,7 +54,6 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
     Json.obj(
       "schemeName" -> schemeName,
       "isCompany" -> true,
-      "isDormant" -> true,
       "hasWorkingKnowledge" -> true,
       "submitUrl" -> routes.DeclarationController.onSubmit().url
     )
@@ -77,9 +85,23 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
     "redirect to next page when button is clicked" in {
 
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+      when(mockAppConfig.emailTemplateId).thenReturn("test template name")
+      when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any()))
+        .thenReturn(Future.successful(MinPSA("test@test.com", isPsaSuspended = false, Some(psaName), None, rlsFlag = false, deceasedFlag = false)))
+      when(mockEmailConnector.sendEmail(any(), any(), any(), any())(any(),any())).thenReturn(Future.successful(EmailSent))
+
       val result = route(application, httpGETRequest(httpPathPOST)).value
+
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SuccessController.onPageLoad().url)
+
+      verify(mockEmailConnector, times(1)).sendEmail(
+        ArgumentMatchers.eq("test@test.com"),
+        ArgumentMatchers.eq("test template name"),
+        ArgumentMatchers.eq(Map("psaName" -> psaName.toString, "schemeName"-> schemeName)),
+        any())(any(), any())
+
+      redirectLocation(result) mustBe Some(controllers.routes.SchemeSuccessController.onPageLoad().url)
     }
 
   }

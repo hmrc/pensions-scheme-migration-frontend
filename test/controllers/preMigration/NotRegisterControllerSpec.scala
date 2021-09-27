@@ -16,7 +16,6 @@
 
 package controllers.preMigration
 
-import connectors.MinimalDetailsConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import matchers.JsonMatchers
@@ -36,7 +35,6 @@ class NotRegisterControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
   private val templateToBeRendered: String = "preMigration/notRegister.njk"
   private val psaName: String = "Nigel"
-  private val mockMinimalDetailsConnector: MinimalDetailsConnector = mock[MinimalDetailsConnector]
 
   private def schemeJson: JsObject = Json.obj(
     "param1" -> msg"messages__pension_scheme".resolve,

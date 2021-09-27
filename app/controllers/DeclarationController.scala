@@ -56,7 +56,6 @@ class DeclarationController @Inject()(
           val json = Json.obj(
             "schemeName" -> schemeName,
             "isCompany" -> true,
-            "isDormant" -> true,
             "hasWorkingKnowledge" -> true,
             "submitUrl" -> routes.DeclarationController.onSubmit().url
           )
@@ -68,8 +67,8 @@ class DeclarationController @Inject()(
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
-        sendEmail(schemeName, request.lock.psaId).map {
-        _ => Redirect(routes.SuccessController.onPageLoad()) }
+        sendEmail(schemeName, request.psaId.id).map {
+        _ => Redirect(routes.SchemeSuccessController.onPageLoad()) }
       }
     }
 
@@ -82,7 +81,7 @@ class DeclarationController @Inject()(
         emailAddress = minimalPsa.email,
         templateName = appConfig.emailTemplateId,
         params = Map("psaName" -> minimalPsa.name, "schemeName"-> schemeName),
-        callbackUrl(psaId)
+        callbackUrl(psaId) //To be edited while implementing audit event
       )
     } recoverWith {
       case _: Throwable => Future.successful(EmailNotSent)
@@ -91,6 +90,6 @@ class DeclarationController @Inject()(
   //To be edited while implementing audit event
   private def callbackUrl(psaId: String): String = {
     val encryptedPsa = crypto.QueryParameterCrypto.encrypt(PlainText(psaId)).value
-    s"${appConfig.migrationUrl}/pensions-scheme/email-response/$encryptedPsa"
+    s"${appConfig.migrationUrl}/email-response/$encryptedPsa"
   }
 }
