@@ -41,17 +41,17 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class SelectAddressController @Inject()(val appConfig: AppConfig,
-  override val messagesApi: MessagesApi,
-  val userAnswersCacheConnector: UserAnswersCacheConnector,
-  val addressLookupConnector: AddressLookupConnector,
-  val navigator: CompoundNavigator,
-  authenticate: AuthAction,
-  getData: DataRetrievalAction,
-  requireData: DataRequiredAction,
-  formProvider: AddressListFormProvider,
-  countryOptions: CountryOptions,
-  val controllerComponents: MessagesControllerComponents,
-  val renderer: Renderer)(implicit val ec: ExecutionContext) extends AddressListController with I18nSupport
+                                        override val messagesApi: MessagesApi,
+                                        val userAnswersCacheConnector: UserAnswersCacheConnector,
+                                        val addressLookupConnector: AddressLookupConnector,
+                                        val navigator: CompoundNavigator,
+                                        authenticate: AuthAction,
+                                        getData: DataRetrievalAction,
+                                        requireData: DataRequiredAction,
+                                        formProvider: AddressListFormProvider,
+                                        countryOptions: CountryOptions,
+                                        val controllerComponents: MessagesControllerComponents,
+                                        val renderer: Renderer)(implicit val ec: ExecutionContext) extends AddressListController with I18nSupport
   with NunjucksSupport with Retrievals {
 
   override def form: Form[Int] = formProvider("selectAddress.required")
@@ -64,13 +64,14 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
 
   def onSubmit(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
-        val addressPages: AddressPages = AddressPages(EnterPostCodeId(index), AddressListId(index), AddressId(index))
+      val addressPages: AddressPages = AddressPages(EnterPostCodeId(index), AddressListId(index), AddressId(index))
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, index, NormalMode).retrieve.right.map(post(_, addressPages))
+        getFormToJson(schemeName, index, NormalMode).retrieve.right.map(post(_, addressPages,
+          manualUrlCall = EstablishersIndividualRoutes.confirmAddressRoute(index, NormalMode)))
       }
     }
 
-  def getFormToJson(schemeName:String, index: Index, mode: Mode) : Retrieval[Form[Int] => JsObject] =
+  def getFormToJson(schemeName: String, index: Index, mode: Mode): Retrieval[Form[Int] => JsObject] =
     Retrieval(
       implicit request =>
         EnterPostCodeId(index).retrieve.right.map { addresses =>
@@ -79,14 +80,15 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
 
           val name = request.userAnswers.get(EstablisherNameId(index)).map(_.fullName).getOrElse(msg("establisherEntityTypeIndividual"))
 
-          form => Json.obj(
-            "form" -> form,
-            "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
-            "entityType" -> msg("establisherEntityTypeIndividual"),
-            "entityName" -> name,
-            "enterManuallyUrl" -> EstablishersIndividualRoutes.confirmAddressRoute(index, NormalMode).url,
-            "schemeName" -> schemeName
-          )
+          form =>
+            Json.obj(
+              "form" -> form,
+              "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
+              "entityType" -> msg("establisherEntityTypeIndividual"),
+              "entityName" -> name,
+              "enterManuallyUrl" -> EstablishersIndividualRoutes.confirmAddressRoute(index, NormalMode).url,
+              "schemeName" -> schemeName
+            )
         }
     )
 }

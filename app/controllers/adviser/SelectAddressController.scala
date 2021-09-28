@@ -21,6 +21,7 @@ import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.{AddressListController, AddressPages}
+import controllers.adviser.routes.ConfirmAddressController
 import forms.address.AddressListFormProvider
 import identifiers.adviser.{AddressId, AddressListId, AdviserNameId, EnterPostCodeId}
 import identifiers.beforeYouStart.SchemeNameId
@@ -64,7 +65,7 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
     (authenticate andThen getData andThen requireData).async { implicit request =>
       val addressPages: AddressPages = AddressPages(EnterPostCodeId, AddressListId, AddressId)
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName,mode).retrieve.right.map(post(_, addressPages))
+        getFormToJson(schemeName,mode).retrieve.right.map(post(_, addressPages,manualUrlCall = ConfirmAddressController.onPageLoad))
       }
     }
 
@@ -83,7 +84,7 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
               "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
               "entityType" -> msg("messages__pension__adviser"),
               "entityName" -> name,
-              "enterManuallyUrl" -> controllers.adviser.routes.ConfirmAddressController.onPageLoad.url,
+              "enterManuallyUrl" -> ConfirmAddressController.onPageLoad.url,
               "schemeName" -> schemeName
             )
         }

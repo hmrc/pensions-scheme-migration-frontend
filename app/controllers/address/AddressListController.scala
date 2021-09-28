@@ -24,7 +24,7 @@ import models.{Address, Mode, NormalMode, TolerantAddress}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{AnyContent, Result}
+import play.api.mvc.{AnyContent, Call, Result}
 import renderer.Renderer
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -39,7 +39,6 @@ trait AddressListController extends FrontendBaseController with Retrievals {
   protected def navigator: CompoundNavigator
   protected def form: Form[Int]
   protected def viewTemplate = "address/addressList.njk"
-
   private def prepareJson(jsObject: JsObject):JsObject = {
     if (jsObject.keys.contains("h1MessageKey")) {
       jsObject
@@ -52,24 +51,28 @@ trait AddressListController extends FrontendBaseController with Retrievals {
     renderer.render(viewTemplate, prepareJson(json(form))).map(Ok(_))
   }
 
-  def post(json: Form[Int] => JsObject, pages: AddressPages, mode: Option[Mode] = None)
+  def post(json: Form[Int] => JsObject, pages: AddressPages, mode: Option[Mode] = None,manualUrlCall:Call)
           (implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
-        form.bindFromRequest().fold(
-          formWithErrors =>
-            renderer.render(viewTemplate, prepareJson(json(formWithErrors))).map(BadRequest(_)),
-          value =>
-            pages.postcodeId.retrieve.right.map { addresses =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(pages.addressPage,
-                  addresses(value).copy(country = Some("GB")).toAddress))
-                _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
-              } yield
-              {
-                val finalMode = mode.getOrElse(NormalMode)
-                Redirect(navigator.nextPage(pages.addressListPage, updatedAnswers, finalMode))
-              }
+    form.bindFromRequest().fold(
+      formWithErrors =>
+        renderer.render(viewTemplate, prepareJson(json(formWithErrors))).map(BadRequest(_)),
+      value =>
+        pages.postcodeId.retrieve.right.map { addresses =>
+          val address = addresses(value).copy(country = Some("GB"))
+          if (address.toAddress.nonEmpty){
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(pages.addressPage,
+                address.toAddress.get))
+              _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+            } yield {
+              val finalMode = mode.getOrElse(NormalMode)
+              Redirect(navigator.nextPage(pages.addressListPage, updatedAnswers, finalMode))
             }
-        )
+          }else{
+            Future.successful(Redirect(manualUrlCall))
+          }
+        }
+    )
   }
 
   def transformAddressesForTemplate(addresses:Seq[TolerantAddress], countryOptions: CountryOptions):Seq[JsObject] = {

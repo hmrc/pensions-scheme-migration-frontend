@@ -58,25 +58,26 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-      retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.right.map(get)
-      }
-  }
+        retrieve(SchemeNameId) { schemeName =>
+          getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.right.map(get)
+        }
+    }
 
   def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
 
-        val addressPages: AddressPages = AddressPages(
-          EnterPreviousPostCodeId(establisherIndex, directorIndex),
-          PreviousAddressListId(establisherIndex, directorIndex),
-          PreviousAddressId(establisherIndex, directorIndex))
+      val addressPages: AddressPages = AddressPages(
+        EnterPreviousPostCodeId(establisherIndex, directorIndex),
+        PreviousAddressListId(establisherIndex, directorIndex),
+        PreviousAddressId(establisherIndex, directorIndex))
 
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.right.map(post(_, addressPages, Some(mode)))
+        getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.right.map(post(_, addressPages, Some(mode),
+          routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, directorIndex, mode)))
       }
     }
 
-  def getFormToJson(schemeName:String,
+  def getFormToJson(schemeName: String,
                     establisherIndex: Index,
                     directorIndex: Index,
                     mode: Mode): Retrieval[Form[Int] => JsObject] =
@@ -88,15 +89,16 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
 
           val name = request.userAnswers.get(DirectorNameId(establisherIndex, directorIndex)).map(_.fullName).getOrElse(msg("messages__director"))
 
-          form => Json.obj(
-            "form" -> form,
-            "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
-            "entityType" -> msg("messages__director"),
-            "entityName" -> name,
-            "enterManuallyUrl" -> routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, directorIndex, mode).url,
-            "schemeName" -> schemeName,
-            "h1MessageKey" -> "previousAddressList.title"
-          )
+          form =>
+            Json.obj(
+              "form" -> form,
+              "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
+              "entityType" -> msg("messages__director"),
+              "entityName" -> name,
+              "enterManuallyUrl" -> routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, directorIndex, mode).url,
+              "schemeName" -> schemeName,
+              "h1MessageKey" -> "previousAddressList.title"
+            )
         }
     )
 }
