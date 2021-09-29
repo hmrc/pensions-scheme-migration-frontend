@@ -18,9 +18,10 @@ package identifiers.establishers.company.address
 
 import identifiers.TypedIdentifier
 import identifiers.establishers.EstablishersId
+import models.TolerantAddress
 import play.api.libs.json.{Format, JsPath, Json}
 
-case class PreviousAddressListId(index: Int) extends TypedIdentifier[Int] {
+case class PreviousAddressListId(index: Int) extends TypedIdentifier[TolerantAddress] {
   override def path: JsPath =
     EstablishersId(index).path \ PreviousAddressListId.toString
 }

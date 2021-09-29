@@ -24,7 +24,7 @@ import controllers.address.ManualAddressController
 import forms.address.AddressFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
-import identifiers.establishers.company.director.address.AddressId
+import identifiers.establishers.company.director.address.{AddressId, AddressListId}
 import models.{Address, AddressConfiguration, Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
@@ -46,7 +46,7 @@ class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
                                          val controllerComponents: MessagesControllerComponents,
                                          val config: AppConfig,
                                          val renderer: Renderer
-)(implicit ec: ExecutionContext) extends ManualAddressController
+                                        )(implicit ec: ExecutionContext) extends ManualAddressController
   with Retrievals with I18nSupport with NunjucksSupport {
 
   override protected val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__director")
@@ -56,7 +56,8 @@ class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.right.map { case directorName ~ schemeName =>
-          get(Some(schemeName), directorName.fullName, AddressId(establisherIndex, directorIndex), AddressConfiguration.PostcodeFirst)
+        get(Some(schemeName), directorName.fullName, AddressId(establisherIndex, directorIndex), AddressListId(establisherIndex, directorIndex)
+          , AddressConfiguration.PostcodeFirst)
       }
     }
 

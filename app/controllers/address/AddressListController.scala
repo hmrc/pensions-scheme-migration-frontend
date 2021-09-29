@@ -61,15 +61,27 @@ trait AddressListController extends FrontendBaseController with Retrievals {
           val address = addresses(value).copy(country = Some("GB"))
           if (address.toAddress.nonEmpty){
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(pages.addressPage,
-                address.toAddress.get))
-              _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+              updatedAnswers <- Future.fromTry(
+                request.userAnswers.set(pages.addressPage,
+                address.toAddress.get)
+              )
+              _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.remove(pages.addressListPage).data)
             } yield {
               val finalMode = mode.getOrElse(NormalMode)
               Redirect(navigator.nextPage(pages.addressListPage, updatedAnswers, finalMode))
             }
           }else{
-            Future.successful(Redirect(manualUrlCall))
+            for {
+              updatedAnswers <-
+
+                Future.fromTry(request.userAnswers.remove(pages.addressPage).set(pages.addressListPage,
+                address)
+              )
+              _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+            } yield {
+              Redirect(manualUrlCall)
+            }
+
           }
         }
     )
@@ -87,5 +99,5 @@ trait AddressListController extends FrontendBaseController with Retrievals {
 }
 
 case class AddressPages(postcodeId: TypedIdentifier[Seq[TolerantAddress]],
-                        addressListPage: TypedIdentifier[Int],
+                        addressListPage: TypedIdentifier[TolerantAddress],
                         addressPage: TypedIdentifier[Address])

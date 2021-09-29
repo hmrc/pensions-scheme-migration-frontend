@@ -20,13 +20,13 @@ import base.SpecBase
 import controllers.adviser.routes._
 import identifiers.adviser.{AddressId, AddressListId, AdviserNameId, EnterEmailId, EnterPhoneId, EnterPostCodeId}
 import identifiers.{Identifier, TypedIdentifier}
-import models.{CheckMode,Mode, NormalMode,_}
+import models.{CheckMode, Mode, NormalMode, _}
 import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes
 import play.api.mvc.Call
 import utils.Data.ua
-import utils.{Enumerable, UserAnswers}
+import utils.{Data, Enumerable, UserAnswers}
 
 
 class AdviserNavigatorSpec
@@ -70,7 +70,7 @@ class AdviserNavigatorSpec
         row(EnterEmailId)(enterPhonePage(NormalMode), Some(detailsUa.set(EnterEmailId, "test@test.com").success.value)),
         row(EnterPhoneId)(postcode(NormalMode), Some(detailsUa.set(EnterPhoneId, "1234").success.value)),
         row(EnterPostCodeId)(selectAddress, addressUAWithValue(EnterPostCodeId, seqAddresses)),
-        row(AddressListId)(cya, addressUAWithValue(AddressListId, 0)),
+        row(AddressListId)(cya, addressUAWithValue(AddressListId, Data.tolerantAddress)),
         row(AddressId)(cya, addressUAWithValue(AddressId, address))
       )
 
@@ -82,7 +82,7 @@ class AdviserNavigatorSpec
         row(EnterPhoneId)(cya, Some(detailsUa.set(EnterPhoneId, "1234").success.value)),
         row(EnterPostCodeId)(selectAddress, addressUAWithValue(EnterPostCodeId, seqAddresses)),
         row(AddressId)(cya, addressUAWithValue(AddressId, address)),
-        row(AddressListId)(cya, addressUAWithValue(AddressListId, 0))
+        row(AddressListId)(cya, addressUAWithValue(AddressListId, Data.tolerantAddress))
       )
 
     "in NormalMode" must {

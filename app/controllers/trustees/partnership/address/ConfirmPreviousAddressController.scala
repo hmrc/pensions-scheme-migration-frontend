@@ -25,6 +25,7 @@ import forms.address.AddressFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.partnership.PartnershipDetailsId
 import identifiers.trustees.partnership.address.PreviousAddressId
+import identifiers.trustees.partnership.address.PreviousAddressListId
 import models.{Address, AddressConfiguration, Index}
 import navigators.CompoundNavigator
 import play.api.data.Form
@@ -58,7 +59,7 @@ class ConfirmPreviousAddressController @Inject()(override val messagesApi: Messa
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       (PartnershipDetailsId(index) and SchemeNameId).retrieve.right.map { case partnershipDetails ~ schemeName =>
-          get(Some(schemeName), partnershipDetails.partnershipName, PreviousAddressId(index), AddressConfiguration.PostcodeFirst)
+          get(Some(schemeName), partnershipDetails.partnershipName, PreviousAddressId(index),PreviousAddressListId(index), AddressConfiguration.PostcodeFirst)
       }
     }
 

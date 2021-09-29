@@ -31,7 +31,7 @@ class AddressYearsIdSpec extends SpecBase with Matchers with ScalaCheckPropertyC
     val answers = UserAnswers(Json.obj())
       .setOrException(AddressYearsId(0), false)
       .setOrException(PreviousAddressId(0), Data.address)
-      .setOrException(PreviousAddressListId(0), 2)
+      .setOrException(PreviousAddressListId(0), Data.tolerantAddress)
       .setOrException(EnterPreviousPostCodeId(0), Nil)
 
     "`AddressYearsId` is set to `true`" must {

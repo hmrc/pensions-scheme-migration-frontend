@@ -23,7 +23,7 @@ import helpers.CountriesHelper
 import identifiers.TypedIdentifier
 import models.AddressConfiguration.AddressConfiguration
 import models.requests.DataRequest
-import models.{Address, AddressConfiguration, Mode, NormalMode}
+import models.{Address, AddressConfiguration, Mode, NormalMode, TolerantAddress}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages}
@@ -66,12 +66,20 @@ trait ManualAddressController
   protected def get(schemeName: Option[String],
                     entityName: String,
                     addressPage: TypedIdentifier[Address],
+                    selectedAddress: TypedIdentifier[TolerantAddress],
                     addressLocation: AddressConfiguration)(
     implicit request: DataRequest[AnyContent],
     ec: ExecutionContext
   ): Future[Result] = {
-    val filledForm = request.userAnswers.get(addressPage).fold(form)(form.fill)
-    renderer.render(viewTemplate, json(schemeName, entityName, filledForm, addressLocation)).map(Ok(_))
+
+    val preparedForm = request.userAnswers.get(addressPage) match {
+      case None => request.userAnswers.get(selectedAddress) match {
+        case Some(value) => form.fill(value.toPrepopAddress)
+        case None => form
+      }
+      case Some(value) => form.fill(value)
+    }
+    renderer.render(viewTemplate, json(schemeName, entityName, preparedForm, addressLocation)).map(Ok(_))
   }
 
   protected def post(schemeName: Option[String],

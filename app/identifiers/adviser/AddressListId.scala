@@ -17,8 +17,9 @@
 package identifiers.adviser
 
 import identifiers.TypedIdentifier
+import models.TolerantAddress
 
-case object AddressListId extends TypedIdentifier[Int] {
+case object AddressListId extends TypedIdentifier[TolerantAddress] {
   override lazy val toString: String = "adviserAddressResults"
 }
 

@@ -29,7 +29,7 @@ import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes
 import play.api.mvc.Call
 import utils.Data.ua
-import utils.{Enumerable, UserAnswers}
+import utils.{Data, Enumerable, UserAnswers}
 
 import java.time.LocalDate
 
@@ -108,12 +108,12 @@ class EstablishersPartnerNavigatorSpec
         row(PartnerEnterUTRId(establisherIndex,partnerIndex))(postcode(establisherIndex,partnerIndex,NormalMode), Some(detailsUa.set(PartnerEnterUTRId(establisherIndex,partnerIndex), ReferenceValue("1234567890")).success.value)),
         row(PartnerNoUTRReasonId(establisherIndex,partnerIndex))(postcode(establisherIndex,partnerIndex,NormalMode), Some(detailsUa.set(PartnerNoUTRReasonId(establisherIndex,partnerIndex), "Reason").success.value)),
         row(AddressId(establisherIndex,partnerIndex))(addressYears(establisherIndex,partnerIndex,NormalMode), addressUAWithValue(AddressId(establisherIndex,partnerIndex), address)),
-        row(AddressListId(establisherIndex,partnerIndex))(addressYears(establisherIndex,partnerIndex,NormalMode), addressUAWithValue(AddressListId(establisherIndex,partnerIndex), 0)),
+        row(AddressListId(establisherIndex,partnerIndex))(addressYears(establisherIndex,partnerIndex,NormalMode), addressUAWithValue(AddressListId(establisherIndex,partnerIndex), Data.tolerantAddress)),
         row(AddressYearsId(establisherIndex,partnerIndex))(enterEmailPage(establisherIndex,partnerIndex,NormalMode), addressUAWithValue(AddressYearsId(establisherIndex,partnerIndex), true)),
         row(AddressYearsId(establisherIndex,partnerIndex))(enterPreviousPostcode(establisherIndex,partnerIndex,NormalMode), addressUAWithValue(AddressYearsId(establisherIndex,partnerIndex), false)),
         row(EnterPostCodeId(establisherIndex,partnerIndex))(selectAddress(establisherIndex,partnerIndex,NormalMode), addressUAWithValue(EnterPostCodeId(establisherIndex,partnerIndex), seqAddresses)),
         row(EnterPreviousPostCodeId(establisherIndex,partnerIndex))(selectPreviousAddress(establisherIndex,partnerIndex,NormalMode), addressUAWithValue(EnterPreviousPostCodeId(establisherIndex,partnerIndex), seqAddresses)),
-        row(PreviousAddressListId(establisherIndex,partnerIndex))(enterEmailPage(establisherIndex,partnerIndex,NormalMode), addressUAWithValue(PreviousAddressListId(establisherIndex,partnerIndex), 0)),
+        row(PreviousAddressListId(establisherIndex,partnerIndex))(enterEmailPage(establisherIndex,partnerIndex,NormalMode), addressUAWithValue(PreviousAddressListId(establisherIndex,partnerIndex), Data.tolerantAddress)),
         row(PreviousAddressId(establisherIndex,partnerIndex))(enterEmailPage(establisherIndex,partnerIndex,NormalMode), addressUAWithValue(PreviousAddressId(establisherIndex,partnerIndex), address)),
         row(EnterEmailId(establisherIndex,partnerIndex))(enterPhonePage(establisherIndex,partnerIndex,NormalMode), Some(detailsUa.set(EnterEmailId(establisherIndex,partnerIndex), "test@test.com").success.value)),
         row(EnterPhoneId(establisherIndex,partnerIndex))(cya, Some(detailsUa.set(EnterPhoneId(establisherIndex,partnerIndex), "1234").success.value)),
@@ -134,12 +134,12 @@ class EstablishersPartnerNavigatorSpec
         row(PartnerEnterUTRId(establisherIndex,partnerIndex))(cya, Some(detailsUa.set(PartnerEnterUTRId(establisherIndex,partnerIndex), ReferenceValue("1234567890")).success.value)),
         row(PartnerNoUTRReasonId(establisherIndex,partnerIndex))(cya, Some(detailsUa.set(PartnerNoUTRReasonId(establisherIndex,partnerIndex), "Reason").success.value)),
         row(AddressId(establisherIndex,partnerIndex))(cya, addressUAWithValue(AddressId(establisherIndex,partnerIndex), address)),
-        row(AddressListId(establisherIndex,partnerIndex))(cya, addressUAWithValue(AddressListId(establisherIndex,partnerIndex), 0)),
+        row(AddressListId(establisherIndex,partnerIndex))(cya, addressUAWithValue(AddressListId(establisherIndex,partnerIndex), Data.tolerantAddress)),
         row(AddressYearsId(establisherIndex,partnerIndex))(cya, addressUAWithValue(AddressYearsId(establisherIndex,partnerIndex), true)),
         row(AddressYearsId(establisherIndex,partnerIndex))(enterPreviousPostcode(establisherIndex,partnerIndex,CheckMode), addressUAWithValue(AddressYearsId(establisherIndex,partnerIndex), false)),
         row(EnterPostCodeId(establisherIndex,partnerIndex))(selectAddress(establisherIndex,partnerIndex,CheckMode), addressUAWithValue(EnterPostCodeId(establisherIndex,partnerIndex), seqAddresses)),
         row(EnterPreviousPostCodeId(establisherIndex,partnerIndex))(selectPreviousAddress(establisherIndex,partnerIndex,CheckMode), addressUAWithValue(EnterPreviousPostCodeId(establisherIndex,partnerIndex), seqAddresses)),
-        row(PreviousAddressListId(establisherIndex,partnerIndex))(cya, addressUAWithValue(PreviousAddressListId(establisherIndex,partnerIndex), 0)),
+        row(PreviousAddressListId(establisherIndex,partnerIndex))(cya, addressUAWithValue(PreviousAddressListId(establisherIndex,partnerIndex), Data.tolerantAddress)),
         row(PreviousAddressId(establisherIndex,partnerIndex))(cya, addressUAWithValue(PreviousAddressId(establisherIndex,partnerIndex), address)),
         row(EnterEmailId(establisherIndex,partnerIndex))(cya, Some(detailsUa.set(EnterEmailId(establisherIndex,partnerIndex), "test@test.com").success.value)),
         row(EnterPhoneId(establisherIndex,partnerIndex))(cya, Some(detailsUa.set(EnterPhoneId(establisherIndex,partnerIndex), "1234").success.value))
