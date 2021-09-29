@@ -16,7 +16,6 @@
 
 package controllers.racdac
 
-import connectors.MinimalDetailsConnector
 import controllers.ControllerSpecBase
 import controllers.actions.FakeAuthAction
 import matchers.JsonMatchers
@@ -35,7 +34,6 @@ import scala.concurrent.Future
 class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val templateToBeRendered = "racdac/declaration.njk"
-  private val mockMinimalDetailsConnector: MinimalDetailsConnector = mock[MinimalDetailsConnector]
 
   private def jsonToPassToTemplate: JsObject =
     Json.obj(

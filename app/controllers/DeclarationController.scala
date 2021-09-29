@@ -16,23 +16,32 @@
 
 package controllers
 
+import config.AppConfig
+import connectors.{EmailConnector, EmailNotSent, EmailStatus, MinimalDetailsConnector}
 import controllers.actions._
 import identifiers.beforeYouStart.SchemeNameId
+import models.requests.DataRequest
+import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationController @Inject()(
+                                       appConfig: AppConfig,
                                        override val messagesApi: MessagesApi,
                                        authenticate: AuthAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        val controllerComponents: MessagesControllerComponents,
+                                       emailConnector: EmailConnector,
+                                       minimalDetailsConnector: MinimalDetailsConnector,
+                                       crypto: ApplicationCrypto,
                                        renderer: Renderer
                                      )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
@@ -47,7 +56,6 @@ class DeclarationController @Inject()(
           val json = Json.obj(
             "schemeName" -> schemeName,
             "isCompany" -> true,
-            "isDormant" -> true,
             "hasWorkingKnowledge" -> true,
             "submitUrl" -> routes.DeclarationController.onSubmit().url
           )
@@ -56,7 +64,32 @@ class DeclarationController @Inject()(
     }
 
   def onSubmit: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData) {
-      Redirect(routes.SuccessController.onPageLoad())
+    (authenticate andThen getData andThen requireData).async {
+      implicit request =>
+      SchemeNameId.retrieve.right.map { schemeName =>
+        sendEmail(schemeName, request.psaId.id).map {
+        _ => Redirect(routes.SchemeSuccessController.onPageLoad()) }
+      }
     }
+
+  private def sendEmail(schemeName: String, psaId: String)
+                       (implicit request: DataRequest[AnyContent]): Future[EmailStatus] = {
+    logger.debug("Fetch email from API")
+
+    minimalDetailsConnector.getPSADetails(psaId) flatMap { minimalPsa =>
+      emailConnector.sendEmail(
+        emailAddress = minimalPsa.email,
+        templateName = appConfig.schemeConfirmationEmailTemplateId,
+        params = Map("psaName" -> minimalPsa.name, "schemeName"-> schemeName),
+        callbackUrl(psaId) //To be edited while implementing audit event
+      )
+    } recoverWith {
+      case _: Throwable => Future.successful(EmailNotSent)
+    }
+  }
+  //To be edited while implementing audit event
+  private def callbackUrl(psaId: String): String = {
+    val encryptedPsa = crypto.QueryParameterCrypto.encrypt(PlainText(psaId)).value
+    s"${appConfig.migrationUrl}/email-response/$encryptedPsa"
+  }
 }
