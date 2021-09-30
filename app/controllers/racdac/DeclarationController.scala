@@ -17,16 +17,21 @@
 package controllers.racdac
 
 import config.AppConfig
-import connectors.MinimalDetailsConnector
+import connectors.cache.BulkMigrationQueueConnector
+import connectors._
 import controllers.actions.AuthAction
+import models.racDac.Request
+import models.requests.AuthenticatedRequest
+import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationController @Inject()(
                                        appConfig: AppConfig,
@@ -34,11 +39,14 @@ class DeclarationController @Inject()(
                                        authenticate: AuthAction,
                                        minimalDetailsConnector: MinimalDetailsConnector,
                                        val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer
+                                       renderer: Renderer,
+                                       bulkMigrationQueueConnector: BulkMigrationQueueConnector,
+                                       listOfSchemesConnector: ListOfSchemesConnector,
+                                       emailConnector: EmailConnector,
+                                       crypto: ApplicationCrypto
                                      )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
-    with I18nSupport
-     {
+    with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
     authenticate.async {
@@ -52,11 +60,46 @@ class DeclarationController @Inject()(
             )
             renderer.render("racdac/declaration.njk", json).map(Ok(_))
         }
-  }
+    }
 
   def onSubmit: Action[AnyContent] =
-    authenticate {
-      Redirect(controllers.routes.IndexController.onPageLoad().url)
+    authenticate.async {
+      implicit request =>
+        val psaId = request.psaId.id
+        listOfSchemesConnector.getListOfSchemes(psaId).flatMap {
+          case Right(listOfSchemes) =>
+            val racDacSchemes = listOfSchemes.items.getOrElse(Nil).filter(_.racDac).map { items =>
+              Request(items.schemeName, items.policyNo.getOrElse(
+                throw new Exception("Policy Number is mandatory for RAC/DAC")))
+            }
+            bulkMigrationQueueConnector.pushAll(psaId, Json.toJson(racDacSchemes)).flatMap { _ =>
+              sendEmail(psaId).map { _ =>
+                Redirect(controllers.racdac.routes.ConfirmationController.onPageLoad().url)
+              }
+            }
+          case _ =>
+            Future(Redirect(controllers.routes.IndexController.onPageLoad()))
+        }
+    }
+
+  private def sendEmail(psaId: String)
+                       (implicit request: AuthenticatedRequest[AnyContent]): Future[EmailStatus] = {
+    logger.debug(s"Sending bulk migration email for $psaId")
+    minimalDetailsConnector.getPSADetails(psaId) flatMap { minimalPsa =>
+      emailConnector.sendEmail(
+        emailAddress = minimalPsa.email,
+        templateName = appConfig.bulkMigrationConfirmationEmailTemplateId,
+        params = Map("psaName" -> minimalPsa.name),
+        callbackUrl(psaId)
+      )
+    } recoverWith {
+      case _: Throwable => Future.successful(EmailNotSent)
+    }
   }
 
+  //Todo: To be edited while implementing audit event
+  private def callbackUrl(psaId: String): String = {
+    val encryptedPsa = crypto.QueryParameterCrypto.encrypt(PlainText(psaId)).value
+    s"${appConfig.migrationUrl}/email-response/$encryptedPsa"
+  }
 }

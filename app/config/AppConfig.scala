@@ -52,6 +52,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val lockOnSchemeUrl: String = s"$migrationUrl${config.get[String](path = "urls.lockOnScheme")}"
   lazy val dataCacheUrl: String = s"$migrationUrl${config.get[String](path = "urls.dataCache")}"
   lazy val schemeDataCacheUrl: String = s"$migrationUrl${config.get[String](path = "urls.schemeDataCache")}"
+  lazy val bulkMigrationEnqueueUrl: String = s"$migrationUrl${config.get[String](path = "urls.bulkMigrationEnqueue")}"
   def featureToggleUrl(toggle:String) : String = s"$migrationUrl${config.get[String]("urls.featureToggle").format(toggle)}"
 
   lazy val listOfSchemesUrl: String = s"$migrationUrl${config.get[String](path = "urls.listOfSchemes")}"
@@ -99,5 +100,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val listSchemePagination: Int = loadConfig("listSchemePagination").toInt
   lazy val emailApiUrl: String = s"${servicesConfig.baseUrl("email")}"
   lazy val schemeConfirmationEmailTemplateId: String = loadConfig("email.schemeConfirmationTemplateId")
+  lazy val bulkMigrationConfirmationEmailTemplateId: String = loadConfig("email.bulkMigrationConfirmationTemplateId")
   lazy val emailSendForce: Boolean = config.getOptional[Boolean]("email.force").getOrElse(false)
 }

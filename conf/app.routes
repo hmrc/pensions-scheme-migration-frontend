@@ -120,6 +120,9 @@ POST        /rac-dac/list-rac-dacs-all                                   control
 
 GET         /rac-dac/declaration                                           controllers.racdac.DeclarationController.onPageLoad
 GET         /rac-dac/submit-declaration                                    controllers.racdac.DeclarationController.onSubmit
+
+GET         /rac-dac/confirmation                                   controllers.racdac.ConfirmationController.onPageLoad
+
 GET         /adviser-address-results                                 controllers.adviser.SelectAddressController.onPageLoad(mode: Mode = NormalMode)
 POST        /adviser-address-results                                 controllers.adviser.SelectAddressController.onSubmit(mode: Mode = NormalMode)
 
