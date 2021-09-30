@@ -62,10 +62,10 @@ trait AddressListController extends FrontendBaseController with Retrievals {
           if (address.toAddress.nonEmpty){
             for {
               updatedAnswers <- Future.fromTry(
-                request.userAnswers.set(pages.addressPage,
+                request.userAnswers.remove(pages.addressListPage).set(pages.addressPage,
                 address.toAddress.get)
               )
-              _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.remove(pages.addressListPage).data)
+              _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
             } yield {
               val finalMode = mode.getOrElse(NormalMode)
               Redirect(navigator.nextPage(pages.addressListPage, updatedAnswers, finalMode))
