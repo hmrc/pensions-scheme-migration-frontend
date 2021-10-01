@@ -24,7 +24,7 @@ import controllers.address.ManualAddressController
 import forms.address.AddressFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.partnership.partner.PartnerNameId
-import identifiers.establishers.partnership.partner.address.AddressId
+import identifiers.establishers.partnership.partner.address.{AddressId, AddressListId}
 import models.{Address, AddressConfiguration, Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
@@ -56,7 +56,8 @@ class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
   def onPageLoad(establisherIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       (PartnerNameId(establisherIndex, partnerIndex) and SchemeNameId).retrieve.right.map { case partnerName ~ schemeName =>
-        get(Some(schemeName), partnerName.fullName, AddressId(establisherIndex, partnerIndex), AddressConfiguration.PostcodeFirst)
+        get(Some(schemeName), partnerName.fullName, AddressId(establisherIndex, partnerIndex),AddressListId(establisherIndex, partnerIndex)
+          , AddressConfiguration.PostcodeFirst)
       }
     }
 

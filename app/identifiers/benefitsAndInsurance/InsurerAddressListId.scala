@@ -17,7 +17,8 @@
 package identifiers.benefitsAndInsurance
 
 import identifiers.TypedIdentifier
+import models.TolerantAddress
 
-case object InsurerAddressListId extends TypedIdentifier[Int] {
+case object InsurerAddressListId extends TypedIdentifier[TolerantAddress] {
   override def toString: String = "insurerAddressList"
 }

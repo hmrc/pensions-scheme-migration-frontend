@@ -29,7 +29,7 @@ import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes
 import play.api.mvc.Call
 import utils.Data.{partnershipDetails, ua}
-import utils.{Enumerable, UserAnswers}
+import utils.{Data, Enumerable, UserAnswers}
 
 
 class TrusteesPartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour with Enumerable.Implicits with TryValues {
@@ -94,7 +94,7 @@ class TrusteesPartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour 
         row(HavePAYEId(index))(cyaDetails, uaWithValue(HavePAYEId(index), false)),
         row(PAYEId(index))(cyaDetails),
         row(EnterPostCodeId(index))(selectAddress, addressUAWithValue(EnterPostCodeId(index), seqAddresses)),
-        row(AddressListId(index))(addressYears, addressUAWithValue(AddressListId(index), 0)),
+        row(AddressListId(index))(addressYears, addressUAWithValue(AddressListId(index), Data.tolerantAddress)),
         row(AddressId(index))(addressYears, addressUAWithValue(AddressId(index), address)),
 
         row(AddressYearsId(index))(cyaAddress, uaWithValue(AddressYearsId(index), true)),
@@ -104,7 +104,7 @@ class TrusteesPartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour 
         row(TradingTimeId(index))(enterPreviousPostcode, uaWithValue(TradingTimeId(index), true)),
 
         row(EnterPreviousPostCodeId(index))(selectPreviousAddress, addressUAWithValue(EnterPreviousPostCodeId(index), seqAddresses)),
-        row(PreviousAddressListId(index))(cyaAddress, addressUAWithValue(PreviousAddressListId(index), 0)),
+        row(PreviousAddressListId(index))(cyaAddress, addressUAWithValue(PreviousAddressListId(index), Data.tolerantAddress)),
         row(PreviousAddressId(index))(cyaAddress, addressUAWithValue(PreviousAddressId(index), address)),
       )
 

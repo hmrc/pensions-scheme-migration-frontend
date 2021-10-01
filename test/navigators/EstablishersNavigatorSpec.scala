@@ -32,7 +32,7 @@ import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes
 import play.api.mvc.Call
 import utils.Data.ua
-import utils.{Enumerable, UserAnswers}
+import utils.{Data, Enumerable, UserAnswers}
 import helpers.routes.EstablishersIndividualRoutes._
 
 import java.time.LocalDate
@@ -105,14 +105,14 @@ class EstablishersNavigatorSpec
         row(EstablisherUTRId(index))(cyaDetailsRoute(index, NormalMode), Some(detailsUa.set(EstablisherUTRId(index), ReferenceValue("1234567890")).success.value)),
         row(EstablisherNoUTRReasonId(index))(cyaDetailsRoute(index, NormalMode), Some(detailsUa.set(EstablisherNoUTRReasonId(index), "Reason").success.value)),
         row(EnterPostCodeId(index))(selectAddress(NormalMode), addressUAWithValue(EnterPostCodeId(index), seqAddresses)),
-        row(AddressListId(index))(addressYears(NormalMode), addressUAWithValue(AddressListId(index), 0)),
+        row(AddressListId(index))(addressYears(NormalMode), addressUAWithValue(AddressListId(index), Data.tolerantAddress)),
         row(AddressId(index))(addressYears(NormalMode), addressUAWithValue(AddressId(index), address)),
 
         row(AddressYearsId(index))(cyaAddress, addressUAWithValue(AddressYearsId(index), true)),
         row(AddressYearsId(index))(enterPreviousPostcode(NormalMode), addressUAWithValue(AddressYearsId(index), false)),
 
         row(EnterPreviousPostCodeId(index))(selectPreviousAddress(NormalMode), addressUAWithValue(EnterPreviousPostCodeId(index), seqAddresses)),
-        row(PreviousAddressListId(index))(cyaAddress, addressUAWithValue(PreviousAddressListId(index), 0)),
+        row(PreviousAddressListId(index))(cyaAddress, addressUAWithValue(PreviousAddressListId(index), Data.tolerantAddress)),
         row(PreviousAddressId(index))(cyaAddress, addressUAWithValue(PreviousAddressId(index), address)),
         row(EnterEmailId(index))(enterPhonePage(NormalMode), Some(detailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
         row(EnterPhoneId(index))(cyaContact, Some(detailsUa.set(EnterPhoneId(index), "1234").success.value))

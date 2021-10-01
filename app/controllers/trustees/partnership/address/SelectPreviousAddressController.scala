@@ -21,6 +21,7 @@ import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.{AddressListController, AddressPages}
+import controllers.trustees.partnership.address.routes.ConfirmPreviousAddressController
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.partnership.address.{EnterPreviousPostCodeId, PreviousAddressId, PreviousAddressListId}
@@ -65,7 +66,8 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
     (authenticate andThen getData andThen requireData).async { implicit request =>
         val addressPages: AddressPages = AddressPages(EnterPreviousPostCodeId(index), PreviousAddressListId(index), PreviousAddressId(index))
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, index, NormalMode).retrieve.right.map(post(_, addressPages))
+        getFormToJson(schemeName, index, NormalMode).retrieve.right.map(post(_, addressPages,
+          manualUrlCall = ConfirmPreviousAddressController.onPageLoad(index)))
       }
     }
 
@@ -83,7 +85,7 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
             "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
             "entityType" -> msg("messages__partnership"),
             "entityName" -> name,
-            "enterManuallyUrl" -> controllers.trustees.partnership.address.routes.ConfirmPreviousAddressController.onPageLoad(index).url,
+            "enterManuallyUrl" -> ConfirmPreviousAddressController.onPageLoad(index).url,
             "schemeName" -> schemeName,
             "h1MessageKey" -> "previousAddressList.title"
           )

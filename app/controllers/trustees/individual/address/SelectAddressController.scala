@@ -66,7 +66,8 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
     (authenticate andThen getData andThen requireData).async { implicit request =>
         val addressPages: AddressPages = AddressPages(EnterPostCodeId(index), AddressListId(index), AddressId(index))
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, index, NormalMode).retrieve.right.map(post(_, addressPages))
+        getFormToJson(schemeName, index, NormalMode).retrieve.right.map(post(_, addressPages,
+          manualUrlCall = TrusteesIndividualRoutes.confirmAddressRoute(index, NormalMode)))
       }
     }
 

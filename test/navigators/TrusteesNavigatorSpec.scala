@@ -23,7 +23,7 @@ import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address._
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.details._
-import identifiers.trustees.{OtherTrusteesId, AddTrusteeId, TrusteeKindId}
+import identifiers.trustees.{AddTrusteeId, OtherTrusteesId, TrusteeKindId}
 import identifiers.{Identifier, TypedIdentifier}
 import models.trustees.TrusteeKind
 import models._
@@ -32,7 +32,7 @@ import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes
 import play.api.mvc.Call
 import utils.Data.ua
-import utils.{UserAnswers, Enumerable}
+import utils.{Data, Enumerable, UserAnswers}
 
 import java.time.LocalDate
 
@@ -121,14 +121,14 @@ class TrusteesNavigatorSpec
         row(TrusteeNoUTRReasonId(index))(cya, Some(detailsUa.set(TrusteeNoUTRReasonId(index), "Reason").success.value)),
 
         row(EnterPostCodeId(index))(selectAddress(NormalMode), addressUAWithValue(EnterPostCodeId(index), seqAddresses)),
-        row(AddressListId(index))(addressYears(NormalMode), addressUAWithValue(AddressListId(index), 0)),
+        row(AddressListId(index))(addressYears(NormalMode), addressUAWithValue(AddressListId(index), Data.tolerantAddress)),
         row(AddressId(index))(addressYears(NormalMode), addressUAWithValue(AddressId(index), address)),
 
         row(AddressYearsId(index))(cyaAddress, addressUAWithValue(AddressYearsId(index), true)),
         row(AddressYearsId(index))(enterPreviousPostcode(NormalMode), addressUAWithValue(AddressYearsId(index), false)),
 
         row(EnterPreviousPostCodeId(index))(selectPreviousAddress(NormalMode), addressUAWithValue(EnterPreviousPostCodeId(index), seqAddresses)),
-        row(PreviousAddressListId(index))(cyaAddress, addressUAWithValue(PreviousAddressListId(index), 0)),
+        row(PreviousAddressListId(index))(cyaAddress, addressUAWithValue(PreviousAddressListId(index), Data.tolerantAddress)),
         row(PreviousAddressId(index))(cyaAddress, addressUAWithValue(PreviousAddressId(index), address)),
           row(EnterEmailId(index))(trusteePhonePage(NormalMode), Some(indvDetailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
         row(EnterPhoneId(index))(cyaContact, Some(indvDetailsUa.set(EnterPhoneId(index), "123").success.value)),

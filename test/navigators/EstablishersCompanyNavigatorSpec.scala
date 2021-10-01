@@ -32,7 +32,7 @@ import org.scalatest.prop.TableFor3
 import play.api.libs.json.{JsObject, Json, Writes}
 import play.api.mvc.Call
 import utils.Data.{companyDetails, ua}
-import utils.{Enumerable, UserAnswers}
+import utils.{Data, Enumerable, UserAnswers}
 
 class EstablishersCompanyNavigatorSpec
   extends SpecBase
@@ -126,7 +126,7 @@ class EstablishersCompanyNavigatorSpec
         row(HavePAYEId(index))(cyaDetails, uaWithValue(HavePAYEId(index), false)),
         row(PAYEId(index))(cyaDetails),
         row(EnterPostCodeId(index))(selectAddress, uaWithValue(EnterPostCodeId(index), seqAddresses)),
-        row(AddressListId(index))(addressYears, uaWithValue(AddressListId(index), 0)),
+        row(AddressListId(index))(addressYears, uaWithValue(AddressListId(index), Data.tolerantAddress)),
         row(AddressId(index))(addressYears, uaWithValue(AddressId(index), address)),
 
         row(AddressYearsId(index))(cyaAddress, uaWithValue(AddressYearsId(index), true)),
@@ -136,7 +136,7 @@ class EstablishersCompanyNavigatorSpec
         row(TradingTimeId(index))(enterPreviousPostcode, uaWithValue(TradingTimeId(index), true)),
 
         row(EnterPreviousPostCodeId(index))(selectPreviousAddress, uaWithValue(EnterPreviousPostCodeId(index), seqAddresses)),
-        row(PreviousAddressListId(index))(cyaAddress, uaWithValue(PreviousAddressListId(index), 0)),
+        row(PreviousAddressListId(index))(cyaAddress, uaWithValue(PreviousAddressListId(index), Data.tolerantAddress)),
         row(PreviousAddressId(index))(cyaAddress, uaWithValue(PreviousAddressId(index), address)),
         row(EnterEmailId(index))(enterPhonePage(NormalMode), Some(detailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
         row(EnterPhoneId(index))(cyaContact, Some(detailsUa.set(EnterPhoneId(index), "1234").success.value)),

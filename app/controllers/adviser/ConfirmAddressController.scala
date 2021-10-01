@@ -22,7 +22,7 @@ import controllers.Retrievals
 import controllers.actions._
 import controllers.address.ManualAddressController
 import forms.address.AddressFormProvider
-import identifiers.adviser.{AddressId, AdviserNameId}
+import identifiers.adviser.{AddressId,AddressListId, AdviserNameId}
 import identifiers.beforeYouStart.SchemeNameId
 import models.{Address, AddressConfiguration}
 import navigators.CompoundNavigator
@@ -55,7 +55,7 @@ class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async { implicit request =>
       (AdviserNameId and SchemeNameId).retrieve.right.map { case adviserName ~ schemeName =>
-        get(Some(schemeName), adviserName, AddressId, AddressConfiguration.PostcodeFirst)
+        get(Some(schemeName), adviserName, AddressId,AddressListId, AddressConfiguration.PostcodeFirst)
       }
     }
 

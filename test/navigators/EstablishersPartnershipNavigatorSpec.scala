@@ -30,7 +30,7 @@ import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes
 import play.api.mvc.Call
 import utils.Data.{partnershipDetails, ua}
-import utils.{Enumerable, UserAnswers}
+import utils.{Data, Enumerable, UserAnswers}
 
 class EstablishersPartnershipNavigatorSpec
   extends SpecBase
@@ -94,7 +94,7 @@ class EstablishersPartnershipNavigatorSpec
         row(HavePAYEId(index))(cyaDetails, uaWithValue(HavePAYEId(index), false)),
         row(PAYEId(index))(cyaDetails),
         row(EnterPostCodeId(index))(selectAddress, uaWithValue(EnterPostCodeId(index), seqAddresses)),
-        row(AddressListId(index))(addressYears, uaWithValue(AddressListId(index), 0)),
+        row(AddressListId(index))(addressYears, uaWithValue(AddressListId(index), Data.tolerantAddress)),
         row(AddressId(index))(addressYears, uaWithValue(AddressId(index), address)),
 
         row(AddressYearsId(index))(cyaAddress, uaWithValue(AddressYearsId(index), true)),
@@ -104,7 +104,7 @@ class EstablishersPartnershipNavigatorSpec
         row(TradingTimeId(index))(enterPreviousPostcode, uaWithValue(TradingTimeId(index), true)),
 
         row(EnterPreviousPostCodeId(index))(selectPreviousAddress, uaWithValue(EnterPreviousPostCodeId(index), seqAddresses)),
-        row(PreviousAddressListId(index))(cyaAddress, uaWithValue(PreviousAddressListId(index), 0)),
+        row(PreviousAddressListId(index))(cyaAddress, uaWithValue(PreviousAddressListId(index), Data.tolerantAddress)),
         row(PreviousAddressId(index))(cyaAddress, uaWithValue(PreviousAddressId(index), address)),
 
       )

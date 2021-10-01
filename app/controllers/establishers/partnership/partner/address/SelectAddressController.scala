@@ -67,7 +67,8 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
       val addressPages: AddressPages = AddressPages(EnterPostCodeId(estIndex, partnerIndex),
         AddressListId(estIndex, partnerIndex), AddressId(estIndex, partnerIndex))
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, estIndex, partnerIndex, mode).retrieve.right.map(post(_, addressPages, Some(mode)))
+        getFormToJson(schemeName, estIndex, partnerIndex, mode).retrieve.right.map(post(_, addressPages, Some(mode),
+          routes.ConfirmAddressController.onPageLoad(estIndex, partnerIndex, mode)))
       }
     }
 

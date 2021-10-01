@@ -21,6 +21,7 @@ import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.{AddressListController, AddressPages}
+import controllers.trustees.company.address.routes.ConfirmAddressController
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.company.CompanyDetailsId
@@ -65,7 +66,7 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
     (authenticate andThen getData andThen requireData).async { implicit request =>
         val addressPages: AddressPages = AddressPages(EnterPostCodeId(index), AddressListId(index), AddressId(index))
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, index, NormalMode).retrieve.right.map(post(_, addressPages))
+        getFormToJson(schemeName, index, NormalMode).retrieve.right.map(post(_, addressPages,manualUrlCall = ConfirmAddressController.onPageLoad(index)))
       }
     }
 
@@ -83,7 +84,7 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
             "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
             "entityType" -> msg("messages__company"),
             "entityName" -> name,
-            "enterManuallyUrl" -> controllers.trustees.company.address.routes.ConfirmAddressController.onPageLoad(index).url,
+            "enterManuallyUrl" -> ConfirmAddressController.onPageLoad(index).url,
             "schemeName" -> schemeName
           )
         }

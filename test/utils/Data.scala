@@ -57,6 +57,7 @@ object Data {
   val insurerName= "test insurer"
   val insurerPolicyNo = "test"
   val address = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
+  val tolerantAddress = TolerantAddress.fromAddress(address)
 
   val completeUserAnswers: UserAnswers = UserAnswers().set(SchemeNameId, schemeName).flatMap(
     _.set(SchemeTypeId, SchemeType.BodyCorporate).flatMap(
