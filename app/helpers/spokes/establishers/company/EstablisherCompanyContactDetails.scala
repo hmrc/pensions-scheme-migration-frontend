@@ -43,6 +43,6 @@ index: Index,
     )
 
   override def completeFlag(answers: UserAnswers): Option[Boolean] =
-    answers.isEstablisherCompanyContactDetailsCompleted(index)
+    answers.isEstablisherCompanyContactDetailsComplete(index)
 }
 

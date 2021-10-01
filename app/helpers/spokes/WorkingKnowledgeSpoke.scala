@@ -28,7 +28,7 @@ case object WorkingKnowlegedSpoke extends Spoke {
       controllers.adviser.routes.CheckYourAnswersController.onPageLoad.url
     )
 
-  override def completeFlag(answers: UserAnswers): Option[Boolean] = answers.isAdviserCompleted
+  override def completeFlag(answers: UserAnswers): Option[Boolean] = answers.isAdviserComplete
 }
 
 

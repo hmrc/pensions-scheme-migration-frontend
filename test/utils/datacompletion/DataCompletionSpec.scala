@@ -102,16 +102,16 @@ class DataCompletionSpec extends AnyWordSpec with Matchers with OptionValues wit
       "return true when all the answers are completed" in {
         val answers = UserAnswers().set(CurrentMembersId, Members.One).flatMap(
           _.set(FutureMembersId, Members.One)).get
-        answers.isMembersCompleted.value mustBe true
+        answers.isMembersComplete.value mustBe true
       }
 
       "return false when all answers not completed" in {
         val answers = UserAnswers().set(CurrentMembersId, Members.One).get
-        answers.isMembersCompleted.value mustBe false
+        answers.isMembersComplete.value mustBe false
       }
 
       "return None when there is no data" in {
-        UserAnswers().isMembersCompleted mustBe None
+        UserAnswers().isMembersComplete mustBe None
       }
     }
 
@@ -119,27 +119,27 @@ class DataCompletionSpec extends AnyWordSpec with Matchers with OptionValues wit
       "return Some(true) when defined benefits chosen and no benefits type chosen" in {
         uaBenefitsSectionWithPolicyDetails
           .setOrException(HowProvideBenefitsId, BenefitsProvisionType.DefinedBenefitsOnly)
-          .isBenefitsAndInsuranceCompleted mustBe Some(true)
+          .isBenefitsAndInsuranceComplete mustBe Some(true)
       }
 
       "return Some(false) when defined benefits NOT chosen and no benefits type chosen" in {
         uaBenefitsSectionWithPolicyDetails
           .setOrException(HowProvideBenefitsId, BenefitsProvisionType.MoneyPurchaseOnly)
-          .isBenefitsAndInsuranceCompleted mustBe Some(false)
+          .isBenefitsAndInsuranceComplete mustBe Some(false)
       }
 
       "return Some(true) when defined benefits NOT chosen and a benefits type chosen" in {
         uaBenefitsSectionWithPolicyDetails
           .setOrException(HowProvideBenefitsId, BenefitsProvisionType.MoneyPurchaseOnly)
           .setOrException(BenefitsTypeId, BenefitsType.CashBalanceBenefits)
-          .isBenefitsAndInsuranceCompleted mustBe Some(true)
+          .isBenefitsAndInsuranceComplete mustBe Some(true)
       }
 
       "return Some(true) when secured benefits true and name, policy no and address all added" in {
         uaBenefitsSectionWithPolicyDetails
           .setOrException(HowProvideBenefitsId, BenefitsProvisionType.DefinedBenefitsOnly)
           .setOrException(AreBenefitsSecuredId, true)
-          .isBenefitsAndInsuranceCompleted mustBe Some(true)
+          .isBenefitsAndInsuranceComplete mustBe Some(true)
       }
 
       "return Some(false) when secured benefits true and name, policy no and address NOT all added" in {
@@ -148,14 +148,14 @@ class DataCompletionSpec extends AnyWordSpec with Matchers with OptionValues wit
           .setOrException(AreBenefitsSecuredId, true)
           .setOrException(BenefitsInsuranceNameId, insurerName)
           .setOrException(InsurerAddressId, address)
-          .isBenefitsAndInsuranceCompleted mustBe Some(false)
+          .isBenefitsAndInsuranceComplete mustBe Some(false)
       }
 
       "return Some(true) when secured benefits false and no name, policy no and address added" in {
         uaBenefitsSectionNoPolicyDetails
           .setOrException(HowProvideBenefitsId, BenefitsProvisionType.DefinedBenefitsOnly)
           .setOrException(AreBenefitsSecuredId, false)
-          .isBenefitsAndInsuranceCompleted mustBe Some(true)
+          .isBenefitsAndInsuranceComplete mustBe Some(true)
       }
 
     }
@@ -168,7 +168,7 @@ class DataCompletionSpec extends AnyWordSpec with Matchers with OptionValues wit
           .set(EnterPhoneId, Data.phone).success.value
           .set(AddressId, Data.address).success.value
 
-        userAnswers.isAdviserCompleted.value mustBe true
+        userAnswers.isAdviserComplete.value mustBe true
       }
       "return false when all answers not completed" in {
         val userAnswers = ua
@@ -176,11 +176,11 @@ class DataCompletionSpec extends AnyWordSpec with Matchers with OptionValues wit
           .set(EnterEmailId, Data.email).success.value
           .set(EnterPhoneId, Data.phone).success.value
 
-        userAnswers.isAdviserCompleted.value mustBe false
+        userAnswers.isAdviserComplete.value mustBe false
       }
 
       "return None when there is no data" in {
-        ua.isAdviserCompleted mustBe None
+        ua.isAdviserComplete mustBe None
       }
 
     }

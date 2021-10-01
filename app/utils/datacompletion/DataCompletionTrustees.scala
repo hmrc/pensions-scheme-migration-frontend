@@ -16,22 +16,16 @@
 
 package utils.datacompletion
 
-import identifiers.trustees.TrusteeKindId
-import identifiers.trustees.company.CompanyDetailsId
+import identifiers.trustees.company.address.{TradingTimeId, AddressId => CompanyAddressId, AddressYearsId => CompanyAddressYearsId, PreviousAddressId => CompanyPreviousAddressId}
 import identifiers.trustees.company.details._
-import identifiers.trustees.individual.TrusteeNameId
-import identifiers.trustees.partnership.address.{AddressYearsId => PartnershipAddressYearsId,
-  TradingTimeId => PartnershipTradingTimeId, PreviousAddressId => PartnershipPreviousAddressId, AddressId => PartnershipAddressId}
+import identifiers.trustees.company.{contacts => companyContact}
 import identifiers.trustees.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
-import identifiers.trustees.company.{contacts => companyContact}
-import identifiers.trustees.partnership.{contact => partnershipContact}
 import identifiers.trustees.individual.details._
+import identifiers.trustees.partnership.address.{AddressId => PartnershipAddressId, AddressYearsId => PartnershipAddressYearsId, PreviousAddressId => PartnershipPreviousAddressId, TradingTimeId => PartnershipTradingTimeId}
+import identifiers.trustees.partnership.{contact => partnershipContact, details => partnershipDetails}
+import models.Index
 import utils.UserAnswers
-import identifiers.trustees.company.address.{TradingTimeId, AddressId => CompanyAddressId,
-  AddressYearsId => CompanyAddressYearsId, PreviousAddressId => CompanyPreviousAddressId}
-import identifiers.trustees.partnership.PartnershipDetailsId
-import identifiers.trustees.partnership.{details => partnershipDetails}
 
 trait DataCompletionTrustees extends DataCompletion {
 
@@ -40,12 +34,13 @@ trait DataCompletionTrustees extends DataCompletion {
   def isTrusteeIndividualComplete(index: Int): Boolean =
     isComplete(
       Seq(
-        isAnswerComplete(TrusteeNameId(index)),
-        isAnswerComplete(TrusteeKindId(index))
+        isTrusteeIndividualDetailsComplete(index),
+        isTrusteeIndividualAddressComplete(index),
+        isTrusteeIndividualContactDetailsComplete(index)
       )
     ).getOrElse(false)
 
-  def isTrusteeIndividualDetailsCompleted(index: Int): Option[Boolean] =
+  def isTrusteeIndividualDetailsComplete(index: Int): Option[Boolean] =
     isComplete(
       Seq(
         isAnswerComplete(TrusteeDOBId(index)),
@@ -54,38 +49,20 @@ trait DataCompletionTrustees extends DataCompletion {
       )
     )
 
-  def isTrusteeIndividualAddressCompleted(
-                                           index: Int,
-                                           userAnswers: UserAnswers
-                                         ): Option[Boolean] = {
-    val atAddressMoreThanOneYear = userAnswers.get(AddressYearsId(index)).contains(true)
-    isComplete(
-      Seq(
-        isAnswerComplete(AddressId(index)),
-        isAnswerComplete(AddressYearsId(index)),
-        if (atAddressMoreThanOneYear) Some(true) else isAnswerComplete(PreviousAddressId(index))
-      )
-    )
-  }
+  def isTrusteeIndividualAddressComplete(index: Int): Option[Boolean] =
+  isAddressComplete(AddressId(index), PreviousAddressId(index), AddressYearsId(index), None)
 
-  def isTrusteeIndividualContactDetailsCompleted(index: Int): Option[Boolean] =
-    isComplete(
-      Seq(
-        isAnswerComplete(EnterEmailId(index)),
-        isAnswerComplete(EnterPhoneId(index))
-      )
-    )
+  def isTrusteeIndividualContactDetailsComplete(index: Int): Option[Boolean] =
+    isContactDetailsComplete(EnterEmailId(index), EnterPhoneId(index))
 
   def isTrusteeCompanyComplete(index: Int): Boolean =
-    isComplete(
-      Seq(
-        isAnswerComplete(CompanyDetailsId(index)),
-        isAnswerComplete(TrusteeKindId(index))
-      )
-    ).getOrElse(false)
+    isComplete(Seq(
+      isTrusteeCompanyDetailsComplete(index),
+      isTrusteeCompanyAddressComplete(index),
+      isTrusteeCompanyContactDetailsComplete(index))).getOrElse(false)
 
 
-  def isTrusteeCompanyDetailsCompleted(index: Int): Option[Boolean] = {
+  def isTrusteeCompanyDetailsComplete(index: Int): Option[Boolean] =
     isComplete(
       Seq(
         isAnswerComplete(HaveCompanyNumberId(index), CompanyNumberId(index), Some(NoCompanyNumberReasonId(index))),
@@ -94,46 +71,20 @@ trait DataCompletionTrustees extends DataCompletion {
         isAnswerComplete(HavePAYEId(index), PAYEId(index), None)
       )
     )
-  }
 
-  def isTrusteeCompanyAddressCompleted(
-    index: Int,
-    userAnswers: UserAnswers
-  ): Option[Boolean] = {
+  def isTrusteeCompanyAddressComplete(index: Int): Option[Boolean] =
+    isAddressComplete(CompanyAddressId(index), CompanyPreviousAddressId(index), CompanyAddressYearsId(index), Some(TradingTimeId(index)))
 
-    val previousAddress = (userAnswers.get(CompanyAddressYearsId(index)), userAnswers.get(TradingTimeId(index))) match {
-      case (Some(true), _) => Some(true)
-      case (Some(false), Some(true)) => isAnswerComplete(CompanyPreviousAddressId(index))
-      case (Some(false), Some(false)) => Some(true)
-      case _ => None
-    }
-
-    isComplete(
-      Seq(
-        isAnswerComplete(CompanyAddressId(index)),
-        isAnswerComplete(CompanyAddressYearsId(index)),
-        previousAddress
-      )
-    )
-  }
-
-  def isTrusteeCompanyContactDetailsCompleted(index: Int): Option[Boolean] =
-    isComplete(
-      Seq(
-        isAnswerComplete(companyContact.EnterEmailId(index)),
-        isAnswerComplete(companyContact.EnterPhoneId(index))
-      )
-    )
+  def isTrusteeCompanyContactDetailsComplete(index: Int): Option[Boolean] =
+    isContactDetailsComplete(companyContact.EnterEmailId(index), companyContact.EnterPhoneId(index))
 
   def isTrusteePartnershipComplete(index: Int): Boolean =
-    isComplete(
-      Seq(
-        isAnswerComplete(PartnershipDetailsId(index)),
-        isAnswerComplete(TrusteeKindId(index))
-      )
-    ).getOrElse(false)
+    isComplete(Seq(
+      isTrusteePartnershipDetailsComplete(index),
+      isTrusteePartnershipAddressComplete(index),
+      isTrusteePartnershipContactDetailsComplete(index))).getOrElse(false)
 
-  def isTrusteePartnershipDetailsCompleted(index: Int): Option[Boolean] = {
+  def isTrusteePartnershipDetailsComplete(index: Int): Option[Boolean] =
     isComplete(
       Seq(
         isAnswerComplete(partnershipDetails.HaveUTRId(index), partnershipDetails.PartnershipUTRId(index), Some(partnershipDetails.NoUTRReasonId(index))),
@@ -141,35 +92,13 @@ trait DataCompletionTrustees extends DataCompletion {
         isAnswerComplete(partnershipDetails.HavePAYEId(index),partnershipDetails.PAYEId(index),None)
       )
     )
-  }
 
-  def isTrusteePartnershipContactDetailsCompleted(index: Int): Option[Boolean] =
-    isComplete(
-      Seq(
-        isAnswerComplete(partnershipContact.EnterEmailId(index)),
-        isAnswerComplete(partnershipContact.EnterPhoneId(index))
-      )
-    )
+  def isTrusteePartnershipAddressComplete(index: Index): Option[Boolean] =
+  isAddressComplete(PartnershipAddressId(index),
+    PartnershipPreviousAddressId(index),
+    PartnershipAddressYearsId(index),
+    Some(PartnershipTradingTimeId(index)))
 
-  def isTrusteePartnershipAddressCompleted(
-                                        index: Int,
-                                        userAnswers: UserAnswers
-                                      ): Option[Boolean] = {
-
-    val previousAddress = (userAnswers.get(PartnershipAddressYearsId(index)),
-      userAnswers.get(PartnershipTradingTimeId(index))) match {
-      case (Some(true), _) => Some(true)
-      case (Some(false), Some(true)) => isAnswerComplete(PartnershipPreviousAddressId(index))
-      case (Some(false), Some(false)) => Some(true)
-      case _ => None
-    }
-
-    isComplete(
-      Seq(
-        isAnswerComplete(PartnershipAddressId(index)),
-        isAnswerComplete(PartnershipAddressYearsId(index)),
-        previousAddress
-      )
-    )
-  }
+  def isTrusteePartnershipContactDetailsComplete(index: Int): Option[Boolean] =
+    isContactDetailsComplete(partnershipContact.EnterEmailId(index), partnershipContact.EnterPhoneId(index))
 }

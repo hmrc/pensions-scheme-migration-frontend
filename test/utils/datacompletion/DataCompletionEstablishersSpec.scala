@@ -51,6 +51,15 @@ class DataCompletionEstablishersSpec
           UserAnswers()
             .set(EstablisherKindId(0), EstablisherKind.Individual).success.value
             .set(EstablisherNameId(0), PersonName("a", "b")).success.value
+            .set(EstablisherDOBId(0), LocalDate.parse("2001-01-01")).success.value
+            .set(EstablisherHasNINOId(0), true).success.value
+            .set(EstablisherNINOId(0), ReferenceValue("AB123456C")).success.value
+            .set(EstablisherHasUTRId(0), true).success.value
+            .set(EstablisherUTRId(0), ReferenceValue("1234567890")).success.value
+            .setOrException(AddressId(0), Data.address)
+            .setOrException(AddressYearsId(0), true)
+            .set(EnterEmailId(0), "test@test.com").success.value
+            .set(EnterPhoneId(0), "123").success.value
 
         ua.isEstablisherIndividualComplete(0) mustBe true
       }
@@ -66,7 +75,7 @@ class DataCompletionEstablishersSpec
       }
     }
 
-    "isEstablisherIndividualDetailsCompleted" must {
+    "isEstablisherIndividualDetailsComplete" must {
       "return true when all answers are present" in {
         val ua =
           UserAnswers()
@@ -86,8 +95,8 @@ class DataCompletionEstablishersSpec
             .set(EstablisherHasUTRId(0), false).success.value
             .set(EstablisherNoUTRReasonId(0), "Reason").success.value
 
-        ua1.isEstablisherIndividualDetailsCompleted(0) mustBe Some(true)
-        ua2.isEstablisherIndividualDetailsCompleted(0) mustBe Some(true)
+        ua1.isEstablisherIndividualDetailsComplete(0) mustBe Some(true)
+        ua2.isEstablisherIndividualDetailsComplete(0) mustBe Some(true)
       }
 
       "return false when some answer is missing" in {
@@ -95,12 +104,12 @@ class DataCompletionEstablishersSpec
           UserAnswers()
             .set(EstablisherDOBId(0), LocalDate.parse("2001-01-01")).success.value
 
-        ua.isEstablisherIndividualDetailsCompleted(0) mustBe Some(false)
+        ua.isEstablisherIndividualDetailsComplete(0) mustBe Some(false)
 
       }
     }
 
-    "isEstablisherIndividualAddressCompleted" must {
+    "isEstablisherIndividualAddressComplete" must {
       "return true when all answers are present" in {
         val ua1 =
           UserAnswers()
@@ -113,8 +122,8 @@ class DataCompletionEstablishersSpec
             .setOrException(AddressYearsId(0), false)
             .setOrException(PreviousAddressId(0), Data.address)
 
-        ua1.isEstablisherIndividualAddressCompleted(0, ua1) mustBe Some(true)
-        ua2.isEstablisherIndividualAddressCompleted(0, ua2) mustBe Some(true)
+        ua1.isEstablisherIndividualAddressComplete(0) mustBe Some(true)
+        ua2.isEstablisherIndividualAddressComplete(0) mustBe Some(true)
       }
 
       "return false when some answer is missing" in {
@@ -127,23 +136,23 @@ class DataCompletionEstablishersSpec
           UserAnswers()
             .setOrException(AddressId(0), Data.address)
 
-        ua1.isEstablisherIndividualAddressCompleted(0, ua1) mustBe Some(false)
-        ua2.isEstablisherIndividualAddressCompleted(0, ua2) mustBe Some(false)
+        ua1.isEstablisherIndividualAddressComplete(0) mustBe Some(false)
+        ua2.isEstablisherIndividualAddressComplete(0) mustBe Some(false)
       }
 
       "return None when no answers present" in {
-        UserAnswers().isEstablisherIndividualAddressCompleted(0, UserAnswers()) mustBe None
+        UserAnswers().isEstablisherIndividualAddressComplete(0) mustBe None
       }
     }
 
-    "isEstablisherIndividualContactDetailsCompleted" must {
+    "isEstablisherIndividualContactDetailsComplete" must {
       "return true when all answers are present" in {
         val ua =
           UserAnswers()
             .set(EnterEmailId(0), "test@test.com").success.value
             .set(EnterPhoneId(0), "123").success.value
 
-        ua.isEstablisherIndividualContactDetailsCompleted(0).value mustBe true
+        ua.isEstablisherIndividualContactDetailsComplete(0).value mustBe true
       }
 
       "return false when some answer is missing" in {
@@ -151,11 +160,11 @@ class DataCompletionEstablishersSpec
           UserAnswers()
             .set(EnterEmailId(0), "test@test.com").success.value
 
-        ua.isEstablisherIndividualContactDetailsCompleted(0).value mustBe false
+        ua.isEstablisherIndividualContactDetailsComplete(0).value mustBe false
       }
 
       "return None when no answer is present" in {
-        UserAnswers().isEstablisherIndividualContactDetailsCompleted(0) mustBe None
+        UserAnswers().isEstablisherIndividualContactDetailsComplete(0) mustBe None
       }
     }
   }
@@ -167,6 +176,17 @@ class DataCompletionEstablishersSpec
           UserAnswers()
             .set(EstablisherKindId(0), EstablisherKind.Company).success.value
             .set(CompanyDetailsId(0), CompanyDetails("test company")).success.value
+            .set(HaveCompanyNumberId(0), false).success.value
+            .set(NoCompanyNumberReasonId(0), "reason").success.value
+            .set(HaveUTRId(0), false).success.value
+            .set(NoUTRReasonId(0), "reason").success.value
+            .set(HaveVATId(0), false).success.value
+            .set(HavePAYEId(0), false).success.value
+            .set(partnershipAddress.AddressId(0), Data.address).success.value
+            .set(partnershipAddress.PreviousAddressId(0), Data.address).success.value
+            .set(partnershipAddress.AddressYearsId(0), false).success.value
+            .set(companyContact.EnterEmailId(0), "test@test.com").success.value
+            .set(companyContact.EnterPhoneId(0), "123").success.value
 
         ua.isEstablisherCompanyComplete(0) mustBe true
       }
@@ -182,7 +202,7 @@ class DataCompletionEstablishersSpec
       }
     }
 
-    "isEstablisherCompanyDetailsCompleted" must {
+    "isEstablisherCompanyDetailsComplete" must {
       "return true when all answers are present" in {
 
         val ua1 =
@@ -206,8 +226,8 @@ class DataCompletionEstablishersSpec
             .set(HavePAYEId(0), false).success.value
 
 
-        ua1.isEstablisherCompanyDetailsCompleted(0) mustBe Some(true)
-        ua2.isEstablisherCompanyDetailsCompleted(0) mustBe Some(true)
+        ua1.isEstablisherCompanyDetailsComplete(0) mustBe Some(true)
+        ua2.isEstablisherCompanyDetailsComplete(0) mustBe Some(true)
       }
 
       "return false when some answer is missing" in {
@@ -215,19 +235,19 @@ class DataCompletionEstablishersSpec
           UserAnswers()
             .set(HaveCompanyNumberId(0), false).success.value
 
-        ua.isEstablisherCompanyDetailsCompleted(0) mustBe Some(false)
+        ua.isEstablisherCompanyDetailsComplete(0) mustBe Some(false)
 
       }
     }
 
-    "isEstablisherCompanyContactDetailsCompleted" must {
+    "isEstablisherCompanyContactDetailsComplete" must {
       "return true when all answers are present" in {
         val ua =
           UserAnswers()
             .set(companyContact.EnterEmailId(0), "test@test.com").success.value
             .set(companyContact.EnterPhoneId(0), "123").success.value
 
-        ua.isEstablisherCompanyContactDetailsCompleted(0).value mustBe true
+        ua.isEstablisherCompanyContactDetailsComplete(0).value mustBe true
       }
 
       "return false when some answer is missing" in {
@@ -235,15 +255,15 @@ class DataCompletionEstablishersSpec
           UserAnswers()
             .set(companyContact.EnterEmailId(0), "test@test.com").success.value
 
-        ua.isEstablisherCompanyContactDetailsCompleted(0).value mustBe false
+        ua.isEstablisherCompanyContactDetailsComplete(0).value mustBe false
       }
 
       "return None when no answer is present" in {
-        UserAnswers().isEstablisherCompanyContactDetailsCompleted(0) mustBe None
+        UserAnswers().isEstablisherCompanyContactDetailsComplete(0) mustBe None
       }
     }
 
-    "isEstablisherCompanyAddressCompleted" must {
+    "isEstablisherCompanyAddressComplete" must {
       "return true when address is complete and address years is true" in {
         val ua =
           UserAnswers()
@@ -252,7 +272,7 @@ class DataCompletionEstablishersSpec
             .set(partnershipAddress.AddressId(0), Data.address).success.value
             .set(partnershipAddress.AddressYearsId(0), true).success.value
 
-        ua.isEstablisherCompanyAddressCompleted(0, ua).value mustBe true
+        ua.isEstablisherCompanyAddressComplete(0).value mustBe true
       }
 
       "return true when address is complete and address years is false and trading time is false" in {
@@ -264,7 +284,7 @@ class DataCompletionEstablishersSpec
             .set(partnershipAddress.AddressYearsId(0), false).success.value
             .set(partnershipAddress.TradingTimeId(0), false).success.value
 
-        ua.isEstablisherCompanyAddressCompleted(0, ua).value mustBe true
+        ua.isEstablisherCompanyAddressComplete(0).value mustBe true
       }
 
       "return true when address is complete and previous address is complete" in {
@@ -277,7 +297,7 @@ class DataCompletionEstablishersSpec
             .set(partnershipAddress.TradingTimeId(0), true).success.value
             .set(partnershipAddress.PreviousAddressId(0), Data.address).success.value
 
-        ua.isEstablisherCompanyAddressCompleted(0, ua).value mustBe true
+        ua.isEstablisherCompanyAddressComplete(0).value mustBe true
       }
 
       "return false when address is complete but no address years is present" in {
@@ -287,7 +307,7 @@ class DataCompletionEstablishersSpec
             .set(PartnershipDetailsId(0), PartnershipDetails("test partnership")).success.value
             .set(partnershipAddress.AddressId(0), Data.address).success.value
 
-        ua.isEstablisherCompanyAddressCompleted(0, ua).value mustBe false
+        ua.isEstablisherCompanyAddressComplete(0).value mustBe false
       }
 
       "return false when address is complete but no previous address is present" in {
@@ -299,7 +319,7 @@ class DataCompletionEstablishersSpec
             .set(partnershipAddress.AddressYearsId(0), false).success.value
             .set(partnershipAddress.TradingTimeId(0), true).success.value
 
-        ua.isEstablisherCompanyAddressCompleted(0, ua).value mustBe false
+        ua.isEstablisherCompanyAddressComplete(0).value mustBe false
       }
     }
 
@@ -415,6 +435,15 @@ class DataCompletionEstablishersSpec
           UserAnswers()
             .set(EstablisherKindId(0), EstablisherKind.Partnership).success.value
             .set(PartnershipDetailsId(0), PartnershipDetails("test partnership")).success.value
+            .set(partnershipDetails.HaveUTRId(0), false).success.value
+            .set(partnershipDetails.NoUTRReasonId(0), "reason").success.value
+            .set(partnershipDetails.HaveVATId(0), false).success.value
+            .set(partnershipDetails.HavePAYEId(0), false).success.value
+            .setOrException(partnershipAddress.AddressId(0), Data.address)
+            .setOrException(partnershipAddress.PreviousAddressId(0), Data.address)
+            .setOrException(partnershipAddress.AddressYearsId(0), true)
+            .set(partnershipContact.EnterEmailId(0), "test@test.com").success.value
+            .set(partnershipContact.EnterPhoneId(0), "123").success.value
 
         ua.isEstablisherPartnershipComplete(0) mustBe true
       }
@@ -430,7 +459,7 @@ class DataCompletionEstablishersSpec
       }
     }
 
-    "isEstablisherPartnershipDetailsCompleted" must {
+    "isEstablisherPartnershipDetailsComplete" must {
       "return true when all answers are present" in {
 
         val ua1 =
@@ -450,8 +479,8 @@ class DataCompletionEstablishersSpec
             .set(partnershipDetails.HavePAYEId(0), false).success.value
 
 
-        ua1.isEstablisherPartnershipDetailsCompleted(0) mustBe Some(true)
-        ua2.isEstablisherPartnershipDetailsCompleted(0) mustBe Some(true)
+        ua1.isEstablisherPartnershipDetailsComplete(0) mustBe Some(true)
+        ua2.isEstablisherPartnershipDetailsComplete(0) mustBe Some(true)
       }
 
       "return false when some answer is missing" in {
@@ -459,12 +488,12 @@ class DataCompletionEstablishersSpec
           UserAnswers()
             .set(partnershipDetails.HaveUTRId(0), false).success.value
 
-        ua.isEstablisherPartnershipDetailsCompleted(0) mustBe Some(false)
+        ua.isEstablisherPartnershipDetailsComplete(0) mustBe Some(false)
 
       }
     }
 
-    "isEstablisherPartnershipAddressCompleted" must {
+    "isEstablisherPartnershipAddressComplete" must {
       "return true when all answers are present" in {
         val ua1 =
           UserAnswers()
@@ -478,8 +507,8 @@ class DataCompletionEstablishersSpec
             .setOrException(partnershipAddress.TradingTimeId(0), true)
             .setOrException(partnershipAddress.PreviousAddressId(0), Data.address)
 
-        ua1.isEstablisherPartnershipAddressCompleted(0, ua1) mustBe Some(true)
-        ua2.isEstablisherPartnershipAddressCompleted(0, ua2) mustBe Some(true)
+        ua1.isEstablisherPartnershipAddressComplete(0) mustBe Some(true)
+        ua2.isEstablisherPartnershipAddressComplete(0) mustBe Some(true)
       }
 
       "return false when some answer is missing" in {
@@ -492,23 +521,23 @@ class DataCompletionEstablishersSpec
           UserAnswers()
             .setOrException(partnershipAddress.AddressId(0), Data.address)
 
-        ua1.isEstablisherPartnershipAddressCompleted(0, ua1) mustBe Some(false)
-        ua2.isEstablisherPartnershipAddressCompleted(0, ua2) mustBe Some(false)
+        ua1.isEstablisherPartnershipAddressComplete(0) mustBe Some(false)
+        ua2.isEstablisherPartnershipAddressComplete(0) mustBe Some(false)
       }
 
       "return None when no answers present" in {
-        UserAnswers().isEstablisherPartnershipAddressCompleted(0, UserAnswers()) mustBe None
+        UserAnswers().isEstablisherPartnershipAddressComplete(0) mustBe None
       }
     }
 
-    "isEstablisherPartnershipContactDetailsCompleted" must {
+    "isEstablisherPartnershipContactDetailsComplete" must {
       "return true when all answers are present" in {
         val ua =
           UserAnswers()
             .set(partnershipContact.EnterEmailId(0), "test@test.com").success.value
             .set(partnershipContact.EnterPhoneId(0), "123").success.value
 
-        ua.isEstablisherPartnershipContactDetailsCompleted(0).value mustBe true
+        ua.isEstablisherPartnershipContactDetailsComplete(0).value mustBe true
       }
 
       "return false when some answer is missing" in {
@@ -516,11 +545,11 @@ class DataCompletionEstablishersSpec
           UserAnswers()
             .set(partnershipContact.EnterEmailId(0), "test@test.com").success.value
 
-        ua.isEstablisherPartnershipContactDetailsCompleted(0).value mustBe false
+        ua.isEstablisherPartnershipContactDetailsComplete(0).value mustBe false
       }
 
       "return None when no answer is present" in {
-        UserAnswers().isEstablisherPartnershipContactDetailsCompleted(0) mustBe None
+        UserAnswers().isEstablisherPartnershipContactDetailsComplete(0) mustBe None
       }
     }
 

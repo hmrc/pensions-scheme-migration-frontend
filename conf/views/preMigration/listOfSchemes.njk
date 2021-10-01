@@ -89,7 +89,7 @@
 
                 {% if form.value.value %}
                     <p>
-                        <a id="clear-search-link" href="{{ clearLinkUrl }}">{{ messages("messages__listSchemes__searchText_clearlink") }}</a>
+                        <a id="clear-search-link" href="{{ clearLinkUrl }}" class="govuk-link">{{ messages("messages__listSchemes__searchText_clearlink") }}</a>
                     </p>
                 {% elif racDac %}
 
@@ -106,7 +106,7 @@
                 {% if numberOfSchemes > 0 %}
                     <div class="grid-row">
                         <div class="column-two-thirds">
-                            <p class="govuk-margin-top-5 govuk-margin-bottom-0">
+                            <p class="govuk-margin-top-5 govuk-margin-bottom-0 govuk-body-s">
 
                                     {% if numberOfSchemes == 1 %}
                                        {{ messages("messages__listSchemes__search_result") }}
@@ -138,7 +138,7 @@
      {% if(numberOfSchemes > pagination) %}
                 <div class="grid-row">
                     <div class="column-two-thirds">
-                        <p class="govuk-margin-top-5" id="pagination-text">
+                        <p class="govuk-margin-top-5 govuk-body-s" id="pagination-text">
                             {{paginationText}}
                         </p>
                         <nav class="govuk-margin-top-5" aria-label="page">
@@ -167,6 +167,6 @@
             {% endif %}
 
 
-        <p class="govuk-body"><a id="return_to_psa" href="{{ returnUrl }}" class="govuk-link">{{ messages("return.to.link", psaName) }}</a></p>
+        <p class="govuk-body govuk-!-margin-top-4"><a id="return_to_psa" href="{{ returnUrl }}" class="govuk-link">{{ messages("return.to.link", psaName) }}</a></p>
 
 {% endblock %}
