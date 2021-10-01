@@ -23,8 +23,8 @@ import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.trustees.company.{CompanyDetailsId => TrusteeCompanyDetailsId}
-import identifiers.trustees.partnership.{PartnershipDetailsId => TrusteePartnershipDetailsId}
 import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.partnership.{PartnershipDetailsId => TrusteePartnershipDetailsId}
 import play.api.i18n.Messages
 import utils.UserAnswers
 import viewmodels._
@@ -197,8 +197,11 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
   def declarationEnabled(implicit userAnswers: UserAnswers): Boolean =
     Seq(
       Some(userAnswers.isBeforeYouStartCompleted),
-      userAnswers.isMembersCompleted,
-      userAnswers.isBenefitsAndInsuranceCompleted
+      userAnswers.isMembersComplete,
+      userAnswers.isBenefitsAndInsuranceComplete,
+      userAnswers.isWorkingKnowledgeComplete,
+      Some(userAnswers.isEstablishersSectionComplete),
+      Some(userAnswers.isTrusteesSectionComplete)
     ).forall(_.contains(true))
 
   private[helpers] def declarationSection(viewOnly: Boolean)

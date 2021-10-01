@@ -17,17 +17,25 @@
 package utils
 
 import base.SpecBase.fakeRequest
-import identifiers.aboutMembership.{FutureMembersId, CurrentMembersId}
+import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
 import identifiers.beforeYouStart._
 import identifiers.benefitsAndInsurance._
+import identifiers.establishers.EstablisherKindId
+import identifiers.establishers.individual.EstablisherNameId
+import identifiers.establishers.individual.address.{AddressId, AddressYearsId}
+import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
+import identifiers.establishers.individual.details.{EstablisherDOBId, EstablisherHasNINOId, EstablisherHasUTRId, EstablisherNINOId, EstablisherUTRId}
 import models._
 import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
+import models.establishers.EstablisherKind
 import models.requests.DataRequest
 import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.domain.PsaId
 import utils.Data.ua.writes
+
+import java.time.LocalDate
 
 object Data {
 
@@ -65,6 +73,17 @@ object Data {
     .setOrException(BenefitsInsuranceNameId, insurerName)
     .setOrException(BenefitsInsurancePolicyId, insurerPolicyNo)
     .setOrException(InsurerAddressId, address)
+    .set(EstablisherKindId(0), EstablisherKind.Individual).flatMap(
+    _.set(EstablisherNameId(0), PersonName("a", "b")).flatMap(
+      _.set(EstablisherDOBId(0), LocalDate.parse("2001-01-01")).flatMap(
+      _.set(EstablisherHasNINOId(0), true).flatMap(
+      _.set(EstablisherNINOId(0), ReferenceValue("AB123456C")).flatMap(
+      _.set(EstablisherHasUTRId(0), true).flatMap(
+      _.set(EstablisherUTRId(0), ReferenceValue("1234567890")).flatMap(
+        _.set(EnterEmailId(0), "test@test.com").flatMap(
+            _.set(EnterPhoneId(0), "123"))))))))).get
+              .setOrException(AddressId(0), Data.address)
+              .setOrException(AddressYearsId(0), true)
 
   implicit val request: DataRequest[AnyContent] =
     DataRequest(

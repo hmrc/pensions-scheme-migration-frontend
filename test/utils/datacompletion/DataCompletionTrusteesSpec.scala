@@ -23,7 +23,7 @@ import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.details._
 import identifiers.trustees.individual.{TrusteeNameId, address => individualAddress}
 import identifiers.trustees.partnership.address.{AddressId, AddressYearsId, PreviousAddressId, TradingTimeId}
-import identifiers.trustees.partnership.{PartnershipDetailsId, contact => partnershipContact}
+import identifiers.trustees.partnership.{PartnershipDetailsId, details => partnershipDetails, contact => partnershipContact}
 import models.trustees.TrusteeKind
 import models.{CompanyDetails, PartnershipDetails, PersonName, ReferenceValue}
 import org.scalatest.matchers.must.Matchers
@@ -47,6 +47,15 @@ class DataCompletionTrusteesSpec
           UserAnswers()
             .set(TrusteeKindId(0), TrusteeKind.Individual).success.value
             .set(TrusteeNameId(0), PersonName("a", "b")).success.value
+            .set(TrusteeDOBId(0), LocalDate.parse("2001-01-01")).success.value
+            .set(TrusteeHasNINOId(0), true).success.value
+            .set(TrusteeNINOId(0), ReferenceValue("AB123456C")).success.value
+            .set(TrusteeHasUTRId(0), true).success.value
+            .set(TrusteeUTRId(0), ReferenceValue("1234567890")).success.value
+            .setOrException(individualAddress.AddressId(0), Data.address)
+            .setOrException(individualAddress.AddressYearsId(0), true)
+            .set(EnterEmailId(0), "test@test.com").success.value
+            .set(EnterPhoneId(0), "123").success.value
 
         ua.isTrusteeIndividualComplete(0) mustBe true
       }
@@ -62,7 +71,7 @@ class DataCompletionTrusteesSpec
       }
     }
 
-    "isTrusteeIndividualDetailsCompleted" must {
+    "isTrusteeIndividualDetailsComplete" must {
       "return true when all answers are present" in {
         val ua =
           UserAnswers()
@@ -82,8 +91,8 @@ class DataCompletionTrusteesSpec
             .set(TrusteeHasUTRId(0), false).success.value
             .set(TrusteeNoUTRReasonId(0), "Reason").success.value
 
-        ua1.isTrusteeIndividualDetailsCompleted(0) mustBe Some(true)
-        ua2.isTrusteeIndividualDetailsCompleted(0) mustBe Some(true)
+        ua1.isTrusteeIndividualDetailsComplete(0) mustBe Some(true)
+        ua2.isTrusteeIndividualDetailsComplete(0) mustBe Some(true)
       }
 
       "return false when some answer is missing" in {
@@ -91,12 +100,12 @@ class DataCompletionTrusteesSpec
           UserAnswers()
             .set(TrusteeDOBId(0), LocalDate.parse("2001-01-01")).success.value
 
-        ua.isTrusteeIndividualDetailsCompleted(0) mustBe Some(false)
+        ua.isTrusteeIndividualDetailsComplete(0) mustBe Some(false)
 
       }
     }
 
-    "isTrusteeIndividualAddressCompleted" must {
+    "isTrusteeIndividualAddressComplete" must {
       "return true when all answers are present" in {
         val ua1 =
           UserAnswers()
@@ -109,8 +118,8 @@ class DataCompletionTrusteesSpec
             .setOrException(individualAddress.AddressYearsId(0), false)
             .setOrException(individualAddress.PreviousAddressId(0), Data.address)
 
-        ua1.isTrusteeIndividualAddressCompleted(0, ua1) mustBe Some(true)
-        ua2.isTrusteeIndividualAddressCompleted(0, ua2) mustBe Some(true)
+        ua1.isTrusteeIndividualAddressComplete(0) mustBe Some(true)
+        ua2.isTrusteeIndividualAddressComplete(0) mustBe Some(true)
       }
 
       "return false when some answer is missing" in {
@@ -123,24 +132,24 @@ class DataCompletionTrusteesSpec
           UserAnswers()
             .setOrException(individualAddress.AddressId(0), Data.address)
 
-        ua1.isTrusteeIndividualAddressCompleted(0, ua1) mustBe Some(false)
-        ua2.isTrusteeIndividualAddressCompleted(0, ua2) mustBe Some(false)
+        ua1.isTrusteeIndividualAddressComplete(0) mustBe Some(false)
+        ua2.isTrusteeIndividualAddressComplete(0) mustBe Some(false)
       }
 
       "return None when no answers present" in {
-        UserAnswers().isTrusteeIndividualAddressCompleted(0, UserAnswers()) mustBe None
+        UserAnswers().isTrusteeIndividualAddressComplete(0) mustBe None
       }
     }
 
-    "isTrusteeIndividualContactDetailsCompleted" must {
+    "isTrusteeIndividualContactDetailsComplete" must {
       "return true when all answers are present" in {
         val ua =
           UserAnswers()
             .set(EnterEmailId(0), "test@test.com").success.value
             .set(EnterPhoneId(0), "123").success.value
 
-        ua.isTrusteeIndividualContactDetailsCompleted(0).value mustBe true
-        ua.isTrusteeIndividualContactDetailsCompleted(0).value mustBe true
+        ua.isTrusteeIndividualContactDetailsComplete(0).value mustBe true
+        ua.isTrusteeIndividualContactDetailsComplete(0).value mustBe true
       }
 
       "return false when some answer is missing" in {
@@ -148,11 +157,11 @@ class DataCompletionTrusteesSpec
           UserAnswers()
             .set(EnterEmailId(0), "test@test.com").success.value
 
-        ua.isTrusteeIndividualContactDetailsCompleted(0).value mustBe false
+        ua.isTrusteeIndividualContactDetailsComplete(0).value mustBe false
       }
 
       "return None when no answer is present" in {
-        UserAnswers().isTrusteeIndividualContactDetailsCompleted(0) mustBe None
+        UserAnswers().isTrusteeIndividualContactDetailsComplete(0) mustBe None
       }
     }
   }
@@ -164,6 +173,18 @@ class DataCompletionTrusteesSpec
           UserAnswers()
             .set(TrusteeKindId(0), TrusteeKind.Company).success.value
             .set(CompanyDetailsId(0), CompanyDetails("test company")).success.value
+            .set(HaveCompanyNumberId(0), true).success.value
+            .set(CompanyNumberId(0), ReferenceValue("AB123456C")).success.value
+            .set(HaveUTRId(0), true).success.value
+            .set(CompanyUTRId(0), ReferenceValue("1234567890")).success.value
+            .set(HaveVATId(0), true).success.value
+            .set(VATId(0), ReferenceValue("123456789")).success.value
+            .set(HavePAYEId(0), true).success.value
+            .set(PAYEId(0), ReferenceValue("12345678")).success.value
+            .set(companyAddress.AddressId(0), Data.address).success.value
+            .set(companyAddress.AddressYearsId(0), true).success.value
+            .set(companyContact.EnterEmailId(0), "test@test.com").success.value
+            .set(companyContact.EnterPhoneId(0), "123").success.value
 
         ua.isTrusteeCompanyComplete(0) mustBe true
       }
@@ -179,7 +200,7 @@ class DataCompletionTrusteesSpec
       }
     }
 
-    "isTrusteeCompanyDetailsCompleted" must {
+    "isTrusteeCompanyDetailsComplete" must {
       "return true when all answers are present" in {
 
         val ua1 =
@@ -203,8 +224,8 @@ class DataCompletionTrusteesSpec
             .set(HavePAYEId(0), false).success.value
 
 
-        ua1.isTrusteeCompanyDetailsCompleted(0) mustBe Some(true)
-        ua2.isTrusteeCompanyDetailsCompleted(0) mustBe Some(true)
+        ua1.isTrusteeCompanyDetailsComplete(0) mustBe Some(true)
+        ua2.isTrusteeCompanyDetailsComplete(0) mustBe Some(true)
       }
 
       "return false when some answer is missing" in {
@@ -218,12 +239,12 @@ class DataCompletionTrusteesSpec
             .set(VATId(0), ReferenceValue("123456789")).success.value
             .set(HavePAYEId(0), true).success.value
 
-        ua.isTrusteeCompanyDetailsCompleted(0) mustBe Some(false)
+        ua.isTrusteeCompanyDetailsComplete(0) mustBe Some(false)
 
       }
     }
 
-    "isTrusteeCompanyAddressCompleted" must {
+    "isTrusteeCompanyAddressComplete" must {
       "return true when address is complete and address years is true" in {
         val ua =
           UserAnswers()
@@ -232,7 +253,7 @@ class DataCompletionTrusteesSpec
             .set(companyAddress.AddressId(0), Data.address).success.value
             .set(companyAddress.AddressYearsId(0), true).success.value
 
-        ua.isTrusteeCompanyAddressCompleted(0, ua).value mustBe true
+        ua.isTrusteeCompanyAddressComplete(0).value mustBe true
       }
 
       "return true when address is complete and address years is false and trading time is false" in {
@@ -244,7 +265,7 @@ class DataCompletionTrusteesSpec
             .set(companyAddress.AddressYearsId(0), false).success.value
             .set(companyAddress.TradingTimeId(0), false).success.value
 
-        ua.isTrusteeCompanyAddressCompleted(0, ua).value mustBe true
+        ua.isTrusteeCompanyAddressComplete(0).value mustBe true
       }
 
       "return true when address is complete and previous address is complete" in {
@@ -257,7 +278,7 @@ class DataCompletionTrusteesSpec
             .set(companyAddress.TradingTimeId(0), true).success.value
             .set(companyAddress.PreviousAddressId(0), Data.address).success.value
 
-        ua.isTrusteeCompanyAddressCompleted(0, ua).value mustBe true
+        ua.isTrusteeCompanyAddressComplete(0).value mustBe true
       }
 
       "return false when address is complete but no address years is present" in {
@@ -267,7 +288,7 @@ class DataCompletionTrusteesSpec
             .set(CompanyDetailsId(0), CompanyDetails("test company")).success.value
             .set(companyAddress.AddressId(0), Data.address).success.value
 
-        ua.isTrusteeCompanyAddressCompleted(0, ua).value mustBe false
+        ua.isTrusteeCompanyAddressComplete(0).value mustBe false
       }
 
       "return false when address is complete but no previous address is present" in {
@@ -279,18 +300,18 @@ class DataCompletionTrusteesSpec
             .set(companyAddress.AddressYearsId(0), false).success.value
             .set(companyAddress.TradingTimeId(0), true).success.value
 
-        ua.isTrusteeCompanyAddressCompleted(0, ua).value mustBe false
+        ua.isTrusteeCompanyAddressComplete(0).value mustBe false
       }
     }
 
-    "isTrusteeCompanyContactDetailsCompleted" must {
+    "isTrusteeCompanyContactDetailsComplete" must {
       "return true when all answers are present" in {
         val ua =
           UserAnswers()
             .set(companyContact.EnterEmailId(0), "test@test.com").success.value
             .set(companyContact.EnterPhoneId(0), "123").success.value
 
-        ua.isTrusteeCompanyContactDetailsCompleted(0).value mustBe true
+        ua.isTrusteeCompanyContactDetailsComplete(0).value mustBe true
       }
 
       "return false when some answer is missing" in {
@@ -298,11 +319,11 @@ class DataCompletionTrusteesSpec
           UserAnswers()
             .set(companyContact.EnterEmailId(0), "test@test.com").success.value
 
-        ua.isTrusteeCompanyContactDetailsCompleted(0).value mustBe false
+        ua.isTrusteeCompanyContactDetailsComplete(0).value mustBe false
       }
 
       "return None when no answer is present" in {
-        UserAnswers().isTrusteeCompanyContactDetailsCompleted(0) mustBe None
+        UserAnswers().isTrusteeCompanyContactDetailsComplete(0) mustBe None
       }
     }
   }
@@ -314,6 +335,14 @@ class DataCompletionTrusteesSpec
           UserAnswers()
             .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
             .set(PartnershipDetailsId(0), PartnershipDetails("test partnership")).success.value
+            .set(partnershipDetails.HaveUTRId(0), false).success.value
+            .set(partnershipDetails.NoUTRReasonId(0), "Reason").success.value
+            .set(partnershipDetails.HaveVATId(0), false).success.value
+            .set(partnershipDetails.HavePAYEId(0), false).success.value
+            .set(AddressId(0), Data.address).success.value
+            .set(AddressYearsId(0), true).success.value
+            .set(partnershipContact.EnterEmailId(0), "test@test.com").success.value
+            .set(partnershipContact.EnterPhoneId(0), "123").success.value
 
         ua.isTrusteePartnershipComplete(0) mustBe true
       }
@@ -329,7 +358,7 @@ class DataCompletionTrusteesSpec
       }
     }
 
-    "isTrusteePartnershipAddressCompleted" must {
+    "isTrusteePartnershipAddressComplete" must {
       "return true when address is complete and address years is true" in {
         val ua =
           UserAnswers()
@@ -338,7 +367,7 @@ class DataCompletionTrusteesSpec
             .set(AddressId(0), Data.address).success.value
             .set(AddressYearsId(0), true).success.value
 
-        ua.isTrusteePartnershipAddressCompleted(0, ua).value mustBe true
+        ua.isTrusteePartnershipAddressComplete(0).value mustBe true
       }
 
       "return true when address is complete and address years is false and trading time is false" in {
@@ -350,7 +379,7 @@ class DataCompletionTrusteesSpec
             .set(AddressYearsId(0), false).success.value
             .set(TradingTimeId(0), false).success.value
 
-        ua.isTrusteePartnershipAddressCompleted(0, ua).value mustBe true
+        ua.isTrusteePartnershipAddressComplete(0).value mustBe true
       }
 
       "return true when address is complete and previous address is complete" in {
@@ -363,7 +392,7 @@ class DataCompletionTrusteesSpec
             .set(TradingTimeId(0), true).success.value
             .set(PreviousAddressId(0), Data.address).success.value
 
-        ua.isTrusteePartnershipAddressCompleted(0, ua).value mustBe true
+        ua.isTrusteePartnershipAddressComplete(0).value mustBe true
       }
 
       "return false when address is complete but no address years is present" in {
@@ -373,7 +402,7 @@ class DataCompletionTrusteesSpec
             .set(PartnershipDetailsId(0), PartnershipDetails("test partnership")).success.value
             .set(AddressId(0), Data.address).success.value
 
-        ua.isTrusteePartnershipAddressCompleted(0, ua).value mustBe false
+        ua.isTrusteePartnershipAddressComplete(0).value mustBe false
       }
 
       "return false when address is complete but no previous address is present" in {
@@ -385,18 +414,18 @@ class DataCompletionTrusteesSpec
             .set(AddressYearsId(0), false).success.value
             .set(TradingTimeId(0), true).success.value
 
-        ua.isTrusteePartnershipAddressCompleted(0, ua).value mustBe false
+        ua.isTrusteePartnershipAddressComplete(0).value mustBe false
       }
     }
 
-    "isTrusteePartnershipContactDetailsCompleted" must {
+    "isTrusteePartnershipContactDetailsComplete" must {
       "return true when all answers are present" in {
         val ua =
           UserAnswers()
             .set(partnershipContact.EnterEmailId(0), "test@test.com").success.value
             .set(partnershipContact.EnterPhoneId(0), "123").success.value
 
-        ua.isTrusteePartnershipContactDetailsCompleted(0).value mustBe true
+        ua.isTrusteePartnershipContactDetailsComplete(0).value mustBe true
       }
 
       "return false when some answer is missing" in {
@@ -404,11 +433,11 @@ class DataCompletionTrusteesSpec
           UserAnswers()
             .set(partnershipContact.EnterEmailId(0), "test@test.com").success.value
 
-        ua.isTrusteePartnershipContactDetailsCompleted(0).value mustBe false
+        ua.isTrusteePartnershipContactDetailsComplete(0).value mustBe false
       }
 
       "return None when no answer is present" in {
-        UserAnswers().isTrusteePartnershipContactDetailsCompleted(0) mustBe None
+        UserAnswers().isTrusteePartnershipContactDetailsComplete(0) mustBe None
       }
     }
   }
