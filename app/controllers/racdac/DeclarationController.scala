@@ -17,10 +17,10 @@
 package controllers.racdac
 
 import config.AppConfig
-import connectors.cache.BulkMigrationQueueConnector
 import connectors._
+import connectors.cache.BulkMigrationQueueConnector
 import controllers.actions.AuthAction
-import models.racDac.Request
+import models.racDac.RacDacRequest
 import models.requests.AuthenticatedRequest
 import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -69,8 +69,8 @@ class DeclarationController @Inject()(
         listOfSchemesConnector.getListOfSchemes(psaId).flatMap {
           case Right(listOfSchemes) =>
             val racDacSchemes = listOfSchemes.items.getOrElse(Nil).filter(_.racDac).map { items =>
-              Request(items.schemeName, items.policyNo.getOrElse(
-                throw new Exception("Policy Number is mandatory for RAC/DAC")))
+              RacDacRequest(items.schemeName, items.policyNo.getOrElse(
+                throw new RuntimeException("Policy Number is mandatory for RAC/DAC")))
             }
             bulkMigrationQueueConnector.pushAll(psaId, Json.toJson(racDacSchemes)).flatMap { _ =>
               sendEmail(psaId).map { _ =>
@@ -78,6 +78,7 @@ class DeclarationController @Inject()(
               }
             }
           case _ =>
+            //TODO where to redirect in this case
             Future(Redirect(controllers.routes.IndexController.onPageLoad()))
         }
     }

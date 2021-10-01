@@ -40,7 +40,7 @@ class BulkMigrationQueueConnector @Inject()(config: AppConfig,
       .post(requests)
       .flatMap { response =>
         response.status match {
-          case OK => Future.successful(())
+          case ACCEPTED => Future.successful(())
           case _ => Future.failed(new HttpException(response.body, response.status))
         }
       }
