@@ -50,5 +50,4 @@ class ConfirmationController @Inject()(appConfig: AppConfig,
             renderer.render("racdac/confirmation.njk", json).map(Ok(_))
         }
     }
-
 }

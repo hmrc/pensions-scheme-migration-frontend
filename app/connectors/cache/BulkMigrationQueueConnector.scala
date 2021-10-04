@@ -33,14 +33,14 @@ class BulkMigrationQueueConnector @Inject()(config: AppConfig,
 
 
   def pushAll(psaId: String, requests: JsValue)
-          (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Unit] =
+          (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] =
     http
       .url(config.bulkMigrationEnqueueUrl)
       .withHttpHeaders(queueHeaders(hc, psaId): _*)
       .post(requests)
       .flatMap { response =>
         response.status match {
-          case ACCEPTED => Future.successful(())
+          case ACCEPTED => Future.successful(requests)
           case _ => Future.failed(new HttpException(response.body, response.status))
         }
       }

@@ -78,7 +78,7 @@ class DeclarationController @Inject()(
               }
             }
           case _ =>
-            //TODO where to redirect in this case
+            //TODO: send to no more error page when its developed
             Future(Redirect(controllers.routes.IndexController.onPageLoad()))
         }
     }
