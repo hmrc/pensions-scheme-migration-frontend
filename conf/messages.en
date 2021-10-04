@@ -1069,3 +1069,10 @@ messages__scheme__success__detail__1 = The pension scheme has been added to your
 messages__scheme__success__detail__2 = to manage this pension scheme.
 messages__scheme__success__pension__scheme__link = View your list of pension schemes
 messages__what_happens_next = What happens next
+
+messages__racdac__confirmation__title = You have completed your request to add your RAC/DACs from Pension Schemes Online
+messages__racdac__confirmation__email = We have sent a confirmation email to
+messages__racdac__confirmation__detail = It can take up to 48 hours for your RAC/DACs to be added to your list of schemes on the Managing Pension Schemes service.
+
+
+

@@ -38,4 +38,10 @@ object CacheConnector {
   val pstrHeaders: (HeaderCarrier, String) => Seq[(String, String)] =
     (hc, pstr) => hc.headers(CacheConnector.names(hc)) ++ hc.withExtraHeaders(("pstr", pstr)).extraHeaders
 
+  val queueHeaders: (HeaderCarrier, String) => Seq[(String, String)] =
+    (hc, psaId) => hc.headers(CacheConnector.names(hc)) ++ hc.withExtraHeaders(
+      ("psaId", psaId),
+      ("content-type", "application/json")
+    ).extraHeaders
+
 }
