@@ -206,15 +206,21 @@ class TaskListHelper @Inject()(spokeCreationService: SpokeCreationService) {
 
   private[helpers] def declarationSection(viewOnly: Boolean)
                                          (implicit userAnswers: UserAnswers, messages: Messages): Option[TaskListEntitySection] =
-    if (viewOnly || !declarationEnabled) {
+    if (viewOnly) {
       None
+    } else if(!declarationEnabled) {
+      Some(TaskListEntitySection(
+        isCompleted = None,
+        entities = Nil,
+        Some("messages__schemeTaskList__sectionDeclaration_header"),
+        "messages__schemeTaskList__sectionDeclaration_incomplete"
+      ))
     } else {
       Some(TaskListEntitySection(
         isCompleted = None,
         entities = spokeCreationService.declarationSpoke,
         Some("messages__schemeTaskList__sectionDeclaration_header"),
-        "messages__schemeTaskList__sectionDeclaration_incomplete_v1",
-        "messages__schemeTaskList__sectionDeclaration_incomplete_v2"
+        "messages__schemeTaskList__sectionDeclaration_incomplete"
       ))
     }
 

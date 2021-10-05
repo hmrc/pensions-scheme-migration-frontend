@@ -48,8 +48,7 @@ class TaskListHelperSpec extends SpecBase with Matchers with MockitoSugar with E
   private val aboutHeader = Some(Message("messages__schemeTaskList__about_scheme_header", schemeName))
   private val workingKnowledgeHeader = Some(Message("messages__schemeTaskList__working_knowledge_header"))
   private val declarationHeader = Some("messages__schemeTaskList__sectionDeclaration_header")
-  private val declarationP1 = List("messages__schemeTaskList__sectionDeclaration_incomplete_v1",
-    "messages__schemeTaskList__sectionDeclaration_incomplete_v2")
+  private val declarationP1 = List("messages__schemeTaskList__sectionDeclaration_incomplete")
 
   private val expectedBeforeYouStartSpoke = Seq(EntitySpoke(TaskListLink(beforeYouStartLinkText,
     controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad().url), Some(false)))
