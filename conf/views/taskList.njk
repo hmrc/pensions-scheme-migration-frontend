@@ -240,6 +240,7 @@
                         <ul class="app-task-list__items">
                             <li class="app-task-list__item">
                                 <span class="app-task-list__task-name">
+                                {% if taskSections.declaration.entities.length %}
                                     {% for entity in taskSections.declaration.entities %}
                                         <a id="section-declaration-link"
                                            class="app-task-list__task-name govuk-link"
@@ -247,6 +248,9 @@
                                             {{ messages(entity.link.text) }}
                                         </a>
                                     {% endfor %}
+                                {% else %}
+                                        {{ messages(taskSections.declaration.p1) }}
+                                {% endif %}
                                 </span>
                             </li>
                         </ul>
