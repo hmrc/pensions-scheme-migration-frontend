@@ -987,9 +987,10 @@ messages__listSchemes__schemeName__screen_reader = The scheme name is: {0}
 
 messages__listSchemes__PSTR__screen_reader = {0}’s Pension Scheme Tax Reference number is {1}
 messages__listSchemes__status__screen_reader = {0}’s status is {1}
-messages__listSchemes__searchText_label_scheme = Search for a scheme by scheme name or complete PSTR
-messages__listSchemes__searchText_label_racDac = Search for a RAC/DAC by name or complete PSTR
-messages__listSchemes__searchText_label_hint = For example, 01234567QQ
+messages__listSchemes__searchText_label_scheme = Search by scheme name or PSTR
+messages__listSchemes__searchText_label_racDac = Search for a RAC/DAC by name or PSTR
+messages__listSchemes__searchText_label_hint_scheme = Enter the full PSTR, for example 20123456QQ
+messages__listSchemes__searchText_label_hint_racDac = Enter the full PSTR, for example 01234567QQ
 messages__listSchemes__searchText_clearlink = Clear Search
 messages__listSchemes__search_noMatches = We did not find any {0}s that match what you searched for.
 messages__listSchemes__search_submit = Search
