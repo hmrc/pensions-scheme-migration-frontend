@@ -84,8 +84,7 @@ class ListOfSchemesController @Inject()(
     implicit request =>
       lockingService.initialLockSetupAndRedirect(pstr, request).map { _ =>
         if(isRacDac) {
-          //TODO Replace with first page in Individual RacDac migration journey
-          Redirect(controllers.preMigration.routes.BeforeYouStartController.onPageLoad())
+          Redirect(controllers.racdac.individual.routes.CheckYourAnswersController.onPageLoad)
         } else
           Redirect(controllers.preMigration.routes.BeforeYouStartController.onPageLoad())
       }
