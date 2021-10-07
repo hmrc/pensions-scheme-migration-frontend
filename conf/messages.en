@@ -998,7 +998,7 @@ messages__listSchemes__search_again = Search again
 messages__listSchemes__search_required = Enter a PSTR or {0} name
 messages__listSchemes__search_result = 1 result found
 messages__listSchemes__search_multipleResults = {0} results found
-messages__listSchemes__search_result_title = Search results for list of {0}s on the Pension Schemes Online service
+messages__listSchemes__search_result_title = Search results for list of {0}s on Pension Schemes Online service
 messages__listSchemes__racDacOffset = If a RAC/DAC is no longer active, then you should wind it up on the Pension Schemes Online service.
 
 messages__listSchemes__pagination__text = Showing {0} to {1} of {2} schemes
