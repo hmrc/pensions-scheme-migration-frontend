@@ -17,8 +17,8 @@
 package controllers.racdac.individual
 
 import config.AppConfig
-import connectors.{ListOfSchemesConnector, MinimalDetailsConnector}
 import connectors.cache.UserAnswersCacheConnector
+import connectors.{ListOfSchemesConnector, MinimalDetailsConnector}
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRetrievalAction}
 import helpers.cya.{CYAHelper, RacDacIndividualCYAHelper}
@@ -27,7 +27,7 @@ import models.RacDac
 import models.requests.OptionalDataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{Enumerable, UserAnswers}
@@ -37,11 +37,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourAnswersController @Inject()(
                                             override val messagesApi: MessagesApi,
-                                            appConfig : AppConfig,
+                                            appConfig: AppConfig,
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             cyaHelper: RacDacIndividualCYAHelper,
-                                            listOfSchemesConnector:ListOfSchemesConnector,
+                                            listOfSchemesConnector: ListOfSchemesConnector,
                                             userAnswersCacheConnector: UserAnswersCacheConnector,
                                             minimalDetailsConnector: MinimalDetailsConnector,
                                             val controllerComponents: MessagesControllerComponents,
@@ -66,23 +66,20 @@ class CheckYourAnswersController @Inject()(
             listOfSchemesConnector.getListOfSchemes(request.psaId.id).flatMap {
               case Right(listOfSchemes) =>
                 val racDac = listOfSchemes.items.getOrElse(Nil).filter(item => item.racDac && item.pstr == lock.pstr)
-                if(racDac.nonEmpty) {
+                if (racDac.nonEmpty) {
                   val userAnswers: UserAnswers = UserAnswers(Json.toJson(racDac.head).as[JsObject])
-                  userAnswersCacheConnector.save(lock,Json.toJson(racDac.head) ).flatMap { _ =>
+                  userAnswersCacheConnector.save(lock, Json.toJson(racDac.head)).flatMap { _ =>
                     renderView(userAnswers)
                   }
-                }else {
+                } else {
                   Future.successful(Redirect(controllers.preMigration.routes.ListOfSchemesController.onPageLoad(RacDac)))
                 }
-              case _ =>  Future.successful(Redirect(appConfig.psaOverviewUrl))
+              case _ => Future.successful(Redirect(appConfig.psaOverviewUrl))
             }
         }
-
-
-
     }
 
-  private def renderView(userAnswers: UserAnswers)(implicit request:OptionalDataRequest[AnyContent]) = {
+  private def renderView(userAnswers: UserAnswers)(implicit request: OptionalDataRequest[AnyContent]): Future[Result] = {
     minimalDetailsConnector.getPSAName.flatMap { psaName =>
       renderer.render(
         template = "racdac/individual/check-your-answers.njk",

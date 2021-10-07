@@ -48,7 +48,7 @@ class LockingService @Inject()(lockCacheConnector: LockCacheConnector,
               if(isRacDac){
                 Redirect(controllers.racdac.individual.routes.CheckYourAnswersController.onPageLoad())
               }else
-              Redirect(controllers.routes.TaskListController.onPageLoad())
+                Redirect(controllers.preMigration.routes.BeforeYouStartController.onPageLoad())
             }
           }
       }

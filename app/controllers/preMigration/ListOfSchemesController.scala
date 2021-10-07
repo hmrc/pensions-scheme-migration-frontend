@@ -82,12 +82,7 @@ class ListOfSchemesController @Inject()(
 
   def clickSchemeLink(pstr: String, isRacDac: Boolean): Action[AnyContent] = authenticate.async {
     implicit request =>
-      lockingService.initialLockSetupAndRedirect(pstr, request).map { _ =>
-        if(isRacDac) {
-          Redirect(controllers.racdac.individual.routes.CheckYourAnswersController.onPageLoad)
-        } else
-          Redirect(controllers.preMigration.routes.BeforeYouStartController.onPageLoad())
-      }
+      lockingService.initialLockSetupAndRedirect(pstr, request,isRacDac)
   }
 
 }
