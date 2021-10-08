@@ -82,7 +82,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
   private val jsonToPassToTemplate: JsObject = Json.obj(
     "list" -> rows,
     "schemeName" -> schemeName,
-    "submitUrl" -> controllers.racdac.routes.DeclarationController.onPageLoad().url,
+    "submitUrl" -> controllers.racdac.individual.routes.DeclarationController.onPageLoad().url,
     "psaName" -> Data.psaName,
     "returnUrl" -> mockAppConfig.psaOverviewUrl
   )

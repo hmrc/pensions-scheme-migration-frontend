@@ -86,7 +86,7 @@ class CheckYourAnswersController @Inject()(
         ctx = Json.obj(
           "list" -> cyaHelper.detailsRows(userAnswers),
           "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(userAnswers, implicitly),
-          "submitUrl" -> controllers.racdac.routes.DeclarationController.onPageLoad().url,
+          "submitUrl" -> controllers.racdac.individual.routes.DeclarationController.onPageLoad().url,
           "psaName" -> psaName,
           "returnUrl" -> appConfig.psaOverviewUrl
         )
