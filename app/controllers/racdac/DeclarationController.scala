@@ -76,6 +76,9 @@ class DeclarationController @Inject()(
               sendEmail(psaId).map { _ =>
                 Redirect(controllers.racdac.routes.ConfirmationController.onPageLoad().url)
               }
+            } recoverWith {
+              case _ =>
+                Future.successful(Redirect(routes.RequestNotProcessedController.onPageLoad()))
             }
           case _ =>
             //TODO: send to no more error page when its developed
