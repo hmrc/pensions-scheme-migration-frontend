@@ -72,7 +72,7 @@ class DeclarationController @Inject()(
         //  .getOrElse(throw new RuntimeException("Policy Number is mandatory for RAC/DAC"))
 
           sendEmail(psaId)(implicitly).map { _ =>
-            Redirect(controllers.racdac.routes.ConfirmationController.onPageLoad().url)
+            Redirect(controllers.racdac.individual.routes.ConfirmationController.onPageLoad().url)
         }
     }
 
