@@ -21,8 +21,9 @@ import config.AppConfig
 import connectors.{AncillaryPsaException, ListOfSchemesConnector}
 import controllers.actions.AuthAction
 import forms.ListSchemesFormProvider
+import models.MigrationType.isRacDac
 import models.requests.AuthenticatedRequest
-import models.{Index, MigrationType, Scheme}
+import models.{Index, MigrationType}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -53,18 +54,26 @@ class ListOfSchemesController @Inject()(
 
   def onPageLoad(migrationType: MigrationType): Action[AnyContent] = (authenticate).async {
     implicit request =>
+      val checkRacDac: Boolean=isRacDac(migrationType)
       listOfSchemesConnector.getListOfSchemes(request.psaId.id).flatMap{
         case Right(list) =>
-          if (list.items.exists(_.exists(!_.racDac))&& migrationType == Scheme) {
-          schemeSearchService.searchAndRenderView(form(migrationType), pageNumber = 1, searchText = None, migrationType)}
+          if (list.items.exists(_.exists(_.racDac==checkRacDac))) {
+              schemeSearchService.searchAndRenderView(form(migrationType), pageNumber = 1, searchText = None, migrationType)}
           else {
-            Future.successful(Redirect(routes.NoSchemeToAddController.onPageLoadScheme()))
+            emptyListRedirect(checkRacDac)
           }
-        case _ => Future.successful(Redirect(routes.NoSchemeToAddController.onPageLoadScheme()))
+        case _ => emptyListRedirect(checkRacDac)
     } recoverWith {
         case _: AncillaryPsaException =>
           Future.successful(Redirect(routes.CannotMigrateController.onPageLoad()))
       }
+  }
+  def emptyListRedirect(checkRacDac: Boolean):Future[Result] ={
+    if (checkRacDac) {
+      Future.successful(Redirect(routes.NoSchemeToAddController.onPageLoadRacDac()))
+    }else{
+      Future.successful(Redirect(routes.NoSchemeToAddController.onPageLoadScheme()))
+    }
   }
 
   def onPageLoadWithPageNumber(pageNumber: Index, migrationType: MigrationType): Action[AnyContent] =
