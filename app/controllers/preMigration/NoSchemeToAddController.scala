@@ -17,11 +17,11 @@
 package controllers.preMigration
 
 import config.AppConfig
-import connectors.{AncillaryPsaException, ListOfSchemesConnector, MinimalDetailsConnector}
+import connectors.{ListOfSchemesConnector, MinimalDetailsConnector, AncillaryPsaException}
 import controllers.actions.AuthAction
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{MessagesApi, Messages, I18nSupport}
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.MessageInterpolators
@@ -39,23 +39,21 @@ class NoSchemeToAddController @Inject()(val appConfig: AppConfig,
                                      )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with I18nSupport {
 
+  private def notRegisterController:Future[Result] = Future.successful(Redirect(routes.NotRegisterController.onPageLoadScheme()))
+
   def onPageLoadScheme: Action[AnyContent] = authenticate.async {
     implicit request =>
       listOfSchemesConnector.getListOfSchemes(request.psaId.id).flatMap{
-        case Right(list) => if(list.items.getOrElse(Nil).exists(!_.racDac)){
-         val x= minimalDetailsConnector.getPSAName.flatMap{
-           psaName =>
-           for {
-             json <- schemeJson(psaName)
-           } yield{
-               renderer.render("preMigration/noSchemeToAdd.njk", json).map(Ok(_))
-             }
-         }
-        } else {
-          Future.successful(Redirect(routes.NotRegisterController.onPageLoadScheme()))
-        }
-        case _ => Future.successful(Redirect(routes.NotRegisterController.onPageLoadScheme()))
-      }recoverWith {
+        case Right(list) =>
+          if (list.items.exists(_.exists(!_.racDac))) {
+            minimalDetailsConnector.getPSAName.flatMap{ psaName =>
+              renderer.render("preMigration/noSchemeToAdd.njk", schemeJson(psaName)).map(Ok(_))
+            }
+          } else {
+            notRegisterController
+          }
+        case _ => notRegisterController
+      } recoverWith {
         case _: AncillaryPsaException =>
           Future.successful(Redirect(routes.CannotMigrateController.onPageLoad()))
       }
