@@ -35,7 +35,7 @@ import scala.concurrent.Future
 
 class ConfirmationControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
-  private val templateToBeRendered = "racdac/confirmation.njk"
+  private val templateToBeRendered = "racdac/individual/confirmation.njk"
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val extraModules: Seq[GuiceableModule] = Seq(

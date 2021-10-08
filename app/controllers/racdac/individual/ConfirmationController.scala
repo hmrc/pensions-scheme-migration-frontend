@@ -47,7 +47,7 @@ class ConfirmationController @Inject()(appConfig: AppConfig,
               "email" -> psaEmail,
               "finishUrl" -> appConfig.psaOverviewUrl
             )
-            renderer.render("racdac/confirmation.njk", json).map(Ok(_))
+            renderer.render("racdac/individual/confirmation.njk", json).map(Ok(_))
         }
     }
 }
