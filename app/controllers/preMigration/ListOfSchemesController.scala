@@ -18,10 +18,11 @@ package controllers.preMigration
 
 import com.google.inject.Inject
 import config.AppConfig
+import connectors.{AncillaryPsaException, ListOfSchemesConnector}
 import controllers.actions.AuthAction
 import forms.ListSchemesFormProvider
 import models.requests.AuthenticatedRequest
-import models.{Index, MigrationType}
+import models.{Index, MigrationType, Scheme}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -37,6 +38,7 @@ class ListOfSchemesController @Inject()(
                                        authenticate: AuthAction,
                                        val controllerComponents: MessagesControllerComponents,
                                        formProvider: ListSchemesFormProvider,
+                                       listOfSchemesConnector: ListOfSchemesConnector,
                                        schemeSearchService: SchemeSearchService,
                                        lockingService: LockingService
                                      )(implicit val ec: ExecutionContext)
@@ -51,7 +53,18 @@ class ListOfSchemesController @Inject()(
 
   def onPageLoad(migrationType: MigrationType): Action[AnyContent] = (authenticate).async {
     implicit request =>
-      schemeSearchService.searchAndRenderView(form(migrationType), pageNumber = 1, searchText = None, migrationType)
+      listOfSchemesConnector.getListOfSchemes(request.psaId.id).flatMap{
+        case Right(list) =>
+          if (list.items.exists(_.exists(!_.racDac))&& migrationType == Scheme) {
+          schemeSearchService.searchAndRenderView(form(migrationType), pageNumber = 1, searchText = None, migrationType)}
+          else {
+            Future.successful(Redirect(routes.NoSchemeToAddController.onPageLoadScheme()))
+          }
+        case _ => Future.successful(Redirect(routes.NoSchemeToAddController.onPageLoadScheme()))
+    } recoverWith {
+        case _: AncillaryPsaException =>
+          Future.successful(Redirect(routes.CannotMigrateController.onPageLoad()))
+      }
   }
 
   def onPageLoadWithPageNumber(pageNumber: Index, migrationType: MigrationType): Action[AnyContent] =

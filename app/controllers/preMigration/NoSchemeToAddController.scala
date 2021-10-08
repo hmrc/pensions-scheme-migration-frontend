@@ -17,45 +17,35 @@
 package controllers.preMigration
 
 import config.AppConfig
-import connectors.{ListOfSchemesConnector, MinimalDetailsConnector, AncillaryPsaException}
+import connectors.MinimalDetailsConnector
 import controllers.actions.AuthAction
-import play.api.i18n.{MessagesApi, Messages, I18nSupport}
+import models.{RacDac, Scheme}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class NoSchemeToAddController @Inject()(val appConfig: AppConfig,
                                       override val messagesApi: MessagesApi,
                                       authenticate: AuthAction,
                                       val controllerComponents: MessagesControllerComponents,
-                                        listOfSchemesConnector: ListOfSchemesConnector,
                                       minimalDetailsConnector: MinimalDetailsConnector,
                                       renderer: Renderer
                                      )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with I18nSupport {
 
-  private def notRegisterController:Future[Result] = Future.successful(Redirect(routes.NotRegisterController.onPageLoadScheme()))
-
   def onPageLoadScheme: Action[AnyContent] = authenticate.async {
     implicit request =>
-      listOfSchemesConnector.getListOfSchemes(request.psaId.id).flatMap{
-        case Right(list) =>
-          if (list.items.exists(_.exists(!_.racDac))) {
-            minimalDetailsConnector.getPSAName.flatMap{ psaName =>
-              renderer.render("preMigration/noSchemeToAdd.njk", schemeJson(psaName)).map(Ok(_))
-            }
-          } else {
-            notRegisterController
-          }
-        case _ => notRegisterController
-      } recoverWith {
-        case _: AncillaryPsaException =>
-          Future.successful(Redirect(routes.CannotMigrateController.onPageLoad()))
+      minimalDetailsConnector.getPSAName.flatMap { psaName =>
+        renderer.render(
+          template = "preMigration/noSchemeToAdd.njk",
+          ctx =  schemeJson(psaName)
+        ).map(Ok(_))
       }
   }
 
@@ -73,6 +63,7 @@ class NoSchemeToAddController @Inject()(val appConfig: AppConfig,
     Json.obj(
       "param1" -> msg"messages__pension_scheme".resolve,
       "psaName" -> psaName,
+      "continueUrl" -> routes.ListOfSchemesController.onPageLoad(Scheme).url,
       "contactHmrcUrl" -> appConfig.contactHmrcUrl,
       "returnUrl" -> appConfig.psaOverviewUrl
     )
@@ -82,6 +73,7 @@ class NoSchemeToAddController @Inject()(val appConfig: AppConfig,
     Json.obj(
       "param1" -> msg"messages__racdac".resolve,
       "psaName" -> psaName,
+      "continueUrl" -> routes.ListOfSchemesController.onPageLoad(RacDac).url,
       "contactHmrcUrl" -> appConfig.contactHmrcUrl,
       "returnUrl" -> appConfig.psaOverviewUrl
     )
