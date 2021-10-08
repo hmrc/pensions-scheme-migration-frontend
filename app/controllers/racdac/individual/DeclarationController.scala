@@ -82,7 +82,7 @@ class DeclarationController @Inject()(
     minimalDetailsConnector.getPSADetails(psaId) flatMap { minimalPsa =>
       emailConnector.sendEmail(
         emailAddress = minimalPsa.email,
-        templateName = appConfig.bulkMigrationConfirmationEmailTemplateId,
+        templateName = appConfig.individualMigrationConfirmationEmailTemplateId,
         params = Map("psaName" -> minimalPsa.name),
         callbackUrl(psaId)
       )
