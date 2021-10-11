@@ -19,10 +19,9 @@ package controllers.racdac
 import connectors.{ListOfSchemesConnector, MinimalDetailsConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.FakeAuthAction
-import controllers.preMigration.{NoSchemeToAddController, routes}
 import forms.YesNoFormProvider
 import matchers.JsonMatchers
-import models.{Items, ListOfLegacySchemes, RacDac, Scheme}
+import models.{Items, ListOfLegacySchemes}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
@@ -48,8 +47,10 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
   private val schemeDetail = Items("10000678RE", "2020-10-10", racDac = false, "abcdefghi", "2020-12-12", None)
   private val racDacDetail = Items("10000678RF", "2020-10-10", racDac = true, "abcdefghi", "2020-12-12", Some("12345678"))
- // private val expectedResponse = ListOfLegacySchemes(1, Some(List(schemeDetail, racDacDetail)))
-  private val expectedResponseWithEmpty = ListOfLegacySchemes(1, None)
+  private val expectedResponseWithScheme = ListOfLegacySchemes(1, Some(List(schemeDetail)))
+  private val expectedResponse = ListOfLegacySchemes(1, Some(List( racDacDetail)))
+  private val expectedResponseWithEmpty = ListOfLegacySchemes(0, None)
+
 
   private val templateToBeRendered: String = "racdac/transferAll.njk"
   private val form: Form[Boolean] = formProvider(messages("messages__transferAll__error"))
@@ -79,7 +80,7 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
+      when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.successful(Right(expectedResponse)))
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
@@ -96,22 +97,20 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
       jsonCaptor.getValue must containJson(commonJson(form) ++ json)
     }
 
-    "return OK and the correct view for a GET for scheme with RacDac Only" in {
-
-      when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.successful(Right(expectedResponseWithEmpty)))
-      val result: Future[Result] = controller.onPageLoad(fakeDataRequest())
-      status(result) mustEqual SEE_OTHER
-    //  redirectLocation(result) mustBe Some(routes.NoSchemeToAddController.onPageLoadRacDac().url)
-    }
-
     "return OK and the correct view for a GET for scheme with Scheme Only" in {
 
+      when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.successful(Right(expectedResponseWithScheme)))
+      val result: Future[Result] = controller.onPageLoad(fakeDataRequest())
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac().url)
+    }
+    "return OK and the correct view for a GET for scheme with returning empty list " in {
+
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.successful(Right(expectedResponseWithEmpty)))
       val result: Future[Result] = controller.onPageLoad(fakeDataRequest())
       status(result) mustEqual SEE_OTHER
-    //  redirectLocation(result) mustBe Some(routes.NoSchemeToAddController.onPageLoadScheme().url)
+      redirectLocation(result) mustBe Some(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac().url)
     }
-
     "redirect to the next page when valid data is submitted" in {
       val request: FakeRequest[AnyContentAsFormUrlEncoded] = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
