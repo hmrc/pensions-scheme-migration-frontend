@@ -19,7 +19,6 @@ package controllers.preMigration
 import config.AppConfig
 import connectors.MinimalDetailsConnector
 import controllers.actions.AuthAction
-import models.{RacDac, Scheme}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -63,7 +62,7 @@ class NoSchemeToAddController @Inject()(val appConfig: AppConfig,
     Json.obj(
       "param1" -> msg"messages__pension_scheme".resolve,
       "psaName" -> psaName,
-      "continueUrl" -> routes.ListOfSchemesController.onPageLoad(Scheme).url,
+      "yourSchemesUrl" -> appConfig.yourPensionSchemesUrl,
       "contactHmrcUrl" -> appConfig.contactHmrcUrl,
       "returnUrl" -> appConfig.psaOverviewUrl
     )
@@ -73,7 +72,7 @@ class NoSchemeToAddController @Inject()(val appConfig: AppConfig,
     Json.obj(
       "param1" -> msg"messages__racdac".resolve,
       "psaName" -> psaName,
-      "continueUrl" -> routes.ListOfSchemesController.onPageLoad(RacDac).url,
+      "yourSchemesUrl" -> appConfig.yourPensionSchemesUrl,
       "contactHmrcUrl" -> appConfig.contactHmrcUrl,
       "returnUrl" -> appConfig.psaOverviewUrl
     )

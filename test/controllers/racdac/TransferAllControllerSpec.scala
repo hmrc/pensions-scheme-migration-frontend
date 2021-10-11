@@ -16,7 +16,7 @@
 
 package controllers.racdac
 
-import connectors.MinimalDetailsConnector
+import connectors.{ListOfSchemesConnector, MinimalDetailsConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.FakeAuthAction
 import forms.YesNoFormProvider
@@ -42,6 +42,7 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
   private val psaName: String = "Psa Name"
   private val formProvider: YesNoFormProvider = new YesNoFormProvider()
   private val mockMinDetailsConnector: MinimalDetailsConnector = mock[MinimalDetailsConnector]
+  private val mockListOfSchemesConnector: ListOfSchemesConnector = mock[ListOfSchemesConnector]
 
   private val templateToBeRendered: String = "racdac/transferAll.njk"
   private val form: Form[Boolean] = formProvider(messages("messages__transferAll__error"))
@@ -58,7 +59,7 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
   private def controller: TransferAllController =
     new TransferAllController(appConfig, messagesApi, new FakeAuthAction(), formProvider, mockMinDetailsConnector,
-      controllerComponents, new Renderer(mockAppConfig, mockRenderer))
+      mockListOfSchemesConnector,controllerComponents, new Renderer(mockAppConfig, mockRenderer))
 
   "TransferAllController" must {
 

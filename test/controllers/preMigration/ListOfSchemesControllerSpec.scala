@@ -16,6 +16,7 @@
 
 package controllers.preMigration
 
+import connectors.ListOfSchemesConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.ListSchemesFormProvider
@@ -34,12 +35,13 @@ class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
   private val mockSchemeSearchService: SchemeSearchService = mock[SchemeSearchService]
   private val mockLockingService: LockingService = mock[LockingService]
+  private val mockListOfSchemesConnector: ListOfSchemesConnector = mock[ListOfSchemesConnector]
 
   private val formProvider: ListSchemesFormProvider = new ListSchemesFormProvider()
 
   private def controller: ListOfSchemesController =
     new ListOfSchemesController(mockAppConfig, messagesApi, new FakeAuthAction(),
-      controllerComponents, formProvider, mockSchemeSearchService, mockLockingService)
+      controllerComponents, formProvider,mockListOfSchemesConnector, mockSchemeSearchService, mockLockingService)
 
   "onPageLoad" must {
     "return OK and the correct view returned by the service" in {
