@@ -72,10 +72,11 @@ class DeclarationController @Inject()(
               RacDacRequest(items.schemeName, items.policyNo.getOrElse(
                 throw new RuntimeException("Policy Number is mandatory for RAC/DAC")))
             }
-            bulkMigrationQueueConnector.pushAll(psaId, Json.toJson(racDacSchemes)).flatMap { _ =>
-              sendEmail(psaId).map { _ =>
-                Redirect(controllers.racdac.routes.ConfirmationController.onPageLoad().url)
-              }
+            bulkMigrationQueueConnector.pushAll(psaId, Json.toJson(racDacSchemes)).flatMap {
+              _ =>
+                sendEmail(psaId).map { _ =>
+                  Redirect(controllers.racdac.routes.ConfirmationController.onPageLoad().url)
+                }
             } recoverWith {
               case _ =>
                 Future.successful(Redirect(routes.RequestNotProcessedController.onPageLoad()))
