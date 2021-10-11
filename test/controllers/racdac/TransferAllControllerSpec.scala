@@ -19,8 +19,10 @@ package controllers.racdac
 import connectors.{ListOfSchemesConnector, MinimalDetailsConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.FakeAuthAction
+import controllers.preMigration.{NoSchemeToAddController, routes}
 import forms.YesNoFormProvider
 import matchers.JsonMatchers
+import models.{Items, ListOfLegacySchemes, RacDac, Scheme}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
@@ -44,6 +46,11 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
   private val mockMinDetailsConnector: MinimalDetailsConnector = mock[MinimalDetailsConnector]
   private val mockListOfSchemesConnector: ListOfSchemesConnector = mock[ListOfSchemesConnector]
 
+  private val schemeDetail = Items("10000678RE", "2020-10-10", racDac = false, "abcdefghi", "2020-12-12", None)
+  private val racDacDetail = Items("10000678RF", "2020-10-10", racDac = true, "abcdefghi", "2020-12-12", Some("12345678"))
+ // private val expectedResponse = ListOfLegacySchemes(1, Some(List(schemeDetail, racDacDetail)))
+  private val expectedResponseWithEmpty = ListOfLegacySchemes(1, None)
+
   private val templateToBeRendered: String = "racdac/transferAll.njk"
   private val form: Form[Boolean] = formProvider(messages("messages__transferAll__error"))
 
@@ -60,6 +67,11 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
   private def controller: TransferAllController =
     new TransferAllController(appConfig, messagesApi, new FakeAuthAction(), formProvider, mockMinDetailsConnector,
       mockListOfSchemesConnector,controllerComponents, new Renderer(mockAppConfig, mockRenderer))
+//  private def NoSchemeToAddController: NoSchemeToAddController =
+//    new NoSchemeToAddController(appConfig, messagesApi, new FakeAuthAction(),controllerComponents, mockMinDetailsConnector,
+//       new Renderer(mockAppConfig, mockRenderer))
+
+
 
   "TransferAllController" must {
 
@@ -82,6 +94,22 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
       val json: JsObject = Json.obj("radios" -> Radios.yesNo(form("value")))
 
       jsonCaptor.getValue must containJson(commonJson(form) ++ json)
+    }
+
+    "return OK and the correct view for a GET for scheme with RacDac Only" in {
+
+      when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.successful(Right(expectedResponseWithEmpty)))
+      val result: Future[Result] = controller.onPageLoad(fakeDataRequest())
+      status(result) mustEqual SEE_OTHER
+    //  redirectLocation(result) mustBe Some(routes.NoSchemeToAddController.onPageLoadRacDac().url)
+    }
+
+    "return OK and the correct view for a GET for scheme with Scheme Only" in {
+
+      when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.successful(Right(expectedResponseWithEmpty)))
+      val result: Future[Result] = controller.onPageLoad(fakeDataRequest())
+      status(result) mustEqual SEE_OTHER
+    //  redirectLocation(result) mustBe Some(routes.NoSchemeToAddController.onPageLoadScheme().url)
     }
 
     "redirect to the next page when valid data is submitted" in {

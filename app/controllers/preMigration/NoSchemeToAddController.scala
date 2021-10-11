@@ -61,6 +61,7 @@ class NoSchemeToAddController @Inject()(val appConfig: AppConfig,
   private def schemeJson(psaName: String)(implicit messages: Messages):JsObject = {
     Json.obj(
       "param1" -> msg"messages__pension_scheme".resolve,
+      "param2" -> msg"messages__scheme".resolve,
       "psaName" -> psaName,
       "yourSchemesUrl" -> appConfig.yourPensionSchemesUrl,
       "contactHmrcUrl" -> appConfig.contactHmrcUrl,
@@ -71,6 +72,7 @@ class NoSchemeToAddController @Inject()(val appConfig: AppConfig,
   private def racDacJson(psaName: String)(implicit messages: Messages):JsObject = {
     Json.obj(
       "param1" -> msg"messages__racdac".resolve,
+      "param2" -> msg"messages__racdac".resolve,
       "psaName" -> psaName,
       "yourSchemesUrl" -> appConfig.yourPensionSchemesUrl,
       "contactHmrcUrl" -> appConfig.contactHmrcUrl,
