@@ -17,7 +17,7 @@
 package controllers.preMigration
 
 import config.AppConfig
-import connectors.cache.FeatureToggleConnector
+import connectors.cache.{BulkMigrationQueueConnector, FeatureToggleConnector}
 import controllers.actions._
 import models.FeatureToggle.Enabled
 import models.FeatureToggleName.MigrationTransfer
@@ -37,6 +37,7 @@ class MigrationTilePartialController @Inject()(
                                             override val messagesApi: MessagesApi,
                                             authenticate: AuthAction,
                                             featureToggleConnector: FeatureToggleConnector,
+                                            bulkMigrationQueueConnector: BulkMigrationQueueConnector,
                                             val controllerComponents: MessagesControllerComponents,
                                             renderer: Renderer
                                           )(implicit ec: ExecutionContext)
@@ -45,17 +46,21 @@ class MigrationTilePartialController @Inject()(
     with NunjucksSupport {
 
   def migrationPartial: Action[AnyContent] = authenticate.async { implicit request =>
-    val links: Future[Seq[PageLink]] = featureToggleConnector.get(MigrationTransfer.asString).map {
+    val links: Future[Seq[PageLink]] = featureToggleConnector.get(MigrationTransfer.asString).flatMap {
       case Enabled(_) =>
-        Seq(
-          PageLink("add-pension-schemes", appConfig.schemesMigrationTransfer, msg"messages__migrationLink__addSchemesLink"),
-          PageLink("add-rac-dacs", appConfig.racDacMigrationTransfer, msg"messages__migrationLink__addRacDacsLink")
-        )
+        bulkMigrationQueueConnector.isRequestInProgress(request.psaId.id).map{
+          case false =>
+            Seq(PageLink("add-pension-schemes", appConfig.schemesMigrationTransfer, msg"messages__migrationLink__addSchemesLink"),
+              PageLink("add-rac-dacs", appConfig.racDacMigrationTransfer, msg"messages__migrationLink__addRacDacsLink"))
+          case true =>
+            Seq(PageLink("add-pension-schemes", appConfig.schemesMigrationTransfer, msg"messages__migrationLink__addSchemesLink"),
+              PageLink("check-rac-dacs", appConfig.racDacMigrationCheckStatus, msg"messages__migrationLink__checkStatusRacDacsLink"))
+        }
       case _ =>
-        Seq(
+        Future(Seq(
           PageLink("view-pension-schemes", appConfig.schemesMigrationViewOnly, msg"messages__migrationLink__viewSchemesLink"),
           PageLink("view-rac-dacs", appConfig.racDacMigrationViewOnly, msg"messages__migrationLink__viewRacDacsLink")
-        )
+        ))
     }
 
     links.flatMap { migrationLinks =>

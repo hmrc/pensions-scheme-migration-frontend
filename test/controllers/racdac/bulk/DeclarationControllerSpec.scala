@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.racdac
+package controllers.racdac.bulk
 
 import connectors.cache.BulkMigrationQueueConnector
 import connectors.{EmailConnector, EmailSent, ListOfSchemesConnector, MinimalDetailsConnector}
@@ -65,8 +65,8 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
-  private def httpPathGET: String = controllers.racdac.routes.DeclarationController.onPageLoad().url
-  private def httpPathPOST: String = controllers.racdac.routes.DeclarationController.onSubmit().url
+  private def httpPathGET: String = controllers.racdac.bulk.routes.DeclarationController.onPageLoad().url
+  private def httpPathPOST: String = controllers.racdac.bulk.routes.DeclarationController.onSubmit().url
 
   "RacDac DeclarationController" must {
 
@@ -95,7 +95,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
       val result = route(application, httpGETRequest(httpPathPOST)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.racdac.routes.ConfirmationController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.racdac.bulk.routes.ConfirmationController.onPageLoad().url)
     }
   }
 }

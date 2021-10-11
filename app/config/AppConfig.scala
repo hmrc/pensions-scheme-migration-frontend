@@ -53,6 +53,9 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val dataCacheUrl: String = s"$migrationUrl${config.get[String](path = "urls.dataCache")}"
   lazy val schemeDataCacheUrl: String = s"$migrationUrl${config.get[String](path = "urls.schemeDataCache")}"
   lazy val bulkMigrationEnqueueUrl: String = s"$migrationUrl${config.get[String](path = "urls.bulkMigrationEnqueue")}"
+  lazy val bulkMigrationIsInProgressUrl: String = s"$migrationUrl${config.get[String](path = "urls.bulkMigrationIsInProgress")}"
+  lazy val bulkMigrationIsAllFailedUrl: String = s"$migrationUrl${config.get[String](path = "urls.bulkMigrationIsAllFailed")}"
+  lazy val bulkMigrationDeleteAllUrl: String = s"$migrationUrl${config.get[String](path = "urls.bulkMigrationDeleteAll")}"
   def featureToggleUrl(toggle:String) : String = s"$migrationUrl${config.get[String]("urls.featureToggle").format(toggle)}"
 
   lazy val listOfSchemesUrl: String = s"$migrationUrl${config.get[String](path = "urls.listOfSchemes")}"
@@ -72,6 +75,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val racDacMigrationViewOnly: String = config.get[String]("urls.rac-dacs-migration-view-only")
   lazy val schemesMigrationTransfer: String = config.get[String]("urls.schemes-migration-transfer")
   lazy val racDacMigrationTransfer: String = config.get[String]("urls.rac-dacs-migration-transfer")
+  lazy val racDacMigrationCheckStatus: String = config.get[String]("urls.rac-dacs-migration-check-status")
 
   val reportAProblemPartialUrl: String = getConfigString("contact-frontend.report-problem-url.with-js")
   val reportAProblemNonJSUrl: String = getConfigString("contact-frontend.report-problem-url.non-js")

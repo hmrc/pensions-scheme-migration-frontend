@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.racdac
+package controllers.racdac.bulk
 
 import config.AppConfig
 import connectors._
@@ -74,7 +74,7 @@ class DeclarationController @Inject()(
             }
             bulkMigrationQueueConnector.pushAll(psaId, Json.toJson(racDacSchemes)).flatMap { _ =>
               sendEmail(psaId).map { _ =>
-                Redirect(controllers.racdac.routes.ConfirmationController.onPageLoad().url)
+                Redirect(routes.ConfirmationController.onPageLoad().url)
               }
             }
           case _ =>

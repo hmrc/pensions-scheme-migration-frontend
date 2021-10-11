@@ -943,6 +943,7 @@ messages__migrationLink__viewSchemesLink = View pension schemes registered on th
 messages__migrationLink__viewRacDacsLink = View RAC/DACs registered on the Pension Schemes Online service
 messages__migrationLink__addSchemesLink = Add pension schemes registered on the Pension Schemes Online service
 messages__migrationLink__addRacDacsLink = Add RAC/DACs registered on the Pension Schemes Online service
+messages__migrationLink__checkStatusRacDacsLink = Check the status of your RAC/DACs being added from Pension Schemes Online
 
 messages__pension_scheme = pension scheme
 messages__scheme = scheme
@@ -1074,5 +1075,15 @@ messages__racdac__confirmation__title = You have completed your request to add y
 messages__racdac__confirmation__email = We have sent a confirmation email to
 messages__racdac__confirmation__detail = It can take up to 48 hours for your RAC/DACs to be added to your list of schemes on the Managing Pension Schemes service.
 
+messages__racdac__inprogress__title = We are adding your RAC/DACs
+messages__racdac__inprogress__p1 = We are in the process of adding your RAC/DACs from the Pension Schemes Online service.
+messages__racdac__inprogress__p2__first = It can take time for your RAC/DACs to be added from Pension Schemes Online. You can view your RAC/DACs in
+messages__racdac__inprogress__p2_link_text =  your list of schemes
+messages__racdac__inprogress__p2__last =  once they have been added.
+messages__racdac__inprogress__button__text = Back to administrator overview
 
-
+messages__racdac__finished__title = We could not add some of your RAC/DACs
+messages__racdac__finished__p1__first = We have added some of your RAC/DACs from the Pension Schemes Online service. You can view your RAC/DACs in
+messages__racdac__finished__p1_link_text = your list of schemes
+messages__racdac__finished__p2__first = Some of your RAC/DACs could not be added because the service was unavailable.
+messages__racdac__finished__p2_link_text = Try adding them again

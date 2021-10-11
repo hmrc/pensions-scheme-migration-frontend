@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package controllers.racdac
+package controllers.racdac.bulk
 
-import connectors.MinimalDetailsConnector
+import connectors.cache.BulkMigrationQueueConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import matchers.JsonMatchers
@@ -29,26 +29,26 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.{Data, Enumerable}
+import utils.Enumerable
 
 import scala.concurrent.Future
 
-class ConfirmationControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class InProgressControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
-  private val templateToBeRendered = "racdac/confirmation.njk"
-
+  private val templateToBeRendered = "racdac/inProgress.njk"
+  private val mockQueueConnector = mock[BulkMigrationQueueConnector]
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val extraModules: Seq[GuiceableModule] = Seq(
-    bind[MinimalDetailsConnector].to(mockMinimalDetailsConnector)
+    bind[BulkMigrationQueueConnector].to(mockQueueConnector)
   )
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
-  private def httpPathGET: String = controllers.racdac.routes.ConfirmationController.onPageLoad().url
+  private def httpPathGET: String = controllers.racdac.bulk.routes.InProgressController.onPageLoad().url
 
   private val jsonToPassToTemplate: JsObject =
     Json.obj(
-      "email" -> Data.email,
-      "finishUrl" -> mockAppConfig.psaOverviewUrl
+      "listOfSchemesUrl" -> mockAppConfig.yourPensionSchemesUrl,
+      "returnUrl" -> mockAppConfig.psaOverviewUrl
     )
 
   override def beforeEach: Unit = {
@@ -56,11 +56,10 @@ class ConfirmationControllerSpec extends ControllerSpecBase with NunjucksSupport
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
-  "ConfirmationController" must {
+  "InProgressController" must {
 
     "return OK and the correct view for a GET" in {
-      when(mockMinimalDetailsConnector.getPSAEmail(any(), any())).thenReturn(Future.successful(Data.email))
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, httpGETRequest(httpPathGET)).value
@@ -73,6 +72,5 @@ class ConfirmationControllerSpec extends ControllerSpecBase with NunjucksSupport
 
       jsonCaptor.getValue must containJson(jsonToPassToTemplate)
     }
-
   }
 }
