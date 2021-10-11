@@ -79,8 +79,8 @@ GET         /what-you-will-need-before-start                        controllers.
 GET         /no-pension-schemes-registered                         controllers.preMigration.NotRegisterController.onPageLoadScheme
 GET         /rac-dac/no-rac-dacs-registered                                controllers.preMigration.NotRegisterController.onPageLoadRacDac
 
-GET         /no-more-schemes-to-add                                        controllers.preMigration.NoSchemeToAddController.onPageLoadScheme
-GET         /rac-dac/no-more-rac-dacs-to-add                               controllers.preMigration.NoSchemeToAddController.onPageLoadRacDac
+GET         /no-pension-schemes-to-add                                        controllers.preMigration.NoSchemeToAddController.onPageLoadScheme
+GET         /rac-dac/no-rac-dacs-to-add                               controllers.preMigration.NoSchemeToAddController.onPageLoadRacDac
 
 
 GET         /list-pension-schemes                                   controllers.preMigration.ListOfSchemesController.onPageLoad(migrationType: MigrationType = Scheme)

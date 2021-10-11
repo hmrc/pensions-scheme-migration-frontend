@@ -968,7 +968,7 @@ messages_noSchemeToAdd_p1 = You cannot add a {0} from the Pension Schemes Online
 messages_noSchemeToAdd_p2 = This may be because you:
 messages_noSchemeToAdd_p3 = if you need help.
 messages_noSchemeToAdd_p4 = to manage the {0}s you have added from Pension Schemes Online.
-messages_noSchemeToAdd_li1_1 = have added all your {0} from Pension Schemes Online
+messages_noSchemeToAdd_li1_1 = have added all your {0}s from Pension Schemes Online
 messages_noSchemeToAdd_li1_2 = do not have any active {0}s registered on Pension Schemes Online
 messages_noSchemeToAdd_view_your_list = View your list of schemes
 
