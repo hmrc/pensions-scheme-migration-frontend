@@ -68,7 +68,7 @@ class EnterPostcodeController @Inject()(val appConfig: AppConfig,
     implicit request =>
       retrieve(SchemeNameId) { schemeName =>
         post(getFormToJson(schemeName, establisherIndex, directorIndex, mode),
-          EnterPostCodeId(establisherIndex, directorIndex), "enterPostcode.invalid", Some(mode))
+          EnterPostCodeId(establisherIndex, directorIndex), "enterPostcode.noresults", Some(mode))
       }
   }
 
