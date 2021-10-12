@@ -1079,4 +1079,10 @@ messages__racdac__request__not__processed__heading = Sorry, there was a problem 
 messages__racdac__request__not__processed__p = We could not process your request to add your RAC/DACs from Pension Schemes Online.
 messages__racdac__request__not__processed__link = Try adding them again
 
+messages__racdac__cya__heading = RAC/DAC details
+messages__racdac__cya__name__label = What is the name of the RAC/DAC?
+messages__racdac__cya__name__visuallyhidden = the name of the RAC/DAC
+messages__racdac__cya__contract__or__policy_number__label = What is {0}’s contract or policy number?
+messages__racdac__cya__contract__or__policy_number__visuallyhidden = {0}’s contract or policy number
+
 

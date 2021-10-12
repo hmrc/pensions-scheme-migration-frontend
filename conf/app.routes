@@ -118,8 +118,8 @@ POST        /rac-dac/add-all                                   controllers.racda
 GET         /rac-dac/list-rac-dacs-all                                    controllers.racdac.BulkListController.onPageLoad
 POST        /rac-dac/list-rac-dacs-all                                   controllers.racdac.BulkListController.onSubmit
 
-GET         /rac-dac/declaration                                           controllers.racdac.DeclarationController.onPageLoad
-GET         /rac-dac/submit-declaration                                    controllers.racdac.DeclarationController.onSubmit
+GET         /rac-dac/declaration-all                                           controllers.racdac.DeclarationController.onPageLoad
+GET         /rac-dac/submit-declaration-all                                    controllers.racdac.DeclarationController.onSubmit
 
 GET         /rac-dac/confirmation                                   controllers.racdac.ConfirmationController.onPageLoad
 
@@ -131,3 +131,7 @@ POST        /confirm-adviser-address                                 controllers
 
 GET         /check-adviser-answers                                   controllers.adviser.CheckYourAnswersController.onPageLoad
 GET         /rac-dac/request-not-processed                           controllers.racdac.RequestNotProcessedController.onPageLoad
+
+GET         /rac-dac/check-your-answers                              controllers.racdac.individual.CheckYourAnswersController.onPageLoad
+GET         /rac-dac/declaration                                     controllers.racdac.individual.DeclarationController.onPageLoad
+GET         /rac-dac/submit-declaration                              controllers.racdac.individual.DeclarationController.onSubmit
