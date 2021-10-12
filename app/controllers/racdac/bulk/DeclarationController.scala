@@ -18,7 +18,7 @@ package controllers.racdac.bulk
 
 import config.AppConfig
 import connectors._
-import connectors.cache.BulkMigrationQueueConnector
+import connectors.cache.{BulkMigrationQueueConnector, CurrentPstrCacheConnector}
 import controllers.actions.AuthAction
 import models.racDac.RacDacRequest
 import models.requests.AuthenticatedRequest
@@ -42,6 +42,7 @@ class DeclarationController @Inject()(
                                        renderer: Renderer,
                                        bulkMigrationQueueConnector: BulkMigrationQueueConnector,
                                        listOfSchemesConnector: ListOfSchemesConnector,
+                                       currentPstrCacheConnector: CurrentPstrCacheConnector,
                                        emailConnector: EmailConnector,
                                        crypto: ApplicationCrypto
                                      )(implicit val executionContext: ExecutionContext)
@@ -66,6 +67,7 @@ class DeclarationController @Inject()(
     authenticate.async {
       implicit request =>
         val psaId = request.psaId.id
+        currentPstrCacheConnector
         listOfSchemesConnector.getListOfSchemes(psaId).flatMap {
           case Right(listOfSchemes) =>
             val racDacSchemes = listOfSchemes.items.getOrElse(Nil).filter(_.racDac).map { items =>

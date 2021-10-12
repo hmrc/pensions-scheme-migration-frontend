@@ -23,7 +23,7 @@ import forms.racdac.RacDacBulkListFormProvider
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SchemeSearchService
+import services.BulkRacDacService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
@@ -35,7 +35,7 @@ class BulkListController @Inject()(
                                     authenticate: AuthAction,
                                     val controllerComponents: MessagesControllerComponents,
                                     formProvider: RacDacBulkListFormProvider,
-                                    schemeSearchService: SchemeSearchService
+                                    bulkRacDacService: BulkRacDacService
                                   )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport with NunjucksSupport {
@@ -44,13 +44,13 @@ class BulkListController @Inject()(
 
   def onPageLoad: Action[AnyContent] = authenticate.async {
     implicit request =>
-      schemeSearchService.renderRacDacBulkView(form, pageNumber = 1)
+      bulkRacDacService.renderRacDacBulkView(form, pageNumber = 1)
   }
 
   def onSubmit: Action[AnyContent] = authenticate.async {
     implicit request =>
       form.bindFromRequest().fold(formWithErrors =>
-        schemeSearchService.renderRacDacBulkView(formWithErrors, pageNumber = 1),
+        bulkRacDacService.renderRacDacBulkView(formWithErrors, pageNumber = 1),
         { case true =>
           Future.successful(Redirect(routes.DeclarationController.onPageLoad()))
         case _ =>
@@ -58,5 +58,4 @@ class BulkListController @Inject()(
         }
       )
   }
-
 }
