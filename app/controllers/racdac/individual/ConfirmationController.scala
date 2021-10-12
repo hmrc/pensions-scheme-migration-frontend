@@ -18,7 +18,10 @@ package controllers.racdac.individual
 
 import config.AppConfig
 import connectors.MinimalDetailsConnector
+import connectors.cache.{CurrentPstrCacheConnector, LockCacheConnector, UserAnswersCacheConnector}
 import controllers.actions._
+import helpers.cya.CYAHelper
+import identifiers.beforeYouStart.SchemeNameId
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -31,7 +34,12 @@ import scala.concurrent.ExecutionContext
 class ConfirmationController @Inject()(appConfig: AppConfig,
                                        override val messagesApi: MessagesApi,
                                        authenticate: AuthAction,
+                                       getData: DataRetrievalAction,
+                                       requireData: DataRequiredAction,
                                        minimalDetailsConnector: MinimalDetailsConnector,
+                                       userAnswersCacheConnector: UserAnswersCacheConnector,
+                                       currentPstrCacheConnector:CurrentPstrCacheConnector,
+                                       lockCacheConnector:LockCacheConnector,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer
                                        )(implicit ec: ExecutionContext)
@@ -39,14 +47,26 @@ class ConfirmationController @Inject()(appConfig: AppConfig,
     with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
-    authenticate.async {
+    (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        minimalDetailsConnector.getPSAEmail.flatMap {
-          psaEmail =>
-            val json = Json.obj(
-              "email" -> psaEmail,
-              "finishUrl" -> appConfig.psaOverviewUrl
+        val jsonFuture =
+          for {
+            email <- minimalDetailsConnector.getPSAEmail
+            _ <- currentPstrCacheConnector.remove
+            _ <- lockCacheConnector.removeLock(request.lock)
+            _ <- userAnswersCacheConnector.remove(request.lock.pstr)
+          } yield {
+            Json.obj(
+              "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+              "pstr" -> request.lock.pstr,
+              "email" -> email,
+              "yourSchemesLink" -> appConfig.yourPensionSchemesUrl,
+              "returnUrl" -> appConfig.psaOverviewUrl
             )
+          }
+
+        jsonFuture.flatMap {
+          json =>
             renderer.render("racdac/individual/confirmation.njk", json).map(Ok(_))
         }
     }

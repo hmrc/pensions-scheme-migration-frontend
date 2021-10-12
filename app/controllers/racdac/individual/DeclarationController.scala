@@ -19,6 +19,7 @@ package controllers.racdac.individual
 import config.AppConfig
 import connectors._
 import controllers.actions.{AuthAction, DataRetrievalAction}
+import identifiers.beforeYouStart.SchemeNameId
 import models.requests.OptionalDataRequest
 import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -46,7 +47,7 @@ class DeclarationController @Inject()(
     with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
-    authenticate.async {
+    (authenticate andThen getData).async {
       implicit request =>
         minimalDetailsConnector.getPSAName.flatMap {
           psaName =>
@@ -64,26 +65,27 @@ class DeclarationController @Inject()(
       implicit request =>
         val psaId = request.psaId.id
 
+
+         val userAnswers = request.userAnswers.get
+         val racDacName = userAnswers.get(SchemeNameId)
+          .getOrElse(throw new RuntimeException("Scheme Name is mandatory for RAC/DAC"))
         //TODO need to use when calling connector for ETMP
-        // val userAnswers = request.userAnswers.get
-        // val racDacName = userAnswers.get(SchemeNameId)
-        //  .getOrElse(throw new RuntimeException("Scheme Name is mandatory for RAC/DAC"))
         // val policyNumberId= userAnswers.get(ContractOrPolicyNumberId)
         //  .getOrElse(throw new RuntimeException("Policy Number is mandatory for RAC/DAC"))
 
-          sendEmail(psaId)(implicitly).map { _ =>
+          sendEmail(racDacName,psaId)(implicitly).map { _ =>
             Redirect(controllers.racdac.individual.routes.ConfirmationController.onPageLoad().url)
         }
     }
 
-  private def sendEmail(psaId: String)
+  private def sendEmail(schemeName: String,psaId: String)
                        (implicit request: OptionalDataRequest[AnyContent]): Future[EmailStatus] = {
     logger.debug(s"Sending Rac Dac migration email for $psaId")
     minimalDetailsConnector.getPSADetails(psaId) flatMap { minimalPsa =>
       emailConnector.sendEmail(
         emailAddress = minimalPsa.email,
         templateName = appConfig.individualMigrationConfirmationEmailTemplateId,
-        params = Map("psaName" -> minimalPsa.name),
+        params = Map("psaName" -> minimalPsa.name,"schemeName"-> schemeName),
         callbackUrl(psaId)
       )
     } recoverWith {

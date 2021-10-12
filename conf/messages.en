@@ -1074,9 +1074,12 @@ messages__racdac__confirmation__title = You have completed your request to add y
 messages__racdac__confirmation__email = We have sent a confirmation email to
 messages__racdac__confirmation__detail = It can take up to 48 hours for your RAC/DACs to be added to your list of schemes on the Managing Pension Schemes service.
 
-messages__racdac__individual__confirmation__title = You have completed your request to add your RAC/DACs from Pension Schemes Online
-messages__racdac__individual__confirmation__email = We have sent a confirmation email to
-messages__racdac__individual__confirmation__detail = It can take up to 48 hours for your RAC/DACs to be added to your list of schemes on the Managing Pension Schemes service.
+messages__racdac__individual__confirmation__title = The RAC/DAC has been added from Pension Schemes Online
+messages__racdac__individual__confirmation__heading = The RAC/DAC {0} has been added from Pension Schemes Online
+messages__racdac__individual__confirmation__pstr__number = The PSTR number is {0}
+messages__racdac__individual__confirmation__detail__1 = The RAC/DAC has been added to your list of pension schemes.
+messages__racdac__individual__confirmation__detail__2 = to manage this RAC/DAC.
+messages__racdac__individual__confirmation__pension__scheme__link = View your list of pension schemes
 
 messages__racdac__cya__heading = RAC/DAC details
 messages__racdac__cya__name__label = What is the name of the RAC/DAC?

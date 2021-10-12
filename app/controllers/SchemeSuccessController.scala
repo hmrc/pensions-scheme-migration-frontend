@@ -61,7 +61,6 @@ class SchemeSuccessController @Inject()(appConfig: AppConfig,
               "pstr" -> request.lock.pstr,
               "email" -> email,
               "yourSchemesLink" -> appConfig.yourPensionSchemesUrl,
-              //TODO above link need to be change after your schemes page develop new story for the same
               "returnUrl" -> appConfig.psaOverviewUrl
             )
           }
