@@ -106,7 +106,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
       val minPSA = MinPSA("test@test.com", false, Some("test company"), None, false, false)
       when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(minPSA))
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(), any())).thenReturn(Future(Right(listOfSchems)))
-      when(mockBulkMigrationConnector.pushAll(any(), any())(any(), any())).thenReturn(Future.failed(new HttpException(any(), any())))
+      when(mockBulkMigrationConnector.pushAll(any(), any())(any(), any())).thenReturn(Future.failed(new HttpException("No Service", SERVICE_UNAVAILABLE)))
 
       val result = route(application, httpGETRequest(httpPathPOST)).value
 
