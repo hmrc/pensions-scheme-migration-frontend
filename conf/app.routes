@@ -118,16 +118,16 @@ POST        /rac-dac/add-all                                   controllers.racda
 GET         /rac-dac/list-rac-dacs-all                                    controllers.racdac.bulk.BulkListController.onPageLoad
 POST        /rac-dac/list-rac-dacs-all                                   controllers.racdac.bulk.BulkListController.onSubmit
 
-GET         /rac-dac/declaration                                           controllers.racdac.bulk.DeclarationController.onPageLoad
-GET         /rac-dac/submit-declaration                                    controllers.racdac.bulk.DeclarationController.onSubmit
-
-GET         /rac-dac/confirmation                                    controllers.racdac.bulk.ConfirmationController.onPageLoad
+GET         /rac-dac/declaration-all                                           controllers.racdac.bulk.DeclarationController.onPageLoad
+GET         /rac-dac/submit-declaration-all                                    controllers.racdac.bulk.DeclarationController.onSubmit
 
 GET         /rac-dac/rac-dac-status-in-progress                      controllers.racdac.bulk.InProgressController.onPageLoad
 
 GET         /rac-dac/rac-dac-status-complete                         controllers.racdac.bulk.FinishedStatusController.onPageLoad
 
 GET         /rac-dac/check-status                                    controllers.racdac.bulk.CheckStatusController.onPageLoad
+
+GET         /rac-dac/confirmation                                   controllers.racdac.bulk.ConfirmationController.onPageLoad
 
 GET         /adviser-address-results                                 controllers.adviser.SelectAddressController.onPageLoad(mode: Mode = NormalMode)
 POST        /adviser-address-results                                 controllers.adviser.SelectAddressController.onSubmit(mode: Mode = NormalMode)
@@ -136,3 +136,7 @@ GET         /confirm-adviser-address                                 controllers
 POST        /confirm-adviser-address                                 controllers.adviser.ConfirmAddressController.onSubmit
 
 GET         /check-adviser-answers                                   controllers.adviser.CheckYourAnswersController.onPageLoad
+
+GET         /rac-dac/check-your-answers                              controllers.racdac.individual.CheckYourAnswersController.onPageLoad
+GET         /rac-dac/declaration                                     controllers.racdac.individual.DeclarationController.onPageLoad
+GET         /rac-dac/submit-declaration                              controllers.racdac.individual.DeclarationController.onSubmit
