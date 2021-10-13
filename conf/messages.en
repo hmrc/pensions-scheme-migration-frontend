@@ -1075,6 +1075,11 @@ messages__racdac__confirmation__title = You have completed your request to add y
 messages__racdac__confirmation__email = We have sent a confirmation email to
 messages__racdac__confirmation__detail = It can take up to 48 hours for your RAC/DACs to be added to your list of schemes on the Managing Pension Schemes service.
 
+messages__racdac__request__not__processed__title = We could not process your request to add your RAC/DACs from Pension Schemes Online
+messages__racdac__request__not__processed__heading = Sorry, there was a problem with the service
+messages__racdac__request__not__processed__p = We could not process your request to add your RAC/DACs from Pension Schemes Online.
+messages__racdac__request__not__processed__link = Try adding them again
+
 messages__racdac__cya__heading = RAC/DAC details
 messages__racdac__cya__name__label = What is the name of the RAC/DAC?
 messages__racdac__cya__name__visuallyhidden = the name of the RAC/DAC

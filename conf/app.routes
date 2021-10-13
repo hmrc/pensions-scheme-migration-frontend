@@ -130,6 +130,7 @@ GET         /confirm-adviser-address                                 controllers
 POST        /confirm-adviser-address                                 controllers.adviser.ConfirmAddressController.onSubmit
 
 GET         /check-adviser-answers                                   controllers.adviser.CheckYourAnswersController.onPageLoad
+GET         /rac-dac/request-not-processed                           controllers.racdac.RequestNotProcessedController.onPageLoad
 
 GET         /rac-dac/check-your-answers                              controllers.racdac.individual.CheckYourAnswersController.onPageLoad
 GET         /rac-dac/declaration                                     controllers.racdac.individual.DeclarationController.onPageLoad
