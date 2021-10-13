@@ -790,11 +790,11 @@ messages__confirmDeleteTrustee__title = Are you sure you want to delete this tru
 
 messages__schemeTaskList__trusteeIndividualAddress_addLink = Add address for {0}
 
-individualEnterPreviousPostcode.required = Enter the individual’s previous postcode
+individualEnterPreviousPostcode.required = Enter a postcode
 trusteeEnterPreviousPostcode.invalid = Enter a postcode in the correct format
 
-companyEnterPreviousPostcode.required = Enter the company’s previous postcode
-partnershipEnterPreviousPostcode.required = Enter the partnership’s previous postcode
+companyEnterPreviousPostcode.required = Enter a postcode
+partnershipEnterPreviousPostcode.required = Enter a postcode
 trusteeEnterPreviousPostcode.invalid = Enter a postcode in the correct format
 
 
