@@ -68,11 +68,6 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
   private def controller: TransferAllController =
     new TransferAllController(appConfig, messagesApi, new FakeAuthAction(), formProvider, mockMinDetailsConnector,
       mockListOfSchemesConnector,controllerComponents, new Renderer(mockAppConfig, mockRenderer))
-//  private def NoSchemeToAddController: NoSchemeToAddController =
-//    new NoSchemeToAddController(appConfig, messagesApi, new FakeAuthAction(),controllerComponents, mockMinDetailsConnector,
-//       new Renderer(mockAppConfig, mockRenderer))
-
-
 
   "TransferAllController" must {
 

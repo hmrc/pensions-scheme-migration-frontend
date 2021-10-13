@@ -68,7 +68,7 @@ class ListOfSchemesController @Inject()(
           Future.successful(Redirect(routes.CannotMigrateController.onPageLoad()))
       }
   }
-  def emptyListRedirect(checkRacDac: Boolean):Future[Result] ={
+  private def emptyListRedirect(checkRacDac: Boolean):Future[Result] ={
     if (checkRacDac) {
       Future.successful(Redirect(routes.NoSchemeToAddController.onPageLoadRacDac()))
     }else{
