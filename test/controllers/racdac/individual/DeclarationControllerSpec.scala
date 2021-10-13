@@ -30,7 +30,7 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.Data.psaName
+import utils.Data.{psaName, ua}
 import utils.Enumerable
 
 import scala.concurrent.Future
@@ -69,6 +69,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
     "RacDac Individual DeclarationController" must {
 
       "return OK and the correct view for a GET" in {
+        mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
         when(mockMinimalDetailsConnector.getPSAName(any(), any())).thenReturn(Future.successful(psaName))
         val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
         val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
@@ -82,14 +83,14 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
       }
 
       "redirect to next page when rac dac schems exist" in {
-
+        mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
         val minPSA = MinPSA("test@test.com", false, Some("test company"), None, false, false)
         when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(minPSA))
         when(mockEmailConnector.sendEmail(any(), any(), any(), any())(any(), any())).thenReturn(Future(EmailSent))
         val result = route(application, httpGETRequest(httpPathPOST)).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.racdac.routes.ConfirmationController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(controllers.racdac.individual.routes.ConfirmationController.onPageLoad().url)
       }
     }
   }

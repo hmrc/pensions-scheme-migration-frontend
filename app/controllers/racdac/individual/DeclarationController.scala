@@ -18,9 +18,9 @@ package controllers.racdac.individual
 
 import config.AppConfig
 import connectors._
-import controllers.actions.{AuthAction, DataRetrievalAction}
+import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.beforeYouStart.SchemeNameId
-import models.requests.OptionalDataRequest
+import models.requests.DataRequest
 import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -37,6 +37,7 @@ class DeclarationController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        authenticate: AuthAction,
                                        getData: DataRetrievalAction,
+                                       requireData: DataRequiredAction,
                                        minimalDetailsConnector: MinimalDetailsConnector,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer,
@@ -47,7 +48,7 @@ class DeclarationController @Inject()(
     with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
-    (authenticate andThen getData).async {
+    (authenticate andThen getData andThen requireData).async {
       implicit request =>
         minimalDetailsConnector.getPSAName.flatMap {
           psaName =>
@@ -61,12 +62,11 @@ class DeclarationController @Inject()(
     }
 
   def onSubmit: Action[AnyContent] =
-    (authenticate andThen getData).async {
+    (authenticate andThen getData andThen requireData).async {
       implicit request =>
         val psaId = request.psaId.id
 
-
-         val userAnswers = request.userAnswers.get
+         val userAnswers = request.userAnswers
          val racDacName = userAnswers.get(SchemeNameId)
           .getOrElse(throw new RuntimeException("Scheme Name is mandatory for RAC/DAC"))
         //TODO need to use when calling connector for ETMP
@@ -79,7 +79,7 @@ class DeclarationController @Inject()(
     }
 
   private def sendEmail(schemeName: String,psaId: String)
-                       (implicit request: OptionalDataRequest[AnyContent]): Future[EmailStatus] = {
+                       (implicit request: DataRequest[AnyContent]): Future[EmailStatus] = {
     logger.debug(s"Sending Rac Dac migration email for $psaId")
     minimalDetailsConnector.getPSADetails(psaId) flatMap { minimalPsa =>
       emailConnector.sendEmail(

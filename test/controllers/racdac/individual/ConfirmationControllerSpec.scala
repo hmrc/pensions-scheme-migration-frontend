@@ -17,8 +17,10 @@
 package controllers.racdac.individual
 
 import connectors.MinimalDetailsConnector
+import connectors.cache.{CurrentPstrCacheConnector, LockCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
+import identifiers.beforeYouStart.SchemeNameId
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -26,20 +28,26 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.Results.Ok
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.{Data, Enumerable}
+import utils.Data.ua
+import utils.{Data, Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 
 class ConfirmationControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val templateToBeRendered = "racdac/individual/confirmation.njk"
-
+  private val userAnswers: Option[UserAnswers] = ua.set(SchemeNameId, Data.schemeName).toOption
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  private val mockCurrentPstrCacheConnector: CurrentPstrCacheConnector = mock[CurrentPstrCacheConnector]
+  private val mockLockCacheConnector: LockCacheConnector = mock[LockCacheConnector]
   private val extraModules: Seq[GuiceableModule] = Seq(
-    bind[MinimalDetailsConnector].to(mockMinimalDetailsConnector)
+    bind[MinimalDetailsConnector].to(mockMinimalDetailsConnector),
+    bind[CurrentPstrCacheConnector].to(mockCurrentPstrCacheConnector),
+    bind[LockCacheConnector].to(mockLockCacheConnector)
   )
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
@@ -47,18 +55,25 @@ class ConfirmationControllerSpec extends ControllerSpecBase with NunjucksSupport
 
   private val jsonToPassToTemplate: JsObject =
     Json.obj(
+      "schemeName" -> Data.schemeName,
+      "pstr" -> "pstr",
       "email" -> Data.email,
-      "finishUrl" -> mockAppConfig.psaOverviewUrl
+      "yourSchemesLink" -> mockAppConfig.yourPensionSchemesUrl,
+      "returnUrl" -> mockAppConfig.psaOverviewUrl
     )
 
   override def beforeEach: Unit = {
     super.beforeEach
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+    when(mockUserAnswersCacheConnector.remove(any())(any(), any())).thenReturn(Future.successful(Ok))
+    when(mockCurrentPstrCacheConnector.remove(any(), any())).thenReturn(Future.successful(Ok))
+    when(mockLockCacheConnector.removeLock(any())(any(), any())).thenReturn(Future.successful(Ok))
   }
 
   "ConfirmationController" must {
 
     "return OK and the correct view for a GET" in {
+      mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
       when(mockMinimalDetailsConnector.getPSAEmail(any(), any())).thenReturn(Future.successful(Data.email))
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
