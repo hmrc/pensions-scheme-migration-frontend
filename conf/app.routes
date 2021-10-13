@@ -79,6 +79,10 @@ GET         /what-you-will-need-before-start                        controllers.
 GET         /no-pension-schemes-registered                         controllers.preMigration.NotRegisterController.onPageLoadScheme
 GET         /rac-dac/no-rac-dacs-registered                                controllers.preMigration.NotRegisterController.onPageLoadRacDac
 
+GET         /no-pension-schemes-to-add                                        controllers.preMigration.NoSchemeToAddController.onPageLoadScheme
+GET         /rac-dac/no-rac-dacs-to-add                               controllers.preMigration.NoSchemeToAddController.onPageLoadRacDac
+
+
 GET         /list-pension-schemes                                   controllers.preMigration.ListOfSchemesController.onPageLoad(migrationType: MigrationType = Scheme)
 POST        /list-pension-schemes                                   controllers.preMigration.ListOfSchemesController.onSearch(migrationType: MigrationType = Scheme)
 GET         /list-pension-schemes/page/:pageNumber                  controllers.preMigration.ListOfSchemesController.onPageLoadWithPageNumber(pageNumber: Int, migrationType: MigrationType = Scheme)
@@ -130,6 +134,7 @@ GET         /confirm-adviser-address                                 controllers
 POST        /confirm-adviser-address                                 controllers.adviser.ConfirmAddressController.onSubmit
 
 GET         /check-adviser-answers                                   controllers.adviser.CheckYourAnswersController.onPageLoad
+GET         /rac-dac/request-not-processed                           controllers.racdac.RequestNotProcessedController.onPageLoad
 
 GET         /rac-dac/check-your-answers                              controllers.racdac.individual.CheckYourAnswersController.onPageLoad
 GET         /rac-dac/declaration                                     controllers.racdac.individual.DeclarationController.onPageLoad
