@@ -30,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class LockingService @Inject()(lockCacheConnector: LockCacheConnector,
                                schemeCacheConnector: CurrentPstrCacheConnector){
 
-  def initialLockSetupAndRedirect(pstr: String, request: AuthenticatedRequest[_])
+  def initialLockSetupAndRedirect(pstr: String, request: AuthenticatedRequest[_],isRacDac:Boolean=false)
                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Result] = {
     val lock = MigrationLock(pstr, request.externalId, request.psaId.id)
     schemeCacheConnector.save(Json.toJson(lock)).flatMap { _ =>
@@ -38,11 +38,17 @@ class LockingService @Inject()(lockCacheConnector: LockCacheConnector,
         case Some(lockOnScheme) if lockOnScheme.credId != lock.credId => //TODO redirect to locked page
           Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
         case Some(lockOnScheme) if lockOnScheme.credId == lock.credId =>
+          if(isRacDac){
+            Future.successful(Redirect(controllers.racdac.individual.routes.CheckYourAnswersController.onPageLoad()))
+          }else
           Future.successful(Redirect(controllers.routes.TaskListController.onPageLoad()))
         case _ =>
           lockCacheConnector.removeLockByUser.flatMap {_ =>
             lockCacheConnector.setLock(lock).map {_ =>
-              Redirect(controllers.routes.TaskListController.onPageLoad())
+              if(isRacDac){
+                Redirect(controllers.racdac.individual.routes.CheckYourAnswersController.onPageLoad())
+              }else
+                Redirect(controllers.preMigration.routes.BeforeYouStartController.onPageLoad())
             }
           }
       }

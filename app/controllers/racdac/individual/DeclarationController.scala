@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package controllers.racdac
+package controllers.racdac.individual
 
 import config.AppConfig
 import connectors._
-import connectors.cache.BulkMigrationQueueConnector
-import controllers.actions.AuthAction
-import models.racDac.RacDacRequest
-import models.requests.AuthenticatedRequest
+import controllers.actions.{AuthAction, DataRetrievalAction}
+import models.requests.OptionalDataRequest
 import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -37,11 +35,10 @@ class DeclarationController @Inject()(
                                        appConfig: AppConfig,
                                        override val messagesApi: MessagesApi,
                                        authenticate: AuthAction,
+                                       getData: DataRetrievalAction,
                                        minimalDetailsConnector: MinimalDetailsConnector,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer,
-                                       bulkMigrationQueueConnector: BulkMigrationQueueConnector,
-                                       listOfSchemesConnector: ListOfSchemesConnector,
                                        emailConnector: EmailConnector,
                                        crypto: ApplicationCrypto
                                      )(implicit val executionContext: ExecutionContext)
@@ -55,7 +52,7 @@ class DeclarationController @Inject()(
           psaName =>
             val json = Json.obj(
               "psaName" -> psaName,
-              "submitUrl" -> routes.DeclarationController.onSubmit().url,
+              "submitUrl" -> controllers.racdac.individual.routes.DeclarationController.onSubmit().url,
               "returnUrl" -> appConfig.psaOverviewUrl
             )
             renderer.render("racdac/declaration.njk", json).map(Ok(_))
@@ -63,33 +60,25 @@ class DeclarationController @Inject()(
     }
 
   def onSubmit: Action[AnyContent] =
-    authenticate.async {
+    (authenticate andThen getData).async {
       implicit request =>
         val psaId = request.psaId.id
-        listOfSchemesConnector.getListOfSchemes(psaId).flatMap {
-          case Right(listOfSchemes) =>
-            val racDacSchemes = listOfSchemes.items.getOrElse(Nil).filter(_.racDac).map { items =>
-              RacDacRequest(items.schemeName, items.policyNo.getOrElse(
-                throw new RuntimeException("Policy Number is mandatory for RAC/DAC")))
-            }
-            bulkMigrationQueueConnector.pushAll(psaId, Json.toJson(racDacSchemes)).flatMap {
-              _ =>
-                sendEmail(psaId).map { _ =>
-                  Redirect(controllers.racdac.routes.ConfirmationController.onPageLoad().url)
-                }
-            } recoverWith {
-              case _ =>
-                Future.successful(Redirect(routes.RequestNotProcessedController.onPageLoad()))
-            }
-          case _ =>
-            //TODO: send to no more error page when its developed
-            Future(Redirect(controllers.routes.IndexController.onPageLoad()))
+
+        //TODO need to use when calling connector for ETMP
+        // val userAnswers = request.userAnswers.get
+        // val racDacName = userAnswers.get(SchemeNameId)
+        //  .getOrElse(throw new RuntimeException("Scheme Name is mandatory for RAC/DAC"))
+        // val policyNumberId= userAnswers.get(ContractOrPolicyNumberId)
+        //  .getOrElse(throw new RuntimeException("Policy Number is mandatory for RAC/DAC"))
+
+          sendEmail(psaId)(implicitly).map { _ =>
+            Redirect(controllers.racdac.routes.ConfirmationController.onPageLoad().url)
         }
     }
 
   private def sendEmail(psaId: String)
-                       (implicit request: AuthenticatedRequest[AnyContent]): Future[EmailStatus] = {
-    logger.debug(s"Sending bulk migration email for $psaId")
+                       (implicit request: OptionalDataRequest[AnyContent]): Future[EmailStatus] = {
+    logger.debug(s"Sending Rac Dac migration email for $psaId")
     minimalDetailsConnector.getPSADetails(psaId) flatMap { minimalPsa =>
       emailConnector.sendEmail(
         emailAddress = minimalPsa.email,

@@ -50,7 +50,6 @@
 {% if params.searchButton %}
   {% set describedBy = describedBy + ' ' + buttonId if describedBy else errorId %}
   {{ govukButton({
-    classes: params.searchButton.classes,
     attributes: params.searchButton.attributes,
     html: params.searchButton.html,
     text: params.searchButton.text,
