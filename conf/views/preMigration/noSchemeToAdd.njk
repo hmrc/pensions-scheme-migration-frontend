@@ -1,0 +1,40 @@
+{% extends "includes/layout.njk" %}
+
+{% from "macros/title.njk"                         import title %}
+{% from "macros/returnLink.njk"                    import returnLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+
+{% block pageTitle %}
+  {{ title(messages("messages_noSchemeToAdd_title", param1)) }}
+{% endblock %}
+
+{% block mainContent %}
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">{{ messages("messages_noSchemeToAdd_title", param1) }}</h1>
+
+        <p class="govuk-body">{{ messages("messages_noSchemeToAdd_p1", param1) }}</p>
+        <p class="govuk-body">{{ messages("messages_noSchemeToAdd_p2") }}</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+                        <li>{{ messages("messages_noSchemeToAdd_li1_1",param1) }}</li>
+                        <li>{{ messages("messages_noSchemeToAdd_li1_2",param2) }}</li>
+                    </ul>
+                    <p class="govuk-body">
+                                <a id="view-schemes"  href="{{ yourSchemesUrl }}" class="govuk-link">{{ messages("messages_noSchemeToAdd_view_your_list") }}</a>
+                                {{ messages("messages_noSchemeToAdd_p4",param1) }}
+                             </p>
+                    <p class="govuk-body">
+                    <a id="contactHmrclink" href="{{ contactHmrcUrl }}" class="govuk-link">{{ messages("messages_contact_hmrc_link") }}</a>
+                    {{ messages("messages_noSchemeToAdd_p3") }}
+                 </p>
+
+           <p class="govuk-body"><a id="return_to_psa" href="{{ returnUrl }}" class="govuk-link">{{ messages("return.to.link", psaName) }}</a></p>
+
+      </div>
+    </div>
+
+{% endblock %}

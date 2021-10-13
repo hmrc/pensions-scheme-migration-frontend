@@ -18,8 +18,10 @@ package controllers.preMigration
 
 import com.google.inject.Inject
 import config.AppConfig
+import connectors.{AncillaryPsaException, ListOfSchemesConnector}
 import controllers.actions.AuthAction
 import forms.ListSchemesFormProvider
+import models.MigrationType.isRacDac
 import models.requests.AuthenticatedRequest
 import models.{Index, MigrationType}
 import play.api.data.Form
@@ -37,6 +39,7 @@ class ListOfSchemesController @Inject()(
                                        authenticate: AuthAction,
                                        val controllerComponents: MessagesControllerComponents,
                                        formProvider: ListSchemesFormProvider,
+                                       listOfSchemesConnector: ListOfSchemesConnector,
                                        schemeSearchService: SchemeSearchService,
                                        lockingService: LockingService
                                      )(implicit val ec: ExecutionContext)
@@ -51,7 +54,26 @@ class ListOfSchemesController @Inject()(
 
   def onPageLoad(migrationType: MigrationType): Action[AnyContent] = (authenticate).async {
     implicit request =>
-      schemeSearchService.searchAndRenderView(form(migrationType), pageNumber = 1, searchText = None, migrationType)
+      val checkRacDac: Boolean=isRacDac(migrationType)
+      listOfSchemesConnector.getListOfSchemes(request.psaId.id).flatMap{
+        case Right(list) =>
+          if (list.items.exists(_.exists(_.racDac==checkRacDac))) {
+              schemeSearchService.searchAndRenderView(form(migrationType), pageNumber = 1, searchText = None, migrationType)}
+          else {
+            emptyListRedirect(checkRacDac)
+          }
+        case _ => emptyListRedirect(checkRacDac)
+    } recoverWith {
+        case _: AncillaryPsaException =>
+          Future.successful(Redirect(routes.CannotMigrateController.onPageLoad()))
+      }
+  }
+  private def emptyListRedirect(checkRacDac: Boolean):Future[Result] ={
+    if (checkRacDac) {
+      Future.successful(Redirect(routes.NoSchemeToAddController.onPageLoadRacDac()))
+    }else{
+      Future.successful(Redirect(routes.NoSchemeToAddController.onPageLoadScheme()))
+    }
   }
 
   def onPageLoadWithPageNumber(pageNumber: Index, migrationType: MigrationType): Action[AnyContent] =
