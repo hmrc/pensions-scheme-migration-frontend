@@ -103,7 +103,7 @@
                 {% endif %}
 
                 {% if form.value.value %}
-                    <p>
+                    <p class="govuk-body">
                         <a id="clear-search-link" href="{{ clearLinkUrl }}" class="govuk-link">{{ messages("messages__listSchemes__searchText_clearlink") }}</a>
                     </p>
                 {% elif racDac %}
@@ -141,7 +141,7 @@
      {% if noResultsMessageKey %}
                 <div class="grid-row">
                     <div class="column-two-thirds">
-                        <p id="noSchemes">{{ messages(noResultsMessageKey) }}</p>
+                        <p class="govuk-body" id="noSchemes">{{ messages(noResultsMessageKey) }}</p>
                     </div>
                 </div>
      {% endif %}
