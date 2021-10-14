@@ -18,10 +18,10 @@ package controllers.racdac.bulk
 
 import config.AppConfig
 import connectors._
-import connectors.cache.{BulkMigrationQueueConnector, CurrentPstrCacheConnector}
-import controllers.actions.AuthAction
+import connectors.cache.BulkMigrationQueueConnector
+import controllers.actions.{AuthAction, BulkDataAction}
 import models.racDac.RacDacRequest
-import models.requests.AuthenticatedRequest
+import models.requests.BulkDataRequest
 import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -41,8 +41,7 @@ class DeclarationController @Inject()(
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer,
                                        bulkMigrationQueueConnector: BulkMigrationQueueConnector,
-                                       listOfSchemesConnector: ListOfSchemesConnector,
-                                       currentPstrCacheConnector: CurrentPstrCacheConnector,
+                                       getData: BulkDataAction,
                                        emailConnector: EmailConnector,
                                        crypto: ApplicationCrypto
                                      )(implicit val executionContext: ExecutionContext)
@@ -50,43 +49,34 @@ class DeclarationController @Inject()(
     with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
-    authenticate.async {
+    (authenticate andThen getData(true)).async {
       implicit request =>
-        minimalDetailsConnector.getPSAName.flatMap {
-          psaName =>
-            val json = Json.obj(
-              "psaName" -> psaName,
-              "submitUrl" -> routes.DeclarationController.onSubmit().url,
-              "returnUrl" -> appConfig.psaOverviewUrl
-            )
-            renderer.render("racdac/declaration.njk", json).map(Ok(_))
-        }
+        val json = Json.obj(
+          "psaName" -> request.md.name,
+          "submitUrl" -> routes.DeclarationController.onSubmit().url,
+          "returnUrl" -> appConfig.psaOverviewUrl
+        )
+        renderer.render("racdac/declaration.njk", json).map(Ok(_))
     }
 
   def onSubmit: Action[AnyContent] =
-    authenticate.async {
+    (authenticate andThen getData(false)).async {
       implicit request =>
-        val psaId = request.psaId.id
-        currentPstrCacheConnector
-        listOfSchemesConnector.getListOfSchemes(psaId).flatMap {
-          case Right(listOfSchemes) =>
-            val racDacSchemes = listOfSchemes.items.getOrElse(Nil).filter(_.racDac).map { items =>
-              RacDacRequest(items.schemeName, items.policyNo.getOrElse(
-                throw new RuntimeException("Policy Number is mandatory for RAC/DAC")))
-            }
-            bulkMigrationQueueConnector.pushAll(psaId, Json.toJson(racDacSchemes)).flatMap { _ =>
-              sendEmail(psaId).map { _ =>
-                Redirect(routes.ConfirmationController.onPageLoad().url)
-              }
-            }
-          case _ =>
-            //TODO: send to no more error page when its developed
-            Future(Redirect(controllers.routes.IndexController.onPageLoad()))
+        val psaId = request.request.psaId.id
+        val racDacSchemes = request.lisOfSchemes.filter(_.racDac).map { items =>
+          RacDacRequest(items.schemeName, items.policyNo.getOrElse(
+            throw new RuntimeException("Policy Number is mandatory for RAC/DAC")))
+        }
+
+        bulkMigrationQueueConnector.pushAll(psaId, Json.toJson(racDacSchemes)).flatMap { _ =>
+          sendEmail(psaId).map { _ =>
+            Redirect(routes.ConfirmationController.onPageLoad().url)
+          }
         }
     }
 
   private def sendEmail(psaId: String)
-                       (implicit request: AuthenticatedRequest[AnyContent]): Future[EmailStatus] = {
+                       (implicit request: BulkDataRequest[AnyContent]): Future[EmailStatus] = {
     logger.debug(s"Sending bulk migration email for $psaId")
     minimalDetailsConnector.getPSADetails(psaId) flatMap { minimalPsa =>
       emailConnector.sendEmail(

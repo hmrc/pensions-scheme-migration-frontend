@@ -18,19 +18,15 @@ package services
 
 import com.google.inject.Inject
 import config.AppConfig
-import connectors.cache.CurrentPstrCacheConnector
-import connectors.{AncillaryPsaException, DelimitedAdminException, ListOfSchemesConnector, MinimalDetailsConnector}
-import controllers.preMigration.routes
 import controllers.preMigration.routes.ListOfSchemesController
 import models.Items
-import models.requests.AuthenticatedRequest
+import models.requests.BulkDataRequest
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Result}
 import renderer.Renderer
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Table.Cell
 import uk.gov.hmrc.viewmodels.Text.Literal
@@ -41,10 +37,7 @@ import java.time.format.DateTimeFormatter
 import scala.concurrent.{ExecutionContext, Future}
 
 class BulkRacDacService @Inject()(appConfig: AppConfig,
-                                  minimalDetailsConnector: MinimalDetailsConnector,
-                                  listOfSchemesConnector: ListOfSchemesConnector,
                                   paginationService: PaginationService,
-                                  currentPstrCacheConnector: CurrentPstrCacheConnector,
                                   renderer: Renderer) extends NunjucksSupport {
 
   private def pagination: Int = appConfig.listSchemePagination
@@ -70,64 +63,42 @@ class BulkRacDacService @Inject()(appConfig: AppConfig,
     Table(head, rows, attributes = Map("role" -> "table"))
   }
 
-  private def listOfSchemes(psaId: String)(implicit hc: HeaderCarrier,
-                                           ec: ExecutionContext): Future[List[Items]] = {
-    listOfSchemesConnector.getListOfSchemes(psaId).flatMap {
-      case Right(listOfSchemes) =>
-        val listSchemes = listOfSchemes.items.getOrElse(Nil).filter(_.racDac)
-        currentPstrCacheConnector.save(Json.toJson(listSchemes)).map(_ => listSchemes)
-      case _ =>
-        Future(List.empty[Items])
-    }
-  }
-
   def renderRacDacBulkView(
                             form: Form[Boolean],
                             pageNumber: Int
-                          )(implicit request: AuthenticatedRequest[AnyContent],
+                          )(implicit request: BulkDataRequest[AnyContent],
                             messages: Messages,
-                            hc: HeaderCarrier,
                             ec: ExecutionContext): Future[Result] = {
-    listOfSchemes(request.psaId.id).flatMap { filteredResult =>
 
-      val numberOfSchemes: Int = filteredResult.length
-      val numberOfPages: Int = paginationService.divide(numberOfSchemes, pagination)
-      val schemeDetails = paginationService.selectPageOfResults(filteredResult, pageNumber, numberOfPages)
+    val numberOfSchemes: Int = request.lisOfSchemes.length
+    val numberOfPages: Int = paginationService.divide(numberOfSchemes, pagination)
+    val schemeDetails = paginationService.selectPageOfResults(request.lisOfSchemes, pageNumber, numberOfPages)
 
-      minimalDetailsConnector.getPSADetails(request.psaId.id).flatMap {
-        case md if md.deceasedFlag => Future.successful(Redirect(appConfig.deceasedContactHmrcUrl))
-        case md if md.rlsFlag => Future.successful(Redirect(appConfig.psaUpdateContactDetailsUrl))
-        case md =>
+    request.md match {
+      case md if md.deceasedFlag => Future.successful(Redirect(appConfig.deceasedContactHmrcUrl))
+      case md if md.rlsFlag => Future.successful(Redirect(appConfig.psaUpdateContactDetailsUrl))
+      case md =>
 
-          val json: JsObject = Json.obj(
-            "form" -> form,
-            "psaName" -> md.name,
-            "numberOfSchemes" -> numberOfSchemes,
-            "pagination" -> pagination,
-            "pageNumber" -> pageNumber,
-            "pageNumberLinks" -> paginationService.pageNumberLinks(
-              pageNumber,
-              numberOfSchemes,
-              pagination,
-              numberOfPages
-            ),
-            "numberOfPages" -> numberOfPages,
-            "returnUrl" -> appConfig.psaOverviewUrl,
-            "paginationText" -> paginationService.paginationText(pageNumber, pagination, numberOfSchemes, numberOfPages),
-            "schemes" -> mapToTable(schemeDetails, viewOnly = true),
-            "radios" -> Radios.yesNo(form("value"))
-          )
-          renderer.render("racdac/racDacsBulkList.njk", json)
-            .map(body => if (form.hasErrors) BadRequest(body) else Ok(body))
-
-      } recoverWith {
-        case _: DelimitedAdminException =>
-          Future.successful(Redirect(appConfig.psaDelimitedUrl))
-      }
-
-    } recoverWith {
-      case _: AncillaryPsaException =>
-        Future.successful(Redirect(routes.CannotMigrateController.onPageLoad()))
+        val json: JsObject = Json.obj(
+          "form" -> form,
+          "psaName" -> md.name,
+          "numberOfSchemes" -> numberOfSchemes,
+          "pagination" -> pagination,
+          "pageNumber" -> pageNumber,
+          "pageNumberLinks" -> paginationService.pageNumberLinks(
+            pageNumber,
+            numberOfSchemes,
+            pagination,
+            numberOfPages
+          ),
+          "numberOfPages" -> numberOfPages,
+          "returnUrl" -> appConfig.psaOverviewUrl,
+          "paginationText" -> paginationService.paginationText(pageNumber, pagination, numberOfSchemes, numberOfPages),
+          "schemes" -> mapToTable(schemeDetails, viewOnly = true),
+          "radios" -> Radios.yesNo(form("value"))
+        )
+        renderer.render("racdac/racDacsBulkList.njk", json)
+          .map(body => if (form.hasErrors) BadRequest(body) else Ok(body))
     }
   }
 }

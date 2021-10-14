@@ -67,7 +67,7 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
           }
       }
 
-  def search(psaId: String, searchText: Option[String])
+  def search(psaId: String, searchText: Option[String], isRacDac: Boolean)
             (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[Items]] =
     listOfSchemesConnector.getListOfSchemes(psaId).map {
       case Right(listOfSchemes) =>
@@ -76,7 +76,7 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
           searchText.fold[List[Items] => List[Items]](identity)(
             st => filterSchemesByPstrOrSchemeName(st, _: List[Items])
           )
-        filterSearchResults(listOfSchemes.items.getOrElse(Nil).filter(!_.racDac))
+        filterSearchResults(listOfSchemes.items.getOrElse(Nil).filter(_.racDac == isRacDac))
 
       case _ =>
         List.empty[Items]
@@ -84,16 +84,24 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
 
 
   def mapToTable(schemeDetails: List[Items], isRacDac: Boolean, viewOnly: Boolean): Table = {
-    val head = Seq(
-      Cell(msg"messages__listSchemes__column_schemeName"),
-      Cell(msg"messages__listSchemes__column_pstr"),
-      Cell(msg"messages__listSchemes__column_regDate")
-    )
+    val head =
+      if(isRacDac)
+        Seq(
+          Cell(msg"messages__listSchemes__column_racDacName"),
+          Cell(msg"messages__listSchemes__column_pstr"),
+          Cell(msg"messages__listSchemes__column_regDate")
+        )
+      else
+        Seq(
+          Cell(msg"messages__listSchemes__column_schemeName"),
+          Cell(msg"messages__listSchemes__column_pstr"),
+          Cell(msg"messages__listSchemes__column_regDate")
+        )
 
     val formatter: String => String = date => LocalDate.parse(date).format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
 
     val schemeName: Items => Content = data => if (viewOnly) Literal(data.schemeName) else Html(
-      s"""<a class=migrate-pstr-${data.pstr} href=${ListOfSchemesController.clickSchemeLink(data.pstr, false)}>${data.schemeName}</a>""".stripMargin)
+      s"""<a class=migrate-pstr-${data.pstr} href=${ListOfSchemesController.clickSchemeLink(data.pstr, isRacDac)}>${data.schemeName}</a>""".stripMargin)
 
     val rows = schemeDetails.map { data =>
       Seq(Cell(schemeName(data), Seq("govuk-!-width-one-quarter")),
@@ -173,7 +181,7 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
                            hc: HeaderCarrier,
                            ec: ExecutionContext): Future[Result] =
     featureToggleConnector.get(MigrationTransfer.asString).flatMap { toggle =>
-      search(request.psaId.id, searchText).flatMap { searchResult =>
+      search(request.psaId.id, searchText, isRacDac(migrationType)).flatMap { searchResult =>
         val numberOfSchemes: Int = searchResult.length
 
         val numberOfPages: Int =
