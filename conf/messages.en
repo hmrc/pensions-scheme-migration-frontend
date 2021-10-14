@@ -350,9 +350,8 @@ postcode.label = Postcode
 postcode.title = What is {0}’s postcode?
 previousPostcode.title = What was {0}’s previous postcode?
 postcode.youCan = You can
-error.postcode.required = Enter the postcode
-error.postcode.invalid = Enter a valid postcode
-error.postcode.invalid = Enter a valid postcode
+error.postcode.required = Enter a postcode
+error.postcode.invalid = Enter a postcode in the correct format
 address.linkText.enterManually = enter the address manually
 
 error.address_line_1.required = Enter the first line of address
@@ -371,7 +370,8 @@ error.country.invalid = Enter a valid country
 findAddress = Find address
 
 insurerEnterPostcode.required = Enter the postcode of the insurance company that secures the scheme benefits
-insurerEnterPostcode.invalid = Enter a real postcode
+insurerEnterPostcode.invalid = Enter a postcode in the correct format
+insurerEnterPostcode.noresults = Postcode cannot be found
 
 insurerSelectAddress.required = Select the address of the insurance company that secures the scheme benefits
 
@@ -481,9 +481,10 @@ previousAddress.title = Enter {0}’s previous address
 messages__visuallyHidden__previousAddress = the previous address for {0}
 
 enterPostcode.required = Enter a postcode
-enterPostcode.invalid = Enter a real postcode
+enterPostcode.invalid = Enter a postcode in the correct format
+enterPostcode.noresults = Postcode cannot be found
 
-establisherEnterPreviousPostcode.invalid = Enter the individual’s real postcode
+establisherEnterPreviousPostcode.invalid = Enter a postcode in the correct format
 
 selectAddress.required = Select an address
 
@@ -789,12 +790,12 @@ messages__confirmDeleteTrustee__title = Are you sure you want to delete this tru
 
 messages__schemeTaskList__trusteeIndividualAddress_addLink = Add address for {0}
 
-individualEnterPreviousPostcode.required = Enter the individual’s previous postcode
-trusteeEnterPreviousPostcode.invalid = Enter a real postcode
+individualEnterPreviousPostcode.required = Enter a postcode
+trusteeEnterPreviousPostcode.invalid = Enter a postcode in the correct format
 
-companyEnterPreviousPostcode.required = Enter the company’s previous postcode
-partnershipEnterPreviousPostcode.required = Enter the partnership’s previous postcode
-trusteeEnterPreviousPostcode.invalid = Enter a real postcode
+companyEnterPreviousPostcode.required = Enter a postcode
+partnershipEnterPreviousPostcode.required = Enter a postcode
+trusteeEnterPreviousPostcode.invalid = Enter a postcode in the correct format
 
 
 individualAddressYears.error.required = Select yes if the individual has used this address for more than 1 year
@@ -963,6 +964,16 @@ messages_notRegister_p1 = You cannot view or add a {0} from Pension Schemes Onli
 messages_notRegister_p2 = if you do have {0}s registered on the Pension Schemes Online service and are seeing this page in error.
 messages_notRegister_pension_scheme= pension scheme
 
+messages_contact_hmrc_link= Contact HMRC
+messages_noSchemeToAdd_title= No {0}s to add
+messages_noSchemeToAdd_p1 = You cannot add a {0} from the Pension Schemes Online service.
+messages_noSchemeToAdd_p2 = This may be because you:
+messages_noSchemeToAdd_p3 = if you need help.
+messages_noSchemeToAdd_p4 = to manage the {0}s you have added from Pension Schemes Online.
+messages_noSchemeToAdd_li1_1 = have added all your {0}s from Pension Schemes Online
+messages_noSchemeToAdd_li1_2 = do not have any active {0}s registered on Pension Schemes Online
+messages_noSchemeToAdd_view_your_list = View your list of schemes
+
 messages__partnershipName__title = What is the partnership’s name?
 messages__error__partnership_name = Enter the partnership’s name
 messages__error__partnership_name_length = The partnership name cannot be more than 160 characters
@@ -988,9 +999,10 @@ messages__listSchemes__schemeName__screen_reader = The scheme name is: {0}
 
 messages__listSchemes__PSTR__screen_reader = {0}’s Pension Scheme Tax Reference number is {1}
 messages__listSchemes__status__screen_reader = {0}’s status is {1}
-messages__listSchemes__searchText_label_scheme = Search for a scheme by scheme name or complete PSTR
-messages__listSchemes__searchText_label_racDac = Search for a RAC/DAC by name or complete PSTR
-messages__listSchemes__searchText_label_hint = For example, 01234567QQ
+messages__listSchemes__searchText_label_scheme = Search by scheme name or PSTR
+messages__listSchemes__searchText_label_racDac = Search for a RAC/DAC by name or PSTR
+messages__listSchemes__searchText_label_hint_scheme = Enter the full PSTR, for example 20123456QQ
+messages__listSchemes__searchText_label_hint_racDac = Enter the full PSTR, for example 01234567QQ
 messages__listSchemes__searchText_clearlink = Clear Search
 messages__listSchemes__search_noMatches = We did not find any {0}s that match what you searched for.
 messages__listSchemes__search_submit = Search
@@ -998,7 +1010,7 @@ messages__listSchemes__search_again = Search again
 messages__listSchemes__search_required = Enter a PSTR or {0} name
 messages__listSchemes__search_result = 1 result found
 messages__listSchemes__search_multipleResults = {0} results found
-messages__listSchemes__search_result_title = Search results for list of {0}s on the Pension Schemes Online service
+messages__listSchemes__search_result_title = Search results for list of {0}s on Pension Schemes Online service
 messages__listSchemes__racDacOffset = If a RAC/DAC is no longer active, then you should wind it up on the Pension Schemes Online service.
 
 messages__listSchemes__pagination__text = Showing {0} to {1} of {2} schemes
@@ -1074,6 +1086,11 @@ messages__what_happens_next = What happens next
 messages__racdac__confirmation__title = You have completed your request to add your RAC/DACs from Pension Schemes Online
 messages__racdac__confirmation__email = We have sent a confirmation email to
 messages__racdac__confirmation__detail = It can take up to 48 hours for your RAC/DACs to be added to your list of schemes on the Managing Pension Schemes service.
+
+messages__racdac__request__not__processed__title = We could not process your request to add your RAC/DACs from Pension Schemes Online
+messages__racdac__request__not__processed__heading = Sorry, there was a problem with the service
+messages__racdac__request__not__processed__p = We could not process your request to add your RAC/DACs from Pension Schemes Online.
+messages__racdac__request__not__processed__link = Try adding them again
 
 messages__racdac__cya__heading = RAC/DAC details
 messages__racdac__cya__name__label = What is the name of the RAC/DAC?

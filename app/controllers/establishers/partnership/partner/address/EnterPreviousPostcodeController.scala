@@ -51,7 +51,7 @@ class EnterPreviousPostcodeController @Inject()(val appConfig: AppConfig,
                                                 val renderer: Renderer
                                                )(implicit val ec: ExecutionContext) extends PostcodeController with I18nSupport with NunjucksSupport {
 
-  def form: Form[String] = formProvider("individualEnterPreviousPostcode.required", "individualEnterPreviousPostcode.invalid")
+  def form: Form[String] = formProvider("individualEnterPreviousPostcode.required", "enterPostcode.invalid")
 
   def formWithError(messageKey: String): Form[String] = {
     form.withError("value", s"messages__error__postcode_$messageKey")
@@ -68,7 +68,7 @@ class EnterPreviousPostcodeController @Inject()(val appConfig: AppConfig,
     implicit request =>
       retrieve(SchemeNameId) { schemeName =>
         post(getFormToJson(schemeName, establisherIndex, partnerIndex, mode),
-          EnterPreviousPostCodeId(establisherIndex, partnerIndex), "establisherEnterPostcode.invalid",
+          EnterPreviousPostCodeId(establisherIndex, partnerIndex), "enterPostcode.noresults",
           Some(mode))
       }
   }
