@@ -61,7 +61,7 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
   private val mockFuzzyMatching = mock[SchemeFuzzyMatcher]
   private val mockListOfSchemesConnector = mock[ListOfSchemesConnector]
   private val mockMinimalDetailsConnector: MinimalDetailsConnector = mock[MinimalDetailsConnector]
-  private val paginationService = new PaginationService
+  private val paginationService = new PaginationService(appConfig)
   private val mockFeatureToggleConnector: FeatureToggleConnector = mock[FeatureToggleConnector]
   private val mockRenderer: NunjucksRenderer = mock[NunjucksRenderer]
   private val typeOfList:List[String]=List("pension scheme","RAC/DAC")
