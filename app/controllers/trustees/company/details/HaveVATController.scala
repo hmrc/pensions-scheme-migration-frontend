@@ -57,7 +57,7 @@ class HaveVATController @Inject()(
     formProvider(Message("messages__genericHaveVat__error__required", name(index)))
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
 
         SchemeNameId.retrieve.right.map {
@@ -75,7 +75,7 @@ class HaveVATController @Inject()(
     }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
 
         SchemeNameId.retrieve.right.map {

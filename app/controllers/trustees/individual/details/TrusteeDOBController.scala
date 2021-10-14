@@ -50,7 +50,7 @@ class TrusteeDOBController @Inject()(
   val form: Form[LocalDate] = formProvider()
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
 
         SchemeNameId.retrieve.right.map {
@@ -65,7 +65,7 @@ class TrusteeDOBController @Inject()(
     }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.right.map {
           schemeName =>

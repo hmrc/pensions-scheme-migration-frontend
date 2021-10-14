@@ -48,7 +48,7 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
   extends FrontendBaseController with Retrievals with I18nSupport with NunjucksSupport {
 
   def onPageLoad: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         val trustees = request.userAnswers.allTrusteesAfterDelete
         val table = helper.mapTrusteesToTable(trustees)
@@ -63,7 +63,7 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
         renderer.render("trustees/addTrustee.njk", json).map(Ok(_))
     }
 
-  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
       def navNextPage(v: Option[Boolean]):Future[Result] =
         Future.successful(Redirect(navigator.nextPage(AddTrusteeId(v), request.userAnswers)))

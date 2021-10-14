@@ -42,7 +42,7 @@ class WhatYouWillNeedController @Inject()(
     with I18nSupport
     with Retrievals
     with NunjucksSupport {
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
       val json: JsObject = Json.obj(
         "schemeName" -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException),

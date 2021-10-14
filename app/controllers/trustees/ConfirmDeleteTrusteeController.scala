@@ -56,7 +56,7 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
   FrontendBaseController with I18nSupport with Retrievals with NunjucksSupport {
 
   def onPageLoad(index: Index, trusteeKind: TrusteeKind): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         getDeletableTrustee(index, trusteeKind, request.userAnswers) map {
           trustee =>
@@ -92,7 +92,7 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
 
   def onSubmit(trusteeIndex: Index, trusteeKind: TrusteeKind)
   : Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
 
         trusteeKind match {

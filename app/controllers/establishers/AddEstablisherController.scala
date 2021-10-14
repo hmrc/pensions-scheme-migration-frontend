@@ -50,7 +50,7 @@ class AddEstablisherController @Inject()(
     with NunjucksSupport {
 
   def onPageLoad: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         val establishers = request.userAnswers.allEstablishersAfterDelete
         val table        = helper.mapEstablishersToTable(establishers)
@@ -67,7 +67,7 @@ class AddEstablisherController @Inject()(
     }
 
   def onSubmit: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         val establishers = request.userAnswers.allEstablishersAfterDelete
         val table        = helper.mapEstablishersToTable(establishers)

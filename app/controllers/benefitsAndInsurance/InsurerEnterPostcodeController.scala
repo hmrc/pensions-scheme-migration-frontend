@@ -56,13 +56,13 @@ class InsurerEnterPostcodeController @Inject()(val appConfig: AppConfig,
   }
 
   def onPageLoad: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async { implicit request =>
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
         get(getFormToJson(schemeName))
       }
     }
 
-  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async{
+  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async{
     implicit request =>
       retrieve(SchemeNameId) { schemeName =>
         post(getFormToJson(schemeName), InsurerEnterPostCodeId, "insurerEnterPostcode.invalid")

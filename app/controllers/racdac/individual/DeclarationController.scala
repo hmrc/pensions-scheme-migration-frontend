@@ -48,7 +48,7 @@ class DeclarationController @Inject()(
     with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData(true)).async {
       implicit request =>
         minimalDetailsConnector.getPSAName.flatMap {
           psaName =>
@@ -62,7 +62,7 @@ class DeclarationController @Inject()(
     }
 
   def onSubmit: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         val psaId = request.psaId.id
 

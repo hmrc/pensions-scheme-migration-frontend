@@ -52,7 +52,7 @@ class ConfirmDeleteDirectorController @Inject()(override val messagesApi: Messag
   extends FrontendBaseController with I18nSupport with Retrievals with NunjucksSupport {
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         DirectorNameId(establisherIndex, directorIndex).retrieve.right.map { director =>
           if (director.isDeleted) {
@@ -75,7 +75,7 @@ class ConfirmDeleteDirectorController @Inject()(override val messagesApi: Messag
   private def form(name: String)(implicit messages: Messages): Form[Boolean] = formProvider(name)
 
   def onSubmit(establisherIndex: Index, directorIndex: Index): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
 
         DirectorNameId(establisherIndex, directorIndex).retrieve.right.map { director =>

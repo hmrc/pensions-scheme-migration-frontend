@@ -50,7 +50,7 @@ class TradingTimeController @Inject()(override val messagesApi: MessagesApi,
     formProvider("partnershipTradingTime.error.required")
 
   def onPageLoad(index: Index): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async { implicit request =>
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
       (PartnershipDetailsId(index) and SchemeNameId).retrieve.right.map {
         case partnershipDetails ~ schemeName =>
           get(Some(schemeName), partnershipDetails.partnershipName, Messages("messages__partnership"), form, TradingTimeId(index))
@@ -58,7 +58,7 @@ class TradingTimeController @Inject()(override val messagesApi: MessagesApi,
     }
 
   def onSubmit(index: Index): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async { implicit request =>
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
       (PartnershipDetailsId(index) and SchemeNameId).retrieve.right.map {
         case partnershipDetails ~ schemeName =>
           post(Some(schemeName), partnershipDetails.partnershipName, Messages("messages__partnership"), form, TradingTimeId(index))

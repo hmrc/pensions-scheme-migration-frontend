@@ -50,7 +50,7 @@ class OtherTrusteesController @Inject()(
     formProvider(errorMsg = Message("messages__otherTrustees__error__required"))
 
   def onPageLoad: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.right.map {
           schemeName =>
@@ -68,7 +68,7 @@ class OtherTrusteesController @Inject()(
     }
 
   def onSubmit: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.right.map {
           schemeName =>

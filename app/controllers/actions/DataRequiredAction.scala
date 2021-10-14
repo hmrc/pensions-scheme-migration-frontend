@@ -17,23 +17,37 @@
 package controllers.actions
 
 import com.google.inject.{ImplementedBy, Inject}
-import models.Scheme
 import models.requests.{DataRequest, OptionalDataRequest}
+import models.{RacDac, Scheme}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DataRequiredActionImpl @Inject()(implicit val executionContext: ExecutionContext) extends DataRequiredAction {
+class DataRequiredImpl @Inject()(isRacDac: Boolean)(implicit val executionContext: ExecutionContext) extends DataRequired {
 
   override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] =
     (request.userAnswers, request.lock) match {
       case (Some(data), Some(lock)) =>
         Future.successful(Right(DataRequest(request.request, data, request.psaId, lock, request.viewOnly)))
       case _ =>
-        Future.successful(Left(Redirect(controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme))))
+        val migrationType= if(isRacDac) RacDac else Scheme
+        Future.successful(Left(Redirect(controllers.preMigration.routes.ListOfSchemesController.onPageLoad(migrationType))))
     }
 }
 
+@ImplementedBy(classOf[DataRequiredImpl])
+trait DataRequired extends ActionRefiner[OptionalDataRequest, DataRequest]
+
+class DataRequiredActionImpl @Inject()
+                              (implicit ec: ExecutionContext) extends DataRequiredAction {
+
+  override def apply(isRacDac: Boolean = false): DataRequired = new DataRequiredImpl(isRacDac)
+}
+
 @ImplementedBy(classOf[DataRequiredActionImpl])
-trait DataRequiredAction extends ActionRefiner[OptionalDataRequest, DataRequest]
+trait DataRequiredAction {
+  def apply(isRacDac: Boolean = false): DataRequired
+}
+
+

@@ -56,14 +56,14 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
 
   override def form: Form[Int] = formProvider("selectAddress.required")
 
-  def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
+  def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async { implicit request =>
     retrieve(SchemeNameId) { schemeName =>
       getFormToJson(schemeName, index, NormalMode).retrieve.right.map(get)
     }
   }
 
   def onSubmit(index: Index): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async { implicit request =>
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
         val addressPages: AddressPages = AddressPages(EnterPreviousPostCodeId(index), PreviousAddressListId(index), PreviousAddressId(index))
       retrieve(SchemeNameId) { schemeName =>
         getFormToJson(schemeName, index, NormalMode).retrieve.right.map(post(_, addressPages,

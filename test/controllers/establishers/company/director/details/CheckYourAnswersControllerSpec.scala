@@ -91,7 +91,7 @@ class CheckYourAnswersControllerSpec
       messagesApi          = messagesApi,
       authenticate         = new FakeAuthAction(),
       getData              = dataRetrievalAction,
-      requiredData          = new DataRequiredActionImpl,
+      requireData          = new DataRequiredActionImpl,
       cyaHelper            = cyaHelper,
       controllerComponents = controllerComponents,
       renderer             = new Renderer(mockAppConfig, mockRenderer)

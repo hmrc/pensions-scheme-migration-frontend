@@ -56,7 +56,7 @@ class ConfirmPreviousAddressController @Inject()(override val messagesApi: Messa
   def form(implicit messages: Messages): Form[Address] = formProvider()
 
   def onPageLoad(establisherIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async { implicit request =>
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
       (PartnerNameId(establisherIndex, partnerIndex) and SchemeNameId).retrieve.right.map { case partnerName ~ schemeName =>
           get(Some(schemeName), partnerName.fullName, PreviousAddressId(establisherIndex, partnerIndex),
             PreviousAddressListId(establisherIndex, partnerIndex), AddressConfiguration.PostcodeFirst)
@@ -64,7 +64,7 @@ class ConfirmPreviousAddressController @Inject()(override val messagesApi: Messa
     }
 
   def onSubmit(establisherIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async { implicit request =>
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
       (PartnerNameId(establisherIndex, partnerIndex) and SchemeNameId).retrieve.right.map { case partnerName ~ schemeName =>
         post(Some(schemeName), partnerName.fullName, PreviousAddressId(establisherIndex, partnerIndex), AddressConfiguration.PostcodeFirst, Some(mode))
       }

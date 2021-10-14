@@ -47,7 +47,7 @@ class WhatYouWillNeedController @Inject()(
     with NunjucksSupport {
 
   def onPageLoad(index: Index): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         EstablisherNameId(index).retrieve.right.map {
           personName =>

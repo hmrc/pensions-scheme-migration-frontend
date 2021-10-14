@@ -51,7 +51,7 @@ class EstablisherNameController @Inject()(
     with NunjucksSupport {
 
   def onPageLoad(index: Index): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         renderer.render(
           template = "personName.njk",
@@ -64,7 +64,7 @@ class EstablisherNameController @Inject()(
     }
 
   def onSubmit(index: Index): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>

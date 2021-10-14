@@ -47,7 +47,7 @@ class SchemeSuccessController @Inject()(appConfig: AppConfig,
     with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
-    (identify andThen getData andThen requireData).async {
+    (identify andThen getData andThen requireData()).async {
       implicit request =>
         val jsonFuture =
           for {

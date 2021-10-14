@@ -53,7 +53,7 @@ class BenefitsTypeController @Inject()(override val messagesApi: MessagesApi,
     formProvider()
 
   def onPageLoad: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async { implicit request =>
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         val preparedForm = request.userAnswers.get(BenefitsTypeId) match {
           case Some(value) =>
@@ -70,7 +70,7 @@ class BenefitsTypeController @Inject()(override val messagesApi: MessagesApi,
     }
 
   def onSubmit: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async { implicit request =>
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         form
           .bindFromRequest()

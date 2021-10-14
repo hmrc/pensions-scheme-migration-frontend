@@ -54,7 +54,7 @@ class PartnerNameController @Inject()(
     formProvider("messages__error__partner")
 
   def onPageLoad(establisherIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         renderer.render(
           template = "personName.njk",
@@ -67,7 +67,7 @@ class PartnerNameController @Inject()(
     }
 
   def onSubmit(establisherIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>

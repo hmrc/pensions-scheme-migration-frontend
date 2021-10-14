@@ -58,13 +58,13 @@ class EnterPreviousPostcodeController @Inject()(val appConfig: AppConfig,
   }
 
   def onPageLoad(index: Index): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async { implicit request =>
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
         get(getFormToJson(schemeName, index, NormalMode))
       }
     }
 
-  def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async{
+  def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async{
     implicit request =>
       retrieve(SchemeNameId) { schemeName =>
         post(getFormToJson(schemeName, index, NormalMode), EnterPreviousPostCodeId(index), "enterPostcode.invalid")

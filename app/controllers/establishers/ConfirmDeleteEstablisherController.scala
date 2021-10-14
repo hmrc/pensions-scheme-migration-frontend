@@ -56,7 +56,7 @@ class ConfirmDeleteEstablisherController @Inject()(override val messagesApi: Mes
   FrontendBaseController with I18nSupport with Retrievals with NunjucksSupport {
 
   def onPageLoad(index: Index, establisherKind: EstablisherKind): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         getDeletableEstablisher(index, establisherKind, request.userAnswers) map {
           establisher =>
@@ -92,7 +92,7 @@ class ConfirmDeleteEstablisherController @Inject()(override val messagesApi: Mes
 
   def onSubmit(establisherIndex: Index, establisherKind: EstablisherKind)
   : Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
 
         establisherKind match {

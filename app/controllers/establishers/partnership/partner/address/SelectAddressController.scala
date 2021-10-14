@@ -56,14 +56,14 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
   override def form: Form[Int] = formProvider("selectAddress.required")
 
   def onPageLoad(estIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async { implicit request =>
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
         getFormToJson(schemeName, estIndex, partnerIndex, mode).retrieve.right.map(get)
       }
     }
 
   def onSubmit(estIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async { implicit request =>
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
       val addressPages: AddressPages = AddressPages(EnterPostCodeId(estIndex, partnerIndex),
         AddressListId(estIndex, partnerIndex), AddressId(estIndex, partnerIndex))
       retrieve(SchemeNameId) { schemeName =>

@@ -60,14 +60,14 @@ class EnterPostcodeController @Inject()(val appConfig: AppConfig,
   }
 
   def onPageLoad(establisherIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async { implicit request =>
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
         get(getFormToJson(schemeName, establisherIndex, partnerIndex, mode))
       }
     }
 
   def onSubmit(establisherIndex: Index, partnerIndex: Index, mode: Mode):
-  Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
       retrieve(SchemeNameId) { schemeName =>
         post(getFormToJson(schemeName, establisherIndex, partnerIndex, mode),

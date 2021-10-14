@@ -72,7 +72,7 @@ class AddPartnersController @Inject()(
   private val form: Form[Boolean] = formProvider()
 
   def onPageLoad(index: Int,mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
 
         val partners = request.userAnswers.allPartnersAfterDelete(index)
@@ -92,7 +92,7 @@ class AddPartnersController @Inject()(
     }
 
   def onSubmit(index: Int,mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         val partners = request.userAnswers.allPartnersAfterDelete(index)
         val itemList=   helper.directorsOrPartnersItemList(partners)

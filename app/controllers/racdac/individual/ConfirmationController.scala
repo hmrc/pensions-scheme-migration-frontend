@@ -47,7 +47,7 @@ class ConfirmationController @Inject()(appConfig: AppConfig,
     with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData(true)).async {
       implicit request =>
         val jsonFuture =
           for {
