@@ -68,7 +68,7 @@ class EnterPostcodeController @Inject()(val appConfig: AppConfig,
   def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async{
     implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        post(getFormToJson(schemeName, index, NormalMode), EnterPostCodeId(index), "enterPostcode.invalid")
+        post(getFormToJson(schemeName, index, NormalMode), EnterPostCodeId(index), "enterPostcode.noresults")
       }
   }
 

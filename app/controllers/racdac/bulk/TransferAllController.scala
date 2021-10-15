@@ -17,7 +17,7 @@
 package controllers.racdac.bulk
 
 import config.AppConfig
-import connectors.MinimalDetailsConnector
+import connectors.{AncillaryPsaException, ListOfSchemesConnector, MinimalDetailsConnector}
 import controllers.Retrievals
 import controllers.actions._
 import forms.YesNoFormProvider
@@ -40,6 +40,7 @@ class TransferAllController @Inject()( appConfig: AppConfig,
                                        authenticate: AuthAction,
                                        formProvider: YesNoFormProvider,
                                        minimalDetailsConnector: MinimalDetailsConnector,
+                                       listOfSchemesConnector: ListOfSchemesConnector,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer
                                      )(implicit val executionContext: ExecutionContext) extends
@@ -49,14 +50,25 @@ class TransferAllController @Inject()( appConfig: AppConfig,
 
   def onPageLoad: Action[AnyContent] = authenticate.async {
     implicit request =>
-      minimalDetailsConnector.getPSAName.flatMap { psaName =>
-        val json: JsObject = Json.obj(
-          "form" -> form,
-          "psaName" -> psaName,
-          "returnUrl" -> appConfig.psaOverviewUrl,
-          "radios" -> Radios.yesNo(form("value"))
-        )
-        renderer.render("racdac/transferAll.njk", json).map(Ok(_))
+      listOfSchemesConnector.getListOfSchemes(request.psaId.id).flatMap {
+        case Right(list) =>
+          if (list.items.getOrElse(Nil).exists(_.racDac)) {
+            minimalDetailsConnector.getPSAName.flatMap { psaName =>
+              val json: JsObject = Json.obj(
+                "form" -> form,
+                "psaName" -> psaName,
+                "returnUrl" -> appConfig.psaOverviewUrl,
+                "radios" -> Radios.yesNo(form("value"))
+              )
+              renderer.render("racdac/transferAll.njk", json).map(Ok(_))
+            }
+          } else{
+            Future.successful(Redirect(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac()))
+          }
+        case _ => Future.successful(Redirect(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac()))
+      }recoverWith {
+        case _: AncillaryPsaException =>
+          Future.successful(Redirect(controllers.preMigration.routes.CannotMigrateController.onPageLoad()))
       }
   }
 
