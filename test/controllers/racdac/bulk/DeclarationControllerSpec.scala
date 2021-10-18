@@ -17,22 +17,20 @@
 package controllers.racdac.bulk
 
 import connectors.cache.BulkMigrationQueueConnector
-import connectors.{EmailConnector, EmailSent, ListOfSchemesConnector, MinimalDetailsConnector}
+import connectors.{EmailConnector, EmailSent}
 import controllers.ControllerSpecBase
-import controllers.actions.MutableFakeDataRetrievalAction
+import controllers.actions.{BulkDataAction, MutableFakeBulkDataAction}
 import matchers.JsonMatchers
-import models.{Items, ListOfLegacySchemes, MinPSA}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.inject.bind
-import play.api.inject.guice.GuiceableModule
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.http.HttpException
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.Data.psaName
 import utils.Enumerable
 
 import scala.concurrent.Future
@@ -41,21 +39,27 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
   private val templateToBeRendered = "racdac/declaration.njk"
   private val mockBulkMigrationConnector = mock[BulkMigrationQueueConnector]
-  private val mockListOfSchemesConnector = mock[ListOfSchemesConnector]
 
-  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  private val mutableFakeBulkDataAction: MutableFakeBulkDataAction = new MutableFakeBulkDataAction(false)
   val extraModules: Seq[GuiceableModule] = Seq(
-    bind[MinimalDetailsConnector].to(mockMinimalDetailsConnector),
     bind[BulkMigrationQueueConnector].to(mockBulkMigrationConnector),
-    bind[ListOfSchemesConnector].to(mockListOfSchemesConnector),
     bind[EmailConnector].toInstance(mockEmailConnector)
   )
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
+  private val application: Application = new GuiceApplicationBuilder()
+    .configure(
+      "metrics.jvm" -> false,
+      "metrics.enabled" -> false
+    )
+    .overrides(
+      modules ++ extraModules ++ Seq[GuiceableModule](
+        bind[BulkDataAction].toInstance(mutableFakeBulkDataAction)
+      ): _*
+    ).build()
   private val dummyUrl = "/dummyurl"
 
   private def jsonToPassToTemplate: JsObject =
     Json.obj(
-      "psaName" -> psaName,
+      "psaName" -> "test company",
       "submitUrl" -> routes.DeclarationController.onSubmit().url,
       "returnUrl" -> dummyUrl
     )
@@ -72,7 +76,6 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
   "RacDac DeclarationController" must {
 
     "return OK and the correct view for a GET" in {
-      when(mockMinimalDetailsConnector.getPSAName(any(), any())).thenReturn(Future.successful(psaName))
       val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
       val result = route(application, httpGETRequest(httpPathGET)).value
@@ -85,12 +88,6 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
     }
 
     "redirect to next page when rac dac schems exist" in {
-      val listOfSchems = ListOfLegacySchemes(2, Some(List(
-        Items("test-pstr1", "", true, "rac dac 1", "", Some("1234")),
-        Items("test-pstr-2", "", true, "rac dac 2", "", Some("6789")))))
-      val minPSA = MinPSA("test@test.com", false, Some("test company"), None, false, false)
-      when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(minPSA))
-      when(mockListOfSchemesConnector.getListOfSchemes(any())(any(), any())).thenReturn(Future(Right(listOfSchems)))
       when(mockBulkMigrationConnector.pushAll(any(), any())(any(), any())).thenReturn(Future(Json.obj()))
       when(mockEmailConnector.sendEmail(any(), any(), any(), any())(any(), any())).thenReturn(Future(EmailSent))
       val result = route(application, httpGETRequest(httpPathPOST)).value
@@ -100,12 +97,12 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
     }
 
     "redirect to Request not process page when error while push" in {
-      val listOfSchems = ListOfLegacySchemes(2, Some(List(
+      /*val listOfSchems = ListOfLegacySchemes(2, Some(List(
         Items("test-pstr1", "", true, "rac dac 1", "", Some("1234")),
         Items("test-pstr-2", "", true, "rac dac 2", "", Some("6789")))))
-      val minPSA = MinPSA("test@test.com", false, Some("test company"), None, false, false)
-      when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(minPSA))
-      when(mockListOfSchemesConnector.getListOfSchemes(any())(any(), any())).thenReturn(Future(Right(listOfSchems)))
+      val minPSA = MinPSA("test@test.com", false, Some("test company"), None, false, false)*/
+      //when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(minPSA))
+      //when(mockListOfSchemesConnector.getListOfSchemes(any())(any(), any())).thenReturn(Future(Right(listOfSchems)))
       when(mockBulkMigrationConnector.pushAll(any(), any())(any(), any())).thenReturn(Future.failed(new HttpException("No Service", SERVICE_UNAVAILABLE)))
 
       val result = route(application, httpGETRequest(httpPathPOST)).value

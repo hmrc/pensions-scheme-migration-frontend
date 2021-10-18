@@ -17,12 +17,12 @@
 package controllers.racdac.bulk
 
 import controllers.ControllerSpecBase
-import controllers.actions.MutableFakeDataRetrievalAction
+import controllers.actions.{BulkDataAction, MutableFakeBulkDataAction}
 import matchers.JsonMatchers
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.inject.bind
-import play.api.inject.guice.GuiceableModule
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.mvc.Results.{BadRequest, Ok}
 import play.api.test.Helpers._
 import services.BulkRacDacService
@@ -37,11 +37,20 @@ class BulkListControllerSpec extends ControllerSpecBase with NunjucksSupport wit
   val table: Table = Table(head = Nil, rows = Nil)
   private val mockBulkRacDacService: BulkRacDacService = mock[BulkRacDacService]
 
-  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  private val mutableFakeBulkDataAction: MutableFakeBulkDataAction = new MutableFakeBulkDataAction(false)
   val extraModules: Seq[GuiceableModule] = Seq(
     bind[BulkRacDacService].toInstance(mockBulkRacDacService)
   )
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
+  private val application: Application = new GuiceApplicationBuilder()
+    .configure(
+      "metrics.jvm" -> false,
+      "metrics.enabled" -> false
+    )
+    .overrides(
+      modules ++ extraModules ++ Seq[GuiceableModule](
+        bind[BulkDataAction].toInstance(mutableFakeBulkDataAction)
+      ): _*
+    ).build()
 
   private def httpPathGET: String = routes.BulkListController.onPageLoad().url
   private def httpPathPOST: String = routes.BulkListController.onSubmit().url

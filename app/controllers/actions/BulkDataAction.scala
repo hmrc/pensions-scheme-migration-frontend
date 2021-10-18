@@ -70,12 +70,12 @@ class BulkRetrievalImpl @Inject()(schemeCacheConnector: CurrentPstrCacheConnecto
         case _ =>
           Future(Right(BulkDataRequest(request, md, Nil)))
       }
-    } recoverWith {
-      case _: DelimitedAdminException =>
-        Future.successful(Left(Redirect(appConfig.psaDelimitedUrl)))
+    }).flatten.recoverWith {
       case _: AncillaryPsaException =>
         Future.successful(Left(Redirect(controllers.preMigration.routes.CannotMigrateController.onPageLoad())))
-    }).flatten
+      case _: DelimitedAdminException =>
+        Future.successful(Left(Redirect(appConfig.psaDelimitedUrl)))
+    }
   }
 }
 

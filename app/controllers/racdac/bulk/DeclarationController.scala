@@ -37,7 +37,6 @@ class DeclarationController @Inject()(
                                        appConfig: AppConfig,
                                        override val messagesApi: MessagesApi,
                                        authenticate: AuthAction,
-                                       minimalDetailsConnector: MinimalDetailsConnector,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer,
                                        bulkMigrationQueueConnector: BulkMigrationQueueConnector,
@@ -81,14 +80,12 @@ class DeclarationController @Inject()(
   private def sendEmail(psaId: String)
                        (implicit request: BulkDataRequest[AnyContent]): Future[EmailStatus] = {
     logger.debug(s"Sending bulk migration email for $psaId")
-    minimalDetailsConnector.getPSADetails(psaId) flatMap { minimalPsa =>
       emailConnector.sendEmail(
-        emailAddress = minimalPsa.email,
+        emailAddress = request.md.email,
         templateName = appConfig.bulkMigrationConfirmationEmailTemplateId,
-        params = Map("psaName" -> minimalPsa.name),
+        params = Map("psaName" -> request.md.name),
         callbackUrl(psaId)
-      )
-    } recoverWith {
+      ) recoverWith {
       case _: Throwable => Future.successful(EmailNotSent)
     }
   }
