@@ -16,17 +16,16 @@
 
 package controllers.preMigration
 
-import connectors.cache.FeatureToggleConnector
+import connectors.cache.{BulkMigrationQueueConnector, FeatureToggleConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import matchers.JsonMatchers
 import models.FeatureToggle.{Disabled, Enabled}
 import models.FeatureToggleName.MigrationTransfer
 import models.PageLink
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
+import org.mockito.{ArgumentCaptor, MockitoSugar}
 import org.scalatest.TryValues
-import org.mockito.MockitoSugar
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
@@ -40,6 +39,7 @@ class MigrationTilePartialControllerSpec extends ControllerSpecBase with Nunjuck
 
   private val templateToBeRendered: String = "preMigration/migrationLinksPartial.njk"
   private val mockFeatureToggleConnector: FeatureToggleConnector = mock[FeatureToggleConnector]
+  private val mockQueueConnector = mock[BulkMigrationQueueConnector]
 
   val viewOnlyLinks: Seq[PageLink] = Seq(
     PageLink("view-pension-schemes", appConfig.schemesMigrationViewOnly, msg"messages__migrationLink__viewSchemesLink"),
@@ -51,8 +51,13 @@ class MigrationTilePartialControllerSpec extends ControllerSpecBase with Nunjuck
     PageLink("add-rac-dacs", appConfig.racDacMigrationTransfer, msg"messages__migrationLink__addRacDacsLink")
   )
 
+  val transferLinksInProgress: Seq[PageLink] = Seq(
+    PageLink("add-pension-schemes", appConfig.schemesMigrationTransfer, msg"messages__migrationLink__addSchemesLink"),
+    PageLink("check-rac-dacs", appConfig.racDacMigrationCheckStatus, msg"messages__migrationLink__checkStatusRacDacsLink")
+  )
+
   private def controller(): MigrationTilePartialController =
-    new MigrationTilePartialController(appConfig, messagesApi, new FakeAuthAction(), mockFeatureToggleConnector,
+    new MigrationTilePartialController(appConfig, messagesApi, new FakeAuthAction(), mockFeatureToggleConnector, mockQueueConnector,
       controllerComponents, new Renderer(mockAppConfig, mockRenderer))
 
   "MigrationTilePartialController" must {
@@ -73,9 +78,10 @@ class MigrationTilePartialControllerSpec extends ControllerSpecBase with Nunjuck
       jsonCaptor.getValue must containJson(Json.obj("links" -> Json.toJson(viewOnlyLinks)))
     }
 
-    "return OK and the correct partial for a GET when migration feature is transfer-enabled" in {
+    "return OK and the correct partial for a GET when migration feature is transfer-enabled and request is not in progress" in {
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Enabled(MigrationTransfer)))
+      when(mockQueueConnector.isRequestInProgress(any())(any(), any())).thenReturn(Future.successful(false))
 
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
@@ -88,6 +94,24 @@ class MigrationTilePartialControllerSpec extends ControllerSpecBase with Nunjuck
       templateCaptor.getValue mustEqual templateToBeRendered
 
       jsonCaptor.getValue must containJson(Json.obj("links" -> Json.toJson(transferLinks)))
+    }
+
+    "return OK and the correct partial for a GET when migration feature is transfer-enabled and request is in progress" in {
+      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+      when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Enabled(MigrationTransfer)))
+      when(mockQueueConnector.isRequestInProgress(any())(any(), any())).thenReturn(Future.successful(true))
+
+      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+      val result: Future[Result] = controller().migrationPartial()(fakeDataRequest())
+
+      status(result) mustBe OK
+
+      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+
+      templateCaptor.getValue mustEqual templateToBeRendered
+
+      jsonCaptor.getValue must containJson(Json.obj("links" -> Json.toJson(transferLinksInProgress)))
     }
   }
 }

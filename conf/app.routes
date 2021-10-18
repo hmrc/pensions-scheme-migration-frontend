@@ -116,16 +116,22 @@ POST        /adviser-postcode                                        controllers
 GET         /change/adviser-postcode                                 controllers.adviser.EnterPostcodeController.onPageLoad(mode: Mode = CheckMode)
 POST        /change/adviser-postcode                                 controllers.adviser.EnterPostcodeController.onSubmit(mode: Mode = CheckMode)
 
-GET         /rac-dac/add-all                                   controllers.racdac.TransferAllController.onPageLoad
-POST        /rac-dac/add-all                                   controllers.racdac.TransferAllController.onSubmit
+GET         /rac-dac/add-all                                   controllers.racdac.bulk.TransferAllController.onPageLoad
+POST        /rac-dac/add-all                                   controllers.racdac.bulk.TransferAllController.onSubmit
 
-GET         /rac-dac/list-rac-dacs-all                                    controllers.racdac.BulkListController.onPageLoad
-POST        /rac-dac/list-rac-dacs-all                                   controllers.racdac.BulkListController.onSubmit
+GET         /rac-dac/list-rac-dacs-all                                    controllers.racdac.bulk.BulkListController.onPageLoad
+POST        /rac-dac/list-rac-dacs-all                                   controllers.racdac.bulk.BulkListController.onSubmit
 
-GET         /rac-dac/declaration-all                                           controllers.racdac.DeclarationController.onPageLoad
-GET         /rac-dac/submit-declaration-all                                    controllers.racdac.DeclarationController.onSubmit
+GET         /rac-dac/declaration-all                                           controllers.racdac.bulk.DeclarationController.onPageLoad
+GET         /rac-dac/submit-declaration-all                                    controllers.racdac.bulk.DeclarationController.onSubmit
 
-GET         /rac-dac/confirmation                                   controllers.racdac.ConfirmationController.onPageLoad
+GET         /rac-dac/rac-dac-status-in-progress                      controllers.racdac.bulk.InProgressController.onPageLoad
+
+GET         /rac-dac/rac-dac-status-complete                         controllers.racdac.bulk.FinishedStatusController.onPageLoad
+
+GET         /rac-dac/check-status                                    controllers.racdac.bulk.CheckStatusController.onPageLoad
+
+GET         /rac-dac/confirmation                                   controllers.racdac.bulk.ConfirmationController.onPageLoad
 
 GET         /adviser-address-results                                 controllers.adviser.SelectAddressController.onPageLoad(mode: Mode = NormalMode)
 POST        /adviser-address-results                                 controllers.adviser.SelectAddressController.onSubmit(mode: Mode = NormalMode)
@@ -134,7 +140,7 @@ GET         /confirm-adviser-address                                 controllers
 POST        /confirm-adviser-address                                 controllers.adviser.ConfirmAddressController.onSubmit
 
 GET         /check-adviser-answers                                   controllers.adviser.CheckYourAnswersController.onPageLoad
-GET         /rac-dac/request-not-processed                           controllers.racdac.RequestNotProcessedController.onPageLoad
+GET         /rac-dac/request-not-processed                           controllers.racdac.bulk.RequestNotProcessedController.onPageLoad
 
 GET         /rac-dac/check-your-answers                              controllers.racdac.individual.CheckYourAnswersController.onPageLoad
 GET         /rac-dac/declaration                                     controllers.racdac.individual.DeclarationController.onPageLoad

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.racdac
+package controllers.racdac.bulk
 
 import config.AppConfig
 import connectors.{AncillaryPsaException, ListOfSchemesConnector, MinimalDetailsConnector}
@@ -85,7 +85,7 @@ class TransferAllController @Inject()( appConfig: AppConfig,
           renderer.render("racdac/transferAll.njk", json).map(BadRequest(_))
         }, {
           case true =>
-            Future.successful(Redirect(controllers.racdac.routes.BulkListController.onPageLoad()))
+            Future.successful(Redirect(controllers.racdac.bulk.routes.BulkListController.onPageLoad()))
           case _ =>
             Future.successful(Redirect(controllers.preMigration.routes.ListOfSchemesController.onPageLoad(RacDac)))
         }

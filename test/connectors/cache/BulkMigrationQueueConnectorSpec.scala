@@ -22,7 +22,7 @@ import org.scalatest.wordspec.AsyncWordSpec
 import org.scalatest.{OptionValues, RecoverMethods}
 import play.api.http.Status
 import play.api.http.Status.ACCEPTED
-import play.api.libs.json.Json
+import play.api.libs.json.{JsBoolean, Json}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 import utils.WireMockHelper
 
@@ -34,11 +34,14 @@ class BulkMigrationQueueConnectorSpec extends AsyncWordSpec with WireMockHelper 
 
   private lazy val connector: BulkMigrationQueueConnector = injector.instanceOf[BulkMigrationQueueConnector]
   private val bulkMigrationUrl = "/pensions-scheme-migration/bulk-migration"
+  private val bulkMigrationIsInProgressUrl = "/pensions-scheme-migration/bulk-migration/isRequestInProgress"
+  private val bulkMigrationAllFailedUrl = "/pensions-scheme-migration/bulk-migration/isAllFailed"
+  private val bulkMigrationDeleteAllUrl = "/pensions-scheme-migration/bulk-migration/deleteAll"
   private val psaId = "test-psaId"
 
   ".pushAll" must {
 
-    "save the lock in the collection" in {
+    "post the requests to the queue" in {
       server.stubFor(
         post(urlEqualTo(bulkMigrationUrl))
           .withRequestBody(equalTo(Json.stringify(Json.obj())))
@@ -63,6 +66,88 @@ class BulkMigrationQueueConnectorSpec extends AsyncWordSpec with WireMockHelper 
       )
       recoverToExceptionIf[HttpException] {
         connector.pushAll(psaId, Json.obj())
+      } map {
+        _.responseCode mustEqual Status.INTERNAL_SERVER_ERROR
+      }
+    }
+  }
+
+  ".isRequestInProgress" must {
+
+    "return true if requests are in progress/todo" in {
+      server.stubFor(
+        get(urlEqualTo(bulkMigrationIsInProgressUrl))
+          .willReturn(ok(JsBoolean(true).toString()))
+      )
+
+      connector.isRequestInProgress(psaId) map { res =>
+        res mustBe true
+      }
+    }
+
+    "return false for upstream error" in {
+      server.stubFor(
+        get(urlEqualTo(bulkMigrationIsInProgressUrl))
+          .willReturn(
+            serverError
+          )
+      )
+      connector.isRequestInProgress(psaId) map { res =>
+        res mustBe false
+      }
+    }
+  }
+
+  ".isAllFailed" must {
+
+    "return true if all requests are failed" in {
+      server.stubFor(
+        get(urlEqualTo(bulkMigrationAllFailedUrl))
+          .willReturn(ok(JsBoolean(true).toString()))
+      )
+
+      connector.isAllFailed(psaId) map { res =>
+        res mustBe true
+      }
+    }
+
+    "throw http exception for upstream error" in {
+      server.stubFor(
+        get(urlEqualTo(bulkMigrationAllFailedUrl))
+          .willReturn(
+            serverError
+          )
+      )
+      recoverToExceptionIf[HttpException] {
+        connector.isAllFailed(psaId)
+      } map {
+        _.responseCode mustEqual Status.INTERNAL_SERVER_ERROR
+      }
+    }
+  }
+
+  ".deleteAll" must {
+
+    "return true if all requests are deleted" in {
+      server.stubFor(
+        delete(urlEqualTo(bulkMigrationDeleteAllUrl))
+          .willReturn(ok(JsBoolean(true).toString()))
+      )
+
+      connector.deleteAll(psaId) map { res =>
+        res mustBe true
+      }
+    }
+
+    "throw http exception for upstream error" in {
+      server.stubFor(
+        delete(urlEqualTo(bulkMigrationDeleteAllUrl))
+          .willReturn(
+            serverError
+          )
+      )
+      recoverToExceptionIf[HttpException] {
+        connector.deleteAll(psaId)
       } map {
         _.responseCode mustEqual Status.INTERNAL_SERVER_ERROR
       }

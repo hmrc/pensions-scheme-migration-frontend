@@ -14,35 +14,41 @@
  * limitations under the License.
  */
 
-package controllers.racdac
+package controllers.racdac.bulk
 
+import connectors.MinimalDetailsConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
+import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.Enumerable
+import utils.{Data, Enumerable}
 
 import scala.concurrent.Future
 
-class RequestNotProcessedControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class ConfirmationControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
-  private val templateToBeRendered = "racdac/request-not-processed.njk"
+  private val templateToBeRendered = "racdac/confirmation.njk"
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  private val extraModules: Seq[GuiceableModule] = Seq(
+    bind[MinimalDetailsConnector].to(mockMinimalDetailsConnector)
+  )
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
-
-  private def httpPathGET: String = controllers.racdac.routes.RequestNotProcessedController.onPageLoad().url
+  private def httpPathGET: String = controllers.racdac.bulk.routes.ConfirmationController.onPageLoad().url
 
   private val jsonToPassToTemplate: JsObject =
     Json.obj(
-      "tryAgain" -> routes.TransferAllController.onPageLoad().url
+      "email" -> Data.email,
+      "finishUrl" -> mockAppConfig.psaOverviewUrl
     )
 
   override def beforeEach: Unit = {
@@ -50,10 +56,10 @@ class RequestNotProcessedControllerSpec extends ControllerSpecBase with Nunjucks
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
-  "RequestNotProcessedController" must {
+  "ConfirmationController" must {
 
     "return OK and the correct view for a GET" in {
-
+      when(mockMinimalDetailsConnector.getPSAEmail(any(), any())).thenReturn(Future.successful(Data.email))
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
