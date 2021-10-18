@@ -17,7 +17,7 @@
 package controllers.racdac.bulk
 
 import config.AppConfig
-import connectors.MinimalDetailsConnector
+import connectors.cache.CurrentPstrCacheConnector
 import controllers.actions._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -31,23 +31,23 @@ import scala.concurrent.ExecutionContext
 class ConfirmationController @Inject()(appConfig: AppConfig,
                                        override val messagesApi: MessagesApi,
                                        authenticate: AuthAction,
-                                       minimalDetailsConnector: MinimalDetailsConnector,
+                                       currentPstrCacheConnector: CurrentPstrCacheConnector,
+                                       getData: BulkDataAction,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer
-                                       )(implicit ec: ExecutionContext)
+                                      )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
-    authenticate.async {
+    (authenticate andThen getData(true)).async {
       implicit request =>
-        minimalDetailsConnector.getPSAEmail.flatMap {
-          psaEmail =>
-            val json = Json.obj(
-              "email" -> psaEmail,
-              "finishUrl" -> appConfig.psaOverviewUrl
-            )
-            renderer.render("racdac/confirmation.njk", json).map(Ok(_))
+        val json = Json.obj(
+          "email" -> request.md.email,
+          "finishUrl" -> appConfig.psaOverviewUrl
+        )
+        currentPstrCacheConnector.remove.flatMap { _ =>
+          renderer.render("racdac/confirmation.njk", json).map(Ok(_))
         }
     }
 }

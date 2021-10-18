@@ -18,12 +18,12 @@ package controllers.racdac.bulk
 
 import com.google.inject.Inject
 import config.AppConfig
-import controllers.actions.AuthAction
+import controllers.actions.{AuthAction, BulkDataAction}
 import forms.racdac.RacDacBulkListFormProvider
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SchemeSearchService
+import services.BulkRacDacService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
@@ -33,24 +33,25 @@ class BulkListController @Inject()(
                                     val appConfig: AppConfig,
                                     override val messagesApi: MessagesApi,
                                     authenticate: AuthAction,
+                                    getData: BulkDataAction,
                                     val controllerComponents: MessagesControllerComponents,
                                     formProvider: RacDacBulkListFormProvider,
-                                    schemeSearchService: SchemeSearchService
+                                    bulkRacDacService: BulkRacDacService
                                   )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport with NunjucksSupport {
 
   val form: Form[Boolean] = formProvider()
 
-  def onPageLoad: Action[AnyContent] = authenticate.async {
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData(false)).async {
     implicit request =>
-      schemeSearchService.renderRacDacBulkView(form, pageNumber = 1)
+      bulkRacDacService.renderRacDacBulkView(form, pageNumber = 1)
   }
 
-  def onSubmit: Action[AnyContent] = authenticate.async {
+  def onSubmit: Action[AnyContent] = (authenticate andThen getData(false)).async {
     implicit request =>
       form.bindFromRequest().fold(formWithErrors =>
-        schemeSearchService.renderRacDacBulkView(formWithErrors, pageNumber = 1),
+        bulkRacDacService.renderRacDacBulkView(formWithErrors, pageNumber = 1),
         { case true =>
           Future.successful(Redirect(routes.DeclarationController.onPageLoad()))
         case _ =>
@@ -58,5 +59,4 @@ class BulkListController @Inject()(
         }
       )
   }
-
 }

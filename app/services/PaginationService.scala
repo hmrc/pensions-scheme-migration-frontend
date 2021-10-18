@@ -16,9 +16,16 @@
 
 package services
 
+import config.AppConfig
+import models.Items
+import play.api.i18n.Messages
+
 import javax.inject.Inject
 
-class PaginationService @Inject()() {
+class PaginationService @Inject()(appConfig: AppConfig) {
+  private def pagination: Int = appConfig.listSchemePagination
+  private val msgPrefix: String = "messages__listSchemes__pagination__"
+
   def divide(numberOfSchemes: Int,
              pagination: Int): Int =
     if (pagination > 0 && numberOfSchemes > 0) {
@@ -48,4 +55,30 @@ class PaginationService @Inject()() {
     else {
       Seq.range(numberOfPages - 4, numberOfPages + 1)
     }
+
+  def selectPageOfResults(
+                                   searchResult: List[Items],
+                                   pageNumber: Int,
+                                   numberOfPages: Int
+                                 ): List[Items] =
+    pageNumber match {
+      case 1 => searchResult.take(pagination)
+      case p if p <= numberOfPages =>
+
+        searchResult.slice(
+          (pageNumber * pagination) - pagination,
+          pageNumber * pagination
+        )
+
+      case _ => throw new Exception
+    }
+
+  def paginationText(pageNumber: Int, pagination: Int, numberOfSchemes: Int, numberOfPages: Int)(implicit messages: Messages): String = {
+    messages(
+      s"${msgPrefix}text",
+      if (pageNumber == 1) pageNumber else ((pageNumber * pagination) - pagination) + 1,
+      if (pageNumber == numberOfPages) numberOfSchemes else pageNumber * pagination,
+      numberOfSchemes
+    )
+  }
 }

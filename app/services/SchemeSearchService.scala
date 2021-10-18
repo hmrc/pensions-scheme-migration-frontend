@@ -21,37 +21,38 @@ import config.AppConfig
 import connectors.cache.FeatureToggleConnector
 import connectors.{AncillaryPsaException, DelimitedAdminException, ListOfSchemesConnector, MinimalDetailsConnector}
 import controllers.preMigration.routes
+import controllers.preMigration.routes.ListOfSchemesController
 import models.FeatureToggleName.MigrationTransfer
-import models.{Items, MigrationType}
 import models.MigrationType.isRacDac
 import models.requests.AuthenticatedRequest
+import models.{Items, MigrationType}
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Result}
 import renderer.Renderer
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Table.Cell
 import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{Content, Html, MessageInterpolators, Radios, Table}
+import uk.gov.hmrc.viewmodels.{Content, Html, MessageInterpolators, Table}
 import utils.SchemeFuzzyMatcher
-import controllers.preMigration.routes.ListOfSchemesController
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import scala.concurrent.{ExecutionContext, Future}
-import play.api.mvc.Results._
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 
 class SchemeSearchService @Inject()(appConfig: AppConfig,
                                     fuzzyMatching: SchemeFuzzyMatcher,
-                                    listOfSchemesConnector:ListOfSchemesConnector,
+                                    listOfSchemesConnector: ListOfSchemesConnector,
                                     minimalDetailsConnector: MinimalDetailsConnector,
                                     paginationService: PaginationService,
                                     featureToggleConnector: FeatureToggleConnector,
                                     renderer: Renderer) extends NunjucksSupport {
 
   private def pagination: Int = appConfig.listSchemePagination
+
   private val pstrRegex = "^[0-9]{8}[A-Za-z]{2}$".r
 
   private val filterSchemesByPstrOrSchemeName: (String, List[Items]) => List[Items] =
@@ -64,58 +65,54 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
             val isMatch = fuzzyMatching.doFuzzyMatching(searchText, schemeDetail.schemeName)
             if (isMatch) Some(schemeDetail) else None
           }
-    }
+      }
 
   def search(psaId: String, searchText: Option[String], isRacDac: Boolean)
             (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[Items]] =
     listOfSchemesConnector.getListOfSchemes(psaId).map {
-        case Right(listOfSchemes) =>
+      case Right(listOfSchemes) =>
 
-          val filterSearchResults =
-            searchText.fold[List[Items] => List[Items]](identity)(
-              st => filterSchemesByPstrOrSchemeName(st, _: List[Items])
-            )
-          filterSearchResults(listOfSchemes.items.getOrElse(Nil).filter(_.racDac == isRacDac))
+        val filterSearchResults =
+          searchText.fold[List[Items] => List[Items]](identity)(
+            st => filterSchemesByPstrOrSchemeName(st, _: List[Items])
+          )
+        filterSearchResults(listOfSchemes.items.getOrElse(Nil).filter(_.racDac == isRacDac))
 
-        case _ =>
-          List.empty[Items]
-      }
+      case _ =>
+        List.empty[Items]
+    }
 
 
   def mapToTable(schemeDetails: List[Items], isRacDac: Boolean, viewOnly: Boolean): Table = {
-      val head =
-        if(isRacDac)
-          Seq(
-            Cell(msg"messages__listSchemes__column_racDacName"),
-            Cell(msg"messages__listSchemes__column_pstr"),
-            Cell(msg"messages__listSchemes__column_regDate")
-          )
-          else
+    val head =
+      if(isRacDac)
         Seq(
-        Cell(msg"messages__listSchemes__column_schemeName"),
-        Cell(msg"messages__listSchemes__column_pstr"),
-        Cell(msg"messages__listSchemes__column_regDate")
-      )
+          Cell(msg"messages__listSchemes__column_racDacName"),
+          Cell(msg"messages__listSchemes__column_pstr"),
+          Cell(msg"messages__listSchemes__column_regDate")
+        )
+      else
+        Seq(
+          Cell(msg"messages__listSchemes__column_schemeName"),
+          Cell(msg"messages__listSchemes__column_pstr"),
+          Cell(msg"messages__listSchemes__column_regDate")
+        )
 
     val formatter: String => String = date => LocalDate.parse(date).format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
 
-    val schemeName: Items => Content = data => if(viewOnly) Literal(data.schemeName) else Html(
-        s"""<a class=migrate-pstr-${data.pstr} href=${ListOfSchemesController.clickSchemeLink(data.pstr, isRacDac)}>${data.schemeName}</a>""".stripMargin)
+    val schemeName: Items => Content = data => if (viewOnly) Literal(data.schemeName) else Html(
+      s"""<a class=migrate-pstr-${data.pstr} href=${ListOfSchemesController.clickSchemeLink(data.pstr, isRacDac)}>${data.schemeName}</a>""".stripMargin)
 
     val rows = schemeDetails.map { data =>
       Seq(Cell(schemeName(data), Seq("govuk-!-width-one-quarter")),
         Cell(Literal(data.pstr), Seq("govuk-!-width-one-quarter")),
         Cell(Literal(formatter(data.schemeOpenDate)), Seq("govuk-!-width-one-half")))
     }
-
     Table(head, rows, attributes = Map("role" -> "table"))
-
   }
 
-  private val msgPrefix:String ="messages__listSchemes__pagination__"
-
-  def typeOfList(migrationType: MigrationType)(implicit messages: Messages):String =
-    if(isRacDac(migrationType)) messages("messages__racdac") else messages("messages__pension_scheme")
+  def typeOfList(migrationType: MigrationType)(implicit messages: Messages): String =
+    if (isRacDac(migrationType)) messages("messages__racdac") else messages("messages__pension_scheme")
 
   private def renderView(
                           schemeDetails: List[Items],
@@ -152,10 +149,10 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
           "noResultsMessageKey" -> noResultsMessageKey,
           "clearLinkUrl" -> routes.ListOfSchemesController.onPageLoad(migrationType).url,
           "returnUrl" -> appConfig.psaOverviewUrl,
-          "paginationText" -> paginationText(pageNumber, pagination, numberOfSchemes, numberOfPages),
+          "paginationText" -> paginationService.paginationText(pageNumber, pagination, numberOfSchemes, numberOfPages),
           "typeOfList" -> typeOfList(migrationType),
           "viewOnly" -> viewOnly
-        ) ++  (if (schemeDetails.nonEmpty) Json.obj("schemes" -> mapToTable(schemeDetails, isRacDac(migrationType), viewOnly)) else Json.obj())
+        ) ++ (if (schemeDetails.nonEmpty) Json.obj("schemes" -> mapToTable(schemeDetails, isRacDac(migrationType), viewOnly)) else Json.obj())
 
         renderer.render("preMigration/listOfSchemes.njk", json)
           .map(body => if (form.hasErrors) BadRequest(body) else Ok(body))
@@ -164,15 +161,6 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
       case _: DelimitedAdminException =>
         Future.successful(Redirect(appConfig.psaDelimitedUrl))
     }
-
-  private  def paginationText(pageNumber:Int,pagination:Int,numberOfSchemes:Int,numberOfPages:Int)(implicit messages: Messages):String={
-    messages(
-      s"${msgPrefix}text",
-      if (pageNumber == 1) pageNumber else ((pageNumber * pagination) - pagination) + 1,
-      if (pageNumber == numberOfPages) numberOfSchemes else pageNumber * pagination,
-      numberOfSchemes
-    )
-  }
 
   private def noResultsMessageKey(searchText: Option[String], searchResult: List[Items], migrationType: MigrationType)
                                  (implicit messages: Messages): Option[String] =
@@ -184,14 +172,14 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
     }
 
   def searchAndRenderView(
-                                   form: Form[String],
-                                   pageNumber: Int,
-                                   searchText: Option[String],
-                                   migrationType: MigrationType
-                                 )(implicit request: AuthenticatedRequest[AnyContent],
-                                   messages: Messages,
-                                   hc: HeaderCarrier,
-                                   ec: ExecutionContext): Future[Result] =
+                           form: Form[String],
+                           pageNumber: Int,
+                           searchText: Option[String],
+                           migrationType: MigrationType
+                         )(implicit request: AuthenticatedRequest[AnyContent],
+                           messages: Messages,
+                           hc: HeaderCarrier,
+                           ec: ExecutionContext): Future[Result] =
     featureToggleConnector.get(MigrationTransfer.asString).flatMap { toggle =>
       search(request.psaId.id, searchText, isRacDac(migrationType)).flatMap { searchResult =>
         val numberOfSchemes: Int = searchResult.length
@@ -200,7 +188,7 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
           paginationService.divide(numberOfSchemes, pagination)
 
         renderView(
-          selectPageOfResults(searchResult, pageNumber, numberOfPages),
+          paginationService.selectPageOfResults(searchResult, pageNumber, numberOfPages),
           numberOfSchemes,
           pageNumber,
           numberOfPages,
@@ -214,72 +202,4 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
           Future.successful(Redirect(routes.CannotMigrateController.onPageLoad()))
       }
     }
-
-  def renderRacDacBulkView(
-                           form: Form[Boolean],
-                           pageNumber: Int
-                         )(implicit request: AuthenticatedRequest[AnyContent],
-                           messages: Messages,
-                           hc: HeaderCarrier,
-                           ec: ExecutionContext): Future[Result] =
-
-      search(request.psaId.id, None, isRacDac = true).flatMap { searchResult =>
-
-        val numberOfSchemes: Int = searchResult.length
-        val numberOfPages: Int = paginationService.divide(numberOfSchemes, pagination)
-        val schemeDetails = selectPageOfResults(searchResult, pageNumber, numberOfPages)
-
-        minimalDetailsConnector.getPSADetails(request.psaId.id).flatMap {
-          case md if md.deceasedFlag => Future.successful(Redirect(appConfig.deceasedContactHmrcUrl))
-          case md if md.rlsFlag => Future.successful(Redirect(appConfig.psaUpdateContactDetailsUrl))
-          case md =>
-
-            val json: JsObject = Json.obj(
-              "form" -> form,
-              "psaName" -> md.name,
-              "numberOfSchemes" -> numberOfSchemes,
-              "pagination" -> pagination,
-              "pageNumber" -> pageNumber,
-              "pageNumberLinks" -> paginationService.pageNumberLinks(
-                pageNumber,
-                numberOfSchemes,
-                pagination,
-                numberOfPages
-              ),
-              "numberOfPages" -> numberOfPages,
-              "returnUrl" -> appConfig.psaOverviewUrl,
-              "paginationText" -> paginationText(pageNumber,pagination,numberOfSchemes,numberOfPages),
-              "schemes" -> mapToTable(schemeDetails, isRacDac = true, viewOnly = true),
-              "radios" -> Radios.yesNo(form("value"))
-            )
-            renderer.render("racdac/racDacsBulkList.njk", json)
-              .map(body => if (form.hasErrors) BadRequest(body) else Ok(body))
-
-        } recoverWith {
-          case _: DelimitedAdminException =>
-            Future.successful(Redirect(appConfig.psaDelimitedUrl))
-        }
-
-      } recoverWith {
-        case _: AncillaryPsaException =>
-          Future.successful(Redirect(routes.CannotMigrateController.onPageLoad()))
-      }
-
-  private def selectPageOfResults(
-                                   searchResult: List[Items],
-                                   pageNumber: Int,
-                                   numberOfPages: Int
-                                 ): List[Items] =
-    pageNumber match {
-      case 1 => searchResult.take(pagination)
-      case p if p <= numberOfPages =>
-
-        searchResult.slice(
-          (pageNumber * pagination) - pagination,
-          pageNumber * pagination
-        )
-
-      case _ => throw new Exception
-    }
-
 }

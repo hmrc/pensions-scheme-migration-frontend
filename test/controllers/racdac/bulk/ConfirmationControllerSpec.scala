@@ -16,16 +16,17 @@
 
 package controllers.racdac.bulk
 
-import connectors.MinimalDetailsConnector
+import connectors.cache.CurrentPstrCacheConnector
 import controllers.ControllerSpecBase
-import controllers.actions.MutableFakeDataRetrievalAction
+import controllers.actions.{BulkDataAction, MutableFakeBulkDataAction}
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.inject.bind
-import play.api.inject.guice.GuiceableModule
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.Results.Ok
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
@@ -36,12 +37,23 @@ import scala.concurrent.Future
 class ConfirmationControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val templateToBeRendered = "racdac/confirmation.njk"
+  private val mockSchemeCacheConnector = mock[CurrentPstrCacheConnector]
 
-  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val extraModules: Seq[GuiceableModule] = Seq(
-    bind[MinimalDetailsConnector].to(mockMinimalDetailsConnector)
+  private val mutableFakeBulkDataAction: MutableFakeBulkDataAction = new MutableFakeBulkDataAction(false)
+  val extraModules: Seq[GuiceableModule] = Seq(
+    bind[CurrentPstrCacheConnector].to(mockSchemeCacheConnector)
   )
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
+
+  private val application: Application = new GuiceApplicationBuilder()
+    .configure(
+      "metrics.jvm" -> false,
+      "metrics.enabled" -> false
+    )
+    .overrides(
+      modules ++ extraModules ++ Seq[GuiceableModule](
+        bind[BulkDataAction].toInstance(mutableFakeBulkDataAction)
+      ): _*
+    ).build()
 
   private def httpPathGET: String = controllers.racdac.bulk.routes.ConfirmationController.onPageLoad().url
 
@@ -59,7 +71,7 @@ class ConfirmationControllerSpec extends ControllerSpecBase with NunjucksSupport
   "ConfirmationController" must {
 
     "return OK and the correct view for a GET" in {
-      when(mockMinimalDetailsConnector.getPSAEmail(any(), any())).thenReturn(Future.successful(Data.email))
+      when(mockSchemeCacheConnector.remove(any(), any())).thenReturn(Future(Ok))
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 

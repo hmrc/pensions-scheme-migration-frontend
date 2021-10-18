@@ -17,15 +17,15 @@
 package controllers.racdac.bulk
 
 import controllers.ControllerSpecBase
-import controllers.actions.MutableFakeDataRetrievalAction
+import controllers.actions.{BulkDataAction, MutableFakeBulkDataAction}
 import matchers.JsonMatchers
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.inject.bind
-import play.api.inject.guice.GuiceableModule
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.mvc.Results.{BadRequest, Ok}
 import play.api.test.Helpers._
-import services.SchemeSearchService
+import services.BulkRacDacService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Table
 import utils.Enumerable
@@ -35,13 +35,22 @@ import scala.concurrent.Future
 class BulkListControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   val table: Table = Table(head = Nil, rows = Nil)
-  private val mockSchemeSearchService: SchemeSearchService = mock[SchemeSearchService]
+  private val mockBulkRacDacService: BulkRacDacService = mock[BulkRacDacService]
 
-  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  private val mutableFakeBulkDataAction: MutableFakeBulkDataAction = new MutableFakeBulkDataAction(false)
   val extraModules: Seq[GuiceableModule] = Seq(
-    bind[SchemeSearchService].toInstance(mockSchemeSearchService)
+    bind[BulkRacDacService].toInstance(mockBulkRacDacService)
   )
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
+  private val application: Application = new GuiceApplicationBuilder()
+    .configure(
+      "metrics.jvm" -> false,
+      "metrics.enabled" -> false
+    )
+    .overrides(
+      modules ++ extraModules ++ Seq[GuiceableModule](
+        bind[BulkDataAction].toInstance(mutableFakeBulkDataAction)
+      ): _*
+    ).build()
 
   private def httpPathGET: String = routes.BulkListController.onPageLoad().url
   private def httpPathPOST: String = routes.BulkListController.onSubmit().url
@@ -56,7 +65,7 @@ class BulkListControllerSpec extends ControllerSpecBase with NunjucksSupport wit
 
   override def beforeEach: Unit = {
     super.beforeEach
-    when(mockSchemeSearchService.renderRacDacBulkView(any(), any())(any(), any(), any(), any())).thenReturn(Future.successful(Ok("")))
+    when(mockBulkRacDacService.renderRacDacBulkView(any(), any())(any(), any(), any())).thenReturn(Future.successful(Ok("")))
     when(mockAppConfig.psaOverviewUrl) thenReturn appConfig.psaOverviewUrl
   }
 
@@ -90,7 +99,7 @@ class BulkListControllerSpec extends ControllerSpecBase with NunjucksSupport wit
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {
-      when(mockSchemeSearchService.renderRacDacBulkView(any(), any())(any(), any(), any(), any())).thenReturn(Future.successful(BadRequest("")))
+      when(mockBulkRacDacService.renderRacDacBulkView(any(), any())(any(), any(), any())).thenReturn(Future.successful(BadRequest("")))
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
 
       status(result) mustEqual BAD_REQUEST

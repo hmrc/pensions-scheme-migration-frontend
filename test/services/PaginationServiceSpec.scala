@@ -19,7 +19,7 @@ package services
 import base.SpecBase
 
 class PaginationServiceSpec extends SpecBase {
-  val paginationService: PaginationService = new PaginationService
+  val paginationService: PaginationService = new PaginationService(appConfig)
   "PaginationService" must {
     "return 0 when pagination of 0 passed to divide" in {
       paginationService.divide(numberOfSchemes = 10, pagination = 0) mustBe 0
