@@ -62,7 +62,7 @@ class DeclarationController @Inject()(
     }
 
   def onSubmit: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData()).async {
+    (authenticate andThen getData andThen requireData(true)).async {
       implicit request =>
         val psaId = request.psaId.id
 
