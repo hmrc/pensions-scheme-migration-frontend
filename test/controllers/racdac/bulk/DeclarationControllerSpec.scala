@@ -97,12 +97,6 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
     }
 
     "redirect to Request not process page when error while push" in {
-      /*val listOfSchems = ListOfLegacySchemes(2, Some(List(
-        Items("test-pstr1", "", true, "rac dac 1", "", Some("1234")),
-        Items("test-pstr-2", "", true, "rac dac 2", "", Some("6789")))))
-      val minPSA = MinPSA("test@test.com", false, Some("test company"), None, false, false)*/
-      //when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(minPSA))
-      //when(mockListOfSchemesConnector.getListOfSchemes(any())(any(), any())).thenReturn(Future(Right(listOfSchems)))
       when(mockBulkMigrationConnector.pushAll(any(), any())(any(), any())).thenReturn(Future.failed(new HttpException("No Service", SERVICE_UNAVAILABLE)))
 
       val result = route(application, httpGETRequest(httpPathPOST)).value
