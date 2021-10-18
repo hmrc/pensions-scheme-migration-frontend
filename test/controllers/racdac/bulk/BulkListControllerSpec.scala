@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.racdac
+package controllers.racdac.bulk
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
@@ -23,7 +23,7 @@ import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.mvc.Results.{Ok, BadRequest}
+import play.api.mvc.Results.{BadRequest, Ok}
 import play.api.test.Helpers._
 import services.SchemeSearchService
 import uk.gov.hmrc.nunjucks.NunjucksSupport

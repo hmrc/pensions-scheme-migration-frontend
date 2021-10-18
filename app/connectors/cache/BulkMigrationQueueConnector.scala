@@ -28,12 +28,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class BulkMigrationQueueConnector @Inject()(config: AppConfig,
                                             http: WSClient
-                                  ) {
-
+                                           ) {
 
 
   def pushAll(psaId: String, requests: JsValue)
-          (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] =
+             (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] =
     http
       .url(config.bulkMigrationEnqueueUrl)
       .withHttpHeaders(queueHeaders(hc, psaId): _*)
@@ -42,6 +41,51 @@ class BulkMigrationQueueConnector @Inject()(config: AppConfig,
         response.status match {
           case ACCEPTED => Future.successful(requests)
           case _ => Future.failed(new HttpException(response.body, response.status))
+        }
+      }
+
+  def isRequestInProgress(psaId: String)
+                         (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Boolean] =
+    http
+      .url(config.bulkMigrationIsInProgressUrl)
+      .withHttpHeaders(queueHeaders(hc, psaId): _*)
+      .get()
+      .flatMap { response =>
+        response.status match {
+          case OK =>
+            Future.successful(response.json.as[Boolean])
+          case _ =>
+            Future.successful(false)
+        }
+      }
+
+  def isAllFailed(psaId: String)
+                         (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Boolean] =
+    http
+      .url(config.bulkMigrationIsAllFailedUrl)
+      .withHttpHeaders(queueHeaders(hc, psaId): _*)
+      .get()
+      .flatMap { response =>
+        response.status match {
+          case OK =>
+            Future.successful(response.json.as[Boolean])
+          case _ =>
+            Future.failed(new HttpException(response.body, response.status))
+        }
+      }
+
+  def deleteAll(psaId: String)
+                 (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Boolean] =
+    http
+      .url(config.bulkMigrationDeleteAllUrl)
+      .withHttpHeaders(queueHeaders(hc, psaId): _*)
+      .delete()
+      .flatMap { response =>
+        response.status match {
+          case OK =>
+            Future.successful(response.json.as[Boolean])
+          case _ =>
+            Future.failed(new HttpException(response.body, response.status))
         }
       }
 }

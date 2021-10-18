@@ -14,36 +14,31 @@
  * limitations under the License.
  */
 
-package controllers.racdac
+package controllers.racdac.bulk
 
 import config.AppConfig
-import controllers.actions.AuthAction
+import connectors.cache.BulkMigrationQueueConnector
+import controllers.actions._
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class RequestNotProcessedController @Inject()(val appConfig: AppConfig,
-                                              override val messagesApi: MessagesApi,
-                                              authenticate: AuthAction,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              renderer: Renderer
+class CheckStatusController @Inject()(val appConfig: AppConfig,
+                                      override val messagesApi: MessagesApi,
+                                      authenticate: AuthAction,
+                                      bulkMigrationQueueConnector: BulkMigrationQueueConnector,
+                                      val controllerComponents: MessagesControllerComponents
                                      )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = authenticate.async {
-    implicit request =>
-        renderer.render(
-          template = "racdac/request-not-processed.njk",
-          Json.obj(
-            "tryAgain" -> routes.TransferAllController.onPageLoad().url
-          )
-        ).map(Ok(_))
-      }
+  def onPageLoad: Action[AnyContent] = authenticate.async { implicit request =>
+    bulkMigrationQueueConnector.isAllFailed(request.psaId.id).map {
+      case true => Redirect(controllers.racdac.bulk.routes.FinishedStatusController.onPageLoad())
+      case false => Redirect(controllers.racdac.bulk.routes.InProgressController.onPageLoad())
+    }
   }
-
+}
 
