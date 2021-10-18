@@ -105,5 +105,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val emailApiUrl: String = s"${servicesConfig.baseUrl("email")}"
   lazy val schemeConfirmationEmailTemplateId: String = loadConfig("email.schemeConfirmationTemplateId")
   lazy val bulkMigrationConfirmationEmailTemplateId: String = loadConfig("email.bulkMigrationConfirmationTemplateId")
+  lazy val individualMigrationConfirmationEmailTemplateId: String = loadConfig("email.individualMigrationConfirmationTemplateId")
   lazy val emailSendForce: Boolean = config.getOptional[Boolean]("email.force").getOrElse(false)
 }

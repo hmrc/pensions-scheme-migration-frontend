@@ -45,7 +45,7 @@ class WhatYouWillNeedController @Inject()(override val messagesApi: MessagesApi,
   with NunjucksSupport {
 
   def onPageLoad(establisherIndex: Index): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
 
       implicit request =>
         val partnerIndex = request.userAnswers.allPartners(establisherIndex).size

@@ -59,7 +59,7 @@ class PartnerNoUTRReasonController @Inject()(override val messagesApi: MessagesA
     formProvider(Message("messages__reason__error_utrRequired", name(establisherIndex,partnerIndex)))
 
   def onPageLoad(establisherIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.right.map {
           schemeName =>
@@ -75,7 +75,7 @@ class PartnerNoUTRReasonController @Inject()(override val messagesApi: MessagesA
     }
 
   def onSubmit(establisherIndex: Index, partnerIndex: Index,mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.right.map {
           schemeName =>

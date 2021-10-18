@@ -51,7 +51,7 @@ class WorkingKnowledgeController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
       val preparedForm = request.userAnswers.get(WorkingKnowledgeId).fold(form)(form.fill)
       val json: JsObject = Json.obj(
@@ -62,7 +62,7 @@ class WorkingKnowledgeController @Inject()(
       renderer.render("beforeYouStart/workingKnowledge.njk", json).map(Ok(_))
   }
 
-  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {

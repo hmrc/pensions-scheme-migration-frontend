@@ -54,14 +54,14 @@ class InsurerSelectAddressController @Inject()(val appConfig: AppConfig,
 
   override def form: Form[Int] = formProvider("insurerSelectAddress.required")
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async { implicit request =>
     retrieve(SchemeNameId) { schemeName =>
       getFormToJson(schemeName).retrieve.right.map(get)
     }
   }
 
   def onSubmit: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async { implicit request =>
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
         val addressPages: AddressPages = AddressPages(InsurerEnterPostCodeId, InsurerAddressListId, InsurerAddressId)
       retrieve(SchemeNameId) { schemeName =>
         getFormToJson(schemeName).retrieve.right.map(post(_, addressPages,manualUrlCall = InsurerConfirmAddressController.onPageLoad()))

@@ -131,7 +131,7 @@ GET         /rac-dac/rac-dac-status-complete                         controllers
 
 GET         /rac-dac/check-status                                    controllers.racdac.bulk.CheckStatusController.onPageLoad
 
-GET         /rac-dac/confirmation                                   controllers.racdac.bulk.ConfirmationController.onPageLoad
+GET         /rac-dac/confirmation-all                                   controllers.racdac.bulk.ConfirmationController.onPageLoad
 
 GET         /adviser-address-results                                 controllers.adviser.SelectAddressController.onPageLoad(mode: Mode = NormalMode)
 POST        /adviser-address-results                                 controllers.adviser.SelectAddressController.onSubmit(mode: Mode = NormalMode)
@@ -145,3 +145,4 @@ GET         /rac-dac/request-not-processed                           controllers
 GET         /rac-dac/check-your-answers                              controllers.racdac.individual.CheckYourAnswersController.onPageLoad
 GET         /rac-dac/declaration                                     controllers.racdac.individual.DeclarationController.onPageLoad
 GET         /rac-dac/submit-declaration                              controllers.racdac.individual.DeclarationController.onSubmit
+GET         /rac-dac/confirmation                                    controllers.racdac.individual.ConfirmationController.onPageLoad

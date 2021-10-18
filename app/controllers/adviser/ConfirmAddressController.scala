@@ -53,14 +53,14 @@ class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
   def form(implicit messages: Messages): Form[Address] = formProvider()
 
   def onPageLoad: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async { implicit request =>
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
       (AdviserNameId and SchemeNameId).retrieve.right.map { case adviserName ~ schemeName =>
         get(Some(schemeName), adviserName, AddressId,AddressListId, AddressConfiguration.PostcodeFirst)
       }
     }
 
   def onSubmit: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async { implicit request =>
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
       (AdviserNameId and SchemeNameId).retrieve.right.map { case adviserName ~ schemeName =>
         post(Some(schemeName), adviserName, AddressId, AddressConfiguration.PostcodeFirst)
       }

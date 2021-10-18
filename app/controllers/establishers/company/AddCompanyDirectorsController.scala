@@ -72,7 +72,7 @@ class AddCompanyDirectorsController @Inject()(
   private val form: Form[Boolean] = formProvider()
 
   def onPageLoad(index: Int,mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
 
         val directors = request.userAnswers.allDirectorsAfterDelete(index)
@@ -92,7 +92,7 @@ class AddCompanyDirectorsController @Inject()(
     }
 
   def onSubmit(index: Int,mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         val directors = request.userAnswers.allDirectorsAfterDelete(index)
         val itemList=   helper.directorsOrPartnersItemList(directors)

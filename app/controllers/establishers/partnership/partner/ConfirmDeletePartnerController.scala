@@ -51,7 +51,7 @@ class ConfirmDeletePartnerController @Inject()(override val messagesApi: Message
   extends FrontendBaseController with I18nSupport with Retrievals with NunjucksSupport {
 
   def onPageLoad(establisherIndex: Index, partnerIndex: Index): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         PartnerNameId(establisherIndex, partnerIndex).retrieve.right.map { partner =>
           if (partner.isDeleted) {
@@ -74,7 +74,7 @@ class ConfirmDeletePartnerController @Inject()(override val messagesApi: Message
   private def form(name: String)(implicit messages: Messages): Form[Boolean] = formProvider(name)
 
   def onSubmit(establisherIndex: Index, partnerIndex: Index): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
 
         PartnerNameId(establisherIndex, partnerIndex).retrieve.right.map { partner =>

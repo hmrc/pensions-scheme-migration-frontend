@@ -53,7 +53,7 @@ class BenefitsInsurancePolicyController @Inject()(override val messagesApi: Mess
     formProvider()
 
   def onPageLoad: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async { implicit request =>
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
       (request.userAnswers.get(SchemeNameId), request.userAnswers.get(BenefitsInsuranceNameId)) match {
         case (Some(schemeName), optionInsurancePolicyName) =>
           val preparedForm = request.userAnswers.get(BenefitsInsurancePolicyId) match {
@@ -74,7 +74,7 @@ class BenefitsInsurancePolicyController @Inject()(override val messagesApi: Mess
     }
 
   def onSubmit: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async { implicit request =>
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
       (request.userAnswers.get(SchemeNameId), request.userAnswers.get(BenefitsInsuranceNameId)) match {
         case (Some(schemeName), optionInsurancePolicyName) =>
         form

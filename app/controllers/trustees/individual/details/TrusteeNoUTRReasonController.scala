@@ -60,7 +60,7 @@ class TrusteeNoUTRReasonController @Inject()(
     formProvider(Message("messages__reason__error_utrRequired", name(index)))
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.right.map {
           schemeName =>
@@ -76,7 +76,7 @@ class TrusteeNoUTRReasonController @Inject()(
     }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.right.map {
           schemeName =>

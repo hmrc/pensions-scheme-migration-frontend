@@ -41,7 +41,7 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
   FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits {
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         directorName(establisherIndex, directorIndex) match {
           case Right(directorName) =>

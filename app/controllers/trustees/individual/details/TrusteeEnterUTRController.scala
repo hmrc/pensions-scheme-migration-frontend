@@ -58,7 +58,7 @@ class TrusteeEnterUTRController @Inject()(
   private def form: Form[ReferenceValue] = formProvider()
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.right.map {
           schemeName =>
@@ -76,7 +76,7 @@ class TrusteeEnterUTRController @Inject()(
     }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.right.map {
           schemeName =>

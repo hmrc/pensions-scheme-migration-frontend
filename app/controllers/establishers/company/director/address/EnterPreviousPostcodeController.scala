@@ -58,13 +58,13 @@ class EnterPreviousPostcodeController @Inject()(val appConfig: AppConfig,
   }
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async { implicit request =>
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
         get(getFormToJson(schemeName, establisherIndex, directorIndex, mode))
       }
     }
 
-  def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
       retrieve(SchemeNameId) { schemeName =>
         post(getFormToJson(schemeName, establisherIndex, directorIndex, mode),

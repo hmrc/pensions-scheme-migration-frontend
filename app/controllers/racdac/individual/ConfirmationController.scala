@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.racdac.individual
 
 import config.AppConfig
 import connectors.MinimalDetailsConnector
@@ -31,23 +31,23 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class SchemeSuccessController @Inject()(appConfig: AppConfig,
-                                        override val messagesApi: MessagesApi,
-                                        identify: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        userAnswersCacheConnector: UserAnswersCacheConnector,
-                                        renderer: Renderer,
-                                        minimalDetailsConnector: MinimalDetailsConnector,
-                                        currentPstrCacheConnector:CurrentPstrCacheConnector,
-                                        lockCacheConnector:LockCacheConnector
+class ConfirmationController @Inject()(appConfig: AppConfig,
+                                       override val messagesApi: MessagesApi,
+                                       authenticate: AuthAction,
+                                       getData: DataRetrievalAction,
+                                       requireData: DataRequiredAction,
+                                       minimalDetailsConnector: MinimalDetailsConnector,
+                                       userAnswersCacheConnector: UserAnswersCacheConnector,
+                                       currentPstrCacheConnector:CurrentPstrCacheConnector,
+                                       lockCacheConnector:LockCacheConnector,
+                                       val controllerComponents: MessagesControllerComponents,
+                                       renderer: Renderer
                                        )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
-    (identify andThen getData andThen requireData()).async {
+    (authenticate andThen getData andThen requireData(true)).async {
       implicit request =>
         val jsonFuture =
           for {
@@ -64,11 +64,10 @@ class SchemeSuccessController @Inject()(appConfig: AppConfig,
               "returnUrl" -> appConfig.psaOverviewUrl
             )
           }
-        jsonFuture.flatMap { json =>
-          renderer.render("schemeSuccess.njk", json).map { viewHtml =>
-            Ok(viewHtml)
-          }
+
+        jsonFuture.flatMap {
+          json =>
+            renderer.render("racdac/individual/confirmation.njk", json).map(Ok(_))
         }
     }
-
 }

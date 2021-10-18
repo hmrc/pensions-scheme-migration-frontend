@@ -18,8 +18,9 @@ package controllers.racdac.individual
 
 import config.AppConfig
 import connectors._
-import controllers.actions.{AuthAction, DataRetrievalAction}
-import models.requests.OptionalDataRequest
+import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import identifiers.beforeYouStart.SchemeNameId
+import models.requests.DataRequest
 import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -36,6 +37,7 @@ class DeclarationController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        authenticate: AuthAction,
                                        getData: DataRetrievalAction,
+                                       requireData: DataRequiredAction,
                                        minimalDetailsConnector: MinimalDetailsConnector,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer,
@@ -46,7 +48,7 @@ class DeclarationController @Inject()(
     with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
-    authenticate.async {
+    (authenticate andThen getData andThen requireData(true)).async {
       implicit request =>
         minimalDetailsConnector.getPSAName.flatMap {
           psaName =>
@@ -60,30 +62,30 @@ class DeclarationController @Inject()(
     }
 
   def onSubmit: Action[AnyContent] =
-    (authenticate andThen getData).async {
+    (authenticate andThen getData andThen requireData(true)).async {
       implicit request =>
         val psaId = request.psaId.id
 
+         val userAnswers = request.userAnswers
+         val racDacName = userAnswers.get(SchemeNameId)
+          .getOrElse(throw new RuntimeException("Scheme Name is mandatory for RAC/DAC"))
         //TODO need to use when calling connector for ETMP
-        // val userAnswers = request.userAnswers.get
-        // val racDacName = userAnswers.get(SchemeNameId)
-        //  .getOrElse(throw new RuntimeException("Scheme Name is mandatory for RAC/DAC"))
         // val policyNumberId= userAnswers.get(ContractOrPolicyNumberId)
         //  .getOrElse(throw new RuntimeException("Policy Number is mandatory for RAC/DAC"))
 
-          sendEmail(psaId)(implicitly).map { _ =>
-            Redirect(controllers.racdac.bulk.routes.ConfirmationController.onPageLoad().url)
+          sendEmail(racDacName,psaId)(implicitly).map { _ =>
+            Redirect(controllers.racdac.individual.routes.ConfirmationController.onPageLoad().url)
         }
     }
 
-  private def sendEmail(psaId: String)
-                       (implicit request: OptionalDataRequest[AnyContent]): Future[EmailStatus] = {
+  private def sendEmail(schemeName: String,psaId: String)
+                       (implicit request: DataRequest[AnyContent]): Future[EmailStatus] = {
     logger.debug(s"Sending Rac Dac migration email for $psaId")
     minimalDetailsConnector.getPSADetails(psaId) flatMap { minimalPsa =>
       emailConnector.sendEmail(
         emailAddress = minimalPsa.email,
-        templateName = appConfig.bulkMigrationConfirmationEmailTemplateId,
-        params = Map("psaName" -> minimalPsa.name),
+        templateName = appConfig.individualMigrationConfirmationEmailTemplateId,
+        params = Map("psaName" -> minimalPsa.name,"schemeName"-> schemeName),
         callbackUrl(psaId)
       )
     } recoverWith {

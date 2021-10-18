@@ -50,7 +50,7 @@ class BenefitsInsuranceNameController @Inject()(override val messagesApi: Messag
     formProvider()
 
   def onPageLoad: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async { implicit request =>
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         val preparedForm = request.userAnswers.get(BenefitsInsuranceNameId) match {
           case Some(value) => form.fill(value)
@@ -65,7 +65,7 @@ class BenefitsInsuranceNameController @Inject()(override val messagesApi: Messag
     }
 
   def onSubmit: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async { implicit request =>
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         form
           .bindFromRequest()

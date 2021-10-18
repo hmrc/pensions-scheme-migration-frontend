@@ -48,7 +48,7 @@ class WhatYouWillNeedCompanyContactController @Inject()(
     with NunjucksSupport {
 
   def onPageLoad(index: Index): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         CompanyDetailsId(index).retrieve.right.map {
           details =>

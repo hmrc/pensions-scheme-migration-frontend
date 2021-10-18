@@ -53,7 +53,7 @@ class EstablisherKindController @Inject()(
   private val form = formProvider()
 
   def onPageLoad(index: Index): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         val formWithData = request.userAnswers.get(EstablisherKindId(index)).fold(form)(form.fill)
         val json = Json.obj(
@@ -64,7 +64,7 @@ class EstablisherKindController @Inject()(
         renderer.render("establishers/establisherKind.njk", json).map(Ok(_))
     }
 
-  def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {

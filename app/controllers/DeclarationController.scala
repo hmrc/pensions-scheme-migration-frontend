@@ -49,7 +49,7 @@ class DeclarationController @Inject()(
     with Retrievals {
 
   def onPageLoad: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.right.map { schemeName =>
 
@@ -64,7 +64,7 @@ class DeclarationController @Inject()(
     }
 
   def onSubmit: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         sendEmail(schemeName, request.psaId.id).map {

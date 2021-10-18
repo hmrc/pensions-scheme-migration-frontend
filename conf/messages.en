@@ -1092,6 +1092,13 @@ messages__racdac__request__not__processed__heading = Sorry, there was a problem 
 messages__racdac__request__not__processed__p = We could not process your request to add your RAC/DACs from Pension Schemes Online.
 messages__racdac__request__not__processed__link = Try adding them again
 
+messages__racdac__individual__confirmation__title = The RAC/DAC has been added from Pension Schemes Online
+messages__racdac__individual__confirmation__heading = The RAC/DAC {0} has been added from Pension Schemes Online
+messages__racdac__individual__confirmation__pstr__number = The PSTR number is {0}
+messages__racdac__individual__confirmation__detail__1 = The RAC/DAC has been added to your list of pension schemes.
+messages__racdac__individual__confirmation__detail__2 = to manage this RAC/DAC.
+messages__racdac__individual__confirmation__pension__scheme__link = View your list of pension schemes
+
 messages__racdac__cya__heading = RAC/DAC details
 messages__racdac__cya__name__label = What is the name of the RAC/DAC?
 messages__racdac__cya__name__visuallyhidden = the name of the RAC/DAC

@@ -50,7 +50,7 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
     formProvider("companyAddressYears.error.required")
 
   def onPageLoad(index: Index): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async { implicit request =>
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
       (CompanyDetailsId(index) and SchemeNameId).retrieve.right.map {
         case companyDetails ~ schemeName =>
           get(Some(schemeName), companyDetails.companyName, Messages("messages__company"), form, AddressYearsId(index))
@@ -58,7 +58,7 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
     }
 
   def onSubmit(index: Index): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async { implicit request =>
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
       (CompanyDetailsId(index) and SchemeNameId).retrieve.right.map {
         case companyDetails ~ schemeName =>
           post(Some(schemeName), companyDetails.companyName, Messages("messages__company"), form, AddressYearsId(index))

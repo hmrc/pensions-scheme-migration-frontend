@@ -39,7 +39,7 @@ class WhatYouWillNeedController @Inject()(override val messagesApi: MessagesApi,
                                         )(implicit val executionContext: ExecutionContext) extends FrontendBaseController
   with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         val json = Json.obj(

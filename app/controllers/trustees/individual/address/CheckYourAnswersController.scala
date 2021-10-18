@@ -47,7 +47,7 @@ class CheckYourAnswersController @Inject()(
     with Retrievals {
 
   def onPageLoad(index: Index): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         renderer.render(
           template = "check-your-answers.njk",

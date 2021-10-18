@@ -53,7 +53,7 @@ class FutureMembersController @Inject()(override val messagesApi: MessagesApi,
   private def form(schemeName: String)(implicit messages: Messages): Form[Members] =
     formProvider(Message("futureMembers.error.required", schemeName))
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         val preparedForm = request.userAnswers.get(FutureMembersId) match {
@@ -72,7 +72,7 @@ class FutureMembersController @Inject()(override val messagesApi: MessagesApi,
       }
   }
 
-  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         form(schemeName).bindFromRequest().fold(

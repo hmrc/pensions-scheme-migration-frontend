@@ -35,7 +35,7 @@ import scala.concurrent.ExecutionContext
 class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi,
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
-                                           requiredData: DataRequiredAction,
+                                           requireData: DataRequiredAction,
                                            val controllerComponents: MessagesControllerComponents,
                                            cyaHelper: EstablisherPartnerDetailsCYAHelper,
                                            renderer: Renderer
@@ -46,7 +46,7 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
     with Retrievals {
 
   def onPageLoad(partnershipIndex: Index, partnerIndex: Index): Action[AnyContent] =
-    (authenticate andThen getData andThen requiredData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         renderer.render(
           template = "check-your-answers.njk",

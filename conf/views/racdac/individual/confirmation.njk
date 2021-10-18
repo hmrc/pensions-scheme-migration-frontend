@@ -1,0 +1,44 @@
+{% extends "includes/layout.njk" %}
+
+{% from "macros/title.njk"                         import title %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% block pageTitle %}
+  {{ title(messages("messages__racdac__individual__confirmation__title")) }}
+{% endblock %}
+
+
+{% block mainContent %}
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        {{ govukPanel({
+                titleText: messages("messages__racdac__individual__confirmation__heading",schemeName),
+                html: "<span class='heading-large govuk-!-font-weight-bold'>"+messages("messages__racdac__individual__confirmation__pstr__number", pstr)+"</span>"
+        }) }}
+        <p class="govuk-body">
+            {{messages("messages__complete__email")}}
+            <span class="govuk-!-font-weight-bold">{{email}}</span>.
+        </p>
+
+        <h2 class="govuk-heading-m">{{ messages("messages__what_happens_next") }}</h2>
+
+            <p class="govuk-body">{{ messages("messages__racdac__individual__confirmation__detail__1") }}
+                <a id="rac-dac-scheme-link" href="{{yourSchemesLink}}" class="govuk-link">{{ messages("messages__racdac__individual__confirmation__pension__scheme__link") }}</a>
+                {{ messages("messages__racdac__individual__confirmation__detail__2") }}
+            </p>
+
+        <p class="govuk-body"><a class="govuk-link print-this-page" href="#">{{ messages("site.printThisPage") }}</a></p>
+
+        {{ govukButton({
+            href: returnUrl,
+            attributes: {id: "rac-dac-finish"},
+            text: messages("messages__finish")
+          }) }}
+      </div>
+    </div>
+
+{% endblock %}

@@ -59,7 +59,7 @@ class DirectorNoUTRReasonController @Inject()(override val messagesApi: Messages
     formProvider(Message("messages__reason__error_utrRequired", name(establisherIndex,directorIndex)))
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.right.map {
           schemeName =>
@@ -75,7 +75,7 @@ class DirectorNoUTRReasonController @Inject()(override val messagesApi: Messages
     }
 
   def onSubmit(establisherIndex: Index, directorIndex: Index,mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.right.map {
           schemeName =>

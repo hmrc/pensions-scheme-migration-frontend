@@ -57,7 +57,7 @@ class EnterEmailController @Inject()(
     formProvider(Messages("messages__error__common__email__required"))
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.right.map {
           schemeName =>
@@ -73,7 +73,7 @@ class EnterEmailController @Inject()(
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.right.map {
           schemeName =>

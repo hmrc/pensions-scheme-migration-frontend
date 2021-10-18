@@ -57,7 +57,7 @@ class EnterPhoneController @Inject()(
     formProvider(Message("messages__error__common__phone__required"),Some(Message("messages__phone__invalid")))
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.right.map {
           schemeName =>
@@ -73,7 +73,7 @@ class EnterPhoneController @Inject()(
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.right.map {
           schemeName =>
