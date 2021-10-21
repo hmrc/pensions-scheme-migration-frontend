@@ -1118,7 +1118,7 @@ messages__racdac__finished__p1_link_text = your list of schemes
 messages__racdac__finished__p2__first = Some of your RAC/DACs could not be added because the service was unavailable.
 messages__racdac__finished__p2_link_text = Try adding them again
 
-messages__scheme__locked__title = Locked title
+messages__scheme__locked__title = The {0} is locked
 messages__scheme__locked__heading = {0} is locked
-messages__scheme__locked__p = Another scheme administrator is currently transferring this {0} from the Pension Schemes Online service.
+messages__scheme__locked__p = Another scheme administrator is currently adding this {0} from the Pension Schemes Online service.
 messages__scheme__locked__link = Back to list of {0}s

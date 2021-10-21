@@ -148,4 +148,5 @@ GET         /rac-dac/submit-declaration                              controllers
 GET         /rac-dac/confirmation                                    controllers.racdac.individual.ConfirmationController.onPageLoad
 
 GET         /scheme-locked                                           controllers.SchemeLockedController.onPageLoadScheme
-GET         /racdac/scheme-locked                                    controllers.SchemeLockedController.onPageLoadRacDac
+GET         /rac-dac/rac-dac-locked                                  controllers.SchemeLockedController.onPageLoadRacDac
+GET         /manage-pension-schemes-overview                         controllers.PensionSchemeRedirectController.onPageLoad

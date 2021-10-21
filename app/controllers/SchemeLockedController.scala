@@ -16,8 +16,6 @@
 
 package controllers
 
-import config.AppConfig
-import connectors.MinimalDetailsConnector
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import helpers.cya.CYAHelper
 import identifiers.beforeYouStart.SchemeNameId
@@ -32,13 +30,11 @@ import utils.UserAnswers
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class SchemeLockedController @Inject()(val appConfig: AppConfig,
-                                       override val messagesApi: MessagesApi,
+class SchemeLockedController @Inject()(override val messagesApi: MessagesApi,
                                        authenticate: AuthAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        val controllerComponents: MessagesControllerComponents,
-                                       minimalDetailsConnector: MinimalDetailsConnector,
                                        renderer: Renderer
                                      )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with I18nSupport {
@@ -53,12 +49,10 @@ class SchemeLockedController @Inject()(val appConfig: AppConfig,
 
   def onPageLoadRacDac: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
-      minimalDetailsConnector.getPSAName.flatMap { psaName =>
         renderer.render(
           template = "schemeLocked.njk",
           ctx = racDacJson(request.userAnswers)
         ).map(Ok(_))
-      }
   }
 
   private def schemeJson(userAnswers:UserAnswers)(implicit messages: Messages):JsObject = {
