@@ -39,7 +39,7 @@
 {% endset %}
 
 {% block pageTitle %}
-    {{ heading }}
+   {{ title(heading, form.errors) }}
 {% endblock %}
 
 {% set buttonContent  %}
