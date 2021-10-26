@@ -140,10 +140,11 @@ class SpokeCreationService extends Enumerable.Implicits {
                           spoke: Spoke,
                           name: String)(implicit messages: Messages): EntitySpoke = {
     val isComplete: Option[Boolean] = {
-      (entityList.isEmpty) match {
-        case (false) =>
+      entityList.isEmpty  match {
+        case false if entityList.size == 1 => Some(false)
+        case false =>
           Some(entityList.forall(_.isCompleted))
-        case (true) =>
+        case true =>
           Some(false)
       }
     }
