@@ -136,7 +136,7 @@ class SpokeCreationService extends Enumerable.Implicits {
     EntitySpoke(spoke.changeLink(name), isComplete)
   }
 
-  def createPartnerSpoke(entityList: Seq[Entity[_]],
+  private def createPartnerSpoke(entityList: Seq[Entity[_]],
                           spoke: Spoke,
                           name: String)(implicit messages: Messages): EntitySpoke = {
     val isComplete: Option[Boolean] = {
