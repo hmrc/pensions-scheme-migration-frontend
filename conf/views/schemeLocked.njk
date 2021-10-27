@@ -6,7 +6,7 @@
 
 
 {% block pageTitle %}
-  {{ title(messages("messages__scheme__locked__title",param1)) }}
+  {{ title(messages("messages__scheme__locked__title",schemeType)) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -16,12 +16,12 @@
 
         <h1 class="govuk-heading-xl">{{ messages("messages__scheme__locked__heading", schemeName) }}</h1>
 
-        <p class="govuk-body">{{ messages("messages__scheme__locked__p", param1) }}</p>
+        <p class="govuk-body">{{ messages("messages__scheme__locked__p", schemeType) }}</p>
 
         {{ govukButton({
                  href: returnUrl,
                  attributes: {id: "submit"},
-                 text: messages("messages__scheme__locked__link", param1)
+                 text: messages("messages__scheme__locked__link", schemeType)
           }) }}
       </div>
     </div>

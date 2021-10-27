@@ -39,13 +39,13 @@ class SchemeLockedControllerSpec extends ControllerSpecBase with NunjucksSupport
 
   private def schemeJson: JsObject = Json.obj(
     "schemeName" ->schemeName,
-    "param1" -> messages("messages__scheme"),
+    "schemeType" -> messages("messages__scheme"),
     "returnUrl" -> controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
   )
 
   val racDacJson: JsObject = Json.obj(
     "schemeName" -> schemeName,
-    "param1" -> messages("messages__racdac"),
+    "schemeType" -> messages("messages__racdac"),
     "returnUrl" -> controllers.preMigration.routes.ListOfSchemesController.onPageLoad(RacDac).url
   )
 

@@ -58,7 +58,7 @@ class SchemeLockedController @Inject()(override val messagesApi: MessagesApi,
   private def schemeJson(userAnswers:UserAnswers)(implicit messages: Messages):JsObject = {
     Json.obj(
       "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(userAnswers, implicitly),
-      "param1" -> messages("messages__scheme"),
+      "schemeType" -> messages("messages__scheme"),
       "returnUrl" -> controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
     )
   }
@@ -66,7 +66,7 @@ class SchemeLockedController @Inject()(override val messagesApi: MessagesApi,
   private def racDacJson(userAnswers:UserAnswers)(implicit messages: Messages):JsObject = {
     Json.obj(
       "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(userAnswers, implicitly),
-      "param1" -> messages("messages__racdac"),
+      "schemeType" -> messages("messages__racdac"),
       "returnUrl" -> controllers.preMigration.routes.ListOfSchemesController.onPageLoad(RacDac).url
     )
   }
