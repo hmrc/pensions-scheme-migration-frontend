@@ -1,6 +1,5 @@
-{% macro navigationLink(linkText,pageNumber) %}
+{% macro navigationLink(linkText,pageNumber, baseUrl) %}
 {%- set id = linkText | lower  -%}
-{%- set baseUrl = "/add-pension-scheme/list-pension-schemes/page/"  -%}
 {%- set url = baseUrl+pageNumber  -%}
 {%- set ariaLabelMessageStr = "messages__listSchemes__pagination__"+id+"__ariaLabel"  -%}
 {%- set ariaLabel = messages(ariaLabelMessageStr)  -%}

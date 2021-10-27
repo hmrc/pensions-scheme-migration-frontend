@@ -16,6 +16,7 @@
 
 package controllers.racdac.bulk
 
+import connectors.cache.CurrentPstrCacheConnector
 import connectors.{ListOfSchemesConnector, MinimalDetailsConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.FakeAuthAction
@@ -27,6 +28,7 @@ import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.Results.Ok
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
@@ -44,6 +46,7 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
   private val formProvider: YesNoFormProvider = new YesNoFormProvider()
   private val mockMinDetailsConnector: MinimalDetailsConnector = mock[MinimalDetailsConnector]
   private val mockListOfSchemesConnector: ListOfSchemesConnector = mock[ListOfSchemesConnector]
+  private val mockCurrentPstrCacheConnector: CurrentPstrCacheConnector = mock[CurrentPstrCacheConnector]
 
   private val schemeDetail = Items("10000678RE", "2020-10-10", racDac = false, "abcdefghi", "2020-12-12", None)
   private val racDacDetail = Items("10000678RF", "2020-10-10", racDac = true, "abcdefghi", "2020-12-12", Some("12345678"))
@@ -67,7 +70,7 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
   private def controller: TransferAllController =
     new TransferAllController(appConfig, messagesApi, new FakeAuthAction(), formProvider, mockMinDetailsConnector,
-      mockListOfSchemesConnector,controllerComponents, new Renderer(mockAppConfig, mockRenderer))
+      mockListOfSchemesConnector, mockCurrentPstrCacheConnector, controllerComponents, new Renderer(mockAppConfig, mockRenderer))
 
   "TransferAllController" must {
 
@@ -106,14 +109,15 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac().url)
     }
-    "redirect to the next page when valid data is submitted" in {
+    "remove the existing cached data and redirect to the next page when valid data is submitted" in {
       val request: FakeRequest[AnyContentAsFormUrlEncoded] = fakeRequest.withFormUrlEncodedBody(("value", "true"))
-
+      when(mockCurrentPstrCacheConnector.remove(any(), any())).thenReturn(Future.successful(Ok("")))
       val result: Future[Result] = controller.onSubmit(request)
 
       status(result) mustBe SEE_OTHER
 
       redirectLocation(result) mustBe Some(routes.BulkListController.onPageLoad().url)
+      verify(mockCurrentPstrCacheConnector, times(1)).remove(any(), any())
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

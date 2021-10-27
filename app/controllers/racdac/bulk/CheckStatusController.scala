@@ -18,26 +18,43 @@ package controllers.racdac.bulk
 
 import config.AppConfig
 import connectors.cache.BulkMigrationQueueConnector
+import connectors.{AncillaryPsaException, ListOfSchemesConnector}
 import controllers.actions._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class CheckStatusController @Inject()(val appConfig: AppConfig,
                                       override val messagesApi: MessagesApi,
                                       authenticate: AuthAction,
                                       bulkMigrationQueueConnector: BulkMigrationQueueConnector,
+                                      listOfSchemesConnector: ListOfSchemesConnector,
                                       val controllerComponents: MessagesControllerComponents
                                      )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = authenticate.async { implicit request =>
-    bulkMigrationQueueConnector.isAllFailed(request.psaId.id).map {
-      case true => Redirect(controllers.racdac.bulk.routes.FinishedStatusController.onPageLoad())
-      case false => Redirect(controllers.racdac.bulk.routes.InProgressController.onPageLoad())
+    bulkMigrationQueueConnector.isAllFailed(request.psaId.id).flatMap {
+      case Some(true) => Future.successful(Redirect(controllers.racdac.bulk.routes.FinishedStatusController.onPageLoad()))
+      case Some(false) => Future.successful(Redirect(controllers.racdac.bulk.routes.InProgressController.onPageLoad()))
+      case None =>
+        listOfSchemesConnector.getListOfSchemes(request.psaId.id).map {
+          case Right(listSchemes) =>
+            if (listSchemes.items.exists(_.exists(_.racDac))) {
+              Redirect(appConfig.psaOverviewUrl)
+            }
+            else {
+              Redirect(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac())
+            }
+          case _ =>
+            Redirect(appConfig.psaOverviewUrl)
+        } recoverWith {
+          case _: AncillaryPsaException =>
+            Future.successful(Redirect(controllers.preMigration.routes.CannotMigrateController.onPageLoad()))
+        }
     }
   }
 }

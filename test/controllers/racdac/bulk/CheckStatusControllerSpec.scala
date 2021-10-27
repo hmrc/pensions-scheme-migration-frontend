@@ -16,10 +16,12 @@
 
 package controllers.racdac.bulk
 
+import connectors.{AncillaryPsaException, ListOfSchemesConnector}
 import connectors.cache.BulkMigrationQueueConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import matchers.JsonMatchers
+import models.{Items, ListOfLegacySchemes}
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.inject.bind
@@ -34,8 +36,10 @@ class CheckStatusControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val mockQueueConnector = mock[BulkMigrationQueueConnector]
+  private val mockListSchemesConnector = mock[ListOfSchemesConnector]
   private val extraModules: Seq[GuiceableModule] = Seq(
-    bind[BulkMigrationQueueConnector].to(mockQueueConnector)
+    bind[BulkMigrationQueueConnector].to(mockQueueConnector),
+    bind[ListOfSchemesConnector].to(mockListSchemesConnector)
   )
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
@@ -44,7 +48,7 @@ class CheckStatusControllerSpec extends ControllerSpecBase with NunjucksSupport 
   "CheckStatusController" must {
 
     "redirect to finished status page when all failed items left in the queue" in {
-      when(mockQueueConnector.isAllFailed(any())(any(), any())).thenReturn(Future.successful(true))
+      when(mockQueueConnector.isAllFailed(any())(any(), any())).thenReturn(Future.successful(Some(true)))
 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
@@ -53,12 +57,46 @@ class CheckStatusControllerSpec extends ControllerSpecBase with NunjucksSupport 
     }
 
     "redirect to in progress page when items are in progress/todo in the queue" in {
-      when(mockQueueConnector.isAllFailed(any())(any(), any())).thenReturn(Future.successful(false))
+      when(mockQueueConnector.isAllFailed(any())(any(), any())).thenReturn(Future.successful(Some(false)))
 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustBe controllers.racdac.bulk.routes.InProgressController.onPageLoad().url
+    }
+
+    "redirect to no scheme to add page when there is nothing in the queue and no schemes" in {
+      when(mockQueueConnector.isAllFailed(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockListSchemesConnector.getListOfSchemes(any())(any(), any())).thenReturn(Future(Right(ListOfLegacySchemes(0, None))))
+
+      val result = route(application, httpGETRequest(httpPathGET)).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustBe controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac().url
+    }
+
+    "redirect to psa overview page when there is nothing in the queue and there are schemes" in {
+      val listOfSchemes = List(Items("test-pstr", "", true, "test-scheme", "", Some("")))
+      when(mockQueueConnector.isAllFailed(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockListSchemesConnector.getListOfSchemes(any())(any(), any())).
+        thenReturn(Future(Right(ListOfLegacySchemes(1, Some(listOfSchemes)))))
+      when(mockAppConfig.psaOverviewUrl).thenReturn("/foo")
+
+      val result = route(application, httpGETRequest(httpPathGET)).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustBe "/foo"
+    }
+
+    "redirect to cannot migrate page when there is nothing in the queue and list of schems has thrown AncillaryPsaException" in {
+      when(mockQueueConnector.isAllFailed(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockListSchemesConnector.getListOfSchemes(any())(any(), any())).
+        thenReturn(Future.failed(new AncillaryPsaException))
+
+      val result = route(application, httpGETRequest(httpPathGET)).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustBe controllers.preMigration.routes.CannotMigrateController.onPageLoad().url
     }
   }
 }

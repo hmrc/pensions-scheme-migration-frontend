@@ -60,7 +60,7 @@ class BulkMigrationQueueConnector @Inject()(config: AppConfig,
       }
 
   def isAllFailed(psaId: String)
-                         (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Boolean] =
+                         (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[Boolean]] =
     http
       .url(config.bulkMigrationIsAllFailedUrl)
       .withHttpHeaders(queueHeaders(hc, psaId): _*)
@@ -68,7 +68,9 @@ class BulkMigrationQueueConnector @Inject()(config: AppConfig,
       .flatMap { response =>
         response.status match {
           case OK =>
-            Future.successful(response.json.as[Boolean])
+            Future.successful(Some(response.json.as[Boolean]))
+          case NO_CONTENT =>
+            Future.successful(None)
           case _ =>
             Future.failed(new HttpException(response.body, response.status))
         }
