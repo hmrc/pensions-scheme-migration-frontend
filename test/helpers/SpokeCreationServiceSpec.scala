@@ -429,6 +429,15 @@ class SpokeCreationServiceSpec
           .setOrException(PartnershipUTRId(0), ReferenceValue("12345678"))
           .setOrException(PartnershipAddressId(0), Data.address)
           .setOrException(EnterEmailId(0), "11")
+          .set(identifiers.establishers.partnership.partner.address.AddressId(0,0), Data.address).success.value
+          .set(identifiers.establishers.partnership.partner.address.AddressYearsId(0,0), true).success.value
+          .set(identifiers.establishers.partnership.partner.contact.EnterEmailId(0,0), "t@t.c").success.value
+          .set(identifiers.establishers.partnership.partner.contact.EnterPhoneId(0,0), "1").success.value
+          .set(identifiers.establishers.partnership.partner.details.PartnerDOBId(0,0), LocalDate.of(2000,12,12)).success.value
+          .set(identifiers.establishers.partnership.partner.details.PartnerEnterUTRId(0,0), ReferenceValue("test")).success.value
+          .set(identifiers.establishers.partnership.partner.details.PartnerNINOId(0,0), ReferenceValue("test")).success.value
+          .set(identifiers.establishers.partnership.partner.details.PartnerHasUTRId(0,0), true).success.value
+          .set(identifiers.establishers.partnership.partner.details.PartnerHasNINOId(0,0), true).success.value
           .set(PartnerNameId(0,0), PersonName("Jane", "Doe")).success.value
 
       val expectedSpoke =
@@ -760,7 +769,8 @@ class SpokeCreationServiceSpec
         )
       result mustBe expectedSpoke
     }
-    "display all the spokes with appropriate links and complete status when data is returned from TPSS" in {
+
+    "display all the spokes with appropriate links and complete status when data is returned from TPSS incl partners incomplete when only one partner" in {
       val userAnswers =
         ua
           .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
