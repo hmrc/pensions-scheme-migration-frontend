@@ -146,3 +146,7 @@ GET         /rac-dac/check-your-answers                              controllers
 GET         /rac-dac/declaration                                     controllers.racdac.individual.DeclarationController.onPageLoad
 GET         /rac-dac/submit-declaration                              controllers.racdac.individual.DeclarationController.onSubmit
 GET         /rac-dac/confirmation                                    controllers.racdac.individual.ConfirmationController.onPageLoad
+
+GET         /scheme-locked                                           controllers.SchemeLockedController.onPageLoadScheme
+GET         /rac-dac/rac-dac-locked                                  controllers.SchemeLockedController.onPageLoadRacDac
+GET         /manage-pension-schemes-overview                         controllers.PensionSchemeRedirectController.onPageLoad

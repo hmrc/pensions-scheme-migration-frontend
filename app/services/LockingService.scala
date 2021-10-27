@@ -35,8 +35,11 @@ class LockingService @Inject()(lockCacheConnector: LockCacheConnector,
     val lock = MigrationLock(pstr, request.externalId, request.psaId.id)
     schemeCacheConnector.save(Json.toJson(lock)).flatMap { _ =>
       lockCacheConnector.getLockOnScheme(pstr) flatMap {
-        case Some(lockOnScheme) if lockOnScheme.credId != lock.credId => //TODO redirect to locked page
-          Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
+        case Some(lockOnScheme) if lockOnScheme.credId != lock.credId =>
+          if(isRacDac){
+            Future.successful(Redirect(controllers.routes.SchemeLockedController.onPageLoadRacDac()))
+          }else
+            Future.successful(Redirect(controllers.routes.SchemeLockedController.onPageLoadScheme()))
         case Some(lockOnScheme) if lockOnScheme.credId == lock.credId =>
           if(isRacDac){
             Future.successful(Redirect(controllers.racdac.individual.routes.CheckYourAnswersController.onPageLoad()))
