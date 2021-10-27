@@ -420,7 +420,7 @@ class SpokeCreationServiceSpec
       result mustBe expectedSpoke
     }
 
-    "display all the spokes with appropriate links and incomplete status when data is returned from TPSS" in {
+    "display all the spokes with appropriate links and incomplete status when data is returned from TPSS and where only 1 partner show incomplete status" in {
       val userAnswers =
         ua
           .set(EstablisherKindId(0), EstablisherKind.Partnership).success.value
@@ -770,7 +770,7 @@ class SpokeCreationServiceSpec
       result mustBe expectedSpoke
     }
 
-    "display all the spokes with appropriate links and complete status when data is returned from TPSS incl partners incomplete when only one partner" in {
+    "display all the spokes with appropriate links and complete status when data is returned from TPSS" in {
       val userAnswers =
         ua
           .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
