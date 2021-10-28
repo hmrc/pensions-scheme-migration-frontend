@@ -107,7 +107,18 @@ class BulkMigrationQueueConnectorSpec extends AsyncWordSpec with WireMockHelper 
       )
 
       connector.isAllFailed(psaId) map { res =>
-        res mustBe true
+        res mustBe Some(true)
+      }
+    }
+
+    "return None if nothing in the queue" in {
+      server.stubFor(
+        get(urlEqualTo(bulkMigrationAllFailedUrl))
+          .willReturn(aResponse.withStatus(204))
+      )
+
+      connector.isAllFailed(psaId) map { res =>
+        res mustBe None
       }
     }
 

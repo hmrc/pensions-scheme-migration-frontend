@@ -1,7 +1,6 @@
-{% macro pageNumberLink(linkNumber,numberOfPages) %}
+{% macro pageNumberLink(linkNumber,numberOfPages, baseUrl) %}
 {%- set baseId = "pageNumber-"  -%}
 {%- set id = baseId+linkNumber  -%}
-{%- set baseUrl = "/add-pension-scheme/list-pension-schemes/page/"  -%}
 {%- set url = baseUrl+linkNumber  -%}
 {%- set ariaLabelLink = messages("messages__listSchemes__pagination__pageNumber__ariaLabel", linkNumber, numberOfPages) -%}
 {%- set ariaLabelLinkCurrent = messages("messages__listSchemes__pagination__pageNumberCurrent__ariaLabel", linkNumber, numberOfPages) -%}

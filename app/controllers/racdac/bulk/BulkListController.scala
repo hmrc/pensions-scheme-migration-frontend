@@ -20,9 +20,10 @@ import com.google.inject.Inject
 import config.AppConfig
 import controllers.actions.{AuthAction, BulkDataAction}
 import forms.racdac.RacDacBulkListFormProvider
+import models.requests.BulkDataRequest
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.BulkRacDacService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -48,15 +49,29 @@ class BulkListController @Inject()(
       bulkRacDacService.renderRacDacBulkView(form, pageNumber = 1)
   }
 
+  def onPageLoadWithPageNumber(pageNumber: Int): Action[AnyContent] = (authenticate andThen getData(false)).async {
+    implicit request =>
+      bulkRacDacService.renderRacDacBulkView(form, pageNumber)
+  }
+
   def onSubmit: Action[AnyContent] = (authenticate andThen getData(false)).async {
     implicit request =>
-      form.bindFromRequest().fold(formWithErrors =>
-        bulkRacDacService.renderRacDacBulkView(formWithErrors, pageNumber = 1),
-        { case true =>
-          Future.successful(Redirect(routes.DeclarationController.onPageLoad()))
-        case _ =>
-          Future.successful(Redirect(appConfig.psaOverviewUrl))
-        }
-      )
+      submit(pageNumber = 1)
+  }
+
+  def onSubmitWithPageNumber(pageNumber: Int): Action[AnyContent] = (authenticate andThen getData(false)).async {
+    implicit request =>
+      submit(pageNumber)
+  }
+
+  private def submit(pageNumber: Int)(implicit request: BulkDataRequest[AnyContent]): Future[Result] = {
+    form.bindFromRequest().fold(formWithErrors =>
+      bulkRacDacService.renderRacDacBulkView(formWithErrors, pageNumber),
+      { case true =>
+        Future.successful(Redirect(routes.DeclarationController.onPageLoad()))
+      case _ =>
+        Future.successful(Redirect(appConfig.psaOverviewUrl))
+      }
+    )
   }
 }

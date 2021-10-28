@@ -119,8 +119,10 @@ POST        /change/adviser-postcode                                 controllers
 GET         /rac-dac/add-all                                   controllers.racdac.bulk.TransferAllController.onPageLoad
 POST        /rac-dac/add-all                                   controllers.racdac.bulk.TransferAllController.onSubmit
 
-GET         /rac-dac/list-rac-dacs-all                                    controllers.racdac.bulk.BulkListController.onPageLoad
+GET         /rac-dac/list-rac-dacs-all                                   controllers.racdac.bulk.BulkListController.onPageLoad
 POST        /rac-dac/list-rac-dacs-all                                   controllers.racdac.bulk.BulkListController.onSubmit
+GET         /rac-dac/list-rac-dacs-all/page/:pageNumber                  controllers.racdac.bulk.BulkListController.onPageLoadWithPageNumber(pageNumber: Int)
+POST        /rac-dac/list-rac-dacs-all/page/:pageNumber                  controllers.racdac.bulk.BulkListController.onSubmitWithPageNumber(pageNumber: Int)
 
 GET         /rac-dac/declaration-all                                           controllers.racdac.bulk.DeclarationController.onPageLoad
 GET         /rac-dac/submit-declaration-all                                    controllers.racdac.bulk.DeclarationController.onSubmit
