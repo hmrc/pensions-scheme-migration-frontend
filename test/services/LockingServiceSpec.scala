@@ -46,8 +46,15 @@ class LockingServiceSpec extends SpecBase with MockitoSugar {
        val request : AuthenticatedRequest[AnyContent] = AuthenticatedRequest(fakeRequest, "", PsaId(psaId))
        when(mockSchemeCacheConnector.save(any())(any(),any())).thenReturn(Future.successful(Json.obj()))
        when(mockLockCacheConnector.getLockOnScheme(ArgumentMatchers.eq(pstr))(any(),any())).thenReturn(Future.successful(Some(migrationLock)))
-       redirectLocation(service.initialLockSetupAndRedirect(pstr,request)) mustBe Some(controllers.routes.IndexController.onPageLoad().url)
+       redirectLocation(service.initialLockSetupAndRedirect(pstr,request)) mustBe Some(controllers.routes.SchemeLockedController.onPageLoadScheme().url)
        }
+      " Redirect to Locked Page if racdac is locked by different user" in {
+
+      val request : AuthenticatedRequest[AnyContent] = AuthenticatedRequest(fakeRequest, "", PsaId(psaId))
+      when(mockSchemeCacheConnector.save(any())(any(),any())).thenReturn(Future.successful(Json.obj()))
+      when(mockLockCacheConnector.getLockOnScheme(ArgumentMatchers.eq(pstr))(any(),any())).thenReturn(Future.successful(Some(migrationLock)))
+      redirectLocation(service.initialLockSetupAndRedirect(pstr,request,true)) mustBe Some(controllers.routes.SchemeLockedController.onPageLoadRacDac().url)
+      }
      }
 
   " Redirect to TaskList Page if scheme is locked by same user" in {

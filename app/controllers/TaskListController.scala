@@ -71,7 +71,8 @@ class TaskListController @Inject()(
   private def renderView(implicit userAnswers: UserAnswers, request: OptionalDataRequest[_]): Future[Result] = {
     val json = Json.obj(
       "taskSections" -> taskListHelper.taskList(request.viewOnly),
-      "schemeName" -> taskListHelper.getSchemeName
+      "schemeName" -> taskListHelper.getSchemeName,
+      "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad().url
     )
     renderer.render("taskList.njk", json).map(Ok(_))
   }

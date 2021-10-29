@@ -55,7 +55,7 @@ class DeclarationController @Inject()(
             val json = Json.obj(
               "psaName" -> psaName,
               "submitUrl" -> controllers.racdac.individual.routes.DeclarationController.onSubmit().url,
-              "returnUrl" -> appConfig.psaOverviewUrl
+              "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad().url
             )
             renderer.render("racdac/declaration.njk", json).map(Ok(_))
         }

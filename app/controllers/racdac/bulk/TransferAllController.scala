@@ -17,6 +17,7 @@
 package controllers.racdac.bulk
 
 import config.AppConfig
+import connectors.cache.CurrentPstrCacheConnector
 import connectors.{AncillaryPsaException, ListOfSchemesConnector, MinimalDetailsConnector}
 import controllers.Retrievals
 import controllers.actions._
@@ -35,14 +36,15 @@ import utils.Enumerable
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TransferAllController @Inject()( appConfig: AppConfig,
-                                       override val messagesApi: MessagesApi,
-                                       authenticate: AuthAction,
-                                       formProvider: YesNoFormProvider,
-                                       minimalDetailsConnector: MinimalDetailsConnector,
-                                       listOfSchemesConnector: ListOfSchemesConnector,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer
+class TransferAllController @Inject()(appConfig: AppConfig,
+                                      override val messagesApi: MessagesApi,
+                                      authenticate: AuthAction,
+                                      formProvider: YesNoFormProvider,
+                                      minimalDetailsConnector: MinimalDetailsConnector,
+                                      listOfSchemesConnector: ListOfSchemesConnector,
+                                      currentPstrCacheConnector: CurrentPstrCacheConnector,
+                                      val controllerComponents: MessagesControllerComponents,
+                                      renderer: Renderer
                                      )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
@@ -62,11 +64,11 @@ class TransferAllController @Inject()( appConfig: AppConfig,
               )
               renderer.render("racdac/transferAll.njk", json).map(Ok(_))
             }
-          } else{
+          } else {
             Future.successful(Redirect(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac()))
           }
         case _ => Future.successful(Redirect(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac()))
-      }recoverWith {
+      } recoverWith {
         case _: AncillaryPsaException =>
           Future.successful(Redirect(controllers.preMigration.routes.CannotMigrateController.onPageLoad()))
       }
@@ -83,11 +85,15 @@ class TransferAllController @Inject()( appConfig: AppConfig,
             "radios" -> Radios.yesNo(formWithErrors("value"))
           )
           renderer.render("racdac/transferAll.njk", json).map(BadRequest(_))
-        }, {
-          case true =>
-            Future.successful(Redirect(controllers.racdac.bulk.routes.BulkListController.onPageLoad()))
-          case _ =>
-            Future.successful(Redirect(controllers.preMigration.routes.ListOfSchemesController.onPageLoad(RacDac)))
+        }, { value =>
+          currentPstrCacheConnector.remove.map { _ =>
+            value match {
+              case true =>
+                Redirect(controllers.racdac.bulk.routes.BulkListController.onPageLoad())
+              case _ =>
+                Redirect(controllers.preMigration.routes.ListOfSchemesController.onPageLoad(RacDac))
+            }
+          }
         }
       )
   }

@@ -53,7 +53,9 @@ class BulkListControllerSpec extends ControllerSpecBase with NunjucksSupport wit
     ).build()
 
   private def httpPathGET: String = routes.BulkListController.onPageLoad().url
+  private def httpPathGETWithPageNumber: String = routes.BulkListController.onPageLoadWithPageNumber(2).url
   private def httpPathPOST: String = routes.BulkListController.onSubmit().url
+  private def httpPathPOSTWithPageNumber: String = routes.BulkListController.onSubmitWithPageNumber(2).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq("true")
@@ -72,10 +74,16 @@ class BulkListControllerSpec extends ControllerSpecBase with NunjucksSupport wit
 
   "BulkListController" must {
 
-    "return OK and the correct view for a GET, passing the correct no of trustees and max trustees into template" in {
-
+    "return OK and the correct view for a GET" in {
 
       val result = route(application, httpGETRequest(httpPathGET)).value
+
+      status(result) mustEqual OK
+    }
+
+    "return OK and the correct view for a GET with page number" in {
+
+      val result = route(application, httpGETRequest(httpPathGETWithPageNumber)).value
 
       status(result) mustEqual OK
     }
@@ -83,6 +91,15 @@ class BulkListControllerSpec extends ControllerSpecBase with NunjucksSupport wit
     "redirect to next page when user answers yes" in {
 
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result) mustBe Some(routes.DeclarationController.onPageLoad().url)
+    }
+
+    "redirect to next page when user answers yes for a POST with page number" in {
+
+      val result = route(application, httpPOSTRequest(httpPathPOSTWithPageNumber, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 

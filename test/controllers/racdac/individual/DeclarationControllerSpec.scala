@@ -55,7 +55,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
     Json.obj(
       "psaName" -> psaName,
       "submitUrl" -> routes.DeclarationController.onSubmit().url,
-      "returnUrl" -> mockAppConfig.psaOverviewUrl
+      "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad().url
     )
 
   override def beforeEach: Unit = {

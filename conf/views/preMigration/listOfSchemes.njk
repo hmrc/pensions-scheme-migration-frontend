@@ -50,6 +50,7 @@
     {% endif %}
 {% endset %}
 
+{%- set listSchemeUrl = "/add-pension-scheme/list-pension-schemes/page/"  -%}
 
 
 {% block mainContent %}
@@ -159,21 +160,21 @@
                         <nav class="govuk-margin-top-5" aria-label="page">
                             {% if(pageNumber > 1) %}
 
-                              {{navigationLink(messages("messages__listSchemes__pagination__first"),"1")}}
-                              {{navigationLink(messages("messages__listSchemes__pagination__prev"),(pageNumber-1))}}
+                              {{navigationLink(messages("messages__listSchemes__pagination__first"),"1", listSchemeUrl)}}
+                              {{navigationLink(messages("messages__listSchemes__pagination__prev"),(pageNumber-1), listSchemeUrl)}}
 
                             {% endif %}
 
                             {% for  pageNumber  in pageNumberLinks   %}
 
-                                {{pageNumberLink(pageNumber,numberOfPages)}}
+                                {{pageNumberLink(pageNumber,numberOfPages, listSchemeUrl)}}
 
                             {% endfor %}
 
                             {% if(pageNumber < numberOfPages) %}
 
-                             {{navigationLink(messages("messages__listSchemes__pagination__next"),(pageNumber+1))}}
-                             {{navigationLink(messages("messages__listSchemes__pagination__last"),(numberOfPages))}}
+                             {{navigationLink(messages("messages__listSchemes__pagination__next"),(pageNumber+1), listSchemeUrl)}}
+                             {{navigationLink(messages("messages__listSchemes__pagination__last"),(numberOfPages), listSchemeUrl)}}
 
                            {% endif %}
                         </nav>

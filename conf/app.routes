@@ -119,8 +119,10 @@ POST        /change/adviser-postcode                                 controllers
 GET         /rac-dac/add-all                                   controllers.racdac.bulk.TransferAllController.onPageLoad
 POST        /rac-dac/add-all                                   controllers.racdac.bulk.TransferAllController.onSubmit
 
-GET         /rac-dac/list-rac-dacs-all                                    controllers.racdac.bulk.BulkListController.onPageLoad
+GET         /rac-dac/list-rac-dacs-all                                   controllers.racdac.bulk.BulkListController.onPageLoad
 POST        /rac-dac/list-rac-dacs-all                                   controllers.racdac.bulk.BulkListController.onSubmit
+GET         /rac-dac/list-rac-dacs-all/page/:pageNumber                  controllers.racdac.bulk.BulkListController.onPageLoadWithPageNumber(pageNumber: Int)
+POST        /rac-dac/list-rac-dacs-all/page/:pageNumber                  controllers.racdac.bulk.BulkListController.onSubmitWithPageNumber(pageNumber: Int)
 
 GET         /rac-dac/declaration-all                                           controllers.racdac.bulk.DeclarationController.onPageLoad
 GET         /rac-dac/submit-declaration-all                                    controllers.racdac.bulk.DeclarationController.onSubmit
@@ -146,3 +148,7 @@ GET         /rac-dac/check-your-answers                              controllers
 GET         /rac-dac/declaration                                     controllers.racdac.individual.DeclarationController.onPageLoad
 GET         /rac-dac/submit-declaration                              controllers.racdac.individual.DeclarationController.onSubmit
 GET         /rac-dac/confirmation                                    controllers.racdac.individual.ConfirmationController.onPageLoad
+
+GET         /scheme-locked                                           controllers.SchemeLockedController.onPageLoadScheme
+GET         /rac-dac/rac-dac-locked                                  controllers.SchemeLockedController.onPageLoadRacDac
+GET         /manage-pension-schemes-overview                         controllers.PensionSchemeRedirectController.onPageLoad
