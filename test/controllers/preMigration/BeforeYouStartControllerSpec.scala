@@ -23,7 +23,7 @@ import models.Scheme
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, MockitoSugar}
 import org.scalatest.TryValues
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
@@ -45,9 +45,13 @@ class BeforeYouStartControllerSpec extends ControllerSpecBase with NunjucksSuppo
     )
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 
+  val schemeName: String = "Test scheme name"
+  val itemList : JsValue = Json.obj(
+    "schemeName" -> schemeName
+  )
   private def controller(): BeforeYouStartController =
     new BeforeYouStartController(messagesApi, new FakeAuthAction(), mutableFakeDataRetrievalAction,
-      mockMinimalDetailsConnector,mockUserAnswersCacheConnector, controllerComponents, new Renderer(mockAppConfig, mockRenderer))
+      mockMinimalDetailsConnector,mockUserAnswersCacheConnector, mockLegacySchemeDetailsConnector, controllerComponents, new Renderer(mockAppConfig, mockRenderer))
 
   "BeforeYouStartController" must {
     "return OK and the correct view for a GET" in {
@@ -74,6 +78,7 @@ class BeforeYouStartControllerSpec extends ControllerSpecBase with NunjucksSuppo
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       when(mockMinimalDetailsConnector.getPSAName(any(),any())).thenReturn(Future.successful(psaName))
       when( mockUserAnswersCacheConnector.save(any(), any())(any(),any())).thenReturn(Future.successful(Json.obj()))
+      when(mockLegacySchemeDetailsConnector.getLegacySchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(Right(itemList)))
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
