@@ -17,7 +17,7 @@
 package config
 
 import controllers.routes
-import models.ReportTechnicalIssue
+import models.{MigrationType, ReportTechnicalIssue}
 import play.api.Configuration
 import play.api.i18n.Lang
 import play.api.mvc.Call
@@ -59,6 +59,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   def featureToggleUrl(toggle:String) : String = s"$migrationUrl${config.get[String]("urls.featureToggle").format(toggle)}"
 
   lazy val listOfSchemesUrl: String = s"$migrationUrl${config.get[String](path = "urls.listOfSchemes")}"
+  def registerSchemeUrl(migrationType: MigrationType): String = s"$migrationUrl${config.get[String]("urls.registerScheme").format(migrationType)}"
   lazy val addressLookUp = s"${servicesConfig.baseUrl("address-lookup")}"
   lazy val yourPensionSchemesUrl: String = loadConfig("urls.yourPensionSchemes")
 
