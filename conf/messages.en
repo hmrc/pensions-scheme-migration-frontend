@@ -175,6 +175,9 @@ messages__schemeTaskList__contactDetails_addLink = Add contact details for {0}
 messages__schemeTaskList__contactDetails_changeLink = Change contact details for {0}
 messages__schemeTaskList__trusteeContactDetails_addLink = Add contact details for {0}
 messages__schemeTaskList__trusteeContactDetails_changeLink = Change contact details for {0}
+messages__schemeTaskList__anyTrustee_title = Does {0} have any trustees?
+messages__schemeTaskList__anyTrustee_hint = You must add at least one trustee if the scheme is a single trust.
+messages__schemeTaskList__anyTrustee_error = Select yes if the pension scheme has trustees
 
 messages__individual = the individual
 messages__title_individual = The individual
