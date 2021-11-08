@@ -77,9 +77,9 @@ class DeclarationController @Inject()(
         val psaId = request.psaId.id
         val userAnswers = request.userAnswers
         (for {
-          updatedUa <- Future.fromTry(userAnswers.set(( __ \ "pstr"),JsString(request.lock.pstr)))
-          //cacheMap <- userAnswersCacheConnector.save(request.lock, updatedUa.data)
-          submissionResponse <- pensionsSchemeConnector.registerScheme(UserAnswers(updatedUa.data), psaId, Scheme)
+          updatedUa <- Future.fromTry(userAnswers.set( __ \ "pstr",JsString(request.lock.pstr)))
+          _ <- userAnswersCacheConnector.save(request.lock, updatedUa.data)
+          _ <- pensionsSchemeConnector.registerScheme(UserAnswers(updatedUa.data), psaId, Scheme)
           _ <- sendEmail(schemeName, request.psaId.id)
         } yield {
           Redirect(routes.SchemeSuccessController.onPageLoad())
