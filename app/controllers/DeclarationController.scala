@@ -16,6 +16,7 @@
 
 package controllers
 
+import audit.{AuditService, SchemeMigrationEmailEvent}
 import config.AppConfig
 import connectors.{EmailConnector, EmailNotSent, EmailStatus, MinimalDetailsConnector}
 import controllers.actions._
@@ -38,6 +39,7 @@ class DeclarationController @Inject()(
                                        authenticate: AuthAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
+                                       auditService: AuditService,
                                        val controllerComponents: MessagesControllerComponents,
                                        emailConnector: EmailConnector,
                                        minimalDetailsConnector: MinimalDetailsConnector,
@@ -82,7 +84,11 @@ class DeclarationController @Inject()(
         templateName = appConfig.schemeConfirmationEmailTemplateId,
         params = Map("psaName" -> minimalPsa.name, "schemeName"-> schemeName),
         callbackUrl(psaId) //To be edited while implementing audit event
-      )
+      ).map{
+        status =>
+          auditService.sendEvent(SchemeMigrationEmailEvent(psaId,minimalPsa.email))
+          status
+      }
     } recoverWith {
       case _: Throwable => Future.successful(EmailNotSent)
     }
