@@ -58,6 +58,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val bulkMigrationDeleteAllUrl: String = s"$migrationUrl${config.get[String](path = "urls.bulkMigrationDeleteAll")}"
   def featureToggleUrl(toggle:String) : String = s"$migrationUrl${config.get[String]("urls.featureToggle").format(toggle)}"
 
+  lazy val legacySchemeDetailsUrl: String = s"$migrationUrl${config.get[String](path = "urls.legacySchemeDetails")}"
   lazy val listOfSchemesUrl: String = s"$migrationUrl${config.get[String](path = "urls.listOfSchemes")}"
   def registerSchemeUrl(migrationType: MigrationType): String = s"$migrationUrl${config.get[String]("urls.registerScheme").format(migrationType)}"
   lazy val addressLookUp = s"${servicesConfig.baseUrl("address-lookup")}"

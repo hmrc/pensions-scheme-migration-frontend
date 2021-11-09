@@ -16,11 +16,10 @@
 
 package controllers.preMigration
 
-import connectors.MinimalDetailsConnector
 import connectors.cache.UserAnswersCacheConnector
+import connectors.{LegacySchemeDetailsConnector, MinimalDetailsConnector}
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRetrievalAction}
-import controllers.testonly.TestMongoController
 import models.Scheme
 import models.requests.OptionalDataRequest
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -29,7 +28,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.UserAnswers
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,6 +38,7 @@ class BeforeYouStartController @Inject()(
                                            getData: DataRetrievalAction,
                                            minimalDetailsConnector: MinimalDetailsConnector,
                                            userAnswersCacheConnector: UserAnswersCacheConnector,
+                                           legacySchemeDetailsConnector : LegacySchemeDetailsConnector,
                                            val controllerComponents: MessagesControllerComponents,
                                            val renderer: Renderer
                                          )(implicit val ec: ExecutionContext)
@@ -59,9 +58,12 @@ class BeforeYouStartController @Inject()(
             renderView
 
           case (None, Some(lock)) =>
-            implicit val userAnswers: UserAnswers = UserAnswers(TestMongoController.data) //TODO once getSchemeDetails API is implemented, fetch data from API
-            userAnswersCacheConnector.save(lock, userAnswers.data).flatMap { _ =>
-              renderView
+            legacySchemeDetailsConnector.getLegacySchemeDetails(lock.psaId, lock.pstr).flatMap {
+              case Right(data) =>
+                userAnswersCacheConnector.save(lock, data).flatMap { _ =>
+                  renderView
+                }
+              case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
             }
         }
 

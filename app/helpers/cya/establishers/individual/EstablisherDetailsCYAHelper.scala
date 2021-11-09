@@ -61,18 +61,16 @@ class EstablisherDetailsCYAHelper
         visuallyHiddenText = Some(msg"messages__hasNINO__cya__visuallyHidden".withArgs(establisherName)),
         answerTransform    = answerBooleanTransform
       )),
-      ua.get(EstablisherNINOId(index)) map {
-        _ =>
+      ua.get(EstablisherHasNINOId(index)) map {
+        case true =>
           answerOrAddRow(
             id                 = EstablisherNINOId(index),
             message            = Message("messages__enterNINO__cya", establisherName),
-            url                = Some(enterUniqueTaxpayerReferenceRoute(index, CheckMode).url),
+            url                = Some(enterNationaInsuranceNumberRoute(index, CheckMode).url),
             visuallyHiddenText = Some(msg"messages__enterNINO__cya_visuallyHidden".withArgs(establisherName)),
             answerTransform    = referenceValueTransform
           )
-      },
-      ua.get(EstablisherNoNINOReasonId(index)) map {
-        _ =>
+      case false =>
           answerOrAddRow(
             id                 = EstablisherNoNINOReasonId(index),
             message            = Message("messages__whyNoNINO", establisherName),
@@ -87,8 +85,8 @@ class EstablisherDetailsCYAHelper
         visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(establisherName)),
         answerTransform    = answerBooleanTransform
       )),
-      ua.get(EstablisherUTRId(index)) map {
-        _ =>
+      ua.get(EstablisherHasUTRId(index)) map {
+        case true =>
           answerOrAddRow(
             id                 = EstablisherUTRId(index),
             message            = Message("messages__enterUTR__cya_label", establisherName),
@@ -96,9 +94,7 @@ class EstablisherDetailsCYAHelper
             visuallyHiddenText = Some(msg"messages__enterUTR__cya_visuallyHidden".withArgs(establisherName)),
             answerTransform    = referenceValueTransform
           )
-      },
-      ua.get(EstablisherNoUTRReasonId(index)) map {
-        _ =>
+        case false =>
           answerOrAddRow(
             id                 = EstablisherNoUTRReasonId(index),
             message            = Message("messages__whyNoUTR", establisherName),
