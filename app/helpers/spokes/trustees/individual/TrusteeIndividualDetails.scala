@@ -30,7 +30,7 @@ case class TrusteeIndividualDetails(
   val messageKeyPrefix = "messages__schemeTaskList__details_"
 
   val linkKeyAndRoute: (String, String) =
-    if (completeFlag(answers).getOrElse(false))
+    if (completeFlag(answers).isDefined)
       (s"${messageKeyPrefix}changeLink", TrusteesIndividualRoutes.cyaDetailsRoute(index, NormalMode).url)
     else
       (s"${messageKeyPrefix}addLink", TrusteesIndividualRoutes.detailsRoute(index, NormalMode).url)

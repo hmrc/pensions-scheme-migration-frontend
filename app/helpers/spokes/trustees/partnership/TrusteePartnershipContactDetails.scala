@@ -29,7 +29,7 @@ index: Index,
   ) extends Spoke {
   val messageKeyPrefix = "messages__schemeTaskList__trusteeIndividualContactDetails_"
   val linkKeyAndRoute: (String, String) = {
-    if (completeFlag(answers).getOrElse(false))
+    if (completeFlag(answers).isDefined)
       (s"${messageKeyPrefix}changeLink", CheckYourAnswersController.onPageLoad(index).url)
     else
       (s"${messageKeyPrefix}addLink", WhatYouWillNeedController.onPageLoad(index).url)

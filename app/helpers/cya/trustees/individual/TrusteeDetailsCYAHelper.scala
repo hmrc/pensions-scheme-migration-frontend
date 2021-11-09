@@ -56,8 +56,8 @@ class TrusteeDetailsCYAHelper
         visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(trusteeName)),
         answerTransform    = answerBooleanTransform
       )),
-      ua.get(TrusteeNINOId(index)) map {
-        _ =>
+      ua.get(TrusteeHasNINOId(index)) map {
+        case true =>
           answerOrAddRow(
             id                 = TrusteeNINOId(index),
             message            = Message("messages__enterNINO__cya", trusteeName),
@@ -65,9 +65,7 @@ class TrusteeDetailsCYAHelper
             visuallyHiddenText = Some(msg"messages__hasNINO__cya__visuallyHidden".withArgs(trusteeName)),
             answerTransform    = referenceValueTransform
           )
-      },
-      ua.get(TrusteeNoNINOReasonId(index)) map {
-        _ =>
+        case false =>
           answerOrAddRow(
             id                 = TrusteeNoNINOReasonId(index),
             message            = Message("messages__whyNoNINO", trusteeName),
@@ -82,8 +80,8 @@ class TrusteeDetailsCYAHelper
         visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(trusteeName)),
         answerTransform    = answerBooleanTransform
       )),
-      ua.get(TrusteeUTRId(index)) map {
-        _ =>
+      ua.get(TrusteeHasUTRId(index)) map {
+        case true =>
           answerOrAddRow(
             id                 = TrusteeUTRId(index),
             message            = Message("messages__enterUTR__cya_label", trusteeName),
@@ -91,9 +89,7 @@ class TrusteeDetailsCYAHelper
             visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(trusteeName)),
             answerTransform    = referenceValueTransform
           )
-      },
-      ua.get(TrusteeNoUTRReasonId(index)) map {
-        _ =>
+        case false =>
           answerOrAddRow(
             id                 = TrusteeNoUTRReasonId(index),
             message            = Message("messages__whyNoUTR", trusteeName),

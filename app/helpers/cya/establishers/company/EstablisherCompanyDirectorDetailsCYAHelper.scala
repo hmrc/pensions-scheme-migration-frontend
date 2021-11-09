@@ -74,8 +74,8 @@ class EstablisherCompanyDirectorDetailsCYAHelper
         visuallyHiddenText = Some(msg"messages__hasNINO__cya__visuallyHidden".withArgs(directorName)),
         answerTransform    = answerBooleanTransform
       )),
-      ua.get(DirectorNINOId(establisherIndex, directorIndex)) map {
-        _ =>
+      ua.get(DirectorHasNINOId(establisherIndex, directorIndex)) map {
+        case true =>
           answerOrAddRow(
             id                 = DirectorNINOId(establisherIndex, directorIndex),
             message            = Message("messages__enterNINO__cya", directorName),
@@ -83,9 +83,7 @@ class EstablisherCompanyDirectorDetailsCYAHelper
             visuallyHiddenText = Some(msg"messages__hasNINO__cya__visuallyHidden".withArgs(directorName)),
             answerTransform    = referenceValueTransform
           )
-      },
-      ua.get(DirectorNoNINOReasonId(establisherIndex, directorIndex)) map {
-        _ =>
+        case false =>
           answerOrAddRow(
             id                 = DirectorNoNINOReasonId(establisherIndex, directorIndex),
             message            = Message("messages__whyNoNINO", directorName),
@@ -100,8 +98,8 @@ class EstablisherCompanyDirectorDetailsCYAHelper
         visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(directorName)),
         answerTransform    = answerBooleanTransform
       )),
-      ua.get(DirectorEnterUTRId(establisherIndex, directorIndex)) map {
-        _ =>
+      ua.get(DirectorHasUTRId(establisherIndex, directorIndex)) map {
+        case true =>
           answerOrAddRow(
             id                 = DirectorEnterUTRId(establisherIndex, directorIndex),
             message            = Message("messages__enterUTR__cya_label", directorName),
@@ -109,9 +107,7 @@ class EstablisherCompanyDirectorDetailsCYAHelper
             visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(directorName)),
             answerTransform    = referenceValueTransform
           )
-      },
-      ua.get(DirectorNoUTRReasonId(establisherIndex, directorIndex)) map {
-        _ =>
+        case false =>
           answerOrAddRow(
             id                 = DirectorNoUTRReasonId(establisherIndex, directorIndex),
             message            = Message("messages__whyNoUTR", directorName),
