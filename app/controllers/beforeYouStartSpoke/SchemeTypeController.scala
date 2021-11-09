@@ -57,7 +57,7 @@ class SchemeTypeController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.right.map {
           schemeName =>
-            val preparedForm = request.userAnswers.get(SchemeTypeId) match {
+            val preparedForm = request.userAnswers.get(SchemeTypeId)(SchemeType.optionalReads) match {
               case None        => form
               case Some(value) => form.fill(value)
             }

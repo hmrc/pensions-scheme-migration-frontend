@@ -25,7 +25,7 @@ case class PAYEId(index: Int) extends TypedIdentifier[ReferenceValue] {
   override def path: JsPath = EstablishersId(index).path \ PAYEId.toString
 }
 
-object UTRId {
+object PAYEId {
   override lazy val toString: String = "paye"
   implicit lazy val formats: Format[PAYEId] = Json.format[PAYEId]
 }

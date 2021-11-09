@@ -19,12 +19,13 @@ package helpers.cya
 import controllers.beforeYouStartSpoke.routes
 import helpers.CountriesHelper
 import identifiers.beforeYouStart._
+import models.SchemeType
 import models.SchemeType.Other
 import models.requests.DataRequest
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.viewmodels.MessageInterpolators
-import uk.gov.hmrc.viewmodels.SummaryList.{Value, Row, Key}
+import uk.gov.hmrc.viewmodels.SummaryList.{Key, Row, Value}
 import utils.UserAnswers
 import viewmodels.Message
 
@@ -35,7 +36,7 @@ class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
           ): Seq[Row] = {
     implicit val ua: UserAnswers = request.userAnswers
     val schemeName = CYAHelper.getAnswer(SchemeNameId)
-    val schemeTypeAnswer = ua.get(SchemeTypeId)
+    val schemeTypeAnswer = ua.get(SchemeTypeId)(SchemeType.optionalReads)
     val schemeTypeRow = {
       val url: String = routes.SchemeTypeController.onPageLoad().url
       val visuallyHiddenText = msg"messages__visuallyhidden__schemeType".withArgs(schemeName)
@@ -43,6 +44,11 @@ class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
         case None => Row(
           key = Key(msg"messages__cya__scheme_type".withArgs(schemeName), classes = Seq("govuk-!-width-one-half")),
           value = Value(msg"site.not_entered", classes = Seq("govuk-!-width-one-third")),
+          actions = actionAdd(Some(url), Some(visuallyHiddenText))
+        )
+        case Some(Other(details)) if details.equals("") => Row(
+          key = Key(msg"messages__cya__scheme_type".withArgs(schemeName), classes = Seq("govuk-!-width-one-half")),
+          value = Value(msg"messages__schemeTaskList__incomplete", classes = Seq("govuk-!-width-one-third")),
           actions = actionAdd(Some(url), Some(visuallyHiddenText))
         )
         case Some(Other(_)) => Row(

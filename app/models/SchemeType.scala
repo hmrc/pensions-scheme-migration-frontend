@@ -106,6 +106,23 @@ object SchemeType {
     }
   }
 
+  val optionalReads: Reads[SchemeType] = {
+
+    (JsPath \ "name").read[String].flatMap {
+
+      case schemeTypeName if schemeTypeName == "other" =>
+        (JsPath \ "schemeTypeDetails").read[String]
+          .map[SchemeType](Other)
+          .orElse(Reads[SchemeType](_ => JsSuccess(Other(""))))
+
+      case schemeTypeName if mappings.keySet.contains(schemeTypeName) =>
+        Reads(_ => JsSuccess(mappings.apply(schemeTypeName)))
+
+      case _ => Reads(_ => JsError("Invalid Scheme Type"))
+    }
+  }
+
+
   implicit lazy val writes: Writes[SchemeType] = new Writes[SchemeType] {
     def writes(o: SchemeType): JsObject = {
       o match {

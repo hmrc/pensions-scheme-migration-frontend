@@ -27,7 +27,7 @@ case class EnterEmailId(index: Int) extends TypedIdentifier[String] {
 
 object EnterEmailId {
   override lazy val toString: String =
-    "companyEmail"
+    "email"
 
   def collectionPath(index: Int): JsPath =
     EstablishersId(index).path \ EnterEmailId.toString
