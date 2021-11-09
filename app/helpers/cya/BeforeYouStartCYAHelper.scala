@@ -28,6 +28,7 @@ import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.SummaryList.{Key, Row, Value}
 import utils.UserAnswers
 import viewmodels.Message
+import identifiers.beforeYouStart.IsSchemeTypeOtherId
 
 class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
   //scalastyle:off method.length
@@ -51,12 +52,17 @@ class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
           value = Value(msg"messages__schemeTaskList__incomplete", classes = Seq("govuk-!-width-one-third")),
           actions = actionAdd(Some(url), Some(visuallyHiddenText))
         )
-        case Some(Other(_)) => Row(
+        case Some(Other(details)) if details.nonEmpty => Row(
           key = Key(msg"messages__cya__scheme_type".withArgs(schemeName), classes = Seq("govuk-!-width-one-half")),
-          value = Value(msg"messages__scheme_type_other", classes = Seq("govuk-!-width-one-third")),
+          value = Value(msg"$details", classes = Seq("govuk-!-width-one-third")),
           actions = actionChange(Some(url), Some(visuallyHiddenText))
         )
-        case Some(value) => Row(
+        case Some(value) if request.userAnswers.get(IsSchemeTypeOtherId).contains(true) => Row(
+          key = Key(msg"messages__cya__scheme_type".withArgs(schemeName), classes = Seq("govuk-!-width-one-half")),
+          value = Value(msg"messages__scheme_type_$value", classes = Seq("govuk-!-width-one-third")),
+          actions = actionChange(Some(url), Some(visuallyHiddenText))
+        )
+        case Some(value) if request.userAnswers.get(IsSchemeTypeOtherId).isEmpty => Row(
           key = Key(msg"messages__cya__scheme_type".withArgs(schemeName), classes = Seq("govuk-!-width-one-half")),
           value = Value(msg"messages__scheme_type_$value", classes = Seq("govuk-!-width-one-third")),
           actions = Seq.empty
