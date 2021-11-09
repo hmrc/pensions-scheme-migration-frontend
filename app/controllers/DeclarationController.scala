@@ -17,7 +17,6 @@
 package controllers
 
 import config.AppConfig
-import connectors.cache.UserAnswersCacheConnector
 import connectors._
 import controllers.actions._
 import identifiers.beforeYouStart.SchemeNameId
@@ -47,7 +46,6 @@ class DeclarationController @Inject()(
                                        emailConnector: EmailConnector,
                                        minimalDetailsConnector: MinimalDetailsConnector,
                                        pensionsSchemeConnector:PensionsSchemeConnector,
-                                       userAnswersCacheConnector: UserAnswersCacheConnector,
                                        crypto: ApplicationCrypto,
                                        renderer: Renderer
                                      )(implicit val executionContext: ExecutionContext)
@@ -78,15 +76,13 @@ class DeclarationController @Inject()(
         val userAnswers = request.userAnswers
         (for {
           updatedUa <- Future.fromTry(userAnswers.set( __ \ "pstr",JsString(request.lock.pstr)))
-          _ <- userAnswersCacheConnector.save(request.lock, updatedUa.data)
           _ <- pensionsSchemeConnector.registerScheme(UserAnswers(updatedUa.data), psaId, Scheme)
           _ <- sendEmail(schemeName, request.psaId.id)
         } yield {
           Redirect(routes.SchemeSuccessController.onPageLoad())
         })recoverWith {
           case ex: UpstreamErrorResponse if is5xx(ex.statusCode) =>
-           // Future.successful(Redirect(controllers.routes.YourActionWasNotProcessedController.onPageLoadScheme))
-            Future.successful(Redirect(controllers.routes.TaskListController.onPageLoad))
+            Future.successful(Redirect(controllers.routes.YourActionWasNotProcessedController.onPageLoadScheme))
           case _ =>
             Future.successful(Redirect(controllers.routes.TaskListController.onPageLoad))
         }

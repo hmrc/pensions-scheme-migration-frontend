@@ -18,10 +18,9 @@ package controllers.racdac.individual
 
 import config.AppConfig
 import connectors._
-import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.beforeYouStart.SchemeNameId
-import models.Scheme
+import models.RacDac
 import models.requests.DataRequest
 import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -29,8 +28,6 @@ import play.api.libs.json.{JsString, Json, __}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
-import uk.gov.hmrc.http.HttpReads.is5xx
-import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswers
 
@@ -45,7 +42,6 @@ class DeclarationController @Inject()(
                                        requireData: DataRequiredAction,
                                        minimalDetailsConnector: MinimalDetailsConnector,
                                        pensionsSchemeConnector:PensionsSchemeConnector,
-                                       userAnswersCacheConnector: UserAnswersCacheConnector,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer,
                                        emailConnector: EmailConnector,
@@ -76,23 +72,15 @@ class DeclarationController @Inject()(
          val userAnswers = request.userAnswers
          val racDacName = userAnswers.get(SchemeNameId)
           .getOrElse(throw new RuntimeException("Scheme Name is mandatory for RAC/DAC"))
-        //TODO need to use when calling connector for ETMP
-        // val policyNumberId= userAnswers.get(ContractOrPolicyNumberId)
-        //  .getOrElse(throw new RuntimeException("Policy Number is mandatory for RAC/DAC"))
-
             (for {
               updatedUa <- Future.fromTry(userAnswers.set( __ \ "pstr",JsString(request.lock.pstr)))
-              _ <- userAnswersCacheConnector.save(request.lock, updatedUa.data)
-              _ <- pensionsSchemeConnector.registerScheme(UserAnswers(updatedUa.data), psaId, Scheme)
+              _ <- pensionsSchemeConnector.registerScheme(UserAnswers(updatedUa.data), psaId, RacDac)
               _ <- sendEmail(racDacName,psaId)
             } yield {
               Redirect(controllers.racdac.individual.routes.ConfirmationController.onPageLoad().url)
             })recoverWith {
-              case ex: UpstreamErrorResponse if is5xx(ex.statusCode) =>
-                // Future.successful(Redirect(controllers.routes.YourActionWasNotProcessedController.onPageLoadScheme))
-                Future.successful(Redirect(controllers.routes.TaskListController.onPageLoad))
               case _ =>
-                Future.successful(Redirect(controllers.routes.TaskListController.onPageLoad))
+                Future.successful(Redirect(controllers.routes.YourActionWasNotProcessedController.onPageLoadRacDac))
             }
     }
 
