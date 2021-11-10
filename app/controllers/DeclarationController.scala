@@ -16,11 +16,12 @@
 
 package controllers
 
-import audit.{AuditService, SchemeMigrationEmailEvent}
+import audit.{AuditService, EmailAuditEvent}
 import config.AppConfig
 import connectors.{EmailConnector, EmailNotSent, EmailStatus, MinimalDetailsConnector}
 import controllers.actions._
 import identifiers.beforeYouStart.SchemeNameId
+import models.JourneyType.SCHEME_MIG
 import models.requests.DataRequest
 import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -86,7 +87,7 @@ class DeclarationController @Inject()(
         callbackUrl(psaId) //To be edited while implementing audit event
       ).map{
         status =>
-          auditService.sendEvent(SchemeMigrationEmailEvent(psaId,minimalPsa.email))
+          auditService.sendEvent(EmailAuditEvent(psaId,SCHEME_MIG,minimalPsa.email))
           status
       }
     } recoverWith {

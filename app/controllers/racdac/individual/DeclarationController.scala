@@ -16,11 +16,12 @@
 
 package controllers.racdac.individual
 
-import audit.{AuditService, RetirementOrDeferredAnnuityContractMigrationEmailEvent}
+import audit.{AuditService, EmailAuditEvent}
 import config.AppConfig
 import connectors._
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.beforeYouStart.SchemeNameId
+import models.JourneyType.RACDAC_IND_MIG
 import models.requests.DataRequest
 import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -90,7 +91,7 @@ class DeclarationController @Inject()(
         params = Map("psaName" -> minimalPsa.name,"schemeName"-> schemeName),
         callbackUrl(psaId)
       ).map { status =>
-      auditService.sendEvent(RetirementOrDeferredAnnuityContractMigrationEmailEvent(psaId, minimalPsa.email))
+      auditService.sendEvent(EmailAuditEvent(psaId, RACDAC_IND_MIG,minimalPsa.email))
       status
     }
     } recoverWith {

@@ -15,13 +15,15 @@
  */
 
 package audit
+import models.JourneyType
 
-case class RetirementOrDeferredAnnuityContractMigrationEmailEvent(
+  case class EmailAuditEvent(
                          psaId: String,
+                         journeyType: JourneyType.Name,
                          emailAddress: String
                        ) extends AuditEvent {
 
-  override def auditType: String = "RetirementOrDeferredAnnuityContractMigrationEmailSentEvent"
+  override def auditType: String = s"${journeyType.toString}EmailSentEvent"
 
   override def details: Map[String, String] =
     Map(

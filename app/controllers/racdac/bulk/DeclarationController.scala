@@ -16,11 +16,12 @@
 
 package controllers.racdac.bulk
 
-import audit.{AuditService, RetirementOrDeferredAnnuityContractMigrationEmailEvent}
+import audit.{AuditService, EmailAuditEvent}
 import config.AppConfig
 import connectors._
 import connectors.cache.BulkMigrationQueueConnector
 import controllers.actions.{AuthAction, BulkDataAction}
+import models.JourneyType.RACDAC_BULK_MIG
 import models.racDac.RacDacRequest
 import models.requests.BulkDataRequest
 import play.api.i18n.Lang.logger
@@ -88,7 +89,7 @@ class DeclarationController @Inject()(
         params = Map("psaName" -> request.md.name),
         callbackUrl(psaId)
       ).map { status =>
-        auditService.sendEvent(RetirementOrDeferredAnnuityContractMigrationEmailEvent(psaId, request.md.email))
+        auditService.sendEvent(EmailAuditEvent(psaId, RACDAC_BULK_MIG,request.md.email))
         status
       } recoverWith {
       case _: Throwable => Future.successful(EmailNotSent)

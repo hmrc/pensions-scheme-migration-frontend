@@ -14,19 +14,11 @@
  * limitations under the License.
  */
 
-package audit
+package models
 
-case class SchemeMigrationEmailEvent(
-                         psaId: String,
-                         emailAddress: String
-                       ) extends AuditEvent {
-
-  override def auditType: String = "SchemeMigrationEmailSentEvent"
-
-  override def details: Map[String, String] =
-    Map(
-      "psaId" -> psaId,
-      "emailAddress" -> emailAddress
-    )
+object JourneyType extends Enumeration {
+  type Name = Value
+  val SCHEME_MIG: JourneyType.Value = Value("SchemeMigration")
+  val RACDAC_IND_MIG: JourneyType.Value = Value("RetirementOrDeferredAnnuityContractMigration")
+  val RACDAC_BULK_MIG: JourneyType.Value = Value("RetirementOrDeferredAnnuityContractBulkMigration")
 }
-
