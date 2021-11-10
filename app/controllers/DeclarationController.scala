@@ -28,6 +28,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import identifiers.beforeYouStart.WorkingKnowledgeId
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -51,12 +52,13 @@ class DeclarationController @Inject()(
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
+        val hasWorkingKnowledge = if (request.userAnswers.get(WorkingKnowledgeId).contains(true)) true else false
         SchemeNameId.retrieve.right.map { schemeName =>
 
           val json = Json.obj(
             "schemeName" -> schemeName,
             "isCompany" -> true,
-            "hasWorkingKnowledge" -> true,
+            "hasWorkingKnowledge" -> hasWorkingKnowledge,
             "submitUrl" -> routes.DeclarationController.onSubmit().url
           )
           renderer.render("declaration.njk", json).map(Ok(_))
