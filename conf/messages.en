@@ -1000,6 +1000,8 @@ messages__listSchemes__schemeName__screen_reader = The scheme name is: {0}
 
 messages__listSchemes__PSTR__screen_reader = {0}’s Pension Scheme Tax Reference number is {1}
 messages__listSchemes__status__screen_reader = {0}’s status is {1}
+messages__listSchemes__p1_scheme = This page lists the pension schemes registered on Pension Schemes Online. Select a pension scheme to add it to Managing Pension Schemes.
+messages__listSchemes__racDac = This page lists the RAC/DACs registered on Pension Schemes Online. Select a RAC/DAC to add it to Managing Pension Schemes.
 messages__listSchemes__searchText_label_scheme = Search by scheme name or PSTR
 messages__listSchemes__searchText_label_racDac = Search for a RAC/DAC by name or PSTR
 messages__listSchemes__searchText_label_hint_scheme = Enter the full PSTR, for example 20123456QQ
