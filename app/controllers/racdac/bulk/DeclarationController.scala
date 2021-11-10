@@ -16,6 +16,7 @@
 
 package controllers.racdac.bulk
 
+import audit.{AuditService, RetirementOrDeferredAnnuityContractMigrationEmailEvent}
 import config.AppConfig
 import connectors._
 import connectors.cache.BulkMigrationQueueConnector
@@ -42,6 +43,7 @@ class DeclarationController @Inject()(
                                        bulkMigrationQueueConnector: BulkMigrationQueueConnector,
                                        getData: BulkDataAction,
                                        emailConnector: EmailConnector,
+                                       auditService: AuditService,
                                        crypto: ApplicationCrypto
                                      )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
@@ -85,7 +87,10 @@ class DeclarationController @Inject()(
         templateName = appConfig.bulkMigrationConfirmationEmailTemplateId,
         params = Map("psaName" -> request.md.name),
         callbackUrl(psaId)
-      ) recoverWith {
+      ).map { status =>
+        auditService.sendEvent(RetirementOrDeferredAnnuityContractMigrationEmailEvent(psaId, request.md.email))
+        status
+      } recoverWith {
       case _: Throwable => Future.successful(EmailNotSent)
     }
   }

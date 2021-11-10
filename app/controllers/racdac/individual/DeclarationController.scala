@@ -16,6 +16,7 @@
 
 package controllers.racdac.individual
 
+import audit.{AuditService, RetirementOrDeferredAnnuityContractMigrationEmailEvent}
 import config.AppConfig
 import connectors._
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
@@ -38,6 +39,7 @@ class DeclarationController @Inject()(
                                        authenticate: AuthAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
+                                       auditService: AuditService,
                                        minimalDetailsConnector: MinimalDetailsConnector,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer,
@@ -87,7 +89,10 @@ class DeclarationController @Inject()(
         templateName = appConfig.individualMigrationConfirmationEmailTemplateId,
         params = Map("psaName" -> minimalPsa.name,"schemeName"-> schemeName),
         callbackUrl(psaId)
-      )
+      ).map { status =>
+      auditService.sendEvent(RetirementOrDeferredAnnuityContractMigrationEmailEvent(psaId, minimalPsa.email))
+      status
+    }
     } recoverWith {
       case _: Throwable => Future.successful(EmailNotSent)
     }
