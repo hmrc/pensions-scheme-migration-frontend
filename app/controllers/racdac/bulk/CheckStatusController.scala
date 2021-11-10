@@ -18,11 +18,12 @@ package controllers.racdac.bulk
 
 import config.AppConfig
 import connectors.cache.BulkMigrationQueueConnector
-import connectors.{AncillaryPsaException, ListOfSchemesConnector}
+import connectors.ListOfSchemesConnector
 import controllers.actions._
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.HttpResponseRedirects.listOfSchemesRedirects
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -51,10 +52,7 @@ class CheckStatusController @Inject()(val appConfig: AppConfig,
             }
           case _ =>
             Redirect(appConfig.psaOverviewUrl)
-        } recoverWith {
-          case _: AncillaryPsaException =>
-            Future.successful(Redirect(controllers.preMigration.routes.CannotMigrateController.onPageLoad()))
-        }
+        } recoverWith listOfSchemesRedirects
     }
   }
 }

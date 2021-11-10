@@ -19,7 +19,7 @@ package services
 import com.google.inject.Inject
 import config.AppConfig
 import connectors.cache.FeatureToggleConnector
-import connectors.{AncillaryPsaException, DelimitedAdminException, ListOfSchemesConnector, MinimalDetailsConnector}
+import connectors.{ListOfSchemesConnector, DelimitedAdminException, MinimalDetailsConnector}
 import controllers.preMigration.routes
 import controllers.preMigration.routes.ListOfSchemesController
 import models.FeatureToggleName.MigrationTransfer
@@ -36,8 +36,9 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Table.Cell
 import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{Content, Html, MessageInterpolators, Table}
-import utils.SchemeFuzzyMatcher
+import uk.gov.hmrc.viewmodels.{Table, MessageInterpolators, Content, Html}
+import utils.HttpResponseRedirects.listOfSchemesRedirects
+import utils.{SchemeFuzzyMatcher, HttpResponseHelper}
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -49,7 +50,7 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
                                     minimalDetailsConnector: MinimalDetailsConnector,
                                     paginationService: PaginationService,
                                     featureToggleConnector: FeatureToggleConnector,
-                                    renderer: Renderer) extends NunjucksSupport {
+                                    renderer: Renderer) extends NunjucksSupport with HttpResponseHelper {
 
   private def pagination: Int = appConfig.listSchemePagination
 
@@ -77,7 +78,6 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
             st => filterSchemesByPstrOrSchemeName(st, _: List[Items])
           )
         filterSearchResults(listOfSchemes.items.getOrElse(Nil).filter(_.racDac == isRacDac))
-
       case _ =>
         List.empty[Items]
     }
@@ -197,9 +197,6 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
           migrationType,
           toggle.isDisabled
         )
-      } recoverWith {
-        case _: AncillaryPsaException =>
-          Future.successful(Redirect(routes.CannotMigrateController.onPageLoad()))
-      }
+      } recoverWith listOfSchemesRedirects
     }
 }

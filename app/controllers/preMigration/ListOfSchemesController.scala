@@ -18,18 +18,19 @@ package controllers.preMigration
 
 import com.google.inject.Inject
 import config.AppConfig
-import connectors.{AncillaryPsaException, ListOfSchemesConnector}
+import connectors.ListOfSchemesConnector
 import controllers.actions.AuthAction
 import forms.ListSchemesFormProvider
 import models.MigrationType.isRacDac
 import models.requests.AuthenticatedRequest
 import models.{Index, MigrationType}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{MessagesApi, Messages, I18nSupport}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.{LockingService, SchemeSearchService}
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.HttpResponseRedirects.listOfSchemesRedirects
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -62,15 +63,8 @@ class ListOfSchemesController @Inject()(
           else {
             emptyListRedirect(checkRacDac)
           }
-        case Left(response) if response.status == BAD_GATEWAY =>
-          Future.successful(Redirect(controllers.routes.ThereIsAProblemController.onPageLoad()))
-        case Left(xx) =>
-          println("\n>>>>>>RESPONSE=" +   xx)
-          emptyListRedirect(checkRacDac)
-    } recoverWith {
-        case _: AncillaryPsaException =>
-          Future.successful(Redirect(routes.CannotMigrateController.onPageLoad()))
-      }
+        case _ => emptyListRedirect(checkRacDac)
+    } recoverWith listOfSchemesRedirects
   }
   private def emptyListRedirect(checkRacDac: Boolean):Future[Result] ={
     if (checkRacDac) {
