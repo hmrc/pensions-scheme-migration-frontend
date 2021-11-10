@@ -62,7 +62,11 @@ class ListOfSchemesController @Inject()(
           else {
             emptyListRedirect(checkRacDac)
           }
-        case _ => emptyListRedirect(checkRacDac)
+        case Left(response) if response.status == BAD_GATEWAY =>
+          Future.successful(Redirect(controllers.routes.ThereIsAProblemController.onPageLoad()))
+        case Left(xx) =>
+          println("\n>>>>>>RESPONSE=" +   xx)
+          emptyListRedirect(checkRacDac)
     } recoverWith {
         case _: AncillaryPsaException =>
           Future.successful(Redirect(routes.CannotMigrateController.onPageLoad()))
