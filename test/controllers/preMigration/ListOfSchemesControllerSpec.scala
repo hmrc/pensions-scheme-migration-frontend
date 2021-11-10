@@ -75,7 +75,7 @@ class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSuppor
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.failed(ListOfSchemes5xxException()))
       val result = controller.onPageLoad(Scheme)(fakeRequest)
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.ThereIsAProblemController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.preMigration.routes.ThereIsAProblemController.onPageLoad().url)
     }
 
     "return OK and the correct view for a GET for scheme with RacDac Only" in {

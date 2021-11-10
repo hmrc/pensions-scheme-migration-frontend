@@ -87,7 +87,7 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.failed(ListOfSchemes5xxException()))
       val result = controller.onPageLoad(fakeDataRequest(ua))
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.ThereIsAProblemController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.preMigration.routes.ThereIsAProblemController.onPageLoad().url)
     }
 
     "return OK and the correct view for a GET" in{

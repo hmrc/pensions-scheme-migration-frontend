@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.preMigration
 
+import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
@@ -31,13 +32,13 @@ import scala.concurrent.Future
 
 class ThereIsAProblemControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
-  private val templateToBeRendered = "thereIsAProblem.njk"
+  private val templateToBeRendered = "preMigration/thereIsAProblem.njk"
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
-  private def httpPathGET: String = controllers.routes.ThereIsAProblemController.onPageLoad().url
+  private def httpPathGET: String = routes.ThereIsAProblemController.onPageLoad().url
 
 
   override def beforeEach: Unit = {

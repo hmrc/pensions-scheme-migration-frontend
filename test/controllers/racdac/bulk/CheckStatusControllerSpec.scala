@@ -62,7 +62,7 @@ class CheckStatusControllerSpec extends ControllerSpecBase with NunjucksSupport 
       when(mockListSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.failed(ListOfSchemes5xxException()))
       val result = route(application, httpGETRequest(httpPathGET)).value
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.ThereIsAProblemController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.preMigration.routes.ThereIsAProblemController.onPageLoad().url)
     }
 
     "redirect to finished status page when all failed items left in the queue" in {

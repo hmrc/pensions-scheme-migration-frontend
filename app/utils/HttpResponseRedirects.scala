@@ -28,7 +28,7 @@ object HttpResponseRedirects {
       case _: AncillaryPsaException =>
         Future.successful(Redirect(routes.CannotMigrateController.onPageLoad()))
       case _: ListOfSchemes5xxException =>
-        Future.successful(Redirect(controllers.routes.ThereIsAProblemController.onPageLoad()))
+        Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
     }
   }
 }

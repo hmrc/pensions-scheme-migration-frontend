@@ -19,7 +19,7 @@ package controllers.actions
 import base.SpecBase
 import config.AppConfig
 import connectors.cache.CurrentPstrCacheConnector
-import connectors.{AncillaryPsaException, ListOfSchemesConnector, MinimalDetailsConnector, DelimitedAdminException, ListOfSchemes5xxException}
+import connectors._
 import models.requests.{AuthenticatedRequest, BulkDataRequest}
 import models.{Items, MinPSA, ListOfLegacySchemes}
 import org.mockito.ArgumentMatchers._
@@ -223,7 +223,7 @@ class BulkDataActionSpec
 
         whenReady(futureResult) { result =>
           result.header.status mustBe SEE_OTHER
-          redirectLocation(futureResult).value mustBe controllers.routes.ThereIsAProblemController.onPageLoad().url
+          redirectLocation(futureResult).value mustBe controllers.preMigration.routes.ThereIsAProblemController.onPageLoad().url
         }
       }
     }

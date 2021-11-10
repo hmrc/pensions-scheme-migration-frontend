@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.preMigration
 
 import config.AppConfig
 import play.api.i18n.{MessagesApi, I18nSupport}
@@ -33,6 +33,6 @@ class ThereIsAProblemController @Inject()(val appConfig: AppConfig,
   FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = Action.async { implicit request =>
-    renderer.render("thereIsAProblem.njk").map(Ok(_))
+    renderer.render("preMigration/thereIsAProblem.njk").map(Ok(_))
   }
 }
