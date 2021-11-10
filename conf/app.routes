@@ -152,3 +152,7 @@ GET         /rac-dac/confirmation                                    controllers
 GET         /scheme-locked                                           controllers.SchemeLockedController.onPageLoadScheme
 GET         /rac-dac/rac-dac-locked                                  controllers.SchemeLockedController.onPageLoadRacDac
 GET         /manage-pension-schemes-overview                         controllers.PensionSchemeRedirectController.onPageLoad
+
+GET         /there-is-a-problem                                      controllers.ThereIsAProblemController.onPageLoad
+
+

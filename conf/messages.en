@@ -1123,3 +1123,7 @@ messages__scheme__locked__title = The {0} is locked
 messages__scheme__locked__heading = {0} is locked
 messages__scheme__locked__p = Another scheme administrator is currently adding this {0} from the Pension Schemes Online service.
 messages__scheme__locked__link = Back to list of {0}s
+
+messages__thereIsAProblem__title = There is a problem with the service
+messages__thereIsAProblem__heading = Sorry, there is a problem with the service
+messages__thereIsAProblem__p1 = Try again later.
