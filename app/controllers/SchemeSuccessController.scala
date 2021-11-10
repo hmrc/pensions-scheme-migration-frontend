@@ -52,9 +52,9 @@ class SchemeSuccessController @Inject()(appConfig: AppConfig,
         val jsonFuture =
           for {
             email <- minimalDetailsConnector.getPSAEmail
-//            _ <- currentPstrCacheConnector.remove
-//            _ <- lockCacheConnector.removeLock(request.lock)
-//            _ <- userAnswersCacheConnector.remove(request.lock.pstr)
+            _ <- currentPstrCacheConnector.remove
+            _ <- lockCacheConnector.removeLock(request.lock)
+            _ <- userAnswersCacheConnector.remove(request.lock.pstr)
           } yield {
             Json.obj(
               "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
