@@ -98,6 +98,6 @@ class DeclarationController @Inject()(
 
   private def callbackUrl(psaId: String): String = {
     val encryptedPsa = crypto.QueryParameterCrypto.encrypt(PlainText(psaId)).value
-    s"${appConfig.migrationUrl}/email-response/${SCHEME_MIG}/$encryptedPsa"
+    s"${appConfig.migrationUrl}/pensions-scheme-migration/email-response/${SCHEME_MIG}/$encryptedPsa"
   }
 }

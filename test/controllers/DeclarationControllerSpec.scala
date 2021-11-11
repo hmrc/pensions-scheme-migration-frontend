@@ -20,8 +20,8 @@ import connectors.{EmailConnector, EmailSent, MinimalDetailsConnector}
 import controllers.actions.MutableFakeDataRetrievalAction
 import matchers.JsonMatchers
 import models.MinPSA
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
