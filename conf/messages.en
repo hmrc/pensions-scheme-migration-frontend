@@ -929,6 +929,7 @@ messages__partners__whatYouWillNeed__item8 = contact phone number
 messages__partner__name = The partner’s name
 messages__partner__name__cya__visuallyHidden = the name of the partner
 messages__addPartner_radio_label = Do you want to add another partner?
+messages__addPartner_atleast_two_partners = You will need to tell us details for at least two partners.
 messages__confirmDeletePartners__title = Are you sure you want to delete this partner?
 messages__addPartners_lede = You must tell us about all your partners. You can add up to 10 using the digital service.
 
@@ -1000,6 +1001,8 @@ messages__listSchemes__schemeName__screen_reader = The scheme name is: {0}
 
 messages__listSchemes__PSTR__screen_reader = {0}’s Pension Scheme Tax Reference number is {1}
 messages__listSchemes__status__screen_reader = {0}’s status is {1}
+messages__listSchemes__p1_scheme = This page lists the pension schemes registered on Pension Schemes Online. Select a pension scheme to add it to Managing Pension Schemes.
+messages__listSchemes__racDac = This page lists the RAC/DACs registered on Pension Schemes Online. Select a RAC/DAC to add it to Managing Pension Schemes.
 messages__listSchemes__searchText_label_scheme = Search by scheme name or PSTR
 messages__listSchemes__searchText_label_racDac = Search for a RAC/DAC by name or PSTR
 messages__listSchemes__searchText_label_hint_scheme = Enter the full PSTR, for example 20123456QQ
@@ -1119,7 +1122,13 @@ messages__racdac__finished__p1_link_text = your list of schemes
 messages__racdac__finished__p2__first = Some of your RAC/DACs could not be added because the service was unavailable.
 messages__racdac__finished__p2_link_text = Try adding them again
 
+messages__scheme__locked__title = The {0} is locked
+messages__scheme__locked__heading = {0} is locked
+messages__scheme__locked__p = Another scheme administrator is currently adding this {0} from the Pension Schemes Online service.
+messages__scheme__locked__link = Back to list of {0}s
+
 messages__tasklist__establisher = Establisher
+messages__tasklist__trustee = Trustee
 messages__tasklist__complete = {0} details are complete
 messages__tasklist__incomplete = {0} details are incomplete
 

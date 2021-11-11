@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
-package identifiers.establishers.company.details
+package identifiers.beforeYouStart
 
 import identifiers.TypedIdentifier
-import identifiers.establishers.EstablishersId
-import models.ReferenceValue
-import play.api.libs.json.{Format, JsPath, Json}
 
-case class PAYEId(index: Int) extends TypedIdentifier[ReferenceValue] {
-  override def path: JsPath = EstablishersId(index).path \ PAYEId.toString
+case object IsSchemeTypeOtherId extends TypedIdentifier[Boolean] {
+  val value: Boolean = false
 }
 
-object PAYEId {
-  override lazy val toString: String = "paye"
-  implicit lazy val formats: Format[PAYEId] = Json.format[PAYEId]
-}

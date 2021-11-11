@@ -16,26 +16,29 @@
 
 package controllers.preMigration
 
-import config.AppConfig
-import connectors.MinimalDetailsConnector
+import connectors.cache.UserAnswersCacheConnector
+import connectors.{LegacySchemeDetailsConnector, MinimalDetailsConnector}
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRetrievalAction}
+import models.Scheme
+import models.requests.OptionalDataRequest
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class BeforeYouStartController @Inject()(
-                                           appConfig : AppConfig,
                                            override val messagesApi: MessagesApi,
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            minimalDetailsConnector: MinimalDetailsConnector,
+                                           userAnswersCacheConnector: UserAnswersCacheConnector,
+                                           legacySchemeDetailsConnector : LegacySchemeDetailsConnector,
                                            val controllerComponents: MessagesControllerComponents,
                                            val renderer: Renderer
                                          )(implicit val ec: ExecutionContext)
@@ -47,18 +50,37 @@ class BeforeYouStartController @Inject()(
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData).async {
       implicit request =>
-        minimalDetailsConnector.getPSAName.flatMap { psaName =>
-            renderer.render(
-              template = "preMigration/beforeYouStart.njk",
-              ctx = Json.obj(
-                "pageTitle" -> Messages("messages__BeforeYouStart__title"),
-                "continueUrl" -> controllers.routes.TaskListController.onPageLoad().url,
-                "psaName" -> psaName,
-                "returnUrl" -> appConfig.psaOverviewUrl
-              )
-            ).map(Ok(_))
+        (request.userAnswers, request.lock) match {
+          case (_, None) =>
+            Future.successful(Redirect(controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme)))
+
+          case (Some(ua), _) =>
+            renderView
+
+          case (None, Some(lock)) =>
+            legacySchemeDetailsConnector.getLegacySchemeDetails(lock.psaId, lock.pstr).flatMap {
+              case Right(data) =>
+                userAnswersCacheConnector.save(lock, data).flatMap { _ =>
+                  renderView
+                }
+              case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
+            }
         }
 
     }
 
+
+  private def renderView(implicit request: OptionalDataRequest[_]): Future[Result]= {
+    minimalDetailsConnector.getPSAName.flatMap { psaName =>
+      renderer.render(
+        template = "preMigration/beforeYouStart.njk",
+        ctx = Json.obj(
+          "pageTitle" -> Messages("messages__BeforeYouStart__title"),
+          "continueUrl" -> controllers.routes.TaskListController.onPageLoad().url,
+          "psaName" -> psaName,
+          "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad().url
+        )
+      ).map(Ok(_))
+    }
+  }
 }

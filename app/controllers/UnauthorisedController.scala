@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/*package controllers
+package controllers
 
 import config.AppConfig
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -24,8 +24,8 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
-*/
-/*class UnauthorisedController @Inject()(val appConfig: AppConfig,
+
+class UnauthorisedController @Inject()(val appConfig: AppConfig,
                                        override val messagesApi: MessagesApi,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer
@@ -35,5 +35,4 @@ import scala.concurrent.ExecutionContext
   def onPageLoad: Action[AnyContent] = Action.async { implicit request =>
     renderer.render("unauthorised.njk").map(Ok(_))
   }
-}*/
-
+}

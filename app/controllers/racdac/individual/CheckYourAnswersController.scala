@@ -88,7 +88,7 @@ class CheckYourAnswersController @Inject()(
           "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(userAnswers, implicitly),
           "submitUrl" -> controllers.racdac.individual.routes.DeclarationController.onPageLoad().url,
           "psaName" -> psaName,
-          "returnUrl" -> appConfig.psaOverviewUrl
+          "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad().url
         )
       ).map(Ok(_))
     }

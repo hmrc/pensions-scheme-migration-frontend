@@ -43,10 +43,10 @@
              {% if(numberOfSchemes > pagination) %}
                         <div class="grid-row">
                             <div class="column-two-thirds">
-                                <p class="govuk-margin-top-5" id="pagination-text">
+                                <p class="govuk-body-s govuk-margin-top-5" id="pagination-text">
                                     {{paginationText}}
                                 </p>
-                                <nav class="govuk-margin-top-5" aria-label="page">
+                                <nav class="govuk-margin-top-5 govuk-!-margin-bottom-6" aria-label="page">
                                     {% if(pageNumber > 1) %}
 
                                       {{navigationLink(messages("messages__listSchemes__pagination__first"),"1", listRacDacUrl)}}

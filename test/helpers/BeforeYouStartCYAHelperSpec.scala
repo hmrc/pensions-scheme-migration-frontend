@@ -43,7 +43,7 @@ class BeforeYouStartCYAHelperSpec
 
   val ua: UserAnswers = UserAnswers()
     .set(SchemeNameId, schemeName).success.value
-    .set(SchemeTypeId, SchemeType.Other("other")).success.value
+    .set(SchemeTypeId, SchemeType.Other("messages__scheme_type_other")).success.value
     .set(EstablishedCountryId, "AF").success.value
     .set(WorkingKnowledgeId, true).success.value
 

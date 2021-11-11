@@ -49,9 +49,9 @@ class AddToListHelper {
     ) ++ (if (establishers.size > 1) linkHeader else Nil)
   }
 
-  def mapTrusteesToTable[A <: Entity[_]](trustees: Seq[A])
+  def mapTrusteesToTable[A <: Entity[_]](trustees: Seq[A], caption: String, editLinkText: String)
                                         (implicit messages: Messages): Table =
-    mapToTable(trustees, trusteesHead(trustees), "", "")
+    mapToTable(trustees, trusteesHead(trustees), caption, editLinkText)
 
   private def trusteesHead[A <: Entity[_]](trustees: Seq[A])
                                           (implicit messages: Messages): Seq[Cell] = {

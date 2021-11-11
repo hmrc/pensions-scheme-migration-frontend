@@ -20,8 +20,9 @@ import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import helpers.cya.CYAHelper
 import helpers.cya.establishers.individual.EstablisherAddressCYAHelper
+import helpers.routes.EstablishersIndividualRoutes.taskListRoute
 import identifiers.beforeYouStart.SchemeNameId
-import models.Index
+import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -54,7 +55,7 @@ class CheckYourAnswersController @Inject()(
           ctx = Json.obj(
             "list"       -> cyaHelper.rows(index),
             "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
-            "submitUrl"  -> controllers.routes.TaskListController.onPageLoad().url
+            "submitUrl"  -> taskListRoute(index, NormalMode).url
           )
         ).map(Ok(_))
     }

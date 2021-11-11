@@ -74,8 +74,8 @@ class EstablisherPartnerDetailsCYAHelper
         visuallyHiddenText = Some(msg"messages__hasNINO__cya__visuallyHidden".withArgs(partnerName)),
         answerTransform    = answerBooleanTransform
       )),
-      ua.get(PartnerNINOId(establisherIndex, partnerIndex)) map {
-        _ =>
+      ua.get(PartnerHasNINOId(establisherIndex, partnerIndex)) map {
+        case true =>
           answerOrAddRow(
             id                 = PartnerNINOId(establisherIndex, partnerIndex),
             message            = Message("messages__enterNINO__cya", partnerName),
@@ -83,9 +83,7 @@ class EstablisherPartnerDetailsCYAHelper
             visuallyHiddenText = Some(msg"messages__hasNINO__cya__visuallyHidden".withArgs(partnerName)),
             answerTransform    = referenceValueTransform
           )
-      },
-      ua.get(PartnerNoNINOReasonId(establisherIndex, partnerIndex)) map {
-        _ =>
+        case false =>
           answerOrAddRow(
             id                 = PartnerNoNINOReasonId(establisherIndex, partnerIndex),
             message            = Message("messages__whyNoNINO", partnerName),
@@ -100,8 +98,8 @@ class EstablisherPartnerDetailsCYAHelper
         visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(partnerName)),
         answerTransform    = answerBooleanTransform
       )),
-      ua.get(PartnerEnterUTRId(establisherIndex, partnerIndex)) map {
-        _ =>
+      ua.get(PartnerHasUTRId(establisherIndex, partnerIndex)) map {
+        case true =>
           answerOrAddRow(
             id                 = PartnerEnterUTRId(establisherIndex, partnerIndex),
             message            = Message("messages__enterUTR__cya_label", partnerName),
@@ -109,9 +107,7 @@ class EstablisherPartnerDetailsCYAHelper
             visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(partnerName)),
             answerTransform    = referenceValueTransform
           )
-      },
-      ua.get(PartnerNoUTRReasonId(establisherIndex, partnerIndex)) map {
-        _ =>
+        case false =>
           answerOrAddRow(
             id                 = PartnerNoUTRReasonId(establisherIndex, partnerIndex),
             message            = Message("messages__whyNoUTR", partnerName),

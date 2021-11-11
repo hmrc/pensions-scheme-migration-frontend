@@ -84,7 +84,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
     "schemeName" -> schemeName,
     "submitUrl" -> controllers.racdac.individual.routes.DeclarationController.onPageLoad().url,
     "psaName" -> Data.psaName,
-    "returnUrl" -> mockAppConfig.psaOverviewUrl
+    "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad().url
   )
 
   override def beforeEach: Unit = {

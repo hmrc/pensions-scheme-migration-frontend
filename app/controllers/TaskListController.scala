@@ -16,14 +16,14 @@
 
 package controllers
 
+import connectors.LegacySchemeDetailsConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AuthAction, DataRetrievalAction}
-import controllers.testonly.TestMongoController
 import helpers.TaskListHelper
 import models.Scheme
 import models.requests.OptionalDataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -38,6 +38,7 @@ class TaskListController @Inject()(
                                     getData: DataRetrievalAction,
                                     taskListHelper: TaskListHelper,
                                     userAnswersCacheConnector: UserAnswersCacheConnector,
+                                    legacySchemeDetailsConnector : LegacySchemeDetailsConnector,
                                     val controllerComponents: MessagesControllerComponents,
                                     renderer: Renderer
                                   )(implicit val executionContext: ExecutionContext)
@@ -56,9 +57,13 @@ class TaskListController @Inject()(
           renderView
 
         case (None, Some(lock)) =>
-          implicit val userAnswers: UserAnswers = UserAnswers(TestMongoController.data) //TODO once getSchemeDetails API is implemented, fetch data from API
-          userAnswersCacheConnector.save(lock, userAnswers.data).flatMap { _ =>
-            renderView
+          legacySchemeDetailsConnector.getLegacySchemeDetails(lock.psaId, lock.pstr).flatMap {
+            case Right(data) =>
+              implicit val userAnswers: UserAnswers = UserAnswers(data.as[JsObject])
+              userAnswersCacheConnector.save(lock, data).flatMap { _ =>
+                renderView
+              }
+            case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
           }
       }
   }
@@ -66,7 +71,8 @@ class TaskListController @Inject()(
   private def renderView(implicit userAnswers: UserAnswers, request: OptionalDataRequest[_]): Future[Result] = {
     val json = Json.obj(
       "taskSections" -> taskListHelper.taskList(request.viewOnly),
-      "schemeName" -> taskListHelper.getSchemeName
+      "schemeName" -> taskListHelper.getSchemeName,
+      "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad().url
     )
     renderer.render("taskList.njk", json).map(Ok(_))
   }

@@ -8,6 +8,9 @@ GET         /assets/*file                                          controllers.A
 #TODO this is a temporary test root. MUST be removed before production release
 GET         /:pstr/saveData                                        controllers.testonly.TestMongoController.save(pstr)
 
+GET         /unauthorised                                          controllers.UnauthorisedController.onPageLoad
+GET         /you-need-to-register                                  controllers.YouNeedToRegisterController.onPageLoad()
+
 GET         /index                                                 controllers.IndexController.onPageLoad
 GET         /task-list                                             controllers.TaskListController.onPageLoad
 
@@ -145,3 +148,7 @@ GET         /rac-dac/check-your-answers                              controllers
 GET         /rac-dac/declaration                                     controllers.racdac.individual.DeclarationController.onPageLoad
 GET         /rac-dac/submit-declaration                              controllers.racdac.individual.DeclarationController.onSubmit
 GET         /rac-dac/confirmation                                    controllers.racdac.individual.ConfirmationController.onPageLoad
+
+GET         /scheme-locked                                           controllers.SchemeLockedController.onPageLoadScheme
+GET         /rac-dac/rac-dac-locked                                  controllers.SchemeLockedController.onPageLoadRacDac
+GET         /manage-pension-schemes-overview                         controllers.PensionSchemeRedirectController.onPageLoad
