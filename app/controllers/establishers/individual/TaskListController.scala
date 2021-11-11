@@ -23,7 +23,6 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import models.Index
 import models.requests.DataRequest
-import navigators.CompoundNavigator
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -34,7 +33,6 @@ import scala.concurrent.ExecutionContext
 
 class TaskListController @Inject()(
                                     override val messagesApi: MessagesApi,
-                                    val navigator: CompoundNavigator,
                                     authenticate: AuthAction,
                                     getData: DataRetrievalAction,
                                     requireData: DataRequiredAction,

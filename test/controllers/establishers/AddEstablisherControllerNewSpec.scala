@@ -23,8 +23,8 @@ import helpers.AddToListHelper
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.{AddEstablisherId, EstablisherKindId, IsEstablisherNewId}
 import matchers.JsonMatchers
-import models.PersonName
 import models.establishers.EstablisherKind
+import models.{PersonName, Scheme}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -38,10 +38,10 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.{Radios, Table}
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
-import models.Scheme
+
 import scala.concurrent.Future
 
-class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class AddEstablisherControllerNewSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
   private val establisherName: String = "Jane Doe"
   private val userAnswers: Option[UserAnswers] = ua.set(EstablisherKindId(0), EstablisherKind.Individual).flatMap(
     _.set(EstablisherNameId(0), PersonName("a", "b", isDeleted = true)).flatMap(
@@ -52,7 +52,7 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
           ))))).toOption
   private val templateToBeRendered = "establishers/addEstablisher.njk"
   private val form: Form[Boolean] = new ConfirmDeleteEstablisherFormProvider()(establisherName)
-  val table: Table = Table(head = Nil, rows = Nil)
+  private val table: Table = Table(head = Nil, rows = Nil)
   private val mockHelper: AddToListHelper = mock[AddToListHelper]
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -61,8 +61,8 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
   )
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
-  private def httpPathGET: String = controllers.establishers.routes.AddEstablisherController.onPageLoad().url
-  private def httpPathPOST: String = controllers.establishers.routes.AddEstablisherController.onSubmit().url
+  private def httpPathGET: String = controllers.establishers.routes.AddEstablisherControllerNew.onPageLoad().url
+  private def httpPathPOST: String = controllers.establishers.routes.AddEstablisherControllerNew.onSubmit().url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq("true")
@@ -75,7 +75,8 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
   private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>
     Json.obj(
       "form" -> form,
-      "table" -> table,
+      "completeTable" -> table,
+      "incompleteTable" -> table,
       "radios" -> Radios.yesNo(form("value")),
       "schemeName" -> schemeName
     )
@@ -116,7 +117,6 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
-
       when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(AddEstablisherId(Some(true))), any(), any())(any()))
         .thenReturn(routes.AddEstablisherController.onPageLoad())
 

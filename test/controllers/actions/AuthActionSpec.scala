@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.actions
+/*package controllers.actions
 
 import base.SpecBase
 import controllers.routes
@@ -28,9 +28,9 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ExecutionContext, Future}*/
 
-class AuthActionSpec
+/*class AuthActionSpec
   extends SpecBase
     with BeforeAndAfterEach
     with MockitoSugar {
@@ -173,4 +173,4 @@ object AuthActionSpec extends SpecBase with MockitoSugar {
   }
 
   private val parser: BodyParsers.Default = injector.instanceOf[BodyParsers.Default]
-}
+}*/
