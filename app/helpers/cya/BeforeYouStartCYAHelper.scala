@@ -57,7 +57,7 @@ class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
           value = Value(msg"$details", classes = Seq("govuk-!-width-one-third")),
           actions = actionChange(Some(url), Some(visuallyHiddenText))
         )
-        case Some(value) if request.userAnswers.get(IsSchemeTypeOtherId).contains(true) => Row(
+        case Some(value) if request.userAnswers.get(IsSchemeTypeOtherId).nonEmpty => Row(
           key = Key(msg"messages__cya__scheme_type".withArgs(schemeName), classes = Seq("govuk-!-width-one-half")),
           value = Value(msg"messages__scheme_type_$value", classes = Seq("govuk-!-width-one-third")),
           actions = actionChange(Some(url), Some(visuallyHiddenText))
