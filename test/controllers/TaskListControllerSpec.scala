@@ -16,18 +16,18 @@
 
 package controllers
 
+import connectors.LegacySchemeDetailsConnector
 import controllers.actions._
 import helpers.TaskListHelper
 import matchers.JsonMatchers
 import models.{EntitySpoke, Scheme, TaskListLink}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
+import org.mockito.{ArgumentCaptor, MockitoSugar}
 import org.scalatest.BeforeAndAfterEach
-import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import utils.Data
@@ -41,7 +41,8 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
   private val mockTaskListHelper = mock[TaskListHelper]
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   val extraModules: Seq[GuiceableModule] = Seq(
-    bind[TaskListHelper].to(mockTaskListHelper)
+    bind[TaskListHelper].to(mockTaskListHelper),
+    bind[LegacySchemeDetailsConnector].toInstance(mockLegacySchemeDetailsConnector)
   )
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
   private val templateToBeRendered = "taskList.njk"
@@ -72,12 +73,17 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
     "schemeName" -> schemeName
   )
 
+  val itemList : JsValue = Json.obj(
+    "taskSections" -> schemeDetailsTL,
+    "schemeName" -> schemeName
+  )
   override def beforeEach: Unit = {
     super.beforeEach
     when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
     when(mockTaskListHelper.taskList(any())(any(), any())).thenReturn(schemeDetailsTL)
     when(mockTaskListHelper.getSchemeName(any())).thenReturn(schemeName)
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+    when(mockLegacySchemeDetailsConnector.getLegacySchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(Right(itemList)))
   }
 
 
@@ -111,13 +117,10 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
     "retrieved data from API store it and return  OK" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
       mutableFakeDataRetrievalAction.setLockToReturn(Some(Data.migrationLock))
+
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      when( mockUserAnswersCacheConnector.save(any(), any())(any(),any())).thenReturn(Future.successful(Json.obj()))
-
       val result = route(application, httpGETRequest(httpPathGET)).value
-
 
       status(result) mustEqual OK
 
@@ -125,7 +128,6 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
 
       templateCaptor.getValue mustEqual templateToBeRendered
 
-      jsonCaptor.getValue must containJson(json)
     }
 
   }

@@ -20,7 +20,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.beforeYouStart.SchemeTypeFormProvider
-import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId}
+import identifiers.beforeYouStart.{IsSchemeTypeOtherId, SchemeNameId, SchemeTypeId}
 import models.SchemeType
 import navigators.CompoundNavigator
 import play.api.data.Form
@@ -30,9 +30,11 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.UserAnswers
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class SchemeTypeController @Inject()(
                                       override val messagesApi: MessagesApi,
@@ -57,7 +59,7 @@ class SchemeTypeController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.right.map {
           schemeName =>
-            val preparedForm = request.userAnswers.get(SchemeTypeId) match {
+            val preparedForm = request.userAnswers.get(SchemeTypeId)(SchemeType.optionalReads) match {
               case None        => form
               case Some(value) => form.fill(value)
             }
@@ -89,11 +91,15 @@ class SchemeTypeController @Inject()(
                   )
                 ).map(BadRequest(_))
             },
-          value =>
+          value => {
+
+            val ua: Try[UserAnswers] = request.userAnswers.set(IsSchemeTypeOtherId, true).flatMap(_.set(SchemeTypeId, value))
+
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(SchemeTypeId, value))
+              updatedAnswers <- Future.fromTry(ua)
               _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
             } yield Redirect(navigator.nextPage(SchemeTypeId, updatedAnswers))
+          }
         )
     }
 

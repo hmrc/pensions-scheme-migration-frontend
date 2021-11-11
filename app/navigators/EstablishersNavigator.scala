@@ -121,7 +121,7 @@ class EstablishersNavigator@Inject()(config: AppConfig)
                                     answers: UserAnswers
                                   ): Call =
     value match {
-      case Some(false) => TaskListController.onPageLoad()
+      case Some(false) => controllers.routes.TaskListController.onPageLoad()
       case Some(true) => EstablisherKindController.onPageLoad(answers.establishersCount)
       case None => controllers.routes.TaskListController.onPageLoad()
     }

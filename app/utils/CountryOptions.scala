@@ -51,6 +51,7 @@ class CountryOptions(val options: Seq[InputOption]) {
       .find(_.value == code)
       .map(_.label)
       .getOrElse(code)
+
 }
 
 object CountryOptions {

@@ -28,6 +28,8 @@ import identifiers.trustees.individual.TrusteeNameId
 import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind
 import play.api.libs.json.{Format, Json}
+import helpers.routes.EstablishersIndividualRoutes.taskListRoute
+import helpers.routes.TrusteesIndividualRoutes.{taskListRoute => trusteeTaskListRoute}
 
 sealed trait Entity[ID] {
   def id: ID
@@ -53,13 +55,14 @@ case class EstablisherIndividualEntity(
                                         isNewEntity: Boolean,
                                         noOfRecords: Int
                                       ) extends Establisher[EstablisherNameId] {
-  override def editLink: Option[String] = None
+  override def editLink: Option[String] = Some(taskListRoute(index, NormalMode).url)
 
-  override def deleteLink: Option[String] =
+  override def deleteLink: Option[String] = {
     if (noOfRecords > 1)
       Some(ConfirmDeleteEstablisherController.onPageLoad(id.index, EstablisherKind.Individual).url)
     else
       None
+  }
 
   override def index: Int = id.index
 }
@@ -71,7 +74,7 @@ object EstablisherIndividualEntity {
 case class EstablisherCompanyEntity(id: CompanyDetailsId, name: String, isDeleted: Boolean,
                                     isCompleted: Boolean, isNewEntity: Boolean, noOfRecords: Int) extends
   Establisher[CompanyDetailsId] {
-  override def editLink: Option[String] = None
+  override def editLink: Option[String] = Some(controllers.establishers.company.routes.TaskListController.onPageLoad(index).url)
 
   override def deleteLink: Option[String] = {
     if (noOfRecords > 1)
@@ -90,7 +93,7 @@ object EstablisherCompanyEntity {
 case class EstablisherPartnershipEntity(id: PartnershipDetailsId, name: String, isDeleted: Boolean,
                                     isCompleted: Boolean, isNewEntity: Boolean, noOfRecords: Int) extends
   Establisher[PartnershipDetailsId] {
-  override def editLink: Option[String] = None
+  override def editLink: Option[String] = Some(controllers.establishers.partnership.routes.TaskListController.onPageLoad(index).url)
 
   override def deleteLink: Option[String] = {
     if (noOfRecords > 1)
@@ -126,7 +129,7 @@ case class TrusteeIndividualEntity(
   isNewEntity: Boolean,
   noOfRecords: Int
 ) extends Trustee[TrusteeNameId] {
-  override def editLink: Option[String] = None
+  override def editLink: Option[String] = Some(trusteeTaskListRoute(index, NormalMode).url)
 
   override def deleteLink: Option[String] =
     if (noOfRecords > 1)
@@ -144,7 +147,7 @@ object TrusteeIndividualEntity {
 case class TrusteeCompanyEntity(id: TrusteeCompanyDetailsId, name: String, isDeleted: Boolean,
                                     isCompleted: Boolean, isNewEntity: Boolean, noOfRecords: Int) extends
   Trustee[TrusteeCompanyDetailsId] {
-  override def editLink: Option[String] = None
+  override def editLink: Option[String] = Some(controllers.trustees.company.routes.TaskListController.onPageLoad(index).url)
 
   override def deleteLink: Option[String] = {
     if (noOfRecords > 1)
@@ -163,7 +166,7 @@ object TrusteeCompanyEntity {
 case class TrusteePartnershipEntity(id: TrusteePartnershipDetailsId, name: String, isDeleted: Boolean,
                                 isCompleted: Boolean, isNewEntity: Boolean, noOfRecords: Int) extends
   Trustee[TrusteePartnershipDetailsId] {
-  override def editLink: Option[String] = None
+  override def editLink: Option[String] = Some(controllers.trustees.partnership.routes.TaskListController.onPageLoad(index).url)
 
   override def deleteLink: Option[String] = {
     if (noOfRecords > 1)

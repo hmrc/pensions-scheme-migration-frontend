@@ -29,7 +29,7 @@ index: Index,
   ) extends Spoke {
   val messageKeyPrefix = "messages__schemeTaskList__contactDetails_"
   val linkKeyAndRoute: (String, String) = {
-    if (completeFlag(answers).getOrElse(false))
+    if (completeFlag(answers).isDefined)
       (s"${messageKeyPrefix}changeLink", cyaContactRoute(index, NormalMode).url)
     else
       (s"${messageKeyPrefix}addLink", contactRoute(index, NormalMode).url)

@@ -53,7 +53,7 @@ class AddEstablisherController @Inject()(
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         val establishers = request.userAnswers.allEstablishersAfterDelete
-        val table        = helper.mapEstablishersToTable(establishers)
+        val table        = helper.mapEstablishersToTable(establishers, "", "")
 
         renderer.render(
           template = "establishers/addEstablisher.njk",
@@ -70,7 +70,7 @@ class AddEstablisherController @Inject()(
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         val establishers = request.userAnswers.allEstablishersAfterDelete
-        val table        = helper.mapEstablishersToTable(establishers)
+        val table        = helper.mapEstablishersToTable(establishers, "", "")
 
         formProvider(establishers).bindFromRequest().fold(
           formWithErrors =>

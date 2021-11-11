@@ -23,7 +23,7 @@ import forms.trustees.AddTrusteeFormProvider
 import helpers.AddToListHelper
 import identifiers.trustees.AddTrusteeId
 import navigators.CompoundNavigator
-import play.api.i18n.{MessagesApi, I18nSupport}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import renderer.Renderer
@@ -51,10 +51,18 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         val trustees = request.userAnswers.allTrusteesAfterDelete
-        val table = helper.mapTrusteesToTable(trustees)
+        val trusteesComplete = trustees.filter(_.isCompleted)
+        val trusteesIncomplete = trustees.filterNot(_.isCompleted)
+        val completeTable = helper.mapTrusteesToTable(trusteesComplete, caption = "Completed", editLinkText = "site.change")
+        val incompleteTable = helper.mapTrusteesToTable(trusteesIncomplete, caption = "Incomplete", editLinkText = "site.add.details")
+
+        println("\n\n\n completeTable : "+completeTable.rows.size)
+        println("\n\n\n incompleteTable : "+incompleteTable.rows.size)
+
         val json: JsObject = Json.obj(
           "form" -> formProvider(trustees),
-          "table" -> table,
+          "completeTable" -> completeTable,
+          "incompleteTable" -> incompleteTable,
           "radios" -> Radios.yesNo(formProvider(trustees)("value")),
           "schemeName" -> existingSchemeName,
           "trusteeSize" -> trustees.size,
@@ -69,7 +77,10 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
         Future.successful(Redirect(navigator.nextPage(AddTrusteeId(v), request.userAnswers)))
 
       val trustees = request.userAnswers.allTrusteesAfterDelete
-      val table = helper.mapTrusteesToTable(trustees)
+      val trusteesComplete = trustees.filter(_.isCompleted)
+      val trusteesIncomplete = trustees.filterNot(_.isCompleted)
+      val completeTable = helper.mapEstablishersToTable(trusteesComplete, caption = "Completed", editLinkText = "site.change")
+      val incompleteTable = helper.mapEstablishersToTable(trusteesIncomplete, caption = "Incomplete", editLinkText = "site.add.details")
       val formWithErrors = formProvider(trustees).bindFromRequest()
 
       (formWithErrors.value, trustees.length) match {
@@ -78,7 +89,8 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
         case _ =>
           val json: JsObject = Json.obj(
             "form" -> formWithErrors,
-            "table" -> table,
+            "completeTable" -> completeTable,
+            "incompleteTable" -> incompleteTable,
             "radios" -> Radios.yesNo(formWithErrors("value")),
             "schemeName" -> existingSchemeName,
             "trusteeSize" -> trustees.size,
