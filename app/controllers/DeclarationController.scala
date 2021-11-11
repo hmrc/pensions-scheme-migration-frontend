@@ -69,10 +69,11 @@ class DeclarationController @Inject()(
   def onSubmit: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-      SchemeNameId.retrieve.right.map { schemeName =>
-        sendEmail(schemeName, request.psaId.id).map {
-        _ => Redirect(routes.SchemeSuccessController.onPageLoad()) }
-      }
+        SchemeNameId.retrieve.right.map { schemeName =>
+          sendEmail(schemeName, request.psaId.id).map {
+            _ => Redirect(routes.SchemeSuccessController.onPageLoad())
+          }
+        }
     }
 
   private def sendEmail(schemeName: String, psaId: String)
@@ -83,20 +84,20 @@ class DeclarationController @Inject()(
       emailConnector.sendEmail(
         emailAddress = minimalPsa.email,
         templateName = appConfig.schemeConfirmationEmailTemplateId,
-        params = Map("psaName" -> minimalPsa.name, "schemeName"-> schemeName),
-        callbackUrl(psaId) //To be edited while implementing audit event
-      ).map{
+        params = Map("psaName" -> minimalPsa.name, "schemeName" -> schemeName),
+        callbackUrl(psaId)
+      ).map {
         status =>
-          auditService.sendEvent(EmailAuditEvent(psaId,SCHEME_MIG,minimalPsa.email))
+          auditService.sendEvent(EmailAuditEvent(psaId, SCHEME_MIG, minimalPsa.email))
           status
       }
     } recoverWith {
       case _: Throwable => Future.successful(EmailNotSent)
     }
   }
-  //To be edited while implementing audit event
+
   private def callbackUrl(psaId: String): String = {
     val encryptedPsa = crypto.QueryParameterCrypto.encrypt(PlainText(psaId)).value
-    s"${appConfig.migrationUrl}/email-response/$encryptedPsa"
+    s"${appConfig.migrationUrl}/email-response/${SCHEME_MIG}/$encryptedPsa"
   }
 }

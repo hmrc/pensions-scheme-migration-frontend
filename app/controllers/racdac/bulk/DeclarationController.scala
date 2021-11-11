@@ -83,22 +83,21 @@ class DeclarationController @Inject()(
   private def sendEmail(psaId: String)
                        (implicit request: BulkDataRequest[AnyContent]): Future[EmailStatus] = {
     logger.debug(s"Sending bulk migration email for $psaId")
-      emailConnector.sendEmail(
-        emailAddress = request.md.email,
-        templateName = appConfig.bulkMigrationConfirmationEmailTemplateId,
-        params = Map("psaName" -> request.md.name),
-        callbackUrl(psaId)
-      ).map { status =>
-        auditService.sendEvent(EmailAuditEvent(psaId, RACDAC_BULK_MIG,request.md.email))
-        status
-      } recoverWith {
+    emailConnector.sendEmail(
+      emailAddress = request.md.email,
+      templateName = appConfig.bulkMigrationConfirmationEmailTemplateId,
+      params = Map("psaName" -> request.md.name),
+      callbackUrl(psaId)
+    ).map { status =>
+      auditService.sendEvent(EmailAuditEvent(psaId, RACDAC_BULK_MIG, request.md.email))
+      status
+    } recoverWith {
       case _: Throwable => Future.successful(EmailNotSent)
     }
   }
 
-  //Todo: To be edited while implementing audit event
   private def callbackUrl(psaId: String): String = {
     val encryptedPsa = crypto.QueryParameterCrypto.encrypt(PlainText(psaId)).value
-    s"${appConfig.migrationUrl}/email-response/$encryptedPsa"
+    s"${appConfig.migrationUrl}/email-response/${RACDAC_BULK_MIG}/$encryptedPsa"
   }
 }
