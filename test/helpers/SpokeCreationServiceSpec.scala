@@ -19,8 +19,6 @@ package helpers
 import base.SpecBase
 import helpers.routes.EstablishersIndividualRoutes.contactRoute
 import helpers.routes.{EstablishersIndividualRoutes, TrusteesIndividualRoutes}
-import identifiers.adviser.{AdviserNameId, EnterEmailId => adviserEnterEmailId, EnterPhoneId => adviserEnterPhoneId, AddressId => adviserAddressId}
-import identifiers.beforeYouStart.{SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.contact.EnterPhoneId
@@ -30,16 +28,16 @@ import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{AddressId => IndividualAddressId}
 import identifiers.establishers.partnership.address.{AddressId => PartnershipAddressId}
 import identifiers.establishers.partnership.contact.EnterEmailId
-import identifiers.establishers.partnership.details.{PartnershipUTRId, HaveUTRId}
+import identifiers.establishers.partnership.details.{HaveUTRId, PartnershipUTRId}
 import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.{PartnershipDetailsId => EstablisherPartnershipDetailsId}
 import identifiers.trustees.company.{details => trusteeCompanyDetails}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.contact.{EnterEmailId => TrusteeEmailId, EnterPhoneId => TrusteePhoneId}
 import identifiers.trustees.individual.details.{TrusteeDOBId, TrusteeNINOId, TrusteeUTRId}
-import identifiers.trustees.partnership.address.{AddressYearsId => TrusteePartnershipAddressYearsId, AddressId => TrusteePartnershipAddressId}
+import identifiers.trustees.partnership.address.{AddressId => TrusteePartnershipAddressId, AddressYearsId => TrusteePartnershipAddressYearsId}
 import identifiers.trustees.partnership.contact.{EnterEmailId => TrusteePartnershipEmailId, EnterPhoneId => TrusteePartnershipPhoneId}
-import identifiers.trustees.partnership.details.{HavePAYEId => TrusteeHavePAYEId, PAYEId => TrusteePAYEId, HaveVATId => TrusteeHaveVATId, VATId => TrusteeVATId, HaveUTRId => TrusteeHaveUTRId}
+import identifiers.trustees.partnership.details.{HavePAYEId => TrusteeHavePAYEId, HaveUTRId => TrusteeHaveUTRId, HaveVATId => TrusteeHaveVATId, PAYEId => TrusteePAYEId, VATId => TrusteeVATId}
 import identifiers.trustees.partnership.{PartnershipDetailsId => TrusteePartnershipDetailsId}
 import identifiers.trustees.{TrusteeKindId, company => trusteeCompany}
 import models._
@@ -47,8 +45,8 @@ import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
-import utils.Data.{schemeName, ua}
-import utils.{Enumerable, Data}
+import utils.Data.ua
+import utils.{Data, Enumerable}
 import viewmodels.Message
 
 import java.time.LocalDate
@@ -62,73 +60,7 @@ class SpokeCreationServiceSpec
 
   val spokeCreationService = new SpokeCreationService()
 
-  "getBeforeYouStartSpoke" must {
-    "display the spoke with link to cya page with complete status if the spoke is completed" in {
-      val userAnswers = ua.set(SchemeTypeId, SchemeType.SingleTrust).get.set(WorkingKnowledgeId, true).get
-        .set(EstablishedCountryId, "GB").get
-
-      val expectedSpoke = Seq(EntitySpoke(TaskListLink(Message("messages__schemeTaskList__before_you_start_link_text", schemeName),
-        controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad().url), Some(true)))
-
-      val result = spokeCreationService.getBeforeYouStartSpoke(userAnswers, schemeName)
-      result mustBe expectedSpoke
-    }
-  }
-
-  "getAboutSpoke" when {
-    "in subscription" must {
-      "display all the spokes with link to first page, blank status if the spoke is uninitiated" in {
-
-        val expectedSpoke = Seq(
-          EntitySpoke(TaskListLink(Message("messages__schemeTaskList__about_members_link_text", schemeName),
-            controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad().url), None),
-          EntitySpoke(TaskListLink(
-            messages("messages__schemeTaskList__about_benefits_and_insurance_link_text", schemeName),
-            controllers.benefitsAndInsurance.routes.CheckYourAnswersController.onPageLoad.url
-          ), None)
-        )
-
-        val result = spokeCreationService.aboutSpokes(ua, schemeName)
-        result mustBe expectedSpoke
-      }
-
-    }
-  }
-
-  "workingKnowledgeSpoke" must {
-    "display the spoke with link to wyn page with in complete status if the spoke is in progress" in {
-      val expectedSpoke =
-        Seq(EntitySpoke(
-          TaskListLink(Message("messages__schemeTaskList__add_details_wk"),
-            controllers.adviser.routes.WhatYouWillNeedController.onPageLoad.url, None),
-          isCompleted = None
-        ))
-      val result = spokeCreationService.workingKnowledgeSpoke(ua)
-
-      result mustBe expectedSpoke
-    }
-    "display the spoke with link to cya page with complete status if the spoke is in progress" in {
-      val userAnswers =
-        ua
-          .set(AdviserNameId, "test").success.value
-          .set(adviserEnterEmailId, Data.email).success.value
-          .set(adviserEnterPhoneId, Data.phone).success.value
-          .set(adviserAddressId, Data.address).success.value
-
-      val expectedSpoke =
-        Seq(EntitySpoke(
-          TaskListLink(Message("messages__schemeTaskList__details_changeLink","test"),
-            controllers.adviser.routes.CheckYourAnswersController.onPageLoad.url,None),
-          isCompleted = Some(true)
-        ))
-      val result = spokeCreationService.workingKnowledgeSpoke(userAnswers)
-
-      result mustBe expectedSpoke
-    }
-
-  }
-
-  "getAddEstablisherHeaderSpokes" must {
+   "getAddEstablisherHeaderSpokes" must {
     "return no spokes when no establishers and view only" in {
       val result = spokeCreationService.getAddEstablisherHeaderSpokes(ua, viewOnly = true)
       result mustBe Nil
