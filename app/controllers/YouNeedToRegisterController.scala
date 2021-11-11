@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+/*package controllers
 
 import config.AppConfig
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -24,8 +24,9 @@ import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.ExecutionContext*/
 
+/*
 class YouNeedToRegisterController @Inject()(appConfig: AppConfig,
                                             override val messagesApi: MessagesApi,
                                             val controllerComponents: MessagesControllerComponents,
@@ -44,3 +45,4 @@ class YouNeedToRegisterController @Inject()(appConfig: AppConfig,
       renderer.render("youNeedToRegister.njk", json).map(Ok(_))
   }
 }
+*/

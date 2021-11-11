@@ -47,17 +47,17 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector,
     authorised().retrieve(Retrievals.externalId and Retrievals.allEnrolments) {
 
       case Some(id) ~ enrolments =>           createAuthRequest(id, enrolments, request, block)
-      case _ =>                               Future.successful(Redirect(UnauthorisedController.onPageLoad()))
+      case _ =>                               Future.successful(Redirect(IndexController.onPageLoad()))
 
     } recover {
 
       case _: NoActiveSession =>              Redirect(config.loginUrl, Map("continue" -> Seq(config.psaOverviewUrl)))
-      case _: InsufficientEnrolments =>       Redirect(UnauthorisedController.onPageLoad())
+      /*case _: InsufficientEnrolments =>       Redirect(UnauthorisedController.onPageLoad())
       case _: InsufficientConfidenceLevel =>  Redirect(UnauthorisedController.onPageLoad())
       case _: UnsupportedAuthProvider =>      Redirect(UnauthorisedController.onPageLoad())
       case _: UnsupportedAffinityGroup =>     Redirect(UnauthorisedController.onPageLoad())
       case _: UnsupportedCredentialRole =>    Redirect(UnauthorisedController.onPageLoad())
-      case _: IdNotFound =>                   Redirect(YouNeedToRegisterController.onPageLoad())
+      case _: IdNotFound =>                   Redirect(YouNeedToRegisterController.onPageLoad())*/
     }
   }
 
@@ -69,7 +69,7 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector,
 
     enrolments.getEnrolment("HMRC-PODS-ORG").flatMap(_.getIdentifier("PSAID")) match {
       case Some(psaId) => block(AuthenticatedRequest(request, id, PsaId(psaId.value)))
-      case _ => Future.successful(Redirect(YouNeedToRegisterController.onPageLoad()))
+      case _ => Future.successful(Redirect(IndexController.onPageLoad()))
     }
   }
 

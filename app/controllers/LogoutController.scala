@@ -45,7 +45,7 @@ class LogoutController @Inject()(
               Redirect(appConfig.serviceSignOut).withNewSession
             }
         case _ =>
-          Future.successful(Redirect(routes.UnauthorisedController.onPageLoad()))
+          Future.successful(Redirect(routes.IndexController.onPageLoad()))
       } recover {
         case _: MissingBearerToken =>
           Redirect(appConfig.serviceSignOut).withNewSession

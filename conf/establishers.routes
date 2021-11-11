@@ -1,6 +1,9 @@
 GET         /scheme-establishers                         controllers.establishers.AddEstablisherController.onPageLoad()
 POST        /scheme-establishers                         controllers.establishers.AddEstablisherController.onSubmit()
 
+GET         /scheme-establishers-new                         controllers.establishers.AddEstablisherControllerNew.onPageLoad()
+POST        /scheme-establishers-new                         controllers.establishers.AddEstablisherControllerNew.onSubmit()
+
 GET         /:index/company/delete-establisher           controllers.establishers.ConfirmDeleteEstablisherController.onPageLoad(index: Index, establisherKind: EstablisherKind = EstablisherKind.Company)
 POST        /:index/company/delete-establisher           controllers.establishers.ConfirmDeleteEstablisherController.onSubmit(index: Index, establisherKind: EstablisherKind = EstablisherKind.Company)
 

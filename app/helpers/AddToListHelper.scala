@@ -19,8 +19,8 @@ package helpers
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
-import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.company.{CompanyDetailsId => TrusteeCompanyDetailsId}
+import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.partnership.{PartnershipDetailsId => TrusteePartnershipDetailsId}
 import models.Entity
 import play.api.i18n.Messages
@@ -31,9 +31,9 @@ import uk.gov.hmrc.viewmodels.{Html, MessageInterpolators, Table}
 
 class AddToListHelper {
 
-  def mapEstablishersToTable[A <: Entity[_]](establishers: Seq[A])
+  def mapEstablishersToTable[A <: Entity[_]](establishers: Seq[A], caption: String, editLinkText: String)
                                             (implicit messages: Messages): Table =
-    mapToTable(establishers, establishersHead(establishers))
+    mapToTable(establishers, establishersHead(establishers), caption, editLinkText)
 
   private def establishersHead[A <: Entity[_]](establishers: Seq[A])(implicit messages: Messages): Seq[Cell] = {
 
@@ -51,7 +51,7 @@ class AddToListHelper {
 
   def mapTrusteesToTable[A <: Entity[_]](trustees: Seq[A])
                                         (implicit messages: Messages): Table =
-    mapToTable(trustees, trusteesHead(trustees))
+    mapToTable(trustees, trusteesHead(trustees), "", "")
 
   private def trusteesHead[A <: Entity[_]](trustees: Seq[A])
                                           (implicit messages: Messages): Seq[Cell] = {
@@ -69,18 +69,21 @@ class AddToListHelper {
     ) ++ (if (trustees.size > 1) linkHeader else Nil)
   }
 
-  private def mapToTable[A <: Entity[_]](entities: Seq[A], head: Seq[Cell])
+  private def mapToTable[A <: Entity[_]](entities: Seq[A], head: Seq[Cell], caption: String, editLinkText: String)
                                         (implicit messages: Messages): Table = {
 
     val rows = entities.map { data =>
-      Seq(Cell(Literal(data.name), Seq("govuk-!-width-one-half")),
+      Seq(Cell(Literal(data.name), Seq("govuk-!-width-one-quarter")),
         Cell(Literal(getTypeFromId(data.id)), Seq("govuk-!-width-one-quarter"))) ++
+        data.editLink.fold[Seq[Cell]](Nil)(editLink =>
+          Seq(Cell(link(s"edit-${data.index}", editLinkText, editLink, data.name), Seq("govuk-!-width-one-quarter")))
+        ) ++
         data.deleteLink.fold[Seq[Cell]](Nil)(delLink =>
             Seq(Cell(link(s"remove-${data.index}", "site.remove", delLink, data.name), Seq("govuk-!-width-one-quarter")))
         )
     }
 
-    Table(head, rows, attributes = Map("role" -> "table"))
+    Table(Nil, rows, caption = Some(Literal(caption)), attributes = Map("role" -> "table"))
   }
 
   def link(id: String, text: String, url: String, name: String)(implicit messages: Messages): Html = {

@@ -30,6 +30,7 @@ site.no = No
 site.add = Add
 site.change = Change
 site.remove = Remove
+site.add.details = Add details
 site.not_entered = Not entered
 site.view = View
 site.hidden-delete = Delete {0}
@@ -1117,3 +1118,9 @@ messages__racdac__finished__p1__first = We have added some of your RAC/DACs from
 messages__racdac__finished__p1_link_text = your list of schemes
 messages__racdac__finished__p2__first = Some of your RAC/DACs could not be added because the service was unavailable.
 messages__racdac__finished__p2_link_text = Try adding them again
+
+messages__tasklist__establisher = Establisher
+messages__tasklist__complete = {0} details are complete
+messages__tasklist__incomplete = {0} details are incomplete
+
+messages__tasklist__complete__section = You have completed {0} of {1} sections
