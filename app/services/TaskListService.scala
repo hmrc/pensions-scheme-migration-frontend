@@ -17,11 +17,11 @@
 package services
 
 import controllers.establishers.routes.{AddEstablisherController, EstablisherKindController}
-import controllers.trustees.routes.{AddTrusteeController, TrusteeKindController}
+import controllers.trustees.routes.{AddTrusteeController, TrusteeKindController, AnyTrusteesController}
 import helpers.cya.MandatoryAnswerMissingException
 import identifiers.adviser.AdviserNameId
-import identifiers.beforeYouStart.{SchemeNameId, WorkingKnowledgeId}
-import models.NewTaskListLink
+import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId, WorkingKnowledgeId}
+import models.{NewTaskListLink, SchemeType}
 import play.api.i18n.Messages
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.UserAnswers
@@ -119,13 +119,23 @@ class TaskListService extends NunjucksSupport  {
   def trusteesDetails (implicit ua: UserAnswers, messages: Messages): NewTaskListLink =
   {
     if (ua.allTrusteesAfterDelete.isEmpty)
-      NewTaskListLink(
-        text = messages(getLinkKey("trustees_", Some(ua.isTrusteesSectionComplete).isDefined), getSchemeName),
-        target = TrusteeKindController.onPageLoad(ua.allTrustees.size).url,
-        visuallyHiddenText = None,
-        status = ua.isTrusteesSectionComplete
-      )
-    else
+      {
+        if(ua.get(SchemeTypeId).contains(SchemeType.SingleTrust))
+          NewTaskListLink(
+            text = messages(getLinkKey("trustees_", Some(ua.isTrusteesSectionComplete).isDefined), getSchemeName),
+            target = TrusteeKindController.onPageLoad(ua.allTrustees.size).url,
+            visuallyHiddenText = None,
+            status = ua.isTrusteesSectionComplete
+          )
+        else
+            NewTaskListLink(
+              text = messages(getLinkKey("trustees_", Some(ua.isTrusteesSectionComplete).isDefined), getSchemeName),
+              target = AnyTrusteesController.onPageLoad().url,
+              visuallyHiddenText = None,
+              status = ua.isTrusteesSectionComplete
+            )
+     }
+     else
       NewTaskListLink(
         text = messages(getLinkKey("trustees_", Some(ua.isTrusteesSectionComplete).isDefined), getSchemeName),
         target = AddTrusteeController.onPageLoad().url,

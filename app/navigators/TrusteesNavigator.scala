@@ -20,16 +20,16 @@ import controllers.routes._
 import controllers.trustees.routes._
 import helpers.routes.TrusteesIndividualRoutes
 import identifiers._
-import identifiers.trustees._
+import identifiers.trustees.{AnyTrusteesId, _}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address._
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.details._
 import models.requests.DataRequest
 import models.trustees.TrusteeKind
-import models.{Mode, Index, CheckMode, NormalMode}
-import play.api.mvc.{Call, AnyContent}
-import utils.{UserAnswers, Enumerable}
+import models.{CheckMode, Index, Mode, NormalMode}
+import play.api.mvc.{AnyContent, Call}
+import utils.{Enumerable, UserAnswers}
 
 class TrusteesNavigator
   extends Navigator
@@ -39,6 +39,7 @@ class TrusteesNavigator
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case TrusteeKindId(index) => trusteeKindRoutes(index, ua)
+    case AnyTrusteesId(value) => anyTrusteesRoutes(value, ua)
     case TrusteeNameId(_) => AddTrusteeController.onPageLoad()
     case AddTrusteeId(value) => addTrusteeRoutes(value, ua)
     case ConfirmDeleteTrusteeId => AddTrusteeController.onPageLoad()
@@ -75,17 +76,18 @@ class TrusteesNavigator
     case EnterPhoneId(index) => cyaContactDetails(index)
   }
 
-  private def cyaDetails(index:Int): Call = TrusteesIndividualRoutes.cyaDetailsRoute(index, NormalMode)
+  private def cyaDetails(index: Int): Call = TrusteesIndividualRoutes.cyaDetailsRoute(index, NormalMode)
 
-  private def cyaAddress(index:Int): Call = TrusteesIndividualRoutes.cyaAddressRoute(index, NormalMode)
-  private def addressYears(index:Int, mode:Mode): Call = TrusteesIndividualRoutes.timeAtAddressRoute(index, NormalMode)
+  private def cyaAddress(index: Int): Call = TrusteesIndividualRoutes.cyaAddressRoute(index, NormalMode)
 
-  private def cyaContactDetails(index:Int): Call = TrusteesIndividualRoutes.cyaContactRoute(index, NormalMode)
+  private def addressYears(index: Int, mode: Mode): Call = TrusteesIndividualRoutes.timeAtAddressRoute(index, NormalMode)
+
+  private def cyaContactDetails(index: Int): Call = TrusteesIndividualRoutes.cyaContactRoute(index, NormalMode)
 
   private def trusteeKindRoutes(
-                                     index: Index,
-                                     ua: UserAnswers
-                                   ): Call =
+                                 index: Index,
+                                 ua: UserAnswers
+                               ): Call =
     ua.get(TrusteeKindId(index)) match {
       case Some(TrusteeKind.Individual) => TrusteesIndividualRoutes.nameRoute(index, NormalMode)
       case Some(TrusteeKind.Company) => controllers.trustees.company.routes.CompanyDetailsController.onPageLoad(index)
@@ -94,14 +96,27 @@ class TrusteesNavigator
     }
 
   private def addTrusteeRoutes(
-                                    value: Option[Boolean],
-                                    answers: UserAnswers
-                                  ): Call =
-      value match {
-        case Some(false) => TaskListController.onPageLoad()
-        case Some(true) => TrusteeKindController.onPageLoad(answers.trusteesCount)
-        case None => controllers.trustees.routes.OtherTrusteesController.onPageLoad
-      }
+                                value: Option[Boolean],
+                                answers: UserAnswers
+                              ): Call =
+    value match {
+      case Some(false) => TaskListController.onPageLoad()
+      case Some(true) => TrusteeKindController.onPageLoad(answers.trusteesCount)
+      case None => controllers.trustees.routes.OtherTrusteesController.onPageLoad
+    }
+
+  private def anyTrusteesRoutes(
+                                 value: Option[Boolean],
+                                 answers: UserAnswers,
+                               ): Call = {
+
+  println("\n\n\n\n\n\n\n\nAnyTrustees" +value)
+    value match {
+    case Some(false) => TaskListController.onPageLoad()
+    case Some(true) => TrusteeKindController.onPageLoad(answers.trusteesCount)
+    case None => IndexController.onPageLoad()
+  }
+}
 
   private def trusteeHasNino(
                                   index: Index,
