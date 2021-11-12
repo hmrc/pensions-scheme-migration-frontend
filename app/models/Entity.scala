@@ -132,10 +132,7 @@ case class TrusteeIndividualEntity(
   override def editLink: Option[String] = Some(trusteeTaskListRoute(index, NormalMode).url)
 
   override def deleteLink: Option[String] =
-    if (noOfRecords > 1)
       Some(controllers.trustees.routes.ConfirmDeleteTrusteeController.onPageLoad(id.index, TrusteeKind.Individual).url)
-    else
-      None
 
   override def index: Int = id.index
 }
@@ -150,10 +147,7 @@ case class TrusteeCompanyEntity(id: TrusteeCompanyDetailsId, name: String, isDel
   override def editLink: Option[String] = Some(controllers.trustees.company.routes.TaskListController.onPageLoad(index).url)
 
   override def deleteLink: Option[String] = {
-    if (noOfRecords > 1)
       Some(controllers.trustees.routes.ConfirmDeleteTrusteeController.onPageLoad(id.index, TrusteeKind.Company).url)
-    else
-      None
   }
 
   override def index: Int = id.index
@@ -169,10 +163,7 @@ case class TrusteePartnershipEntity(id: TrusteePartnershipDetailsId, name: Strin
   override def editLink: Option[String] = Some(controllers.trustees.partnership.routes.TaskListController.onPageLoad(index).url)
 
   override def deleteLink: Option[String] = {
-    if (noOfRecords > 1)
       Some(controllers.trustees.routes.ConfirmDeleteTrusteeController.onPageLoad(id.index, TrusteeKind.Partnership).url)
-    else
-      None
   }
 
   override def index: Int = id.index

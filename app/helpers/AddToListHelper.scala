@@ -27,49 +27,19 @@ import play.api.i18n.Messages
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.viewmodels.Table.Cell
 import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{Html, MessageInterpolators, Table}
+import uk.gov.hmrc.viewmodels.{Html, Table}
 
 class AddToListHelper {
 
   def mapEstablishersToTable[A <: Entity[_]](establishers: Seq[A], caption: String, editLinkText: String)
                                             (implicit messages: Messages): Table =
-    mapToTable(establishers, establishersHead(establishers), caption, editLinkText)
+    mapToTable(establishers, caption, editLinkText, hideDeleteLink = false)
 
-  private def establishersHead[A <: Entity[_]](establishers: Seq[A])(implicit messages: Messages): Seq[Cell] = {
-
-    val linkHeader: Seq[Cell] =
-      Seq(Cell(Html(s"""<span class=govuk-visually-hidden>${messages("addEstablisher.hiddenText.removeLink.header")}</span>""")))
-
-    val typeHeader: Html =
-      Html(s"""<span aria-hidden=true>${messages("addEstablisher.type.header")}</span>""" +
-          s"""<span class=govuk-visually-hidden>${messages("addEstablisher.type.header.hiddenText")}</span>""")
-    Seq(
-      Cell(msg"addEstablisher.name.header"),
-      Cell(typeHeader)
-    ) ++ (if (establishers.size > 1) linkHeader else Nil)
-  }
-
-  def mapTrusteesToTable[A <: Entity[_]](trustees: Seq[A], caption: String, editLinkText: String)
+  def mapTrusteesToTable[A <: Entity[_]](trustees: Seq[A], caption: String, editLinkText: String, hideDeleteLink: Boolean = false)
                                         (implicit messages: Messages): Table =
-    mapToTable(trustees, trusteesHead(trustees), caption, editLinkText)
+    mapToTable(trustees, caption, editLinkText, hideDeleteLink)
 
-  private def trusteesHead[A <: Entity[_]](trustees: Seq[A])
-                                          (implicit messages: Messages): Seq[Cell] = {
-
-    val linkHeader =
-      Seq(Cell(Html(s"""<span class=govuk-visually-hidden>${messages("addTrustee.hiddenText.removeLink.header")}</span>""")))
-
-    val typeHeader: Html =
-      Html(s"""<span aria-hidden=true>${messages("addTrustee.type.header")}</span>""" +
-          s"""<span class=govuk-visually-hidden>${messages("addTrustee.type.header.hiddenText")}</span>""")
-
-    Seq(
-      Cell(msg"addTrustee.name.header"),
-      Cell(typeHeader)
-    ) ++ (if (trustees.size > 1) linkHeader else Nil)
-  }
-
-  private def mapToTable[A <: Entity[_]](entities: Seq[A], head: Seq[Cell], caption: String, editLinkText: String)
+  private def mapToTable[A <: Entity[_]](entities: Seq[A], caption: String, editLinkText: String, hideDeleteLink: Boolean)
                                         (implicit messages: Messages): Table = {
 
     val rows = entities.map { data =>
@@ -78,9 +48,11 @@ class AddToListHelper {
         data.editLink.fold[Seq[Cell]](Nil)(editLink =>
           Seq(Cell(link(s"edit-${data.index}", editLinkText, editLink, data.name), Seq("govuk-!-width-one-quarter")))
         ) ++
-        data.deleteLink.fold[Seq[Cell]](Nil)(delLink =>
+        (if(!hideDeleteLink) {
+          data.deleteLink.fold[Seq[Cell]](Nil)(delLink =>
             Seq(Cell(link(s"remove-${data.index}", "site.remove", delLink, data.name), Seq("govuk-!-width-one-quarter")))
-        )
+          )
+        } else Nil)
     }
 
     Table(Nil, rows, caption = Some(Literal(caption)), attributes = Map("role" -> "table"))

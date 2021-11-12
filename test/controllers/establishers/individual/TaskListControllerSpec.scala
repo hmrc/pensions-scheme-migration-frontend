@@ -56,7 +56,7 @@ class TaskListControllerSpec
       "totalSpokes" -> 0,
       "completedCount" -> 0,
       "entityType" -> Message("messages__tasklist__establisher"),
-      "submitUrl" -> controllers.establishers.routes.AddEstablisherControllerNew.onPageLoad().url
+      "submitUrl" -> controllers.establishers.routes.AddEstablisherController.onPageLoad().url
     )
 
   private def controller(
