@@ -18,6 +18,7 @@ package controllers
 
 import connectors.{EmailConnector, EmailSent, MinimalDetailsConnector}
 import controllers.actions.MutableFakeDataRetrievalAction
+import identifiers.beforeYouStart.{SchemeNameId, WorkingKnowledgeId}
 import matchers.JsonMatchers
 import models.MinPSA
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
@@ -30,7 +31,7 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{psaName, schemeName, ua}
-import utils.Enumerable
+import utils.{Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 
@@ -66,7 +67,39 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
   "DeclarationController" must {
 
-    "return OK and the correct view for a GET" in {
+    "return OK with WorkingKnowledgeId true and the correct view for a GET" in {
+      val ua: UserAnswers = UserAnswers()
+        .setOrException(SchemeNameId, schemeName)
+        .setOrException(WorkingKnowledgeId, true)
+
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+
+      val templateCaptor:ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor:ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+
+      val result = route(application, httpGETRequest(httpPathGET)).value
+
+      status(result) mustEqual OK
+
+      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+
+      templateCaptor.getValue mustEqual templateToBeRendered
+
+      jsonCaptor.getValue must containJson(jsonToPassToTemplate)
+    }
+
+    "return OK with WorkingKnowledgeId false and the correct view for a GET" in {
+      val ua: UserAnswers = UserAnswers()
+        .setOrException(SchemeNameId, schemeName)
+        .setOrException(WorkingKnowledgeId, false)
+
+      val jsonToPassToTemplate: JsObject =
+        Json.obj(
+          "schemeName" -> schemeName,
+          "isCompany" -> true,
+          "hasWorkingKnowledge" -> false,
+          "submitUrl" -> routes.DeclarationController.onSubmit().url
+        )
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
       val templateCaptor:ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
