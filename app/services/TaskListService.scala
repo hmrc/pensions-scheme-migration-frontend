@@ -30,7 +30,7 @@ class TaskListService extends NunjucksSupport  {
 
   val messageKeyPrefix = "messages__newSchemeTaskList__"
 
-  def getLinkKey(value: String, isCompletionDefined: Boolean) :  String = {
+  private def getLinkKey(value: String, isCompletionDefined: Boolean) :  String = {
     val messagePrefix = s"$messageKeyPrefix" + value
 
     val linkKey: String =
@@ -45,7 +45,7 @@ class TaskListService extends NunjucksSupport  {
   def getSchemeName[A](implicit ua: UserAnswers): String =
     ua.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
 
-  def basicDetails (implicit ua: UserAnswers, messages: Messages): NewTaskListLink =
+  private def basicDetails (implicit ua: UserAnswers, messages: Messages): NewTaskListLink =
   {
     NewTaskListLink(
       text = messages(getLinkKey("basicDetails_", Some(ua.isBeforeYouStartCompleted).isDefined), getSchemeName),
@@ -55,7 +55,7 @@ class TaskListService extends NunjucksSupport  {
     )
   }
 
-  def membershipDetails (implicit ua: UserAnswers, messages: Messages): NewTaskListLink =
+  private def membershipDetails (implicit ua: UserAnswers, messages: Messages): NewTaskListLink =
   {
     NewTaskListLink(
       text = messages(getLinkKey("membershipDetails_", Some(ua.isMembersComplete).isDefined), getSchemeName),
@@ -65,7 +65,7 @@ class TaskListService extends NunjucksSupport  {
     )
   }
 
-  def benefitsAndInsuranceDetails (implicit ua: UserAnswers, messages: Messages): NewTaskListLink =
+  private def benefitsAndInsuranceDetails (implicit ua: UserAnswers, messages: Messages): NewTaskListLink =
   {
     NewTaskListLink(
       text = messages(getLinkKey("benefitsAndInsuranceDetails_", Some(ua.isBenefitsAndInsuranceComplete).isDefined), getSchemeName),
@@ -75,7 +75,7 @@ class TaskListService extends NunjucksSupport  {
     )
   }
 
-  def workingKnowledgeDetails (implicit ua: UserAnswers, messages: Messages): Option[NewTaskListLink] =
+  private def workingKnowledgeDetails (implicit ua: UserAnswers, messages: Messages): Option[NewTaskListLink] =
   {
     ua.get(WorkingKnowledgeId) match {
       case Some(false) =>
@@ -98,7 +98,7 @@ class TaskListService extends NunjucksSupport  {
     }
   }
 
-  def establishersDetails (implicit ua: UserAnswers, messages: Messages): NewTaskListLink =
+  private def establishersDetails (implicit ua: UserAnswers, messages: Messages): NewTaskListLink =
   {
     if (ua.allEstablishersAfterDelete.isEmpty)
       NewTaskListLink(
@@ -116,7 +116,7 @@ class TaskListService extends NunjucksSupport  {
       )
   }
 
-  def trusteesDetails (implicit ua: UserAnswers, messages: Messages): NewTaskListLink =
+  private def trusteesDetails (implicit ua: UserAnswers, messages: Messages): NewTaskListLink =
   {
     if (ua.allTrusteesAfterDelete.isEmpty)
       {
@@ -144,7 +144,7 @@ class TaskListService extends NunjucksSupport  {
       )
   }
 
-  def completionSpokeCount(implicit ua: UserAnswers, messages: Messages): Int = taskSections.count(x => x.exists(_.status))
+  private def completionSpokeCount(implicit ua: UserAnswers, messages: Messages): Int = taskSections.count(x => x.exists(_.status))
 
   def schemeCompletionStatus(implicit ua: UserAnswers, messages: Messages) : String = {
     if(completionSpokeCount == taskSections.size)

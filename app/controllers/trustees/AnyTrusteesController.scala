@@ -82,7 +82,7 @@ class AnyTrusteesController @Inject()(navigator: CompoundNavigator,
                   "radios" -> Radios.yesNo(formWithErrors("value")),
                   "schemeName" -> schemeName
                 )
-                renderer.render("trustees/trusteeKind.njk", json).map(BadRequest(_))
+                renderer.render("trustees/anyTrustees.njk", json).map(BadRequest(_))
             }
           },
           value => {
