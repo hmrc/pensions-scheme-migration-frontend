@@ -30,6 +30,7 @@ site.no = No
 site.add = Add
 site.change = Change
 site.remove = Remove
+site.add.details = Add details
 site.not_entered = Not entered
 site.view = View
 site.hidden-delete = Delete {0}
@@ -992,6 +993,8 @@ messages__listSchemes__schemeName__screen_reader = The scheme name is: {0}
 
 messages__listSchemes__PSTR__screen_reader = {0}’s Pension Scheme Tax Reference number is {1}
 messages__listSchemes__status__screen_reader = {0}’s status is {1}
+messages__listSchemes__p1_scheme = This page lists the pension schemes registered on Pension Schemes Online. Select a pension scheme to add it to Managing Pension Schemes.
+messages__listSchemes__racDac = This page lists the RAC/DACs registered on Pension Schemes Online. Select a RAC/DAC to add it to Managing Pension Schemes.
 messages__listSchemes__searchText_label_scheme = Search by scheme name or PSTR
 messages__listSchemes__searchText_label_racDac = Search for a RAC/DAC by name or PSTR
 messages__listSchemes__searchText_label_hint_scheme = Enter the full PSTR, for example 20123456QQ
@@ -1115,3 +1118,10 @@ messages__scheme__locked__title = The {0} is locked
 messages__scheme__locked__heading = {0} is locked
 messages__scheme__locked__p = Another scheme administrator is currently adding this {0} from the Pension Schemes Online service.
 messages__scheme__locked__link = Back to list of {0}s
+
+messages__tasklist__establisher = Establisher
+messages__tasklist__trustee = Trustee
+messages__tasklist__complete = {0} details are complete
+messages__tasklist__incomplete = {0} details are incomplete
+
+messages__tasklist__complete__section = You have completed {0} of {1} sections
