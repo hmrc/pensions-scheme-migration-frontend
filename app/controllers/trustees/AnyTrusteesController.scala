@@ -16,24 +16,27 @@
 
 package controllers.trustees
 
+import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.YesNoFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.AnyTrusteesId
 import navigators.CompoundNavigator
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.Radios
-import utils.Enumerable
+import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class AnyTrusteesController @Inject()(navigator: CompoundNavigator,
                                       override val messagesApi: MessagesApi,
@@ -41,6 +44,7 @@ class AnyTrusteesController @Inject()(navigator: CompoundNavigator,
                                       getData: DataRetrievalAction,
                                       requireData: DataRequiredAction,
                                       formProvider: YesNoFormProvider,
+                                      userAnswersCacheConnector: UserAnswersCacheConnector,
                                       val controllerComponents: MessagesControllerComponents,
                                       renderer: Renderer
                                      )(implicit val executionContext: ExecutionContext) extends
@@ -51,12 +55,13 @@ class AnyTrusteesController @Inject()(navigator: CompoundNavigator,
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request => {
+        val formWithData = request.userAnswers.get(AnyTrusteesId).fold(form)(form.fill)
         SchemeNameId.retrieve.right.map {
           schemeName =>
             val json: JsObject = Json.obj(
-              "form" -> form,
+              "form" -> formWithData,
               "entityType" -> Message("messages__the_scheme"),
-              "radios" -> Radios.yesNo(form("value")),
+              "radios" -> Radios.yesNo(formWithData("value")),
               "schemeName" -> schemeName
             )
             renderer.render("trustees/anyTrustees.njk", json).map(Ok(_))
@@ -67,13 +72,8 @@ class AnyTrusteesController @Inject()(navigator: CompoundNavigator,
   def onSubmit: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        val formWithErrors = form.bindFromRequest()
-        def navNextPage(v: Option[Boolean]): Future[Result] =
-          Future.successful(Redirect(navigator.nextPage(AnyTrusteesId(v), request.userAnswers)))
-
-        formWithErrors.value match {
-          case Some(v) => navNextPage(Some(v))
-          case _ =>
+        form.bindFromRequest().fold(
+          (formWithErrors: Form[_]) => {
             SchemeNameId.retrieve.right.map {
               schemeName =>
                 val json: JsObject = Json.obj(
@@ -82,8 +82,19 @@ class AnyTrusteesController @Inject()(navigator: CompoundNavigator,
                   "radios" -> Radios.yesNo(formWithErrors("value")),
                   "schemeName" -> schemeName
                 )
-                renderer.render("trustees/anyTrustees.njk", json).map(BadRequest(_))
+                renderer.render("trustees/trusteeKind.njk", json).map(BadRequest(_))
             }
-        }
+          },
+          value => {
+
+            val ua: Try[UserAnswers] = request.userAnswers.set(AnyTrusteesId, value)
+
+            for {
+              updatedAnswers <- Future.fromTry(ua)
+              _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+            } yield
+              Redirect(navigator.nextPage(AnyTrusteesId, updatedAnswers))
+          }
+        )
     }
 }

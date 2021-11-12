@@ -18,12 +18,8 @@ package identifiers.trustees
 
 import identifiers._
 
-case class AnyTrusteesId(addAnother: Option[Boolean]) extends Identifier {
-  override def toString: String = "anyTrustees"
-}
-
-case object AnyTrusteesId {
-  override def toString: String = "anyTrustees"
+case object AnyTrusteesId extends TypedIdentifier[Boolean] {
+  override lazy val toString: String = "anyTrustees"
 }
 
 

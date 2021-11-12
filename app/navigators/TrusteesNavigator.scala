@@ -39,10 +39,10 @@ class TrusteesNavigator
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case TrusteeKindId(index) => trusteeKindRoutes(index, ua)
-    case AnyTrusteesId(value) => anyTrusteesRoutes(value, ua)
+    case AnyTrusteesId => anyTrusteesRoutes(ua)
     case TrusteeNameId(_) => AddTrusteeController.onPageLoad()
     case AddTrusteeId(value) => addTrusteeRoutes(value, ua)
-    case ConfirmDeleteTrusteeId => AddTrusteeController.onPageLoad()
+    case ConfirmDeleteTrusteeId => deleteTrusteeRoutes(ua)
     case TrusteeDOBId(index) => TrusteesIndividualRoutes.haveNationalInsuranceNumberRoute(index, NormalMode)
     case TrusteeHasNINOId(index) => trusteeHasNino(index, ua, NormalMode)
     case TrusteeNINOId(index) => TrusteesIndividualRoutes.haveUniqueTaxpayerReferenceRoute(index, NormalMode)
@@ -105,13 +105,20 @@ class TrusteesNavigator
       case None => controllers.trustees.routes.OtherTrusteesController.onPageLoad
     }
 
+  private def deleteTrusteeRoutes(
+                                answers: UserAnswers
+                              ): Call = {
+    answers.allTrusteesAfterDelete.nonEmpty match {
+      case false => TaskListController.onPageLoad()
+      case true => AddTrusteeController.onPageLoad()
+    }
+  }
+
   private def anyTrusteesRoutes(
-                                 value: Option[Boolean],
                                  answers: UserAnswers,
                                ): Call = {
 
-  println("\n\n\n\n\n\n\n\nAnyTrustees" +value)
-    value match {
+    answers.get(AnyTrusteesId) match {
     case Some(false) => TaskListController.onPageLoad()
     case Some(true) => TrusteeKindController.onPageLoad(answers.trusteesCount)
     case None => IndexController.onPageLoad()
