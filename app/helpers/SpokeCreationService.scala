@@ -39,7 +39,7 @@ class SpokeCreationService extends Enumerable.Implicits {
     else if (answers.allEstablishersAfterDelete.isEmpty)
       Seq(
         EntitySpoke(
-          link = TaskListLink(
+          link = SpokeTaskListLink(
             text = messages("messages__schemeTaskList__sectionEstablishers_add_link"),
             target = EstablisherKindController.onPageLoad(answers.allEstablishers.size).url
           ),
@@ -49,7 +49,7 @@ class SpokeCreationService extends Enumerable.Implicits {
     else
       Seq(
         EntitySpoke(
-          link = TaskListLink(
+          link = SpokeTaskListLink(
             text = messages("messages__schemeTaskList__sectionEstablishers_change_link"),
             target = AddEstablisherController.onPageLoad().url
           ),
@@ -123,7 +123,7 @@ class SpokeCreationService extends Enumerable.Implicits {
       if(answers.get(SchemeTypeId).contains(SchemeType.SingleTrust)) {
         Seq(
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = messages("messages__schemeTaskList__sectionTrustees_add_link"),
               target = controllers.trustees.routes.TrusteeKindController.onPageLoad(answers.allTrustees.size).url
             ),
@@ -133,7 +133,7 @@ class SpokeCreationService extends Enumerable.Implicits {
       } else
         Seq(
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = messages("messages__schemeTaskList__sectionTrustees_add_link"),
               target = controllers.trustees.routes.AnyTrusteesController.onPageLoad.url
             ),
@@ -143,7 +143,7 @@ class SpokeCreationService extends Enumerable.Implicits {
     } else
       Seq(
         EntitySpoke(
-          link = TaskListLink(
+          link = SpokeTaskListLink(
             text = messages("messages__schemeTaskList__sectionTrustees_change_link"),
             target = controllers.trustees.routes.AddTrusteeController.onPageLoad().url
           ),
@@ -179,7 +179,7 @@ class SpokeCreationService extends Enumerable.Implicits {
   def declarationSpoke(implicit messages: Messages): Seq[EntitySpoke] =
     Seq(
       EntitySpoke(
-        link = TaskListLink(
+        link = SpokeTaskListLink(
           text = messages("messages__schemeTaskList__declaration_link"),
           target = controllers.routes.DeclarationController.onPageLoad().url
         )

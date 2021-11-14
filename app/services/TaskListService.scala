@@ -17,20 +17,23 @@
 package services
 
 import controllers.establishers.routes.{AddEstablisherController, EstablisherKindController}
-import controllers.trustees.routes.{AddTrusteeController, TrusteeKindController, AnyTrusteesController}
+import controllers.trustees.routes.{AddTrusteeController, AnyTrusteesController, TrusteeKindController}
 import helpers.cya.MandatoryAnswerMissingException
+import identifiers.ExpireAtId
 import identifiers.adviser.AdviserNameId
 import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId, WorkingKnowledgeId}
-import models.{NewTaskListLink, SchemeType}
+import models.{SchemeType, TaskListLink}
 import play.api.i18n.Messages
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.UserAnswers
 
-class TaskListService extends NunjucksSupport  {
+import java.text.SimpleDateFormat
+import java.util.Date
+
+class TaskListService {
 
   val messageKeyPrefix = "messages__newSchemeTaskList__"
 
-  private def getLinkKey(value: String, isCompletionDefined: Boolean) :  String = {
+  private def getLinkKey(value: String, isCompletionDefined: Boolean): String = {
     val messagePrefix = s"$messageKeyPrefix" + value
 
     val linkKey: String =
@@ -45,49 +48,45 @@ class TaskListService extends NunjucksSupport  {
   def getSchemeName[A](implicit ua: UserAnswers): String =
     ua.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
 
-  private def basicDetails (implicit ua: UserAnswers, messages: Messages): NewTaskListLink =
-  {
-    NewTaskListLink(
-      text = messages(getLinkKey("basicDetails_", Some(ua.isBeforeYouStartCompleted).isDefined), getSchemeName),
+  private def basicDetails(implicit ua: UserAnswers, messages: Messages): TaskListLink = {
+    TaskListLink(
+      text = messages(getLinkKey("basicDetails_", ua.isBeforeYouStartCompleted), getSchemeName),
       target = controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad().url,
       visuallyHiddenText = None,
       status = ua.isBeforeYouStartCompleted
     )
   }
 
-  private def membershipDetails (implicit ua: UserAnswers, messages: Messages): NewTaskListLink =
-  {
-    NewTaskListLink(
-      text = messages(getLinkKey("membershipDetails_", Some(ua.isMembersComplete).isDefined), getSchemeName),
+  private def membershipDetails(implicit ua: UserAnswers, messages: Messages): TaskListLink = {
+    TaskListLink(
+      text = messages(getLinkKey("membershipDetails_", ua.isMembersComplete.isDefined), getSchemeName),
       target = controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad().url,
       visuallyHiddenText = None,
       status = ua.isMembersComplete.getOrElse(false)
     )
   }
 
-  private def benefitsAndInsuranceDetails (implicit ua: UserAnswers, messages: Messages): NewTaskListLink =
-  {
-    NewTaskListLink(
-      text = messages(getLinkKey("benefitsAndInsuranceDetails_", Some(ua.isBenefitsAndInsuranceComplete).isDefined), getSchemeName),
+  private def benefitsAndInsuranceDetails(implicit ua: UserAnswers, messages: Messages): TaskListLink = {
+    TaskListLink(
+      text = messages(getLinkKey("benefitsAndInsuranceDetails_", ua.isBenefitsAndInsuranceComplete.isDefined), getSchemeName),
       target = controllers.benefitsAndInsurance.routes.CheckYourAnswersController.onPageLoad().url,
       visuallyHiddenText = None,
       status = ua.isBenefitsAndInsuranceComplete.getOrElse(false)
     )
   }
 
-  private def workingKnowledgeDetails (implicit ua: UserAnswers, messages: Messages): Option[NewTaskListLink] =
-  {
+  private def workingKnowledgeDetails(implicit ua: UserAnswers, messages: Messages): Option[TaskListLink] = {
     ua.get(WorkingKnowledgeId) match {
       case Some(false) =>
         if (ua.get(AdviserNameId).isEmpty)
-          Some(NewTaskListLink(
+          Some(TaskListLink(
             text = messages(getLinkKey("workingKnowledge_", false), getSchemeName),
             target = controllers.adviser.routes.WhatYouWillNeedController.onPageLoad().url,
             visuallyHiddenText = None,
             status = ua.isAdviserComplete.getOrElse(false)
           ))
         else
-          Some(NewTaskListLink(
+          Some(TaskListLink(
             text = messages(getLinkKey("workingKnowledge_", true), ua.get(AdviserNameId).getOrElse("")),
             target = controllers.adviser.routes.CheckYourAnswersController.onPageLoad().url,
             visuallyHiddenText = None,
@@ -98,65 +97,68 @@ class TaskListService extends NunjucksSupport  {
     }
   }
 
-  private def establishersDetails (implicit ua: UserAnswers, messages: Messages): NewTaskListLink =
-  {
+  private def establishersDetails(implicit ua: UserAnswers, messages: Messages): TaskListLink = {
     if (ua.allEstablishersAfterDelete.isEmpty)
-      NewTaskListLink(
-        text = messages(getLinkKey("establishers_", Some(ua.isEstablishersSectionComplete).isDefined), getSchemeName),
+      TaskListLink(
+        text = messages(getLinkKey("establishers_", ua.isEstablishersSectionComplete), getSchemeName),
         target = EstablisherKindController.onPageLoad(ua.allEstablishers.size).url,
         visuallyHiddenText = None,
         status = ua.isEstablishersSectionComplete
       )
     else
-      NewTaskListLink(
-        text = messages(getLinkKey("establishers_", Some(ua.isEstablishersSectionComplete).isDefined), getSchemeName),
+      TaskListLink(
+        text = messages(getLinkKey("establishers_", ua.isEstablishersSectionComplete), getSchemeName),
         target = AddEstablisherController.onPageLoad().url,
         visuallyHiddenText = None,
         status = ua.isEstablishersSectionComplete
       )
   }
 
-  private def trusteesDetails (implicit ua: UserAnswers, messages: Messages): NewTaskListLink =
-  {
-    if (ua.allTrusteesAfterDelete.isEmpty)
-      {
-        if(ua.get(SchemeTypeId).contains(SchemeType.SingleTrust))
-          NewTaskListLink(
-            text = messages(getLinkKey("trustees_", Some(ua.isTrusteesSectionComplete).isDefined), getSchemeName),
-            target = TrusteeKindController.onPageLoad(ua.allTrustees.size).url,
-            visuallyHiddenText = None,
-            status = ua.isTrusteesSectionComplete
-          )
-        else
-            NewTaskListLink(
-              text = messages(getLinkKey("trustees_", Some(ua.isTrusteesSectionComplete).isDefined), getSchemeName),
-              target = AnyTrusteesController.onPageLoad().url,
-              visuallyHiddenText = None,
-              status = ua.isTrusteesSectionComplete
-            )
-     }
-     else
-      NewTaskListLink(
-        text = messages(getLinkKey("trustees_", Some(ua.isTrusteesSectionComplete).isDefined), getSchemeName),
+  private def trusteesDetails(implicit ua: UserAnswers, messages: Messages): TaskListLink = {
+    if (ua.allTrusteesAfterDelete.isEmpty) {
+      if (ua.get(SchemeTypeId).contains(SchemeType.SingleTrust))
+        TaskListLink(
+          text = messages(getLinkKey("trustees_", ua.isTrusteesSectionComplete), getSchemeName),
+          target = TrusteeKindController.onPageLoad(ua.allTrustees.size).url,
+          visuallyHiddenText = None,
+          status = ua.isTrusteesSectionComplete
+        )
+      else
+        TaskListLink(
+          text = messages(getLinkKey("trustees_", ua.isTrusteesSectionComplete), getSchemeName),
+          target = AnyTrusteesController.onPageLoad().url,
+          visuallyHiddenText = None,
+          status = ua.isTrusteesSectionComplete
+        )
+    }
+    else
+      TaskListLink(
+        text = messages(getLinkKey("trustees_", ua.isTrusteesSectionComplete), getSchemeName),
         target = AddTrusteeController.onPageLoad().url,
         visuallyHiddenText = None,
         status = ua.isTrusteesSectionComplete
       )
   }
 
-  private def completionSpokeCount(implicit ua: UserAnswers, messages: Messages): Int = taskSections.count(x => x.exists(_.status))
+  private def completionSpokeCount(implicit ua: UserAnswers, messages: Messages): Int =
+    taskSections.count(taskListLink => taskListLink.exists(_.status))
 
-  def schemeCompletionStatus(implicit ua: UserAnswers, messages: Messages) : String = {
-    if(completionSpokeCount == taskSections.size)
+  def schemeCompletionStatus(implicit ua: UserAnswers, messages: Messages): String = {
+    if (completionSpokeCount == taskSections.size)
       messages("messages__newSchemeTaskList__schemeStatus_heading", messages("messages__newSchemeTaskList__schemeStatus_complete"))
     else
       messages("messages__newSchemeTaskList__schemeStatus_heading", messages("messages__newSchemeTaskList__schemeStatus_incomplete"))
-    }
+  }
 
-  def schemeCompletionDescription(implicit ua: UserAnswers, messages: Messages) : String =
+  def schemeCompletionDescription(implicit ua: UserAnswers, messages: Messages): String =
     messages("messages__newSchemeTaskList__schemeStatus_desc", completionSpokeCount, taskSections.size)
 
-  def declarationEnabled(implicit ua: UserAnswers): Boolean =
+  def getExpireAt(implicit ua: UserAnswers): Option[String] = {
+    val formatter = new SimpleDateFormat("dd MMMM YYYY")
+    ua.get(ExpireAtId).map(expireAt => formatter.format(new Date(expireAt)))
+  }
+
+  def declarationEnabled(implicit ua: UserAnswers): Boolean = {
     Seq(
       Some(ua.isBeforeYouStartCompleted),
       ua.isMembersComplete,
@@ -165,38 +167,27 @@ class TaskListService extends NunjucksSupport  {
       Some(ua.isEstablishersSectionComplete),
       Some(ua.isTrusteesSectionComplete)
     ).forall(_.contains(true))
+  }
 
-  def declarationSection (implicit userAnswers: UserAnswers, messages: Messages): NewTaskListLink =
-    if(!declarationEnabled)
-      NewTaskListLink(
+  def declarationSection(implicit userAnswers: UserAnswers, messages: Messages): TaskListLink =
+    if (!declarationEnabled)
+      TaskListLink(
         text = messages("messages__schemeTaskList__sectionDeclaration_incomplete"),
         target = "",
         visuallyHiddenText = None,
         status = declarationEnabled
       )
     else
-      NewTaskListLink(
+      TaskListLink(
         text = messages("messages__schemeTaskList__declaration_link"),
         target = controllers.routes.DeclarationController.onPageLoad().url,
         visuallyHiddenText = None,
         status = declarationEnabled
       )
 
-  def taskSections (implicit ua: UserAnswers, messages: Messages): Seq[Option[NewTaskListLink]] = {
-    if(workingKnowledgeDetails.isEmpty)
-      Seq (Some(basicDetails),
-        Some(membershipDetails),
-        Some(benefitsAndInsuranceDetails),
-        Some(establishersDetails),
-        Some(trusteesDetails)
-      )
-    else
-      Seq (Some(basicDetails),
-        Some(membershipDetails),
-        Some(benefitsAndInsuranceDetails),
-        workingKnowledgeDetails,
-        Some(establishersDetails),
-        Some(trusteesDetails)
-      )
+  def taskSections(implicit ua: UserAnswers, messages: Messages): Seq[Option[TaskListLink]] = {
+    val seqOtherTasks = Seq(Some(basicDetails), Some(membershipDetails), Some(benefitsAndInsuranceDetails))
+    val seqEntityTasks = Seq(Some(establishersDetails), Some(trusteesDetails))
+    if (workingKnowledgeDetails.isEmpty) seqOtherTasks ++ seqEntityTasks else seqOtherTasks ++ Seq(workingKnowledgeDetails) ++ seqEntityTasks
   }
 }

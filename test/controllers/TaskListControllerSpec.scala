@@ -19,7 +19,7 @@ package controllers
 import connectors.LegacySchemeDetailsConnector
 import controllers.actions._
 import matchers.JsonMatchers
-import models.{NewTaskListLink, Scheme}
+import models.{TaskListLink, Scheme}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, MockitoSugar}
 import org.scalatest.BeforeAndAfterEach
@@ -49,20 +49,20 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
 
   private def httpPathGET: String = controllers.routes.TaskListController.onPageLoad.url
 
-  private val basicDetailsSection = Some(NewTaskListLink("Change Test scheme name basic details",
+  private val basicDetailsSection = Some(TaskListLink("Change Test scheme name basic details",
     controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad().url, None, false))
-  private val membershipDetailsSection = Some(NewTaskListLink("Change Test scheme name membership details",
+  private val membershipDetailsSection = Some(TaskListLink("Change Test scheme name membership details",
     controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad().url, None, true))
 
   private val declarationSection =
-    NewTaskListLink(
+    TaskListLink(
     text = "You must complete every section before you can declare.",
     target = "",
     visuallyHiddenText = None,
     status = false
   )
 
-  private val schemeDetailsTL : Seq[Option[NewTaskListLink]] =
+  private val schemeDetailsTL : Seq[Option[TaskListLink]] =
     Seq(basicDetailsSection,
       membershipDetailsSection)
 
@@ -70,7 +70,7 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
   val json = Json.obj(
     "schemeStatus" -> "Scheme Details are incomplete",
     "schemeStatusDescription" -> "You have completed 1 of 2 sections",
-    "expiryDate" -> "31 January 2022",
+    "expiryDate" -> "14 November 2021",
     "taskSections" -> schemeDetailsTL,
     "schemeName" -> schemeName,
     "declarationEnabled" -> false,
@@ -90,6 +90,7 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
     when(mockTaskListService.declarationEnabled(any())).thenReturn(false)
     when(mockTaskListService.declarationSection(any(), any())).thenReturn(declarationSection)
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+    when(mockTaskListService.getExpireAt(any())).thenReturn(Some("14 November 2021"))
     when(mockLegacySchemeDetailsConnector.getLegacySchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(Right(itemList)))
   }
 

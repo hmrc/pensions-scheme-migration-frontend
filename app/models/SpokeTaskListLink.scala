@@ -18,9 +18,9 @@ package models
 
 import play.api.libs.json.{Format, Json}
 
-case class NewTaskListLink(text: String, target: String, visuallyHiddenText: Option[String] = None, status: Boolean)
+case class SpokeTaskListLink(text: String, target: String, visuallyHiddenText: Option[String] = None)
 
-object NewTaskListLink {
-  implicit lazy val formats: Format[NewTaskListLink] = Json.format[NewTaskListLink]
+object SpokeTaskListLink {
+  implicit lazy val formats: Format[SpokeTaskListLink] = Json.format[SpokeTaskListLink]
 }
 

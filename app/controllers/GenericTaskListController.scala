@@ -50,7 +50,7 @@ trait GenericTaskListController
       template = "spokeTaskList.njk",
       ctx = Json.obj(
         "taskSections" -> spokes,
-        "establisherName" -> entityName,
+        "entityName" -> entityName,
         "schemeName" -> schemeName,
         "totalSpokes" -> totalSpokes,
         "completedCount" -> completedCount,

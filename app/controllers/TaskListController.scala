@@ -72,7 +72,7 @@ class TaskListController @Inject()(
     val json = Json.obj(
         "schemeStatus" -> taskListService.schemeCompletionStatus,
         "schemeStatusDescription" -> taskListService.schemeCompletionDescription,
-        "expiryDate" -> "31 January 2022",
+        "expiryDate" -> taskListService.getExpireAt,
         "taskSections" -> taskListService.taskSections,
         "schemeName" -> taskListService.getSchemeName,
         "declarationEnabled" -> taskListService.declarationEnabled,

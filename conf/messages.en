@@ -1123,5 +1123,6 @@ messages__tasklist__establisher = Establisher
 messages__tasklist__trustee = Trustee
 messages__tasklist__complete = {0} details are complete
 messages__tasklist__incomplete = {0} details are incomplete
+messages__tasklist__title = {0} details
 
 messages__tasklist__complete__section = You have completed {0} of {1} sections

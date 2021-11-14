@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 
-package helpers.spokes
+package identifiers
 
-import models.SpokeTaskListLink
-import play.api.i18n.Messages
-import utils.UserAnswers
-
-trait Spoke {
-
-  def changeLink(name: String)(implicit messages: Messages): SpokeTaskListLink
-
-  def completeFlag(answers: UserAnswers): Option[Boolean]
+case object ExpireAtId extends TypedIdentifier[Long] {
+  override lazy val toString: String = "expireAt"
 }
+
+

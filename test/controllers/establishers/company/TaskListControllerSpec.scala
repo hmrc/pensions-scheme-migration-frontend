@@ -51,7 +51,7 @@ class TaskListControllerSpec
   private def json: JsObject =
     Json.obj(
       "taskSections" -> Nil,
-      "establisherName" -> company.companyName,
+      "entityName" -> company.companyName,
       "schemeName" -> schemeName,
       "totalSpokes" -> 0,
       "completedCount" -> 0,
@@ -72,7 +72,7 @@ class TaskListControllerSpec
       renderer             = new Renderer(mockAppConfig, mockRenderer)
     )
 
-  "WhatYouWillNeedCompanyContactController" must {
+  "Task List Controller" must {
     "return OK and the correct view for a GET" in {
       when(mockSpokeCreationService.getEstablisherCompanySpokes(any(), any(), any())(any())).thenReturn(Nil)
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))

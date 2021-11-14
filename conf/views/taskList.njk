@@ -52,13 +52,12 @@
                             {% endfor %}
                           </ul>
                        </ol>
-                       <li id="DecSubmit">
                          <h2 id="section-declaration-header"
                             class="govuk-heading-l">
                                 {{ messages("messages__schemeTaskList__sectionDeclaration_header") }}
                          </h2>
                          <ul class="app-task-list__items">
-                            <li class="app-task-list__item">
+                            <li id="DecSubmit" class="app-task-list__item">
                                <span class="app-task-list__task-name">
                                 {% if declarationEnabled %}
                                     <a id="section-declaration-link"
@@ -72,7 +71,6 @@
                                 </span>
                             </li>
                          </ul>
-                       </li>
 
                     <p class="govuk-body">
                         <a id="save-and-return"
