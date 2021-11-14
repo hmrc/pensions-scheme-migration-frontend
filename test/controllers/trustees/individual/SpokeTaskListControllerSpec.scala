@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.establishers.company
+package controllers.trustees.individual
 
 import controllers.ControllerSpecBase
 import controllers.actions._
 import helpers.SpokeCreationService
-import identifiers.establishers.company.CompanyDetailsId
+import identifiers.trustees.individual.TrusteeNameId
 import matchers.JsonMatchers
-import models.CompanyDetails
+import models.PersonName
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
@@ -37,47 +37,47 @@ import viewmodels.Message
 
 import scala.concurrent.Future
 
-class TaskListControllerSpec
+class SpokeTaskListControllerSpec
   extends ControllerSpecBase
     with NunjucksSupport
     with JsonMatchers
     with TryValues {
 
-  private val company: CompanyDetails = CompanyDetails("test")
-  private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(0), company).success.value
+  private val personName: PersonName = PersonName("Jane", "Doe")
+  private val userAnswers: UserAnswers = ua.set(TrusteeNameId(0), personName).success.value
   private val mockSpokeCreationService = mock[SpokeCreationService]
   private val templateToBeRendered: String = "spokeTaskList.njk"
 
   private def json: JsObject =
     Json.obj(
       "taskSections" -> Nil,
-      "entityName" -> company.companyName,
+      "entityName" -> personName.fullName,
       "schemeName" -> schemeName,
       "totalSpokes" -> 0,
       "completedCount" -> 0,
-      "entityType" -> Message("messages__tasklist__establisher"),
-      "submitUrl" -> controllers.establishers.routes.AddEstablisherController.onPageLoad().url
+      "entityType" -> Message("messages__tasklist__trustee"),
+      "submitUrl" -> controllers.trustees.routes.AddTrusteeController.onPageLoad().url
     )
 
   private def controller(
                           dataRetrievalAction: DataRetrievalAction
-                        ): TaskListController =
-    new TaskListController(
-      messagesApi          = messagesApi,
-      authenticate         = new FakeAuthAction(),
-      getData              = dataRetrievalAction,
-      requireData          = new DataRequiredActionImpl,
+                        ): SpokeTaskListController =
+    new SpokeTaskListController(
+      messagesApi = messagesApi,
+      authenticate = new FakeAuthAction(),
+      getData = dataRetrievalAction,
+      requireData = new DataRequiredActionImpl,
       controllerComponents = controllerComponents,
       spokeCreationService = mockSpokeCreationService,
-      renderer             = new Renderer(mockAppConfig, mockRenderer)
+      renderer = new Renderer(mockAppConfig, mockRenderer)
     )
 
   "Task List Controller" must {
     "return OK and the correct view for a GET" in {
-      when(mockSpokeCreationService.getEstablisherCompanySpokes(any(), any(), any())(any())).thenReturn(Nil)
+      when(mockSpokeCreationService.getTrusteeIndividualSpokes(any(), any(), any())(any())).thenReturn(Nil)
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.trustees.company
+package controllers.trustees.partnership
 
 import controllers.GenericTaskListController
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import helpers.SpokeCreationService
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.trustees.company.CompanyDetailsId
+import identifiers.trustees.partnership.PartnershipDetailsId
 import models.Index
 import models.requests.DataRequest
 import play.api.i18n.MessagesApi
@@ -31,23 +31,23 @@ import viewmodels.Message
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class TaskListController @Inject()(
-                                           override val messagesApi: MessagesApi,
-                                           authenticate: AuthAction,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           spokeCreationService: SpokeCreationService,
-                                           val renderer: Renderer
-                                         )(implicit val executionContext: ExecutionContext)
+class SpokeTaskListController @Inject()(
+                                    override val messagesApi: MessagesApi,
+                                    authenticate: AuthAction,
+                                    getData: DataRetrievalAction,
+                                    requireData: DataRequiredAction,
+                                    val controllerComponents: MessagesControllerComponents,
+                                    spokeCreationService: SpokeCreationService,
+                                    val renderer: Renderer
+                                  )(implicit val executionContext: ExecutionContext)
   extends GenericTaskListController {
 
   private def name(index: Index)
                   (implicit request: DataRequest[AnyContent]): String =
     request
       .userAnswers
-      .get(CompanyDetailsId(index))
-      .fold(Message("messages__company"))(_.companyName)
+      .get(PartnershipDetailsId(index))
+      .fold(Message("messages__partnership"))(_.partnershipName)
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
@@ -55,7 +55,7 @@ class TaskListController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             get(
-              spokes = spokeCreationService.getTrusteeCompanySpokes(request.userAnswers, name(index), index),
+              spokes = spokeCreationService.getTrusteePartnershipSpokes(request.userAnswers, name(index), index),
               entityName = name(index),
               schemeName = schemeName,
               entityType = Message("messages__tasklist__trustee"),

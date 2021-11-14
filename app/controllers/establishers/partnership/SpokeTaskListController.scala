@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.trustees.partnership
+package controllers.establishers.partnership
 
 import controllers.GenericTaskListController
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import helpers.SpokeCreationService
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.trustees.partnership.PartnershipDetailsId
+import identifiers.establishers.partnership.PartnershipDetailsId
 import models.Index
 import models.requests.DataRequest
 import play.api.i18n.MessagesApi
@@ -31,7 +31,7 @@ import viewmodels.Message
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class TaskListController @Inject()(
+class SpokeTaskListController @Inject()(
                                     override val messagesApi: MessagesApi,
                                     authenticate: AuthAction,
                                     getData: DataRetrievalAction,
@@ -55,11 +55,11 @@ class TaskListController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             get(
-              spokes = spokeCreationService.getTrusteePartnershipSpokes(request.userAnswers, name(index), index),
+              spokes = spokeCreationService.getEstablisherPartnershipSpokes(request.userAnswers, name(index), index),
               entityName = name(index),
               schemeName = schemeName,
-              entityType = Message("messages__tasklist__trustee"),
-              submitUrl = controllers.trustees.routes.AddTrusteeController.onPageLoad().url
+              entityType = Message("messages__tasklist__establisher"),
+              submitUrl = controllers.establishers.routes.AddEstablisherController.onPageLoad().url
             )
         }
     }

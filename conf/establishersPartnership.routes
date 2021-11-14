@@ -94,4 +94,4 @@ POST        /:index/partnership/change/enter-phone-number                       
 
 GET         /:index/partnership/check-your-answers-contact-details                       controllers.establishers.partnership.contact.CheckYourAnswersController.onPageLoad(index: Index)
 
-GET         /:index/partnership/task-list                                               controllers.establishers.partnership.TaskListController.onPageLoad(index:Index)
+GET         /:index/partnership/task-list                                               controllers.establishers.partnership.SpokeTaskListController.onPageLoad(index:Index)

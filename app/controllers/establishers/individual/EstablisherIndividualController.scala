@@ -50,7 +50,7 @@ class EstablisherIndividualController @Inject()(
   enterPreviousPostcodeController: address.EnterPreviousPostcodeController,
   selectPreviousAddressController: address.SelectPreviousAddressController,
   confirmPreviousAddressController: address.ConfirmPreviousAddressController,
-  taskListController: TaskListController)
+  taskListController: SpokeTaskListController)
   (implicit val executionContext: ExecutionContext) {
 
   //scalastyle:off cyclomatic.complexity

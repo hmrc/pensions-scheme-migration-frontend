@@ -37,7 +37,7 @@ import viewmodels.Message
 
 import scala.concurrent.Future
 
-class TaskListControllerSpec
+class SpokeTaskListControllerSpec
   extends ControllerSpecBase
     with NunjucksSupport
     with JsonMatchers
@@ -61,8 +61,8 @@ class TaskListControllerSpec
 
   private def controller(
                           dataRetrievalAction: DataRetrievalAction
-                        ): TaskListController =
-    new TaskListController(
+                        ): SpokeTaskListController =
+    new SpokeTaskListController(
       messagesApi = messagesApi,
       authenticate = new FakeAuthAction(),
       getData = dataRetrievalAction,

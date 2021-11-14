@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.trustees.individual
+package controllers.establishers.individual
 
 import controllers.GenericTaskListController
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import helpers.SpokeCreationService
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.trustees.individual.TrusteeNameId
+import identifiers.establishers.individual.EstablisherNameId
 import models.Index
 import models.requests.DataRequest
 import play.api.i18n.MessagesApi
@@ -31,7 +31,7 @@ import viewmodels.Message
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class TaskListController @Inject()(
+class SpokeTaskListController @Inject()(
                                     override val messagesApi: MessagesApi,
                                     authenticate: AuthAction,
                                     getData: DataRetrievalAction,
@@ -46,7 +46,7 @@ class TaskListController @Inject()(
                   (implicit request: DataRequest[AnyContent]): String =
     request
       .userAnswers
-      .get(TrusteeNameId(index))
+      .get(EstablisherNameId(index))
       .fold(Message("messages__individual"))(_.fullName)
 
   def onPageLoad(index: Index): Action[AnyContent] =
@@ -55,11 +55,11 @@ class TaskListController @Inject()(
         SchemeNameId.retrieve.right.map {
           schemeName =>
             get(
-              spokes = spokeCreationService.getTrusteeIndividualSpokes(request.userAnswers, name(index), index),
+              spokes = spokeCreationService.getEstablisherIndividualSpokes(request.userAnswers, name(index), index),
               entityName = name(index),
               schemeName = schemeName,
-              entityType = Message("messages__tasklist__trustee"),
-              submitUrl = controllers.trustees.routes.AddTrusteeController.onPageLoad().url
+              entityType = Message("messages__tasklist__establisher"),
+              submitUrl = controllers.establishers.routes.AddEstablisherController.onPageLoad().url
             )
         }
     }

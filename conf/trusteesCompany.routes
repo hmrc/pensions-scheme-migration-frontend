@@ -98,4 +98,4 @@ POST        /:index/company/change/enter-phone-number                           
 
 GET         /:index/company/check-your-answers-contact-details                          controllers.trustees.company.contacts.CheckYourAnswersController.onPageLoad(index: Index)
 
-GET         /:index/company/task-list                                                   controllers.trustees.company.TaskListController.onPageLoad(index:Index)
+GET         /:index/company/task-list                                                   controllers.trustees.company.SpokeTaskListController.onPageLoad(index:Index)

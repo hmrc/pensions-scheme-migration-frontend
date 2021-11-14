@@ -35,7 +35,7 @@ import utils.Data._
 
 import scala.concurrent.Future
 
-class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach with MockitoSugar with JsonMatchers {
+class SpokeSpokeSpokeSpokeSpokeSpokeTaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach with MockitoSugar with JsonMatchers {
 
   private val mockTaskListService = mock[TaskListService]
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
