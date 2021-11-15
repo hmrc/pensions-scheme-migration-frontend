@@ -62,7 +62,7 @@
                                 {% if declarationEnabled %}
                                     <a id="section-declaration-link"
                                         class="app-task-list__task-name govuk-link"
-                                        href="declaration.target">
+                                        href="{{ declaration.target }}">
                                         {{ messages(declaration.text) }}
                                     </a>
                                 {% else %}

@@ -97,9 +97,9 @@ class EstablishersNavigator@Inject()(config: AppConfig)
           controllers.establishers.partnership.partner.routes.PartnerNameController
             .onPageLoad(index, answers.allPartners(index).size, NormalMode)
         } else {
-          controllers.routes.TaskListController.onPageLoad()
+          controllers.establishers.partnership.routes.SpokeTaskListController.onPageLoad(index)
         }
-      }.getOrElse(controllers.routes.TaskListController.onPageLoad())
+      }.getOrElse(controllers.establishers.partnership.routes.SpokeTaskListController.onPageLoad(index))
 
     }else {
       controllers.establishers.partnership.routes.OtherPartnersController.onPageLoad(index,NormalMode)

@@ -100,9 +100,9 @@ class EstablishersCompanyNavigator @Inject()(config: AppConfig)
           controllers.establishers.company.director.routes.DirectorNameController
             .onPageLoad(index, answers.allDirectors(index).size, NormalMode)
         } else {
-          controllers.routes.TaskListController.onPageLoad()
+          controllers.establishers.company.routes.SpokeTaskListController.onPageLoad(index)
         }
-      }.getOrElse(controllers.routes.TaskListController.onPageLoad())
+      }.getOrElse(controllers.establishers.company.routes.SpokeTaskListController.onPageLoad(index))
 
     }else {
       controllers.establishers.company.routes.OtherDirectorsController.onPageLoad(index,NormalMode)

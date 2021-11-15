@@ -60,8 +60,8 @@ class TaskListServiceSpec extends SpecBase with BeforeAndAfterEach with MockitoS
 
     "return all the sections without working knowledge and with status incomplete with no scheme type" in {
       val ua = UserAnswers().setOrException(SchemeNameId, schemeName)
-      val expectedSections = Seq(basicDetailsSection(false), membershipDetailsSection(false),
-        benefitsAndInsuranceDetails(false), establisherSectionIncomplete,
+      val expectedSections = Seq(basicDetailsSection(false), membershipDetailsSection(false, false),
+        benefitsAndInsuranceDetails(false, false), establisherSectionIncomplete,
         trusteeSectionIncomplete(controllers.trustees.routes.AnyTrusteesController.onPageLoad().url))
       val result = taskListService.taskSections(ua, implicitly)
       result mustBe expectedSections
@@ -70,8 +70,8 @@ class TaskListServiceSpec extends SpecBase with BeforeAndAfterEach with MockitoS
     "return all the sections with incomplete status for scheme type as SingleTrust" in {
       val ua = UserAnswers().setOrException(SchemeNameId, schemeName)
         .setOrException(SchemeTypeId, SchemeType.SingleTrust)
-      val expectedSections = Seq(basicDetailsSection(false), membershipDetailsSection(false),
-        benefitsAndInsuranceDetails(false), establisherSectionIncomplete,
+      val expectedSections = Seq(basicDetailsSection(false), membershipDetailsSection(false, false),
+        benefitsAndInsuranceDetails(false, false), establisherSectionIncomplete,
         trusteeSectionIncomplete(controllers.trustees.routes.TrusteeKindController.onPageLoad(0).url))
       val result = taskListService.taskSections(ua, implicitly)
       result mustBe expectedSections
@@ -80,8 +80,8 @@ class TaskListServiceSpec extends SpecBase with BeforeAndAfterEach with MockitoS
     "return all the sections with incomplete status for scheme type as BodyCorporate" in {
       val ua = UserAnswers().setOrException(SchemeNameId, schemeName)
         .setOrException(SchemeTypeId, SchemeType.BodyCorporate)
-      val expectedSections = Seq(basicDetailsSection(false), membershipDetailsSection(false),
-        benefitsAndInsuranceDetails(false), establisherSectionIncomplete,
+      val expectedSections = Seq(basicDetailsSection(false), membershipDetailsSection(false, false),
+        benefitsAndInsuranceDetails(false, false), establisherSectionIncomplete,
         trusteeSectionIncomplete(controllers.trustees.routes.AnyTrusteesController.onPageLoad().url))
       val result = taskListService.taskSections(ua, implicitly)
       result mustBe expectedSections
@@ -166,8 +166,8 @@ class TaskListServiceSpec extends SpecBase with BeforeAndAfterEach with MockitoS
     }
   }
 
-  private def basicDetailsSection(complete: Boolean = true): Option[TaskListLink] = {
-    val linkText = if (complete) "messages__newSchemeTaskList__basicDetails_changeLink" else
+  private def basicDetailsSection(complete: Boolean = true, started: Boolean = true): Option[TaskListLink] = {
+    val linkText = if (started) "messages__newSchemeTaskList__basicDetails_changeLink" else
       "messages__newSchemeTaskList__basicDetails_addLink"
     Some(TaskListLink(
       text = messages(linkText, schemeName),
@@ -177,8 +177,8 @@ class TaskListServiceSpec extends SpecBase with BeforeAndAfterEach with MockitoS
     ))
   }
 
-  private def membershipDetailsSection(complete: Boolean = true): Option[TaskListLink] = {
-    val linkText = if (complete) "messages__newSchemeTaskList__membershipDetails_changeLink" else
+  private def membershipDetailsSection(complete: Boolean = true, started: Boolean = true): Option[TaskListLink] = {
+    val linkText = if (started) "messages__newSchemeTaskList__membershipDetails_changeLink" else
       "messages__newSchemeTaskList__membershipDetails_addLink"
     Some(TaskListLink(
       text = messages(linkText, schemeName),
@@ -188,8 +188,8 @@ class TaskListServiceSpec extends SpecBase with BeforeAndAfterEach with MockitoS
     ))
   }
 
-  private def benefitsAndInsuranceDetails(complete: Boolean = true): Option[TaskListLink] = {
-    val linkText = if (complete) "messages__newSchemeTaskList__benefitsAndInsuranceDetails_changeLink" else
+  private def benefitsAndInsuranceDetails(complete: Boolean = true, started: Boolean = true): Option[TaskListLink] = {
+    val linkText = if (started) "messages__newSchemeTaskList__benefitsAndInsuranceDetails_changeLink" else
       "messages__newSchemeTaskList__benefitsAndInsuranceDetails_addLink"
     Some(TaskListLink(
       text = messages(linkText, schemeName),
