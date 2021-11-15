@@ -71,5 +71,4 @@ class ListOfSchemesConnectorImpl @Inject()(
 sealed trait ListOfSchemesException extends Exception
 case class AncillaryPsaException() extends ListOfSchemesException
 case class ListOfSchemes5xxException() extends ListOfSchemesException
-case class InternalServerErrorException() extends ListOfSchemesException
 
