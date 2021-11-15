@@ -72,6 +72,7 @@ GET         /confirmation                                          controllers.S
 GET         /migration-tile                                         controllers.preMigration.MigrationTilePartialController.migrationPartial
 GET         /cannot-add-pension-scheme                              controllers.preMigration.CannotAddController.onPageLoadScheme
 GET         /cannot-migrate                                         controllers.preMigration.CannotMigrateController.onPageLoad
+GET         /there-is-a-problem                                      controllers.preMigration.ThereIsAProblemController.onPageLoad
 
 GET         /rac-dac/cannot-add-rac-dac                                      controllers.preMigration.CannotAddController.onPageLoadRacDac
 GET         /what-you-will-need-before-start                        controllers.preMigration.BeforeYouStartController.onPageLoad

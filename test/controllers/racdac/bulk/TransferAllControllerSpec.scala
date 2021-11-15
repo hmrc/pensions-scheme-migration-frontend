@@ -17,7 +17,7 @@
 package controllers.racdac.bulk
 
 import connectors.cache.CurrentPstrCacheConnector
-import connectors.{ListOfSchemesConnector, MinimalDetailsConnector}
+import connectors.{ListOfSchemes5xxException, ListOfSchemesConnector, MinimalDetailsConnector, AncillaryPsaException}
 import controllers.ControllerSpecBase
 import controllers.actions.FakeAuthAction
 import forms.YesNoFormProvider
@@ -73,6 +73,22 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
       mockListOfSchemesConnector, mockCurrentPstrCacheConnector, controllerComponents, new Renderer(mockAppConfig, mockRenderer))
 
   "TransferAllController" must {
+
+    "redirect to the cannot migrate page when AncillaryPSAException is thrown" in {
+      reset(mockListOfSchemesConnector)
+      when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.failed(AncillaryPsaException()))
+      val result = controller.onPageLoad(fakeDataRequest(ua))
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.preMigration.routes.CannotMigrateController.onPageLoad().url)
+    }
+
+    "redirect to the 'There is a problem' page when ListOfSchemes5xxException is thrown" in {
+      reset(mockListOfSchemesConnector)
+      when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.failed(ListOfSchemes5xxException()))
+      val result = controller.onPageLoad(fakeDataRequest(ua))
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.preMigration.routes.ThereIsAProblemController.onPageLoad().url)
+    }
 
     "return OK and the correct view for a GET" in{
 
