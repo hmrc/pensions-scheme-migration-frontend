@@ -103,6 +103,6 @@ class DeclarationController @Inject()(
 
   private def callbackUrl(psaId: String): String = {
     val encryptedPsa = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(psaId)).value, StandardCharsets.UTF_8.toString)
-    s"${appConfig.migrationUrl}/pensions-scheme-migration/email-response/${RACDAC_IND_MIG}/$encryptedPsa"
+    s"${appConfig.migrationUrl}/pensions-scheme-migration/email-response/$RACDAC_IND_MIG/$encryptedPsa"
   }
 }
