@@ -47,7 +47,7 @@ import java.time.LocalDate
 
 class TaskListServiceSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
-  private val taskListService = new TaskListService()
+  private val taskListService = new TaskListService(appConfig)
 
   "taskSections " must {
     "return all the sections without working knowledge and with status complete" in {
@@ -162,7 +162,7 @@ class TaskListServiceSpec extends SpecBase with BeforeAndAfterEach with MockitoS
     "return the correct formatted expire At date" in {
       val ua = UserAnswers().setOrException(ExpireAtId, 1636848000000L)
       val result = taskListService.getExpireAt(ua)
-      result mustBe Some("14 November 2021")
+      result mustBe "14 November 2021"
     }
   }
 

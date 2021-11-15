@@ -16,6 +16,7 @@
 
 package services
 
+import config.AppConfig
 import controllers.establishers.routes.{AddEstablisherController, EstablisherKindController}
 import controllers.trustees.routes.{AddTrusteeController, AnyTrusteesController, TrusteeKindController}
 import helpers.cya.MandatoryAnswerMissingException
@@ -27,9 +28,11 @@ import play.api.i18n.Messages
 import utils.UserAnswers
 
 import java.text.SimpleDateFormat
+import java.time.{LocalDateTime, ZoneOffset}
 import java.util.Date
+import javax.inject.Inject
 
-class TaskListService {
+class TaskListService @Inject()(appConfig: AppConfig) {
 
   val messageKeyPrefix = "messages__newSchemeTaskList__"
 
@@ -153,9 +156,11 @@ class TaskListService {
   def schemeCompletionDescription(implicit ua: UserAnswers, messages: Messages): String =
     messages("messages__newSchemeTaskList__schemeStatus_desc", completionSpokeCount, taskSections.size)
 
-  def getExpireAt(implicit ua: UserAnswers): Option[String] = {
+  def getExpireAt(implicit ua: UserAnswers): String = {
     val formatter = new SimpleDateFormat("dd MMMM YYYY")
-    ua.get(ExpireAtId).map(expireAt => formatter.format(new Date(expireAt)))
+    val calculatedExpiryDate = LocalDateTime.now()
+      .plusDays(appConfig.migrationDataTTL).toInstant(ZoneOffset.UTC).toEpochMilli
+    formatter.format(new Date(ua.get(ExpireAtId).getOrElse(calculatedExpiryDate)))
   }
 
   def declarationEnabled(implicit ua: UserAnswers): Boolean = {

@@ -35,7 +35,7 @@ import utils.Data._
 
 import scala.concurrent.Future
 
-class SpokeSpokeSpokeSpokeSpokeSpokeTaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach with MockitoSugar with JsonMatchers {
+class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach with MockitoSugar with JsonMatchers {
 
   private val mockTaskListService = mock[TaskListService]
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -90,7 +90,7 @@ class SpokeSpokeSpokeSpokeSpokeSpokeTaskListControllerSpec extends ControllerSpe
     when(mockTaskListService.declarationEnabled(any())).thenReturn(false)
     when(mockTaskListService.declarationSection(any(), any())).thenReturn(declarationSection)
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-    when(mockTaskListService.getExpireAt(any())).thenReturn(Some("14 November 2021"))
+    when(mockTaskListService.getExpireAt(any())).thenReturn("14 November 2021")
     when(mockLegacySchemeDetailsConnector.getLegacySchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(Right(itemList)))
   }
 
