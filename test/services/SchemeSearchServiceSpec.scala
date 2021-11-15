@@ -30,7 +30,7 @@ import models.MigrationType.isRacDac
 import models._
 import models.requests.AuthenticatedRequest
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, ArgumentMatchers, MockitoSugar}
+import org.mockito.{ArgumentCaptor, MockitoSugar, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
@@ -43,10 +43,10 @@ import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.nunjucks.{NunjucksRenderer, NunjucksSupport}
+import uk.gov.hmrc.nunjucks.{NunjucksSupport, NunjucksRenderer}
 import uk.gov.hmrc.viewmodels.Table.Cell
 import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, Table}
+import uk.gov.hmrc.viewmodels.{Table, MessageInterpolators}
 import utils.Data._
 import utils.SchemeFuzzyMatcher
 
@@ -113,7 +113,6 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
   }
 
   "search" must {
-
     "return correct list of scheme details with search on correct pstr" in {
 
       when(mockListOfSchemesConnector.getListOfSchemes(ArgumentMatchers.eq(psaId))(any(), any()))

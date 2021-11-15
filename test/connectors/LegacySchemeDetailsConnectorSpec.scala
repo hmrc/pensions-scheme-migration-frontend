@@ -17,11 +17,11 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import org.scalatest.{BeforeAndAfterEach, OptionValues}
+import org.scalatest.{OptionValues, BeforeAndAfterEach}
 import org.scalatest.flatspec.AsyncFlatSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.http.Status._
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{Json, JsValue}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
@@ -71,27 +71,6 @@ class LegacySchemeDetailsConnectorSpec extends AsyncFlatSpec with Matchers with 
     )
   }
 
-  it should "throw InternalServerErrorException for a 500 response" in {
-
-    server.stubFor(
-      get(urlEqualTo(legacySchemeDetailsUrl))
-        .willReturn(
-          aResponse()
-            .withStatus(INTERNAL_SERVER_ERROR)
-            .withHeader("Content-Type", "application/json")
-            .withBody("{}")
-        )
-    )
-
-    val connector = injector.instanceOf[LegacySchemeDetailsConnector]
-
-    recoverToSucceededIf[InternalServerErrorException] {
-      connector.getLegacySchemeDetails(psaId, pstr)
-    }
-    connector.getLegacySchemeDetails(psaId, pstr).map(listOfSchemes =>
-      listOfSchemes.left.get.status shouldBe INTERNAL_SERVER_ERROR
-    )
-  }
 }
 
   object LegacySchemeDetailsConnectorSpec extends OptionValues {

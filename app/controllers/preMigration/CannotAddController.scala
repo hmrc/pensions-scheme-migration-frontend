@@ -17,15 +17,16 @@
 package controllers.preMigration
 
 import config.AppConfig
-import connectors.{AncillaryPsaException, ListOfSchemesConnector}
+import connectors.ListOfSchemesConnector
 import controllers.actions.AuthAction
 import models.{RacDac, Scheme}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.MessageInterpolators
+import utils.HttpResponseRedirects._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -58,11 +59,10 @@ class CannotAddController @Inject()(val appConfig: AppConfig,
           Future.successful(Redirect(routes.NotRegisterController.onPageLoadScheme()))
         }
       case _ => Future.successful(Redirect(routes.NotRegisterController.onPageLoadScheme()))
-    } recoverWith {
-      case _: AncillaryPsaException =>
-        Future.successful(Redirect(routes.CannotMigrateController.onPageLoad()))
-    }
+    } recoverWith listOfSchemesRedirects
   }
+
+
 
   def onPageLoadRacDac: Action[AnyContent] = authenticate.async { implicit request =>
     listOfSchemesConnector.getListOfSchemes(request.psaId.id).flatMap {
@@ -80,9 +80,6 @@ class CannotAddController @Inject()(val appConfig: AppConfig,
           Future.successful(Redirect(routes.NotRegisterController.onPageLoadRacDac()))
         }
       case _ => Future.successful(Redirect(routes.NotRegisterController.onPageLoadRacDac()))
-    } recoverWith {
-      case _: AncillaryPsaException =>
-        Future.successful(Redirect(routes.CannotMigrateController.onPageLoad()))
-    }
+    } recoverWith listOfSchemesRedirects
   }
 }

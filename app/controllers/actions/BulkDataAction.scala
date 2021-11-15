@@ -16,10 +16,10 @@
 
 package controllers.actions
 
-import com.google.inject.{ImplementedBy, Inject}
+import com.google.inject.{Inject, ImplementedBy}
 import config.AppConfig
 import connectors.cache.CurrentPstrCacheConnector
-import connectors.{AncillaryPsaException, DelimitedAdminException, ListOfSchemesConnector, MinimalDetailsConnector}
+import connectors._
 import models.requests.{AuthenticatedRequest, BulkDataRequest}
 import models.{Items, MinPSA}
 import play.api.libs.json.{JsSuccess, Json}
@@ -73,6 +73,8 @@ class BulkRetrievalImpl @Inject()(schemeCacheConnector: CurrentPstrCacheConnecto
     }).flatten.recoverWith {
       case _: AncillaryPsaException =>
         Future.successful(Left(Redirect(controllers.preMigration.routes.CannotMigrateController.onPageLoad())))
+      case _: ListOfSchemes5xxException =>
+        Future.successful(Left(Redirect(controllers.preMigration.routes.ThereIsAProblemController.onPageLoad())))
       case _: DelimitedAdminException =>
         Future.successful(Left(Redirect(appConfig.psaDelimitedUrl)))
     }

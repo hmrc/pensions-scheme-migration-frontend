@@ -16,14 +16,15 @@
 
 package connectors
 
-import com.google.inject.{ImplementedBy, Inject, Singleton}
+import com.google.inject.{Inject, Singleton, ImplementedBy}
 import config.AppConfig
 import models.ListOfLegacySchemes
 import play.api.Logger
 import play.api.http.Status._
-import play.api.libs.json.{JsError, JsResultException, JsSuccess, Json}
+import play.api.libs.json.{JsResultException, JsError, JsSuccess, Json}
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.HttpReads.is5xx
+import uk.gov.hmrc.http.{HttpClient, HttpResponse, HeaderCarrier}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -55,6 +56,7 @@ class ListOfSchemesConnectorImpl @Inject()(
             case JsError(errors) => throw JsResultException(errors)
           }
         case UNPROCESSABLE_ENTITY if response.body.contains(ancillaryPsaError) => throw AncillaryPsaException()
+        case response if is5xx(response) => throw ListOfSchemes5xxException()
         case _ =>
           logger.error(response.body)
           Left(response)
@@ -68,4 +70,5 @@ class ListOfSchemesConnectorImpl @Inject()(
 
 sealed trait ListOfSchemesException extends Exception
 case class AncillaryPsaException() extends ListOfSchemesException
-case class InternalServerErrorException() extends ListOfSchemesException
+case class ListOfSchemes5xxException() extends ListOfSchemesException
+

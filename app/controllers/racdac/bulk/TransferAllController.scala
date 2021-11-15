@@ -18,13 +18,13 @@ package controllers.racdac.bulk
 
 import config.AppConfig
 import connectors.cache.CurrentPstrCacheConnector
-import connectors.{AncillaryPsaException, ListOfSchemesConnector, MinimalDetailsConnector}
+import connectors.{ListOfSchemesConnector, MinimalDetailsConnector}
 import controllers.Retrievals
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.RacDac
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -32,6 +32,7 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Enumerable
+import utils.HttpResponseRedirects.listOfSchemesRedirects
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -68,10 +69,7 @@ class TransferAllController @Inject()(appConfig: AppConfig,
             Future.successful(Redirect(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac()))
           }
         case _ => Future.successful(Redirect(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac()))
-      } recoverWith {
-        case _: AncillaryPsaException =>
-          Future.successful(Redirect(controllers.preMigration.routes.CannotMigrateController.onPageLoad()))
-      }
+      } recoverWith listOfSchemesRedirects
   }
 
   def onSubmit: Action[AnyContent] = authenticate.async {

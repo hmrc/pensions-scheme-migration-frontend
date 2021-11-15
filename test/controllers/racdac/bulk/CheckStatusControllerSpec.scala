@@ -16,7 +16,7 @@
 
 package controllers.racdac.bulk
 
-import connectors.{AncillaryPsaException, ListOfSchemesConnector}
+import connectors.{ListOfSchemes5xxException, ListOfSchemesConnector, AncillaryPsaException}
 import connectors.cache.BulkMigrationQueueConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
@@ -46,6 +46,24 @@ class CheckStatusControllerSpec extends ControllerSpecBase with NunjucksSupport 
   private def httpPathGET: String = controllers.racdac.bulk.routes.CheckStatusController.onPageLoad().url
 
   "CheckStatusController" must {
+
+    "redirect to the cannot migrate page when AncillaryPSAException is thrown" in {
+      reset(mockListSchemesConnector)
+      when(mockQueueConnector.isAllFailed(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockListSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.failed(AncillaryPsaException()))
+      val result = route(application, httpGETRequest(httpPathGET)).value
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.preMigration.routes.CannotMigrateController.onPageLoad().url)
+    }
+
+    "redirect to the 'There is a problem' page when ListOfSchemes5xxException is thrown" in {
+      reset(mockListSchemesConnector)
+      when(mockQueueConnector.isAllFailed(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockListSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.failed(ListOfSchemes5xxException()))
+      val result = route(application, httpGETRequest(httpPathGET)).value
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.preMigration.routes.ThereIsAProblemController.onPageLoad().url)
+    }
 
     "redirect to finished status page when all failed items left in the queue" in {
       when(mockQueueConnector.isAllFailed(any())(any(), any())).thenReturn(Future.successful(Some(true)))
