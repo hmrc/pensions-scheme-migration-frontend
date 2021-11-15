@@ -50,7 +50,7 @@ class TaskListService {
 
   private def basicDetails(implicit ua: UserAnswers, messages: Messages): TaskListLink = {
     TaskListLink(
-      text = messages(getLinkKey("basicDetails_", ua.isBeforeYouStartCompleted), getSchemeName),
+      text = messages(getLinkKey("basicDetails_", Some(ua.isBeforeYouStartCompleted).isDefined), getSchemeName),
       target = controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad().url,
       visuallyHiddenText = None,
       status = ua.isBeforeYouStartCompleted
@@ -100,14 +100,14 @@ class TaskListService {
   private def establishersDetails(implicit ua: UserAnswers, messages: Messages): TaskListLink = {
     if (ua.allEstablishersAfterDelete.isEmpty)
       TaskListLink(
-        text = messages(getLinkKey("establishers_", ua.isEstablishersSectionComplete), getSchemeName),
+        text = messages(getLinkKey("establishers_", false), getSchemeName),
         target = EstablisherKindController.onPageLoad(ua.allEstablishers.size).url,
         visuallyHiddenText = None,
         status = ua.isEstablishersSectionComplete
       )
     else
       TaskListLink(
-        text = messages(getLinkKey("establishers_", ua.isEstablishersSectionComplete), getSchemeName),
+        text = messages(getLinkKey("establishers_", true), getSchemeName),
         target = AddEstablisherController.onPageLoad().url,
         visuallyHiddenText = None,
         status = ua.isEstablishersSectionComplete
@@ -118,14 +118,14 @@ class TaskListService {
     if (ua.allTrusteesAfterDelete.isEmpty) {
       if (ua.get(SchemeTypeId).contains(SchemeType.SingleTrust))
         TaskListLink(
-          text = messages(getLinkKey("trustees_", ua.isTrusteesSectionComplete), getSchemeName),
+          text = messages(getLinkKey("trustees_", false), getSchemeName),
           target = TrusteeKindController.onPageLoad(ua.allTrustees.size).url,
           visuallyHiddenText = None,
           status = ua.isTrusteesSectionComplete
         )
       else
         TaskListLink(
-          text = messages(getLinkKey("trustees_", ua.isTrusteesSectionComplete), getSchemeName),
+          text = messages(getLinkKey("trustees_", false), getSchemeName),
           target = AnyTrusteesController.onPageLoad().url,
           visuallyHiddenText = None,
           status = ua.isTrusteesSectionComplete
@@ -133,7 +133,7 @@ class TaskListService {
     }
     else
       TaskListLink(
-        text = messages(getLinkKey("trustees_", ua.isTrusteesSectionComplete), getSchemeName),
+        text = messages(getLinkKey("trustees_", true), getSchemeName),
         target = AddTrusteeController.onPageLoad().url,
         visuallyHiddenText = None,
         status = ua.isTrusteesSectionComplete
