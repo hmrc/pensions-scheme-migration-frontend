@@ -21,7 +21,7 @@ import identifiers.ExpireAtId
 import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
 import identifiers.adviser.{AdviserNameId, AddressId => AdviserAddressId, EnterEmailId => AdviserEnterEmailId, EnterPhoneId => AdviserEnterPhoneId}
 import identifiers.beforeYouStart.{EstablishedCountryId, SchemeNameId, SchemeTypeId, WorkingKnowledgeId}
-import identifiers.benefitsAndInsurance.{AreBenefitsSecuredId, BenefitsTypeId, HowProvideBenefitsId}
+import identifiers.benefitsAndInsurance.{AreBenefitsSecuredId, BenefitsTypeId, HowProvideBenefitsId, IsInvestmentRegulatedId, IsOccupationalId}
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{AddressId, AddressYearsId}
@@ -253,6 +253,8 @@ class TaskListServiceSpec extends SpecBase with BeforeAndAfterEach with MockitoS
   private def benefitsAndInsuranceUa(ua: UserAnswers): UserAnswers = ua.setOrException(HowProvideBenefitsId, BenefitsProvisionType.MoneyPurchaseOnly)
     .setOrException(BenefitsTypeId, BenefitsType.CashBalanceBenefits)
     .setOrException(AreBenefitsSecuredId, false)
+    .setOrException(IsInvestmentRegulatedId, false)
+    .setOrException(IsOccupationalId, false)
 
   private def establishersUa(ua: UserAnswers): UserAnswers = ua.setOrException(EstablisherKindId(0), EstablisherKind.Individual)
     .setOrException(EstablisherNameId(0), PersonName("a", "b"))

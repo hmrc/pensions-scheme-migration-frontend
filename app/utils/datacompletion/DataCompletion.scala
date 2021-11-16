@@ -72,7 +72,9 @@ trait DataCompletion {
     isComplete(
         Seq(
             get(HowProvideBenefitsId).map(_=>true),
-            isAnswerComplete(AreBenefitsSecuredId)
+            isAnswerComplete(AreBenefitsSecuredId),
+            isAnswerComplete(IsInvestmentRegulatedId),
+            isAnswerComplete(IsOccupationalId),
         ) ++ benefitsTypeCompletion ++ policyDetailsCompletion
       )
     }

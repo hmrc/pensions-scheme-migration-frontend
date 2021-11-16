@@ -128,7 +128,7 @@ class TaskListService @Inject()(appConfig: AppConfig) {
         )
       else
         TaskListLink(
-          text = messages(getLinkKey("trustees_", false), getSchemeName),
+          text = messages(getLinkKey("trustees_", ua.isTrusteesSectionComplete), getSchemeName),
           target = AnyTrusteesController.onPageLoad().url,
           visuallyHiddenText = None,
           status = ua.isTrusteesSectionComplete
