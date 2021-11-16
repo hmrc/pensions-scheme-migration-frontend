@@ -16,19 +16,23 @@
 
 package controllers.racdac.individual
 
+import audit.{EmailAuditEvent, AuditService}
 import config.AppConfig
 import connectors._
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{DataRetrievalAction, DataRequiredAction, AuthAction}
 import identifiers.beforeYouStart.SchemeNameId
+import models.JourneyType.RACDAC_IND_MIG
 import models.requests.DataRequest
 import play.api.i18n.Lang.logger
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -38,6 +42,7 @@ class DeclarationController @Inject()(
                                        authenticate: AuthAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
+                                       auditService: AuditService,
                                        minimalDetailsConnector: MinimalDetailsConnector,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer,
@@ -66,36 +71,38 @@ class DeclarationController @Inject()(
       implicit request =>
         val psaId = request.psaId.id
 
-         val userAnswers = request.userAnswers
-         val racDacName = userAnswers.get(SchemeNameId)
+        val userAnswers = request.userAnswers
+        val racDacName = userAnswers.get(SchemeNameId)
           .getOrElse(throw new RuntimeException("Scheme Name is mandatory for RAC/DAC"))
         //TODO need to use when calling connector for ETMP
         // val policyNumberId= userAnswers.get(ContractOrPolicyNumberId)
         //  .getOrElse(throw new RuntimeException("Policy Number is mandatory for RAC/DAC"))
 
-          sendEmail(racDacName,psaId)(implicitly).map { _ =>
-            Redirect(controllers.racdac.individual.routes.ConfirmationController.onPageLoad().url)
+        sendEmail(racDacName, psaId)(implicitly).map { _ =>
+          Redirect(controllers.racdac.individual.routes.ConfirmationController.onPageLoad().url)
         }
     }
 
-  private def sendEmail(schemeName: String,psaId: String)
+  private def sendEmail(schemeName: String, psaId: String)
                        (implicit request: DataRequest[AnyContent]): Future[EmailStatus] = {
     logger.debug(s"Sending Rac Dac migration email for $psaId")
     minimalDetailsConnector.getPSADetails(psaId) flatMap { minimalPsa =>
       emailConnector.sendEmail(
         emailAddress = minimalPsa.email,
         templateName = appConfig.individualMigrationConfirmationEmailTemplateId,
-        params = Map("psaName" -> minimalPsa.name,"schemeName"-> schemeName),
+        params = Map("psaName" -> minimalPsa.name, "schemeName" -> schemeName),
         callbackUrl(psaId)
-      )
+      ).map { status =>
+        auditService.sendEvent(EmailAuditEvent(psaId, RACDAC_IND_MIG, minimalPsa.email))
+        status
+      }
     } recoverWith {
       case _: Throwable => Future.successful(EmailNotSent)
     }
   }
 
-  //Todo: To be edited while implementing audit event
   private def callbackUrl(psaId: String): String = {
-    val encryptedPsa = crypto.QueryParameterCrypto.encrypt(PlainText(psaId)).value
-    s"${appConfig.migrationUrl}/email-response/$encryptedPsa"
+    val encryptedPsa = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(psaId)).value, StandardCharsets.UTF_8.toString)
+    s"${appConfig.migrationUrl}/pensions-scheme-migration/email-response/$RACDAC_IND_MIG/$encryptedPsa"
   }
 }
