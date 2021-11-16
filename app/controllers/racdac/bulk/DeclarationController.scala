@@ -16,20 +16,24 @@
 
 package controllers.racdac.bulk
 
+import audit.{EmailAuditEvent, AuditService}
 import config.AppConfig
 import connectors._
 import connectors.cache.BulkMigrationQueueConnector
-import controllers.actions.{AuthAction, BulkDataAction}
+import controllers.actions.{BulkDataAction, AuthAction}
+import models.JourneyType.RACDAC_BULK_MIG
 import models.racDac.RacDacRequest
 import models.requests.BulkDataRequest
 import play.api.i18n.Lang.logger
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -42,6 +46,7 @@ class DeclarationController @Inject()(
                                        bulkMigrationQueueConnector: BulkMigrationQueueConnector,
                                        getData: BulkDataAction,
                                        emailConnector: EmailConnector,
+                                       auditService: AuditService,
                                        crypto: ApplicationCrypto
                                      )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
@@ -80,19 +85,21 @@ class DeclarationController @Inject()(
   private def sendEmail(psaId: String)
                        (implicit request: BulkDataRequest[AnyContent]): Future[EmailStatus] = {
     logger.debug(s"Sending bulk migration email for $psaId")
-      emailConnector.sendEmail(
-        emailAddress = request.md.email,
-        templateName = appConfig.bulkMigrationConfirmationEmailTemplateId,
-        params = Map("psaName" -> request.md.name),
-        callbackUrl(psaId)
-      ) recoverWith {
+    emailConnector.sendEmail(
+      emailAddress = request.md.email,
+      templateName = appConfig.bulkMigrationConfirmationEmailTemplateId,
+      params = Map("psaName" -> request.md.name),
+      callbackUrl(psaId)
+    ).map { status =>
+      auditService.sendEvent(EmailAuditEvent(psaId, RACDAC_BULK_MIG, request.md.email))
+      status
+    } recoverWith {
       case _: Throwable => Future.successful(EmailNotSent)
     }
   }
 
-  //Todo: To be edited while implementing audit event
   private def callbackUrl(psaId: String): String = {
-    val encryptedPsa = crypto.QueryParameterCrypto.encrypt(PlainText(psaId)).value
-    s"${appConfig.migrationUrl}/email-response/$encryptedPsa"
+    val encryptedPsa = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(psaId)).value, StandardCharsets.UTF_8.toString)
+    s"${appConfig.migrationUrl}/pensions-scheme-migration/email-response/${RACDAC_BULK_MIG}/$encryptedPsa"
   }
 }
