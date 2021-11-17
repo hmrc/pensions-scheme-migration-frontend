@@ -115,7 +115,7 @@ class TrusteesNavigator
   }
 
   private def anyTrusteesRoutes(
-                                 answers: UserAnswers,
+                                 answers: UserAnswers
                                ): Call = {
 
     answers.get(AnyTrusteesId) match {
