@@ -18,7 +18,7 @@ package helpers.spokes.establishers.individual
 
 import helpers.routes.EstablishersIndividualRoutes.{contactRoute, cyaContactRoute}
 import helpers.spokes.Spoke
-import models.{Index, NormalMode, TaskListLink}
+import models.{Index, NormalMode, SpokeTaskListLink}
 import play.api.i18n.Messages
 import utils.UserAnswers
 
@@ -35,8 +35,8 @@ index: Index,
       (s"${messageKeyPrefix}addLink", contactRoute(index, NormalMode).url)
   }
   override def changeLink(name: String)
-                         (implicit messages: Messages): TaskListLink =
-    TaskListLink(
+                         (implicit messages: Messages): SpokeTaskListLink =
+    SpokeTaskListLink(
       text = Messages(linkKeyAndRoute._1, name),
       target = linkKeyAndRoute._2,
       visuallyHiddenText = None

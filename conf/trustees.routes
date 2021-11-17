@@ -22,6 +22,9 @@ POST        /other-trustees                                      controllers.tru
 GET         /change/other-trustees                               controllers.trustees.OtherTrusteesController.onPageLoad
 POST        /change/other-trustees                               controllers.trustees.OtherTrusteesController.onSubmit
 
+GET         /any-trustees                                      controllers.trustees.AnyTrusteesController.onPageLoad
+POST        /any-trustees                                      controllers.trustees.AnyTrusteesController.onSubmit
+
 
 ->          /                                            trusteesIndividual.Routes
 ->          /                                            trusteesCompany.Routes

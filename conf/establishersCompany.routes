@@ -108,5 +108,7 @@ POST        /:index/company/other-directors                                     
 GET         /:index/change/company/other-directors                                  controllers.establishers.company.OtherDirectorsController.onPageLoad(index:Index,mode:Mode=CheckMode)
 POST        /:index/change/company/other-directors                                  controllers.establishers.company.OtherDirectorsController.onSubmit(index:Index,mode:Mode=CheckMode)
 
+GET         /:index/company/task-list                                               controllers.establishers.company.SpokeTaskListController.onPageLoad(index:Index)
+
 
 ->          /                                                                        establishersCompanyDirector.Routes

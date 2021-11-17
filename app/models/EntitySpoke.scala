@@ -18,7 +18,7 @@ package models
 
 import play.api.libs.json.{Format, Json}
 
-case class EntitySpoke(link: TaskListLink, isCompleted: Option[Boolean] = None)
+case class EntitySpoke(link: SpokeTaskListLink, isCompleted: Option[Boolean] = None)
 
 object EntitySpoke {
   implicit lazy val formats: Format[EntitySpoke] = Json.format[EntitySpoke]

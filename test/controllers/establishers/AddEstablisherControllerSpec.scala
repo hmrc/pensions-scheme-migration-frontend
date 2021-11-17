@@ -23,8 +23,8 @@ import helpers.AddToListHelper
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.{AddEstablisherId, EstablisherKindId, IsEstablisherNewId}
 import matchers.JsonMatchers
-import models.PersonName
 import models.establishers.EstablisherKind
+import models.{PersonName, Scheme}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -38,7 +38,7 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.{Radios, Table}
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
-import models.Scheme
+
 import scala.concurrent.Future
 
 class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
@@ -52,7 +52,7 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
           ))))).toOption
   private val templateToBeRendered = "establishers/addEstablisher.njk"
   private val form: Form[Boolean] = new ConfirmDeleteEstablisherFormProvider()(establisherName)
-  val table: Table = Table(head = Nil, rows = Nil)
+  private val table: Table = Table(head = Nil, rows = Nil)
   private val mockHelper: AddToListHelper = mock[AddToListHelper]
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -75,7 +75,8 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
   private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>
     Json.obj(
       "form" -> form,
-      "table" -> table,
+      "completeTable" -> table,
+      "incompleteTable" -> table,
       "radios" -> Radios.yesNo(form("value")),
       "schemeName" -> schemeName
     )
@@ -83,7 +84,7 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
   override def beforeEach: Unit = {
     super.beforeEach
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-    when(mockHelper.mapEstablishersToTable(any())(any())).thenReturn(table)
+    when(mockHelper.mapEstablishersToTable(any(), any(), any())(any())).thenReturn(table)
   }
 
 
@@ -116,7 +117,6 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
-
       when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(AddEstablisherId(Some(true))), any(), any())(any()))
         .thenReturn(routes.AddEstablisherController.onPageLoad())
 

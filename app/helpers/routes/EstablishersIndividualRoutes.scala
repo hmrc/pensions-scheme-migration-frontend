@@ -108,4 +108,7 @@ object EstablishersIndividualRoutes {
 
   def confirmPreviousAddressPOSTRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
     .onSubmit(index, mode, "confirm-previous-address")
+
+  def taskListRoute(index: Index, mode: Mode): Call = EstablisherIndividualController
+    .onPageLoad(index, mode, "task-list")
 }

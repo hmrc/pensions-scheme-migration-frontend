@@ -14,22 +14,10 @@
  * limitations under the License.
  */
 
-package helpers.spokes
+package identifiers
 
-import models.TaskListLink
-import play.api.i18n.Messages
-import utils.UserAnswers
-
-case object BeforeYouStartSpoke extends Spoke {
-
-  override def changeLink(name: String)(implicit messages: Messages): TaskListLink =
-    TaskListLink(
-      messages("messages__schemeTaskList__before_you_start_link_text", name),
-      controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad.url
-    )
-
-  override def completeFlag(answers: UserAnswers): Option[Boolean] = Some(answers.isBeforeYouStartCompleted)
+case object ExpireAtId extends TypedIdentifier[Long] {
+  override lazy val toString: String = "expireAt"
 }
-
 
 

@@ -14,24 +14,12 @@
  * limitations under the License.
  */
 
-package helpers.spokes
+package identifiers.trustees
 
-import models.TaskListLink
-import play.api.i18n.Messages
-import utils.UserAnswers
+import identifiers._
 
-case object AboutMembersSpoke extends Spoke {
-
-  override def changeLink(name: String)(implicit messages: Messages): TaskListLink =
-    TaskListLink(
-      messages("messages__schemeTaskList__about_members_link_text", name),
-      controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad.url
-    )
-
-  override def completeFlag(answers: UserAnswers): Option[Boolean] = answers.isMembersComplete
+case object AnyTrusteesId extends TypedIdentifier[Boolean] {
+  override lazy val toString: String = "anyTrustees"
 }
-
-
-
 
 

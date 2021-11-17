@@ -18,7 +18,7 @@ package helpers.spokes.trustees.company
 
 import controllers.trustees.company.details.routes.{CheckYourAnswersController, WhatYouWillNeedController}
 import helpers.spokes.Spoke
-import models.{Index, TaskListLink}
+import models.{Index, SpokeTaskListLink}
 import play.api.i18n.Messages
 import utils.UserAnswers
 
@@ -36,8 +36,8 @@ case class TrusteeCompanyDetails(
   }
 
   override def changeLink(name: String)
-    (implicit messages: Messages): TaskListLink =
-    TaskListLink(
+    (implicit messages: Messages): SpokeTaskListLink =
+    SpokeTaskListLink(
       text = Messages(linkKeyAndRoute._1, name),
       target = linkKeyAndRoute._2,
       visuallyHiddenText = None

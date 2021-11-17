@@ -28,12 +28,17 @@
 
                 {{ csrf() | safe }}
 
-                <h1 id="chargeC_h1" class="govuk-heading-xl">{{ messages('messages__addEstablisher_title') }}</h1>
-
-                <div role="region" aria-labelledby="chargeC_h1" class="govuk-!-margin-bottom-7">
-                    {{ govukTable(table) }}
-                </div>
-
+                <h1 id="addEstablisher_h1" class="govuk-heading-xl">{{ messages('messages__addEstablisher_title') }}</h1>
+                {% if incompleteTable.rows.length > 0 %}
+                    <div role="region" class="govuk-!-margin-bottom-10">
+                        {{ govukTable(incompleteTable) }}
+                    </div>
+                {% endif %}
+                {% if completeTable.rows.length > 0 %}
+                     <div role="region" class="govuk-!-margin-bottom-7">
+                         {{ govukTable(completeTable) }}
+                     </div>
+                {% endif %}
                 {{ govukRadios({
                     classes: "govuk-radios--inline",
                     name: 'value',

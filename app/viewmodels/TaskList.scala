@@ -21,9 +21,6 @@ import play.api.libs.json.{Format, Json}
 
 case class TaskList(
                                   h1: String,
-                                  beforeYouStart: TaskListEntitySection,
-                                  about: TaskListEntitySection,
-                                  workingKnowledge: Option[TaskListEntitySection],
                                   addEstablisherHeader: Option[TaskListEntitySection],
                                   addTrusteeHeader: Option[TaskListEntitySection],
                                   establishers: Seq[TaskListEntitySection],

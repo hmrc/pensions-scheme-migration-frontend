@@ -61,7 +61,7 @@ class CheckYourAnswersControllerSpec
   def commonJson: JsObject =
     Json.obj(
       "schemeName" -> "Test scheme name",
-      "submitUrl" -> controllers.routes.TaskListController.onPageLoad().url
+      "submitUrl" -> controllers.trustees.company.routes.SpokeTaskListController.onPageLoad(0).url
     )
 
   private def jsonToPassToTemplate(answers: Seq[SummaryList.Row]): JsObject =

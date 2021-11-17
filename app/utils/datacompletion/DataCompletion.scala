@@ -21,7 +21,7 @@ import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
 import identifiers.adviser.{AddressId, AdviserNameId, EnterEmailId, EnterPhoneId}
 import identifiers.beforeYouStart._
 import identifiers.benefitsAndInsurance._
-import identifiers.trustees.OtherTrusteesId
+import identifiers.trustees.{AnyTrusteesId, OtherTrusteesId}
 import models.Address
 import models.SchemeType.SingleTrust
 import models.benefitsAndInsurance.BenefitsProvisionType.DefinedBenefitsOnly
@@ -72,7 +72,9 @@ trait DataCompletion {
     isComplete(
         Seq(
             get(HowProvideBenefitsId).map(_=>true),
-            isAnswerComplete(AreBenefitsSecuredId)
+            isAnswerComplete(AreBenefitsSecuredId),
+            isAnswerComplete(IsInvestmentRegulatedId),
+            isAnswerComplete(IsOccupationalId)
         ) ++ benefitsTypeCompletion ++ policyDetailsCompletion
       )
     }
@@ -98,7 +100,7 @@ trait DataCompletion {
     if (isSingleOrMaster)
       allTrustees.nonEmpty && allTrusteesComplete
     else
-      allTrusteesComplete
+      (allTrustees.nonEmpty && allTrusteesComplete && get(AnyTrusteesId).contains(true)) || get(AnyTrusteesId).contains(false)
   }
 
   //GENERIC METHODS

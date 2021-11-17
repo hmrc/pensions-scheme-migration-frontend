@@ -49,7 +49,8 @@ class EstablisherIndividualController @Inject()(
   addressYearsController: address.AddressYearsController,
   enterPreviousPostcodeController: address.EnterPreviousPostcodeController,
   selectPreviousAddressController: address.SelectPreviousAddressController,
-  confirmPreviousAddressController: address.ConfirmPreviousAddressController)
+  confirmPreviousAddressController: address.ConfirmPreviousAddressController,
+  taskListController: SpokeTaskListController)
   (implicit val executionContext: ExecutionContext) {
 
   //scalastyle:off cyclomatic.complexity
@@ -78,6 +79,7 @@ class EstablisherIndividualController @Inject()(
       case "enter-previous-postcode" => enterPreviousPostcodeController.onPageLoad(index)
       case "previous-address-results" => selectPreviousAddressController.onPageLoad(index)
       case "confirm-previous-address" => confirmPreviousAddressController.onPageLoad(index)
+      case "task-list" => taskListController.onPageLoad(index)
       case _ => throw new RuntimeException("No route")
     }
   }
