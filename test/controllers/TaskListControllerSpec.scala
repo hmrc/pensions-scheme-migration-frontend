@@ -18,9 +18,8 @@ package controllers
 
 import connectors.LegacySchemeDetailsConnector
 import controllers.actions._
-import helpers.TaskListHelper
 import matchers.JsonMatchers
-import models.{EntitySpoke, Scheme, TaskListLink}
+import models.{TaskListLink, Scheme}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, MockitoSugar}
 import org.scalatest.BeforeAndAfterEach
@@ -30,18 +29,18 @@ import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
+import services.TaskListService
 import utils.Data
 import utils.Data._
-import viewmodels.{Message, TaskList, TaskListEntitySection}
 
 import scala.concurrent.Future
 
 class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach with MockitoSugar with JsonMatchers {
 
-  private val mockTaskListHelper = mock[TaskListHelper]
+  private val mockTaskListService = mock[TaskListService]
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   val extraModules: Seq[GuiceableModule] = Seq(
-    bind[TaskListHelper].to(mockTaskListHelper),
+    bind[TaskListService].to(mockTaskListService),
     bind[LegacySchemeDetailsConnector].toInstance(mockLegacySchemeDetailsConnector)
   )
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
@@ -50,39 +49,48 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
 
   private def httpPathGET: String = controllers.routes.TaskListController.onPageLoad.url
 
-  private val expectedSpoke = Seq(EntitySpoke(TaskListLink(Message("messages__schemeTaskList__before_you_start_link_text", schemeName),
-    controllers.routes.IndexController.onPageLoad.url), Some(false)))
+  private val basicDetailsSection = Some(TaskListLink("Change Test scheme name basic details",
+    controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad().url, None, false))
+  private val membershipDetailsSection = Some(TaskListLink("Change Test scheme name membership details",
+    controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad().url, None, true))
 
-  private val testHeader = Some(Message("messages__schemeTaskList__before_you_start_header"))
-  private val testSection = TaskListEntitySection(None, expectedSpoke, testHeader)
-
-  private val schemeDetailsTL = TaskList(
-    h1 = schemeName,
-    beforeYouStart = testSection,
-    about = testSection,
-    workingKnowledge = Some(testSection),
-    addEstablisherHeader = Some(testSection),
-    addTrusteeHeader = Some(testSection),
-    establishers = Seq(testSection),
-    trustees = Seq(testSection),
-    declaration = Some(testSection)
+  private val declarationSection =
+    TaskListLink(
+    text = "You must complete every section before you can declare.",
+    target = "",
+    visuallyHiddenText = None,
+    status = false
   )
+
+  private val schemeDetailsTL : Seq[Option[TaskListLink]] =
+    Seq(basicDetailsSection,
+      membershipDetailsSection)
+
 
   val json = Json.obj(
+    "schemeStatus" -> "Scheme Details are incomplete",
+    "schemeStatusDescription" -> "You have completed 1 of 2 sections",
+    "expiryDate" -> "14 November 2021",
     "taskSections" -> schemeDetailsTL,
-    "schemeName" -> schemeName
+    "schemeName" -> schemeName,
+    "declarationEnabled" -> false,
+    "declaration" -> declarationSection,
+    "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad().url
   )
 
-  val itemList : JsValue = Json.obj(
-    "taskSections" -> schemeDetailsTL,
-    "schemeName" -> schemeName
-  )
+  val itemList : JsValue = json
+
   override def beforeEach: Unit = {
     super.beforeEach
     when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-    when(mockTaskListHelper.taskList(any())(any(), any())).thenReturn(schemeDetailsTL)
-    when(mockTaskListHelper.getSchemeName(any())).thenReturn(schemeName)
+    when(mockTaskListService.schemeCompletionStatus(any(), any())).thenReturn("Scheme Details are incomplete")
+    when(mockTaskListService.schemeCompletionDescription(any(), any())).thenReturn("You have completed 1 of 2 sections")
+    when(mockTaskListService.taskSections(any(), any())).thenReturn(schemeDetailsTL)
+    when(mockTaskListService.getSchemeName(any())).thenReturn(schemeName)
+    when(mockTaskListService.declarationEnabled(any())).thenReturn(false)
+    when(mockTaskListService.declarationSection(any(), any())).thenReturn(declarationSection)
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+    when(mockTaskListService.getExpireAt(any())).thenReturn("14 November 2021")
     when(mockLegacySchemeDetailsConnector.getLegacySchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(Right(itemList)))
   }
 

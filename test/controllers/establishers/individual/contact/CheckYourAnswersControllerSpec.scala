@@ -61,7 +61,7 @@ class CheckYourAnswersControllerSpec
   val commonJson: JsObject =
     Json.obj(
       "schemeName" -> "Test scheme name",
-      "submitUrl" -> controllers.routes.TaskListController.onPageLoad().url
+      "submitUrl" -> "/add-pension-scheme/establisher/1/individual/task-list"
     )
 
   private def jsonToPassToTemplate(answers: Seq[SummaryList.Row]): JsObject =

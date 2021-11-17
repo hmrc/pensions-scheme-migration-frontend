@@ -18,7 +18,7 @@ package helpers.spokes.establishers.individual
 
 import helpers.routes.EstablishersIndividualRoutes
 import helpers.spokes.Spoke
-import models.{TaskListLink, Index, NormalMode}
+import models.{SpokeTaskListLink, Index, NormalMode}
 import play.api.i18n.Messages
 import utils.UserAnswers
 
@@ -37,8 +37,8 @@ case class EstablisherIndividualAddress(
   }
 
   override def changeLink(name: String)
-    (implicit messages: Messages): TaskListLink =
-    TaskListLink(
+    (implicit messages: Messages): SpokeTaskListLink =
+    SpokeTaskListLink(
       text = Messages(linkKeyAndRoute._1, name),
       target = linkKeyAndRoute._2,
       visuallyHiddenText = None

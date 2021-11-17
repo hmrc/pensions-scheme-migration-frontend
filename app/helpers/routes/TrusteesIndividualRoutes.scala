@@ -111,4 +111,7 @@ object TrusteesIndividualRoutes {
 
   def confirmPreviousAddressPOSTRoute(index: Index, mode: Mode): Call = TrusteeIndividualController
     .onSubmit(index, mode, "confirm-previous-address")
+
+  def taskListRoute(index: Index, mode: Mode): Call = TrusteeIndividualController
+    .onPageLoad(index, mode, "task-list")
 }

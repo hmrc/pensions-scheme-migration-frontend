@@ -19,13 +19,13 @@ package controllers
 import connectors.LegacySchemeDetailsConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AuthAction, DataRetrievalAction}
-import helpers.TaskListHelper
 import models.Scheme
 import models.requests.OptionalDataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import renderer.Renderer
+import services.TaskListService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswers
 
@@ -33,14 +33,14 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TaskListController @Inject()(
-                                    override val messagesApi: MessagesApi,
-                                    authenticate: AuthAction,
-                                    getData: DataRetrievalAction,
-                                    taskListHelper: TaskListHelper,
-                                    userAnswersCacheConnector: UserAnswersCacheConnector,
-                                    legacySchemeDetailsConnector : LegacySchemeDetailsConnector,
-                                    val controllerComponents: MessagesControllerComponents,
-                                    renderer: Renderer
+                                        override val messagesApi: MessagesApi,
+                                        authenticate: AuthAction,
+                                        getData: DataRetrievalAction,
+                                        taskListService: TaskListService,
+                                        userAnswersCacheConnector: UserAnswersCacheConnector,
+                                        legacySchemeDetailsConnector : LegacySchemeDetailsConnector,
+                                        val controllerComponents: MessagesControllerComponents,
+                                        renderer: Renderer
                                   )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
@@ -70,9 +70,14 @@ class TaskListController @Inject()(
 
   private def renderView(implicit userAnswers: UserAnswers, request: OptionalDataRequest[_]): Future[Result] = {
     val json = Json.obj(
-      "taskSections" -> taskListHelper.taskList(request.viewOnly),
-      "schemeName" -> taskListHelper.getSchemeName,
-      "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad().url
+        "schemeStatus" -> taskListService.schemeCompletionStatus,
+        "schemeStatusDescription" -> taskListService.schemeCompletionDescription,
+        "expiryDate" -> taskListService.getExpireAt,
+        "taskSections" -> taskListService.taskSections,
+        "schemeName" -> taskListService.getSchemeName,
+        "declarationEnabled" -> taskListService.declarationEnabled,
+        "declaration" -> taskListService.declarationSection,
+        "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad().url
     )
     renderer.render("taskList.njk", json).map(Ok(_))
   }

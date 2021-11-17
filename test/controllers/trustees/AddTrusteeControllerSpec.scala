@@ -79,7 +79,8 @@ class AddTrusteeControllerSpec extends ControllerSpecBase with NunjucksSupport w
       form =>
         Json.obj(
           "form" -> form,
-          "table" -> table,
+          "completeTable" -> table,
+          "incompleteTable" -> table,
           "radios" -> Radios.yesNo(form("value")),
           "schemeName" -> schemeName,
           "trusteeSize" -> countOfTrustees,
@@ -90,7 +91,7 @@ class AddTrusteeControllerSpec extends ControllerSpecBase with NunjucksSupport w
   override def beforeEach: Unit = {
     super.beforeEach
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-    when(mockHelper.mapTrusteesToTable(any())(any())).thenReturn(table)
+    when(mockHelper.mapTrusteesToTable(any(), any(), any(), any())(any())).thenReturn(table)
     when(mockAppConfig.maxTrustees).thenReturn(maxTrustees)
   }
 

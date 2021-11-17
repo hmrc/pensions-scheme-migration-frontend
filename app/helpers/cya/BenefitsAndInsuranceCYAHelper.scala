@@ -94,7 +94,7 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
         Some(msg"howProvideBenefits.visuallyHidden".withArgs(schemeName)), answerBenefitsProvisionTypeTransform
       )
     )
-    val seqRowBenefitsType = if(ua.get(HowProvideBenefitsId).contains(DefinedBenefitsOnly)) Nil else Seq(
+    val seqRowBenefitsType = if((ua.get(HowProvideBenefitsId).contains(DefinedBenefitsOnly)) || ua.get(HowProvideBenefitsId).isEmpty ) Nil else Seq(
       answerOrAddRow(
         BenefitsTypeId,
         Message("benefitsType.h1", schemeName).resolve,

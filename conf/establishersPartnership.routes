@@ -93,3 +93,5 @@ GET         /:index/partnership/change/enter-phone-number                       
 POST        /:index/partnership/change/enter-phone-number                                controllers.establishers.partnership.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = CheckMode)
 
 GET         /:index/partnership/check-your-answers-contact-details                       controllers.establishers.partnership.contact.CheckYourAnswersController.onPageLoad(index: Index)
+
+GET         /:index/partnership/task-list                                               controllers.establishers.partnership.SpokeTaskListController.onPageLoad(index:Index)

@@ -14,24 +14,13 @@
  * limitations under the License.
  */
 
-package helpers.spokes
+package models
 
-import models.TaskListLink
-import play.api.i18n.Messages
-import utils.UserAnswers
+import play.api.libs.json.{Format, Json}
 
-case object BenefitsAndInsuranceSpoke extends Spoke {
+case class SpokeTaskListLink(text: String, target: String, visuallyHiddenText: Option[String] = None)
 
-  override def changeLink(name: String)(implicit messages: Messages): TaskListLink =
-    TaskListLink(
-      messages("messages__schemeTaskList__about_benefits_and_insurance_link_text", name),
-      controllers.benefitsAndInsurance.routes.CheckYourAnswersController.onPageLoad.url
-    )
-
-  override def completeFlag(answers: UserAnswers): Option[Boolean] = answers.isBenefitsAndInsuranceComplete
+object SpokeTaskListLink {
+  implicit lazy val formats: Format[SpokeTaskListLink] = Json.format[SpokeTaskListLink]
 }
-
-
-
-
 

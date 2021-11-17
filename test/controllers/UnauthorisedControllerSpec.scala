@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+/*package controllers
 
 import controllers.actions.MutableFakeDataRetrievalAction
 import matchers.JsonMatchers
@@ -27,8 +27,9 @@ import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.{Enumerable, UserAnswers}
 
-import scala.concurrent.Future
+import scala.concurrent.Future*/
 
+/*
 class UnauthorisedControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val templateToBeRendered = "unauthorised.njk"
@@ -64,3 +65,4 @@ class UnauthorisedControllerSpec extends ControllerSpecBase with NunjucksSupport
 
   }
 }
+*/

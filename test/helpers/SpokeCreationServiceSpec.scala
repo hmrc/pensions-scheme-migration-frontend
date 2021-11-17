@@ -19,8 +19,6 @@ package helpers
 import base.SpecBase
 import helpers.routes.EstablishersIndividualRoutes.contactRoute
 import helpers.routes.{EstablishersIndividualRoutes, TrusteesIndividualRoutes}
-import identifiers.adviser.{AdviserNameId, EnterEmailId => adviserEnterEmailId, EnterPhoneId => adviserEnterPhoneId, AddressId => adviserAddressId}
-import identifiers.beforeYouStart.{SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.contact.EnterPhoneId
@@ -30,16 +28,16 @@ import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{AddressId => IndividualAddressId}
 import identifiers.establishers.partnership.address.{AddressId => PartnershipAddressId}
 import identifiers.establishers.partnership.contact.EnterEmailId
-import identifiers.establishers.partnership.details.{PartnershipUTRId, HaveUTRId}
+import identifiers.establishers.partnership.details.{HaveUTRId, PartnershipUTRId}
 import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.{PartnershipDetailsId => EstablisherPartnershipDetailsId}
 import identifiers.trustees.company.{details => trusteeCompanyDetails}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.contact.{EnterEmailId => TrusteeEmailId, EnterPhoneId => TrusteePhoneId}
 import identifiers.trustees.individual.details.{TrusteeDOBId, TrusteeNINOId, TrusteeUTRId}
-import identifiers.trustees.partnership.address.{AddressYearsId => TrusteePartnershipAddressYearsId, AddressId => TrusteePartnershipAddressId}
+import identifiers.trustees.partnership.address.{AddressId => TrusteePartnershipAddressId, AddressYearsId => TrusteePartnershipAddressYearsId}
 import identifiers.trustees.partnership.contact.{EnterEmailId => TrusteePartnershipEmailId, EnterPhoneId => TrusteePartnershipPhoneId}
-import identifiers.trustees.partnership.details.{HavePAYEId => TrusteeHavePAYEId, PAYEId => TrusteePAYEId, HaveVATId => TrusteeHaveVATId, VATId => TrusteeVATId, HaveUTRId => TrusteeHaveUTRId}
+import identifiers.trustees.partnership.details.{HavePAYEId => TrusteeHavePAYEId, HaveUTRId => TrusteeHaveUTRId, HaveVATId => TrusteeHaveVATId, PAYEId => TrusteePAYEId, VATId => TrusteeVATId}
 import identifiers.trustees.partnership.{PartnershipDetailsId => TrusteePartnershipDetailsId}
 import identifiers.trustees.{TrusteeKindId, company => trusteeCompany}
 import models._
@@ -47,8 +45,8 @@ import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
-import utils.Data.{schemeName, ua}
-import utils.{Enumerable, Data}
+import utils.Data.ua
+import utils.{Data, Enumerable}
 import viewmodels.Message
 
 import java.time.LocalDate
@@ -62,73 +60,7 @@ class SpokeCreationServiceSpec
 
   val spokeCreationService = new SpokeCreationService()
 
-  "getBeforeYouStartSpoke" must {
-    "display the spoke with link to cya page with complete status if the spoke is completed" in {
-      val userAnswers = ua.set(SchemeTypeId, SchemeType.SingleTrust).get.set(WorkingKnowledgeId, true).get
-        .set(EstablishedCountryId, "GB").get
-
-      val expectedSpoke = Seq(EntitySpoke(TaskListLink(Message("messages__schemeTaskList__before_you_start_link_text", schemeName),
-        controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad().url), Some(true)))
-
-      val result = spokeCreationService.getBeforeYouStartSpoke(userAnswers, schemeName)
-      result mustBe expectedSpoke
-    }
-  }
-
-  "getAboutSpoke" when {
-    "in subscription" must {
-      "display all the spokes with link to first page, blank status if the spoke is uninitiated" in {
-
-        val expectedSpoke = Seq(
-          EntitySpoke(TaskListLink(Message("messages__schemeTaskList__about_members_link_text", schemeName),
-            controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad().url), None),
-          EntitySpoke(TaskListLink(
-            messages("messages__schemeTaskList__about_benefits_and_insurance_link_text", schemeName),
-            controllers.benefitsAndInsurance.routes.CheckYourAnswersController.onPageLoad.url
-          ), None)
-        )
-
-        val result = spokeCreationService.aboutSpokes(ua, schemeName)
-        result mustBe expectedSpoke
-      }
-
-    }
-  }
-
-  "workingKnowledgeSpoke" must {
-    "display the spoke with link to wyn page with in complete status if the spoke is in progress" in {
-      val expectedSpoke =
-        Seq(EntitySpoke(
-          TaskListLink(Message("messages__schemeTaskList__add_details_wk"),
-            controllers.adviser.routes.WhatYouWillNeedController.onPageLoad.url, None),
-          isCompleted = None
-        ))
-      val result = spokeCreationService.workingKnowledgeSpoke(ua)
-
-      result mustBe expectedSpoke
-    }
-    "display the spoke with link to cya page with complete status if the spoke is in progress" in {
-      val userAnswers =
-        ua
-          .set(AdviserNameId, "test").success.value
-          .set(adviserEnterEmailId, Data.email).success.value
-          .set(adviserEnterPhoneId, Data.phone).success.value
-          .set(adviserAddressId, Data.address).success.value
-
-      val expectedSpoke =
-        Seq(EntitySpoke(
-          TaskListLink(Message("messages__schemeTaskList__details_changeLink","test"),
-            controllers.adviser.routes.CheckYourAnswersController.onPageLoad.url,None),
-          isCompleted = Some(true)
-        ))
-      val result = spokeCreationService.workingKnowledgeSpoke(userAnswers)
-
-      result mustBe expectedSpoke
-    }
-
-  }
-
-  "getAddEstablisherHeaderSpokes" must {
+   "getAddEstablisherHeaderSpokes" must {
     "return no spokes when no establishers and view only" in {
       val result = spokeCreationService.getAddEstablisherHeaderSpokes(ua, viewOnly = true)
       result mustBe Nil
@@ -137,7 +69,7 @@ class SpokeCreationServiceSpec
     "return all the spokes with appropriate links when no establishers and NOT view only" in {
       val expectedSpoke =
         Seq(EntitySpoke(
-          TaskListLink(Message("messages__schemeTaskList__sectionEstablishers_add_link"),
+          SpokeTaskListLink(Message("messages__schemeTaskList__sectionEstablishers_add_link"),
             controllers.establishers.routes.EstablisherKindController.onPageLoad(0).url), None)
         )
 
@@ -151,7 +83,7 @@ class SpokeCreationServiceSpec
 
       val expectedSpoke =
         Seq(EntitySpoke(
-          TaskListLink(Message("messages__schemeTaskList__sectionEstablishers_change_link"),
+          SpokeTaskListLink(Message("messages__schemeTaskList__sectionEstablishers_change_link"),
             controllers.establishers.routes.AddEstablisherController.onPageLoad().url), None)
         )
 
@@ -170,7 +102,7 @@ class SpokeCreationServiceSpec
       val expectedSpoke =
         Seq(
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Add details for a b",
               target = EstablishersIndividualRoutes.detailsRoute(0, NormalMode).url,
               visuallyHiddenText = None
@@ -178,7 +110,7 @@ class SpokeCreationServiceSpec
             isCompleted = None
           ),
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Add address for a b",
               target = EstablishersIndividualRoutes.wywnAddressRoute(0, NormalMode).url,
               visuallyHiddenText = None
@@ -186,7 +118,7 @@ class SpokeCreationServiceSpec
             isCompleted = None
           ),
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Add contact details for a b",
               target = contactRoute(0, NormalMode).url,
               visuallyHiddenText = None
@@ -214,7 +146,7 @@ class SpokeCreationServiceSpec
 
       val expectedSpoke =
         Seq(EntitySpoke(
-          link = TaskListLink(
+          link = SpokeTaskListLink(
             text = "Add details for test",
             target = controllers.establishers.company.details.routes.WhatYouWillNeedController.onPageLoad(0).url,
             visuallyHiddenText = None
@@ -222,7 +154,7 @@ class SpokeCreationServiceSpec
           isCompleted = None
         ),
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Add address for test",
               target = controllers.establishers.company.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
@@ -230,7 +162,7 @@ class SpokeCreationServiceSpec
             isCompleted = None
           ),
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Add contact details for test",
               target = controllers.establishers.company.contact.routes.WhatYouWillNeedCompanyContactController.onPageLoad(0).url,
               visuallyHiddenText = None
@@ -238,7 +170,7 @@ class SpokeCreationServiceSpec
             isCompleted = None
           ),
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Add directors for test",
               target = controllers.establishers.company.director.details.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
@@ -269,7 +201,7 @@ class SpokeCreationServiceSpec
       val expectedSpoke =
         Seq(
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Change details for test",
               target = controllers.establishers.company.details.routes.CheckYourAnswersController.onPageLoad(0).url,
               visuallyHiddenText = None
@@ -277,7 +209,7 @@ class SpokeCreationServiceSpec
             isCompleted = Some(false)
           ),
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Change address for test",
               target = controllers.establishers.company.address.routes.CheckYourAnswersController.onPageLoad(0).url,
               visuallyHiddenText = None
@@ -285,7 +217,7 @@ class SpokeCreationServiceSpec
             isCompleted = Some(false)
           ),
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Change contact details for test",
               target = controllers.establishers.company.contact.routes.CheckYourAnswersController.onPageLoad(0).url,
               visuallyHiddenText = None
@@ -293,7 +225,7 @@ class SpokeCreationServiceSpec
             isCompleted = Some(false)
           ),
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Add directors for test",
               target = controllers.establishers.company.director.details.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
@@ -325,7 +257,7 @@ class SpokeCreationServiceSpec
     val expectedSpoke =
       Seq(
         EntitySpoke(
-          link = TaskListLink(
+          link = SpokeTaskListLink(
             text = "Change details for test",
             target = controllers.establishers.company.details.routes.CheckYourAnswersController.onPageLoad(0).url,
             visuallyHiddenText = None
@@ -333,7 +265,7 @@ class SpokeCreationServiceSpec
           isCompleted = Some(false)
         ),
         EntitySpoke(
-          link = TaskListLink(
+          link = SpokeTaskListLink(
             text = "Change address for test",
             target = controllers.establishers.company.address.routes.CheckYourAnswersController.onPageLoad(0).url,
             visuallyHiddenText = None
@@ -341,7 +273,7 @@ class SpokeCreationServiceSpec
           isCompleted = Some(false)
         ),
         EntitySpoke(
-          link = TaskListLink(
+          link = SpokeTaskListLink(
             text = "Change contact details for test",
             target = controllers.establishers.company.contact.routes.CheckYourAnswersController.onPageLoad(0).url,
             visuallyHiddenText = None
@@ -349,7 +281,7 @@ class SpokeCreationServiceSpec
           isCompleted = Some(false)
         ),
         EntitySpoke(
-          link = TaskListLink(
+          link = SpokeTaskListLink(
             text = "Change directors for test",
             target = controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(0,NormalMode).url,
             visuallyHiddenText = None
@@ -378,7 +310,7 @@ class SpokeCreationServiceSpec
       val expectedSpoke =
         Seq(
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Add details for test",
               target = controllers.establishers.partnership.details.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
@@ -386,7 +318,7 @@ class SpokeCreationServiceSpec
             isCompleted = None
           ),
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Add address for test",
               target = controllers.establishers.partnership.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
@@ -394,7 +326,7 @@ class SpokeCreationServiceSpec
             isCompleted = None
           ),
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Add contact details for test",
               target = controllers.establishers.partnership.contact.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
@@ -402,7 +334,7 @@ class SpokeCreationServiceSpec
             isCompleted = None
           ),
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Add partners for test",
               target = controllers.establishers.partnership.partner.details.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
@@ -443,7 +375,7 @@ class SpokeCreationServiceSpec
       val expectedSpoke =
         Seq(
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Change details for test",
               target = controllers.establishers.partnership.details.routes.CheckYourAnswersController.onPageLoad(0).url,
               visuallyHiddenText = None
@@ -451,7 +383,7 @@ class SpokeCreationServiceSpec
             isCompleted = Some(false)
           ),
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Change address for test",
               target = controllers.establishers.partnership.address.routes.CheckYourAnswersController.onPageLoad(0).url,
               visuallyHiddenText = None
@@ -459,7 +391,7 @@ class SpokeCreationServiceSpec
             isCompleted = Some(false)
           ),
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Change contact details for test",
               target = controllers.establishers.partnership.contact.routes.CheckYourAnswersController.onPageLoad(0).url,
               visuallyHiddenText = None
@@ -467,7 +399,7 @@ class SpokeCreationServiceSpec
             isCompleted = Some(false)
           ),
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Change partners for test",
               target = controllers.establishers.partnership.routes.AddPartnersController.onPageLoad(0,NormalMode).url,
               visuallyHiddenText = None
@@ -497,7 +429,7 @@ class SpokeCreationServiceSpec
       val expectedSpoke =
         Seq(
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Add details for a b",
               target = TrusteesIndividualRoutes.detailsRoute(0, NormalMode).url,
               visuallyHiddenText = None
@@ -505,7 +437,7 @@ class SpokeCreationServiceSpec
             isCompleted = None
           ),
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Add address for a b",
               target = TrusteesIndividualRoutes.wywnAddressRoute(0, NormalMode).url,
               visuallyHiddenText = None
@@ -513,7 +445,7 @@ class SpokeCreationServiceSpec
             isCompleted = None
           ),
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Add contact details for a b",
               target = TrusteesIndividualRoutes.contactRoute(0, NormalMode).url,
               visuallyHiddenText = None
@@ -546,7 +478,7 @@ class SpokeCreationServiceSpec
       val expectedSpoke =
         Seq(
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Change details for a b",
               target = TrusteesIndividualRoutes.cyaDetailsRoute(0, NormalMode).url,
               visuallyHiddenText = None
@@ -554,7 +486,7 @@ class SpokeCreationServiceSpec
             isCompleted = Some(true)
           ),
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Change address for a b",
               target = TrusteesIndividualRoutes.cyaAddressRoute(0, NormalMode).url,
               visuallyHiddenText = None
@@ -562,7 +494,7 @@ class SpokeCreationServiceSpec
             isCompleted = Some(false)
           ),
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Change contact details for a b",
               target = TrusteesIndividualRoutes.cyaContactRoute(0, NormalMode).url,
               visuallyHiddenText = None
@@ -590,7 +522,7 @@ class SpokeCreationServiceSpec
 
       val expectedSpoke =
         Seq(EntitySpoke(
-          link = TaskListLink(
+          link = SpokeTaskListLink(
             text = "Add details for test",
             target = controllers.trustees.company.details.routes.WhatYouWillNeedController.onPageLoad(0).url,
             visuallyHiddenText = None
@@ -598,7 +530,7 @@ class SpokeCreationServiceSpec
           isCompleted = None
         ),
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Add address for test",
               target = controllers.trustees.company.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
@@ -606,7 +538,7 @@ class SpokeCreationServiceSpec
             isCompleted = None
           ),
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Add contact details for test",
               target = controllers.trustees.company.contacts.routes.WhatYouWillNeedCompanyContactController.onPageLoad(0).url,
               visuallyHiddenText = None
@@ -636,7 +568,7 @@ class SpokeCreationServiceSpec
       val expectedSpoke =
         Seq(
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Change details for test",
               target = controllers.trustees.company.details.routes.CheckYourAnswersController.onPageLoad(0).url,
               visuallyHiddenText = None
@@ -644,7 +576,7 @@ class SpokeCreationServiceSpec
             isCompleted = Some(false)
           ),
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Add address for test",
               target = controllers.trustees.company.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
@@ -652,7 +584,7 @@ class SpokeCreationServiceSpec
             isCompleted = None
           ),
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Add contact details for test",
               target = controllers.trustees.company.contacts.routes.WhatYouWillNeedCompanyContactController.onPageLoad(0).url,
               visuallyHiddenText = None
@@ -688,7 +620,7 @@ class SpokeCreationServiceSpec
         val expectedSpoke =
           Seq(
             EntitySpoke(
-              link = TaskListLink(
+              link = SpokeTaskListLink(
                 text = "Change details for test",
                 target = controllers.trustees.company.details.routes.CheckYourAnswersController.onPageLoad(0).url,
                 visuallyHiddenText = None
@@ -696,7 +628,7 @@ class SpokeCreationServiceSpec
               isCompleted = Some(true)
             ),
             EntitySpoke(
-              link = TaskListLink(
+              link = SpokeTaskListLink(
                 text = "Add address for test",
                 target = controllers.trustees.company.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
                 visuallyHiddenText = None
@@ -704,7 +636,7 @@ class SpokeCreationServiceSpec
               isCompleted = None
             ),
             EntitySpoke(
-              link = TaskListLink(
+              link = SpokeTaskListLink(
                 text = "Add contact details for test",
                 target = controllers.trustees.company.contacts.routes.WhatYouWillNeedCompanyContactController.onPageLoad(0).url,
                 visuallyHiddenText = None
@@ -736,7 +668,7 @@ class SpokeCreationServiceSpec
       val expectedSpoke =
         Seq(
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Add details for a b",
               target = controllers.trustees.partnership.details.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
@@ -744,7 +676,7 @@ class SpokeCreationServiceSpec
             isCompleted = None
           ),
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Add address for a b",
               target = controllers.trustees.partnership.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
@@ -752,7 +684,7 @@ class SpokeCreationServiceSpec
             isCompleted = None
           ),
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Add contact details for a b",
               target = controllers.trustees.partnership.contact.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
@@ -790,7 +722,7 @@ class SpokeCreationServiceSpec
       val expectedSpoke =
         Seq(
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Change details for a b",
               target = controllers.trustees.partnership.details.routes.CheckYourAnswersController.onPageLoad(0).url,
               visuallyHiddenText = None
@@ -798,7 +730,7 @@ class SpokeCreationServiceSpec
             isCompleted = Some(true)
           ),
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Change address for a b",
               target = controllers.trustees.partnership.address.routes.CheckYourAnswersController.onPageLoad(0).url,
               visuallyHiddenText = None
@@ -806,7 +738,7 @@ class SpokeCreationServiceSpec
             isCompleted = Some(true)
           ),
           EntitySpoke(
-            link = TaskListLink(
+            link = SpokeTaskListLink(
               text = "Change contact details for a b",
               target = controllers.trustees.partnership.contact.routes.CheckYourAnswersController.onPageLoad(0).url,
               visuallyHiddenText = None
@@ -828,7 +760,7 @@ class SpokeCreationServiceSpec
   "declarationSpoke" must {
 
     "return declaration spoke with link" in {
-      val expectedSpoke = Seq(EntitySpoke(TaskListLink(
+      val expectedSpoke = Seq(EntitySpoke(SpokeTaskListLink(
         messages("messages__schemeTaskList__declaration_link"),
         controllers.routes.DeclarationController.onPageLoad().url)
       ))
