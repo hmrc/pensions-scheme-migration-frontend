@@ -16,11 +16,12 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, _}
 import models.{Items, ListOfLegacySchemes}
-import org.scalatest.{BeforeAndAfterEach,OptionValues}
+import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.flatspec.AsyncFlatSpec
+import play.api.http.Status
 import play.api.http.Status._
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HeaderCarrier
@@ -58,7 +59,8 @@ class ListOfSchemesConnectorSpec extends AsyncFlatSpec with Matchers with WireMo
     server.stubFor(
       get(urlEqualTo(listOfSchemesUrl))
         .willReturn(
-          badRequest
+            aResponse()
+            .withStatus(Status.BAD_REQUEST)
             .withHeader("Content-Type", "application/json")
             .withBody(invalidPayloadResponse)
         )
@@ -71,7 +73,7 @@ class ListOfSchemesConnectorSpec extends AsyncFlatSpec with Matchers with WireMo
     )
   }
 
-  it should "throw InternalServerErrorException for a 500 response" in {
+  it should "throw ListOfSchemes5xxException for a 5xx response" in {
 
     server.stubFor(
       get(urlEqualTo(listOfSchemesUrl))
@@ -85,13 +87,9 @@ class ListOfSchemesConnectorSpec extends AsyncFlatSpec with Matchers with WireMo
 
     val connector = injector.instanceOf[ListOfSchemesConnector]
 
-    recoverToSucceededIf[InternalServerErrorException] {
+    recoverToSucceededIf[ListOfSchemes5xxException] {
       connector.getListOfSchemes(psaId)
     }
-    connector.getListOfSchemes(psaId).map(listOfSchemes =>
-      listOfSchemes.left.get.status shouldBe INTERNAL_SERVER_ERROR
-    )
-
   }
 
 }

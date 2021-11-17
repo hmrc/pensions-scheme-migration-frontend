@@ -19,9 +19,9 @@ package controllers.actions
 import base.SpecBase
 import config.AppConfig
 import connectors.cache.CurrentPstrCacheConnector
-import connectors.{DelimitedAdminException, ListOfSchemesConnector, MinimalDetailsConnector}
+import connectors._
 import models.requests.{AuthenticatedRequest, BulkDataRequest}
-import models.{Items, ListOfLegacySchemes, MinPSA}
+import models.{Items, MinPSA, ListOfLegacySchemes}
 import org.mockito.ArgumentMatchers._
 import org.mockito.MockitoSugar
 import org.scalatest.EitherValues
@@ -182,6 +182,48 @@ class BulkDataActionSpec
         whenReady(futureResult) { result =>
           result.header.status mustBe SEE_OTHER
           redirectLocation(futureResult).value mustBe appConfig.psaDelimitedUrl
+        }
+      }
+    }
+
+    "AncillaryPsaException is thrown by list schemes api call" must {
+      "redirect to the 'cannot migrate' page" in {
+        reset(schemeCacheConnector, minimalDetailsConnector, listOfSchemesConnector)
+        when(schemeCacheConnector.fetch(any(), any())) thenReturn Future(None)
+        when(listOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.failed(AncillaryPsaException()))
+
+        val action = new Harness(schemeCacheConnector, listOfSchemesConnector, minimalDetailsConnector, appConfig, false)
+
+        val futureResult = action.callRefine(AuthenticatedRequest(
+          request = fakeRequest,
+          externalId = "id",
+          psaId = PsaId(psaId)
+        )).map(_.left.value)
+
+        whenReady(futureResult) { result =>
+          result.header.status mustBe SEE_OTHER
+          redirectLocation(futureResult).value mustBe controllers.preMigration.routes.CannotMigrateController.onPageLoad().url
+        }
+      }
+    }
+
+    "ListOfSchemes5xxException is thrown by list schemes api call" must {
+      "redirect to the 'there is a problem' page" in {
+        reset(schemeCacheConnector, minimalDetailsConnector, listOfSchemesConnector)
+        when(schemeCacheConnector.fetch(any(), any())) thenReturn Future(None)
+        when(listOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.failed(ListOfSchemes5xxException()))
+
+        val action = new Harness(schemeCacheConnector, listOfSchemesConnector, minimalDetailsConnector, appConfig, false)
+
+        val futureResult = action.callRefine(AuthenticatedRequest(
+          request = fakeRequest,
+          externalId = "id",
+          psaId = PsaId(psaId)
+        )).map(_.left.value)
+
+        whenReady(futureResult) { result =>
+          result.header.status mustBe SEE_OTHER
+          redirectLocation(futureResult).value mustBe controllers.preMigration.routes.ThereIsAProblemController.onPageLoad().url
         }
       }
     }

@@ -20,17 +20,18 @@ import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import connectors.{ListOfSchemesConnector, MinimalDetailsConnector}
 import controllers.Retrievals
-import controllers.actions.{AuthAction, DataRetrievalAction}
-import helpers.cya.{CYAHelper, RacDacIndividualCYAHelper}
+import controllers.actions.{DataRetrievalAction, AuthAction}
+import helpers.cya.{RacDacIndividualCYAHelper, CYAHelper}
 import identifiers.beforeYouStart.SchemeNameId
 import models.RacDac
 import models.requests.OptionalDataRequest
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.{Enumerable, UserAnswers}
+import utils.HttpResponseRedirects.listOfSchemesRedirects
+import utils.{UserAnswers, Enumerable}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -75,7 +76,7 @@ class CheckYourAnswersController @Inject()(
                   Future.successful(Redirect(controllers.preMigration.routes.ListOfSchemesController.onPageLoad(RacDac)))
                 }
               case _ => Future.successful(Redirect(appConfig.psaOverviewUrl))
-            }
+            } recoverWith listOfSchemesRedirects
         }
     }
 

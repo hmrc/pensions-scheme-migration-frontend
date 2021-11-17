@@ -16,13 +16,18 @@
 
 package controllers
 
+import audit.{EmailAuditEvent, AuditService}
 import config.AppConfig
+import connectors.{EmailNotSent, EmailConnector, EmailStatus, MinimalDetailsConnector}
 import connectors._
 import controllers.actions._
 import identifiers.beforeYouStart.SchemeNameId
+import models.JourneyType.SCHEME_MIG
 import models.Scheme
 import models.requests.DataRequest
 import play.api.i18n.Lang.logger
+import play.api.i18n.{MessagesApi, I18nSupport}
+import play.api.libs.json.Json
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsString, Json, __}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -31,8 +36,11 @@ import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.http.HttpReads.is5xx
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import identifiers.beforeYouStart.WorkingKnowledgeId
 import utils.UserAnswers
 
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -42,6 +50,7 @@ class DeclarationController @Inject()(
                                        authenticate: AuthAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
+                                       auditService: AuditService,
                                        val controllerComponents: MessagesControllerComponents,
                                        emailConnector: EmailConnector,
                                        minimalDetailsConnector: MinimalDetailsConnector,
@@ -56,12 +65,13 @@ class DeclarationController @Inject()(
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
+        val hasWorkingKnowledge = if (request.userAnswers.get(WorkingKnowledgeId).contains(true)) true else false
         SchemeNameId.retrieve.right.map { schemeName =>
 
           val json = Json.obj(
             "schemeName" -> schemeName,
             "isCompany" -> true,
-            "hasWorkingKnowledge" -> true,
+            "hasWorkingKnowledge" -> hasWorkingKnowledge,
             "submitUrl" -> routes.DeclarationController.onSubmit().url
           )
           renderer.render("declaration.njk", json).map(Ok(_))
@@ -97,16 +107,20 @@ class DeclarationController @Inject()(
       emailConnector.sendEmail(
         emailAddress = minimalPsa.email,
         templateName = appConfig.schemeConfirmationEmailTemplateId,
-        params = Map("psaName" -> minimalPsa.name, "schemeName"-> schemeName),
-        callbackUrl(psaId) //To be edited while implementing audit event
-      )
+        params = Map("psaName" -> minimalPsa.name, "schemeName" -> schemeName),
+        callbackUrl(psaId)
+      ).map {
+        status =>
+          auditService.sendEvent(EmailAuditEvent(psaId, SCHEME_MIG, minimalPsa.email))
+          status
+      }
     } recoverWith {
       case _: Throwable => Future.successful(EmailNotSent)
     }
   }
-  //To be edited while implementing audit event
+
   private def callbackUrl(psaId: String): String = {
-    val encryptedPsa = crypto.QueryParameterCrypto.encrypt(PlainText(psaId)).value
-    s"${appConfig.migrationUrl}/email-response/$encryptedPsa"
+    val encryptedPsa = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(psaId)).value, StandardCharsets.UTF_8.toString)
+    s"${appConfig.migrationUrl}/pensions-scheme-migration/email-response/${SCHEME_MIG}/$encryptedPsa"
   }
 }
