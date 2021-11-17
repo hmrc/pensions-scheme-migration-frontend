@@ -74,7 +74,7 @@ trait DataCompletion {
             get(HowProvideBenefitsId).map(_=>true),
             isAnswerComplete(AreBenefitsSecuredId),
             isAnswerComplete(IsInvestmentRegulatedId),
-            isAnswerComplete(IsOccupationalId),
+            isAnswerComplete(IsOccupationalId)
         ) ++ benefitsTypeCompletion ++ policyDetailsCompletion
       )
     }
