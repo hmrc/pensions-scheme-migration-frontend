@@ -27,8 +27,8 @@ import utils.{HttpResponseHelper, UserAnswers}
 import scala.concurrent.{ExecutionContext, Future}
 
 class PensionsSchemeConnector @Inject()(config: AppConfig,
-                                        http: HttpClient,
-                                           )  extends HttpResponseHelper {
+                                        http: HttpClient
+                                       ) extends HttpResponseHelper {
 
   def registerScheme(answers: UserAnswers, psaId: String, migrationType: MigrationType)
                     (implicit hc: HeaderCarrier,
@@ -39,7 +39,7 @@ class PensionsSchemeConnector @Inject()(config: AppConfig,
       .POST[JsValue, HttpResponse](url, Json.toJson(answers.data), Seq("psaId" -> psaId)).map { response =>
       response.status match {
         case OK =>
-         val json= Json.parse(response.body)
+          val json = Json.parse(response.body)
           (json \ "schemeReferenceNumber").validate[String] match {
             case JsSuccess(value, _) => value
             case JsError(errors) => throw JsResultException(errors)
