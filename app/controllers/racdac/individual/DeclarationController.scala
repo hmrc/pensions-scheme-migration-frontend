@@ -22,14 +22,18 @@ import connectors._
 import controllers.actions.{DataRetrievalAction, DataRequiredAction, AuthAction}
 import identifiers.beforeYouStart.SchemeNameId
 import models.JourneyType.RACDAC_IND_MIG
+import models.RacDac
 import models.requests.DataRequest
 import play.api.i18n.Lang.logger
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.{JsString, Json, __}
 import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.UserAnswers
 
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -44,6 +48,7 @@ class DeclarationController @Inject()(
                                        requireData: DataRequiredAction,
                                        auditService: AuditService,
                                        minimalDetailsConnector: MinimalDetailsConnector,
+                                       pensionsSchemeConnector:PensionsSchemeConnector,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer,
                                        emailConnector: EmailConnector,
@@ -74,13 +79,16 @@ class DeclarationController @Inject()(
         val userAnswers = request.userAnswers
         val racDacName = userAnswers.get(SchemeNameId)
           .getOrElse(throw new RuntimeException("Scheme Name is mandatory for RAC/DAC"))
-        //TODO need to use when calling connector for ETMP
-        // val policyNumberId= userAnswers.get(ContractOrPolicyNumberId)
-        //  .getOrElse(throw new RuntimeException("Policy Number is mandatory for RAC/DAC"))
-
-        sendEmail(racDacName, psaId)(implicitly).map { _ =>
-          Redirect(controllers.racdac.individual.routes.ConfirmationController.onPageLoad().url)
-        }
+            (for {
+              updatedUa <- Future.fromTry(userAnswers.set( __ \ "pstr",JsString(request.lock.pstr)))
+              _ <- pensionsSchemeConnector.registerScheme(UserAnswers(updatedUa.data), psaId, RacDac)
+              _ <- sendEmail(racDacName,psaId)
+            } yield {
+              Redirect(controllers.racdac.individual.routes.ConfirmationController.onPageLoad().url)
+            })recoverWith {
+              case _ =>
+                Future.successful(Redirect(controllers.routes.YourActionWasNotProcessedController.onPageLoadRacDac))
+            }
     }
 
   private def sendEmail(schemeName: String, psaId: String)

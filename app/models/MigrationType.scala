@@ -21,7 +21,7 @@ import utils.WithName
 
 sealed trait MigrationType
 
-case object Scheme extends WithName("") with MigrationType
+case object Scheme extends WithName("scheme") with MigrationType
 case object RacDac extends WithName("racdac") with MigrationType
 
 object MigrationType {

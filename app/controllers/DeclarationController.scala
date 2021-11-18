@@ -19,18 +19,25 @@ package controllers
 import audit.{EmailAuditEvent, AuditService}
 import config.AppConfig
 import connectors.{EmailNotSent, EmailConnector, EmailStatus, MinimalDetailsConnector}
+import connectors._
 import controllers.actions._
 import identifiers.beforeYouStart.SchemeNameId
 import models.JourneyType.SCHEME_MIG
+import models.Scheme
 import models.requests.DataRequest
 import play.api.i18n.Lang.logger
 import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.libs.json.Json
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.{JsString, Json, __}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
+import uk.gov.hmrc.http.HttpReads.is5xx
+import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import identifiers.beforeYouStart.WorkingKnowledgeId
+import utils.UserAnswers
 
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -47,6 +54,7 @@ class DeclarationController @Inject()(
                                        val controllerComponents: MessagesControllerComponents,
                                        emailConnector: EmailConnector,
                                        minimalDetailsConnector: MinimalDetailsConnector,
+                                       pensionsSchemeConnector:PensionsSchemeConnector,
                                        crypto: ApplicationCrypto,
                                        renderer: Renderer
                                      )(implicit val executionContext: ExecutionContext)
@@ -73,11 +81,22 @@ class DeclarationController @Inject()(
   def onSubmit: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        SchemeNameId.retrieve.right.map { schemeName =>
-          sendEmail(schemeName, request.psaId.id).map {
-            _ => Redirect(routes.SchemeSuccessController.onPageLoad())
-          }
+      SchemeNameId.retrieve.right.map { schemeName =>
+        val psaId = request.psaId.id
+        val userAnswers = request.userAnswers
+        (for {
+          updatedUa <- Future.fromTry(userAnswers.set( __ \ "pstr",JsString(request.lock.pstr)))
+          _ <- pensionsSchemeConnector.registerScheme(UserAnswers(updatedUa.data), psaId, Scheme)
+          _ <- sendEmail(schemeName, request.psaId.id)
+        } yield {
+          Redirect(routes.SchemeSuccessController.onPageLoad())
+        })recoverWith {
+          case ex: UpstreamErrorResponse if is5xx(ex.statusCode) =>
+            Future.successful(Redirect(controllers.routes.YourActionWasNotProcessedController.onPageLoadScheme))
+          case _ =>
+            Future.successful(Redirect(controllers.routes.TaskListController.onPageLoad))
         }
+      }
     }
 
   private def sendEmail(schemeName: String, psaId: String)
