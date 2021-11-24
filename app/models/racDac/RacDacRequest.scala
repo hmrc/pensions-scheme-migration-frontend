@@ -18,7 +18,7 @@ package models.racDac
 
 import play.api.libs.json.{Json, OFormat}
 
-case class RacDacRequest(schemeName: String, policyNumber: String)
+case class RacDacRequest(schemeName: String, policyNumber: String,pstr: String,declarationDate: String,schemeOpenDate: String)
 
 object RacDacRequest {
   implicit val requestFormat: OFormat[RacDacRequest] = Json.format

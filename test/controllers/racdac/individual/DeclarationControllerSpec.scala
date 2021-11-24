@@ -16,7 +16,7 @@
 
 package controllers.racdac.individual
 
-import connectors.{EmailConnector, EmailSent, MinimalDetailsConnector}
+import connectors.{EmailConnector, EmailSent, MinimalDetailsConnector, PensionsSchemeConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import matchers.JsonMatchers
@@ -24,13 +24,16 @@ import models.MinPSA
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
+import play.api.http.Status
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
+import uk.gov.hmrc.http.HttpReads.upstreamResponseMessage
+import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.Data.{psaName, ua}
+import utils.Data.{psaName, pstr, ua}
 import utils.Enumerable
 
 import scala.concurrent.Future
@@ -40,10 +43,12 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
   private val templateToBeRendered = "racdac/declaration.njk"
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  private val mockPensionsSchemeConnector:PensionsSchemeConnector = mock[PensionsSchemeConnector]
 
   val extraModules: Seq[GuiceableModule] = Seq(
     bind[EmailConnector].toInstance(mockEmailConnector),
-    bind[MinimalDetailsConnector].toInstance(mockMinimalDetailsConnector)
+    bind[MinimalDetailsConnector].toInstance(mockMinimalDetailsConnector),
+    bind[PensionsSchemeConnector].toInstance(mockPensionsSchemeConnector)
   )
 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
@@ -86,12 +91,26 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
         mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
         val minPSA = MinPSA("test@test.com", false, Some("test company"), None, false, false)
         when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(minPSA))
+        when(mockPensionsSchemeConnector.registerScheme(any(),any(), any())(any(),any())).thenReturn(Future.successful(pstr))
         when(mockEmailConnector.sendEmail(any(), any(), any(), any())(any(), any())).thenReturn(Future(EmailSent))
         val result = route(application, httpGETRequest(httpPathPOST)).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.racdac.individual.routes.ConfirmationController.onPageLoad().url)
       }
+    }
+    "redirect to your action was not processed page when backend returns 5XX" in {
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+      val minPSA = MinPSA("test@test.com", false, Some("test company"), None, false, false)
+      when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(minPSA))
+      when(mockPensionsSchemeConnector.registerScheme(any(),any(), any())(any(),any())).thenReturn(Future.failed(
+        UpstreamErrorResponse(upstreamResponseMessage("POST", "url",
+          Status.INTERNAL_SERVER_ERROR, "response.body"), Status.INTERNAL_SERVER_ERROR, Status.INTERNAL_SERVER_ERROR)))
+      when(mockEmailConnector.sendEmail(any(), any(), any(), any())(any(), any())).thenReturn(Future(EmailSent))
+      val result = route(application, httpGETRequest(httpPathPOST)).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.routes.YourActionWasNotProcessedController.onPageLoadRacDac.url)
     }
   }
 }

@@ -69,7 +69,7 @@ class DeclarationController @Inject()(
         val psaId = request.request.psaId.id
         val racDacSchemes = request.lisOfSchemes.filter(_.racDac).map { items =>
           RacDacRequest(items.schemeName, items.policyNo.getOrElse(
-            throw new RuntimeException("Policy Number is mandatory for RAC/DAC")))
+            throw new RuntimeException("Policy Number is mandatory for RAC/DAC")),items.pstr,items.declarationDate,items.schemeOpenDate)
         }
 
         bulkMigrationQueueConnector.pushAll(psaId, Json.toJson(racDacSchemes)).flatMap { _ =>

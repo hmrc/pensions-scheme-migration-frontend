@@ -26,7 +26,7 @@ import identifiers._
 import identifiers.establishers.company.address._
 import identifiers.establishers.company.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.company.details._
-import identifiers.establishers.company.{AddCompanyDirectorsId, CompanyDetailsId}
+import identifiers.establishers.company.{AddCompanyDirectorsId, CompanyDetailsId, OtherDirectorsId}
 import identifiers.establishers.individual.EstablisherNameId
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode, NormalMode}
@@ -68,6 +68,7 @@ class EstablishersCompanyNavigator @Inject()(config: AppConfig)
     case PreviousAddressId(index) => cyaAddress(index)
     case AddCompanyDirectorsId(index) =>
       addDirectors(index, ua)
+    case OtherDirectorsId(index) => controllers.routes.TaskListController.onPageLoad()
 
   }
 
@@ -86,6 +87,7 @@ class EstablishersCompanyNavigator @Inject()(config: AppConfig)
     case PAYEId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
     case EnterEmailId(index) => cyaContactDetails(index)
     case EnterPhoneId(index) => cyaContactDetails(index)
+    case OtherDirectorsId(index) => controllers.routes.TaskListController.onPageLoad()
   }
 
   private def cyaAddress(index:Int): Call = controllers.establishers.company.address.routes.CheckYourAnswersController.onPageLoad(index)
