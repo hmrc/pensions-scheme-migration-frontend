@@ -28,9 +28,12 @@ import identifiers.beforeYouStart.SchemeTypeId
 import models.Index._
 import models._
 import play.api.i18n.Messages
+import services.DataPrefillService
 import utils.{Enumerable, UserAnswers}
 
-class SpokeCreationService extends Enumerable.Implicits {
+import javax.inject.Inject
+
+class SpokeCreationService @Inject()(dataPrefillService: DataPrefillService) extends Enumerable.Implicits {
 
    def getAddEstablisherHeaderSpokes(answers: UserAnswers, viewOnly: Boolean)
                                    (implicit messages: Messages): Seq[EntitySpoke] =
@@ -72,7 +75,7 @@ class SpokeCreationService extends Enumerable.Implicits {
       createSpoke(answers, EstablisherCompanyDetails(index, answers), name),
       createSpoke(answers, EstablisherCompanyAddress(index, answers), name),
       createSpoke(answers, EstablisherCompanyContactDetails(index, answers), name),
-      createDirectorSpoke(answers.allDirectorsAfterDelete(indexToInt(index)), EstablisherCompanyDirectorDetails(index, answers), name)
+      createDirectorSpoke(answers.allDirectorsAfterDelete(indexToInt(index)), EstablisherCompanyDirectorDetails(index, answers, dataPrefillService), name)
     )
   }
 

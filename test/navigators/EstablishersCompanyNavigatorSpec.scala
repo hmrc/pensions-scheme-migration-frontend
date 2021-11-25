@@ -41,11 +41,13 @@ class EstablishersCompanyNavigatorSpec
     with TryValues {
 
   private val navigator: CompoundNavigator = injector.instanceOf[CompoundNavigator]
+
   private val index: Index = Index(0)
 
   private val addEstablisherPage: Call = controllers.establishers.routes.AddEstablisherController.onPageLoad()
   private val detailsUa: UserAnswers =
     ua.set(CompanyDetailsId(0), companyDetails).success.value
+
   private def uaWithValue[A](idType:TypedIdentifier[A], idValue:A)(implicit writes: Writes[A]) =
     detailsUa.set(idType, idValue).toOption
 

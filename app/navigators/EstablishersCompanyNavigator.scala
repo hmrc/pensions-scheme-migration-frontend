@@ -31,11 +31,12 @@ import identifiers.establishers.individual.EstablisherNameId
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode, NormalMode}
 import play.api.mvc.{AnyContent, Call}
+import services.DataPrefillService
 import utils.{Enumerable, UserAnswers}
 
 import javax.inject.Inject
 
-class EstablishersCompanyNavigator @Inject()(config: AppConfig)
+class EstablishersCompanyNavigator @Inject()(config: AppConfig, dataPrefillService: DataPrefillService)
   extends Navigator
     with Enumerable.Implicits {
 
@@ -88,31 +89,38 @@ class EstablishersCompanyNavigator @Inject()(config: AppConfig)
     case EnterPhoneId(index) => cyaContactDetails(index)
   }
 
-  private def cyaAddress(index:Int): Call = controllers.establishers.company.address.routes.CheckYourAnswersController.onPageLoad(index)
-  private def addressYears(index:Int, mode:Mode): Call = controllers.establishers.company.address.routes.AddressYearsController.onPageLoad(index)
+  private def cyaAddress(index: Int): Call = controllers.establishers.company.address.routes.CheckYourAnswersController.onPageLoad(index)
+
+  private def addressYears(index: Int, mode: Mode): Call = controllers.establishers.company.address.routes.AddressYearsController.onPageLoad(index)
+
   private def addDirectors(index: Int, answers: UserAnswers): Call = {
+    val noOfIndividualTrustees = dataPrefillService.getListOfTrustees(index)(answers).count(indv => !indv.isDeleted && indv.isComplete)
+    val addCompanyDirectors = answers.get(AddCompanyDirectorsId(index))
+
     if (answers.allDirectorsAfterDelete(index).isEmpty) {
       controllers.establishers.company.director.routes.DirectorNameController
         .onPageLoad(index, answers.allDirectors(index).size, NormalMode)
     } else if (answers.allDirectorsAfterDelete(index).length < config.maxDirectors) {
-      answers.get(AddCompanyDirectorsId(index)).map { addCompanyDirectors =>
-        if (addCompanyDirectors) {
-          controllers.establishers.company.director.routes.DirectorNameController
-            .onPageLoad(index, answers.allDirectors(index).size, NormalMode)
-        } else {
+      addCompanyDirectors match {
+        case Some(true) if noOfIndividualTrustees == 1 =>
+          controllers.establishers.company.director.routes.TrusteeAlsoDirectorController.onPageLoad(index)
+        case Some(true) if noOfIndividualTrustees > 1 =>
+          controllers.establishers.company.director.routes.TrusteesAlsoDirectorsController.onPageLoad(index)
+        case Some(true) =>
+          controllers.establishers.company.director.routes.DirectorNameController.onPageLoad(index, answers.allDirectors(index).size, NormalMode)
+        case _ =>
           controllers.establishers.company.routes.SpokeTaskListController.onPageLoad(index)
-        }
-      }.getOrElse(controllers.establishers.company.routes.SpokeTaskListController.onPageLoad(index))
-
-    }else {
-      controllers.establishers.company.routes.OtherDirectorsController.onPageLoad(index,NormalMode)
+      }
+    } else {
+      controllers.establishers.company.routes.OtherDirectorsController.onPageLoad(index, NormalMode)
     }
   }
+
   private def companyNumberRoutes(
-                                  index: Index,
-                                  answers: UserAnswers,
-                                  mode: Mode
-                                ): Call =
+                                   index: Index,
+                                   answers: UserAnswers,
+                                   mode: Mode
+                                 ): Call =
     answers.get(HaveCompanyNumberId(index)) match {
       case Some(true) => detailsRoutes.CompanyNumberController.onPageLoad(index, mode)
       case Some(false) => detailsRoutes.NoCompanyNumberReasonController.onPageLoad(index, mode)
@@ -120,22 +128,23 @@ class EstablishersCompanyNavigator @Inject()(config: AppConfig)
     }
 
   private def utrRoutes(
-                                   index: Index,
-                                   answers: UserAnswers,
-                                   mode: Mode
-                                 ): Call =
+                         index: Index,
+                         answers: UserAnswers,
+                         mode: Mode
+                       ): Call =
     answers.get(HaveUTRId(index)) match {
       case Some(true) => detailsRoutes.UTRController.onPageLoad(index, mode)
       case Some(false) => detailsRoutes.NoUTRReasonController.onPageLoad(index, mode)
       case None => controllers.routes.TaskListController.onPageLoad()
     }
-  private def cyaContactDetails(index:Int): Call = controllers.establishers.company.contact.routes.CheckYourAnswersController.onPageLoad(index)
+
+  private def cyaContactDetails(index: Int): Call = controllers.establishers.company.contact.routes.CheckYourAnswersController.onPageLoad(index)
 
   private def vatRoutes(
-                                   index: Index,
-                                   answers: UserAnswers,
-                                   mode: Mode
-                                 ): Call =
+                         index: Index,
+                         answers: UserAnswers,
+                         mode: Mode
+                       ): Call =
     answers.get(HaveVATId(index)) match {
       case Some(true) => detailsRoutes.VATController.onPageLoad(index, mode)
       case Some(false) if mode == NormalMode => detailsRoutes.HavePAYEController.onPageLoad(index, mode)
@@ -144,10 +153,10 @@ class EstablishersCompanyNavigator @Inject()(config: AppConfig)
     }
 
   private def payeRoutes(
-                         index: Index,
-                         answers: UserAnswers,
-                         mode: Mode
-                       ): Call =
+                          index: Index,
+                          answers: UserAnswers,
+                          mode: Mode
+                        ): Call =
     answers.get(HavePAYEId(index)) match {
       case Some(true) => detailsRoutes.PAYEController.onPageLoad(index, mode)
       case Some(false) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)

@@ -114,4 +114,10 @@ object TrusteesIndividualRoutes {
 
   def taskListRoute(index: Index, mode: Mode): Call = TrusteeIndividualController
     .onPageLoad(index, mode, "task-list")
+
+  def directorAlsoTrusteeRoute(index: Index, mode: Mode): Call = TrusteeIndividualController
+    .onPageLoad(index, mode, "director-also-trustee")
+
+  def directorsAlsoTrusteesRoute(index: Index, mode: Mode): Call = TrusteeIndividualController
+    .onPageLoad(index, mode, "directors-also-trustees")
 }

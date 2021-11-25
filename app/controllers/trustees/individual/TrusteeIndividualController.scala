@@ -50,6 +50,8 @@ class TrusteeIndividualController @Inject()(
   enterPreviousPostcodeController: address.EnterPreviousPostcodeController,
   selectPreviousAddressController: address.SelectPreviousAddressController,
   confirmPreviousAddressController: address.ConfirmPreviousAddressController,
+  directorsAlsoTrusteesController: DirectorsAlsoTrusteesController,
+  directorAlsoTrusteeController: DirectorAlsoTrusteeController,
   taskListController: SpokeTaskListController)
   (implicit val executionContext: ExecutionContext) {
 
@@ -80,6 +82,8 @@ class TrusteeIndividualController @Inject()(
       case "previous-address-results" => selectPreviousAddressController.onPageLoad(index)
       case "confirm-previous-address" => confirmPreviousAddressController.onPageLoad(index)
       case "task-list" => taskListController.onPageLoad(index)
+      case "director-also-trustee" => directorAlsoTrusteeController.onPageLoad(index)
+      case "directors-also-trustees" => directorsAlsoTrusteesController.onPageLoad(index)
       case _ => throw new RuntimeException("No route")
     }
   }
@@ -104,6 +108,8 @@ class TrusteeIndividualController @Inject()(
       case "enter-previous-postcode" => enterPreviousPostcodeController.onSubmit(index)
       case "previous-address-results" => selectPreviousAddressController.onSubmit(index)
       case "confirm-previous-address" => confirmPreviousAddressController.onSubmit(index)
+      case "director-also-trustee" => directorAlsoTrusteeController.onSubmit(index)
+      case "directors-also-trustees" => directorsAlsoTrusteesController.onSubmit(index)
       case _ => throw new RuntimeException("No route")
     }
   }

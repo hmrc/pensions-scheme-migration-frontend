@@ -21,20 +21,32 @@ import helpers.spokes.Spoke
 import models.Index.indexToInt
 import models.{Index, NormalMode, SpokeTaskListLink}
 import play.api.i18n.Messages
+import services.DataPrefillService
 import utils.UserAnswers
 
 
 case class EstablisherCompanyDirectorDetails(
                                          index: Index,
-                                         answers: UserAnswers
+                                         answers: UserAnswers,
+                                         dataPrefillService: DataPrefillService
                                        ) extends Spoke {
   val messageKeyPrefix = "messages__schemeTaskList__directors_"
   val isDirectorNotExists= answers.allDirectorsAfterDelete(indexToInt(index)).isEmpty
-  val linkKeyAndRoute: (String, String) =
-    if (isDirectorNotExists)
-      (s"${messageKeyPrefix}addLink", WhatYouWillNeedController.onPageLoad(index).url)
-    else
-      (s"${messageKeyPrefix}changeLink", controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(index,NormalMode).url)
+  val noOfIndividualTrustees = dataPrefillService.allIndividualTrustees(answers).count(indv => !indv.isDeleted && indv.isComplete)
+  val linkKeyAndRoute: (String, String) = {
+    isDirectorNotExists match {
+      case _ if noOfIndividualTrustees > 1 =>
+        (if(isDirectorNotExists) s"${messageKeyPrefix}addLink" else s"${messageKeyPrefix}changeLink",
+          controllers.establishers.company.director.routes.TrusteesAlsoDirectorsController.onPageLoad(index).url)
+      case _ if noOfIndividualTrustees == 1 =>
+        (if(isDirectorNotExists) s"${messageKeyPrefix}addLink" else s"${messageKeyPrefix}changeLink",
+          controllers.establishers.company.director.routes.TrusteeAlsoDirectorController.onPageLoad(index).url)
+      case true =>
+        (s"${messageKeyPrefix}addLink", WhatYouWillNeedController.onPageLoad(index).url)
+      case _ =>
+        (s"${messageKeyPrefix}changeLink", controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(index,NormalMode).url)
+    }
+  }
 
   override def changeLink(name: String)
                          (implicit messages: Messages): SpokeTaskListLink =

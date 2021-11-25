@@ -28,6 +28,7 @@ import models.requests.DataRequest
 import models.{CheckMode, Index, Mode, NormalMode}
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
+import Index.intToIndex
 
 class EstablishersCompanyDirectorNavigator
   extends Navigator
@@ -57,6 +58,9 @@ class EstablishersCompanyDirectorNavigator
     case EnterPhoneId(establisherIndex, directorIndex) => cyaDetails(establisherIndex, directorIndex)
     case ConfirmDeleteDirectorId(establisherIndex) =>
       controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(establisherIndex, NormalMode)
+    case TrusteeAlsoDirectorId(establisherIndex) => trusteeAlsoDirectorRoutes(establisherIndex, ua)
+    case TrusteesAlsoDirectorsId(establisherIndex) => trusteesAlsoDirectorsRoutes(establisherIndex, ua)
+
   }
 
   override protected def editRouteMap(ua: UserAnswers)
@@ -125,5 +129,31 @@ class EstablishersCompanyDirectorNavigator
       case Some(false) => DirectorNoUTRReasonController.onPageLoad(establisherIndex, directorIndex, mode)
       case None => controllers.routes.TaskListController.onPageLoad()
     }
+
+  private def trusteeAlsoDirectorRoutes(establisherIndex: Index, answers: UserAnswers): Call = {
+    val noneValue = 11
+    (answers.get(TrusteeAlsoDirectorId(establisherIndex)), answers.allDirectorsAfterDelete(establisherIndex).nonEmpty) match {
+      case (Some(value), true) if value == noneValue =>
+        controllers.establishers.company.director.routes.DirectorNameController.onPageLoad(establisherIndex,
+          answers.allDirectors(establisherIndex).size, NormalMode)
+      case (Some(value), false) if value == noneValue =>
+        controllers.establishers.company.director.details.routes.WhatYouWillNeedController.onPageLoad(establisherIndex)
+      case _ =>
+        controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(establisherIndex, NormalMode)
+    }
+  }
+
+  private def trusteesAlsoDirectorsRoutes(establisherIndex: Index, answers: UserAnswers): Call = {
+    val noneValue = 11
+    (answers.get(TrusteesAlsoDirectorsId(establisherIndex)), answers.allDirectorsAfterDelete(establisherIndex).nonEmpty) match {
+      case (Some(value), true) if value.size == 1 && value.contains(noneValue) =>
+        controllers.establishers.company.director.routes.DirectorNameController.onPageLoad(establisherIndex,
+          answers.allDirectors(establisherIndex).size, NormalMode)
+      case (Some(value), false) if value.size == 1 && value.contains(noneValue) =>
+        controllers.establishers.company.director.details.routes.WhatYouWillNeedController.onPageLoad(establisherIndex)
+      case _ =>
+        controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(establisherIndex, NormalMode)
+    }
+  }
 }
 
