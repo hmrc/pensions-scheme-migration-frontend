@@ -17,11 +17,12 @@
 package controllers
 
 import config.AppConfig
+import connectors.ListOfSchemesConnector
 import connectors.cache.LockCacheConnector
 import controllers.actions.AuthAction
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, MissingBearerToken}
+import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
@@ -32,23 +33,17 @@ class LogoutController @Inject()(
                                   appConfig: AppConfig,
                                   val controllerComponents: MessagesControllerComponents,
                                   authenticate: AuthAction,
-                                  lockCacheConnector: LockCacheConnector
+                                  lockCacheConnector: LockCacheConnector,
+                                  listOfSchemesConnector:ListOfSchemesConnector
                                 )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport with AuthorisedFunctions {
 
-  def onPageLoad(): Action[AnyContent] = Action.async {
+  def onPageLoad(): Action[AnyContent] = authenticate.async {
     implicit request =>
-      authorised().retrieve(uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.externalId) {
-        case Some(id) =>
-          lockCacheConnector.removeLockByUser.map { _ =>
-              Redirect(appConfig.serviceSignOut).withNewSession
-            }
-        case _ =>
-          Future.successful(Redirect(routes.UnauthorisedController.onPageLoad()))
-      } recover {
-        case _: MissingBearerToken =>
-          Redirect(appConfig.serviceSignOut).withNewSession
+      lockCacheConnector.removeLockByUser.map { _ =>
+        listOfSchemesConnector.removeCache(request.psaId.id)
+        Redirect(appConfig.serviceSignOut).withNewSession
       }
   }
 

@@ -17,7 +17,7 @@
 package controllers.racdac.individual
 
 import config.AppConfig
-import connectors.MinimalDetailsConnector
+import connectors.{ListOfSchemesConnector, MinimalDetailsConnector}
 import connectors.cache.{CurrentPstrCacheConnector, LockCacheConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import helpers.cya.CYAHelper
@@ -40,6 +40,7 @@ class ConfirmationController @Inject()(appConfig: AppConfig,
                                        userAnswersCacheConnector: UserAnswersCacheConnector,
                                        currentPstrCacheConnector:CurrentPstrCacheConnector,
                                        lockCacheConnector:LockCacheConnector,
+                                       listOfSchemesConnector:ListOfSchemesConnector,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer
                                        )(implicit ec: ExecutionContext)
@@ -55,6 +56,7 @@ class ConfirmationController @Inject()(appConfig: AppConfig,
             _ <- currentPstrCacheConnector.remove
             _ <- lockCacheConnector.removeLock(request.lock)
             _ <- userAnswersCacheConnector.remove(request.lock.pstr)
+            _ <- listOfSchemesConnector.removeCache(request.psaId.id)
           } yield {
             Json.obj(
               "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),

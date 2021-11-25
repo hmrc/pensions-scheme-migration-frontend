@@ -16,7 +16,7 @@
 
 package controllers.racdac.individual
 
-import connectors.MinimalDetailsConnector
+import connectors.{ListOfSchemesConnector, MinimalDetailsConnector}
 import connectors.cache.{CurrentPstrCacheConnector, LockCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
@@ -44,9 +44,11 @@ class ConfirmationControllerSpec extends ControllerSpecBase with NunjucksSupport
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val mockCurrentPstrCacheConnector: CurrentPstrCacheConnector = mock[CurrentPstrCacheConnector]
   private val mockLockCacheConnector: LockCacheConnector = mock[LockCacheConnector]
+  private val mockListOfSchemesConnector: ListOfSchemesConnector = mock[ListOfSchemesConnector]
   private val extraModules: Seq[GuiceableModule] = Seq(
     bind[MinimalDetailsConnector].to(mockMinimalDetailsConnector),
     bind[CurrentPstrCacheConnector].to(mockCurrentPstrCacheConnector),
+    bind[ListOfSchemesConnector].to(mockListOfSchemesConnector),
     bind[LockCacheConnector].to(mockLockCacheConnector)
   )
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
@@ -68,6 +70,7 @@ class ConfirmationControllerSpec extends ControllerSpecBase with NunjucksSupport
     when(mockUserAnswersCacheConnector.remove(any())(any(), any())).thenReturn(Future.successful(Ok))
     when(mockCurrentPstrCacheConnector.remove(any(), any())).thenReturn(Future.successful(Ok))
     when(mockLockCacheConnector.removeLock(any())(any(), any())).thenReturn(Future.successful(Ok))
+    when(mockListOfSchemesConnector.removeCache(any())(any(), any())).thenReturn(Future.successful(Ok))
   }
 
   "ConfirmationController" must {
