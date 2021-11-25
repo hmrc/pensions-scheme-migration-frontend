@@ -24,7 +24,7 @@ object DataPrefillRadio {
 
   def radios(form: Form[_], values: Seq[(String, Int)]): Seq[Radios.Item] = {
     val items = values.map(value => Radios.Radio(Literal(value._1), value._2.toString)) :+
-      Radios.Radio(msg"messages__directors__prefill__label__none", "11")
+      Radios.Radio(msg"messages__prefill__label__none", "11")
     Radios(form("value"), items)
   }
 }
