@@ -1125,6 +1125,12 @@ messages__thereIsAProblem__title = There is a problem with the service
 messages__thereIsAProblem__heading = Sorry, there is a problem with the service
 messages__thereIsAProblem__p1 = Try again later.
 
+messages__yourActionWasNotProcessed__title = Sorry, your action was not processed
+messages__yourActionWasNotProcessed__heading = Sorry, your action was not processed
+messages__yourActionWasNotProcessed__p1 = Try again later.
+messages__yourActionWasNotProcessed__p2 = Any information entered will have been saved from the last ‘save and continue’.
+messages__yourActionWasNotProcessed__p3 = If the problem persists you can tell us about it using the link below.
+
 messages__directors__prefill__title = Which of these trustees is also a director
 messages__directors__prefill__heading = Which of these trustees is also a director of {0}
 messages__directors__prefill__single__error__required = Select if the trustee is also a director. If the trustee is not also a director, select "none of the above"

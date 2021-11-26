@@ -56,7 +56,7 @@ pipelineStages in Assets := Seq(concat, uglify)
   .settings(
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;.*models.*;.*repositories.*;" +
       ".*BuildInfo.*;.*javascript.*;.*Routes.*;.*GuiceInjector;.*UserAnswersCacheConnector;" +
-      ".*ControllerConfiguration;.*LanguageSwitchController;.*TestMongoController;.*LanguageSelect.*;.*TestMongoPage.*;.*ErrorTemplate.*",
+      ".*ControllerConfiguration;.*LanguageSwitchController;.*LanguageSelect.*;.*TestMongoPage.*;.*ErrorTemplate.*",
     ScoverageKeys.coverageMinimum := 80,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
