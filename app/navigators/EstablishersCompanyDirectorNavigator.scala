@@ -131,6 +131,7 @@ class EstablishersCompanyDirectorNavigator
 
   private def trusteeAlsoDirectorRoutes(establisherIndex: Index, answers: UserAnswers): Call = {
     val noneValue = 11
+    println("\n\n\n answers : "+answers)
     (answers.get(TrusteeAlsoDirectorId(establisherIndex)), answers.allDirectorsAfterDelete(establisherIndex).nonEmpty) match {
       case (Some(value), true) if value == noneValue =>
         controllers.establishers.company.director.routes.DirectorNameController.onPageLoad(establisherIndex,

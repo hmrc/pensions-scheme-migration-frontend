@@ -75,6 +75,7 @@ class AddCompanyDirectorsController @Inject()(
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
 
+        println("\n\n\n request.userAnswers : "+request.userAnswers)
         val directors = request.userAnswers.allDirectorsAfterDelete(index)
         val itemList=   helper.directorsOrPartnersItemList(directors)
         renderer.render(

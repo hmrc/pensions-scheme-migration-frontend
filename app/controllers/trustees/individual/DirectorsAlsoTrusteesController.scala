@@ -50,7 +50,7 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
                                                 config: AppConfig,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 renderer: Renderer
-                                    )(implicit val executionContext: ExecutionContext) extends FrontendBaseController
+                                               )(implicit val executionContext: ExecutionContext) extends FrontendBaseController
   with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
   private def form(implicit ua: UserAnswers): Form[List[Int]] = {
@@ -63,20 +63,20 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
   def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
-       implicit val ua: UserAnswers = request.userAnswers
+        implicit val ua: UserAnswers = request.userAnswers
         val seqDirector = dataPrefillService.getListOfDirectorsToBeCopied
         if (seqDirector.nonEmpty) {
-        val json = Json.obj(
-          "form" -> form,
-          "schemeName" -> schemeName,
-          "pageHeading" -> msg"messages__trustees__prefill__title",
-          "titleMessage" -> msg"messages__trustees__prefill__heading",
-          "trusteeCheckboxes" -> DataPrefillCheckbox.checkboxes(form,
-            seqDirector.map(director => (director.fullName, director.index)))
-        )
+          val json = Json.obj(
+            "form" -> form,
+            "schemeName" -> schemeName,
+            "pageHeading" -> msg"messages__trustees__prefill__title",
+            "titleMessage" -> msg"messages__trustees__prefill__heading",
+            "trusteeCheckboxes" -> DataPrefillCheckbox.checkboxes(form,
+              seqDirector.map(director => (director.fullName, director.index)))
+          )
 
-        renderer.render("dataPrefillCheckbox.njk", json).map(Ok(_))
-      } else {
+          renderer.render("dataPrefillCheckbox.njk", json).map(Ok(_))
+        } else {
           Future(Redirect(controllers.routes.TaskListController.onPageLoad()))
         }
       }
@@ -101,13 +101,14 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
             renderer.render("dataPrefillCheckbox.njk", json).map(BadRequest(_))
           },
           value => {
-            val uaAfterCopy = if(value.headOption.getOrElse(0) < config.maxTrustees) {
+            val uaAfterCopy = if (value.headOption.getOrElse(0) < config.maxTrustees) {
               dataPrefillService.copyAllDirectorsToTrustees(ua, value,
                 seqDirector.headOption.flatMap(_.mainIndex).getOrElse(0))
             } else ua
             val updatedUa = uaAfterCopy.setOrException(DirectorsAlsoTrusteesId(establisherIndex), value)
-            userAnswersCacheConnector.save(request.lock, updatedUa.data)
-            Future(Redirect(navigator.nextPage(DirectorsAlsoTrusteesId(establisherIndex), updatedUa)))
+            userAnswersCacheConnector.save(request.lock, updatedUa.data).map { _ =>
+              Redirect(navigator.nextPage(DirectorsAlsoTrusteesId(establisherIndex), updatedUa))
+            }
           }
         )
       }

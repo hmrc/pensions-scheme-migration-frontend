@@ -150,14 +150,12 @@ class DataPrefillService @Inject()() extends Enumerable.Implicits {
 
   def getListOfTrusteesToBeCopied(establisherIndex: Int)(implicit ua: UserAnswers): Seq[IndividualDetails] = {
     val filteredTrusteesSeq = allIndividualTrustees.filter(indv => !indv.isDeleted && indv.isComplete)
-    println("\n\n\n filteredTrusteesSeq : "+filteredTrusteesSeq)
     val allDirectors = (ua.data \ "establishers" \ establisherIndex \ "director").validate[JsArray].asOpt match {
       case Some(arr) => arr.value.zipWithIndex.flatMap { jsValueWithIndex =>
         jsValueWithIndex._1.validate[IndividualDetails](readsDirector(establisherIndex, jsValueWithIndex._2)).asOpt
       }
       case _ => Nil
     }
-    println("\n\n\n allDirectors : "+allDirectors)
     filteredTrusteesSeq.filterNot { trustee =>
       val allDirectorsNotDeleted = allDirectors.filter(!_.isDeleted)
       trustee.nino.map(ninoVal => allDirectorsNotDeleted.exists(_.nino.contains(ninoVal)))

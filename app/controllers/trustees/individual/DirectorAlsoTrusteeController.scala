@@ -16,6 +16,7 @@
 
 package controllers.trustees.individual
 
+import uk.gov.hmrc.viewmodels.MessageInterpolators
 import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
@@ -33,7 +34,6 @@ import renderer.Renderer
 import services.DataPrefillService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.{Enumerable, UserAnswers}
 
 import javax.inject.Inject
@@ -89,8 +89,8 @@ class DirectorAlsoTrusteeController @Inject()(override val messagesApi: Messages
             val json = Json.obj(
               "form" -> formWithErrors,
               "schemeName" -> schemeName,
-              "pageHeading" -> "messages__trustees__prefill__title",
-              "titleMessage" -> "messages__trustees__prefill__heading",
+              "pageHeading" -> msg"messages__trustees__prefill__title",
+              "titleMessage" -> msg"messages__trustees__prefill__heading",
               "radios" -> DataPrefillRadio.radios(form,
                 seqDirector.map(director => (director.fullName, director.index)))
             )
@@ -100,8 +100,9 @@ class DirectorAlsoTrusteeController @Inject()(override val messagesApi: Messages
             val uaAfterCopy = if (value > config.maxTrustees) ua else dataPrefillService.copyAllDirectorsToTrustees(ua, Seq(value),
               seqDirector.headOption.flatMap(_.mainIndex).getOrElse(0))
             val updatedUa = uaAfterCopy.setOrException(DirectorAlsoTrusteeId(index), value)
-            userAnswersCacheConnector.save(request.lock, updatedUa.data)
-            Future(Redirect(navigator.nextPage(DirectorAlsoTrusteeId(index), updatedUa)))
+            userAnswersCacheConnector.save(request.lock, updatedUa.data).map { _ =>
+              Redirect(navigator.nextPage(DirectorAlsoTrusteeId(index), updatedUa))
+            }
           }
         )
       }

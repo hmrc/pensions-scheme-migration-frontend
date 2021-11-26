@@ -33,13 +33,12 @@ case class EstablisherCompanyDirectorDetails(
   val messageKeyPrefix = "messages__schemeTaskList__directors_"
   val isDirectorNotExists= answers.allDirectorsAfterDelete(indexToInt(index)).isEmpty
   val noOfIndividualTrustees = dataPrefillService.getListOfTrusteesToBeCopied(index)(answers).size
-  println("\n\n\n noOfIndividualTrustees : "+dataPrefillService.allIndividualTrustees(answers))
   val linkKeyAndRoute: (String, String) = {
     isDirectorNotExists match {
-      case _ if noOfIndividualTrustees > 1 =>
+      case true if noOfIndividualTrustees > 1 =>
         (if(isDirectorNotExists) s"${messageKeyPrefix}addLink" else s"${messageKeyPrefix}changeLink",
           controllers.establishers.company.director.routes.TrusteesAlsoDirectorsController.onPageLoad(index).url)
-      case _ if noOfIndividualTrustees == 1 =>
+      case true if noOfIndividualTrustees == 1 =>
         (if(isDirectorNotExists) s"${messageKeyPrefix}addLink" else s"${messageKeyPrefix}changeLink",
           controllers.establishers.company.director.routes.TrusteeAlsoDirectorController.onPageLoad(index).url)
       case true =>

@@ -90,17 +90,19 @@ class TrusteeAlsoDirectorController @Inject()(override val messagesApi: Messages
               "form" -> formWithErrors,
               "schemeName" -> schemeName,
               "pageHeading" -> msg"messages__directors__prefill__title",
-              "titleMessage" -> msg"messages__directors__prefill__title".withArgs(companyName.companyName).resolve,
+              "titleMessage" -> msg"messages__directors__prefill__heading".withArgs(companyName.companyName).resolve,
               "radios" -> DataPrefillRadio.radios(form,
                 seqTrustee.map(trustee => (trustee.fullName, trustee.index)))
             )
             renderer.render("dataPrefillRadio.njk", json).map(BadRequest(_))
           },
           value => {
-            val uaAfterCopy = if(value > config.maxDirectors) ua else dataPrefillService.copyAllTrusteesToDirectors(ua, Seq(value), establisherIndex)
+            def uaAfterCopy: UserAnswers = if(value > config.maxDirectors) ua else
+              dataPrefillService.copyAllTrusteesToDirectors(ua, Seq(value), establisherIndex)
             val updatedUa = uaAfterCopy.setOrException(TrusteeAlsoDirectorId(establisherIndex), value)
-            userAnswersCacheConnector.save(request.lock, updatedUa.data)
-            Future(Redirect(navigator.nextPage(TrusteeAlsoDirectorId(establisherIndex), updatedUa)))
+            userAnswersCacheConnector.save(request.lock, updatedUa.data).map {_ =>
+              Redirect(navigator.nextPage(TrusteeAlsoDirectorId(establisherIndex), updatedUa))
+            }
           }
         )
       }

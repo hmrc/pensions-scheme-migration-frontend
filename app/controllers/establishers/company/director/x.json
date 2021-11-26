@@ -1,0 +1,233 @@
+{
+  "establishers": [
+    {
+      "establisherDetails": {
+        "firstName": "User",
+        "lastName": "One One"
+      },
+      "hasNino": true,
+      "address": {
+        "country": "NO",
+        "postcode": "TF3 5TR",
+        "addressLine1": "addressline123",
+        "addressLine2": "addressline234",
+        "addressLine3": "addressline3",
+        "addressLine4": "addressline4"
+      },
+      "phone": "0042334",
+      "establisherKind": "individual",
+      "dateOfBirth": "1955-03-29",
+      "email": "aye@h.com",
+      "nino": {
+        "value": "AA999999A"
+      }
+    },
+    {
+      "establisherDetails": {
+        "firstName": "Second",
+        "lastName": "User"
+      },
+      "hasNino": false,
+      "noNinoReason": "Test",
+      "address": {
+        "country": "NO",
+        "postcode": "",
+        "addressLine1": "addressline1",
+        "addressLine2": "addressline2",
+        "addressLine3": "",
+        "addressLine4": ""
+      },
+      "phone": "00442335",
+      "establisherKind": "individual",
+      "dateOfBirth": "1955-03-29",
+      "email": "bbb@gmail.com"
+    },
+    {
+      "havePaye": false,
+      "haveCompanyNumber": false,
+      "address": {
+        "postcode": "",
+        "addressLine1": "sdfdsf",
+        "addressLine2": "sdfdsf",
+        "addressLine3": "",
+        "addressLine4": ""
+      },
+      "companyDetails": {
+        "companyName": "dsfdsf"
+      },
+      "phone": "23234",
+      "establisherKind": "company",
+      "noCompanyNumberReason": "fsdfdsf",
+      "haveVat": false,
+      "email": "sdf@sdf"
+    },
+    {
+      "havePaye": true,
+      "haveCompanyNumber": true,
+      "address": {
+        "country": "LI",
+        "postcode": "",
+        "addressLine1": "sdfdsfdsf",
+        "addressLine2": "sdfdsfdsf",
+        "addressLine3": "",
+        "addressLine4": ""
+      },
+      "companyDetails": {
+        "companyName": "sfdsfdsfsdf"
+      },
+      "companyNumber": {
+        "value": "123458"
+      },
+      "establisherKind": "company",
+      "vat": {
+        "value": "123456789"
+      },
+      "paye": {
+        "value": "123AB456"
+      },
+      "haveVat": true,
+      "email": "sdfds@dfdsf",
+      "director": [
+        {
+          "hasNino": true,
+          "address": {
+            "country": "NO",
+            "postcode": "TF3 8TR",
+            "addressLine1": "addressline1",
+            "addressLine2": "addressline2",
+            "addressLine3": "addressline3",
+            "addressLine4": "addressline4"
+          },
+          "addressYears": true,
+          "noUtrReason": "lk",
+          "dateOfBirth": "1955-03-29",
+          "hasUtr": false,
+          "directorDetails": {
+            "firstName": "Third",
+            "lastName": "User"
+          },
+          "directorContactDetails": {
+            "emailAddress": "sS@s.com",
+            "phoneNumber": "0142334"
+          },
+          "nino": {
+            "value": "AA999999B"
+          }
+        },
+        {
+          "hasNino": false,
+          "noNinoReason": "Test",
+          "address": {
+            "country": "GB",
+            "postcode": "",
+            "addressLine1": "addressline1",
+            "addressLine2": "addressline2",
+            "addressLine3": "",
+            "addressLine4": ""
+          },
+          "addressYears": true,
+          "noUtrReason": "jj",
+          "dateOfBirth": "1955-03-30",
+          "hasUtr": false,
+          "directorDetails": {
+            "firstName": "Fourth",
+            "lastName": "User"
+          },
+          "directorContactDetails": {
+            "emailAddress": "ddb@gmail.com",
+            "phoneNumber": "00442735"
+          }
+        }
+      ],
+      "trusteeAlsoDirector": 1
+    }
+  ],
+  "schemeType": {
+    "name": "other"
+  },
+  "occupationalPensionScheme": true,
+  "schemeName": "Legacy Scheme Filled",
+  "relationshipStartDate": "2017-04-06",
+  "currentMembers": "opt2",
+  "schemeOpenDate": "2017-04-06",
+  "expireAt": 1640304000000,
+  "schemeEstablishedCountry": "SI",
+  "securedBenefits": false,
+  "investmentRegulated": true,
+  "trustees": [
+    {
+      "hasNino": true,
+      "address": {
+        "country": "NO",
+        "postcode": "TF3 8TR",
+        "addressLine1": "addressline1",
+        "addressLine2": "addressline2",
+        "addressLine3": "addressline3",
+        "addressLine4": "addressline4"
+      },
+      "phone": "0142334",
+      "dateOfBirth": "1955-03-29",
+      "trusteeKind": "individual",
+      "trusteeDetails": {
+        "firstName": "Third",
+        "lastName": "User"
+      },
+      "nino": {
+        "value": "AA999999B"
+      },
+      "hasUtr": false,
+      "noUtrReason": "lk",
+      "addressYears": true,
+      "email": "sS@s.com"
+    },
+    {
+      "hasNino": false,
+      "noNinoReason": "Test",
+      "address": {
+        "country": "GB",
+        "postcode": "",
+        "addressLine1": "addressline1",
+        "addressLine2": "addressline2",
+        "addressLine3": "",
+        "addressLine4": ""
+      },
+      "phone": "00442735",
+      "dateOfBirth": "1955-03-30",
+      "trusteeKind": "individual",
+      "trusteeDetails": {
+        "firstName": "Fourth",
+        "lastName": "User"
+      },
+      "email": "ddb@gmail.com",
+      "hasUtr": false,
+      "noUtrReason": "jj",
+      "addressYears": true
+    },
+    {
+      "havePaye": true,
+      "haveCompanyNumber": false,
+      "address": {
+        "country": "NL",
+        "postcode": "",
+        "addressLine1": "asdasd",
+        "addressLine2": "asdsada",
+        "addressLine3": "",
+        "addressLine4": ""
+      },
+      "companyDetails": {
+        "companyName": "asdsad"
+      },
+      "vat": {
+        "value": "222456289"
+      },
+      "paye": {
+        "value": "123AB456"
+      },
+      "noCompanyNumberReason": "dsfdsfsdf",
+      "haveVat": true,
+      "trusteeKind": "company",
+      "email": "asdasd@dfdsf"
+    }
+  ],
+  "racDac": false
+}
