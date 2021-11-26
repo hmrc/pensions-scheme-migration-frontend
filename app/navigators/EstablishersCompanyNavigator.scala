@@ -95,10 +95,7 @@ class EstablishersCompanyNavigator @Inject()(config: AppConfig, dataPrefillServi
 
   private def addDirectors(index: Int, answers: UserAnswers): Call = {
     val noOfIndividualTrustees = dataPrefillService.getListOfTrusteesToBeCopied(index)(answers).count(indv => !indv.isDeleted && indv.isComplete)
-    println("\n\n\n noOfIndividualTrustees : "+noOfIndividualTrustees)
     val addCompanyDirectors = answers.get(AddCompanyDirectorsId(index))
-println("\n\n\n add: "+answers.get(AddCompanyDirectorsId(index)))
-println("\n\n\n ddd: "+answers.allDirectorsAfterDelete(index).length)
     if (answers.allDirectorsAfterDelete(index).isEmpty) {
       controllers.establishers.company.director.routes.DirectorNameController
         .onPageLoad(index, answers.allDirectors(index).size, NormalMode)
