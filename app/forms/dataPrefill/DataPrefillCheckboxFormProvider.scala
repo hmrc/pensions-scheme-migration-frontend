@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms
+package forms.dataPrefill
 
 import forms.mappings.{DataPrefillConstraints, Mappings}
 import play.api.data.Form
@@ -22,7 +22,7 @@ import play.api.data.Forms.list
 
 import javax.inject.Inject
 
-class DataPrefillMultiFormProvider @Inject() extends Mappings with DataPrefillConstraints {
+class DataPrefillCheckboxFormProvider @Inject() extends Mappings with DataPrefillConstraints {
 
   def apply(entityCount: Int, requiredError: String, noneSelectedWithValueError: String, moreThanTenError: String): Form[List[Int]] =
     Form(

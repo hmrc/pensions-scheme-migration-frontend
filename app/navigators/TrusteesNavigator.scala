@@ -94,7 +94,7 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
                                  index: Index,
                                  ua: UserAnswers
                                ): Call = {
-    val noOfDirectors = dataPrefillService.getListOfDirectors(ua).size
+    val noOfDirectors = dataPrefillService.getListOfDirectorsToBeCopied(ua).size
     ua.get(TrusteeKindId(index)) match {
       case Some(TrusteeKind.Individual) if noOfDirectors == 1 =>
         TrusteesIndividualRoutes.directorAlsoTrusteeRoute(index, NormalMode)

@@ -21,12 +21,11 @@ import matchers.JsonMatchers
 import models.prefill.IndividualDetails
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
 import utils.{Enumerable, UaJsValueGenerators, UserAnswers}
-
 import java.time.LocalDate
-
 
 class DataPrefillServiceSpec extends SpecBase with JsonMatchers with Enumerable.Implicits with UaJsValueGenerators {
   private val dataPrefillService = new DataPrefillService()
+
   "copyAllDirectorsToTrustees" must {
     "copy all the selected directors to trustees" in {
       forAll(uaJsValueWithNino) {
@@ -58,19 +57,37 @@ class DataPrefillServiceSpec extends SpecBase with JsonMatchers with Enumerable.
     "return the directors which are non deleted, completed and their nino is not matching with any of the existing trustees" in {
       forAll(uaJsValueWithNino) {
         ua => {
-          val result = dataPrefillService.getListOfDirectors(UserAnswers(ua))
+          val result = dataPrefillService.getListOfDirectorsToBeCopied(UserAnswers(ua))
           result mustBe Seq(IndividualDetails("Test", "User 3", false, Some("CS700300A"), Some(LocalDate.parse("1999-03-13")), 2, true, Some(0)))
+        }
+      }
+    }
+
+    "return the directors which are non deleted, completed, no nino and their name and dob is not matching with any of the existing trustees" in {
+      forAll(uaJsValueWithNoNino) {
+        ua => {
+          val result = dataPrefillService.getListOfDirectorsToBeCopied(UserAnswers(ua))
+          result mustBe Seq(IndividualDetails("Test", "User 3", false, None, Some(LocalDate.parse("1999-03-13")), 2, true, Some(0)))
         }
       }
     }
   }
 
-  "getListOfTrustees" must {
-    "return the trustees which are non deleted, completed and their nino/name with dob is not matching with any of the existing trustees" in {
+  "getListOfTrusteesToBeCopied" must {
+    "return the trustees which are non deleted, completed, no nino and their name and dob is not matching with any of the existing directors" in {
       forAll(uaJsValueWithNoNino) {
         ua => {
-          val result = dataPrefillService.getListOfTrustees(0)(UserAnswers(ua))
+          val result = dataPrefillService.getListOfTrusteesToBeCopied(0)(UserAnswers(ua))
           result mustBe Seq(IndividualDetails("Test", "User 4", false, Some("CS700400A"), Some(LocalDate.parse("1999-04-13")), 1, true, None))
+        }
+      }
+    }
+
+    "return no trustees when their nino is matching with any of the existing directors" in {
+      forAll(uaJsValueWithNino) {
+        ua => {
+          val result = dataPrefillService.getListOfTrusteesToBeCopied(0)(UserAnswers(ua))
+          result mustBe Nil
         }
       }
     }

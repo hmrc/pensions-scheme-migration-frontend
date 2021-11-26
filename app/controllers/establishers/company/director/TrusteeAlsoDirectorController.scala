@@ -20,7 +20,7 @@ import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import forms.DataPrefillSingleFormProvider
+import forms.dataPrefill.DataPrefillRadioFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.director.TrusteeAlsoDirectorId
@@ -46,7 +46,7 @@ class TrusteeAlsoDirectorController @Inject()(override val messagesApi: Messages
                                               authenticate: AuthAction,
                                               getData: DataRetrievalAction,
                                               requireData: DataRequiredAction,
-                                              formProvider: DataPrefillSingleFormProvider,
+                                              formProvider: DataPrefillRadioFormProvider,
                                               dataPrefillService: DataPrefillService,
                                               config: AppConfig,
                                               val controllerComponents: MessagesControllerComponents,
@@ -55,14 +55,14 @@ class TrusteeAlsoDirectorController @Inject()(override val messagesApi: Messages
   with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
   private def form: Form[Int] =
-    formProvider("messages__directors__prefill__single__error__required")
+    formProvider("messages__trustees__prefill__single__error__required")
 
   def onPageLoad(establisherIndex: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
       (CompanyDetailsId(establisherIndex) and SchemeNameId).retrieve.right.map { case companyName ~ schemeName =>
         implicit val ua: UserAnswers = request.userAnswers
-        val seqTrustee = dataPrefillService.getListOfTrustees(establisherIndex)
-
+        val seqTrustee = dataPrefillService.getListOfTrusteesToBeCopied(establisherIndex)
+        if(seqTrustee.nonEmpty) {
         val json = Json.obj(
           "form" -> form,
           "schemeName" -> schemeName,
@@ -71,8 +71,10 @@ class TrusteeAlsoDirectorController @Inject()(override val messagesApi: Messages
           "radios" -> DataPrefillRadio.radios(form,
             seqTrustee.map(trustee => (trustee.fullName, trustee.index)))
         )
-
         renderer.render("dataPrefillRadio.njk", json).map(Ok(_))
+      } else {
+          Future(Redirect(controllers.establishers.company.routes.SpokeTaskListController.onPageLoad(establisherIndex)))
+        }
       }
   }
 
@@ -80,7 +82,7 @@ class TrusteeAlsoDirectorController @Inject()(override val messagesApi: Messages
     implicit request =>
       implicit val ua: UserAnswers = request.userAnswers
       (CompanyDetailsId(establisherIndex) and SchemeNameId).retrieve.right.map { case companyName ~ schemeName =>
-        val seqTrustee = dataPrefillService.getListOfTrustees(establisherIndex)
+        val seqTrustee = dataPrefillService.getListOfTrusteesToBeCopied(establisherIndex)
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
 

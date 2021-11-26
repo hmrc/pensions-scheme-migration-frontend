@@ -60,7 +60,6 @@ class EstablishersCompanyDirectorNavigator
       controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(establisherIndex, NormalMode)
     case TrusteeAlsoDirectorId(establisherIndex) => trusteeAlsoDirectorRoutes(establisherIndex, ua)
     case TrusteesAlsoDirectorsId(establisherIndex) => trusteesAlsoDirectorsRoutes(establisherIndex, ua)
-
   }
 
   override protected def editRouteMap(ua: UserAnswers)

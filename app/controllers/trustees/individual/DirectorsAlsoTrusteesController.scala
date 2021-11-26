@@ -20,7 +20,7 @@ import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import forms.DataPrefillMultiFormProvider
+import forms.dataPrefill.DataPrefillCheckboxFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.DirectorsAlsoTrusteesId
 import models.{DataPrefillCheckbox, Index}
@@ -45,7 +45,7 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
                                                 authenticate: AuthAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
-                                                formProvider: DataPrefillMultiFormProvider,
+                                                formProvider: DataPrefillCheckboxFormProvider,
                                                 dataPrefillService: DataPrefillService,
                                                 config: AppConfig,
                                                 val controllerComponents: MessagesControllerComponents,
@@ -64,8 +64,8 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
     implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
        implicit val ua: UserAnswers = request.userAnswers
-        val seqDirector = dataPrefillService.getListOfDirectors
-
+        val seqDirector = dataPrefillService.getListOfDirectorsToBeCopied
+        if (seqDirector.nonEmpty) {
         val json = Json.obj(
           "form" -> form,
           "schemeName" -> schemeName,
@@ -76,6 +76,9 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
         )
 
         renderer.render("dataPrefillCheckbox.njk", json).map(Ok(_))
+      } else {
+          Future(Redirect(controllers.routes.TaskListController.onPageLoad()))
+        }
       }
   }
 
@@ -83,7 +86,7 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
     implicit request =>
       implicit val ua: UserAnswers = request.userAnswers
       SchemeNameId.retrieve.right.map { schemeName =>
-        val seqDirector = dataPrefillService.getListOfDirectors
+        val seqDirector = dataPrefillService.getListOfDirectorsToBeCopied
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
 

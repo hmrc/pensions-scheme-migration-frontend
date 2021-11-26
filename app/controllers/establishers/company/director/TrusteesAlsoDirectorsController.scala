@@ -20,7 +20,7 @@ import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import forms.DataPrefillMultiFormProvider
+import forms.dataPrefill.DataPrefillCheckboxFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.director.TrusteesAlsoDirectorsId
@@ -46,7 +46,7 @@ class TrusteesAlsoDirectorsController @Inject()(override val messagesApi: Messag
                                                 authenticate: AuthAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
-                                                formProvider: DataPrefillMultiFormProvider,
+                                                formProvider: DataPrefillCheckboxFormProvider,
                                                 dataPrefillService: DataPrefillService,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 config: AppConfig,
@@ -65,8 +65,8 @@ class TrusteesAlsoDirectorsController @Inject()(override val messagesApi: Messag
     implicit request =>
       (CompanyDetailsId(establisherIndex) and SchemeNameId).retrieve.right.map { case companyName ~ schemeName =>
        implicit val ua: UserAnswers = request.userAnswers
-        val seqTrustee = dataPrefillService.getListOfTrustees(establisherIndex)
-
+        val seqTrustee = dataPrefillService.getListOfTrusteesToBeCopied(establisherIndex)
+        if(seqTrustee.nonEmpty){
         val json = Json.obj(
           "form" -> form(establisherIndex),
           "schemeName" -> schemeName,
@@ -77,6 +77,9 @@ class TrusteesAlsoDirectorsController @Inject()(override val messagesApi: Messag
         )
 
         renderer.render("dataPrefillCheckbox.njk", json).map(Ok(_))
+      } else {
+          Future(Redirect(controllers.establishers.company.routes.SpokeTaskListController.onPageLoad(establisherIndex)))
+        }
       }
   }
 
@@ -84,7 +87,7 @@ class TrusteesAlsoDirectorsController @Inject()(override val messagesApi: Messag
     implicit request =>
       implicit val ua: UserAnswers = request.userAnswers
       (CompanyDetailsId(establisherIndex) and SchemeNameId).retrieve.right.map { case companyName ~ schemeName =>
-        val seqTrustee = dataPrefillService.getListOfTrustees(establisherIndex)
+        val seqTrustee = dataPrefillService.getListOfTrusteesToBeCopied(establisherIndex)
         form(establisherIndex).bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
 

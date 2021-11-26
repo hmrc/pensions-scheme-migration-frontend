@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package forms
+package forms.dataPrefill
 
 import forms.mappings.Mappings
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class DataPrefillSingleFormProvider @Inject() extends Mappings {
-
+class DataPrefillRadioFormProvider @Inject() extends Mappings {
   def apply(requiredError: String): Form[Int] = Form("value" -> int(requiredError))
 }

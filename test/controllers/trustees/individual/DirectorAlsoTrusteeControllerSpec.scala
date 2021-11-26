@@ -18,10 +18,11 @@ package controllers.trustees.individual
 
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
-import forms.DataPrefillSingleFormProvider
+import forms.dataPrefill.DataPrefillRadioFormProvider
 import identifiers.trustees.individual.TrusteeNameId
 import matchers.JsonMatchers
 import models.PersonName
+import models.prefill.IndividualDetails
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
@@ -45,7 +46,7 @@ class DirectorAlsoTrusteeControllerSpec extends ControllerSpecBase
   with BeforeAndAfterEach {
 
   private val personName: PersonName = PersonName("Jane", "Doe")
-  private val formProvider: DataPrefillSingleFormProvider = new DataPrefillSingleFormProvider()
+  private val formProvider: DataPrefillRadioFormProvider = new DataPrefillRadioFormProvider()
   private val form = formProvider("")
   private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
   private val userAnswers: UserAnswers = ua.set(TrusteeNameId(0), personName).success.value
@@ -64,7 +65,7 @@ class DirectorAlsoTrusteeControllerSpec extends ControllerSpecBase
       mockDataPrefillService
     )
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-    when(mockDataPrefillService.getListOfDirectors(any())).thenReturn(Nil)
+    when(mockDataPrefillService.getListOfDirectorsToBeCopied(any())).thenReturn(Nil)
   }
 
   private def controller(
@@ -89,6 +90,7 @@ class DirectorAlsoTrusteeControllerSpec extends ControllerSpecBase
 
   "DirectorAlsoTrusteeController" must {
     "return OK and the correct view for a GET" in {
+      when(mockDataPrefillService.getListOfDirectorsToBeCopied(any())).thenReturn(Seq(IndividualDetails("", "", false, None, None, 0, true, None)))
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
       val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(userAnswers))
@@ -99,6 +101,16 @@ class DirectorAlsoTrusteeControllerSpec extends ControllerSpecBase
       templateCaptor.getValue mustEqual templateToBeRendered
       val json: JsObject = Json.obj("form" -> form)
       jsonCaptor.getValue must containJson(commonJson ++ json)
+    }
+
+    "redirect to task list page for a GET when there are no directors to be copied" in {
+      when(mockDataPrefillService.getListOfDirectorsToBeCopied(any())).thenReturn(Nil)
+      val getData = new FakeDataRetrievalAction(Some(userAnswers))
+
+      val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(userAnswers))
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.routes.TaskListController.onPageLoad().url)
     }
 
     "copy the directors and redirect to the next page when valid data is submitted with value less than max trustees" in {

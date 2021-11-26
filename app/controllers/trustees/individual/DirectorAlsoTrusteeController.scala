@@ -20,7 +20,7 @@ import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import forms.DataPrefillSingleFormProvider
+import forms.dataPrefill.DataPrefillRadioFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.DirectorAlsoTrusteeId
 import models.{DataPrefillRadio, Index}
@@ -45,7 +45,7 @@ class DirectorAlsoTrusteeController @Inject()(override val messagesApi: Messages
                                               authenticate: AuthAction,
                                               getData: DataRetrievalAction,
                                               requireData: DataRequiredAction,
-                                              formProvider: DataPrefillSingleFormProvider,
+                                              formProvider: DataPrefillRadioFormProvider,
                                               dataPrefillService: DataPrefillService,
                                               config: AppConfig,
                                               val controllerComponents: MessagesControllerComponents,
@@ -60,18 +60,21 @@ class DirectorAlsoTrusteeController @Inject()(override val messagesApi: Messages
     implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         implicit val ua: UserAnswers = request.userAnswers
-        val seqDirector = dataPrefillService.getListOfDirectors
+        val seqDirector = dataPrefillService.getListOfDirectorsToBeCopied
 
-        val json = Json.obj(
-          "form" -> form,
-          "schemeName" -> schemeName,
-          "pageHeading" -> msg"messages__trustees__prefill__title",
-          "titleMessage" -> msg"messages__trustees__prefill__heading",
-          "radios" -> DataPrefillRadio.radios(form,
-            seqDirector.map(director => (director.fullName, director.index)))
-        )
-
-        renderer.render("dataPrefillRadio.njk", json).map(Ok(_))
+        if (seqDirector.nonEmpty) {
+          val json = Json.obj(
+            "form" -> form,
+            "schemeName" -> schemeName,
+            "pageHeading" -> msg"messages__trustees__prefill__title",
+            "titleMessage" -> msg"messages__trustees__prefill__heading",
+            "radios" -> DataPrefillRadio.radios(form,
+              seqDirector.map(director => (director.fullName, director.index)))
+          )
+          renderer.render("dataPrefillRadio.njk", json).map(Ok(_))
+        } else {
+          Future(Redirect(controllers.routes.TaskListController.onPageLoad()))
+        }
       }
   }
 
@@ -79,7 +82,7 @@ class DirectorAlsoTrusteeController @Inject()(override val messagesApi: Messages
     implicit request =>
       implicit val ua: UserAnswers = request.userAnswers
       SchemeNameId.retrieve.right.map { schemeName =>
-        val seqDirector = dataPrefillService.getListOfDirectors
+        val seqDirector = dataPrefillService.getListOfDirectorsToBeCopied
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
 
@@ -94,7 +97,7 @@ class DirectorAlsoTrusteeController @Inject()(override val messagesApi: Messages
             renderer.render("dataPrefillRadio.njk", json).map(BadRequest(_))
           },
           value => {
-            val uaAfterCopy = if(value > config.maxTrustees) ua else dataPrefillService.copyAllDirectorsToTrustees(ua, Seq(value),
+            val uaAfterCopy = if (value > config.maxTrustees) ua else dataPrefillService.copyAllDirectorsToTrustees(ua, Seq(value),
               seqDirector.headOption.flatMap(_.mainIndex).getOrElse(0))
             val updatedUa = uaAfterCopy.setOrException(DirectorAlsoTrusteeId(index), value)
             userAnswersCacheConnector.save(request.lock, updatedUa.data)

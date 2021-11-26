@@ -32,7 +32,8 @@ case class EstablisherCompanyDirectorDetails(
                                        ) extends Spoke {
   val messageKeyPrefix = "messages__schemeTaskList__directors_"
   val isDirectorNotExists= answers.allDirectorsAfterDelete(indexToInt(index)).isEmpty
-  val noOfIndividualTrustees = dataPrefillService.allIndividualTrustees(answers).count(indv => !indv.isDeleted && indv.isComplete)
+  val noOfIndividualTrustees = dataPrefillService.getListOfTrusteesToBeCopied(index)(answers).size
+  println("\n\n\n noOfIndividualTrustees : "+dataPrefillService.allIndividualTrustees(answers))
   val linkKeyAndRoute: (String, String) = {
     isDirectorNotExists match {
       case _ if noOfIndividualTrustees > 1 =>
