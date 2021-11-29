@@ -30,10 +30,10 @@ case class EstablisherCompanyDirectorDetails(
                                          answers: UserAnswers,
                                          dataPrefillService: DataPrefillService
                                        ) extends Spoke {
-  val messageKeyPrefix = "messages__schemeTaskList__directors_"
-  val isDirectorNotExists= answers.allDirectorsAfterDelete(indexToInt(index)).isEmpty
-  val noOfIndividualTrustees = dataPrefillService.getListOfTrusteesToBeCopied(index)(answers).size
-  val linkKeyAndRoute: (String, String) = {
+  private val messageKeyPrefix = "messages__schemeTaskList__directors_"
+  private val isDirectorNotExists= answers.allDirectorsAfterDelete(indexToInt(index)).isEmpty
+  private val noOfIndividualTrustees = dataPrefillService.getListOfTrusteesToBeCopied(index)(answers).size
+  private val linkKeyAndRoute: (String, String) = {
     isDirectorNotExists match {
       case true if noOfIndividualTrustees > 1 =>
         (if(isDirectorNotExists) s"${messageKeyPrefix}addLink" else s"${messageKeyPrefix}changeLink",

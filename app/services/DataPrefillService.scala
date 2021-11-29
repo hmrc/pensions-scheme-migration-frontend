@@ -134,7 +134,7 @@ class DataPrefillService @Inject()() extends Enumerable.Implicits {
   def getListOfDirectorsToBeCopied(implicit ua: UserAnswers): Seq[IndividualDetails] = {
     val filteredDirectorsSeq = allDirectors.filter(dir => !dir.isDeleted && dir.isComplete)
     filteredDirectorsSeq.filterNot { director =>
-     val allNonDeletedTrustees = allIndividualTrustees.filter(!_.isDeleted)
+      val allNonDeletedTrustees = allIndividualTrustees.filter(!_.isDeleted)
 
       director.nino.map(ninoVal =>
         allNonDeletedTrustees.exists(_.nino.contains(ninoVal)))
@@ -188,21 +188,22 @@ class DataPrefillService @Inject()() extends Enumerable.Implicits {
         asJsResultSeq(jsResults)
       case _ => JsSuccess(Nil)
     }
+
     override def reads(json: JsValue): JsResult[Seq[Option[Seq[IndividualDetails]]]] = {
       ua.data \ EstablishersId.toString match {
         case JsDefined(JsArray(establishers)) =>
           val jsResults = establishers.zipWithIndex.map {
             case (jsValue, index) =>
-            val establisherKind = (jsValue \ EstablisherKindId.toString).validate[String].asOpt
+              val establisherKind = (jsValue \ EstablisherKindId.toString).validate[String].asOpt
 
-            val readsForEstablisherKind = establisherKind match {
+              val readsForEstablisherKind = establisherKind match {
 
-              case Some(EstablisherKind.Company.toString) =>
-                (JsPath \ "director").readNullable(readsAllDirectors(index))
-              case _ =>
-                Reads.pure[Option[Seq[IndividualDetails]]](None)
-            }
-            readsForEstablisherKind.reads(jsValue)
+                case Some(EstablisherKind.Company.toString) =>
+                  (JsPath \ "director").readNullable(readsAllDirectors(index))
+                case _ =>
+                  Reads.pure[Option[Seq[IndividualDetails]]](None)
+              }
+              readsForEstablisherKind.reads(jsValue)
           }
           asJsResultSeq(jsResults)
         case _ => JsSuccess(Nil)
@@ -238,6 +239,7 @@ class DataPrefillService @Inject()() extends Enumerable.Implicits {
       Some(IndividualDetails(
         trusteeName.firstName, trusteeName.lastName, trusteeName.isDeleted, ninoReferenceVale.map(_.value), dob, index, ua.isTrusteeIndividualComplete(index)))
     )
+
     override def reads(json: JsValue): JsResult[Seq[Option[IndividualDetails]]] = {
       ua.data \ TrusteesId.toString match {
         case JsDefined(JsArray(trustees)) =>

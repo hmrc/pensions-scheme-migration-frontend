@@ -71,8 +71,7 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
             "schemeName" -> schemeName,
             "pageHeading" -> msg"messages__trustees__prefill__title",
             "titleMessage" -> msg"messages__trustees__prefill__heading",
-            "trusteeCheckboxes" -> DataPrefillCheckbox.checkboxes(form,
-              seqDirector.map(director => (director.fullName, director.index)))
+            "trusteeCheckboxes" -> DataPrefillCheckbox.checkboxes(form, seqDirector)
           )
 
           renderer.render("dataPrefillCheckbox.njk", json).map(Ok(_))
@@ -95,8 +94,7 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
               "schemeName" -> schemeName,
               "pageHeading" -> msg"messages__trustees__prefill__title",
               "titleMessage" -> msg"messages__trustees__prefill__heading",
-              "trusteeCheckboxes" -> DataPrefillCheckbox.checkboxes(formWithErrors,
-                seqDirector.map(director => (director.fullName, director.index)))
+              "trusteeCheckboxes" -> DataPrefillCheckbox.checkboxes(form, seqDirector)
             )
             renderer.render("dataPrefillCheckbox.njk", json).map(BadRequest(_))
           },

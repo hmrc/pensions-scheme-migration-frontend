@@ -26,18 +26,16 @@ class DataPrefillCheckboxFormProvider @Inject() extends Mappings with DataPrefil
 
   def apply(entityCount: Int, requiredError: String, noneSelectedWithValueError: String, moreThanTenError: String): Form[List[Int]] =
     Form(
-      "value" -> list(int(requiredError)).verifying(
-        firstError(
-          noValueInList(
-            errorKey = requiredError
-          ),
-          noneSelectedWithValue(
-            errorKey = noneSelectedWithValueError
-          ),
-          moreThanTen(
-            errorKey = moreThanTenError,
-            entityCount
-          )
+      "value" -> list[Int](int(requiredError)).verifying(
+        noValueInList(
+          errorKey = requiredError
+        ),
+        noneSelectedWithValue(
+          errorKey = noneSelectedWithValueError
+        ),
+        moreThanTen(
+          errorKey = moreThanTenError,
+          entityCount
         )
       )
     )

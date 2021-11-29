@@ -68,8 +68,7 @@ class TrusteeAlsoDirectorController @Inject()(override val messagesApi: Messages
           "schemeName" -> schemeName,
           "pageHeading" -> msg"messages__directors__prefill__title",
           "titleMessage" -> msg"messages__directors__prefill__heading".withArgs(companyName.companyName).resolve,
-          "radios" -> DataPrefillRadio.radios(form,
-            seqTrustee.map(trustee => (trustee.fullName, trustee.index)))
+          "radios" -> DataPrefillRadio.radios(form, seqTrustee)
         )
         renderer.render("dataPrefillRadio.njk", json).map(Ok(_))
       } else {
@@ -91,8 +90,7 @@ class TrusteeAlsoDirectorController @Inject()(override val messagesApi: Messages
               "schemeName" -> schemeName,
               "pageHeading" -> msg"messages__directors__prefill__title",
               "titleMessage" -> msg"messages__directors__prefill__heading".withArgs(companyName.companyName).resolve,
-              "radios" -> DataPrefillRadio.radios(form,
-                seqTrustee.map(trustee => (trustee.fullName, trustee.index)))
+              "radios" -> DataPrefillRadio.radios(form, seqTrustee)
             )
             renderer.render("dataPrefillRadio.njk", json).map(BadRequest(_))
           },

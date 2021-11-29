@@ -56,9 +56,12 @@ class TrusteesAlsoDirectorsController @Inject()(override val messagesApi: Messag
 
   private def form(index: Index)(implicit ua: UserAnswers, messages: Messages): Form[List[Int]] = {
     val existingDirCount = ua.allDirectorsAfterDelete(index).size
-    formProvider(existingDirCount, "messages__trustees__prefill__multi__error__required",
+    formProvider(
+      existingDirCount,
+      "messages__trustees__prefill__multi__error__required",
       "messages__trustees__prefill__multi__error__noneWithValue",
-      messages("messages__trustees__prefill__multi__error__moreThanTen", existingDirCount, (config.maxDirectors - existingDirCount)))
+      messages("messages__trustees__prefill__multi__error__moreThanTen", existingDirCount, config.maxDirectors - existingDirCount)
+    )
   }
 
   def onPageLoad(establisherIndex: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
@@ -72,8 +75,7 @@ class TrusteesAlsoDirectorsController @Inject()(override val messagesApi: Messag
             "schemeName" -> schemeName,
             "pageHeading" -> msg"messages__directors__prefill__title",
             "titleMessage" -> msg"messages__directors__prefill__heading".withArgs(companyName.companyName).resolve,
-            "trusteeCheckboxes" -> DataPrefillCheckbox.checkboxes(form(establisherIndex),
-              seqTrustee.map(trustee => (trustee.fullName, trustee.index)))
+            "trusteeCheckboxes" -> DataPrefillCheckbox.checkboxes(form(establisherIndex), seqTrustee)
           )
 
           renderer.render("dataPrefillCheckbox.njk", json).map(Ok(_))
@@ -89,15 +91,13 @@ class TrusteesAlsoDirectorsController @Inject()(override val messagesApi: Messag
       (CompanyDetailsId(establisherIndex) and SchemeNameId).retrieve.right.map { case companyName ~ schemeName =>
         val seqTrustee = dataPrefillService.getListOfTrusteesToBeCopied(establisherIndex)
         form(establisherIndex).bindFromRequest().fold(
-          (formWithErrors: Form[_]) => {
-
+          formWithErrors => {
             val json = Json.obj(
               "form" -> formWithErrors,
               "schemeName" -> schemeName,
               "pageHeading" -> msg"messages__directors__prefill__title",
               "titleMessage" -> msg"messages__directors__prefill__heading".withArgs(companyName.companyName).resolve,
-              "trusteeCheckboxes" -> DataPrefillCheckbox.checkboxes(formWithErrors,
-                seqTrustee.map(trustee => (trustee.fullName, trustee.index)))
+              "trusteeCheckboxes" -> DataPrefillCheckbox.checkboxes(formWithErrors, seqTrustee)
             )
             renderer.render("dataPrefillCheckbox.njk", json).map(BadRequest(_))
           },

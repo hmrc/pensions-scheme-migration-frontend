@@ -20,11 +20,12 @@ import play.api.data.Form
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.Text.Literal
 import viewmodels.forNunjucks.Checkboxes
+import models.prefill.{IndividualDetails => DataPrefillIndividualDetails}
 
 object DataPrefillCheckbox {
 
-  def checkboxes(form: Form[_], values: Seq[(String, Int)]): Seq[Checkboxes.Item] = {
-    val items = values.map(value => Checkboxes.Checkbox(Literal(value._1), value._2.toString, None, None))
+  def checkboxes(form: Form[List[Int]], values: Seq[DataPrefillIndividualDetails]): Seq[Checkboxes.Item] = {
+    val items = values.map(indvDetails => Checkboxes.Checkbox(Literal(indvDetails.fullName), indvDetails.index.toString, None, None))
     val noneOfTheAbove = Checkboxes.Checkbox(msg"messages__prefill__label__none", "11", Some("exclusive"), None)
     val divider = Checkboxes.Checkbox(msg"messages__prefill__label__divider", "divider", None, Some(msg"messages__prefill__label__divider"))
     Checkboxes.set(form("value"), items :+ divider :+ noneOfTheAbove)

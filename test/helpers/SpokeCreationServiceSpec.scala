@@ -143,7 +143,7 @@ class SpokeCreationServiceSpec
 
   "getEstablisherCompanySpokes" must {
     "display all the spokes with appropriate links and incomplete status when no data is returned from TPSS" in {
-      when(mockDataPrefillService.allIndividualTrustees(any)).thenReturn(Nil)
+      when(mockDataPrefillService.getListOfTrusteesToBeCopied(any)(any)).thenReturn(Nil)
       val userAnswers =
         ua
           .set(EstablisherKindId(0), EstablisherKind.Company).success.value
@@ -194,6 +194,7 @@ class SpokeCreationServiceSpec
     }
 
   "display all the spokes with appropriate links and incomplete status when data is returned from TPSS for company address spoke" in {
+    when(mockDataPrefillService.getListOfDirectorsToBeCopied(any)).thenReturn(Nil)
     val userAnswers =
       ua
         .set(EstablisherKindId(0), EstablisherKind.Company).success.value

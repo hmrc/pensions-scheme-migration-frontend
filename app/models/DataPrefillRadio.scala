@@ -19,11 +19,12 @@ package models
 import play.api.data.Form
 import uk.gov.hmrc.viewmodels.{MessageInterpolators, Radios}
 import uk.gov.hmrc.viewmodels.Text.Literal
+import models.prefill.{IndividualDetails => DataPrefillIndividualDetails}
 
 object DataPrefillRadio {
 
-  def radios(form: Form[_], values: Seq[(String, Int)]): Seq[Radios.Item] = {
-    val items = values.map(value => Radios.Radio(Literal(value._1), value._2.toString)) :+
+  def radios(form: Form[_], values: Seq[DataPrefillIndividualDetails]): Seq[Radios.Item] = {
+    val items = values.map(indvDetails => Radios.Radio(Literal(indvDetails.fullName), indvDetails.index.toString)) :+
       Radios.Radio(msg"messages__prefill__label__none", "11")
     Radios(form("value"), items)
   }
