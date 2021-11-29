@@ -32,7 +32,7 @@ package controllers
  * limitations under the License.
  */
 
-import connectors.MinimalDetailsConnector
+import connectors.{ListOfSchemesConnector, MinimalDetailsConnector}
 import connectors.cache.{CurrentPstrCacheConnector, LockCacheConnector}
 import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.establishers.individual.EstablisherNameId
@@ -60,11 +60,13 @@ class SchemeSuccessControllerSpec extends ControllerSpecBase with NunjucksSuppor
   private val templateToBeRendered = "schemeSuccess.njk"
   private val mockCurrentPstrCacheConnector: CurrentPstrCacheConnector = mock[CurrentPstrCacheConnector]
   private val mockLockCacheConnector: LockCacheConnector = mock[LockCacheConnector]
+  private val mockListOfSchemesConnector: ListOfSchemesConnector = mock[ListOfSchemesConnector]
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   val extraModules: Seq[GuiceableModule] = Seq(
     bind[MinimalDetailsConnector].to(mockMinimalDetailsConnector),
     bind[CurrentPstrCacheConnector].to(mockCurrentPstrCacheConnector),
+    bind[ListOfSchemesConnector].to(mockListOfSchemesConnector),
     bind[LockCacheConnector].to(mockLockCacheConnector)
   )
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
@@ -86,6 +88,7 @@ class SchemeSuccessControllerSpec extends ControllerSpecBase with NunjucksSuppor
     when(mockUserAnswersCacheConnector.remove(any())(any(), any())).thenReturn(Future.successful(Ok))
     when(mockCurrentPstrCacheConnector.remove(any(), any())).thenReturn(Future.successful(Ok))
     when(mockLockCacheConnector.removeLock(any())(any(), any())).thenReturn(Future.successful(Ok))
+    when(mockListOfSchemesConnector.removeCache(any())(any(), any())).thenReturn(Future.successful(Ok))
   }
 
 

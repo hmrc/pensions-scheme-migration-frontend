@@ -16,15 +16,17 @@
 
 package connectors
 
-import com.google.inject.{Inject, Singleton, ImplementedBy}
+import com.google.inject.{ImplementedBy, Inject, Singleton}
 import config.AppConfig
 import models.ListOfLegacySchemes
 import play.api.Logger
 import play.api.http.Status._
-import play.api.libs.json.{JsResultException, JsError, JsSuccess, Json}
+import play.api.libs.json.{JsError, JsResultException, JsSuccess, Json}
+import play.api.mvc.Result
+import play.api.mvc.Results.Ok
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.HttpReads.is5xx
-import uk.gov.hmrc.http.{HttpClient, HttpResponse, HeaderCarrier}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -34,6 +36,8 @@ trait ListOfSchemesConnector {
   def getListOfSchemes(psaId: String)
                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[HttpResponse, ListOfLegacySchemes]]
 
+  def removeCache(psaId: String)
+            (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result]
 }
 
 @Singleton
@@ -64,6 +68,11 @@ class ListOfSchemesConnectorImpl @Inject()(
     }
   }
 
+  def removeCache(psaId: String)
+            (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
+    val (url, schemeHc) = (config.listOfSchemesRemoveCacheUrl, hc.withExtraHeaders("psaId" -> psaId))
+    http.DELETE[HttpResponse](url)(implicitly, schemeHc, implicitly).map(_ => Ok)
+  }
   private val ancillaryPsaError: String = "Administrator is a subordinate in mapping table"
 
 }

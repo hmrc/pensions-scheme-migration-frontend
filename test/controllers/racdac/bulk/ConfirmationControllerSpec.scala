@@ -16,6 +16,7 @@
 
 package controllers.racdac.bulk
 
+import connectors.ListOfSchemesConnector
 import connectors.cache.CurrentPstrCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.{BulkDataAction, MutableFakeBulkDataAction}
@@ -38,10 +39,11 @@ class ConfirmationControllerSpec extends ControllerSpecBase with NunjucksSupport
 
   private val templateToBeRendered = "racdac/confirmation.njk"
   private val mockSchemeCacheConnector = mock[CurrentPstrCacheConnector]
-
+  private val mockListOfSchemesConnector: ListOfSchemesConnector = mock[ListOfSchemesConnector]
   private val mutableFakeBulkDataAction: MutableFakeBulkDataAction = new MutableFakeBulkDataAction(false)
   val extraModules: Seq[GuiceableModule] = Seq(
-    bind[CurrentPstrCacheConnector].to(mockSchemeCacheConnector)
+    bind[CurrentPstrCacheConnector].to(mockSchemeCacheConnector),
+    bind[ListOfSchemesConnector].to(mockListOfSchemesConnector)
   )
 
   private val application: Application = new GuiceApplicationBuilder()
@@ -72,6 +74,7 @@ class ConfirmationControllerSpec extends ControllerSpecBase with NunjucksSupport
 
     "return OK and the correct view for a GET" in {
       when(mockSchemeCacheConnector.remove(any(), any())).thenReturn(Future(Ok))
+      when(mockListOfSchemesConnector.removeCache(any())(any(), any())).thenReturn(Future.successful(Ok))
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 

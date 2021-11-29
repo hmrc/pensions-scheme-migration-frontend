@@ -60,6 +60,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   lazy val legacySchemeDetailsUrl: String = s"$migrationUrl${config.get[String](path = "urls.legacySchemeDetails")}"
   lazy val listOfSchemesUrl: String = s"$migrationUrl${config.get[String](path = "urls.listOfSchemes")}"
+  lazy val listOfSchemesRemoveCacheUrl: String = s"$migrationUrl${config.get[String](path = "urls.listOfSchemesRemoveCache")}"
   def registerSchemeUrl(migrationType: MigrationType): String = s"$migrationUrl${config.get[String]("urls.registerScheme").format(migrationType)}"
   lazy val addressLookUp = s"${servicesConfig.baseUrl("address-lookup")}"
   lazy val yourPensionSchemesUrl: String = loadConfig("urls.yourPensionSchemes")
