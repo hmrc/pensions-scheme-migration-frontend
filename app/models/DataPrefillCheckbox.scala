@@ -17,16 +17,17 @@
 package models
 
 import play.api.data.Form
-import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.Text.Literal
-import viewmodels.forNunjucks.Checkboxes
 import models.prefill.{IndividualDetails => DataPrefillIndividualDetails}
+import uk.gov.hmrc.viewmodels.MessageInterpolators
+import viewmodels.forNunjucks.Checkboxes
 
 object DataPrefillCheckbox {
 
   def checkboxes(form: Form[List[Int]], values: Seq[DataPrefillIndividualDetails]): Seq[Checkboxes.Item] = {
+    val noneValue = "11"
     val items = values.map(indvDetails => Checkboxes.Checkbox(Literal(indvDetails.fullName), indvDetails.index.toString, None, None))
-    val noneOfTheAbove = Checkboxes.Checkbox(msg"messages__prefill__label__none", "11", Some("exclusive"), None)
+    val noneOfTheAbove = Checkboxes.Checkbox(msg"messages__prefill__label__none", noneValue, Some("exclusive"), None)
     val divider = Checkboxes.Checkbox(msg"messages__prefill__label__divider", "divider", None, Some(msg"messages__prefill__label__divider"))
     Checkboxes.set(form("value"), items :+ divider :+ noneOfTheAbove)
   }
