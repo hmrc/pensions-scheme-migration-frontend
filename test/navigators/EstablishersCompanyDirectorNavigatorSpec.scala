@@ -70,17 +70,6 @@ class EstablishersCompanyDirectorNavigatorSpec
   )
 
   val address = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
-  /*private val johnDoe = PersonName("John", "Doe")
-  private def validData(directors: PersonName*): JsObject = {
-    Json.obj(
-      EstablishersId.toString -> Json.arr(
-        Json.obj(
-          CompanyDetailsId.toString -> CompanyDetails("test company name"),
-          "director" -> directors.map(d => Json.obj(DirectorNameId.toString -> Json.toJson(d)))
-        )
-      )
-    )
-  }*/
 
   private def addAddCompanyDirectorsPage(establisherIndex:Int,mode:Mode): Call = controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(establisherIndex,mode)
   private def postcode(establisherIndex:Int,directorIndex:Int,mode: Mode): Call = controllers.establishers.company.director.address.routes.EnterPostcodeController.onPageLoad(establisherIndex, directorIndex, mode)
@@ -133,11 +122,11 @@ class EstablishersCompanyDirectorNavigatorSpec
         row(EnterEmailId(establisherIndex,directorIndex))(enterPhonePage(establisherIndex,directorIndex,NormalMode), Some(detailsUa.set(EnterEmailId(establisherIndex,directorIndex), "test@test.com").success.value)),
         row(EnterPhoneId(establisherIndex,directorIndex))(cya, Some(detailsUa.set(EnterPhoneId(establisherIndex,directorIndex), "1234").success.value)),
         row(ConfirmDeleteDirectorId(directorIndex))(addAddCompanyDirectorsPage(directorIndex,NormalMode), Some(detailsUa.set(ConfirmDeleteDirectorId(directorIndex),true).success.value)),
-        row(TrusteeAlsoDirectorId(establisherIndex))(directorNamePage(establisherIndex, directorIndex = 1,NormalMode), Some(detailsUa.set(TrusteeAlsoDirectorId(directorIndex), 11).success.value)),
-        row(TrusteeAlsoDirectorId(establisherIndex))(whatYouWillNeedPage(establisherIndex), Some(ua.set(TrusteeAlsoDirectorId(directorIndex), value = 11).success.value)),
+        row(TrusteeAlsoDirectorId(establisherIndex))(directorNamePage(establisherIndex, directorIndex = 1,NormalMode), Some(detailsUa.set(TrusteeAlsoDirectorId(directorIndex), -1).success.value)),
+        row(TrusteeAlsoDirectorId(establisherIndex))(whatYouWillNeedPage(establisherIndex), Some(ua.set(TrusteeAlsoDirectorId(directorIndex), value = -1).success.value)),
         row(TrusteeAlsoDirectorId(establisherIndex))(addAddCompanyDirectorsPage(directorIndex,NormalMode), Some(ua.set(TrusteeAlsoDirectorId(directorIndex), value = 2).success.value)),
-        row(TrusteesAlsoDirectorsId(establisherIndex))(directorNamePage(establisherIndex, directorIndex = 1,NormalMode), Some(detailsUa.set(TrusteesAlsoDirectorsId(directorIndex), Seq(11)).success.value)),
-        row(TrusteesAlsoDirectorsId(establisherIndex))(whatYouWillNeedPage(establisherIndex), Some(ua.set(TrusteesAlsoDirectorsId(directorIndex), value = Seq(11)).success.value)),
+        row(TrusteesAlsoDirectorsId(establisherIndex))(directorNamePage(establisherIndex, directorIndex = 1,NormalMode), Some(detailsUa.set(TrusteesAlsoDirectorsId(directorIndex), Seq(-1)).success.value)),
+        row(TrusteesAlsoDirectorsId(establisherIndex))(whatYouWillNeedPage(establisherIndex), Some(ua.set(TrusteesAlsoDirectorsId(directorIndex), value = Seq(-1)).success.value)),
         row(TrusteesAlsoDirectorsId(establisherIndex))(addAddCompanyDirectorsPage(directorIndex,NormalMode), Some(ua.set(TrusteesAlsoDirectorsId(directorIndex), value = Seq(2)).success.value))
       )
 

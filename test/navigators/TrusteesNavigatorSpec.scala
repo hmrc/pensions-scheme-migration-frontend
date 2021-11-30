@@ -135,9 +135,9 @@ class TrusteesNavigatorSpec
           row(EnterEmailId(index))(trusteePhonePage(NormalMode), Some(indvDetailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
         row(EnterPhoneId(index))(cyaContact, Some(indvDetailsUa.set(EnterPhoneId(index), "123").success.value)),
         row(OtherTrusteesId)(taskListPage),
-        row(DirectorAlsoTrusteeId(index))(namePage(NormalMode), Some(indvDetailsUa.set(DirectorAlsoTrusteeId(index), 11).success.value)),
+        row(DirectorAlsoTrusteeId(index))(namePage(NormalMode), Some(indvDetailsUa.set(DirectorAlsoTrusteeId(index), -1).success.value)),
         row(DirectorAlsoTrusteeId(index))(addTrusteePage, Some(ua.set(DirectorAlsoTrusteeId(index), value = 2).success.value)),
-        row(DirectorsAlsoTrusteesId(index))(namePage(NormalMode), Some(detailsUa.set(DirectorsAlsoTrusteesId(index), Seq(11)).success.value)),
+        row(DirectorsAlsoTrusteesId(index))(namePage(NormalMode), Some(detailsUa.set(DirectorsAlsoTrusteesId(index), Seq(-1)).success.value)),
         row(DirectorsAlsoTrusteesId(index))(addTrusteePage, Some(ua.set(DirectorsAlsoTrusteesId(index), value = Seq(2)).success.value))
       )
 
