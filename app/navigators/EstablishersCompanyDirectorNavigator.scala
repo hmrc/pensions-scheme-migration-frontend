@@ -130,7 +130,7 @@ class EstablishersCompanyDirectorNavigator
     }
 
   private def trusteeAlsoDirectorRoutes(establisherIndex: Index, answers: UserAnswers): Call = {
-    val noneValue = 11
+    val noneValue = -1
     (answers.get(TrusteeAlsoDirectorId(establisherIndex)), answers.allDirectorsAfterDelete(establisherIndex).nonEmpty) match {
       case (Some(value), true) if value == noneValue =>
         controllers.establishers.company.director.routes.DirectorNameController.onPageLoad(establisherIndex,
@@ -143,7 +143,7 @@ class EstablishersCompanyDirectorNavigator
   }
 
   private def trusteesAlsoDirectorsRoutes(establisherIndex: Index, answers: UserAnswers): Call = {
-    val noneValue = 11
+    val noneValue = -1
     (answers.get(TrusteesAlsoDirectorsId(establisherIndex)), answers.allDirectorsAfterDelete(establisherIndex).nonEmpty) match {
       case (Some(value), true) if value.size == 1 && value.contains(noneValue) =>
         controllers.establishers.company.director.routes.DirectorNameController.onPageLoad(establisherIndex,

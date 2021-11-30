@@ -1,233 +1,1967 @@
 {
-  "establishers": [
-    {
-      "establisherDetails": {
-        "firstName": "User",
-        "lastName": "One One"
-      },
-      "hasNino": true,
-      "address": {
-        "country": "NO",
-        "postcode": "TF3 5TR",
-        "addressLine1": "addressline123",
-        "addressLine2": "addressline234",
-        "addressLine3": "addressline3",
-        "addressLine4": "addressline4"
-      },
-      "phone": "0042334",
-      "establisherKind": "individual",
-      "dateOfBirth": "1955-03-29",
-      "email": "aye@h.com",
-      "nino": {
-        "value": "AA999999A"
-      }
-    },
-    {
-      "establisherDetails": {
-        "firstName": "Second",
-        "lastName": "User"
-      },
-      "hasNino": false,
-      "noNinoReason": "Test",
-      "address": {
-        "country": "NO",
-        "postcode": "",
-        "addressLine1": "addressline1",
-        "addressLine2": "addressline2",
-        "addressLine3": "",
-        "addressLine4": ""
-      },
-      "phone": "00442335",
-      "establisherKind": "individual",
-      "dateOfBirth": "1955-03-29",
-      "email": "bbb@gmail.com"
-    },
-    {
-      "havePaye": false,
-      "haveCompanyNumber": false,
-      "address": {
-        "postcode": "",
-        "addressLine1": "sdfdsf",
-        "addressLine2": "sdfdsf",
-        "addressLine3": "",
-        "addressLine4": ""
-      },
-      "companyDetails": {
-        "companyName": "dsfdsf"
-      },
-      "phone": "23234",
-      "establisherKind": "company",
-      "noCompanyNumberReason": "fsdfdsf",
-      "haveVat": false,
-      "email": "sdf@sdf"
-    },
-    {
-      "havePaye": true,
-      "haveCompanyNumber": true,
-      "address": {
-        "country": "LI",
-        "postcode": "",
-        "addressLine1": "sdfdsfdsf",
-        "addressLine2": "sdfdsfdsf",
-        "addressLine3": "",
-        "addressLine4": ""
-      },
-      "companyDetails": {
-        "companyName": "sfdsfdsfsdf"
-      },
-      "companyNumber": {
-        "value": "123458"
-      },
-      "establisherKind": "company",
-      "vat": {
-        "value": "123456789"
-      },
-      "paye": {
-        "value": "123AB456"
-      },
-      "haveVat": true,
-      "email": "sdfds@dfdsf",
-      "director": [
-        {
-          "hasNino": true,
-          "address": {
-            "country": "NO",
-            "postcode": "TF3 8TR",
-            "addressLine1": "addressline1",
-            "addressLine2": "addressline2",
-            "addressLine3": "addressline3",
-            "addressLine4": "addressline4"
-          },
-          "addressYears": true,
-          "noUtrReason": "lk",
-          "dateOfBirth": "1955-03-29",
-          "hasUtr": false,
-          "directorDetails": {
-            "firstName": "Third",
-            "lastName": "User"
-          },
-          "directorContactDetails": {
-            "emailAddress": "sS@s.com",
-            "phoneNumber": "0142334"
-          },
-          "nino": {
-            "value": "AA999999B"
-          }
+  "data" : {
+    "establishers" : [
+      {
+        "isEstablisherNew" : true,
+        "establisherKind" : "company",
+        "companyDetails" : {
+          "companyName" : "COMPANY ONE",
+          "isDeleted" : false
         },
-        {
-          "hasNino": false,
-          "noNinoReason": "Test",
-          "address": {
-            "country": "GB",
-            "postcode": "",
-            "addressLine1": "addressline1",
-            "addressLine2": "addressline2",
-            "addressLine3": "",
-            "addressLine4": ""
+        "director" : [
+          {
+            "directorDetails" : {
+              "firstName" : "DIRECTOR",
+              "lastName" : "ONE",
+              "isDeleted" : false
+            },
+            "dateOfBirth" : "1990-01-01",
+            "hasNino" : true,
+            "nino" : {
+              "value" : "JH111111A",
+              "isEditable" : false
+            },
+            "hasUtr" : true,
+            "utr" : {
+              "value" : "1111111111",
+              "isEditable" : false
+            },
+            "addresses" : [
+              {
+                "addressLine1" : "10 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "2 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "3 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "4 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "5 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "6 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "8 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "9 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 1",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 2",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 3",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              }
+            ],
+            "address" : {
+              "addressLine1" : "10 Other Place",
+              "addressLine2" : "Some District",
+              "addressLine3" : "Anytown",
+              "postcode" : "ZZ1 1ZZ",
+              "country" : "GB"
+            },
+            "addressYears" : true,
+            "directorContactDetails" : {
+              "emailAddress" : "A@a.COM",
+              "phoneNumber" : "1"
+            }
           },
-          "addressYears": true,
-          "noUtrReason": "jj",
-          "dateOfBirth": "1955-03-30",
-          "hasUtr": false,
-          "directorDetails": {
-            "firstName": "Fourth",
-            "lastName": "User"
+          {
+            "directorDetails" : {
+              "firstName" : "DIRECTOR",
+              "lastName" : "TWO",
+              "isDeleted" : false
+            },
+            "dateOfBirth" : "1990-02-02",
+            "hasNino" : true,
+            "nino" : {
+              "value" : "JH222222A",
+              "isEditable" : false
+            },
+            "hasUtr" : true,
+            "utr" : {
+              "value" : "2222222222",
+              "isEditable" : false
+            },
+            "addresses" : [
+              {
+                "addressLine1" : "10 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "2 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "3 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "4 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "5 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "6 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "8 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "9 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 1",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 2",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 3",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              }
+            ],
+            "address" : {
+              "addressLine1" : "2 Other Place",
+              "addressLine2" : "Some District",
+              "addressLine3" : "Anytown",
+              "postcode" : "ZZ1 1ZZ",
+              "country" : "GB"
+            },
+            "addressYears" : true,
+            "directorContactDetails" : {
+              "emailAddress" : "A@A.COM",
+              "phoneNumber" : "2"
+            }
           },
-          "directorContactDetails": {
-            "emailAddress": "ddb@gmail.com",
-            "phoneNumber": "00442735"
+          {
+            "directorDetails" : {
+              "firstName" : "DIRECTOR",
+              "lastName" : "THREE",
+              "isDeleted" : false
+            },
+            "dateOfBirth" : "1990-03-03",
+            "hasNino" : true,
+            "nino" : {
+              "value" : "JH333333A",
+              "isEditable" : false
+            },
+            "hasUtr" : true,
+            "utr" : {
+              "value" : "3333333333",
+              "isEditable" : false
+            },
+            "addresses" : [
+              {
+                "addressLine1" : "10 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "2 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "3 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "4 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "5 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "6 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "8 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "9 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 1",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 2",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 3",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              }
+            ],
+            "address" : {
+              "addressLine1" : "3 Other Place",
+              "addressLine2" : "Some District",
+              "addressLine3" : "Anytown",
+              "postcode" : "ZZ1 1ZZ",
+              "country" : "GB"
+            },
+            "addressYears" : true,
+            "directorContactDetails" : {
+              "emailAddress" : "A@A.COM",
+              "phoneNumber" : "1"
+            }
+          },
+          {
+            "directorDetails" : {
+              "firstName" : "DIRECTOR",
+              "lastName" : "FOUR",
+              "isDeleted" : false
+            },
+            "dateOfBirth" : "1990-04-04",
+            "hasNino" : true,
+            "nino" : {
+              "value" : "JH444444A",
+              "isEditable" : false
+            },
+            "hasUtr" : false,
+            "noUtrReason" : "COS",
+            "addresses" : [
+              {
+                "addressLine1" : "10 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "2 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "3 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "4 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "5 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "6 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "8 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "9 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 1",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 2",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 3",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              }
+            ],
+            "address" : {
+              "addressLine1" : "10 Other Place",
+              "addressLine2" : "Some District",
+              "addressLine3" : "Anytown",
+              "postcode" : "ZZ1 1ZZ",
+              "country" : "GB"
+            },
+            "addressYears" : true,
+            "directorContactDetails" : {
+              "emailAddress" : "A@A.COM",
+              "phoneNumber" : "4"
+            }
+          },
+          {
+            "directorDetails" : {
+              "firstName" : "TRUSTEE",
+              "lastName" : "ONE",
+              "isDeleted" : true
+            },
+            "dateOfBirth" : "1990-01-01",
+            "hasNino" : true,
+            "nino" : {
+              "value" : "JH111111A",
+              "isEditable" : false
+            },
+            "hasUtr" : true,
+            "utr" : {
+              "value" : "1111111111",
+              "isEditable" : false
+            },
+            "addresses" : [
+              {
+                "addressLine1" : "10 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "2 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "3 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "4 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "5 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "6 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "8 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "9 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 1",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 2",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 3",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              }
+            ],
+            "address" : {
+              "addressLine1" : "10 Other Place",
+              "addressLine2" : "Some District",
+              "addressLine3" : "Anytown",
+              "postcode" : "ZZ1 1ZZ",
+              "country" : "GB"
+            },
+            "addressYears" : true,
+            "directorContactDetails" : {
+              "emailAddress" : "A@A.COM",
+              "phoneNumber" : "1"
+            }
+          },
+          {
+            "directorDetails" : {
+              "firstName" : "TRUSTEE",
+              "lastName" : "ONE",
+              "isDeleted" : true
+            },
+            "dateOfBirth" : "1990-01-01",
+            "hasNino" : true,
+            "nino" : {
+              "value" : "JH111111A",
+              "isEditable" : false
+            },
+            "hasUtr" : true,
+            "utr" : {
+              "value" : "1111111111",
+              "isEditable" : false
+            },
+            "addresses" : [
+              {
+                "addressLine1" : "10 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "2 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "3 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "4 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "5 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "6 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "8 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "9 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 1",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 2",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 3",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              }
+            ],
+            "address" : {
+              "addressLine1" : "10 Other Place",
+              "addressLine2" : "Some District",
+              "addressLine3" : "Anytown",
+              "postcode" : "ZZ1 1ZZ",
+              "country" : "GB"
+            },
+            "addressYears" : true,
+            "directorContactDetails" : {
+              "emailAddress" : "A@a.COM",
+              "phoneNumber" : "1"
+            }
+          },
+          {
+            "directorDetails" : {
+              "firstName" : "DIRECTOR",
+              "lastName" : "FIVE",
+              "isDeleted" : false
+            },
+            "dateOfBirth" : "1990-05-05",
+            "hasNino" : true,
+            "nino" : {
+              "value" : "JH555555A",
+              "isEditable" : false
+            },
+            "hasUtr" : false,
+            "noUtrReason" : "COS",
+            "addresses" : [
+              {
+                "addressLine1" : "10 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "2 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "3 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "4 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "5 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "6 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "8 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "9 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 1",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 2",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 3",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              }
+            ],
+            "address" : {
+              "addressLine1" : "5 Other Place",
+              "addressLine2" : "Some District",
+              "addressLine3" : "Anytown",
+              "postcode" : "ZZ1 1ZZ",
+              "country" : "GB"
+            },
+            "addressYears" : true,
+            "directorContactDetails" : {
+              "emailAddress" : "A@A.COM",
+              "phoneNumber" : "2"
+            }
+          },
+          {
+            "directorDetails" : {
+              "firstName" : "DIRECTOR",
+              "lastName" : "SIX",
+              "isDeleted" : false
+            },
+            "dateOfBirth" : "1990-06-06",
+            "hasNino" : true,
+            "nino" : {
+              "value" : "JH666666A",
+              "isEditable" : false
+            },
+            "hasUtr" : false,
+            "noUtrReason" : "COS",
+            "addresses" : [
+              {
+                "addressLine1" : "10 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "2 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "3 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "4 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "5 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "6 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "8 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "9 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 1",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 2",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 3",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              }
+            ],
+            "address" : {
+              "addressLine1" : "10 Other Place",
+              "addressLine2" : "Some District",
+              "addressLine3" : "Anytown",
+              "postcode" : "ZZ1 1ZZ",
+              "country" : "GB"
+            },
+            "addressYears" : true,
+            "directorContactDetails" : {
+              "emailAddress" : "A@A.COM",
+              "phoneNumber" : "1"
+            }
+          },
+          {
+            "directorDetails" : {
+              "firstName" : "DIRECTOR",
+              "lastName" : "SEVEN",
+              "isDeleted" : false
+            },
+            "dateOfBirth" : "1990-07-07",
+            "hasNino" : true,
+            "nino" : {
+              "value" : "JH777777A",
+              "isEditable" : false
+            },
+            "hasUtr" : false,
+            "noUtrReason" : "COS",
+            "addresses" : [
+              {
+                "addressLine1" : "10 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "2 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "3 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "4 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "5 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "6 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "8 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "9 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 1",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 2",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 3",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              }
+            ],
+            "address" : {
+              "addressLine1" : "10 Other Place",
+              "addressLine2" : "Some District",
+              "addressLine3" : "Anytown",
+              "postcode" : "ZZ1 1ZZ",
+              "country" : "GB"
+            },
+            "addressYears" : true,
+            "directorContactDetails" : {
+              "emailAddress" : "A@A.COM",
+              "phoneNumber" : "1"
+            }
+          },
+          {
+            "directorDetails" : {
+              "firstName" : "DIRECTOR",
+              "lastName" : "EIGHT",
+              "isDeleted" : false
+            },
+            "dateOfBirth" : "1990-08-08",
+            "hasNino" : true,
+            "nino" : {
+              "value" : "JH888888A",
+              "isEditable" : false
+            },
+            "hasUtr" : false,
+            "noUtrReason" : "COS",
+            "addresses" : [
+              {
+                "addressLine1" : "10 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "2 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "3 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "4 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "5 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "6 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "8 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "9 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 1",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 2",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 3",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              }
+            ],
+            "address" : {
+              "addressLine1" : "10 Other Place",
+              "addressLine2" : "Some District",
+              "addressLine3" : "Anytown",
+              "postcode" : "ZZ1 1ZZ",
+              "country" : "GB"
+            },
+            "addressYears" : true,
+            "directorContactDetails" : {
+              "emailAddress" : "A@A.COM",
+              "phoneNumber" : "1"
+            }
+          },
+          {
+            "directorDetails" : {
+              "firstName" : "DIRECTOR",
+              "lastName" : "NINE",
+              "isDeleted" : false
+            },
+            "dateOfBirth" : "1990-09-09",
+            "hasNino" : true,
+            "nino" : {
+              "value" : "JH939392A",
+              "isEditable" : false
+            },
+            "hasUtr" : false,
+            "noUtrReason" : "COS",
+            "addresses" : [
+              {
+                "addressLine1" : "10 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "2 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "3 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "4 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "5 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "6 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "8 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "9 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 1",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 2",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 3",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              }
+            ],
+            "address" : {
+              "addressLine1" : "10 Other Place",
+              "addressLine2" : "Some District",
+              "addressLine3" : "Anytown",
+              "postcode" : "ZZ1 1ZZ",
+              "country" : "GB"
+            },
+            "addressYears" : true,
+            "directorContactDetails" : {
+              "emailAddress" : "A@A.COM",
+              "phoneNumber" : "1"
+            }
+          },
+          {
+            "directorDetails" : {
+              "firstName" : "DIRECTOR",
+              "lastName" : "TEN",
+              "isDeleted" : true
+            },
+            "dateOfBirth" : "1990-10-10",
+            "hasNino" : true,
+            "nino" : {
+              "value" : "JH111111A",
+              "isEditable" : false
+            },
+            "hasUtr" : false,
+            "noUtrReason" : "COS",
+            "addresses" : [
+              {
+                "addressLine1" : "10 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "2 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "3 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "4 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "5 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "6 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "8 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "9 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 1",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 2",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 3",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              }
+            ],
+            "address" : {
+              "addressLine1" : "10 Other Place",
+              "addressLine2" : "Some District",
+              "addressLine3" : "Anytown",
+              "postcode" : "ZZ1 1ZZ",
+              "country" : "GB"
+            },
+            "addressYears" : true,
+            "directorContactDetails" : {
+              "emailAddress" : "A@A.COM",
+              "phoneNumber" : "1"
+            }
+          },
+          {
+            "directorDetails" : {
+              "firstName" : "DIRECTOR",
+              "lastName" : "TEN",
+              "isDeleted" : true
+            },
+            "dateOfBirth" : "1990-10-10",
+            "hasNino" : true,
+            "nino" : {
+              "value" : "JH101010A",
+              "isEditable" : false
+            },
+            "hasUtr" : false,
+            "noUtrReason" : "Z",
+            "addresses" : [
+              {
+                "addressLine1" : "10 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "2 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "3 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "4 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "5 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "6 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "8 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "9 Other Place",
+                "addressLine2" : "Some District",
+                "addressLine3" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 1",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 2",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              },
+              {
+                "addressLine1" : "Flat 3",
+                "addressLine2" : "7 Other Place",
+                "addressLine3" : "Some District",
+                "addressLine4" : "Anytown",
+                "postalCode" : "ZZ1 1ZZ",
+                "countryCode" : "GB"
+              }
+            ],
+            "address" : {
+              "addressLine1" : "10 Other Place",
+              "addressLine2" : "Some District",
+              "addressLine3" : "Anytown",
+              "postcode" : "ZZ1 1ZZ",
+              "country" : "GB"
+            },
+            "addressYears" : true,
+            "directorContactDetails" : {
+              "emailAddress" : "Z@A.COM",
+              "phoneNumber" : "1"
+            }
           }
+        ],
+        "trusteeAlsoDirector" : 11
+      }
+    ],
+    "schemeType" : {
+      "name" : "other"
+    },
+    "occupationalPensionScheme" : true,
+    "schemeName" : "Legacy Scheme Empty",
+    "relationshipStartDate" : "2017-04-06",
+    "currentMembers" : "opt2",
+    "schemeOpenDate" : "2017-04-06",
+    "expireAt" : NumberLong(1640649600000),
+    "schemeEstablishedCountry" : "SI",
+    "securedBenefits" : false,
+    "investmentRegulated" : true,
+    "trustees" : [
+      {
+        "isTrusteeNew" : true,
+        "trusteeKind" : "individual"
+      },
+      {
+        "isTrusteeNew" : true,
+        "trusteeKind" : "individual"
+      },
+      {
+        "isTrusteeNew" : true,
+        "trusteeKind" : "individual"
+      },
+      {
+        "isTrusteeNew" : true,
+        "trusteeKind" : "individual",
+        "directorsAlsoTrustees" : [
+          11
+        ],
+        "trusteeDetails" : {
+          "firstName" : "TRUSTEE",
+          "lastName" : "ONE",
+          "isDeleted" : false
+        },
+        "dateOfBirth" : "1990-01-01",
+        "hasNino" : true,
+        "nino" : {
+          "value" : "JH111122A",
+          "isEditable" : false
+        },
+        "hasUtr" : false,
+        "noUtrReason" : "COS",
+        "addresses" : [
+          {
+            "addressLine1" : "10 Other Place",
+            "addressLine2" : "Some District",
+            "addressLine3" : "Anytown",
+            "postalCode" : "ZZ1 1ZZ",
+            "countryCode" : "GB"
+          },
+          {
+            "addressLine1" : "2 Other Place",
+            "addressLine2" : "Some District",
+            "addressLine3" : "Anytown",
+            "postalCode" : "ZZ1 1ZZ",
+            "countryCode" : "GB"
+          },
+          {
+            "addressLine1" : "3 Other Place",
+            "addressLine2" : "Some District",
+            "addressLine3" : "Anytown",
+            "postalCode" : "ZZ1 1ZZ",
+            "countryCode" : "GB"
+          },
+          {
+            "addressLine1" : "4 Other Place",
+            "addressLine2" : "Some District",
+            "addressLine3" : "Anytown",
+            "postalCode" : "ZZ1 1ZZ",
+            "countryCode" : "GB"
+          },
+          {
+            "addressLine1" : "5 Other Place",
+            "addressLine2" : "Some District",
+            "addressLine3" : "Anytown",
+            "postalCode" : "ZZ1 1ZZ",
+            "countryCode" : "GB"
+          },
+          {
+            "addressLine1" : "6 Other Place",
+            "addressLine2" : "Some District",
+            "addressLine3" : "Anytown",
+            "postalCode" : "ZZ1 1ZZ",
+            "countryCode" : "GB"
+          },
+          {
+            "addressLine1" : "8 Other Place",
+            "addressLine2" : "Some District",
+            "addressLine3" : "Anytown",
+            "postalCode" : "ZZ1 1ZZ",
+            "countryCode" : "GB"
+          },
+          {
+            "addressLine1" : "9 Other Place",
+            "addressLine2" : "Some District",
+            "addressLine3" : "Anytown",
+            "postalCode" : "ZZ1 1ZZ",
+            "countryCode" : "GB"
+          },
+          {
+            "addressLine1" : "Flat 1",
+            "addressLine2" : "7 Other Place",
+            "addressLine3" : "Some District",
+            "addressLine4" : "Anytown",
+            "postalCode" : "ZZ1 1ZZ",
+            "countryCode" : "GB"
+          },
+          {
+            "addressLine1" : "Flat 2",
+            "addressLine2" : "7 Other Place",
+            "addressLine3" : "Some District",
+            "addressLine4" : "Anytown",
+            "postalCode" : "ZZ1 1ZZ",
+            "countryCode" : "GB"
+          },
+          {
+            "addressLine1" : "Flat 3",
+            "addressLine2" : "7 Other Place",
+            "addressLine3" : "Some District",
+            "addressLine4" : "Anytown",
+            "postalCode" : "ZZ1 1ZZ",
+            "countryCode" : "GB"
+          }
+        ],
+        "address" : {
+          "addressLine1" : "10 Other Place",
+          "addressLine2" : "Some District",
+          "addressLine3" : "Anytown",
+          "postcode" : "ZZ1 1ZZ",
+          "country" : "GB"
+        },
+        "addressYears" : true,
+        "email" : "A@A.COM",
+        "phone" : "1"
+      },
+      {
+        "isTrusteeNew" : true,
+        "trusteeKind" : "individual",
+        "directorsAlsoTrustees" : [
+          11
+        ]
+      },
+      {
+        "isTrusteeNew" : true,
+        "trusteeKind" : "individual"
+      },
+      {
+        "isTrusteeNew" : true,
+        "trusteeKind" : "individual"
+      },
+      {
+        "isTrusteeNew" : true,
+        "trusteeKind" : "individual"
+      },
+      {
+        "isTrusteeNew" : true,
+        "trusteeKind" : "individual"
+      },
+      {
+        "isTrusteeNew" : true,
+        "trusteeKind" : "individual"
+      },
+      {
+        "isTrusteeNew" : true,
+        "trusteeKind" : "individual"
+      },
+      {
+        "isTrusteeNew" : true,
+        "trusteeKind" : "individual",
+        "directorsAlsoTrustees" : [
+          11
+        ],
+        "trusteeDetails" : {
+          "firstName" : "TRUSTEE",
+          "lastName" : "TWO",
+          "isDeleted" : false
+        },
+        "dateOfBirth" : "1990-02-02",
+        "hasNino" : true,
+        "nino" : {
+          "value" : "JH222229A",
+          "isEditable" : false
+        },
+        "hasUtr" : false,
+        "noUtrReason" : "COS",
+        "addresses" : [
+          {
+            "addressLine1" : "10 Other Place",
+            "addressLine2" : "Some District",
+            "addressLine3" : "Anytown",
+            "postalCode" : "ZZ1 1ZZ",
+            "countryCode" : "GB"
+          },
+          {
+            "addressLine1" : "2 Other Place",
+            "addressLine2" : "Some District",
+            "addressLine3" : "Anytown",
+            "postalCode" : "ZZ1 1ZZ",
+            "countryCode" : "GB"
+          },
+          {
+            "addressLine1" : "3 Other Place",
+            "addressLine2" : "Some District",
+            "addressLine3" : "Anytown",
+            "postalCode" : "ZZ1 1ZZ",
+            "countryCode" : "GB"
+          },
+          {
+            "addressLine1" : "4 Other Place",
+            "addressLine2" : "Some District",
+            "addressLine3" : "Anytown",
+            "postalCode" : "ZZ1 1ZZ",
+            "countryCode" : "GB"
+          },
+          {
+            "addressLine1" : "5 Other Place",
+            "addressLine2" : "Some District",
+            "addressLine3" : "Anytown",
+            "postalCode" : "ZZ1 1ZZ",
+            "countryCode" : "GB"
+          },
+          {
+            "addressLine1" : "6 Other Place",
+            "addressLine2" : "Some District",
+            "addressLine3" : "Anytown",
+            "postalCode" : "ZZ1 1ZZ",
+            "countryCode" : "GB"
+          },
+          {
+            "addressLine1" : "8 Other Place",
+            "addressLine2" : "Some District",
+            "addressLine3" : "Anytown",
+            "postalCode" : "ZZ1 1ZZ",
+            "countryCode" : "GB"
+          },
+          {
+            "addressLine1" : "9 Other Place",
+            "addressLine2" : "Some District",
+            "addressLine3" : "Anytown",
+            "postalCode" : "ZZ1 1ZZ",
+            "countryCode" : "GB"
+          },
+          {
+            "addressLine1" : "Flat 1",
+            "addressLine2" : "7 Other Place",
+            "addressLine3" : "Some District",
+            "addressLine4" : "Anytown",
+            "postalCode" : "ZZ1 1ZZ",
+            "countryCode" : "GB"
+          },
+          {
+            "addressLine1" : "Flat 2",
+            "addressLine2" : "7 Other Place",
+            "addressLine3" : "Some District",
+            "addressLine4" : "Anytown",
+            "postalCode" : "ZZ1 1ZZ",
+            "countryCode" : "GB"
+          },
+          {
+            "addressLine1" : "Flat 3",
+            "addressLine2" : "7 Other Place",
+            "addressLine3" : "Some District",
+            "addressLine4" : "Anytown",
+            "postalCode" : "ZZ1 1ZZ",
+            "countryCode" : "GB"
+          }
+        ],
+        "address" : {
+          "addressLine1" : "10 Other Place",
+          "addressLine2" : "Some District",
+          "addressLine3" : "Anytown",
+          "postcode" : "ZZ1 1ZZ",
+          "country" : "GB"
+        },
+        "addressYears" : true,
+        "email" : "A@AAAA.COM",
+        "phone" : "11"
+      },
+      {
+        "isTrusteeNew" : true,
+        "trusteeKind" : "individual",
+        "directorsAlsoTrustees" : [
+          0,
+          1,
+          2,
+          3,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "hasNino" : true,
+        "utr" : {
+          "value" : "1111111111",
+          "isEditable" : false
+        },
+        "address" : {
+          "addressLine1" : "10 Other Place",
+          "addressLine2" : "Some District",
+          "addressLine3" : "Anytown",
+          "postcode" : "ZZ1 1ZZ",
+          "country" : "GB"
+        },
+        "phone" : "1",
+        "addressYears" : true,
+        "dateOfBirth" : "1990-01-01",
+        "hasUtr" : true,
+        "trusteeDetails" : {
+          "firstName" : "DIRECTOR",
+          "lastName" : "ONE"
+        },
+        "trusteeKind" : "individual",
+        "email" : "A@a.COM",
+        "nino" : {
+          "value" : "JH111111A",
+          "isEditable" : false
         }
-      ],
-      "trusteeAlsoDirector": 1
-    }
-  ],
-  "schemeType": {
-    "name": "other"
-  },
-  "occupationalPensionScheme": true,
-  "schemeName": "Legacy Scheme Filled",
-  "relationshipStartDate": "2017-04-06",
-  "currentMembers": "opt2",
-  "schemeOpenDate": "2017-04-06",
-  "expireAt": 1640304000000,
-  "schemeEstablishedCountry": "SI",
-  "securedBenefits": false,
-  "investmentRegulated": true,
-  "trustees": [
-    {
-      "hasNino": true,
-      "address": {
-        "country": "NO",
-        "postcode": "TF3 8TR",
-        "addressLine1": "addressline1",
-        "addressLine2": "addressline2",
-        "addressLine3": "addressline3",
-        "addressLine4": "addressline4"
       },
-      "phone": "0142334",
-      "dateOfBirth": "1955-03-29",
-      "trusteeKind": "individual",
-      "trusteeDetails": {
-        "firstName": "Third",
-        "lastName": "User"
+      {
+        "hasNino" : true,
+        "utr" : {
+          "value" : "2222222222",
+          "isEditable" : false
+        },
+        "address" : {
+          "addressLine1" : "2 Other Place",
+          "addressLine2" : "Some District",
+          "addressLine3" : "Anytown",
+          "postcode" : "ZZ1 1ZZ",
+          "country" : "GB"
+        },
+        "phone" : "2",
+        "addressYears" : true,
+        "dateOfBirth" : "1990-02-02",
+        "hasUtr" : true,
+        "trusteeDetails" : {
+          "firstName" : "DIRECTOR",
+          "lastName" : "TWO"
+        },
+        "trusteeKind" : "individual",
+        "email" : "A@A.COM",
+        "nino" : {
+          "value" : "JH222222A",
+          "isEditable" : false
+        }
       },
-      "nino": {
-        "value": "AA999999B"
+      {
+        "hasNino" : true,
+        "utr" : {
+          "value" : "3333333333",
+          "isEditable" : false
+        },
+        "address" : {
+          "addressLine1" : "3 Other Place",
+          "addressLine2" : "Some District",
+          "addressLine3" : "Anytown",
+          "postcode" : "ZZ1 1ZZ",
+          "country" : "GB"
+        },
+        "phone" : "1",
+        "addressYears" : true,
+        "dateOfBirth" : "1990-03-03",
+        "hasUtr" : true,
+        "trusteeDetails" : {
+          "firstName" : "DIRECTOR",
+          "lastName" : "THREE"
+        },
+        "trusteeKind" : "individual",
+        "email" : "A@A.COM",
+        "nino" : {
+          "value" : "JH333333A",
+          "isEditable" : false
+        }
       },
-      "hasUtr": false,
-      "noUtrReason": "lk",
-      "addressYears": true,
-      "email": "sS@s.com"
-    },
-    {
-      "hasNino": false,
-      "noNinoReason": "Test",
-      "address": {
-        "country": "GB",
-        "postcode": "",
-        "addressLine1": "addressline1",
-        "addressLine2": "addressline2",
-        "addressLine3": "",
-        "addressLine4": ""
+      {
+        "hasNino" : true,
+        "address" : {
+          "addressLine1" : "10 Other Place",
+          "addressLine2" : "Some District",
+          "addressLine3" : "Anytown",
+          "postcode" : "ZZ1 1ZZ",
+          "country" : "GB"
+        },
+        "phone" : "4",
+        "addressYears" : true,
+        "noUtrReason" : "COS",
+        "dateOfBirth" : "1990-04-04",
+        "hasUtr" : false,
+        "trusteeDetails" : {
+          "firstName" : "DIRECTOR",
+          "lastName" : "FOUR"
+        },
+        "trusteeKind" : "individual",
+        "email" : "A@A.COM",
+        "nino" : {
+          "value" : "JH444444A",
+          "isEditable" : false
+        }
       },
-      "phone": "00442735",
-      "dateOfBirth": "1955-03-30",
-      "trusteeKind": "individual",
-      "trusteeDetails": {
-        "firstName": "Fourth",
-        "lastName": "User"
+      {
+        "hasNino" : true,
+        "address" : {
+          "addressLine1" : "5 Other Place",
+          "addressLine2" : "Some District",
+          "addressLine3" : "Anytown",
+          "postcode" : "ZZ1 1ZZ",
+          "country" : "GB"
+        },
+        "phone" : "2",
+        "addressYears" : true,
+        "noUtrReason" : "COS",
+        "dateOfBirth" : "1990-05-05",
+        "hasUtr" : false,
+        "trusteeDetails" : {
+          "firstName" : "DIRECTOR",
+          "lastName" : "FIVE"
+        },
+        "trusteeKind" : "individual",
+        "email" : "A@A.COM",
+        "nino" : {
+          "value" : "JH555555A",
+          "isEditable" : false
+        }
       },
-      "email": "ddb@gmail.com",
-      "hasUtr": false,
-      "noUtrReason": "jj",
-      "addressYears": true
-    },
-    {
-      "havePaye": true,
-      "haveCompanyNumber": false,
-      "address": {
-        "country": "NL",
-        "postcode": "",
-        "addressLine1": "asdasd",
-        "addressLine2": "asdsada",
-        "addressLine3": "",
-        "addressLine4": ""
+      {
+        "hasNino" : true,
+        "address" : {
+          "addressLine1" : "10 Other Place",
+          "addressLine2" : "Some District",
+          "addressLine3" : "Anytown",
+          "postcode" : "ZZ1 1ZZ",
+          "country" : "GB"
+        },
+        "phone" : "1",
+        "addressYears" : true,
+        "noUtrReason" : "COS",
+        "dateOfBirth" : "1990-06-06",
+        "hasUtr" : false,
+        "trusteeDetails" : {
+          "firstName" : "DIRECTOR",
+          "lastName" : "SIX"
+        },
+        "trusteeKind" : "individual",
+        "email" : "A@A.COM",
+        "nino" : {
+          "value" : "JH666666A",
+          "isEditable" : false
+        }
       },
-      "companyDetails": {
-        "companyName": "asdsad"
+      {
+        "hasNino" : true,
+        "address" : {
+          "addressLine1" : "10 Other Place",
+          "addressLine2" : "Some District",
+          "addressLine3" : "Anytown",
+          "postcode" : "ZZ1 1ZZ",
+          "country" : "GB"
+        },
+        "phone" : "1",
+        "addressYears" : true,
+        "noUtrReason" : "COS",
+        "dateOfBirth" : "1990-07-07",
+        "hasUtr" : false,
+        "trusteeDetails" : {
+          "firstName" : "DIRECTOR",
+          "lastName" : "SEVEN"
+        },
+        "trusteeKind" : "individual",
+        "email" : "A@A.COM",
+        "nino" : {
+          "value" : "JH777777A",
+          "isEditable" : false
+        }
       },
-      "vat": {
-        "value": "222456289"
+      {
+        "hasNino" : true,
+        "address" : {
+          "addressLine1" : "10 Other Place",
+          "addressLine2" : "Some District",
+          "addressLine3" : "Anytown",
+          "postcode" : "ZZ1 1ZZ",
+          "country" : "GB"
+        },
+        "phone" : "1",
+        "addressYears" : true,
+        "noUtrReason" : "COS",
+        "dateOfBirth" : "1990-08-08",
+        "hasUtr" : false,
+        "trusteeDetails" : {
+          "firstName" : "DIRECTOR",
+          "lastName" : "EIGHT",
+          "isDeleted" : true
+        },
+        "trusteeKind" : "individual",
+        "email" : "A@A.COM",
+        "nino" : {
+          "value" : "JH888888A",
+          "isEditable" : false
+        }
       },
-      "paye": {
-        "value": "123AB456"
+      {
+        "isTrusteeNew" : true,
+        "trusteeKind" : "individual"
       },
-      "noCompanyNumberReason": "dsfdsfsdf",
-      "haveVat": true,
-      "trusteeKind": "company",
-      "email": "asdasd@dfdsf"
-    }
-  ],
-  "racDac": false
+      {
+        "isTrusteeNew" : true,
+        "trusteeKind" : "individual"
+      },
+      {
+        "isTrusteeNew" : true,
+        "trusteeKind" : "individual"
+      }
+    ],
+    "racDac" : false
+  }
 }

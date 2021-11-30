@@ -163,7 +163,7 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
     }
 
   private def directorAlsoTrusteeRoutes(index: Index, answers: UserAnswers): Call = {
-    val noneValue = 11
+    val noneValue = -1
     answers.get(DirectorAlsoTrusteeId(index)) match {
       case Some(value) if value == noneValue =>
         TrusteesIndividualRoutes.nameRoute(index, NormalMode)
@@ -173,7 +173,7 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
   }
 
   private def directorsAlsoTrusteesRoutes(index: Index, answers: UserAnswers): Call = {
-    val noneValue = 11
+    val noneValue = -1
     answers.get(DirectorsAlsoTrusteesId(index)) match {
       case Some(value) if value.size == 1 && value.contains(noneValue) =>
         TrusteesIndividualRoutes.nameRoute(index, NormalMode)

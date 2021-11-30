@@ -25,7 +25,7 @@ import viewmodels.forNunjucks.Checkboxes
 object DataPrefillCheckbox {
 
   def checkboxes(form: Form[List[Int]], values: Seq[DataPrefillIndividualDetails]): Seq[Checkboxes.Item] = {
-    val noneValue = "11"
+    val noneValue = "-1"
     val items = values.map(indvDetails => Checkboxes.Checkbox(Literal(indvDetails.fullName), indvDetails.index.toString, None, None))
     val noneOfTheAbove = Checkboxes.Checkbox(msg"messages__prefill__label__none", noneValue, Some("exclusive"), None)
     val divider = Checkboxes.Checkbox(msg"messages__prefill__label__divider", "divider", None, Some(msg"messages__prefill__label__divider"))

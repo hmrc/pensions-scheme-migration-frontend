@@ -23,7 +23,7 @@ import play.api.data.validation.{Invalid, Valid}
 
 class DataPrefillConstraintsSpec extends PlaySpec with DataPrefillConstraints with RegexBehaviourSpec {
 
-  private val noneValue = 11
+  private val noneValue = -1
   "noValueInList" must {
 
     "return Invalid when there is no item selected" in {

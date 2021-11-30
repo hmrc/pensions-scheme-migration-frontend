@@ -19,30 +19,39 @@ package forms.mappings
 import play.api.data.validation.{Constraint, Invalid, Valid}
 
 trait DataPrefillConstraints {
-  private val noneValue = 11
+  private val noneValue = -1
   private val maxNoOfEntity = 10
 
-  protected def noValueInList(errorKey: String): Constraint[List[Int]] =
+  protected def noValueInList(errorKey: String): Constraint[List[Int]] = {
+
     Constraint {
       case lst if lst.nonEmpty =>
         Valid
       case _ =>
+        println("\n\n\n in no value")
         Invalid(errorKey)
     }
+  }
 
-  protected def noneSelectedWithValue(errorKey: String): Constraint[List[Int]] =
+  protected def noneSelectedWithValue(errorKey: String): Constraint[List[Int]] = {
+
     Constraint {
       case lst if lst.size > 1 && lst.contains(noneValue) =>
+        println("\n\n\n in none selected")
         Invalid(errorKey)
       case _ =>
         Valid
     }
+  }
 
-  protected def moreThanTen(errorKey: String, entityCount: Int): Constraint[List[Int]] =
+  protected def moreThanTen(errorKey: String, entityCount: Int): Constraint[List[Int]] = {
+
     Constraint {
       case lst if (lst.size + entityCount) > maxNoOfEntity && !lst.contains(noneValue) =>
+        println("\n\n\n in more than ten")
         Invalid(errorKey)
       case _ =>
         Valid
     }
+  }
 }
