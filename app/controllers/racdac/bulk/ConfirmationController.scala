@@ -17,6 +17,7 @@
 package controllers.racdac.bulk
 
 import config.AppConfig
+import connectors.ListOfSchemesConnector
 import connectors.cache.CurrentPstrCacheConnector
 import controllers.actions._
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -34,6 +35,7 @@ class ConfirmationController @Inject()(appConfig: AppConfig,
                                        currentPstrCacheConnector: CurrentPstrCacheConnector,
                                        getData: BulkDataAction,
                                        val controllerComponents: MessagesControllerComponents,
+                                       listOfSchemesConnector:ListOfSchemesConnector,
                                        renderer: Renderer
                                       )(implicit ec: ExecutionContext)
   extends FrontendBaseController
@@ -41,13 +43,15 @@ class ConfirmationController @Inject()(appConfig: AppConfig,
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData(true)).async {
-      implicit request =>
+      implicit request => {
         val json = Json.obj(
           "email" -> request.md.email,
           "finishUrl" -> appConfig.psaOverviewUrl
         )
+        listOfSchemesConnector.removeCache(request.request.psaId.id)
         currentPstrCacheConnector.remove.flatMap { _ =>
           renderer.render("racdac/confirmation.njk", json).map(Ok(_))
         }
+      }
     }
 }

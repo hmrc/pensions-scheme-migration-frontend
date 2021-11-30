@@ -17,7 +17,7 @@
 package controllers
 
 import config.AppConfig
-import connectors.MinimalDetailsConnector
+import connectors.{ListOfSchemesConnector, MinimalDetailsConnector}
 import connectors.cache.{CurrentPstrCacheConnector, LockCacheConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import helpers.cya.CYAHelper
@@ -41,7 +41,8 @@ class SchemeSuccessController @Inject()(appConfig: AppConfig,
                                         renderer: Renderer,
                                         minimalDetailsConnector: MinimalDetailsConnector,
                                         currentPstrCacheConnector:CurrentPstrCacheConnector,
-                                        lockCacheConnector:LockCacheConnector
+                                        lockCacheConnector:LockCacheConnector,
+                                        listOfSchemesConnector:ListOfSchemesConnector
                                        )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
@@ -55,6 +56,7 @@ class SchemeSuccessController @Inject()(appConfig: AppConfig,
             _ <- currentPstrCacheConnector.remove
             _ <- lockCacheConnector.removeLock(request.lock)
             _ <- userAnswersCacheConnector.remove(request.lock.pstr)
+            _ <- listOfSchemesConnector.removeCache(request.psaId.id)
           } yield {
             Json.obj(
               "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
