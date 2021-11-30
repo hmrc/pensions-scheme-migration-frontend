@@ -28,7 +28,6 @@ trait DataPrefillConstraints {
       case lst if lst.nonEmpty =>
         Valid
       case _ =>
-        println("\n\n\n in no value")
         Invalid(errorKey)
     }
   }
@@ -37,7 +36,6 @@ trait DataPrefillConstraints {
 
     Constraint {
       case lst if lst.size > 1 && lst.contains(noneValue) =>
-        println("\n\n\n in none selected")
         Invalid(errorKey)
       case _ =>
         Valid
@@ -48,7 +46,6 @@ trait DataPrefillConstraints {
 
     Constraint {
       case lst if (lst.size + entityCount) > maxNoOfEntity && !lst.contains(noneValue) =>
-        println("\n\n\n in more than ten")
         Invalid(errorKey)
       case _ =>
         Valid

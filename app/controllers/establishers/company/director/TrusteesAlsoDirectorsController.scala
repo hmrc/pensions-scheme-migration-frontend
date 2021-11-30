@@ -91,13 +91,13 @@ class TrusteesAlsoDirectorsController @Inject()(override val messagesApi: Messag
       (CompanyDetailsId(establisherIndex) and SchemeNameId).retrieve.right.map { case companyName ~ schemeName =>
         val seqTrustee = dataPrefillService.getListOfTrusteesToBeCopied(establisherIndex)
         form(establisherIndex).bindFromRequest().fold(
-          formWithErrors => {
+          (formWithErrors: Form[_]) => {
             val json = Json.obj(
               "form" -> formWithErrors,
               "schemeName" -> schemeName,
               "pageHeading" -> msg"messages__directors__prefill__title",
               "titleMessage" -> msg"messages__directors__prefill__heading".withArgs(companyName.companyName).resolve,
-              "dataPrefillCheckboxes" -> DataPrefillCheckbox.checkboxes(formWithErrors, seqTrustee)
+              "dataPrefillCheckboxes" -> DataPrefillCheckbox.checkboxes(form(establisherIndex), seqTrustee)
             )
             renderer.render("dataPrefillCheckbox.njk", json).map(BadRequest(_))
           },

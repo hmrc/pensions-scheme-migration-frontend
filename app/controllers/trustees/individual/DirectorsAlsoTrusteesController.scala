@@ -88,7 +88,6 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
         val seqDirector = dataPrefillService.getListOfDirectorsToBeCopied
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
-
             val json = Json.obj(
               "form" -> formWithErrors,
               "schemeName" -> schemeName,
