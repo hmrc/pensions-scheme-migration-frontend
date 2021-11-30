@@ -26,7 +26,7 @@ import identifiers.trustees.DirectorsAlsoTrusteesId
 import models.{DataPrefillCheckbox, Index}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -53,11 +53,11 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
                                                )(implicit val executionContext: ExecutionContext) extends FrontendBaseController
   with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
-  private def form(implicit ua: UserAnswers): Form[List[Int]] = {
+  private def form(implicit ua: UserAnswers, messages: Messages): Form[List[Int]] = {
     val existingTrusteeCount = ua.allTrusteesAfterDelete.size
     formProvider(existingTrusteeCount, "messages__directors__prefill__multi__error__required",
       "messages__directors__prefill__multi__error__noneWithValue",
-      "messages__directors__prefill__multi__error__moreThanTen")
+      messages("messages__trustees__prefill__multi__error__moreThanTen", existingTrusteeCount, config.maxTrustees - existingTrusteeCount))
   }
 
   def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
@@ -71,7 +71,7 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
             "schemeName" -> schemeName,
             "pageHeading" -> msg"messages__trustees__prefill__title",
             "titleMessage" -> msg"messages__trustees__prefill__heading",
-            "trusteeCheckboxes" -> DataPrefillCheckbox.checkboxes(form, seqDirector)
+            "dataPrefillCheckboxes" -> DataPrefillCheckbox.checkboxes(form, seqDirector)
           )
 
           renderer.render("dataPrefillCheckbox.njk", json).map(Ok(_))
@@ -94,7 +94,7 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
               "schemeName" -> schemeName,
               "pageHeading" -> msg"messages__trustees__prefill__title",
               "titleMessage" -> msg"messages__trustees__prefill__heading",
-              "trusteeCheckboxes" -> DataPrefillCheckbox.checkboxes(form, seqDirector)
+              "dataPrefillCheckboxes" -> DataPrefillCheckbox.checkboxes(form, seqDirector)
             )
             renderer.render("dataPrefillCheckbox.njk", json).map(BadRequest(_))
           },

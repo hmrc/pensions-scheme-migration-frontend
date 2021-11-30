@@ -75,7 +75,7 @@ class TrusteesAlsoDirectorsController @Inject()(override val messagesApi: Messag
             "schemeName" -> schemeName,
             "pageHeading" -> msg"messages__directors__prefill__title",
             "titleMessage" -> msg"messages__directors__prefill__heading".withArgs(companyName.companyName).resolve,
-            "trusteeCheckboxes" -> DataPrefillCheckbox.checkboxes(form(establisherIndex), seqTrustee)
+            "dataPrefillCheckboxes" -> DataPrefillCheckbox.checkboxes(form(establisherIndex), seqTrustee)
           )
 
           renderer.render("dataPrefillCheckbox.njk", json).map(Ok(_))
@@ -97,7 +97,7 @@ class TrusteesAlsoDirectorsController @Inject()(override val messagesApi: Messag
               "schemeName" -> schemeName,
               "pageHeading" -> msg"messages__directors__prefill__title",
               "titleMessage" -> msg"messages__directors__prefill__heading".withArgs(companyName.companyName).resolve,
-              "trusteeCheckboxes" -> DataPrefillCheckbox.checkboxes(formWithErrors, seqTrustee)
+              "dataPrefillCheckboxes" -> DataPrefillCheckbox.checkboxes(formWithErrors, seqTrustee)
             )
             renderer.render("dataPrefillCheckbox.njk", json).map(BadRequest(_))
           },
@@ -105,7 +105,7 @@ class TrusteesAlsoDirectorsController @Inject()(override val messagesApi: Messag
             val uaAfterCopy: UserAnswers = if (value.headOption.getOrElse(0) > config.maxDirectors) ua else
               dataPrefillService.copyAllTrusteesToDirectors(ua, value, establisherIndex)
             val updatedUa = uaAfterCopy.setOrException(TrusteesAlsoDirectorsId(establisherIndex), value)
-            userAnswersCacheConnector.save(request.lock, updatedUa.data).map { answers =>
+            userAnswersCacheConnector.save(request.lock, updatedUa.data).map { _ =>
               Redirect(navigator.nextPage(TrusteesAlsoDirectorsId(establisherIndex), updatedUa))
             }
           }

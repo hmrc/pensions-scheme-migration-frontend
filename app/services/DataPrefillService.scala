@@ -52,7 +52,7 @@ class DataPrefillService @Inject()() extends Enumerable.Implicits {
 
     val trusteeTransformer = (__ \ "trustees").json.update(
       __.read[JsArray].map {
-        case JsArray(arr) => JsArray(arr.drop(1) ++ seqDirectors)
+        case JsArray(arr) => JsArray(arr ++ seqDirectors)
       }
     )
     transformUa(ua, trusteeTransformer)

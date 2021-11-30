@@ -36,7 +36,10 @@
                 classes: "govuk-fieldset__legend--xl govuk-!-margin-bottom-8"
               }
             },
-            items: trusteeCheckboxes,
+            items: dataPrefillCheckboxes,
+            hint: {
+              text: messages("messages__prefill__checkbox__hint")
+            },
             errorMessage: form.errors[0]
           }) }}
 

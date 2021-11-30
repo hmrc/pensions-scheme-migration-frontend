@@ -32,9 +32,9 @@ class DataPrefillServiceSpec extends SpecBase with JsonMatchers with Enumerable.
         ua => {
           val result = dataPrefillService.copyAllDirectorsToTrustees(UserAnswers(ua), Seq(1), 0)
           val path = result.data \ "trustees"
-          (path \ 0 \ "nino" \ "value").as[String] mustBe "CS700200A"
+          (path \ 0 \ "nino" \ "value").as[String] mustBe "CS700100A"
           (path \ 0 \ "trusteeDetails" \ "firstName").as[String] mustBe "Test"
-          (path \ 0 \ "trusteeDetails" \ "lastName").as[String] mustBe "User 2"
+          (path \ 0 \ "trusteeDetails" \ "lastName").as[String] mustBe "User 1"
         }
       }
     }
