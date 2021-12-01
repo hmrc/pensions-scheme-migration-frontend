@@ -26,7 +26,6 @@ import models.establishers.EstablisherKind
 import models.prefill.IndividualDetails
 import models.trustees.TrusteeKind
 import models.{PersonName, ReferenceValue}
-import play.api.i18n.Lang.logger
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
@@ -173,9 +172,9 @@ class DataPrefillService @Inject()() extends Enumerable.Implicits {
       case JsSuccess(directorsWithEstablishers, _) if directorsWithEstablishers.nonEmpty =>
         directorsWithEstablishers.flatten.headOption.getOrElse(Nil)
       case JsError(errors) =>
-        logger.warn(s"Invalid json while reading all the directors for data prefill: $errors")
         Nil
-      case _ => Nil
+      case _ =>
+        Nil
     }
   }
 
@@ -258,12 +257,6 @@ class DataPrefillService @Inject()() extends Enumerable.Implicits {
   }
 
   private def asJsResultSeq[A](jsResults: Seq[JsResult[A]]): JsResult[Seq[A]] = {
-    val allErrors = jsResults.collect {
-      case JsError(errors) => errors
-    }.flatten
-    if (allErrors.nonEmpty) { // If any of JSON is invalid then log warning but return the valid ones
-      logger.warn("Errors in JSON: " + allErrors)
-    }
     JsSuccess(jsResults.collect {
       case JsSuccess(i, _) => i
     })

@@ -24,8 +24,9 @@ import models.prefill.{IndividualDetails => DataPrefillIndividualDetails}
 object DataPrefillRadio {
 
   def radios(form: Form[_], values: Seq[DataPrefillIndividualDetails]): Seq[Radios.Item] = {
+    val noneValue = "-1"
     val items = values.map(indvDetails => Radios.Radio(Literal(indvDetails.fullName), indvDetails.index.toString)) :+
-      Radios.Radio(msg"messages__prefill__label__none", "11")
+      Radios.Radio(msg"messages__prefill__label__none", noneValue)
     Radios(form("value"), items)
   }
 }

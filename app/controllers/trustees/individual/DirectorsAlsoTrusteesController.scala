@@ -98,10 +98,10 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
             renderer.render("dataPrefillCheckbox.njk", json).map(BadRequest(_))
           },
           value => {
-            val uaAfterCopy = if (value.headOption.getOrElse(0) < config.maxTrustees) {
+            val uaAfterCopy = if (value.headOption.getOrElse(-1) < 0) ua else
               dataPrefillService.copyAllDirectorsToTrustees(ua, value,
                 seqDirector.headOption.flatMap(_.mainIndex).getOrElse(0))
-            } else ua
+
             val updatedUa = uaAfterCopy.setOrException(DirectorsAlsoTrusteesId(establisherIndex), value)
             userAnswersCacheConnector.save(request.lock, updatedUa.data).map { _ =>
               Redirect(navigator.nextPage(DirectorsAlsoTrusteesId(establisherIndex), updatedUa))

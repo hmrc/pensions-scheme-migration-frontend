@@ -112,6 +112,7 @@ class DirectorsAlsoTrusteesControllerSpec extends ControllerSpecBase
 
     "copy the directors and redirect to the next page when valid data is submitted with value less than max trustees" in {
       when(mockDataPrefillService.copyAllDirectorsToTrustees(any(), any(), any())).thenReturn(ua)
+      when(mockDataPrefillService.getListOfDirectorsToBeCopied(any())).thenReturn(Seq(IndividualDetails("", "", false, None, None, 0, true, None)))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
       val request: FakeRequest[AnyContentAsJson] = fakeRequest.withJsonBody(Json.obj("value" -> Seq("0")))
 
@@ -126,7 +127,7 @@ class DirectorsAlsoTrusteesControllerSpec extends ControllerSpecBase
 
     "don't copy the directors and redirect to the next page when the value is none of the above" in {
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-      val request: FakeRequest[AnyContentAsJson] = fakeRequest.withJsonBody(Json.obj("value" -> Seq("11")))
+      val request: FakeRequest[AnyContentAsJson] = fakeRequest.withJsonBody(Json.obj("value" -> Seq("-1")))
 
       val getData = new FakeDataRetrievalAction(Some(ua))
       val result: Future[Result] = controller(getData).onSubmit(0)(request)

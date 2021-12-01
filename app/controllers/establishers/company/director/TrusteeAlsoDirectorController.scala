@@ -95,7 +95,7 @@ class TrusteeAlsoDirectorController @Inject()(override val messagesApi: Messages
             renderer.render("dataPrefillRadio.njk", json).map(BadRequest(_))
           },
           value => {
-            def uaAfterCopy: UserAnswers = if(value > config.maxDirectors) ua else
+            def uaAfterCopy: UserAnswers = if(value < 0) ua else
               dataPrefillService.copyAllTrusteesToDirectors(ua, Seq(value), establisherIndex)
             val updatedUa = uaAfterCopy.setOrException(TrusteeAlsoDirectorId(establisherIndex), value)
             userAnswersCacheConnector.save(request.lock, updatedUa.data).map {_ =>

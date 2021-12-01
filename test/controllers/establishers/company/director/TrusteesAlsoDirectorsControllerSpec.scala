@@ -129,7 +129,7 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
 
     "don't copy the trustees and redirect to the next page when the value is none of the above" in {
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-      val request: FakeRequest[AnyContentAsJson] = fakeRequest.withJsonBody(Json.obj("value" -> Seq("11")))
+      val request: FakeRequest[AnyContentAsJson] = fakeRequest.withJsonBody(Json.obj("value" -> Seq("-1")))
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
       val result: Future[Result] = controller(getData).onSubmit(0)(request)
