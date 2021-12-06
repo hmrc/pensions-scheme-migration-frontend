@@ -16,7 +16,6 @@
 
 package controllers.establishers.company.director
 
-import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
@@ -48,14 +47,13 @@ class TrusteeAlsoDirectorController @Inject()(override val messagesApi: Messages
                                               requireData: DataRequiredAction,
                                               formProvider: DataPrefillRadioFormProvider,
                                               dataPrefillService: DataPrefillService,
-                                              config: AppConfig,
                                               val controllerComponents: MessagesControllerComponents,
                                               renderer: Renderer
                                              )(implicit val executionContext: ExecutionContext) extends FrontendBaseController
   with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
   private def form: Form[Int] =
-    formProvider("messages__trustees__prefill__single__error__required")
+    formProvider("messages__directors__prefill__single__error__required")
 
   def onPageLoad(establisherIndex: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
@@ -98,7 +96,7 @@ class TrusteeAlsoDirectorController @Inject()(override val messagesApi: Messages
             def uaAfterCopy: UserAnswers = if(value < 0) ua else
               dataPrefillService.copyAllTrusteesToDirectors(ua, Seq(value), establisherIndex)
             val updatedUa = uaAfterCopy.setOrException(TrusteeAlsoDirectorId(establisherIndex), value)
-            userAnswersCacheConnector.save(request.lock, updatedUa.data).map {_ =>
+            userAnswersCacheConnector.save(request.lock, uaAfterCopy.data).map {_ =>
               Redirect(navigator.nextPage(TrusteeAlsoDirectorId(establisherIndex), updatedUa))
             }
           }

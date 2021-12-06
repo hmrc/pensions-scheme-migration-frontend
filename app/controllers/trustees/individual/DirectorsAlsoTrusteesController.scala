@@ -55,8 +55,8 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
 
   private def form(implicit ua: UserAnswers, messages: Messages): Form[List[Int]] = {
     val existingTrusteeCount = ua.allTrusteesAfterDelete.size
-    formProvider(existingTrusteeCount, "messages__directors__prefill__multi__error__required",
-      "messages__directors__prefill__multi__error__noneWithValue",
+    formProvider(existingTrusteeCount, "messages__trustees__prefill__multi__error__required",
+      "messages__trustees__prefill__multi__error__noneWithValue",
       messages("messages__trustees__prefill__multi__error__moreThanTen", existingTrusteeCount, config.maxTrustees - existingTrusteeCount))
   }
 
@@ -103,7 +103,7 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
                 seqDirector.headOption.flatMap(_.mainIndex).getOrElse(0))
 
             val updatedUa = uaAfterCopy.setOrException(DirectorsAlsoTrusteesId(establisherIndex), value)
-            userAnswersCacheConnector.save(request.lock, updatedUa.data).map { _ =>
+            userAnswersCacheConnector.save(request.lock, uaAfterCopy.data).map { _ =>
               Redirect(navigator.nextPage(DirectorsAlsoTrusteesId(establisherIndex), updatedUa))
             }
           }

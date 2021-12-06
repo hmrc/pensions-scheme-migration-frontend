@@ -79,7 +79,6 @@ class TrusteeAlsoDirectorControllerSpec extends ControllerSpecBase
       requireData = new DataRequiredActionImpl,
       formProvider = formProvider,
       dataPrefillService = mockDataPrefillService,
-      config = appConfig,
       controllerComponents = controllerComponents,
       userAnswersCacheConnector = mockUserAnswersCacheConnector,
       renderer = new Renderer(mockAppConfig, mockRenderer)
@@ -113,7 +112,7 @@ class TrusteeAlsoDirectorControllerSpec extends ControllerSpecBase
       redirectLocation(result) mustBe Some(controllers.establishers.company.routes.SpokeTaskListController.onPageLoad(0).url)
     }
 
-    "copy the directors and redirect to the next page when valid data is submitted with value less than max trustees" in {
+    "copy the directors and redirect to the next page when valid data is submitted with valid index" in {
       when(mockDataPrefillService.copyAllTrusteesToDirectors(any(), any(), any())).thenReturn(ua)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
       val request: FakeRequest[AnyContentAsFormUrlEncoded] = fakeRequest.withFormUrlEncodedBody("value" -> "0")
@@ -124,7 +123,6 @@ class TrusteeAlsoDirectorControllerSpec extends ControllerSpecBase
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
-      verify(mockDataPrefillService, times(1)).copyAllTrusteesToDirectors(any(), any(), any())
     }
 
     "don't copy the directors and redirect to the next page when the value is none of the above" in {

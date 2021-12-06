@@ -54,7 +54,7 @@ class DirectorAlsoTrusteeController @Inject()(override val messagesApi: Messages
   with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
   private def form: Form[Int] =
-    formProvider("messages__directors__prefill__single__error__required")
+    formProvider("messages__trustees__prefill__single__error__required")
 
   def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
@@ -98,7 +98,7 @@ class DirectorAlsoTrusteeController @Inject()(override val messagesApi: Messages
             val uaAfterCopy = if (value < 0) ua else dataPrefillService.copyAllDirectorsToTrustees(ua, Seq(value),
               seqDirector.headOption.flatMap(_.mainIndex).getOrElse(0))
             val updatedUa = uaAfterCopy.setOrException(DirectorAlsoTrusteeId(index), value)
-            userAnswersCacheConnector.save(request.lock, updatedUa.data).map { _ =>
+            userAnswersCacheConnector.save(request.lock, uaAfterCopy.data).map { _ =>
               Redirect(navigator.nextPage(DirectorAlsoTrusteeId(index), updatedUa))
             }
           }

@@ -58,9 +58,9 @@ class TrusteesAlsoDirectorsController @Inject()(override val messagesApi: Messag
     val existingDirCount = ua.allDirectorsAfterDelete(index).size
     formProvider(
       existingDirCount,
-      "messages__trustees__prefill__multi__error__required",
-      "messages__trustees__prefill__multi__error__noneWithValue",
-      messages("messages__trustees__prefill__multi__error__moreThanTen", existingDirCount, config.maxDirectors - existingDirCount)
+      "messages__directors__prefill__multi__error__required",
+      "messages__directors__prefill__multi__error__noneWithValue",
+      messages("messages__directors__prefill__multi__error__moreThanTen", existingDirCount, config.maxDirectors - existingDirCount)
     )
   }
 
@@ -105,7 +105,7 @@ class TrusteesAlsoDirectorsController @Inject()(override val messagesApi: Messag
             val uaAfterCopy: UserAnswers = if (value.headOption.getOrElse(-1) < 0) ua else
               dataPrefillService.copyAllTrusteesToDirectors(ua, value, establisherIndex)
             val updatedUa = uaAfterCopy.setOrException(TrusteesAlsoDirectorsId(establisherIndex), value)
-            userAnswersCacheConnector.save(request.lock, updatedUa.data).map { _ =>
+            userAnswersCacheConnector.save(request.lock, uaAfterCopy.data).map { _ =>
               Redirect(navigator.nextPage(TrusteesAlsoDirectorsId(establisherIndex), updatedUa))
             }
           }
