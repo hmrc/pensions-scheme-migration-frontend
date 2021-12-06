@@ -488,6 +488,8 @@ messages__enterEmail = What is the email address for {0}?
 messages__enterEmail_pageHeading = What is {0}’s email address?
 messages__enterEmail_cya_label = {0}’s email address
 messages__contact_details__hint = We will only use this to contact {0} about pension scheme administration.
+messages__contact_details__email__hint = We will use this email address to contact {0} if we have any questions about {1}.
+messages__contact_details__phone__hint = We will use this phone number to contact {0} if we have any questions about {1}.
 messages__enterEmail__cya__visuallyHidden = the email address for {0}
 
 messages__enterPhone__error_required = Enter a phone number for {0}
