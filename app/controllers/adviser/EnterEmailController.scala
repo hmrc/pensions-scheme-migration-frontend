@@ -67,7 +67,7 @@ class EnterEmailController @Inject()(
               id = EnterEmailId,
               form = form,
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__contact_details__hint", name))
+              paragraphText = Seq(Message("messages__contact_details__email__hint", name, schemeName))
             )
         }
     }
@@ -83,7 +83,7 @@ class EnterEmailController @Inject()(
               id = EnterEmailId,
               form = form,
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__contact_details__hint", name)),
+              paragraphText = Seq(Message("messages__contact_details__email__hint", name, schemeName)),
               mode = mode
             )
         }
