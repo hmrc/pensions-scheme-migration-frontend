@@ -18,12 +18,12 @@ package navigators
 
 import base.SpecBase
 import controllers.establishers.company.director.details
-import identifiers.establishers.company.director.{ConfirmDeleteDirectorId, DirectorNameId}
 import identifiers.establishers.company.director.address._
 import identifiers.establishers.company.director.contact.{EnterEmailId, EnterPhoneId}
-import identifiers.establishers.company.director.details.{DirectorDOBId, DirectorEnterUTRId, DirectorHasNINOId, DirectorHasUTRId, DirectorNINOId, DirectorNoNINOReasonId, DirectorNoUTRReasonId}
+import identifiers.establishers.company.director.details._
+import identifiers.establishers.company.director.{ConfirmDeleteDirectorId, DirectorNameId, TrusteeAlsoDirectorId, TrusteesAlsoDirectorsId}
 import identifiers.{Identifier, TypedIdentifier}
-import models.{CheckMode, Index, Mode, NormalMode, PersonName, ReferenceValue, _}
+import models._
 import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes
@@ -71,10 +71,9 @@ class EstablishersCompanyDirectorNavigatorSpec
 
   val address = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
 
-
   private def addAddCompanyDirectorsPage(establisherIndex:Int,mode:Mode): Call = controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(establisherIndex,mode)
   private def postcode(establisherIndex:Int,directorIndex:Int,mode: Mode): Call = controllers.establishers.company.director.address.routes.EnterPostcodeController.onPageLoad(establisherIndex, directorIndex, mode)
-  private def enterPreviousPostcode(establisherIndex:Int,directorIndex:Int,mode:Mode): Call =
+  private def enterPreviousPostcode(estruetablisherIndex:Int,directorIndex:Int,mode:Mode): Call =
     controllers.establishers.company.director.address.routes.EnterPreviousPostcodeController.onPageLoad(establisherIndex,directorIndex,mode)
 
   private def selectAddress(establisherIndex:Int,directorIndex:Int,mode:Mode): Call =
@@ -92,6 +91,11 @@ class EstablishersCompanyDirectorNavigatorSpec
   private def enterEmailPage(establisherIndex:Int,directorIndex:Int,mode:Mode): Call =
     controllers.establishers.company.director.contact.routes.EnterEmailController.onPageLoad(establisherIndex,directorIndex,mode)
 
+  private def directorNamePage(establisherIndex:Int, directorIndex:Int, mode:Mode): Call =
+    controllers.establishers.company.director.routes.DirectorNameController.onPageLoad(establisherIndex,directorIndex,mode)
+
+  private def whatYouWillNeedPage(establisherIndex:Int): Call =
+    controllers.establishers.company.director.details.routes.WhatYouWillNeedController.onPageLoad(establisherIndex)
 
   "EstablishersCompanyDirectorNavigator" when {
     def navigation: TableFor3[Identifier, UserAnswers, Call] =
@@ -117,7 +121,13 @@ class EstablishersCompanyDirectorNavigatorSpec
         row(PreviousAddressId(establisherIndex,directorIndex))(enterEmailPage(establisherIndex,directorIndex,NormalMode), addressUAWithValue(PreviousAddressId(establisherIndex,directorIndex), address)),
         row(EnterEmailId(establisherIndex,directorIndex))(enterPhonePage(establisherIndex,directorIndex,NormalMode), Some(detailsUa.set(EnterEmailId(establisherIndex,directorIndex), "test@test.com").success.value)),
         row(EnterPhoneId(establisherIndex,directorIndex))(cya, Some(detailsUa.set(EnterPhoneId(establisherIndex,directorIndex), "1234").success.value)),
-        row(ConfirmDeleteDirectorId(directorIndex))(addAddCompanyDirectorsPage(directorIndex,NormalMode), Some(detailsUa.set(ConfirmDeleteDirectorId(directorIndex),true).success.value))
+        row(ConfirmDeleteDirectorId(directorIndex))(addAddCompanyDirectorsPage(directorIndex,NormalMode), Some(detailsUa.set(ConfirmDeleteDirectorId(directorIndex),true).success.value)),
+        row(TrusteeAlsoDirectorId(establisherIndex))(directorNamePage(establisherIndex, directorIndex = 1,NormalMode), Some(detailsUa.set(TrusteeAlsoDirectorId(directorIndex), -1).success.value)),
+        row(TrusteeAlsoDirectorId(establisherIndex))(whatYouWillNeedPage(establisherIndex), Some(ua.set(TrusteeAlsoDirectorId(directorIndex), value = -1).success.value)),
+        row(TrusteeAlsoDirectorId(establisherIndex))(addAddCompanyDirectorsPage(directorIndex,NormalMode), Some(ua.set(TrusteeAlsoDirectorId(directorIndex), value = 2).success.value)),
+        row(TrusteesAlsoDirectorsId(establisherIndex))(directorNamePage(establisherIndex, directorIndex = 1,NormalMode), Some(detailsUa.set(TrusteesAlsoDirectorsId(directorIndex), Seq(-1)).success.value)),
+        row(TrusteesAlsoDirectorsId(establisherIndex))(whatYouWillNeedPage(establisherIndex), Some(ua.set(TrusteesAlsoDirectorsId(directorIndex), value = Seq(-1)).success.value)),
+        row(TrusteesAlsoDirectorsId(establisherIndex))(addAddCompanyDirectorsPage(directorIndex,NormalMode), Some(ua.set(TrusteesAlsoDirectorsId(directorIndex), value = Seq(2)).success.value))
       )
 
     def editNavigation: TableFor3[Identifier, UserAnswers, Call] =

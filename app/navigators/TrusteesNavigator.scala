@@ -16,6 +16,7 @@
 
 package navigators
 
+import config.AppConfig
 import controllers.routes._
 import controllers.trustees.routes._
 import helpers.routes.TrusteesIndividualRoutes
@@ -29,9 +30,12 @@ import models.requests.DataRequest
 import models.trustees.TrusteeKind
 import models.{CheckMode, Index, Mode, NormalMode}
 import play.api.mvc.{AnyContent, Call}
+import services.DataPrefillService
 import utils.{Enumerable, UserAnswers}
 
-class TrusteesNavigator
+import javax.inject.Inject
+
+class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPrefillService)
   extends Navigator
     with Enumerable.Implicits {
 
@@ -61,6 +65,8 @@ class TrusteesNavigator
     case EnterEmailId(index) => TrusteesIndividualRoutes.phoneNumberRoute(index, NormalMode)
     case EnterPhoneId(index) => cyaContactDetails(index)
     case OtherTrusteesId => TaskListController.onPageLoad()
+    case DirectorAlsoTrusteeId(index) => directorAlsoTrusteeRoutes(index, ua)
+    case DirectorsAlsoTrusteesId(index) => directorsAlsoTrusteesRoutes(index, ua)
   }
 
   override protected def editRouteMap(ua: UserAnswers)
@@ -87,13 +93,22 @@ class TrusteesNavigator
   private def trusteeKindRoutes(
                                  index: Index,
                                  ua: UserAnswers
-                               ): Call =
+                               ): Call = {
+    val noOfDirectors = dataPrefillService.getListOfDirectorsToBeCopied(ua).size
     ua.get(TrusteeKindId(index)) match {
-      case Some(TrusteeKind.Individual) => TrusteesIndividualRoutes.nameRoute(index, NormalMode)
-      case Some(TrusteeKind.Company) => controllers.trustees.company.routes.CompanyDetailsController.onPageLoad(index)
-      case Some(TrusteeKind.Partnership) => controllers.trustees.partnership.routes.PartnershipDetailsController.onPageLoad(index)
+      case Some(TrusteeKind.Individual) if noOfDirectors == 1 =>
+        TrusteesIndividualRoutes.directorAlsoTrusteeRoute(index, NormalMode)
+      case Some(TrusteeKind.Individual) if noOfDirectors > 1 =>
+        TrusteesIndividualRoutes.directorsAlsoTrusteesRoute(index, NormalMode)
+      case Some(TrusteeKind.Individual) =>
+        TrusteesIndividualRoutes.nameRoute(index, NormalMode)
+      case Some(TrusteeKind.Company) =>
+        controllers.trustees.company.routes.CompanyDetailsController.onPageLoad(index)
+      case Some(TrusteeKind.Partnership) =>
+        controllers.trustees.partnership.routes.PartnershipDetailsController.onPageLoad(index)
       case _ => IndexController.onPageLoad()
     }
+  }
 
   private def addTrusteeRoutes(
                                 value: Option[Boolean],
@@ -146,4 +161,24 @@ class TrusteesNavigator
       case Some(false) => TrusteesIndividualRoutes.reasonForNoUniqueTaxpayerReferenceRoute(index, mode)
       case None => controllers.routes.TaskListController.onPageLoad()
     }
+
+  private def directorAlsoTrusteeRoutes(index: Index, answers: UserAnswers): Call = {
+    val noneValue = -1
+    answers.get(DirectorAlsoTrusteeId(index)) match {
+      case Some(value) if value == noneValue =>
+        TrusteesIndividualRoutes.nameRoute(index, NormalMode)
+      case _ =>
+        AddTrusteeController.onPageLoad()
+    }
+  }
+
+  private def directorsAlsoTrusteesRoutes(index: Index, answers: UserAnswers): Call = {
+    val noneValue = -1
+    answers.get(DirectorsAlsoTrusteesId(index)) match {
+      case Some(value) if value.size == 1 && value.contains(noneValue) =>
+        TrusteesIndividualRoutes.nameRoute(index, NormalMode)
+      case _ =>
+        AddTrusteeController.onPageLoad()
+    }
+  }
 }

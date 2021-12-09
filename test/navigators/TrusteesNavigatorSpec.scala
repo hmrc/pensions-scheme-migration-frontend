@@ -23,7 +23,7 @@ import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address._
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.details._
-import identifiers.trustees.{AddTrusteeId, OtherTrusteesId, TrusteeKindId}
+import identifiers.trustees.{AddTrusteeId, DirectorAlsoTrusteeId, DirectorsAlsoTrusteesId, OtherTrusteesId, TrusteeKindId}
 import identifiers.{Identifier, TypedIdentifier}
 import models.trustees.TrusteeKind
 import models._
@@ -98,6 +98,8 @@ class TrusteesNavigatorSpec
   private def addressYears(mode:Mode): Call =
     TrusteesIndividualRoutes.timeAtAddressRoute(index, mode)
 
+  private def namePage(mode:Mode): Call =
+    TrusteesIndividualRoutes.nameRoute(index, mode)
 
   "TrusteesNavigator" when {
     def navigation: TableFor3[Identifier, UserAnswers, Call] =
@@ -132,7 +134,11 @@ class TrusteesNavigatorSpec
         row(PreviousAddressId(index))(cyaAddress, addressUAWithValue(PreviousAddressId(index), address)),
           row(EnterEmailId(index))(trusteePhonePage(NormalMode), Some(indvDetailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
         row(EnterPhoneId(index))(cyaContact, Some(indvDetailsUa.set(EnterPhoneId(index), "123").success.value)),
-        row(OtherTrusteesId)(taskListPage)
+        row(OtherTrusteesId)(taskListPage),
+        row(DirectorAlsoTrusteeId(index))(namePage(NormalMode), Some(indvDetailsUa.set(DirectorAlsoTrusteeId(index), -1).success.value)),
+        row(DirectorAlsoTrusteeId(index))(addTrusteePage, Some(ua.set(DirectorAlsoTrusteeId(index), value = 2).success.value)),
+        row(DirectorsAlsoTrusteesId(index))(namePage(NormalMode), Some(detailsUa.set(DirectorsAlsoTrusteesId(index), Seq(-1)).success.value)),
+        row(DirectorsAlsoTrusteesId(index))(addTrusteePage, Some(ua.set(DirectorsAlsoTrusteesId(index), value = Seq(2)).success.value))
       )
 
     def editNavigation: TableFor3[Identifier, UserAnswers, Call] =

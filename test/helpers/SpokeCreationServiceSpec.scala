@@ -43,8 +43,10 @@ import identifiers.trustees.{TrusteeKindId, company => trusteeCompany}
 import models._
 import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind
+import org.mockito.scalatest.MockitoSugar
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
+import services.DataPrefillService
 import utils.Data.ua
 import utils.{Data, Enumerable}
 import viewmodels.Message
@@ -56,9 +58,11 @@ class SpokeCreationServiceSpec
     with Matchers
     with OptionValues
     with TryValues
+    with MockitoSugar
     with Enumerable.Implicits {
 
-  val spokeCreationService = new SpokeCreationService()
+  private val mockDataPrefillService = mock[DataPrefillService]
+  val spokeCreationService = new SpokeCreationService(mockDataPrefillService)
 
    "getAddEstablisherHeaderSpokes" must {
     "return no spokes when no establishers and view only" in {
@@ -139,6 +143,7 @@ class SpokeCreationServiceSpec
 
   "getEstablisherCompanySpokes" must {
     "display all the spokes with appropriate links and incomplete status when no data is returned from TPSS" in {
+      when(mockDataPrefillService.getListOfTrusteesToBeCopied(any)(any)).thenReturn(Nil)
       val userAnswers =
         ua
           .set(EstablisherKindId(0), EstablisherKind.Company).success.value
@@ -189,6 +194,7 @@ class SpokeCreationServiceSpec
     }
 
   "display all the spokes with appropriate links and incomplete status when data is returned from TPSS for company address spoke" in {
+    when(mockDataPrefillService.getListOfDirectorsToBeCopied(any)).thenReturn(Nil)
     val userAnswers =
       ua
         .set(EstablisherKindId(0), EstablisherKind.Company).success.value

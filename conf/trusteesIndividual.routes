@@ -3,3 +3,5 @@ GET         /:index/individual/:page                                            
 GET         /:index/individual/change/:page                                             controllers.trustees.individual.TrusteeIndividualController.onPageLoad(index:Index, mode: Mode = CheckMode, page:String)
 POST        /:index/individual/:page                                                    controllers.trustees.individual.TrusteeIndividualController.onSubmit(index:Index, mode:Mode = NormalMode, page:String)
 POST        /:index/individual/change/:page                                             controllers.trustees.individual.TrusteeIndividualController.onSubmit(index:Index, mode:Mode = CheckMode, page:String)
+
+

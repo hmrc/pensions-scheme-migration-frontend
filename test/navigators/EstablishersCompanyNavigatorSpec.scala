@@ -41,11 +41,13 @@ class EstablishersCompanyNavigatorSpec
     with TryValues {
 
   private val navigator: CompoundNavigator = injector.instanceOf[CompoundNavigator]
+
   private val index: Index = Index(0)
 
   private val addEstablisherPage: Call = controllers.establishers.routes.AddEstablisherController.onPageLoad()
   private val detailsUa: UserAnswers =
     ua.set(CompanyDetailsId(0), companyDetails).success.value
+
   private def uaWithValue[A](idType:TypedIdentifier[A], idValue:A)(implicit writes: Writes[A]) =
     detailsUa.set(idType, idValue).toOption
 
@@ -106,6 +108,9 @@ class EstablishersCompanyNavigatorSpec
   private def addCompanyDirectorsMoreThanTen =
     UserAnswers(validData(Seq.fill(10)(johnDoe): _*))
 
+  private def addOneCompanyDir =
+    UserAnswers(validData(johnDoe)).setOrException(AddCompanyDirectorsId(0), true)
+
   "EstablishersCompanyNavigator" when {
     def navigation: TableFor3[Identifier, UserAnswers, Call] =
       Table(
@@ -141,7 +146,8 @@ class EstablishersCompanyNavigatorSpec
         row(EnterEmailId(index))(enterPhonePage(NormalMode), Some(detailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
         row(EnterPhoneId(index))(cyaContact, Some(detailsUa.set(EnterPhoneId(index), "1234").success.value)),
         row(AddCompanyDirectorsId(index))(directorNamePage(NormalMode,0), Some(detailsUa.set(CompanyDetailsId(index), companyDetails).success.value)),
-        row(AddCompanyDirectorsId(index))(otherDirectors(NormalMode,index), Some(addCompanyDirectorsMoreThanTen))
+        row(AddCompanyDirectorsId(index))(otherDirectors(NormalMode,index), Some(addCompanyDirectorsMoreThanTen)),
+        row(AddCompanyDirectorsId(index))(directorNamePage(NormalMode,1), Some(addOneCompanyDir))
       )
 
     def editNavigation: TableFor3[Identifier, UserAnswers, Call] =
