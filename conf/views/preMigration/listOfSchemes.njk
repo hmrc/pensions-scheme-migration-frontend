@@ -58,15 +58,23 @@
     {% endif %}
 {% endset %}
 
-{%- set listSchemeUrl = "/add-pension-scheme/list-pension-schemes/page/"  -%}
+{%- set listRacDacUrl = "/add-pension-scheme/rac-dac/list-rac-dacs/page/"-%}
+{%- set listUrl = "/add-pension-scheme/list-pension-schemes/page/" -%}
 
+{% set listSchemeUrl %}
+   {% if racDac %}
+        {{-listRacDacUrl-}}
+     {% else %}
+        {{-listUrl-}}
+    {% endif %}
+{% endset %}
 
 {% block mainContent %}
 
    <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
 
-            {% if form.errors.length > 0 %}
+            {% if form.errors.length > 0 %}447
                 {{ govukErrorSummary({
                     "titleText": messages("error.summary.title"),
                     "errorList": form.errors

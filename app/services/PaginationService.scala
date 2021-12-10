@@ -70,7 +70,7 @@ class PaginationService @Inject()(appConfig: AppConfig) {
           pageNumber * pagination
         )
 
-      case _ => throw new Exception
+      case _ => throw new IllegalArgumentException("Invalid page number passed")
     }
 
   def paginationText(pageNumber: Int, pagination: Int, numberOfSchemes: Int, numberOfPages: Int)(implicit messages: Messages): String = {

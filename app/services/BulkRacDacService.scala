@@ -96,5 +96,8 @@ class BulkRacDacService @Inject()(appConfig: AppConfig,
         renderer.render("racdac/racDacsBulkList.njk", json)
           .map(body => if (form.hasErrors) BadRequest(body) else Ok(body))
     }
+  } recoverWith {
+    case e: IllegalArgumentException =>
+      Future.successful(Redirect(controllers.routes.NotFoundController.onPageLoad()))
   }
 }

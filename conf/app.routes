@@ -8,6 +8,8 @@ GET         /assets/*file                                          controllers.A
 GET         /unauthorised                                          controllers.UnauthorisedController.onPageLoad
 GET         /you-need-to-register                                  controllers.YouNeedToRegisterController.onPageLoad()
 
+GET         /not-found                                             controllers.NotFoundController.onPageLoad()
+
 GET         /index                                                 controllers.IndexController.onPageLoad
 GET         /task-list                                             controllers.TaskListController.onPageLoad
 
