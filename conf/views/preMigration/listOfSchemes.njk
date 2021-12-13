@@ -58,8 +58,16 @@
     {% endif %}
 {% endset %}
 
-{%- set listSchemeUrl = "/add-pension-scheme/list-pension-schemes/page/"  -%}
+{%- set listRacDacUrl = "/add-pension-scheme/rac-dac/list-rac-dacs/page/"-%}
+{%- set listUrl = "/add-pension-scheme/list-pension-schemes/page/" -%}
 
+{% set listSchemeUrl %}
+   {% if racDac %}
+        {{-listRacDacUrl-}}
+     {% else %}
+        {{-listUrl-}}
+    {% endif %}
+{% endset %}
 
 {% block mainContent %}
 

@@ -29,6 +29,8 @@ object HttpResponseRedirects {
         Future.successful(Redirect(routes.CannotMigrateController.onPageLoad()))
       case _: ListOfSchemes5xxException =>
         Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+      case _: IllegalArgumentException =>
+        Future.successful(Redirect(controllers.routes.NotFoundController.onPageLoad()))
     }
   }
 }
