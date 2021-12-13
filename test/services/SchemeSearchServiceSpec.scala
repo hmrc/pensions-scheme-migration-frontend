@@ -195,9 +195,9 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
       )
 
       val rows= List(Seq(
-        Cell(Literal("scheme-1"), Seq("govuk-!-width-one-quarter")),
+        Cell(Literal("scheme-1"), Seq("govuk-!-width-one-half")),
         Cell(Literal(pstr1), Seq("govuk-!-width-one-quarter")),
-        Cell(Literal("12 December 1989"), Seq("govuk-!-width-one-half"))))
+        Cell(Literal("12 December 1989"), Seq("govuk-!-width-one-quarter"))))
 
       service.mapToTable(List(fullSchemes.head), isRacDac = isRacDacFalse, viewOnly = true)  mustBe
         Table(head, rows,  attributes = Map("role" -> "table"))
@@ -212,9 +212,9 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
       )
 
       val rows= List(Seq(
-        Cell(Literal("scheme-2"), Seq("govuk-!-width-one-quarter")),
+        Cell(Literal("scheme-2"), Seq("govuk-!-width-one-half")),
         Cell(Literal(pstr2), Seq("govuk-!-width-one-quarter")),
-        Cell(Literal("12 October 2000"), Seq("govuk-!-width-one-half"))))
+        Cell(Literal("12 October 2000"), Seq("govuk-!-width-one-quarter"))))
 
       val table =Table(head, rows,  attributes = Map("role" -> "table"))
 
@@ -447,24 +447,24 @@ object SchemeSearchServiceSpec extends SpecBase with MockitoSugar with BeforeAnd
     List(Seq(
       Cell(uk.gov.hmrc.viewmodels.Html(
         s"""<a class=migrate-pstr-$pstr1 href=${ListOfSchemesController.clickSchemeLink(pstr1, false)}>scheme-1</a>""".stripMargin),
-        Seq("govuk-!-width-one-quarter")),
+        Seq("govuk-!-width-one-half")),
       Cell(Literal(pstr1), Seq("govuk-!-width-one-quarter")),
-      Cell(Literal("12 December 1989"), Seq("govuk-!-width-one-half")))
+      Cell(Literal("12 December 1989"), Seq("govuk-!-width-one-quarter")))
     ),
     attributes = Map("role" -> "table"))
 
   val racDacRows= List(Seq(
     Cell(uk.gov.hmrc.viewmodels.Html(
       s"""<a class=migrate-pstr-$pstr1 href=${ListOfSchemesController.clickSchemeLink(pstr1, true)}>scheme-1</a>""".stripMargin),
-      Seq("govuk-!-width-one-quarter")),
+      Seq("govuk-!-width-one-half")),
     Cell(Literal(pstr1), Seq("govuk-!-width-one-quarter")),
-    Cell(Literal("12 December 1989"), Seq("govuk-!-width-one-half"))),
+    Cell(Literal("12 December 1989"), Seq("govuk-!-width-one-quarter"))),
     Seq(
       Cell(uk.gov.hmrc.viewmodels.Html(
         s"""<a class=migrate-pstr-$pstr2 href=${ListOfSchemesController.clickSchemeLink(pstr2, true)}>scheme-2</a>""".stripMargin),
-        Seq("govuk-!-width-one-quarter")),
+        Seq("govuk-!-width-one-half")),
       Cell(Literal(pstr2), Seq("govuk-!-width-one-quarter")),
-      Cell(Literal("12 October 2000"), Seq("govuk-!-width-one-half")))
+      Cell(Literal("12 October 2000"), Seq("govuk-!-width-one-quarter")))
   )
 
   val tableForRacDac: Table = Table(head, racDacRows,  attributes = Map("role" -> "table"))

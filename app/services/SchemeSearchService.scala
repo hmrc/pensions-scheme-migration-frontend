@@ -104,9 +104,9 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
       s"""<a class=migrate-pstr-${data.pstr} href=${ListOfSchemesController.clickSchemeLink(data.pstr, isRacDac)}>${data.schemeName}</a>""".stripMargin)
 
     val rows = schemeDetails.map { data =>
-      Seq(Cell(schemeName(data), Seq("govuk-!-width-one-quarter")),
+      Seq(Cell(schemeName(data), Seq("govuk-!-width-one-half")),
         Cell(Literal(data.pstr), Seq("govuk-!-width-one-quarter")),
-        Cell(Literal(formatter(data.schemeOpenDate)), Seq("govuk-!-width-one-half")))
+        Cell(Literal(formatter(data.schemeOpenDate)), Seq("govuk-!-width-one-quarter")))
     }
     Table(head, rows, attributes = Map("role" -> "table"))
   }

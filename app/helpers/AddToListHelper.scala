@@ -55,7 +55,7 @@ class AddToListHelper {
         } else Nil)
     }
 
-    Table(Nil, rows, caption = Some(Literal(messages(caption))), attributes = Map("role" -> "table"))
+    Table(Nil, rows, caption = Some(Literal(messages(caption))),captionClasses=Seq("govuk-visually-hidden"), attributes = Map("role" -> "table"))
   }
 
   def link(id: String, text: String, url: String, name: String)(implicit messages: Messages): Html = {
