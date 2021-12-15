@@ -16,12 +16,13 @@
 
 package controllers.actions
 
-import com.google.inject.{Inject, ImplementedBy}
+import com.google.inject.{ImplementedBy, Inject}
 import config.AppConfig
 import connectors.cache.CurrentPstrCacheConnector
 import connectors._
 import models.requests.{AuthenticatedRequest, BulkDataRequest}
 import models.{Items, MinPSA}
+import play.api.Logger
 import play.api.libs.json.{JsSuccess, Json}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
@@ -36,10 +37,14 @@ class BulkRetrievalImpl @Inject()(schemeCacheConnector: CurrentPstrCacheConnecto
                                   appConfig: AppConfig,
                                   isRequired: Boolean)(implicit val executionContext: ExecutionContext) extends BulkRetrieval {
 
+  private val logger  = Logger(classOf[BulkRetrievalImpl])
+
+
   override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, BulkDataRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     schemeCacheConnector.fetch flatMap {
       case None if isRequired =>
+        logger.info("schemeCacheConnector Fetch redirecting to Overview Page")
         Future.successful(Left(Redirect(appConfig.psaOverviewUrl)))
       case None =>
         getBulkRacDacRequest(request)
@@ -48,6 +53,7 @@ class BulkRetrievalImpl @Inject()(schemeCacheConnector: CurrentPstrCacheConnecto
           case (JsSuccess(schemes, _), JsSuccess(md, _)) =>
             Future(Right(BulkDataRequest(request, md, schemes)))
           case _ =>
+            logger.info("BulkDataAction redirecting to Overview Page")
             Future.successful(Left(Redirect(appConfig.psaOverviewUrl)))
         }
     }

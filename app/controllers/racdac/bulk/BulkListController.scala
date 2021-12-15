@@ -73,7 +73,7 @@ class BulkListController @Inject()(
       { case true =>
         Future.successful(Redirect(routes.DeclarationController.onPageLoad()))
       case _ =>
-        logger.info(s"Redirecting to overview page")
+        logger.info(s"BulkListController redirecting to overview page")
         Future.successful(Redirect(appConfig.psaOverviewUrl))
       }
     )
