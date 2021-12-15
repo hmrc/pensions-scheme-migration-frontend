@@ -21,6 +21,7 @@ import config.AppConfig
 import controllers.actions.{AuthAction, BulkDataAction}
 import forms.racdac.RacDacBulkListFormProvider
 import models.requests.BulkDataRequest
+import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -41,6 +42,8 @@ class BulkListController @Inject()(
                                   )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport with NunjucksSupport {
+
+  private val logger = Logger(classOf[BulkListController])
 
   val form: Form[Boolean] = formProvider()
 
@@ -70,6 +73,7 @@ class BulkListController @Inject()(
       { case true =>
         Future.successful(Redirect(routes.DeclarationController.onPageLoad()))
       case _ =>
+        logger.info(s"Redirecting to overview page")
         Future.successful(Redirect(appConfig.psaOverviewUrl))
       }
     )
