@@ -125,7 +125,7 @@ GET         /rac-dac/list-rac-dacs-all/page/:pageNumber                  control
 POST        /rac-dac/list-rac-dacs-all/page/:pageNumber                  controllers.racdac.bulk.BulkListController.onSubmitWithPageNumber(pageNumber: Int)
 
 GET         /rac-dac/declaration-all                                           controllers.racdac.bulk.DeclarationController.onPageLoad
-GET         /rac-dac/submit-declaration-all                                    controllers.racdac.bulk.DeclarationController.onSubmit
+POST         /rac-dac/declaration-all                                    controllers.racdac.bulk.DeclarationController.onSubmit
 
 GET         /rac-dac/rac-dac-status-in-progress                      controllers.racdac.bulk.InProgressController.onPageLoad
 
