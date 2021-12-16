@@ -131,7 +131,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
       when(mockPensionsSchemeConnector.registerScheme(any(),any(), any())(any(),any())).thenReturn(Future.successful(pstr))
       when(mockEmailConnector.sendEmail(any(), any(), any(), any())(any(),any())).thenReturn(Future.successful(EmailSent))
 
-      val result = route(application, httpGETRequest(httpPathPOST)).value
+      val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -154,7 +154,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
         UpstreamErrorResponse(upstreamResponseMessage("POST", "url",
           Status.INTERNAL_SERVER_ERROR, "response.body"), Status.INTERNAL_SERVER_ERROR, Status.INTERNAL_SERVER_ERROR)))
 
-      val result = route(application, httpGETRequest(httpPathPOST)).value
+      val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.YourActionWasNotProcessedController.onPageLoadScheme.url)
@@ -169,7 +169,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
         UpstreamErrorResponse(upstreamResponseMessage("POST", "url",
           Status.BAD_REQUEST, "response.body"), Status.BAD_REQUEST, Status.BAD_REQUEST)))
 
-      val result = route(application, httpGETRequest(httpPathPOST)).value
+      val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.TaskListController.onPageLoad.url)
