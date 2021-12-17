@@ -19,10 +19,8 @@ package controllers.establishers.individual.address
 import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import helpers.routes.EstablishersIndividualRoutes
 import identifiers.establishers.individual.address.EnterPreviousPostCodeId
 import matchers.JsonMatchers
-import models.{NormalMode, TolerantAddress}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -33,8 +31,9 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.{Data, Enumerable, UserAnswers}
-import models.Scheme
+import utils.{UserAnswers, Enumerable, Data}
+import models.{TolerantAddress, Scheme}
+
 import scala.concurrent.Future
 
 class SelectPreviousAddressControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
@@ -47,8 +46,8 @@ class SelectPreviousAddressControllerSpec extends ControllerSpecBase with Nunjuc
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = EstablishersIndividualRoutes.previousAddressResultsRoute(0, NormalMode).url
-  private val httpPathPOST: String = EstablishersIndividualRoutes.previousAddressResultsPOSTRoute( 0, NormalMode).url
+  private val httpPathGET: String = controllers.establishers.individual.address.routes.SelectPreviousAddressController.onPageLoad(0).url
+  private val httpPathPOST: String = controllers.establishers.individual.address.routes.SelectPreviousAddressController.onSubmit( 0).url
 
   private val seqAddresses = Seq(
     TolerantAddress(Some("1"),Some("1"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")),
@@ -103,7 +102,7 @@ class SelectPreviousAddressControllerSpec extends ControllerSpecBase with Nunjuc
         .setOrException(EnterPreviousPostCodeId(0), seqAddresses)
 
       when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
-        .thenReturn(EstablishersIndividualRoutes.cyaAddressRoute(0, NormalMode))
+        .thenReturn(controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(0))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -112,7 +111,7 @@ class SelectPreviousAddressControllerSpec extends ControllerSpecBase with Nunjuc
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(EstablishersIndividualRoutes.cyaAddressRoute(0, NormalMode).url)
+      redirectLocation(result) mustBe Some(controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(0).url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

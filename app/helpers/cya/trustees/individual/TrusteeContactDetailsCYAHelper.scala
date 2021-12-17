@@ -16,18 +16,18 @@
 
 package helpers.cya.trustees.individual
 
+import controllers.trustees.individual.contact.routes
 import helpers.cya.CYAHelper
 import helpers.cya.CYAHelper.getName
-import helpers.routes.TrusteesIndividualRoutes
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import models.requests.DataRequest
-import models.{Index, CheckMode}
+import models.{CheckMode, Index}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.SummaryList.Row
-import utils.{UserAnswers, Enumerable}
+import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 
 class TrusteeContactDetailsCYAHelper
@@ -49,13 +49,13 @@ class TrusteeContactDetailsCYAHelper
       Some(answerOrAddRow(
         id = EnterEmailId(index),
         message = Message("messages__enterEmail_cya_label", trusteeName).resolve,
-        url = Some(TrusteesIndividualRoutes.emailRoute(index, CheckMode).url),
+        url = Some(routes.EnterEmailController.onPageLoad(index, CheckMode).url),
         visuallyHiddenText = Some(msg"messages__enterEmail__cya__visuallyHidden".withArgs(trusteeName))
       )),
       Some(answerOrAddRow(
         id = EnterPhoneId(index),
         message = Message("messages__enterPhone_cya_label", trusteeName).resolve,
-        url = Some(TrusteesIndividualRoutes.phoneNumberRoute(index, CheckMode).url),
+        url = Some(routes.EnterPhoneController.onPageLoad(index, CheckMode).url),
         visuallyHiddenText = Some(msg"messages__enterPhone__cya__visuallyHidden".withArgs(trusteeName))
       ))).flatten
 

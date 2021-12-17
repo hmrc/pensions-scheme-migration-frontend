@@ -18,16 +18,15 @@ package helpers.cya.establishers.individual
 
 import helpers.cya.CYAHelper
 import helpers.cya.CYAHelper.getName
-import helpers.routes.EstablishersIndividualRoutes.{emailRoute, phoneNumberRoute}
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
 import models.requests.DataRequest
-import models.{CheckMode, Index}
+import models.{Index, CheckMode}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.SummaryList.Row
-import utils.{Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable}
 import viewmodels.Message
 
 class EstablisherContactDetailsCYAHelper
@@ -49,13 +48,13 @@ class EstablisherContactDetailsCYAHelper
       Some(answerOrAddRow(
         id = EnterEmailId(index),
         message = Message("messages__enterEmail_cya_label", establisherName).resolve,
-        url = Some(emailRoute(index, CheckMode).url),
+        url = Some(controllers.establishers.individual.contact.routes.EnterEmailController.onPageLoad(index, CheckMode).url),
         visuallyHiddenText = Some(msg"messages__enterEmail__cya__visuallyHidden".withArgs(establisherName))
       )),
       Some(answerOrAddRow(
         id = EnterPhoneId(index),
         message = Message("messages__enterPhone_cya_label", establisherName).resolve,
-        url = Some(phoneNumberRoute(index, CheckMode).url),
+        url = Some(controllers.establishers.individual.contact.routes.EnterPhoneController.onPageLoad(index, CheckMode).url),
         visuallyHiddenText = Some(msg"messages__enterPhone__cya__visuallyHidden".withArgs(establisherName))
       ))).flatten
 

@@ -17,13 +17,12 @@
 package controllers.establishers.individual.contact
 
 import controllers.Retrievals
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{DataRetrievalAction, DataRequiredAction, AuthAction}
 import helpers.cya.MandatoryAnswerMissingException
-import helpers.routes.EstablishersIndividualRoutes.emailRoute
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import models.{Index, NormalMode}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -58,7 +57,7 @@ class WhatYouWillNeedController @Inject()(
                 "name"        -> personName.fullName,
                 "pageHeading" -> Message("messages__title_individual"),
                 "entityType" -> Message("messages__individual"),
-                "continueUrl" -> emailRoute(index, NormalMode).url,
+                "continueUrl" -> controllers.establishers.individual.contact.routes.EnterEmailController.onPageLoad(0, NormalMode).url,
                 "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )
             ).map(Ok(_))

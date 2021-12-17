@@ -20,16 +20,15 @@ import config.AppConfig
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
-import controllers.address.{AddressPages, AddressListController}
+import controllers.address.{AddressListController, AddressPages}
 import forms.address.AddressListFormProvider
-import helpers.routes.TrusteesIndividualRoutes
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address.{EnterPreviousPostCodeId, PreviousAddressId, PreviousAddressListId}
-import models.{Mode, Index, NormalMode}
+import models.{Index, Mode, NormalMode}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{MessagesApi, I18nSupport}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -67,7 +66,7 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
         val addressPages: AddressPages = AddressPages(EnterPreviousPostCodeId(index), PreviousAddressListId(index), PreviousAddressId(index))
       retrieve(SchemeNameId) { schemeName =>
         getFormToJson(schemeName, index, NormalMode).retrieve.right.map(post(_, addressPages,
-          manualUrlCall = TrusteesIndividualRoutes.confirmPreviousAddressRoute(index, NormalMode)))
+          manualUrlCall = controllers.trustees.individual.address.routes.ConfirmPreviousAddressController.onPageLoad(index)))
       }
     }
 
@@ -85,7 +84,7 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
             "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
             "entityType" -> msg("trusteeEntityTypeIndividual"),
             "entityName" -> name,
-            "enterManuallyUrl" -> TrusteesIndividualRoutes.confirmPreviousAddressRoute(index, mode).url,
+            "enterManuallyUrl" -> controllers.trustees.individual.address.routes.ConfirmPreviousAddressController.onPageLoad(index).url,
             "schemeName" -> schemeName,
             "h1MessageKey" -> "previousAddressList.title"
           )

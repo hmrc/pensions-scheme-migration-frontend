@@ -17,13 +17,12 @@
 package controllers.trustees.individual.contact
 
 import controllers.Retrievals
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{DataRetrievalAction, DataRequiredAction, AuthAction}
 import helpers.cya.CYAHelper
 import helpers.cya.trustees.individual.TrusteeContactDetailsCYAHelper
-import helpers.routes.TrusteesIndividualRoutes.taskListRoute
 import identifiers.beforeYouStart.SchemeNameId
-import models.{Index, NormalMode}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import models.Index
+import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -55,7 +54,7 @@ class CheckYourAnswersController @Inject()(
           ctx = Json.obj(
             "list"       -> cyaHelper.contactDetailsRows(index),
             "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
-            "submitUrl"  -> taskListRoute(index, NormalMode).url
+            "submitUrl"  -> controllers.trustees.individual.routes.SpokeTaskListController.onPageLoad(index).url
           )
         ).map(Ok(_))
     }

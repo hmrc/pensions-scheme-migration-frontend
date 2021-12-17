@@ -16,9 +16,8 @@
 
 package helpers.spokes.establishers.individual
 
-import helpers.routes.EstablishersIndividualRoutes
 import helpers.spokes.Spoke
-import models.{SpokeTaskListLink, Index, NormalMode}
+import models.{SpokeTaskListLink, Index}
 import play.api.i18n.Messages
 import utils.UserAnswers
 
@@ -31,9 +30,9 @@ case class EstablisherIndividualAddress(
 
   val linkKeyAndRoute: (String, String) = {
     if (completeFlag(answers).isDefined)
-      (s"${messageKeyPrefix}changeLink", EstablishersIndividualRoutes.cyaAddressRoute(index, NormalMode).url)
+      (s"${messageKeyPrefix}changeLink", controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(index).url)
     else
-      (s"${messageKeyPrefix}addLink", EstablishersIndividualRoutes.wywnAddressRoute(index, NormalMode).url)
+      (s"${messageKeyPrefix}addLink", controllers.establishers.individual.address.routes.WhatYouWillNeedController.onPageLoad(index).url)
   }
 
   override def changeLink(name: String)
