@@ -16,12 +16,11 @@
 
 package helpers.spokes.trustees.individual
 
-import helpers.routes.TrusteesIndividualRoutes
 import helpers.spokes.Spoke
-import models.{SpokeTaskListLink, Index, NormalMode}
+import models.{SpokeTaskListLink, Index}
 import play.api.i18n.Messages
 import utils.UserAnswers
-
+import controllers.trustees.individual.address.routes._
 
 case class TrusteeIndividualAddress(
   index: Index,
@@ -31,9 +30,9 @@ case class TrusteeIndividualAddress(
 
   val linkKeyAndRoute: (String, String) = {
     if (completeFlag(answers).isDefined)
-      (s"${messageKeyPrefix}changeLink", TrusteesIndividualRoutes.cyaAddressRoute(index, NormalMode).url)
+      (s"${messageKeyPrefix}changeLink", CheckYourAnswersController.onPageLoad(index).url)
     else
-      (s"${messageKeyPrefix}addLink", TrusteesIndividualRoutes.wywnAddressRoute(index, NormalMode).url)
+      (s"${messageKeyPrefix}addLink", WhatYouWillNeedController.onPageLoad(index).url)
   }
 
   override def changeLink(name: String)

@@ -19,11 +19,10 @@ package controllers.trustees.individual.details
 import controllers.Retrievals
 import controllers.actions.{DataRetrievalAction, DataRequiredAction, AuthAction}
 import helpers.cya.MandatoryAnswerMissingException
-import helpers.routes.TrusteesIndividualRoutes
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.individual.TrusteeNameId
 import models.{Index, NormalMode}
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{MessagesApi, Messages, I18nSupport}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -56,7 +55,7 @@ class WhatYouWillNeedController @Inject()(
               ctx = Json.obj(
                 "name"        -> personName.fullName,
                 "entityType" -> Messages("messages__title_individual"),
-                "continueUrl" -> TrusteesIndividualRoutes.dateOfBirthRoute(index, NormalMode).url,
+                "continueUrl" -> routes.TrusteeDOBController.onPageLoad(index, NormalMode).url,
                 "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )
             ).map(Ok(_))

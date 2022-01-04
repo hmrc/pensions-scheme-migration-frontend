@@ -19,9 +19,7 @@ package controllers.establishers.individual.address
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import helpers.cya.establishers.individual.EstablisherAddressCYAHelper
-import helpers.routes.EstablishersIndividualRoutes
 import matchers.JsonMatchers
-import models.NormalMode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
@@ -43,7 +41,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
 
   private val templateToBeRendered = "check-your-answers.njk"
   private val mockCyaHelper: EstablisherAddressCYAHelper = mock[EstablisherAddressCYAHelper]
-  private def httpPathGET: String = EstablishersIndividualRoutes.cyaAddressRoute(0, NormalMode).url
+  private def httpPathGET: String = controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(0).url
   val extraModules: Seq[GuiceableModule] = Seq(
     bind[EstablisherAddressCYAHelper].toInstance(mockCyaHelper)
   )

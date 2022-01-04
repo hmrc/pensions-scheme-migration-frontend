@@ -17,8 +17,6 @@
 package helpers
 
 import base.SpecBase
-import helpers.routes.EstablishersIndividualRoutes.contactRoute
-import helpers.routes.{EstablishersIndividualRoutes, TrusteesIndividualRoutes}
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.contact.EnterPhoneId
@@ -28,16 +26,16 @@ import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{AddressId => IndividualAddressId}
 import identifiers.establishers.partnership.address.{AddressId => PartnershipAddressId}
 import identifiers.establishers.partnership.contact.EnterEmailId
-import identifiers.establishers.partnership.details.{HaveUTRId, PartnershipUTRId}
+import identifiers.establishers.partnership.details.{PartnershipUTRId, HaveUTRId}
 import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.{PartnershipDetailsId => EstablisherPartnershipDetailsId}
 import identifiers.trustees.company.{details => trusteeCompanyDetails}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.contact.{EnterEmailId => TrusteeEmailId, EnterPhoneId => TrusteePhoneId}
 import identifiers.trustees.individual.details.{TrusteeDOBId, TrusteeNINOId, TrusteeUTRId}
-import identifiers.trustees.partnership.address.{AddressId => TrusteePartnershipAddressId, AddressYearsId => TrusteePartnershipAddressYearsId}
+import identifiers.trustees.partnership.address.{AddressYearsId => TrusteePartnershipAddressYearsId, AddressId => TrusteePartnershipAddressId}
 import identifiers.trustees.partnership.contact.{EnterEmailId => TrusteePartnershipEmailId, EnterPhoneId => TrusteePartnershipPhoneId}
-import identifiers.trustees.partnership.details.{HavePAYEId => TrusteeHavePAYEId, HaveUTRId => TrusteeHaveUTRId, HaveVATId => TrusteeHaveVATId, PAYEId => TrusteePAYEId, VATId => TrusteeVATId}
+import identifiers.trustees.partnership.details.{HavePAYEId => TrusteeHavePAYEId, PAYEId => TrusteePAYEId, HaveVATId => TrusteeHaveVATId, VATId => TrusteeVATId, HaveUTRId => TrusteeHaveUTRId}
 import identifiers.trustees.partnership.{PartnershipDetailsId => TrusteePartnershipDetailsId}
 import identifiers.trustees.{TrusteeKindId, company => trusteeCompany}
 import models._
@@ -48,7 +46,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
 import services.DataPrefillService
 import utils.Data.ua
-import utils.{Data, Enumerable}
+import utils.{Enumerable, Data}
 import viewmodels.Message
 
 import java.time.LocalDate
@@ -108,7 +106,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = SpokeTaskListLink(
               text = "Add details for a b",
-              target = EstablishersIndividualRoutes.detailsRoute(0, NormalMode).url,
+              target = controllers.establishers.individual.details.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
             isCompleted = None
@@ -116,7 +114,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = SpokeTaskListLink(
               text = "Add address for a b",
-              target = EstablishersIndividualRoutes.wywnAddressRoute(0, NormalMode).url,
+              target = controllers.establishers.individual.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
             isCompleted = None
@@ -124,7 +122,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = SpokeTaskListLink(
               text = "Add contact details for a b",
-              target = contactRoute(0, NormalMode).url,
+              target = controllers.establishers.individual.contact.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
             isCompleted = None
@@ -437,7 +435,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = SpokeTaskListLink(
               text = "Add details for a b",
-              target = TrusteesIndividualRoutes.detailsRoute(0, NormalMode).url,
+              target = controllers.trustees.individual.details.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
             isCompleted = None
@@ -445,7 +443,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = SpokeTaskListLink(
               text = "Add address for a b",
-              target = TrusteesIndividualRoutes.wywnAddressRoute(0, NormalMode).url,
+              target = controllers.trustees.individual.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
             isCompleted = None
@@ -453,7 +451,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = SpokeTaskListLink(
               text = "Add contact details for a b",
-              target = TrusteesIndividualRoutes.contactRoute(0, NormalMode).url,
+              target = controllers.trustees.individual.contact.routes.WhatYouWillNeedController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
             isCompleted = None
@@ -486,7 +484,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = SpokeTaskListLink(
               text = "Change details for a b",
-              target = TrusteesIndividualRoutes.cyaDetailsRoute(0, NormalMode).url,
+              target = controllers.trustees.individual.details.routes.CheckYourAnswersController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
             isCompleted = Some(true)
@@ -494,7 +492,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = SpokeTaskListLink(
               text = "Change address for a b",
-              target = TrusteesIndividualRoutes.cyaAddressRoute(0, NormalMode).url,
+              target = controllers.trustees.individual.address.routes.CheckYourAnswersController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
             isCompleted = Some(false)
@@ -502,7 +500,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = SpokeTaskListLink(
               text = "Change contact details for a b",
-              target = TrusteesIndividualRoutes.cyaContactRoute(0, NormalMode).url,
+              target = controllers.trustees.individual.contact.routes.CheckYourAnswersController.onPageLoad(0).url,
               visuallyHiddenText = None
             ),
             isCompleted = Some(true)
