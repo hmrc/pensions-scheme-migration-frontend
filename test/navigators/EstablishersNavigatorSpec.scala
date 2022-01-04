@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -95,29 +95,16 @@ class EstablishersNavigatorSpec
         row(AddEstablisherId(Some(false)))(taskListPage),
         row(ConfirmDeleteEstablisherId)(addEstablisherPage),
 
-
-// TODO: PODS-5944 Remove old commented below
         row(EstablisherDOBId(index))(controllers.establishers.individual.details.routes.EstablisherHasNINOController.onPageLoad(index, NormalMode), Some(detailsUa.set(EstablisherDOBId(index), LocalDate.parse("2000-01-01")).success.value)),
         row(EstablisherHasNINOId(index))(controllers.establishers.individual.details.routes.EstablisherEnterNINOController.onPageLoad(index, NormalMode), Some(detailsUa.set(EstablisherHasNINOId(index), true).success.value)),
         row(EstablisherHasNINOId(index))(controllers.establishers.individual.details.routes.EstablisherNoNINOReasonController.onPageLoad(index, NormalMode), Some(detailsUa.set(EstablisherHasNINOId(index), false).success.value)),
         row(EstablisherNINOId(index))(controllers.establishers.individual.details.routes.EstablisherHasNINOController.onPageLoad(index, NormalMode), Some(detailsUa.set(EstablisherNINOId(index), ReferenceValue("AB123456C")).success.value)),
         row(EstablisherNoNINOReasonId(index))(controllers.establishers.individual.details.routes.EstablisherHasUTRController.onPageLoad(index, NormalMode), Some(detailsUa.set(EstablisherNoNINOReasonId(index), "Reason").success.value)),
-        row(EstablisherHasUTRId(index))(controllers.establishers.individual.details.routes.EstablisherHasUTRController.onPageLoad(index, NormalMode), Some(detailsUa.set(EstablisherHasUTRId(index), true).success.value)),
+        row(EstablisherHasUTRId(index))(controllers.establishers.individual.details.routes.EstablisherEnterUTRController.onPageLoad(index, NormalMode), Some(detailsUa.set(EstablisherHasUTRId(index), true).success.value)),
         row(EstablisherHasUTRId(index))(controllers.establishers.individual.details.routes.EstablisherNoUTRReasonController.onPageLoad(index, NormalMode), Some(detailsUa.set(EstablisherHasUTRId(index), false).success.value)),
         row(EstablisherUTRId(index))(controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index), Some(detailsUa.set(EstablisherUTRId(index), ReferenceValue("1234567890")).success.value)),
         row(EstablisherNoUTRReasonId(index))(controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index), Some(detailsUa.set(EstablisherNoUTRReasonId(index), "Reason").success.value)),
 
-
-
-        //row(EstablisherDOBId(index))(haveNationalInsuranceNumberRoute(index, NormalMode), Some(detailsUa.set(EstablisherDOBId(index), LocalDate.parse("2000-01-01")).success.value)),
-        //row(EstablisherHasNINOId(index))(enterNationaInsuranceNumberRoute(index, NormalMode), Some(detailsUa.set(EstablisherHasNINOId(index), true).success.value)),
-        //row(EstablisherHasNINOId(index))(reasonForNoNationalInsuranceNumberRoute(index, NormalMode), Some(detailsUa.set(EstablisherHasNINOId(index), false).success.value)),
-        //row(EstablisherNINOId(index))(haveUniqueTaxpayerReferenceRoute(index, NormalMode), Some(detailsUa.set(EstablisherNINOId(index), ReferenceValue("AB123456C")).success.value)),
-        //row(EstablisherNoNINOReasonId(index))(haveUniqueTaxpayerReferenceRoute(index, NormalMode), Some(detailsUa.set(EstablisherNoNINOReasonId(index), "Reason").success.value)),
-        //row(EstablisherHasUTRId(index))(enterUniqueTaxpayerReferenceRoute(index, NormalMode), Some(detailsUa.set(EstablisherHasUTRId(index), true).success.value)),
-        //row(EstablisherHasUTRId(index))(reasonForNoUniqueTaxpayerReferenceRoute(index, NormalMode), Some(detailsUa.set(EstablisherHasUTRId(index), false).success.value)),
-        //row(EstablisherUTRId(index))(cyaDetailsRoute(index, NormalMode), Some(detailsUa.set(EstablisherUTRId(index), ReferenceValue("1234567890")).success.value)),
-        //row(EstablisherNoUTRReasonId(index))(cyaDetailsRoute(index, NormalMode), Some(detailsUa.set(EstablisherNoUTRReasonId(index), "Reason").success.value)),
         row(EnterPostCodeId(index))(selectAddress(NormalMode), addressUAWithValue(EnterPostCodeId(index), seqAddresses)),
         row(AddressListId(index))(addressYears(NormalMode), addressUAWithValue(AddressListId(index), Data.tolerantAddress)),
         row(AddressId(index))(addressYears(NormalMode), addressUAWithValue(AddressId(index), address)),
@@ -140,7 +127,7 @@ class EstablishersNavigatorSpec
         row(EstablisherHasNINOId(index))(controllers.establishers.individual.details.routes.EstablisherNoNINOReasonController.onPageLoad(index, CheckMode), Some(detailsUa.set(EstablisherHasNINOId(index), false).success.value)),
         row(EstablisherNINOId(index))(controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index), Some(detailsUa.set(EstablisherNINOId(index), ReferenceValue("AB123456C")).success.value)),
         row(EstablisherNoNINOReasonId(index))(controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index), Some(detailsUa.set(EstablisherNoNINOReasonId(index), "Reason").success.value)),
-        row(EstablisherHasUTRId(index))(controllers.establishers.individual.details.routes.EstablisherHasUTRController.onPageLoad(index, CheckMode), Some(detailsUa.set(EstablisherHasUTRId(index), true).success.value)),
+        row(EstablisherHasUTRId(index))(controllers.establishers.individual.details.routes.EstablisherEnterUTRController.onPageLoad(index, CheckMode), Some(detailsUa.set(EstablisherHasUTRId(index), true).success.value)),
         row(EstablisherHasUTRId(index))(controllers.establishers.individual.details.routes.EstablisherNoUTRReasonController.onPageLoad(index, CheckMode), Some(detailsUa.set(EstablisherHasUTRId(index), false).success.value)),
         row(EstablisherUTRId(index))(controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index), Some(detailsUa.set(EstablisherUTRId(index), ReferenceValue("1234567890")).success.value)),
         row(EstablisherNoUTRReasonId(index))(controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index), Some(detailsUa.set(EstablisherNoUTRReasonId(index), "Reason").success.value)),

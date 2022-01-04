@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ class EstablishersNavigator@Inject()(config: AppConfig)
 
   //scalastyle:off cyclomatic.complexity
   override protected def routeMap(ua: UserAnswers)
-                                 (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
+    (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case EstablisherKindId(index) => establisherKindRoutes(index, ua)
     case EstablisherNameId(_) => AddEstablisherController.onPageLoad()
     case AddEstablisherId(value) => addEstablisherRoutes(value, ua)
@@ -68,7 +68,7 @@ class EstablishersNavigator@Inject()(config: AppConfig)
   }
 
   override protected def editRouteMap(ua: UserAnswers)
-                                     (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
+    (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case EstablisherDOBId(index) => cyaDetails(index)
     case EstablisherHasNINOId(index) => establisherHasNino(index, ua, CheckMode)
     case EstablisherNINOId(index) => cyaDetails(index)
@@ -104,9 +104,9 @@ class EstablishersNavigator@Inject()(config: AppConfig)
     }
   }
   private def establisherKindRoutes(
-                                     index: Index,
-                                     ua: UserAnswers
-                                   ): Call =
+    index: Index,
+    ua: UserAnswers
+  ): Call =
     ua.get(EstablisherKindId(index)) match {
       case Some(EstablisherKind.Individual) => controllers.establishers.individual.routes.EstablisherNameController.onPageLoad(index)
       case Some(EstablisherKind.Company) => CompanyDetailsController.onPageLoad(index)
@@ -115,9 +115,9 @@ class EstablishersNavigator@Inject()(config: AppConfig)
     }
 
   private def addEstablisherRoutes(
-                                    value: Option[Boolean],
-                                    answers: UserAnswers
-                                  ): Call =
+    value: Option[Boolean],
+    answers: UserAnswers
+  ): Call =
     value match {
       case Some(false) => controllers.routes.TaskListController.onPageLoad()
       case Some(true) => EstablisherKindController.onPageLoad(answers.establishersCount)
@@ -125,10 +125,10 @@ class EstablishersNavigator@Inject()(config: AppConfig)
     }
 
   private def establisherHasNino(
-                                  index: Index,
-                                  answers: UserAnswers,
-                                  mode: Mode
-                                ): Call =
+    index: Index,
+    answers: UserAnswers,
+    mode: Mode
+  ): Call =
     answers.get(EstablisherHasNINOId(index)) match {
       case Some(true) => controllers.establishers.individual.details.routes.EstablisherEnterNINOController.onPageLoad(index, mode)
       case Some(false) => controllers.establishers.individual.details.routes.EstablisherNoNINOReasonController.onPageLoad(index, mode)
@@ -136,12 +136,12 @@ class EstablishersNavigator@Inject()(config: AppConfig)
     }
 
   private def establisherHasUtr(
-                                 index: Index,
-                                 answers: UserAnswers,
-                                 mode: Mode
-                               ): Call =
+    index: Index,
+    answers: UserAnswers,
+    mode: Mode
+  ): Call =
     answers.get(EstablisherHasUTRId(index)) match {
-      case Some(true) => controllers.establishers.individual.details.routes.EstablisherHasUTRController.onPageLoad(index, mode)
+      case Some(true) => controllers.establishers.individual.details.routes.EstablisherEnterUTRController.onPageLoad(index, mode)
       case Some(false) => controllers.establishers.individual.details.routes.EstablisherNoUTRReasonController.onPageLoad(index, mode)
       case None => controllers.routes.TaskListController.onPageLoad()
     }
