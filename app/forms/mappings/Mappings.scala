@@ -55,9 +55,9 @@ trait Mappings extends Formatters with Constraints {
 
     tuple(
       "day" -> int(requiredKey = "error.date.day_blank", wholeNumberKey = "error.date.day_invalid", nonNumericKey =
-        "error.date.day_invalid"),
+        "error.date.day_invalid").verifying("error.date.day_invalid", d => d > 0 && d < 32),
       "month" -> int(requiredKey = "error.date.month_blank", wholeNumberKey = "error.date.month_invalid",
-        nonNumericKey = "error.date.month_invalid"),
+        nonNumericKey = "error.date.month_invalid").verifying("error.date.month_invalid", d => d > 0 && d < 13),
       "year" -> int(requiredKey = "error.date.year_blank", wholeNumberKey = "error.date.year_invalid", nonNumericKey
       = "error.date.year_invalid")
     ).verifying(invalidKey, inputs => validDate(inputs))
