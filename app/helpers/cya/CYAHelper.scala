@@ -110,7 +110,7 @@ trait CYAHelper {
       case None =>
         Row(
           key = Key(msg"$message", classes = Seq("govuk-!-width-one-half")),
-          value = Value(msg"site.not_entered", classes = Seq("govuk-!-width-one-third")),
+          value = Value(msg"site.incomplete", classes = Seq("govuk-!-width-one-third")),
           actions = actionAdd(url, visuallyHiddenText)
         )
       case Some(answer) =>
@@ -138,7 +138,7 @@ trait CYAHelper {
                   (implicit messages: Messages): Row =
     Row(
       key = Key(msg"$message", classes = Seq("govuk-!-width-one-half")),
-      value = Value(msg"site.not_entered", classes = Seq("govuk-!-width-one-third")),
+      value = Value(msg"site.incomplete", classes = Seq("govuk-!-width-one-third")),
       actions = actionAdd(url, visuallyHiddenText)
     )
 

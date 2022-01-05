@@ -90,7 +90,7 @@ class AddEstablisherController @Inject()(
     val completeTable = helper.mapEstablishersToTable(establishersComplete,
       caption = "messages__schemeTaskList__completed", editLinkText = "site.change")
     val incompleteTable = helper.mapEstablishersToTable(establishersIncomplete,
-      caption = "messages__schemeTaskList__incomplete", editLinkText = "site.add.details")
+      caption = "site.incomplete", editLinkText = "site.add.details")
 
     Json.obj(
       "form" -> form,
