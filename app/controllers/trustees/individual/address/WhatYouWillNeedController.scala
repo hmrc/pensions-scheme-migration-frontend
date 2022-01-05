@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,12 @@
 package controllers.trustees.individual.address
 
 import controllers.Retrievals
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{DataRetrievalAction, DataRequiredAction, AuthAction}
 import helpers.cya.MandatoryAnswerMissingException
-import helpers.routes.TrusteesIndividualRoutes
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.individual.TrusteeNameId
-import models.{Index, NormalMode}
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import models.Index
+import play.api.i18n.{MessagesApi, Messages, I18nSupport}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -54,9 +53,9 @@ class WhatYouWillNeedController @Inject()(
             renderer.render(
               template = "address/whatYouWillNeed.njk",
               ctx = Json.obj(
-                "name" -> personName.fullName,
+                "name"        -> personName.fullName,
                 "entityType" -> Messages("messages__title_individual"),
-                "continueUrl" -> TrusteesIndividualRoutes.enterPostcodeRoute(index, NormalMode).url,
+                "continueUrl" -> controllers.trustees.individual.address.routes.EnterPostcodeController.onPageLoad(index).url,
                 "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )
             ).map(Ok(_))

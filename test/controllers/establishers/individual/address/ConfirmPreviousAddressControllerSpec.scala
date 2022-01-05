@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,10 @@ package controllers.establishers.individual.address
 import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import helpers.routes.EstablishersIndividualRoutes
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.PreviousAddressId
 import matchers.JsonMatchers
-import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -53,8 +51,8 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with Nunju
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = EstablishersIndividualRoutes.confirmPreviousAddressRoute(0, NormalMode).url
-  private val httpPathPOST: String = EstablishersIndividualRoutes.confirmPreviousAddressPOSTRoute(0, NormalMode).url
+  private val httpPathGET: String = controllers.establishers.individual.address.routes.ConfirmPreviousAddressController.onPageLoad(0).url
+  private val httpPathPOST: String = controllers.establishers.individual.address.routes.ConfirmPreviousAddressController.onSubmit(0).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "line1" -> Seq("1"),
@@ -108,7 +106,7 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with Nunju
     "Save data to user answers and redirect to next page when valid data is submitted" in {
 
       when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
-        .thenReturn(EstablishersIndividualRoutes.cyaAddressRoute(0, NormalMode))
+        .thenReturn(controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(0))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -117,7 +115,7 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with Nunju
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(EstablishersIndividualRoutes.cyaAddressRoute(0, NormalMode).url)
+      redirectLocation(result) mustBe Some(controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(0).url)
 
       verify(mockUserAnswersCacheConnector, times(1)).save(any(),jsonCaptor.capture())(any(), any())
       val expectedJson = Json.obj(

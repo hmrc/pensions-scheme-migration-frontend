@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,6 @@
 
 package models
 
-import controllers.establishers.routes._
-import helpers.routes.EstablishersIndividualRoutes.taskListRoute
-import helpers.routes.TrusteesIndividualRoutes.{taskListRoute => trusteeTaskListRoute}
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.individual.EstablisherNameId
@@ -55,11 +52,12 @@ case class EstablisherIndividualEntity(
                                         isNewEntity: Boolean,
                                         noOfRecords: Int
                                       ) extends Establisher[EstablisherNameId] {
-  override def editLink: Option[String] = Some(taskListRoute(index, NormalMode).url)
+  override def editLink: Option[String] =
+    Some(controllers.establishers.individual.routes.SpokeTaskListController.onPageLoad(index).url)
 
   override def deleteLink: Option[String] = {
     if (noOfRecords > 1)
-      Some(ConfirmDeleteEstablisherController.onPageLoad(id.index, EstablisherKind.Individual).url)
+      Some(controllers.establishers.routes.ConfirmDeleteEstablisherController.onPageLoad(id.index, EstablisherKind.Individual).url)
     else
       None
   }
@@ -78,7 +76,7 @@ case class EstablisherCompanyEntity(id: CompanyDetailsId, name: String, isDelete
 
   override def deleteLink: Option[String] = {
     if (noOfRecords > 1)
-      Some(ConfirmDeleteEstablisherController.onPageLoad(id.index, EstablisherKind.Company).url)
+      Some(controllers.establishers.routes.ConfirmDeleteEstablisherController.onPageLoad(id.index, EstablisherKind.Company).url)
     else
       None
   }
@@ -97,7 +95,7 @@ case class EstablisherPartnershipEntity(id: PartnershipDetailsId, name: String, 
 
   override def deleteLink: Option[String] = {
     if (noOfRecords > 1)
-      Some(ConfirmDeleteEstablisherController.onPageLoad(id.index, EstablisherKind.Partnership).url)
+      Some(controllers.establishers.routes.ConfirmDeleteEstablisherController.onPageLoad(id.index, EstablisherKind.Partnership).url)
     else
       None
   }
@@ -115,11 +113,6 @@ sealed trait Establisher[T] extends Entity[T]
 object Establisher {
   implicit lazy val formats: Format[Establisher[_]] = Json.format[Establisher[_]]
 }
-//sealed trait Director[T] extends Entity[T]
-//
-//object Director {
-//  implicit lazy val formats: Format[Director[_]] = Json.format[Director[_]]
-//}
 
 case class TrusteeIndividualEntity(
   id: TrusteeNameId,
@@ -129,7 +122,8 @@ case class TrusteeIndividualEntity(
   isNewEntity: Boolean,
   noOfRecords: Int
 ) extends Trustee[TrusteeNameId] {
-  override def editLink: Option[String] = Some(trusteeTaskListRoute(index, NormalMode).url)
+  override def editLink: Option[String] =
+    Some(controllers.trustees.individual.routes.SpokeTaskListController.onPageLoad(index).url)
 
   override def deleteLink: Option[String] =
       Some(controllers.trustees.routes.ConfirmDeleteTrusteeController.onPageLoad(id.index, TrusteeKind.Individual).url)

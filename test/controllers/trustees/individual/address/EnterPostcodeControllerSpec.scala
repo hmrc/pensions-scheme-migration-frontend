@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,8 @@ package controllers.trustees.individual.address
 import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import helpers.routes.TrusteesIndividualRoutes
 import identifiers.beforeYouStart.SchemeNameId
 import matchers.JsonMatchers
-import models.{TolerantAddress, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -34,8 +32,9 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
-import utils.{Data, Enumerable, UserAnswers}
-import models.Scheme
+import utils.{UserAnswers, Enumerable, Data}
+import models.{TolerantAddress, Scheme}
+
 import scala.concurrent.Future
 
 class EnterPostcodeControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
@@ -49,8 +48,8 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with NunjucksSuppor
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = TrusteesIndividualRoutes.enterPostcodeRoute(0, NormalMode).url
-  private val httpPathPOST: String = TrusteesIndividualRoutes.enterPostcodePOSTRoute(0, NormalMode).url
+  private val httpPathGET: String = controllers.trustees.individual.address.routes.EnterPostcodeController.onPageLoad(0).url
+  private val httpPathPOST: String = controllers.trustees.individual.address.routes.EnterPostcodeController.onSubmit(0).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq("ZZ11ZZ")
@@ -98,7 +97,7 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with NunjucksSuppor
       val seqAddresses = Seq(TolerantAddress(Some("a"),Some("b"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")))
 
       when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
-        .thenReturn(TrusteesIndividualRoutes.cyaAddressRoute(0, NormalMode))
+        .thenReturn(routes.CheckYourAnswersController.onPageLoad(0))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
       when(mockAddressLookupConnector.addressLookupByPostCode(any())(any(), any()))
@@ -109,7 +108,7 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with NunjucksSuppor
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(TrusteesIndividualRoutes.cyaAddressRoute(0, NormalMode).url)
+      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad(0).url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.PostcodeController
 import forms.address.PostcodeFormProvider
-import helpers.routes.EstablishersIndividualRoutes
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.EnterPreviousPostCodeId
@@ -81,7 +80,7 @@ class EnterPreviousPostcodeController @Inject()(val appConfig: AppConfig,
         "entityType" -> msg("establisherEntityTypeIndividual"),
         "entityName" -> name,
         "form" -> form,
-        "enterManuallyUrl" -> EstablishersIndividualRoutes.confirmPreviousAddressRoute(index, NormalMode).url,
+        "enterManuallyUrl" -> controllers.establishers.individual.address.routes.ConfirmPreviousAddressController.onPageLoad(index).url,
         "schemeName" -> schemeName,
         "h1MessageKey" -> "previousPostcode.title"
       )

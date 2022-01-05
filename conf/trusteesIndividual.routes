@@ -1,7 +1,88 @@
+GET         /:index/individual/name                                                  controllers.trustees.individual.TrusteeNameController.onPageLoad(index:Index)
+POST        /:index/individual/name                                                  controllers.trustees.individual.TrusteeNameController.onSubmit(index:Index)
 
-GET         /:index/individual/:page                                                    controllers.trustees.individual.TrusteeIndividualController.onPageLoad(index:Index, mode: Mode = NormalMode, page:String)
-GET         /:index/individual/change/:page                                             controllers.trustees.individual.TrusteeIndividualController.onPageLoad(index:Index, mode: Mode = CheckMode, page:String)
-POST        /:index/individual/:page                                                    controllers.trustees.individual.TrusteeIndividualController.onSubmit(index:Index, mode:Mode = NormalMode, page:String)
-POST        /:index/individual/change/:page                                             controllers.trustees.individual.TrusteeIndividualController.onSubmit(index:Index, mode:Mode = CheckMode, page:String)
+GET         /:index/individual/details                                               controllers.trustees.individual.details.WhatYouWillNeedController.onPageLoad(index: Index)
 
+GET         /:index/individual/date-of-birth                                         controllers.trustees.individual.details.TrusteeDOBController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/individual/date-of-birth                                         controllers.trustees.individual.details.TrusteeDOBController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/individual/change/date-of-birth                                  controllers.trustees.individual.details.TrusteeDOBController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/individual/change/date-of-birth                                  controllers.trustees.individual.details.TrusteeDOBController.onSubmit(index: Index, mode: Mode = CheckMode)
 
+GET         /:index/individual/have-national-insurance-number                        controllers.trustees.individual.details.TrusteeHasNINOController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/individual/have-national-insurance-number                        controllers.trustees.individual.details.TrusteeHasNINOController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/individual/change/have-national-insurance-number                 controllers.trustees.individual.details.TrusteeHasNINOController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/individual/change/have-national-insurance-number                 controllers.trustees.individual.details.TrusteeHasNINOController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/individual/have-unique-taxpayer-reference                        controllers.trustees.individual.details.TrusteeHasUTRController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/individual/have-unique-taxpayer-reference                        controllers.trustees.individual.details.TrusteeHasUTRController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/individual/change/have-unique-taxpayer-reference                 controllers.trustees.individual.details.TrusteeHasUTRController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/individual/change/have-unique-taxpayer-reference                 controllers.trustees.individual.details.TrusteeHasUTRController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/individual/enter-unique-taxpayer-reference                       controllers.trustees.individual.details.TrusteeEnterUTRController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/individual/enter-unique-taxpayer-reference                       controllers.trustees.individual.details.TrusteeEnterUTRController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/individual/change/enter-unique-taxpayer-reference                controllers.trustees.individual.details.TrusteeEnterUTRController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/individual/change/enter-unique-taxpayer-reference                controllers.trustees.individual.details.TrusteeEnterUTRController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/individual/enter-national-insurance-number                       controllers.trustees.individual.details.TrusteeEnterNINOController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/individual/enter-national-insurance-number                       controllers.trustees.individual.details.TrusteeEnterNINOController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/individual/change/enter-national-insurance-number                controllers.trustees.individual.details.TrusteeEnterNINOController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/individual/change/enter-national-insurance-number                controllers.trustees.individual.details.TrusteeEnterNINOController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/individual/reason-for-no-national-insurance-number               controllers.trustees.individual.details.TrusteeNoNINOReasonController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/individual/reason-for-no-national-insurance-number               controllers.trustees.individual.details.TrusteeNoNINOReasonController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/individual/change/reason-for-no-national-insurance-number        controllers.trustees.individual.details.TrusteeNoNINOReasonController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/individual/change/reason-for-no-national-insurance-number        controllers.trustees.individual.details.TrusteeNoNINOReasonController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/individual/reason-for-no-unique-taxpayer-reference               controllers.trustees.individual.details.TrusteeNoUTRReasonController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/individual/reason-for-no-unique-taxpayer-reference               controllers.trustees.individual.details.TrusteeNoUTRReasonController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/individual/change/reason-for-no-unique-taxpayer-reference        controllers.trustees.individual.details.TrusteeNoUTRReasonController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/individual/change/reason-for-no-unique-taxpayer-reference        controllers.trustees.individual.details.TrusteeNoUTRReasonController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/individual/check-your-answers-details                           controllers.trustees.individual.details.CheckYourAnswersController.onPageLoad(index: Index)
+
+GET         /:index/individual/address                                              controllers.trustees.individual.address.WhatYouWillNeedController.onPageLoad(index: Index)
+
+GET         /:index/individual/enter-postcode                                       controllers.trustees.individual.address.EnterPostcodeController.onPageLoad(index: Index)
+POST        /:index/individual/enter-postcode                                       controllers.trustees.individual.address.EnterPostcodeController.onSubmit(index: Index)
+
+GET         /:index/individual/address-results                                      controllers.trustees.individual.address.SelectAddressController.onPageLoad(index: Index)
+POST        /:index/individual/address-results                                      controllers.trustees.individual.address.SelectAddressController.onSubmit(index: Index)
+
+GET         /:index/individual/confirm-address                                      controllers.trustees.individual.address.ConfirmAddressController.onPageLoad(index: Index)
+POST        /:index/individual/confirm-address                                      controllers.trustees.individual.address.ConfirmAddressController.onSubmit(index: Index)
+
+GET         /:index/individual/check-your-answers-address                           controllers.trustees.individual.address.CheckYourAnswersController.onPageLoad(index: Index)
+
+GET         /:index/individual/time-at-address                                      controllers.trustees.individual.address.AddressYearsController.onPageLoad(index: Index)
+POST        /:index/individual/time-at-address                                      controllers.trustees.individual.address.AddressYearsController.onSubmit(index: Index)
+
+GET         /:index/individual/enter-previous-postcode                              controllers.trustees.individual.address.EnterPreviousPostcodeController.onPageLoad(index: Index)
+POST        /:index/individual/enter-previous-postcode                              controllers.trustees.individual.address.EnterPreviousPostcodeController.onSubmit(index: Index)
+
+GET         /:index/individual/previous-address-results                             controllers.trustees.individual.address.SelectPreviousAddressController.onPageLoad(index: Index)
+POST        /:index/individual/previous-address-results                             controllers.trustees.individual.address.SelectPreviousAddressController.onSubmit(index: Index)
+
+GET         /:index/individual/confirm-previous-address                             controllers.trustees.individual.address.ConfirmPreviousAddressController.onPageLoad(index: Index)
+POST        /:index/individual/confirm-previous-address                             controllers.trustees.individual.address.ConfirmPreviousAddressController.onSubmit(index: Index)
+
+GET         /:index/individual/contact-details                                      controllers.trustees.individual.contact.WhatYouWillNeedController.onPageLoad(index: Index)
+
+GET         /:index/individual/enter-email-address                                  controllers.trustees.individual.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/individual/enter-email-address                                  controllers.trustees.individual.contact.EnterEmailController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/individual/change/enter-email-address                           controllers.trustees.individual.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/individual/change/enter-email-address                           controllers.trustees.individual.contact.EnterEmailController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/individual/enter-phone-number                                   controllers.trustees.individual.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/individual/enter-phone-number                                   controllers.trustees.individual.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/individual/change/enter-phone-number                            controllers.trustees.individual.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/individual/change/enter-phone-number                            controllers.trustees.individual.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = CheckMode)
+
+GET         /:index/individual/check-your-answers-contact-details                    controllers.trustees.individual.contact.CheckYourAnswersController.onPageLoad(index: Index)
+
+GET         /:index/individual/task-list                                                   controllers.trustees.individual.SpokeTaskListController.onPageLoad(index:Index)
+
+GET         /:index/individual/director-also-trustee                    controllers.trustees.individual.DirectorAlsoTrusteeController.onPageLoad(index: Index)
+POST         /:index/individual/director-also-trustee                    controllers.trustees.individual.DirectorAlsoTrusteeController.onSubmit(index: Index)
+
+GET         /:index/individual/directors-also-trustees                    controllers.trustees.individual.DirectorsAlsoTrusteesController.onPageLoad(index: Index)
+POST         /:index/individual/directors-also-trustees                    controllers.trustees.individual.DirectorsAlsoTrusteesController.onSubmit(index: Index)

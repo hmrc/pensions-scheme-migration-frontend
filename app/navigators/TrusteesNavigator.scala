@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,11 @@ package navigators
 
 import config.AppConfig
 import controllers.routes._
+import controllers.trustees.individual.address.routes.{SelectAddressController, EnterPreviousPostcodeController, SelectPreviousAddressController}
+import controllers.trustees.individual.contact.routes._
+import controllers.trustees.individual.details.routes._
+import controllers.trustees.individual.routes._
 import controllers.trustees.routes._
-import helpers.routes.TrusteesIndividualRoutes
 import identifiers._
 import identifiers.trustees.{AnyTrusteesId, _}
 import identifiers.trustees.individual.TrusteeNameId
@@ -47,22 +50,22 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
     case TrusteeNameId(_) => AddTrusteeController.onPageLoad()
     case AddTrusteeId(value) => addTrusteeRoutes(value, ua)
     case ConfirmDeleteTrusteeId => deleteTrusteeRoutes(ua)
-    case TrusteeDOBId(index) => TrusteesIndividualRoutes.haveNationalInsuranceNumberRoute(index, NormalMode)
+    case TrusteeDOBId(index) => TrusteeHasNINOController.onPageLoad(index, NormalMode)
     case TrusteeHasNINOId(index) => trusteeHasNino(index, ua, NormalMode)
-    case TrusteeNINOId(index) => TrusteesIndividualRoutes.haveUniqueTaxpayerReferenceRoute(index, NormalMode)
-    case TrusteeNoNINOReasonId(index) => TrusteesIndividualRoutes.haveUniqueTaxpayerReferenceRoute(index, NormalMode)
+    case TrusteeNINOId(index) => TrusteeHasUTRController.onPageLoad(index, NormalMode)
+    case TrusteeNoNINOReasonId(index) => TrusteeHasUTRController.onPageLoad(index, NormalMode)
     case TrusteeHasUTRId(index) => trusteeHasUtr(index, ua, NormalMode)
     case TrusteeUTRId(index) => cyaDetails(index)
     case TrusteeNoUTRReasonId(index) => cyaDetails(index)
-    case EnterPostCodeId(index) => TrusteesIndividualRoutes.selectAddressRoute(index, NormalMode)
+    case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index)
     case AddressListId(index) => addressYears(index, NormalMode)
     case AddressId(index) => addressYears(index, NormalMode)
     case AddressYearsId(index) =>
-      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else TrusteesIndividualRoutes.enterPreviousPostcodeRoute(index, NormalMode)
-    case EnterPreviousPostCodeId(index) => TrusteesIndividualRoutes.previousAddressResultsRoute(index, NormalMode)
+      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else EnterPreviousPostcodeController.onPageLoad(index)
+    case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index)
     case PreviousAddressListId(index) => cyaAddress(index)
     case PreviousAddressId(index) => cyaAddress(index)
-    case EnterEmailId(index) => TrusteesIndividualRoutes.phoneNumberRoute(index, NormalMode)
+    case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
     case EnterPhoneId(index) => cyaContactDetails(index)
     case OtherTrusteesId => TaskListController.onPageLoad()
     case DirectorAlsoTrusteeId(index) => directorAlsoTrusteeRoutes(index, ua)
@@ -82,13 +85,13 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
     case EnterPhoneId(index) => cyaContactDetails(index)
   }
 
-  private def cyaDetails(index: Int): Call = TrusteesIndividualRoutes.cyaDetailsRoute(index, NormalMode)
+  private def cyaDetails(index:Int): Call = controllers.trustees.individual.details.routes.CheckYourAnswersController.onPageLoad(index)
 
-  private def cyaAddress(index: Int): Call = TrusteesIndividualRoutes.cyaAddressRoute(index, NormalMode)
 
-  private def addressYears(index: Int, mode: Mode): Call = TrusteesIndividualRoutes.timeAtAddressRoute(index, NormalMode)
+  private def cyaAddress(index:Int): Call = controllers.trustees.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
+  private def addressYears(index:Int, mode:Mode): Call = controllers.trustees.individual.address.routes.AddressYearsController.onPageLoad(index)
 
-  private def cyaContactDetails(index: Int): Call = TrusteesIndividualRoutes.cyaContactRoute(index, NormalMode)
+  private def cyaContactDetails(index:Int): Call = controllers.trustees.individual.contact.routes.CheckYourAnswersController.onPageLoad(index)
 
   private def trusteeKindRoutes(
                                  index: Index,
@@ -97,11 +100,11 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
     val noOfDirectors = dataPrefillService.getListOfDirectorsToBeCopied(ua).size
     ua.get(TrusteeKindId(index)) match {
       case Some(TrusteeKind.Individual) if noOfDirectors == 1 =>
-        TrusteesIndividualRoutes.directorAlsoTrusteeRoute(index, NormalMode)
+        controllers.trustees.individual.routes.DirectorAlsoTrusteeController.onPageLoad(index)
       case Some(TrusteeKind.Individual) if noOfDirectors > 1 =>
-        TrusteesIndividualRoutes.directorsAlsoTrusteesRoute(index, NormalMode)
+        controllers.trustees.individual.routes.DirectorsAlsoTrusteesController.onPageLoad(index)
       case Some(TrusteeKind.Individual) =>
-        TrusteesIndividualRoutes.nameRoute(index, NormalMode)
+        TrusteeNameController.onPageLoad(index)
       case Some(TrusteeKind.Company) =>
         controllers.trustees.company.routes.CompanyDetailsController.onPageLoad(index)
       case Some(TrusteeKind.Partnership) =>
@@ -146,8 +149,8 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
                                   mode: Mode
                                 ): Call =
     answers.get(TrusteeHasNINOId(index)) match {
-      case Some(true) => TrusteesIndividualRoutes.enterNationaInsuranceNumberRoute(index, mode)
-      case Some(false) => TrusteesIndividualRoutes.reasonForNoNationalInsuranceNumberRoute(index, mode)
+      case Some(true) => TrusteeEnterNINOController.onPageLoad(index, mode)
+      case Some(false) => TrusteeNoNINOReasonController.onPageLoad(index, mode)
       case None => controllers.routes.TaskListController.onPageLoad()
     }
 
@@ -157,8 +160,8 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
                                  mode: Mode
                                ): Call =
     answers.get(TrusteeHasUTRId(index)) match {
-      case Some(true) => TrusteesIndividualRoutes.enterUniqueTaxpayerReferenceRoute(index, mode)
-      case Some(false) => TrusteesIndividualRoutes.reasonForNoUniqueTaxpayerReferenceRoute(index, mode)
+      case Some(true) => TrusteeEnterUTRController.onPageLoad(index, mode)
+      case Some(false) => TrusteeNoUTRReasonController.onPageLoad(index, mode)
       case None => controllers.routes.TaskListController.onPageLoad()
     }
 
@@ -166,7 +169,7 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
     val noneValue = -1
     answers.get(DirectorAlsoTrusteeId(index)) match {
       case Some(value) if value == noneValue =>
-        TrusteesIndividualRoutes.nameRoute(index, NormalMode)
+        controllers.trustees.individual.routes.TrusteeNameController.onPageLoad(index)
       case _ =>
         AddTrusteeController.onPageLoad()
     }
@@ -176,7 +179,7 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
     val noneValue = -1
     answers.get(DirectorsAlsoTrusteesId(index)) match {
       case Some(value) if value.size == 1 && value.contains(noneValue) =>
-        TrusteesIndividualRoutes.nameRoute(index, NormalMode)
+        controllers.trustees.individual.routes.TrusteeNameController.onPageLoad(index)
       case _ =>
         AddTrusteeController.onPageLoad()
     }

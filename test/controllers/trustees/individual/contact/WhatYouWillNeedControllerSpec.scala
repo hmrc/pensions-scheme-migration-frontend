@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,9 @@ package controllers.trustees.individual.contact
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import helpers.routes.TrusteesIndividualRoutes
 import identifiers.trustees.individual.TrusteeNameId
 import matchers.JsonMatchers
-import models.{PersonName, NormalMode}
+import models.{NormalMode, PersonName}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
@@ -49,10 +48,10 @@ class WhatYouWillNeedControllerSpec
 
   private def json: JsObject =
     Json.obj(
-      "name" -> personName.fullName,
+      "name"        -> personName.fullName,
       "pageHeading" -> Message("messages__title_individual"),
       "entityType" -> Message("messages__individual"),
-      "continueUrl" -> TrusteesIndividualRoutes.emailRoute(0, NormalMode).url,
+      "continueUrl" -> controllers.trustees.individual.contact.routes.EnterEmailController.onPageLoad(0, NormalMode).url,
       "schemeName"  -> schemeName
     )
 

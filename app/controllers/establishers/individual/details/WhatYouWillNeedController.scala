@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,13 +53,14 @@ class WhatYouWillNeedController @Inject()(
             renderer.render(
               template = "details/whatYouWillNeedIndividualDetails.njk",
               ctx = Json.obj(
-                "name" -> personName.fullName,
+                "name"        -> personName.fullName,
                 "entityType" -> Messages("messages__title_individual"),
-                "continueUrl" -> controllers.establishers.individual.routes.EstablisherIndividualController.onPageLoad(index, NormalMode, "date-of-birth").url,
-                "schemeName" -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
+                "continueUrl" -> controllers.establishers.individual.details.routes.EstablisherDOBController.onPageLoad(index, NormalMode).url,
+                "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )
             ).map(Ok(_))
         }
     }
 
 }
+

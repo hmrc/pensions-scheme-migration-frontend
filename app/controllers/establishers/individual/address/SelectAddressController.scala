@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.{AddressPages, AddressListController}
 import forms.address.AddressListFormProvider
-import helpers.routes.EstablishersIndividualRoutes
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{EnterPostCodeId, AddressListId, AddressId}
@@ -67,7 +66,7 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
       val addressPages: AddressPages = AddressPages(EnterPostCodeId(index), AddressListId(index), AddressId(index))
       retrieve(SchemeNameId) { schemeName =>
         getFormToJson(schemeName, index, NormalMode).retrieve.right.map(post(_, addressPages,
-          manualUrlCall = EstablishersIndividualRoutes.confirmAddressRoute(index, NormalMode)))
+          manualUrlCall = controllers.establishers.individual.address.routes.ConfirmAddressController.onPageLoad(index)))
       }
     }
 
@@ -86,7 +85,7 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
               "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
               "entityType" -> msg("establisherEntityTypeIndividual"),
               "entityName" -> name,
-              "enterManuallyUrl" -> EstablishersIndividualRoutes.confirmAddressRoute(index, NormalMode).url,
+              "enterManuallyUrl" -> controllers.establishers.individual.address.routes.ConfirmPreviousAddressController.onPageLoad(index).url,
               "schemeName" -> schemeName
             )
         }

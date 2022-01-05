@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,11 @@
 
 package helpers.spokes.trustees.individual
 
-import helpers.routes.TrusteesIndividualRoutes
 import helpers.spokes.Spoke
-import models.{SpokeTaskListLink, Index, NormalMode}
+import models.{SpokeTaskListLink, Index}
 import play.api.i18n.Messages
 import utils.UserAnswers
-
+import controllers.trustees.individual.details.routes._
 
 case class TrusteeIndividualDetails(
                                          index: Index,
@@ -31,9 +30,9 @@ case class TrusteeIndividualDetails(
 
   val linkKeyAndRoute: (String, String) =
     if (completeFlag(answers).isDefined)
-      (s"${messageKeyPrefix}changeLink", TrusteesIndividualRoutes.cyaDetailsRoute(index, NormalMode).url)
+      (s"${messageKeyPrefix}changeLink", CheckYourAnswersController.onPageLoad(index).url)
     else
-      (s"${messageKeyPrefix}addLink", TrusteesIndividualRoutes.detailsRoute(index, NormalMode).url)
+      (s"${messageKeyPrefix}addLink", WhatYouWillNeedController.onPageLoad(index).url)
 
   override def changeLink(name: String)
                          (implicit messages: Messages): SpokeTaskListLink =

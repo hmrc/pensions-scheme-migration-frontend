@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,10 @@ package controllers.establishers.individual.address
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.address.AddressYearsFormProvider
-import helpers.routes.EstablishersIndividualRoutes
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressYearsId
 import matchers.JsonMatchers
-import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -36,8 +34,9 @@ import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{Data, Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable, Data}
 import models.Scheme
+
 import scala.concurrent.Future
 
 class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
@@ -45,8 +44,8 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
   private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(EstablisherNameId(0), Data.individualName))
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
-  private val httpPathGET: String = EstablishersIndividualRoutes.timeAtAddressRoute(0, NormalMode).url
-  private val httpPathPOST: String = EstablishersIndividualRoutes.timeAtAddressPOSTRoute(0, NormalMode).url
+  private val httpPathGET: String = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(0).url
+  private val httpPathPOST: String = controllers.establishers.individual.address.routes.AddressYearsController.onSubmit(0).url
   private val form: Form[Boolean] = new AddressYearsFormProvider()("")
 
   private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>
@@ -125,7 +124,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
       val expectedJson = Json.obj()
 
       when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
-        .thenReturn( EstablishersIndividualRoutes.cyaAddressRoute(0, NormalMode))
+        .thenReturn( controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(0))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -141,7 +140,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
 
       jsonCaptor.getValue must containJson(expectedJson)
 
-      redirectLocation(result) mustBe Some( EstablishersIndividualRoutes.cyaAddressRoute(0, NormalMode).url)
+      redirectLocation(result) mustBe Some( controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(0).url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

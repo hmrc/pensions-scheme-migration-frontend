@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,6 @@ import controllers.establishers.company.routes.CompanyDetailsController
 import controllers.establishers.partnership.routes._
 import controllers.establishers.routes._
 import controllers.routes._
-import helpers.routes.EstablishersIndividualRoutes
-import helpers.routes.EstablishersIndividualRoutes._
 import identifiers._
 import identifiers.establishers._
 import identifiers.establishers.individual.EstablisherNameId
@@ -44,33 +42,33 @@ class EstablishersNavigator@Inject()(config: AppConfig)
 
   //scalastyle:off cyclomatic.complexity
   override protected def routeMap(ua: UserAnswers)
-                                 (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
+    (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case EstablisherKindId(index) => establisherKindRoutes(index, ua)
     case EstablisherNameId(_) => AddEstablisherController.onPageLoad()
     case AddEstablisherId(value) => addEstablisherRoutes(value, ua)
     case ConfirmDeleteEstablisherId => AddEstablisherController.onPageLoad()
-    case EstablisherDOBId(index) => haveNationalInsuranceNumberRoute(index, NormalMode)
+    case EstablisherDOBId(index) => controllers.establishers.individual.details.routes.EstablisherHasNINOController.onPageLoad(index, NormalMode)
     case EstablisherHasNINOId(index) => establisherHasNino(index, ua, NormalMode)
-    case EstablisherNINOId(index) => haveUniqueTaxpayerReferenceRoute(index, NormalMode)
-    case EstablisherNoNINOReasonId(index) => haveUniqueTaxpayerReferenceRoute(index, NormalMode)
+    case EstablisherNINOId(index) => controllers.establishers.individual.details.routes.EstablisherHasNINOController.onPageLoad(index, NormalMode)
+    case EstablisherNoNINOReasonId(index) => controllers.establishers.individual.details.routes.EstablisherHasUTRController.onPageLoad(index, NormalMode)
     case EstablisherHasUTRId(index) => establisherHasUtr(index, ua, NormalMode)
     case EstablisherUTRId(index) => cyaDetails(index)
     case EstablisherNoUTRReasonId(index) => cyaDetails(index)
-    case EnterPostCodeId(index) => EstablishersIndividualRoutes.selectAddressRoute(index, NormalMode)
+    case EnterPostCodeId(index) => controllers.establishers.individual.address.routes.SelectAddressController.onPageLoad(index)
     case AddressListId(index) => addressYears(index, NormalMode)
     case AddressId(index) => addressYears(index, NormalMode)
     case AddressYearsId(index) =>
-      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else EstablishersIndividualRoutes.enterPreviousPostcodeRoute(index, NormalMode)
-    case EnterPreviousPostCodeId(index) => EstablishersIndividualRoutes.previousAddressResultsRoute(index, NormalMode)
+      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index)
+    case EnterPreviousPostCodeId(index) => controllers.establishers.individual.address.routes.SelectPreviousAddressController.onPageLoad(index)
     case PreviousAddressListId(index) => cyaAddress(index)
     case PreviousAddressId(index) => cyaAddress(index)
-    case EnterEmailId(index) => phoneNumberRoute(index, NormalMode)
+    case EnterEmailId(index) => controllers.establishers.individual.contact.routes.EnterPhoneController.onPageLoad(index, NormalMode)
     case EnterPhoneId(index) => cyaContactDetails(index)
     case AddPartnersId(index) => addPartners(index, ua)
   }
 
   override protected def editRouteMap(ua: UserAnswers)
-                                     (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
+    (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case EstablisherDOBId(index) => cyaDetails(index)
     case EstablisherHasNINOId(index) => establisherHasNino(index, ua, CheckMode)
     case EstablisherNINOId(index) => cyaDetails(index)
@@ -82,10 +80,10 @@ class EstablishersNavigator@Inject()(config: AppConfig)
     case EnterPhoneId(index) => cyaContactDetails(index)
   }
 
-  private def cyaAddress(index:Int): Call = EstablishersIndividualRoutes.cyaAddressRoute(index, NormalMode)
-  private def cyaDetails(index:Int): Call = cyaDetailsRoute(index, NormalMode)
-  private def cyaContactDetails(index:Int): Call = cyaContactRoute(index, NormalMode)
-  private def addressYears(index:Int, mode:Mode): Call =EstablishersIndividualRoutes.timeAtAddressRoute(index, NormalMode)
+  private def cyaAddress(index:Int): Call = controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
+  private def cyaDetails(index:Int): Call = controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index)
+  private def cyaContactDetails(index:Int): Call = controllers.establishers.individual.contact.routes.CheckYourAnswersController.onPageLoad(index)
+  private def addressYears(index:Int, mode:Mode): Call =controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index)
 
   private def addPartners(index: Int, answers: UserAnswers): Call = {
     if (answers.allPartnersAfterDelete(index).isEmpty) {
@@ -106,20 +104,20 @@ class EstablishersNavigator@Inject()(config: AppConfig)
     }
   }
   private def establisherKindRoutes(
-                                     index: Index,
-                                     ua: UserAnswers
-                                   ): Call =
+    index: Index,
+    ua: UserAnswers
+  ): Call =
     ua.get(EstablisherKindId(index)) match {
-      case Some(EstablisherKind.Individual) => nameRoute(index, NormalMode)
+      case Some(EstablisherKind.Individual) => controllers.establishers.individual.routes.EstablisherNameController.onPageLoad(index)
       case Some(EstablisherKind.Company) => CompanyDetailsController.onPageLoad(index)
       case Some(EstablisherKind.Partnership) => PartnershipDetailsController.onPageLoad(index)
       case _ => IndexController.onPageLoad()
     }
 
   private def addEstablisherRoutes(
-                                    value: Option[Boolean],
-                                    answers: UserAnswers
-                                  ): Call =
+    value: Option[Boolean],
+    answers: UserAnswers
+  ): Call =
     value match {
       case Some(false) => controllers.routes.TaskListController.onPageLoad()
       case Some(true) => EstablisherKindController.onPageLoad(answers.establishersCount)
@@ -127,24 +125,24 @@ class EstablishersNavigator@Inject()(config: AppConfig)
     }
 
   private def establisherHasNino(
-                                  index: Index,
-                                  answers: UserAnswers,
-                                  mode: Mode
-                                ): Call =
+    index: Index,
+    answers: UserAnswers,
+    mode: Mode
+  ): Call =
     answers.get(EstablisherHasNINOId(index)) match {
-      case Some(true) => enterNationaInsuranceNumberRoute(index, mode)
-      case Some(false) => reasonForNoNationalInsuranceNumberRoute(index, mode)
+      case Some(true) => controllers.establishers.individual.details.routes.EstablisherEnterNINOController.onPageLoad(index, mode)
+      case Some(false) => controllers.establishers.individual.details.routes.EstablisherNoNINOReasonController.onPageLoad(index, mode)
       case None => controllers.routes.TaskListController.onPageLoad()
     }
 
   private def establisherHasUtr(
-                                 index: Index,
-                                 answers: UserAnswers,
-                                 mode: Mode
-                               ): Call =
+    index: Index,
+    answers: UserAnswers,
+    mode: Mode
+  ): Call =
     answers.get(EstablisherHasUTRId(index)) match {
-      case Some(true) => enterUniqueTaxpayerReferenceRoute(index, mode)
-      case Some(false) => reasonForNoUniqueTaxpayerReferenceRoute(index, mode)
+      case Some(true) => controllers.establishers.individual.details.routes.EstablisherEnterUTRController.onPageLoad(index, mode)
+      case Some(false) => controllers.establishers.individual.details.routes.EstablisherNoUTRReasonController.onPageLoad(index, mode)
       case None => controllers.routes.TaskListController.onPageLoad()
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,19 @@
 
 package helpers
 
-import controllers.establishers.routes._
-import helpers.spokes._
 import helpers.spokes.establishers.company._
 import helpers.spokes.establishers.individual._
-import helpers.spokes.establishers.partnership.{EstablisherPartnerDetails, EstablisherPartnershipAddress, EstablisherPartnershipDetails, _}
-import helpers.spokes.trustees.company.{TrusteeCompanyAddress, TrusteeCompanyContactDetails, TrusteeCompanyDetails}
-import helpers.spokes.trustees.individual.{TrusteeIndividualAddress, TrusteeIndividualContactDetails, TrusteeIndividualDetails}
-import helpers.spokes.trustees.partnership.{TrusteePartnershipAddress, TrusteePartnershipContactDetails, TrusteePartnershipDetails}
+import helpers.spokes.establishers.partnership._
+import helpers.spokes.trustees.company.{TrusteeCompanyContactDetails, TrusteeCompanyAddress, TrusteeCompanyDetails}
+import helpers.spokes.trustees.individual.{TrusteeIndividualAddress, TrusteeIndividualDetails, TrusteeIndividualContactDetails}
+import helpers.spokes.trustees.partnership.{TrusteePartnershipDetails, TrusteePartnershipAddress, TrusteePartnershipContactDetails}
 import identifiers.beforeYouStart.SchemeTypeId
+import helpers.spokes.Spoke
 import models.Index._
 import models._
 import play.api.i18n.Messages
 import services.DataPrefillService
-import utils.{Enumerable, UserAnswers}
+import utils.{UserAnswers, Enumerable}
 
 import javax.inject.Inject
 
@@ -44,7 +43,7 @@ class SpokeCreationService @Inject()(dataPrefillService: DataPrefillService) ext
         EntitySpoke(
           link = SpokeTaskListLink(
             text = messages("messages__schemeTaskList__sectionEstablishers_add_link"),
-            target = EstablisherKindController.onPageLoad(answers.allEstablishers.size).url
+            target = controllers.establishers.routes.EstablisherKindController.onPageLoad(answers.allEstablishers.size).url
           ),
           isCompleted = None
         )
@@ -54,7 +53,7 @@ class SpokeCreationService @Inject()(dataPrefillService: DataPrefillService) ext
         EntitySpoke(
           link = SpokeTaskListLink(
             text = messages("messages__schemeTaskList__sectionEstablishers_change_link"),
-            target = AddEstablisherController.onPageLoad().url
+            target = controllers.establishers.routes.AddEstablisherController.onPageLoad().url
           ),
           isCompleted = None
         )
@@ -92,14 +91,7 @@ class SpokeCreationService @Inject()(dataPrefillService: DataPrefillService) ext
   def createDirectorSpoke(entityList: Seq[Entity[_]],
                           spoke: Spoke,
                           name: String)(implicit messages: Messages): EntitySpoke = {
-    val isComplete: Option[Boolean] = {
-      (entityList.isEmpty) match {
-        case (false) =>
-          Some(entityList.forall(_.isCompleted))
-        case (true) =>
-          Some(false)
-      }
-    }
+    val isComplete: Option[Boolean] = Some(entityList.nonEmpty && entityList.forall(_.isCompleted))
     EntitySpoke(spoke.changeLink(name), isComplete)
   }
 
