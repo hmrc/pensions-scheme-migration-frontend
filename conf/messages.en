@@ -444,17 +444,10 @@ messages__address__whatYouWillNeed_p = You will need to tell us {0}’s:
 messages__address__whatYouWillNeed_li_1 = current address
 messages__address__whatYouWillNeed_li_2 = previous address if {0} has used this address for less than 1 year
 
-messages__establisherIndividualContactDetails__whatYouWillNeed_title = The establisher’s contact details
-messages__establisherIndividualContactDetails__whatYouWillNeed_h1 = Contact details for {0}
-messages__individualContactDetails__whatYouWillNeed_p = You will need to tell us {0}’s:
-messages__individualContactDetails__whatYouWillNeed_li_1 = contact email address
-messages__individualContactDetails__whatYouWillNeed_li_2 = contact phone number
-
 messages__contactDetails__whatYouWillNeed_h1 = {0}’s contact details
 messages__contactDetails__whatYouWillNeed_p = You will need to tell us {0}’s:
 messages__contactDetails__whatYouWillNeed_li_1 = contact email address
 messages__contactDetails__whatYouWillNeed_li_2 = contact phone number
-
 
 messages__trusteeCompanyContactDetails__whatYouWillNeed_title = The company’s contact details
 messages__trusteeCompanyContactDetails__whatYouWillNeed_h1 = Contact details for {0}
@@ -788,6 +781,7 @@ trusteeEnterPreviousPostcode.invalid = Enter a postcode in the correct format
 
 
 individualAddressYears.error.required = Select yes if the individual has used this address for more than 1 year
+individualAddressYears.partnership.partner.error.required = Select yes if the partner has used this address for at least 1 year
 companyAddressYears.error.required = Select yes if the company has used this address for more than 1 year
 partnershipAddressYears.error.required = Select yes if the partnership has used this address for more than 1 year
 messages__visuallyhidden__trusteeAddressYears = whether {0} has used this address for at least 1 year
@@ -853,7 +847,7 @@ messages__vat__error_invalid = Enter {0}’s VAT registration number in the corr
 messages__vat__error_required = Enter a VAT registration number
 
 messages__paye = What is {0}’s employer PAYE reference?
-messages__paye_cya = {0}’s Employer PAYE reference
+messages__paye_cya = {0}’s employer PAYE reference
 messages__paye__p = You can tell us any employer PAYE reference if {0} has more than one.
 messages__paye__hint = For example, 123/AB456
 messages__paye__error_invalid = Enter {0}’s employer PAYE reference in the correct format
@@ -903,7 +897,7 @@ messages__addCompanyDirectors_add_director = Add a director
 messages__alreadyDeleted__director_title = You have already deleted this director
 
 messages__partners__title = Partners
-messages__partners__whatYouWillNeedPartners__p1 = For every partner associated with the partnership you’re registering, you will need to tell us the partner’s:
+messages__partners__whatYouWillNeedPartners__p1 = For every partner, you will need to tell us the partner’s:
 messages__partners__whatYouWillNeed__item1 = name
 messages__partners__whatYouWillNeed__item2 = date of birth
 messages__partners__whatYouWillNeed__item3 = National Insurance number, or reason why they do not have one
