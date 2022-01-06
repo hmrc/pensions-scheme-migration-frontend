@@ -21,18 +21,21 @@ import config.AppConfig
 import connectors.cache.CacheConnector._
 import play.api.http.Status._
 import play.api.libs.json._
-import play.api.libs.ws.WSClient
-import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpException}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class BulkMigrationQueueConnector @Inject()(config: AppConfig,
-                                            http: WSClient
+                                            http: HttpClient
                                            ) {
 
 
+  override protected def url = s"${config.bulkMigrationEnqueueUrl}"
+
   def pushAll(psaId: String, requests: JsValue)
              (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] =
+
+
     http
       .url(config.bulkMigrationEnqueueUrl)
       .withHttpHeaders(queueHeaders(hc, psaId): _*)

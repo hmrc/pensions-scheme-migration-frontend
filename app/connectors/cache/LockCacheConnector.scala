@@ -22,15 +22,15 @@ import connectors.cache.CacheConnector._
 import models.MigrationLock
 import play.api.http.Status._
 import play.api.libs.json._
-import play.api.libs.ws.WSClient
 import play.api.mvc.Result
 import play.api.mvc.Results._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
+import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpException, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class LockCacheConnector @Inject()(config: AppConfig,
-                                   http: WSClient
+                                   http: HttpClient
                                   ) {
 
 
