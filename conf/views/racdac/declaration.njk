@@ -17,6 +17,9 @@
         <h1 class="govuk-heading-xl">
           {{ messages("messages__declaration__title") }}
         </h1>
+  <form method="post" autocomplete="off" novalidate>
+
+            {{ csrf() | safe }}
 
         <p class="govuk-body">
           {{ messages("messages__declaration__declare") }}
@@ -30,11 +33,11 @@
         </ul>
 
           {{ govukButton({
-              href: submitUrl,
               text: messages("site.agree_and_continue"),
+              preventDoubleClick: true,
               attributes: {id: "submit"}
           }) }}
-
+  </form>
       </div>
     </div>
 

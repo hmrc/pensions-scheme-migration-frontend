@@ -93,7 +93,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
         when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(minPSA))
         when(mockPensionsSchemeConnector.registerScheme(any(),any(), any())(any(),any())).thenReturn(Future.successful(pstr))
         when(mockEmailConnector.sendEmail(any(), any(), any(), any())(any(), any())).thenReturn(Future(EmailSent))
-        val result = route(application, httpGETRequest(httpPathPOST)).value
+        val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.racdac.individual.routes.ConfirmationController.onPageLoad().url)
@@ -107,7 +107,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
         UpstreamErrorResponse(upstreamResponseMessage("POST", "url",
           Status.INTERNAL_SERVER_ERROR, "response.body"), Status.INTERNAL_SERVER_ERROR, Status.INTERNAL_SERVER_ERROR)))
       when(mockEmailConnector.sendEmail(any(), any(), any(), any())(any(), any())).thenReturn(Future(EmailSent))
-      val result = route(application, httpGETRequest(httpPathPOST)).value
+      val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.YourActionWasNotProcessedController.onPageLoadRacDac.url)

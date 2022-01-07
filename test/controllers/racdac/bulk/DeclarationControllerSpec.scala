@@ -90,7 +90,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
     "redirect to next page when rac dac schems exist" in {
       when(mockBulkMigrationConnector.pushAll(any(), any())(any(), any())).thenReturn(Future(Json.obj()))
       when(mockEmailConnector.sendEmail(any(), any(), any(), any())(any(), any())).thenReturn(Future(EmailSent))
-      val result = route(application, httpGETRequest(httpPathPOST)).value
+      val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.racdac.bulk.routes.ConfirmationController.onPageLoad().url)
@@ -99,7 +99,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
     "redirect to Request not process page when error while push" in {
       when(mockBulkMigrationConnector.pushAll(any(), any())(any(), any())).thenReturn(Future.failed(new HttpException("No Service", SERVICE_UNAVAILABLE)))
 
-      val result = route(application, httpGETRequest(httpPathPOST)).value
+      val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.racdac.bulk.routes.RequestNotProcessedController.onPageLoad().url)
