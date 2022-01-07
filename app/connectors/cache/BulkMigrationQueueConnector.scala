@@ -21,7 +21,7 @@ import config.AppConfig
 import connectors.cache.CacheConnector._
 import play.api.http.Status._
 import play.api.libs.json._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpException}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpException, HttpResponse, NotFoundException}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -34,6 +34,7 @@ class BulkMigrationQueueConnector @Inject()(config: AppConfig,
 
   def pushAll(psaId: String, requests: JsValue)
              (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] =
+
 
 
     http
@@ -93,4 +94,9 @@ class BulkMigrationQueueConnector @Inject()(config: AppConfig,
             Future.failed(new HttpException(response.body, response.status))
         }
       }
+
+  private def mapExceptionsToStatus: PartialFunction[Throwable, Future[HttpResponse]] = {
+    case _: NotFoundException =>
+      Future.successful(HttpResponse(NOT_FOUND, "Not found"))
+  }
 }
