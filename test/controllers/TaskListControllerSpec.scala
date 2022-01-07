@@ -19,7 +19,7 @@ package controllers
 import connectors.LegacySchemeDetailsConnector
 import controllers.actions._
 import matchers.JsonMatchers
-import models.{TaskListLink, Scheme}
+import models.{Scheme, TaskListLink}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, MockitoSugar}
 import org.scalatest.BeforeAndAfterEach
@@ -77,6 +77,7 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
     "declaration" -> declarationSection,
     "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad().url
   )
+ val expectedJson = Json.obj("anyTrustees" -> false)
 
   val itemList : JsValue = json
 
@@ -136,6 +137,21 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
 
       templateCaptor.getValue mustEqual templateToBeRendered
 
+    }
+
+    "retrieved data from API store it and correct value for AnyTrusteesId and return  OK" in {
+      mutableFakeDataRetrievalAction.setDataToReturn(None)
+      mutableFakeDataRetrievalAction.setLockToReturn(Some(Data.migrationLock))
+      when(mockLegacySchemeDetailsConnector.getLegacySchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(Right(itemList)))
+
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+      val result = route(application, httpGETRequest(httpPathGET)).value
+
+      status(result) mustEqual OK
+
+      verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptor.capture())(any(), any())
+
+      jsonCaptor.getValue must containJson(expectedJson)
     }
 
   }
