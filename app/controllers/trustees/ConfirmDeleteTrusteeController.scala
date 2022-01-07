@@ -149,9 +149,17 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
           Try(request.userAnswers)
         }
         Future.fromTry(deletionResult).flatMap { answers =>
-          val updatedUA = answers.removeAll(Set(OtherTrusteesId, AnyTrusteesId))
-          userAnswersCacheConnector.save(request.lock, updatedUA.data).map { _ =>
-            Redirect(navigator.nextPage(ConfirmDeleteTrusteeId, updatedUA))
+          val updatedUA = answers.removeAll(Set(OtherTrusteesId))
+          if(updatedUA.allTrusteesAfterDelete.isEmpty) {
+            val updatedFinalUA = updatedUA.removeAll(Set(AnyTrusteesId))
+            userAnswersCacheConnector.save(request.lock, updatedFinalUA.data).map { _ =>
+              Redirect(navigator.nextPage(ConfirmDeleteTrusteeId, updatedFinalUA))
+            }
+          }
+          else {
+            userAnswersCacheConnector.save(request.lock, updatedUA.data).map { _ =>
+              Redirect(navigator.nextPage(ConfirmDeleteTrusteeId, updatedUA))
+            }
           }
         }
       }
