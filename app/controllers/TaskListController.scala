@@ -56,7 +56,7 @@ class TaskListController @Inject()(
         case (Some(ua), _) =>
           implicit val userAnswers: UserAnswers = ua
           if(userAnswers.allTrusteesAfterDelete.nonEmpty) {
-            val updatedUa = userAnswers.setOrException(AnyTrusteesId, userAnswers.allTrusteesAfterDelete.nonEmpty)
+            val updatedUa = userAnswers.setOrException(AnyTrusteesId, true)
             renderView(updatedUa, implicitly)
           }
           else
