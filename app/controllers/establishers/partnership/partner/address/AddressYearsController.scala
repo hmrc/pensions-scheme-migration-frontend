@@ -48,7 +48,7 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
     with Enumerable.Implicits
 {
   private def form: Form[Boolean] =
-    formProvider("individualAddressYears.error.required")
+    formProvider("individualAddressYears.partnership.partner.error.required")
 
   def onPageLoad(establisherIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>

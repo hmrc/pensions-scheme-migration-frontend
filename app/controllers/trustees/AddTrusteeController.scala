@@ -84,7 +84,7 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
     val completeTable = helper.mapTrusteesToTable(trusteesComplete,
       caption = "messages__schemeTaskList__completed", editLinkText = "site.change", hideDeleteLink)
     val incompleteTable = helper.mapTrusteesToTable(trusteesIncomplete,
-      caption = "messages__schemeTaskList__incomplete", editLinkText = "site.add.details", hideDeleteLink)
+      caption = "site.incomplete", editLinkText = "site.add.details", hideDeleteLink)
 
     Json.obj(
       "form" -> form,
