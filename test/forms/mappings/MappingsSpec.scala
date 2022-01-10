@@ -48,126 +48,6 @@ class MappingsSpec extends AnyWordSpec with Matchers with OptionValues with Mapp
 
   import MappingsSpec._
 
-//  "text" must {
-//
-//    val testForm: Form[String] =
-//      Form(
-//        "value" -> text()
-//      )
-//
-//    "bind a valid string" in {
-//      val result = testForm.bind(Map("value" -> "foobar"))
-//      result.get mustEqual "foobar"
-//    }
-//
-//    "trim spaces from a valid string" in {
-//      val gen = RegexpGen.from("""^\s+test\s+$""")
-//      forAll(gen) { s =>
-//        val result = testForm.bind(Map("value" -> s))
-//        result.get mustBe "test"
-//      }
-//    }
-//
-//    "minimise internal spaces" in {
-//      val gen = RegexpGen.from("""^start\s+middle\s+end$""")
-//      forAll(gen) { s =>
-//        val result = testForm.bind(Map("value" -> s))
-//        result.get mustBe "start middle end"
-//      }
-//    }
-//
-//    "not bind an empty string" in {
-//      val result = testForm.bind(Map("value" -> ""))
-//      result.errors must contain(FormError("value", "error.required"))
-//    }
-//
-//    "not bind a string containing only spaces" in {
-//      val gen = RegexpGen.from("""^\s+$""")
-//      forAll(gen) { s =>
-//        val result = testForm.bind(Map("value" -> s))
-//        result.errors must contain(FormError("value", "error.required"))
-//      }
-//    }
-//
-//    "not bind an empty map" in {
-//      val result = testForm.bind(Map.empty[String, String])
-//      result.errors must contain(FormError("value", "error.required"))
-//    }
-//
-//    "return a custom error message" in {
-//      val form = Form("value" -> text("custom.error"))
-//      val result = form.bind(Map("value" -> ""))
-//      result.errors must contain(FormError("value", "custom.error"))
-//    }
-//
-//    "unbind a valid value" in {
-//      val result = testForm.fill("foobar")
-//      result.apply("value").value.value mustEqual "foobar"
-//    }
-//  }
-//
-//  "optionalText" must {
-//
-//    val testForm: Form[Option[String]] =
-//      Form(
-//        "value" -> optionalText()
-//      )
-//
-//    "bind a valid string" in {
-//      forAll(stringsLongerThan(0)) { s =>
-//        val result = testForm.bind(Map("value" -> s))
-//        result.get mustBe Some(s)
-//      }
-//    }
-//
-//    "trim spaces from a valid string" in {
-//      val gen = RegexpGen.from("""^\s+test\s+$""")
-//      forAll(gen) { s =>
-//        val result = testForm.bind(Map("value" -> s))
-//        result.get mustBe Some("test")
-//      }
-//    }
-//
-//    "minimise internal spaces" in {
-//      val gen = RegexpGen.from("""^start\s+middle\s+end$""")
-//      forAll(gen) { s =>
-//        val result = testForm.bind(Map("value" -> s))
-//        result.get mustBe Some("start middle end")
-//      }
-//    }
-//
-//    "bind an empty string to None" in {
-//      val result = testForm.bind(Map("value" -> ""))
-//      result.get mustBe None
-//    }
-//
-//    "bind a string containing only spaces to None" in {
-//      val gen = RegexpGen.from("""^\s+$""")
-//      forAll(gen) { s =>
-//        val result = testForm.bind(Map("value" -> s))
-//        result.get mustBe None
-//      }
-//    }
-//
-//    "bind an empty map to None" in {
-//      val result = testForm.bind(Map.empty[String, String])
-//      result.get mustBe None
-//    }
-//
-//    "unbind some valid value" in {
-//      forAll(Gen.alphaStr) { s =>
-//        val result = testForm.fill(Some(s))
-//        result.apply("value").value mustBe Some(s)
-//      }
-//    }
-//
-//    "unbind None to an empty string" in {
-//      val result = testForm.fill(None)
-//      result.apply("value").value mustBe Some("")
-//    }
-//
-//  }
-
   "boolean" must {
 
     val testForm: Form[Boolean] =
@@ -326,7 +206,7 @@ class MappingsSpec extends AnyWordSpec with Matchers with OptionValues with Mapp
       )
 
       result.errors.size mustBe 1
-      result.errors must contain(FormError("date", "error.invalid_date"))
+      result.errors must contain(FormError("date.day", "error.date.day_invalid"))
     }
 
     "not bind invalid month" in {
@@ -339,7 +219,7 @@ class MappingsSpec extends AnyWordSpec with Matchers with OptionValues with Mapp
       )
 
       result.errors.size mustBe 1
-      result.errors must contain(FormError("date", "error.invalid_date"))
+      result.errors must contain(FormError("date.month", "error.date.month_invalid"))
     }
 
     "fill correctly from model" in {
