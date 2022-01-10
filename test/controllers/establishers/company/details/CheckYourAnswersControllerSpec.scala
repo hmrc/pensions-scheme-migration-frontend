@@ -49,7 +49,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
   private val rows = Seq(
     Row(
       key = Key(Literal("test-key"), classes = Seq("govuk-!-width-one-half")),
-      value = Value(msg"site.not_entered", classes = Seq("govuk-!-width-one-third")),
+      value = Value(msg"site.incomplete", classes = Seq("govuk-!-width-one-third")),
       actions = List(
         Action(
           content = Html(s"<span  aria-hidden=true >${messages("site.add")}</span>"),
