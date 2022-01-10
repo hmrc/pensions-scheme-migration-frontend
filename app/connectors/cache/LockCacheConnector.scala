@@ -36,19 +36,20 @@ class LockCacheConnector @Inject()(config: AppConfig,
 
 
   def setLock(lock: MigrationLock)
-          (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] =
-    http
-      .url(config.lockUrl)
-      .withHttpHeaders(lockHeaders(hc, lock): _*)
-      .post(Json.obj())
-      .flatMap { response =>
+          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[JsValue] = {
+
+    val headers: Seq[(String, String)] = Seq(("pstr", lock.pstr),("psaId", lock.psaId), ("Content-Type", "application/json"))
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+
+    http.POST[JsValue, HttpResponse](config.lockUrl, Json.obj())(implicitly, implicitly, hc, implicitly)
+      .map { response =>
         response.status match {
-          case OK => Future.successful(Json.toJson(lock))
-          case CONFLICT =>//TODO Potential redirect to error/interrupt page or back to beginning of journey
-            Future.failed(new HttpException("Trying to lock a scheme that is already locked", CONFLICT))
-          case _ => Future.failed(new HttpException(response.body, response.status))
+          case OK => Json.toJson(lock)
+          case CONFLICT => throw new HttpException("Trying to lock a scheme that is already locked", CONFLICT)
+          case _ => throw new HttpException(response.body, response.status)
         }
       }
+  }
 
   def getLock(lock: MigrationLock)
              (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[MigrationLock]] =
@@ -62,21 +63,21 @@ class LockCacheConnector @Inject()(config: AppConfig,
     get(config.lockByUserUrl, headers(hc))
 
   private def get(url: String, headers: Seq[(String, String)])
-                 (implicit ec: ExecutionContext): Future[Option[MigrationLock]] =
+                 (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[MigrationLock]] = {
 
-    http
-      .url(url)
-      .withHttpHeaders(headers: _*)
-      .get()
-      .flatMap { response =>
-        response.status match {
-          case NOT_FOUND =>
-            Future.successful(None)
-          case OK =>
-            Future.successful(response.json.asOpt[MigrationLock])
-          case _ =>
-            Future.failed(new HttpException(response.body, response.status))
-        }
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+
+  http.GET[HttpResponse](url)(implicitly, hc, implicitly)
+      .map { response =>
+            response.status match {
+              case NOT_FOUND =>
+                None
+              case OK =>
+                response.json.asOpt[MigrationLock]
+              case _ =>
+                throw new HttpException(response.body, response.status)
+            }
+          }
       }
 
   def removeLock(lock: MigrationLock)
@@ -91,10 +92,12 @@ class LockCacheConnector @Inject()(config: AppConfig,
     remove(config.lockByUserUrl, headers(hc))
 
   private def remove(url: String, headers: Seq[(String, String)])
-            (implicit ec: ExecutionContext): Future[Result] =
-    http
-      .url(url)
-      .withHttpHeaders(headers: _*)
-      .delete()
-      .map(_ => Ok)
+            (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Result] = {
+
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+
+    http.DELETE[HttpResponse](url)(implicitly, hc, implicitly).map { _ =>
+      Ok
+    }
+  }
 }

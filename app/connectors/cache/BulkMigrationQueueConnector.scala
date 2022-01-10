@@ -18,10 +18,10 @@ package connectors.cache
 
 import com.google.inject.Inject
 import config.AppConfig
-import connectors.cache.CacheConnector._
 import play.api.http.Status._
 import play.api.libs.json._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpException, HttpResponse, NotFoundException}
+import uk.gov.hmrc.http.HttpReads.Implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,73 +30,76 @@ class BulkMigrationQueueConnector @Inject()(config: AppConfig,
                                            ) {
 
 
-  override protected def url = s"${config.bulkMigrationEnqueueUrl}"
-
   def pushAll(psaId: String, requests: JsValue)
-             (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] =
+             (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[JsValue] = {
 
+    val headers: Seq[(String, String)] = Seq(("psaId", psaId), ("Content-Type", "application/json"))
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-
-    http
-      .url(config.bulkMigrationEnqueueUrl)
-      .withHttpHeaders(queueHeaders(hc, psaId): _*)
-      .post(requests)
-      .flatMap { response =>
+    http.POST[JsValue, HttpResponse](config.bulkMigrationEnqueueUrl, requests)(implicitly, implicitly, hc, implicitly)
+      .recoverWith(mapExceptionsToStatus)
+      .map { response =>
         response.status match {
-          case ACCEPTED => Future.successful(requests)
-          case _ => Future.failed(new HttpException(response.body, response.status))
+          case ACCEPTED => requests
+          case _ => throw new HttpException(response.body, response.status)
         }
       }
+  }
 
   def isRequestInProgress(psaId: String)
-                         (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Boolean] =
-    http
-      .url(config.bulkMigrationIsInProgressUrl)
-      .withHttpHeaders(queueHeaders(hc, psaId): _*)
-      .get()
-      .flatMap { response =>
+                         (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Boolean] = {
+    val headers: Seq[(String, String)] = Seq(("psaId", psaId), ("Content-Type", "application/json"))
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+
+    http.GET[HttpResponse](config.bulkMigrationIsInProgressUrl)(implicitly, hc, implicitly)
+      .recoverWith(mapExceptionsToStatus)
+      .map { response =>
         response.status match {
           case OK =>
-            Future.successful(response.json.as[Boolean])
+            response.json.as[Boolean]
           case _ =>
-            Future.successful(false)
+            false
         }
       }
+  }
 
   def isAllFailed(psaId: String)
-                         (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[Boolean]] =
-    http
-      .url(config.bulkMigrationIsAllFailedUrl)
-      .withHttpHeaders(queueHeaders(hc, psaId): _*)
-      .get()
-      .flatMap { response =>
-        response.status match {
-          case OK =>
-            Future.successful(Some(response.json.as[Boolean]))
-          case NO_CONTENT =>
-            Future.successful(None)
-          case _ =>
-            Future.failed(new HttpException(response.body, response.status))
-        }
-      }
+                 (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[Boolean]] = {
 
-  def deleteAll(psaId: String)
-                 (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Boolean] =
-    http
-      .url(config.bulkMigrationDeleteAllUrl)
-      .withHttpHeaders(queueHeaders(hc, psaId): _*)
-      .delete()
-      .flatMap { response =>
+    val headers: Seq[(String, String)] = Seq(("psaId", psaId), ("Content-Type", "application/json"))
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+
+    http.GET[HttpResponse](config.bulkMigrationIsAllFailedUrl)(implicitly, hc, implicitly)
+      .recoverWith(mapExceptionsToStatus)
+      .map { response =>
         response.status match {
           case OK =>
-            Future.successful(response.json.as[Boolean])
+            Some(response.json.as[Boolean])
+          case NO_CONTENT =>
+            None
           case _ =>
-            Future.failed(new HttpException(response.body, response.status))
+            throw new HttpException(response.body, response.status)
         }
       }
+  }
 
   private def mapExceptionsToStatus: PartialFunction[Throwable, Future[HttpResponse]] = {
     case _: NotFoundException =>
       Future.successful(HttpResponse(NOT_FOUND, "Not found"))
+  }
+
+  def deleteAll(psaId: String)
+               (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Boolean] = {
+    val headers: Seq[(String, String)] = Seq(("psaId", psaId), ("Content-Type", "application/json"))
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+
+    http.DELETE[HttpResponse](config.bulkMigrationDeleteAllUrl)(implicitly, hc, implicitly).map { response =>
+      response.status match {
+        case OK =>
+          response.json.as[Boolean]
+        case _ =>
+          throw new HttpException(response.body, response.status)
+      }
+    }
   }
 }

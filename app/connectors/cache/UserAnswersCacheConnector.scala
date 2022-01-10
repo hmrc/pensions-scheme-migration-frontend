@@ -24,6 +24,7 @@ import play.api.libs.json._
 import play.api.mvc.Result
 import play.api.mvc.Results._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpException, HttpResponse, NotFoundException}
+import uk.gov.hmrc.http.HttpReads.Implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -66,28 +67,25 @@ class UserAnswersCacheConnectorImpl @Inject()(config: AppConfig,
   }
 
   def save(lock: MigrationLock, value: JsValue)
-          (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] = {
-    val allExtraHeaders = Seq(
-     ???
-    )
-    savePost(allExtraHeaders, url, value)
+          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[JsValue] = {
+    val headers: Seq[(String, String)] = Seq(("pstr", lock.pstr),("psaId", lock.psaId), ("Content-Type", "application/json"))
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-//    http
-//      .url(config.dataCacheUrl)
-//      .withHttpHeaders(lockHeaders(hc, lock): _*)
-//      .post(PlainText(Json.stringify(value)).value)
-//      .flatMap { response =>
-//        response.status match {
-//          case OK =>
-//            Future.successful(value)
-//          case _ =>
-//            Future.failed(new HttpException(response.body, response.status))
-//        }
-  }
+    http.POST[JsValue, HttpResponse](config.dataCacheUrl, value)(implicitly, implicitly, hc, implicitly)
+      .recoverWith(mapExceptionsToStatus)
+      .map { response =>
+            response.status match {
+              case OK =>
+                value
+              case _ =>
+                throw new HttpException(response.body, response.status)
+            }
+          }
+      }
 
   def remove(pstr: String)
                         (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Result] = {
-    val headers: Seq[(String, String)] = Seq(("id", pstr))
+    val headers: Seq[(String, String)] = Seq(("pstr", pstr))
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
     http.DELETE[HttpResponse](url)(implicitly, hc, implicitly).map { _ =>
       Ok
