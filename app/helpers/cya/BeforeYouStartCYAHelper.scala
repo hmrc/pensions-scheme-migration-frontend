@@ -44,12 +44,12 @@ class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
       schemeTypeAnswer match {
         case None => Row(
           key = Key(msg"messages__cya__scheme_type".withArgs(schemeName), classes = Seq("govuk-!-width-one-half")),
-          value = Value(msg"site.not_entered", classes = Seq("govuk-!-width-one-third")),
+          value = Value(msg"site.incomplete", classes = Seq("govuk-!-width-one-third")),
           actions = actionAdd(Some(url), Some(visuallyHiddenText))
         )
         case Some(Other(details)) if details.equals("") => Row(
           key = Key(msg"messages__cya__scheme_type".withArgs(schemeName), classes = Seq("govuk-!-width-one-half")),
-          value = Value(msg"messages__schemeTaskList__incomplete", classes = Seq("govuk-!-width-one-third")),
+          value = Value(msg"site.incomplete", classes = Seq("govuk-!-width-one-third")),
           actions = actionAdd(Some(url), Some(visuallyHiddenText))
         )
         case Some(Other(details)) if details.nonEmpty => Row(

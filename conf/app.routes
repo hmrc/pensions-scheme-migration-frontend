@@ -55,7 +55,7 @@ GET         /check-your-answers-members                            controllers.a
 GET         /what-you-will-need-benefits-insurance                controllers.benefitsAndInsurance.WhatYouWillNeedController.onPageLoad
 
 GET         /declaration                                           controllers.DeclarationController.onPageLoad
-GET         /submit-declaration                                    controllers.DeclarationController.onSubmit
+POST         /declaration                                            controllers.DeclarationController.onSubmit
 
 GET         /insurance-postcode                                    controllers.benefitsAndInsurance.InsurerEnterPostcodeController.onPageLoad
 POST        /insurance-postcode                                    controllers.benefitsAndInsurance.InsurerEnterPostcodeController.onSubmit
@@ -125,7 +125,7 @@ GET         /rac-dac/list-rac-dacs-all/page/:pageNumber                  control
 POST        /rac-dac/list-rac-dacs-all/page/:pageNumber                  controllers.racdac.bulk.BulkListController.onSubmitWithPageNumber(pageNumber: Int)
 
 GET         /rac-dac/declaration-all                                           controllers.racdac.bulk.DeclarationController.onPageLoad
-GET         /rac-dac/submit-declaration-all                                    controllers.racdac.bulk.DeclarationController.onSubmit
+POST         /rac-dac/declaration-all                                    controllers.racdac.bulk.DeclarationController.onSubmit
 
 GET         /rac-dac/rac-dac-status-in-progress                      controllers.racdac.bulk.InProgressController.onPageLoad
 
@@ -146,7 +146,7 @@ GET         /rac-dac/request-not-processed-all                       controllers
 
 GET         /rac-dac/check-your-answers                              controllers.racdac.individual.CheckYourAnswersController.onPageLoad
 GET         /rac-dac/declaration                                     controllers.racdac.individual.DeclarationController.onPageLoad
-GET         /rac-dac/submit-declaration                              controllers.racdac.individual.DeclarationController.onSubmit
+POST         /rac-dac/declaration                                        controllers.racdac.individual.DeclarationController.onSubmit
 GET         /rac-dac/confirmation                                    controllers.racdac.individual.ConfirmationController.onPageLoad
 
 GET         /scheme-locked                                           controllers.SchemeLockedController.onPageLoadScheme

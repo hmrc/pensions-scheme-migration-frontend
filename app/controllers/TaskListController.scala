@@ -19,6 +19,7 @@ package controllers
 import connectors.LegacySchemeDetailsConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AuthAction, DataRetrievalAction}
+import identifiers.trustees.AnyTrusteesId
 import models.Scheme
 import models.requests.OptionalDataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -54,15 +55,19 @@ class TaskListController @Inject()(
 
         case (Some(ua), _) =>
           implicit val userAnswers: UserAnswers = ua
-          renderView
+          if(userAnswers.allTrusteesAfterDelete.nonEmpty) {
+            val updatedUa = userAnswers.setOrException(AnyTrusteesId, true)
+            renderView(updatedUa, implicitly)
+          }
+          else
+            renderView
 
         case (None, Some(lock)) =>
           legacySchemeDetailsConnector.getLegacySchemeDetails(lock.psaId, lock.pstr).flatMap {
             case Right(data) =>
-              implicit val userAnswers: UserAnswers = UserAnswers(data.as[JsObject])
-              userAnswersCacheConnector.save(lock, data).flatMap { _ =>
-                renderView
-              }
+              val userAnswers: UserAnswers = UserAnswers(data.as[JsObject])
+              val updatedUa = userAnswers.setOrException(AnyTrusteesId, userAnswers.allTrusteesAfterDelete.nonEmpty)
+              userAnswersCacheConnector.save(lock, updatedUa.data).flatMap(_ => renderView(updatedUa, implicitly))
             case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
           }
       }
