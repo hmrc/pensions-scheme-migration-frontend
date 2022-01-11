@@ -18,7 +18,6 @@ package connectors.cache
 
 import com.google.inject.Inject
 import config.AppConfig
-import connectors.cache.CacheConnector._
 import models.MigrationLock
 import play.api.http.Status._
 import play.api.libs.json._
@@ -52,20 +51,35 @@ class LockCacheConnector @Inject()(config: AppConfig,
   }
 
   def getLock(lock: MigrationLock)
-             (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[MigrationLock]] =
-    get(config.lockUrl, lockHeaders(hc, lock))
+             (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[MigrationLock]] = {
+
+    val headers: Seq[(String, String)] = Seq(("pstr", lock.pstr),
+      ("psaId", lock.psaId),
+      ("content-type", "application/json"))
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+
+    get(config.lockUrl, hc)
+  }
 
   def getLockOnScheme(pstr: String)
-           (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[MigrationLock]] =
-    get(config.lockOnSchemeUrl, pstrHeaders(hc, pstr))
+           (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[MigrationLock]] = {
 
-  def getLockByUser(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[MigrationLock]] =
-    get(config.lockByUserUrl, headers(hc))
-
-  private def get(url: String, headers: Seq[(String, String)])
-                 (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[MigrationLock]] = {
-
+    val headers: Seq[(String, String)] = Seq(("pstr", pstr))
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+
+    get(config.lockOnSchemeUrl, hc)
+  }
+
+  def getLockByUser(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[MigrationLock]] = {
+
+    val headers: Seq[(String, String)] = Seq(("content-type", "application/json"))
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+
+    get(config.lockByUserUrl, hc)
+  }
+
+  private def get(url: String, hc: HeaderCarrier)
+                 (implicit ec: ExecutionContext): Future[Option[MigrationLock]] = {
 
   http.GET[HttpResponse](url)(implicitly, hc, implicitly)
       .map { response =>
@@ -81,22 +95,37 @@ class LockCacheConnector @Inject()(config: AppConfig,
       }
 
   def removeLock(lock: MigrationLock)
-            (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result] =
-    remove(config.lockUrl, lockHeaders(hc, lock))
-
-  def removeLockOnScheme(pstr: String)
-                (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result] =
-    remove(config.lockOnSchemeUrl, pstrHeaders(hc, pstr))
-
-  def removeLockByUser(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result] =
-    remove(config.lockByUserUrl, headers(hc))
-
-  private def remove(url: String, headers: Seq[(String, String)])
             (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Result] = {
 
+    val headers: Seq[(String, String)] = Seq(("pstr", lock.pstr),
+      ("psaId", lock.psaId),
+      ("content-type", "application/json"))
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    http.DELETE[HttpResponse](url)(implicitly, hc, implicitly).map { _ =>
+    remove(config.lockUrl, hc)
+  }
+
+  def removeLockOnScheme(pstr: String)
+                (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Result] = {
+
+    val headers: Seq[(String, String)] = Seq(("pstr", pstr))
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+
+    remove(config.lockOnSchemeUrl, hc)
+  }
+
+  def removeLockByUser(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Result] = {
+
+    val headers: Seq[(String, String)] = Seq(("content-type", "application/json"))
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+
+    remove(config.lockByUserUrl, hc)
+  }
+
+  private def remove(url: String, hc: HeaderCarrier)
+            (implicit ec: ExecutionContext): Future[Result] = {
+
+      http.DELETE[HttpResponse](url)(implicitly, hc, implicitly).map { _ =>
       Ok
     }
   }
