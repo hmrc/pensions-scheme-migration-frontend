@@ -17,7 +17,7 @@
 
         {{ govukPanel({
                 titleText: messages("messages__racdac__individual__confirmation__heading",schemeName),
-                html: "<span class='heading-large govuk-!-font-weight-bold'>"+messages("messages__racdac__individual__confirmation__pstr__number", pstr)+"</span>"
+                html: "<span class='heading-large'>"+messages("messages__racdac__individual__confirmation__pstr__number")+"</span> <span class='heading-large govuk-!-font-weight-bold'>" + pstr + "</span>"
         }) }}
         <p class="govuk-body">
             {{messages("messages__complete__email")}}
