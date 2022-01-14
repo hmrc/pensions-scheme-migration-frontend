@@ -20,24 +20,27 @@ import config.AppConfig
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
-import controllers.address.{AddressPages, AddressListController}
+import controllers.address.{AddressListController, AddressPages}
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.address.{EnterPreviousPostCodeId, PreviousAddressId, PreviousAddressListId}
-import models.{Mode, Index}
+import identifiers.trustees.individual.{address => trusteeAddress}
+import models._
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{MessagesApi, I18nSupport}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import services.DataUpdateService
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.CountryOptions
+import utils.{CountryOptions, UserAnswers}
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
                                                 override val messagesApi: MessagesApi,
@@ -48,12 +51,11 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
                                                 formProvider: AddressListFormProvider,
+                                                dataUpdateService: DataUpdateService,
                                                 countryOptions: CountryOptions,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 val renderer: Renderer)(implicit val ec: ExecutionContext) extends AddressListController with I18nSupport
   with NunjucksSupport with Retrievals {
-
-  override def form: Form[Int] = formProvider("selectAddress.required")
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
@@ -61,20 +63,6 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
         retrieve(SchemeNameId) { schemeName =>
           getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.right.map(get)
         }
-    }
-
-  def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData()).async { implicit request =>
-
-      val addressPages: AddressPages = AddressPages(
-        EnterPreviousPostCodeId(establisherIndex, directorIndex),
-        PreviousAddressListId(establisherIndex, directorIndex),
-        PreviousAddressId(establisherIndex, directorIndex))
-
-      retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.right.map(post(_, addressPages, Some(mode),
-          routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, directorIndex, mode)))
-      }
     }
 
   def getFormToJson(schemeName: String,
@@ -101,4 +89,83 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
             )
         }
     )
+
+  def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
+
+      val addressPages: AddressPages = AddressPages(
+        EnterPreviousPostCodeId(establisherIndex, directorIndex),
+        PreviousAddressListId(establisherIndex, directorIndex),
+        PreviousAddressId(establisherIndex, directorIndex))
+
+      retrieve(SchemeNameId) { schemeName =>
+        val json: Form[Int] => JsObject = getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.right.get
+        form.bindFromRequest().fold(
+          formWithErrors =>
+            renderer.render(viewTemplate, prepareJson(json(formWithErrors))).map(BadRequest(_)),
+          value =>
+            addressPages.postcodeId.retrieve.right.map { addresses =>
+              val address = addresses(value).copy(country = Some("GB"))
+              if (address.toAddress.nonEmpty) {
+                for {
+                  updatedAnswers <- Future.fromTry(
+                    setUpdatedAnswersOne(establisherIndex, directorIndex, mode, addressPages, address, request.userAnswers)
+                  )
+                  _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+                } yield {
+                  val finalMode = Some(mode).getOrElse(NormalMode)
+                  Redirect(navigator.nextPage(addressPages.addressListPage, updatedAnswers, finalMode))
+                }
+              } else {
+                for {
+                  updatedAnswers <-
+
+                    Future.fromTry(setUpdatedAnswersTwo(establisherIndex, directorIndex, mode, addressPages, address, request.userAnswers)
+                    )
+                  _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+                } yield {
+                  Redirect(routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, directorIndex, mode))
+                }
+
+              }
+            }
+        )
+      }
+    }
+
+  override def form: Form[Int] = formProvider("selectAddress.required")
+
+  private def setUpdatedAnswersOne(establisherIndex: Index, directorIndex: Index, mode: Mode, addressPages: AddressPages,
+                                   address: TolerantAddress, ua: UserAnswers): Try[UserAnswers] = {
+    var updatedUserAnswers: Try[UserAnswers] = Try(ua)
+    if (mode == CheckMode) {
+      val trustee = dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua)
+      if (!trustee.isDeleted) {
+        val trusteeAddressPages: AddressPages = AddressPages(trusteeAddress.EnterPreviousPostCodeId(trustee.index),
+          trusteeAddress.PreviousAddressListId(trustee.index), trusteeAddress.PreviousAddressId(trustee.index))
+        updatedUserAnswers = ua.remove(trusteeAddressPages.addressListPage).set(trusteeAddressPages.addressPage,
+          address.toAddress.get)
+      }
+    }
+    val finalUpdatedUserAnswers = updatedUserAnswers.get.remove(addressPages.addressListPage).set(addressPages.addressPage,
+      address.toAddress.get)
+    finalUpdatedUserAnswers
+  }
+
+  private def setUpdatedAnswersTwo(establisherIndex: Index, directorIndex: Index, mode: Mode, addressPages: AddressPages,
+                                   address: TolerantAddress, ua: UserAnswers): Try[UserAnswers] = {
+    var updatedUserAnswers: Try[UserAnswers] = Try(ua)
+    if (mode == CheckMode) {
+      val trustee = dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua)
+      if (!trustee.isDeleted) {
+        val trusteeAddressPages: AddressPages = AddressPages(trusteeAddress.EnterPreviousPostCodeId(trustee.index),
+          trusteeAddress.PreviousAddressListId(trustee.index), trusteeAddress.PreviousAddressId(trustee.index))
+        updatedUserAnswers = ua.remove(trusteeAddressPages.addressPage).set(trusteeAddressPages.addressListPage,
+          address)
+      }
+    }
+    val finalUpdatedUserAnswers = updatedUserAnswers.get.remove(addressPages.addressPage).set(addressPages.addressListPage,
+      address)
+    finalUpdatedUserAnswers
+  }
 }

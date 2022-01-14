@@ -19,13 +19,13 @@ package controllers.establishers.company.director
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import identifiers.establishers.company.OtherDirectorsId
 import forms.establishers.ConfirmDeleteEstablisherFormProvider
-import identifiers.establishers.company.director.{DirectorNameId, ConfirmDeleteDirectorId}
+import identifiers.establishers.company.OtherDirectorsId
+import identifiers.establishers.company.director.{ConfirmDeleteDirectorId, DirectorNameId}
 import models.Index
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{MessagesApi, Messages, I18nSupport}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -40,13 +40,13 @@ import scala.util.Try
 
 class ConfirmDeleteDirectorController @Inject()(override val messagesApi: MessagesApi,
                                                 navigator: CompoundNavigator,
-                                                 authenticate: AuthAction,
-                                                 getData: DataRetrievalAction,
-                                                 requireData: DataRequiredAction,
-                                                 formProvider: ConfirmDeleteEstablisherFormProvider,
-                                                 val controllerComponents: MessagesControllerComponents,
-                                                 userAnswersCacheConnector: UserAnswersCacheConnector,
-                                                 renderer: Renderer
+                                                authenticate: AuthAction,
+                                                getData: DataRetrievalAction,
+                                                requireData: DataRequiredAction,
+                                                formProvider: ConfirmDeleteEstablisherFormProvider,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                userAnswersCacheConnector: UserAnswersCacheConnector,
+                                                renderer: Renderer
                                                )(implicit val executionContext: ExecutionContext
                                                )
   extends FrontendBaseController with I18nSupport with Retrievals with NunjucksSupport {
@@ -62,17 +62,15 @@ class ConfirmDeleteDirectorController @Inject()(override val messagesApi: Messag
               "form" -> form(director.fullName),
               "titleMessage" -> msg"messages__confirmDeleteDirectors__title".resolve,
               "name" -> director.fullName,
-              "hint" ->  Some(Messages(s"messages__confirmDeleteDirectors__companyHint")),
+              "hint" -> Some(Messages(s"messages__confirmDeleteDirectors__companyHint")),
               "radios" -> Radios.yesNo(formProvider(director.fullName)(implicitly)("value")),
               "submitUrl" -> routes.ConfirmDeleteDirectorController.onSubmit(establisherIndex, directorIndex).url,
               "schemeName" -> existingSchemeName
             )
             renderer.render("delete.njk", json).map(Ok(_))
           }
-        }getOrElse Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
+        } getOrElse Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
     }
-
-  private def form(name: String)(implicit messages: Messages): Form[Boolean] = formProvider(name)
 
   def onSubmit(establisherIndex: Index, directorIndex: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
@@ -85,7 +83,7 @@ class ConfirmDeleteDirectorController @Inject()(override val messagesApi: Messag
               val json = Json.obj(
                 "form" -> formWithErrors,
                 "titleMessage" -> msg"messages__confirmDeleteDirectors__title".resolve,
-                "name" ->  director.fullName,
+                "name" -> director.fullName,
                 "hint" -> Some(Messages(s"messages__confirmDeleteDirectors__companyHint")),
                 "radios" -> Radios.yesNo(formProvider(director.fullName)(implicitly)("value")),
                 "submitUrl" -> routes.ConfirmDeleteDirectorController.onSubmit(establisherIndex, directorIndex).url,
@@ -96,7 +94,7 @@ class ConfirmDeleteDirectorController @Inject()(override val messagesApi: Messag
             value => {
               val deletionResult: Try[UserAnswers] = if (value) {
                 request.userAnswers.set(DirectorNameId(establisherIndex, directorIndex),
-                  director.copy (isDeleted = true))
+                  director.copy(isDeleted = true))
               } else {
                 Try(request.userAnswers)
               }
@@ -111,6 +109,8 @@ class ConfirmDeleteDirectorController @Inject()(override val messagesApi: Messag
           )
         }
     }
+
+  private def form(name: String)(implicit messages: Messages): Form[Boolean] = formProvider(name)
 
 
 }

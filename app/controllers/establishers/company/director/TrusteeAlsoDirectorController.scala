@@ -52,24 +52,21 @@ class TrusteeAlsoDirectorController @Inject()(override val messagesApi: Messages
                                              )(implicit val executionContext: ExecutionContext) extends FrontendBaseController
   with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
-  private def form: Form[Int] =
-    formProvider("messages__directors__prefill__single__error__required")
-
   def onPageLoad(establisherIndex: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
       (CompanyDetailsId(establisherIndex) and SchemeNameId).retrieve.right.map { case companyName ~ schemeName =>
         implicit val ua: UserAnswers = request.userAnswers
         val seqTrustee = dataPrefillService.getListOfTrusteesToBeCopied(establisherIndex)
-        if(seqTrustee.nonEmpty) {
-        val json = Json.obj(
-          "form" -> form,
-          "schemeName" -> schemeName,
-          "pageHeading" -> msg"messages__directors__prefill__title",
-          "titleMessage" -> msg"messages__directors__prefill__heading".withArgs(companyName.companyName).resolve,
-          "radios" -> DataPrefillRadio.radios(form, seqTrustee)
-        )
-        renderer.render("dataPrefillRadio.njk", json).map(Ok(_))
-      } else {
+        if (seqTrustee.nonEmpty) {
+          val json = Json.obj(
+            "form" -> form,
+            "schemeName" -> schemeName,
+            "pageHeading" -> msg"messages__directors__prefill__title",
+            "titleMessage" -> msg"messages__directors__prefill__heading".withArgs(companyName.companyName).resolve,
+            "radios" -> DataPrefillRadio.radios(form, seqTrustee)
+          )
+          renderer.render("dataPrefillRadio.njk", json).map(Ok(_))
+        } else {
           Future(Redirect(controllers.establishers.company.routes.SpokeTaskListController.onPageLoad(establisherIndex)))
         }
       }
@@ -93,14 +90,18 @@ class TrusteeAlsoDirectorController @Inject()(override val messagesApi: Messages
             renderer.render("dataPrefillRadio.njk", json).map(BadRequest(_))
           },
           value => {
-            def uaAfterCopy: UserAnswers = if(value < 0) ua else
+            def uaAfterCopy: UserAnswers = if (value < 0) ua else
               dataPrefillService.copyAllTrusteesToDirectors(ua, Seq(value), establisherIndex)
+
             val updatedUa = uaAfterCopy.setOrException(TrusteeAlsoDirectorId(establisherIndex), value)
-            userAnswersCacheConnector.save(request.lock, uaAfterCopy.data).map {_ =>
+            userAnswersCacheConnector.save(request.lock, uaAfterCopy.data).map { _ =>
               Redirect(navigator.nextPage(TrusteeAlsoDirectorId(establisherIndex), updatedUa))
             }
           }
         )
       }
   }
+
+  private def form: Form[Int] =
+    formProvider("messages__directors__prefill__single__error__required")
 }

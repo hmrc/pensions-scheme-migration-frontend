@@ -21,18 +21,22 @@ import controllers.Retrievals
 import controllers.actions._
 import forms.PersonNameFormProvider
 import identifiers.establishers.company.director.DirectorNameId
-import models.{Index, Mode, PersonName}
+import identifiers.trustees.individual.TrusteeNameId
+import models.{CheckMode, Index, Mode, PersonName}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import services.DataUpdateService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.UserAnswers
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class DirectorNameController @Inject()(
                                         override val messagesApi: MessagesApi,
@@ -41,17 +45,15 @@ class DirectorNameController @Inject()(
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
                                         formProvider: PersonNameFormProvider,
+                                        dataUpdateService: DataUpdateService,
                                         val controllerComponents: MessagesControllerComponents,
                                         userAnswersCacheConnector: UserAnswersCacheConnector,
                                         renderer: Renderer
                                       )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
-  with Retrievals
-  with I18nSupport
-  with NunjucksSupport {
-
-  private def form(implicit messages: Messages): Form[PersonName] =
-    formProvider("messages__error__director")
+    with Retrievals
+    with I18nSupport
+    with NunjucksSupport {
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
@@ -63,7 +65,7 @@ class DirectorNameController @Inject()(
             "schemeName" -> existingSchemeName,
             "entityType" -> Messages("messages__director")
           )
-        ).flatMap( view => Future.successful(Ok(view)))
+        ).flatMap(view => Future.successful(Ok(view)))
     }
 
   def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
@@ -81,11 +83,25 @@ class DirectorNameController @Inject()(
             ).map(BadRequest(_)),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(DirectorNameId(establisherIndex, directorIndex), value))
-              _              <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+              updatedAnswers <- Future.fromTry(setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
+              _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
             } yield
               Redirect(navigator.nextPage(DirectorNameId(establisherIndex, directorIndex), updatedAnswers, mode))
         )
     }
+
+  private def form(implicit messages: Messages): Form[PersonName] =
+    formProvider("messages__error__director")
+
+  private def setUpdatedAnswers(establisherIndex: Index, directorIndex: Index, mode: Mode, value: PersonName, ua: UserAnswers): Try[UserAnswers] = {
+    var updatedUserAnswers: Try[UserAnswers] = Try(ua)
+    if (mode == CheckMode) {
+      val trustee = dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua)
+      if (!trustee.isDeleted)
+        updatedUserAnswers = ua.set(TrusteeNameId(trustee.index), value)
+    }
+    val finalUpdatedUserAnswers = updatedUserAnswers.get.set(DirectorNameId(establisherIndex, directorIndex), value)
+    finalUpdatedUserAnswers
+  }
 
 }

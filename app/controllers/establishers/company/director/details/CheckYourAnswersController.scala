@@ -51,9 +51,9 @@ class CheckYourAnswersController @Inject()(override val messagesApi: MessagesApi
         renderer.render(
           template = "check-your-answers.njk",
           ctx = Json.obj(
-            "list" -> cyaHelper.detailsRows(companyIndex,directorIndex),
-           "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
-            "submitUrl" -> controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(companyIndex,NormalMode).url
+            "list" -> cyaHelper.detailsRows(companyIndex, directorIndex),
+            "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+            "submitUrl" -> controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(companyIndex, NormalMode).url
           )
         ).map(Ok(_))
     }

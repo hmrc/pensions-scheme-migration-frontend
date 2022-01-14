@@ -23,30 +23,55 @@ import forms.HasReferenceNumberFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.details.DirectorHasNINOId
+import identifiers.trustees.individual.details.TrusteeHasNINOId
 import models.requests.DataRequest
-import models.{Index, Mode}
+import models.{CheckMode, Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.MessagesApi
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import services.DataUpdateService
+import uk.gov.hmrc.viewmodels.Radios
+import utils.UserAnswers
 import viewmodels.Message
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class DirectorHasNINOController @Inject()(
-                                          override val messagesApi: MessagesApi,
-                                          val navigator: CompoundNavigator,
-                                          authenticate: AuthAction,
-                                          getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction,
-                                          formProvider: HasReferenceNumberFormProvider,
-                                          val controllerComponents: MessagesControllerComponents,
-                                          val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                          val renderer: Renderer
+                                           override val messagesApi: MessagesApi,
+                                           val navigator: CompoundNavigator,
+                                           authenticate: AuthAction,
+                                           getData: DataRetrievalAction,
+                                           requireData: DataRequiredAction,
+                                           formProvider: HasReferenceNumberFormProvider,
+                                           dataUpdateService: DataUpdateService,
+                                           val controllerComponents: MessagesControllerComponents,
+                                           val userAnswersCacheConnector: UserAnswersCacheConnector,
+                                           val renderer: Renderer
                                          )(implicit val executionContext: ExecutionContext) extends
   HasReferenceValueController {
+
+  def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
+    (authenticate andThen getData andThen requireData()).async {
+      implicit request =>
+
+        SchemeNameId.retrieve.right.map {
+          schemeName =>
+            get(
+              pageTitle = Message("messages__hasNINO", Message("messages__director")),
+              pageHeading = Message("messages__hasNINO", name(establisherIndex, directorIndex)),
+              isPageHeading = true,
+              id = DirectorHasNINOId(establisherIndex, directorIndex),
+              form = form(establisherIndex, directorIndex),
+              schemeName = schemeName,
+              legendClass = "govuk-label--xl"
+            )
+        }
+    }
 
   private def name(establisherIndex: Index, directorIndex: Index)
                   (implicit request: DataRequest[AnyContent]): String =
@@ -62,39 +87,44 @@ class DirectorHasNINOController @Inject()(
     )
   }
 
-  def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData()).async {
-      implicit request =>
-
-        SchemeNameId.retrieve.right.map {
-          schemeName =>
-            get(
-              pageTitle     = Message("messages__hasNINO", Message("messages__director")),
-              pageHeading     = Message("messages__hasNINO", name(establisherIndex, directorIndex)),
-              isPageHeading = true,
-              id            = DirectorHasNINOId(establisherIndex, directorIndex),
-              form          = form(establisherIndex, directorIndex),
-              schemeName    = schemeName,
-              legendClass   = "govuk-label--xl"
-            )
-        }
-    }
-
   def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.right.map {
           schemeName =>
-            post(
-              pageTitle     = Message("messages__hasNINO", Message("messages__director")),
-              pageHeading     = Message("messages__hasNINO", name(establisherIndex, directorIndex)),
-              isPageHeading = true,
-              id            = DirectorHasNINOId(establisherIndex, directorIndex),
-              form          = form(establisherIndex, directorIndex),
-              schemeName    = schemeName,
-              legendClass   = "govuk-label--xl",
-              mode          = mode
+            form(establisherIndex, directorIndex).bindFromRequest().fold(
+              (formWithErrors: Form[_]) =>
+                renderer.render(
+                  template = templateName(Seq()),
+                  ctx = Json.obj(
+                    "pageTitle" -> Message("messages__hasNINO", Message("messages__director")),
+                    "pageHeading" -> Message("messages__hasNINO", name(establisherIndex, directorIndex)),
+                    "isPageHeading" -> true,
+                    "form" -> formWithErrors,
+                    "radios" -> Radios.yesNo(formWithErrors("value")),
+                    "schemeName" -> schemeName,
+                    "legendClass" -> "govuk-label--xl",
+                    "paragraphs" -> Seq()
+                  )
+                ).map(BadRequest(_)),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
+                  _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+                } yield
+                  Redirect(navigator.nextPage(DirectorHasNINOId(establisherIndex, directorIndex), updatedAnswers, mode))
             )
         }
     }
+
+  private def setUpdatedAnswers(establisherIndex: Index, directorIndex: Index, mode: Mode, value: Boolean, ua: UserAnswers): Try[UserAnswers] = {
+    var updatedUserAnswers: Try[UserAnswers] = Try(ua)
+    if (mode == CheckMode) {
+      val trustee = dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua)
+      if (!trustee.isDeleted)
+        updatedUserAnswers = ua.set(TrusteeHasNINOId(trustee.index), value)
+    }
+    val finalUpdatedUserAnswers = updatedUserAnswers.get.set(DirectorHasNINOId(establisherIndex, directorIndex), value)
+    finalUpdatedUserAnswers
+  }
 }

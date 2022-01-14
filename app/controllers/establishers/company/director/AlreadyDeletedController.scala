@@ -19,8 +19,8 @@ package controllers.establishers.company.director
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.establishers.company.director.DirectorNameId
-import models.{Index, NormalMode}
 import models.requests.DataRequest
+import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -45,21 +45,21 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
       implicit request =>
         directorName(establisherIndex, directorIndex) match {
           case Right(directorName) =>
-            renderer.render("alreadyDeleted.njk", json(establisherIndex,directorName, existingSchemeName)).map(Ok(_))
+            renderer.render("alreadyDeleted.njk", json(establisherIndex, directorName, existingSchemeName)).map(Ok(_))
           case Left(result) => result
         }
 
     }
 
-  private def json(establisherIndex: Index,directorName: String, schemeName: Option[String])(implicit messages: Messages): JsObject = Json.obj(
+  private def json(establisherIndex: Index, directorName: String, schemeName: Option[String])(implicit messages: Messages): JsObject = Json.obj(
     "title" -> messages("messages__alreadyDeleted__director_title"),
     "name" -> directorName,
     "schemeName" -> schemeName,
-    "submitUrl" -> controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(establisherIndex,NormalMode).url
+    "submitUrl" -> controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(establisherIndex, NormalMode).url
   )
 
   private def directorName(establisherIndex: Index, directorIndex: Index)(implicit
-                                                                              dataRequest: DataRequest[AnyContent])
+                                                                          dataRequest: DataRequest[AnyContent])
   : Either[Future[Result], String] = {
     DirectorNameId(establisherIndex, directorIndex).retrieve.right.map(_.fullName)
   }

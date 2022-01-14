@@ -23,17 +23,22 @@ import forms.ReasonFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.details.DirectorNoNINOReasonId
+import identifiers.trustees.individual.details.TrusteeNoNINOReasonId
 import models.requests.DataRequest
-import models.{Index, Mode}
+import models.{CheckMode, Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.MessagesApi
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import services.DataUpdateService
+import utils.UserAnswers
 import viewmodels.Message
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class DirectorNoNINOReasonController @Inject()(
                                                 override val messagesApi: MessagesApi,
@@ -42,11 +47,55 @@ class DirectorNoNINOReasonController @Inject()(
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
                                                 formProvider: ReasonFormProvider,
+                                                dataUpdateService: DataUpdateService,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 val userAnswersCacheConnector: UserAnswersCacheConnector,
                                                 val renderer: Renderer
                                               )(implicit val executionContext: ExecutionContext)
   extends ReasonController {
+
+  def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
+    (authenticate andThen getData andThen requireData()).async {
+      implicit request =>
+        SchemeNameId.retrieve.right.map {
+          schemeName =>
+            get(
+              pageTitle = Message("messages__whyNoNINO", Message("messages__director")),
+              pageHeading = Message("messages__whyNoNINO", name(establisherIndex, directorIndex)),
+              isPageHeading = true,
+              id = DirectorNoNINOReasonId(establisherIndex, directorIndex),
+              form = form(establisherIndex, directorIndex),
+              schemeName = schemeName
+            )
+        }
+    }
+
+  def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
+    (authenticate andThen getData andThen requireData()).async {
+      implicit request =>
+        SchemeNameId.retrieve.right.map {
+          schemeName =>
+            form(establisherIndex, directorIndex).bindFromRequest().fold(
+              (formWithErrors: Form[_]) =>
+                renderer.render(
+                  template = "reason.njk",
+                  ctx = Json.obj(
+                    "pageTitle" -> Message("messages__whyNoNINO", Message("messages__director")),
+                    "pageHeading" -> Message("messages__whyNoNINO", name(establisherIndex, directorIndex)),
+                    "isPageHeading" -> true,
+                    "form" -> formWithErrors,
+                    "schemeName" -> schemeName
+                  )
+                ).map(BadRequest(_)),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
+                  _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+                } yield
+                  Redirect(navigator.nextPage(DirectorNoNINOReasonId(establisherIndex, directorIndex), updatedAnswers, mode))
+            )
+        }
+    }
 
   private def name(establisherIndex: Index, directorIndex: Index)
                   (implicit request: DataRequest[AnyContent]): String =
@@ -59,36 +108,14 @@ class DirectorNoNINOReasonController @Inject()(
                   (implicit request: DataRequest[AnyContent]): Form[String] =
     formProvider(Message("messages__reason__error_ninoRequired", name(establisherIndex, directorIndex)))
 
-  def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData()).async {
-      implicit request =>
-        SchemeNameId.retrieve.right.map {
-          schemeName =>
-            get(
-              pageTitle     = Message("messages__whyNoNINO", Message("messages__director")),
-              pageHeading     = Message("messages__whyNoNINO", name(establisherIndex, directorIndex)),
-              isPageHeading = true,
-              id            = DirectorNoNINOReasonId(establisherIndex, directorIndex),
-              form          = form(establisherIndex, directorIndex),
-              schemeName    = schemeName
-            )
-        }
+  private def setUpdatedAnswers(establisherIndex: Index, directorIndex: Index, mode: Mode, value: String, ua: UserAnswers): Try[UserAnswers] = {
+    var updatedUserAnswers: Try[UserAnswers] = Try(ua)
+    if (mode == CheckMode) {
+      val trustee = dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua)
+      if (!trustee.isDeleted)
+        updatedUserAnswers = ua.set(TrusteeNoNINOReasonId(trustee.index), value)
     }
-
-  def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData()).async {
-      implicit request =>
-        SchemeNameId.retrieve.right.map {
-          schemeName =>
-            post(
-              pageTitle     = Message("messages__whyNoNINO", Message("messages__director")),
-              pageHeading     = Message("messages__whyNoNINO", name(establisherIndex, directorIndex)),
-              isPageHeading = true,
-              id            = DirectorNoNINOReasonId(establisherIndex, directorIndex),
-              form          = form(establisherIndex, directorIndex),
-              schemeName    = schemeName,
-              mode          = mode
-            )
-        }
-    }
+    val finalUpdatedUserAnswers = updatedUserAnswers.get.set(DirectorNoNINOReasonId(establisherIndex, directorIndex), value)
+    finalUpdatedUserAnswers
+  }
 }

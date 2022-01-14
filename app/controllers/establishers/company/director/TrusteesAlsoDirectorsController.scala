@@ -54,16 +54,6 @@ class TrusteesAlsoDirectorsController @Inject()(override val messagesApi: Messag
                                                )(implicit val executionContext: ExecutionContext) extends FrontendBaseController
   with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
-  private def form(index: Index)(implicit ua: UserAnswers, messages: Messages): Form[List[Int]] = {
-    val existingDirCount = ua.allDirectorsAfterDelete(index).size
-    formProvider(
-      existingDirCount,
-      "messages__directors__prefill__multi__error__required",
-      "messages__directors__prefill__multi__error__noneWithValue",
-      messages("messages__directors__prefill__multi__error__moreThanTen", existingDirCount, config.maxDirectors - existingDirCount)
-    )
-  }
-
   def onPageLoad(establisherIndex: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
       (CompanyDetailsId(establisherIndex) and SchemeNameId).retrieve.right.map { case companyName ~ schemeName =>
@@ -111,5 +101,15 @@ class TrusteesAlsoDirectorsController @Inject()(override val messagesApi: Messag
           }
         )
       }
+  }
+
+  private def form(index: Index)(implicit ua: UserAnswers, messages: Messages): Form[List[Int]] = {
+    val existingDirCount = ua.allDirectorsAfterDelete(index).size
+    formProvider(
+      existingDirCount,
+      "messages__directors__prefill__multi__error__required",
+      "messages__directors__prefill__multi__error__noneWithValue",
+      messages("messages__directors__prefill__multi__error__moreThanTen", existingDirCount, config.maxDirectors - existingDirCount)
+    )
   }
 }
