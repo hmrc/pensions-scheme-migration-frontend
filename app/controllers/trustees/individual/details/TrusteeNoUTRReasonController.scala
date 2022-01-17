@@ -21,19 +21,24 @@ import controllers.ReasonController
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.ReasonFormProvider
 import identifiers.beforeYouStart.SchemeNameId
+import identifiers.establishers.company.director.details.DirectorNoUTRReasonId
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.details.TrusteeNoUTRReasonId
 import models.requests.DataRequest
-import models.{Index, Mode}
+import models.{CheckMode, Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.MessagesApi
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import services.DataUpdateService
+import utils.UserAnswers
 import viewmodels.Message
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class TrusteeNoUTRReasonController @Inject()(
                                                   override val messagesApi: MessagesApi,
@@ -42,6 +47,7 @@ class TrusteeNoUTRReasonController @Inject()(
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
                                                   formProvider: ReasonFormProvider,
+                                                  dataUpdateService: DataUpdateService,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   val userAnswersCacheConnector: UserAnswersCacheConnector,
                                                   val renderer: Renderer
@@ -80,15 +86,38 @@ class TrusteeNoUTRReasonController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.right.map {
           schemeName =>
-            post(
-              pageTitle     = Message("messages__whyNoUTR", Message("messages__individual")),
-              pageHeading     = Message("messages__whyNoUTR", name(index)),
-              isPageHeading = true,
-              id            = TrusteeNoUTRReasonId(index),
-              form          = form(index),
-              schemeName    = schemeName,
-              mode          = mode
+            form(index).bindFromRequest().fold(
+              (formWithErrors: Form[_]) =>
+                renderer.render(
+                  template = "reason.njk",
+                  ctx = Json.obj(
+                    "pageTitle"     -> Message("messages__whyNoUTR", Message("messages__individual")),
+                    "pageHeading" -> Message("messages__whyNoUTR", name(index)),
+                    "isPageHeading" -> true,
+                    "form"          -> formWithErrors,
+                    "schemeName"    -> schemeName
+                  )
+                ).map(BadRequest(_)),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(setUpdatedAnswers(index, mode, value, request.userAnswers))
+                  _              <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+                } yield
+                  Redirect(navigator.nextPage(TrusteeNoUTRReasonId(index), updatedAnswers, mode))
             )
         }
     }
+
+  private def setUpdatedAnswers(index: Index, mode: Mode, value: String, ua: UserAnswers): Try[UserAnswers] = {
+    var updatedUserAnswers: Try[UserAnswers] = Try(ua)
+    if (mode == CheckMode) {
+      val directors = dataUpdateService.findMatchingDirectors(index)(ua)
+      for(director <- directors) {
+        if (!director.isDeleted)
+          updatedUserAnswers = updatedUserAnswers.get.set(DirectorNoUTRReasonId(director.mainIndex.get, director.index), value)
+      }
+    }
+    val finalUpdatedUserAnswers = updatedUserAnswers.get.set(TrusteeNoUTRReasonId(index), value)
+    finalUpdatedUserAnswers
+  }
 }

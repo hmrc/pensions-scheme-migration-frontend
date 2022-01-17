@@ -16,11 +16,13 @@
 
 package services
 
+import identifiers.establishers.{EstablisherKindId, EstablishersId}
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.details._
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.details._
 import identifiers.trustees.{TrusteeKindId, TrusteesId}
+import models.establishers.EstablisherKind
 import models.prefill.IndividualDetails
 import models.trustees.TrusteeKind
 import models.{Index, PersonName, ReferenceValue}
@@ -85,6 +87,74 @@ class DataUpdateService @Inject()() extends Enumerable.Implicits {
     filteredTrusteesSeq(0)
   }
 
+  def findMatchingDirectors(index: Index)(implicit ua: UserAnswers): Seq[IndividualDetails] = {
+    val filteredDirectorsSeq = allDirectors.filter(dir => !dir.isDeleted)
+    val trustee = getTrusteeDetails(index)
+    filteredDirectorsSeq.filter { director =>
+      director.nino.map(ninoVal =>
+        trustee.nino.contains(ninoVal))
+        .getOrElse{(trustee.dob, director.dob) match {
+            case (Some(trusteeDob), Some(dirDob)) => trusteeDob.isEqual(dirDob) && trustee.fullName == director.fullName
+            case _ => false
+          }
+          }
+    }
+    filteredDirectorsSeq
+  }
+
+  def allDirectors(implicit ua: UserAnswers): Seq[IndividualDetails] = {
+    ua.data.validate[Seq[Option[Seq[IndividualDetails]]]](readsDirectors) match {
+      case JsSuccess(directorsWithEstablishers, _) if directorsWithEstablishers.nonEmpty => {
+        directorsWithEstablishers.flatten.flatten
+      }
+      case JsError(errors) =>
+        Nil
+      case _ =>
+        Nil
+    }
+  }
+
+  private def readsDirector(estIndex: Int, directorIndex: Int)(implicit ua: UserAnswers): Reads[IndividualDetails] = (
+    (JsPath \ DirectorNameId.toString).read[PersonName] and
+      (JsPath \ DirectorDOBId.toString).readNullable[LocalDate] and
+      (JsPath \ DirectorNINOId.toString).readNullable[ReferenceValue]
+    ) ((directorName, dob, ninoReferenceVale) =>
+    IndividualDetails(
+      directorName.firstName, directorName.lastName, directorName.isDeleted, ninoReferenceVale.map(_.value), dob, directorIndex,
+      ua.isDirectorComplete(estIndex, directorIndex), Some(estIndex))
+  )
+
+  private def readsDirectors(implicit ua: UserAnswers): Reads[Seq[Option[Seq[IndividualDetails]]]] = new Reads[Seq[Option[Seq[IndividualDetails]]]] {
+    private def readsAllDirectors(estIndex: Int)(implicit ua: UserAnswers): Reads[Seq[IndividualDetails]] = {
+      case JsArray(directors) =>
+        val jsResults: IndexedSeq[JsResult[IndividualDetails]] = directors.zipWithIndex.map { case (jsValue, dirIndex) =>
+          readsDirector(estIndex, dirIndex).reads(jsValue)
+        }
+        asJsResultSeq(jsResults)
+      case _ => JsSuccess(Nil)
+    }
+
+    override def reads(json: JsValue): JsResult[Seq[Option[Seq[IndividualDetails]]]] = {
+      ua.data \ EstablishersId.toString match {
+        case JsDefined(JsArray(establishers)) =>
+          val jsResults = establishers.zipWithIndex.map {
+            case (jsValue, index) =>
+              val establisherKind = (jsValue \ EstablisherKindId.toString).validate[String].asOpt
+
+              val readsForEstablisherKind = establisherKind match {
+
+                case Some(EstablisherKind.Company.toString) =>
+                  (JsPath \ "director").readNullable(readsAllDirectors(index))
+                case _ =>
+                  Reads.pure[Option[Seq[IndividualDetails]]](None)
+              }
+              readsForEstablisherKind.reads(jsValue)
+          }
+          asJsResultSeq(jsResults)
+        case _ => JsSuccess(Nil)
+      }
+    }
+  }
 
   private def getDirectorDetails(estIndex: Int, directorIndex: Int)(implicit ua: UserAnswers): IndividualDetails = {
     val directorName = ua.get(DirectorNameId(estIndex, directorIndex)).get
@@ -94,6 +164,16 @@ class DataUpdateService @Inject()() extends Enumerable.Implicits {
       directorName.firstName, directorName.lastName, directorName.isDeleted, directorNino, directorDob, directorIndex,
       ua.isDirectorComplete(estIndex, directorIndex), Some(estIndex))
   }
+
+  private def getTrusteeDetails(index: Int)(implicit ua: UserAnswers): IndividualDetails = {
+    val trusteeName = ua.get(TrusteeNameId(index)).get
+    val trusteeNino = ua.get(TrusteeNINOId(index)).map(_.value)
+    val trusteeDob = ua.get(TrusteeDOBId(index))
+    IndividualDetails(
+      trusteeName.firstName, trusteeName.lastName, trusteeName.isDeleted, trusteeNino, trusteeDob, index,
+      ua.isTrusteeIndividualComplete(index), Some(index))
+  }
+
 
   private def asJsResultSeq[A](jsResults: Seq[JsResult[A]]): JsResult[Seq[A]] = {
     JsSuccess(jsResults.collect {

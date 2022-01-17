@@ -42,28 +42,42 @@ GET         /:index/individual/check-your-answers-details                       
 
 GET         /:index/individual/address                                              controllers.trustees.individual.address.WhatYouWillNeedController.onPageLoad(index: Index)
 
-GET         /:index/individual/enter-postcode                                       controllers.trustees.individual.address.EnterPostcodeController.onPageLoad(index: Index)
-POST        /:index/individual/enter-postcode                                       controllers.trustees.individual.address.EnterPostcodeController.onSubmit(index: Index)
+GET         /:index/individual/enter-postcode                                       controllers.trustees.individual.address.EnterPostcodeController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/individual/enter-postcode                                       controllers.trustees.individual.address.EnterPostcodeController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/individual/change/enter-postcode                                controllers.trustees.individual.address.EnterPostcodeController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/individual/change/enter-postcode                                controllers.trustees.individual.address.EnterPostcodeController.onSubmit(index: Index, mode: Mode = CheckMode)
 
-GET         /:index/individual/address-results                                      controllers.trustees.individual.address.SelectAddressController.onPageLoad(index: Index)
-POST        /:index/individual/address-results                                      controllers.trustees.individual.address.SelectAddressController.onSubmit(index: Index)
+GET         /:index/individual/address-results                                      controllers.trustees.individual.address.SelectAddressController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/individual/address-results                                      controllers.trustees.individual.address.SelectAddressController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/individual/change/address-results                               controllers.trustees.individual.address.SelectAddressController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/individual/change/address-results                               controllers.trustees.individual.address.SelectAddressController.onSubmit(index: Index, mode: Mode = CheckMode)
 
-GET         /:index/individual/confirm-address                                      controllers.trustees.individual.address.ConfirmAddressController.onPageLoad(index: Index)
-POST        /:index/individual/confirm-address                                      controllers.trustees.individual.address.ConfirmAddressController.onSubmit(index: Index)
+GET         /:index/individual/confirm-address                                      controllers.trustees.individual.address.ConfirmAddressController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/individual/confirm-address                                      controllers.trustees.individual.address.ConfirmAddressController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/individual/change/confirm-address                               controllers.trustees.individual.address.ConfirmAddressController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/individual/change/confirm-address                               controllers.trustees.individual.address.ConfirmAddressController.onSubmit(index: Index, mode: Mode = CheckMode)
 
 GET         /:index/individual/check-your-answers-address                           controllers.trustees.individual.address.CheckYourAnswersController.onPageLoad(index: Index)
 
-GET         /:index/individual/time-at-address                                      controllers.trustees.individual.address.AddressYearsController.onPageLoad(index: Index)
-POST        /:index/individual/time-at-address                                      controllers.trustees.individual.address.AddressYearsController.onSubmit(index: Index)
+GET         /:index/individual/time-at-address                                      controllers.trustees.individual.address.AddressYearsController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/individual/time-at-address                                      controllers.trustees.individual.address.AddressYearsController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/individual/change/time-at-address                               controllers.trustees.individual.address.AddressYearsController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/individual/change/time-at-address                               controllers.trustees.individual.address.AddressYearsController.onSubmit(index: Index, mode: Mode = CheckMode)
 
-GET         /:index/individual/enter-previous-postcode                              controllers.trustees.individual.address.EnterPreviousPostcodeController.onPageLoad(index: Index)
-POST        /:index/individual/enter-previous-postcode                              controllers.trustees.individual.address.EnterPreviousPostcodeController.onSubmit(index: Index)
+GET         /:index/individual/enter-previous-postcode                              controllers.trustees.individual.address.EnterPreviousPostcodeController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/individual/enter-previous-postcode                              controllers.trustees.individual.address.EnterPreviousPostcodeController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/individual/change/enter-previous-postcode                       controllers.trustees.individual.address.EnterPreviousPostcodeController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/individual/change/enter-previous-postcode                       controllers.trustees.individual.address.EnterPreviousPostcodeController.onSubmit(index: Index, mode: Mode = CheckMode)
 
-GET         /:index/individual/previous-address-results                             controllers.trustees.individual.address.SelectPreviousAddressController.onPageLoad(index: Index)
-POST        /:index/individual/previous-address-results                             controllers.trustees.individual.address.SelectPreviousAddressController.onSubmit(index: Index)
+GET         /:index/individual/previous-address-results                             controllers.trustees.individual.address.SelectPreviousAddressController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/individual/previous-address-results                             controllers.trustees.individual.address.SelectPreviousAddressController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/individual/change/previous-address-results                      controllers.trustees.individual.address.SelectPreviousAddressController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/individual/change/previous-address-results                      controllers.trustees.individual.address.SelectPreviousAddressController.onSubmit(index: Index, mode: Mode = CheckMode)
 
-GET         /:index/individual/confirm-previous-address                             controllers.trustees.individual.address.ConfirmPreviousAddressController.onPageLoad(index: Index)
-POST        /:index/individual/confirm-previous-address                             controllers.trustees.individual.address.ConfirmPreviousAddressController.onSubmit(index: Index)
+GET         /:index/individual/confirm-previous-address                             controllers.trustees.individual.address.ConfirmPreviousAddressController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/individual/confirm-previous-address                             controllers.trustees.individual.address.ConfirmPreviousAddressController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/individual/change/confirm-previous-address                      controllers.trustees.individual.address.ConfirmPreviousAddressController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/individual/change/confirm-previous-address                       controllers.trustees.individual.address.ConfirmPreviousAddressController.onSubmit(index: Index, mode: Mode = CheckMode)
 
 GET         /:index/individual/contact-details                                      controllers.trustees.individual.contact.WhatYouWillNeedController.onPageLoad(index: Index)
 

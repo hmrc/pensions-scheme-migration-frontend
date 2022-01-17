@@ -57,12 +57,12 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
     case TrusteeHasUTRId(index) => trusteeHasUtr(index, ua, NormalMode)
     case TrusteeUTRId(index) => cyaDetails(index)
     case TrusteeNoUTRReasonId(index) => cyaDetails(index)
-    case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index)
+    case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index, NormalMode)
     case AddressListId(index) => addressYears(index, NormalMode)
     case AddressId(index) => addressYears(index, NormalMode)
     case AddressYearsId(index) =>
-      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else EnterPreviousPostcodeController.onPageLoad(index)
-    case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index)
+      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else EnterPreviousPostcodeController.onPageLoad(index, NormalMode)
+    case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index, NormalMode)
     case PreviousAddressListId(index) => cyaAddress(index)
     case PreviousAddressId(index) => cyaAddress(index)
     case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
@@ -81,6 +81,15 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
     case TrusteeHasUTRId(index) => trusteeHasUtr(index, ua, CheckMode)
     case TrusteeUTRId(index) => cyaDetails(index)
     case TrusteeNoUTRReasonId(index) => cyaDetails(index)
+    case AddressId(index) => cyaAddress(index)
+    case AddressListId(index) => cyaAddress(index)
+    case AddressYearsId(index) =>
+      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index)
+      else EnterPreviousPostcodeController.onPageLoad(index, CheckMode)
+    case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index, CheckMode)
+    case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index, CheckMode)
+    case PreviousAddressId(index) => cyaAddress(index)
+    case PreviousAddressListId(index) => cyaAddress(index)
     case EnterEmailId(index) => cyaContactDetails(index)
     case EnterPhoneId(index) => cyaContactDetails(index)
   }
@@ -89,7 +98,7 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
 
 
   private def cyaAddress(index:Int): Call = controllers.trustees.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
-  private def addressYears(index:Int, mode:Mode): Call = controllers.trustees.individual.address.routes.AddressYearsController.onPageLoad(index)
+  private def addressYears(index:Int, mode:Mode): Call = controllers.trustees.individual.address.routes.AddressYearsController.onPageLoad(index, mode)
 
   private def cyaContactDetails(index:Int): Call = controllers.trustees.individual.contact.routes.CheckYourAnswersController.onPageLoad(index)
 

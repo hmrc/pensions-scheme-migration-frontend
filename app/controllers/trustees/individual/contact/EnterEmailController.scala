@@ -21,18 +21,23 @@ import controllers.EmailAddressController
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.EmailFormProvider
 import identifiers.beforeYouStart.SchemeNameId
+import identifiers.establishers.company.director.{contact => Director}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.contact.EnterEmailId
 import models.requests.DataRequest
-import models.{Index, Mode}
+import models.{CheckMode, Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import services.DataUpdateService
+import utils.UserAnswers
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class EnterEmailController @Inject()(
                                             override val messagesApi: MessagesApi,
@@ -41,6 +46,7 @@ class EnterEmailController @Inject()(
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
                                             formProvider: EmailFormProvider,
+                                            dataUpdateService: DataUpdateService,
                                             val controllerComponents: MessagesControllerComponents,
                                             val userAnswersCacheConnector: UserAnswersCacheConnector,
                                             val renderer: Renderer
@@ -78,15 +84,38 @@ class EnterEmailController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.right.map {
           schemeName =>
-            post(
-              entityName = name(index),
-              entityType = Messages("messages__individual"),
-              id            = EnterEmailId(index),
-              form          = form(index),
-              schemeName    = schemeName,
-              paragraphText = Seq(Messages("messages__contact_details__hint", name(index))),
-              mode          = mode
+            form(index).bindFromRequest().fold(
+              (formWithErrors: Form[_]) =>
+                renderer.render(
+                  template = "email.njk",
+                  ctx = Json.obj(
+                    "entityName" -> name(index),
+                    "entityType" -> Messages("messages__individual"),
+                    "form" -> formWithErrors,
+                    "schemeName" -> schemeName,
+                    "paragraph" -> Seq(Messages("messages__contact_details__hint", name(index)))
+                  )
+                ).map(BadRequest(_)),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(setUpdatedAnswers(index, mode, value, request.userAnswers))
+                  _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+                } yield
+                  Redirect(navigator.nextPage(EnterEmailId(index), updatedAnswers, mode))
             )
         }
     }
+
+  private def setUpdatedAnswers(index: Index, mode: Mode, value: String, ua: UserAnswers): Try[UserAnswers] = {
+    var updatedUserAnswers: Try[UserAnswers] = Try(ua)
+    if (mode == CheckMode) {
+      val directors = dataUpdateService.findMatchingDirectors(index)(ua)
+      for(director <- directors) {
+        if (!director.isDeleted)
+          updatedUserAnswers = updatedUserAnswers.get.set(Director.EnterEmailId(director.mainIndex.get, director.index), value)
+      }
+    }
+    val finalUpdatedUserAnswers = updatedUserAnswers.get.set(EnterEmailId(index), value)
+    finalUpdatedUserAnswers
+  }
 }

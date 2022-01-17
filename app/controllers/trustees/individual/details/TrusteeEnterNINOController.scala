@@ -21,19 +21,24 @@ import controllers.EnterReferenceValueController
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.NINOFormProvider
 import identifiers.beforeYouStart.SchemeNameId
+import identifiers.establishers.company.director.details.DirectorNINOId
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.details.TrusteeNINOId
 import models.requests.DataRequest
-import models.{Index, Mode, ReferenceValue}
+import models.{CheckMode, Index, Mode, ReferenceValue}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.MessagesApi
+import play.api.libs.json.{JsString, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import services.DataUpdateService
+import utils.UserAnswers
 import viewmodels.Message
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class TrusteeEnterNINOController @Inject()(
                                                 override val messagesApi: MessagesApi,
@@ -42,6 +47,7 @@ class TrusteeEnterNINOController @Inject()(
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
                                                 formProvider: NINOFormProvider,
+                                                dataUpdateService: DataUpdateService,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 val userAnswersCacheConnector: UserAnswersCacheConnector,
                                                 val renderer: Renderer
@@ -82,17 +88,40 @@ class TrusteeEnterNINOController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.right.map {
           schemeName =>
-            post(
-              pageTitle     = Message("messages__enterNINO_title", Message("messages__individual")),
-              pageHeading     = Message("messages__enterNINO", name(index)),
-              isPageHeading = true,
-              id            = TrusteeNINOId(index),
-              form          = form(index),
-              schemeName    = schemeName,
-              hintText      = Some(Message("messages__enterNINO__hint")),
-              legendClass   = "govuk-label--xl",
-              mode          = mode
+            form(index).bindFromRequest().fold(
+              (formWithErrors: Form[_]) =>
+                renderer.render(
+                  template = templateName(Seq(), Some(Message("messages__enterNINO__hint"))),
+                  ctx = Json.obj(
+                    "pageTitle"     -> Message("messages__enterNINO_title", Message("messages__individual")),
+                    "pageHeading" -> Message("messages__enterNINO", name(index)),
+                    "isPageHeading" -> true,
+                    "form"          -> formWithErrors,
+                    "schemeName"    -> schemeName,
+                    "legendClass"   -> "govuk-label--xl",
+                    "paragraphs"    -> Seq()
+                  ) ++ Some(Message("messages__enterNINO__hint")).fold(Json.obj())(text => Json.obj("hintText" -> JsString(text)))
+                ).map(BadRequest(_)),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(setUpdatedAnswers(index, mode, value, request.userAnswers))
+                  _              <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+                } yield
+                  Redirect(navigator.nextPage(TrusteeNINOId(index), updatedAnswers, mode))
             )
         }
     }
+
+  private def setUpdatedAnswers(index: Index, mode: Mode, value: ReferenceValue, ua: UserAnswers): Try[UserAnswers] = {
+    var updatedUserAnswers: Try[UserAnswers] = Try(ua)
+    if (mode == CheckMode) {
+      val directors = dataUpdateService.findMatchingDirectors(index)(ua)
+      for(director <- directors) {
+        if (!director.isDeleted)
+          updatedUserAnswers = updatedUserAnswers.get.set(DirectorNINOId(director.mainIndex.get, director.index), value)
+      }
+    }
+    val finalUpdatedUserAnswers = updatedUserAnswers.get.set(TrusteeNINOId(index), value)
+    finalUpdatedUserAnswers
+  }
 }
