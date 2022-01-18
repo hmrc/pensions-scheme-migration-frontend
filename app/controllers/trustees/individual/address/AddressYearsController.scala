@@ -65,7 +65,6 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (TrusteeNameId(index) and SchemeNameId).retrieve.right.map {
         case trusteeName ~ schemeName =>
-          post(Some(schemeName), trusteeName.fullName, Messages("trusteeEntityTypeIndividual"), form, AddressYearsId(index))
           form
             .bindFromRequest()
             .fold(

@@ -31,8 +31,8 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.{UserAnswers, Enumerable, Data}
-import models.{TolerantAddress, Scheme}
+import utils.{Data, Enumerable, UserAnswers}
+import models.{NormalMode, Scheme, TolerantAddress}
 
 import scala.concurrent.Future
 
@@ -46,8 +46,8 @@ class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = controllers.trustees.individual.address.routes.SelectAddressController.onPageLoad(0).url
-  private val httpPathPOST: String = controllers.trustees.individual.address.routes.SelectAddressController.onSubmit(0).url
+  private val httpPathGET: String = controllers.trustees.individual.address.routes.SelectAddressController.onPageLoad(0, NormalMode).url
+  private val httpPathPOST: String = controllers.trustees.individual.address.routes.SelectAddressController.onSubmit(0, NormalMode).url
 
   private val seqAddresses = Seq(
     TolerantAddress(Some("1"),Some("1"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")),

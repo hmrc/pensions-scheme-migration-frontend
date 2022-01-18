@@ -101,7 +101,7 @@ trait UaJsValueGenerators {
     )
   }
 
-  def uaJsValueWithMatching: Gen[JsObject] = for {
+  def uaJsValueWithTrusteeMatching: Gen[JsObject] = for {
     trusteeDetails <- trusteeIndividualJsValueGen(isNinoAvailable = true, 1)
     trusteeDetailsFour <- trusteeIndividualJsValueGen(isNinoAvailable = false, 4)
     estComDetails <- singleDirJsValueGen(isNinoAvailable = true)
@@ -112,7 +112,7 @@ trait UaJsValueGenerators {
     )
   }
 
-  def uaJsValueWithNoMatching: Gen[JsObject] = for {
+  def uaJsValueWithNoTrusteeMatching: Gen[JsObject] = for {
     trusteeDetails <- trusteeIndividualJsValueGen(isNinoAvailable = true, 2)
     trusteeDetailsFour <- trusteeIndividualJsValueGen(isNinoAvailable = false, 4)
     estComDetails <- singleDirJsValueGen(isNinoAvailable = true)
@@ -120,6 +120,26 @@ trait UaJsValueGenerators {
     Json.obj(
       "establishers" -> Seq(estComDetails),
       "trustees" -> (Seq(trusteeDetails) ++ Seq(trusteeDetailsFour))
+    )
+  }
+
+  def uaJsValueWithDirectorsMatching: Gen[JsObject] = for {
+    trusteeDetails <- trusteeIndividualJsValueGen(isNinoAvailable = true, 1)
+    estComDetails <- estCompanyWithNinoInDirJsValueGen(isNinoAvailable = true)
+  } yield {
+    Json.obj(
+      "establishers" -> Seq(estComDetails),
+      "trustees" -> Seq(trusteeDetails)
+    )
+  }
+
+  def uaJsValueWithNoDirectorMatching: Gen[JsObject] = for {
+    trusteeDetails <- trusteeIndividualJsValueGen(isNinoAvailable = false, 2)
+    estComDetails <- estCompanyWithNinoInDirJsValueGen(isNinoAvailable = false)
+  } yield {
+    Json.obj(
+      "establishers" -> Seq(estComDetails),
+      "trustees" -> Seq(trusteeDetails)
     )
   }
   def trusteeIndividualJsValueGen(isNinoAvailable: Boolean, index: Int): Gen[JsObject] = for {

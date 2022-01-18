@@ -28,7 +28,7 @@ class DataUpdateServiceSpec extends SpecBase with JsonMatchers with Enumerable.I
 
   "findMatchingTrustee" must {
     "return the trustee which is non deleted and their nino, name and dob matched with the directors" in {
-      uaJsValueWithMatching.map{
+      uaJsValueWithTrusteeMatching.map{
         ua => {
           val result = dataUpdateService.findMatchingTrustee(1,1)(UserAnswers(ua))
           result mustBe Seq(IndividualDetails("Test", "User 1", false, Some("CS700100A"), Some(LocalDate.parse("1999-04-13")), 1, true, None))
@@ -37,9 +37,29 @@ class DataUpdateServiceSpec extends SpecBase with JsonMatchers with Enumerable.I
     }
 
     "return no trustees when their nino, name and dob is not matching with the director" in {
-      uaJsValueWithNoMatching.map {
+      uaJsValueWithNoTrusteeMatching.map {
         ua => {
           val result = dataUpdateService.findMatchingTrustee(1,1)(UserAnswers(ua))
+          result mustBe Nil
+        }
+      }
+    }
+  }
+
+  "findMatchingDirectors" must {
+    "return the list of Directors which is non deleted and their nino, name and dob matched with the trustee" in {
+      uaJsValueWithDirectorsMatching.map{
+        ua => {
+          val result = dataUpdateService.findMatchingDirectors(1)(UserAnswers(ua))
+          result mustBe Seq(IndividualDetails("Test", "User 1", false, Some("CS700100A"), Some(LocalDate.parse("1999-04-13")), 1, true, None))
+        }
+      }
+    }
+
+    "return empty list when their nino, name and dob is not matching with the trustee" in {
+      uaJsValueWithNoDirectorMatching.map {
+        ua => {
+          val result = dataUpdateService.findMatchingDirectors(1)(UserAnswers(ua))
           result mustBe Nil
         }
       }

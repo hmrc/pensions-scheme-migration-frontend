@@ -88,16 +88,16 @@ class TrusteesNavigatorSpec
     controllers.trustees.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
 
   private def enterPreviousPostcode(mode:Mode): Call =
-    controllers.trustees.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index)
+    controllers.trustees.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index, NormalMode)
 
   private def selectAddress(mode:Mode): Call =
-    controllers.trustees.individual.address.routes.SelectAddressController.onPageLoad(index)
+    controllers.trustees.individual.address.routes.SelectAddressController.onPageLoad(index, NormalMode)
 
   private def selectPreviousAddress(mode:Mode): Call =
-    controllers.trustees.individual.address.routes.SelectPreviousAddressController.onPageLoad(index)
+    controllers.trustees.individual.address.routes.SelectPreviousAddressController.onPageLoad(index, NormalMode)
 
   private def addressYears(mode:Mode): Call =
-    controllers.trustees.individual.address.routes.AddressYearsController.onPageLoad(index)
+    controllers.trustees.individual.address.routes.AddressYearsController.onPageLoad(index, NormalMode)
 
   private def namePage(mode:Mode): Call =
     controllers.trustees.individual.routes.TrusteeNameController.onPageLoad(index)
