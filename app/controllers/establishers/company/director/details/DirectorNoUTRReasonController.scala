@@ -111,8 +111,8 @@ class DirectorNoUTRReasonController @Inject()(override val messagesApi: Messages
     var updatedUserAnswers: Try[UserAnswers] = Try(ua)
     if (mode == CheckMode) {
       val trustee = dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua)
-      if (!trustee.isDeleted)
-        updatedUserAnswers = ua.set(TrusteeNoUTRReasonId(trustee.index), value)
+      if (trustee.isDefined)
+        updatedUserAnswers = ua.set(TrusteeNoUTRReasonId(trustee.get.index), value)
     }
     val finalUpdatedUserAnswers = updatedUserAnswers.get.set(DirectorNoUTRReasonId(establisherIndex, directorIndex), value)
     finalUpdatedUserAnswers

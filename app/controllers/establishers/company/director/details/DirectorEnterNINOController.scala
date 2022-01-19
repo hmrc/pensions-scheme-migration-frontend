@@ -116,8 +116,8 @@ class DirectorEnterNINOController @Inject()(
     var updatedUserAnswers: Try[UserAnswers] = Try(ua)
     if (mode == CheckMode) {
       val trustee = dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua)
-      if (!trustee.isDeleted)
-        updatedUserAnswers = ua.set(TrusteeNINOId(trustee.index), value)
+      if (trustee.isDefined)
+        updatedUserAnswers = ua.set(TrusteeNINOId(trustee.get.index), value)
     }
     val finalUpdatedUserAnswers = updatedUserAnswers.get.set(DirectorNINOId(establisherIndex, directorIndex), value)
     finalUpdatedUserAnswers

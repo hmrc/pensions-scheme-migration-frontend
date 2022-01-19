@@ -112,8 +112,8 @@ class EnterEmailController @Inject()(
     var updatedUserAnswers: Try[UserAnswers] = Try(ua)
     if (mode == CheckMode) {
       val trustee = dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua)
-      if (!trustee.isDeleted)
-        updatedUserAnswers = ua.set(trusteeEnterEmailId(trustee.index), value)
+      if (trustee.isDefined)
+        updatedUserAnswers = ua.set(trusteeEnterEmailId(trustee.get.index), value)
     }
     val finalUpdatedUserAnswers = updatedUserAnswers.get.set(EnterEmailId(establisherIndex, directorIndex), value)
     finalUpdatedUserAnswers

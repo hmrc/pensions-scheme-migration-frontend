@@ -97,8 +97,8 @@ class DirectorNameController @Inject()(
     var updatedUserAnswers: Try[UserAnswers] = Try(ua)
     if (mode == CheckMode) {
       val trustee = dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua)
-      if (!trustee.isDeleted)
-        updatedUserAnswers = ua.set(TrusteeNameId(trustee.index), value)
+      if (trustee.isDefined)
+        updatedUserAnswers = ua.set(TrusteeNameId(trustee.get.index), value)
     }
     val finalUpdatedUserAnswers = updatedUserAnswers.get.set(DirectorNameId(establisherIndex, directorIndex), value)
     finalUpdatedUserAnswers

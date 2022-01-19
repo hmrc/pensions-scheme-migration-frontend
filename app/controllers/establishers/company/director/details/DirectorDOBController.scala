@@ -108,8 +108,8 @@ class DirectorDOBController @Inject()(
     var updatedUserAnswers: Try[UserAnswers] = Try(ua)
     if (mode == CheckMode) {
       val trustee = dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua)
-      if (!trustee.isDeleted)
-        updatedUserAnswers = ua.set(TrusteeDOBId(trustee.index), value)
+      if (trustee.isDefined)
+        updatedUserAnswers = ua.set(TrusteeDOBId(trustee.get.index), value)
     }
     val finalUpdatedUserAnswers = updatedUserAnswers.get.set(DirectorDOBId(establisherIndex, directorIndex), value)
     finalUpdatedUserAnswers

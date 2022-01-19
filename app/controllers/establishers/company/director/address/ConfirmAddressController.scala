@@ -91,8 +91,8 @@ class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
     var updatedUserAnswers: Try[UserAnswers] = Try(ua)
     if (mode == CheckMode) {
       val trustee = dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua)
-      if (!trustee.isDeleted)
-        updatedUserAnswers = ua.set(trusteeAddressId(trustee.index), value)
+      if (trustee.isDefined)
+        updatedUserAnswers = ua.set(trusteeAddressId(trustee.get.index), value)
     }
     val finalUpdatedUserAnswers = updatedUserAnswers.get.set(AddressId(establisherIndex, directorIndex), value)
     finalUpdatedUserAnswers

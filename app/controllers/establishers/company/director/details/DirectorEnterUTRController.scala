@@ -114,8 +114,8 @@ class DirectorEnterUTRController @Inject()(
     var updatedUserAnswers: Try[UserAnswers] = Try(ua)
     if (mode == CheckMode) {
       val trustee = dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua)
-      if (!trustee.isDeleted)
-        updatedUserAnswers = ua.set(TrusteeUTRId(trustee.index), value)
+      if (trustee.isDefined)
+        updatedUserAnswers = ua.set(TrusteeUTRId(trustee.get.index), value)
     }
     val finalUpdatedUserAnswers = updatedUserAnswers.get.set(DirectorEnterUTRId(establisherIndex, directorIndex), value)
     finalUpdatedUserAnswers

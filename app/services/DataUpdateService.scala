@@ -73,10 +73,10 @@ class DataUpdateService @Inject()() extends Enumerable.Implicits {
   }
 
 
-  def findMatchingTrustee(establisherIndex: Index, directorIndex: Index)(implicit ua: UserAnswers): IndividualDetails = {
+  def findMatchingTrustee(establisherIndex: Index, directorIndex: Index)(implicit ua: UserAnswers): Option[IndividualDetails] = {
     val filteredTrusteesSeq = allIndividualTrustees.filter(indv => !indv.isDeleted)
     val director = getDirectorDetails(establisherIndex, directorIndex)
-    filteredTrusteesSeq.filter { trustee =>
+    val matchingTrustee = filteredTrusteesSeq.filter { trustee =>
       trustee.nino.map(ninoVal => director.nino.contains(ninoVal))
         .getOrElse {(trustee.dob, director.dob) match {
             case (Some(trusteeDob), Some(dirDob)) => dirDob.isEqual(trusteeDob) && trustee.fullName == director.fullName
@@ -84,13 +84,16 @@ class DataUpdateService @Inject()() extends Enumerable.Implicits {
           }
         }
     }
-    filteredTrusteesSeq(0)
+    if(matchingTrustee.nonEmpty)
+      Some(matchingTrustee(0))
+    else
+      None
   }
 
   def findMatchingDirectors(index: Index)(implicit ua: UserAnswers): Seq[IndividualDetails] = {
     val filteredDirectorsSeq = allDirectors.filter(dir => !dir.isDeleted)
     val trustee = getTrusteeDetails(index)
-    filteredDirectorsSeq.filter { director =>
+    val matchingDirectors = filteredDirectorsSeq.filter { director =>
       director.nino.map(ninoVal =>
         trustee.nino.contains(ninoVal))
         .getOrElse{(trustee.dob, director.dob) match {
@@ -99,7 +102,10 @@ class DataUpdateService @Inject()() extends Enumerable.Implicits {
           }
           }
     }
-    filteredDirectorsSeq
+    if (matchingDirectors.nonEmpty)
+      matchingDirectors
+    else
+      Seq()
   }
 
   def allDirectors(implicit ua: UserAnswers): Seq[IndividualDetails] = {

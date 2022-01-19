@@ -113,8 +113,8 @@ class EnterPhoneNumberController @Inject()(
     var updatedUserAnswers: Try[UserAnswers] = Try(ua)
     if (mode == CheckMode) {
       val trustee = dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua)
-      if (!trustee.isDeleted)
-        updatedUserAnswers = ua.set(trusteeEnterPhoneId(trustee.index), value)
+      if (trustee.isDefined)
+        updatedUserAnswers = ua.set(trusteeEnterPhoneId(trustee.get.index), value)
     }
     val finalUpdatedUserAnswers = updatedUserAnswers.get.set(EnterPhoneId(establisherIndex, directorIndex), value)
     finalUpdatedUserAnswers

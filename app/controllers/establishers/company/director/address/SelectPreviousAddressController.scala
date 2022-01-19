@@ -140,9 +140,9 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
     var updatedUserAnswers: Try[UserAnswers] = Try(ua)
     if (mode == CheckMode) {
       val trustee = dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua)
-      if (!trustee.isDeleted) {
-        val trusteeAddressPages: AddressPages = AddressPages(trusteeAddress.EnterPreviousPostCodeId(trustee.index),
-          trusteeAddress.PreviousAddressListId(trustee.index), trusteeAddress.PreviousAddressId(trustee.index))
+      if (trustee.isDefined) {
+        val trusteeAddressPages: AddressPages = AddressPages(trusteeAddress.EnterPreviousPostCodeId(trustee.get.index),
+          trusteeAddress.PreviousAddressListId(trustee.get.index), trusteeAddress.PreviousAddressId(trustee.get.index))
         updatedUserAnswers = ua.remove(trusteeAddressPages.addressListPage).set(trusteeAddressPages.addressPage,
           address.toAddress.get)
       }
@@ -157,9 +157,9 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
     var updatedUserAnswers: Try[UserAnswers] = Try(ua)
     if (mode == CheckMode) {
       val trustee = dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua)
-      if (!trustee.isDeleted) {
-        val trusteeAddressPages: AddressPages = AddressPages(trusteeAddress.EnterPreviousPostCodeId(trustee.index),
-          trusteeAddress.PreviousAddressListId(trustee.index), trusteeAddress.PreviousAddressId(trustee.index))
+      if (trustee.isDefined) {
+        val trusteeAddressPages: AddressPages = AddressPages(trusteeAddress.EnterPreviousPostCodeId(trustee.get.index),
+          trusteeAddress.PreviousAddressListId(trustee.get.index), trusteeAddress.PreviousAddressId(trustee.get.index))
         updatedUserAnswers = ua.remove(trusteeAddressPages.addressPage).set(trusteeAddressPages.addressListPage,
           address)
       }
