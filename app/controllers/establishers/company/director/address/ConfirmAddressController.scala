@@ -88,13 +88,15 @@ class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
   def form(implicit messages: Messages): Form[Address] = formProvider()
 
   private def setUpdatedAnswers(establisherIndex: Index, directorIndex: Index, mode: Mode, value: Address, ua: UserAnswers): Try[UserAnswers] = {
-    var updatedUserAnswers: Try[UserAnswers] = Try(ua)
-    if (mode == CheckMode) {
-      val trustee = dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua)
-      if (trustee.isDefined)
-        updatedUserAnswers = ua.set(trusteeAddressId(trustee.get.index), value)
-    }
-    val finalUpdatedUserAnswers = updatedUserAnswers.get.set(AddressId(establisherIndex, directorIndex), value)
+    val updatedUserAnswers =
+      mode match {
+        case CheckMode =>
+          dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
+            ua.setOrException(trusteeAddressId(trustee.index), value)
+          }.getOrElse(ua)
+        case _ => ua
+      }
+    val finalUpdatedUserAnswers = updatedUserAnswers.set(AddressId(establisherIndex, directorIndex), value)
     finalUpdatedUserAnswers
   }
 }

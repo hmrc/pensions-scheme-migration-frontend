@@ -44,7 +44,7 @@ trait PostcodeController extends FrontendBaseController with Retrievals {
   protected def addressLookupConnector: AddressLookupConnector
   protected def viewTemplate = "address/postcode.njk"
 
-  def prepareJson(jsObject: JsObject):JsObject = {
+  protected def prepareJson(jsObject: JsObject):JsObject = {
     if (jsObject.keys.contains("h1MessageKey")) {
       jsObject
     } else {

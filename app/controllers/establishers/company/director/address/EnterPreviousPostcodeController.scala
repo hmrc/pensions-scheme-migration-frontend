@@ -96,13 +96,15 @@ class EnterPreviousPostcodeController @Inject()(val appConfig: AppConfig,
   def form: Form[String] = formProvider("individualEnterPreviousPostcode.required", "establisherEnterPreviousPostcode.invalid")
 
   def setUpdatedAnswers(establisherIndex: Index, directorIndex: Index, mode: Mode, value: Seq[TolerantAddress], ua: UserAnswers): Try[UserAnswers] = {
-    var updatedUserAnswers: Try[UserAnswers] = Try(ua)
-    if (mode == CheckMode) {
-      val trustee = dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua)
-      if (trustee.isDefined)
-        updatedUserAnswers = ua.set(trusteeEnterPreviousPostCodeId(trustee.get.index), value)
-    }
-    val finalUpdatedUserAnswers = updatedUserAnswers.get.set(EnterPreviousPostCodeId(establisherIndex, directorIndex), value)
+    val updatedUserAnswers =
+      mode match {
+        case CheckMode =>
+          dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
+            ua.setOrException(trusteeEnterPreviousPostCodeId(trustee.index), value)
+          }.getOrElse(ua)
+        case _ => ua
+      }
+    val finalUpdatedUserAnswers = updatedUserAnswers.set(EnterPreviousPostCodeId(establisherIndex, directorIndex), value)
     finalUpdatedUserAnswers
   }
 

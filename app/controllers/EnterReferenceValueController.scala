@@ -45,7 +45,7 @@ trait EnterReferenceValueController
 
   protected def navigator: CompoundNavigator
 
-  def templateName(paragraphText: Seq[String], hintText: Option[String]) =
+  protected def templateName(paragraphText: Seq[String], hintText: Option[String]) : String=
     if (paragraphText.nonEmpty || hintText.nonEmpty) "enterReferenceValueWithHint.njk" else "enterReferenceValue.njk"
 
   def get(

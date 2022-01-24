@@ -88,15 +88,19 @@ class ConfirmPreviousAddressController @Inject()(override val messagesApi: Messa
     }
 
   private def setUpdatedAnswers(index: Index, value: Address, mode: Mode, ua: UserAnswers): Try[UserAnswers] = {
-    var updatedUserAnswers: Try[UserAnswers] = Try(ua)
-    if (mode == CheckMode) {
-      val directors = dataUpdateService.findMatchingDirectors(index)(ua)
-      for (director <- directors) {
-        if (!director.isDeleted)
-          updatedUserAnswers = updatedUserAnswers.get.set(Director.PreviousAddressId(director.mainIndex.get, director.index), value)
+    val updatedUserAnswers =
+      mode match {
+      case CheckMode =>
+        val directors = dataUpdateService.findMatchingDirectors(index)(ua)
+        directors.foldLeft[UserAnswers](ua) { (acc, director) =>
+          if (director.isDeleted)
+            acc
+          else
+            acc.setOrException(Director.PreviousAddressId(director.mainIndex.get, director.index), value)
+        }
+      case _ => ua
       }
-    }
-    val finalUpdatedUserAnswers = updatedUserAnswers.get.set(PreviousAddressId(index), value)
+    val finalUpdatedUserAnswers = updatedUserAnswers.set(PreviousAddressId(index), value)
     finalUpdatedUserAnswers
   }
 }

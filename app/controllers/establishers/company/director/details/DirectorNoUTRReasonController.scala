@@ -108,13 +108,15 @@ class DirectorNoUTRReasonController @Inject()(override val messagesApi: Messages
       .fold("the director")(_.fullName)
 
   private def setUpdatedAnswers(establisherIndex: Index, directorIndex: Index, mode: Mode, value: String, ua: UserAnswers): Try[UserAnswers] = {
-    var updatedUserAnswers: Try[UserAnswers] = Try(ua)
-    if (mode == CheckMode) {
-      val trustee = dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua)
-      if (trustee.isDefined)
-        updatedUserAnswers = ua.set(TrusteeNoUTRReasonId(trustee.get.index), value)
+    val updatedUserAnswers =
+      mode match {
+        case CheckMode =>
+          dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
+            ua.setOrException(TrusteeNoUTRReasonId(trustee.index), value)
+          }.getOrElse(ua)
+        case _ => ua
     }
-    val finalUpdatedUserAnswers = updatedUserAnswers.get.set(DirectorNoUTRReasonId(establisherIndex, directorIndex), value)
+    val finalUpdatedUserAnswers = updatedUserAnswers.set(DirectorNoUTRReasonId(establisherIndex, directorIndex), value)
     finalUpdatedUserAnswers
   }
 }

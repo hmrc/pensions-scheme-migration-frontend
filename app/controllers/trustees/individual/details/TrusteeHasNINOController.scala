@@ -118,15 +118,19 @@ class TrusteeHasNINOController @Inject()(
     }
 
   private def setUpdatedAnswers(index: Index, mode: Mode, value: Boolean, ua: UserAnswers): Try[UserAnswers] = {
-    var updatedUserAnswers: Try[UserAnswers] = Try(ua)
-    if (mode == CheckMode) {
-      val directors = dataUpdateService.findMatchingDirectors(index)(ua)
-      for(director <- directors) {
-        if (!director.isDeleted)
-          updatedUserAnswers = updatedUserAnswers.get.set(DirectorHasNINOId(director.mainIndex.get, director.index), value)
+    val updatedUserAnswers =
+      mode match {
+        case CheckMode =>
+          val directors = dataUpdateService.findMatchingDirectors(index)(ua)
+          directors.foldLeft[UserAnswers](ua) { (acc, director) =>
+            if (director.isDeleted)
+              acc
+            else
+              acc.setOrException(DirectorHasNINOId(director.mainIndex.get, director.index), value)
+          }
+        case _ => ua
       }
-    }
-    val finalUpdatedUserAnswers = updatedUserAnswers.get.set(TrusteeHasNINOId(index), value)
+    val finalUpdatedUserAnswers = updatedUserAnswers.set(TrusteeHasNINOId(index), value)
     finalUpdatedUserAnswers
   }
 }

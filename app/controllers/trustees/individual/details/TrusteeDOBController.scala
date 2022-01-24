@@ -106,15 +106,19 @@ class TrusteeDOBController @Inject()(
     }
 
   private def setUpdatedAnswers(index: Index, mode: Mode, value: LocalDate, ua: UserAnswers): Try[UserAnswers] = {
-    var updatedUserAnswers: Try[UserAnswers] = Try(ua)
-    if (mode == CheckMode) {
-      val directors = dataUpdateService.findMatchingDirectors(index)(ua)
-      for(director <- directors) {
-          if (!director.isDeleted)
-            updatedUserAnswers = updatedUserAnswers.get.set(DirectorDOBId(director.mainIndex.get, director.index), value)
+    val updatedUserAnswers =
+      mode match {
+        case CheckMode =>
+          val directors = dataUpdateService.findMatchingDirectors(index)(ua)
+          directors.foldLeft[UserAnswers](ua) { (acc, director) =>
+            if (director.isDeleted)
+              acc
+            else
+              acc.setOrException(DirectorDOBId(director.mainIndex.get, director.index), value)
+          }
+        case _ => ua
       }
-    }
-    val finalUpdatedUserAnswers = updatedUserAnswers.get.set(TrusteeDOBId(index), value)
+    val finalUpdatedUserAnswers = updatedUserAnswers.set(TrusteeDOBId(index), value)
     finalUpdatedUserAnswers
   }
 }

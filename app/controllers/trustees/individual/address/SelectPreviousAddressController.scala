@@ -80,7 +80,7 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
               if (address.toAddress.nonEmpty) {
                 for {
                   updatedAnswers <- Future.fromTry(
-                    setUpdatedAnswersOne(index, mode, addressPages, address, request.userAnswers)
+                    setUpdatedAnswersForUkAddr(index, mode, addressPages, address, request.userAnswers)
                   )
                   _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
                 } yield {
@@ -91,7 +91,7 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
                 for {
                   updatedAnswers <-
 
-                    Future.fromTry(setUpdatedAnswersTwo(index, mode, addressPages, address, request.userAnswers)
+                    Future.fromTry(setUpdatedAnswersForNonUkAddr(index, mode, addressPages, address, request.userAnswers)
                     )
                   _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
                 } yield {
@@ -104,7 +104,7 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
       }
     }
 
-  private def setUpdatedAnswersOne(index: Index, mode: Mode, addressPages: AddressPages,
+  private def setUpdatedAnswersForUkAddr(index: Index, mode: Mode, addressPages: AddressPages,
                                    address: TolerantAddress, ua: UserAnswers): Try[UserAnswers] = {
     var updatedUserAnswers: Try[UserAnswers] = Try(ua)
     if (mode == CheckMode) {
@@ -123,21 +123,26 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
     finalUpdatedUserAnswers
   }
 
-  private def setUpdatedAnswersTwo(index: Index, mode: Mode, addressPages: AddressPages,
+  private def setUpdatedAnswersForNonUkAddr(index: Index, mode: Mode, addressPages: AddressPages,
                                    address: TolerantAddress, ua: UserAnswers): Try[UserAnswers] = {
-    var updatedUserAnswers: Try[UserAnswers] = Try(ua)
-    if (mode == CheckMode) {
-      val directors = dataUpdateService.findMatchingDirectors(index)(ua)
-      for (director <- directors) {
-        if (!director.isDeleted) {
-          val directorAddressPages: AddressPages = AddressPages(Director.EnterPreviousPostCodeId(director.mainIndex.get, director.index),
-            Director.PreviousAddressListId(director.mainIndex.get, director.index), Director.PreviousAddressId(director.mainIndex.get, director.index))
-          updatedUserAnswers = ua.remove(directorAddressPages.addressPage).set(directorAddressPages.addressListPage,
-            address)
-        }
+    val updatedUserAnswers =
+      mode match {
+        case CheckMode =>
+          val directors = dataUpdateService.findMatchingDirectors(index)(ua)
+          directors.foldLeft[UserAnswers](ua) { (acc, director) =>
+            if (director.isDeleted)
+              acc
+            else
+            {
+              val directorAddressPages: AddressPages = AddressPages(Director.EnterPreviousPostCodeId(director.mainIndex.get, director.index),
+                Director.PreviousAddressListId(director.mainIndex.get, director.index), Director.PreviousAddressId(director.mainIndex.get, director.index))
+              acc.remove(directorAddressPages.addressPage).setOrException(directorAddressPages.addressListPage,
+                address)
+            }
+          }
+        case _ => ua
       }
-    }
-    val finalUpdatedUserAnswers = updatedUserAnswers.get.remove(addressPages.addressPage).set(addressPages.addressListPage,
+    val finalUpdatedUserAnswers = updatedUserAnswers.remove(addressPages.addressPage).set(addressPages.addressListPage,
       address)
     finalUpdatedUserAnswers
   }

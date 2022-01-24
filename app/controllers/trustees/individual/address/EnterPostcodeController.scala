@@ -111,15 +111,19 @@ class EnterPostcodeController @Inject()(val appConfig: AppConfig,
   }
 
   private def setUpdatedAnswers(index: Index, mode: Mode, value: Seq[TolerantAddress], ua: UserAnswers): Try[UserAnswers] = {
-    var updatedUserAnswers: Try[UserAnswers] = Try(ua)
-    if (mode == CheckMode) {
-      val directors = dataUpdateService.findMatchingDirectors(index)(ua)
-      for (director <- directors) {
-        if (!director.isDeleted)
-          updatedUserAnswers = updatedUserAnswers.get.set(Director.EnterPostCodeId(director.mainIndex.get, director.index), value)
-      }
+    val updatedUserAnswers =
+      mode match {
+        case CheckMode =>
+          val directors = dataUpdateService.findMatchingDirectors(index)(ua)
+          directors.foldLeft[UserAnswers](ua) { (acc, director) =>
+            if (director.isDeleted)
+              acc
+            else
+              acc.setOrException(Director.EnterPostCodeId(director.mainIndex.get, director.index), value)
+          }
+        case _ => ua
     }
-    val finalUpdatedUserAnswers = updatedUserAnswers.get.set(EnterPostCodeId(index), value)
+    val finalUpdatedUserAnswers = updatedUserAnswers.set(EnterPostCodeId(index), value)
     finalUpdatedUserAnswers
   }
 }

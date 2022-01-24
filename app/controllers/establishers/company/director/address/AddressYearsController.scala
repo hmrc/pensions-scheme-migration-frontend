@@ -84,13 +84,15 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
     }
 
   private def setUpdatedAnswers(establisherIndex: Index, directorIndex: Index, mode: Mode, value: Boolean, ua: UserAnswers): Try[UserAnswers] = {
-    var updatedUserAnswers: Try[UserAnswers] = Try(ua)
-    if (mode == CheckMode) {
-      val trustee = dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua)
-      if (trustee.isDefined)
-        updatedUserAnswers = ua.set(trusteeAddressYearsId(trustee.get.index), value)
+    val updatedUserAnswers =
+      mode match {
+        case CheckMode =>
+          dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
+            ua.setOrException(trusteeAddressYearsId(trustee.index), value)
+          }.getOrElse(ua)
+        case _ => ua
     }
-    val finalUpdatedUserAnswers = updatedUserAnswers.get.set(AddressYearsId(establisherIndex, directorIndex), value)
+    val finalUpdatedUserAnswers = updatedUserAnswers.set(AddressYearsId(establisherIndex, directorIndex), value)
     finalUpdatedUserAnswers
   }
 }

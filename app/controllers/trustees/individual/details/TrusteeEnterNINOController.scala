@@ -113,15 +113,19 @@ class TrusteeEnterNINOController @Inject()(
     }
 
   private def setUpdatedAnswers(index: Index, mode: Mode, value: ReferenceValue, ua: UserAnswers): Try[UserAnswers] = {
-    var updatedUserAnswers: Try[UserAnswers] = Try(ua)
-    if (mode == CheckMode) {
-      val directors = dataUpdateService.findMatchingDirectors(index)(ua)
-      for(director <- directors) {
-        if (!director.isDeleted)
-          updatedUserAnswers = updatedUserAnswers.get.set(DirectorNINOId(director.mainIndex.get, director.index), value)
+    val updatedUserAnswers =
+      mode match {
+        case CheckMode =>
+          val directors = dataUpdateService.findMatchingDirectors(index)(ua)
+          directors.foldLeft[UserAnswers](ua) { (acc, director) =>
+            if (director.isDeleted)
+              acc
+            else
+              acc.setOrException(DirectorNINOId(director.mainIndex.get, director.index), value)
+          }
+        case _ => ua
       }
-    }
-    val finalUpdatedUserAnswers = updatedUserAnswers.get.set(TrusteeNINOId(index), value)
+    val finalUpdatedUserAnswers = updatedUserAnswers.set(TrusteeNINOId(index), value)
     finalUpdatedUserAnswers
   }
 }

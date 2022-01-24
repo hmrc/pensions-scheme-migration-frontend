@@ -90,13 +90,15 @@ class ConfirmPreviousAddressController @Inject()(override val messagesApi: Messa
   def form(implicit messages: Messages): Form[Address] = formProvider()
 
   private def setUpdatedAnswers(establisherIndex: Index, directorIndex: Index, mode: Mode, value: Address, ua: UserAnswers): Try[UserAnswers] = {
-    var updatedUserAnswers: Try[UserAnswers] = Try(ua)
-    if (mode == CheckMode) {
-      val trustee = dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua)
-      if (trustee.isDefined)
-        updatedUserAnswers = ua.set(trusteePreviousAddressId(trustee.get.index), value)
+    val updatedUserAnswers =
+    mode match {
+      case CheckMode =>
+        dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
+          ua.setOrException(trusteePreviousAddressId(trustee.index), value)
+        }.getOrElse(ua)
+      case _ => ua
     }
-    val finalUpdatedUserAnswers = updatedUserAnswers.get.set(PreviousAddressId(establisherIndex, directorIndex), value)
+    val finalUpdatedUserAnswers = updatedUserAnswers.set(PreviousAddressId(establisherIndex, directorIndex), value)
     finalUpdatedUserAnswers
   }
 }

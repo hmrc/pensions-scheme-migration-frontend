@@ -106,13 +106,15 @@ class EnterPostcodeController @Inject()(val appConfig: AppConfig,
   }
 
   private def setUpdatedAnswers(establisherIndex: Index, directorIndex: Index, mode: Mode, value: Seq[TolerantAddress], ua: UserAnswers): Try[UserAnswers] = {
-    var updatedUserAnswers: Try[UserAnswers] = Try(ua)
-    if (mode == CheckMode) {
-      val trustee = dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua)
-      if (trustee.isDefined)
-        updatedUserAnswers = ua.set(trusteeEnterPostCodeId(trustee.get.index), value)
+    val updatedUserAnswers =
+    mode match {
+      case CheckMode =>
+        dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
+          ua.setOrException(trusteeEnterPostCodeId(trustee.index), value)
+        }.getOrElse(ua)
+      case _ => ua
     }
-    val finalUpdatedUserAnswers = updatedUserAnswers.get.set(EnterPostCodeId(establisherIndex, directorIndex), value)
+    val finalUpdatedUserAnswers = updatedUserAnswers.set(EnterPostCodeId(establisherIndex, directorIndex), value)
     finalUpdatedUserAnswers
   }
 
