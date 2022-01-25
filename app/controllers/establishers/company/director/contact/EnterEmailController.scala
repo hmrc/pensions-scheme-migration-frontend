@@ -23,41 +23,36 @@ import forms.EmailFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.contact.EnterEmailId
+import identifiers.trustees.individual.contact.{EnterEmailId => trusteeEnterEmailId}
 import models.requests.DataRequest
-import models.{Index, Mode}
+import models.{CheckMode, Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import services.DataUpdateService
+import utils.UserAnswers
 import viewmodels.Message
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class EnterEmailController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        val navigator: CompoundNavigator,
-                                        authenticate: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: EmailFormProvider,
-                                        val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        val renderer: Renderer
-                                       )(implicit val executionContext: ExecutionContext)
+                                      override val messagesApi: MessagesApi,
+                                      val navigator: CompoundNavigator,
+                                      authenticate: AuthAction,
+                                      getData: DataRetrievalAction,
+                                      requireData: DataRequiredAction,
+                                      formProvider: EmailFormProvider,
+                                      dataUpdateService: DataUpdateService,
+                                      val userAnswersCacheConnector: UserAnswersCacheConnector,
+                                      val controllerComponents: MessagesControllerComponents,
+                                      val renderer: Renderer
+                                    )(implicit val executionContext: ExecutionContext)
   extends EmailAddressController {
-
-  private def name(establisherIndex: Index, directorIndex: Index)
-                  (implicit request: DataRequest[AnyContent]): String =
-    request
-      .userAnswers
-      .get(DirectorNameId(establisherIndex, directorIndex))
-      .fold("the director")(_.fullName)
-
-  private def form(establisherIndex: Index, directorIndex: Index)
-                  (implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Message("messages__enterEmail__error_required", name(establisherIndex, directorIndex)))
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
@@ -80,15 +75,49 @@ class EnterEmailController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.right.map {
           schemeName =>
-            post(
-              entityName = name(establisherIndex, directorIndex),
-              entityType = Messages("messages__director"),
-              id = EnterEmailId(establisherIndex, directorIndex),
-              form = form(establisherIndex, directorIndex),
-              schemeName = schemeName,
-              paragraphText = Seq(Messages("messages__contact_details__hint", name(establisherIndex, directorIndex))),
-              mode = mode
+            form(establisherIndex, directorIndex).bindFromRequest().fold(
+              (formWithErrors: Form[_]) =>
+                renderer.render(
+                  template = "email.njk",
+                  ctx = Json.obj(
+                    "entityName" -> name(establisherIndex, directorIndex),
+                    "entityType" -> Messages("messages__director"),
+                    "form" -> formWithErrors,
+                    "schemeName" -> schemeName,
+                    "paragraph" -> Seq(Messages("messages__contact_details__hint", name(establisherIndex, directorIndex)))
+                  )
+                ).map(BadRequest(_)),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
+                  _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+                } yield
+                  Redirect(navigator.nextPage(EnterEmailId(establisherIndex, directorIndex), updatedAnswers, mode))
             )
         }
     }
+
+  private def form(establisherIndex: Index, directorIndex: Index)
+                  (implicit request: DataRequest[AnyContent]): Form[String] =
+    formProvider(Message("messages__enterEmail__error_required", name(establisherIndex, directorIndex)))
+
+  private def name(establisherIndex: Index, directorIndex: Index)
+                  (implicit request: DataRequest[AnyContent]): String =
+    request
+      .userAnswers
+      .get(DirectorNameId(establisherIndex, directorIndex))
+      .fold("the director")(_.fullName)
+
+  private def setUpdatedAnswers(establisherIndex: Index, directorIndex: Index, mode: Mode, value: String, ua: UserAnswers): Try[UserAnswers] = {
+    val updatedUserAnswers =
+    mode match {
+      case CheckMode =>
+        dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
+          ua.setOrException(trusteeEnterEmailId(trustee.index), value)
+        }.getOrElse(ua)
+      case _ => ua
+    }
+    val finalUpdatedUserAnswers = updatedUserAnswers.set(EnterEmailId(establisherIndex, directorIndex), value)
+    finalUpdatedUserAnswers
+  }
 }

@@ -101,6 +101,47 @@ trait UaJsValueGenerators {
     )
   }
 
+  def uaJsValueWithTrusteeMatching: Gen[JsObject] = for {
+    trusteeDetails <- trusteeIndividualJsValueGen(isNinoAvailable = true, 1)
+    trusteeDetailsFour <- trusteeIndividualJsValueGen(isNinoAvailable = false, 4)
+    estComDetails <- singleDirJsValueGen(isNinoAvailable = true)
+  } yield {
+    Json.obj(
+      "establishers" -> Seq(estComDetails),
+      "trustees" -> (Seq(trusteeDetails) ++ Seq(trusteeDetailsFour))
+    )
+  }
+
+  def uaJsValueWithNoTrusteeMatching: Gen[JsObject] = for {
+    trusteeDetails <- trusteeIndividualJsValueGen(isNinoAvailable = true, 2)
+    trusteeDetailsFour <- trusteeIndividualJsValueGen(isNinoAvailable = false, 4)
+    estComDetails <- singleDirJsValueGen(isNinoAvailable = true)
+  } yield {
+    Json.obj(
+      "establishers" -> Seq(estComDetails),
+      "trustees" -> (Seq(trusteeDetails) ++ Seq(trusteeDetailsFour))
+    )
+  }
+
+  def uaJsValueWithDirectorsMatching: Gen[JsObject] = for {
+    trusteeDetails <- trusteeIndividualJsValueGen(isNinoAvailable = true, 1)
+    estComDetails <- estCompanyWithNinoInDirJsValueGen(isNinoAvailable = true)
+  } yield {
+    Json.obj(
+      "establishers" -> Seq(estComDetails),
+      "trustees" -> Seq(trusteeDetails)
+    )
+  }
+
+  def uaJsValueWithNoDirectorMatching: Gen[JsObject] = for {
+    trusteeDetails <- trusteeIndividualJsValueGen(isNinoAvailable = false, 2)
+    estComDetails <- estCompanyWithNinoInDirJsValueGen(isNinoAvailable = false)
+  } yield {
+    Json.obj(
+      "establishers" -> Seq(estComDetails),
+      "trustees" -> Seq(trusteeDetails)
+    )
+  }
   def trusteeIndividualJsValueGen(isNinoAvailable: Boolean, index: Int): Gen[JsObject] = for {
     referenceOrNino <- Gen.const(s"CS700${index}00A")
     email <- Gen.const("aaa@gmail.com")
@@ -143,6 +184,25 @@ trait UaJsValueGenerators {
       )
     ) ++ address.as[JsObject] ++ Json.obj("director" -> Seq(directorDetails1.as[JsObject],
       directorDetails2.as[JsObject], directorDetails3.as[JsObject]))
+  }
+
+  def singleDirJsValueGen(isNinoAvailable: Boolean): Gen[JsObject] = for {
+    orgName <- nameGenerator
+    address <- addressJsValueGen
+    directorDetails <- directorJsValueGen(isDeleted = false, isNinoAvailable, index = 1)
+  } yield {
+    Json.obj(
+      "establisherKind" -> "company",
+      "haveCompanyNumber" -> false,
+      "havePaye" -> false,
+      "haveVat" -> false,
+      "noCompanyNumberReason" -> "fsdfdsf",
+      "phone" -> "23234",
+      "email" -> "sdf@sdf",
+      "companyDyDetails" -> Json.obj(
+        "companyName" -> orgName
+      )
+    ) ++ address.as[JsObject] ++ Json.obj("director" -> directorDetails.as[JsObject])
   }
 
   def directorJsValueGen(isDeleted: Boolean, isNinoAvailable: Boolean, index: Int): Gen[JsValue] = for {

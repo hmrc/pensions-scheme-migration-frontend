@@ -46,7 +46,7 @@ trait HasReferenceValueController
 
   protected def navigator: CompoundNavigator
 
-  private def templateName(paragraphText: Seq[String]) =
+  protected def templateName(paragraphText: Seq[String]): String =
     if (paragraphText.nonEmpty) "hasReferenceValueWithHint.njk" else "hasReferenceValue.njk"
 
   def get(

@@ -90,6 +90,7 @@ class TrusteeEnterUTRControllerSpec
       getData                   = dataRetrievalAction,
       requireData               = new DataRequiredActionImpl,
       formProvider              = formProvider,
+      dataUpdateService         = mockDataUpdateService,
       controllerComponents      = controllerComponents,
       userAnswersCacheConnector = mockUserAnswersCacheConnector,
       renderer                  = new Renderer(mockAppConfig, mockRenderer)

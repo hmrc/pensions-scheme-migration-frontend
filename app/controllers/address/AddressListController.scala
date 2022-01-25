@@ -39,7 +39,7 @@ trait AddressListController extends FrontendBaseController with Retrievals {
   protected def navigator: CompoundNavigator
   protected def form: Form[Int]
   protected def viewTemplate = "address/addressList.njk"
-  private def prepareJson(jsObject: JsObject):JsObject = {
+  protected def prepareJson(jsObject: JsObject):JsObject = {
     if (jsObject.keys.contains("h1MessageKey")) {
       jsObject
     } else {

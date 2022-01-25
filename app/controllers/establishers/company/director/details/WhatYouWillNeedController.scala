@@ -38,11 +38,11 @@ class WhatYouWillNeedController @Inject()(override val messagesApi: MessagesApi,
                                           requireData: DataRequiredAction,
                                           val controllerComponents: MessagesControllerComponents,
                                           val renderer: Renderer
-                                                 )(implicit val ec: ExecutionContext)
+                                         )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
-  with I18nSupport
-  with Retrievals
-  with NunjucksSupport {
+    with I18nSupport
+    with Retrievals
+    with NunjucksSupport {
 
   def onPageLoad(establisherIndex: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {

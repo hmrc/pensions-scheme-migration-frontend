@@ -23,29 +23,34 @@ import controllers.actions._
 import controllers.address.ManualAddressController
 import forms.address.AddressFormProvider
 import identifiers.beforeYouStart.SchemeNameId
+import identifiers.establishers.company.director.{address => Director}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address.{AddressId, AddressListId}
-import models.{Address, AddressConfiguration, Index}
+import models._
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import services.DataUpdateService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
+import utils.UserAnswers
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
-class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
-  val userAnswersCacheConnector: UserAnswersCacheConnector,
-  val navigator: CompoundNavigator,
-  authenticate: AuthAction,
-  getData: DataRetrievalAction,
-  requireData: DataRequiredAction,
-  formProvider: AddressFormProvider,
-  val controllerComponents: MessagesControllerComponents,
-  val config: AppConfig,
-  val renderer: Renderer
+class ConfirmAddressController @Inject()( override val messagesApi: MessagesApi,
+                                          val userAnswersCacheConnector: UserAnswersCacheConnector,
+                                          val navigator: CompoundNavigator,
+                                          authenticate: AuthAction,
+                                          getData: DataRetrievalAction,
+                                          requireData: DataRequiredAction,
+                                          formProvider: AddressFormProvider,
+                                          dataUpdateService: DataUpdateService,
+                                          val controllerComponents: MessagesControllerComponents,
+                                          val config: AppConfig,
+                                          val renderer: Renderer
 )(implicit ec: ExecutionContext) extends ManualAddressController
   with Retrievals with I18nSupport with NunjucksSupport {
 
@@ -53,17 +58,47 @@ class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
 
   override protected val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__individual")
 
-  def onPageLoad(index: Index): Action[AnyContent] =
+  def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (TrusteeNameId(index) and SchemeNameId).retrieve.right.map { case trusteeName ~ schemeName =>
           get(Some(schemeName), trusteeName.fullName, AddressId(index),AddressListId(index), AddressConfiguration.PostcodeFirst)
       }
     }
 
-  def onSubmit(index: Index): Action[AnyContent] =
+  def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (TrusteeNameId(index) and SchemeNameId).retrieve.right.map { case trusteeName ~ schemeName =>
-        post(Some(schemeName), trusteeName.fullName, AddressId(index), AddressConfiguration.PostcodeFirst)
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => {
+              renderer.render(viewTemplate, json(Some(schemeName), trusteeName.fullName, formWithErrors, AddressConfiguration.PostcodeFirst)).map(BadRequest(_))
+            },
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(setUpdatedAnswers(index, value, mode, request.userAnswers))
+                _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+              } yield {
+                Redirect(navigator.nextPage(AddressId(index), updatedAnswers, mode))
+              }
+          )
       }
     }
+
+  private def setUpdatedAnswers(index: Index, value: Address, mode: Mode, ua: UserAnswers): Try[UserAnswers] = {
+    val updatedUserAnswers =
+      mode match {
+        case CheckMode =>
+          val directors = dataUpdateService.findMatchingDirectors(index)(ua)
+          directors.foldLeft[UserAnswers](ua) { (acc, director) =>
+            if (director.isDeleted)
+              acc
+            else
+              acc.setOrException(Director.AddressId(director.mainIndex.get, director.index), value)
+          }
+        case _ => ua
+      }
+  val finalUpdatedUserAnswers = updatedUserAnswers.set(AddressId(index), value)
+  finalUpdatedUserAnswers
+  }
 }

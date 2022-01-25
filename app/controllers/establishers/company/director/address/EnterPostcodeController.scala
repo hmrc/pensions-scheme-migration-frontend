@@ -25,18 +25,22 @@ import forms.address.PostcodeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.address.EnterPostCodeId
+import identifiers.trustees.individual.address.{EnterPostCodeId => trusteeEnterPostCodeId}
+import models._
 import models.requests.DataRequest
-import models.{Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import services.DataUpdateService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
+import utils.UserAnswers
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class EnterPostcodeController @Inject()(val appConfig: AppConfig,
                                         override val messagesApi: MessagesApi,
@@ -46,16 +50,11 @@ class EnterPostcodeController @Inject()(val appConfig: AppConfig,
                                         authenticate: AuthAction,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
+                                        dataUpdateService: DataUpdateService,
                                         formProvider: PostcodeFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
                                         val renderer: Renderer)(implicit val ec: ExecutionContext)
   extends PostcodeController with I18nSupport with NunjucksSupport {
-
-  def form: Form[String] = formProvider("enterPostcode.required", "enterPostcode.invalid")
-
-  def formWithError(messageKey: String): Form[String] = {
-    form.withError("value", s"messages__error__postcode_$messageKey")
-  }
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
@@ -64,14 +63,32 @@ class EnterPostcodeController @Inject()(val appConfig: AppConfig,
       }
     }
 
-  def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
-    implicit request =>
-      retrieve(SchemeNameId) { schemeName =>
-        post(getFormToJson(schemeName, establisherIndex, directorIndex, mode),
-          EnterPostCodeId(establisherIndex, directorIndex), "enterPostcode.noresults", Some(mode))
-      }
-  }
+  def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
+    (authenticate andThen getData andThen requireData()).async {
+      implicit request =>
+        retrieve(SchemeNameId) { schemeName =>
+          val formToJson: Form[String] => JsObject = getFormToJson(schemeName, establisherIndex, directorIndex, mode)
+          form.bindFromRequest().fold(
+            formWithErrors =>
+              renderer.render(viewTemplate, prepareJson(formToJson(formWithErrors))).map(BadRequest(_)),
+            value =>
+              addressLookupConnector.addressLookupByPostCode(value).flatMap {
+                case Nil =>
+                  val json = prepareJson(formToJson(formWithError("enterPostcode.noresults")))
+                  renderer.render(viewTemplate, json).map(BadRequest(_))
 
+                case addresses =>
+                  for {
+                    updatedAnswers <- Future.fromTry(setUpdatedAnswers(establisherIndex, directorIndex, mode, addresses, request.userAnswers))
+                    _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+                  } yield {
+                    val finalMode = Some(mode).getOrElse(NormalMode)
+                    Redirect(navigator.nextPage(EnterPostCodeId(establisherIndex, directorIndex), updatedAnswers, finalMode))
+                  }
+              }
+          )
+        }
+    }
 
   def getFormToJson(schemeName: String, establisherIndex: Index, directorIndex: Index, mode: Mode)
                    (implicit request: DataRequest[AnyContent]): Form[String] => JsObject = {
@@ -87,4 +104,23 @@ class EnterPostcodeController @Inject()(val appConfig: AppConfig,
       )
     }
   }
+
+  private def setUpdatedAnswers(establisherIndex: Index, directorIndex: Index, mode: Mode, value: Seq[TolerantAddress], ua: UserAnswers): Try[UserAnswers] = {
+    val updatedUserAnswers =
+    mode match {
+      case CheckMode =>
+        dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
+          ua.setOrException(trusteeEnterPostCodeId(trustee.index), value)
+        }.getOrElse(ua)
+      case _ => ua
+    }
+    val finalUpdatedUserAnswers = updatedUserAnswers.set(EnterPostCodeId(establisherIndex, directorIndex), value)
+    finalUpdatedUserAnswers
+  }
+
+  def formWithError(messageKey: String): Form[String] = {
+    form.withError("value", s"messages__error__postcode_$messageKey")
+  }
+
+  def form: Form[String] = formProvider("enterPostcode.required", "enterPostcode.invalid")
 }

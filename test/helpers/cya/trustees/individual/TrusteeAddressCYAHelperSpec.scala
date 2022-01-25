@@ -21,7 +21,7 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
 import models.requests.DataRequest
-import models.{Address, MigrationLock, PersonName}
+import models.{Address, CheckMode, MigrationLock, PersonName}
 import org.scalatest.TryValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -84,20 +84,20 @@ class TrusteeAddressCYAHelperSpec extends AnyWordSpec with Matchers with TryValu
 
       result.head mustBe summaryListRowHtml(key = Messages("messages__address__whatYouWillNeed_h1", trusteeName.fullName),
         value = answerAddressTransform(trusteeAddress), Some(Link(text = Messages("site.change"),
-          target = controllers.trustees.individual.address.routes.EnterPostcodeController.onPageLoad(0).url,
+          target = controllers.trustees.individual.address.routes.EnterPostcodeController.onPageLoad(0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__address", trusteeName.fullName))),
           attributes = Map("id" -> "cya-0-0-change"))))
 
       result(1) mustBe summaryListRow(key = Messages("addressYears.title", trusteeName.fullName), valueMsgKey = "booleanAnswer.false",
         Some(Link(text = Messages("site.change"),
-          target = controllers.trustees.individual.address.routes.AddressYearsController.onPageLoad(0).url,
+          target = controllers.trustees.individual.address.routes.AddressYearsController.onPageLoad(0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
             Messages("messages__visuallyhidden__addressYears", trusteeName.fullName))),
           attributes = Map("id" -> "cya-0-1-change"))))
 
       result(2) mustBe summaryListRowHtml(key = Messages("messages__previousAddress", trusteeName.fullName),
         value = answerAddressTransform(trusteePreviousAddress), Some(Link(text = Messages("site.change"),
-          target = controllers.trustees.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(0).url,
+          target = controllers.trustees.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__previousAddress", trusteeName.fullName))),
           attributes = Map("id" -> "cya-0-2-change"))))
     }

@@ -20,12 +20,10 @@ import config.AppConfig
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
-import models.requests.DataRequest
-import models.{Mode, NormalMode, TolerantAddress}
 import forms.FormsHelper.formWithError
 import identifiers.TypedIdentifier
-import models.TolerantAddress
 import models.requests.DataRequest
+import models.{Mode, NormalMode, TolerantAddress}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -46,7 +44,7 @@ trait PostcodeController extends FrontendBaseController with Retrievals {
   protected def addressLookupConnector: AddressLookupConnector
   protected def viewTemplate = "address/postcode.njk"
 
-  private def prepareJson(jsObject: JsObject):JsObject = {
+  protected def prepareJson(jsObject: JsObject):JsObject = {
     if (jsObject.keys.contains("h1MessageKey")) {
       jsObject
     } else {

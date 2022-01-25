@@ -25,16 +25,20 @@ import forms.address.AddressFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.address.{AddressId, AddressListId}
-import models.{Address, AddressConfiguration, Index, Mode}
+import identifiers.trustees.individual.address.{AddressId => trusteeAddressId}
+import models._
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import services.DataUpdateService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
+import utils.UserAnswers
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
                                          val userAnswersCacheConnector: UserAnswersCacheConnector,
@@ -43,6 +47,7 @@ class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
                                          formProvider: AddressFormProvider,
+                                         dataUpdateService: DataUpdateService,
                                          val controllerComponents: MessagesControllerComponents,
                                          val config: AppConfig,
                                          val renderer: Renderer
@@ -50,8 +55,6 @@ class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
   with Retrievals with I18nSupport with NunjucksSupport {
 
   override protected val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__director")
-
-  def form(implicit messages: Messages): Form[Address] = formProvider()
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
@@ -64,7 +67,36 @@ class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
   def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.right.map { case directorName ~ schemeName =>
-        post(Some(schemeName), directorName.fullName, AddressId(establisherIndex, directorIndex), AddressConfiguration.PostcodeFirst, Some(mode))
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => {
+              renderer.render(viewTemplate, json(Some(schemeName), directorName.fullName, formWithErrors, AddressConfiguration.PostcodeFirst)).map(BadRequest(_))
+            },
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
+                _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+              } yield {
+                val finalMode = Some(mode).getOrElse(NormalMode)
+                Redirect(navigator.nextPage(AddressId(establisherIndex, directorIndex), updatedAnswers, finalMode))
+              }
+          )
       }
     }
+
+  def form(implicit messages: Messages): Form[Address] = formProvider()
+
+  private def setUpdatedAnswers(establisherIndex: Index, directorIndex: Index, mode: Mode, value: Address, ua: UserAnswers): Try[UserAnswers] = {
+    val updatedUserAnswers =
+      mode match {
+        case CheckMode =>
+          dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
+            ua.setOrException(trusteeAddressId(trustee.index), value)
+          }.getOrElse(ua)
+        case _ => ua
+      }
+    val finalUpdatedUserAnswers = updatedUserAnswers.set(AddressId(establisherIndex, directorIndex), value)
+    finalUpdatedUserAnswers
+  }
 }

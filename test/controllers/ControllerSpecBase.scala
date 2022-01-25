@@ -34,6 +34,7 @@ import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.Helpers.{GET, POST}
 import play.api.test.{FakeHeaders, FakeRequest}
+import services.DataUpdateService
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import utils.{CountryOptions, Enumerable}
 
@@ -61,6 +62,7 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach with MockitoSu
   protected val mockMinimalDetailsConnector: MinimalDetailsConnector = mock[MinimalDetailsConnector]
   protected val mockEmailConnector: EmailConnector = mock[EmailConnector]
   protected val mockLegacySchemeDetailsConnector: LegacySchemeDetailsConnector = mock[LegacySchemeDetailsConnector]
+  protected val mockDataUpdateService: DataUpdateService = mock[DataUpdateService]
 
   def modules: Seq[GuiceableModule] = Seq(
     bind[AuthAction].to[FakeAuthAction],
