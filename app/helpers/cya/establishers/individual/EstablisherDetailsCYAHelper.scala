@@ -64,7 +64,7 @@ class EstablisherDetailsCYAHelper
           answerOrAddRow(
             id                 = EstablisherNINOId(index),
             message            = Message("messages__enterNINO__cya", establisherName),
-            url                = Some(controllers.establishers.individual.details.routes.EstablisherHasUTRController.onPageLoad(index, CheckMode).url),
+            url                = Some(controllers.establishers.individual.details.routes.EstablisherEnterNINOController.onPageLoad(index, CheckMode).url),
             visuallyHiddenText = Some(msg"messages__enterNINO__cya_visuallyHidden".withArgs(establisherName)),
             answerTransform    = referenceValueTransform
           )
@@ -88,7 +88,7 @@ class EstablisherDetailsCYAHelper
           answerOrAddRow(
             id                 = EstablisherUTRId(index),
             message            = Message("messages__enterUTR__cya_label", establisherName),
-            url                = Some(controllers.establishers.individual.details.routes.EstablisherHasUTRController.onPageLoad(index, CheckMode).url),
+            url                = Some(controllers.establishers.individual.details.routes.EstablisherEnterUTRController.onPageLoad(index, CheckMode).url),
             visuallyHiddenText = Some(msg"messages__enterUTR__cya_visuallyHidden".withArgs(establisherName)),
             answerTransform    = referenceValueTransform
           )
