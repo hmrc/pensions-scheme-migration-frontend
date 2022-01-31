@@ -31,7 +31,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import javax.inject.Inject
@@ -91,14 +90,14 @@ class DeclarationController @Inject()(
       params = Map("psaName" -> request.md.name),
       callbackUrl(psaId)
     ).map { status =>
-      auditService.sendEvent(EmailAuditEvent(psaId, RACDAC_BULK_MIG, request.md.email))
+      auditService.sendEvent(EmailAuditEvent(psaId, RACDAC_BULK_MIG, request.md.email, pstrId=""))
       status
     } recoverWith {
       case _: Throwable => Future.successful(EmailNotSent)
     }
   }
 
-  private def callbackUrl(psaId: String): String = {
+  private def callbackUrl(psaId: String) = {
     val encryptedPsa = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(psaId)).value, StandardCharsets.UTF_8.toString)
     s"${appConfig.migrationUrl}/pensions-scheme-migration/email-response/${RACDAC_BULK_MIG}/$encryptedPsa"
   }

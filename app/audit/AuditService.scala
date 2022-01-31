@@ -46,7 +46,6 @@ class AuditServiceImpl @Inject()(
                                 ) extends AuditService {
 
   private val logger = Logger(classOf[AuditServiceImpl])
-
   implicit def toHc(request: RequestHeader): AuditHeaderCarrier =
     auditHeaderCarrier(HeaderCarrierConverter.fromRequestAndSession(request, request.session))
 
@@ -55,7 +54,7 @@ class AuditServiceImpl @Inject()(
 
 
     val details = rh.toAuditDetails() ++ event.details
-    logger.debug(s"[AuditService][sendEvent] sending ${event.auditType}")
+    logger.debug(s"[AuditService][sendEvent] sending ${event.auditType}") //you can put a print line here to test your code
     val result: Future[AuditResult] = connector.sendEvent(
       DataEvent(
         auditSource = config.appName,
