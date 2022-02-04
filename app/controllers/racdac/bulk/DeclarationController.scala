@@ -16,21 +16,22 @@
 
 package controllers.racdac.bulk
 
-import audit.{EmailAuditEvent, AuditService}
+import audit.{AuditService, EmailAuditEvent}
 import config.AppConfig
 import connectors._
 import connectors.cache.BulkMigrationQueueConnector
-import controllers.actions.{BulkDataAction, AuthAction}
+import controllers.actions.{AuthAction, BulkDataAction}
 import models.JourneyType.RACDAC_BULK_MIG
 import models.racDac.RacDacRequest
 import models.requests.BulkDataRequest
 import play.api.i18n.Lang.logger
-import play.api.i18n.{MessagesApi, I18nSupport}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import javax.inject.Inject

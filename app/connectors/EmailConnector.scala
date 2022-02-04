@@ -59,7 +59,6 @@ class EmailConnectorImpl @Inject()(
       force = config.emailSendForce,
       eventUrl = callbackUrl
     )
-      println("\n\n\n\n\n\n\n" + callbackUrl)
     val jsonData = Json.toJson(sendEmailReq)
 
     logger.debug(s"Data to email: $jsonData for email address $emailAddress")
