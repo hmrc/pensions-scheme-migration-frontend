@@ -16,16 +16,16 @@
 
 package controllers.racdac.bulk
 
-import audit.{EmailAuditEvent, AuditService}
+import audit.{AuditService, EmailAuditEvent}
 import config.AppConfig
 import connectors._
 import connectors.cache.BulkMigrationQueueConnector
-import controllers.actions.{BulkDataAction, AuthAction}
+import controllers.actions.{AuthAction, BulkDataAction}
 import models.JourneyType.RACDAC_BULK_MIG
 import models.racDac.RacDacRequest
 import models.requests.BulkDataRequest
 import play.api.i18n.Lang.logger
-import play.api.i18n.{MessagesApi, I18nSupport}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -91,14 +91,14 @@ class DeclarationController @Inject()(
       params = Map("psaName" -> request.md.name),
       callbackUrl(psaId)
     ).map { status =>
-      auditService.sendEvent(EmailAuditEvent(psaId, RACDAC_BULK_MIG, request.md.email))
+      auditService.sendEvent(EmailAuditEvent(psaId, RACDAC_BULK_MIG, request.md.email, pstrId=""))
       status
     } recoverWith {
       case _: Throwable => Future.successful(EmailNotSent)
     }
   }
 
-  private def callbackUrl(psaId: String): String = {
+  private def callbackUrl(psaId: String) = {
     val encryptedPsa = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(psaId)).value, StandardCharsets.UTF_8.toString)
     s"${appConfig.migrationUrl}/pensions-scheme-migration/email-response/${RACDAC_BULK_MIG}/$encryptedPsa"
   }

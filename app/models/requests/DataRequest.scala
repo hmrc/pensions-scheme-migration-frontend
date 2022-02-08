@@ -21,6 +21,7 @@ import play.api.mvc.{Request, WrappedRequest}
 import uk.gov.hmrc.domain.PsaId
 import utils.UserAnswers
 
+
 case class OptionalDataRequest[A](
                                    request: Request[A],
                                    userAnswers: Option[UserAnswers],

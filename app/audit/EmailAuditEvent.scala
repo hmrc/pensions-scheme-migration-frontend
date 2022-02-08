@@ -20,15 +20,16 @@ import models.JourneyType
   case class EmailAuditEvent(
                          psaId: String,
                          journeyType: JourneyType.Name,
-                         emailAddress: String
-                       ) extends AuditEvent {
+                         emailAddress: String,
+                         pstrId: String) extends AuditEvent {
 
   override def auditType: String = s"${journeyType.toString}EmailSentEvent"
-
+    //anything here will automatically end up in splunk
   override def details: Map[String, String] =
     Map(
       "psaId" -> psaId,
-      "emailAddress" -> emailAddress
+      "emailAddress" -> emailAddress,
+      "pstr" -> pstrId
     )
 }
 

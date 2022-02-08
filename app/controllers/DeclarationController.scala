@@ -83,11 +83,12 @@ class DeclarationController @Inject()(
       implicit request =>
       SchemeNameId.retrieve.right.map { schemeName =>
         val psaId = request.psaId.id
+        val pstrId = request.lock.pstr
         val userAnswers = request.userAnswers
         (for {
           updatedUa <- Future.fromTry(userAnswers.set( __ \ "pstr",JsString(request.lock.pstr)))
           _ <- pensionsSchemeConnector.registerScheme(UserAnswers(updatedUa.data), psaId, Scheme)
-          _ <- sendEmail(schemeName, request.psaId.id)
+          _ <- sendEmail(schemeName, psaId, pstrId)
         } yield {
           Redirect(routes.SchemeSuccessController.onPageLoad())
         })recoverWith {
@@ -99,7 +100,7 @@ class DeclarationController @Inject()(
       }
     }
 
-  private def sendEmail(schemeName: String, psaId: String)
+  private def sendEmail(schemeName: String, psaId: String, pstrId:String)
                        (implicit request: DataRequest[AnyContent]): Future[EmailStatus] = {
     logger.debug("Fetch email from API")
 
@@ -108,10 +109,11 @@ class DeclarationController @Inject()(
         emailAddress = minimalPsa.email,
         templateName = appConfig.schemeConfirmationEmailTemplateId,
         params = Map("psaName" -> minimalPsa.name, "schemeName" -> schemeName),
-        callbackUrl(psaId)
-      ).map {
+        callbackUrl(psaId, pstrId)
+      )
+      .map {
         status =>
-          auditService.sendEvent(EmailAuditEvent(psaId, SCHEME_MIG, minimalPsa.email))
+          auditService.sendEvent(EmailAuditEvent(psaId, SCHEME_MIG, minimalPsa.email, pstrId))
           status
       }
     } recoverWith {
@@ -119,8 +121,9 @@ class DeclarationController @Inject()(
     }
   }
 
-  private def callbackUrl(psaId: String): String = {
+  private def callbackUrl(psaId: String, pstrId:String): String = {
     val encryptedPsa = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(psaId)).value, StandardCharsets.UTF_8.toString)
-    s"${appConfig.migrationUrl}/pensions-scheme-migration/email-response/${SCHEME_MIG}/$encryptedPsa"
+    val encryptedPstr = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(pstrId)).value, StandardCharsets.UTF_8.toString)
+    s"${appConfig.migrationUrl}/pensions-scheme-migration/email-response/${SCHEME_MIG}/$encryptedPsa/$encryptedPstr"
   }
 }

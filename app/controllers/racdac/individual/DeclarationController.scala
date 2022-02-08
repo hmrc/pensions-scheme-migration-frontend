@@ -75,14 +75,14 @@ class DeclarationController @Inject()(
     (authenticate andThen getData andThen requireData(true)).async {
       implicit request =>
         val psaId = request.psaId.id
-
+        val pstrId = request.lock.pstr
         val userAnswers = request.userAnswers
         val racDacName = userAnswers.get(SchemeNameId)
           .getOrElse(throw new RuntimeException("Scheme Name is mandatory for RAC/DAC"))
             (for {
               updatedUa <- Future.fromTry(userAnswers.set( __ \ "pstr",JsString(request.lock.pstr)))
               _ <- pensionsSchemeConnector.registerScheme(UserAnswers(updatedUa.data), psaId, RacDac)
-              _ <- sendEmail(racDacName,psaId)
+              _ <- sendEmail(racDacName,psaId, pstrId)
             } yield {
               Redirect(controllers.racdac.individual.routes.ConfirmationController.onPageLoad().url)
             })recoverWith {
@@ -91,7 +91,7 @@ class DeclarationController @Inject()(
             }
     }
 
-  private def sendEmail(schemeName: String, psaId: String)
+  private def sendEmail(schemeName: String, psaId: String, pstrId:String)
                        (implicit request: DataRequest[AnyContent]): Future[EmailStatus] = {
     logger.debug(s"Sending Rac Dac migration email for $psaId")
     minimalDetailsConnector.getPSADetails(psaId) flatMap { minimalPsa =>
@@ -99,9 +99,9 @@ class DeclarationController @Inject()(
         emailAddress = minimalPsa.email,
         templateName = appConfig.individualMigrationConfirmationEmailTemplateId,
         params = Map("psaName" -> minimalPsa.name, "schemeName" -> schemeName),
-        callbackUrl(psaId)
+        callbackUrl(psaId, pstrId)
       ).map { status =>
-        auditService.sendEvent(EmailAuditEvent(psaId, RACDAC_IND_MIG, minimalPsa.email))
+        auditService.sendEvent(EmailAuditEvent(psaId, RACDAC_IND_MIG, minimalPsa.email, pstrId))
         status
       }
     } recoverWith {
@@ -109,8 +109,9 @@ class DeclarationController @Inject()(
     }
   }
 
-  private def callbackUrl(psaId: String): String = {
+  private def callbackUrl(psaId: String, pstrId:String): String = {
     val encryptedPsa = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(psaId)).value, StandardCharsets.UTF_8.toString)
-    s"${appConfig.migrationUrl}/pensions-scheme-migration/email-response/$RACDAC_IND_MIG/$encryptedPsa"
+    val encryptedPstr = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(pstrId)).value, StandardCharsets.UTF_8.toString)
+    s"${appConfig.migrationUrl}/pensions-scheme-migration/email-response/$RACDAC_IND_MIG/$encryptedPsa/$encryptedPstr"
   }
 }
