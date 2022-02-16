@@ -74,11 +74,24 @@ class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
       answerRow(messages("messages__cya__scheme_name"), schemeName),
       schemeTypeRow)
 
-    val seqRowCountryWorkingKnowledge = Seq(
-      answerRow(messages("messages__cya__country", schemeName),
-        messages(s"country.${CYAHelper.getAnswer(EstablishedCountryId)}"),
-        Some(routes.EstablishedCountryController.onPageLoad().url),
-        Some(msg"messages__visuallyhidden__schemeEstablishedCountry".withArgs(schemeName))),
+    val country = request.userAnswers.get(EstablishedCountryId)
+    val countryRow = {
+      val url: String = routes.EstablishedCountryController.onPageLoad().url
+      val visuallyHiddenText = msg"messages__visuallyhidden__schemeEstablishedCountry".withArgs(schemeName)
+      country match {
+        case None => Row(
+          key = Key(msg"messages__cya__country".withArgs(schemeName), classes = Seq("govuk-!-width-one-half")),
+          value = Value(msg"site.incomplete", classes = Seq("govuk-!-width-one-third")),
+          actions = actionAdd(Some(url), Some(visuallyHiddenText)))
+        case Some(details) => Row(
+          key = Key(msg"messages__cya__country".withArgs(schemeName), classes = Seq("govuk-!-width-one-half")),
+          value = Value(msg"country.$details", classes = Seq("govuk-!-width-one-third")),
+          actions = actionChange(Some(url), Some(visuallyHiddenText))
+        )
+      }
+    }
+     val seqRowCountryWorkingKnowledge =  Seq(
+      countryRow,
       answerOrAddRow(
         id = WorkingKnowledgeId,
         message = Message("messages__cya__working_knowledge").resolve,
