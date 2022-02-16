@@ -66,8 +66,8 @@ class BeforeYouStartCYAHelperSpec
           ))
         ),
         Row(
-          key = Key(Message(msg"messages__cya__country".withArgs(schemeName).resolve), classes = Seq("govuk-!-width-one-half")),
-          value = Value(Literal("Afghanistan")),
+          key = Key(msg"messages__cya__country".withArgs(schemeName), classes = Seq("govuk-!-width-one-half")),
+          value = Value(msg"country.AF", classes = Seq("govuk-!-width-one-third")),
           actions = Seq(Action(
             content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
             href =  controllers.beforeYouStartSpoke.routes.EstablishedCountryController.onPageLoad().url,
