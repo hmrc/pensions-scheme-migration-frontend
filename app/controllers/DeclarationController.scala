@@ -85,16 +85,19 @@ class DeclarationController @Inject()(
         val psaId = request.psaId.id
         val pstrId = request.lock.pstr
         val userAnswers = request.userAnswers
+        logger.warn("About to register scheme for " + schemeName)
         (for {
           updatedUa <- Future.fromTry(userAnswers.set( __ \ "pstr",JsString(request.lock.pstr)))
           _ <- pensionsSchemeConnector.registerScheme(UserAnswers(updatedUa.data), psaId, Scheme)
           _ <- sendEmail(schemeName, psaId, pstrId)
         } yield {
+          logger.warn("Success in registering scheme")
           Redirect(routes.SchemeSuccessController.onPageLoad())
         })recoverWith {
           case ex: UpstreamErrorResponse if is5xx(ex.statusCode) =>
             Future.successful(Redirect(controllers.routes.YourActionWasNotProcessedController.onPageLoadScheme))
-          case _ =>
+          case ex =>
+            logger.warn("Declaration controller redirecting due to " + ex.getMessage, ex)
             Future.successful(Redirect(controllers.routes.TaskListController.onPageLoad))
         }
       }
