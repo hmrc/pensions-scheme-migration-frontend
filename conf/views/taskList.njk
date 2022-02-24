@@ -29,7 +29,7 @@
                    <p class="govuk-body">{{ schemeStatusDescription }}</p>
                 <h2 class="govuk-heading-m">{{messages("messages__newSchemeTaskList__schemeDetailsExpiryDate")}}</h2>
                     <p class="govuk-body">{{ expiryDate }}</p>
-                      <ol class="app-task-list">
+                      <div class="app-task-list">
                           <ul class="app-task-list__items">
                             {% for item in taskSections %}
                                <li class="app-task-list__item">
@@ -51,7 +51,7 @@
                                </li>
                             {% endfor %}
                           </ul>
-                       </ol>
+                       </div>
                          <h2 id="section-declaration-header"
                             class="govuk-heading-l">
                                 {{ messages("messages__schemeTaskList__sectionDeclaration_header") }}
