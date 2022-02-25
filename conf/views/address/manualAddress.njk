@@ -29,7 +29,7 @@
           }) }}
         {% endif %}
 
-        <form action="{{ submitUrl }}" method="post" autocomplete="off" novalidate>
+        <form method="post" autocomplete="off" novalidate>
 
           {{ csrf() | safe }}
          {% call govukFieldset({
