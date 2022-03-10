@@ -446,7 +446,7 @@ object SchemeSearchServiceSpec extends SpecBase with MockitoSugar with BeforeAnd
   private val tableForScheme=Table(schemeHead,
     List(Seq(
       Cell(uk.gov.hmrc.viewmodels.Html(
-        s"""<a class=migrate-pstr-$pstr1 href=${ListOfSchemesController.clickSchemeLink(pstr1, false)}>scheme-1</a>""".stripMargin),
+        s"""<a class="govuk-link migrate-pstr-$pstr1" href=${ListOfSchemesController.clickSchemeLink(pstr1, false)}>scheme-1</a>""".stripMargin),
         Seq("govuk-!-width-one-half")),
       Cell(Literal(pstr1), Seq("govuk-!-width-one-quarter")),
       Cell(Literal("12 December 1989"), Seq("govuk-!-width-one-quarter")))
@@ -455,13 +455,13 @@ object SchemeSearchServiceSpec extends SpecBase with MockitoSugar with BeforeAnd
 
   val racDacRows= List(Seq(
     Cell(uk.gov.hmrc.viewmodels.Html(
-      s"""<a class=migrate-pstr-$pstr1 href=${ListOfSchemesController.clickSchemeLink(pstr1, true)}>scheme-1</a>""".stripMargin),
+      s"""<a class="govuk-link migrate-pstr-$pstr1" href=${ListOfSchemesController.clickSchemeLink(pstr1, true)}>scheme-1</a>""".stripMargin),
       Seq("govuk-!-width-one-half")),
     Cell(Literal(pstr1), Seq("govuk-!-width-one-quarter")),
     Cell(Literal("12 December 1989"), Seq("govuk-!-width-one-quarter"))),
     Seq(
       Cell(uk.gov.hmrc.viewmodels.Html(
-        s"""<a class=migrate-pstr-$pstr2 href=${ListOfSchemesController.clickSchemeLink(pstr2, true)}>scheme-2</a>""".stripMargin),
+        s"""<a class="govuk-link migrate-pstr-$pstr2" href=${ListOfSchemesController.clickSchemeLink(pstr2, true)}>scheme-2</a>""".stripMargin),
         Seq("govuk-!-width-one-half")),
       Cell(Literal(pstr2), Seq("govuk-!-width-one-quarter")),
       Cell(Literal("12 October 2000"), Seq("govuk-!-width-one-quarter")))
