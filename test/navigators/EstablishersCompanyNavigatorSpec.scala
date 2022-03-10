@@ -71,15 +71,15 @@ class EstablishersCompanyNavigatorSpec
 
   private val cyaAddress: Call = addressRoutes.CheckYourAnswersController.onPageLoad(index)
 
-  private def enterPreviousPostcode: Call = addressRoutes.EnterPreviousPostcodeController.onPageLoad(index)
+  private def enterPreviousPostcode(mode:Mode): Call = addressRoutes.EnterPreviousPostcodeController.onPageLoad(index,mode)
 
-  private def tradingTime: Call = addressRoutes.TradingTimeController.onPageLoad(index)
+  private def tradingTime(mode:Mode): Call = addressRoutes.TradingTimeController.onPageLoad(index,mode)
 
-  private def selectAddress: Call = addressRoutes.SelectAddressController.onPageLoad(index)
+  private def selectAddress(mode:Mode): Call = addressRoutes.SelectAddressController.onPageLoad(index,mode)
 
-  private def selectPreviousAddress: Call = addressRoutes.SelectPreviousAddressController.onPageLoad(index)
+  private def selectPreviousAddress(mode:Mode): Call = addressRoutes.SelectPreviousAddressController.onPageLoad(index,mode)
 
-  private def addressYears: Call = addressRoutes.AddressYearsController.onPageLoad(index)
+  private def addressYears(mode:Mode): Call = addressRoutes.AddressYearsController.onPageLoad(index,mode)
 
   private def enterPhonePage(mode:Mode): Call =
     controllers.establishers.company.contact.routes.EnterPhoneController.onPageLoad(index, mode)
@@ -130,17 +130,17 @@ class EstablishersCompanyNavigatorSpec
         row(HavePAYEId(index))(paye(), uaWithValue(HavePAYEId(index), true)),
         row(HavePAYEId(index))(cyaDetails, uaWithValue(HavePAYEId(index), false)),
         row(PAYEId(index))(cyaDetails),
-        row(EnterPostCodeId(index))(selectAddress, uaWithValue(EnterPostCodeId(index), seqAddresses)),
-        row(AddressListId(index))(addressYears, uaWithValue(AddressListId(index), Data.tolerantAddress)),
-        row(AddressId(index))(addressYears, uaWithValue(AddressId(index), address)),
+        row(EnterPostCodeId(index))(selectAddress(NormalMode), uaWithValue(EnterPostCodeId(index), seqAddresses)),
+        row(AddressListId(index))(addressYears(NormalMode), uaWithValue(AddressListId(index), Data.tolerantAddress)),
+        row(AddressId(index))(addressYears(NormalMode), uaWithValue(AddressId(index), address)),
 
         row(AddressYearsId(index))(cyaAddress, uaWithValue(AddressYearsId(index), true)),
-        row(AddressYearsId(index))(tradingTime, uaWithValue(AddressYearsId(index), false)),
+        row(AddressYearsId(index))(tradingTime(NormalMode), uaWithValue(AddressYearsId(index), false)),
 
         row(TradingTimeId(index))(cyaAddress, uaWithValue(TradingTimeId(index), false)),
-        row(TradingTimeId(index))(enterPreviousPostcode, uaWithValue(TradingTimeId(index), true)),
+        row(TradingTimeId(index))(enterPreviousPostcode(NormalMode), uaWithValue(TradingTimeId(index), true)),
 
-        row(EnterPreviousPostCodeId(index))(selectPreviousAddress, uaWithValue(EnterPreviousPostCodeId(index), seqAddresses)),
+        row(EnterPreviousPostCodeId(index))(selectPreviousAddress(NormalMode), uaWithValue(EnterPreviousPostCodeId(index), seqAddresses)),
         row(PreviousAddressListId(index))(cyaAddress, uaWithValue(PreviousAddressListId(index), Data.tolerantAddress)),
         row(PreviousAddressId(index))(cyaAddress, uaWithValue(PreviousAddressId(index), address)),
         row(EnterEmailId(index))(enterPhonePage(NormalMode), Some(detailsUa.set(EnterEmailId(index), "test@test.com").success.value)),

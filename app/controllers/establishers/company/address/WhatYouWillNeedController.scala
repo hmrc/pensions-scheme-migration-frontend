@@ -22,7 +22,7 @@ import controllers.establishers.company.address.routes._
 import helpers.cya.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
-import models.Index
+import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -56,7 +56,7 @@ class WhatYouWillNeedController @Inject()(
               ctx = Json.obj(
                 "name" -> personName.companyName,
                 "entityType" -> Messages("messages__title_company"),
-                "continueUrl" -> EnterPostcodeController.onPageLoad(index).url,
+                "continueUrl" -> EnterPostcodeController.onPageLoad(index,NormalMode).url,
                 "schemeName" -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
               )
             ).map(Ok(_))

@@ -34,7 +34,8 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.{Data, Enumerable, UserAnswers}
-import models.Scheme
+import models.{NormalMode, Scheme}
+
 import scala.concurrent.Future
 
 class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
@@ -51,8 +52,8 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = controllers.establishers.company.address.routes.ConfirmAddressController.onPageLoad(0).url
-  private val httpPathPOST: String = controllers.establishers.company.address.routes.ConfirmAddressController.onSubmit(0).url
+  private val httpPathGET: String = controllers.establishers.company.address.routes.ConfirmAddressController.onPageLoad(0,NormalMode).url
+  private val httpPathPOST: String = controllers.establishers.company.address.routes.ConfirmAddressController.onSubmit(0,NormalMode).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "line1" -> Seq("1"),
