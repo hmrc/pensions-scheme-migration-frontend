@@ -26,7 +26,7 @@ import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.address.{EnterPreviousPostCodeId, PreviousAddressId, PreviousAddressListId}
-import models.{Index, Mode, NormalMode}
+import models.{Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -56,18 +56,18 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
 
   override def form: Form[Int] = formProvider("selectAddress.required")
 
-  def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async { implicit request =>
+  def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async { implicit request =>
     retrieve(SchemeNameId) { schemeName =>
-      getFormToJson(schemeName, index, NormalMode).retrieve.right.map(get)
+      getFormToJson(schemeName, index, mode).retrieve.right.map(get)
     }
   }
 
-  def onSubmit(index: Index): Action[AnyContent] =
+  def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
         val addressPages: AddressPages = AddressPages(EnterPreviousPostCodeId(index), PreviousAddressListId(index), PreviousAddressId(index))
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, index, NormalMode).retrieve.right.map(post(_, addressPages,
-          manualUrlCall = ConfirmPreviousAddressController.onPageLoad(index)))
+        getFormToJson(schemeName, index, mode).retrieve.right.map(post(_, addressPages,
+          manualUrlCall = ConfirmPreviousAddressController.onPageLoad(index,mode),mode=Some(mode)))
       }
     }
 
@@ -85,7 +85,7 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
             "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
             "entityType" -> msg("messages__company"),
             "entityName" -> name,
-            "enterManuallyUrl" -> ConfirmPreviousAddressController.onPageLoad(index).url,
+            "enterManuallyUrl" -> ConfirmPreviousAddressController.onPageLoad(index,mode).url,
             "schemeName" -> schemeName,
             "h1MessageKey" -> "previousAddressList.title"
           )

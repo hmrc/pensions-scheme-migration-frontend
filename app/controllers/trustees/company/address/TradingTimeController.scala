@@ -23,7 +23,7 @@ import forms.address.TradingTimeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.address.TradingTimeId
-import models.Index
+import models.{Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
@@ -49,7 +49,7 @@ class TradingTimeController @Inject()(override val messagesApi: MessagesApi,
   private def form: Form[Boolean] =
     formProvider("companyTradingTime.error.required")
 
-  def onPageLoad(index: Index): Action[AnyContent] =
+  def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (CompanyDetailsId(index) and SchemeNameId).retrieve.right.map {
         case companyDetails ~ schemeName =>
@@ -57,11 +57,11 @@ class TradingTimeController @Inject()(override val messagesApi: MessagesApi,
       }
     }
 
-  def onSubmit(index: Index): Action[AnyContent] =
+  def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (CompanyDetailsId(index) and SchemeNameId).retrieve.right.map {
         case companyDetails ~ schemeName =>
-          post(Some(schemeName), companyDetails.companyName, Messages("messages__company"), form, TradingTimeId(index))
+          post(Some(schemeName), companyDetails.companyName, Messages("messages__company"), form, TradingTimeId(index),Some(mode))
       }
     }
 }
