@@ -26,10 +26,10 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.EnterPreviousPostCodeId
 import models.requests.DataRequest
-import models.{Mode, Index, NormalMode}
+import models.{Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{MessagesApi, I18nSupport}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -57,17 +57,17 @@ class EnterPreviousPostcodeController @Inject()(val appConfig: AppConfig,
     form.withError("value", s"messages__error__postcode_$messageKey")
   }
 
-  def onPageLoad(index: Index): Action[AnyContent] =
+  def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        get(getFormToJson(schemeName, index, NormalMode))
+        get(getFormToJson(schemeName, index, mode))
       }
     }
 
-  def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async{
+  def onSubmit(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async{
     implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        post(getFormToJson(schemeName, index, NormalMode), EnterPreviousPostCodeId(index), "enterPostcode.noresults")
+        post(getFormToJson(schemeName, index, mode), EnterPreviousPostCodeId(index), "enterPostcode.noresults",Some(mode))
       }
   }
 
@@ -80,7 +80,7 @@ class EnterPreviousPostcodeController @Inject()(val appConfig: AppConfig,
         "entityType" -> msg("establisherEntityTypeIndividual"),
         "entityName" -> name,
         "form" -> form,
-        "enterManuallyUrl" -> controllers.establishers.individual.address.routes.ConfirmPreviousAddressController.onPageLoad(index).url,
+        "enterManuallyUrl" -> controllers.establishers.individual.address.routes.ConfirmPreviousAddressController.onPageLoad(index,mode).url,
         "schemeName" -> schemeName,
         "h1MessageKey" -> "previousPostcode.title"
       )

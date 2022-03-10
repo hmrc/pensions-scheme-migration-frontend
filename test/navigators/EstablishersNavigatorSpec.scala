@@ -67,15 +67,15 @@ class EstablishersNavigatorSpec
   private val cyaAddress: Call = controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
 
   private def enterPreviousPostcode(mode:Mode): Call =
-    controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad( index)
+    controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad( index,mode)
 
   private def selectAddress(mode:Mode): Call = {
-    controllers.establishers.individual.address.routes.SelectAddressController.onPageLoad(index)
+    controllers.establishers.individual.address.routes.SelectAddressController.onPageLoad(index,mode)
   }
 
-  private def selectPreviousAddress(mode:Mode): Call = controllers.establishers.individual.address.routes.SelectPreviousAddressController.onPageLoad(index)
+  private def selectPreviousAddress(mode:Mode): Call = controllers.establishers.individual.address.routes.SelectPreviousAddressController.onPageLoad(index,mode)
 
-  private def addressYears(mode:Mode): Call = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index)
+  private def addressYears(mode:Mode): Call = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index,mode)
 
   private def enterPhonePage(mode:Mode): Call =
     controllers.establishers.individual.contact.routes.EnterPhoneController.onPageLoad(index, mode)

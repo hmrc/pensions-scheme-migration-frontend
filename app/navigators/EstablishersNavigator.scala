@@ -54,12 +54,12 @@ class EstablishersNavigator@Inject()(config: AppConfig)
     case EstablisherHasUTRId(index) => establisherHasUtr(index, ua, NormalMode)
     case EstablisherUTRId(index) => cyaDetails(index)
     case EstablisherNoUTRReasonId(index) => cyaDetails(index)
-    case EnterPostCodeId(index) => controllers.establishers.individual.address.routes.SelectAddressController.onPageLoad(index)
+    case EnterPostCodeId(index) => controllers.establishers.individual.address.routes.SelectAddressController.onPageLoad(index,NormalMode)
     case AddressListId(index) => addressYears(index, NormalMode)
     case AddressId(index) => addressYears(index, NormalMode)
     case AddressYearsId(index) =>
-      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index)
-    case EnterPreviousPostCodeId(index) => controllers.establishers.individual.address.routes.SelectPreviousAddressController.onPageLoad(index)
+      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index,NormalMode)
+    case EnterPreviousPostCodeId(index) => controllers.establishers.individual.address.routes.SelectPreviousAddressController.onPageLoad(index,NormalMode)
     case PreviousAddressListId(index) => cyaAddress(index)
     case PreviousAddressId(index) => cyaAddress(index)
     case EnterEmailId(index) => controllers.establishers.individual.contact.routes.EnterPhoneController.onPageLoad(index, NormalMode)
@@ -78,12 +78,21 @@ class EstablishersNavigator@Inject()(config: AppConfig)
     case EstablisherNoUTRReasonId(index) => cyaDetails(index)
     case EnterEmailId(index) => cyaContactDetails(index)
     case EnterPhoneId(index) => cyaContactDetails(index)
+    case AddressId(index) => cyaAddress(index)
+    case AddressListId(index) => cyaAddress(index)
+    case AddressYearsId(index) =>
+      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index)
+      else controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index, CheckMode)
+    case EnterPostCodeId(index) => controllers.establishers.individual.address.routes.SelectAddressController.onPageLoad(index, CheckMode)
+    case EnterPreviousPostCodeId(index) => controllers.establishers.individual.address.routes.SelectPreviousAddressController.onPageLoad(index, CheckMode)
+    case PreviousAddressId(index) => cyaAddress(index)
+    case PreviousAddressListId(index) => cyaAddress(index)
   }
 
   private def cyaAddress(index:Int): Call = controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
   private def cyaDetails(index:Int): Call = controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index)
   private def cyaContactDetails(index:Int): Call = controllers.establishers.individual.contact.routes.CheckYourAnswersController.onPageLoad(index)
-  private def addressYears(index:Int, mode:Mode): Call =controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index)
+  private def addressYears(index:Int, mode:Mode): Call =controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index,mode)
 
   private def addPartners(index: Int, answers: UserAnswers): Call = {
     if (answers.allPartnersAfterDelete(index).isEmpty) {
