@@ -56,6 +56,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val bulkMigrationIsInProgressUrl: String = s"$migrationUrl${config.get[String](path = "urls.bulkMigrationIsInProgress")}"
   lazy val bulkMigrationIsAllFailedUrl: String = s"$migrationUrl${config.get[String](path = "urls.bulkMigrationIsAllFailed")}"
   lazy val bulkMigrationDeleteAllUrl: String = s"$migrationUrl${config.get[String](path = "urls.bulkMigrationDeleteAll")}"
+  lazy val bulkMigrationEventsLogStatusUrl: String = s"$migrationUrl${config.get[String](path = "urls.bulkMigrationEventsLogStatus")}"
   def featureToggleUrl(toggle:String) : String = s"$migrationUrl${config.get[String]("urls.featureToggle").format(toggle)}"
 
   lazy val legacySchemeDetailsUrl: String = s"$migrationUrl${config.get[String](path = "urls.legacySchemeDetails")}"

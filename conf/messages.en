@@ -1144,3 +1144,10 @@ messages__trustees__prefill__multi__error__noneWithValue = Select the directors 
 messages__prefill__label__none = None of the above
 messages__prefill__label__divider = Or
 messages__prefill__checkbox__hint = Select all that apply, or select “None of the above”
+
+messages__processingRequest__h1_processing = We are processing your request
+messages__processingRequest__content_processing = Please wait while your request is processed. Do not close this page or leave the service.
+messages__processingRequest__h1_processed = We have processed your request
+messages__processingRequest__content_processed = Select continue.
+messages__processingRequest__h1_failure = Sorry, there was a problem with the service
+messages__processingRequest__content_failure = We could not process your request. Select continue to try again.

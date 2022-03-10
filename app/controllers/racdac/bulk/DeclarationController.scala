@@ -74,7 +74,8 @@ class DeclarationController @Inject()(
 
         bulkMigrationQueueConnector.pushAll(psaId, Json.toJson(racDacSchemes)).flatMap { _ =>
           sendEmail(psaId).map { _ =>
-            Redirect(routes.ConfirmationController.onPageLoad().url)
+            //Redirect(routes.ConfirmationController.onPageLoad().url)
+            Redirect(routes.ProcessingRequestController.onPageLoad().url)
           }
         } recoverWith {
           case _ =>
