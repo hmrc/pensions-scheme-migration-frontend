@@ -40,22 +40,37 @@ class ProcessingRequestController @Inject()(override val messagesApi: MessagesAp
     authenticate.async {
       implicit request =>
         bulkMigrationEventsLogConnector.getStatus.flatMap { status =>
-          println("\nSTAT=" + status)
-          val (header, content) = getHeaderAndContent(status)
+          val (header, content, redirect) = headerContentAndRedirect(status)
           val json = Json.obj(
             "pageTitle" -> header,
             "heading" -> header,
-            "content" -> content
+            "content" -> content,
+            "continueUrl" -> redirect
           )
           renderer.render("racdac/processingRequest.njk", json).map(Ok(_))
         }
     }
 
-  private def getHeaderAndContent(status:Int): Tuple2[String, String] = {
+  private def headerContentAndRedirect(status:Int): Tuple3[String, String, String] = {
     status match {
-      case ACCEPTED => Tuple2("messages__processingRequest__h1_processed","messages__processingRequest__content_processed")
-      case NOT_FOUND => Tuple2("messages__processingRequest__h1_processing", "messages__processingRequest__content_processing")
-      case _ => Tuple2("messages__processingRequest__h1_failure","messages__processingRequest__content_failure")
+      case ACCEPTED =>
+        Tuple3(
+          "messages__processingRequest__h1_processed",
+          "messages__processingRequest__content_processed",
+          routes.ConfirmationController.onPageLoad().url
+        )
+      case NOT_FOUND =>
+        Tuple3(
+          "messages__processingRequest__h1_processing",
+          "messages__processingRequest__content_processing",
+          routes.ConfirmationController.onPageLoad().url
+        )
+      case _ =>
+        Tuple3(
+          "messages__processingRequest__h1_failure",
+          "messages__processingRequest__content_failure",
+          routes.ConfirmationController.onPageLoad().url
+        )
     }
   }
 }
