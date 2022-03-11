@@ -16,6 +16,7 @@
 
 package controllers.racdac.bulk
 
+import config.AppConfig
 import connectors.cache.BulkMigrationEventsLogConnector
 import controllers.actions._
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -27,7 +28,8 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class ProcessingRequestController @Inject()(override val messagesApi: MessagesApi,
+class ProcessingRequestController @Inject()(val appConfig: AppConfig,
+                                             override val messagesApi: MessagesApi,
                                             authenticate: AuthAction,
                                             val controllerComponents: MessagesControllerComponents,
                                             renderer: Renderer,
@@ -45,7 +47,8 @@ class ProcessingRequestController @Inject()(override val messagesApi: MessagesAp
             "pageTitle" -> header,
             "heading" -> header,
             "content" -> content,
-            "continueUrl" -> redirect
+            "continueUrl" -> redirect,
+            "backUrl" -> appConfig.psaOverviewUrl
           )
           renderer.render("racdac/processingRequest.njk", json).map(Ok(_))
         }
