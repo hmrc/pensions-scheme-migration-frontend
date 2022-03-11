@@ -101,7 +101,7 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
     val formatter: String => String = date => LocalDate.parse(date).format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
 
     val schemeName: Items => Content = data => if (viewOnly) Literal(data.schemeName) else Html(
-      s"""<a class=migrate-pstr-${data.pstr} href=${ListOfSchemesController.clickSchemeLink(data.pstr, isRacDac)}>${data.schemeName}</a>""".stripMargin)
+      s"""<a class="govuk-link migrate-pstr-${data.pstr}" href=${ListOfSchemesController.clickSchemeLink(data.pstr, isRacDac)}>${data.schemeName}</a>""".stripMargin)
 
     val rows = schemeDetails.map { data =>
       Seq(Cell(schemeName(data), Seq("govuk-!-width-one-half")),
