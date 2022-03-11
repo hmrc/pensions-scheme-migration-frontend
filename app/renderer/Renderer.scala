@@ -48,6 +48,8 @@ class Renderer @Inject()(appConfig: AppConfig, renderer: NunjucksRenderer) {
       "reportAProblemNonJSUrl"          -> appConfig.reportAProblemNonJSUrl,
       "psaOverviewUrl"                  -> appConfig.psaOverviewUrl,
       "timeout"                         -> appConfig.timeoutSeconds,
-      "countdown"                       -> appConfig.CountdownInSeconds
+      "countdown"                       -> appConfig.CountdownInSeconds,
+      "gtmContainerId"                  -> appConfig.gtmContainerId,
+      "trackingSnippetUrl"              -> appConfig.trackingSnippetUrl
   )
 }
