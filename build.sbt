@@ -60,7 +60,7 @@ pipelineStages in Assets := Seq(concat, uglify)
     ScoverageKeys.coverageMinimum := 80,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
-    scalacOptions ++= Seq("-Xfatal-warnings", "-feature")
+    scalacOptions ++= Seq(/*"-Xfatal-warnings",*/ "-feature")
   )
   .settings(
     scalacOptions ++= Seq(/*"-Xfatal-warnings",*/ "-feature"),

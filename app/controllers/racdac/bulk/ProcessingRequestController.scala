@@ -51,7 +51,7 @@ class ProcessingRequestController @Inject()(override val messagesApi: MessagesAp
         }
     }
 
-  private def headerContentAndRedirect(status:Int): Tuple3[String, String, String] = {
+  private def headerContentAndRedirect(status: Int): (String, String, String) = {
     status match {
       case ACCEPTED =>
         Tuple3(
@@ -63,13 +63,13 @@ class ProcessingRequestController @Inject()(override val messagesApi: MessagesAp
         Tuple3(
           "messages__processingRequest__h1_processing",
           "messages__processingRequest__content_processing",
-          routes.ConfirmationController.onPageLoad().url
+          routes.ProcessingRequestController.onPageLoad().url
         )
       case _ =>
         Tuple3(
           "messages__processingRequest__h1_failure",
           "messages__processingRequest__content_failure",
-          routes.ConfirmationController.onPageLoad().url
+          routes.DeclarationController.onPageLoad().url
         )
     }
   }
