@@ -120,7 +120,15 @@ class TrusteesPartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour 
         row(VATId(index))(cyaDetails),
         row(HavePAYEId(index))(paye(CheckMode), uaWithValue(HavePAYEId(index), true)),
         row(HavePAYEId(index))(cyaDetails, uaWithValue(HavePAYEId(index), false)),
-        row(PAYEId(index))(cyaDetails)
+        row(PAYEId(index))(cyaDetails),
+        row(EnterPostCodeId(index))(selectAddress(CheckMode), addressUAWithValue(EnterPostCodeId(index), seqAddresses)),
+        row(AddressListId(index))(cyaAddress, addressUAWithValue(AddressListId(index), Data.tolerantAddress)),
+        row(AddressId(index))(cyaAddress, uaWithValue(AddressYearsId(index), true)),
+        row(AddressYearsId(index))(cyaAddress, uaWithValue(AddressYearsId(index), true)),
+        row(AddressYearsId(index))(enterPreviousPostcode(CheckMode),uaWithValue(AddressYearsId(index), false)),
+        row(EnterPreviousPostCodeId(index))(selectPreviousAddress(CheckMode),addressUAWithValue(EnterPreviousPostCodeId(index), seqAddresses)),
+        row(PreviousAddressListId(index))(cyaAddress, addressUAWithValue(PreviousAddressListId(index), Data.tolerantAddress)),
+        row(PreviousAddressId(index))(cyaAddress, addressUAWithValue(PreviousAddressId(index), address))
       )
 
     "in NormalMode" must {

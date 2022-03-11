@@ -126,7 +126,15 @@ class EstablishersPartnershipNavigatorSpec
         row(VATId(index))(cyaDetails),
         row(HavePAYEId(index))(paye(CheckMode), uaWithValue(HavePAYEId(index), true)),
         row(HavePAYEId(index))(cyaDetails, uaWithValue(HavePAYEId(index), false)),
-        row(PAYEId(index))(cyaDetails)
+        row(PAYEId(index))(cyaDetails),
+        row(EnterPostCodeId(index))(selectAddress(CheckMode), uaWithValue(EnterPostCodeId(index), seqAddresses)),
+        row(AddressListId(index))(cyaAddress, uaWithValue(AddressListId(index), Data.tolerantAddress)),
+        row(AddressId(index))(cyaAddress, uaWithValue(AddressYearsId(index), true)),
+        row(AddressYearsId(index))(cyaAddress, uaWithValue(AddressYearsId(index), true)),
+        row(AddressYearsId(index))(enterPreviousPostcode(CheckMode),uaWithValue(AddressYearsId(index), false)),
+        row(EnterPreviousPostCodeId(index))(selectPreviousAddress(CheckMode),uaWithValue(EnterPreviousPostCodeId(index), seqAddresses)),
+        row(PreviousAddressListId(index))(cyaAddress, uaWithValue(PreviousAddressListId(index), Data.tolerantAddress)),
+        row(PreviousAddressId(index))(cyaAddress, uaWithValue(PreviousAddressId(index), address))
       )
 
     "in NormalMode" must {

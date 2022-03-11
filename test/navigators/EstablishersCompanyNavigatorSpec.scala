@@ -169,7 +169,15 @@ class EstablishersCompanyNavigatorSpec
         row(HavePAYEId(index))(cyaDetails, uaWithValue(HavePAYEId(index), false)),
         row(PAYEId(index))(cyaDetails),
         row(EnterEmailId(index))(cyaContact, Some(detailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
-        row(EnterPhoneId(index))(cyaContact, Some(detailsUa.set(EnterPhoneId(index), "1234").success.value))
+        row(EnterPhoneId(index))(cyaContact, Some(detailsUa.set(EnterPhoneId(index), "1234").success.value)),
+        row(EnterPostCodeId(index))(selectAddress(CheckMode), uaWithValue(EnterPostCodeId(index), seqAddresses)),
+        row(AddressListId(index))(cyaAddress, uaWithValue(AddressListId(index), Data.tolerantAddress)),
+        row(AddressId(index))(cyaAddress, uaWithValue(AddressYearsId(index), true)),
+        row(AddressYearsId(index))(cyaAddress, uaWithValue(AddressYearsId(index), true)),
+        row(AddressYearsId(index))(enterPreviousPostcode(CheckMode),uaWithValue(AddressYearsId(index), false)),
+        row(EnterPreviousPostCodeId(index))(selectPreviousAddress(CheckMode),uaWithValue(EnterPreviousPostCodeId(index), seqAddresses)),
+        row(PreviousAddressListId(index))(cyaAddress, uaWithValue(PreviousAddressListId(index), Data.tolerantAddress)),
+        row(PreviousAddressId(index))(cyaAddress, uaWithValue(PreviousAddressId(index), address))
       )
 
     "in NormalMode" must {

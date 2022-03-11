@@ -88,16 +88,16 @@ class TrusteesNavigatorSpec
     controllers.trustees.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
 
   private def enterPreviousPostcode(mode:Mode): Call =
-    controllers.trustees.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index, NormalMode)
+    controllers.trustees.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index, mode)
 
   private def selectAddress(mode:Mode): Call =
-    controllers.trustees.individual.address.routes.SelectAddressController.onPageLoad(index, NormalMode)
+    controllers.trustees.individual.address.routes.SelectAddressController.onPageLoad(index, mode)
 
   private def selectPreviousAddress(mode:Mode): Call =
-    controllers.trustees.individual.address.routes.SelectPreviousAddressController.onPageLoad(index, NormalMode)
+    controllers.trustees.individual.address.routes.SelectPreviousAddressController.onPageLoad(index, mode)
 
   private def addressYears(mode:Mode): Call =
-    controllers.trustees.individual.address.routes.AddressYearsController.onPageLoad(index, NormalMode)
+    controllers.trustees.individual.address.routes.AddressYearsController.onPageLoad(index, mode)
 
   private def namePage(mode:Mode): Call =
     controllers.trustees.individual.routes.TrusteeNameController.onPageLoad(index)
@@ -155,7 +155,15 @@ class TrusteesNavigatorSpec
         row(TrusteeUTRId(index))(cya, Some(detailsUa.set(TrusteeUTRId(index), ReferenceValue("1234567890")).success.value)),
         row(TrusteeNoUTRReasonId(index))(cya, Some(detailsUa.set(TrusteeNoUTRReasonId(index), "Reason").success.value)),
         row(EnterEmailId(index))(cyaContact, Some(indvDetailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
-        row(EnterPhoneId(index))(cyaContact, Some(indvDetailsUa.set(EnterPhoneId(index), "123").success.value))
+        row(EnterPhoneId(index))(cyaContact, Some(indvDetailsUa.set(EnterPhoneId(index), "123").success.value)),
+        row(EnterPostCodeId(index))(selectAddress(CheckMode), addressUAWithValue(EnterPostCodeId(index), seqAddresses)),
+        row(AddressListId(index))(cyaAddress, addressUAWithValue(AddressListId(index), Data.tolerantAddress)),
+        row(AddressId(index))(cyaAddress, Some(detailsUa.set(AddressYearsId(index), true).success.value)),
+        row(AddressYearsId(index))(cyaAddress, Some(detailsUa.set(AddressYearsId(index), true).success.value)),
+        row(AddressYearsId(index))(enterPreviousPostcode(CheckMode), Some(detailsUa.set(AddressYearsId(index), false).success.value)),
+        row(EnterPreviousPostCodeId(index))(selectPreviousAddress(CheckMode),addressUAWithValue(EnterPreviousPostCodeId(index), seqAddresses)),
+        row(PreviousAddressListId(index))(cyaAddress, addressUAWithValue(PreviousAddressListId(index), Data.tolerantAddress)),
+        row(PreviousAddressId(index))(cyaAddress, addressUAWithValue(PreviousAddressId(index), address))
       )
     "in NormalMode" must {
       behave like navigatorWithRoutesForMode(NormalMode)(navigator, navigation)

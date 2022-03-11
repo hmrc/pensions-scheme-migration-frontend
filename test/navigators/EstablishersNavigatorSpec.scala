@@ -25,14 +25,13 @@ import identifiers.establishers.individual.details._
 import identifiers.establishers.{AddEstablisherId, ConfirmDeleteEstablisherId, EstablisherKindId}
 import identifiers.{Identifier, TypedIdentifier}
 import models.establishers.EstablisherKind
-import models.{CheckMode, PersonName, NormalMode, Mode, ReferenceValue, Index, _}
+import models.{CheckMode, Index, Mode, NormalMode, PersonName, ReferenceValue, _}
 import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes
 import play.api.mvc.Call
 import utils.Data.ua
 import utils.{Data, Enumerable, UserAnswers}
-import utils.{UserAnswers, Enumerable}
 
 import java.time.LocalDate
 
@@ -132,7 +131,15 @@ class EstablishersNavigatorSpec
         row(EstablisherUTRId(index))(controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index), Some(detailsUa.set(EstablisherUTRId(index), ReferenceValue("1234567890")).success.value)),
         row(EstablisherNoUTRReasonId(index))(controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index), Some(detailsUa.set(EstablisherNoUTRReasonId(index), "Reason").success.value)),
         row(EnterEmailId(index))(cyaContact, Some(detailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
-        row(EnterPhoneId(index))(cyaContact, Some(detailsUa.set(EnterPhoneId(index), "1234").success.value))
+        row(EnterPhoneId(index))(cyaContact, Some(detailsUa.set(EnterPhoneId(index), "1234").success.value)),
+        row(EnterPostCodeId(index))(selectAddress(CheckMode), addressUAWithValue(EnterPostCodeId(index), seqAddresses)),
+        row(AddressListId(index))(cyaAddress, addressUAWithValue(AddressListId(index), Data.tolerantAddress)),
+        row(AddressId(index))(cyaAddress, addressUAWithValue(AddressYearsId(index), true)),
+        row(AddressYearsId(index))(cyaAddress, addressUAWithValue(AddressYearsId(index), true)),
+        row(AddressYearsId(index))(enterPreviousPostcode(CheckMode),addressUAWithValue(AddressYearsId(index), false)),
+        row(EnterPreviousPostCodeId(index))(selectPreviousAddress(CheckMode),addressUAWithValue(EnterPreviousPostCodeId(index), seqAddresses)),
+        row(PreviousAddressListId(index))(cyaAddress, addressUAWithValue(PreviousAddressListId(index), Data.tolerantAddress)),
+        row(PreviousAddressId(index))(cyaAddress, addressUAWithValue(PreviousAddressId(index), address))
       )
 
     "in NormalMode" must {
