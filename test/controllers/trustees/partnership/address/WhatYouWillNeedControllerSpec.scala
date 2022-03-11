@@ -20,6 +20,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.trustees.partnership.PartnershipDetailsId
 import matchers.JsonMatchers
+import models.NormalMode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
@@ -50,7 +51,7 @@ class WhatYouWillNeedControllerSpec
     Json.obj(
       "name" -> Data.partnershipDetails.partnershipName,
       "entityType" -> Messages("messages__title_partnership"),
-      "continueUrl" -> controllers.trustees.partnership.address.routes.EnterPostcodeController.onPageLoad(0).url,
+      "continueUrl" -> controllers.trustees.partnership.address.routes.EnterPostcodeController.onPageLoad(0,NormalMode).url,
       "schemeName" -> "Test scheme name"
     )
 

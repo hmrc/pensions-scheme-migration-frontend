@@ -20,7 +20,7 @@ import helpers.cya.CYAHelper
 import helpers.cya.CYAHelper.getPartnershipName
 import identifiers.trustees.partnership.address.{AddressId, AddressYearsId, PreviousAddressId, TradingTimeId}
 import identifiers.trustees.partnership.PartnershipDetailsId
-import models.Index
+import models.{CheckMode, Index}
 import models.requests.DataRequest
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
@@ -47,13 +47,13 @@ class TrusteeAddressCYAHelper
       answerOrAddRow(
         AddressId(index),
         Message("messages__address__whatYouWillNeed_h1", trusteeName).resolve,
-        Some(controllers.trustees.partnership.address.routes.EnterPostcodeController.onPageLoad(index).url),
+        Some(controllers.trustees.partnership.address.routes.EnterPostcodeController.onPageLoad(index,CheckMode).url),
         Some(msg"messages__visuallyHidden__address".withArgs(trusteeName)), answerAddressTransform
       ),
       answerOrAddRow(
         AddressYearsId(index),
         Message("addressYears.title", trusteeName).resolve,
-        Some(controllers.trustees.partnership.address.routes.AddressYearsController.onPageLoad(index).url),
+        Some(controllers.trustees.partnership.address.routes.AddressYearsController.onPageLoad(index,CheckMode).url),
         Some(msg"messages__visuallyhidden__addressYears".withArgs(trusteeName)), answerBooleanTransform
       )
     )
@@ -63,7 +63,7 @@ class TrusteeAddressCYAHelper
         answerOrAddRow(
           TradingTimeId(index),
           Message("tradingTime.title", trusteeName).resolve,
-          Some(controllers.trustees.partnership.address.routes.TradingTimeController.onPageLoad(index).url),
+          Some(controllers.trustees.partnership.address.routes.TradingTimeController.onPageLoad(index,CheckMode).url),
           Some(msg"messages__visuallyhidden__TradingTime".withArgs(trusteeName)), answerBooleanTransform
         )
       )
@@ -77,7 +77,7 @@ class TrusteeAddressCYAHelper
           answerOrAddRow(
             PreviousAddressId(index),
             Message("messages__previousAddress", trusteeName).resolve,
-            Some(controllers.trustees.partnership.address.routes.EnterPreviousPostcodeController.onPageLoad(index).url),
+            Some(controllers.trustees.partnership.address.routes.EnterPreviousPostcodeController.onPageLoad(index,CheckMode).url),
             Some(msg"messages__visuallyHidden__previousAddress".withArgs(trusteeName)), answerAddressTransform
           )
         )

@@ -40,14 +40,14 @@ class TrusteesPartnershipNavigator
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case PartnershipDetailsId(_) => AddTrusteeController.onPageLoad()
-    case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index)
-    case AddressListId(index) => addressYears(index)
-    case AddressId(index) => addressYears(index)
+    case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index,NormalMode)
+    case AddressListId(index) => addressYears(index,NormalMode)
+    case AddressId(index) => addressYears(index,NormalMode)
     case AddressYearsId(index) =>
-      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else TradingTimeController.onPageLoad(index)
+      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else TradingTimeController.onPageLoad(index,NormalMode)
     case TradingTimeId(index) =>
-      if (ua.get(TradingTimeId(index)).contains(true)) EnterPreviousPostcodeController.onPageLoad(index) else cyaAddress(index)
-    case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index)
+      if (ua.get(TradingTimeId(index)).contains(true)) EnterPreviousPostcodeController.onPageLoad(index,NormalMode) else cyaAddress(index)
+    case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index,NormalMode)
     case PreviousAddressListId(index) => cyaAddress(index)
     case PreviousAddressId(index) => cyaAddress(index)
     case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
@@ -73,10 +73,21 @@ class TrusteesPartnershipNavigator
     case VATId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
     case HavePAYEId(index) => payeRoutes(index, ua, CheckMode)
     case PAYEId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+    case AddressId(index) => cyaAddress(index)
+    case AddressListId(index) => cyaAddress(index)
+    case AddressYearsId(index) =>
+      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index)
+      else EnterPreviousPostcodeController.onPageLoad(index, CheckMode)
+    case TradingTimeId(index) =>
+      if (ua.get(TradingTimeId(index)).contains(true)) EnterPreviousPostcodeController.onPageLoad(index, CheckMode) else cyaAddress(index)
+    case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index, CheckMode)
+    case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index, CheckMode)
+    case PreviousAddressId(index) => cyaAddress(index)
+    case PreviousAddressListId(index) => cyaAddress(index)
   }
 
   private def cyaAddress(index:Int): Call = controllers.trustees.partnership.address.routes.CheckYourAnswersController.onPageLoad(index)
-  private def addressYears(index:Int): Call = controllers.trustees.partnership.address.routes.AddressYearsController.onPageLoad(index)
+  private def addressYears(index:Int,mode:Mode): Call = controllers.trustees.partnership.address.routes.AddressYearsController.onPageLoad(index,mode)
   private def cyaContactDetails(index:Int): Call = controllers.trustees.partnership.contact.routes.CheckYourAnswersController.onPageLoad(index)
 
   private def utrRoutes(
