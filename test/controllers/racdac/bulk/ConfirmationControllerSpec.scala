@@ -65,6 +65,13 @@ class ConfirmationControllerSpec extends ControllerSpecBase with NunjucksSupport
       "finishUrl" -> mockAppConfig.psaOverviewUrl
     )
 
+  private val confirmationData = Json.obj(
+    "confirmationData" -> Json.obj(
+      "email" -> Data.email,
+      "psaId" -> ""
+    )
+  )
+
   override def beforeEach: Unit = {
     super.beforeEach
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
@@ -74,6 +81,7 @@ class ConfirmationControllerSpec extends ControllerSpecBase with NunjucksSupport
 
     "return OK and the correct view for a GET" in {
       when(mockSchemeCacheConnector.remove(any(), any())).thenReturn(Future(Ok))
+      when(mockSchemeCacheConnector.fetch(any(), any())).thenReturn(Future(Some(confirmationData)))
       when(mockListOfSchemesConnector.removeCache(any())(any(), any())).thenReturn(Future.successful(Ok))
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])

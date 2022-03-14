@@ -16,17 +16,14 @@
 
 package controllers.racdac.bulk
 
-import audit.AuditService
 import config.AppConfig
-import connectors._
-import connectors.cache.BulkMigrationQueueConnector
+import connectors.cache.{BulkMigrationQueueConnector, CurrentPstrCacheConnector}
 import controllers.actions.{AuthAction, BulkDataAction}
 import models.racDac.RacDacRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
-import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
@@ -40,9 +37,7 @@ class DeclarationController @Inject()(
                                        renderer: Renderer,
                                        bulkMigrationQueueConnector: BulkMigrationQueueConnector,
                                        getData: BulkDataAction,
-                                       emailConnector: EmailConnector,
-                                       auditService: AuditService,
-                                       crypto: ApplicationCrypto
+                                       schemeCacheConnector: CurrentPstrCacheConnector
                                      )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
@@ -64,36 +59,21 @@ class DeclarationController @Inject()(
         val psaId = request.request.psaId.id
         val racDacSchemes = request.lisOfSchemes.filter(_.racDac).map { items =>
           RacDacRequest(items.schemeName, items.policyNo.getOrElse(
-            throw new RuntimeException("Policy Number is mandatory for RAC/DAC")),items.pstr,items.declarationDate,items.schemeOpenDate)
+            throw new RuntimeException("Policy Number is mandatory for RAC/DAC")), items.pstr, items.declarationDate, items.schemeOpenDate)
         }
         bulkMigrationQueueConnector.pushAll(psaId, Json.toJson(racDacSchemes)).flatMap { _ =>
-          //sendEmail(psaId).map { _ => // TODO: Move this somewhere...
-            Future.successful(Redirect(routes.ProcessingRequestController.onPageLoad().url))
-          //}
+          val confirmationData = Json.obj(
+            "confirmationData" -> Json.obj(
+              "email" -> request.md.email,
+              "psaId" -> request.request.psaId.id
+            )
+          )
+          schemeCacheConnector.save(confirmationData).map { _ =>
+            Redirect(routes.ProcessingRequestController.onPageLoad().url)
+          }
         } recoverWith {
           case _ =>
             Future.successful(Redirect(routes.RequestNotProcessedController.onPageLoad()))
         }
     }
-
-//  private def sendEmail(psaId: String)
-//                       (implicit request: BulkDataRequest[AnyContent]): Future[EmailStatus] = {
-//    logger.debug(s"Sending bulk migration email for $psaId")
-//    emailConnector.sendEmail(
-//      emailAddress = request.md.email,
-//      templateName = appConfig.bulkMigrationConfirmationEmailTemplateId,
-//      params = Map("psaName" -> request.md.name),
-//      callbackUrl(psaId)
-//    ).map { status =>
-//      auditService.sendEvent(EmailAuditEvent(psaId, RACDAC_BULK_MIG, request.md.email, pstrId=""))
-//      status
-//    } recoverWith {
-//      case _: Throwable => Future.successful(EmailNotSent)
-//    }
-//  }
-
-//  private def callbackUrl(psaId: String) = {
-//    val encryptedPsa = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(psaId)).value, StandardCharsets.UTF_8.toString)
-//    s"${appConfig.migrationUrl}/pensions-scheme-migration/email-response/${RACDAC_BULK_MIG}/$encryptedPsa"
-//  }
 }

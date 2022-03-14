@@ -16,8 +16,8 @@
 
 package controllers.racdac.bulk
 
-import connectors.cache.BulkMigrationQueueConnector
-import connectors.{EmailConnector, EmailSent}
+import connectors.EmailConnector
+import connectors.cache.{BulkMigrationQueueConnector, CurrentPstrCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{BulkDataAction, MutableFakeBulkDataAction}
 import matchers.JsonMatchers
@@ -39,11 +39,13 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
   private val templateToBeRendered = "racdac/declaration.njk"
   private val mockBulkMigrationConnector = mock[BulkMigrationQueueConnector]
+  private val mockCurrentPstrCacheConnector = mock[CurrentPstrCacheConnector]
 
   private val mutableFakeBulkDataAction: MutableFakeBulkDataAction = new MutableFakeBulkDataAction(false)
   val extraModules: Seq[GuiceableModule] = Seq(
     bind[BulkMigrationQueueConnector].to(mockBulkMigrationConnector),
-    bind[EmailConnector].toInstance(mockEmailConnector)
+    bind[EmailConnector].toInstance(mockEmailConnector),
+    bind[CurrentPstrCacheConnector].toInstance(mockCurrentPstrCacheConnector)
   )
   private val application: Application = new GuiceApplicationBuilder()
     .configure(
@@ -66,6 +68,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
   override def beforeEach: Unit = {
     super.beforeEach
+    reset(mockCurrentPstrCacheConnector)
     when(mockAppConfig.psaOverviewUrl) thenReturn dummyUrl
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
@@ -92,7 +95,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
   "onSubmit" must {
     "redirect to next page when rac dac schemes exist" in {
       when(mockBulkMigrationConnector.pushAll(any(), any())(any(), any())).thenReturn(Future(Json.obj()))
-      when(mockEmailConnector.sendEmail(any(), any(), any(), any())(any(), any())).thenReturn(Future(EmailSent))
+      when(mockCurrentPstrCacheConnector.save(any())(any(), any())).thenReturn(Future.successful(Json.obj()))
       val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
       status(result) mustEqual SEE_OTHER
