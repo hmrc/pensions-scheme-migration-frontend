@@ -47,8 +47,7 @@ class ProcessingRequestController @Inject()(val appConfig: AppConfig,
             "pageTitle" -> header,
             "heading" -> header,
             "content" -> content,
-            "continueUrl" -> redirect,
-            "backUrl" -> appConfig.psaOverviewUrl
+            "continueUrl" -> redirect
           )
           renderer.render("racdac/processingRequest.njk", json).map(Ok(_))
         }

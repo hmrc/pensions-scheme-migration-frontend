@@ -8,15 +8,6 @@
   {{ title(messages(pageTitle)) }}
 {% endblock %}
 
-{% block beforeContent %}
-    {% include "includes/phase-banner.njk" %}
-    {{ govukBackLink({
-        href: backUrl,
-        text: "Back",
-        classes: "js-visible"
-    }) }}
-{% endblock %}
-
 {% block mainContent %}
 
     {% if heading == "messages__processingRequest__h1_processing" %}
