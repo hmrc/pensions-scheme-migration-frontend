@@ -5,38 +5,38 @@ GET         /:index/individual/details                                          
 
 GET         /:index/individual/date-of-birth                                            controllers.establishers.individual.details.EstablisherDOBController.onPageLoad(index: Index, mode: Mode = NormalMode)
 POST        /:index/individual/date-of-birth                                            controllers.establishers.individual.details.EstablisherDOBController.onSubmit(index: Index, mode: Mode = NormalMode)
-GET         /:index/individual/change/date-of-birth                                     controllers.establishers.individual.details.EstablisherDOBController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/individual/change/date-of-birth                                     controllers.establishers.individual.details.EstablisherDOBController.onSubmit(index: Index, mode: Mode = CheckMode)
+GET         /:index/change/individual/date-of-birth                                     controllers.establishers.individual.details.EstablisherDOBController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/change/individual/date-of-birth                                     controllers.establishers.individual.details.EstablisherDOBController.onSubmit(index: Index, mode: Mode = CheckMode)
 
 GET         /:index/individual/have-national-insurance-number                           controllers.establishers.individual.details.EstablisherHasNINOController.onPageLoad(index: Index, mode: Mode = NormalMode)
 POST        /:index/individual/have-national-insurance-number                           controllers.establishers.individual.details.EstablisherHasNINOController.onSubmit(index: Index, mode: Mode = NormalMode)
-GET         /:index/individual/change/have-national-insurance-number                    controllers.establishers.individual.details.EstablisherHasNINOController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/individual/change/have-national-insurance-number                    controllers.establishers.individual.details.EstablisherHasNINOController.onSubmit(index: Index, mode: Mode = CheckMode)
+GET         /:index/change/individual/have-national-insurance-number                    controllers.establishers.individual.details.EstablisherHasNINOController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/change/individual/have-national-insurance-number                    controllers.establishers.individual.details.EstablisherHasNINOController.onSubmit(index: Index, mode: Mode = CheckMode)
 
 GET         /:index/individual/have-unique-taxpayer-reference                           controllers.establishers.individual.details.EstablisherHasUTRController.onPageLoad(index: Index, mode: Mode = NormalMode)
 POST        /:index/individual/have-unique-taxpayer-reference                           controllers.establishers.individual.details.EstablisherHasUTRController.onSubmit(index: Index, mode: Mode = NormalMode)
-GET         /:index/individual/change/have-unique-taxpayer-reference                    controllers.establishers.individual.details.EstablisherHasUTRController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/individual/change/have-unique-taxpayer-reference                    controllers.establishers.individual.details.EstablisherHasUTRController.onSubmit(index: Index, mode: Mode = CheckMode)
+GET         /:index/change/individual/have-unique-taxpayer-reference                    controllers.establishers.individual.details.EstablisherHasUTRController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/change/individual/have-unique-taxpayer-reference                    controllers.establishers.individual.details.EstablisherHasUTRController.onSubmit(index: Index, mode: Mode = CheckMode)
 
 GET         /:index/individual/enter-unique-taxpayer-reference                          controllers.establishers.individual.details.EstablisherEnterUTRController.onPageLoad(index: Index, mode: Mode = NormalMode)
 POST        /:index/individual/enter-unique-taxpayer-reference                          controllers.establishers.individual.details.EstablisherEnterUTRController.onSubmit(index: Index, mode: Mode = NormalMode)
-GET         /:index/individual/change/enter-unique-taxpayer-reference                   controllers.establishers.individual.details.EstablisherEnterUTRController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/individual/change/enter-unique-taxpayer-reference                   controllers.establishers.individual.details.EstablisherEnterUTRController.onSubmit(index: Index, mode: Mode = CheckMode)
+GET         /:index/change/individual/enter-unique-taxpayer-reference                   controllers.establishers.individual.details.EstablisherEnterUTRController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/change/individual/enter-unique-taxpayer-reference                   controllers.establishers.individual.details.EstablisherEnterUTRController.onSubmit(index: Index, mode: Mode = CheckMode)
 
 GET         /:index/individual/enter-national-insurance-number                          controllers.establishers.individual.details.EstablisherEnterNINOController.onPageLoad(index: Index, mode: Mode = NormalMode)
 POST        /:index/individual/enter-national-insurance-number                          controllers.establishers.individual.details.EstablisherEnterNINOController.onSubmit(index: Index, mode: Mode = NormalMode)
-GET         /:index/individual/change/enter-national-insurance-number                   controllers.establishers.individual.details.EstablisherEnterNINOController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/individual/change/enter-national-insurance-number                   controllers.establishers.individual.details.EstablisherEnterNINOController.onSubmit(index: Index, mode: Mode = CheckMode)
+GET         /:index/change/individual/enter-national-insurance-number                   controllers.establishers.individual.details.EstablisherEnterNINOController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/change/individual/enter-national-insurance-number                   controllers.establishers.individual.details.EstablisherEnterNINOController.onSubmit(index: Index, mode: Mode = CheckMode)
 
 GET         /:index/individual/reason-for-no-national-insurance-number                  controllers.establishers.individual.details.EstablisherNoNINOReasonController.onPageLoad(index: Index, mode: Mode = NormalMode)
 POST        /:index/individual/reason-for-no-national-insurance-number                  controllers.establishers.individual.details.EstablisherNoNINOReasonController.onSubmit(index: Index, mode: Mode = NormalMode)
-GET         /:index/individual/change/reason-for-no-national-insurance-number           controllers.establishers.individual.details.EstablisherNoNINOReasonController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/individual/change/reason-for-no-national-insurance-number           controllers.establishers.individual.details.EstablisherNoNINOReasonController.onSubmit(index: Index, mode: Mode = CheckMode)
+GET         /:index/change/individual/reason-for-no-national-insurance-number           controllers.establishers.individual.details.EstablisherNoNINOReasonController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/change/individual/reason-for-no-national-insurance-number           controllers.establishers.individual.details.EstablisherNoNINOReasonController.onSubmit(index: Index, mode: Mode = CheckMode)
 
 GET         /:index/individual/reason-for-no-unique-taxpayer-reference                  controllers.establishers.individual.details.EstablisherNoUTRReasonController.onPageLoad(index: Index, mode: Mode = NormalMode)
 POST        /:index/individual/reason-for-no-unique-taxpayer-reference                  controllers.establishers.individual.details.EstablisherNoUTRReasonController.onSubmit(index: Index, mode: Mode = NormalMode)
-GET         /:index/individual/change/reason-for-no-unique-taxpayer-reference           controllers.establishers.individual.details.EstablisherNoUTRReasonController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/individual/change/reason-for-no-unique-taxpayer-reference           controllers.establishers.individual.details.EstablisherNoUTRReasonController.onSubmit(index: Index, mode: Mode = CheckMode)
+GET         /:index/change/individual/reason-for-no-unique-taxpayer-reference           controllers.establishers.individual.details.EstablisherNoUTRReasonController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/change/individual/reason-for-no-unique-taxpayer-reference           controllers.establishers.individual.details.EstablisherNoUTRReasonController.onSubmit(index: Index, mode: Mode = CheckMode)
 
 GET         /:index/individual/check-your-answers-details                               controllers.establishers.individual.details.CheckYourAnswersController.onPageLoad(index: Index)
 
@@ -84,13 +84,13 @@ GET         /:index/individual/contact-details                                  
 
 GET         /:index/individual/enter-email-address                                      controllers.establishers.individual.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = NormalMode)
 POST        /:index/individual/enter-email-address                                      controllers.establishers.individual.contact.EnterEmailController.onSubmit(index: Index, mode: Mode = NormalMode)
-GET         /:index/individual/change/enter-email-address                               controllers.establishers.individual.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/individual/change/enter-email-address                               controllers.establishers.individual.contact.EnterEmailController.onSubmit(index: Index, mode: Mode = CheckMode)
+GET         /:index/change/individual/enter-email-address                               controllers.establishers.individual.contact.EnterEmailController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/change/individual/enter-email-address                               controllers.establishers.individual.contact.EnterEmailController.onSubmit(index: Index, mode: Mode = CheckMode)
 
 GET         /:index/individual/enter-phone-number                                       controllers.establishers.individual.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = NormalMode)
 POST        /:index/individual/enter-phone-number                                       controllers.establishers.individual.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = NormalMode)
-GET         /:index/individual/change/enter-phone-number                                controllers.establishers.individual.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/individual/change/enter-phone-number                                controllers.establishers.individual.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = CheckMode)
+GET         /:index/change/individual/enter-phone-number                                controllers.establishers.individual.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = CheckMode)
+POST        /:index/change/individual/enter-phone-number                                controllers.establishers.individual.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = CheckMode)
 
 GET         /:index/individual/check-your-answers-contact-details                       controllers.establishers.individual.contact.CheckYourAnswersController.onPageLoad(index: Index)
 
