@@ -18,11 +18,9 @@ package services
 
 import com.google.inject.Inject
 import config.AppConfig
-import connectors.cache.FeatureToggleConnector
-import connectors.{ListOfSchemesConnector, DelimitedAdminException, MinimalDetailsConnector}
+import connectors.{DelimitedAdminException, ListOfSchemesConnector, MinimalDetailsConnector}
 import controllers.preMigration.routes
 import controllers.preMigration.routes.ListOfSchemesController
-import models.FeatureToggleName.MigrationTransfer
 import models.MigrationType.isRacDac
 import models.requests.AuthenticatedRequest
 import models.{Items, MigrationType}
@@ -36,9 +34,9 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Table.Cell
 import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{Table, MessageInterpolators, Content, Html}
+import uk.gov.hmrc.viewmodels.{Content, Html, MessageInterpolators, Table}
 import utils.HttpResponseRedirects.listOfSchemesRedirects
-import utils.{SchemeFuzzyMatcher, HttpResponseHelper}
+import utils.{HttpResponseHelper, SchemeFuzzyMatcher}
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -49,7 +47,6 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
                                     listOfSchemesConnector: ListOfSchemesConnector,
                                     minimalDetailsConnector: MinimalDetailsConnector,
                                     paginationService: PaginationService,
-                                    featureToggleConnector: FeatureToggleConnector,
                                     renderer: Renderer) extends NunjucksSupport with HttpResponseHelper {
 
   private def pagination: Int = appConfig.listSchemePagination
@@ -175,12 +172,12 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
                            form: Form[String],
                            pageNumber: Int,
                            searchText: Option[String],
-                           migrationType: MigrationType
+                           migrationType: MigrationType,
+                           migrationToggleValue:Boolean
                          )(implicit request: AuthenticatedRequest[AnyContent],
                            messages: Messages,
                            hc: HeaderCarrier,
                            ec: ExecutionContext): Future[Result] =
-    featureToggleConnector.get(MigrationTransfer.asString).flatMap { toggle =>
       search(request.psaId.id, searchText, isRacDac(migrationType)).flatMap { searchResult =>
         val numberOfSchemes: Int = searchResult.length
 
@@ -195,8 +192,8 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
           noResultsMessageKey(searchText, searchResult, migrationType),
           form,
           migrationType,
-          toggle.isDisabled
+          !migrationToggleValue
         )
       } recoverWith listOfSchemesRedirects
-    }
+
 }
