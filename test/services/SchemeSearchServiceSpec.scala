@@ -18,19 +18,16 @@ package services
 
 import base.SpecBase
 import config.AppConfig
-import connectors.cache.FeatureToggleConnector
 import connectors.{ListOfSchemesConnector, MinimalDetailsConnector}
 import controllers.preMigration.routes
 import controllers.preMigration.routes.ListOfSchemesController
 import forms.ListSchemesFormProvider
 import matchers.JsonMatchers
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.MigrationTransfer
 import models.MigrationType.isRacDac
 import models._
 import models.requests.AuthenticatedRequest
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, MockitoSugar, ArgumentMatchers}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers, MockitoSugar}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
@@ -43,10 +40,10 @@ import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.nunjucks.{NunjucksSupport, NunjucksRenderer}
+import uk.gov.hmrc.nunjucks.{NunjucksRenderer, NunjucksSupport}
 import uk.gov.hmrc.viewmodels.Table.Cell
 import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{Table, MessageInterpolators}
+import uk.gov.hmrc.viewmodels.{MessageInterpolators, Table}
 import utils.Data._
 import utils.SchemeFuzzyMatcher
 
@@ -62,7 +59,7 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
   private val mockListOfSchemesConnector = mock[ListOfSchemesConnector]
   private val mockMinimalDetailsConnector: MinimalDetailsConnector = mock[MinimalDetailsConnector]
   private val paginationService = new PaginationService(mockAppConfig)
-  private val mockFeatureToggleConnector: FeatureToggleConnector = mock[FeatureToggleConnector]
+
   private val mockRenderer: NunjucksRenderer = mock[NunjucksRenderer]
   private val typeOfList:List[String]=List("pension scheme","RAC/DAC")
   private val psaName: String = "Nigel"
@@ -99,7 +96,7 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
     (if (paginationText.isDefined) Json.obj("paginationText" -> paginationText.get) else Json.obj())
 
   val service = new SchemeSearchService(mockAppConfig, mockFuzzyMatching, mockListOfSchemesConnector,
-    mockMinimalDetailsConnector, paginationService, mockFeatureToggleConnector, new Renderer(mockAppConfig, mockRenderer))
+    mockMinimalDetailsConnector, paginationService, new Renderer(mockAppConfig, mockRenderer))
 
   override def beforeEach: Unit = {
     super.beforeEach
@@ -108,7 +105,6 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
     when(mockAppConfig.listSchemePagination) thenReturn pagination
     when(mockAppConfig.psaUpdateContactDetailsUrl).thenReturn(dummyUrl)
     when(mockAppConfig.deceasedContactHmrcUrl).thenReturn(dummyUrl)
-    when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Enabled(MigrationTransfer)))
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
@@ -232,7 +228,7 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = service.searchAndRenderView(form, 1, None, Scheme)
+      val result = service.searchAndRenderView(form, 1, None, Scheme, migrationToggleValue = true)
 
       status(result) mustBe OK
 
@@ -249,7 +245,7 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
     "rlsFlag is true and deceasedFlag is false return redirect to update contact page" in {
       when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(minimalPSA(rlsFlag = true)))
 
-      val result = service.searchAndRenderView(form, 1, None, Scheme)
+      val result = service.searchAndRenderView(form, 1, None, Scheme, migrationToggleValue = true)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(dummyUrl)
@@ -258,7 +254,7 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
     "rlsFlag is true and deceasedFlag is true return redirect to contact hmrc page" in {
       when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(minimalPSA(rlsFlag = true,deceasedFlag = true)))
 
-      val result = service.searchAndRenderView(form, 1, None, Scheme)
+      val result = service.searchAndRenderView(form, 1, None, Scheme, migrationToggleValue = true)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(dummyUrl)
@@ -273,7 +269,7 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = service.searchAndRenderView(form, 1, None, Scheme)
+      val result = service.searchAndRenderView(form, 1, None, Scheme, migrationToggleValue = true)
 
       status(result) mustBe OK
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
@@ -298,7 +294,7 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = service.searchAndRenderView(form, 1, None, RacDac)
+      val result = service.searchAndRenderView(form, 1, None, RacDac, migrationToggleValue = true)
 
       status(result) mustBe OK
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
@@ -326,7 +322,7 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = service.searchAndRenderView(form, pageNumber, None, RacDac)
+      val result = service.searchAndRenderView(form, pageNumber, None, RacDac, migrationToggleValue = true)
 
       status(result) mustBe OK
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
@@ -353,7 +349,7 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
       implicit val request: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(postRequest, "", PsaId(psaId))
       val boundForm = form.bind(Map("value" -> searchText))
 
-      val result = service.searchAndRenderView(boundForm, 1, Some(searchText), Scheme)
+      val result = service.searchAndRenderView(boundForm, 1, Some(searchText), Scheme, migrationToggleValue = true)
 
       status(result) mustBe OK
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
@@ -375,7 +371,7 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", ""))
       implicit val request: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(postRequest, "", PsaId(psaId))
       val boundForm = form.bind(Map("value" -> ""))
-      val result = service.searchAndRenderView(boundForm, 1, None, Scheme)
+      val result = service.searchAndRenderView(boundForm, 1, None, Scheme, migrationToggleValue = true)
       status(result) mustBe BAD_REQUEST
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
@@ -395,7 +391,7 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
       val boundForm = form.bind(Map("value" -> incorrectSearchText))
-      val result = service.searchAndRenderView(boundForm, 1, Some(incorrectSearchText), Scheme)
+      val result = service.searchAndRenderView(boundForm, 1, Some(incorrectSearchText), Scheme, migrationToggleValue = true)
       status(result) mustBe OK
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())

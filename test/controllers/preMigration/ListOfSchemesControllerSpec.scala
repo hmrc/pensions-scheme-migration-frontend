@@ -16,14 +16,17 @@
 
 package controllers.preMigration
 
-import connectors.{ListOfSchemes5xxException, ListOfSchemesConnector, AncillaryPsaException}
+import connectors.cache.FeatureToggleConnector
+import connectors.{AncillaryPsaException, ListOfSchemes5xxException, ListOfSchemesConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.ListSchemesFormProvider
 import matchers.JsonMatchers
-import models.{RacDac, Scheme, Items, ListOfLegacySchemes}
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.MigrationTransfer
+import models.{Items, ListOfLegacySchemes, RacDac, Scheme}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{MockitoSugar, ArgumentMatchers}
+import org.mockito.{ArgumentMatchers, MockitoSugar}
 import org.scalatest.TryValues
 import play.api.mvc.Result
 import play.api.mvc.Results._
@@ -41,18 +44,26 @@ class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSuppor
   private val racDacDetail = Items("10000678RF", "2020-10-10", racDac = true, "abcdefghi", "2020-12-12", Some("12345678"))
   private val expectedResponse = ListOfLegacySchemes(1, Some(List(schemeDetail, racDacDetail)))
   private val expectedResponseWithEmpty = ListOfLegacySchemes(1, None)
-
+  private val mockFeatureToggleConnector: FeatureToggleConnector = mock[FeatureToggleConnector]
 
   private val formProvider: ListSchemesFormProvider = new ListSchemesFormProvider()
 
   private def controller: ListOfSchemesController =
     new ListOfSchemesController(mockAppConfig, messagesApi, new FakeAuthAction(),
-      controllerComponents, formProvider,mockListOfSchemesConnector, mockSchemeSearchService, mockLockingService)
+      controllerComponents, formProvider,mockListOfSchemesConnector, mockSchemeSearchService, mockLockingService, mockFeatureToggleConnector)
+
+
+  override def beforeEach: Unit = {
+    super.beforeEach
+    reset(mockFeatureToggleConnector)
+    when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Enabled(MigrationTransfer)))
+  }
+
 
   "onPageLoad" must {
     "return OK and the correct view returned by the service" in {
 
-      when(mockSchemeSearchService.searchAndRenderView(any(), any(), any(), any())(any(), any(), any(), any()))
+      when(mockSchemeSearchService.searchAndRenderView(any(), any(), any(), any(), any())(any(), any(), any(), any()))
         .thenReturn(Future.successful(Ok("")))
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.successful(Right(expectedResponse)))
 
@@ -99,7 +110,7 @@ class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSuppor
   "onPageLoadWithPageNumber" must {
     "return OK and the correct view returned by the service" in {
 
-      when(mockSchemeSearchService.searchAndRenderView(any(), any(), any(), any())(any(), any(), any(), any()))
+      when(mockSchemeSearchService.searchAndRenderView(any(), any(), any(), any(), any())(any(), any(), any(), any()))
         .thenReturn(Future.successful(Ok("")))
 
       val result = controller.onPageLoadWithPageNumber(1, Scheme)(fakeRequest)
@@ -112,7 +123,7 @@ class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
   "onSearch" when {
     "return OK and the correct view when there are schemes without pagination and search on non empty string" in {
-      when(mockSchemeSearchService.searchAndRenderView(any(), any(), any(), any())(any(), any(), any(), any()))
+      when(mockSchemeSearchService.searchAndRenderView(any(), any(), any(), any(), any())(any(), any(), any(), any()))
         .thenReturn(Future.successful(Ok("")))
       val searchText = "pstr1"
 
@@ -124,7 +135,7 @@ class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSuppor
     }
 
     "return BADREQUEST and error when no value is entered into search" in {
-      when(mockSchemeSearchService.searchAndRenderView(any(), any(), ArgumentMatchers.eq(None), any())(any(), any(), any(), any()))
+      when(mockSchemeSearchService.searchAndRenderView(any(), any(), ArgumentMatchers.eq(None), any(), any())(any(), any(), any(), any()))
         .thenReturn(Future.successful(BadRequest("")))
 
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", ""))
