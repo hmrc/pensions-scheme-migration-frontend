@@ -31,11 +31,11 @@ import play.api.Application
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.viewmodels.{Radios, Table}
+import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
 
@@ -52,7 +52,11 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
           ))))).toOption
   private val templateToBeRendered = "establishers/addEstablisher.njk"
   private val form: Form[Boolean] = new ConfirmDeleteEstablisherFormProvider()(establisherName)
-  private val table: Table = Table(head = Nil, rows = Nil)
+  private val itemList: JsValue = Json.obj(
+    "name" -> establisherName,
+    "changeUrl" ->  "controllers.establishers.company.routes.SpokeTaskListController.onPageLoad(0)",
+    "removeUrl" ->   "controllers.establishers.ConfirmDeleteEstablisherController.onPageLoad(0,0)"
+  )
   private val mockHelper: AddToListHelper = mock[AddToListHelper]
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -75,8 +79,8 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
   private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>
     Json.obj(
       "form" -> form,
-      "completeTable" -> table,
-      "incompleteTable" -> table,
+      "itemListIncomplete" -> itemList,
+      "itemListComplete" -> itemList,
       "radios" -> Radios.yesNo(form("value")),
       "schemeName" -> schemeName
     )
@@ -84,7 +88,7 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
   override def beforeEach: Unit = {
     super.beforeEach
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-    when(mockHelper.mapEstablishersToTable(any(), any(), any())(any())).thenReturn(table)
+    when(mockHelper.mapEstablishersToList(any(), any(), any())).thenReturn(itemList)
   }
 
 
