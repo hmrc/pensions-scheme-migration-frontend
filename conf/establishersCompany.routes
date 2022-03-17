@@ -22,7 +22,7 @@ POST        /:index/change/company/reason-for-no-company-number                 
 GET         /:index/company/have-unique-taxpayer-reference                          controllers.establishers.company.details.HaveUTRController.onPageLoad(index: Index, mode: Mode = NormalMode)
 POST        /:index/company/have-unique-taxpayer-reference                          controllers.establishers.company.details.HaveUTRController.onSubmit(index: Index, mode: Mode = NormalMode)
 GET         /:index/change/company/have-unique-taxpayer-reference                   controllers.establishers.company.details.HaveUTRController.onPageLoad(index: Index, mode: Mode = CheckMode)
-POST        /:index/chang/companye/have-unique-taxpayer-reference                   controllers.establishers.company.details.HaveUTRController.onSubmit(index: Index, mode: Mode = CheckMode)
+POST        /:index/change/company/have-unique-taxpayer-reference                   controllers.establishers.company.details.HaveUTRController.onSubmit(index: Index, mode: Mode = CheckMode)
 
 GET         /:index/company/enter-unique-taxpayer-reference                         controllers.establishers.company.details.UTRController.onPageLoad(index: Index, mode: Mode = NormalMode)
 POST        /:index/company/enter-unique-taxpayer-reference                         controllers.establishers.company.details.UTRController.onSubmit(index: Index, mode: Mode = NormalMode)
