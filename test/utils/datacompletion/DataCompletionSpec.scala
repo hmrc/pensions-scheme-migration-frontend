@@ -17,11 +17,12 @@
 package utils.datacompletion
 
 import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
-import identifiers.adviser.{AddressId, AdviserNameId, EnterEmailId, EnterPhoneId}
+import identifiers.adviser.{AdviserNameId, EnterEmailId, EnterPhoneId, AddressId => adviserAddressId}
+import identifiers.establishers.company.address._
 import identifiers.beforeYouStart.{EstablishedCountryId, SchemeNameId, SchemeTypeId, WorkingKnowledgeId}
 import identifiers.benefitsAndInsurance._
 import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
-import models.{Members, SchemeType}
+import models.{Address, Members, SchemeType}
 import org.scalatest.OptionValues
 import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.matchers.must.Matchers
@@ -76,6 +77,54 @@ class DataCompletionSpec extends AnyWordSpec with Matchers with OptionValues wit
 
       "return Some(true) when answer is present" in {
         ua.isAnswerComplete(SchemeNameId) mustBe Some(true)
+      }
+    }
+
+    "isAddressComplete" must {
+      "return None when current Address is missing" in {
+
+        val userAnswers = ua
+          .set(AddressYearsId(0), true).success.value
+
+        userAnswers.isAddressComplete(AddressId(0),PreviousAddressId(0),AddressYearsId(0),Some(TradingTimeId(0)))  mustBe None
+      }
+
+      "return Some(true) when entire address journey is completed" in {
+        val userAnswers = ua
+          .set(AddressId(0), Data.address).success.value
+          .set(AddressYearsId(0), false).success.value
+          .set(PreviousAddressId(0), Data.address).success.value
+          .set(TradingTimeId(0), true).success.value
+
+        userAnswers.isAddressComplete(AddressId(0),PreviousAddressId(0),AddressYearsId(0),Some(TradingTimeId(0)))  mustBe Some(true)
+      }
+
+      "return Some(false) when previous Address is missing" in {
+        val userAnswers = ua
+          .set(AddressId(0), Data.address).success.value
+          .set(AddressYearsId(0), false).success.value
+          .set(TradingTimeId(0), true).success.value
+
+        userAnswers.isAddressComplete(AddressId(0),PreviousAddressId(0),AddressYearsId(0),Some(TradingTimeId(0)))  mustBe  Some(false)
+      }
+
+      "return Some(false) when current Address is UK and missing postcode" in {
+        val address = Address("addr1", "addr2", None, None, Some(""), "GB")
+        val userAnswers = ua
+          .set(AddressId(0), address).success.value
+          .set(AddressYearsId(0), true).success.value
+
+        userAnswers.isAddressComplete(AddressId(0),PreviousAddressId(0),AddressYearsId(0),Some(TradingTimeId(0)))  mustBe  Some(false)
+      }
+      "return Some(false) when previous Address is UK and missing postcode" in {
+        val address = Address("addr1", "addr2", None, None, Some(""), "GB")
+        val userAnswers = ua
+          .set(AddressId(0), Data.address).success.value
+          .set(AddressYearsId(0), false).success.value
+          .set(PreviousAddressId(0), address).success.value
+          .set(TradingTimeId(0), true).success.value
+
+        userAnswers.isAddressComplete(AddressId(0),PreviousAddressId(0),AddressYearsId(0),Some(TradingTimeId(0)))  mustBe  Some(false)
       }
     }
 
@@ -166,7 +215,7 @@ class DataCompletionSpec extends AnyWordSpec with Matchers with OptionValues wit
           .set(AdviserNameId, "test").success.value
           .set(EnterEmailId, Data.email).success.value
           .set(EnterPhoneId, Data.phone).success.value
-          .set(AddressId, Data.address).success.value
+          .set(adviserAddressId, Data.address).success.value
 
         userAnswers.isAdviserComplete.value mustBe true
       }

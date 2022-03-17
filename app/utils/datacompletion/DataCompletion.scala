@@ -136,16 +136,23 @@ trait DataCompletion {
                         tradingTime: Option[TypedIdentifier[Boolean]]
                        ): Option[Boolean] =
     (get(currentAddressId), get(timeAtAddress)) match {
-      case (Some(_), Some(true)) => Some(true)
+      case (Some(currentAdd), Some(true)) => Some(checkPostcodeForUkAddress(currentAdd))
       case (None, _) => None
       case (Some(_), Some(false)) =>
         (get(previousAddressId), tradingTime) match {
-          case (Some(_), _) => Some(true)
+          case (Some(previousAdd), _) => Some(checkPostcodeForUkAddress(previousAdd))
           case (_, Some(tradingTimeId)) => Some(!get(tradingTimeId).getOrElse(true))
           case _ => Some(false)
         }
       case _ => Some(false)
     }
+
+  private def checkPostcodeForUkAddress(address: Address): Boolean = {
+    if (address.country.equals("GB") && address.postcode.getOrElse("").isEmpty)
+      false
+    else
+      true
+  }
 
   def isContactDetailsComplete(emailId: TypedIdentifier[String],
                                phoneId: TypedIdentifier[String]): Option[Boolean] =
