@@ -35,7 +35,6 @@ class AddToListHelper {
                                        : JsValue = {
     Json.toJson(
       entities.map { data =>
-
         Map("name" -> data.name,
           "changeUrl" ->   data.editLink.getOrElse("#"),
           "removeUrl" ->   data.deleteLink.getOrElse("#")
