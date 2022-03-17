@@ -22,7 +22,7 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address.{AddressId, AddressYearsId, PreviousAddressId, TradingTimeId}
 import models.requests.DataRequest
-import models.{Address, CompanyDetails, MigrationLock}
+import models.{Address, CheckMode, CompanyDetails, MigrationLock}
 import org.scalatest.TryValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -87,27 +87,27 @@ class EstablisherCompanyAddressCYAHelperSpec extends AnyWordSpec with Matchers w
 
       result.head mustBe summaryListRowHtml(key = messages("messages__address__whatYouWillNeed_h1", establisherCompanyName.companyName),
         value = answerAddressTransform(establisherAddress), Some(Link(text = Messages("site.change"),
-          target = controllers.establishers.company.address.routes.EnterPostcodeController.onPageLoad(0).url,
+          target = controllers.establishers.company.address.routes.EnterPostcodeController.onPageLoad(0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__address", establisherCompanyName.companyName))),
           attributes = Map("id" -> "cya-0-0-change"))))
 
       result(1) mustBe summaryListRow(key = Messages("addressYears.title", establisherCompanyName.companyName), valueMsgKey = "booleanAnswer.false",
         Some(Link(text = Messages("site.change"),
-          target = controllers.establishers.company.address.routes.AddressYearsController.onPageLoad(0).url,
+          target = controllers.establishers.company.address.routes.AddressYearsController.onPageLoad(0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
             Messages("messages__visuallyhidden__addressYears", establisherCompanyName.companyName))),
           attributes = Map("id" -> "cya-0-1-change"))))
 
       result(2) mustBe summaryListRow(key = Messages("tradingTime.title", establisherCompanyName.companyName), valueMsgKey = "booleanAnswer.true",
         Some(Link(text = Messages("site.change"),
-          target = controllers.establishers.company.address.routes.TradingTimeController.onPageLoad(0).url,
+          target = controllers.establishers.company.address.routes.TradingTimeController.onPageLoad(0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
             Messages("messages__visuallyhidden__TradingTime", establisherCompanyName.companyName))),
           attributes = Map("id" -> "cya-0-2-change"))))
 
       result(3) mustBe summaryListRowHtml(key = Message("messages__previousAddress", establisherCompanyName.companyName).resolve,
         value = answerAddressTransform(establisherPreviousAddress), Some(Link(text = Messages("site.change"),
-          target = controllers.establishers.company.address.routes.EnterPreviousPostcodeController.onPageLoad(0).url,
+          target = controllers.establishers.company.address.routes.EnterPreviousPostcodeController.onPageLoad(0, CheckMode).url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyHidden__previousAddress",
             establisherCompanyName.companyName))),
           attributes = Map("id" -> "cya-0-3-change"))))

@@ -23,7 +23,7 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.partnership.PartnershipDetailsId
 import identifiers.trustees.partnership.address.AddressId
 import matchers.JsonMatchers
-import models.Scheme
+import models.{NormalMode, Scheme}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -52,8 +52,8 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = controllers.trustees.partnership.address.routes.ConfirmAddressController.onPageLoad(0).url
-  private val httpPathPOST: String = controllers.trustees.partnership.address.routes.ConfirmAddressController.onSubmit(0).url
+  private val httpPathGET: String = controllers.trustees.partnership.address.routes.ConfirmAddressController.onPageLoad(0,NormalMode).url
+  private val httpPathPOST: String = controllers.trustees.partnership.address.routes.ConfirmAddressController.onSubmit(0,NormalMode).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "line1" -> Seq("1"),

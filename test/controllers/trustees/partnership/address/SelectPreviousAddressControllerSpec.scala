@@ -21,7 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.trustees.partnership.address.EnterPreviousPostCodeId
 import matchers.JsonMatchers
-import models.{Scheme, TolerantAddress}
+import models.{NormalMode, Scheme, TolerantAddress}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -46,8 +46,8 @@ class SelectPreviousAddressControllerSpec extends ControllerSpecBase with Nunjuc
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = controllers.trustees.partnership.address.routes.SelectPreviousAddressController.onPageLoad(0).url
-  private val httpPathPOST: String = controllers.trustees.partnership.address.routes.SelectPreviousAddressController.onSubmit(0).url
+  private val httpPathGET: String = controllers.trustees.partnership.address.routes.SelectPreviousAddressController.onPageLoad(0,NormalMode).url
+  private val httpPathPOST: String = controllers.trustees.partnership.address.routes.SelectPreviousAddressController.onSubmit(0,NormalMode).url
 
   private val seqAddresses = Seq(
     TolerantAddress(Some("1"),Some("1"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")),

@@ -21,7 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.beforeYouStart.SchemeNameId
 import matchers.JsonMatchers
-import models.{Scheme, TolerantAddress}
+import models.{NormalMode, Scheme, TolerantAddress}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -34,7 +34,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{Data, Enumerable, UserAnswers}
-import models.Scheme
+
 import scala.concurrent.Future
 
 class EnterPostcodeControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
@@ -48,8 +48,8 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with NunjucksSuppor
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = controllers.establishers.company.address.routes.EnterPostcodeController.onPageLoad(0).url
-  private val httpPathPOST: String = controllers.establishers.company.address.routes.EnterPostcodeController.onSubmit(0).url
+  private val httpPathGET: String = controllers.establishers.company.address.routes.EnterPostcodeController.onPageLoad(0,NormalMode).url
+  private val httpPathPOST: String = controllers.establishers.company.address.routes.EnterPostcodeController.onSubmit(0,NormalMode).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq("ZZ11ZZ")

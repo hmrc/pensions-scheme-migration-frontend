@@ -23,10 +23,10 @@ import controllers.actions._
 import controllers.address.PostcodeController
 import forms.address.PostcodeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.trustees.partnership.address.EnterPostCodeId
 import identifiers.trustees.partnership.PartnershipDetailsId
+import identifiers.trustees.partnership.address.EnterPostCodeId
 import models.requests.DataRequest
-import models.{Index, Mode, NormalMode}
+import models.{Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -57,17 +57,17 @@ class EnterPostcodeController @Inject()(val appConfig: AppConfig,
     form.withError("value", s"messages__error__postcode_$messageKey")
   }
 
-  def onPageLoad(index: Index): Action[AnyContent] =
+  def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        get(getFormToJson(schemeName, index, NormalMode))
+        get(getFormToJson(schemeName, index, mode))
       }
     }
 
-  def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async{
+  def onSubmit(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async{
     implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        post(getFormToJson(schemeName, index, NormalMode), EnterPostCodeId(index), "enterPostcode.noresults")
+        post(getFormToJson(schemeName, index, mode), EnterPostCodeId(index), "enterPostcode.noresults",Some(mode))
       }
   }
 
@@ -80,7 +80,7 @@ class EnterPostcodeController @Inject()(val appConfig: AppConfig,
         "entityType" -> msg("messages__partnership"),
         "entityName" -> name,
         "form" -> form,
-        "enterManuallyUrl" -> controllers.trustees.partnership.address.routes.ConfirmAddressController.onPageLoad(index).url,
+        "enterManuallyUrl" -> controllers.trustees.partnership.address.routes.ConfirmAddressController.onPageLoad(index,mode).url,
         "schemeName" -> schemeName
       )
     }

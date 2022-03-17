@@ -25,7 +25,7 @@ import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.address.{AddressId, AddressListId, EnterPostCodeId}
-import models.{Index, Mode, NormalMode}
+import models.{Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -55,18 +55,18 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
 
   override def form: Form[Int] = formProvider("selectAddress.required")
 
-  def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async { implicit request =>
+  def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async { implicit request =>
     retrieve(SchemeNameId) { schemeName =>
-      getFormToJson(schemeName, index, NormalMode).retrieve.right.map(get)
+      getFormToJson(schemeName, index, mode).retrieve.right.map(get)
     }
   }
 
-  def onSubmit(index: Index): Action[AnyContent] =
+  def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
         val addressPages: AddressPages = AddressPages(EnterPostCodeId(index), AddressListId(index), AddressId(index))
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, index, NormalMode).retrieve.right.map(post(_, addressPages,
-          manualUrlCall = routes.ConfirmAddressController.onPageLoad(index)))
+        getFormToJson(schemeName, index, mode).retrieve.right.map(post(_, addressPages,
+          manualUrlCall = routes.ConfirmAddressController.onPageLoad(index,mode),mode=Some(mode)))
       }
     }
 
@@ -84,7 +84,7 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
             "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
             "entityType" -> msg("establisherEntityTypePartnership"),
             "entityName" -> name,
-            "enterManuallyUrl" -> routes.ConfirmAddressController.onPageLoad(index).url,
+            "enterManuallyUrl" -> routes.ConfirmAddressController.onPageLoad(index,mode).url,
             "schemeName" -> schemeName
           )
         }

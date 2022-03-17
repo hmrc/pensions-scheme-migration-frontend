@@ -19,14 +19,14 @@ package helpers.cya.establishers.individual
 import helpers.cya.CYAHelper
 import helpers.cya.CYAHelper.getName
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.address.{AddressYearsId, PreviousAddressId, AddressId}
-import models.Index
+import identifiers.establishers.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
+import models.{CheckMode, Index}
 import models.requests.DataRequest
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.SummaryList.Row
-import utils.{UserAnswers, Enumerable}
+import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 
 class EstablisherAddressCYAHelper
@@ -47,13 +47,13 @@ class EstablisherAddressCYAHelper
       answerOrAddRow(
         AddressId(index),
         Message("messages__address__whatYouWillNeed_h1", establisherName).resolve,
-        Some(controllers.establishers.individual.address.routes.EnterPostcodeController.onPageLoad(index).url),
+        Some(controllers.establishers.individual.address.routes.EnterPostcodeController.onPageLoad(index,CheckMode).url),
         Some(msg"messages__visuallyHidden__address".withArgs(establisherName)), answerAddressTransform
       ),
       answerOrAddRow(
         AddressYearsId(index),
         Message("addressYears.title", establisherName).resolve,
-        Some(controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index).url),
+        Some(controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index,CheckMode).url),
         Some(msg"messages__visuallyhidden__addressYears".withArgs(establisherName)), answerBooleanTransform
       )
     )
@@ -65,7 +65,7 @@ class EstablisherAddressCYAHelper
         answerOrAddRow(
           PreviousAddressId(index),
           Message("messages__previousAddress", establisherName).resolve,
-          Some(controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index).url),
+          Some(controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index,CheckMode).url),
           Some(msg"messages__visuallyHidden__previousAddress".withArgs(establisherName)), answerAddressTransform
         )
       )

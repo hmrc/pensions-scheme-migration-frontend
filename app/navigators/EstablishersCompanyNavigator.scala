@@ -57,14 +57,14 @@ class EstablishersCompanyNavigator @Inject()(config: AppConfig, dataPrefillServi
     case HavePAYEId(index) => payeRoutes(index, ua, NormalMode)
     case PAYEId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
     case CompanyDetailsId(_) => AddEstablisherController.onPageLoad()
-    case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index)
+    case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index, NormalMode)
     case AddressListId(index) => addressYears(index, NormalMode)
     case AddressId(index) => addressYears(index, NormalMode)
     case AddressYearsId(index) =>
-      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else TradingTimeController.onPageLoad(index)
+      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index) else TradingTimeController.onPageLoad(index, NormalMode)
     case TradingTimeId(index) =>
-      if (ua.get(TradingTimeId(index)).contains(true)) EnterPreviousPostcodeController.onPageLoad(index) else cyaAddress(index)
-    case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index)
+      if (ua.get(TradingTimeId(index)).contains(true)) EnterPreviousPostcodeController.onPageLoad(index, NormalMode) else cyaAddress(index)
+    case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index, NormalMode)
     case PreviousAddressListId(index) => cyaAddress(index)
     case PreviousAddressId(index) => cyaAddress(index)
     case AddCompanyDirectorsId(index) =>
@@ -89,11 +89,22 @@ class EstablishersCompanyNavigator @Inject()(config: AppConfig, dataPrefillServi
     case EnterEmailId(index) => cyaContactDetails(index)
     case EnterPhoneId(index) => cyaContactDetails(index)
     case OtherDirectorsId(index) => controllers.routes.TaskListController.onPageLoad()
+    case AddressId(index) => cyaAddress(index)
+    case AddressListId(index) => cyaAddress(index)
+    case AddressYearsId(index) =>
+      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index)
+      else EnterPreviousPostcodeController.onPageLoad(index, CheckMode)
+    case TradingTimeId(index) =>
+      if (ua.get(TradingTimeId(index)).contains(true)) EnterPreviousPostcodeController.onPageLoad(index, CheckMode) else cyaAddress(index)
+    case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index, CheckMode)
+    case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index, CheckMode)
+    case PreviousAddressId(index) => cyaAddress(index)
+    case PreviousAddressListId(index) => cyaAddress(index)
   }
 
   private def cyaAddress(index: Int): Call = controllers.establishers.company.address.routes.CheckYourAnswersController.onPageLoad(index)
 
-  private def addressYears(index: Int, mode: Mode): Call = controllers.establishers.company.address.routes.AddressYearsController.onPageLoad(index)
+  private def addressYears(index: Int, mode: Mode): Call = controllers.establishers.company.address.routes.AddressYearsController.onPageLoad(index,mode)
 
   private def addDirectors(index: Int, answers: UserAnswers): Call = {
     val noOfIndividualTrustees = dataPrefillService.getListOfTrusteesToBeCopied(index)(answers).count(indv => !indv.isDeleted && indv.isComplete)
