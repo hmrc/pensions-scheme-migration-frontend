@@ -27,7 +27,6 @@
             <form method="post" autocomplete="off" novalidate>
 
                 {{ csrf() | safe }}
-
                 <h1 id="addTrustee_h1" class="govuk-heading-xl">{{ messages('messages__addTrustee_title') }}</h1>
                 {% if itemListIncomplete.length > 0 %}
                  <h2 class="govuk-heading-s"> {{ messages("site.incomplete") }} </h2>
@@ -44,12 +43,14 @@
                                 <span class="govuk-visually-hidden">{{messages('site.add.details')}} {{ item.name }}</span>
                               </a>
                             </dd>
+                            {% if hideDeleteLink != true %}
                             <dd class="hmrc-add-to-a-list__remove">
                               <a class="govuk-link" href="{{ item.removeUrl }}">
                                 <span aria-hidden="true">{{messages('site.remove')}}</span>
                                 <span class="govuk-visually-hidden">{{messages('site.remove')}} {{ item.name }}</span>
                               </a>
                             </dd>
+                            {% endif %}
                           </div>
                          {% endfor %}
                       </dl>
@@ -72,12 +73,14 @@
                                     <span class="govuk-visually-hidden">{{messages('site.change')}} {{ item.name }}</span>
                                   </a>
                                 </dd>
+                                 {% if hideDeleteLink != true %}
                                 <dd class="hmrc-add-to-a-list__remove">
                                   <a class="govuk-link" href="{{ item.removeUrl }}">
                                     <span aria-hidden="true">{{messages('site.remove')}}</span>
                                     <span class="govuk-visually-hidden">{{messages('site.remove')}} {{ item.name }}</span>
                                   </a>
                                 </dd>
+                                {% endif %}
                               </div>
                              {% endfor %}
                           </dl>

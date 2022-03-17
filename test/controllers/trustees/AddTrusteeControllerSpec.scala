@@ -54,6 +54,7 @@ class AddTrusteeControllerSpec extends ControllerSpecBase with NunjucksSupport w
   private val templateToBeRendered = "trustees/addTrustee.njk"
   private val form: Form[Boolean] = new ConfirmDeleteTrusteeFormProvider()(trusteeName)
   val table: Table = Table(head = Nil, rows = Nil)
+  private val hideDeleteLink = false
   private val itemList: JsValue = Json.obj(
     "name" -> trusteeName,
     "changeUrl" ->  "controllers.establishers.company.routes.SpokeTaskListController.onPageLoad(0)",
@@ -87,6 +88,7 @@ class AddTrusteeControllerSpec extends ControllerSpecBase with NunjucksSupport w
           "form" -> form,
           "itemListComplete" -> itemList,
           "itemListIncomplete" -> itemList,
+          "hideDeleteLink" -> hideDeleteLink,
           "radios" -> Radios.yesNo(form("value")),
           "schemeName" -> schemeName,
           "trusteeSize" -> countOfTrustees,

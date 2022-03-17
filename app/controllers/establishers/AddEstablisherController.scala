@@ -87,14 +87,14 @@ class AddEstablisherController @Inject()(
   private def getJson(form: Form[_], establishers: Seq[Establisher[_]])(implicit request: DataRequest[AnyContent]): JsObject = {
     val establishersComplete = establishers.filter(_.isCompleted)
     val establishersIncomplete = establishers.filterNot(_.isCompleted)
-    val completeTable = helper.mapEstablishersToList(establishersComplete,
+    val completeList = helper.mapEstablishersToList(establishersComplete,
       caption = "messages__schemeTaskList__completed", editLinkText = "site.change")
-    val incompleteTable = helper.mapEstablishersToList(establishersIncomplete,
+    val incompleteList = helper.mapEstablishersToList(establishersIncomplete,
       caption = "site.incomplete", editLinkText = "site.add.details")
     Json.obj(
       "form" -> form,
-      "itemListIncomplete" -> incompleteTable,
-      "itemListComplete" -> completeTable,
+      "itemListIncomplete" -> incompleteList,
+      "itemListComplete" -> completeList,
       "radios" -> Radios.yesNo(form("value")),
       "schemeName" -> existingSchemeName
     )
