@@ -20,7 +20,7 @@ import helpers.cya.CYAHelper
 import helpers.cya.CYAHelper.getPartnershipName
 import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.address.{AddressId, AddressYearsId, PreviousAddressId, TradingTimeId}
-import models.Index
+import models.{CheckMode, Index}
 import models.requests.DataRequest
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
@@ -47,13 +47,13 @@ class EstablisherPartnershipAddressCYAHelper
       answerOrAddRow(
         AddressId(index),
         Message("messages__address__whatYouWillNeed_h1", establisherName).resolve,
-        Some(controllers.establishers.partnership.address.routes.EnterPostcodeController.onPageLoad(index).url),
+        Some(controllers.establishers.partnership.address.routes.EnterPostcodeController.onPageLoad(index,CheckMode).url),
         Some(msg"messages__visuallyHidden__address".withArgs(establisherName)), answerAddressTransform
       ),
       answerOrAddRow(
         AddressYearsId(index),
         Message("addressYears.title", establisherName).resolve,
-        Some(controllers.establishers.partnership.address.routes.AddressYearsController.onPageLoad(index).url),
+        Some(controllers.establishers.partnership.address.routes.AddressYearsController.onPageLoad(index,CheckMode).url),
         Some(msg"messages__visuallyhidden__addressYears".withArgs(establisherName)), answerBooleanTransform
       )
     )
@@ -62,7 +62,7 @@ class EstablisherPartnershipAddressCYAHelper
         answerOrAddRow(
           TradingTimeId(index),
           Message("tradingTime.title", establisherName).resolve,
-          Some(controllers.establishers.partnership.address.routes.TradingTimeController.onPageLoad(index).url),
+          Some(controllers.establishers.partnership.address.routes.TradingTimeController.onPageLoad(index,CheckMode).url),
           Some(msg"messages__visuallyhidden__TradingTime".withArgs(establisherName)), answerBooleanTransform
         )
       )
@@ -76,7 +76,7 @@ class EstablisherPartnershipAddressCYAHelper
           answerOrAddRow(
             PreviousAddressId(index),
             Message("messages__previousAddress", establisherName).resolve,
-            Some(controllers.establishers.partnership.address.routes.EnterPreviousPostcodeController.onPageLoad(index).url),
+            Some(controllers.establishers.partnership.address.routes.EnterPreviousPostcodeController.onPageLoad(index,CheckMode).url),
             Some(msg"messages__visuallyHidden__previousAddress".withArgs(establisherName)), answerAddressTransform
           )
         )

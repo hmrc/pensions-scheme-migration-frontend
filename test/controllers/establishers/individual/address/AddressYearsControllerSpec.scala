@@ -34,8 +34,8 @@ import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{UserAnswers, Enumerable, Data}
-import models.Scheme
+import utils.{Data, Enumerable, UserAnswers}
+import models.{NormalMode, Scheme}
 
 import scala.concurrent.Future
 
@@ -44,8 +44,8 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
   private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(EstablisherNameId(0), Data.individualName))
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
-  private val httpPathGET: String = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(0).url
-  private val httpPathPOST: String = controllers.establishers.individual.address.routes.AddressYearsController.onSubmit(0).url
+  private val httpPathGET: String = controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(0,NormalMode).url
+  private val httpPathPOST: String = controllers.establishers.individual.address.routes.AddressYearsController.onSubmit(0,NormalMode).url
   private val form: Form[Boolean] = new AddressYearsFormProvider()("")
 
   private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>

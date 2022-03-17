@@ -35,7 +35,8 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
 import utils.{Data, Enumerable, UserAnswers}
-import models.Scheme
+import models.{NormalMode, Scheme}
+
 import scala.concurrent.Future
 
 class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
@@ -43,8 +44,8 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
   private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(PartnershipDetailsId(0), Data.partnershipDetails))
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
-  private val httpPathGET: String = controllers.establishers.partnership.address.routes.AddressYearsController.onPageLoad(0).url
-  private val httpPathPOST: String = controllers.establishers.partnership.address.routes.AddressYearsController.onSubmit(0).url
+  private val httpPathGET: String = controllers.establishers.partnership.address.routes.AddressYearsController.onPageLoad(0,NormalMode).url
+  private val httpPathPOST: String = controllers.establishers.partnership.address.routes.AddressYearsController.onSubmit(0,NormalMode).url
   private val form: Form[Boolean] = new AddressYearsFormProvider()("")
 
   private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>

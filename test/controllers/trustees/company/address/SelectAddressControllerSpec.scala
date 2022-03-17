@@ -21,7 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.trustees.company.address.EnterPostCodeId
 import matchers.JsonMatchers
-import models.TolerantAddress
+import models.{NormalMode, Scheme, TolerantAddress}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -33,7 +33,7 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.{Data, Enumerable, UserAnswers}
-import models.Scheme
+
 import scala.concurrent.Future
 
 class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
@@ -46,8 +46,8 @@ class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = controllers.trustees.company.address.routes.SelectAddressController.onPageLoad(0).url
-  private val httpPathPOST: String = controllers.trustees.company.address.routes.SelectAddressController.onSubmit(0).url
+  private val httpPathGET: String = controllers.trustees.company.address.routes.SelectAddressController.onPageLoad(0,NormalMode).url
+  private val httpPathPOST: String = controllers.trustees.company.address.routes.SelectAddressController.onSubmit(0,NormalMode).url
 
   private val seqAddresses = Seq(
     TolerantAddress(Some("1"),Some("1"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")),

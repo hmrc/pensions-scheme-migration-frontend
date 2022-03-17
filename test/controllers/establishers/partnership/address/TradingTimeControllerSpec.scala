@@ -23,7 +23,7 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.address.TradingTimeId
 import matchers.JsonMatchers
-import models.Scheme
+import models.{NormalMode, Scheme}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -44,8 +44,8 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
   private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(PartnershipDetailsId(0), Data.partnershipDetails))
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
-  private val httpPathGET: String = controllers.establishers.partnership.address.routes.TradingTimeController.onPageLoad(0).url
-  private val httpPathPOST: String = controllers.establishers.partnership.address.routes.TradingTimeController.onSubmit(0).url
+  private val httpPathGET: String = controllers.establishers.partnership.address.routes.TradingTimeController.onPageLoad(0,NormalMode).url
+  private val httpPathPOST: String = controllers.establishers.partnership.address.routes.TradingTimeController.onSubmit(0,NormalMode).url
   private val form: Form[Boolean] = new TradingTimeFormProvider()("")
 
   private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>

@@ -65,18 +65,18 @@ class TrusteesCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour with
   )
 
   private def enterPreviousPostcode(mode:Mode): Call =
-    controllers.trustees.company.address.routes.EnterPreviousPostcodeController.onPageLoad(index)
+    controllers.trustees.company.address.routes.EnterPreviousPostcodeController.onPageLoad(index,mode)
 
   private def selectAddress(mode:Mode): Call =
-    controllers.trustees.company.address.routes.SelectAddressController.onPageLoad(index)
+    controllers.trustees.company.address.routes.SelectAddressController.onPageLoad(index,mode)
 
   private def selectPreviousAddress(mode:Mode): Call =
-    controllers.trustees.company.address.routes.SelectPreviousAddressController.onPageLoad(index)
+    controllers.trustees.company.address.routes.SelectPreviousAddressController.onPageLoad(index,mode)
 
   private def addressYears(mode:Mode): Call =
-    controllers.trustees.company.address.routes.AddressYearsController.onPageLoad(index)
+    controllers.trustees.company.address.routes.AddressYearsController.onPageLoad(index,mode)
 
-  private def tradingTime: Call = controllers.trustees.company.address.routes.TradingTimeController.onPageLoad(index)
+  private def tradingTime(mode:Mode): Call = controllers.trustees.company.address.routes.TradingTimeController.onPageLoad(index,mode)
     ua.set(CompanyDetailsId(0), companyDetails).success.value
 
   private def enterPhonePage(mode:Mode): Call =
@@ -109,7 +109,7 @@ class TrusteesCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour with
         row(AddressId(index))(addressYears(NormalMode), addressUAWithValue(AddressId(index), address)),
 
         row(AddressYearsId(index))(cyaAddress, uaWithValue(AddressYearsId(index), true)),
-        row(AddressYearsId(index))(tradingTime, uaWithValue(AddressYearsId(index), false)),
+        row(AddressYearsId(index))(tradingTime(NormalMode), uaWithValue(AddressYearsId(index), false)),
 
         row(TradingTimeId(index))(cyaAddress, uaWithValue(TradingTimeId(index), false)),
         row(TradingTimeId(index))(enterPreviousPostcode(NormalMode), uaWithValue(TradingTimeId(index), true)),
@@ -140,7 +140,16 @@ class TrusteesCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour with
         row(HavePAYEId(index))(paye(CheckMode), uaWithValue(HavePAYEId(index), true)),
         row(HavePAYEId(index))(cyaDetails, uaWithValue(HavePAYEId(index), false)),
         row(EnterEmailId(index))(enterPhonePage(NormalMode), Some(detailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
-        row(EnterPhoneId(index))(cyaContact, Some(detailsUa.set(EnterPhoneId(index), "1234").success.value))
+        row(EnterPhoneId(index))(cyaContact, Some(detailsUa.set(EnterPhoneId(index), "1234").success.value)),
+        row(PAYEId(index))(cyaDetails),
+        row(EnterPostCodeId(index))(selectAddress(CheckMode), addressUAWithValue(EnterPostCodeId(index), seqAddresses)),
+        row(AddressListId(index))(cyaAddress, addressUAWithValue(AddressListId(index), Data.tolerantAddress)),
+        row(AddressId(index))(cyaAddress, uaWithValue(AddressYearsId(index), true)),
+        row(AddressYearsId(index))(cyaAddress, uaWithValue(AddressYearsId(index), true)),
+        row(AddressYearsId(index))(enterPreviousPostcode(CheckMode),uaWithValue(AddressYearsId(index), false)),
+        row(EnterPreviousPostCodeId(index))(selectPreviousAddress(CheckMode),addressUAWithValue(EnterPreviousPostCodeId(index), seqAddresses)),
+        row(PreviousAddressListId(index))(cyaAddress, addressUAWithValue(PreviousAddressListId(index), Data.tolerantAddress)),
+        row(PreviousAddressId(index))(cyaAddress, addressUAWithValue(PreviousAddressId(index), address))
       )
 
     "in NormalMode" must {
