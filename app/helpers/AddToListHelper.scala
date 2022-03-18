@@ -16,12 +16,6 @@
 
 package helpers
 
-import identifiers.establishers.company.CompanyDetailsId
-import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.partnership.PartnershipDetailsId
-import identifiers.trustees.company.{CompanyDetailsId => TrusteeCompanyDetailsId}
-import identifiers.trustees.individual.TrusteeNameId
-import identifiers.trustees.partnership.{PartnershipDetailsId => TrusteePartnershipDetailsId}
 import models.Entity
 import play.api.i18n.Messages
 import play.api.libs.json.{JsValue, Json}
@@ -31,47 +25,29 @@ import uk.gov.hmrc.viewmodels.{Html, Table}
 
 class AddToListHelper {
 
-  def mapEstablishersToTable[A <: Entity[_]](establishers: Seq[A], caption: String, editLinkText: String)
-                                            (implicit messages: Messages): Table =
-    mapToTable(establishers, caption, editLinkText, hideDeleteLink = false)
+  def mapEstablishersToList[A <: Entity[_]](establishers: Seq[A], caption: String, editLinkText: String): JsValue =
+    mapToList(establishers)
 
-  def mapTrusteesToTable[A <: Entity[_]](trustees: Seq[A], caption: String, editLinkText: String, hideDeleteLink: Boolean = false)
-                                        (implicit messages: Messages): Table =
-    mapToTable(trustees, caption, editLinkText, hideDeleteLink)
+  def mapTrusteesToList[A <: Entity[_]](trustees: Seq[A], caption: String, editLinkText: String, hideDeleteLink: Boolean = false): JsValue =
+    mapToList(trustees)
 
-  private def mapToTable[A <: Entity[_]](entities: Seq[A], caption: String, editLinkText: String, hideDeleteLink: Boolean)
-                                        (implicit messages: Messages): Table = {
-
-    val rows = entities.map { data =>
-      Seq(Cell(Literal(data.name), Seq("govuk-!-width-one-quarter")),
-        Cell(Literal(getTypeFromId(data.id)), Seq("govuk-!-width-one-quarter"))) ++
-        data.editLink.fold[Seq[Cell]](Nil)(editLink =>
-          Seq(Cell(link(s"edit-${data.index}", editLinkText, editLink, data.name), Seq("govuk-!-width-one-quarter")))
-        ) ++
-        (if(!hideDeleteLink) {
-          data.deleteLink.fold[Seq[Cell]](Nil)(delLink =>
-            Seq(Cell(link(s"remove-${data.index}", "site.remove", delLink, data.name), Seq("govuk-!-width-one-quarter")))
-          )
-        } else Nil)
-    }
-
-    Table(Nil, rows, caption = Some(Literal(messages(caption))),captionClasses=Seq("govuk-visually-hidden"), attributes = Map("role" -> "table"))
+  private def mapToList[A <: Entity[_]](entities: Seq[A])
+                                       : JsValue = {
+    Json.toJson(
+      entities.map { data =>
+        Map("name" -> data.name,
+          "changeUrl" ->   data.editLink.getOrElse("#"),
+          "removeUrl" ->   data.deleteLink.getOrElse("#")
+        )
+      }
+    )
   }
+
 
   def link(id: String, text: String, url: String, name: String)(implicit messages: Messages): Html = {
     Html(s"<a class=govuk-link id=$id href=$url><span aria-hidden=true >${messages(text)}</span>" +
       s"<span class=govuk-visually-hidden>${messages(text)} $name</span> </a>")
   }
-
-  private def getTypeFromId[ID](id: ID)(implicit messages: Messages): String =
-    id match {
-      case EstablisherNameId(_) => messages("kind.individual")
-      case TrusteeNameId(_) => messages("kind.individual")
-      case CompanyDetailsId(_) => messages("kind.company")
-      case TrusteeCompanyDetailsId(_) => messages("kind.company")
-      case PartnershipDetailsId(_) => messages("kind.partnership")
-      case TrusteePartnershipDetailsId(_) => messages("kind.partnership")
-    }
 
   def mapDirectorOrPartnerToTable[A <: Entity[_]](directorsOrPartners: Seq[A])
                                         (implicit messages: Messages): Table =
