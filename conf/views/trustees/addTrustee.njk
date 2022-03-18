@@ -38,7 +38,7 @@
                                {{ item.name }}
                             </dt>
                             <dd class="hmrc-add-to-a-list__change">
-                              <a class="govuk-link" id="edit-{{loop.index}}" href="{{ item.changeUrl }}">
+                              <a class="govuk-link" id="edit-{{loop.index-1}}" href="{{ item.changeUrl }}">
                                 <span aria-hidden="true">{{messages('site.add.details')}}</span>
                                 <span class="govuk-visually-hidden">{{messages('site.add.details')}} {{ item.name }}</span>
                               </a>
@@ -68,7 +68,7 @@
                                    {{ item.name }}
                                 </dt>
                                 <dd class="hmrc-add-to-a-list__change">
-                                  <a class="govuk-link" id="edit-{{loop.index}}" href="{{ item.changeUrl }}">
+                                  <a class="govuk-link" id="edit-complete-{{loop.index-1}}" href="{{ item.changeUrl }}">
                                     <span aria-hidden="true">{{messages('site.change')}}</span>
                                     <span class="govuk-visually-hidden">{{messages('site.change')}} {{ item.name }}</span>
                                   </a>
