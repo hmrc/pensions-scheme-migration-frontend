@@ -21,7 +21,7 @@ import org.scalatest.matchers.must.Matchers._
 import org.scalatest.wordspec.AsyncWordSpec
 import org.scalatest.{OptionValues, RecoverMethods}
 import play.api.http.Status
-import play.api.http.Status.{ACCEPTED, OK}
+import play.api.http.Status.OK
 import play.api.libs.json.{JsBoolean, Json}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 import utils.WireMockHelper
