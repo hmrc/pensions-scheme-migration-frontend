@@ -27,30 +27,41 @@ import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmationController @Inject()(appConfig: AppConfig,
                                        override val messagesApi: MessagesApi,
                                        authenticate: AuthAction,
                                        currentPstrCacheConnector: CurrentPstrCacheConnector,
-                                       getData: BulkDataAction,
                                        val controllerComponents: MessagesControllerComponents,
-                                       listOfSchemesConnector:ListOfSchemesConnector,
+                                       listOfSchemesConnector: ListOfSchemesConnector,
                                        renderer: Renderer
                                       )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
-    (authenticate andThen getData(true)).async {
+    authenticate.async {
       implicit request => {
-        val json = Json.obj(
-          "email" -> request.md.email,
-          "finishUrl" -> appConfig.psaOverviewUrl
-        )
-        listOfSchemesConnector.removeCache(request.request.psaId.id)
-        currentPstrCacheConnector.remove.flatMap { _ =>
-          renderer.render("racdac/confirmation.njk", json).map(Ok(_))
+        currentPstrCacheConnector.fetch.flatMap {
+          case None => Future.successful(Redirect(appConfig.psaOverviewUrl))
+          case Some(jsValue) =>
+            val optEmail = (jsValue \ "confirmationData" \ "email").asOpt[String]
+            val optPsaId = (jsValue \ "confirmationData" \ "psaId").asOpt[String]
+            (optEmail, optPsaId) match {
+              case (Some(email), Some(psaId)) =>
+                val json = Json.obj(
+                  "email" -> email,
+                  "finishUrl" -> appConfig.psaOverviewUrl
+                )
+                listOfSchemesConnector.removeCache(psaId).flatMap { _ =>
+                  currentPstrCacheConnector.remove.flatMap { _ =>
+                    renderer.render("racdac/confirmation.njk", json).map(Ok(_))
+                  }
+                }
+              case _ =>
+                Future.successful(Redirect(appConfig.psaOverviewUrl))
+            }
         }
       }
     }

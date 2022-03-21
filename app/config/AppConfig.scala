@@ -59,6 +59,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val bulkMigrationIsInProgressUrl: String = s"$migrationUrl${config.get[String](path = "urls.bulkMigrationIsInProgress")}"
   lazy val bulkMigrationIsAllFailedUrl: String = s"$migrationUrl${config.get[String](path = "urls.bulkMigrationIsAllFailed")}"
   lazy val bulkMigrationDeleteAllUrl: String = s"$migrationUrl${config.get[String](path = "urls.bulkMigrationDeleteAll")}"
+  lazy val bulkMigrationEventsLogStatusUrl: String = s"$migrationUrl${config.get[String](path = "urls.bulkMigrationEventsLogStatus")}"
   def featureToggleUrl(toggle:String) : String = s"$migrationUrl${config.get[String]("urls.featureToggle").format(toggle)}"
 
   lazy val legacySchemeDetailsUrl: String = s"$migrationUrl${config.get[String](path = "urls.legacySchemeDetails")}"
@@ -110,7 +111,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val listSchemePagination: Int = loadConfig("listSchemePagination").toInt
   lazy val emailApiUrl: String = s"${servicesConfig.baseUrl("email")}"
   lazy val schemeConfirmationEmailTemplateId: String = loadConfig("email.schemeConfirmationTemplateId")
-  lazy val bulkMigrationConfirmationEmailTemplateId: String = loadConfig("email.bulkMigrationConfirmationTemplateId")
   lazy val individualMigrationConfirmationEmailTemplateId: String = loadConfig("email.individualMigrationConfirmationTemplateId")
   lazy val emailSendForce: Boolean = config.getOptional[Boolean]("email.force").getOrElse(false)
   lazy val migrationDataTTL: Int = config.get[Int]("migration-data-cache.timeToLiveInDays")

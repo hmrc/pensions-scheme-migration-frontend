@@ -132,6 +132,7 @@ GET         /rac-dac/rac-dac-status-in-progress                      controllers
 GET         /rac-dac/rac-dac-status-complete                         controllers.racdac.bulk.FinishedStatusController.onPageLoad
 
 GET         /rac-dac/check-status                                    controllers.racdac.bulk.CheckStatusController.onPageLoad
+GET         /rac-dac/add-all/processing-request                                    controllers.racdac.bulk.ProcessingRequestController.onPageLoad
 
 GET         /rac-dac/confirmation-all                                   controllers.racdac.bulk.ConfirmationController.onPageLoad
 

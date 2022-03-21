@@ -63,7 +63,7 @@ pipelineStages in Assets := Seq(concat, uglify)
     scalacOptions ++= Seq("-Xfatal-warnings", "-feature")
   )
   .settings(
-    scalacOptions ++= Seq(/*"-Xfatal-warnings",*/ "-feature"),
+    scalacOptions ++= Seq("-Xfatal-warnings", "-feature"),
     retrieveManaged := true,
     evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
   )

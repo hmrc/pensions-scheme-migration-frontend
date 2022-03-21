@@ -40,7 +40,7 @@ class BulkMigrationQueueConnector @Inject()(config: AppConfig,
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
         response.status match {
-          case ACCEPTED => requests
+          case OK => requests
           case _ => throw new HttpException(response.body, response.status)
         }
       }
