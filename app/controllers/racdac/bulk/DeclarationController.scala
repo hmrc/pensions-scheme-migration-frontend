@@ -20,6 +20,7 @@ import config.AppConfig
 import connectors.cache.{BulkMigrationQueueConnector, CurrentPstrCacheConnector}
 import controllers.actions.{AuthAction, BulkDataAction}
 import models.racDac.RacDacRequest
+import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -53,6 +54,8 @@ class DeclarationController @Inject()(
         renderer.render("racdac/declaration.njk", json).map(Ok(_))
     }
 
+  private val logger = Logger(classOf[DeclarationController])
+
   def onSubmit: Action[AnyContent] =
     (authenticate andThen getData(false)).async {
       implicit request =>
@@ -72,7 +75,8 @@ class DeclarationController @Inject()(
             Redirect(routes.ProcessingRequestController.onPageLoad().url)
           }
         } recoverWith {
-          case _ =>
+          case ex =>
+            logger.warn(ex.getMessage, ex)
             Future.successful(Redirect(routes.RequestNotProcessedController.onPageLoad()))
         }
     }
