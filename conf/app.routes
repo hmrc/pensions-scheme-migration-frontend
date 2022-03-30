@@ -84,12 +84,12 @@ GET         /rac-dac/no-rac-dacs-to-add                               controller
 
 
 GET         /list-pension-schemes                                   controllers.preMigration.ListOfSchemesController.onPageLoad(migrationType: MigrationType = Scheme)
-POST        /list-pension-schemes                                   controllers.preMigration.ListOfSchemesController.onSearch(migrationType: MigrationType = Scheme)
+POST        /list-pension-schemes-results                                  controllers.preMigration.ListOfSchemesController.onSearch(migrationType: MigrationType = Scheme)
 GET         /list-pension-schemes/page/:pageNumber                  controllers.preMigration.ListOfSchemesController.onPageLoadWithPageNumber(pageNumber: Int, migrationType: MigrationType = Scheme)
 POST        /list-pension-schemes/page/:pageNumber                  controllers.preMigration.ListOfSchemesController.onSearchWithPageNumber(pageNumber: Int, migrationType: MigrationType = Scheme)
 
 GET         /rac-dac/list-rac-dacs                                          controllers.preMigration.ListOfSchemesController.onPageLoad(migrationType: MigrationType = RacDac)
-POST        /rac-dac/list-rac-dacs                                          controllers.preMigration.ListOfSchemesController.onSearch(migrationType: MigrationType = RacDac)
+POST        /rac-dac/list-rac-dacs-results                                          controllers.preMigration.ListOfSchemesController.onSearch(migrationType: MigrationType = RacDac)
 GET         /rac-dac/list-rac-dacs/page/:pageNumber                         controllers.preMigration.ListOfSchemesController.onPageLoadWithPageNumber(pageNumber: Int, migrationType: MigrationType = RacDac)
 POST        /rac-dac/list-rac-dacs/page/:pageNumber                         controllers.preMigration.ListOfSchemesController.onSearchWithPageNumber(pageNumber: Int, migrationType: MigrationType = RacDac)
 GET         /list-schemes-on-click/:pstr/:isRacDac                  controllers.preMigration.ListOfSchemesController.clickSchemeLink(pstr: String, isRacDac: Boolean)

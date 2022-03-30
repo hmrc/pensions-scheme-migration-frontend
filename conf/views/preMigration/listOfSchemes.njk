@@ -140,8 +140,8 @@
     {% if form.value.value %}
                 {% if numberOfSchemes > 0 %}
                     <div class="grid-row">
-                        <div class="column-two-thirds">
-                            <p class="govuk-margin-top-5 govuk-margin-bottom-0 govuk-body-s">
+                        <div class="column-two-thirds" role="status">
+                            <p class="govuk-margin-top-5 govuk-margin-bottom-0 govuk-body-m">
 
                                     {% if numberOfSchemes == 1 %}
                                        {{ messages("messages__listSchemes__search_result") }}
@@ -160,7 +160,7 @@
 
      {% if noResultsMessageKey %}
                 <div class="grid-row">
-                    <div class="column-two-thirds">
+                    <div class="column-two-thirds" role="status">
                         <p class="govuk-body" id="noSchemes">{{ messages(noResultsMessageKey) }}</p>
                     </div>
                 </div>
