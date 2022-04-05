@@ -32,3 +32,7 @@ $hmrc-assets-path: "/add-pension-scheme/assets/lib/hmrc-frontend/hmrc/assets";
   [role="region"][aria-labelledby] {
     overflow: auto;
   }
+ .govuk-panel {
+   overflow-wrap: break-word;
+   word-wrap: break-word; // Support IE (autoprefixer doesn't add this as it's not a prefix)
+  }
