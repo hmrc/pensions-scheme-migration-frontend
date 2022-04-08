@@ -126,6 +126,46 @@ class DataCompletionSpec extends AnyWordSpec with Matchers with OptionValues wit
 
         userAnswers.isAddressComplete(AddressId(0),PreviousAddressId(0),AddressYearsId(0),Some(TradingTimeId(0)))  mustBe  Some(false)
       }
+
+      "return Some(true) when current Address is UK and with correct postcode" in {
+        val address = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
+        val userAnswers = ua
+          .set(AddressId(0), address).success.value
+          .set(AddressYearsId(0), true).success.value
+
+        userAnswers.isAddressComplete(AddressId(0),PreviousAddressId(0),AddressYearsId(0),Some(TradingTimeId(0)))  mustBe  Some(true)
+      }
+      "return Some(false) when current Address is UK and with wrong postcode" in {
+        val address = Address("addr1", "addr2", None, None, Some("ZZZ1ZZ"), "GB")
+        val userAnswers = ua
+          .set(AddressId(0), address).success.value
+          .set(AddressYearsId(0), true).success.value
+
+        userAnswers.isAddressComplete(AddressId(0),PreviousAddressId(0),AddressYearsId(0),Some(TradingTimeId(0)))  mustBe  Some(false)
+      }
+
+      "return Some(false) when previous Address is UK and wrong postcode" in {
+        val address = Address("addr1", "addr2", None, None, Some("ZZZ1ZZ"), "GB")
+        val userAnswers = ua
+          .set(AddressId(0), Data.address).success.value
+          .set(AddressYearsId(0), false).success.value
+          .set(PreviousAddressId(0), address).success.value
+          .set(TradingTimeId(0), true).success.value
+
+        userAnswers.isAddressComplete(AddressId(0),PreviousAddressId(0),AddressYearsId(0),Some(TradingTimeId(0)))  mustBe  Some(false)
+      }
+
+      "return Some(true) when previous Address is UK and wrong postcode" in {
+        val address = Address("addr1", "addr2", None, None, Some("ZZ1 1ZZ"), "GB")
+        val userAnswers = ua
+          .set(AddressId(0), Data.address).success.value
+          .set(AddressYearsId(0), false).success.value
+          .set(PreviousAddressId(0), address).success.value
+          .set(TradingTimeId(0), true).success.value
+
+        userAnswers.isAddressComplete(AddressId(0),PreviousAddressId(0),AddressYearsId(0),Some(TradingTimeId(0)))  mustBe  Some(true)
+      }
+
     }
 
     "isBeforeYouStartCompleted" must {
