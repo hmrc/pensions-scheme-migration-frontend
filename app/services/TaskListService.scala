@@ -49,7 +49,7 @@ class TaskListService @Inject()(appConfig: AppConfig) {
   }
 
   def getSchemeName[A](implicit ua: UserAnswers): String =
-    ua.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
+    ua.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
 
   private def basicDetails(implicit ua: UserAnswers, messages: Messages): TaskListLink = {
     TaskListLink(

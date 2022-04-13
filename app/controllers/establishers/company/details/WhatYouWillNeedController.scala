@@ -57,7 +57,7 @@ class WhatYouWillNeedController @Inject()(
                 "name"        -> details.companyName,
                 "entityType" -> Messages("messages__title_company"),
                 "continueUrl" -> HaveCompanyNumberController.onPageLoad(index, NormalMode).url,
-                "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
+                "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
               )
             ).map(Ok(_))
         }

@@ -53,7 +53,7 @@ class WhatYouWillNeedController @Inject()(override val messagesApi: MessagesApi,
           template = "establishers/company/director/whatYouWillNeed.njk",
           ctx = Json.obj(
             "continueUrl" -> DirectorNameController.onPageLoad(establisherIndex, directorIndex, NormalMode).url,
-            "schemeName" -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
+            "schemeName" -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
           )
         ).map(Ok(_))
     }
