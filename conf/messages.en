@@ -922,7 +922,7 @@ messages__addPartners_at_maximum = You have added the maximum number of partners
 messages__addPartners_add_partner = Add a partner
 messages__alreadyDeleted__partner_title = You have already deleted this partner
 
-messages__migrationLink__header = Pension schemes registered on the Pension Schemes Online service
+messages__migrationLink__header = Pension scheme migration
 messages__migrationLink__viewSchemesLink = View pension schemes registered on the Pension Schemes Online service
 messages__migrationLink__viewRacDacsLink = View RAC/DACs registered on the Pension Schemes Online service
 messages__migrationLink__addSchemesLink = Add pension schemes registered on the Pension Schemes Online service
