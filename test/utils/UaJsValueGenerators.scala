@@ -74,7 +74,7 @@ trait UaJsValueGenerators {
           "addressLine2" -> line2,
           "addressLine3" -> line3,
         "addressLine4" ->line4,
-          "postcode" -> postcode,
+          "postcode" -> {if (country == "GB") "ZZ11ZZ" else postcode},
           "country" -> country
         )
     )
