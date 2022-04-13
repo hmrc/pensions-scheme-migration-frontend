@@ -148,11 +148,15 @@ trait DataCompletion {
     }
 
   private def checkPostcodeForUkAddress(address: Address): Boolean = {
-    if (address.country.equals("GB") && address.postcode.getOrElse("").isEmpty)
+    val regexPostcode = """^[A-Z]{1,2}[0-9][0-9A-Z]?\s?[0-9][A-Z]{2}$"""
+    val postCode=postCodeDataTransform(address.postcode)
+    if (address.country.equals("GB") && (postCode.getOrElse("").isEmpty || !postCode.getOrElse("").matches(regexPostcode) ))
       false
     else
       true
   }
+  private def postCodeDataTransform(value: Option[String]): Option[String] =
+    value.map(_.trim.toUpperCase.replaceAll(" {2,}", " ")).filter(_.nonEmpty)
 
   def isContactDetailsComplete(emailId: TypedIdentifier[String],
                                phoneId: TypedIdentifier[String]): Option[Boolean] =
