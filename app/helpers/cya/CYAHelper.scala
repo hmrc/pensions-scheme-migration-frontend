@@ -153,27 +153,27 @@ object CYAHelper {
   def getAnswer[A](id: TypedIdentifier[A])
     (implicit ua: UserAnswers, rds: Reads[A]): String =
     ua.get(id)
-      .getOrElse(throw MandatoryAnswerMissingException)
+      .getOrElse(throw MandatoryAnswerMissingException(id.toString))
       .toString
 
   def getName(id: TypedIdentifier[PersonName])
     (implicit ua: UserAnswers, rds: Reads[PersonName]): String =
     ua.get(id)
-      .getOrElse(throw MandatoryAnswerMissingException)
+      .getOrElse(throw MandatoryAnswerMissingException(id.toString))
       .fullName
 
   def getCompanyName(id: TypedIdentifier[CompanyDetails])
     (implicit ua: UserAnswers, rds: Reads[CompanyDetails]): String =
     ua.get(id)
-      .getOrElse(throw MandatoryAnswerMissingException)
+      .getOrElse(throw MandatoryAnswerMissingException(id.toString))
       .companyName
 
   def getPartnershipName(id: TypedIdentifier[PartnershipDetails])
                     (implicit ua: UserAnswers, rds: Reads[PartnershipDetails]): String =
     ua.get(id)
-      .getOrElse(throw MandatoryAnswerMissingException)
+      .getOrElse(throw MandatoryAnswerMissingException(id.toString))
       .partnershipName
 }
 
-case object MandatoryAnswerMissingException
-  extends Exception("An answer which was mandatory is missing from scheme details returned from TPSS")
+case class MandatoryAnswerMissingException(missingField:String)
+  extends Exception(s"An answer which was mandatory is missing from scheme details returned from TPSS: $missingField")

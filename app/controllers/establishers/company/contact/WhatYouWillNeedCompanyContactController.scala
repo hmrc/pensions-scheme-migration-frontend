@@ -59,7 +59,7 @@ class WhatYouWillNeedCompanyContactController @Inject()(
                 "pageHeading" -> Message("messages__title_company"),
                 "entityType" -> Message("messages__company"),
                 "continueUrl" -> EnterEmailController.onPageLoad(index, NormalMode).url,
-                "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
+                "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
               )
             ).map(Ok(_))
         }

@@ -56,7 +56,7 @@ class WhatYouWillNeedController @Inject()(
                 "name"        -> personName.fullName,
                 "entityType" -> Messages("messages__title_individual"),
                 "continueUrl" -> routes.TrusteeDOBController.onPageLoad(index, NormalMode).url,
-                "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
+                "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
               )
             ).map(Ok(_))
         }

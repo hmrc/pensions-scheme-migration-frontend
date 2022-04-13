@@ -38,7 +38,7 @@ class AdviserCYAHelper
                  ): Seq[Row] = {
     implicit val ua: UserAnswers =
       request.userAnswers
-    val adviserName: String = ua.get(AdviserNameId).getOrElse(throw MandatoryAnswerMissingException)
+    val adviserName: String = ua.get(AdviserNameId).getOrElse(throw MandatoryAnswerMissingException(AdviserNameId.toString))
 
     val rowsWithoutDynamicIndices = Seq(
       Some(answerOrAddRow(

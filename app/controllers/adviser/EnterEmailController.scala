@@ -50,7 +50,7 @@ class EnterEmailController @Inject()(
 
   private def name
   (implicit request: DataRequest[AnyContent]): String = {
-    request.userAnswers.get(AdviserNameId).getOrElse(throw MandatoryAnswerMissingException)
+    request.userAnswers.get(AdviserNameId).getOrElse(throw MandatoryAnswerMissingException(AdviserNameId.toString))
   }
 
   private def form(implicit request: DataRequest[AnyContent]): Form[String] =

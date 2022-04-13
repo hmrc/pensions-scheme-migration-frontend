@@ -32,7 +32,7 @@ class RacDacIndividualCYAHelper
                         ): Seq[Row] = {
     val racDacName: String =
       userAnswers.get(SchemeNameId)
-        .getOrElse(throw MandatoryAnswerMissingException)
+        .getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
 
     val rowsWithoutDynamicIndices = Seq(
       Some(answerOrAddRow(

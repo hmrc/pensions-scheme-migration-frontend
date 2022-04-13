@@ -57,7 +57,7 @@ class WhatYouWillNeedController @Inject()(
                 "name"        -> details.partnershipName,
                 "pageTitle" -> Messages("messages__partnershipDetails__whatYouWillNeed_title"),
                 "continueUrl" -> HaveUTRController.onPageLoad(index, NormalMode).url,
-                "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
+                "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
               )
             ).map(Ok(_))
         }

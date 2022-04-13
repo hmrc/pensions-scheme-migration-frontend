@@ -45,7 +45,7 @@ class WhatYouWillNeedController @Inject()(
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
       val json: JsObject = Json.obj(
-        "schemeName" -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException),
+        "schemeName" -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString)),
         "continueUrl" -> routes.AdviserNameController.onPageLoad(NormalMode).url
       )
       renderer.render("adviser/whatYouWillNeed.njk", json).map(Ok(_))

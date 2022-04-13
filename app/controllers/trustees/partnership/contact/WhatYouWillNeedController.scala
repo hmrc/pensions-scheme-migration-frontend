@@ -59,7 +59,7 @@ class WhatYouWillNeedController @Inject()(
                 "pageHeading" -> Message("messages__title_partnership"),
                 "entityType" -> Message("messages__partnership"),
                 "continueUrl" -> EnterEmailController.onPageLoad(index, NormalMode).url,
-                "schemeName" -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException)
+                "schemeName" -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
               )
             ).map(Ok(_))
         }
