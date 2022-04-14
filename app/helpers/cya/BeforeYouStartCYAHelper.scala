@@ -28,16 +28,26 @@ import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.SummaryList.{Key, Row, Value}
 import utils.UserAnswers
 import viewmodels.Message
-import identifiers.beforeYouStart.IsSchemeTypeOtherId
 
 class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
-  //scalastyle:off method.length
+
+  def rowsEnabledChange(isEnabledChange: Boolean)(implicit request: DataRequest[AnyContent],
+                                      messages: Messages
+  ): Seq[Row] = rowsImpl(isEnabledChange = isEnabledChange)
+
   def rows(implicit request: DataRequest[AnyContent],
-            messages: Messages
-          ): Seq[Row] = {
+             messages: Messages
+  ): Seq[Row] = rowsImpl(isEnabledChange = false)
+
+  //scalastyle:off method.length
+  //scalastyle:off cyclomatic.complexity
+  private def rowsImpl(isEnabledChange: Boolean)(implicit request: DataRequest[AnyContent],
+                                                 messages: Messages
+  ): Seq[Row] = {
     implicit val ua: UserAnswers = request.userAnswers
     val schemeName = CYAHelper.getAnswer(SchemeNameId)
     val schemeTypeAnswer = ua.get(SchemeTypeId)(SchemeType.optionalReads)
+
     val schemeTypeRow = {
       val url: String = routes.SchemeTypeController.onPageLoad().url
       val visuallyHiddenText = msg"messages__visuallyhidden__schemeType".withArgs(schemeName)
@@ -62,6 +72,11 @@ class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
           value = Value(msg"messages__scheme_type_$value", classes = Seq("govuk-!-width-one-third")),
           actions = actionChange(Some(url), Some(visuallyHiddenText))
         )
+        case Some(value) if isEnabledChange => Row(
+          key = Key(msg"messages__cya__scheme_type".withArgs(schemeName), classes = Seq("govuk-!-width-one-half")),
+          value = Value(msg"messages__scheme_type_$value", classes = Seq("govuk-!-width-one-third")),
+          actions = actionChange(Some(url), Some(visuallyHiddenText))
+        )
         case Some(value) => Row(
           key = Key(msg"messages__cya__scheme_type".withArgs(schemeName), classes = Seq("govuk-!-width-one-half")),
           value = Value(msg"messages__scheme_type_$value", classes = Seq("govuk-!-width-one-third")),
@@ -70,7 +85,7 @@ class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
       }
     }
 
-     val seqRowSchemeNameAndType = Seq(
+    val seqRowSchemeNameAndType = Seq(
       answerRow(messages("messages__cya__scheme_name"), schemeName),
       schemeTypeRow)
 
@@ -90,7 +105,7 @@ class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
         )
       }
     }
-     val seqRowCountryWorkingKnowledge =  Seq(
+    val seqRowCountryWorkingKnowledge = Seq(
       countryRow,
       answerOrAddRow(
         id = WorkingKnowledgeId,
@@ -102,6 +117,6 @@ class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
     )
     val beforeYouStart = seqRowSchemeNameAndType ++ seqRowCountryWorkingKnowledge
 
-      rowsWithDynamicIndices(beforeYouStart)
+    rowsWithDynamicIndices(beforeYouStart)
   }
 }
