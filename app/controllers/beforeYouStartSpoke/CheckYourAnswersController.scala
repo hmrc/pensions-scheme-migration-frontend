@@ -47,11 +47,14 @@ class CheckYourAnswersController @Inject()(
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
 
+        // Workaround to enabled the Change link for type of scheme:-
+        val isEnabledChange = request.request.getQueryString("cgl22").contains("true")
+
         val json = Json.obj(
-            "list" -> cyaHelper.rows,
-            "schemeName" -> existingSchemeName,
-            "submitUrl" -> controllers.routes.TaskListController.onPageLoad().url
-          )
+          "list" -> cyaHelper.rowsForCYA(isEnabledChange),
+          "schemeName" -> existingSchemeName,
+          "submitUrl" -> controllers.routes.TaskListController.onPageLoad().url
+        )
 
         renderer.render("check-your-answers.njk", json).map(Ok(_))
     }
