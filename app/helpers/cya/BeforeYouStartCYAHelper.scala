@@ -30,25 +30,10 @@ import utils.UserAnswers
 import viewmodels.Message
 
 class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
-
-  def rowsEnabledChange(isEnabledChange: Boolean)(implicit request: DataRequest[AnyContent],
-                                                  messages: Messages
-  ): Seq[Row] = rowsImpl(isEnabledChange = isEnabledChange)
-
-  /*
-
-  When the above method rowsEnabledChange - added for fix PODS-6920 - is removed then the rows method below can be reinstated.
-  At present rowsEnabledChange is called instead.
-
-  def rows(implicit request: DataRequest[AnyContent],
-           messages: Messages
-          ): Seq[Row] = rowsImpl(isEnabledChange = false)
-
-  */
   //scalastyle:off method.length
   //scalastyle:off cyclomatic.complexity
-  private def rowsImpl(isEnabledChange: Boolean)(implicit request: DataRequest[AnyContent],
-                                                 messages: Messages
+  def rowsForCYA(isEnabledChange: Boolean)(implicit request: DataRequest[AnyContent],
+                                           messages: Messages
   ): Seq[Row] = {
     implicit val ua: UserAnswers = request.userAnswers
     val schemeName = CYAHelper.getAnswer(SchemeNameId)

@@ -51,7 +51,7 @@ class CheckYourAnswersController @Inject()(
         val isEnabledChange = request.request.getQueryString("cgl22").contains("true")
 
         val json = Json.obj(
-          "list" -> cyaHelper.rowsEnabledChange(isEnabledChange),
+          "list" -> cyaHelper.rowsForCYA(isEnabledChange),
           "schemeName" -> existingSchemeName,
           "submitUrl" -> controllers.routes.TaskListController.onPageLoad().url
         )
