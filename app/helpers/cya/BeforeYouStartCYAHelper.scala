@@ -32,12 +32,12 @@ import viewmodels.Message
 class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
 
   def rowsEnabledChange(isEnabledChange: Boolean)(implicit request: DataRequest[AnyContent],
-                                      messages: Messages
+                                                  messages: Messages
   ): Seq[Row] = rowsImpl(isEnabledChange = isEnabledChange)
-
+  
   def rows(implicit request: DataRequest[AnyContent],
-             messages: Messages
-  ): Seq[Row] = rowsImpl(isEnabledChange = false)
+           messages: Messages
+          ): Seq[Row] = rowsImpl(isEnabledChange = false)
 
   //scalastyle:off method.length
   //scalastyle:off cyclomatic.complexity

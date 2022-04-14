@@ -49,7 +49,7 @@ class BeforeYouStartCYAHelperSpec
 
   "BeforeYouStartCYAHelper" must {
     "return all rows" in {
-      val result = beforeYouStartCYAHelper.rows(fakeDataRequest(ua), messages)
+      val result = beforeYouStartCYAHelper.rowsEnabledChange(isEnabledChange = false)(fakeDataRequest(ua), messages)
       val rows: Seq[Row] = Seq(Row(
         key = Key(Message(msg"messages__cya__scheme_name".resolve), classes = Seq("govuk-!-width-one-half")),
         value = Value(Literal(schemeName)),
