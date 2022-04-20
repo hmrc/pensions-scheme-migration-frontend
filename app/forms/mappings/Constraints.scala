@@ -179,6 +179,9 @@ trait Constraints {
     case _ =>
       Invalid(invalidKey, regexAddressLine)
   }
+
+  protected def emailMaxLength(errorKey: String): Constraint[String] = maxLength(132, errorKey)
+
   protected def emailAddressRestrictive(errorKey: String): Constraint[String] = regexp(regexEmailRestrictive, errorKey)
 
   protected def postCode(errorKey: String): Constraint[String] = regexp(regexPostcode, errorKey)

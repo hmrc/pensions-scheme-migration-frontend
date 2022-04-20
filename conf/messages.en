@@ -474,6 +474,7 @@ messages__visuallyhidden__addressYears = whether {0} has used this address for a
 messages__visuallyHidden__address = the address for {0}
 
 messages__enterEmail__error_invalid = Enter an email address in the correct format, like name@example.com
+messages__enterEmail__error_maxLength = Enter an email address using less than 133 characters
 messages__enterEmail__error_required = Enter an email address for {0}
 messages__enterEmail__type__error_required = Enter {0}’s email address
 messages__enterEmail = What is the email address for {0}?
