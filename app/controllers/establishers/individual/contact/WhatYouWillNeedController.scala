@@ -57,7 +57,7 @@ class WhatYouWillNeedController @Inject()(
                 "name"        -> personName.fullName,
                 "pageHeading" -> Message("messages__title_individual"),
                 "entityType" -> Message("messages__individual"),
-                "continueUrl" -> controllers.establishers.individual.contact.routes.EnterEmailController.onPageLoad(0, NormalMode).url,
+                "continueUrl" -> controllers.establishers.individual.contact.routes.EnterEmailController.onPageLoad(index, NormalMode).url,
                 "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
               )
             ).map(Ok(_))
