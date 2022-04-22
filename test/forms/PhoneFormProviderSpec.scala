@@ -22,6 +22,8 @@ import play.api.data.FormError
 
 class PhoneFormProviderSpec extends StringFieldBehaviours with Constraints {
 
+  private val maxPhoneNumberLength = 24
+  private val keyPhoneNumberLength = "messages__enterPhone__error_maxLength"
   val keyPhoneRequired = "messages__enterPhone__error_required"
   val keyPhoneInvalid = "messages__enterPhone__error_invalid"
   val form = new PhoneFormProvider()(keyPhoneRequired)
@@ -47,6 +49,13 @@ class PhoneFormProviderSpec extends StringFieldBehaviours with Constraints {
       fieldName,
       "ABC",
       FormError(fieldName, keyPhoneInvalid, Seq(regexPhoneNumber))
+    )
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength = maxPhoneNumberLength,
+      lengthError = FormError(fieldName, keyPhoneNumberLength, Seq(maxPhoneNumberLength))
     )
 
   }
