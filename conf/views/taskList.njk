@@ -56,9 +56,9 @@
                             class="govuk-heading-l">
                                 {{ messages("messages__schemeTaskList__sectionDeclaration_header") }}
                          </h2>
-                         <ul class="app-task-list__items">
-                            <li id="DecSubmit" class="app-task-list__item">
-                               <span class="app-task-list__task-name">
+                         <div class="app-task-list__items">
+                            <p id="DecSubmit" class="app-task-list__item govuk-body">
+
                                 {% if declarationEnabled %}
                                     <a id="section-declaration-link"
                                         class="app-task-list__task-name govuk-link"
@@ -68,9 +68,9 @@
                                 {% else %}
                                     {{ declaration.text }}
                                 {% endif %}
-                                </span>
-                            </li>
-                         </ul>
+                               
+                            </p>
+                         </div>
 
                     <p class="govuk-body">
                         <a id="save-and-return"
