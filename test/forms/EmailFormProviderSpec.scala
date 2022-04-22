@@ -22,7 +22,7 @@ import play.api.data.FormError
 
 class EmailFormProviderSpec extends StringFieldBehaviours with Constraints {
   private val maxEmailLength = 132
-  val keyMaxLength = "messages__enterEmail__error_maxLength"
+  private val keyMaxLength = "messages__enterEmail__error_maxLength"
   val keyEmailRequired = "messages__enterEmail__error_required"
   val keyInvalid = "messages__enterEmail__error_invalid"
   val form = new EmailFormProvider()(keyEmailRequired)
