@@ -488,6 +488,7 @@ messages__enterEmail__cya__visuallyHidden = the email address for {0}
 messages__enterPhone__error_required = Enter a phone number for {0}
 messages__enterPhone__type__error_required = Enter {0}’s phone number
 messages__enterPhone__error_invalid = Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192
+messages__enterPhone__error_maxLength = The phone number cannot be more than 24 characters
 messages__enterPhone = What is the phone number for {0}?
 messages__enterPhone_pageHeading = What is {0}’s phone number?
 messages__enterPhone_cya_label = {0}’s phone number

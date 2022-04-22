@@ -190,6 +190,8 @@ trait Constraints {
 
   protected def addressLine(errorKey: String): Constraint[String] = regexp(regexAddressLine, errorKey)
 
+  protected def phoneNumberMaxLength(errorKey: String): Constraint[String] = maxLength(24, errorKey)
+
   protected def phoneNumber(errorKey: String): Constraint[String] = regexp(regexPhoneNumber, errorKey)
 
   protected def vatRegistrationNumber(errorKey: String): Constraint[String] = regexp(regexVat, errorKey)
