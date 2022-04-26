@@ -26,7 +26,10 @@ class EmailFormProvider @Inject() extends Mappings with Constraints {
   def apply(requiredKey: String): Form[String] = Form(
     "value" -> text(requiredKey)
       .verifying(
-        emailAddressRestrictive("messages__enterEmail__error_invalid")
+        firstError(
+          emailMaxLength("messages__enterEmail__error_maxLength"),
+          emailAddressRestrictive("messages__enterEmail__error_invalid")
+        )
       )
   )
 }
