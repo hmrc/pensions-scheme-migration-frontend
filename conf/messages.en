@@ -887,7 +887,7 @@ messages__director__name = Director’s name
 messages__director__name__cya__visuallyHidden = the director’s name {0}
 messages__addDirector_radio_label = Do you want to add another director?
 messages__confirmDeleteDirectors__title = Are you sure you want to delete this director?
-messages__addCompanyDirectors_lede = You must tell us about all your directors. You can add up to 10 using the digital service.
+messages__addCompanyDirectors_lede = You must tell us about all your directors. You can add up to 10 using this service.
 
 messages__otherDirectors__title=Do you need to tell us about other directors?
 messages__otherDirectors__heading=Do you need to tell us about other directors?
@@ -914,7 +914,7 @@ messages__partner__name__cya__visuallyHidden = the name of the partner
 messages__addPartner_radio_label = Do you want to add another partner?
 messages__addPartner_atleast_two_partners = You will need to tell us details for at least two partners.
 messages__confirmDeletePartners__title = Are you sure you want to delete this partner?
-messages__addPartners_lede = You must tell us about all your partners. You can add up to 10 using the digital service.
+messages__addPartners_lede = You must tell us about all your partners. You can add up to 10 using this service.
 
 messages__otherPartners__title=Do you need to tell us about other partners?
 messages__otherPartners__heading=Do you need to tell us about other partners?
