@@ -18,6 +18,7 @@ package navigators
 
 import config.AppConfig
 import controllers.establishers.company.address.routes._
+import controllers.establishers.company.routes._
 import controllers.establishers.company.contact.routes._
 import controllers.establishers.company.details.{routes => detailsRoutes}
 import controllers.establishers.routes._
@@ -56,7 +57,7 @@ class EstablishersCompanyNavigator @Inject()(config: AppConfig, dataPrefillServi
     case VATId(index) => detailsRoutes.HavePAYEController.onPageLoad(index, NormalMode)
     case HavePAYEId(index) => payeRoutes(index, ua, NormalMode)
     case PAYEId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
-    case CompanyDetailsId(_) => AddEstablisherController.onPageLoad()
+    case CompanyDetailsId(index) => SpokeTaskListController.onPageLoad(index)
     case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index, NormalMode)
     case AddressListId(index) => addressYears(index, NormalMode)
     case AddressId(index) => addressYears(index, NormalMode)

@@ -47,7 +47,7 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case TrusteeKindId(index) => trusteeKindRoutes(index, ua)
     case AnyTrusteesId => anyTrusteesRoutes(ua)
-    case TrusteeNameId(_) => AddTrusteeController.onPageLoad()
+    case TrusteeNameId(index) => controllers.trustees.individual.routes.SpokeTaskListController.onPageLoad(index)
     case AddTrusteeId(value) => addTrusteeRoutes(value, ua)
     case ConfirmDeleteTrusteeId => deleteTrusteeRoutes(ua)
     case TrusteeDOBId(index) => TrusteeHasNINOController.onPageLoad(index, NormalMode)

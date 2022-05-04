@@ -16,10 +16,10 @@
 
 package navigators
 
-import controllers.routes._
+
 import controllers.trustees.partnership.address.routes._
-import controllers.trustees.routes._
 import controllers.trustees.partnership.contact.routes._
+import controllers.trustees.partnership.routes._
 import controllers.trustees.partnership.details.{routes => detailsRoutes}
 import identifiers._
 import identifiers.trustees.partnership.PartnershipDetailsId
@@ -39,7 +39,7 @@ class TrusteesPartnershipNavigator
   //scalastyle:off cyclomatic.complexity
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
-    case PartnershipDetailsId(_) => AddTrusteeController.onPageLoad()
+    case PartnershipDetailsId(index) => SpokeTaskListController.onPageLoad(index)
     case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index,NormalMode)
     case AddressListId(index) => addressYears(index,NormalMode)
     case AddressId(index) => addressYears(index,NormalMode)
@@ -63,7 +63,6 @@ class TrusteesPartnershipNavigator
 
   override protected def editRouteMap(ua: UserAnswers)
                                      (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
-    case PartnershipDetailsId(_) => IndexController.onPageLoad()
     case EnterEmailId(index) => cyaContactDetails(index)
     case EnterPhoneId(index) => cyaContactDetails(index)
     case HaveUTRId(index) => utrRoutes(index, ua, CheckMode)

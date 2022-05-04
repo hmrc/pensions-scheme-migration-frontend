@@ -44,7 +44,7 @@ class EstablishersNavigator@Inject()(config: AppConfig)
   override protected def routeMap(ua: UserAnswers)
     (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case EstablisherKindId(index) => establisherKindRoutes(index, ua)
-    case EstablisherNameId(_) => AddEstablisherController.onPageLoad()
+    case EstablisherNameId(index) => controllers.establishers.individual.routes.SpokeTaskListController.onPageLoad(index)
     case AddEstablisherId(value) => addEstablisherRoutes(value, ua)
     case ConfirmDeleteEstablisherId => AddEstablisherController.onPageLoad()
     case EstablisherDOBId(index) => controllers.establishers.individual.details.routes.EstablisherHasNINOController.onPageLoad(index, NormalMode)

@@ -44,7 +44,7 @@ class EstablishersCompanyNavigatorSpec
 
   private val index: Index = Index(0)
 
-  private val addEstablisherPage: Call = controllers.establishers.routes.AddEstablisherController.onPageLoad()
+  private val addEstablisherDetailsPage: Call = controllers.establishers.company.routes.SpokeTaskListController.onPageLoad(index)
   private val detailsUa: UserAnswers =
     ua.set(CompanyDetailsId(0), companyDetails).success.value
 
@@ -115,7 +115,7 @@ class EstablishersCompanyNavigatorSpec
     def navigation: TableFor3[Identifier, UserAnswers, Call] =
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
-         row(CompanyDetailsId(index))(addEstablisherPage),
+         row(CompanyDetailsId(index))(addEstablisherDetailsPage),
         row(HaveCompanyNumberId(index))(companyNumber(), uaWithValue(HaveCompanyNumberId(index), true)),
         row(HaveCompanyNumberId(index))(noCompanyNumber(), uaWithValue(HaveCompanyNumberId(index), false)),
         row(CompanyNumberId(index))(haveUtr()),

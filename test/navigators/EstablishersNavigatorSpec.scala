@@ -48,6 +48,7 @@ class EstablishersNavigatorSpec
   private val companyDetailsPage: Call = controllers.establishers.company.routes.CompanyDetailsController.onPageLoad(index)
   private val partnershipDetailsPage: Call = controllers.establishers.partnership.routes.PartnershipDetailsController.onPageLoad(index)
   private val addEstablisherPage: Call = controllers.establishers.routes.AddEstablisherController.onPageLoad()
+  private val addEstablisherDetailsPage: Call = controllers.establishers.individual.routes.SpokeTaskListController.onPageLoad(index)
   private val taskListPage: Call = controllers.routes.TaskListController.onPageLoad()
   private val establisherKindPage: Call = routes.EstablisherKindController.onPageLoad(index)
   private val detailsUa: UserAnswers =
@@ -89,7 +90,7 @@ class EstablishersNavigatorSpec
         row(EstablisherKindId(index))(establisherNamePage, Some(uaWithEstablisherKind(EstablisherKind.Individual))),
         row(EstablisherKindId(index))(companyDetailsPage, Some(uaWithEstablisherKind(EstablisherKind.Company))),
         row(EstablisherKindId(index))(partnershipDetailsPage, Some(uaWithEstablisherKind(EstablisherKind.Partnership))),
-        row(EstablisherNameId(index))(addEstablisherPage),
+        row(EstablisherNameId(index))(addEstablisherDetailsPage),
         row(AddEstablisherId(Some(true)))(establisherKindPage),
         row(AddEstablisherId(Some(false)))(taskListPage),
         row(ConfirmDeleteEstablisherId)(addEstablisherPage),

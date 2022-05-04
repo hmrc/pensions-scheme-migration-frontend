@@ -49,7 +49,7 @@ class TrusteesPartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour 
   private val cyaDetails: Call = detailsRoutes.CheckYourAnswersController.onPageLoad(index)
 
 
-  private val addTrusteePage: Call = controllers.trustees.routes.AddTrusteeController.onPageLoad()
+  private val addTrusteeDetailsPage: Call = controllers.trustees.partnership.routes.SpokeTaskListController.onPageLoad(index)
 
   private def addressUAWithValue[A](idType:TypedIdentifier[A], idValue:A)(implicit writes: Writes[A]) =
     detailsUa.set(idType, idValue).toOption
@@ -81,7 +81,7 @@ class TrusteesPartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour 
     def navigation: TableFor3[Identifier, UserAnswers, Call] =
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
-        row(PartnershipDetailsId(index))(addTrusteePage),
+        row(PartnershipDetailsId(index))(addTrusteeDetailsPage),
         row(HaveUTRId(index))(utr(), uaWithValue(HaveUTRId(index), true)),
         row(HaveUTRId(index))(noUtr(), uaWithValue(HaveUTRId(index), false)),
         row(PartnershipUTRId(index))(haveVat()),
@@ -110,7 +110,6 @@ class TrusteesPartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour 
     def editNavigation: TableFor3[Identifier, UserAnswers, Call] =
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
-        row(PartnershipDetailsId(index))(controllers.routes.IndexController.onPageLoad()),
         row(HaveUTRId(index))(utr(CheckMode), uaWithValue(HaveUTRId(index), true)),
         row(HaveUTRId(index))(noUtr(CheckMode), uaWithValue(HaveUTRId(index), false)),
         row(PartnershipUTRId(index))(cyaDetails),
