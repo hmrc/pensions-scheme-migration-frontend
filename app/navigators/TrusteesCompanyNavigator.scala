@@ -19,9 +19,10 @@ package navigators
 import controllers.routes._
 import controllers.trustees.company.address.routes.{EnterPreviousPostcodeController,
   SelectAddressController, SelectPreviousAddressController, TradingTimeController}
+import controllers.trustees.company.routes._
 import controllers.trustees.company.contacts.routes._
 import controllers.trustees.company.details.{routes => detailsRoutes}
-import controllers.trustees.routes._
+
 import identifiers._
 import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.address.{AddressYearsId, TradingTimeId, _}
@@ -39,7 +40,7 @@ class TrusteesCompanyNavigator
   //scalastyle:off cyclomatic.complexity
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
-    case CompanyDetailsId(_) => AddTrusteeController.onPageLoad()
+    case CompanyDetailsId(index) => SpokeTaskListController.onPageLoad(index:Index)
     case HaveCompanyNumberId(index) => companyNumberRoutes(index, ua, NormalMode)
     case CompanyNumberId(index) => detailsRoutes.HaveUTRController.onPageLoad(index, NormalMode)
     case NoCompanyNumberReasonId(index) => detailsRoutes.HaveUTRController.onPageLoad(index, NormalMode)

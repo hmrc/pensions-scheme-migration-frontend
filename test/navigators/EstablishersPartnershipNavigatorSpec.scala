@@ -40,7 +40,7 @@ class EstablishersPartnershipNavigatorSpec
 
   private val navigator: CompoundNavigator = injector.instanceOf[CompoundNavigator]
   private val index: Index = Index(0)
-  private val addEstablisherPage: Call = controllers.establishers.routes.AddEstablisherController.onPageLoad()
+  private val addEstablisherDetailsPage: Call = controllers.establishers.partnership.routes.SpokeTaskListController.onPageLoad(index)
   private val detailsUa: UserAnswers =
     ua.set(PartnershipDetailsId(0), partnershipDetails).success.value
   private def uaWithValue[A](idType:TypedIdentifier[A], idValue:A)(implicit writes: Writes[A]) =
@@ -78,7 +78,7 @@ class EstablishersPartnershipNavigatorSpec
     def navigation: TableFor3[Identifier, UserAnswers, Call] =
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
-        row(PartnershipDetailsId(index))(addEstablisherPage),
+        row(PartnershipDetailsId(index))(addEstablisherDetailsPage),
 
         row(EnterEmailId(index))(controllers.establishers.partnership.contact.routes.EnterPhoneController.onPageLoad(index, NormalMode)),
         row(EnterPhoneId(index))(controllers.establishers.partnership.contact.routes.CheckYourAnswersController.onPageLoad(index)),

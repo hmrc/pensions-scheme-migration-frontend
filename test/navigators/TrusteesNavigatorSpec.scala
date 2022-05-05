@@ -53,6 +53,7 @@ class TrusteesNavigatorSpec
   private val partnershipPage: Call = controllers.trustees.partnership.routes.PartnershipDetailsController.onPageLoad(index)
   private def trusteePhonePage(mode: Mode): Call = controllers.trustees.individual.contact.routes.EnterPhoneController.onPageLoad(index, mode)
   private val addTrusteePage: Call = controllers.trustees.routes.AddTrusteeController.onPageLoad()
+  private val addTrusteeDetailsPage: Call = controllers.trustees.individual.routes.SpokeTaskListController.onPageLoad(index)
   private val taskListPage: Call = controllers.routes.TaskListController.onPageLoad()
   private val otherTrusteesPage: Call = controllers.trustees.routes.OtherTrusteesController.onPageLoad
   private val trusteeKindPage: Call = routes.TrusteeKindController.onPageLoad(index)
@@ -109,7 +110,7 @@ class TrusteesNavigatorSpec
         row(TrusteeKindId(index))(trusteeNamePage, Some(uaWithTrusteeKind(TrusteeKind.Individual))),
         row(TrusteeKindId(index))(companyPage, Some(uaWithTrusteeKind(TrusteeKind.Company))),
         row(TrusteeKindId(index))(partnershipPage, Some(uaWithTrusteeKind(TrusteeKind.Partnership))),
-        row(TrusteeNameId(index))(addTrusteePage),
+        row(TrusteeNameId(index))(addTrusteeDetailsPage),
         row(AddTrusteeId(Some(true)))(trusteeKindPage),
         row(AddTrusteeId(Some(false)))(taskListPage),
         row(AddTrusteeId(None))(otherTrusteesPage),

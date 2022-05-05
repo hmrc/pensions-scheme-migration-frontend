@@ -37,7 +37,7 @@ class TrusteesCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour with
   private val navigator: CompoundNavigator = injector.instanceOf[CompoundNavigator]
   private val index: Index = Index(0)
 
-  private val addTrusteePage: Call = controllers.trustees.routes.AddTrusteeController.onPageLoad()
+  private val addTrusteeDetailsPage: Call = controllers.trustees.company.routes.SpokeTaskListController.onPageLoad(index)
   private val detailsUa: UserAnswers =
     ua.set(CompanyDetailsId(0), companyDetails).success.value
   private def uaWithValue[A](idType:TypedIdentifier[A], idValue:A)(implicit writes: Writes[A]) =
@@ -89,7 +89,7 @@ class TrusteesCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour with
     def navigation: TableFor3[Identifier, UserAnswers, Call] =
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
-        row(CompanyDetailsId(index))(addTrusteePage),
+        row(CompanyDetailsId(index))(addTrusteeDetailsPage),
         row(HaveCompanyNumberId(index))(companyNumber(), uaWithValue(HaveCompanyNumberId(index), true)),
         row(HaveCompanyNumberId(index))(noCompanyNumber(), uaWithValue(HaveCompanyNumberId(index), false)),
         row(CompanyNumberId(index))(haveUtr()),
