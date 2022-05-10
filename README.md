@@ -3,7 +3,7 @@
 
 ## Info
 
-This service allows a pensions administrator, either an individual or an organisation, to migrated TPPS Scheme to ETMP.
+This service allows a pensions administrator, either an individual or an organisation, to migrate a TPPS Scheme to ETMP.
 
 This service has a corresponding back-end service, namely pensions-scheme-migration.
 
@@ -17,6 +17,8 @@ This service has a corresponding back-end service, namely pensions-scheme-migrat
 |email                      |https://github.com/hmrc/email                  |
 |auth                       |https://github.com/hmrc/auth                   |
 |contact-frontend           |https://github.com/hmrc/contact-frontend                   |
+
+// TODO: Where are the auth and contact-frontend dependencies used?
 
 ### Endpoints used
 
