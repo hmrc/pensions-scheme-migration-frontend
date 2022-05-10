@@ -19,10 +19,8 @@ package controllers.preMigration
 import com.google.inject.Inject
 import config.AppConfig
 import connectors.ListOfSchemesConnector
-import connectors.cache.FeatureToggleConnector
 import controllers.actions.AuthAction
 import forms.ListSchemesFormProvider
-import models.FeatureToggleName.MigrationTransfer
 import models.MigrationType.isRacDac
 import models.requests.AuthenticatedRequest
 import models.{Index, MigrationType}
@@ -44,8 +42,7 @@ class ListOfSchemesController @Inject()(
                                          formProvider: ListSchemesFormProvider,
                                          listOfSchemesConnector: ListOfSchemesConnector,
                                          schemeSearchService: SchemeSearchService,
-                                         lockingService: LockingService,
-                                         featureToggleConnector: FeatureToggleConnector
+                                         lockingService: LockingService
                                        )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport with NunjucksSupport {
@@ -56,29 +53,20 @@ class ListOfSchemesController @Inject()(
     messages("messages__listSchemes__search_required",
       schemeSearchService.typeOfList(migrationType)))
 
-  private def isMigrationEnabled(implicit request: AuthenticatedRequest[AnyContent]): Future[Boolean] = {
-    featureToggleConnector.get(MigrationTransfer.asString).map { toggle =>
-      toggle.isEnabled ||
-        request.request.getQueryString("cgl22").contains("true") ||
-        request.headers.get(REFERER).exists(_.contains( "rac-dac/add-all"))
-    }
-  }
 
-  def onPageLoad(migrationType: MigrationType): Action[AnyContent] = (authenticate).async {
+  def onPageLoad(migrationType: MigrationType): Action[AnyContent] = authenticate.async {
     implicit request =>
-      isMigrationEnabled.flatMap { migrationEnabled =>
-        val checkRacDac: Boolean = isRacDac(migrationType)
-        listOfSchemesConnector.getListOfSchemes(request.psaId.id).flatMap {
-          case Right(list) =>
-            if (list.items.exists(_.exists(_.racDac == checkRacDac))) {
-              schemeSearchService.searchAndRenderView(form(migrationType), pageNumber = 1, searchText = None, migrationType, migrationEnabled)
-            }
-            else {
-              emptyListRedirect(checkRacDac)
-            }
-          case _ => emptyListRedirect(checkRacDac)
-        } recoverWith listOfSchemesRedirects
-      }
+      val checkRacDac: Boolean = isRacDac(migrationType)
+      listOfSchemesConnector.getListOfSchemes(request.psaId.id).flatMap {
+        case Right(list) =>
+          if (list.items.exists(_.exists(_.racDac == checkRacDac))) {
+            schemeSearchService.searchAndRenderView(form(migrationType), pageNumber = 1, searchText = None, migrationType)
+          }
+          else {
+            emptyListRedirect(checkRacDac)
+          }
+        case _ => emptyListRedirect(checkRacDac)
+      } recoverWith listOfSchemesRedirects
   }
 
   private def emptyListRedirect(checkRacDac: Boolean): Future[Result] = {
@@ -90,11 +78,9 @@ class ListOfSchemesController @Inject()(
   }
 
   def onPageLoadWithPageNumber(pageNumber: Index, migrationType: MigrationType): Action[AnyContent] =
-    (authenticate).async { implicit request =>
-      isMigrationEnabled.flatMap { migrationEnabled =>
-        schemeSearchService.searchAndRenderView(form(migrationType), pageNumber, searchText = None, migrationType, migrationEnabled)
+    authenticate.async { implicit request =>
+        schemeSearchService.searchAndRenderView(form(migrationType), pageNumber, searchText = None, migrationType)
       }
-    }
 
   def onSearch(migrationType: MigrationType): Action[AnyContent] = authenticate.async {
     implicit request =>
@@ -107,16 +93,14 @@ class ListOfSchemesController @Inject()(
   }
 
   private def search(migrationType: MigrationType)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {
-    isMigrationEnabled.flatMap { migrationEnabled =>
     form(migrationType)
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[String]) =>
-          schemeSearchService.searchAndRenderView(formWithErrors, pageNumber = 1, searchText = None, migrationType, migrationEnabled),
+          schemeSearchService.searchAndRenderView(formWithErrors, pageNumber = 1, searchText = None, migrationType),
         value =>
-          schemeSearchService.searchAndRenderView(form(migrationType).fill(value), pageNumber = 1, searchText = Some(value), migrationType, migrationEnabled)
+          schemeSearchService.searchAndRenderView(form(migrationType).fill(value), pageNumber = 1, searchText = Some(value), migrationType)
       )
-    }
   }
 
   def clickSchemeLink(pstr: String, isRacDac: Boolean): Action[AnyContent] = authenticate.async {

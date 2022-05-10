@@ -17,10 +17,8 @@
 package controllers.preMigration
 
 import config.AppConfig
-import connectors.cache.{BulkMigrationQueueConnector, FeatureToggleConnector}
+import connectors.cache.BulkMigrationQueueConnector
 import controllers.actions._
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.MigrationTransfer
 import models.PageLink
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -33,34 +31,25 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class MigrationTilePartialController @Inject()(
-                                            appConfig: AppConfig,
-                                            override val messagesApi: MessagesApi,
-                                            authenticate: AuthAction,
-                                            featureToggleConnector: FeatureToggleConnector,
-                                            bulkMigrationQueueConnector: BulkMigrationQueueConnector,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            renderer: Renderer
-                                          )(implicit ec: ExecutionContext)
+                                                appConfig: AppConfig,
+                                                override val messagesApi: MessagesApi,
+                                                authenticate: AuthAction,
+                                                bulkMigrationQueueConnector: BulkMigrationQueueConnector,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                renderer: Renderer
+                                              )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
     with NunjucksSupport {
 
   def migrationPartial: Action[AnyContent] = authenticate.async { implicit request =>
-    val links: Future[Seq[PageLink]] = featureToggleConnector.get(MigrationTransfer.asString).flatMap {
-      case Enabled(_) =>
-        bulkMigrationQueueConnector.isRequestInProgress(request.psaId.id).map{
-          case false =>
-            Seq(PageLink("add-pension-schemes", appConfig.schemesMigrationTransfer, msg"messages__migrationLink__addSchemesLink"),
-              PageLink("add-rac-dacs", appConfig.racDacMigrationTransfer, msg"messages__migrationLink__addRacDacsLink"))
-          case true =>
-            Seq(PageLink("add-pension-schemes", appConfig.schemesMigrationTransfer, msg"messages__migrationLink__addSchemesLink"),
-              PageLink("check-rac-dacs", appConfig.racDacMigrationCheckStatus, msg"messages__migrationLink__checkStatusRacDacsLink"))
-        }
-      case _ =>
-        Future(Seq(
-          PageLink("view-pension-schemes", appConfig.schemesMigrationViewOnly, msg"messages__migrationLink__viewSchemesLink"),
-          PageLink("view-rac-dacs", appConfig.racDacMigrationViewOnly, msg"messages__migrationLink__viewRacDacsLink")
-        ))
+    val links: Future[Seq[PageLink]] = bulkMigrationQueueConnector.isRequestInProgress(request.psaId.id).map {
+      case false =>
+        Seq(PageLink("add-pension-schemes", appConfig.schemesMigrationTransfer, msg"messages__migrationLink__addSchemesLink"),
+          PageLink("add-rac-dacs", appConfig.racDacMigrationTransfer, msg"messages__migrationLink__addRacDacsLink"))
+      case true =>
+        Seq(PageLink("add-pension-schemes", appConfig.schemesMigrationTransfer, msg"messages__migrationLink__addSchemesLink"),
+          PageLink("check-rac-dacs", appConfig.racDacMigrationCheckStatus, msg"messages__migrationLink__checkStatusRacDacsLink"))
     }
 
     links.flatMap { migrationLinks =>

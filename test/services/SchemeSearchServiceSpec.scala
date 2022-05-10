@@ -61,19 +61,23 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
   private val paginationService = new PaginationService(mockAppConfig)
 
   private val mockRenderer: NunjucksRenderer = mock[NunjucksRenderer]
-  private val typeOfList:List[String]=List("pension scheme","RAC/DAC")
+  private val typeOfList: List[String] = List("pension scheme", "RAC/DAC")
   private val psaName: String = "Nigel"
   private val pagination: Int = 10
+
   private def minimalPSA(rlsFlag: Boolean = false, deceasedFlag: Boolean = false) =
     MinPSA("", isPsaSuspended = false, Some(psaName), None, rlsFlag = rlsFlag, deceasedFlag = deceasedFlag)
+
   private val formProvider: ListSchemesFormProvider = new ListSchemesFormProvider()
+
   private def form(implicit messages: Messages): Form[String] = formProvider(messages("messages__listSchemes__search_required", "pension scheme"))
-  private val dummyUrl="dummyurl"
+
+  private val dummyUrl = "dummyurl"
   implicit val request: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(fakeRequest, "", PsaId(psaId))
 
-  private def schemeJson(numberOfSchemes:Int, pagination:Int, pageNumber:Int, numberOfPages:Int, migrationType:MigrationType,
-                         noResultsMessageKey:Option[String], paginationText:Option[String], typeOfList:String,
-                         schemeTable:Option[Table], form:Form[_]=form): JsObject = Json.obj(
+  private def schemeJson(numberOfSchemes: Int, pagination: Int, pageNumber: Int, numberOfPages: Int, migrationType: MigrationType,
+                         noResultsMessageKey: Option[String], paginationText: Option[String], typeOfList: String,
+                         schemeTable: Option[Table], form: Form[_] = form): JsObject = Json.obj(
 
     "form" -> form,
     "psaName" -> psaName,
@@ -92,7 +96,7 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
     "clearLinkUrl" -> routes.ListOfSchemesController.onPageLoad(migrationType).url,
     "returnUrl" -> dummyUrl,
     "typeOfList" -> typeOfList,
-  ) ++  (if (schemeTable.isDefined) Json.obj("schemes" -> schemeTable.get) else Json.obj()) ++
+  ) ++ (if (schemeTable.isDefined) Json.obj("schemes" -> schemeTable.get) else Json.obj()) ++
     (if (paginationText.isDefined) Json.obj("paginationText" -> paginationText.get) else Json.obj())
 
   val service = new SchemeSearchService(mockAppConfig, mockFuzzyMatching, mockListOfSchemesConnector,
@@ -153,7 +157,7 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
       when(mockListOfSchemesConnector.getListOfSchemes(ArgumentMatchers.eq(psaId))(any(), any()))
         .thenReturn(Future.successful(Right(listOfSchemes)))
 
-      whenReady(service.search(psaId, Some("scheme-1"),isRacDac = isRacDacFalse)) { result =>
+      whenReady(service.search(psaId, Some("scheme-1"), isRacDac = isRacDacFalse)) { result =>
         result mustBe fullSchemes.filter(_.racDac == isRacDacFalse).filter(_.schemeName == "scheme-1")
       }
     }
@@ -163,7 +167,7 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
       when(mockListOfSchemesConnector.getListOfSchemes(ArgumentMatchers.eq(psaId))(any(), any()))
         .thenReturn(Future.successful(Right(listOfSchemes)))
 
-      whenReady(service.search(psaId, Some("scheme-1"),isRacDac = isRacDacTrue)) { result =>
+      whenReady(service.search(psaId, Some("scheme-1"), isRacDac = isRacDacTrue)) { result =>
         result mustBe fullSchemes.filter(_.racDac == isRacDacTrue).filter(_.schemeName == "scheme-2")
       }
     }
@@ -174,7 +178,7 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
       when(mockListOfSchemesConnector.getListOfSchemes(ArgumentMatchers.eq(psaId))(any(), any()))
         .thenReturn(Future.successful(Right(emptyList)))
 
-      whenReady(service.search(psaId, Some("no matching"),isRacDac = isRacDacFalse)) { result =>
+      whenReady(service.search(psaId, Some("no matching"), isRacDac = isRacDacFalse)) { result =>
         result mustBe Nil
       }
     }
@@ -184,37 +188,37 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
   "mapToTable" must {
 
     "return correct table of scheme details" in {
-      val head=Seq(
+      val head = Seq(
         Cell(msg"messages__listSchemes__column_schemeName"),
         Cell(msg"messages__listSchemes__column_pstr"),
         Cell(msg"messages__listSchemes__column_regDate")
       )
 
-      val rows= List(Seq(
+      val rows = List(Seq(
         Cell(Literal("scheme-1"), Seq("govuk-!-width-one-half")),
         Cell(Literal(pstr1), Seq("govuk-!-width-one-quarter")),
         Cell(Literal("12 December 1989"), Seq("govuk-!-width-one-quarter"))))
 
-      service.mapToTable(List(fullSchemes.head), isRacDac = isRacDacFalse, viewOnly = true)  mustBe
-        Table(head, rows,  attributes = Map("role" -> "table"))
+      service.mapToTable(List(fullSchemes.head), isRacDac = isRacDacFalse) mustBe
+        Table(head, rows, attributes = Map("role" -> "table"))
 
     }
 
     "return correct table of scheme details with rac dac" in {
-      val head=Seq(
+      val head = Seq(
         Cell(msg"messages__listSchemes__column_racDacName"),
         Cell(msg"messages__listSchemes__column_pstr"),
         Cell(msg"messages__listSchemes__column_regDate")
       )
 
-      val rows= List(Seq(
+      val rows = List(Seq(
         Cell(Literal("scheme-2"), Seq("govuk-!-width-one-half")),
         Cell(Literal(pstr2), Seq("govuk-!-width-one-quarter")),
         Cell(Literal("12 October 2000"), Seq("govuk-!-width-one-quarter"))))
 
-      val table =Table(head, rows,  attributes = Map("role" -> "table"))
+      val table = Table(head, rows, attributes = Map("role" -> "table"))
 
-      service.mapToTable(fullSchemes.tail, isRacDac = isRacDacTrue, viewOnly = true)  mustBe table
+      service.mapToTable(fullSchemes.tail, isRacDac = isRacDacTrue) mustBe table
 
     }
   }
@@ -225,10 +229,10 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(), any())).thenReturn(Future.successful(Right(emptySchemes)))
       val numberOfPages = paginationService.divide(0, pagination)
 
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = service.searchAndRenderView(form, 1, None, Scheme, migrationToggleValue = true)
+      val result = service.searchAndRenderView(form, 1, None, Scheme)
 
       status(result) mustBe OK
 
@@ -245,16 +249,16 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
     "rlsFlag is true and deceasedFlag is false return redirect to update contact page" in {
       when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(minimalPSA(rlsFlag = true)))
 
-      val result = service.searchAndRenderView(form, 1, None, Scheme, migrationToggleValue = true)
+      val result = service.searchAndRenderView(form, 1, None, Scheme)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(dummyUrl)
     }
 
     "rlsFlag is true and deceasedFlag is true return redirect to contact hmrc page" in {
-      when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(minimalPSA(rlsFlag = true,deceasedFlag = true)))
+      when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(minimalPSA(rlsFlag = true, deceasedFlag = true)))
 
-      val result = service.searchAndRenderView(form, 1, None, Scheme, migrationToggleValue = true)
+      val result = service.searchAndRenderView(form, 1, None, Scheme)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(dummyUrl)
@@ -266,10 +270,10 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
 
       val numberOfPages = paginationService.divide(fullSchemes.length, pagination)
 
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = service.searchAndRenderView(form, 1, None, Scheme, migrationToggleValue = true)
+      val result = service.searchAndRenderView(form, 1, None, Scheme)
 
       status(result) mustBe OK
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
@@ -291,15 +295,15 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
 
       when(mockAppConfig.listSchemePagination) thenReturn pagination
 
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = service.searchAndRenderView(form, 1, None, RacDac, migrationToggleValue = true)
+      val result = service.searchAndRenderView(form, 1, None, RacDac)
 
       status(result) mustBe OK
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
       jsonCaptor.getValue must containJson(schemeJson(
-        fullSchemes.length, pagination,pageNumber, numberOfPages, RacDac, None,
+        fullSchemes.length, pagination, pageNumber, numberOfPages, RacDac, None,
         Some("Showing 1 to 1 of 2 schemes"), typeOfList(1), Some(tableForRacDac.copy(rows = List(racDacRows.head)))))
 
     }
@@ -319,15 +323,15 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
 
       when(mockAppConfig.listSchemePagination) thenReturn pagination
 
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = service.searchAndRenderView(form, pageNumber, None, RacDac, migrationToggleValue = true)
+      val result = service.searchAndRenderView(form, pageNumber, None, RacDac)
 
       status(result) mustBe OK
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
       jsonCaptor.getValue must containJson(schemeJson(
-        fullSchemes.length, pagination,pageNumber, numberOfPages, RacDac, None,
+        fullSchemes.length, pagination, pageNumber, numberOfPages, RacDac, None,
         Some("Showing 2 to 2 of 2 schemes"), typeOfList(1), Some(tableForRacDac.copy(rows = racDacRows.tail))))
 
     }
@@ -343,18 +347,18 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
         paginationService.divide(fullSchemes.length, 2)
 
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", searchText))
       implicit val request: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(postRequest, "", PsaId(psaId))
       val boundForm = form.bind(Map("value" -> searchText))
 
-      val result = service.searchAndRenderView(boundForm, 1, Some(searchText), Scheme, migrationToggleValue = true)
+      val result = service.searchAndRenderView(boundForm, 1, Some(searchText), Scheme)
 
       status(result) mustBe OK
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
       jsonCaptor.getValue must containJson(schemeJson(
-        1, 2,1, numberOfPages, Scheme, None,
+        1, 2, 1, numberOfPages, Scheme, None,
         Some("Showing 1 to 1 of 1 schemes"), typeOfList.head, Some(tableForScheme), boundForm))
 
     }
@@ -366,17 +370,17 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
       val numberOfPages = paginationService.divide(fullSchemes.length, pagination)
 
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", ""))
       implicit val request: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(postRequest, "", PsaId(psaId))
       val boundForm = form.bind(Map("value" -> ""))
-      val result = service.searchAndRenderView(boundForm, 1, None, Scheme, migrationToggleValue = true)
+      val result = service.searchAndRenderView(boundForm, 1, None, Scheme)
       status(result) mustBe BAD_REQUEST
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
       jsonCaptor.getValue must containJson(schemeJson(
-        1, pagination,1, numberOfPages, Scheme, None,
+        1, pagination, 1, numberOfPages, Scheme, None,
         Some("Showing 1 to 1 of 1 schemes"), typeOfList.head, Some(tableForScheme), boundForm))
 
     }
@@ -388,15 +392,15 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(), any())).thenReturn(Future.successful(Right(listOfSchemes)))
 
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
       val boundForm = form.bind(Map("value" -> incorrectSearchText))
-      val result = service.searchAndRenderView(boundForm, 1, Some(incorrectSearchText), Scheme, migrationToggleValue = true)
+      val result = service.searchAndRenderView(boundForm, 1, Some(incorrectSearchText), Scheme)
       status(result) mustBe OK
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
       jsonCaptor.getValue must containJson(schemeJson(
-        0, pagination,1,0, Scheme, Some(Messages("messages__listSchemes__search_noMatches", typeOfList.head)),
+        0, pagination, 1, 0, Scheme, Some(Messages("messages__listSchemes__search_noMatches", typeOfList.head)),
         Some("Showing 1 to 10 of 0 schemes"), typeOfList.head, None, boundForm))
 
     }
@@ -412,7 +416,9 @@ object SchemeSearchServiceSpec extends SpecBase with MockitoSugar with BeforeAnd
   private val pstr2: String = "10000678RD"
   private val isRacDacFalse: Boolean = false
   private val isRacDacTrue: Boolean = true
+
   def listOfSchemes: ListOfLegacySchemes = ListOfLegacySchemes(2, Some(fullSchemes))
+
   def emptySchemes: ListOfLegacySchemes = ListOfLegacySchemes(0, None)
 
   def fullSchemes: List[Items] =
@@ -427,7 +433,7 @@ object SchemeSearchServiceSpec extends SpecBase with MockitoSugar with BeforeAnd
       Items(pstr2, "2020-10-10", racDac = true, "scheme-2", "2000-10-12", Some("12345678"))
     )
 
-  private val head=Seq(
+  private val head = Seq(
     Cell(msg"messages__listSchemes__column_racDacName"),
     Cell(msg"messages__listSchemes__column_pstr"),
     Cell(msg"messages__listSchemes__column_regDate")
@@ -439,7 +445,7 @@ object SchemeSearchServiceSpec extends SpecBase with MockitoSugar with BeforeAnd
     Cell(msg"messages__listSchemes__column_regDate")
   )
 
-  private val tableForScheme=Table(schemeHead,
+  private val tableForScheme = Table(schemeHead,
     List(Seq(
       Cell(uk.gov.hmrc.viewmodels.Html(
         s"""<a class="govuk-link migrate-pstr-$pstr1" href=${ListOfSchemesController.clickSchemeLink(pstr1, false)}>scheme-1</a>""".stripMargin),
@@ -449,7 +455,7 @@ object SchemeSearchServiceSpec extends SpecBase with MockitoSugar with BeforeAnd
     ),
     attributes = Map("role" -> "table"))
 
-  val racDacRows= List(Seq(
+  val racDacRows = List(Seq(
     Cell(uk.gov.hmrc.viewmodels.Html(
       s"""<a class="govuk-link migrate-pstr-$pstr1" href=${ListOfSchemesController.clickSchemeLink(pstr1, true)}>scheme-1</a>""".stripMargin),
       Seq("govuk-!-width-one-half")),
@@ -463,6 +469,6 @@ object SchemeSearchServiceSpec extends SpecBase with MockitoSugar with BeforeAnd
       Cell(Literal("12 October 2000"), Seq("govuk-!-width-one-quarter")))
   )
 
-  val tableForRacDac: Table = Table(head, racDacRows,  attributes = Map("role" -> "table"))
+  val tableForRacDac: Table = Table(head, racDacRows, attributes = Map("role" -> "table"))
 }
 

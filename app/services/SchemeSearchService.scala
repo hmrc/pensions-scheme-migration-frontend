@@ -80,7 +80,7 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
     }
 
 
-  def mapToTable(schemeDetails: List[Items], isRacDac: Boolean, viewOnly: Boolean): Table = {
+  def mapToTable(schemeDetails: List[Items], isRacDac: Boolean): Table = {
     val head =
       if(isRacDac)
         Seq(
@@ -97,7 +97,7 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
 
     val formatter: String => String = date => LocalDate.parse(date).format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
 
-    val schemeName: Items => Content = data => if (viewOnly) Literal(data.schemeName) else Html(
+    val schemeName: Items => Content = data => Html(
       s"""<a class="govuk-link migrate-pstr-${data.pstr}" href=${ListOfSchemesController.clickSchemeLink(data.pstr, isRacDac)}>${data.schemeName}</a>""".stripMargin)
 
     val rows = schemeDetails.map { data =>
@@ -118,8 +118,7 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
                           numberOfPages: Int,
                           noResultsMessageKey: Option[String],
                           form: Form[String],
-                          migrationType: MigrationType,
-                          viewOnly: Boolean
+                          migrationType: MigrationType
                         )(implicit hc: HeaderCarrier,
                           messages: Messages,
                           request: AuthenticatedRequest[AnyContent],
@@ -148,9 +147,8 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
           "submitUrl" -> routes.ListOfSchemesController.onSearch(migrationType).url,
           "returnUrl" -> appConfig.psaOverviewUrl,
           "paginationText" -> paginationService.paginationText(pageNumber, pagination, numberOfSchemes, numberOfPages),
-          "typeOfList" -> typeOfList(migrationType),
-          "viewOnly" -> viewOnly
-        ) ++ (if (schemeDetails.nonEmpty) Json.obj("schemes" -> mapToTable(schemeDetails, isRacDac(migrationType), viewOnly)) else Json.obj())
+          "typeOfList" -> typeOfList(migrationType)
+        ) ++ (if (schemeDetails.nonEmpty) Json.obj("schemes" -> mapToTable(schemeDetails, isRacDac(migrationType))) else Json.obj())
 
         renderer.render("preMigration/listOfSchemes.njk", json)
           .map(body => if (form.hasErrors) BadRequest(body) else Ok(body))
@@ -173,8 +171,7 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
                            form: Form[String],
                            pageNumber: Int,
                            searchText: Option[String],
-                           migrationType: MigrationType,
-                           migrationToggleValue:Boolean
+                           migrationType: MigrationType
                          )(implicit request: AuthenticatedRequest[AnyContent],
                            messages: Messages,
                            hc: HeaderCarrier,
@@ -193,7 +190,6 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
           noResultsMessageKey(searchText, searchResult, migrationType),
           form,
           migrationType,
-          !migrationToggleValue
         )
       } recoverWith listOfSchemesRedirects
 
