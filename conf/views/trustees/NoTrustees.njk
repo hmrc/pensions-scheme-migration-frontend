@@ -1,0 +1,47 @@
+{% extends "includes/layout.njk" %}
+
+{% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
+{% from "govuk/components/radios/macro.njk"        import govukRadios %}
+{% from "govuk/components/button/macro.njk"        import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "macros/title.njk"                         import title %}
+{% from "macros/returnLink.njk"                    import returnLink %}
+
+{% block pageTitle %}
+    {{ title(messages("messages__addTrustees_title"), form.errors) }}
+{% endblock %}
+
+{% block mainContent %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            {% if form.errors.length > 0 %}
+                {{ govukErrorSummary({
+                    "titleText": messages("error.summary.title"),
+                    "errorList": form.errors
+                }) }}
+            {% endif %}
+
+            <form method="post" autocomplete="off" novalidate>
+
+                {{ csrf() | safe }}
+
+                <h1 id="noEstablishers_h1" class="govuk-heading-xl">{{ messages('messages__noTrustees_title') }}</h1>
+
+                <p id="noEstablishers_p" class="govuk-body">{{ messages('messages__noTrustees_text') }}</p>
+
+                {{ govukButton({
+                    text: messages("site.continue"),
+                    attributes: {id: "submit"}
+                }) }}
+
+            </form>
+
+        </div>
+    </div>
+
+    {{ returnLink(schemeName) }}
+
+{% endblock %}

@@ -48,8 +48,11 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
       _.set(IsEstablisherNewId(0), true).flatMap(
         _.set(EstablisherKindId(1), EstablisherKind.Individual).flatMap(
           _.set(EstablisherNameId(1), PersonName("c", "d", isDeleted = true)).flatMap(
-            _.set(IsEstablisherNewId(1), true)
-          ))))).toOption
+            _.set(IsEstablisherNewId(1), true).flatMap(
+              _.set(EstablisherKindId(2), EstablisherKind.Individual).flatMap(
+                _.set(EstablisherNameId(2), PersonName("e", "f", isDeleted = false)).flatMap(
+                  _.set(IsEstablisherNewId(2), true)
+          )))))))).toOption
   private val templateToBeRendered = "establishers/addEstablisher.njk"
   private val form: Form[Boolean] = new ConfirmDeleteEstablisherFormProvider()(establisherName)
   private val itemList: JsValue = Json.obj(
@@ -151,6 +154,16 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustBe controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
+    }
+
+    "redirect to no establishers page if there are no added establishers" in {
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+
+      val result = route(application, httpGETRequest(httpPathGET)).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustBe routes.NoEstablishersController.onPageLoad().url
     }
   }
 }

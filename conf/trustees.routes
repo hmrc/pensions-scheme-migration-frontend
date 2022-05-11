@@ -1,6 +1,9 @@
 GET         /scheme-trustees                         controllers.trustees.AddTrusteeController.onPageLoad()
 POST        /scheme-trustees                         controllers.trustees.AddTrusteeController.onSubmit()
 
+GET         /none                                    controllers.trustees.NoTrusteesController.onPageLoad()
+POST        /none                                    controllers.trustees.NoTrusteesController.onSubmit()
+
 GET         /:index/partnership/delete-trustee           controllers.trustees.ConfirmDeleteTrusteeController.onPageLoad(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Partnership)
 POST        /:index/partnership/delete-trustee           controllers.trustees.ConfirmDeleteTrusteeController.onSubmit(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Partnership)
 

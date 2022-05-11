@@ -49,7 +49,7 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
     case AnyTrusteesId => anyTrusteesRoutes(ua)
     case TrusteeNameId(index) => controllers.trustees.individual.routes.SpokeTaskListController.onPageLoad(index)
     case AddTrusteeId(value) => addTrusteeRoutes(value, ua)
-    case ConfirmDeleteTrusteeId => deleteTrusteeRoutes(ua)
+    case ConfirmDeleteTrusteeId => AddTrusteeController.onPageLoad()
     case TrusteeDOBId(index) => TrusteeHasNINOController.onPageLoad(index, NormalMode)
     case TrusteeHasNINOId(index) => trusteeHasNino(index, ua, NormalMode)
     case TrusteeNINOId(index) => TrusteeHasUTRController.onPageLoad(index, NormalMode)
@@ -131,15 +131,6 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
       case Some(true) => TrusteeKindController.onPageLoad(answers.trusteesCount)
       case None => controllers.trustees.routes.OtherTrusteesController.onPageLoad
     }
-
-  private def deleteTrusteeRoutes(
-                                answers: UserAnswers
-                              ): Call = {
-    answers.allTrusteesAfterDelete.nonEmpty match {
-      case false => TaskListController.onPageLoad()
-      case true => AddTrusteeController.onPageLoad()
-    }
-  }
 
   private def anyTrusteesRoutes(
                                  answers: UserAnswers
