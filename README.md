@@ -18,7 +18,7 @@ This service has a corresponding back-end service, namely pensions-scheme-migrat
 |auth                       |https://github.com/hmrc/auth                   |
 |contact-frontend           |https://github.com/hmrc/contact-frontend                   |
 
-// TODO: Where are the auth and contact-frontend dependencies used?
+// TODO: Clarification, where are the auth and contact-frontend dependencies used in this repo as not in list?
 
 ### Endpoints used
 
