@@ -43,7 +43,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.{NunjucksRenderer, NunjucksSupport}
 import uk.gov.hmrc.viewmodels.Table.Cell
 import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, Table}
+import uk.gov.hmrc.viewmodels.{MessageInterpolators, Table, Html => HtmlView}
 import utils.Data._
 import utils.SchemeFuzzyMatcher
 
@@ -195,8 +195,9 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
       )
 
       val rows = List(Seq(
-        Cell(Literal("scheme-1"), Seq("govuk-!-width-one-half")),
-        Cell(Literal(pstr1), Seq("govuk-!-width-one-quarter")),
+        Cell(HtmlView(s"""<a class="govuk-link migrate-pstr-$pstr1" href=/add-pension-scheme/list-schemes-on-click/$pstr1/false>scheme-1</a>"""),
+          Seq("govuk-!-width-one-half")),
+        Cell(content=Literal(pstr1), Seq("govuk-!-width-one-quarter")),
         Cell(Literal("12 December 1989"), Seq("govuk-!-width-one-quarter"))))
 
       service.mapToTable(List(fullSchemes.head), isRacDac = isRacDacFalse) mustBe
@@ -212,7 +213,8 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
       )
 
       val rows = List(Seq(
-        Cell(Literal("scheme-2"), Seq("govuk-!-width-one-half")),
+        Cell(HtmlView(s"""<a class="govuk-link migrate-pstr-$pstr2" href=/add-pension-scheme/list-schemes-on-click/$pstr2/true>scheme-2</a>"""),
+          Seq("govuk-!-width-one-half")),
         Cell(Literal(pstr2), Seq("govuk-!-width-one-quarter")),
         Cell(Literal("12 October 2000"), Seq("govuk-!-width-one-quarter"))))
 

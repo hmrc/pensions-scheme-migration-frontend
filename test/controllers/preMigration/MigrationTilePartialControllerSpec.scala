@@ -58,21 +58,6 @@ class MigrationTilePartialControllerSpec extends ControllerSpecBase with Nunjuck
       controllerComponents, new Renderer(mockAppConfig, mockRenderer))
 
   "MigrationTilePartialController" must {
-    "return OK and the correct partial for a GET when migration feature is view-only" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
-      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-      val result: Future[Result] = controller().migrationPartial()(fakeDataRequest())
-
-      status(result) mustBe OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(Json.obj("links" -> Json.toJson(viewOnlyLinks)))
-    }
 
     "return OK and the correct partial for a GET when migration feature is transfer-enabled and request is not in progress" in {
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
