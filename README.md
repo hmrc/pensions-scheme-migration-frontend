@@ -3,7 +3,7 @@
 
 ## Info
 
-This service allows a pensions administrator, either an individual or an organisation, to migrated TPPS Scheme to ETMP.
+This service allows a pensions administrator, either an individual or an organisation, to migrate a TPPS Scheme to ETMP.
 
 This service has a corresponding back-end service, namely pensions-scheme-migration.
 
