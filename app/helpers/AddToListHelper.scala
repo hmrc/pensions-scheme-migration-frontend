@@ -28,7 +28,7 @@ class AddToListHelper {
   def mapEstablishersToList[A <: Entity[_]](establishers: Seq[A], caption: String, editLinkText: String): JsValue =
     mapToList(establishers)
 
-  def mapTrusteesToList[A <: Entity[_]](trustees: Seq[A], caption: String, editLinkText: String, hideDeleteLink: Boolean = false): JsValue =
+  def mapTrusteesToList[A <: Entity[_]](trustees: Seq[A], caption: String, editLinkText: String): JsValue =
     mapToList(trustees)
 
   private def mapToList[A <: Entity[_]](entities: Seq[A])

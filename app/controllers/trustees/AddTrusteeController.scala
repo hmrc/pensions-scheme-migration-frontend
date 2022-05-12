@@ -87,17 +87,15 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
   private def getJson(form: Form[_], trustees: Seq[Trustee[_]])(implicit request: DataRequest[AnyContent]): JsObject = {
     val trusteesComplete = trustees.filter(_.isCompleted)
     val trusteesIncomplete = trustees.filterNot(_.isCompleted)
-    val hideDeleteLink = request.userAnswers.get(SchemeTypeId).contains(SchemeType.SingleTrust) && trustees.size == 1
     val completeList = helper.mapTrusteesToList(trusteesComplete,
-      caption = "messages__schemeTaskList__completed", editLinkText = "site.change", hideDeleteLink)
+      caption = "messages__schemeTaskList__completed", editLinkText = "site.change")
     val incompleteList  = helper.mapTrusteesToList(trusteesIncomplete,
-      caption = "site.incomplete", editLinkText = "site.add.details", hideDeleteLink)
+      caption = "site.incomplete", editLinkText = "site.add.details")
 
     Json.obj(
       "form" -> form,
       "itemListIncomplete" -> incompleteList,
       "itemListComplete" -> completeList,
-      "hideDeleteLink" -> hideDeleteLink,
       "radios" -> Radios.yesNo(form("value")),
       "schemeName" -> existingSchemeName,
       "trusteeSize" -> trustees.size,
