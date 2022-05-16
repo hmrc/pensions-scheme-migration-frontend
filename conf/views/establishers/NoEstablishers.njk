@@ -9,7 +9,7 @@
 {% from "macros/returnLink.njk"                    import returnLink %}
 
 {% block pageTitle %}
-    {{ title(messages("messages__noEstablishers_title"), form.errors) }}
+    {{ title(messages('messages__noEstablishers_title'), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -28,7 +28,7 @@
 
                 {{ csrf() | safe }}
 
-                <h1 id="noEstablishers_h1" class="govuk-heading-xl">{{ messages('messages__noEstablishers_title') }}</h1>
+                <h1 id="noEstablishers_h1" class="govuk-heading-xl">{{ messages('messages__noEstablishers_heading') }}</h1>
 
                 <p id="noEstablishers_p" class="govuk-body">{{ messages('messages__noEstablishers_text') }}</p>
 
