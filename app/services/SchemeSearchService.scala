@@ -189,7 +189,7 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
           numberOfPages,
           noResultsMessageKey(searchText, searchResult, migrationType),
           form,
-          migrationType,
+          migrationType
         )
       } recoverWith listOfSchemesRedirects
 
