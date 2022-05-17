@@ -19,6 +19,7 @@ package controllers.trustees
 import config.AppConfig
 import controllers.Retrievals
 import controllers.actions._
+import controllers.trustees.routes.{AnyTrusteesController, NoTrusteesController}
 import forms.trustees.AddTrusteeFormProvider
 import helpers.AddToListHelper
 import identifiers.beforeYouStart.SchemeTypeId
@@ -29,7 +30,7 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -55,9 +56,15 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         val trustees = request.userAnswers.allTrusteesAfterDelete
+        val isSingleTrust = request.userAnswers.get(SchemeTypeId).contains(SchemeType.SingleTrust)
 
-        val json: JsObject = getJson(formProvider(trustees), trustees)
-        renderer.render("trustees/addTrustee.njk", json).map(Ok(_))
+        (trustees, isSingleTrust) match {
+          case (Nil, false) => navTo(AnyTrusteesController.onPageLoad())
+          case (Nil, true) => navTo(NoTrusteesController.onPageLoad())
+          case _ =>
+            val json: JsObject = getJson(formProvider(trustees), trustees)
+            renderer.render("trustees/addTrustee.njk", json).map(Ok(_))
+        }
     }
 
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
@@ -80,21 +87,21 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
   private def getJson(form: Form[_], trustees: Seq[Trustee[_]])(implicit request: DataRequest[AnyContent]): JsObject = {
     val trusteesComplete = trustees.filter(_.isCompleted)
     val trusteesIncomplete = trustees.filterNot(_.isCompleted)
-    val hideDeleteLink = request.userAnswers.get(SchemeTypeId).contains(SchemeType.SingleTrust) && trustees.size == 1
     val completeList = helper.mapTrusteesToList(trusteesComplete,
-      caption = "messages__schemeTaskList__completed", editLinkText = "site.change", hideDeleteLink)
+      caption = "messages__schemeTaskList__completed", editLinkText = "site.change")
     val incompleteList  = helper.mapTrusteesToList(trusteesIncomplete,
-      caption = "site.incomplete", editLinkText = "site.add.details", hideDeleteLink)
+      caption = "site.incomplete", editLinkText = "site.add.details")
 
     Json.obj(
       "form" -> form,
       "itemListIncomplete" -> incompleteList,
       "itemListComplete" -> completeList,
-      "hideDeleteLink" -> hideDeleteLink,
       "radios" -> Radios.yesNo(form("value")),
       "schemeName" -> existingSchemeName,
       "trusteeSize" -> trustees.size,
       "maxTrustees" -> config.maxTrustees
     )
   }
+
+  private def navTo(call: Call): Future[Result] = Future.successful(Redirect(call))
 }

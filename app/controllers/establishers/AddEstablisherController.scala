@@ -18,6 +18,7 @@ package controllers.establishers
 
 import controllers.Retrievals
 import controllers.actions._
+import controllers.establishers.routes.NoEstablishersController
 import forms.establishers.AddEstablisherFormProvider
 import helpers.AddToListHelper
 import identifiers.establishers.AddEstablisherId
@@ -57,10 +58,14 @@ class AddEstablisherController @Inject()(
       implicit request =>
         val allEstablishers = request.userAnswers.allEstablishersAfterDelete
 
-        renderer.render(
-          template = "establishers/addEstablisher.njk",
-          ctx = getJson(formProvider(allEstablishers), allEstablishers)
-        ).map(Ok(_))
+        if (allEstablishers.isEmpty) {
+          Future.successful(Redirect(NoEstablishersController.onPageLoad()))
+        } else {
+          renderer.render(
+            template = "establishers/addEstablisher.njk",
+            ctx = getJson(formProvider(allEstablishers), allEstablishers)
+          ).map(Ok(_))
+        }
     }
 
   def onSubmit: Action[AnyContent] =
@@ -72,7 +77,7 @@ class AddEstablisherController @Inject()(
           formWithErrors =>
             renderer.render(
               template = "establishers/addEstablisher.njk",
-              ctx = getJson(formWithErrors, allEstablishers)
+              ctx = getJson(formWithErrors, Nil)
             ).map(BadRequest(_)),
           value =>
             Future.successful(Redirect(

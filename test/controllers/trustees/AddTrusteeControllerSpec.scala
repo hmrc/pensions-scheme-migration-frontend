@@ -20,11 +20,12 @@ import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.trustees.ConfirmDeleteTrusteeFormProvider
 import helpers.AddToListHelper
+import identifiers.beforeYouStart.SchemeTypeId
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.{AddTrusteeId, IsTrusteeNewId, TrusteeKindId}
 import matchers.JsonMatchers
-import models.PersonName
 import models.trustees.TrusteeKind
+import models.{PersonName, Scheme, SchemeType}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -38,7 +39,6 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.{Radios, Table}
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
-import models.Scheme
 
 import scala.concurrent.Future
 
@@ -54,7 +54,6 @@ class AddTrusteeControllerSpec extends ControllerSpecBase with NunjucksSupport w
   private val templateToBeRendered = "trustees/addTrustee.njk"
   private val form: Form[Boolean] = new ConfirmDeleteTrusteeFormProvider()(trusteeName)
   val table: Table = Table(head = Nil, rows = Nil)
-  private val hideDeleteLink = false
   private val itemList: JsValue = Json.obj(
     "name" -> trusteeName,
     "changeUrl" ->  "controllers.establishers.company.routes.SpokeTaskListController.onPageLoad(0)",
@@ -88,7 +87,6 @@ class AddTrusteeControllerSpec extends ControllerSpecBase with NunjucksSupport w
           "form" -> form,
           "itemListComplete" -> itemList,
           "itemListIncomplete" -> itemList,
-          "hideDeleteLink" -> hideDeleteLink,
           "radios" -> Radios.yesNo(form("value")),
           "schemeName" -> schemeName,
           "trusteeSize" -> countOfTrustees,
@@ -99,7 +97,7 @@ class AddTrusteeControllerSpec extends ControllerSpecBase with NunjucksSupport w
   override def beforeEach: Unit = {
     super.beforeEach
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-    when(mockHelper.mapTrusteesToList(any(), any(), any(), any())).thenReturn(itemList)
+    when(mockHelper.mapTrusteesToList(any(), any(), any())).thenReturn(itemList)
     when(mockAppConfig.maxTrustees).thenReturn(maxTrustees)
   }
 
@@ -165,6 +163,28 @@ class AddTrusteeControllerSpec extends ControllerSpecBase with NunjucksSupport w
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustBe controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
+    }
+
+    "redirect to no trustees page if there are no added trustees and the scheme is a single trust" in {
+      val userAnswersNoTrusteesSingleTrust = UserAnswers().setOrException(SchemeTypeId, SchemeType.SingleTrust)
+
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(userAnswersNoTrusteesSingleTrust))
+
+      val result = route(application, httpGETRequest(httpPathGET)).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.NoTrusteesController.onPageLoad().url)
+    }
+
+    "redirect to any trustees page if there are no added trustees and the scheme is NOT a single trust" in {
+      val userAnswersNoTrusteesOtherTrust = UserAnswers().setOrException(SchemeTypeId, SchemeType.GroupLifeDeath)
+
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(userAnswersNoTrusteesOtherTrust))
+
+      val result = route(application, httpGETRequest(httpPathGET)).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.AnyTrusteesController.onPageLoad().url)
     }
   }
 }

@@ -56,10 +56,7 @@ case class EstablisherIndividualEntity(
     Some(controllers.establishers.individual.routes.SpokeTaskListController.onPageLoad(index).url)
 
   override def deleteLink: Option[String] = {
-    if (noOfRecords > 1)
-      Some(controllers.establishers.routes.ConfirmDeleteEstablisherController.onPageLoad(id.index, EstablisherKind.Individual).url)
-    else
-      None
+    Some(controllers.establishers.routes.ConfirmDeleteEstablisherController.onPageLoad(id.index, EstablisherKind.Individual).url)
   }
 
   override def index: Int = id.index
@@ -75,10 +72,7 @@ case class EstablisherCompanyEntity(id: CompanyDetailsId, name: String, isDelete
   override def editLink: Option[String] = Some(controllers.establishers.company.routes.SpokeTaskListController.onPageLoad(index).url)
 
   override def deleteLink: Option[String] = {
-    if (noOfRecords > 1)
-      Some(controllers.establishers.routes.ConfirmDeleteEstablisherController.onPageLoad(id.index, EstablisherKind.Company).url)
-    else
-      None
+    Some(controllers.establishers.routes.ConfirmDeleteEstablisherController.onPageLoad(id.index, EstablisherKind.Company).url)
   }
 
   override def index: Int = id.index
@@ -94,10 +88,7 @@ case class EstablisherPartnershipEntity(id: PartnershipDetailsId, name: String, 
   override def editLink: Option[String] = Some(controllers.establishers.partnership.routes.SpokeTaskListController.onPageLoad(index).url)
 
   override def deleteLink: Option[String] = {
-    if (noOfRecords > 1)
-      Some(controllers.establishers.routes.ConfirmDeleteEstablisherController.onPageLoad(id.index, EstablisherKind.Partnership).url)
-    else
-      None
+    Some(controllers.establishers.routes.ConfirmDeleteEstablisherController.onPageLoad(id.index, EstablisherKind.Partnership).url)
   }
 
   override def index: Int = id.index

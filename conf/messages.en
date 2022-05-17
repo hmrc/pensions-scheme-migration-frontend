@@ -394,6 +394,13 @@ messages__addEstablisher_error__selection = Select yes if you want to add anothe
 messages__establisher__type__error_required = Select what kind of establisher you are adding
 messages__establisher__type_title = What kind of establisher are you adding?
 
+messages__noEstablishers_title = Establishers
+messages__noEstablishers_heading = Establisher
+messages__noEstablishers_text = You must add at least one establisher
+
+messages__noTrustees_title = Trustees
+messages__noTrustees_text = You must add at least one trustee
+
 addEstablisher.name.header = Establisher name
 addEstablisher.type.header = Type
 addEstablisher.type.header.hiddenText = Type of establisher
