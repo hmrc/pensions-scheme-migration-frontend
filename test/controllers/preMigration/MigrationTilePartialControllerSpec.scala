@@ -16,12 +16,10 @@
 
 package controllers.preMigration
 
-import connectors.cache.{BulkMigrationQueueConnector, FeatureToggleConnector}
+import connectors.cache.BulkMigrationQueueConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import matchers.JsonMatchers
-import models.FeatureToggle.{Disabled, Enabled}
-import models.FeatureToggleName.MigrationTransfer
 import models.PageLink
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, MockitoSugar}
@@ -38,7 +36,6 @@ import scala.concurrent.Future
 class MigrationTilePartialControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with MockitoSugar {
 
   private val templateToBeRendered: String = "preMigration/migrationLinksPartial.njk"
-  private val mockFeatureToggleConnector: FeatureToggleConnector = mock[FeatureToggleConnector]
   private val mockQueueConnector = mock[BulkMigrationQueueConnector]
 
   val viewOnlyLinks: Seq[PageLink] = Seq(
@@ -57,33 +54,16 @@ class MigrationTilePartialControllerSpec extends ControllerSpecBase with Nunjuck
   )
 
   private def controller(): MigrationTilePartialController =
-    new MigrationTilePartialController(appConfig, messagesApi, new FakeAuthAction(), mockFeatureToggleConnector, mockQueueConnector,
+    new MigrationTilePartialController(appConfig, messagesApi, new FakeAuthAction(), mockQueueConnector,
       controllerComponents, new Renderer(mockAppConfig, mockRenderer))
 
   "MigrationTilePartialController" must {
-    "return OK and the correct partial for a GET when migration feature is view-only" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-      when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Disabled(MigrationTransfer)))
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-      val result: Future[Result] = controller().migrationPartial()(fakeDataRequest())
-
-      status(result) mustBe OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(Json.obj("links" -> Json.toJson(viewOnlyLinks)))
-    }
 
     "return OK and the correct partial for a GET when migration feature is transfer-enabled and request is not in progress" in {
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-      when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Enabled(MigrationTransfer)))
       when(mockQueueConnector.isRequestInProgress(any())(any(), any())).thenReturn(Future.successful(false))
 
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
       val result: Future[Result] = controller().migrationPartial()(fakeDataRequest())
 
@@ -98,10 +78,9 @@ class MigrationTilePartialControllerSpec extends ControllerSpecBase with Nunjuck
 
     "return OK and the correct partial for a GET when migration feature is transfer-enabled and request is in progress" in {
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-      when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Enabled(MigrationTransfer)))
       when(mockQueueConnector.isRequestInProgress(any())(any(), any())).thenReturn(Future.successful(true))
 
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
       val result: Future[Result] = controller().migrationPartial()(fakeDataRequest())
 
