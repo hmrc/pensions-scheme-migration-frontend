@@ -76,6 +76,39 @@ messages__dob__hint = For example, 31 3 1980
 messages__pension_scheme_registration__title = Migrating pension schemes
 messages__unauthorised__title = You can’t access this service with this account
 
+messages__addingScheme__title = We are adding your scheme
+messages__addingScheme__p1 = We are unable to process your request because we are already adding your scheme from the Pension Schemes Online service.
+messages__addingScheme__p2 = You can view your scheme in
+messages__addingScheme__a = your list of schemes
+messages__addingScheme__p3 = once it has been added.
+messages__addingScheme__a2 = Contact HMRC for help
+messages__addingScheme__p4 = if:
+messages__addingScheme__bullet1 = you cannot see the scheme listed
+messages__addingScheme__bullet2 = you can see the scheme listed but the status is pending
+messages__addingScheme__button = Add another pension scheme
+
+messages__addingRacDac__title = We are adding your RAC/DAC
+messages__addingRacDac__p1 = We are unable to process your request because we are already adding your RAC/DAC from the Pension Schemes Online service.
+messages__addingRacDac__p2 = You can view your RAC/DAC in
+messages__addingRacDac__a = your list of schemes
+messages__addingRacDac__p3 = once it has been added.
+messages__addingRacDac__a2 = Contact HMRC for help
+messages__addingRacDac__p4 = if:
+messages__addingRacDac__bullet1 = you cannot see the RAC/DAC listed
+messages__addingRacDac__bullet2 = you can see the RAC/DAC listed but the status is pending
+messages__addingRacDac__button = Add another RAC/DAC
+
+messages__addingBulkRacDac__title = We are adding your RAC/DACs
+messages__addingBulkRacDac__p1 = We are unable to process your request because we are already adding your RAC/DACs from the Pension Schemes Online service.
+messages__addingBulkRacDac__p2 = You can view your RAC/DACs in
+messages__addingBulkRacDac__a = your list of schemes
+messages__addingBulkRacDac__p3 = once it has been added.
+messages__addingBulkRacDac__a2 = Contact HMRC for help
+messages__addingBulkRacDac__p4 = if:
+messages__addingBulkRacDac__bullet1 = you cannot see the RAC/DACs listed
+messages__addingBulkRacDac__bullet2 = you can see the RAC/DACs listed but the status is pending
+messages__addingBulkRacDac__button = Back to administrator overview
+
 messages__index__title = pensions-scheme-migration-frontend
 messages__scheme_name__heading = What is the name of the scheme?
 messages__error__scheme_name = Enter the name of the scheme

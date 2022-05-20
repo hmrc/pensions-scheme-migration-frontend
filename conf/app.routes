@@ -30,6 +30,10 @@ GET         /check-your-answers-basic-scheme-details               controllers.b
 GET         /current-scheme-members                                controllers.aboutMembership.CurrentMembersController.onPageLoad
 POST        /current-scheme-members                                controllers.aboutMembership.CurrentMembersController.onSubmit
 
+GET         /already-adding-scheme                                 controllers.AddingSchemeController.onPageLoad
+GET         /rac-dac/already-adding-rac-dac                        controllers.AddingRacDacController.onPageLoad
+GET         /rac-dac/already-adding-rac-dacs                       controllers.AddingBulkRacDacController.onPageLoad
+
 GET         /future-scheme-members                                 controllers.aboutMembership.FutureMembersController.onPageLoad
 POST        /future-scheme-members                                 controllers.aboutMembership.FutureMembersController.onSubmit
 
