@@ -25,7 +25,6 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
-import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
@@ -77,11 +76,7 @@ class DeclarationController @Inject()(
             Redirect(routes.ProcessingRequestController.onPageLoad().url)
           }
         } recoverWith {
-          case ex: UpstreamErrorResponse if ex.statusCode == UNPROCESSABLE_ENTITY =>
-            println(s"\n ${ex} + test 1")
-            Future.successful(Redirect(controllers.routes.AddingBulkRacDacController.onPageLoad))
           case ex =>
-            println(s"\n ${ex} + test 2")
             logger.warn(ex.getMessage, ex)
             Future.successful(Redirect(routes.RequestNotProcessedController.onPageLoad()))
         }

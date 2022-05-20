@@ -123,7 +123,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
       val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.AddingRacDacController.onPageLoad.url)
+      redirectLocation(result) mustBe Some(controllers.racdac.individual.routes.AddingRacDacController.onPageLoad.url)
     }
   }
 }

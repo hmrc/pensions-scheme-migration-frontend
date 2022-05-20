@@ -110,14 +110,5 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.racdac.bulk.routes.RequestNotProcessedController.onPageLoad().url)
     }
-
-    "direct to adding Rac/Dac scheme page" in {
-      when(mockBulkMigrationConnector.pushAll(any(), any())(any(), any())).thenReturn(Future.failed(new HttpException("Request not processed", UNPROCESSABLE_ENTITY)))
-
-      val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
-
-      status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.AddingBulkRacDacController.onPageLoad().url)
-    }
   }
 }

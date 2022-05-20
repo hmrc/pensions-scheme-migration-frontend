@@ -88,7 +88,7 @@ class DeclarationController @Inject()(
               Redirect(controllers.racdac.individual.routes.ConfirmationController.onPageLoad().url)
             })recoverWith {
               case ex: UpstreamErrorResponse if ex.statusCode == UNPROCESSABLE_ENTITY =>
-                Future.successful(Redirect(controllers.routes.AddingRacDacController.onPageLoad))
+                Future.successful(Redirect(controllers.racdac.individual.routes.AddingRacDacController.onPageLoad))
               case _ =>
                 Future.successful(Redirect(controllers.routes.YourActionWasNotProcessedController.onPageLoadRacDac))
             }
