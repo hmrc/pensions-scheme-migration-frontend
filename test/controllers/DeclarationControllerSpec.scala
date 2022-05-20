@@ -45,7 +45,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
   private val templateToBeRendered = "declaration.njk"
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val mockPensionsSchemeConnector:PensionsSchemeConnector = mock[PensionsSchemeConnector]
+  private val mockPensionsSchemeConnector: PensionsSchemeConnector = mock[PensionsSchemeConnector]
   val extraModules: Seq[GuiceableModule] = Seq(
     bind[EmailConnector].toInstance(mockEmailConnector),
     bind[MinimalDetailsConnector].toInstance(mockMinimalDetailsConnector),
@@ -55,6 +55,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
   private def httpPathGET: String = controllers.routes.DeclarationController.onPageLoad().url
+
   private def httpPathPOST: String = controllers.routes.DeclarationController.onSubmit().url
 
   private val jsonToPassToTemplate: JsObject =
@@ -80,8 +81,8 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val templateCaptor:ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor:ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
@@ -108,8 +109,8 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
         )
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val templateCaptor:ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor:ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
@@ -128,8 +129,8 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
       when(mockAppConfig.schemeConfirmationEmailTemplateId).thenReturn("test template name")
       when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any()))
         .thenReturn(Future.successful(MinPSA("test@test.com", isPsaSuspended = false, Some(psaName), None, rlsFlag = false, deceasedFlag = false)))
-      when(mockPensionsSchemeConnector.registerScheme(any(),any(), any())(any(),any())).thenReturn(Future.successful(pstr))
-      when(mockEmailConnector.sendEmail(any(), any(), any(), any())(any(),any())).thenReturn(Future.successful(EmailSent))
+      when(mockPensionsSchemeConnector.registerScheme(any(), any(), any())(any(), any())).thenReturn(Future.successful(pstr))
+      when(mockEmailConnector.sendEmail(any(), any(), any(), any())(any(), any())).thenReturn(Future.successful(EmailSent))
 
       val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
@@ -138,7 +139,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
       verify(mockEmailConnector, times(1)).sendEmail(
         ArgumentMatchers.eq("test@test.com"),
         ArgumentMatchers.eq("test template name"),
-        ArgumentMatchers.eq(Map("psaName" -> psaName.toString, "schemeName"-> schemeName)),
+        ArgumentMatchers.eq(Map("psaName" -> psaName.toString, "schemeName" -> schemeName)),
         any())(any(), any())
 
       redirectLocation(result) mustBe Some(controllers.routes.SchemeSuccessController.onPageLoad().url)
@@ -150,7 +151,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
       when(mockAppConfig.schemeConfirmationEmailTemplateId).thenReturn("test template name")
       when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any()))
         .thenReturn(Future.successful(MinPSA("test@test.com", isPsaSuspended = false, Some(psaName), None, rlsFlag = false, deceasedFlag = false)))
-      when(mockPensionsSchemeConnector.registerScheme(any(),any(), any())(any(),any())).thenReturn(Future.failed(
+      when(mockPensionsSchemeConnector.registerScheme(any(), any(), any())(any(), any())).thenReturn(Future.failed(
         UpstreamErrorResponse(upstreamResponseMessage("POST", "url",
           Status.INTERNAL_SERVER_ERROR, "response.body"), Status.INTERNAL_SERVER_ERROR, Status.INTERNAL_SERVER_ERROR)))
 
@@ -165,7 +166,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
       when(mockAppConfig.schemeConfirmationEmailTemplateId).thenReturn("test template name")
       when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any()))
         .thenReturn(Future.successful(MinPSA("test@test.com", isPsaSuspended = false, Some(psaName), None, rlsFlag = false, deceasedFlag = false)))
-      when(mockPensionsSchemeConnector.registerScheme(any(),any(), any())(any(),any())).thenReturn(Future.failed(
+      when(mockPensionsSchemeConnector.registerScheme(any(), any(), any())(any(), any())).thenReturn(Future.failed(
         UpstreamErrorResponse(upstreamResponseMessage("POST", "url",
           Status.BAD_REQUEST, "response.body"), Status.BAD_REQUEST, Status.BAD_REQUEST)))
 
@@ -173,6 +174,22 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.TaskListController.onPageLoad.url)
+    }
+
+    "directs to correct page if 422 response is returned" in {
+
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+      when(mockAppConfig.schemeConfirmationEmailTemplateId).thenReturn("test template name")
+      when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any()))
+        .thenReturn(Future.successful(MinPSA("test@test.com", isPsaSuspended = false, Some(psaName), None, rlsFlag = false, deceasedFlag = false)))
+      when(mockPensionsSchemeConnector.registerScheme(any(), any(), any())(any(), any())).thenReturn(Future.failed(
+        UpstreamErrorResponse(upstreamResponseMessage("POST", "url",
+          Status.UNPROCESSABLE_ENTITY, "response.body"), Status.UNPROCESSABLE_ENTITY, Status.UNPROCESSABLE_ENTITY)))
+
+      val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.routes.AddingSchemeController.onPageLoad.url)
     }
 
   }

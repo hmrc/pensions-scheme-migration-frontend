@@ -112,5 +112,18 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.YourActionWasNotProcessedController.onPageLoadRacDac.url)
     }
+    "direct to adding rac/dac page when backend returns 422" in {
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+      val minPSA = MinPSA("test@test.com", false, Some("test company"), None, false, false)
+      when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(minPSA))
+      when(mockPensionsSchemeConnector.registerScheme(any(),any(), any())(any(),any())).thenReturn(Future.failed(
+        UpstreamErrorResponse(upstreamResponseMessage("POST", "url",
+          Status.UNPROCESSABLE_ENTITY, "response.body"), Status.UNPROCESSABLE_ENTITY, Status.UNPROCESSABLE_ENTITY)))
+      when(mockEmailConnector.sendEmail(any(), any(), any(), any())(any(), any())).thenReturn(Future(EmailSent))
+      val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.routes.AddingRacDacController.onPageLoad.url)
+    }
   }
 }

@@ -25,6 +25,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
@@ -64,7 +65,8 @@ class DeclarationController @Inject()(
           RacDacRequest(items.schemeName, items.policyNo.getOrElse(
             throw new RuntimeException("Policy Number is mandatory for RAC/DAC")), items.pstr, items.declarationDate, items.schemeOpenDate)
         }
-        bulkMigrationQueueConnector.pushAll(psaId, Json.toJson(racDacSchemes)).flatMap { _ =>
+        bulkMigrationQueueConnector.pushAll(psaId, Json.toJson(racDacSchemes)).flatMap { e =>
+          println(s"\n $e + test 0")
           val confirmationData = Json.obj(
             "confirmationData" -> Json.obj(
               "email" -> request.md.email,
@@ -75,7 +77,11 @@ class DeclarationController @Inject()(
             Redirect(routes.ProcessingRequestController.onPageLoad().url)
           }
         } recoverWith {
+          case ex: UpstreamErrorResponse if ex.statusCode == UNPROCESSABLE_ENTITY =>
+            println(s"\n ${ex} + test 1")
+            Future.successful(Redirect(controllers.routes.AddingBulkRacDacController.onPageLoad))
           case ex =>
+            println(s"\n ${ex} + test 2")
             logger.warn(ex.getMessage, ex)
             Future.successful(Redirect(routes.RequestNotProcessedController.onPageLoad()))
         }
