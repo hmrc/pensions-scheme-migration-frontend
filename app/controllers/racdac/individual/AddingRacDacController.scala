@@ -35,10 +35,10 @@ class AddingRacDacController @Inject()(val appConfig: AppConfig,
   FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = Action.async { implicit request =>
-    renderer.render("racdac/individual/addingRacDac.njk", schemeJson).map(Ok(_))
+    renderer.render("racdac/individual/addingRacDac.njk", racDacSchemeJson).map(Ok(_))
   }
 
-  private def schemeJson: JsObject = {
+  private def racDacSchemeJson: JsObject = {
     Json.obj(
       "listOfSchemeUrl" -> appConfig.yourPensionSchemesUrl,
       "contactHmrcUrl" -> appConfig.contactHmrcUrl,

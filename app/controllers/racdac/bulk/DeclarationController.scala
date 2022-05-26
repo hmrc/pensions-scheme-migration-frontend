@@ -65,7 +65,6 @@ class DeclarationController @Inject()(
             throw new RuntimeException("Policy Number is mandatory for RAC/DAC")), items.pstr, items.declarationDate, items.schemeOpenDate)
         }
         bulkMigrationQueueConnector.pushAll(psaId, Json.toJson(racDacSchemes)).flatMap { e =>
-          println(s"\n $e + test 0")
           val confirmationData = Json.obj(
             "confirmationData" -> Json.obj(
               "email" -> request.md.email,
