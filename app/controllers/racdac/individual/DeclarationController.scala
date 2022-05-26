@@ -16,10 +16,10 @@
 
 package controllers.racdac.individual
 
-import audit.{EmailAuditEvent, AuditService}
+import audit.{AuditService, EmailAuditEvent}
 import config.AppConfig
 import connectors._
-import controllers.actions.{DataRetrievalAction, DataRequiredAction, AuthAction}
+import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.beforeYouStart.SchemeNameId
 import models.JourneyType.RACDAC_IND_MIG
 import models.RacDac
@@ -27,11 +27,12 @@ import models.requests.DataRequest
 import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsString, Json, __}
-import play.api.i18n.{MessagesApi, I18nSupport}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
+import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswers
 
@@ -86,6 +87,8 @@ class DeclarationController @Inject()(
             } yield {
               Redirect(controllers.racdac.individual.routes.ConfirmationController.onPageLoad().url)
             })recoverWith {
+              case ex: UpstreamErrorResponse if ex.statusCode == UNPROCESSABLE_ENTITY =>
+                Future.successful(Redirect(controllers.racdac.individual.routes.AddingRacDacController.onPageLoad))
               case _ =>
                 Future.successful(Redirect(controllers.routes.YourActionWasNotProcessedController.onPageLoadRacDac))
             }
