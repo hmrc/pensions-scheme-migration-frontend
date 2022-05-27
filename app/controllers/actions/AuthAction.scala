@@ -20,6 +20,7 @@ import com.google.inject.{ImplementedBy, Inject}
 import config.AppConfig
 import controllers.routes._
 import models.requests.AuthenticatedRequest
+import play.api.Logger
 import play.api.mvc.Results._
 import play.api.mvc._
 import uk.gov.hmrc.auth.core._
@@ -41,12 +42,13 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector,
                                request: Request[A],
                                block: AuthenticatedRequest[A] => Future[Result]
                              ): Future[Result] = {
-
+    println("\n\n\n request" + request.toString())
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-
+    println("\n\n\n Before")
     authorised().retrieve(Retrievals.externalId and Retrievals.allEnrolments) {
 
-      case Some(id) ~ enrolments =>           createAuthRequest(id, enrolments, request, block)
+      case Some(id) ~ enrolments =>  println("\n\n\n Case")
+        createAuthRequest(id, enrolments, request, block)
       case _ =>                               Future.successful(Redirect(UnauthorisedController.onPageLoad()))
 
     } recover {
@@ -57,19 +59,30 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector,
       case _: UnsupportedAuthProvider =>      Redirect(UnauthorisedController.onPageLoad())
       case _: UnsupportedAffinityGroup =>     Redirect(UnauthorisedController.onPageLoad())
       case _: UnsupportedCredentialRole =>    Redirect(UnauthorisedController.onPageLoad())
-      case _: IdNotFound =>                   Redirect(YouNeedToRegisterController.onPageLoad())
+      case _: IdNotFound =>  println("\n\n\n Auth Action")
+        Redirect(YouNeedToRegisterController.onPageLoad())
     }
   }
+
+  private val logger = Logger(classOf[AuthAction])
 
   private def createAuthRequest[A](id: String,
                                    enrolments: Enrolments,
                                    request: Request[A],
                                    block: AuthenticatedRequest[A] => Future[Result]
                                   ): Future[Result] = {
+    logger.warn(" \n\n\n Enrolment: " + enrolments.toString())
+    logger.warn(" \n\n\n before get enrolment" + enrolments.getEnrolment("HMRC-PODS-ORG").toString())
+    logger.warn(" \n\n\n Identifiers: " + enrolments.getEnrolment("HMRC-PODS-ORG").flatMap(_.getIdentifier("PSAID")).toString())
+
+    println(" \n\n\n Enrolment :" + enrolments.toString())
+    println(" \n\n\n before get enrolment: " + enrolments.getEnrolment("HMRC-PODS-ORG").toString())
+    println(" \n\n\n Identifiers: " + enrolments.getEnrolment("HMRC-PODS-ORG").flatMap(_.getIdentifier("PSAID")).toString())
 
     enrolments.getEnrolment("HMRC-PODS-ORG").flatMap(_.getIdentifier("PSAID")) match {
       case Some(psaId) => block(AuthenticatedRequest(request, id, PsaId(psaId.value)))
-      case _ => Future.successful(Redirect(YouNeedToRegisterController.onPageLoad()))
+      case _ => println("\n\n\n bOTTOM You need to register")
+        Future.successful(Redirect(YouNeedToRegisterController.onPageLoad()))
     }
   }
 
