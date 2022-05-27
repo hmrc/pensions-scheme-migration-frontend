@@ -55,7 +55,7 @@ class ListOfSchemesController @Inject()(
 
 
   def onPageLoad(migrationType: MigrationType): Action[AnyContent] = authenticate.async {
-    implicit request => println("\n\n\n List of Schemes")
+    implicit request =>
       val checkRacDac: Boolean = isRacDac(migrationType)
       listOfSchemesConnector.getListOfSchemes(request.psaId.id).flatMap {
         case Right(list) =>
