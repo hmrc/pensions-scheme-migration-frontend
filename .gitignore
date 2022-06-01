@@ -1,6 +1,8 @@
 .*
 
 !.gitignore
+!.jvmopts
+
 !.scalafmt.conf
 .cache
 /.classpath
