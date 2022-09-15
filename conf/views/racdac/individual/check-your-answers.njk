@@ -7,7 +7,7 @@
 {% from "macros/returnLink.njk"                    import returnLink %}
 
 {% block pageTitle %}
-  {{ title(messages("checkYourAnswers.title")) }}
+  {{ title(messages("messages__racdac__cya__heading")) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -16,12 +16,8 @@
       <div class="govuk-grid-column-two-thirds">
 
         <h1 class="govuk-heading-xl">
-          {{ schemeName }}
+            {{ messages("messages__racdac__cya__heading") }}
         </h1>
-
-        <h1 class="govuk-heading-l">
-              {{ messages("messages__racdac__cya__heading") }}
-         </h1>
 
         {{ govukSummaryList({
           rows: list
