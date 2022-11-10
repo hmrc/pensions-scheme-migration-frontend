@@ -49,7 +49,7 @@ class ListOfSchemesConnectorSpec extends AsyncFlatSpec with Matchers with WireMo
     val connector = injector.instanceOf[ListOfSchemesConnector]
 
     connector.getListOfSchemes(psaId).map(listOfSchemes =>
-      listOfSchemes.right.get shouldBe expectedResponse
+      listOfSchemes.toOption.get shouldBe expectedResponse
     )
 
   }
@@ -69,7 +69,7 @@ class ListOfSchemesConnectorSpec extends AsyncFlatSpec with Matchers with WireMo
     val connector = injector.instanceOf[ListOfSchemesConnector]
 
     connector.getListOfSchemes(psaId).map(listOfSchemes =>
-      listOfSchemes.left.get.status shouldBe BAD_REQUEST
+      listOfSchemes.swap.toOption.get.status shouldBe BAD_REQUEST
     )
   }
 

@@ -47,8 +47,8 @@ class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = controllers.adviser.routes.SelectAddressController.onPageLoad.url
-  private val httpPathPOST: String = controllers.adviser.routes.SelectAddressController.onSubmit.url
+  private val httpPathGET: String = controllers.adviser.routes.SelectAddressController.onPageLoad().url
+  private val httpPathPOST: String = controllers.adviser.routes.SelectAddressController.onSubmit().url
   object FakeAddressIdentifier extends TypedIdentifier[Address]
   private val seqAddresses = Seq(
     TolerantAddress(Some("1"),Some("1"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")),

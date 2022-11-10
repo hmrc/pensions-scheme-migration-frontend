@@ -54,7 +54,7 @@ class DataRequiredActionSpec
           )
         )
         whenReady(futureResult) { result =>
-          val response = result.left.get
+          val response = result.swap.toOption.get
           response.header.headers.get(LOCATION) mustBe Some(controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url)
         }
       }
@@ -72,7 +72,7 @@ class DataRequiredActionSpec
           )
         )
         whenReady(futureResult) { result =>
-          val response = result.left.get
+          val response = result.swap.toOption.get
           response.header.headers.get(LOCATION) mustBe Some(controllers.preMigration.routes.ListOfSchemesController.onPageLoad(RacDac).url)
         }
       }
@@ -91,7 +91,7 @@ class DataRequiredActionSpec
           )
         )
         whenReady(futureResult) { result =>
-          val response = result.right.get
+          val response = result.toOption.get
           response.userAnswers mustBe ua
           response.lock mustBe migrationLock
           response.viewOnly mustBe false

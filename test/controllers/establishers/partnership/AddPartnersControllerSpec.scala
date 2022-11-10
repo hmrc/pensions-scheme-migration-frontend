@@ -52,7 +52,7 @@ class AddPartnersControllerSpec extends ControllerSpecBase with NunjucksSupport 
           _.set(IsNewPartnerId(0,0), true)
      ))).toOption
 
-  private def validData() = {
+  private def validData = {
     ua.set(EstablisherKindId(1), EstablisherKind.Partnership).flatMap(
       _.set(PartnershipDetailsId(1), partnershipDetails).flatMap(
         _.set(PartnerNameId(1,1), partnerName).flatMap(

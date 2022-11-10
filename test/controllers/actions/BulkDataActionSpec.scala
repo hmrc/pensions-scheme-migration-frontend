@@ -92,7 +92,7 @@ class BulkDataActionSpec
           request = fakeRequest,
           externalId = "id",
           psaId = PsaId(psaId)
-        )).map(_.right.value)
+        )).map(_.value)
 
         whenReady(futureResult) { result =>
           result.md mustBe minPSA
@@ -117,7 +117,7 @@ class BulkDataActionSpec
           request = fakeRequest,
           externalId = "id",
           psaId = PsaId(psaId)
-        )).map(_.right.value)
+        )).map(_.value)
 
         whenReady(futureResult) { result =>
           result.md mustBe minPSA
@@ -137,7 +137,7 @@ class BulkDataActionSpec
           request = fakeRequest,
           externalId = "id",
           psaId = PsaId(psaId)
-        )).map(_.right.value)
+        )).map(_.value)
 
         whenReady(futureResult) { result =>
           result.md mustBe minPSA

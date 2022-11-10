@@ -48,7 +48,7 @@ class LegacySchemeDetailsConnectorSpec extends AsyncFlatSpec with Matchers with 
     val connector = injector.instanceOf[LegacySchemeDetailsConnector]
 
     connector.getLegacySchemeDetails(psaId, pstr).map(listOfSchemes =>
-      listOfSchemes.right.get shouldBe expectedResponse
+      listOfSchemes.toOption.get shouldBe expectedResponse
     )
 
   }
@@ -67,7 +67,7 @@ class LegacySchemeDetailsConnectorSpec extends AsyncFlatSpec with Matchers with 
     val connector = injector.instanceOf[LegacySchemeDetailsConnector]
 
     connector.getLegacySchemeDetails(psaId, pstr).map(listOfSchemes =>
-      listOfSchemes.left.get.status shouldBe BAD_REQUEST
+      listOfSchemes.swap.toOption.get.status shouldBe BAD_REQUEST
     )
   }
 

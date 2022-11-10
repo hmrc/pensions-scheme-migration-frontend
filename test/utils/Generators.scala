@@ -53,12 +53,12 @@ trait Generators {
 
   def nonNumerics: Gen[String] =
     alphaStr suchThat (_.nonEmpty)
-
+//formatString.format(value)` instead of `value.formatted(formatString)`,
   def decimals: Gen[String] =
     arbitrary[BigDecimal]
       .suchThat(_.abs < Int.MaxValue)
       .suchThat(!_.isValidInt)
-      .map(_.formatted("%f"))
+      .map(x => "%f".format(x))
 
   def intsBelowValue(value: Int): Gen[Int] =
     arbitrary[Int] suchThat (_ < value)

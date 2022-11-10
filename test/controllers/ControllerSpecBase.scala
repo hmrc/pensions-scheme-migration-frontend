@@ -49,7 +49,9 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach with MockitoSu
   def asDocument(htmlAsString: String): Document = Jsoup.parse(htmlAsString)
 
   override def beforeEach(): Unit = {
-    Mockito.reset(mockRenderer, mockUserAnswersCacheConnector, mockCompoundNavigator)
+    Mockito.reset(mockRenderer)
+    Mockito.reset(mockUserAnswersCacheConnector)
+    Mockito.reset(mockCompoundNavigator)
   }
 
   protected def mockDataRetrievalAction: DataRetrievalAction = mock[DataRetrievalAction]
