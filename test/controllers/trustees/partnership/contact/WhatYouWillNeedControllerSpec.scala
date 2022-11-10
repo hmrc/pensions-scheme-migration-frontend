@@ -23,6 +23,7 @@ import matchers.JsonMatchers
 import models.NormalMode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.TryValues
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
@@ -35,7 +36,6 @@ import utils.{Data, UserAnswers}
 import viewmodels.Message
 
 import scala.concurrent.Future
-
 class WhatYouWillNeedControllerSpec
   extends ControllerSpecBase
     with NunjucksSupport

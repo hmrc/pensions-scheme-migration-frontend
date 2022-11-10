@@ -18,23 +18,24 @@ package controllers.establishers.company.director
 
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import identifiers.establishers.company.OtherDirectorsId
 import forms.establishers.ConfirmDeleteEstablisherFormProvider
-import identifiers.establishers.company.director.{DirectorNameId, ConfirmDeleteDirectorId}
+import identifiers.establishers.company.OtherDirectorsId
+import identifiers.establishers.company.director.{ConfirmDeleteDirectorId, DirectorNameId}
 import matchers.JsonMatchers
-import models.{PersonName, Index, NormalMode}
+import models.{Index, NormalMode, PersonName, Scheme}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json, JsValue}
+import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{UserAnswers, Enumerable}
-import models.Scheme
+import utils.{Enumerable, UserAnswers}
+
 import scala.concurrent.Future
 
 class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {

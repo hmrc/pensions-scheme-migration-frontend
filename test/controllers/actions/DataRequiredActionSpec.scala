@@ -19,7 +19,6 @@ package controllers.actions
 import base.SpecBase
 import models.requests.{DataRequest, OptionalDataRequest}
 import models.{RacDac, Scheme}
-import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures.whenReady
 import play.api.mvc.Result
@@ -33,7 +32,7 @@ import scala.concurrent.Future
 class DataRequiredActionSpec
   extends SpecBase
     with BeforeAndAfterEach
-    with MockitoSugar {
+    {
 
   class Harness(isRacDac:Boolean)
     extends DataRequiredImpl(isRacDac) {

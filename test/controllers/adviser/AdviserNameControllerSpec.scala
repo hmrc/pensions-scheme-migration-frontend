@@ -34,6 +34,8 @@ import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{Data, FakeNavigator}
+import org.mockito.Mockito.{never, reset, times, verify, when}
+import org.scalatestplus.mockito.MockitoSugar.mock
 
 import scala.concurrent.Future
 

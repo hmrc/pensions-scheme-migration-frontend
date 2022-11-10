@@ -19,11 +19,12 @@ package controllers.adviser
 import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import identifiers.adviser.{AdviserNameId, AddressId}
+import identifiers.adviser.{AddressId, AdviserNameId}
 import identifiers.beforeYouStart.SchemeNameId
 import matchers.JsonMatchers
 import models.Scheme
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.inject.bind
@@ -33,7 +34,7 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.{UserAnswers, Enumerable, Data}
+import utils.{Data, Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 

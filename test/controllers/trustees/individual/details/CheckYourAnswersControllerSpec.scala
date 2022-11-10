@@ -26,6 +26,7 @@ import models.requests.DataRequest
 import models.{PersonName, ReferenceValue}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.TryValues
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContent, Result}
@@ -39,7 +40,6 @@ import utils.{Enumerable, UserAnswers}
 
 import java.time.LocalDate
 import scala.concurrent.Future
-
 class CheckYourAnswersControllerSpec
   extends ControllerSpecBase
     with NunjucksSupport

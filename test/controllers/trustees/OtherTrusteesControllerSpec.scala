@@ -17,16 +17,17 @@
 package controllers.trustees
 
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRetrievalAction, FakeAuthAction, DataRequiredActionImpl, FakeDataRetrievalAction}
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.HasReferenceNumberFormProvider
 import identifiers.trustees.OtherTrusteesId
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Call, AnyContentAsFormUrlEncoded, Result}
+import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
@@ -37,7 +38,6 @@ import utils.Data.{schemeName, ua}
 import utils.FakeNavigator
 
 import scala.concurrent.Future
-
 class OtherTrusteesControllerSpec extends ControllerSpecBase
   with NunjucksSupport
   with JsonMatchers

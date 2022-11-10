@@ -23,6 +23,7 @@ import matchers.JsonMatchers
 import models.MinPSA
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{times, verify, when}
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.bind
@@ -37,7 +38,6 @@ import utils.Data.{psaName, pstr, ua}
 import utils.Enumerable
 
 import scala.concurrent.Future
-
 class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val templateToBeRendered = "racdac/declaration.njk"

@@ -24,6 +24,7 @@ import matchers.JsonMatchers
 import models.CompanyDetails
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Result}
@@ -36,7 +37,6 @@ import utils.Data.ua
 import utils.{Data, FakeNavigator}
 
 import scala.concurrent.Future
-
 class CompanyDetailsControllerSpec extends ControllerSpecBase
   with NunjucksSupport
   with JsonMatchers

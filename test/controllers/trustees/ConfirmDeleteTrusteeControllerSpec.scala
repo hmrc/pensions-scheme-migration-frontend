@@ -19,12 +19,13 @@ package controllers.trustees
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.trustees.ConfirmDeleteTrusteeFormProvider
-import identifiers.trustees.{AnyTrusteesId, ConfirmDeleteTrusteeId, OtherTrusteesId, TrusteeKindId}
 import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.{AnyTrusteesId, ConfirmDeleteTrusteeId, OtherTrusteesId, TrusteeKindId}
 import matchers.JsonMatchers
 import models.trustees.TrusteeKind
-import models.{Index, PersonName}
+import models.{Index, PersonName, Scheme}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
@@ -35,10 +36,8 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
-import models.Scheme
 
 import scala.concurrent.Future
-
 class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
   private val trusteeName: String = "Jane Doe"
   private val index: Index = Index(0)

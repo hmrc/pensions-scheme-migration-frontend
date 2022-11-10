@@ -23,8 +23,9 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.address.AddressYearsId
 import matchers.JsonMatchers
-import models.{CheckMode, NormalMode, PersonName}
+import models.{CheckMode, NormalMode, PersonName, Scheme}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
@@ -36,7 +37,7 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
 import utils.{Data, Enumerable, UserAnswers}
-import models.Scheme
+
 import scala.concurrent.Future
 
 class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {

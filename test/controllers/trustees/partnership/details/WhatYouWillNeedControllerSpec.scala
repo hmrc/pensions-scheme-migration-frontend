@@ -23,6 +23,7 @@ import matchers.JsonMatchers
 import models.{Index, NormalMode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.TryValues
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
@@ -34,7 +35,6 @@ import utils.Data.{partnershipDetails, ua}
 import utils.UserAnswers
 
 import scala.concurrent.Future
-
 class WhatYouWillNeedControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues {
 
   private val index: Index = Index(0)

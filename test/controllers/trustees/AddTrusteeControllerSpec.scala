@@ -27,6 +27,7 @@ import matchers.JsonMatchers
 import models.trustees.TrusteeKind
 import models.{PersonName, Scheme, SchemeType}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
@@ -41,7 +42,6 @@ import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
 
 import scala.concurrent.Future
-
 class AddTrusteeControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
   private val trusteeName: String = "Jane Doe"
   private val userAnswers: Option[UserAnswers] = ua.set(TrusteeKindId(0), TrusteeKind.Individual).flatMap(

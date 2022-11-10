@@ -22,8 +22,9 @@ import controllers.actions._
 import forms.ListSchemesFormProvider
 import matchers.JsonMatchers
 import models.{Items, ListOfLegacySchemes, RacDac, Scheme}
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentMatchers, MockitoSugar}
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.TryValues
 import play.api.mvc.Result
 import play.api.mvc.Results._
@@ -32,8 +33,7 @@ import services.{LockingService, SchemeSearchService}
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 
 import scala.concurrent.Future
-
-class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with MockitoSugar {
+class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues  {
 
   private val mockSchemeSearchService: SchemeSearchService = mock[SchemeSearchService]
   private val mockLockingService: LockingService = mock[LockingService]

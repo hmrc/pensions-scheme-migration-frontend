@@ -25,6 +25,7 @@ import identifiers.trustees.partnership.address.TradingTimeId
 import matchers.JsonMatchers
 import models.{NormalMode, Scheme}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
@@ -38,7 +39,6 @@ import utils.Data.{schemeName, ua}
 import utils.{Data, Enumerable, UserAnswers}
 
 import scala.concurrent.Future
-
 class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(PartnershipDetailsId(0), Data.partnershipDetails))

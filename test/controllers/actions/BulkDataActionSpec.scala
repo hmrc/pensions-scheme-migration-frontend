@@ -21,11 +21,12 @@ import config.AppConfig
 import connectors.cache.CurrentPstrCacheConnector
 import connectors._
 import models.requests.{AuthenticatedRequest, BulkDataRequest}
-import models.{Items, MinPSA, ListOfLegacySchemes}
+import models.{Items, ListOfLegacySchemes, MinPSA}
 import org.mockito.ArgumentMatchers._
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.{never, reset, times, verify, when}
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.Helpers._
@@ -37,7 +38,6 @@ import scala.concurrent.Future
 
 class BulkDataActionSpec
   extends SpecBase
-    with MockitoSugar
     with EitherValues
     with ScalaFutures {
   class Harness(schemeCacheConnector: CurrentPstrCacheConnector,

@@ -20,8 +20,9 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import matchers.JsonMatchers
 import models.Scheme
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, MockitoSugar}
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.TryValues
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.mvc.Result
@@ -33,8 +34,7 @@ import utils.Data
 import utils.Data.ua
 
 import scala.concurrent.Future
-
-class BeforeYouStartControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with MockitoSugar {
+class BeforeYouStartControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues  {
   private val psaName: String = "Nigel"
   private val templateToBeRendered: String = "preMigration/beforeYouStart.njk"
   private def json: JsObject =

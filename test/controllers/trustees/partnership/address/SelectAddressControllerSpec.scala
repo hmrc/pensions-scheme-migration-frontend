@@ -23,6 +23,7 @@ import identifiers.trustees.partnership.address.EnterPostCodeId
 import matchers.JsonMatchers
 import models.{NormalMode, Scheme, TolerantAddress}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.inject.bind
@@ -35,7 +36,6 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.{Data, Enumerable, UserAnswers}
 
 import scala.concurrent.Future
-
 class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val mockAddressLookupConnector = mock[AddressLookupConnector]

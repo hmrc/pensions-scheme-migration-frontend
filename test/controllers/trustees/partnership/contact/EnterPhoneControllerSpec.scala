@@ -25,6 +25,7 @@ import matchers.JsonMatchers
 import models.NormalMode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
@@ -38,7 +39,6 @@ import utils.Data.ua
 import utils.{Data, FakeNavigator, UserAnswers}
 
 import scala.concurrent.Future
-
 class EnterPhoneControllerSpec extends ControllerSpecBase
   with NunjucksSupport
   with JsonMatchers

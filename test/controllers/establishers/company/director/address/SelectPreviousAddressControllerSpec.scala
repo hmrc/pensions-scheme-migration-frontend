@@ -35,6 +35,8 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.{Data, Enumerable, UserAnswers}
 import models.Scheme
 import scala.concurrent.Future
+import org.mockito.Mockito.{never, reset, times, verify, when}
+import org.scalatestplus.mockito.MockitoSugar.mock
 
 class SelectPreviousAddressControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 

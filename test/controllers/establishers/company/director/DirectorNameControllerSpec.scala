@@ -21,8 +21,9 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import forms.PersonNameFormProvider
 import identifiers.establishers.company.director.DirectorNameId
 import matchers.JsonMatchers
-import models.{Index, NormalMode, PersonName}
+import models.{Index, NormalMode, PersonName, Scheme}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
@@ -33,7 +34,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
-import models.Scheme
+
 import scala.concurrent.Future
 
 class DirectorNameControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {

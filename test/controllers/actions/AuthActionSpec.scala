@@ -19,12 +19,11 @@ package controllers.actions
 import base.SpecBase
 import controllers.routes
 import org.scalatest.BeforeAndAfterEach
-import org.mockito.MockitoSugar
 import play.api.mvc._
 import play.api.test.Helpers._
+import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
-import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -32,8 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AuthActionSpec
   extends SpecBase
-    with BeforeAndAfterEach
-    with MockitoSugar {
+    with BeforeAndAfterEach {
 
   import AuthActionSpec._
 
@@ -138,7 +136,7 @@ class AuthActionSpec
   }
 }
 
-object AuthActionSpec extends SpecBase with MockitoSugar {
+object AuthActionSpec extends SpecBase  {
 
   private def fakeAuthConnector(stubbedRetrievalResult: Future[_]): AuthConnector =
     new AuthConnector {

@@ -25,8 +25,9 @@ import identifiers.establishers.company.director.{DirectorNameId, IsNewDirectorI
 import identifiers.establishers.company.{AddCompanyDirectorsId, CompanyDetailsId}
 import matchers.JsonMatchers
 import models.establishers.EstablisherKind
-import models.{CompanyDetails, NormalMode, PersonName}
+import models.{CompanyDetails, NormalMode, PersonName, Scheme}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
@@ -39,7 +40,7 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{companyDetails, schemeName, ua}
 import utils.{Enumerable, UserAnswers}
-import models.Scheme
+
 import scala.concurrent.Future
 
 class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {

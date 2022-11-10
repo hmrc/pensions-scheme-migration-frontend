@@ -24,6 +24,7 @@ import models.trustees.TrusteeKind
 import models.{Index, PersonName}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{times, verify, when}
 import play.api.Application
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
@@ -33,7 +34,6 @@ import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
 
 import scala.concurrent.Future
-
 class AlreadyDeletedControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val index: Index = Index(0)

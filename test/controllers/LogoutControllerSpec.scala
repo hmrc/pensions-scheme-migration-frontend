@@ -23,6 +23,7 @@ import org.mockito.ArgumentMatchers.any
 import play.api.mvc.Results
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
+import org.mockito.Mockito.{times, verify, when}
 
 import scala.concurrent.Future
 

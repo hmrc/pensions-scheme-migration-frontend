@@ -23,8 +23,9 @@ import helpers.cya.RacDacIndividualCYAHelper
 import identifiers.racdac.ContractOrPolicyNumberId
 import matchers.JsonMatchers
 import models.{Items, ListOfLegacySchemes, RacDac}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, MockitoSugar}
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import play.api.Application
@@ -40,8 +41,7 @@ import utils.Data._
 import utils.{Data, UserAnswers}
 
 import scala.concurrent.Future
-
-class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAfterEach with MockitoSugar with JsonMatchers with NunjucksSupport  {
+class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAfterEach  with JsonMatchers with NunjucksSupport  {
 
   private val mockListOfSchemesConnector = mock[ListOfSchemesConnector]
   private val mockRacDacIndividualCYAHelper = mock[RacDacIndividualCYAHelper]

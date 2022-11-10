@@ -19,15 +19,15 @@ package controllers
 
 import base.SpecBase
 import config.AppConfig
-import connectors.{EmailConnector, LegacySchemeDetailsConnector, MinimalDetailsConnector}
 import connectors.cache.UserAnswersCacheConnector
+import connectors.{EmailConnector, LegacySchemeDetailsConnector, MinimalDetailsConnector}
 import controllers.actions._
 import navigators.CompoundNavigator
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.mockito.Mockito
 import org.scalatest.BeforeAndAfterEach
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.HeaderNames
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}

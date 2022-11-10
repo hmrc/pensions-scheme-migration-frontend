@@ -20,9 +20,11 @@ import connectors.LegacySchemeDetailsConnector
 import controllers.actions._
 import matchers.JsonMatchers
 import models.{Scheme, TaskListLink}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, MockitoSugar}
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -34,7 +36,6 @@ import utils.Data
 import utils.Data._
 
 import scala.concurrent.Future
-
 class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach with MockitoSugar with JsonMatchers {
 
   private val mockTaskListService = mock[TaskListService]

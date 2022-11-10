@@ -17,7 +17,7 @@
 package controllers.racdac.bulk
 
 import connectors.cache.CurrentPstrCacheConnector
-import connectors.{ListOfSchemes5xxException, ListOfSchemesConnector, MinimalDetailsConnector, AncillaryPsaException}
+import connectors.{AncillaryPsaException, ListOfSchemes5xxException, ListOfSchemesConnector, MinimalDetailsConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.FakeAuthAction
 import forms.YesNoFormProvider
@@ -25,6 +25,7 @@ import matchers.JsonMatchers
 import models.{Items, ListOfLegacySchemes}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
@@ -39,7 +40,6 @@ import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.ua
 
 import scala.concurrent.Future
-
 class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with BeforeAndAfterEach{
 
   private val psaName: String = "Psa Name"
