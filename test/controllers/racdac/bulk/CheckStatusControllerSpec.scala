@@ -90,7 +90,7 @@ class CheckStatusControllerSpec extends ControllerSpecBase with NunjucksSupport 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustBe controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac().url
+      redirectLocation(result).value mustBe controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac.url
     }
 
     "redirect to psa overview page when there is nothing in the queue and there are schemes" in {

@@ -61,7 +61,7 @@ class NotRegisterControllerSpec extends ControllerSpecBase with NunjucksSupport 
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result: Future[Result] = controller().onPageLoadScheme()(fakeDataRequest())
+      val result: Future[Result] = controller().onPageLoadScheme(fakeDataRequest())
 
       status(result) mustBe OK
 
@@ -78,7 +78,7 @@ class NotRegisterControllerSpec extends ControllerSpecBase with NunjucksSupport 
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result: Future[Result] = controller().onPageLoadRacDac()(fakeDataRequest())
+      val result: Future[Result] = controller().onPageLoadRacDac(fakeDataRequest())
 
       status(result) mustBe OK
 

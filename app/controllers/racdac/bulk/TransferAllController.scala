@@ -66,9 +66,9 @@ class TransferAllController @Inject()(appConfig: AppConfig,
               renderer.render("racdac/transferAll.njk", json).map(Ok(_))
             }
           } else {
-            Future.successful(Redirect(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac()))
+            Future.successful(Redirect(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac))
           }
-        case _ => Future.successful(Redirect(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac()))
+        case _ => Future.successful(Redirect(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac))
       } recoverWith listOfSchemesRedirects
   }
 

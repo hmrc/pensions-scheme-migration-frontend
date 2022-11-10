@@ -48,7 +48,7 @@ class CheckStatusController @Inject()(val appConfig: AppConfig,
               Redirect(appConfig.psaOverviewUrl)
             }
             else {
-              Redirect(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac())
+              Redirect(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac)
             }
           case _ =>
             Redirect(appConfig.psaOverviewUrl)

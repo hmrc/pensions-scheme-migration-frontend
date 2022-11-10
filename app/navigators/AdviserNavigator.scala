@@ -53,6 +53,6 @@ class AdviserNavigator
   }
 
   private def cyaDetails: Call =CheckYourAnswersController.onPageLoad
-  private def selectAddress: Call = SelectAddressController.onPageLoad
+  private def selectAddress: Call = SelectAddressController.onPageLoad()
 }
 

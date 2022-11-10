@@ -89,7 +89,7 @@ class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSuppor
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(), any())).thenReturn(Future.successful(Right(expectedResponseWithEmpty)))
       val result: Future[Result] = controller.onPageLoad(RacDac)(fakeDataRequest())
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.NoSchemeToAddController.onPageLoadRacDac().url)
+      redirectLocation(result) mustBe Some(routes.NoSchemeToAddController.onPageLoadRacDac.url)
     }
 
     "return OK and the correct view for a GET for scheme with Scheme Only" in {
@@ -97,7 +97,7 @@ class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSuppor
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(), any())).thenReturn(Future.successful(Right(expectedResponseWithEmpty)))
       val result: Future[Result] = controller.onPageLoad(Scheme)(fakeDataRequest())
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.NoSchemeToAddController.onPageLoadScheme().url)
+      redirectLocation(result) mustBe Some(routes.NoSchemeToAddController.onPageLoadScheme.url)
     }
 
   }

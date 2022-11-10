@@ -71,9 +71,9 @@ class ListOfSchemesController @Inject()(
 
   private def emptyListRedirect(checkRacDac: Boolean): Future[Result] = {
     if (checkRacDac) {
-      Future.successful(Redirect(routes.NoSchemeToAddController.onPageLoadRacDac()))
+      Future.successful(Redirect(routes.NoSchemeToAddController.onPageLoadRacDac))
     } else {
-      Future.successful(Redirect(routes.NoSchemeToAddController.onPageLoadScheme()))
+      Future.successful(Redirect(routes.NoSchemeToAddController.onPageLoadScheme))
     }
   }
 

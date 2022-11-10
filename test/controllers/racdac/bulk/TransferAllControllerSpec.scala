@@ -116,14 +116,14 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.successful(Right(expectedResponseWithScheme)))
       val result: Future[Result] = controller.onPageLoad(fakeDataRequest())
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac().url)
+      redirectLocation(result) mustBe Some(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac.url)
     }
     "return OK and the correct view for a GET for scheme with returning empty list " in {
 
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.successful(Right(expectedResponseWithEmpty)))
       val result: Future[Result] = controller.onPageLoad(fakeDataRequest())
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac().url)
+      redirectLocation(result) mustBe Some(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac.url)
     }
     "remove the existing cached data and redirect to the next page when valid data is submitted" in {
       val request: FakeRequest[AnyContentAsFormUrlEncoded] = fakeRequest.withFormUrlEncodedBody(("value", "true"))

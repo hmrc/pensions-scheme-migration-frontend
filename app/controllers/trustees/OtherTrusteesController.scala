@@ -59,7 +59,7 @@ class OtherTrusteesController @Inject()(
               pageHeading = Message("messages__otherTrustees__heading"),
               isPageHeading = true,
               id = OtherTrusteesId,
-              form = form,
+              form = form(),
               schemeName = schemeName,
               paragraphText = Seq(Message("messages__otherTrustees__lede")),
               legendClass = "govuk-visually-hidden"
@@ -77,7 +77,7 @@ class OtherTrusteesController @Inject()(
               pageHeading = Message("messages__otherTrustees__heading"),
               isPageHeading = true,
               id = OtherTrusteesId,
-              form = form,
+              form = form(),
               schemeName = schemeName,
               paragraphText = Seq(Message("messages__otherTrustees__lede")),
               legendClass = "govuk-visually-hidden",

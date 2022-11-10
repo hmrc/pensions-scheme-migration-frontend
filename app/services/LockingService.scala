@@ -37,9 +37,9 @@ class LockingService @Inject()(lockCacheConnector: LockCacheConnector,
       lockCacheConnector.getLockOnScheme(pstr) flatMap {
         case Some(lockOnScheme) if lockOnScheme.credId != lock.credId =>
           if(isRacDac){
-            Future.successful(Redirect(controllers.routes.SchemeLockedController.onPageLoadRacDac()))
+            Future.successful(Redirect(controllers.routes.SchemeLockedController.onPageLoadRacDac))
           }else
-            Future.successful(Redirect(controllers.routes.SchemeLockedController.onPageLoadScheme()))
+            Future.successful(Redirect(controllers.routes.SchemeLockedController.onPageLoadScheme))
         case Some(lockOnScheme) if lockOnScheme.credId == lock.credId =>
           if(isRacDac){
             Future.successful(Redirect(controllers.racdac.individual.routes.CheckYourAnswersController.onPageLoad))

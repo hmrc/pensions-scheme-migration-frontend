@@ -63,7 +63,7 @@ HasReferenceValueController {
               pageHeading = Message("messages__otherPartners__heading"),
               isPageHeading = true,
               id = OtherPartnersId(index),
-              form = form,
+              form = form(),
               schemeName = schemeName,
               paragraphText = Seq(Message("messages__otherPartners__lede")),
               legendClass = "govuk-visually-hidden"
@@ -81,7 +81,7 @@ HasReferenceValueController {
               pageHeading = Message("messages__otherPartners__heading"),
               isPageHeading = true,
               id = OtherPartnersId(index),
-              form = form,
+              form = form(),
               schemeName = schemeName,
               paragraphText = Seq(Message("messages__otherPartners__lede")),
               legendClass = "govuk-visually-hidden",
