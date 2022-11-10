@@ -23,7 +23,6 @@ import identifiers.establishers.company.director.DirectorNameId
 import matchers.JsonMatchers
 import models.{Index, NormalMode, PersonName, Scheme}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form

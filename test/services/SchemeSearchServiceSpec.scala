@@ -27,6 +27,8 @@ import models.MigrationType.isRacDac
 import models._
 import models.requests.AuthenticatedRequest
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.MockitoSugar.mock
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
@@ -104,7 +106,8 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach  with Sca
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockAppConfig, mockRenderer)
+    reset(mockAppConfig)
+    reset(mockRenderer)
     when(mockAppConfig.psaOverviewUrl) thenReturn dummyUrl
     when(mockAppConfig.listSchemePagination) thenReturn pagination
     when(mockAppConfig.psaUpdateContactDetailsUrl).thenReturn(dummyUrl)

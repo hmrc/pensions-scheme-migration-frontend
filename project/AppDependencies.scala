@@ -25,7 +25,8 @@ object AppDependencies {
     "com.vladsch.flexmark" % "flexmark-all" % "0.62.2" % "test, it",
     "org.scalatestplus" %% "scalacheck-1-17" % "3.2.14.0" % Test,
     "com.github.tomakehurst" % "wiremock-jre8" % "2.35.0",
-    "org.pegdown" % "pegdown" % "1.6.0"
+    "org.pegdown" % "pegdown" % "1.6.0",
+    "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.13.4" % Test
   )
 
 //

@@ -23,7 +23,6 @@ import matchers.JsonMatchers
 import models.MinPSA
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.bind

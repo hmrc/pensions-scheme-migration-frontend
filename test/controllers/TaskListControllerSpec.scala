@@ -22,7 +22,6 @@ import matchers.JsonMatchers
 import models.{Scheme, TaskListLink}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.Application
 import play.api.inject.bind

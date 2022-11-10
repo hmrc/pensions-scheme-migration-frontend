@@ -25,7 +25,6 @@ import matchers.JsonMatchers
 import models.establishers.EstablisherKind
 import models.{Index, PersonName, Scheme}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form

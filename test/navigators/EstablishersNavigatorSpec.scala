@@ -24,8 +24,8 @@ import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.individual.details._
 import identifiers.establishers.{AddEstablisherId, ConfirmDeleteEstablisherId, EstablisherKindId}
 import identifiers.{Identifier, TypedIdentifier}
-import models.establishers.EstablisherKind
 import models._
+import models.establishers.EstablisherKind
 import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes

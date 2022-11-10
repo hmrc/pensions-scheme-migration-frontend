@@ -25,7 +25,6 @@ import matchers.JsonMatchers
 import models.{Items, ListOfLegacySchemes, RacDac}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import play.api.Application
