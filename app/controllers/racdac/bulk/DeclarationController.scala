@@ -48,7 +48,7 @@ class DeclarationController @Inject()(
       implicit request =>
         val json = Json.obj(
           "psaName" -> request.md.name,
-          "submitUrl" -> routes.DeclarationController.onSubmit().url,
+          "submitUrl" -> routes.DeclarationController.onSubmit.url,
           "returnUrl" -> appConfig.psaOverviewUrl
         )
         renderer.render("racdac/declaration.njk", json).map(Ok(_))
