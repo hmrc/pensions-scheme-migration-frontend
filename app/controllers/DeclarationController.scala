@@ -62,7 +62,7 @@ class DeclarationController @Inject()(
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         val hasWorkingKnowledge = if (request.userAnswers.get(WorkingKnowledgeId).contains(true)) true else false
-        SchemeNameId.retrieve.right.map { schemeName =>
+        SchemeNameId.retrieve.map { schemeName =>
 
           val json = Json.obj(
             "schemeName" -> schemeName,
