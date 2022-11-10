@@ -168,7 +168,8 @@ class BulkDataActionSpec
 
     "DelimitedAdminException is thrown by minimal psa api call" must {
       "redirect to psa delimited page" in {
-        reset(schemeCacheConnector, minimalDetailsConnector)
+        reset(schemeCacheConnector)
+        reset(minimalDetailsConnector)
         when(schemeCacheConnector.fetch(any(), any())) thenReturn Future(None)
         when(minimalDetailsConnector.getPSADetails(any())(any(), any())).thenThrow(new DelimitedAdminException)
         val action = new Harness(schemeCacheConnector, listOfSchemesConnector, minimalDetailsConnector, appConfig, false)
@@ -188,7 +189,9 @@ class BulkDataActionSpec
 
     "AncillaryPsaException is thrown by list schemes api call" must {
       "redirect to the 'cannot migrate' page" in {
-        reset(schemeCacheConnector, minimalDetailsConnector, listOfSchemesConnector)
+        reset(schemeCacheConnector)
+        reset( minimalDetailsConnector)
+        reset(listOfSchemesConnector)
         when(schemeCacheConnector.fetch(any(), any())) thenReturn Future(None)
         when(listOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.failed(AncillaryPsaException()))
 

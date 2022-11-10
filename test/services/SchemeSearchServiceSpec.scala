@@ -49,7 +49,7 @@ import utils.SchemeFuzzyMatcher
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar with ScalaFutures with NunjucksSupport with JsonMatchers {
+class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach  with ScalaFutures with NunjucksSupport with JsonMatchers {
 
   import SchemeSearchServiceSpec._
 
@@ -410,7 +410,7 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
 }
 
 
-object SchemeSearchServiceSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
+object SchemeSearchServiceSpec extends SpecBase  with BeforeAndAfterEach {
 
   private implicit lazy val hc: HeaderCarrier = HeaderCarrier()
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global

@@ -44,7 +44,7 @@ import utils.{Data, Enumerable, UserAnswers}
 
 import java.time.LocalDate
 
-class TaskListServiceSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class TaskListServiceSpec extends SpecBase with BeforeAndAfterEach  with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val taskListService = new TaskListService(appConfig)
 

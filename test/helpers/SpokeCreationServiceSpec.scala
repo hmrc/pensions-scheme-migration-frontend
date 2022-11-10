@@ -41,8 +41,11 @@ import identifiers.trustees.{TrusteeKindId, company => trusteeCompany}
 import models._
 import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
+import org.scalatestplus.mockito.MockitoSugar
 import services.DataPrefillService
 import utils.Data.ua
 import utils.{Data, Enumerable}

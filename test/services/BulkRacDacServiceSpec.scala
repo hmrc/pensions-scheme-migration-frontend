@@ -24,8 +24,10 @@ import models._
 import models.requests.{AuthenticatedRequest, BulkDataRequest}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, Json}
@@ -41,8 +43,7 @@ import uk.gov.hmrc.viewmodels.{MessageInterpolators, Table}
 import utils.Data._
 
 import scala.concurrent.{ExecutionContext, Future}
-
-class BulkRacDacServiceSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar with ScalaFutures with NunjucksSupport with JsonMatchers {
+class BulkRacDacServiceSpec extends SpecBase with BeforeAndAfterEach  with ScalaFutures with NunjucksSupport with MockitoSugar with JsonMatchers {
 
   import BulkRacDacServiceSpec._
 
@@ -214,7 +215,7 @@ class BulkRacDacServiceSpec extends SpecBase with BeforeAndAfterEach with Mockit
 }
 
 
-object BulkRacDacServiceSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
+object BulkRacDacServiceSpec extends SpecBase  with BeforeAndAfterEach {
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
   private val pstr1: String = "10000678RE"
   private val pstr2: String = "10000678RD"

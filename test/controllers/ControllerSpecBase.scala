@@ -40,7 +40,7 @@ import utils.{CountryOptions, Enumerable}
 
 import scala.concurrent.ExecutionContext
 
-trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach with MockitoSugar with Enumerable.Implicits {
+trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerable.Implicits with MockitoSugar {
 
   implicit val global: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 

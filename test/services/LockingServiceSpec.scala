@@ -31,7 +31,7 @@ import utils.Data._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class LockingServiceSpec extends SpecBase with MockitoSugar {
+class LockingServiceSpec extends SpecBase  {
 
   private val mockLockCacheConnector = mock[LockCacheConnector]
   private val mockSchemeCacheConnector = mock[CurrentPstrCacheConnector]
