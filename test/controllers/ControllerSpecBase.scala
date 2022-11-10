@@ -25,9 +25,8 @@ import controllers.actions._
 import navigators.CompoundNavigator
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.mockito.Mockito
+import org.mockito.{Mockito, MockitoSugar}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.HeaderNames
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
