@@ -76,8 +76,8 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Nunjuc
     "schemeName" -> schemeName
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 

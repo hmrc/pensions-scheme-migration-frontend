@@ -66,8 +66,8 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
       "returnUrl" -> dummyUrl
     )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     reset(mockCurrentPstrCacheConnector)
     when(mockAppConfig.psaOverviewUrl) thenReturn dummyUrl
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))

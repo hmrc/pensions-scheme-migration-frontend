@@ -55,8 +55,8 @@ class AlreadyDeletedControllerSpec extends ControllerSpecBase with NunjucksSuppo
       "submitUrl" -> controllers.establishers.partnership.routes.AddPartnersController.onPageLoad(0,NormalMode).url
     )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 

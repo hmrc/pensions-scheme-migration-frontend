@@ -61,8 +61,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
     "submitUrl" -> controllers.routes.TaskListController.onPageLoad.url
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(play.twirl.api.Html("")))
     when(mockCyaHelper.rowsForCYA(any())(any(), any())).thenReturn(rows)
   }

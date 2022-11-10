@@ -87,8 +87,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
     "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad.url
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(play.twirl.api.Html("")))
     when(mockRacDacIndividualCYAHelper.detailsRows(any())(any())).thenReturn(rows)

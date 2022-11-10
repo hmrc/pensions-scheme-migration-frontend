@@ -65,8 +65,8 @@ class BulkListControllerSpec extends ControllerSpecBase with NunjucksSupport wit
     "value" -> Seq("invalid")
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockBulkRacDacService.renderRacDacBulkView(any(), any())(any(), any(), any())).thenReturn(Future.successful(Ok("")))
     when(mockAppConfig.psaOverviewUrl) thenReturn appConfig.psaOverviewUrl
   }

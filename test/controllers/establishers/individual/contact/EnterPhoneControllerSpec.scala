@@ -61,7 +61,7 @@ class EnterPhoneControllerSpec extends ControllerSpecBase
     )
   private val formData: String = phone
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(
       mockRenderer,
       mockUserAnswersCacheConnector

@@ -55,7 +55,7 @@ class DirectorsAlsoTrusteesControllerSpec extends ControllerSpecBase
       "form" -> form,
       "schemeName" -> Data.schemeName
     )
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(
       mockRenderer,
       mockUserAnswersCacheConnector,

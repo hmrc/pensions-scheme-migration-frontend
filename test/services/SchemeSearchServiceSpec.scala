@@ -102,8 +102,8 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
   val service = new SchemeSearchService(mockAppConfig, mockFuzzyMatching, mockListOfSchemesConnector,
     mockMinimalDetailsConnector, paginationService, new Renderer(mockAppConfig, mockRenderer))
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     reset(mockAppConfig, mockRenderer)
     when(mockAppConfig.psaOverviewUrl) thenReturn dummyUrl
     when(mockAppConfig.listSchemePagination) thenReturn pagination

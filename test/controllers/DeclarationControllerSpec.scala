@@ -33,10 +33,8 @@ import play.twirl.api.Html
 import uk.gov.hmrc.http.HttpReads.upstreamResponseMessage
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.Data.{psaName, schemeName, ua}
-import utils.{Enumerable, UserAnswers}
 import utils.Data.{psaName, pstr, schemeName, ua}
-import utils.Enumerable
+import utils.{Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 
@@ -66,8 +64,8 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
       "submitUrl" -> routes.DeclarationController.onSubmit.url
     )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 

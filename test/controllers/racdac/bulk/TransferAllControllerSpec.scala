@@ -63,7 +63,7 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
     "psaName" -> psaName,
     "returnUrl" -> appConfig.psaOverviewUrl
   )
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(mockRenderer, mockUserAnswersCacheConnector)
     when(mockMinDetailsConnector.getPSAName(any(), any())) thenReturn Future.successful(psaName)
   }

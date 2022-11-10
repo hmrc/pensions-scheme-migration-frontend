@@ -73,7 +73,7 @@ class PartnerEnterUTRControllerSpec
   private val formData: ReferenceValue =
     ReferenceValue(value = "1234567890")
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(
       mockRenderer,
       mockUserAnswersCacheConnector

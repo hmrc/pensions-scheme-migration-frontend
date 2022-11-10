@@ -53,8 +53,8 @@ class YourActionWasNotProcessedControllerSpec extends ControllerSpecBase with Nu
       "returnUrl" ->  controllers.racdac.individual.routes.CheckYourAnswersController.onPageLoad.url
     )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 

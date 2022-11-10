@@ -73,7 +73,7 @@ class OtherPartnersControllerSpec extends ControllerSpecBase
       "isPageHeading" -> true
     )
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(
       mockRenderer,
       mockUserAnswersCacheConnector

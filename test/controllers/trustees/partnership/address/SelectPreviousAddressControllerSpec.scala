@@ -62,8 +62,8 @@ class SelectPreviousAddressControllerSpec extends ControllerSpecBase with Nunjuc
     "value" -> Seq.empty
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 

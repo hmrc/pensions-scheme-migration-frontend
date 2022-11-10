@@ -45,8 +45,8 @@ class RequestNotProcessedControllerSpec extends ControllerSpecBase with Nunjucks
       "tryAgain" -> routes.TransferAllController.onPageLoad.url
     )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 

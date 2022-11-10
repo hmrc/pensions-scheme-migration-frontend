@@ -85,8 +85,8 @@ class BulkRacDacServiceSpec extends SpecBase with BeforeAndAfterEach with Mockit
     psaId = PsaId(psaId)
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     reset(mockAppConfig, mockRenderer)
     when(mockAppConfig.psaOverviewUrl) thenReturn dummyUrl
     when(mockAppConfig.psaUpdateContactDetailsUrl).thenReturn(dummyUrl)

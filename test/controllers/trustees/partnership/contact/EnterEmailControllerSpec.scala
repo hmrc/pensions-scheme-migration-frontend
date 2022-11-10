@@ -60,7 +60,7 @@ class EnterEmailControllerSpec extends ControllerSpecBase
     )
   private val formData: String = Data.email
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(
       mockRenderer,
       mockUserAnswersCacheConnector

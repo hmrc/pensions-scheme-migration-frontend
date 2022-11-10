@@ -108,8 +108,8 @@ class AddPartnersControllerSpec extends ControllerSpecBase with NunjucksSupport 
       "maxPartners" -> mockAppConfig.maxPartners
     )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     reset(mockAppConfig)
     when(mockAppConfig.maxPartners).thenReturn(10)
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))

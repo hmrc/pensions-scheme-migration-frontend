@@ -69,7 +69,7 @@ class EstablisherEnterNINOControllerSpec
   private val formData: ReferenceValue =
     ReferenceValue(value = "AB123456C")
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(
       mockRenderer,
       mockUserAnswersCacheConnector

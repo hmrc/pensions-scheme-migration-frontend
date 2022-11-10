@@ -50,8 +50,8 @@ class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSuppor
       controllerComponents, formProvider, mockListOfSchemesConnector, mockSchemeSearchService, mockLockingService)
 
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
   }
 
 

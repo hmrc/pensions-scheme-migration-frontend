@@ -41,8 +41,8 @@ class ThereIsAProblemControllerSpec extends ControllerSpecBase with NunjucksSupp
   private def httpPathGET: String = routes.ThereIsAProblemController.onPageLoad.url
 
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 

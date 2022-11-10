@@ -52,7 +52,7 @@ class PartnershipDetailsControllerSpec extends ControllerSpecBase
   private val commonJson: JsObject = Json.obj("schemeName" -> Data.schemeName)
   private val formData: PartnershipDetails = PartnershipDetails(partnershipName)
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(
       mockRenderer,
       mockUserAnswersCacheConnector

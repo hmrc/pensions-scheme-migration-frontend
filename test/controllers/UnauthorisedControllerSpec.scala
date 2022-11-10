@@ -41,8 +41,8 @@ class UnauthorisedControllerSpec extends ControllerSpecBase with NunjucksSupport
   private def httpPathGET: String = controllers.routes.UnauthorisedController.onPageLoad.url
 
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 

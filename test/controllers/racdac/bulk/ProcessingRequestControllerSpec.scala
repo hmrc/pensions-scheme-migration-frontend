@@ -55,8 +55,8 @@ class ProcessingRequestControllerSpec extends ControllerSpecBase with NunjucksSu
       "continueUrl" -> redirect
     )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     reset(mockBulkMigrationEventsLogConnector)
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }

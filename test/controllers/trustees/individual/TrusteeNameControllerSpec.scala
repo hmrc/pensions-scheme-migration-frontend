@@ -67,8 +67,8 @@ class TrusteeNameControllerSpec extends ControllerSpecBase with NunjucksSupport 
       "entityType" -> Messages("messages__trustee")
     )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 

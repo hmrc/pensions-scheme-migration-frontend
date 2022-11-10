@@ -108,8 +108,8 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with Nunjucks
       "maxDirectors" -> mockAppConfig.maxDirectors
     )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     reset(mockAppConfig)
     when(mockAppConfig.maxDirectors).thenReturn(10)
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))

@@ -82,7 +82,7 @@ class DirectorHasNINOControllerSpec
       renderer                  = new Renderer(mockAppConfig, mockRenderer)
     )
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(
       mockRenderer,
       mockUserAnswersCacheConnector

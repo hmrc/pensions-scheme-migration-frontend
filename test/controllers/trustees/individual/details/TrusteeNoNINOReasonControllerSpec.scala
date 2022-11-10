@@ -68,7 +68,7 @@ class TrusteeNoNINOReasonControllerSpec
   private val formData: String =
     "Reason"
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(
       mockRenderer,
       mockUserAnswersCacheConnector

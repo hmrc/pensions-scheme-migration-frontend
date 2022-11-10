@@ -81,8 +81,8 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
 
   val itemList : JsValue = json
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
     when(mockTaskListService.schemeCompletionStatus(any(), any())).thenReturn("Scheme Details are incomplete")
     when(mockTaskListService.schemeCompletionDescription(any(), any())).thenReturn("You have completed 1 of 2 sections")

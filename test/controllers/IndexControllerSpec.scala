@@ -39,8 +39,7 @@ class IndexControllerSpec extends ControllerSpecBase with NunjucksSupport with J
 
   private def httpPathGET: String = controllers.routes.IndexController.onPageLoad.url
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 

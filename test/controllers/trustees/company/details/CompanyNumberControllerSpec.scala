@@ -62,7 +62,7 @@ class CompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSuppor
     new CompanyNumberController(messagesApi, new FakeNavigator(desiredRoute = onwardRoute), new FakeAuthAction(), dataRetrievalAction,
       new DataRequiredActionImpl, formProvider, controllerComponents, mockUserAnswersCacheConnector, new Renderer(mockAppConfig, mockRenderer))
 
-  override def beforeEach: Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
+  override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
 
   "CompanyNumberController" must {
     "return OK and the correct view for a GET" in {

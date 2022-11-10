@@ -60,7 +60,7 @@ class AnyTrusteesControllerSpec extends ControllerSpecBase
       "schemeName" -> schemeName
     )
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(
       mockRenderer,
       mockUserAnswersCacheConnector
