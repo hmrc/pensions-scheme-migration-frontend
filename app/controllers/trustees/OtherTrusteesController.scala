@@ -52,7 +52,7 @@ class OtherTrusteesController @Inject()(
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             get(
               pageTitle = Message("messages__otherTrustees__title"),
@@ -70,7 +70,7 @@ class OtherTrusteesController @Inject()(
   def onSubmit: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             post(
               pageTitle = Message("messages__otherTrustees__title"),

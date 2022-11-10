@@ -53,7 +53,7 @@ class ConfirmDeletePartnerController @Inject()(override val messagesApi: Message
   def onPageLoad(establisherIndex: Index, partnerIndex: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        PartnerNameId(establisherIndex, partnerIndex).retrieve.right.map { partner =>
+        PartnerNameId(establisherIndex, partnerIndex).retrieve.map { partner =>
           if (partner.isDeleted) {
             Future.successful(Redirect(routes.AlreadyDeletedController.onPageLoad(establisherIndex, partnerIndex)))
           } else {
@@ -77,7 +77,7 @@ class ConfirmDeletePartnerController @Inject()(override val messagesApi: Message
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
 
-        PartnerNameId(establisherIndex, partnerIndex).retrieve.right.map { partner =>
+        PartnerNameId(establisherIndex, partnerIndex).retrieve.map { partner =>
 
           form(partner.fullName).bindFromRequest().fold(
             (formWithErrors: Form[_]) => {

@@ -57,7 +57,7 @@ class SchemeTypeController @Inject()(
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             val preparedForm = request.userAnswers.get(SchemeTypeId)(SchemeType.optionalReads) match {
               case None        => form
@@ -80,7 +80,7 @@ class SchemeTypeController @Inject()(
       implicit request =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            SchemeNameId.retrieve.right.map {
+            SchemeNameId.retrieve.map {
               schemeName =>
                 renderer.render(
                   template = "beforeYouStart/schemeType.njk",

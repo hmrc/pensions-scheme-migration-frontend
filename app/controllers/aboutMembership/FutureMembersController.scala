@@ -55,7 +55,7 @@ class FutureMembersController @Inject()(override val messagesApi: MessagesApi,
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
-      SchemeNameId.retrieve.right.map { schemeName =>
+      SchemeNameId.retrieve.map { schemeName =>
         val preparedForm = request.userAnswers.get(FutureMembersId) match {
           case None => form(schemeName)
           case Some(value) => form(schemeName).fill(value)
@@ -74,7 +74,7 @@ class FutureMembersController @Inject()(override val messagesApi: MessagesApi,
 
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
-      SchemeNameId.retrieve.right.map { schemeName =>
+      SchemeNameId.retrieve.map { schemeName =>
         form(schemeName).bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
             val json = Json.obj(

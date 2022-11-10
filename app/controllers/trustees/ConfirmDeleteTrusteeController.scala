@@ -97,15 +97,15 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
 
         trusteeKind match {
           case Individual =>
-            TrusteeNameId(trusteeIndex).retrieve.right.map { trusteeDetails =>
+            TrusteeNameId(trusteeIndex).retrieve.map { trusteeDetails =>
               updateTrusteeKind(trusteeDetails.fullName, trusteeKind, trusteeIndex, Some(trusteeDetails), None, None)
             }
           case Company =>
-            CompanyDetailsId(trusteeIndex).retrieve.right.map { trusteeDetails =>
+            CompanyDetailsId(trusteeIndex).retrieve.map { trusteeDetails =>
               updateTrusteeKind(trusteeDetails.companyName, trusteeKind, trusteeIndex, None, Some(trusteeDetails), None)
             }
           case Partnership =>
-            PartnershipDetailsId(trusteeIndex).retrieve.right.map { trusteeDetails =>
+            PartnershipDetailsId(trusteeIndex).retrieve.map { trusteeDetails =>
               updateTrusteeKind(trusteeDetails.partnershipName, trusteeKind, trusteeIndex, None, None, Some(trusteeDetails))
             }
           case _ =>

@@ -55,14 +55,14 @@ class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (CompanyDetailsId(index) and SchemeNameId).retrieve.right.map { case companyDetails ~ schemeName =>
+      (CompanyDetailsId(index) and SchemeNameId).retrieve.map { case companyDetails ~ schemeName =>
           get(Some(schemeName), companyDetails.companyName, AddressId(index),AddressListId(index), AddressConfiguration.PostcodeFirst)
       }
     }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (CompanyDetailsId(index) and SchemeNameId).retrieve.right.map { case companyDetails ~ schemeName =>
+      (CompanyDetailsId(index) and SchemeNameId).retrieve.map { case companyDetails ~ schemeName =>
         post(Some(schemeName), companyDetails.companyName, AddressId(index), AddressConfiguration.PostcodeFirst,Some(mode))
       }
     }

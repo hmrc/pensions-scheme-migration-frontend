@@ -56,7 +56,7 @@ class EstablishedCountryController @Inject()( config: AppConfig,
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
-      SchemeNameId.retrieve.right.map { schemeName =>
+      SchemeNameId.retrieve.map { schemeName =>
         val preparedForm = request.userAnswers.get(EstablishedCountryId) match {
           case None => form
           case Some(value) => form.fill(value)
@@ -75,7 +75,7 @@ class EstablishedCountryController @Inject()( config: AppConfig,
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          SchemeNameId.retrieve.right.map { schemeName =>
+          SchemeNameId.retrieve.map { schemeName =>
             val json = Json.obj(
               "form" -> formWithErrors,
               "schemeName" -> schemeName,

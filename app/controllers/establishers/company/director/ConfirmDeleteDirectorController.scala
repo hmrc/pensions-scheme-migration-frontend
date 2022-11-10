@@ -54,7 +54,7 @@ class ConfirmDeleteDirectorController @Inject()(override val messagesApi: Messag
   def onPageLoad(establisherIndex: Index, directorIndex: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        DirectorNameId(establisherIndex, directorIndex).retrieve.right.map { director =>
+        DirectorNameId(establisherIndex, directorIndex).retrieve.map { director =>
           if (director.isDeleted) {
             Future.successful(Redirect(routes.AlreadyDeletedController.onPageLoad(establisherIndex, directorIndex)))
           } else {
@@ -76,7 +76,7 @@ class ConfirmDeleteDirectorController @Inject()(override val messagesApi: Messag
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
 
-        DirectorNameId(establisherIndex, directorIndex).retrieve.right.map { director =>
+        DirectorNameId(establisherIndex, directorIndex).retrieve.map { director =>
 
           form(director.fullName).bindFromRequest().fold(
             (formWithErrors: Form[_]) => {

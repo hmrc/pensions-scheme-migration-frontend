@@ -60,14 +60,14 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.right.map(get)
+        getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.map(get)
       }
     }
 
   def getFormToJson(schemeName: String, establisherIndex: Index, directorIndex: Index, mode: Mode): Retrieval[Form[Int] => JsObject] =
     Retrieval(
       implicit request =>
-        EnterPostCodeId(establisherIndex, directorIndex).retrieve.right.map { addresses =>
+        EnterPostCodeId(establisherIndex, directorIndex).retrieve.map { addresses =>
 
           val msg = request2Messages(request)
 
@@ -90,12 +90,12 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
       val addressPages: AddressPages = AddressPages(EnterPostCodeId(establisherIndex, directorIndex),
         AddressListId(establisherIndex, directorIndex), AddressId(establisherIndex, directorIndex))
       retrieve(SchemeNameId) { schemeName =>
-        val json: Form[Int] => JsObject = getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.right.get
+        val json: Form[Int] => JsObject = getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.toOption.get
         form.bindFromRequest().fold(
           formWithErrors =>
             renderer.render(viewTemplate, prepareJson(json(formWithErrors))).map(BadRequest(_)),
           value =>
-            addressPages.postcodeId.retrieve.right.map { addresses =>
+            addressPages.postcodeId.retrieve.map { addresses =>
               val address = addresses(value).copy(country = Some("GB"))
               if (address.toAddress.nonEmpty) {
                 for {

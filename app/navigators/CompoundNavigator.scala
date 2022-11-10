@@ -24,7 +24,8 @@ import play.api.Logger
 import play.api.mvc.{AnyContent, Call}
 import utils.UserAnswers
 
-import scala.collection.JavaConverters._
+
+import scala.jdk.CollectionConverters._
 
 trait CompoundNavigator {
   def nextPage(id: Identifier, userAnswers: UserAnswers, mode: Mode = NormalMode)

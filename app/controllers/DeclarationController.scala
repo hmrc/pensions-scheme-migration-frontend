@@ -77,7 +77,7 @@ class DeclarationController @Inject()(
   def onSubmit: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-      SchemeNameId.retrieve.right.map { schemeName =>
+      SchemeNameId.retrieve.map { schemeName =>
         val psaId = request.psaId.id
         val pstrId = request.lock.pstr
         val userAnswers = request.userAnswers

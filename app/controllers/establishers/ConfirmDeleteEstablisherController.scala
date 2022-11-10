@@ -97,15 +97,15 @@ class ConfirmDeleteEstablisherController @Inject()(override val messagesApi: Mes
 
         establisherKind match {
           case Individual =>
-            EstablisherNameId(establisherIndex).retrieve.right.map { establisherDetails =>
+            EstablisherNameId(establisherIndex).retrieve.map { establisherDetails =>
               updateEstablisherKind(establisherDetails.fullName, establisherKind, establisherIndex, Some(establisherDetails), None,None)
             }
           case Company =>
-            CompanyDetailsId(establisherIndex).retrieve.right.map { establisherDetails =>
+            CompanyDetailsId(establisherIndex).retrieve.map { establisherDetails =>
               updateEstablisherKind(establisherDetails.companyName, establisherKind, establisherIndex, None, Some(establisherDetails),None)
             }
           case Partnership =>
-            PartnershipDetailsId(establisherIndex).retrieve.right.map { partnershipDetails =>
+            PartnershipDetailsId(establisherIndex).retrieve.map { partnershipDetails =>
               updateEstablisherKind(partnershipDetails.partnershipName, establisherKind, establisherIndex, None, None,Some(partnershipDetails))
             }
           case _ =>

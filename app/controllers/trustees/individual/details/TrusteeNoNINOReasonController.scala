@@ -68,7 +68,7 @@ class TrusteeNoNINOReasonController @Inject()(
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             get(
               pageTitle     = Message("messages__whyNoNINO", Message("messages__individual")),
@@ -84,7 +84,7 @@ class TrusteeNoNINOReasonController @Inject()(
     def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
       (authenticate andThen getData andThen requireData()).async {
         implicit request =>
-          SchemeNameId.retrieve.right.map {
+          SchemeNameId.retrieve.map {
             schemeName =>
               form(index).bindFromRequest().fold(
                 (formWithErrors: Form[_]) =>

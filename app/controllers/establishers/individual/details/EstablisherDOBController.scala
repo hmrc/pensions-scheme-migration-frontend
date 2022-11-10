@@ -53,7 +53,7 @@ class EstablisherDOBController @Inject()(
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
 
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             get(
               dobId        = EstablisherDOBId(index),
@@ -67,7 +67,7 @@ class EstablisherDOBController @Inject()(
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             post(
               dobId        = EstablisherDOBId(index),

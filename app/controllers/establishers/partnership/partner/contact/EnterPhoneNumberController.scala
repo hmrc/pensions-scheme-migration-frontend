@@ -62,7 +62,7 @@ class EnterPhoneNumberController @Inject()(
   def onPageLoad(establisherIndex: Index, partnerIndex: Index,mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             get(
               entityName = name(establisherIndex, partnerIndex),
@@ -79,7 +79,7 @@ class EnterPhoneNumberController @Inject()(
   def onSubmit( establisherIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             post(
               entityName = name(establisherIndex, partnerIndex),

@@ -58,7 +58,7 @@ class DirectorAlsoTrusteeController @Inject()(override val messagesApi: Messages
 
   def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
-      SchemeNameId.retrieve.right.map { schemeName =>
+      SchemeNameId.retrieve.map { schemeName =>
         implicit val ua: UserAnswers = request.userAnswers
         val seqDirector = dataPrefillService.getListOfDirectorsToBeCopied
 
@@ -80,7 +80,7 @@ class DirectorAlsoTrusteeController @Inject()(override val messagesApi: Messages
   def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
       implicit val ua: UserAnswers = request.userAnswers
-      SchemeNameId.retrieve.right.map { schemeName =>
+      SchemeNameId.retrieve.map { schemeName =>
         val seqDirector = dataPrefillService.getListOfDirectorsToBeCopied
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {

@@ -49,7 +49,7 @@ class WhatYouWillNeedController @Inject()(
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        CompanyDetailsId(index).retrieve.right.map {
+        CompanyDetailsId(index).retrieve.map {
           details =>
             renderer.render(
               template = "details/whatYouWillNeedCompanyDetails.njk",

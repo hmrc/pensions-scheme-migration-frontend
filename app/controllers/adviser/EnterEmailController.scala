@@ -59,7 +59,7 @@ class EnterEmailController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             get(
               entityName = name,
@@ -75,7 +75,7 @@ class EnterEmailController @Inject()(
   def onSubmit(mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             post(
               entityName = name,

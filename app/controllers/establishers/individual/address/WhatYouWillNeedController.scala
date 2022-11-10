@@ -48,7 +48,7 @@ class WhatYouWillNeedController @Inject()(
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        EstablisherNameId(index).retrieve.right.map {
+        EstablisherNameId(index).retrieve.map {
           personName =>
             renderer.render(
               template = "address/whatYouWillNeed.njk",

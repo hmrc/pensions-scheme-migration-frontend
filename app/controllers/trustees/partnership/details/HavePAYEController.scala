@@ -60,7 +60,7 @@ class HavePAYEController @Inject()(
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
 
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             get(
               pageTitle     = Message("messages__havePAYE", Message("messages__partnership")),
@@ -79,7 +79,7 @@ class HavePAYEController @Inject()(
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
 
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             post(
               pageTitle     = Message("messages__havePAYE", Message("messages__partnership")),

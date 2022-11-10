@@ -56,7 +56,7 @@ class TrusteesAlsoDirectorsController @Inject()(override val messagesApi: Messag
 
   def onPageLoad(establisherIndex: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
-      (CompanyDetailsId(establisherIndex) and SchemeNameId).retrieve.right.map { case companyName ~ schemeName =>
+      (CompanyDetailsId(establisherIndex) and SchemeNameId).retrieve.map { case companyName ~ schemeName =>
         implicit val ua: UserAnswers = request.userAnswers
         val seqTrustee = dataPrefillService.getListOfTrusteesToBeCopied(establisherIndex)
         if (seqTrustee.nonEmpty) {
@@ -78,7 +78,7 @@ class TrusteesAlsoDirectorsController @Inject()(override val messagesApi: Messag
   def onSubmit(establisherIndex: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
       implicit val ua: UserAnswers = request.userAnswers
-      (CompanyDetailsId(establisherIndex) and SchemeNameId).retrieve.right.map { case companyName ~ schemeName =>
+      (CompanyDetailsId(establisherIndex) and SchemeNameId).retrieve.map { case companyName ~ schemeName =>
         val seqTrustee = dataPrefillService.getListOfTrusteesToBeCopied(establisherIndex)
         form(establisherIndex).bindFromRequest().fold(
           (formWithErrors: Form[_]) => {

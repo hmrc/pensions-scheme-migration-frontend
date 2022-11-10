@@ -56,7 +56,7 @@ class AnyTrusteesController @Inject()(navigator: CompoundNavigator,
     (authenticate andThen getData andThen requireData()).async {
       implicit request => {
         val formWithData = request.userAnswers.get(AnyTrusteesId).fold(form)(form.fill)
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             val json: JsObject = Json.obj(
               "form" -> formWithData,
@@ -74,7 +74,7 @@ class AnyTrusteesController @Inject()(navigator: CompoundNavigator,
       implicit request =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
-            SchemeNameId.retrieve.right.map {
+            SchemeNameId.retrieve.map {
               schemeName =>
                 val json: JsObject = Json.obj(
                   "form" -> formWithErrors,

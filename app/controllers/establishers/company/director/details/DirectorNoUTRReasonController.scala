@@ -56,7 +56,7 @@ class DirectorNoUTRReasonController @Inject()(override val messagesApi: Messages
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             get(
               pageTitle = Message("messages__whyNoUTR", Message("messages__director")),
@@ -72,7 +72,7 @@ class DirectorNoUTRReasonController @Inject()(override val messagesApi: Messages
   def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             form(establisherIndex, directorIndex).bindFromRequest().fold(
               (formWithErrors: Form[_]) =>

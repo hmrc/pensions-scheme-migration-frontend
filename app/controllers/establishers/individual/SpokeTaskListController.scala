@@ -52,7 +52,7 @@ class SpokeTaskListController @Inject()(
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             get(
               spokes = spokeCreationService.getEstablisherIndividualSpokes(request.userAnswers, name(index), index),

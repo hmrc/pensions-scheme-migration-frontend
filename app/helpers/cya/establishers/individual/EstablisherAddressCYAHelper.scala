@@ -58,7 +58,7 @@ class EstablisherAddressCYAHelper
       )
     )
 
-    val seqRowPreviousAddress = if (ua.get(AddressYearsId(index)).getOrElse(true).equals(true)) {
+    val seqRowPreviousAddress = if (ua.get(AddressYearsId(index)).getOrElse(true)) {
       Nil
     } else {
       Seq(

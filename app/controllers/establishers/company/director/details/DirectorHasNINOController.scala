@@ -59,7 +59,7 @@ class DirectorHasNINOController @Inject()(
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
 
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             get(
               pageTitle = Message("messages__hasNINO", Message("messages__director")),
@@ -90,7 +90,7 @@ class DirectorHasNINOController @Inject()(
   def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             form(establisherIndex, directorIndex).bindFromRequest().fold(
               (formWithErrors: Form[_]) =>

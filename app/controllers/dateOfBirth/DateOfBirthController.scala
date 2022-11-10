@@ -63,7 +63,7 @@ trait DateOfBirthController
         case _           => form
       }
 
-    personNameId.retrieve.right.map {
+    personNameId.retrieve.map {
       personName =>
         renderer.render(
           template = "dob.njk",
@@ -93,7 +93,7 @@ trait DateOfBirthController
         val formWithErrorsDayIdCorrection = formWithErrors.copy(
           errors = formWithErrors.errors map { e => if (e.key == "date.day") e.copy(key = "date") else e }
         )
-        personNameId.retrieve.right.map {
+        personNameId.retrieve.map {
           personName =>
             renderer.render(
               template = "dob.njk",

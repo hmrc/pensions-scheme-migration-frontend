@@ -51,7 +51,7 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (PartnershipDetailsId(index) and SchemeNameId).retrieve.right.map {
+      (PartnershipDetailsId(index) and SchemeNameId).retrieve.map {
         case partnershipDetails ~ schemeName =>
           get(Some(schemeName), partnershipDetails.partnershipName, Messages("establisherEntityTypePartnership"), form, AddressYearsId(index))
       }
@@ -59,7 +59,7 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (PartnershipDetailsId(index) and SchemeNameId).retrieve.right.map {
+      (PartnershipDetailsId(index) and SchemeNameId).retrieve.map {
         case partnershipDetails ~ schemeName =>
           post(Some(schemeName), partnershipDetails.partnershipName, Messages("establisherEntityTypePartnership"), form, AddressYearsId(index),Some(mode))
       }

@@ -51,7 +51,7 @@ class TradingTimeController @Inject()(override val messagesApi: MessagesApi,
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (CompanyDetailsId(index) and SchemeNameId).retrieve.right.map {
+      (CompanyDetailsId(index) and SchemeNameId).retrieve.map {
         case companyDetails ~ schemeName =>
           get(Some(schemeName), companyDetails.companyName, Messages("messages__company"), form, TradingTimeId(index))
       }
@@ -59,7 +59,7 @@ class TradingTimeController @Inject()(override val messagesApi: MessagesApi,
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (CompanyDetailsId(index) and SchemeNameId).retrieve.right.map {
+      (CompanyDetailsId(index) and SchemeNameId).retrieve.map {
         case companyDetails ~ schemeName =>
           post(Some(schemeName), companyDetails.companyName, Messages("messages__company"), form, TradingTimeId(index),Some(mode))
       }

@@ -56,7 +56,7 @@ class InsurerSelectAddressController @Inject()(val appConfig: AppConfig,
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async { implicit request =>
     retrieve(SchemeNameId) { schemeName =>
-      getFormToJson(schemeName).retrieve.right.map(get)
+      getFormToJson(schemeName).retrieve.map(get)
     }
   }
 
@@ -64,14 +64,14 @@ class InsurerSelectAddressController @Inject()(val appConfig: AppConfig,
     (authenticate andThen getData andThen requireData()).async { implicit request =>
         val addressPages: AddressPages = AddressPages(InsurerEnterPostCodeId, InsurerAddressListId, InsurerAddressId)
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName).retrieve.right.map(post(_, addressPages,manualUrlCall = InsurerConfirmAddressController.onPageLoad))
+        getFormToJson(schemeName).retrieve.map(post(_, addressPages,manualUrlCall = InsurerConfirmAddressController.onPageLoad))
       }
     }
 
   def getFormToJson(schemeName:String) : Retrieval[Form[Int] => JsObject] =
     Retrieval(
       implicit request =>
-        InsurerEnterPostCodeId.retrieve.right.map { addresses =>
+        InsurerEnterPostCodeId.retrieve.map { addresses =>
 
           val msg = request2Messages(request)
 

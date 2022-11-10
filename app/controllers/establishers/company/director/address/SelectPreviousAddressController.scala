@@ -61,7 +61,7 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         retrieve(SchemeNameId) { schemeName =>
-          getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.right.map(get)
+          getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.map(get)
         }
     }
 
@@ -71,7 +71,7 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
                     mode: Mode): Retrieval[Form[Int] => JsObject] =
     Retrieval(
       implicit request =>
-        EnterPreviousPostCodeId(establisherIndex, directorIndex).retrieve.right.map { addresses =>
+        EnterPreviousPostCodeId(establisherIndex, directorIndex).retrieve.map { addresses =>
 
           val msg = request2Messages(request)
 
@@ -99,12 +99,12 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
         PreviousAddressId(establisherIndex, directorIndex))
 
       retrieve(SchemeNameId) { schemeName =>
-        val json: Form[Int] => JsObject = getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.right.get
+        val json: Form[Int] => JsObject = getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.toOption.get
         form.bindFromRequest().fold(
           formWithErrors =>
             renderer.render(viewTemplate, prepareJson(json(formWithErrors))).map(BadRequest(_)),
           value =>
-            addressPages.postcodeId.retrieve.right.map { addresses =>
+            addressPages.postcodeId.retrieve.map { addresses =>
               val address = addresses(value).copy(country = Some("GB"))
               if (address.toAddress.nonEmpty) {
                 for {
