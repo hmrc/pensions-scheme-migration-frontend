@@ -22,7 +22,7 @@ import controllers.Retrievals
 import controllers.actions._
 import controllers.address.ManualAddressController
 import forms.address.AddressFormProvider
-import identifiers.adviser.{AddressId,AddressListId, AdviserNameId}
+import identifiers.adviser.{AddressId, AddressListId, AdviserNameId}
 import identifiers.beforeYouStart.SchemeNameId
 import models.{Address, AddressConfiguration}
 import navigators.CompoundNavigator

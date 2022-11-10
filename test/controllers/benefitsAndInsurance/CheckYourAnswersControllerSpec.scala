@@ -41,7 +41,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
 
   private val templateToBeRendered = "check-your-answers.njk"
   private val mockCyaHelper: BenefitsAndInsuranceCYAHelper = mock[BenefitsAndInsuranceCYAHelper]
-  private def httpPathGET: String = controllers.benefitsAndInsurance.routes.CheckYourAnswersController.onPageLoad().url
+  private def httpPathGET: String = controllers.benefitsAndInsurance.routes.CheckYourAnswersController.onPageLoad.url
   val extraModules: Seq[GuiceableModule] = Seq(
     bind[BenefitsAndInsuranceCYAHelper].toInstance(mockCyaHelper)
   )

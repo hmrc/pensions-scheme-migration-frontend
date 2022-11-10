@@ -16,19 +16,19 @@
 
 package helpers
 
+import helpers.spokes.Spoke
 import helpers.spokes.establishers.company._
 import helpers.spokes.establishers.individual._
 import helpers.spokes.establishers.partnership._
-import helpers.spokes.trustees.company.{TrusteeCompanyContactDetails, TrusteeCompanyAddress, TrusteeCompanyDetails}
-import helpers.spokes.trustees.individual.{TrusteeIndividualAddress, TrusteeIndividualDetails, TrusteeIndividualContactDetails}
-import helpers.spokes.trustees.partnership.{TrusteePartnershipDetails, TrusteePartnershipAddress, TrusteePartnershipContactDetails}
+import helpers.spokes.trustees.company.{TrusteeCompanyAddress, TrusteeCompanyContactDetails, TrusteeCompanyDetails}
+import helpers.spokes.trustees.individual.{TrusteeIndividualAddress, TrusteeIndividualContactDetails, TrusteeIndividualDetails}
+import helpers.spokes.trustees.partnership.{TrusteePartnershipAddress, TrusteePartnershipContactDetails, TrusteePartnershipDetails}
 import identifiers.beforeYouStart.SchemeTypeId
-import helpers.spokes.Spoke
 import models.Index._
 import models._
 import play.api.i18n.Messages
 import services.DataPrefillService
-import utils.{UserAnswers, Enumerable}
+import utils.{Enumerable, UserAnswers}
 
 import javax.inject.Inject
 
@@ -53,7 +53,7 @@ class SpokeCreationService @Inject()(dataPrefillService: DataPrefillService) ext
         EntitySpoke(
           link = SpokeTaskListLink(
             text = messages("messages__schemeTaskList__sectionEstablishers_change_link"),
-            target = controllers.establishers.routes.AddEstablisherController.onPageLoad().url
+            target = controllers.establishers.routes.AddEstablisherController.onPageLoad.url
           ),
           isCompleted = None
         )
@@ -140,7 +140,7 @@ class SpokeCreationService @Inject()(dataPrefillService: DataPrefillService) ext
         EntitySpoke(
           link = SpokeTaskListLink(
             text = messages("messages__schemeTaskList__sectionTrustees_change_link"),
-            target = controllers.trustees.routes.AddTrusteeController.onPageLoad().url
+            target = controllers.trustees.routes.AddTrusteeController.onPageLoad.url
           ),
           isCompleted = None
         )
@@ -176,7 +176,7 @@ class SpokeCreationService @Inject()(dataPrefillService: DataPrefillService) ext
       EntitySpoke(
         link = SpokeTaskListLink(
           text = messages("messages__schemeTaskList__declaration_link"),
-          target = controllers.routes.DeclarationController.onPageLoad().url
+          target = controllers.routes.DeclarationController.onPageLoad.url
         )
       )
     )

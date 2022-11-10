@@ -41,7 +41,7 @@ class NoEstablishersController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  def onPageLoad(): Action[AnyContent] =
+  def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         val context = Json.obj(

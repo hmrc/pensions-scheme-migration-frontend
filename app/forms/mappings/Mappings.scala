@@ -16,7 +16,7 @@
 
 package forms.mappings
 
-import play.api.data.Forms.{of, _}
+import play.api.data.Forms._
 import play.api.data.{FieldMapping, Mapping}
 import utils.Enumerable
 

@@ -68,8 +68,8 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
   )
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
-  private def httpPathGET: String = controllers.establishers.routes.AddEstablisherController.onPageLoad().url
-  private def httpPathPOST: String = controllers.establishers.routes.AddEstablisherController.onSubmit().url
+  private def httpPathGET: String = controllers.establishers.routes.AddEstablisherController.onPageLoad.url
+  private def httpPathPOST: String = controllers.establishers.routes.AddEstablisherController.onSubmit.url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq("true")
@@ -125,7 +125,7 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
       when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(AddEstablisherId(Some(true))), any(), any())(any()))
-        .thenReturn(routes.AddEstablisherController.onPageLoad())
+        .thenReturn(routes.AddEstablisherController.onPageLoad)
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
@@ -133,7 +133,7 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result) mustBe Some(routes.AddEstablisherController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.AddEstablisherController.onPageLoad.url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {
@@ -163,7 +163,7 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe routes.NoEstablishersController.onPageLoad().url
+      redirectLocation(result).value mustBe routes.NoEstablishersController.onPageLoad.url
     }
   }
 }

@@ -16,9 +16,9 @@
 
 package helpers.spokes.establishers.company
 
-import controllers.establishers.company.details.routes.{WhatYouWillNeedController,CheckYourAnswersController}
+import controllers.establishers.company.details.routes.{CheckYourAnswersController, WhatYouWillNeedController}
 import helpers.spokes.Spoke
-import models.{SpokeTaskListLink, Index}
+import models.{Index, SpokeTaskListLink}
 import play.api.i18n.Messages
 import utils.UserAnswers
 

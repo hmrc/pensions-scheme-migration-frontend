@@ -39,9 +39,9 @@ class BeforeYouStartControllerSpec extends ControllerSpecBase with NunjucksSuppo
   private val templateToBeRendered: String = "preMigration/beforeYouStart.njk"
   private def json: JsObject =
     Json.obj(
-      "continueUrl" -> controllers.routes.TaskListController.onPageLoad().url,
+      "continueUrl" -> controllers.routes.TaskListController.onPageLoad.url,
       "psaName" -> psaName,
-      "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad().url
+      "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad.url
     )
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 
@@ -61,7 +61,7 @@ class BeforeYouStartControllerSpec extends ControllerSpecBase with NunjucksSuppo
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result: Future[Result] = controller().onPageLoad()(fakeDataRequest())
+      val result: Future[Result] = controller().onPageLoad(fakeDataRequest())
 
       status(result) mustBe OK
 
@@ -82,7 +82,7 @@ class BeforeYouStartControllerSpec extends ControllerSpecBase with NunjucksSuppo
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result: Future[Result] = controller().onPageLoad()(fakeDataRequest())
+      val result: Future[Result] = controller().onPageLoad(fakeDataRequest())
 
       status(result) mustBe OK
 
@@ -95,7 +95,7 @@ class BeforeYouStartControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
     "redirect to List of schemes if lock can not be retrieved " in {
       mutableFakeDataRetrievalAction.setLockToReturn(None)
-      val result: Future[Result] = controller().onPageLoad()(fakeDataRequest())
+      val result: Future[Result] = controller().onPageLoad(fakeDataRequest())
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url)

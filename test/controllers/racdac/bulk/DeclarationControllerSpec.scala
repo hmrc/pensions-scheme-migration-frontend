@@ -62,7 +62,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
   private def jsonToPassToTemplate: JsObject =
     Json.obj(
       "psaName" -> "test company",
-      "submitUrl" -> routes.DeclarationController.onSubmit().url,
+      "submitUrl" -> routes.DeclarationController.onSubmit.url,
       "returnUrl" -> dummyUrl
     )
 
@@ -73,9 +73,9 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
-  private def httpPathGET: String = controllers.racdac.bulk.routes.DeclarationController.onPageLoad().url
+  private def httpPathGET: String = controllers.racdac.bulk.routes.DeclarationController.onPageLoad.url
 
-  private def httpPathPOST: String = controllers.racdac.bulk.routes.DeclarationController.onSubmit().url
+  private def httpPathPOST: String = controllers.racdac.bulk.routes.DeclarationController.onSubmit.url
 
   "onPageLoad" must {
 
@@ -99,7 +99,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
       val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.racdac.bulk.routes.ProcessingRequestController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.racdac.bulk.routes.ProcessingRequestController.onPageLoad.url)
     }
 
     "redirect to Request not process page when error while push" in {
@@ -108,7 +108,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
       val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.racdac.bulk.routes.RequestNotProcessedController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.racdac.bulk.routes.RequestNotProcessedController.onPageLoad.url)
     }
   }
 }

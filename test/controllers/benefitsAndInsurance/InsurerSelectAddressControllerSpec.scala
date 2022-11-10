@@ -47,8 +47,8 @@ class InsurerSelectAddressControllerSpec extends ControllerSpecBase with Nunjuck
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = controllers.benefitsAndInsurance.routes.InsurerSelectAddressController.onPageLoad().url
-  private val httpPathPOST: String = controllers.benefitsAndInsurance.routes.InsurerSelectAddressController.onSubmit().url
+  private val httpPathGET: String = controllers.benefitsAndInsurance.routes.InsurerSelectAddressController.onPageLoad.url
+  private val httpPathPOST: String = controllers.benefitsAndInsurance.routes.InsurerSelectAddressController.onSubmit.url
 
   private val seqAddresses = Seq(
     TolerantAddress(Some("1"),Some("1"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")),
@@ -96,7 +96,7 @@ class InsurerSelectAddressControllerSpec extends ControllerSpecBase with Nunjuck
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad.url
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
@@ -104,7 +104,7 @@ class InsurerSelectAddressControllerSpec extends ControllerSpecBase with Nunjuck
         .setOrException(InsurerEnterPostCodeId, seqAddresses)
 
       when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
-        .thenReturn(routes.CheckYourAnswersController.onPageLoad())
+        .thenReturn(routes.CheckYourAnswersController.onPageLoad)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -113,7 +113,7 @@ class InsurerSelectAddressControllerSpec extends ControllerSpecBase with Nunjuck
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad.url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

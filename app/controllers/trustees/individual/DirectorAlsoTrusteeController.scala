@@ -16,7 +16,6 @@
 
 package controllers.trustees.individual
 
-import uk.gov.hmrc.viewmodels.MessageInterpolators
 import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
@@ -34,6 +33,7 @@ import renderer.Renderer
 import services.DataPrefillService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.{Enumerable, UserAnswers}
 
 import javax.inject.Inject
@@ -72,7 +72,7 @@ class DirectorAlsoTrusteeController @Inject()(override val messagesApi: Messages
           )
           renderer.render("dataPrefillRadio.njk", json).map(Ok(_))
         } else {
-          Future(Redirect(controllers.routes.TaskListController.onPageLoad()))
+          Future(Redirect(controllers.routes.TaskListController.onPageLoad))
         }
       }
   }

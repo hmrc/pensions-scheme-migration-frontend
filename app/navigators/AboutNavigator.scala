@@ -28,12 +28,12 @@ class AboutNavigator extends Navigator {
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case CurrentMembersId | FutureMembersId =>
-      CheckYourAnswersController.onPageLoad()
+      CheckYourAnswersController.onPageLoad
   }
 
   override protected def editRouteMap(ua: UserAnswers)
                                      (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case CurrentMembersId | FutureMembersId =>
-      CheckYourAnswersController.onPageLoad()
+      CheckYourAnswersController.onPageLoad
   }
 }

@@ -38,11 +38,11 @@ class RequestNotProcessedControllerSpec extends ControllerSpecBase with Nunjucks
 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
-  private def httpPathGET: String = controllers.racdac.bulk.routes.RequestNotProcessedController.onPageLoad().url
+  private def httpPathGET: String = controllers.racdac.bulk.routes.RequestNotProcessedController.onPageLoad.url
 
   private val jsonToPassToTemplate: JsObject =
     Json.obj(
-      "tryAgain" -> routes.TransferAllController.onPageLoad().url
+      "tryAgain" -> routes.TransferAllController.onPageLoad.url
     )
 
   override def beforeEach: Unit = {

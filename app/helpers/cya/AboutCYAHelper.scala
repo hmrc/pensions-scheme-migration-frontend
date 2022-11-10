@@ -16,7 +16,7 @@
 
 package helpers.cya
 
-import CYAHelper.getAnswer
+import helpers.cya.CYAHelper.getAnswer
 import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
 import identifiers.beforeYouStart.SchemeNameId
 import models.Members
@@ -38,11 +38,11 @@ class AboutCYAHelper extends CYAHelper with Enumerable.Implicits {
 
     val rowsWithoutDynamicIndices = Seq(
       answerOrAddRow(CurrentMembersId, Message("currentMembers.title", schemeName).resolve,
-        Some(controllers.aboutMembership.routes.CurrentMembersController.onPageLoad().url),
+        Some(controllers.aboutMembership.routes.CurrentMembersController.onPageLoad.url),
         Some(msg"messages__visuallyhidden__currentMembers".withArgs(schemeName)), answerTransform
       ),
       answerOrAddRow(FutureMembersId, Message("futureMembers.title", schemeName).resolve,
-        Some(controllers.aboutMembership.routes.FutureMembersController.onPageLoad().url),
+        Some(controllers.aboutMembership.routes.FutureMembersController.onPageLoad.url),
         Some(msg"messages__visuallyhidden__futureMembers"), answerTransform
       )
     )

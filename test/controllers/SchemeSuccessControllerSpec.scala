@@ -71,7 +71,7 @@ class SchemeSuccessControllerSpec extends ControllerSpecBase with NunjucksSuppor
   )
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
-  private def httpPathGET: String = controllers.routes.SchemeSuccessController.onPageLoad().url
+  private def httpPathGET: String = controllers.routes.SchemeSuccessController.onPageLoad.url
 
   private val jsonToPassToTemplate: JsObject =
     Json.obj(

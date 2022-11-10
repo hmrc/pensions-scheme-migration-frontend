@@ -38,7 +38,7 @@ class ThereIsAProblemControllerSpec extends ControllerSpecBase with NunjucksSupp
 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
-  private def httpPathGET: String = routes.ThereIsAProblemController.onPageLoad().url
+  private def httpPathGET: String = routes.ThereIsAProblemController.onPageLoad.url
 
 
   override def beforeEach: Unit = {

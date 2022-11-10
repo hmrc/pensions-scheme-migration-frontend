@@ -52,9 +52,9 @@ class BulkListControllerSpec extends ControllerSpecBase with NunjucksSupport wit
       ): _*
     ).build()
 
-  private def httpPathGET: String = routes.BulkListController.onPageLoad().url
+  private def httpPathGET: String = routes.BulkListController.onPageLoad.url
   private def httpPathGETWithPageNumber: String = routes.BulkListController.onPageLoadWithPageNumber(2).url
-  private def httpPathPOST: String = routes.BulkListController.onSubmit().url
+  private def httpPathPOST: String = routes.BulkListController.onSubmit.url
   private def httpPathPOSTWithPageNumber: String = routes.BulkListController.onSubmitWithPageNumber(2).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
@@ -94,7 +94,7 @@ class BulkListControllerSpec extends ControllerSpecBase with NunjucksSupport wit
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result) mustBe Some(routes.DeclarationController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.DeclarationController.onPageLoad.url)
     }
 
     "redirect to next page when user answers yes for a POST with page number" in {
@@ -103,7 +103,7 @@ class BulkListControllerSpec extends ControllerSpecBase with NunjucksSupport wit
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result) mustBe Some(routes.DeclarationController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.DeclarationController.onPageLoad.url)
     }
 
     "redirect to next page when user answers no" in {

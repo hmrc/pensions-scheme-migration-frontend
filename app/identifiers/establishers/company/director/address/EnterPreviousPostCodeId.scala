@@ -19,7 +19,7 @@ package identifiers.establishers.company.director.address
 import identifiers.TypedIdentifier
 import identifiers.establishers.EstablishersId
 import models.TolerantAddress
-import play.api.libs.json.{Format, Json, JsPath}
+import play.api.libs.json.{Format, JsPath, Json}
 
 case class EnterPreviousPostCodeId(establisherIndex: Int, directorIndex: Int) extends TypedIdentifier[Seq[TolerantAddress]] {
   override def path: JsPath =

@@ -62,7 +62,7 @@ class LockingServiceSpec extends SpecBase with MockitoSugar {
     val request : AuthenticatedRequest[AnyContent] = AuthenticatedRequest(fakeRequest, credId, PsaId(psaId))
     when(mockSchemeCacheConnector.save(any())(any(),any())).thenReturn(Future.successful(Json.obj()))
     when(mockLockCacheConnector.getLockOnScheme(ArgumentMatchers.eq(pstr))(any(),any())).thenReturn(Future.successful(Some(migrationLock)))
-    redirectLocation(service.initialLockSetupAndRedirect(pstr,request)) mustBe Some(controllers.routes.TaskListController.onPageLoad().url)
+    redirectLocation(service.initialLockSetupAndRedirect(pstr,request)) mustBe Some(controllers.routes.TaskListController.onPageLoad.url)
   }
 
   " Redirect to RacDac Detail Page if racDac is locked by same user " in {
@@ -71,7 +71,7 @@ class LockingServiceSpec extends SpecBase with MockitoSugar {
     when(mockSchemeCacheConnector.save(any())(any(),any())).thenReturn(Future.successful(Json.obj()))
     when(mockLockCacheConnector.getLockOnScheme(ArgumentMatchers.eq(pstr))(any(),any())).thenReturn(Future.successful(Some(migrationLock)))
     redirectLocation(service.initialLockSetupAndRedirect(pstr,request,true)) mustBe
-      Some(controllers.racdac.individual.routes.CheckYourAnswersController.onPageLoad().url)
+      Some(controllers.racdac.individual.routes.CheckYourAnswersController.onPageLoad.url)
   }
 
   " Remove other locks and setLock on the scheme and Redirect to Before you start Page if scheme is not locked by any user" in {
@@ -80,7 +80,7 @@ class LockingServiceSpec extends SpecBase with MockitoSugar {
     when(mockLockCacheConnector.getLockOnScheme(ArgumentMatchers.eq(pstr))(any(),any())).thenReturn(Future.successful(None))
     when(mockLockCacheConnector.removeLockByUser(any(),any())).thenReturn(Future.successful(Ok))
     when(mockLockCacheConnector.setLock(ArgumentMatchers.eq(migrationLock))(any(),any())).thenReturn(Future.successful(Json.obj()))
-    redirectLocation(service.initialLockSetupAndRedirect(pstr,request)) mustBe Some(controllers.preMigration.routes.BeforeYouStartController.onPageLoad().url)
+    redirectLocation(service.initialLockSetupAndRedirect(pstr,request)) mustBe Some(controllers.preMigration.routes.BeforeYouStartController.onPageLoad.url)
   }
 
   " Remove other locks and setLock on the racDac and Redirect to RacDac Detail Page if racDac is not locked by any user" in {
@@ -90,12 +90,12 @@ class LockingServiceSpec extends SpecBase with MockitoSugar {
     when(mockLockCacheConnector.removeLockByUser(any(),any())).thenReturn(Future.successful(Ok))
     when(mockLockCacheConnector.setLock(ArgumentMatchers.eq(migrationLock))(any(),any())).thenReturn(Future.successful(Json.obj()))
     redirectLocation(service.initialLockSetupAndRedirect(pstr,request,true)) mustBe
-      Some(controllers.racdac.individual.routes.CheckYourAnswersController.onPageLoad().url)
+      Some(controllers.racdac.individual.routes.CheckYourAnswersController.onPageLoad.url)
   }
 
   "releaseLockAndRedirect" must {
     " Release the lock and redirect the user" in {
-      val url=controllers.routes.TaskListController.onPageLoad().url
+      val url=controllers.routes.TaskListController.onPageLoad.url
       when(mockLockCacheConnector.removeLockByUser(any(),any())).thenReturn(Future.successful(Ok))
       redirectLocation(service.releaseLockAndRedirect(url)) mustBe Some(url)
     }

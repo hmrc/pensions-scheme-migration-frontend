@@ -202,7 +202,7 @@ class BulkDataActionSpec
 
         whenReady(futureResult) { result =>
           result.header.status mustBe SEE_OTHER
-          redirectLocation(futureResult).value mustBe controllers.preMigration.routes.CannotMigrateController.onPageLoad().url
+          redirectLocation(futureResult).value mustBe controllers.preMigration.routes.CannotMigrateController.onPageLoad.url
         }
       }
     }
@@ -223,7 +223,7 @@ class BulkDataActionSpec
 
         whenReady(futureResult) { result =>
           result.header.status mustBe SEE_OTHER
-          redirectLocation(futureResult).value mustBe controllers.preMigration.routes.ThereIsAProblemController.onPageLoad().url
+          redirectLocation(futureResult).value mustBe controllers.preMigration.routes.ThereIsAProblemController.onPageLoad.url
         }
       }
     }

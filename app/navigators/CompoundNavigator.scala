@@ -38,7 +38,7 @@ class CompoundNavigatorImpl @Inject()(navigators: java.util.Set[Navigator])
 
   private def defaultPage(id: Identifier): Call = {
     logger.warn(s"No navigation defined for id $id")
-    controllers.routes.TaskListController.onPageLoad()
+    controllers.routes.TaskListController.onPageLoad
   }
 
   def nextPage(

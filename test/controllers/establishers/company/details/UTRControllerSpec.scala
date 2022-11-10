@@ -45,7 +45,7 @@ class UTRControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(index), companyDetails).success.value
 
   private val formProvider: UTRFormProvider = new UTRFormProvider()
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
 
   private val commonJson: JsObject =

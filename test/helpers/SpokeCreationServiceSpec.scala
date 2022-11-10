@@ -86,7 +86,7 @@ class SpokeCreationServiceSpec
       val expectedSpoke =
         Seq(EntitySpoke(
           SpokeTaskListLink(Message("messages__schemeTaskList__sectionEstablishers_change_link"),
-            controllers.establishers.routes.AddEstablisherController.onPageLoad().url), None)
+            controllers.establishers.routes.AddEstablisherController.onPageLoad.url), None)
         )
 
       val result = spokeCreationService.getAddEstablisherHeaderSpokes(userAnswers, viewOnly = false)
@@ -766,7 +766,7 @@ class SpokeCreationServiceSpec
     "return declaration spoke with link" in {
       val expectedSpoke = Seq(EntitySpoke(SpokeTaskListLink(
         messages("messages__schemeTaskList__declaration_link"),
-        controllers.routes.DeclarationController.onPageLoad().url)
+        controllers.routes.DeclarationController.onPageLoad.url)
       ))
 
       spokeCreationService.declarationSpoke mustBe expectedSpoke

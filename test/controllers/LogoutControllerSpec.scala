@@ -42,7 +42,7 @@ class LogoutControllerSpec extends ControllerSpecBase with Results {
       when(mockLockCacheConnector.removeLockByUser(any(), any())).thenReturn(Future.successful(Ok))
       when(mockListOfSchemesConnector.removeCache(any())(any(), any())).thenReturn(Future.successful(Ok))
       when(mockAppConfig.serviceSignOut).thenReturn("signout")
-      val result = logoutController.onPageLoad()(fakeRequest)
+      val result = logoutController.onPageLoad(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some("signout")

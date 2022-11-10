@@ -43,7 +43,7 @@ class InProgressControllerSpec extends ControllerSpecBase with NunjucksSupport w
   )
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
-  private def httpPathGET: String = controllers.racdac.bulk.routes.InProgressController.onPageLoad().url
+  private def httpPathGET: String = controllers.racdac.bulk.routes.InProgressController.onPageLoad.url
 
   private val jsonToPassToTemplate: JsObject =
     Json.obj(

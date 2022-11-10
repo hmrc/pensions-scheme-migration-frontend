@@ -23,7 +23,7 @@ import controllers.actions._
 import controllers.address.ManualAddressController
 import forms.address.AddressFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.benefitsAndInsurance.{BenefitsInsuranceNameId, InsurerAddressId,InsurerAddressListId}
+import identifiers.benefitsAndInsurance.{BenefitsInsuranceNameId, InsurerAddressId, InsurerAddressListId}
 import models.{Address, AddressConfiguration}
 import navigators.CompoundNavigator
 import play.api.data.Form

@@ -142,7 +142,7 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Nun
       val expectedJson = Json.obj()
 
       when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(ConfirmDeleteEstablisherId), any(), any())(any()))
-        .thenReturn(routes.AddEstablisherController.onPageLoad())
+        .thenReturn(routes.AddEstablisherController.onPageLoad)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -154,14 +154,14 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Nun
 
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptor.capture)(any(), any())
       jsonCaptor.getValue must containJson(expectedJson)
-      redirectLocation(result) mustBe Some(routes.AddEstablisherController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.AddEstablisherController.onPageLoad.url)
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted for Company" in {
       val expectedJson = Json.obj()
 
       when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(ConfirmDeleteEstablisherId), any(), any())(any()))
-        .thenReturn(routes.AddEstablisherController.onPageLoad())
+        .thenReturn(routes.AddEstablisherController.onPageLoad)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -173,14 +173,14 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Nun
 
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptor.capture)(any(), any())
       jsonCaptor.getValue must containJson(expectedJson)
-      redirectLocation(result) mustBe Some(routes.AddEstablisherController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.AddEstablisherController.onPageLoad.url)
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted for Partnership" in {
       val expectedJson = Json.obj()
 
       when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(ConfirmDeleteEstablisherId), any(), any())(any()))
-        .thenReturn(routes.AddEstablisherController.onPageLoad())
+        .thenReturn(routes.AddEstablisherController.onPageLoad)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -192,7 +192,7 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Nun
 
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptor.capture)(any(), any())
       jsonCaptor.getValue must containJson(expectedJson)
-      redirectLocation(result) mustBe Some(routes.AddEstablisherController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.AddEstablisherController.onPageLoad.url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

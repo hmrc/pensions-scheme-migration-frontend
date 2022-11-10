@@ -54,7 +54,7 @@ class TaskListService @Inject()(appConfig: AppConfig) {
   private def basicDetails(implicit ua: UserAnswers, messages: Messages): TaskListLink = {
     TaskListLink(
       text = messages(getLinkKey("basicDetails_", Some(ua.isBeforeYouStartCompleted).isDefined), getSchemeName),
-      target = controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad().url,
+      target = controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad.url,
       visuallyHiddenText = None,
       status = ua.isBeforeYouStartCompleted
     )
@@ -63,7 +63,7 @@ class TaskListService @Inject()(appConfig: AppConfig) {
   private def membershipDetails(implicit ua: UserAnswers, messages: Messages): TaskListLink = {
     TaskListLink(
       text = messages(getLinkKey("membershipDetails_", ua.isMembersComplete.isDefined), getSchemeName),
-      target = controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad().url,
+      target = controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad.url,
       visuallyHiddenText = None,
       status = ua.isMembersComplete.getOrElse(false)
     )
@@ -72,7 +72,7 @@ class TaskListService @Inject()(appConfig: AppConfig) {
   private def benefitsAndInsuranceDetails(implicit ua: UserAnswers, messages: Messages): TaskListLink = {
     TaskListLink(
       text = messages(getLinkKey("benefitsAndInsuranceDetails_", ua.isBenefitsAndInsuranceComplete.isDefined), getSchemeName),
-      target = controllers.benefitsAndInsurance.routes.CheckYourAnswersController.onPageLoad().url,
+      target = controllers.benefitsAndInsurance.routes.CheckYourAnswersController.onPageLoad.url,
       visuallyHiddenText = None,
       status = ua.isBenefitsAndInsuranceComplete.getOrElse(false)
     )
@@ -84,14 +84,14 @@ class TaskListService @Inject()(appConfig: AppConfig) {
         if (ua.get(AdviserNameId).isEmpty)
           Some(TaskListLink(
             text = messages(getLinkKey("workingKnowledge_", false), getSchemeName),
-            target = controllers.adviser.routes.WhatYouWillNeedController.onPageLoad().url,
+            target = controllers.adviser.routes.WhatYouWillNeedController.onPageLoad.url,
             visuallyHiddenText = None,
             status = ua.isAdviserComplete.getOrElse(false)
           ))
         else
           Some(TaskListLink(
             text = messages(getLinkKey("workingKnowledge_", true), ua.get(AdviserNameId).getOrElse("")),
-            target = controllers.adviser.routes.CheckYourAnswersController.onPageLoad().url,
+            target = controllers.adviser.routes.CheckYourAnswersController.onPageLoad.url,
             visuallyHiddenText = None,
             status = ua.isAdviserComplete.getOrElse(false)
           ))
@@ -111,7 +111,7 @@ class TaskListService @Inject()(appConfig: AppConfig) {
     else
       TaskListLink(
         text = messages(getLinkKey("establishers_", true), getSchemeName),
-        target = AddEstablisherController.onPageLoad().url,
+        target = AddEstablisherController.onPageLoad.url,
         visuallyHiddenText = None,
         status = ua.isEstablishersSectionComplete
       )
@@ -129,7 +129,7 @@ class TaskListService @Inject()(appConfig: AppConfig) {
       else
         TaskListLink(
           text = messages(getLinkKey("trustees_", ua.isTrusteesSectionComplete), getSchemeName),
-          target = AnyTrusteesController.onPageLoad().url,
+          target = AnyTrusteesController.onPageLoad.url,
           visuallyHiddenText = None,
           status = ua.isTrusteesSectionComplete
         )
@@ -137,7 +137,7 @@ class TaskListService @Inject()(appConfig: AppConfig) {
     else
       TaskListLink(
         text = messages(getLinkKey("trustees_", true), getSchemeName),
-        target = AddTrusteeController.onPageLoad().url,
+        target = AddTrusteeController.onPageLoad.url,
         visuallyHiddenText = None,
         status = ua.isTrusteesSectionComplete
       )
@@ -185,7 +185,7 @@ class TaskListService @Inject()(appConfig: AppConfig) {
     else
       TaskListLink(
         text = messages("messages__schemeTaskList__declaration_link"),
-        target = controllers.routes.DeclarationController.onPageLoad().url,
+        target = controllers.routes.DeclarationController.onPageLoad.url,
         visuallyHiddenText = None,
         status = declarationEnabled
       )

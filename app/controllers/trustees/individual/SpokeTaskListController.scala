@@ -59,7 +59,7 @@ class SpokeTaskListController @Inject()(
               entityName = name(index),
               schemeName = schemeName,
               entityType = Message("messages__tasklist__trustee"),
-              submitUrl = controllers.trustees.routes.AddTrusteeController.onPageLoad().url
+              submitUrl = controllers.trustees.routes.AddTrusteeController.onPageLoad.url
             )
         }
     }

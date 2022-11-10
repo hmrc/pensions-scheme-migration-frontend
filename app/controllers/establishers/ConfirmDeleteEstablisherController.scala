@@ -74,7 +74,7 @@ class ConfirmDeleteEstablisherController @Inject()(override val messagesApi: Mes
               )
               renderer.render("delete.njk", json).map(Ok(_))
             }
-        } getOrElse Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
+        } getOrElse Future.successful(Redirect(controllers.routes.IndexController.onPageLoad))
     }
 
   private def getDeletableEstablisher(index: Index, establisherKind: EstablisherKind, userAnswers: UserAnswers)
@@ -109,7 +109,7 @@ class ConfirmDeleteEstablisherController @Inject()(override val messagesApi: Mes
               updateEstablisherKind(partnershipDetails.partnershipName, establisherKind, establisherIndex, None, None,Some(partnershipDetails))
             }
           case _ =>
-            Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
+            Future.successful(Redirect(controllers.routes.IndexController.onPageLoad))
         }
     }
 

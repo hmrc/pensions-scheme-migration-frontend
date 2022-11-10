@@ -49,7 +49,7 @@ class CannotMigrateControllerSpec extends ControllerSpecBase with NunjucksSuppor
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result: Future[Result] = controller().onPageLoad()(fakeDataRequest())
+      val result: Future[Result] = controller().onPageLoad(fakeDataRequest())
 
       status(result) mustBe OK
 

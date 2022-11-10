@@ -44,8 +44,8 @@ class SchemeTypeControllerSpec extends ControllerSpecBase with NunjucksSupport w
 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
-  private def httpPathGET: String = routes.SchemeTypeController.onPageLoad().url
-  private def httpPathPOST: String = routes.SchemeTypeController.onSubmit().url
+  private def httpPathGET: String = routes.SchemeTypeController.onPageLoad.url
+  private def httpPathPOST: String = routes.SchemeTypeController.onSubmit.url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "schemeType.type" -> Seq("single")
@@ -121,7 +121,7 @@ class SchemeTypeControllerSpec extends ControllerSpecBase with NunjucksSupport w
       val expectedJson = Json.obj()
 
       when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(SchemeTypeId), any(), any())(any()))
-        .thenReturn(routes.CheckYourAnswersController.onPageLoad())
+        .thenReturn(routes.CheckYourAnswersController.onPageLoad)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -137,7 +137,7 @@ class SchemeTypeControllerSpec extends ControllerSpecBase with NunjucksSupport w
 
       jsonCaptor.getValue must containJson(expectedJson)
 
-      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad.url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

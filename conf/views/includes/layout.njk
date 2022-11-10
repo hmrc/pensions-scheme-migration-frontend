@@ -18,7 +18,7 @@
         timeout:config.timeout ,
         countdown: config.countdown,
         keepAliveUrl: routes.controllers.LogoutController.keepAlive().url,
-        signOutUrl: routes.controllers.LogoutController.onPageLoad().url
+        signOutUrl: routes.controllers.LogoutController.onPageLoad.url
     }) }}
     {{ trackingSnippet({
         nonce: config.nonce,
@@ -43,7 +43,7 @@
         serviceUrl: config.psaOverviewUrl,
         containerClasses: "govuk-width-container",
         assetsPath: "/assets",
-        signOutHref: routes.controllers.LogoutController.onPageLoad().url
+        signOutHref: routes.controllers.LogoutController.onPageLoad.url
     }) }}
 {% endblock %}
 

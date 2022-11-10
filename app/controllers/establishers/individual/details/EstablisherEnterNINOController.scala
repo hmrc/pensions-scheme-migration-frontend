@@ -31,6 +31,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import viewmodels.Message
+
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 

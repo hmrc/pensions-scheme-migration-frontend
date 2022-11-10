@@ -82,9 +82,9 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
   private val jsonToPassToTemplate: JsObject = Json.obj(
     "list" -> rows,
     "schemeName" -> schemeName,
-    "submitUrl" -> controllers.racdac.individual.routes.DeclarationController.onPageLoad().url,
+    "submitUrl" -> controllers.racdac.individual.routes.DeclarationController.onPageLoad.url,
     "psaName" -> Data.psaName,
-    "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad().url
+    "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad.url
   )
 
   override def beforeEach: Unit = {

@@ -53,7 +53,7 @@ class AlreadyDeletedControllerSpec extends ControllerSpecBase with NunjucksSuppo
       "title" -> messages("messages__alreadyDeleted__trustee_title"),
       "name" -> name.fullName,
       "schemeName" -> schemeName,
-      "submitUrl" -> controllers.trustees.routes.AddTrusteeController.onPageLoad().url
+      "submitUrl" -> controllers.trustees.routes.AddTrusteeController.onPageLoad.url
     )
 
   override def beforeEach: Unit = {

@@ -24,11 +24,11 @@ import identifiers.establishers.company.director._
 import identifiers.establishers.company.director.address._
 import identifiers.establishers.company.director.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.company.director.details._
+import models.Index.intToIndex
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode, NormalMode}
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
-import Index.intToIndex
 
 class EstablishersCompanyDirectorNavigator
   extends Navigator
@@ -114,7 +114,7 @@ class EstablishersCompanyDirectorNavigator
     answers.get(DirectorHasNINOId(establisherIndex, directorIndex)) match {
       case Some(true) => DirectorEnterNINOController.onPageLoad(establisherIndex, directorIndex, mode)
       case Some(false) => DirectorNoNINOReasonController.onPageLoad(establisherIndex, directorIndex, mode)
-      case None => controllers.routes.TaskListController.onPageLoad()
+      case None => controllers.routes.TaskListController.onPageLoad
     }
 
   private def establisherHasUtr(
@@ -126,7 +126,7 @@ class EstablishersCompanyDirectorNavigator
     answers.get(DirectorHasUTRId(establisherIndex, directorIndex)) match {
       case Some(true) => DirectorEnterUTRController.onPageLoad(establisherIndex, directorIndex, mode)
       case Some(false) => DirectorNoUTRReasonController.onPageLoad(establisherIndex, directorIndex, mode)
-      case None => controllers.routes.TaskListController.onPageLoad()
+      case None => controllers.routes.TaskListController.onPageLoad
     }
 
   private def trusteeAlsoDirectorRoutes(establisherIndex: Index, answers: UserAnswers): Call = {

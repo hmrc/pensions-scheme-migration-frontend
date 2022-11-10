@@ -104,7 +104,7 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with Nunju
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad.url
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {

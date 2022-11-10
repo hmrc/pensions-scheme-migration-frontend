@@ -47,9 +47,9 @@ class EstablishersNavigatorSpec
   private val establisherNamePage: Call = controllers.establishers.individual.routes.EstablisherNameController.onPageLoad(index)
   private val companyDetailsPage: Call = controllers.establishers.company.routes.CompanyDetailsController.onPageLoad(index)
   private val partnershipDetailsPage: Call = controllers.establishers.partnership.routes.PartnershipDetailsController.onPageLoad(index)
-  private val addEstablisherPage: Call = controllers.establishers.routes.AddEstablisherController.onPageLoad()
+  private val addEstablisherPage: Call = controllers.establishers.routes.AddEstablisherController.onPageLoad
   private val addEstablisherDetailsPage: Call = controllers.establishers.individual.routes.SpokeTaskListController.onPageLoad(index)
-  private val taskListPage: Call = controllers.routes.TaskListController.onPageLoad()
+  private val taskListPage: Call = controllers.routes.TaskListController.onPageLoad
   private val establisherKindPage: Call = routes.EstablisherKindController.onPageLoad(index)
   private val detailsUa: UserAnswers =
     ua.set(EstablisherNameId(0), PersonName("Jane", "Doe")).success.value

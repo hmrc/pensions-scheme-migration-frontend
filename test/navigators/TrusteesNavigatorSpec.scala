@@ -52,9 +52,9 @@ class TrusteesNavigatorSpec
   private val companyPage: Call = controllers.trustees.company.routes.CompanyDetailsController.onPageLoad(index)
   private val partnershipPage: Call = controllers.trustees.partnership.routes.PartnershipDetailsController.onPageLoad(index)
   private def trusteePhonePage(mode: Mode): Call = controllers.trustees.individual.contact.routes.EnterPhoneController.onPageLoad(index, mode)
-  private val addTrusteePage: Call = controllers.trustees.routes.AddTrusteeController.onPageLoad()
+  private val addTrusteePage: Call = controllers.trustees.routes.AddTrusteeController.onPageLoad
   private val addTrusteeDetailsPage: Call = controllers.trustees.individual.routes.SpokeTaskListController.onPageLoad(index)
-  private val taskListPage: Call = controllers.routes.TaskListController.onPageLoad()
+  private val taskListPage: Call = controllers.routes.TaskListController.onPageLoad
   private val otherTrusteesPage: Call = controllers.trustees.routes.OtherTrusteesController.onPageLoad
   private val trusteeKindPage: Call = routes.TrusteeKindController.onPageLoad(index)
   private def hasNinoPage(mode: Mode): Call =

@@ -53,7 +53,7 @@ class TrusteeNoNINOReasonControllerSpec
   private val form: Form[String] =
     formProvider(s"Enter a reason why ${personName.fullName} does not have a NINO")
   private val onwardRoute: Call =
-    controllers.routes.IndexController.onPageLoad()
+    controllers.routes.IndexController.onPageLoad
   private val userAnswers: UserAnswers =
     ua.set(TrusteeNameId(0), personName).success.value
   private val templateToBeRendered: String =

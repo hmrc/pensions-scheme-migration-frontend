@@ -52,7 +52,7 @@ class CheckYourAnswersController @Inject()(
           ctx = Json.obj(
             "list"       -> cyaHelper.detailsRows,
             "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
-            "submitUrl"  -> controllers.routes.TaskListController.onPageLoad().url
+            "submitUrl"  -> controllers.routes.TaskListController.onPageLoad.url
           )
         ).map(Ok(_))
     }

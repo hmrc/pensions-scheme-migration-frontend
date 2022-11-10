@@ -16,10 +16,10 @@
 
 package models
 
-import play.api.data.Form
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, Radios}
-import uk.gov.hmrc.viewmodels.Text.Literal
 import models.prefill.{IndividualDetails => DataPrefillIndividualDetails}
+import play.api.data.Form
+import uk.gov.hmrc.viewmodels.Text.Literal
+import uk.gov.hmrc.viewmodels.{MessageInterpolators, Radios}
 
 object DataPrefillRadio {
 

@@ -68,7 +68,7 @@ class TaskListController @Inject()(
               val userAnswers: UserAnswers = UserAnswers(data.as[JsObject])
               val updatedUa = userAnswers.setOrException(AnyTrusteesId, userAnswers.allTrusteesAfterDelete.nonEmpty)
               userAnswersCacheConnector.save(lock, updatedUa.data).flatMap(_ => renderView(updatedUa, implicitly))
-            case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
+            case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad))
           }
       }
   }
@@ -82,7 +82,7 @@ class TaskListController @Inject()(
         "schemeName" -> taskListService.getSchemeName,
         "declarationEnabled" -> taskListService.declarationEnabled,
         "declaration" -> taskListService.declarationSection,
-        "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad().url
+        "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad.url
     )
     renderer.render("taskList.njk", json).map(Ok(_))
   }

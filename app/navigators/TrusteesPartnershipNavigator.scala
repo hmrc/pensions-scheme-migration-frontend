@@ -19,16 +19,15 @@ package navigators
 
 import controllers.trustees.partnership.address.routes._
 import controllers.trustees.partnership.contact.routes._
-import controllers.trustees.partnership.routes._
 import controllers.trustees.partnership.details.{routes => detailsRoutes}
+import controllers.trustees.partnership.routes._
 import identifiers._
 import identifiers.trustees.partnership.PartnershipDetailsId
-import identifiers.trustees.partnership.address.{EnterPostCodeId,
-  AddressListId, AddressYearsId, TradingTimeId, EnterPreviousPostCodeId, PreviousAddressListId, PreviousAddressId, AddressId}
+import identifiers.trustees.partnership.address._
 import identifiers.trustees.partnership.contact.{EnterEmailId, EnterPhoneId}
-import identifiers.trustees.partnership.details.{HavePAYEId, HaveUTRId, HaveVATId, NoUTRReasonId, PAYEId, PartnershipUTRId, VATId}
-import models.{CheckMode, Index, Mode, NormalMode}
+import identifiers.trustees.partnership.details._
 import models.requests.DataRequest
+import models.{CheckMode, Index, Mode, NormalMode}
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
 
@@ -97,7 +96,7 @@ class TrusteesPartnershipNavigator
     answers.get(HaveUTRId(index)) match {
       case Some(true) => detailsRoutes.UTRController.onPageLoad(index, mode)
       case Some(false) => detailsRoutes.NoUTRReasonController.onPageLoad(index, mode)
-      case None => controllers.routes.TaskListController.onPageLoad()
+      case None => controllers.routes.TaskListController.onPageLoad
     }
 
   private def vatRoutes(
@@ -109,7 +108,7 @@ class TrusteesPartnershipNavigator
       case Some(true) => detailsRoutes.VATController.onPageLoad(index, mode)
       case Some(false) if mode == NormalMode => detailsRoutes.HavePAYEController.onPageLoad(index, mode)
       case Some(false) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
-      case None => controllers.routes.TaskListController.onPageLoad()
+      case None => controllers.routes.TaskListController.onPageLoad
     }
 
   private def payeRoutes(
@@ -120,6 +119,6 @@ class TrusteesPartnershipNavigator
     answers.get(HavePAYEId(index)) match {
       case Some(true) => detailsRoutes.PAYEController.onPageLoad(index, mode)
       case Some(false) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
-      case None => controllers.routes.TaskListController.onPageLoad()
+      case None => controllers.routes.TaskListController.onPageLoad
     }
 }

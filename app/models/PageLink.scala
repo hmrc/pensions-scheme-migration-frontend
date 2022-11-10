@@ -17,9 +17,9 @@
 package models
 
 import play.api.i18n.Messages
+import play.api.libs.functional.syntax._
 import play.api.libs.json.{OWrites, __}
 import uk.gov.hmrc.viewmodels.Text
-import play.api.libs.functional.syntax._
 
 case class PageLink(id: String, url: String, linkText: Text, hiddenText: Option[Text] = None)
 

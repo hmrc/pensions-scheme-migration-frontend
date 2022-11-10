@@ -53,14 +53,14 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
-  private def httpPathGET: String = controllers.racdac.individual.routes.DeclarationController.onPageLoad().url
-  private def httpPathPOST: String = controllers.racdac.individual.routes.DeclarationController.onSubmit().url
+  private def httpPathGET: String = controllers.racdac.individual.routes.DeclarationController.onPageLoad.url
+  private def httpPathPOST: String = controllers.racdac.individual.routes.DeclarationController.onSubmit.url
 
   private val jsonToPassToTemplate: JsObject =
     Json.obj(
       "psaName" -> psaName,
-      "submitUrl" -> routes.DeclarationController.onSubmit().url,
-      "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad().url
+      "submitUrl" -> routes.DeclarationController.onSubmit.url,
+      "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad.url
     )
 
   override def beforeEach: Unit = {
@@ -96,7 +96,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
         val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.racdac.individual.routes.ConfirmationController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(controllers.racdac.individual.routes.ConfirmationController.onPageLoad.url)
       }
     }
     "redirect to your action was not processed page when backend returns 5XX" in {

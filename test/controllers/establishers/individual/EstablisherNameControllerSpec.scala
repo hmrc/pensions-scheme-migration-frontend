@@ -125,7 +125,7 @@ class EstablisherNameControllerSpec extends ControllerSpecBase with NunjucksSupp
       val expectedJson = Json.obj()
 
       when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(EstablisherNameId(0)), any(), any())(any()))
-        .thenReturn(controllers.establishers.routes.AddEstablisherController.onPageLoad())
+        .thenReturn(controllers.establishers.routes.AddEstablisherController.onPageLoad)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -141,7 +141,7 @@ class EstablisherNameControllerSpec extends ControllerSpecBase with NunjucksSupp
 
       jsonCaptor.getValue must containJson(expectedJson)
 
-      redirectLocation(result) mustBe Some(controllers.establishers.routes.AddEstablisherController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.establishers.routes.AddEstablisherController.onPageLoad.url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

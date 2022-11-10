@@ -19,8 +19,8 @@ package helpers.cya.trustees.partnership
 import controllers.trustees.partnership.contact.routes
 import helpers.cya.CYAHelper
 import helpers.cya.CYAHelper.getPartnershipName
-import identifiers.trustees.partnership.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.partnership.PartnershipDetailsId
+import identifiers.trustees.partnership.contact.{EnterEmailId, EnterPhoneId}
 import models.requests.DataRequest
 import models.{CheckMode, Index}
 import play.api.i18n.Messages

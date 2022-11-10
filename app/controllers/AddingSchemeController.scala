@@ -17,12 +17,12 @@
 package controllers
 
 import config.AppConfig
+import models.Scheme
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import models.Scheme
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext

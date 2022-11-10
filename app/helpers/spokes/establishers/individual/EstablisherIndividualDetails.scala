@@ -17,7 +17,7 @@
 package helpers.spokes.establishers.individual
 
 import helpers.spokes.Spoke
-import models.{SpokeTaskListLink, Index}
+import models.{Index, SpokeTaskListLink}
 import play.api.i18n.Messages
 import utils.UserAnswers
 

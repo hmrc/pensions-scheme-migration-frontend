@@ -43,8 +43,8 @@ class BenefitsInsuranceNameControllerSpec extends ControllerSpecBase with Nunjuc
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
-  private val httpPathGET: String = controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onPageLoad().url
-  private val httpPathPOST: String = controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onSubmit().url
+  private val httpPathGET: String = controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onPageLoad.url
+  private val httpPathPOST: String = controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onSubmit.url
   private val form: Form[String] = new BenefitsInsuranceNameFormProvider()()
 
   private val jsonToPassToTemplate: Form[String] => JsObject = form =>
@@ -112,7 +112,7 @@ class BenefitsInsuranceNameControllerSpec extends ControllerSpecBase with Nunjuc
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad.url
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
@@ -122,7 +122,7 @@ class BenefitsInsuranceNameControllerSpec extends ControllerSpecBase with Nunjuc
       )
 
       when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
-        .thenReturn(routes.CheckYourAnswersController.onPageLoad())
+        .thenReturn(routes.CheckYourAnswersController.onPageLoad)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -138,7 +138,7 @@ class BenefitsInsuranceNameControllerSpec extends ControllerSpecBase with Nunjuc
 
       jsonCaptor.getValue must containJson(expectedJson)
 
-      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad.url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

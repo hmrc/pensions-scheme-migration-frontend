@@ -16,21 +16,22 @@
 
 package utils
 
-import scala.concurrent.Future
+import connectors.{AncillaryPsaException, ListOfSchemes5xxException}
 import controllers.preMigration.routes
 import play.api.mvc.Result
-import connectors.{ListOfSchemes5xxException, AncillaryPsaException}
 import play.api.mvc.Results.Redirect
+
+import scala.concurrent.Future
 
 object HttpResponseRedirects {
   val listOfSchemesRedirects: PartialFunction[Throwable, Future[Result]] = {
     {
       case _: AncillaryPsaException =>
-        Future.successful(Redirect(routes.CannotMigrateController.onPageLoad()))
+        Future.successful(Redirect(routes.CannotMigrateController.onPageLoad))
       case _: ListOfSchemes5xxException =>
-        Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+        Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad))
       case _: IllegalArgumentException =>
-        Future.successful(Redirect(controllers.routes.NotFoundController.onPageLoad()))
+        Future.successful(Redirect(controllers.routes.NotFoundController.onPageLoad))
     }
   }
 }

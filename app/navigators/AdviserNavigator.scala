@@ -38,7 +38,7 @@ class AdviserNavigator
     case EnterPostCodeId => selectAddress
     case AddressListId => cyaDetails
     case AddressId => cyaDetails
-    case _ => IndexController.onPageLoad()
+    case _ => IndexController.onPageLoad
   }
 
   override protected def editRouteMap(ua: UserAnswers)
@@ -49,7 +49,7 @@ class AdviserNavigator
     case EnterPostCodeId => selectAddress
     case AddressListId => cyaDetails
     case AddressId => cyaDetails
-    case _ => IndexController.onPageLoad()
+    case _ => IndexController.onPageLoad
   }
 
   private def cyaDetails: Call =CheckYourAnswersController.onPageLoad

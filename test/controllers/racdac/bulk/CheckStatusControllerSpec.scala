@@ -43,7 +43,7 @@ class CheckStatusControllerSpec extends ControllerSpecBase with NunjucksSupport 
   )
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
-  private def httpPathGET: String = controllers.racdac.bulk.routes.CheckStatusController.onPageLoad().url
+  private def httpPathGET: String = controllers.racdac.bulk.routes.CheckStatusController.onPageLoad.url
 
   "CheckStatusController" must {
 
@@ -53,7 +53,7 @@ class CheckStatusControllerSpec extends ControllerSpecBase with NunjucksSupport 
       when(mockListSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.failed(AncillaryPsaException()))
       val result = route(application, httpGETRequest(httpPathGET)).value
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.preMigration.routes.CannotMigrateController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.preMigration.routes.CannotMigrateController.onPageLoad.url)
     }
 
     "redirect to the 'There is a problem' page when ListOfSchemes5xxException is thrown" in {
@@ -62,7 +62,7 @@ class CheckStatusControllerSpec extends ControllerSpecBase with NunjucksSupport 
       when(mockListSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.failed(ListOfSchemes5xxException()))
       val result = route(application, httpGETRequest(httpPathGET)).value
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.preMigration.routes.ThereIsAProblemController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.preMigration.routes.ThereIsAProblemController.onPageLoad.url)
     }
 
     "redirect to finished status page when all failed items left in the queue" in {
@@ -71,7 +71,7 @@ class CheckStatusControllerSpec extends ControllerSpecBase with NunjucksSupport 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustBe controllers.racdac.bulk.routes.FinishedStatusController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.racdac.bulk.routes.FinishedStatusController.onPageLoad.url
     }
 
     "redirect to in progress page when items are in progress/todo in the queue" in {
@@ -80,7 +80,7 @@ class CheckStatusControllerSpec extends ControllerSpecBase with NunjucksSupport 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustBe controllers.racdac.bulk.routes.InProgressController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.racdac.bulk.routes.InProgressController.onPageLoad.url
     }
 
     "redirect to no scheme to add page when there is nothing in the queue and no schemes" in {
@@ -114,7 +114,7 @@ class CheckStatusControllerSpec extends ControllerSpecBase with NunjucksSupport 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustBe controllers.preMigration.routes.CannotMigrateController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.preMigration.routes.CannotMigrateController.onPageLoad.url
     }
   }
 }

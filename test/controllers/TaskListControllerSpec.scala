@@ -50,9 +50,9 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
   private def httpPathGET: String = controllers.routes.TaskListController.onPageLoad.url
 
   private val basicDetailsSection = Some(TaskListLink("Change Test scheme name basic details",
-    controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad().url, None, false))
+    controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad.url, None, false))
   private val membershipDetailsSection = Some(TaskListLink("Change Test scheme name membership details",
-    controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad().url, None, true))
+    controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad.url, None, true))
 
   private val declarationSection =
     TaskListLink(
@@ -75,7 +75,7 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
     "schemeName" -> schemeName,
     "declarationEnabled" -> false,
     "declaration" -> declarationSection,
-    "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad().url
+    "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad.url
   )
  val expectedJson = Json.obj("anyTrustees" -> false)
 

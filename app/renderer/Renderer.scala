@@ -17,14 +17,13 @@
 package renderer
 
 import config.AppConfig
-
-import javax.inject.Inject
-import play.api.libs.json.{JsObject, JsString, OWrites, Json}
+import play.api.libs.json.{JsObject, JsString, Json, OWrites}
 import play.api.mvc.RequestHeader
 import play.twirl.api.Html
-import views.html.helper.CSPNonce
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
+import views.html.helper.CSPNonce
 
+import javax.inject.Inject
 import scala.concurrent.Future
 
 class Renderer @Inject()(appConfig: AppConfig, renderer: NunjucksRenderer) {

@@ -69,7 +69,7 @@ class ConfirmDeleteDirectorController @Inject()(override val messagesApi: Messag
             )
             renderer.render("delete.njk", json).map(Ok(_))
           }
-        } getOrElse Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
+        } getOrElse Future.successful(Redirect(controllers.routes.IndexController.onPageLoad))
     }
 
   def onSubmit(establisherIndex: Index, directorIndex: Index): Action[AnyContent] =

@@ -16,10 +16,10 @@
 
 package models
 
-import play.api.data.Form
-import uk.gov.hmrc.viewmodels.Text.Literal
 import models.prefill.{IndividualDetails => DataPrefillIndividualDetails}
+import play.api.data.Form
 import uk.gov.hmrc.viewmodels.MessageInterpolators
+import uk.gov.hmrc.viewmodels.Text.Literal
 import viewmodels.forNunjucks.Checkboxes
 
 object DataPrefillCheckbox {

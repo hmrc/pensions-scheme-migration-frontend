@@ -37,7 +37,7 @@ class IndexControllerSpec extends ControllerSpecBase with NunjucksSupport with J
 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
-  private def httpPathGET: String = controllers.routes.IndexController.onPageLoad().url
+  private def httpPathGET: String = controllers.routes.IndexController.onPageLoad.url
 
   override def beforeEach: Unit = {
     super.beforeEach

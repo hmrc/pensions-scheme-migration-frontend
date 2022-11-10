@@ -16,16 +16,16 @@
 
 package navigators
 
-import controllers.establishers.partnership.routes._
 import controllers.establishers.partnership.address.routes._
-import controllers.routes.IndexController
-import controllers.establishers.partnership.details.{routes => detailsRoutes}
 import controllers.establishers.partnership.contact.routes.EnterPhoneController
+import controllers.establishers.partnership.details.{routes => detailsRoutes}
+import controllers.establishers.partnership.routes._
+import controllers.routes.IndexController
 import identifiers._
 import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.address._
 import identifiers.establishers.partnership.contact._
-import identifiers.establishers.partnership.details.{HavePAYEId, HaveUTRId, HaveVATId, NoUTRReasonId, PAYEId, PartnershipUTRId, VATId}
+import identifiers.establishers.partnership.details._
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode, NormalMode}
 import play.api.mvc.{AnyContent, Call}
@@ -63,7 +63,7 @@ class EstablishersPartnershipNavigator@Inject()()
   }
 
  override protected def editRouteMap(ua: UserAnswers)(implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
-   case PartnershipDetailsId(_) => IndexController.onPageLoad()
+   case PartnershipDetailsId(_) => IndexController.onPageLoad
    case HaveUTRId(index) => utrRoutes(index, ua, CheckMode)
    case PartnershipUTRId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
    case NoUTRReasonId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
@@ -97,7 +97,7 @@ class EstablishersPartnershipNavigator@Inject()()
     answers.get(HaveUTRId(index)) match {
       case Some(true) => detailsRoutes.UTRController.onPageLoad(index, mode)
       case Some(false) => detailsRoutes.NoUTRReasonController.onPageLoad(index, mode)
-      case None => controllers.routes.TaskListController.onPageLoad()
+      case None => controllers.routes.TaskListController.onPageLoad
     }
 
   private def cyaContactDetails(index:Int): Call = controllers.establishers.partnership.contact.routes.CheckYourAnswersController.onPageLoad(index)
@@ -111,7 +111,7 @@ class EstablishersPartnershipNavigator@Inject()()
       case Some(true) => detailsRoutes.VATController.onPageLoad(index, mode)
       case Some(false) if mode == NormalMode => detailsRoutes.HavePAYEController.onPageLoad(index, mode)
       case Some(false) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
-      case None => controllers.routes.TaskListController.onPageLoad()
+      case None => controllers.routes.TaskListController.onPageLoad
     }
 
   private def payeRoutes(
@@ -122,7 +122,7 @@ class EstablishersPartnershipNavigator@Inject()()
     answers.get(HavePAYEId(index)) match {
       case Some(true) => detailsRoutes.PAYEController.onPageLoad(index, mode)
       case Some(false) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
-      case None => controllers.routes.TaskListController.onPageLoad()
+      case None => controllers.routes.TaskListController.onPageLoad
     }
 
 }

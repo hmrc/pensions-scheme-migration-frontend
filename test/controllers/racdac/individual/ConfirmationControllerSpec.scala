@@ -53,7 +53,7 @@ class ConfirmationControllerSpec extends ControllerSpecBase with NunjucksSupport
   )
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
-  private def httpPathGET: String = controllers.racdac.individual.routes.ConfirmationController.onPageLoad().url
+  private def httpPathGET: String = controllers.racdac.individual.routes.ConfirmationController.onPageLoad.url
 
   private val jsonToPassToTemplate: JsObject =
     Json.obj(

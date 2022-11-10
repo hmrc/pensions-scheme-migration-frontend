@@ -26,8 +26,8 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.{address => Director}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address.EnterPreviousPostCodeId
-import models.requests.DataRequest
 import models._
+import models.requests.DataRequest
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}

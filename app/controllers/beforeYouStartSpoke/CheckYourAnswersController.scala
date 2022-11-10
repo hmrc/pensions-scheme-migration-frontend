@@ -53,7 +53,7 @@ class CheckYourAnswersController @Inject()(
         val json = Json.obj(
           "list" -> cyaHelper.rowsForCYA(isEnabledChange),
           "schemeName" -> existingSchemeName,
-          "submitUrl" -> controllers.routes.TaskListController.onPageLoad().url
+          "submitUrl" -> controllers.routes.TaskListController.onPageLoad.url
         )
 
         renderer.render("check-your-answers.njk", json).map(Ok(_))

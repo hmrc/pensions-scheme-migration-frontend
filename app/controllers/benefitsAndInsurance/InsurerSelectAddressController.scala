@@ -64,7 +64,7 @@ class InsurerSelectAddressController @Inject()(val appConfig: AppConfig,
     (authenticate andThen getData andThen requireData()).async { implicit request =>
         val addressPages: AddressPages = AddressPages(InsurerEnterPostCodeId, InsurerAddressListId, InsurerAddressId)
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName).retrieve.right.map(post(_, addressPages,manualUrlCall = InsurerConfirmAddressController.onPageLoad()))
+        getFormToJson(schemeName).retrieve.right.map(post(_, addressPages,manualUrlCall = InsurerConfirmAddressController.onPageLoad))
       }
     }
 
@@ -83,7 +83,7 @@ class InsurerSelectAddressController @Inject()(val appConfig: AppConfig,
             "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
             "entityType" -> msg("benefitsInsuranceUnknown"),
             "entityName" -> name,
-            "enterManuallyUrl" -> InsurerConfirmAddressController.onPageLoad().url,
+            "enterManuallyUrl" -> InsurerConfirmAddressController.onPageLoad.url,
             "schemeName" -> schemeName
           )
         }

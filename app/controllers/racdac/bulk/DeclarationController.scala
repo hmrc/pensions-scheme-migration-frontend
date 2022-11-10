@@ -72,12 +72,12 @@ class DeclarationController @Inject()(
             )
           )
           schemeCacheConnector.save(confirmationData).map { _ =>
-            Redirect(routes.ProcessingRequestController.onPageLoad().url)
+            Redirect(routes.ProcessingRequestController.onPageLoad.url)
           }
         } recoverWith {
           case ex =>
             logger.warn(ex.getMessage, ex)
-            Future.successful(Redirect(routes.RequestNotProcessedController.onPageLoad()))
+            Future.successful(Redirect(routes.RequestNotProcessedController.onPageLoad))
         }
     }
 }

@@ -18,10 +18,10 @@ package helpers.cya.trustees.partnership
 
 import helpers.cya.CYAHelper
 import helpers.cya.CYAHelper.getPartnershipName
-import identifiers.trustees.partnership.address.{AddressId, AddressYearsId, PreviousAddressId, TradingTimeId}
 import identifiers.trustees.partnership.PartnershipDetailsId
-import models.{CheckMode, Index}
+import identifiers.trustees.partnership.address.{AddressId, AddressYearsId, PreviousAddressId, TradingTimeId}
 import models.requests.DataRequest
+import models.{CheckMode, Index}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.viewmodels.MessageInterpolators

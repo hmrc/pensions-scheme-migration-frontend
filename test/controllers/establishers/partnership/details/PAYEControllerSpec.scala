@@ -45,7 +45,7 @@ class PAYEControllerSpec extends ControllerSpecBase with NunjucksSupport with Js
   private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(index), partnershipDetails).success.value
 
   private val formProvider: PAYEFormProvider = new PAYEFormProvider()
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
 
   private val commonJson: JsObject =

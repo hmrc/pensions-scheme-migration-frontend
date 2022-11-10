@@ -59,7 +59,7 @@ class SpokeTaskListController @Inject()(
               entityName = name(index),
               schemeName = schemeName,
               entityType = Message("messages__tasklist__establisher"),
-              submitUrl = controllers.establishers.routes.AddEstablisherController.onPageLoad().url
+              submitUrl = controllers.establishers.routes.AddEstablisherController.onPageLoad.url
             )
         }
     }

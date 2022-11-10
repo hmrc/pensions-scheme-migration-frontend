@@ -45,7 +45,7 @@ class CompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSuppor
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(index), companyDetails).success.value
 
   private val formProvider: CompanyNumberFormProvider = new CompanyNumberFormProvider()
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
 
   private val commonJson: JsObject =

@@ -76,7 +76,7 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
 
           renderer.render("dataPrefillCheckbox.njk", json).map(Ok(_))
         } else {
-          Future(Redirect(controllers.routes.TaskListController.onPageLoad()))
+          Future(Redirect(controllers.routes.TaskListController.onPageLoad))
         }
       }
   }

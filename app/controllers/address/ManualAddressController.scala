@@ -23,7 +23,7 @@ import helpers.CountriesHelper
 import identifiers.TypedIdentifier
 import models.AddressConfiguration.AddressConfiguration
 import models.requests.DataRequest
-import models.{Address, AddressConfiguration, Mode, NormalMode, TolerantAddress}
+import models._
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages}

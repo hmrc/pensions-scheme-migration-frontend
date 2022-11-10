@@ -23,7 +23,6 @@ import forms.PAYEFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.partnership.PartnershipDetailsId
 import identifiers.trustees.partnership.details.PAYEId
-import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
 import navigators.CompoundNavigator
@@ -33,6 +32,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import viewmodels.Message
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class PAYEController @Inject()(

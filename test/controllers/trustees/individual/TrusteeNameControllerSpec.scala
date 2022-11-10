@@ -125,7 +125,7 @@ class TrusteeNameControllerSpec extends ControllerSpecBase with NunjucksSupport 
       val expectedJson = Json.obj()
 
       when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(TrusteeNameId(0)), any(), any())(any()))
-        .thenReturn(controllers.trustees.routes.AddTrusteeController.onPageLoad())
+        .thenReturn(controllers.trustees.routes.AddTrusteeController.onPageLoad)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -141,7 +141,7 @@ class TrusteeNameControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
       jsonCaptor.getValue must containJson(expectedJson)
 
-      redirectLocation(result) mustBe Some(controllers.trustees.routes.AddTrusteeController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.trustees.routes.AddTrusteeController.onPageLoad.url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

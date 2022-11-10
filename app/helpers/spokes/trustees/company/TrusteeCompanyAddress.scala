@@ -18,7 +18,7 @@ package helpers.spokes.trustees.company
 
 import controllers.trustees.company.address.routes.{CheckYourAnswersController, WhatYouWillNeedController}
 import helpers.spokes.Spoke
-import models.{SpokeTaskListLink, Index}
+import models.{Index, SpokeTaskListLink}
 import play.api.i18n.Messages
 import utils.UserAnswers
 

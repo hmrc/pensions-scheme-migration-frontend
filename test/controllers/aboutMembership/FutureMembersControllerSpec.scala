@@ -45,8 +45,8 @@ class FutureMembersControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
-  private def httpPathGET: String = controllers.aboutMembership.routes.FutureMembersController.onPageLoad().url
-  private def httpPathPOST: String = controllers.aboutMembership.routes.FutureMembersController.onSubmit().url
+  private def httpPathGET: String = controllers.aboutMembership.routes.FutureMembersController.onPageLoad.url
+  private def httpPathPOST: String = controllers.aboutMembership.routes.FutureMembersController.onSubmit.url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq(Members.One.toString)
@@ -124,7 +124,7 @@ class FutureMembersControllerSpec extends ControllerSpecBase with NunjucksSuppor
       val expectedJson = Json.obj()
 
       when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(FutureMembersId), any(), any())(any()))
-        .thenReturn(routes.CheckYourAnswersController.onPageLoad())
+        .thenReturn(routes.CheckYourAnswersController.onPageLoad)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -140,7 +140,7 @@ class FutureMembersControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
       jsonCaptor.getValue must containJson(expectedJson)
 
-      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad.url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

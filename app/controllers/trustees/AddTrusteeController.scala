@@ -24,13 +24,13 @@ import forms.trustees.AddTrusteeFormProvider
 import helpers.AddToListHelper
 import identifiers.beforeYouStart.SchemeTypeId
 import identifiers.trustees.AddTrusteeId
-import models.{SchemeType, Trustee}
 import models.requests.DataRequest
+import models.{SchemeType, Trustee}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
+import play.api.mvc._
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -59,8 +59,8 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
         val isSingleTrust = request.userAnswers.get(SchemeTypeId).contains(SchemeType.SingleTrust)
 
         (trustees, isSingleTrust) match {
-          case (Nil, false) => navTo(AnyTrusteesController.onPageLoad())
-          case (Nil, true) => navTo(NoTrusteesController.onPageLoad())
+          case (Nil, false) => navTo(AnyTrusteesController.onPageLoad)
+          case (Nil, true) => navTo(NoTrusteesController.onPageLoad)
           case _ =>
             val json: JsObject = getJson(formProvider(trustees), trustees)
             renderer.render("trustees/addTrustee.njk", json).map(Ok(_))

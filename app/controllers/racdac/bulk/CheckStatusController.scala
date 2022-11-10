@@ -17,10 +17,10 @@
 package controllers.racdac.bulk
 
 import config.AppConfig
-import connectors.cache.BulkMigrationQueueConnector
 import connectors.ListOfSchemesConnector
+import connectors.cache.BulkMigrationQueueConnector
 import controllers.actions._
-import play.api.i18n.{MessagesApi, I18nSupport}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.HttpResponseRedirects.listOfSchemesRedirects
@@ -39,8 +39,8 @@ class CheckStatusController @Inject()(val appConfig: AppConfig,
 
   def onPageLoad: Action[AnyContent] = authenticate.async { implicit request =>
     bulkMigrationQueueConnector.isAllFailed(request.psaId.id).flatMap {
-      case Some(true) => Future.successful(Redirect(controllers.racdac.bulk.routes.FinishedStatusController.onPageLoad()))
-      case Some(false) => Future.successful(Redirect(controllers.racdac.bulk.routes.InProgressController.onPageLoad()))
+      case Some(true) => Future.successful(Redirect(controllers.racdac.bulk.routes.FinishedStatusController.onPageLoad))
+      case Some(false) => Future.successful(Redirect(controllers.racdac.bulk.routes.InProgressController.onPageLoad))
       case None =>
         listOfSchemesConnector.getListOfSchemes(request.psaId.id).map {
           case Right(listSchemes) =>

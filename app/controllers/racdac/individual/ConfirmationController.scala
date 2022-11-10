@@ -17,8 +17,8 @@
 package controllers.racdac.individual
 
 import config.AppConfig
-import connectors.{ListOfSchemesConnector, MinimalDetailsConnector}
 import connectors.cache.{CurrentPstrCacheConnector, LockCacheConnector, UserAnswersCacheConnector}
+import connectors.{ListOfSchemesConnector, MinimalDetailsConnector}
 import controllers.actions._
 import helpers.cya.CYAHelper
 import identifiers.beforeYouStart.SchemeNameId

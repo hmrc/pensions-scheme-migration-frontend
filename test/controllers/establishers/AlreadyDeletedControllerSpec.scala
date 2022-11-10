@@ -61,7 +61,7 @@ class AlreadyDeletedControllerSpec extends ControllerSpecBase with NunjucksSuppo
           "title" -> messages("messages__alreadyDeleted__establisher_title"),
           "name" -> individualName.fullName,
           "schemeName" -> schemeName,
-          "submitUrl" -> AddEstablisherController.onPageLoad().url
+          "submitUrl" -> AddEstablisherController.onPageLoad.url
         )
 
       val userAnswers: Option[UserAnswers] = ua.set(EstablisherNameId(0), individualName).toOption
@@ -93,7 +93,7 @@ class AlreadyDeletedControllerSpec extends ControllerSpecBase with NunjucksSuppo
           "title" -> messages("messages__alreadyDeleted__establisher_title"),
           "name" -> companyName.companyName,
           "schemeName" -> schemeName,
-          "submitUrl" -> AddEstablisherController.onPageLoad().url
+          "submitUrl" -> AddEstablisherController.onPageLoad.url
         )
 
       val userAnswers: Option[UserAnswers] = ua.set(CompanyDetailsId(0), companyName).toOption
@@ -125,7 +125,7 @@ class AlreadyDeletedControllerSpec extends ControllerSpecBase with NunjucksSuppo
           "title" -> messages("messages__alreadyDeleted__establisher_title"),
           "name" -> partnershipName.partnershipName,
           "schemeName" -> schemeName,
-          "submitUrl" -> AddEstablisherController.onPageLoad().url
+          "submitUrl" -> AddEstablisherController.onPageLoad.url
         )
 
       def httpPathGET: String = controllers.establishers.routes.AlreadyDeletedController.onPageLoad(index, partnershipKind).url

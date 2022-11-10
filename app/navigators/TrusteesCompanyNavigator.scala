@@ -17,15 +17,13 @@
 package navigators
 
 import controllers.routes._
-import controllers.trustees.company.address.routes.{EnterPreviousPostcodeController,
-  SelectAddressController, SelectPreviousAddressController, TradingTimeController}
-import controllers.trustees.company.routes._
+import controllers.trustees.company.address.routes.{EnterPreviousPostcodeController, SelectAddressController, SelectPreviousAddressController, TradingTimeController}
 import controllers.trustees.company.contacts.routes._
 import controllers.trustees.company.details.{routes => detailsRoutes}
-
+import controllers.trustees.company.routes._
 import identifiers._
 import identifiers.trustees.company.CompanyDetailsId
-import identifiers.trustees.company.address.{AddressYearsId, TradingTimeId, _}
+import identifiers.trustees.company.address._
 import identifiers.trustees.company.contacts.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.company.details._
 import models.requests.DataRequest
@@ -71,7 +69,7 @@ class TrusteesCompanyNavigator
 
   override protected def editRouteMap(ua: UserAnswers)
                                      (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
-    case CompanyDetailsId(_) => IndexController.onPageLoad()
+    case CompanyDetailsId(_) => IndexController.onPageLoad
     case HaveCompanyNumberId(index) => companyNumberRoutes(index, ua, CheckMode)
     case CompanyNumberId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
     case NoCompanyNumberReasonId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
@@ -105,7 +103,7 @@ class TrusteesCompanyNavigator
     answers.get(HaveCompanyNumberId(index)) match {
       case Some(true) => detailsRoutes.CompanyNumberController.onPageLoad(index, mode)
       case Some(false) => detailsRoutes.NoCompanyNumberReasonController.onPageLoad(index, mode)
-      case None => controllers.routes.TaskListController.onPageLoad()
+      case None => controllers.routes.TaskListController.onPageLoad
     }
 
   private def utrRoutes(
@@ -116,7 +114,7 @@ class TrusteesCompanyNavigator
     answers.get(HaveUTRId(index)) match {
       case Some(true) => detailsRoutes.UTRController.onPageLoad(index, mode)
       case Some(false) => detailsRoutes.NoUTRReasonController.onPageLoad(index, mode)
-      case None => controllers.routes.TaskListController.onPageLoad()
+      case None => controllers.routes.TaskListController.onPageLoad
     }
 
   private def vatRoutes(
@@ -128,7 +126,7 @@ class TrusteesCompanyNavigator
       case Some(true) => detailsRoutes.VATController.onPageLoad(index, mode)
       case Some(false) if mode == NormalMode => detailsRoutes.HavePAYEController.onPageLoad(index, mode)
       case Some(false) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
-      case None => controllers.routes.TaskListController.onPageLoad()
+      case None => controllers.routes.TaskListController.onPageLoad
     }
 
   private def payeRoutes(
@@ -139,7 +137,7 @@ class TrusteesCompanyNavigator
     answers.get(HavePAYEId(index)) match {
       case Some(true) => detailsRoutes.PAYEController.onPageLoad(index, mode)
       case Some(false) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
-      case None => controllers.routes.TaskListController.onPageLoad()
+      case None => controllers.routes.TaskListController.onPageLoad
     }
 
   private def cyaAddress(index:Int): Call = controllers.trustees.company.address.routes.CheckYourAnswersController.onPageLoad(index)

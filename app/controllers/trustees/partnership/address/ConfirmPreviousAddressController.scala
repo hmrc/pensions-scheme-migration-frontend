@@ -24,8 +24,7 @@ import controllers.address.ManualAddressController
 import forms.address.AddressFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.partnership.PartnershipDetailsId
-import identifiers.trustees.partnership.address.PreviousAddressId
-import identifiers.trustees.partnership.address.PreviousAddressListId
+import identifiers.trustees.partnership.address.{PreviousAddressId, PreviousAddressListId}
 import models.{Address, AddressConfiguration, Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form

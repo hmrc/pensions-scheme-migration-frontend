@@ -53,7 +53,7 @@ class EstablisherEnterUTRControllerSpec
   private val form: Form[ReferenceValue] =
     formProvider()
   private val onwardRoute: Call =
-    controllers.routes.IndexController.onPageLoad()
+    controllers.routes.IndexController.onPageLoad
   private val userAnswers: UserAnswers =
     ua.set(EstablisherNameId(0), personName).success.value
   private val templateToBeRendered: String =

@@ -54,8 +54,8 @@ class InsurerConfirmAddressControllerSpec extends ControllerSpecBase with Nunjuc
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onPageLoad().url
-  private val httpPathPOST: String = controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onSubmit().url
+  private val httpPathGET: String = controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onPageLoad.url
+  private val httpPathPOST: String = controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onSubmit.url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "line1" -> Seq("1"),
@@ -106,13 +106,13 @@ class InsurerConfirmAddressControllerSpec extends ControllerSpecBase with Nunjuc
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad.url
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
 
       when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
-        .thenReturn(routes.CheckYourAnswersController.onPageLoad())
+        .thenReturn(routes.CheckYourAnswersController.onPageLoad)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -121,7 +121,7 @@ class InsurerConfirmAddressControllerSpec extends ControllerSpecBase with Nunjuc
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad.url)
 
       verify(mockUserAnswersCacheConnector, times(1)).save(any(),jsonCaptor.capture())(any(), any())
       val expectedJson = Json.obj(

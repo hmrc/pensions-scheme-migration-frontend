@@ -75,15 +75,15 @@ object BenefitsAndInsuranceNavigatorSpec extends OptionValues {
   private def uaWithValue[A](idType: TypedIdentifier[A], idValue: A)(implicit writes: Writes[A]) =
     UserAnswers().set(idType, idValue).toOption
 
-  private def benefitsTypePage: Call = BenefitsTypeController.onPageLoad()
+  private def benefitsTypePage: Call = BenefitsTypeController.onPageLoad
 
-  private def insuranceCompanyName: Call = BenefitsInsuranceNameController.onPageLoad()
+  private def insuranceCompanyName: Call = BenefitsInsuranceNameController.onPageLoad
 
-  private def insurancePolicyNumber: Call = BenefitsInsurancePolicyController.onPageLoad()
+  private def insurancePolicyNumber: Call = BenefitsInsurancePolicyController.onPageLoad
 
-  private def insurerSelectAddress: Call = InsurerSelectAddressController.onPageLoad()
+  private def insurerSelectAddress: Call = InsurerSelectAddressController.onPageLoad
 
-  private def insurerEnterPostCode: Call = InsurerEnterPostcodeController.onPageLoad()
+  private def insurerEnterPostCode: Call = InsurerEnterPostcodeController.onPageLoad
 
-  private def checkYourAnswersPage: Call = CheckYourAnswersController.onPageLoad()
+  private def checkYourAnswersPage: Call = CheckYourAnswersController.onPageLoad
 }

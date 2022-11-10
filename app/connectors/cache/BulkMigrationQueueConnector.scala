@@ -20,8 +20,8 @@ import com.google.inject.Inject
 import config.AppConfig
 import play.api.http.Status._
 import play.api.libs.json._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpException, HttpResponse, NotFoundException}
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpException, HttpResponse, NotFoundException}
 
 import scala.concurrent.{ExecutionContext, Future}
 

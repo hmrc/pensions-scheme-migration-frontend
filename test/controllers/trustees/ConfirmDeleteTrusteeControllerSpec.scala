@@ -120,7 +120,7 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with Nunjuck
       val expectedJson = Json.obj()
 
       when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(ConfirmDeleteTrusteeId), any(), any())(any()))
-        .thenReturn(routes.AddTrusteeController.onPageLoad())
+        .thenReturn(routes.AddTrusteeController.onPageLoad)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers.map(_.setOrException(OtherTrusteesId, true)))
@@ -135,7 +135,7 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with Nunjuck
 
       jsonCaptor.getValue must containJson(expectedJson)
 
-      redirectLocation(result) mustBe Some(routes.AddTrusteeController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.AddTrusteeController.onPageLoad.url)
 
       val jsonCaptorUA = ArgumentCaptor.forClass(classOf[JsValue])
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptorUA.capture())(any(), any())
@@ -151,7 +151,7 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with Nunjuck
       val expectedJson = Json.obj()
 
       when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(ConfirmDeleteTrusteeId), any(), any())(any()))
-        .thenReturn(routes.AddTrusteeController.onPageLoad())
+        .thenReturn(routes.AddTrusteeController.onPageLoad)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers1.map(_.setOrException(OtherTrusteesId, true)
@@ -167,7 +167,7 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with Nunjuck
 
       jsonCaptor.getValue must containJson(expectedJson)
 
-      redirectLocation(result) mustBe Some(routes.AddTrusteeController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.AddTrusteeController.onPageLoad.url)
 
       val jsonCaptorUA = ArgumentCaptor.forClass(classOf[JsValue])
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptorUA.capture())(any(), any())

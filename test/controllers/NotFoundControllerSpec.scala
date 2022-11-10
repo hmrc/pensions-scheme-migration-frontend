@@ -36,7 +36,7 @@ class NotFoundControllerSpec extends ControllerSpecBase with NunjucksSupport wit
 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
-  private def httpPathGET: String = controllers.routes.NotFoundController.onPageLoad().url
+  private def httpPathGET: String = controllers.routes.NotFoundController.onPageLoad.url
 
   "NotFoundController" must {
 

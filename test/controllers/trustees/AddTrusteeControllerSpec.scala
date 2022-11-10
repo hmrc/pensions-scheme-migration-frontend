@@ -67,8 +67,8 @@ class AddTrusteeControllerSpec extends ControllerSpecBase with NunjucksSupport w
   )
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
-  private def httpPathGET: String = controllers.trustees.routes.AddTrusteeController.onPageLoad().url
-  private def httpPathPOST: String = controllers.trustees.routes.AddTrusteeController.onSubmit().url
+  private def httpPathGET: String = controllers.trustees.routes.AddTrusteeController.onPageLoad.url
+  private def httpPathPOST: String = controllers.trustees.routes.AddTrusteeController.onSubmit.url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq("true")
@@ -134,7 +134,7 @@ class AddTrusteeControllerSpec extends ControllerSpecBase with NunjucksSupport w
     "Save data to user answers and redirect to next page when valid data is submitted" in {
 
       when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(AddTrusteeId(Some(true))), any(), any())(any()))
-        .thenReturn(routes.AddTrusteeController.onPageLoad())
+        .thenReturn(routes.AddTrusteeController.onPageLoad)
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
@@ -142,7 +142,7 @@ class AddTrusteeControllerSpec extends ControllerSpecBase with NunjucksSupport w
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result) mustBe Some(routes.AddTrusteeController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.AddTrusteeController.onPageLoad.url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {
@@ -173,7 +173,7 @@ class AddTrusteeControllerSpec extends ControllerSpecBase with NunjucksSupport w
       val result = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.NoTrusteesController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.NoTrusteesController.onPageLoad.url)
     }
 
     "redirect to any trustees page if there are no added trustees and the scheme is NOT a single trust" in {
@@ -184,7 +184,7 @@ class AddTrusteeControllerSpec extends ControllerSpecBase with NunjucksSupport w
       val result = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.AnyTrusteesController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.AnyTrusteesController.onPageLoad.url)
     }
   }
 }

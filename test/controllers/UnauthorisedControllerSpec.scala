@@ -38,7 +38,7 @@ class UnauthorisedControllerSpec extends ControllerSpecBase with NunjucksSupport
 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
-  private def httpPathGET: String = controllers.routes.UnauthorisedController.onPageLoad().url
+  private def httpPathGET: String = controllers.routes.UnauthorisedController.onPageLoad.url
 
 
   override def beforeEach: Unit = {

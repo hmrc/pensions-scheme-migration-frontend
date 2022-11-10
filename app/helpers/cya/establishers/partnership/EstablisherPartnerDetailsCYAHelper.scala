@@ -16,9 +16,9 @@
 
 package helpers.cya.establishers.partnership
 
-import controllers.establishers.partnership.partner.details.{routes => detailsRoutes}
 import controllers.establishers.partnership.partner.address.{routes => addressRoutes}
 import controllers.establishers.partnership.partner.contact.{routes => contactRoutes}
+import controllers.establishers.partnership.partner.details.{routes => detailsRoutes}
 import controllers.establishers.partnership.partner.routes
 import helpers.cya.CYAHelper
 import helpers.cya.CYAHelper.getName

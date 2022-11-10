@@ -59,19 +59,19 @@ class ProcessingRequestController @Inject()(val appConfig: AppConfig,
         Tuple3(
           "messages__processingRequest__h1_processed",
           "messages__processingRequest__content_processed",
-          routes.ConfirmationController.onPageLoad().url
+          routes.ConfirmationController.onPageLoad.url
         )
       case NOT_FOUND =>
         Tuple3(
           "messages__processingRequest__h1_processing",
           "messages__processingRequest__content_processing",
-          routes.ProcessingRequestController.onPageLoad().url
+          routes.ProcessingRequestController.onPageLoad.url
         )
       case _ =>
         Tuple3(
           "messages__processingRequest__h1_failure",
           "messages__processingRequest__content_failure",
-          routes.DeclarationController.onPageLoad().url
+          routes.DeclarationController.onPageLoad.url
         )
     }
   }

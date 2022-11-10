@@ -48,7 +48,7 @@ class DirectorAlsoTrusteeControllerSpec extends ControllerSpecBase
   private val personName: PersonName = PersonName("Jane", "Doe")
   private val formProvider: DataPrefillRadioFormProvider = new DataPrefillRadioFormProvider()
   private val form = formProvider("")
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val userAnswers: UserAnswers = ua.set(TrusteeNameId(0), personName).success.value
   private val templateToBeRendered: String = "dataPrefillRadio.njk"
   private val mockDataPrefillService = mock[DataPrefillService]
@@ -110,7 +110,7 @@ class DirectorAlsoTrusteeControllerSpec extends ControllerSpecBase
       val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(userAnswers))
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.TaskListController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.TaskListController.onPageLoad.url)
     }
 
     "copy the directors and redirect to the next page when valid data is submitted with value less than max trustees" in {

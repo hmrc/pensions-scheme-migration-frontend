@@ -46,7 +46,7 @@ class PAYEControllerSpec extends ControllerSpecBase with NunjucksSupport with Js
   private val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
   private val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
   private val formProvider: PAYEFormProvider = new PAYEFormProvider()
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
 
   private val commonJson: JsObject =

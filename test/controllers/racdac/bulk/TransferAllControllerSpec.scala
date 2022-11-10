@@ -79,7 +79,7 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.failed(AncillaryPsaException()))
       val result = controller.onPageLoad(fakeDataRequest(ua))
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.preMigration.routes.CannotMigrateController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.preMigration.routes.CannotMigrateController.onPageLoad.url)
     }
 
     "redirect to the 'There is a problem' page when ListOfSchemes5xxException is thrown" in {
@@ -87,7 +87,7 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.failed(ListOfSchemes5xxException()))
       val result = controller.onPageLoad(fakeDataRequest(ua))
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.preMigration.routes.ThereIsAProblemController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.preMigration.routes.ThereIsAProblemController.onPageLoad.url)
     }
 
     "return OK and the correct view for a GET" in{
@@ -132,7 +132,7 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
       status(result) mustBe SEE_OTHER
 
-      redirectLocation(result) mustBe Some(routes.BulkListController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.BulkListController.onPageLoad.url)
       verify(mockCurrentPstrCacheConnector, times(1)).remove(any(), any())
     }
 

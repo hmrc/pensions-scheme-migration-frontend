@@ -30,9 +30,9 @@ import identifiers.establishers.individual.details._
 import identifiers.establishers.partnership.AddPartnersId
 import models.establishers.EstablisherKind
 import models.requests.DataRequest
-import models.{Mode, Index, CheckMode, NormalMode}
-import play.api.mvc.{Call, AnyContent}
-import utils.{UserAnswers, Enumerable}
+import models.{CheckMode, Index, Mode, NormalMode}
+import play.api.mvc.{AnyContent, Call}
+import utils.{Enumerable, UserAnswers}
 
 import javax.inject.Inject
 
@@ -46,7 +46,7 @@ class EstablishersNavigator@Inject()(config: AppConfig)
     case EstablisherKindId(index) => establisherKindRoutes(index, ua)
     case EstablisherNameId(index) => controllers.establishers.individual.routes.SpokeTaskListController.onPageLoad(index)
     case AddEstablisherId(value) => addEstablisherRoutes(value, ua)
-    case ConfirmDeleteEstablisherId => AddEstablisherController.onPageLoad()
+    case ConfirmDeleteEstablisherId => AddEstablisherController.onPageLoad
     case EstablisherDOBId(index) => controllers.establishers.individual.details.routes.EstablisherHasNINOController.onPageLoad(index, NormalMode)
     case EstablisherHasNINOId(index) => establisherHasNino(index, ua, NormalMode)
     case EstablisherNINOId(index) => controllers.establishers.individual.details.routes.EstablisherHasUTRController.onPageLoad(index, NormalMode)
@@ -120,7 +120,7 @@ class EstablishersNavigator@Inject()(config: AppConfig)
       case Some(EstablisherKind.Individual) => controllers.establishers.individual.routes.EstablisherNameController.onPageLoad(index)
       case Some(EstablisherKind.Company) => CompanyDetailsController.onPageLoad(index)
       case Some(EstablisherKind.Partnership) => PartnershipDetailsController.onPageLoad(index)
-      case _ => IndexController.onPageLoad()
+      case _ => IndexController.onPageLoad
     }
 
   private def addEstablisherRoutes(
@@ -128,9 +128,9 @@ class EstablishersNavigator@Inject()(config: AppConfig)
     answers: UserAnswers
   ): Call =
     value match {
-      case Some(false) => controllers.routes.TaskListController.onPageLoad()
+      case Some(false) => controllers.routes.TaskListController.onPageLoad
       case Some(true) => EstablisherKindController.onPageLoad(answers.establishersCount)
-      case None => controllers.routes.TaskListController.onPageLoad()
+      case None => controllers.routes.TaskListController.onPageLoad
     }
 
   private def establisherHasNino(
@@ -141,7 +141,7 @@ class EstablishersNavigator@Inject()(config: AppConfig)
     answers.get(EstablisherHasNINOId(index)) match {
       case Some(true) => controllers.establishers.individual.details.routes.EstablisherEnterNINOController.onPageLoad(index, mode)
       case Some(false) => controllers.establishers.individual.details.routes.EstablisherNoNINOReasonController.onPageLoad(index, mode)
-      case None => controllers.routes.TaskListController.onPageLoad()
+      case None => controllers.routes.TaskListController.onPageLoad
     }
 
   private def establisherHasUtr(
@@ -152,6 +152,6 @@ class EstablishersNavigator@Inject()(config: AppConfig)
     answers.get(EstablisherHasUTRId(index)) match {
       case Some(true) => controllers.establishers.individual.details.routes.EstablisherEnterUTRController.onPageLoad(index, mode)
       case Some(false) => controllers.establishers.individual.details.routes.EstablisherNoUTRReasonController.onPageLoad(index, mode)
-      case None => controllers.routes.TaskListController.onPageLoad()
+      case None => controllers.routes.TaskListController.onPageLoad
     }
 }

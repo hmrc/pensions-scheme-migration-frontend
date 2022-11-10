@@ -20,10 +20,10 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.trustees.ConfirmDeleteTrusteeFormProvider
-import identifiers.trustees.{AnyTrusteesId, ConfirmDeleteTrusteeId, OtherTrusteesId}
 import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.partnership.PartnershipDetailsId
+import identifiers.trustees.{AnyTrusteesId, ConfirmDeleteTrusteeId, OtherTrusteesId}
 import models._
 import models.requests.DataRequest
 import models.trustees.TrusteeKind
@@ -74,7 +74,7 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
               )
               renderer.render("delete.njk", json).map(Ok(_))
             }
-        } getOrElse Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
+        } getOrElse Future.successful(Redirect(controllers.routes.IndexController.onPageLoad))
     }
 
   private def getDeletableTrustee(index: Index, trusteeKind: TrusteeKind, userAnswers: UserAnswers)
@@ -109,7 +109,7 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
               updateTrusteeKind(trusteeDetails.partnershipName, trusteeKind, trusteeIndex, None, None, Some(trusteeDetails))
             }
           case _ =>
-            Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
+            Future.successful(Redirect(controllers.routes.IndexController.onPageLoad))
         }
     }
 

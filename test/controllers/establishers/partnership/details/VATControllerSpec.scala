@@ -45,7 +45,7 @@ class VATControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
   private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(index), partnershipDetails).success.value
 
   private val formProvider: VATFormProvider = new VATFormProvider()
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
 
   private val commonJson: JsObject =

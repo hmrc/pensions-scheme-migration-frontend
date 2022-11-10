@@ -18,7 +18,7 @@ package identifiers.trustees.company.address
 
 import identifiers.TypedIdentifier
 import identifiers.trustees.TrusteesId
-import play.api.libs.json.{Format, Json, JsPath}
+import play.api.libs.json.{Format, JsPath, Json}
 import utils.UserAnswers
 
 case class AddressYearsId(index: Int) extends TypedIdentifier[Boolean] {

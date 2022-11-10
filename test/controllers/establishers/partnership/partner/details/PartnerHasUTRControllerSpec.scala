@@ -53,7 +53,7 @@ class PartnerHasUTRControllerSpec
   private val form: Form[Boolean] =
     formProvider("Select Yes if Jane Doe has a Unique Taxpayer Reference")
   private val onwardRoute: Call =
-    controllers.routes.IndexController.onPageLoad()
+    controllers.routes.IndexController.onPageLoad
   private val userAnswers: UserAnswers =
     ua.set(PartnerNameId(0,0), personName).success.value
   private val templateToBeRendered: String =

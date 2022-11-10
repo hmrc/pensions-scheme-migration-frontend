@@ -59,7 +59,7 @@ class AddEstablisherController @Inject()(
         val allEstablishers = request.userAnswers.allEstablishersAfterDelete
 
         if (allEstablishers.isEmpty) {
-          Future.successful(Redirect(NoEstablishersController.onPageLoad()))
+          Future.successful(Redirect(NoEstablishersController.onPageLoad))
         } else {
           renderer.render(
             template = "establishers/addEstablisher.njk",

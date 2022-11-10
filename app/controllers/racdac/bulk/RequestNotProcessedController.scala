@@ -40,7 +40,7 @@ class RequestNotProcessedController @Inject()(val appConfig: AppConfig,
         renderer.render(
           template = "racdac/request-not-processed.njk",
           Json.obj(
-            "tryAgain" -> routes.TransferAllController.onPageLoad().url
+            "tryAgain" -> routes.TransferAllController.onPageLoad.url
           )
         ).map(Ok(_))
       }

@@ -23,10 +23,10 @@ import controllers.actions._
 import controllers.address.{AddressListController, AddressPages}
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
+import identifiers.establishers.company.director.{address => Director}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address.{AddressId, AddressListId, EnterPostCodeId}
-import identifiers.establishers.company.director.{address => Director}
-import models.{CheckMode, Index, Mode, NormalMode, TolerantAddress}
+import models._
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}

@@ -49,8 +49,8 @@ class InsurerEnterPostcodeControllerSpec extends ControllerSpecBase with Nunjuck
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onPageLoad().url
-  private val httpPathPOST: String = controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onSubmit().url
+  private val httpPathGET: String = controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onPageLoad.url
+  private val httpPathPOST: String = controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onSubmit.url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq("ZZ11ZZ")
@@ -92,14 +92,14 @@ class InsurerEnterPostcodeControllerSpec extends ControllerSpecBase with Nunjuck
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad.url
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
       val seqAddresses = Seq(TolerantAddress(Some("a"),Some("b"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")))
 
       when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
-        .thenReturn(routes.CheckYourAnswersController.onPageLoad())
+        .thenReturn(routes.CheckYourAnswersController.onPageLoad)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
       when(mockAddressLookupConnector.addressLookupByPostCode(any())(any(), any()))
@@ -110,7 +110,7 @@ class InsurerEnterPostcodeControllerSpec extends ControllerSpecBase with Nunjuck
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad.url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

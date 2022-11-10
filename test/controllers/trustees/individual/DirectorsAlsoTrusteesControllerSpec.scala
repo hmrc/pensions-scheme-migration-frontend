@@ -46,7 +46,7 @@ class DirectorsAlsoTrusteesControllerSpec extends ControllerSpecBase
   //private val personName: PersonName = PersonName("Jane", "Doe")
   private val formProvider: DataPrefillCheckboxFormProvider = new DataPrefillCheckboxFormProvider()
   private val form = formProvider(6,"", "", "")
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val templateToBeRendered: String = "dataPrefillCheckbox.njk"
   private val mockDataPrefillService = mock[DataPrefillService]
 
@@ -107,7 +107,7 @@ class DirectorsAlsoTrusteesControllerSpec extends ControllerSpecBase
       val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(ua))
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.TaskListController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.TaskListController.onPageLoad.url)
     }
 
     "copy the directors and redirect to the next page when valid data is submitted with value less than max trustees" in {

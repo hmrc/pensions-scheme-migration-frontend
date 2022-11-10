@@ -16,9 +16,9 @@
 
 package services
 
-import identifiers.establishers.{EstablisherKindId, EstablishersId}
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.details._
+import identifiers.establishers.{EstablisherKindId, EstablishersId}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.details._
 import identifiers.trustees.{TrusteeKindId, TrusteesId}

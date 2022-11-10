@@ -38,11 +38,11 @@ class BeforeYouStartNavigatorSpec
     def navigation: TableFor3[Identifier, UserAnswers, Call] =
       Table(
         ("Id", "UserAnswers", "Next Page"),
-        row(SchemeTypeId)(CheckYourAnswersController.onPageLoad()),
-        row(SchemeTypeId)(CheckYourAnswersController.onPageLoad(), uaWithValue(SchemeTypeId, SchemeType.BodyCorporate)),
-        row(SchemeTypeId)(CheckYourAnswersController.onPageLoad(), uaWithValue(SchemeTypeId, SchemeType.GroupLifeDeath)),
-        row(EstablishedCountryId)(CheckYourAnswersController.onPageLoad()),
-        row(WorkingKnowledgeId)(CheckYourAnswersController.onPageLoad())
+        row(SchemeTypeId)(CheckYourAnswersController.onPageLoad),
+        row(SchemeTypeId)(CheckYourAnswersController.onPageLoad, uaWithValue(SchemeTypeId, SchemeType.BodyCorporate)),
+        row(SchemeTypeId)(CheckYourAnswersController.onPageLoad, uaWithValue(SchemeTypeId, SchemeType.GroupLifeDeath)),
+        row(EstablishedCountryId)(CheckYourAnswersController.onPageLoad),
+        row(WorkingKnowledgeId)(CheckYourAnswersController.onPageLoad)
       )
 
     "in NormalMode" must {
