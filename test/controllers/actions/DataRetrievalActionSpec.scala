@@ -21,8 +21,8 @@ import connectors.cache.{CurrentPstrCacheConnector, LockCacheConnector, UserAnsw
 import models.MigrationLock
 import models.requests.{AuthenticatedRequest, OptionalDataRequest}
 import org.mockito.ArgumentMatchers._
+import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
-import org.mockito.Mockito.{never, reset, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.libs.json.{JsResultException, Json}
 import uk.gov.hmrc.domain.PsaId

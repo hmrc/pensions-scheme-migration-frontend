@@ -23,11 +23,11 @@ import models.SchemeType
 import org.scalatest.TryValues
 import org.scalatest.matchers.must.Matchers
 import play.api.i18n.Messages
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Value, Row, Key}
-import uk.gov.hmrc.viewmodels.Text.{Message, Literal}
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, Html}
+import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
+import uk.gov.hmrc.viewmodels.Text.{Literal, Message}
+import uk.gov.hmrc.viewmodels.{Html, MessageInterpolators}
 import utils.Data.schemeName
-import utils.{UserAnswers, CountryOptions, Enumerable, InputOption}
+import utils.{CountryOptions, Enumerable, InputOption, UserAnswers}
 
 class BeforeYouStartCYAHelperSpec
   extends SpecBase

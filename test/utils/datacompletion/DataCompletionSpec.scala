@@ -18,9 +18,9 @@ package utils.datacompletion
 
 import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
 import identifiers.adviser.{AdviserNameId, EnterEmailId, EnterPhoneId, AddressId => adviserAddressId}
-import identifiers.establishers.company.address._
 import identifiers.beforeYouStart.{EstablishedCountryId, SchemeNameId, SchemeTypeId, WorkingKnowledgeId}
 import identifiers.benefitsAndInsurance._
+import identifiers.establishers.company.address._
 import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
 import models.{Address, Members, SchemeType}
 import org.scalatest.OptionValues

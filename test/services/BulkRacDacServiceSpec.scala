@@ -22,8 +22,8 @@ import forms.racdac.RacDacBulkListFormProvider
 import matchers.JsonMatchers
 import models._
 import models.requests.{AuthenticatedRequest, BulkDataRequest}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, MockitoSugar}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form

@@ -24,8 +24,8 @@ import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
 import matchers.JsonMatchers
-import models.establishers.EstablisherKind
 import models._
+import models.establishers.EstablisherKind
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}

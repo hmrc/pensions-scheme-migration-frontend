@@ -16,11 +16,11 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, _}
+import com.github.tomakehurst.wiremock.client.WireMock._
 import models.{Items, ListOfLegacySchemes}
-import org.scalatest.{BeforeAndAfterEach, OptionValues}
-import org.scalatest.matchers.should.Matchers
 import org.scalatest.flatspec.AsyncFlatSpec
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import play.api.http.Status
 import play.api.http.Status._
 import play.api.libs.json.Json

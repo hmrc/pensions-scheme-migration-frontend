@@ -25,7 +25,7 @@ import identifiers.establishers.individual.details._
 import identifiers.establishers.{AddEstablisherId, ConfirmDeleteEstablisherId, EstablisherKindId}
 import identifiers.{Identifier, TypedIdentifier}
 import models.establishers.EstablisherKind
-import models.{CheckMode, Index, Mode, NormalMode, PersonName, ReferenceValue, _}
+import models._
 import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes

@@ -23,6 +23,7 @@ import identifiers.aboutMembership.FutureMembersId
 import matchers.JsonMatchers
 import models.{Members, Scheme}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
@@ -33,7 +34,6 @@ import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
-import org.mockito.Mockito.{times, verify, when}
 
 import scala.concurrent.Future
 

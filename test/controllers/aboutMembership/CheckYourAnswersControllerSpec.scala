@@ -22,10 +22,10 @@ import helpers.cya.AboutCYAHelper
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{times, verify, when}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import org.mockito.Mockito.{times, verify, when}
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}

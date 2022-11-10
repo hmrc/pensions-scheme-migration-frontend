@@ -20,9 +20,9 @@ import base.SpecBase
 import controllers.benefitsAndInsurance.routes._
 import identifiers._
 import identifiers.benefitsAndInsurance._
-import models.{CheckMode, NormalMode}
 import models.benefitsAndInsurance.BenefitsProvisionType.{DefinedBenefitsOnly, MixedBenefits, MoneyPurchaseOnly}
 import models.benefitsAndInsurance.BenefitsType._
+import models.{CheckMode, NormalMode}
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.{JsString, Writes}

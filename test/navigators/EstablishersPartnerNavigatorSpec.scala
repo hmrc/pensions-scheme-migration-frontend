@@ -23,7 +23,7 @@ import identifiers.establishers.partnership.partner.contact.{EnterEmailId, Enter
 import identifiers.establishers.partnership.partner.details._
 import identifiers.establishers.partnership.partner.{ConfirmDeletePartnerId, PartnerNameId}
 import identifiers.{Identifier, TypedIdentifier}
-import models.{CheckMode, Index, Mode, NormalMode, PersonName, ReferenceValue, _}
+import models._
 import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes

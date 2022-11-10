@@ -17,11 +17,11 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import org.scalatest.{OptionValues, BeforeAndAfterEach}
 import org.scalatest.flatspec.AsyncFlatSpec
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import play.api.http.Status._
-import play.api.libs.json.{Json, JsValue}
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 

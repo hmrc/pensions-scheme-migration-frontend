@@ -27,7 +27,7 @@ import models.MigrationType.isRacDac
 import models._
 import models.requests.AuthenticatedRequest
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, ArgumentMatchers, MockitoSugar}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form

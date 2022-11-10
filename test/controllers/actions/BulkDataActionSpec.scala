@@ -18,12 +18,12 @@ package controllers.actions
 
 import base.SpecBase
 import config.AppConfig
-import connectors.cache.CurrentPstrCacheConnector
 import connectors._
+import connectors.cache.CurrentPstrCacheConnector
 import models.requests.{AuthenticatedRequest, BulkDataRequest}
 import models.{Items, ListOfLegacySchemes, MinPSA}
 import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito.{never, reset, times, verify, when}
+import org.mockito.Mockito._
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar.mock

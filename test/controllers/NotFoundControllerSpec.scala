@@ -20,12 +20,12 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{times, verify, when}
 import play.api.Application
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.{Enumerable, UserAnswers}
-import org.mockito.Mockito.{times, verify, when}
 
 import scala.concurrent.Future
 

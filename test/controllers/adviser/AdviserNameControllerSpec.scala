@@ -24,6 +24,7 @@ import matchers.JsonMatchers
 import models.{CheckMode, NormalMode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Result}
@@ -34,8 +35,6 @@ import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{Data, FakeNavigator}
-import org.mockito.Mockito.{never, reset, times, verify, when}
-import org.scalatestplus.mockito.MockitoSugar.mock
 
 import scala.concurrent.Future
 

@@ -23,7 +23,7 @@ import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.details._
 import identifiers.trustees.individual.{TrusteeNameId, address => individualAddress}
 import identifiers.trustees.partnership.address.{AddressId, AddressYearsId, PreviousAddressId, TradingTimeId}
-import identifiers.trustees.partnership.{PartnershipDetailsId, details => partnershipDetails, contact => partnershipContact}
+import identifiers.trustees.partnership.{PartnershipDetailsId, contact => partnershipContact, details => partnershipDetails}
 import models.trustees.TrusteeKind
 import models.{CompanyDetails, PartnershipDetails, PersonName, ReferenceValue}
 import org.scalatest.matchers.must.Matchers

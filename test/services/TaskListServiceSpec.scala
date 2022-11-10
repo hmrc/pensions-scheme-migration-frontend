@@ -21,7 +21,7 @@ import identifiers.ExpireAtId
 import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
 import identifiers.adviser.{AdviserNameId, AddressId => AdviserAddressId, EnterEmailId => AdviserEnterEmailId, EnterPhoneId => AdviserEnterPhoneId}
 import identifiers.beforeYouStart.{EstablishedCountryId, SchemeNameId, SchemeTypeId, WorkingKnowledgeId}
-import identifiers.benefitsAndInsurance.{AreBenefitsSecuredId, BenefitsTypeId, HowProvideBenefitsId, IsInvestmentRegulatedId, IsOccupationalId}
+import identifiers.benefitsAndInsurance._
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{AddressId, AddressYearsId}
@@ -37,7 +37,6 @@ import models._
 import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
 import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind
-import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.schemeName

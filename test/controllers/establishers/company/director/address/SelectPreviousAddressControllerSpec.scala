@@ -21,8 +21,9 @@ import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.establishers.company.director.address.EnterPreviousPostCodeId
 import matchers.JsonMatchers
-import models.{NormalMode, TolerantAddress}
+import models.{NormalMode, Scheme, TolerantAddress}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.inject.bind
@@ -33,10 +34,8 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.{Data, Enumerable, UserAnswers}
-import models.Scheme
+
 import scala.concurrent.Future
-import org.mockito.Mockito.{never, reset, times, verify, when}
-import org.scalatestplus.mockito.MockitoSugar.mock
 
 class SelectPreviousAddressControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 

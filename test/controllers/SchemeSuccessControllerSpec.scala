@@ -18,14 +18,15 @@ package controllers
 
 
 
-import connectors.{ListOfSchemesConnector, MinimalDetailsConnector}
 import connectors.cache.{CurrentPstrCacheConnector, LockCacheConnector}
+import connectors.{ListOfSchemesConnector, MinimalDetailsConnector}
 import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
 import models.PersonName
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{times, verify, when}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -36,7 +37,6 @@ import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{Data, Enumerable, UserAnswers}
-import org.mockito.Mockito.{times, verify, when}
 
 import scala.concurrent.Future
 

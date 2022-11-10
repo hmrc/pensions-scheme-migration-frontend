@@ -19,7 +19,7 @@ package navigators
 import base.SpecBase
 import controllers.trustees.company.details.{routes => detailsRoutes}
 import identifiers.trustees.company.CompanyDetailsId
-import identifiers.trustees.company.address.{AddressYearsId, TradingTimeId, _}
+import identifiers.trustees.company.address._
 import identifiers.trustees.company.contacts.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.company.details._
 import identifiers.{Identifier, TypedIdentifier}
