@@ -51,7 +51,7 @@ import utils.SchemeFuzzyMatcher
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach  with ScalaFutures with NunjucksSupport with JsonMatchers {
+class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with ScalaFutures with NunjucksSupport with JsonMatchers {
 
   import SchemeSearchServiceSpec._
 

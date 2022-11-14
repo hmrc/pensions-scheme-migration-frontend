@@ -256,8 +256,6 @@ class DataPrefillService @Inject()() extends Enumerable.Implicits {
     }
   }
 
-
-
   private def asJsResultSeq[A](jsResults: Seq[JsResult[A]]): JsResult[Seq[A]] = {
     JsSuccess(jsResults.collect {
       case JsSuccess(i, _) => i

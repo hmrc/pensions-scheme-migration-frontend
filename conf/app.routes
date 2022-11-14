@@ -1,161 +1,161 @@
 # microservice specific routes
-->          /establisher                                           establishers.Routes
-->          /trustee                                               trustees.Routes
+->          /establisher                                       establishers.Routes
+->          /trustee                                           trustees.Routes
 
-GET         /language/:lang                                        controllers.LanguageSwitchController.switchToLanguage(lang: String)
-GET         /assets/*file                                          controllers.Assets.versioned(path = "/public", file: Asset)
+GET         /language/:lang                                    controllers.LanguageSwitchController.switchToLanguage(lang: String)
+GET         /assets/*file                                      controllers.Assets.versioned(path = "/public", file: Asset)
 
-GET         /unauthorised                                          controllers.UnauthorisedController.onPageLoad
-GET         /you-need-to-register                                  controllers.YouNeedToRegisterController.onPageLoad
+GET         /unauthorised                                      controllers.UnauthorisedController.onPageLoad
+GET         /you-need-to-register                              controllers.YouNeedToRegisterController.onPageLoad
 
-GET         /not-found                                             controllers.NotFoundController.onPageLoad
+GET         /not-found                                         controllers.NotFoundController.onPageLoad
 
-GET         /index                                                 controllers.IndexController.onPageLoad
-GET         /task-list                                             controllers.TaskListController.onPageLoad
+GET         /index                                             controllers.IndexController.onPageLoad
+GET         /task-list                                         controllers.TaskListController.onPageLoad
 
-GET         /sign-out                                              controllers.LogoutController.onPageLoad
-GET         /keep-alive                                            controllers.LogoutController.keepAlive
+GET         /sign-out                                          controllers.LogoutController.onPageLoad
+GET         /keep-alive                                        controllers.LogoutController.keepAlive
 
-GET         /scheme-type                                           controllers.beforeYouStartSpoke.SchemeTypeController.onPageLoad
-POST        /scheme-type                                           controllers.beforeYouStartSpoke.SchemeTypeController.onSubmit
+GET         /scheme-type                                       controllers.beforeYouStartSpoke.SchemeTypeController.onPageLoad
+POST        /scheme-type                                       controllers.beforeYouStartSpoke.SchemeTypeController.onSubmit
 
-GET         /country-established-in                                controllers.beforeYouStartSpoke.EstablishedCountryController.onPageLoad
-POST        /country-established-in                                controllers.beforeYouStartSpoke.EstablishedCountryController.onSubmit
+GET         /country-established-in                            controllers.beforeYouStartSpoke.EstablishedCountryController.onPageLoad
+POST        /country-established-in                            controllers.beforeYouStartSpoke.EstablishedCountryController.onSubmit
 
-GET         /having-pensions-working-knowledge                     controllers.beforeYouStartSpoke.WorkingKnowledgeController.onPageLoad
-POST        /having-pensions-working-knowledge                     controllers.beforeYouStartSpoke.WorkingKnowledgeController.onSubmit
+GET         /having-pensions-working-knowledge                 controllers.beforeYouStartSpoke.WorkingKnowledgeController.onPageLoad
+POST        /having-pensions-working-knowledge                 controllers.beforeYouStartSpoke.WorkingKnowledgeController.onSubmit
 
-GET         /check-your-answers-basic-scheme-details               controllers.beforeYouStartSpoke.CheckYourAnswersController.onPageLoad
+GET         /check-your-answers-basic-scheme-details           controllers.beforeYouStartSpoke.CheckYourAnswersController.onPageLoad
 
-GET         /current-scheme-members                                controllers.aboutMembership.CurrentMembersController.onPageLoad
-POST        /current-scheme-members                                controllers.aboutMembership.CurrentMembersController.onSubmit
+GET         /current-scheme-members                            controllers.aboutMembership.CurrentMembersController.onPageLoad
+POST        /current-scheme-members                            controllers.aboutMembership.CurrentMembersController.onSubmit
 
-GET         /already-adding-scheme                                 controllers.AddingSchemeController.onPageLoad
-GET         /rac-dac/already-adding-rac-dac                        controllers.racdac.individual.AddingRacDacController.onPageLoad
+GET         /already-adding-scheme                             controllers.AddingSchemeController.onPageLoad
+GET         /rac-dac/already-adding-rac-dac                    controllers.racdac.individual.AddingRacDacController.onPageLoad
 
-GET         /future-scheme-members                                 controllers.aboutMembership.FutureMembersController.onPageLoad
-POST        /future-scheme-members                                 controllers.aboutMembership.FutureMembersController.onSubmit
+GET         /future-scheme-members                             controllers.aboutMembership.FutureMembersController.onPageLoad
+POST        /future-scheme-members                             controllers.aboutMembership.FutureMembersController.onSubmit
 
-GET         /benefits-secured-by-insurance                         controllers.benefitsAndInsurance.AreBenefitsSecuredController.onPageLoad
-POST        /benefits-secured-by-insurance                         controllers.benefitsAndInsurance.AreBenefitsSecuredController.onSubmit
+GET         /benefits-secured-by-insurance                     controllers.benefitsAndInsurance.AreBenefitsSecuredController.onPageLoad
+POST        /benefits-secured-by-insurance                     controllers.benefitsAndInsurance.AreBenefitsSecuredController.onSubmit
 
-GET         /insurance-company-name                                controllers.benefitsAndInsurance.BenefitsInsuranceNameController.onPageLoad
-POST        /insurance-company-name                                controllers.benefitsAndInsurance.BenefitsInsuranceNameController.onSubmit
+GET         /insurance-company-name                            controllers.benefitsAndInsurance.BenefitsInsuranceNameController.onPageLoad
+POST        /insurance-company-name                            controllers.benefitsAndInsurance.BenefitsInsuranceNameController.onSubmit
 
-GET         /type-of-benefits                                      controllers.benefitsAndInsurance.HowProvideBenefitsController.onPageLoad
-POST        /type-of-benefits                                      controllers.benefitsAndInsurance.HowProvideBenefitsController.onSubmit
+GET         /type-of-benefits                                  controllers.benefitsAndInsurance.HowProvideBenefitsController.onPageLoad
+POST        /type-of-benefits                                  controllers.benefitsAndInsurance.HowProvideBenefitsController.onSubmit
 
-GET         /money-purchase-benefits                               controllers.benefitsAndInsurance.BenefitsTypeController.onPageLoad
-POST        /money-purchase-benefits                               controllers.benefitsAndInsurance.BenefitsTypeController.onSubmit
+GET         /money-purchase-benefits                           controllers.benefitsAndInsurance.BenefitsTypeController.onPageLoad
+POST        /money-purchase-benefits                           controllers.benefitsAndInsurance.BenefitsTypeController.onSubmit
 
-GET         /insurance-policy-number                               controllers.benefitsAndInsurance.BenefitsInsurancePolicyController.onPageLoad
-POST        /insurance-policy-number                               controllers.benefitsAndInsurance.BenefitsInsurancePolicyController.onSubmit
+GET         /insurance-policy-number                           controllers.benefitsAndInsurance.BenefitsInsurancePolicyController.onPageLoad
+POST        /insurance-policy-number                           controllers.benefitsAndInsurance.BenefitsInsurancePolicyController.onSubmit
 
-GET         /check-your-answers-benefits-insurance                 controllers.benefitsAndInsurance.CheckYourAnswersController.onPageLoad
+GET         /check-your-answers-benefits-insurance             controllers.benefitsAndInsurance.CheckYourAnswersController.onPageLoad
 
-GET         /check-your-answers-members                            controllers.aboutMembership.CheckYourAnswersController.onPageLoad
+GET         /check-your-answers-members                        controllers.aboutMembership.CheckYourAnswersController.onPageLoad
 
-GET         /what-you-will-need-benefits-insurance                controllers.benefitsAndInsurance.WhatYouWillNeedController.onPageLoad
+GET         /what-you-will-need-benefits-insurance             controllers.benefitsAndInsurance.WhatYouWillNeedController.onPageLoad
 
-GET         /declaration                                           controllers.DeclarationController.onPageLoad
-POST         /declaration                                            controllers.DeclarationController.onSubmit
+GET         /declaration                                       controllers.DeclarationController.onPageLoad
+POST        /declaration                                       controllers.DeclarationController.onSubmit
 
-GET         /insurance-postcode                                    controllers.benefitsAndInsurance.InsurerEnterPostcodeController.onPageLoad
-POST        /insurance-postcode                                    controllers.benefitsAndInsurance.InsurerEnterPostcodeController.onSubmit
+GET         /insurance-postcode                                controllers.benefitsAndInsurance.InsurerEnterPostcodeController.onPageLoad
+POST        /insurance-postcode                                controllers.benefitsAndInsurance.InsurerEnterPostcodeController.onSubmit
 
-GET         /insurance-address-results                             controllers.benefitsAndInsurance.InsurerSelectAddressController.onPageLoad
-POST        /insurance-address-results                             controllers.benefitsAndInsurance.InsurerSelectAddressController.onSubmit
+GET         /insurance-address-results                         controllers.benefitsAndInsurance.InsurerSelectAddressController.onPageLoad
+POST        /insurance-address-results                         controllers.benefitsAndInsurance.InsurerSelectAddressController.onSubmit
 
-GET         /insurance-confirm-address                             controllers.benefitsAndInsurance.InsurerConfirmAddressController.onPageLoad
-POST        /insurance-confirm-address                             controllers.benefitsAndInsurance.InsurerConfirmAddressController.onSubmit
+GET         /insurance-confirm-address                         controllers.benefitsAndInsurance.InsurerConfirmAddressController.onPageLoad
+POST        /insurance-confirm-address                         controllers.benefitsAndInsurance.InsurerConfirmAddressController.onSubmit
 
-GET         /confirmation                                          controllers.SchemeSuccessController.onPageLoad
+GET         /confirmation                                      controllers.SchemeSuccessController.onPageLoad
 
-GET         /migration-tile                                         controllers.preMigration.MigrationTilePartialController.migrationPartial
-GET         /cannot-add-pension-scheme                              controllers.preMigration.CannotAddController.onPageLoadScheme
-GET         /cannot-migrate                                         controllers.preMigration.CannotMigrateController.onPageLoad
-GET         /there-is-a-problem                                      controllers.preMigration.ThereIsAProblemController.onPageLoad
+GET         /migration-tile                                    controllers.preMigration.MigrationTilePartialController.migrationPartial
+GET         /cannot-add-pension-scheme                         controllers.preMigration.CannotAddController.onPageLoadScheme
+GET         /cannot-migrate                                    controllers.preMigration.CannotMigrateController.onPageLoad
+GET         /there-is-a-problem                                controllers.preMigration.ThereIsAProblemController.onPageLoad
 
-GET         /rac-dac/cannot-add-rac-dac                                      controllers.preMigration.CannotAddController.onPageLoadRacDac
-GET         /what-you-will-need-before-start                        controllers.preMigration.BeforeYouStartController.onPageLoad
+GET         /rac-dac/cannot-add-rac-dac                        controllers.preMigration.CannotAddController.onPageLoadRacDac
+GET         /what-you-will-need-before-start                   controllers.preMigration.BeforeYouStartController.onPageLoad
 
-GET         /no-pension-schemes-registered                         controllers.preMigration.NotRegisterController.onPageLoadScheme
-GET         /rac-dac/no-rac-dacs-registered                                controllers.preMigration.NotRegisterController.onPageLoadRacDac
+GET         /no-pension-schemes-registered                     controllers.preMigration.NotRegisterController.onPageLoadScheme
+GET         /rac-dac/no-rac-dacs-registered                    controllers.preMigration.NotRegisterController.onPageLoadRacDac
 
-GET         /no-pension-schemes-to-add                                        controllers.preMigration.NoSchemeToAddController.onPageLoadScheme
-GET         /rac-dac/no-rac-dacs-to-add                               controllers.preMigration.NoSchemeToAddController.onPageLoadRacDac
+GET         /no-pension-schemes-to-add                         controllers.preMigration.NoSchemeToAddController.onPageLoadScheme
+GET         /rac-dac/no-rac-dacs-to-add                        controllers.preMigration.NoSchemeToAddController.onPageLoadRacDac
 
 
-GET         /list-pension-schemes                                   controllers.preMigration.ListOfSchemesController.onPageLoad(migrationType: MigrationType = Scheme)
-POST        /list-pension-schemes-results                                  controllers.preMigration.ListOfSchemesController.onSearch(migrationType: MigrationType = Scheme)
-GET         /list-pension-schemes/page/:pageNumber                  controllers.preMigration.ListOfSchemesController.onPageLoadWithPageNumber(pageNumber: Int, migrationType: MigrationType = Scheme)
-POST        /list-pension-schemes/page/:pageNumber                  controllers.preMigration.ListOfSchemesController.onSearchWithPageNumber(pageNumber: Int, migrationType: MigrationType = Scheme)
+GET         /list-pension-schemes                              controllers.preMigration.ListOfSchemesController.onPageLoad(migrationType: MigrationType = Scheme)
+POST        /list-pension-schemes-results                      controllers.preMigration.ListOfSchemesController.onSearch(migrationType: MigrationType = Scheme)
+GET         /list-pension-schemes/page/:pageNumber             controllers.preMigration.ListOfSchemesController.onPageLoadWithPageNumber(pageNumber: Int, migrationType: MigrationType = Scheme)
+POST        /list-pension-schemes/page/:pageNumber             controllers.preMigration.ListOfSchemesController.onSearchWithPageNumber(pageNumber: Int, migrationType: MigrationType = Scheme)
 
-GET         /rac-dac/list-rac-dacs                                          controllers.preMigration.ListOfSchemesController.onPageLoad(migrationType: MigrationType = RacDac)
-POST        /rac-dac/list-rac-dacs-results                                          controllers.preMigration.ListOfSchemesController.onSearch(migrationType: MigrationType = RacDac)
-GET         /rac-dac/list-rac-dacs/page/:pageNumber                         controllers.preMigration.ListOfSchemesController.onPageLoadWithPageNumber(pageNumber: Int, migrationType: MigrationType = RacDac)
-POST        /rac-dac/list-rac-dacs/page/:pageNumber                         controllers.preMigration.ListOfSchemesController.onSearchWithPageNumber(pageNumber: Int, migrationType: MigrationType = RacDac)
-GET         /list-schemes-on-click/:pstr/:isRacDac                  controllers.preMigration.ListOfSchemesController.clickSchemeLink(pstr: String, isRacDac: Boolean)
+GET         /rac-dac/list-rac-dacs                             controllers.preMigration.ListOfSchemesController.onPageLoad(migrationType: MigrationType = RacDac)
+POST        /rac-dac/list-rac-dacs-results                     controllers.preMigration.ListOfSchemesController.onSearch(migrationType: MigrationType = RacDac)
+GET         /rac-dac/list-rac-dacs/page/:pageNumber            controllers.preMigration.ListOfSchemesController.onPageLoadWithPageNumber(pageNumber: Int, migrationType: MigrationType = RacDac)
+POST        /rac-dac/list-rac-dacs/page/:pageNumber            controllers.preMigration.ListOfSchemesController.onSearchWithPageNumber(pageNumber: Int, migrationType: MigrationType = RacDac)
+GET         /list-schemes-on-click/:pstr/:isRacDac             controllers.preMigration.ListOfSchemesController.clickSchemeLink(pstr: String, isRacDac: Boolean)
 
-GET         /what-you-will-need-for-working-knowledge               controllers.adviser.WhatYouWillNeedController.onPageLoad
+GET         /what-you-will-need-for-working-knowledge          controllers.adviser.WhatYouWillNeedController.onPageLoad
 
-GET         /who-has-working-knowledge                               controllers.adviser.AdviserNameController.onPageLoad(mode: Mode = NormalMode)
-POST        /who-has-working-knowledge                               controllers.adviser.AdviserNameController.onSubmit(mode: Mode = NormalMode)
-GET         /change/who-has-working-knowledge                        controllers.adviser.AdviserNameController.onPageLoad(mode: Mode= CheckMode)
-POST        /change/who-has-working-knowledge                        controllers.adviser.AdviserNameController.onSubmit(mode: Mode= CheckMode)
+GET         /who-has-working-knowledge                         controllers.adviser.AdviserNameController.onPageLoad(mode: Mode = NormalMode)
+POST        /who-has-working-knowledge                         controllers.adviser.AdviserNameController.onSubmit(mode: Mode = NormalMode)
+GET         /change/who-has-working-knowledge                  controllers.adviser.AdviserNameController.onPageLoad(mode: Mode= CheckMode)
+POST        /change/who-has-working-knowledge                  controllers.adviser.AdviserNameController.onSubmit(mode: Mode= CheckMode)
 
-GET         /adviser-email-address                                   controllers.adviser.EnterEmailController.onPageLoad(mode: Mode = NormalMode)
-POST        /adviser-email-address                                   controllers.adviser.EnterEmailController.onSubmit(mode: Mode = NormalMode)
-GET         /change/adviser-email-address                            controllers.adviser.EnterEmailController.onPageLoad(mode: Mode = CheckMode)
-POST        /change/adviser-email-address                            controllers.adviser.EnterEmailController.onSubmit(mode: Mode = CheckMode)
+GET         /adviser-email-address                             controllers.adviser.EnterEmailController.onPageLoad(mode: Mode = NormalMode)
+POST        /adviser-email-address                             controllers.adviser.EnterEmailController.onSubmit(mode: Mode = NormalMode)
+GET         /change/adviser-email-address                      controllers.adviser.EnterEmailController.onPageLoad(mode: Mode = CheckMode)
+POST        /change/adviser-email-address                      controllers.adviser.EnterEmailController.onSubmit(mode: Mode = CheckMode)
 
-GET         /adviser-phone-number                                    controllers.adviser.EnterPhoneController.onPageLoad(mode: Mode = NormalMode)
-POST        /adviser-phone-number                                    controllers.adviser.EnterPhoneController.onSubmit(mode: Mode = NormalMode)
-GET         /change/adviser-phone-number                             controllers.adviser.EnterPhoneController.onPageLoad(mode: Mode = CheckMode)
-POST        /change/adviser-phone-number                             controllers.adviser.EnterPhoneController.onSubmit(mode: Mode = CheckMode)
+GET         /adviser-phone-number                              controllers.adviser.EnterPhoneController.onPageLoad(mode: Mode = NormalMode)
+POST        /adviser-phone-number                              controllers.adviser.EnterPhoneController.onSubmit(mode: Mode = NormalMode)
+GET         /change/adviser-phone-number                       controllers.adviser.EnterPhoneController.onPageLoad(mode: Mode = CheckMode)
+POST        /change/adviser-phone-number                       controllers.adviser.EnterPhoneController.onSubmit(mode: Mode = CheckMode)
 
-GET         /adviser-postcode                                        controllers.adviser.EnterPostcodeController.onPageLoad(mode: Mode = NormalMode)
-POST        /adviser-postcode                                        controllers.adviser.EnterPostcodeController.onSubmit(mode: Mode = NormalMode)
-GET         /change/adviser-postcode                                 controllers.adviser.EnterPostcodeController.onPageLoad(mode: Mode = CheckMode)
-POST        /change/adviser-postcode                                 controllers.adviser.EnterPostcodeController.onSubmit(mode: Mode = CheckMode)
+GET         /adviser-postcode                                  controllers.adviser.EnterPostcodeController.onPageLoad(mode: Mode = NormalMode)
+POST        /adviser-postcode                                  controllers.adviser.EnterPostcodeController.onSubmit(mode: Mode = NormalMode)
+GET         /change/adviser-postcode                           controllers.adviser.EnterPostcodeController.onPageLoad(mode: Mode = CheckMode)
+POST        /change/adviser-postcode                           controllers.adviser.EnterPostcodeController.onSubmit(mode: Mode = CheckMode)
 
 GET         /rac-dac/add-all                                   controllers.racdac.bulk.TransferAllController.onPageLoad
 POST        /rac-dac/add-all                                   controllers.racdac.bulk.TransferAllController.onSubmit
 
-GET         /rac-dac/list-rac-dacs-all                                   controllers.racdac.bulk.BulkListController.onPageLoad
-POST        /rac-dac/list-rac-dacs-all                                   controllers.racdac.bulk.BulkListController.onSubmit
-GET         /rac-dac/list-rac-dacs-all/page/:pageNumber                  controllers.racdac.bulk.BulkListController.onPageLoadWithPageNumber(pageNumber: Int)
-POST        /rac-dac/list-rac-dacs-all/page/:pageNumber                  controllers.racdac.bulk.BulkListController.onSubmitWithPageNumber(pageNumber: Int)
+GET         /rac-dac/list-rac-dacs-all                         controllers.racdac.bulk.BulkListController.onPageLoad
+POST        /rac-dac/list-rac-dacs-all                         controllers.racdac.bulk.BulkListController.onSubmit
+GET         /rac-dac/list-rac-dacs-all/page/:pageNumber        controllers.racdac.bulk.BulkListController.onPageLoadWithPageNumber(pageNumber: Int)
+POST        /rac-dac/list-rac-dacs-all/page/:pageNumber        controllers.racdac.bulk.BulkListController.onSubmitWithPageNumber(pageNumber: Int)
 
-GET         /rac-dac/declaration-all                                           controllers.racdac.bulk.DeclarationController.onPageLoad
-POST         /rac-dac/declaration-all                                    controllers.racdac.bulk.DeclarationController.onSubmit
+GET         /rac-dac/declaration-all                           controllers.racdac.bulk.DeclarationController.onPageLoad
+POST        /rac-dac/declaration-all                           controllers.racdac.bulk.DeclarationController.onSubmit
 
-GET         /rac-dac/rac-dac-status-in-progress                      controllers.racdac.bulk.InProgressController.onPageLoad
+GET         /rac-dac/rac-dac-status-in-progress                controllers.racdac.bulk.InProgressController.onPageLoad
 
-GET         /rac-dac/rac-dac-status-complete                         controllers.racdac.bulk.FinishedStatusController.onPageLoad
+GET         /rac-dac/rac-dac-status-complete                   controllers.racdac.bulk.FinishedStatusController.onPageLoad
 
-GET         /rac-dac/check-status                                    controllers.racdac.bulk.CheckStatusController.onPageLoad
-GET         /rac-dac/add-all/processing-request                                    controllers.racdac.bulk.ProcessingRequestController.onPageLoad
+GET         /rac-dac/check-status                              controllers.racdac.bulk.CheckStatusController.onPageLoad
+GET         /rac-dac/add-all/processing-request                controllers.racdac.bulk.ProcessingRequestController.onPageLoad
 
-GET         /rac-dac/confirmation-all                                   controllers.racdac.bulk.ConfirmationController.onPageLoad
+GET         /rac-dac/confirmation-all                          controllers.racdac.bulk.ConfirmationController.onPageLoad
 
-GET         /adviser-address-results                                 controllers.adviser.SelectAddressController.onPageLoad(mode: Mode = NormalMode)
-POST        /adviser-address-results                                 controllers.adviser.SelectAddressController.onSubmit(mode: Mode = NormalMode)
+GET         /adviser-address-results                           controllers.adviser.SelectAddressController.onPageLoad(mode: Mode = NormalMode)
+POST        /adviser-address-results                           controllers.adviser.SelectAddressController.onSubmit(mode: Mode = NormalMode)
 
-GET         /confirm-adviser-address                                 controllers.adviser.ConfirmAddressController.onPageLoad
-POST        /confirm-adviser-address                                 controllers.adviser.ConfirmAddressController.onSubmit
+GET         /confirm-adviser-address                           controllers.adviser.ConfirmAddressController.onPageLoad
+POST        /confirm-adviser-address                           controllers.adviser.ConfirmAddressController.onSubmit
 
-GET         /check-adviser-answers                                   controllers.adviser.CheckYourAnswersController.onPageLoad
-GET         /rac-dac/request-not-processed-all                       controllers.racdac.bulk.RequestNotProcessedController.onPageLoad
+GET         /check-adviser-answers                             controllers.adviser.CheckYourAnswersController.onPageLoad
+GET         /rac-dac/request-not-processed-all                 controllers.racdac.bulk.RequestNotProcessedController.onPageLoad
 
-GET         /rac-dac/check-your-answers                              controllers.racdac.individual.CheckYourAnswersController.onPageLoad
-GET         /rac-dac/declaration                                     controllers.racdac.individual.DeclarationController.onPageLoad
-POST         /rac-dac/declaration                                        controllers.racdac.individual.DeclarationController.onSubmit
-GET         /rac-dac/confirmation                                    controllers.racdac.individual.ConfirmationController.onPageLoad
+GET         /rac-dac/check-your-answers                        controllers.racdac.individual.CheckYourAnswersController.onPageLoad
+GET         /rac-dac/declaration                               controllers.racdac.individual.DeclarationController.onPageLoad
+POST        /rac-dac/declaration                               controllers.racdac.individual.DeclarationController.onSubmit
+GET         /rac-dac/confirmation                              controllers.racdac.individual.ConfirmationController.onPageLoad
 
-GET         /scheme-locked                                           controllers.SchemeLockedController.onPageLoadScheme
-GET         /rac-dac/rac-dac-locked                                  controllers.SchemeLockedController.onPageLoadRacDac
-GET         /manage-pension-schemes-overview                         controllers.PensionSchemeRedirectController.onPageLoad
+GET         /scheme-locked                                     controllers.SchemeLockedController.onPageLoadScheme
+GET         /rac-dac/rac-dac-locked                            controllers.SchemeLockedController.onPageLoadRacDac
+GET         /manage-pension-schemes-overview                   controllers.PensionSchemeRedirectController.onPageLoad
 
-GET         /rac-dac/request-not-processed                           controllers.YourActionWasNotProcessedController.onPageLoadRacDac
-GET         /request-not-processed                                   controllers.YourActionWasNotProcessedController.onPageLoadScheme
+GET         /rac-dac/request-not-processed                     controllers.YourActionWasNotProcessedController.onPageLoadRacDac
+GET         /request-not-processed                             controllers.YourActionWasNotProcessedController.onPageLoadScheme
