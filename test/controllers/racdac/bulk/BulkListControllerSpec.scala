@@ -31,7 +31,6 @@ import uk.gov.hmrc.viewmodels.Table
 import utils.Enumerable
 
 import scala.concurrent.Future
-
 class BulkListControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   val table: Table = Table(head = Nil, rows = Nil)
@@ -52,9 +51,9 @@ class BulkListControllerSpec extends ControllerSpecBase with NunjucksSupport wit
       ): _*
     ).build()
 
-  private def httpPathGET: String = routes.BulkListController.onPageLoad().url
+  private def httpPathGET: String = routes.BulkListController.onPageLoad.url
   private def httpPathGETWithPageNumber: String = routes.BulkListController.onPageLoadWithPageNumber(2).url
-  private def httpPathPOST: String = routes.BulkListController.onSubmit().url
+  private def httpPathPOST: String = routes.BulkListController.onSubmit.url
   private def httpPathPOSTWithPageNumber: String = routes.BulkListController.onSubmitWithPageNumber(2).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
@@ -65,8 +64,8 @@ class BulkListControllerSpec extends ControllerSpecBase with NunjucksSupport wit
     "value" -> Seq("invalid")
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockBulkRacDacService.renderRacDacBulkView(any(), any())(any(), any(), any())).thenReturn(Future.successful(Ok("")))
     when(mockAppConfig.psaOverviewUrl) thenReturn appConfig.psaOverviewUrl
   }
@@ -94,7 +93,7 @@ class BulkListControllerSpec extends ControllerSpecBase with NunjucksSupport wit
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result) mustBe Some(routes.DeclarationController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.DeclarationController.onPageLoad.url)
     }
 
     "redirect to next page when user answers yes for a POST with page number" in {
@@ -103,7 +102,7 @@ class BulkListControllerSpec extends ControllerSpecBase with NunjucksSupport wit
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result) mustBe Some(routes.DeclarationController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.DeclarationController.onPageLoad.url)
     }
 
     "redirect to next page when user answers no" in {

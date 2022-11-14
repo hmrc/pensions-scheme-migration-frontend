@@ -17,11 +17,11 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import org.scalatest.{OptionValues, BeforeAndAfterEach}
 import org.scalatest.flatspec.AsyncFlatSpec
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import play.api.http.Status._
-import play.api.libs.json.{Json, JsValue}
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
@@ -48,7 +48,7 @@ class LegacySchemeDetailsConnectorSpec extends AsyncFlatSpec with Matchers with 
     val connector = injector.instanceOf[LegacySchemeDetailsConnector]
 
     connector.getLegacySchemeDetails(psaId, pstr).map(listOfSchemes =>
-      listOfSchemes.right.get shouldBe expectedResponse
+      listOfSchemes.toOption.get shouldBe expectedResponse
     )
 
   }
@@ -67,7 +67,7 @@ class LegacySchemeDetailsConnectorSpec extends AsyncFlatSpec with Matchers with 
     val connector = injector.instanceOf[LegacySchemeDetailsConnector]
 
     connector.getLegacySchemeDetails(psaId, pstr).map(listOfSchemes =>
-      listOfSchemes.left.get.status shouldBe BAD_REQUEST
+      listOfSchemes.swap.toOption.get.status shouldBe BAD_REQUEST
     )
   }
 

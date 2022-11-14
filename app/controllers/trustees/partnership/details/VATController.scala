@@ -23,7 +23,6 @@ import forms.VATFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.partnership.PartnershipDetailsId
 import identifiers.trustees.partnership.details.VATId
-import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
 import navigators.CompoundNavigator
@@ -33,6 +32,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import viewmodels.Message
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class VATController @Inject()(
@@ -60,7 +60,7 @@ class VATController @Inject()(
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             get(
               pageTitle     = Message("messages__vat", Message("messages__partnership")),
@@ -78,7 +78,7 @@ class VATController @Inject()(
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             post(
               pageTitle     = Message("messages__vat", Message("messages__partnership")),

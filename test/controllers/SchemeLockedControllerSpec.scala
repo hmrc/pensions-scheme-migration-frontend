@@ -19,8 +19,8 @@ package controllers
 import controllers.actions._
 import matchers.JsonMatchers
 import models.{RacDac, Scheme}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, MockitoSugar}
 import org.scalatest.TryValues
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
@@ -32,7 +32,7 @@ import utils.Data.{schemeName, ua}
 
 import scala.concurrent.Future
 
-class SchemeLockedControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with MockitoSugar {
+class SchemeLockedControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues  {
 
   private val templateToBeRendered: String = "schemeLocked.njk"
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -61,7 +61,7 @@ class SchemeLockedControllerSpec extends ControllerSpecBase with NunjucksSupport
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result: Future[Result] = controller().onPageLoadScheme()(fakeDataRequest())
+      val result: Future[Result] = controller().onPageLoadScheme(fakeDataRequest())
 
       status(result) mustBe OK
 
@@ -78,7 +78,7 @@ class SchemeLockedControllerSpec extends ControllerSpecBase with NunjucksSupport
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result: Future[Result] = controller().onPageLoadRacDac()(fakeDataRequest())
+      val result: Future[Result] = controller().onPageLoadRacDac(fakeDataRequest())
 
       status(result) mustBe OK
 

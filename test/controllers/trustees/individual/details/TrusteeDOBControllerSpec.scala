@@ -39,7 +39,6 @@ import utils.{FakeNavigator, UserAnswers}
 
 import java.time.LocalDate
 import scala.concurrent.Future
-
 class TrusteeDOBControllerSpec
   extends ControllerSpecBase
     with NunjucksSupport
@@ -51,7 +50,7 @@ class TrusteeDOBControllerSpec
 
   private val form: Form[LocalDate] = formProvider()
 
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   private val personName: PersonName = PersonName("Jane", "Doe")
 
@@ -89,7 +88,7 @@ class TrusteeDOBControllerSpec
       renderer                  = new Renderer(mockAppConfig, mockRenderer)
     )
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(
       mockRenderer,
       mockUserAnswersCacheConnector

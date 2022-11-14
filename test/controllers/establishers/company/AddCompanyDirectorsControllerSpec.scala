@@ -25,7 +25,7 @@ import identifiers.establishers.company.director.{DirectorNameId, IsNewDirectorI
 import identifiers.establishers.company.{AddCompanyDirectorsId, CompanyDetailsId}
 import matchers.JsonMatchers
 import models.establishers.EstablisherKind
-import models.{CompanyDetails, NormalMode, PersonName}
+import models.{CompanyDetails, NormalMode, PersonName, Scheme}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -39,7 +39,7 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{companyDetails, schemeName, ua}
 import utils.{Enumerable, UserAnswers}
-import models.Scheme
+
 import scala.concurrent.Future
 
 class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
@@ -108,8 +108,8 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with Nunjucks
       "maxDirectors" -> mockAppConfig.maxDirectors
     )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     reset(mockAppConfig)
     when(mockAppConfig.maxDirectors).thenReturn(10)
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))

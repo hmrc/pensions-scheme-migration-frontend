@@ -32,7 +32,6 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Enumerable
 
 import scala.concurrent.Future
-
 class ProcessingRequestControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val templateToBeRendered = "racdac/processingRequest.njk"
@@ -45,7 +44,7 @@ class ProcessingRequestControllerSpec extends ControllerSpecBase with NunjucksSu
   )
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
-  private def httpPathGET: String = controllers.racdac.bulk.routes.ProcessingRequestController.onPageLoad().url
+  private def httpPathGET: String = controllers.racdac.bulk.routes.ProcessingRequestController.onPageLoad.url
 
   private def jsonToPassToTemplate(heading: String, content: String, redirect: String): JsObject =
     Json.obj(
@@ -55,8 +54,8 @@ class ProcessingRequestControllerSpec extends ControllerSpecBase with NunjucksSu
       "continueUrl" -> redirect
     )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     reset(mockBulkMigrationEventsLogConnector)
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
@@ -79,7 +78,7 @@ class ProcessingRequestControllerSpec extends ControllerSpecBase with NunjucksSu
       jsonCaptor.getValue must containJson(jsonToPassToTemplate(
         heading = "messages__processingRequest__h1_processed",
         content = "messages__processingRequest__content_processed",
-        redirect = routes.ConfirmationController.onPageLoad().url
+        redirect = routes.ConfirmationController.onPageLoad.url
       ))
     }
 
@@ -99,7 +98,7 @@ class ProcessingRequestControllerSpec extends ControllerSpecBase with NunjucksSu
       jsonCaptor.getValue must containJson(jsonToPassToTemplate(
         heading = "messages__processingRequest__h1_processing",
         content = "messages__processingRequest__content_processing",
-        redirect = routes.ProcessingRequestController.onPageLoad().url
+        redirect = routes.ProcessingRequestController.onPageLoad.url
       ))
     }
 
@@ -119,7 +118,7 @@ class ProcessingRequestControllerSpec extends ControllerSpecBase with NunjucksSu
       jsonCaptor.getValue must containJson(jsonToPassToTemplate(
         heading = "messages__processingRequest__h1_failure",
         content = "messages__processingRequest__content_failure",
-        redirect = routes.DeclarationController.onPageLoad().url
+        redirect = routes.DeclarationController.onPageLoad.url
       ))
     }
   }

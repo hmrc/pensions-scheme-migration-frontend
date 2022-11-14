@@ -52,7 +52,7 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
     with Enumerable.Implicits {
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.right.map {
+      (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.map {
         case directorName ~ schemeName =>
           get(Some(schemeName), directorName.fullName, Messages("messages__director"), form, AddressYearsId(establisherIndex, directorIndex))
       }
@@ -63,7 +63,7 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
 
   def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.right.map {
+      (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.map {
         case directorName ~ schemeName =>
           form
             .bindFromRequest()

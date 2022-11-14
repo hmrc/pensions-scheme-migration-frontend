@@ -164,11 +164,11 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
   //scalastyle:off method.length
   def readEstablishers: Reads[Seq[Establisher[_]]] = new Reads[Seq[Establisher[_]]] {
 
-    private def noOfRecords: Int = data.validate((__ \ 'establishers).readNullable(__.read(
-      Reads.seq((__ \ 'establisherKind).read[String].flatMap {
-        case "individual" => (__ \ 'establisherDetails \ "isDeleted").json.pick[JsBoolean] orElse notDeleted
-        case "company" => (__ \ 'companyDetails \ "isDeleted").json.pick[JsBoolean] orElse notDeleted
-        case "partnership" => (__ \ 'partnershipDetails \ "isDeleted").json.pick[JsBoolean] orElse notDeleted
+    private def noOfRecords: Int = data.validate((__ \ "establishers").readNullable(__.read(
+      Reads.seq((__ \ "establisherKind").read[String].flatMap {
+        case "individual" => (__ \ "establisherDetails" \ "isDeleted").json.pick[JsBoolean] orElse notDeleted
+        case "company" => (__ \ "companyDetails" \ "isDeleted").json.pick[JsBoolean] orElse notDeleted
+        case "partnership" => (__ \ "partnershipDetails" \ "isDeleted").json.pick[JsBoolean] orElse notDeleted
       }).map(_.count(deleted => !deleted.value))))) match {
       case JsSuccess(Some(ele), _) => ele
       case _ => 0
@@ -214,7 +214,7 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
             }
             readsForEstablisherKind.reads(jsValue)
           }
-          asJsResultSeq(jsResults)
+          asJsResultSeq(jsResults.toSeq)
         case _ => JsSuccess(Nil)
       }
     }
@@ -244,11 +244,11 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
   //scalastyle:off method.length
   def readTrustees: Reads[Seq[Trustee[_]]] = new Reads[Seq[Trustee[_]]] {
 
-    private def noOfRecords: Int = data.validate((__ \ 'trustees).readNullable(__.read(
-      Reads.seq((__ \ 'trusteeKind).read[String].flatMap {
-        case "individual" => (__ \ 'trusteeDetails \ "isDeleted").json.pick[JsBoolean] orElse notDeleted
-        case "company" => (__ \ 'companyDetails \ "isDeleted").json.pick[JsBoolean] orElse notDeleted
-        case "partnership" => (__ \ 'partnershipDetails \ "isDeleted").json.pick[JsBoolean] orElse notDeleted
+    private def noOfRecords: Int = data.validate((__ \ "trustees").readNullable(__.read(
+      Reads.seq((__ \ "trusteeKind").read[String].flatMap {
+        case "individual" => (__ \ "trusteeDetails" \ "isDeleted").json.pick[JsBoolean] orElse notDeleted
+        case "company" => (__ \ "companyDetails" \ "isDeleted").json.pick[JsBoolean] orElse notDeleted
+        case "partnership" => (__ \ "partnershipDetails" \ "isDeleted").json.pick[JsBoolean] orElse notDeleted
       }).map(_.count(deleted => !deleted.value))))) match {
       case JsSuccess(Some(ele), _) => ele
       case _ => 0
@@ -295,7 +295,7 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
             readsForTrusteeKind.reads(jsValue)
           }
 
-          asJsResultSeq(jsResults)
+          asJsResultSeq(jsResults.toSeq)
         case _ => JsSuccess(Nil)
       }
     }

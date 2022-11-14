@@ -49,7 +49,7 @@ class EnterEmailControllerSpec extends ControllerSpecBase
   private val email = "test@test.com"
   private val formProvider: EmailFormProvider = new EmailFormProvider()
   private val form = formProvider("")
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(0), company).success.value
   private val templateToBeRendered: String = "email.njk"
 
@@ -61,7 +61,7 @@ class EnterEmailControllerSpec extends ControllerSpecBase
     )
   private val formData: String = email
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(
       mockRenderer,
       mockUserAnswersCacheConnector

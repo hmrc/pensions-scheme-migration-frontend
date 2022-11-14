@@ -23,7 +23,6 @@ import forms.HasReferenceNumberFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.partnership.PartnershipDetailsId
 import identifiers.trustees.partnership.details.HavePAYEId
-import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import navigators.CompoundNavigator
@@ -33,6 +32,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import viewmodels.Message
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class HavePAYEController @Inject()(
@@ -60,7 +60,7 @@ class HavePAYEController @Inject()(
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
 
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             get(
               pageTitle     = Message("messages__havePAYE", Message("messages__partnership")),
@@ -79,7 +79,7 @@ class HavePAYEController @Inject()(
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
 
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             post(
               pageTitle     = Message("messages__havePAYE", Message("messages__partnership")),

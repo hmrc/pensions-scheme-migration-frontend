@@ -38,7 +38,6 @@ import utils.Data.ua
 import utils.{Data, FakeNavigator, UserAnswers}
 
 import scala.concurrent.Future
-
 class DirectorAlsoTrusteeControllerSpec extends ControllerSpecBase
   with NunjucksSupport
   with JsonMatchers
@@ -48,7 +47,7 @@ class DirectorAlsoTrusteeControllerSpec extends ControllerSpecBase
   private val personName: PersonName = PersonName("Jane", "Doe")
   private val formProvider: DataPrefillRadioFormProvider = new DataPrefillRadioFormProvider()
   private val form = formProvider("")
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val userAnswers: UserAnswers = ua.set(TrusteeNameId(0), personName).success.value
   private val templateToBeRendered: String = "dataPrefillRadio.njk"
   private val mockDataPrefillService = mock[DataPrefillService]
@@ -58,7 +57,7 @@ class DirectorAlsoTrusteeControllerSpec extends ControllerSpecBase
       "form" -> form,
       "schemeName" -> Data.schemeName
     )
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(
       mockRenderer,
       mockUserAnswersCacheConnector,
@@ -110,7 +109,7 @@ class DirectorAlsoTrusteeControllerSpec extends ControllerSpecBase
       val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(userAnswers))
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.TaskListController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.TaskListController.onPageLoad.url)
     }
 
     "copy the directors and redirect to the next page when valid data is submitted with value less than max trustees" in {

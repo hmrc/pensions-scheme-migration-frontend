@@ -21,8 +21,9 @@ import connectors.cache.{CurrentPstrCacheConnector, LockCacheConnector, UserAnsw
 import models.MigrationLock
 import models.requests.{AuthenticatedRequest, OptionalDataRequest}
 import org.mockito.ArgumentMatchers._
+import org.mockito.Mockito.when
+import org.mockito.MockitoSugar.mock
 import org.scalatest.concurrent.ScalaFutures
-import org.mockito.MockitoSugar
 import play.api.libs.json.{JsResultException, Json}
 import uk.gov.hmrc.domain.PsaId
 import utils.Data.psaId
@@ -32,7 +33,6 @@ import scala.concurrent.Future
 
 class DataRetrievalActionSpec
   extends SpecBase
-    with MockitoSugar
     with ScalaFutures {
 
   class Harness(dataCacheConnector: UserAnswersCacheConnector,

@@ -23,6 +23,7 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.address.AddressId
 import matchers.JsonMatchers
+import models.{NormalMode, Scheme}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -34,7 +35,6 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.{Data, Enumerable, UserAnswers}
-import models.{NormalMode, Scheme}
 
 import scala.concurrent.Future
 
@@ -68,8 +68,8 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
     "value" -> Seq.empty
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
     when(mockAppConfig.validCountryCodes).thenReturn(Seq("GB"))
   }

@@ -35,7 +35,6 @@ import utils.Data.ua
 import utils.{Data, UserAnswers}
 
 import scala.concurrent.Future
-
 class WhatYouWillNeedControllerSpec
   extends ControllerSpecBase
     with NunjucksSupport

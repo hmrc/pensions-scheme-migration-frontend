@@ -67,8 +67,8 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with Nunju
     "value" -> Seq.empty
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
     when(mockAppConfig.validCountryCodes).thenReturn(Seq("GB"))
   }

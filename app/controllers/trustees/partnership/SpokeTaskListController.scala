@@ -52,14 +52,14 @@ class SpokeTaskListController @Inject()(
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             get(
               spokes = spokeCreationService.getTrusteePartnershipSpokes(request.userAnswers, name(index), index),
               entityName = name(index),
               schemeName = schemeName,
               entityType = Message("messages__tasklist__trustee"),
-              submitUrl = controllers.trustees.routes.AddTrusteeController.onPageLoad().url
+              submitUrl = controllers.trustees.routes.AddTrusteeController.onPageLoad.url
             )
         }
     }

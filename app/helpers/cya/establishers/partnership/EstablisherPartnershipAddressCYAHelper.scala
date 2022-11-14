@@ -20,8 +20,8 @@ import helpers.cya.CYAHelper
 import helpers.cya.CYAHelper.getPartnershipName
 import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.address.{AddressId, AddressYearsId, PreviousAddressId, TradingTimeId}
-import models.{CheckMode, Index}
 import models.requests.DataRequest
+import models.{CheckMode, Index}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.viewmodels.MessageInterpolators

@@ -48,7 +48,7 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase
   with BeforeAndAfterEach{
 
   private val onwardRoute: Call =
-    controllers.routes.IndexController.onPageLoad()
+    controllers.routes.IndexController.onPageLoad
   private val formProvider: HasReferenceNumberFormProvider =
     new HasReferenceNumberFormProvider()
 
@@ -76,7 +76,7 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase
       "isPageHeading" -> true
     )
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(
       mockRenderer,
       mockUserAnswersCacheConnector

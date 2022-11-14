@@ -57,6 +57,7 @@ trait SchemeTypeMapping
           Other(value)
         case (key, _) if mappings.keySet.contains(key) =>
           mappings.apply(key)
+        case (key, _) => throw new RuntimeException(s"Invalid match $key")
       }
     }
     // scalastyle:off magic.number

@@ -51,7 +51,7 @@ class CheckYourAnswersController @Inject()(
         val json = Json.obj(
           "list" -> cyaHelper.membershipRows,
           "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
-          "submitUrl" -> controllers.routes.TaskListController.onPageLoad().url
+          "submitUrl" -> controllers.routes.TaskListController.onPageLoad.url
         )
 
         renderer

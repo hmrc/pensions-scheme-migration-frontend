@@ -21,8 +21,7 @@ import config.AppConfig
 import models.FeatureToggle
 import play.api.Logger
 import play.api.http.Status._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import utils.HttpResponseHelper
 
 import scala.concurrent.{ExecutionContext, Future}

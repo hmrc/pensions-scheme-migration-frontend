@@ -63,7 +63,7 @@ class BeforeYouStartController @Inject()(
                 userAnswersCacheConnector.save(lock, data).flatMap { _ =>
                   renderView
                 }
-              case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
+              case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad))
             }
         }
 
@@ -76,9 +76,9 @@ class BeforeYouStartController @Inject()(
         template = "preMigration/beforeYouStart.njk",
         ctx = Json.obj(
           "pageTitle" -> Messages("messages__BeforeYouStart__title"),
-          "continueUrl" -> controllers.routes.TaskListController.onPageLoad().url,
+          "continueUrl" -> controllers.routes.TaskListController.onPageLoad.url,
           "psaName" -> psaName,
-          "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad().url
+          "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad.url
         )
       ).map(Ok(_))
     }

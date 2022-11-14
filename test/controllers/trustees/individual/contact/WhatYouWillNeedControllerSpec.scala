@@ -35,7 +35,6 @@ import utils.UserAnswers
 import viewmodels.Message
 
 import scala.concurrent.Future
-
 class WhatYouWillNeedControllerSpec
   extends ControllerSpecBase
     with NunjucksSupport

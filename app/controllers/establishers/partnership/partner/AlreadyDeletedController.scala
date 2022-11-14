@@ -61,7 +61,7 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
   private def partnerName(establisherIndex: Index, partnerIndex: Index)(implicit
                                                                               dataRequest: DataRequest[AnyContent])
   : Either[Future[Result], String] = {
-    PartnerNameId(establisherIndex, partnerIndex).retrieve.right.map(_.fullName)
+    PartnerNameId(establisherIndex, partnerIndex).retrieve.map(_.fullName)
   }
 
 }

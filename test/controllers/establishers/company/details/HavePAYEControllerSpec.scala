@@ -47,7 +47,7 @@ class HavePAYEControllerSpec extends ControllerSpecBase with NunjucksSupport wit
 
   private val formProvider: HasReferenceNumberFormProvider = new HasReferenceNumberFormProvider()
   private val form: Form[Boolean] = formProvider(Message("messages__genericHavePaye__error__required", companyDetails.companyName))
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val templateToBeRendered: String = "hasReferenceValueWithHint.njk"
 
   private val commonJson: JsObject =
@@ -64,7 +64,7 @@ class HavePAYEControllerSpec extends ControllerSpecBase with NunjucksSupport wit
     new HavePAYEController(messagesApi, new FakeNavigator(desiredRoute = onwardRoute), new FakeAuthAction(), dataRetrievalAction,
       new DataRequiredActionImpl, formProvider, controllerComponents, mockUserAnswersCacheConnector, new Renderer(mockAppConfig, mockRenderer))
 
-  override def beforeEach: Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
+  override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
 
   "HavePAYEController" must {
     "return OK and the correct view for a GET" in {

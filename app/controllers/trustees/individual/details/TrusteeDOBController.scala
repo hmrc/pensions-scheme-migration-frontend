@@ -60,7 +60,7 @@ class TrusteeDOBController @Inject()(
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
 
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             get(
               dobId        = TrusteeDOBId(index),
@@ -81,7 +81,7 @@ class TrusteeDOBController @Inject()(
                 val formWithErrorsDayIdCorrection = formWithErrors.copy(
                   errors = formWithErrors.errors map { e => if (e.key == "date.day") e.copy(key = "date") else e }
                 )
-                TrusteeNameId(index).retrieve.right.map {
+                TrusteeNameId(index).retrieve.map {
                   personName =>
                     renderer.render(
                       template = "dob.njk",

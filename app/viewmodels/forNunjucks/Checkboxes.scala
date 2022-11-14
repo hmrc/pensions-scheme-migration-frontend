@@ -18,8 +18,8 @@ package viewmodels.forNunjucks
 
 import play.api.data.Field
 import play.api.i18n.Messages
-import play.api.libs.json._
 import play.api.libs.functional.syntax._
+import play.api.libs.json._
 import uk.gov.hmrc.viewmodels.{Content, Html, RichField, Text, WithContent}
 
 object Checkboxes {

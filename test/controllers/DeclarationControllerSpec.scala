@@ -33,10 +33,8 @@ import play.twirl.api.Html
 import uk.gov.hmrc.http.HttpReads.upstreamResponseMessage
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.Data.{psaName, schemeName, ua}
-import utils.{Enumerable, UserAnswers}
 import utils.Data.{psaName, pstr, schemeName, ua}
-import utils.Enumerable
+import utils.{Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 
@@ -54,20 +52,20 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
-  private def httpPathGET: String = controllers.routes.DeclarationController.onPageLoad().url
+  private def httpPathGET: String = controllers.routes.DeclarationController.onPageLoad.url
 
-  private def httpPathPOST: String = controllers.routes.DeclarationController.onSubmit().url
+  private def httpPathPOST: String = controllers.routes.DeclarationController.onSubmit.url
 
   private val jsonToPassToTemplate: JsObject =
     Json.obj(
       "schemeName" -> schemeName,
       "isCompany" -> true,
       "hasWorkingKnowledge" -> true,
-      "submitUrl" -> routes.DeclarationController.onSubmit().url
+      "submitUrl" -> routes.DeclarationController.onSubmit.url
     )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
@@ -105,7 +103,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
           "schemeName" -> schemeName,
           "isCompany" -> true,
           "hasWorkingKnowledge" -> false,
-          "submitUrl" -> routes.DeclarationController.onSubmit().url
+          "submitUrl" -> routes.DeclarationController.onSubmit.url
         )
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
@@ -142,7 +140,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
         ArgumentMatchers.eq(Map("psaName" -> psaName.toString, "schemeName" -> schemeName)),
         any())(any(), any())
 
-      redirectLocation(result) mustBe Some(controllers.routes.SchemeSuccessController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SchemeSuccessController.onPageLoad.url)
     }
 
     "redirect to your action was not processed page when backend returns 5XX" in {

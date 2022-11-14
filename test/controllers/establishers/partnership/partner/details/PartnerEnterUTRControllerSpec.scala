@@ -53,7 +53,7 @@ class PartnerEnterUTRControllerSpec
   private val form: Form[ReferenceValue] =
     formProvider()
   private val onwardRoute: Call =
-    controllers.routes.IndexController.onPageLoad()
+    controllers.routes.IndexController.onPageLoad
   private val userAnswers: UserAnswers =
     ua.set(PartnerNameId(0,0), personName).success.value
   private val templateToBeRendered: String =
@@ -73,7 +73,7 @@ class PartnerEnterUTRControllerSpec
   private val formData: ReferenceValue =
     ReferenceValue(value = "1234567890")
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(
       mockRenderer,
       mockUserAnswersCacheConnector

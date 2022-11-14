@@ -18,9 +18,9 @@ package navigators
 
 import config.AppConfig
 import controllers.establishers.company.address.routes._
-import controllers.establishers.company.routes._
 import controllers.establishers.company.contact.routes._
 import controllers.establishers.company.details.{routes => detailsRoutes}
+import controllers.establishers.company.routes._
 import controllers.establishers.routes._
 import controllers.routes._
 import identifiers._
@@ -44,7 +44,7 @@ class EstablishersCompanyNavigator @Inject()(config: AppConfig, dataPrefillServi
   //scalastyle:off cyclomatic.complexity
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
-    case EstablisherNameId(_) => AddEstablisherController.onPageLoad()
+    case EstablisherNameId(_) => AddEstablisherController.onPageLoad
     case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
     case EnterPhoneId(index) => cyaContactDetails(index)
     case HaveCompanyNumberId(index) => companyNumberRoutes(index, ua, NormalMode)
@@ -70,13 +70,13 @@ class EstablishersCompanyNavigator @Inject()(config: AppConfig, dataPrefillServi
     case PreviousAddressId(index) => cyaAddress(index)
     case AddCompanyDirectorsId(index) =>
       addDirectors(index, ua)
-    case OtherDirectorsId(index) => controllers.routes.TaskListController.onPageLoad()
+    case OtherDirectorsId(index) => controllers.routes.TaskListController.onPageLoad
 
   }
 
   override protected def editRouteMap(ua: UserAnswers)
                                      (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
-    case CompanyDetailsId(_) => IndexController.onPageLoad()
+    case CompanyDetailsId(_) => IndexController.onPageLoad
     case HaveCompanyNumberId(index) => companyNumberRoutes(index, ua, CheckMode)
     case CompanyNumberId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
     case NoCompanyNumberReasonId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
@@ -89,7 +89,7 @@ class EstablishersCompanyNavigator @Inject()(config: AppConfig, dataPrefillServi
     case PAYEId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
     case EnterEmailId(index) => cyaContactDetails(index)
     case EnterPhoneId(index) => cyaContactDetails(index)
-    case OtherDirectorsId(index) => controllers.routes.TaskListController.onPageLoad()
+    case OtherDirectorsId(index) => controllers.routes.TaskListController.onPageLoad
     case AddressId(index) => cyaAddress(index)
     case AddressListId(index) => cyaAddress(index)
     case AddressYearsId(index) =>
@@ -137,7 +137,7 @@ class EstablishersCompanyNavigator @Inject()(config: AppConfig, dataPrefillServi
     answers.get(HaveCompanyNumberId(index)) match {
       case Some(true) => detailsRoutes.CompanyNumberController.onPageLoad(index, mode)
       case Some(false) => detailsRoutes.NoCompanyNumberReasonController.onPageLoad(index, mode)
-      case None => controllers.routes.TaskListController.onPageLoad()
+      case None => controllers.routes.TaskListController.onPageLoad
     }
 
   private def utrRoutes(
@@ -148,7 +148,7 @@ class EstablishersCompanyNavigator @Inject()(config: AppConfig, dataPrefillServi
     answers.get(HaveUTRId(index)) match {
       case Some(true) => detailsRoutes.UTRController.onPageLoad(index, mode)
       case Some(false) => detailsRoutes.NoUTRReasonController.onPageLoad(index, mode)
-      case None => controllers.routes.TaskListController.onPageLoad()
+      case None => controllers.routes.TaskListController.onPageLoad
     }
 
   private def cyaContactDetails(index: Int): Call = controllers.establishers.company.contact.routes.CheckYourAnswersController.onPageLoad(index)
@@ -162,7 +162,7 @@ class EstablishersCompanyNavigator @Inject()(config: AppConfig, dataPrefillServi
       case Some(true) => detailsRoutes.VATController.onPageLoad(index, mode)
       case Some(false) if mode == NormalMode => detailsRoutes.HavePAYEController.onPageLoad(index, mode)
       case Some(false) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
-      case None => controllers.routes.TaskListController.onPageLoad()
+      case None => controllers.routes.TaskListController.onPageLoad
     }
 
   private def payeRoutes(
@@ -173,6 +173,6 @@ class EstablishersCompanyNavigator @Inject()(config: AppConfig, dataPrefillServi
     answers.get(HavePAYEId(index)) match {
       case Some(true) => detailsRoutes.PAYEController.onPageLoad(index, mode)
       case Some(false) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
-      case None => controllers.routes.TaskListController.onPageLoad()
+      case None => controllers.routes.TaskListController.onPageLoad
     }
 }

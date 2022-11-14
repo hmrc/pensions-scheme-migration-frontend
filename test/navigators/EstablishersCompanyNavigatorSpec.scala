@@ -153,7 +153,7 @@ class EstablishersCompanyNavigatorSpec
     def editNavigation: TableFor3[Identifier, UserAnswers, Call] =
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
-        row(CompanyDetailsId(index))(controllers.routes.IndexController.onPageLoad()),
+        row(CompanyDetailsId(index))(controllers.routes.IndexController.onPageLoad),
         row(HaveCompanyNumberId(index))(companyNumber(CheckMode), uaWithValue(HaveCompanyNumberId(index), true)),
         row(HaveCompanyNumberId(index))(noCompanyNumber(CheckMode), uaWithValue(HaveCompanyNumberId(index), false)),
         row(CompanyNumberId(index))(cyaDetails),

@@ -23,7 +23,7 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.address.PreviousAddressId
 import matchers.JsonMatchers
-import models.{NormalMode, PersonName}
+import models.{NormalMode, PersonName, Scheme}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -36,7 +36,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{Data, Enumerable, UserAnswers}
-import models.Scheme
+
 import scala.concurrent.Future
 
 class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
@@ -67,8 +67,8 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with Nunju
     "value" -> Seq.empty
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
     when(mockAppConfig.validCountryCodes).thenReturn(Seq("GB"))
   }
@@ -101,7 +101,7 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with Nunju
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad.url
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {

@@ -46,13 +46,13 @@ class PartnershipDetailsControllerSpec extends ControllerSpecBase
   private val partnershipName = "test partnership"
   private val formProvider: PartnershipDetailsFormProvider = new PartnershipDetailsFormProvider()
   private val form = formProvider()
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val templateToBeRendered: String = "partnershipDetails.njk"
 
   private val commonJson: JsObject = Json.obj("schemeName" -> Data.schemeName)
   private val formData: PartnershipDetails = PartnershipDetails(partnershipName)
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(
       mockRenderer,
       mockUserAnswersCacheConnector

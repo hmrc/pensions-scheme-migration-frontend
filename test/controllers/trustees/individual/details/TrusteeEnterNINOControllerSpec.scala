@@ -38,7 +38,6 @@ import utils.Data.ua
 import utils.{FakeNavigator, UserAnswers}
 
 import scala.concurrent.Future
-
 class TrusteeEnterNINOControllerSpec
   extends ControllerSpecBase
     with NunjucksSupport
@@ -52,7 +51,7 @@ class TrusteeEnterNINOControllerSpec
 
   private val form: Form[ReferenceValue] = formProvider(personName.fullName)
 
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   private val userAnswers: UserAnswers = ua.set(TrusteeNameId(0), personName).success.value
 
@@ -68,7 +67,7 @@ class TrusteeEnterNINOControllerSpec
     )
   private val formData: ReferenceValue = ReferenceValue(value = "AB123456C")
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(
       mockRenderer,
       mockUserAnswersCacheConnector

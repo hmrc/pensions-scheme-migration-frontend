@@ -57,14 +57,14 @@ class ConfirmPreviousAddressController @Inject()(override val messagesApi: Messa
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (EstablisherNameId(index) and SchemeNameId).retrieve.right.map { case establisherName ~ schemeName =>
+      (EstablisherNameId(index) and SchemeNameId).retrieve.map { case establisherName ~ schemeName =>
           get(Some(schemeName), establisherName.fullName, PreviousAddressId(index),PreviousAddressListId(index), AddressConfiguration.PostcodeFirst)
       }
     }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (EstablisherNameId(index) and SchemeNameId).retrieve.right.map { case establisherName ~ schemeName =>
+      (EstablisherNameId(index) and SchemeNameId).retrieve.map { case establisherName ~ schemeName =>
         post(Some(schemeName), establisherName.fullName, PreviousAddressId(index), AddressConfiguration.PostcodeFirst,Some(mode))
       }
     }

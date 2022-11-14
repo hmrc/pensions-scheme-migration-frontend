@@ -62,7 +62,7 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
 
   def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
-      SchemeNameId.retrieve.right.map { schemeName =>
+      SchemeNameId.retrieve.map { schemeName =>
         implicit val ua: UserAnswers = request.userAnswers
         val seqDirector = dataPrefillService.getListOfDirectorsToBeCopied
         if (seqDirector.nonEmpty) {
@@ -76,7 +76,7 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
 
           renderer.render("dataPrefillCheckbox.njk", json).map(Ok(_))
         } else {
-          Future(Redirect(controllers.routes.TaskListController.onPageLoad()))
+          Future(Redirect(controllers.routes.TaskListController.onPageLoad))
         }
       }
   }
@@ -84,7 +84,7 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
   def onSubmit(establisherIndex: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
       implicit val ua: UserAnswers = request.userAnswers
-      SchemeNameId.retrieve.right.map { schemeName =>
+      SchemeNameId.retrieve.map { schemeName =>
         val seqDirector = dataPrefillService.getListOfDirectorsToBeCopied
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {

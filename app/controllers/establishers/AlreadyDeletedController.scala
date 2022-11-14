@@ -65,9 +65,9 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
                                                                               dataRequest: DataRequest[AnyContent])
   : Either[Future[Result], String] = {
     establisherKind match {
-      case Individual => EstablisherNameId(index).retrieve.right.map(_.fullName)
-      case Company => CompanyDetailsId(index).retrieve.right.map(_.companyName)
-      case Partnership => PartnershipDetailsId(index).retrieve.right.map(_.partnershipName)
+      case Individual => EstablisherNameId(index).retrieve.map(_.fullName)
+      case Company => CompanyDetailsId(index).retrieve.map(_.companyName)
+      case Partnership => PartnershipDetailsId(index).retrieve.map(_.partnershipName)
       case _ => Right("Unimplemented functionality")
     }
   }

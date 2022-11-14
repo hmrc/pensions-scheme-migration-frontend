@@ -112,7 +112,7 @@ class EstablishersPartnershipNavigatorSpec
     def editNavigation: TableFor3[Identifier, UserAnswers, Call] =
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
-        row(PartnershipDetailsId(index))(controllers.routes.IndexController.onPageLoad()),
+        row(PartnershipDetailsId(index))(controllers.routes.IndexController.onPageLoad),
 
         row(EnterEmailId(index))(controllers.establishers.partnership.contact.routes.CheckYourAnswersController.onPageLoad(index)),
         row(EnterPhoneId(index))(controllers.establishers.partnership.contact.routes.CheckYourAnswersController.onPageLoad(index)),

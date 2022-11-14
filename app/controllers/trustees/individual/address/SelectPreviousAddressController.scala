@@ -23,10 +23,10 @@ import controllers.actions._
 import controllers.address.{AddressListController, AddressPages}
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
+import identifiers.establishers.company.director.{address => Director}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address.{EnterPreviousPostCodeId, PreviousAddressId, PreviousAddressListId}
-import identifiers.establishers.company.director.{address => Director}
-import models.{CheckMode, Index, Mode, NormalMode, TolerantAddress}
+import models._
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -62,7 +62,7 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async { implicit request =>
     retrieve(SchemeNameId) { schemeName =>
-      getFormToJson(schemeName, index, mode).retrieve.right.map(get)
+      getFormToJson(schemeName, index, mode).retrieve.map(get)
     }
   }
 
@@ -70,12 +70,12 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
     (authenticate andThen getData andThen requireData()).async { implicit request =>
         val addressPages: AddressPages = AddressPages(EnterPreviousPostCodeId(index), PreviousAddressListId(index), PreviousAddressId(index))
       retrieve(SchemeNameId) { schemeName =>
-        val json: Form[Int] => JsObject = getFormToJson(schemeName, index, mode).retrieve.right.get
+        val json: Form[Int] => JsObject = getFormToJson(schemeName, index, mode).retrieve.toOption.get
         form.bindFromRequest().fold(
           formWithErrors =>
             renderer.render(viewTemplate, prepareJson(json(formWithErrors))).map(BadRequest(_)),
           value =>
-            addressPages.postcodeId.retrieve.right.map { addresses =>
+            addressPages.postcodeId.retrieve.map { addresses =>
               val address = addresses(value).copy(country = Some("GB"))
               if (address.toAddress.nonEmpty) {
                 for {
@@ -156,7 +156,7 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
   def getFormToJson(schemeName:String, index: Index, mode: Mode) : Retrieval[Form[Int] => JsObject] =
     Retrieval(
       implicit request =>
-        EnterPreviousPostCodeId(index).retrieve.right.map { addresses =>
+        EnterPreviousPostCodeId(index).retrieve.map { addresses =>
 
           val msg = request2Messages(request)
 

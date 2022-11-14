@@ -17,7 +17,7 @@
 package controllers.trustees
 
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRetrievalAction, FakeAuthAction, DataRequiredActionImpl, FakeDataRetrievalAction}
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.HasReferenceNumberFormProvider
 import identifiers.trustees.OtherTrusteesId
 import matchers.JsonMatchers
@@ -26,7 +26,7 @@ import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Call, AnyContentAsFormUrlEncoded, Result}
+import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
@@ -37,7 +37,6 @@ import utils.Data.{schemeName, ua}
 import utils.FakeNavigator
 
 import scala.concurrent.Future
-
 class OtherTrusteesControllerSpec extends ControllerSpecBase
   with NunjucksSupport
   with JsonMatchers
@@ -45,7 +44,7 @@ class OtherTrusteesControllerSpec extends ControllerSpecBase
   with BeforeAndAfterEach{
 
   private val onwardRoute: Call =
-    controllers.routes.IndexController.onPageLoad()
+    controllers.routes.IndexController.onPageLoad
   private val formProvider: HasReferenceNumberFormProvider =
     new HasReferenceNumberFormProvider()
 
@@ -66,7 +65,7 @@ class OtherTrusteesControllerSpec extends ControllerSpecBase
       "isPageHeading" -> true
     )
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(
       mockRenderer,
       mockUserAnswersCacheConnector

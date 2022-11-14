@@ -16,11 +16,11 @@
 
 package helpers.spokes.trustees.individual
 
+import controllers.trustees.individual.address.routes._
 import helpers.spokes.Spoke
-import models.{SpokeTaskListLink, Index}
+import models.{Index, SpokeTaskListLink}
 import play.api.i18n.Messages
 import utils.UserAnswers
-import controllers.trustees.individual.address.routes._
 
 case class TrusteeIndividualAddress(
   index: Index,

@@ -27,8 +27,6 @@ import models.requests.DataRequest
 import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsString, Json, __}
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
@@ -65,8 +63,8 @@ class DeclarationController @Inject()(
           psaName =>
             val json = Json.obj(
               "psaName" -> psaName,
-              "submitUrl" -> controllers.racdac.individual.routes.DeclarationController.onSubmit().url,
-              "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad().url
+              "submitUrl" -> controllers.racdac.individual.routes.DeclarationController.onSubmit.url,
+              "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad.url
             )
             renderer.render("racdac/declaration.njk", json).map(Ok(_))
         }
@@ -85,7 +83,7 @@ class DeclarationController @Inject()(
               _ <- pensionsSchemeConnector.registerScheme(UserAnswers(updatedUa.data), psaId, RacDac)
               _ <- sendEmail(racDacName,psaId, pstrId)
             } yield {
-              Redirect(controllers.racdac.individual.routes.ConfirmationController.onPageLoad().url)
+              Redirect(controllers.racdac.individual.routes.ConfirmationController.onPageLoad.url)
             })recoverWith {
               case ex: UpstreamErrorResponse if ex.statusCode == UNPROCESSABLE_ENTITY =>
                 Future.successful(Redirect(controllers.racdac.individual.routes.AddingRacDacController.onPageLoad))

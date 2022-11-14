@@ -52,14 +52,14 @@ class SpokeTaskListController @Inject()(
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             get(
               spokes = spokeCreationService.getEstablisherPartnershipSpokes(request.userAnswers, name(index), index),
               entityName = name(index),
               schemeName = schemeName,
               entityType = Message("messages__tasklist__establisher"),
-              submitUrl = controllers.establishers.routes.AddEstablisherController.onPageLoad().url
+              submitUrl = controllers.establishers.routes.AddEstablisherController.onPageLoad.url
             )
         }
     }

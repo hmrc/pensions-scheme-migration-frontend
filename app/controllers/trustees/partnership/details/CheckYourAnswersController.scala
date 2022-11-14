@@ -21,7 +21,6 @@ import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import helpers.cya.CYAHelper
 import helpers.cya.trustees.partnership.TrusteePartnershipDetailsCYAHelper
 import identifiers.beforeYouStart.SchemeNameId
-import javax.inject.Inject
 import models.Index
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -30,6 +29,7 @@ import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Enumerable
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class CheckYourAnswersController @Inject()(

@@ -60,7 +60,7 @@ class PartnerEnterUTRController @Inject()(
   def onPageLoad(establisherIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             get(
               pageTitle = Message("messages__enterUTR", Message("messages__partner")),
@@ -78,7 +78,7 @@ class PartnerEnterUTRController @Inject()(
   def onSubmit( establisherIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             post(
               pageTitle = Message("messages__enterUTR", Message("messages__partner")),

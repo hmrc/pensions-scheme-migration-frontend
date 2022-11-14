@@ -23,7 +23,7 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.contact.{EnterEmailId, EnterPhoneId}
 import models.requests.DataRequest
-import models.{CheckMode, PartnershipDetails, MigrationLock}
+import models.{CheckMode, MigrationLock, PartnershipDetails}
 import org.scalatest.TryValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec

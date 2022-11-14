@@ -63,7 +63,7 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
                                                                               dataRequest: DataRequest[AnyContent])
   : Either[Future[Result], String] = {
     trusteeKind match {
-      case Individual => TrusteeNameId(index).retrieve.right.map(_.fullName)
+      case Individual => TrusteeNameId(index).retrieve.map(_.fullName)
       case _ => Right("Unimplemented functionality")
     }
   }

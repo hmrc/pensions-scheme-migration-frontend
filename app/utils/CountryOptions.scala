@@ -28,7 +28,7 @@ import javax.inject.{Inject, Singleton}
 class CountryOptions(val options: Seq[InputOption]) {
 
   @Inject()
-  def this(environment: Environment, config: AppConfig) {
+  def this(environment: Environment, config: AppConfig) = {
     this(
       environment.resourceAsStream(config.locationCanonicalList).flatMap {
         in =>

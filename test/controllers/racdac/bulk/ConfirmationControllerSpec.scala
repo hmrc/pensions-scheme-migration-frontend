@@ -34,7 +34,6 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.{Data, Enumerable}
 
 import scala.concurrent.Future
-
 class ConfirmationControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val templateToBeRendered = "racdac/confirmation.njk"
@@ -57,7 +56,7 @@ class ConfirmationControllerSpec extends ControllerSpecBase with NunjucksSupport
       ): _*
     ).build()
 
-  private def httpPathGET: String = controllers.racdac.bulk.routes.ConfirmationController.onPageLoad().url
+  private def httpPathGET: String = controllers.racdac.bulk.routes.ConfirmationController.onPageLoad.url
 
   private val jsonToPassToTemplate: JsObject =
     Json.obj(
@@ -72,8 +71,8 @@ class ConfirmationControllerSpec extends ControllerSpecBase with NunjucksSupport
     )
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 

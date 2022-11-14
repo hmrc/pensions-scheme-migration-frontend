@@ -97,13 +97,13 @@ class BenefitsAndInsuranceCYAHelperSpec extends AnyWordSpec with Matchers with T
 
       result(2) mustBe summaryListRow(key = Messages("howProvideBenefits.h1", schemeName),
         valueMsgKey = "howProvideBenefits.moneyPurchaseOnly", Some(Link(text = Messages("site.change"),
-          target = controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onPageLoad().url,
+          target = controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onPageLoad.url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("howProvideBenefits.visuallyHidden", schemeName))),
           attributes = Map("id" -> "cya-0-2-change"))))
 
       result(3) mustBe summaryListRow(key = Messages("benefitsType.h1", schemeName),
         valueMsgKey = "benefitsType.cashBalanceBenefits", Some(Link(text = Messages("site.change"),
-          target = controllers.benefitsAndInsurance.routes.BenefitsTypeController.onPageLoad().url,
+          target = controllers.benefitsAndInsurance.routes.BenefitsTypeController.onPageLoad.url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("benefitsType.visuallyHidden", schemeName))),
           attributes = Map("id" -> "cya-0-3-change"))))
 
@@ -113,25 +113,25 @@ class BenefitsAndInsuranceCYAHelperSpec extends AnyWordSpec with Matchers with T
 
       result(4) mustBe summaryListRow(key = Messages("areBenefitsSecured.title"), valueMsgKey = "booleanAnswer.true",
         Some(Link(text = Messages("site.change"),
-          target = controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onPageLoad().url,
+          target = controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onPageLoad.url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("areBenefitsSecured.visuallyHidden"))),
           attributes = Map("id" -> "cya-0-4-change"))))
 
       result(5) mustBe summaryListRowLiteral(key = Messages("benefitsInsuranceName.title"), value = insurerName, Some(
         Link(text = Messages("site.change"),
-          target = controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onPageLoad().url,
+          target = controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onPageLoad.url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("benefitsInsuranceName.visuallyHidden"))),
           attributes = Map("id" -> "cya-0-5-change"))))
 
       result(6) mustBe summaryListRowLiteral(key = Messages("benefitsInsurancePolicy.h1", insurerName),
         value = insurerPolicyNo, Some(Link(text = Messages("site.change"),
-          target = controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onPageLoad().url,
+          target = controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onPageLoad.url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("benefitsInsurancePolicy.visuallyHidden"))),
           attributes = Map("id" -> "cya-0-6-change"))))
 
       result(7) mustBe summaryListRowHtml(key = messages("addressList.title", insurerName),
         value = answerBenefitsAddressTransform(insurerAddress), Some(Link(text = Messages("site.change"),
-          target = controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onPageLoad().url,
+          target = controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onPageLoad.url,
           visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("addressList.visuallyHidden"))),
           attributes = Map("id" -> "cya-0-7-change"))))
     }

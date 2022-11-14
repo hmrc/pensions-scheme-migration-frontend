@@ -21,7 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.beforeYouStart.SchemeNameId
 import matchers.JsonMatchers
-import models.{NormalMode, TolerantAddress}
+import models.{NormalMode, Scheme, TolerantAddress}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -34,7 +34,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{Data, Enumerable, UserAnswers}
-import models.Scheme
+
 import scala.concurrent.Future
 
 class EnterPreviousPostcodeControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
@@ -59,8 +59,8 @@ class EnterPreviousPostcodeControllerSpec extends ControllerSpecBase with Nunjuc
     "value" -> Seq.empty
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 

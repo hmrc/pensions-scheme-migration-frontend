@@ -45,7 +45,7 @@ class UTRControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
   private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(index), partnershipDetails).success.value
 
   private val formProvider: UTRFormProvider = new UTRFormProvider()
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
 
   private val commonJson: JsObject =
@@ -62,7 +62,7 @@ class UTRControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
     new UTRController(messagesApi, new FakeNavigator(desiredRoute = onwardRoute), new FakeAuthAction(), dataRetrievalAction,
       new DataRequiredActionImpl, formProvider, controllerComponents, mockUserAnswersCacheConnector, new Renderer(mockAppConfig, mockRenderer))
 
-  override def beforeEach: Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
+  override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
 
   "UTRController" must {
     "return OK and the correct view for a GET" in {

@@ -39,7 +39,6 @@ import utils.{Enumerable, UserAnswers}
 
 import java.time.LocalDate
 import scala.concurrent.Future
-
 class CheckYourAnswersControllerSpec
   extends ControllerSpecBase
     with NunjucksSupport

@@ -37,7 +37,6 @@ import utils.Data.ua
 import utils.{Data, Enumerable, UserAnswers}
 
 import scala.concurrent.Future
-
 class CheckYourAnswersControllerSpec
   extends ControllerSpecBase
     with NunjucksSupport

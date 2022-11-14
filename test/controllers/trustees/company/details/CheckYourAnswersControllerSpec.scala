@@ -34,7 +34,6 @@ import utils.Data.{schemeName, ua}
 import utils.UserAnswers
 
 import scala.concurrent.Future
-
 class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers {
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -65,8 +64,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
     "schemeName" -> schemeName
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(play.twirl.api.Html("")))
     when(mockCyaHelper.detailsRows(any())(any(), any())).thenReturn(rows)
   }

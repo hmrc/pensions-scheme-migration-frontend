@@ -27,7 +27,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Value, Row, Key}
+import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels.Text.Literal
 import uk.gov.hmrc.viewmodels.{Html, NunjucksSupport}
 import utils.Data.{schemeName, ua}
@@ -65,8 +65,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
     "schemeName" -> schemeName
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(play.twirl.api.Html("")))
     when(mockCyaHelper.rows(any())(any(), any())).thenReturn(rows)
   }

@@ -45,8 +45,8 @@ class WorkingKnowledgeControllerSpec extends ControllerSpecBase with NunjucksSup
 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
-  private def httpPathGET: String = routes.WorkingKnowledgeController.onPageLoad().url
-  private def httpPathPOST: String = routes.WorkingKnowledgeController.onSubmit().url
+  private def httpPathGET: String = routes.WorkingKnowledgeController.onPageLoad.url
+  private def httpPathPOST: String = routes.WorkingKnowledgeController.onSubmit.url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq("true")
@@ -63,8 +63,8 @@ class WorkingKnowledgeControllerSpec extends ControllerSpecBase with NunjucksSup
       "radios" -> Radios.yesNo(form("value"))
     )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
@@ -122,7 +122,7 @@ class WorkingKnowledgeControllerSpec extends ControllerSpecBase with NunjucksSup
       val expectedJson = Json.obj()
 
       when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(WorkingKnowledgeId), any(), any())(any()))
-        .thenReturn(routes.CheckYourAnswersController.onPageLoad())
+        .thenReturn(routes.CheckYourAnswersController.onPageLoad)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -138,7 +138,7 @@ class WorkingKnowledgeControllerSpec extends ControllerSpecBase with NunjucksSup
 
       jsonCaptor.getValue must containJson(expectedJson)
 
-      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad.url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

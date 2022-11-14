@@ -35,7 +35,6 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.{Data, Enumerable, UserAnswers}
 
 import scala.concurrent.Future
-
 class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val mockAddressLookupConnector = mock[AddressLookupConnector]
@@ -62,8 +61,8 @@ class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSuppor
     "value" -> Seq.empty
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 

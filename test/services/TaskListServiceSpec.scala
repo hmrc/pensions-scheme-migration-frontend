@@ -21,7 +21,7 @@ import identifiers.ExpireAtId
 import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
 import identifiers.adviser.{AdviserNameId, AddressId => AdviserAddressId, EnterEmailId => AdviserEnterEmailId, EnterPhoneId => AdviserEnterPhoneId}
 import identifiers.beforeYouStart.{EstablishedCountryId, SchemeNameId, SchemeTypeId, WorkingKnowledgeId}
-import identifiers.benefitsAndInsurance.{AreBenefitsSecuredId, BenefitsTypeId, HowProvideBenefitsId, IsInvestmentRegulatedId, IsOccupationalId}
+import identifiers.benefitsAndInsurance._
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{AddressId, AddressYearsId}
@@ -37,7 +37,6 @@ import models._
 import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
 import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind
-import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.schemeName
@@ -45,7 +44,7 @@ import utils.{Data, Enumerable, UserAnswers}
 
 import java.time.LocalDate
 
-class TaskListServiceSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class TaskListServiceSpec extends SpecBase with BeforeAndAfterEach  with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val taskListService = new TaskListService(appConfig)
 
@@ -62,7 +61,7 @@ class TaskListServiceSpec extends SpecBase with BeforeAndAfterEach with MockitoS
       val ua = UserAnswers().setOrException(SchemeNameId, schemeName)
       val expectedSections = Seq(basicDetailsSection(false), membershipDetailsSection(false, false),
         benefitsAndInsuranceDetails(false, false), establisherSectionIncomplete,
-        trusteeSectionIncomplete(controllers.trustees.routes.AnyTrusteesController.onPageLoad().url))
+        trusteeSectionIncomplete(controllers.trustees.routes.AnyTrusteesController.onPageLoad.url))
       val result = taskListService.taskSections(ua, implicitly)
       result mustBe expectedSections
     }
@@ -82,7 +81,7 @@ class TaskListServiceSpec extends SpecBase with BeforeAndAfterEach with MockitoS
         .setOrException(SchemeTypeId, SchemeType.BodyCorporate)
       val expectedSections = Seq(basicDetailsSection(false), membershipDetailsSection(false, false),
         benefitsAndInsuranceDetails(false, false), establisherSectionIncomplete,
-        trusteeSectionIncomplete(controllers.trustees.routes.AnyTrusteesController.onPageLoad().url))
+        trusteeSectionIncomplete(controllers.trustees.routes.AnyTrusteesController.onPageLoad.url))
       val result = taskListService.taskSections(ua, implicitly)
       result mustBe expectedSections
     }
@@ -137,7 +136,7 @@ class TaskListServiceSpec extends SpecBase with BeforeAndAfterEach with MockitoS
       val result = taskListService.declarationSection(ua, implicitly)
       result mustBe TaskListLink(
         text = messages("messages__schemeTaskList__declaration_link"),
-        target = controllers.routes.DeclarationController.onPageLoad().url,
+        target = controllers.routes.DeclarationController.onPageLoad.url,
         visuallyHiddenText = None,
         status = true
       )
@@ -171,7 +170,7 @@ class TaskListServiceSpec extends SpecBase with BeforeAndAfterEach with MockitoS
       "messages__newSchemeTaskList__basicDetails_addLink"
     Some(TaskListLink(
       text = messages(linkText, schemeName),
-      target = controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad().url,
+      target = controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad.url,
       visuallyHiddenText = None,
       status = complete
     ))
@@ -182,7 +181,7 @@ class TaskListServiceSpec extends SpecBase with BeforeAndAfterEach with MockitoS
       "messages__newSchemeTaskList__membershipDetails_addLink"
     Some(TaskListLink(
       text = messages(linkText, schemeName),
-      target = controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad().url,
+      target = controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad.url,
       visuallyHiddenText = None,
       status = complete
     ))
@@ -193,7 +192,7 @@ class TaskListServiceSpec extends SpecBase with BeforeAndAfterEach with MockitoS
       "messages__newSchemeTaskList__benefitsAndInsuranceDetails_addLink"
     Some(TaskListLink(
       text = messages(linkText, schemeName),
-      target = controllers.benefitsAndInsurance.routes.CheckYourAnswersController.onPageLoad().url,
+      target = controllers.benefitsAndInsurance.routes.CheckYourAnswersController.onPageLoad.url,
       visuallyHiddenText = None,
       status = complete
     ))
@@ -201,7 +200,7 @@ class TaskListServiceSpec extends SpecBase with BeforeAndAfterEach with MockitoS
 
   private val establisherSection = Some(TaskListLink(
     text = messages("messages__newSchemeTaskList__establishers_changeLink", schemeName),
-    target = controllers.establishers.routes.AddEstablisherController.onPageLoad().url,
+    target = controllers.establishers.routes.AddEstablisherController.onPageLoad.url,
     visuallyHiddenText = None,
     status = true
   ))
@@ -214,7 +213,7 @@ class TaskListServiceSpec extends SpecBase with BeforeAndAfterEach with MockitoS
   ))
   private val trusteeSection = Some(TaskListLink(
     text = messages("messages__newSchemeTaskList__trustees_changeLink", schemeName),
-    target = controllers.trustees.routes.AddTrusteeController.onPageLoad().url,
+    target = controllers.trustees.routes.AddTrusteeController.onPageLoad.url,
     visuallyHiddenText = None,
     status = true
   ))
@@ -229,14 +228,14 @@ class TaskListServiceSpec extends SpecBase with BeforeAndAfterEach with MockitoS
 
   private val wkSection = Some(TaskListLink(
     text = messages("messages__newSchemeTaskList__workingKnowledge_changeLink", "test adviser"),
-    target = controllers.adviser.routes.CheckYourAnswersController.onPageLoad().url,
+    target = controllers.adviser.routes.CheckYourAnswersController.onPageLoad.url,
     visuallyHiddenText = None,
     status = true
   ))
 
   private val wkSectionIncomplete = Some(TaskListLink(
     text = messages("messages__newSchemeTaskList__workingKnowledge_addLink", "test adviser"),
-    target = controllers.adviser.routes.WhatYouWillNeedController.onPageLoad().url,
+    target = controllers.adviser.routes.WhatYouWillNeedController.onPageLoad.url,
     visuallyHiddenText = None,
     status = false
   ))

@@ -20,9 +20,9 @@ import base.SpecBase
 import controllers.benefitsAndInsurance.routes._
 import identifiers._
 import identifiers.benefitsAndInsurance._
-import models.{CheckMode, NormalMode}
 import models.benefitsAndInsurance.BenefitsProvisionType.{DefinedBenefitsOnly, MixedBenefits, MoneyPurchaseOnly}
 import models.benefitsAndInsurance.BenefitsType._
+import models.{CheckMode, NormalMode}
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.{JsString, Writes}
@@ -75,15 +75,15 @@ object BenefitsAndInsuranceNavigatorSpec extends OptionValues {
   private def uaWithValue[A](idType: TypedIdentifier[A], idValue: A)(implicit writes: Writes[A]) =
     UserAnswers().set(idType, idValue).toOption
 
-  private def benefitsTypePage: Call = BenefitsTypeController.onPageLoad()
+  private def benefitsTypePage: Call = BenefitsTypeController.onPageLoad
 
-  private def insuranceCompanyName: Call = BenefitsInsuranceNameController.onPageLoad()
+  private def insuranceCompanyName: Call = BenefitsInsuranceNameController.onPageLoad
 
-  private def insurancePolicyNumber: Call = BenefitsInsurancePolicyController.onPageLoad()
+  private def insurancePolicyNumber: Call = BenefitsInsurancePolicyController.onPageLoad
 
-  private def insurerSelectAddress: Call = InsurerSelectAddressController.onPageLoad()
+  private def insurerSelectAddress: Call = InsurerSelectAddressController.onPageLoad
 
-  private def insurerEnterPostCode: Call = InsurerEnterPostcodeController.onPageLoad()
+  private def insurerEnterPostCode: Call = InsurerEnterPostcodeController.onPageLoad
 
-  private def checkYourAnswersPage: Call = CheckYourAnswersController.onPageLoad()
+  private def checkYourAnswersPage: Call = CheckYourAnswersController.onPageLoad
 }

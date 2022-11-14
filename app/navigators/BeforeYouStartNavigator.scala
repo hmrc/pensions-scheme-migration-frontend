@@ -18,9 +18,9 @@ package navigators
 
 import controllers.beforeYouStartSpoke.routes._
 import identifiers._
-import identifiers.beforeYouStart.{SchemeTypeId, EstablishedCountryId, WorkingKnowledgeId}
+import identifiers.beforeYouStart.{EstablishedCountryId, SchemeTypeId, WorkingKnowledgeId}
 import models.requests.DataRequest
-import play.api.mvc.{Call, AnyContent}
+import play.api.mvc.{AnyContent, Call}
 import utils.UserAnswers
 
 class BeforeYouStartNavigator extends Navigator {
@@ -28,13 +28,13 @@ class BeforeYouStartNavigator extends Navigator {
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case SchemeTypeId | EstablishedCountryId | WorkingKnowledgeId =>
-      CheckYourAnswersController.onPageLoad()
+      CheckYourAnswersController.onPageLoad
   }
 
   override protected def editRouteMap(ua: UserAnswers)
                                      (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case SchemeTypeId | EstablishedCountryId | WorkingKnowledgeId =>
-      CheckYourAnswersController.onPageLoad()
+      CheckYourAnswersController.onPageLoad
   }
 }
 

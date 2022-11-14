@@ -39,7 +39,7 @@ class LogoutController @Inject()(
   extends FrontendBaseController
     with I18nSupport with AuthorisedFunctions {
 
-  def onPageLoad(): Action[AnyContent] = authenticate.async {
+  def onPageLoad: Action[AnyContent] = authenticate.async {
     implicit request =>
       lockCacheConnector.removeLockByUser.map { _ =>
         listOfSchemesConnector.removeCache(request.psaId.id)

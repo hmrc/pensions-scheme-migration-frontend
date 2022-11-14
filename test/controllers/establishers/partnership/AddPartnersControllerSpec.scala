@@ -52,7 +52,7 @@ class AddPartnersControllerSpec extends ControllerSpecBase with NunjucksSupport 
           _.set(IsNewPartnerId(0,0), true)
      ))).toOption
 
-  private def validData() = {
+  private def validData = {
     ua.set(EstablisherKindId(1), EstablisherKind.Partnership).flatMap(
       _.set(PartnershipDetailsId(1), partnershipDetails).flatMap(
         _.set(PartnerNameId(1,1), partnerName).flatMap(
@@ -108,8 +108,8 @@ class AddPartnersControllerSpec extends ControllerSpecBase with NunjucksSupport 
       "maxPartners" -> mockAppConfig.maxPartners
     )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     reset(mockAppConfig)
     when(mockAppConfig.maxPartners).thenReturn(10)
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))

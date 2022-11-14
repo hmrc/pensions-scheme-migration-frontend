@@ -19,11 +19,11 @@ package controllers.trustees
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.trustees.ConfirmDeleteTrusteeFormProvider
-import identifiers.trustees.{AnyTrusteesId, ConfirmDeleteTrusteeId, OtherTrusteesId, TrusteeKindId}
 import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.{AnyTrusteesId, ConfirmDeleteTrusteeId, OtherTrusteesId, TrusteeKindId}
 import matchers.JsonMatchers
 import models.trustees.TrusteeKind
-import models.{Index, PersonName}
+import models.{Index, PersonName, Scheme}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -35,10 +35,8 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
-import models.Scheme
 
 import scala.concurrent.Future
-
 class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
   private val trusteeName: String = "Jane Doe"
   private val index: Index = Index(0)
@@ -79,8 +77,8 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with Nunjuck
     "schemeName" -> schemeName
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
@@ -120,7 +118,7 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with Nunjuck
       val expectedJson = Json.obj()
 
       when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(ConfirmDeleteTrusteeId), any(), any())(any()))
-        .thenReturn(routes.AddTrusteeController.onPageLoad())
+        .thenReturn(routes.AddTrusteeController.onPageLoad)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers.map(_.setOrException(OtherTrusteesId, true)))
@@ -135,7 +133,7 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with Nunjuck
 
       jsonCaptor.getValue must containJson(expectedJson)
 
-      redirectLocation(result) mustBe Some(routes.AddTrusteeController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.AddTrusteeController.onPageLoad.url)
 
       val jsonCaptorUA = ArgumentCaptor.forClass(classOf[JsValue])
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptorUA.capture())(any(), any())
@@ -151,7 +149,7 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with Nunjuck
       val expectedJson = Json.obj()
 
       when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(ConfirmDeleteTrusteeId), any(), any())(any()))
-        .thenReturn(routes.AddTrusteeController.onPageLoad())
+        .thenReturn(routes.AddTrusteeController.onPageLoad)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers1.map(_.setOrException(OtherTrusteesId, true)
@@ -167,7 +165,7 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with Nunjuck
 
       jsonCaptor.getValue must containJson(expectedJson)
 
-      redirectLocation(result) mustBe Some(routes.AddTrusteeController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.AddTrusteeController.onPageLoad.url)
 
       val jsonCaptorUA = ArgumentCaptor.forClass(classOf[JsValue])
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptorUA.capture())(any(), any())

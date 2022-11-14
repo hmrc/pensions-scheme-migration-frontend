@@ -38,7 +38,6 @@ import utils.Data.ua
 import utils.{Data, FakeNavigator, UserAnswers}
 
 import scala.concurrent.Future
-
 class EnterPhoneControllerSpec extends ControllerSpecBase
   with NunjucksSupport
   with JsonMatchers
@@ -49,7 +48,7 @@ class EnterPhoneControllerSpec extends ControllerSpecBase
   private val phone = "777"
   private val formProvider: PhoneFormProvider = new PhoneFormProvider()
   private val form = formProvider("")
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(0), company).success.value
   private val templateToBeRendered: String = "phone.njk"
 
@@ -61,7 +60,7 @@ class EnterPhoneControllerSpec extends ControllerSpecBase
     )
   private val formData: String = phone
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(
       mockRenderer,
       mockUserAnswersCacheConnector

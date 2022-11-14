@@ -16,24 +16,10 @@
 
 package controllers
 
-/*
- * Copyright 2021 HM Revenue & Customs
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
-import connectors.{ListOfSchemesConnector, MinimalDetailsConnector}
+
 import connectors.cache.{CurrentPstrCacheConnector, LockCacheConnector}
+import connectors.{ListOfSchemesConnector, MinimalDetailsConnector}
 import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
@@ -71,7 +57,7 @@ class SchemeSuccessControllerSpec extends ControllerSpecBase with NunjucksSuppor
   )
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
-  private def httpPathGET: String = controllers.routes.SchemeSuccessController.onPageLoad().url
+  private def httpPathGET: String = controllers.routes.SchemeSuccessController.onPageLoad.url
 
   private val jsonToPassToTemplate: JsObject =
     Json.obj(
@@ -82,8 +68,8 @@ class SchemeSuccessControllerSpec extends ControllerSpecBase with NunjucksSuppor
       "returnUrl" -> mockAppConfig.psaOverviewUrl
     )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
     when(mockUserAnswersCacheConnector.remove(any())(any(), any())).thenReturn(Future.successful(Ok))
     when(mockCurrentPstrCacheConnector.remove(any(), any())).thenReturn(Future.successful(Ok))

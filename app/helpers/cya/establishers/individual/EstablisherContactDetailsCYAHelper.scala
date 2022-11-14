@@ -21,12 +21,12 @@ import helpers.cya.CYAHelper.getName
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
 import models.requests.DataRequest
-import models.{Index, CheckMode}
+import models.{CheckMode, Index}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.SummaryList.Row
-import utils.{UserAnswers, Enumerable}
+import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 
 class EstablisherContactDetailsCYAHelper

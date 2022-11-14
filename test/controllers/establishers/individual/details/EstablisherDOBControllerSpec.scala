@@ -52,7 +52,7 @@ class EstablisherDOBControllerSpec
   private val form: Form[LocalDate] =
     formProvider()
   private val onwardRoute: Call =
-    controllers.routes.IndexController.onPageLoad()
+    controllers.routes.IndexController.onPageLoad
   private val personName: PersonName =
     PersonName("Jane", "Doe")
   private val userAnswers: UserAnswers =
@@ -88,7 +88,7 @@ class EstablisherDOBControllerSpec
       renderer                  = new Renderer(mockAppConfig, mockRenderer)
     )
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(
       mockRenderer,
       mockUserAnswersCacheConnector

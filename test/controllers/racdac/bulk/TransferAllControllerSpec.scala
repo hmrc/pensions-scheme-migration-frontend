@@ -17,7 +17,7 @@
 package controllers.racdac.bulk
 
 import connectors.cache.CurrentPstrCacheConnector
-import connectors.{ListOfSchemes5xxException, ListOfSchemesConnector, MinimalDetailsConnector, AncillaryPsaException}
+import connectors.{AncillaryPsaException, ListOfSchemes5xxException, ListOfSchemesConnector, MinimalDetailsConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.FakeAuthAction
 import forms.YesNoFormProvider
@@ -39,7 +39,6 @@ import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.ua
 
 import scala.concurrent.Future
-
 class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with BeforeAndAfterEach{
 
   private val psaName: String = "Psa Name"
@@ -63,7 +62,7 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
     "psaName" -> psaName,
     "returnUrl" -> appConfig.psaOverviewUrl
   )
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(mockRenderer, mockUserAnswersCacheConnector)
     when(mockMinDetailsConnector.getPSAName(any(), any())) thenReturn Future.successful(psaName)
   }
@@ -79,7 +78,7 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.failed(AncillaryPsaException()))
       val result = controller.onPageLoad(fakeDataRequest(ua))
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.preMigration.routes.CannotMigrateController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.preMigration.routes.CannotMigrateController.onPageLoad.url)
     }
 
     "redirect to the 'There is a problem' page when ListOfSchemes5xxException is thrown" in {
@@ -87,7 +86,7 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.failed(ListOfSchemes5xxException()))
       val result = controller.onPageLoad(fakeDataRequest(ua))
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.preMigration.routes.ThereIsAProblemController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.preMigration.routes.ThereIsAProblemController.onPageLoad.url)
     }
 
     "return OK and the correct view for a GET" in{
@@ -116,14 +115,14 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.successful(Right(expectedResponseWithScheme)))
       val result: Future[Result] = controller.onPageLoad(fakeDataRequest())
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac().url)
+      redirectLocation(result) mustBe Some(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac.url)
     }
     "return OK and the correct view for a GET for scheme with returning empty list " in {
 
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.successful(Right(expectedResponseWithEmpty)))
       val result: Future[Result] = controller.onPageLoad(fakeDataRequest())
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac().url)
+      redirectLocation(result) mustBe Some(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac.url)
     }
     "remove the existing cached data and redirect to the next page when valid data is submitted" in {
       val request: FakeRequest[AnyContentAsFormUrlEncoded] = fakeRequest.withFormUrlEncodedBody(("value", "true"))
@@ -132,7 +131,7 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
       status(result) mustBe SEE_OTHER
 
-      redirectLocation(result) mustBe Some(routes.BulkListController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.BulkListController.onPageLoad.url)
       verify(mockCurrentPstrCacheConnector, times(1)).remove(any(), any())
     }
 

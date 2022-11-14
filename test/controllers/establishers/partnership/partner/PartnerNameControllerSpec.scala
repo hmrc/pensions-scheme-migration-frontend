@@ -68,8 +68,8 @@ class PartnerNameControllerSpec extends ControllerSpecBase with NunjucksSupport 
       "entityType" -> Messages("messages__partner")
     )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 

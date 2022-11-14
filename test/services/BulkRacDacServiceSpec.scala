@@ -41,8 +41,7 @@ import uk.gov.hmrc.viewmodels.{MessageInterpolators, Table}
 import utils.Data._
 
 import scala.concurrent.{ExecutionContext, Future}
-
-class BulkRacDacServiceSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar with ScalaFutures with NunjucksSupport with JsonMatchers {
+class BulkRacDacServiceSpec extends SpecBase with BeforeAndAfterEach  with ScalaFutures with NunjucksSupport with MockitoSugar with JsonMatchers {
 
   import BulkRacDacServiceSpec._
 
@@ -85,8 +84,8 @@ class BulkRacDacServiceSpec extends SpecBase with BeforeAndAfterEach with Mockit
     psaId = PsaId(psaId)
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     reset(mockAppConfig, mockRenderer)
     when(mockAppConfig.psaOverviewUrl) thenReturn dummyUrl
     when(mockAppConfig.psaUpdateContactDetailsUrl).thenReturn(dummyUrl)
@@ -214,7 +213,7 @@ class BulkRacDacServiceSpec extends SpecBase with BeforeAndAfterEach with Mockit
 }
 
 
-object BulkRacDacServiceSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
+object BulkRacDacServiceSpec extends SpecBase  with BeforeAndAfterEach {
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
   private val pstr1: String = "10000678RE"
   private val pstr2: String = "10000678RD"

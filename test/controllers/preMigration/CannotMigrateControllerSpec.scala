@@ -19,8 +19,8 @@ package controllers.preMigration
 import controllers.ControllerSpecBase
 import controllers.actions._
 import matchers.JsonMatchers
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, MockitoSugar}
 import org.scalatest.TryValues
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
@@ -30,8 +30,7 @@ import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
-
-class CannotMigrateControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with MockitoSugar {
+class CannotMigrateControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues{
 
   private val templateToBeRendered: String = "preMigration/cannotMigrate.njk"
 
@@ -49,7 +48,7 @@ class CannotMigrateControllerSpec extends ControllerSpecBase with NunjucksSuppor
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result: Future[Result] = controller().onPageLoad()(fakeDataRequest())
+      val result: Future[Result] = controller().onPageLoad(fakeDataRequest())
 
       status(result) mustBe OK
 

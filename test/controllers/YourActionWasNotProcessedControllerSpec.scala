@@ -38,8 +38,8 @@ class YourActionWasNotProcessedControllerSpec extends ControllerSpecBase with Nu
 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
-  private def httpPathSchemeGET: String = controllers.routes.YourActionWasNotProcessedController.onPageLoadScheme().url
-  private def httpPathRacDacGET: String = controllers.routes.YourActionWasNotProcessedController.onPageLoadRacDac().url
+  private def httpPathSchemeGET: String = controllers.routes.YourActionWasNotProcessedController.onPageLoadScheme.url
+  private def httpPathRacDacGET: String = controllers.routes.YourActionWasNotProcessedController.onPageLoadRacDac.url
 
   private val jsonToPassToTemplateScheme: JsObject =
     Json.obj(
@@ -53,8 +53,8 @@ class YourActionWasNotProcessedControllerSpec extends ControllerSpecBase with Nu
       "returnUrl" ->  controllers.racdac.individual.routes.CheckYourAnswersController.onPageLoad.url
     )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 

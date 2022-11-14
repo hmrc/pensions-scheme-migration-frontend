@@ -68,7 +68,7 @@ class BulkListController @Inject()(
     form.bindFromRequest().fold(formWithErrors =>
       bulkRacDacService.renderRacDacBulkView(formWithErrors, pageNumber),
       { case true =>
-        Future.successful(Redirect(routes.DeclarationController.onPageLoad()))
+        Future.successful(Redirect(routes.DeclarationController.onPageLoad))
       case _ =>
         Future.successful(Redirect(appConfig.psaOverviewUrl))
       }

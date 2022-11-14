@@ -22,18 +22,18 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
 import models.requests.DataRequest
-import models.{PersonName, MigrationLock, CheckMode}
+import models.{CheckMode, MigrationLock, PersonName}
 import org.scalatest.TryValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Value, Row, Key}
+import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, Html}
-import utils.Data.{pstr, schemeName, psaId, credId}
-import utils.{UserAnswers, Enumerable}
+import uk.gov.hmrc.viewmodels.{Html, MessageInterpolators}
+import utils.Data.{credId, psaId, pstr, schemeName}
+import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 
 class EstablisherContactDetailsCYAHelperSpec extends AnyWordSpec with Matchers with TryValues with Enumerable.Implicits {

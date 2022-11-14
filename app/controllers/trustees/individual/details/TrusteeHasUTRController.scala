@@ -72,7 +72,7 @@ class TrusteeHasUTRController @Inject()(
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
 
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             get(
               pageTitle     = Message("messages__hasUTR", Message("messages__individual")),
@@ -91,7 +91,7 @@ class TrusteeHasUTRController @Inject()(
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
 
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             form(index).bindFromRequest().fold(
               (formWithErrors: Form[_]) =>

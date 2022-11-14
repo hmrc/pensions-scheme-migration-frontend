@@ -61,7 +61,7 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
   private def directorName(establisherIndex: Index, directorIndex: Index)(implicit
                                                                           dataRequest: DataRequest[AnyContent])
   : Either[Future[Result], String] = {
-    DirectorNameId(establisherIndex, directorIndex).retrieve.right.map(_.fullName)
+    DirectorNameId(establisherIndex, directorIndex).retrieve.map(_.fullName)
   }
 
 }

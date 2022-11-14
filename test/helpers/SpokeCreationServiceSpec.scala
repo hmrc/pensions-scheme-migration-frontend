@@ -26,27 +26,28 @@ import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{AddressId => IndividualAddressId}
 import identifiers.establishers.partnership.address.{AddressId => PartnershipAddressId}
 import identifiers.establishers.partnership.contact.EnterEmailId
-import identifiers.establishers.partnership.details.{PartnershipUTRId, HaveUTRId}
+import identifiers.establishers.partnership.details.{HaveUTRId, PartnershipUTRId}
 import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.{PartnershipDetailsId => EstablisherPartnershipDetailsId}
 import identifiers.trustees.company.{details => trusteeCompanyDetails}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.contact.{EnterEmailId => TrusteeEmailId, EnterPhoneId => TrusteePhoneId}
 import identifiers.trustees.individual.details.{TrusteeDOBId, TrusteeNINOId, TrusteeUTRId}
-import identifiers.trustees.partnership.address.{AddressYearsId => TrusteePartnershipAddressYearsId, AddressId => TrusteePartnershipAddressId}
+import identifiers.trustees.partnership.address.{AddressId => TrusteePartnershipAddressId, AddressYearsId => TrusteePartnershipAddressYearsId}
 import identifiers.trustees.partnership.contact.{EnterEmailId => TrusteePartnershipEmailId, EnterPhoneId => TrusteePartnershipPhoneId}
-import identifiers.trustees.partnership.details.{HavePAYEId => TrusteeHavePAYEId, PAYEId => TrusteePAYEId, HaveVATId => TrusteeHaveVATId, VATId => TrusteeVATId, HaveUTRId => TrusteeHaveUTRId}
+import identifiers.trustees.partnership.details.{HavePAYEId => TrusteeHavePAYEId, HaveUTRId => TrusteeHaveUTRId, HaveVATId => TrusteeHaveVATId, PAYEId => TrusteePAYEId, VATId => TrusteeVATId}
 import identifiers.trustees.partnership.{PartnershipDetailsId => TrusteePartnershipDetailsId}
 import identifiers.trustees.{TrusteeKindId, company => trusteeCompany}
 import models._
 import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind
-import org.mockito.scalatest.MockitoSugar
+import org.mockito.ArgumentMatchers.any
+import org.mockito.MockitoSugar
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
 import services.DataPrefillService
 import utils.Data.ua
-import utils.{Enumerable, Data}
+import utils.{Data, Enumerable}
 import viewmodels.Message
 
 import java.time.LocalDate
@@ -86,7 +87,7 @@ class SpokeCreationServiceSpec
       val expectedSpoke =
         Seq(EntitySpoke(
           SpokeTaskListLink(Message("messages__schemeTaskList__sectionEstablishers_change_link"),
-            controllers.establishers.routes.AddEstablisherController.onPageLoad().url), None)
+            controllers.establishers.routes.AddEstablisherController.onPageLoad.url), None)
         )
 
       val result = spokeCreationService.getAddEstablisherHeaderSpokes(userAnswers, viewOnly = false)
@@ -766,7 +767,7 @@ class SpokeCreationServiceSpec
     "return declaration spoke with link" in {
       val expectedSpoke = Seq(EntitySpoke(SpokeTaskListLink(
         messages("messages__schemeTaskList__declaration_link"),
-        controllers.routes.DeclarationController.onPageLoad().url)
+        controllers.routes.DeclarationController.onPageLoad.url)
       ))
 
       spokeCreationService.declarationSpoke mustBe expectedSpoke

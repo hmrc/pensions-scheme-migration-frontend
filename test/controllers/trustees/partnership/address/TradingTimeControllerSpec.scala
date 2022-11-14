@@ -38,7 +38,6 @@ import utils.Data.{schemeName, ua}
 import utils.{Data, Enumerable, UserAnswers}
 
 import scala.concurrent.Future
-
 class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(PartnershipDetailsId(0), Data.partnershipDetails))
@@ -63,8 +62,8 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
     "value" -> Seq.empty
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
@@ -117,7 +116,7 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad.url
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {

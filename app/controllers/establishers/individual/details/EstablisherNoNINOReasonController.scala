@@ -62,7 +62,7 @@ class EstablisherNoNINOReasonController @Inject()(
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             get(
               pageTitle     = Message("messages__whyNoNINO", Message("messages__individual")),
@@ -78,7 +78,7 @@ class EstablisherNoNINOReasonController @Inject()(
     def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
       (authenticate andThen getData andThen requireData()).async {
         implicit request =>
-          SchemeNameId.retrieve.right.map {
+          SchemeNameId.retrieve.map {
             schemeName =>
               post(
                 pageTitle     = Message("messages__whyNoNINO", Message("messages__individual")),

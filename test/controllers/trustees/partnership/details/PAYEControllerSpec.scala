@@ -33,11 +33,10 @@ import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import utils.Data.{schemeName, partnershipDetails, ua}
+import utils.Data.{partnershipDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
 
 import scala.concurrent.Future
-
 class PAYEControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with BeforeAndAfterEach {
 
   private val index: Index = Index(0)
@@ -46,7 +45,7 @@ class PAYEControllerSpec extends ControllerSpecBase with NunjucksSupport with Js
   private val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
   private val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
   private val formProvider: PAYEFormProvider = new PAYEFormProvider()
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
 
   private val commonJson: JsObject =
@@ -63,7 +62,7 @@ class PAYEControllerSpec extends ControllerSpecBase with NunjucksSupport with Js
     new PAYEController(messagesApi, new FakeNavigator(desiredRoute = onwardRoute), new FakeAuthAction(), dataRetrievalAction,
       new DataRequiredActionImpl, formProvider, controllerComponents, mockUserAnswersCacheConnector, new Renderer(mockAppConfig, mockRenderer))
 
-  override def beforeEach: Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
+  override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
 
   "PAYEController" must {
     "return OK and the correct view for a GET" in {

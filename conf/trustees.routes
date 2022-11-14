@@ -1,37 +1,37 @@
-GET         /scheme-trustees                         controllers.trustees.AddTrusteeController.onPageLoad()
-POST        /scheme-trustees                         controllers.trustees.AddTrusteeController.onSubmit()
+GET         /scheme-trustees                           controllers.trustees.AddTrusteeController.onPageLoad
+POST        /scheme-trustees                           controllers.trustees.AddTrusteeController.onSubmit
 
-GET         /none                                    controllers.trustees.NoTrusteesController.onPageLoad()
-POST        /none                                    controllers.trustees.NoTrusteesController.onSubmit()
+GET         /none                                      controllers.trustees.NoTrusteesController.onPageLoad
+POST        /none                                      controllers.trustees.NoTrusteesController.onSubmit
 
-GET         /:index/partnership/delete-trustee           controllers.trustees.ConfirmDeleteTrusteeController.onPageLoad(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Partnership)
-POST        /:index/partnership/delete-trustee           controllers.trustees.ConfirmDeleteTrusteeController.onSubmit(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Partnership)
+GET         /:index/partnership/delete-trustee         controllers.trustees.ConfirmDeleteTrusteeController.onPageLoad(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Partnership)
+POST        /:index/partnership/delete-trustee         controllers.trustees.ConfirmDeleteTrusteeController.onSubmit(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Partnership)
 
-GET         /:index/company/delete-trustee           controllers.trustees.ConfirmDeleteTrusteeController.onPageLoad(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Company)
-POST        /:index/company/delete-trustee           controllers.trustees.ConfirmDeleteTrusteeController.onSubmit(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Company)
+GET         /:index/company/delete-trustee             controllers.trustees.ConfirmDeleteTrusteeController.onPageLoad(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Company)
+POST        /:index/company/delete-trustee             controllers.trustees.ConfirmDeleteTrusteeController.onSubmit(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Company)
 
-GET         /:index/individual/confirm-delete        controllers.trustees.ConfirmDeleteTrusteeController.onPageLoad(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Individual)
-POST        /:index/individual/confirm-delete       controllers.trustees.ConfirmDeleteTrusteeController.onSubmit(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Individual)
+GET         /:index/individual/confirm-delete          controllers.trustees.ConfirmDeleteTrusteeController.onPageLoad(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Individual)
+POST        /:index/individual/confirm-delete          controllers.trustees.ConfirmDeleteTrusteeController.onSubmit(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Individual)
 
-GET         /:index/trustee-type                     controllers.trustees.TrusteeKindController.onPageLoad(index:Index)
-POST        /:index/trustee-type                     controllers.trustees.TrusteeKindController.onSubmit(index:Index)
+GET         /:index/trustee-type                       controllers.trustees.TrusteeKindController.onPageLoad(index:Index)
+POST        /:index/trustee-type                       controllers.trustees.TrusteeKindController.onSubmit(index:Index)
 
-GET         /:index/individual/already-deleted           controllers.trustees.AlreadyDeletedController.onPageLoad(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Individual)
-GET         /:index/company/already-deleted              controllers.trustees.AlreadyDeletedController.onPageLoad(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Company)
-GET         /:index/partnership/already-deleted              controllers.trustees.AlreadyDeletedController.onPageLoad(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Partnership)
+GET         /:index/individual/already-deleted         controllers.trustees.AlreadyDeletedController.onPageLoad(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Individual)
+GET         /:index/company/already-deleted            controllers.trustees.AlreadyDeletedController.onPageLoad(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Company)
+GET         /:index/partnership/already-deleted        controllers.trustees.AlreadyDeletedController.onPageLoad(index: Index, trusteeKind: TrusteeKind = TrusteeKind.Partnership)
 
-GET         /other-trustees                                      controllers.trustees.OtherTrusteesController.onPageLoad
-POST        /other-trustees                                      controllers.trustees.OtherTrusteesController.onSubmit
-GET         /change/other-trustees                               controllers.trustees.OtherTrusteesController.onPageLoad
-POST        /change/other-trustees                               controllers.trustees.OtherTrusteesController.onSubmit
-
-
-
-GET         /any-trustees                                      controllers.trustees.AnyTrusteesController.onPageLoad
-POST        /any-trustees                                      controllers.trustees.AnyTrusteesController.onSubmit
+GET         /other-trustees                            controllers.trustees.OtherTrusteesController.onPageLoad
+POST        /other-trustees                            controllers.trustees.OtherTrusteesController.onSubmit
+GET         /change/other-trustees                     controllers.trustees.OtherTrusteesController.onPageLoad
+POST        /change/other-trustees                     controllers.trustees.OtherTrusteesController.onSubmit
 
 
-->          /                                            trusteesIndividual.Routes
-->          /                                            trusteesCompany.Routes
-->          /                                            trusteesPartnership.Routes
+
+GET         /any-trustees                              controllers.trustees.AnyTrusteesController.onPageLoad
+POST        /any-trustees                              controllers.trustees.AnyTrusteesController.onSubmit
+
+
+->          /                                          trusteesIndividual.Routes
+->          /                                          trusteesCompany.Routes
+->          /                                          trusteesPartnership.Routes
 

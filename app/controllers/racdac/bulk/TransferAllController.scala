@@ -24,7 +24,7 @@ import controllers.actions._
 import forms.YesNoFormProvider
 import models.RacDac
 import play.api.data.Form
-import play.api.i18n.{MessagesApi, I18nSupport}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -66,9 +66,9 @@ class TransferAllController @Inject()(appConfig: AppConfig,
               renderer.render("racdac/transferAll.njk", json).map(Ok(_))
             }
           } else {
-            Future.successful(Redirect(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac()))
+            Future.successful(Redirect(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac))
           }
-        case _ => Future.successful(Redirect(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac()))
+        case _ => Future.successful(Redirect(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac))
       } recoverWith listOfSchemesRedirects
   }
 
@@ -87,7 +87,7 @@ class TransferAllController @Inject()(appConfig: AppConfig,
           currentPstrCacheConnector.remove.map { _ =>
             value match {
               case true =>
-                Redirect(controllers.racdac.bulk.routes.BulkListController.onPageLoad())
+                Redirect(controllers.racdac.bulk.routes.BulkListController.onPageLoad)
               case _ =>
                 Redirect(controllers.preMigration.routes.ListOfSchemesController.onPageLoad(RacDac))
             }

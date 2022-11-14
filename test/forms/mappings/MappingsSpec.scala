@@ -172,11 +172,11 @@ class MappingsSpec extends AnyWordSpec with Matchers with OptionValues with Mapp
       )
 
       result.errors.size mustBe 3
-      result.errors must contain allOf(
-        FormError("date.day", "error.date.day_blank"),
-        FormError("date.month", "error.date.month_blank"),
-        FormError("date.year", "error.date.year_blank")
-      )
+
+      result.errors.contains(FormError("date.day", "error.date.day_blank")) mustBe true
+      result.errors.contains(FormError("date.month", "error.date.month_blank")) mustBe true
+      result.errors.contains(FormError("date.year", "error.date.year_blank")) mustBe true
+
     }
 
     "not bind non-numeric input" in {
@@ -189,11 +189,11 @@ class MappingsSpec extends AnyWordSpec with Matchers with OptionValues with Mapp
       )
 
       result.errors.size mustBe 3
-      result.errors must contain allOf(
-        FormError("date.day", "error.date.day_invalid"),
-        FormError("date.month", "error.date.month_invalid"),
-        FormError("date.year", "error.date.year_invalid")
-      )
+
+      result.errors.contains(FormError("date.day", "error.date.day_invalid")) mustBe true
+      result.errors.contains(FormError("date.month", "error.date.month_invalid")) mustBe true
+      result.errors.contains(FormError("date.year", "error.date.year_invalid")) mustBe true
+
     }
 
     "not bind invalid day" in {

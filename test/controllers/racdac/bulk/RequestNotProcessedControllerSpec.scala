@@ -29,7 +29,6 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Enumerable
 
 import scala.concurrent.Future
-
 class RequestNotProcessedControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val templateToBeRendered = "racdac/request-not-processed.njk"
@@ -38,15 +37,15 @@ class RequestNotProcessedControllerSpec extends ControllerSpecBase with Nunjucks
 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
-  private def httpPathGET: String = controllers.racdac.bulk.routes.RequestNotProcessedController.onPageLoad().url
+  private def httpPathGET: String = controllers.racdac.bulk.routes.RequestNotProcessedController.onPageLoad.url
 
   private val jsonToPassToTemplate: JsObject =
     Json.obj(
-      "tryAgain" -> routes.TransferAllController.onPageLoad().url
+      "tryAgain" -> routes.TransferAllController.onPageLoad.url
     )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 

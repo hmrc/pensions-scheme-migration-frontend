@@ -23,6 +23,7 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressYearsId
 import matchers.JsonMatchers
+import models.{NormalMode, Scheme}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -35,7 +36,6 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
 import utils.{Data, Enumerable, UserAnswers}
-import models.{NormalMode, Scheme}
 
 import scala.concurrent.Future
 
@@ -63,8 +63,8 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
     "value" -> Seq.empty
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 

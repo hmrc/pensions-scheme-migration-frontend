@@ -24,8 +24,8 @@ import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
 import matchers.JsonMatchers
+import models._
 import models.establishers.EstablisherKind
-import models.{CompanyDetails, Index, PartnershipDetails, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -37,9 +37,8 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
-import models.Scheme
-import scala.concurrent.Future
 
+import scala.concurrent.Future
 class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
   private val individualName: String = "Jane Doe"
   private val companyName: String = "test company"
@@ -78,8 +77,8 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Nun
     "schemeName" -> schemeName
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
@@ -142,7 +141,7 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Nun
       val expectedJson = Json.obj()
 
       when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(ConfirmDeleteEstablisherId), any(), any())(any()))
-        .thenReturn(routes.AddEstablisherController.onPageLoad())
+        .thenReturn(routes.AddEstablisherController.onPageLoad)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -154,14 +153,14 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Nun
 
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptor.capture)(any(), any())
       jsonCaptor.getValue must containJson(expectedJson)
-      redirectLocation(result) mustBe Some(routes.AddEstablisherController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.AddEstablisherController.onPageLoad.url)
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted for Company" in {
       val expectedJson = Json.obj()
 
       when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(ConfirmDeleteEstablisherId), any(), any())(any()))
-        .thenReturn(routes.AddEstablisherController.onPageLoad())
+        .thenReturn(routes.AddEstablisherController.onPageLoad)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -173,14 +172,14 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Nun
 
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptor.capture)(any(), any())
       jsonCaptor.getValue must containJson(expectedJson)
-      redirectLocation(result) mustBe Some(routes.AddEstablisherController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.AddEstablisherController.onPageLoad.url)
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted for Partnership" in {
       val expectedJson = Json.obj()
 
       when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(ConfirmDeleteEstablisherId), any(), any())(any()))
-        .thenReturn(routes.AddEstablisherController.onPageLoad())
+        .thenReturn(routes.AddEstablisherController.onPageLoad)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -192,7 +191,7 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Nun
 
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptor.capture)(any(), any())
       jsonCaptor.getValue must containJson(expectedJson)
-      redirectLocation(result) mustBe Some(routes.AddEstablisherController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.AddEstablisherController.onPageLoad.url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

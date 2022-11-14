@@ -53,7 +53,7 @@ class EstablisherHasUTRControllerSpec
   private val form: Form[Boolean] =
     formProvider("Select Yes if Jane Doe has a Unique Taxpayer Reference")
   private val onwardRoute: Call =
-    controllers.routes.IndexController.onPageLoad()
+    controllers.routes.IndexController.onPageLoad
   private val userAnswers: UserAnswers =
     ua.set(EstablisherNameId(0), personName).success.value
   private val templateToBeRendered: String =
@@ -86,7 +86,7 @@ class EstablisherHasUTRControllerSpec
       renderer                  = new Renderer(mockAppConfig, mockRenderer)
     )
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(
       mockRenderer,
       mockUserAnswersCacheConnector

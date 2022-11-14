@@ -16,8 +16,8 @@
 
 package controllers.racdac.individual
 
-import connectors.{ListOfSchemesConnector, MinimalDetailsConnector}
 import connectors.cache.{CurrentPstrCacheConnector, LockCacheConnector}
+import connectors.{ListOfSchemesConnector, MinimalDetailsConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.beforeYouStart.SchemeNameId
@@ -36,7 +36,6 @@ import utils.Data.ua
 import utils.{Data, Enumerable, UserAnswers}
 
 import scala.concurrent.Future
-
 class ConfirmationControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val templateToBeRendered = "racdac/individual/confirmation.njk"
@@ -53,7 +52,7 @@ class ConfirmationControllerSpec extends ControllerSpecBase with NunjucksSupport
   )
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
-  private def httpPathGET: String = controllers.racdac.individual.routes.ConfirmationController.onPageLoad().url
+  private def httpPathGET: String = controllers.racdac.individual.routes.ConfirmationController.onPageLoad.url
 
   private val jsonToPassToTemplate: JsObject =
     Json.obj(
@@ -64,8 +63,8 @@ class ConfirmationControllerSpec extends ControllerSpecBase with NunjucksSupport
       "returnUrl" -> mockAppConfig.psaOverviewUrl
     )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
     when(mockUserAnswersCacheConnector.remove(any())(any(), any())).thenReturn(Future.successful(Ok))
     when(mockCurrentPstrCacheConnector.remove(any(), any())).thenReturn(Future.successful(Ok))

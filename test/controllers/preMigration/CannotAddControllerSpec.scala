@@ -21,8 +21,8 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import matchers.JsonMatchers
 import models.{Items, ListOfLegacySchemes, RacDac, Scheme}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, MockitoSugar}
 import org.scalatest.TryValues
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
@@ -32,8 +32,7 @@ import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
-
-class CannotAddControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with MockitoSugar {
+class CannotAddControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues  {
 
   private val templateToBeRendered: String = "preMigration/cannotAdd.njk"
   private val mockListOfSchemesConnector:ListOfSchemesConnector= mock[ListOfSchemesConnector];
@@ -75,7 +74,7 @@ class CannotAddControllerSpec extends ControllerSpecBase with NunjucksSupport wi
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result: Future[Result] = controller().onPageLoadScheme()(fakeDataRequest())
+      val result: Future[Result] = controller().onPageLoadScheme(fakeDataRequest())
 
       status(result) mustBe OK
 
@@ -89,16 +88,16 @@ class CannotAddControllerSpec extends ControllerSpecBase with NunjucksSupport wi
     "return OK and the correct view for a GET for scheme with no pension Scheme" in {
 
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.successful(Right(expectedResponseWithRacOnly)))
-      val result: Future[Result] = controller().onPageLoadScheme()(fakeDataRequest())
+      val result: Future[Result] = controller().onPageLoadScheme(fakeDataRequest())
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.NotRegisterController.onPageLoadScheme().url)
+      redirectLocation(result) mustBe Some(routes.NotRegisterController.onPageLoadScheme.url)
     }
     "return OK and the correct view for a GET for scheme with Empty pension Scheme" in {
 
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.successful(Right(expectedResponseWithEmpty)))
-      val result: Future[Result] = controller().onPageLoadScheme()(fakeDataRequest())
+      val result: Future[Result] = controller().onPageLoadScheme(fakeDataRequest())
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.NotRegisterController.onPageLoadScheme().url)
+      redirectLocation(result) mustBe Some(routes.NotRegisterController.onPageLoadScheme.url)
     }
 
     "return OK and the correct view for a GET for rac dac" in {
@@ -107,7 +106,7 @@ class CannotAddControllerSpec extends ControllerSpecBase with NunjucksSupport wi
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result: Future[Result] = controller().onPageLoadRacDac()(fakeDataRequest())
+      val result: Future[Result] = controller().onPageLoadRacDac(fakeDataRequest())
 
       status(result) mustBe OK
 
@@ -120,16 +119,16 @@ class CannotAddControllerSpec extends ControllerSpecBase with NunjucksSupport wi
     "return OK and the correct view for a GET for rac Dac with no rac dac" in {
 
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.successful(Right(expectedResponseWithPensionOnly)))
-      val result: Future[Result] = controller().onPageLoadRacDac()(fakeDataRequest())
+      val result: Future[Result] = controller().onPageLoadRacDac(fakeDataRequest())
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.NotRegisterController.onPageLoadRacDac().url)
+      redirectLocation(result) mustBe Some(routes.NotRegisterController.onPageLoadRacDac.url)
     }
     "return OK and the correct view for a GET for rac Dac with empty list" in {
 
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.successful(Right(expectedResponseWithEmpty)))
-      val result: Future[Result] = controller().onPageLoadRacDac()(fakeDataRequest())
+      val result: Future[Result] = controller().onPageLoadRacDac(fakeDataRequest())
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.NotRegisterController.onPageLoadRacDac().url)
+      redirectLocation(result) mustBe Some(routes.NotRegisterController.onPageLoadRacDac.url)
     }
   }
 }

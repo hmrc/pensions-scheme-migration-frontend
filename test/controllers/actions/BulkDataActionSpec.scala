@@ -18,12 +18,13 @@ package controllers.actions
 
 import base.SpecBase
 import config.AppConfig
-import connectors.cache.CurrentPstrCacheConnector
 import connectors._
+import connectors.cache.CurrentPstrCacheConnector
 import models.requests.{AuthenticatedRequest, BulkDataRequest}
-import models.{Items, MinPSA, ListOfLegacySchemes}
-import org.mockito.ArgumentMatchers._
-import org.mockito.MockitoSugar
+import models.{Items, ListOfLegacySchemes, MinPSA}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
+import org.mockito.MockitoSugar.mock
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.ScalaFutures
 import play.api.libs.json.Json
@@ -37,7 +38,6 @@ import scala.concurrent.Future
 
 class BulkDataActionSpec
   extends SpecBase
-    with MockitoSugar
     with EitherValues
     with ScalaFutures {
   class Harness(schemeCacheConnector: CurrentPstrCacheConnector,
@@ -92,7 +92,7 @@ class BulkDataActionSpec
           request = fakeRequest,
           externalId = "id",
           psaId = PsaId(psaId)
-        )).map(_.right.value)
+        )).map(_.value)
 
         whenReady(futureResult) { result =>
           result.md mustBe minPSA
@@ -117,7 +117,7 @@ class BulkDataActionSpec
           request = fakeRequest,
           externalId = "id",
           psaId = PsaId(psaId)
-        )).map(_.right.value)
+        )).map(_.value)
 
         whenReady(futureResult) { result =>
           result.md mustBe minPSA
@@ -137,7 +137,7 @@ class BulkDataActionSpec
           request = fakeRequest,
           externalId = "id",
           psaId = PsaId(psaId)
-        )).map(_.right.value)
+        )).map(_.value)
 
         whenReady(futureResult) { result =>
           result.md mustBe minPSA
@@ -168,7 +168,8 @@ class BulkDataActionSpec
 
     "DelimitedAdminException is thrown by minimal psa api call" must {
       "redirect to psa delimited page" in {
-        reset(schemeCacheConnector, minimalDetailsConnector)
+        reset(schemeCacheConnector)
+        reset(minimalDetailsConnector)
         when(schemeCacheConnector.fetch(any(), any())) thenReturn Future(None)
         when(minimalDetailsConnector.getPSADetails(any())(any(), any())).thenThrow(new DelimitedAdminException)
         val action = new Harness(schemeCacheConnector, listOfSchemesConnector, minimalDetailsConnector, appConfig, false)
@@ -188,7 +189,9 @@ class BulkDataActionSpec
 
     "AncillaryPsaException is thrown by list schemes api call" must {
       "redirect to the 'cannot migrate' page" in {
-        reset(schemeCacheConnector, minimalDetailsConnector, listOfSchemesConnector)
+        reset(schemeCacheConnector)
+        reset( minimalDetailsConnector)
+        reset(listOfSchemesConnector)
         when(schemeCacheConnector.fetch(any(), any())) thenReturn Future(None)
         when(listOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.failed(AncillaryPsaException()))
 
@@ -202,7 +205,7 @@ class BulkDataActionSpec
 
         whenReady(futureResult) { result =>
           result.header.status mustBe SEE_OTHER
-          redirectLocation(futureResult).value mustBe controllers.preMigration.routes.CannotMigrateController.onPageLoad().url
+          redirectLocation(futureResult).value mustBe controllers.preMigration.routes.CannotMigrateController.onPageLoad.url
         }
       }
     }
@@ -223,7 +226,7 @@ class BulkDataActionSpec
 
         whenReady(futureResult) { result =>
           result.header.status mustBe SEE_OTHER
-          redirectLocation(futureResult).value mustBe controllers.preMigration.routes.ThereIsAProblemController.onPageLoad().url
+          redirectLocation(futureResult).value mustBe controllers.preMigration.routes.ThereIsAProblemController.onPageLoad.url
         }
       }
     }

@@ -48,19 +48,19 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
           answerOrAddRow(
             BenefitsInsuranceNameId,
             Message("benefitsInsuranceName.title").resolve,
-            Some(controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onPageLoad().url),
+            Some(controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onPageLoad.url),
             Some(msg"benefitsInsuranceName.visuallyHidden"), answerStringTransform
           ),
           answerOrAddRow(
             BenefitsInsurancePolicyId,
             msgHeadingInsurancePolicy.resolve,
-            Some(controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onPageLoad().url),
+            Some(controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onPageLoad.url),
             Some(msg"benefitsInsurancePolicy.visuallyHidden"), answerStringTransform
           ),
           answerOrAddRow(
             InsurerAddressId,
             msgHeadingInsurerAddress.resolve,
-            Some(controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onPageLoad().url),
+            Some(controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onPageLoad.url),
             Some(msg"addressList.visuallyHidden"), answerAddressTransform
           )
       )
@@ -90,7 +90,7 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
       answerOrAddRow(
         HowProvideBenefitsId,
         Message("howProvideBenefits.h1", schemeName).resolve,
-        Some(controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onPageLoad().url),
+        Some(controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onPageLoad.url),
         Some(msg"howProvideBenefits.visuallyHidden".withArgs(schemeName)), answerBenefitsProvisionTypeTransform
       )
     )
@@ -98,7 +98,7 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
       answerOrAddRow(
         BenefitsTypeId,
         Message("benefitsType.h1", schemeName).resolve,
-        Some(controllers.benefitsAndInsurance.routes.BenefitsTypeController.onPageLoad().url),
+        Some(controllers.benefitsAndInsurance.routes.BenefitsTypeController.onPageLoad.url),
         Some(msg"benefitsType.visuallyHidden".withArgs(schemeName)), answerBenefitsTypeTransform
       )
     )
@@ -107,7 +107,7 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
       answerOrAddRow(
         AreBenefitsSecuredId,
         Message("areBenefitsSecured.title").resolve,
-        Some(controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onPageLoad().url),
+        Some(controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onPageLoad.url),
         Some(msg"areBenefitsSecured.visuallyHidden"), answerBooleanTransform
       )
     )

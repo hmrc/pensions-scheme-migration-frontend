@@ -38,7 +38,6 @@ import utils.Data.ua
 import utils.{Data, FakeNavigator, UserAnswers}
 
 import scala.concurrent.Future
-
 class EnterEmailControllerSpec extends ControllerSpecBase
   with NunjucksSupport
   with JsonMatchers
@@ -48,7 +47,7 @@ class EnterEmailControllerSpec extends ControllerSpecBase
 
   private val formProvider: EmailFormProvider = new EmailFormProvider()
   private val form = formProvider("")
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(0), Data.partnershipDetails).success.value
   private val templateToBeRendered: String = "email.njk"
 
@@ -60,7 +59,7 @@ class EnterEmailControllerSpec extends ControllerSpecBase
     )
   private val formData: String = Data.email
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(
       mockRenderer,
       mockUserAnswersCacheConnector

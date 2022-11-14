@@ -53,7 +53,7 @@ class NoUTRReasonControllerSpec
   private val form: Form[String] =
     formProvider(Message("messages__reason__error_utrRequired", partnershipName))
   private val onwardRoute: Call =
-    controllers.routes.IndexController.onPageLoad()
+    controllers.routes.IndexController.onPageLoad
   private val userAnswers: UserAnswers =
     ua.set(PartnershipDetailsId(0), PartnershipDetails(partnershipName)).success.value
   private val templateToBeRendered: String =
@@ -68,7 +68,7 @@ class NoUTRReasonControllerSpec
   private val formData: String =
     "Reason"
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(
       mockRenderer,
       mockUserAnswersCacheConnector

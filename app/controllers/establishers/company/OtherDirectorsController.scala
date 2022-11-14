@@ -56,14 +56,14 @@ HasReferenceValueController {
   def onPageLoad(index: Index,mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             get(
               pageTitle = Message("messages__otherDirectors__title"),
               pageHeading = Message("messages__otherDirectors__heading"),
               isPageHeading = true,
               id = OtherDirectorsId(index),
-              form = form,
+              form = form(),
               schemeName = schemeName,
               paragraphText = Seq(Message("messages__otherDirectors__lede")),
               legendClass = "govuk-visually-hidden"
@@ -74,14 +74,14 @@ HasReferenceValueController {
   def onSubmit(index: Index,mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             post(
               pageTitle = Message("messages__otherDirectors__title"),
               pageHeading = Message("messages__otherDirectors__heading"),
               isPageHeading = true,
               id = OtherDirectorsId(index),
-              form = form,
+              form = form(),
               schemeName = schemeName,
               paragraphText = Seq(Message("messages__otherDirectors__lede")),
               legendClass = "govuk-visually-hidden",

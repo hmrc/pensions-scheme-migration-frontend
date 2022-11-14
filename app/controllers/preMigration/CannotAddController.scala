@@ -20,7 +20,7 @@ import config.AppConfig
 import connectors.ListOfSchemesConnector
 import controllers.actions.AuthAction
 import models.{RacDac, Scheme}
-import play.api.i18n.{MessagesApi, I18nSupport}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -56,9 +56,9 @@ class CannotAddController @Inject()(val appConfig: AppConfig,
 
           renderer.render("preMigration/cannotAdd.njk", json).map(Ok(_))
         } else {
-          Future.successful(Redirect(routes.NotRegisterController.onPageLoadScheme()))
+          Future.successful(Redirect(routes.NotRegisterController.onPageLoadScheme))
         }
-      case _ => Future.successful(Redirect(routes.NotRegisterController.onPageLoadScheme()))
+      case _ => Future.successful(Redirect(routes.NotRegisterController.onPageLoadScheme))
     } recoverWith listOfSchemesRedirects
   }
 
@@ -77,9 +77,9 @@ class CannotAddController @Inject()(val appConfig: AppConfig,
 
           renderer.render("preMigration/cannotAdd.njk", json).map(Ok(_))
         } else {
-          Future.successful(Redirect(routes.NotRegisterController.onPageLoadRacDac()))
+          Future.successful(Redirect(routes.NotRegisterController.onPageLoadRacDac))
         }
-      case _ => Future.successful(Redirect(routes.NotRegisterController.onPageLoadRacDac()))
+      case _ => Future.successful(Redirect(routes.NotRegisterController.onPageLoadRacDac))
     } recoverWith listOfSchemesRedirects
   }
 }

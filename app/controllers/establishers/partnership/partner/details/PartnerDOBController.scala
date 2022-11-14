@@ -52,7 +52,7 @@ class PartnerDOBController @Inject()(
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
 
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             get(
               dobId        = PartnerDOBId(establisherIndex, partnerIndex),
@@ -66,7 +66,7 @@ class PartnerDOBController @Inject()(
   def onSubmit(establisherIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             post(
               dobId        = PartnerDOBId(establisherIndex, partnerIndex),

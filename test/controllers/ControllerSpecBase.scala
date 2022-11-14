@@ -19,15 +19,14 @@ package controllers
 
 import base.SpecBase
 import config.AppConfig
-import connectors.{EmailConnector, LegacySchemeDetailsConnector, MinimalDetailsConnector}
 import connectors.cache.UserAnswersCacheConnector
+import connectors.{EmailConnector, LegacySchemeDetailsConnector, MinimalDetailsConnector}
 import controllers.actions._
 import navigators.CompoundNavigator
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.mockito.Mockito
+import org.mockito.{Mockito, MockitoSugar}
 import org.scalatest.BeforeAndAfterEach
-import org.mockito.MockitoSugar
 import play.api.http.HeaderNames
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
@@ -40,7 +39,7 @@ import utils.{CountryOptions, Enumerable}
 
 import scala.concurrent.ExecutionContext
 
-trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach with MockitoSugar with Enumerable.Implicits {
+trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerable.Implicits with MockitoSugar {
 
   implicit val global: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
@@ -48,8 +47,10 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach with MockitoSu
 
   def asDocument(htmlAsString: String): Document = Jsoup.parse(htmlAsString)
 
-  override def beforeEach: Unit = {
-    Mockito.reset(mockRenderer, mockUserAnswersCacheConnector, mockCompoundNavigator)
+  override def beforeEach(): Unit = {
+    Mockito.reset(mockRenderer)
+    Mockito.reset(mockUserAnswersCacheConnector)
+    Mockito.reset(mockCompoundNavigator)
   }
 
   protected def mockDataRetrievalAction: DataRetrievalAction = mock[DataRetrievalAction]

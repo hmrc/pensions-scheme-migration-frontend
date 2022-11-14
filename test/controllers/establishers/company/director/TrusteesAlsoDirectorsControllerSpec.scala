@@ -58,7 +58,7 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
       "form" -> form,
       "schemeName" -> Data.schemeName
     )
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(
       mockRenderer,
       mockUserAnswersCacheConnector,
@@ -73,7 +73,7 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
                         ): TrusteesAlsoDirectorsController =
     new TrusteesAlsoDirectorsController(
       messagesApi = messagesApi,
-      navigator = new FakeNavigator(desiredRoute = controllers.routes.IndexController.onPageLoad()),
+      navigator = new FakeNavigator(desiredRoute = controllers.routes.IndexController.onPageLoad),
       authenticate = new FakeAuthAction(),
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl,

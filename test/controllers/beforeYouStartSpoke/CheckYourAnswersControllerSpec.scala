@@ -45,7 +45,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
   private val templateToBeRendered = "check-your-answers.njk"
 
-  private def httpPathGET: String = controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad().url
+  private def httpPathGET: String = controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad.url
 
   private val rows = Seq(
     Row(
@@ -58,11 +58,11 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
   private val jsonToPassToTemplate: JsObject = Json.obj(
     "list" -> rows,
     "schemeName" -> schemeName,
-    "submitUrl" -> controllers.routes.TaskListController.onPageLoad().url
+    "submitUrl" -> controllers.routes.TaskListController.onPageLoad.url
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(play.twirl.api.Html("")))
     when(mockCyaHelper.rowsForCYA(any())(any(), any())).thenReturn(rows)
   }

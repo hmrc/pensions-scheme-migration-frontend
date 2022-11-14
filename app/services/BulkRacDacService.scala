@@ -98,6 +98,6 @@ class BulkRacDacService @Inject()(appConfig: AppConfig,
     }
   } recoverWith {
     case e: IllegalArgumentException =>
-      Future.successful(Redirect(controllers.routes.NotFoundController.onPageLoad()))
+      Future.successful(Redirect(controllers.routes.NotFoundController.onPageLoad))
   }
 }

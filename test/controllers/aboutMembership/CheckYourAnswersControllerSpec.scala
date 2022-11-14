@@ -45,7 +45,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
   private val templateToBeRendered = "check-your-answers.njk"
 
-  private def httpPathGET: String = controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad().url
+  private def httpPathGET: String = controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad.url
 
   private val rows = Seq(
     Row(
@@ -54,7 +54,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
       actions = List(
         Action(
           content = Html(s"<span aria-hidden=true >${messages("site.add")}</span>"),
-          href = controllers.aboutMembership.routes.CurrentMembersController.onPageLoad().url,
+          href = controllers.aboutMembership.routes.CurrentMembersController.onPageLoad.url,
           visuallyHiddenText = Some(msg"messages__visuallyhidden__currentMembers")
         )
       )
@@ -65,7 +65,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
       actions = List(
         Action(
           content = Html(s"<span aria-hidden=true >${messages("site.add")}</span>"),
-          href = routes.FutureMembersController.onPageLoad().url,
+          href = routes.FutureMembersController.onPageLoad.url,
           visuallyHiddenText = Some(msg"messages__visuallyhidden__futureMembers")
         )
       )
@@ -75,11 +75,11 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
   private val jsonToPassToTemplate: JsObject = Json.obj(
     "list" -> rows,
     "schemeName" -> schemeName,
-    "submitUrl" -> controllers.routes.TaskListController.onPageLoad().url
+    "submitUrl" -> controllers.routes.TaskListController.onPageLoad.url
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(play.twirl.api.Html("")))
     when(mockCyaHelper.membershipRows(any(), any())).thenReturn(rows)
   }

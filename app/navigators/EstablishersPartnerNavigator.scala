@@ -99,7 +99,7 @@ class EstablishersPartnerNavigator
     answers.get(PartnerHasNINOId(estIndex,partnerIndex)) match {
       case Some(true) => PartnerEnterNINOController.onPageLoad(estIndex,partnerIndex, mode)
       case Some(false) => PartnerNoNINOReasonController.onPageLoad(estIndex,partnerIndex, mode)
-      case None => controllers.routes.TaskListController.onPageLoad()
+      case None => controllers.routes.TaskListController.onPageLoad
     }
 
   private def establisherHasUtr(
@@ -111,7 +111,7 @@ class EstablishersPartnerNavigator
     answers.get(PartnerHasUTRId(estIndex,partnerIndex)) match {
       case Some(true) => PartnerEnterUTRController.onPageLoad(estIndex,partnerIndex, mode)
       case Some(false) => PartnerNoUTRReasonController.onPageLoad(estIndex,partnerIndex, mode)
-      case None => controllers.routes.TaskListController.onPageLoad()
+      case None => controllers.routes.TaskListController.onPageLoad
     }
 
 }

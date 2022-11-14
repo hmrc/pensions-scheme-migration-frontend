@@ -22,8 +22,8 @@ import controllers.actions._
 import forms.ListSchemesFormProvider
 import matchers.JsonMatchers
 import models.{Items, ListOfLegacySchemes, RacDac, Scheme}
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentMatchers, MockitoSugar}
 import org.scalatest.TryValues
 import play.api.mvc.Result
 import play.api.mvc.Results._
@@ -32,8 +32,7 @@ import services.{LockingService, SchemeSearchService}
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 
 import scala.concurrent.Future
-
-class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with MockitoSugar {
+class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues  {
 
   private val mockSchemeSearchService: SchemeSearchService = mock[SchemeSearchService]
   private val mockLockingService: LockingService = mock[LockingService]
@@ -50,8 +49,8 @@ class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSuppor
       controllerComponents, formProvider, mockListOfSchemesConnector, mockSchemeSearchService, mockLockingService)
 
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
   }
 
 
@@ -73,7 +72,7 @@ class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSuppor
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(), any())).thenReturn(Future.failed(AncillaryPsaException()))
       val result = controller.onPageLoad(Scheme)(fakeRequest)
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.preMigration.routes.CannotMigrateController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.preMigration.routes.CannotMigrateController.onPageLoad.url)
     }
 
     "redirect to the 'There is a problem' page when ListOfSchemes5xxException is thrown" in {
@@ -81,7 +80,7 @@ class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSuppor
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(), any())).thenReturn(Future.failed(ListOfSchemes5xxException()))
       val result = controller.onPageLoad(Scheme)(fakeRequest)
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.preMigration.routes.ThereIsAProblemController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.preMigration.routes.ThereIsAProblemController.onPageLoad.url)
     }
 
     "return OK and the correct view for a GET for scheme with RacDac Only" in {
@@ -89,7 +88,7 @@ class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSuppor
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(), any())).thenReturn(Future.successful(Right(expectedResponseWithEmpty)))
       val result: Future[Result] = controller.onPageLoad(RacDac)(fakeDataRequest())
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.NoSchemeToAddController.onPageLoadRacDac().url)
+      redirectLocation(result) mustBe Some(routes.NoSchemeToAddController.onPageLoadRacDac.url)
     }
 
     "return OK and the correct view for a GET for scheme with Scheme Only" in {
@@ -97,7 +96,7 @@ class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSuppor
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(), any())).thenReturn(Future.successful(Right(expectedResponseWithEmpty)))
       val result: Future[Result] = controller.onPageLoad(Scheme)(fakeDataRequest())
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.NoSchemeToAddController.onPageLoadScheme().url)
+      redirectLocation(result) mustBe Some(routes.NoSchemeToAddController.onPageLoadScheme.url)
     }
 
   }

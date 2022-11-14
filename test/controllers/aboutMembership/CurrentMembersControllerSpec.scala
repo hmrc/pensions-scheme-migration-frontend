@@ -45,9 +45,9 @@ class CurrentMembersControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
-  private def httpPathGET: String = controllers.aboutMembership.routes.CurrentMembersController.onPageLoad().url
+  private def httpPathGET: String = controllers.aboutMembership.routes.CurrentMembersController.onPageLoad.url
 
-  private def httpPathPOST: String = controllers.aboutMembership.routes.CurrentMembersController.onSubmit().url
+  private def httpPathPOST: String = controllers.aboutMembership.routes.CurrentMembersController.onSubmit.url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq(Members.One.toString)
@@ -66,8 +66,8 @@ class CurrentMembersControllerSpec extends ControllerSpecBase with NunjucksSuppo
       "radios" -> Members.radios(form)
     )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
@@ -125,7 +125,7 @@ class CurrentMembersControllerSpec extends ControllerSpecBase with NunjucksSuppo
       val expectedJson = Json.obj()
 
       when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(CurrentMembersId), any(), any())(any()))
-        .thenReturn(routes.CheckYourAnswersController.onPageLoad())
+        .thenReturn(routes.CheckYourAnswersController.onPageLoad)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -141,7 +141,7 @@ class CurrentMembersControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
       jsonCaptor.getValue must containJson(expectedJson)
 
-      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad.url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

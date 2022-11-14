@@ -33,11 +33,10 @@ import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import utils.Data.{schemeName, partnershipDetails, ua}
+import utils.Data.{partnershipDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
 
 import scala.concurrent.Future
-
 class VATControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with BeforeAndAfterEach {
 
   private val index: Index = Index(0)
@@ -45,7 +44,7 @@ class VATControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
   private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(index), partnershipDetails).success.value
 
   private val formProvider: VATFormProvider = new VATFormProvider()
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
   private val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
   private val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
@@ -64,7 +63,7 @@ class VATControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
     new VATController(messagesApi, new FakeNavigator(desiredRoute = onwardRoute), new FakeAuthAction(), dataRetrievalAction,
       new DataRequiredActionImpl, formProvider, controllerComponents, mockUserAnswersCacheConnector, new Renderer(mockAppConfig, mockRenderer))
 
-  override def beforeEach: Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
+  override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
 
   "VATController" must {
     "return OK and the correct view for a GET" in {

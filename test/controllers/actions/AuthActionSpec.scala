@@ -19,12 +19,11 @@ package controllers.actions
 import base.SpecBase
 import controllers.routes
 import org.scalatest.BeforeAndAfterEach
-import org.mockito.MockitoSugar
 import play.api.mvc._
 import play.api.test.Helpers._
+import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
-import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -32,8 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AuthActionSpec
   extends SpecBase
-    with BeforeAndAfterEach
-    with MockitoSugar {
+    with BeforeAndAfterEach {
 
   import AuthActionSpec._
 
@@ -43,7 +41,7 @@ class AuthActionSpec
         val authAction = new AuthActionImpl(fakeAuthConnector(authRetrievals()), parser, appConfig)
         val controller = new Harness(authAction)
 
-        val result = controller.onPageLoad()(fakeRequest)
+        val result = controller.onPageLoad(fakeRequest)
         status(result) mustBe OK
       }
     }
@@ -52,7 +50,7 @@ class AuthActionSpec
         val authAction = new AuthActionImpl(fakeAuthConnector(emptyAuthRetrievals), parser, appConfig)
         val controller = new Harness(authAction)
 
-        val result = controller.onPageLoad()(fakeRequest)
+        val result = controller.onPageLoad(fakeRequest)
         status(result) mustBe SEE_OTHER
       }
     }
@@ -61,7 +59,7 @@ class AuthActionSpec
         val authAction = new AuthActionImpl(fakeAuthConnector(erroneousRetrievals), parser, appConfig)
         val controller = new Harness(authAction)
 
-        val result = controller.onPageLoad()(fakeRequest)
+        val result = controller.onPageLoad(fakeRequest)
         status(result) mustBe SEE_OTHER
       }
     }
@@ -70,7 +68,7 @@ class AuthActionSpec
       "redirect the user to log in " in {
         val authAction = new AuthActionImpl(fakeAuthConnector(Future.failed(new MissingBearerToken)), parser, appConfig)
         val controller = new Harness(authAction)
-        val result = controller.onPageLoad()(fakeRequest)
+        val result = controller.onPageLoad(fakeRequest)
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get must startWith(appConfig.loginUrl)
       }
@@ -80,7 +78,7 @@ class AuthActionSpec
       "redirect the user to log in " in {
         val authAction = new AuthActionImpl(fakeAuthConnector(Future.failed(new BearerTokenExpired)), parser, appConfig)
         val controller = new Harness(authAction)
-        val result = controller.onPageLoad()(fakeRequest)
+        val result = controller.onPageLoad(fakeRequest)
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get must startWith(appConfig.loginUrl)
       }
@@ -90,9 +88,9 @@ class AuthActionSpec
       "redirect the user to the unauthorised page" in {
         val authAction = new AuthActionImpl(fakeAuthConnector(Future.failed(new InsufficientEnrolments)), parser, appConfig)
         val controller = new Harness(authAction)
-        val result = controller.onPageLoad()(fakeRequest)
+        val result = controller.onPageLoad(fakeRequest)
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad.url)
       }
     }
 
@@ -100,9 +98,9 @@ class AuthActionSpec
       "redirect the user to the unauthorised page" in {
         val authAction = new AuthActionImpl(fakeAuthConnector(Future.failed(new InsufficientConfidenceLevel)), parser, appConfig)
         val controller = new Harness(authAction)
-        val result = controller.onPageLoad()(fakeRequest)
+        val result = controller.onPageLoad(fakeRequest)
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad.url)
       }
     }
 
@@ -110,9 +108,9 @@ class AuthActionSpec
       "redirect the user to the unauthorised page" in {
         val authAction = new AuthActionImpl(fakeAuthConnector(Future.failed(new UnsupportedAuthProvider)), parser, appConfig)
         val controller = new Harness(authAction)
-        val result = controller.onPageLoad()(fakeRequest)
+        val result = controller.onPageLoad(fakeRequest)
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad.url)
       }
     }
 
@@ -120,9 +118,9 @@ class AuthActionSpec
       "redirect the user to the unauthorised page" in {
         val authAction = new AuthActionImpl(fakeAuthConnector(Future.failed(new UnsupportedAffinityGroup)), parser, appConfig)
         val controller = new Harness(authAction)
-        val result = controller.onPageLoad()(fakeRequest)
+        val result = controller.onPageLoad(fakeRequest)
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad.url)
       }
     }
 
@@ -130,15 +128,15 @@ class AuthActionSpec
       "redirect the user to the unauthorised page" in {
         val authAction = new AuthActionImpl(fakeAuthConnector(Future.failed(new UnsupportedCredentialRole)), parser, appConfig)
         val controller = new Harness(authAction)
-        val result = controller.onPageLoad()(fakeRequest)
+        val result = controller.onPageLoad(fakeRequest)
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad.url)
       }
     }
   }
 }
 
-object AuthActionSpec extends SpecBase with MockitoSugar {
+object AuthActionSpec extends SpecBase  {
 
   private def fakeAuthConnector(stubbedRetrievalResult: Future[_]): AuthConnector =
     new AuthConnector {
@@ -169,7 +167,7 @@ object AuthActionSpec extends SpecBase with MockitoSugar {
                  authAction: AuthAction,
                  val controllerComponents: MessagesControllerComponents = controllerComponents
                ) extends BaseController {
-    def onPageLoad(): Action[AnyContent] = authAction.apply { _ => Ok }
+    def onPageLoad: Action[AnyContent] = authAction.apply { _ => Ok }
   }
 
   private val parser: BodyParsers.Default = injector.instanceOf[BodyParsers.Default]

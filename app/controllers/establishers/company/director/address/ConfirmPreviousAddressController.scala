@@ -60,7 +60,7 @@ class ConfirmPreviousAddressController @Inject()(override val messagesApi: Messa
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.right.map { case directorName ~ schemeName =>
+      (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.map { case directorName ~ schemeName =>
         get(Some(schemeName), directorName.fullName, PreviousAddressId(establisherIndex, directorIndex),
           PreviousAddressListId(establisherIndex, directorIndex), AddressConfiguration.PostcodeFirst)
       }
@@ -68,7 +68,7 @@ class ConfirmPreviousAddressController @Inject()(override val messagesApi: Messa
 
   def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.right.map { case directorName ~ schemeName =>
+      (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.map { case directorName ~ schemeName =>
         form
           .bindFromRequest()
           .fold(

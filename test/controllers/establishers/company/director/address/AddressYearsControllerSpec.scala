@@ -23,7 +23,7 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.address.AddressYearsId
 import matchers.JsonMatchers
-import models.{CheckMode, NormalMode, PersonName}
+import models.{CheckMode, NormalMode, PersonName, Scheme}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -36,7 +36,7 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
 import utils.{Data, Enumerable, UserAnswers}
-import models.Scheme
+
 import scala.concurrent.Future
 
 class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
@@ -65,8 +65,8 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
     "value" -> Seq.empty
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
@@ -119,7 +119,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad.url
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {

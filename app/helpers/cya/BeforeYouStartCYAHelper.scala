@@ -40,7 +40,7 @@ class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
     val schemeTypeAnswer = ua.get(SchemeTypeId)(SchemeType.optionalReads)
 
     val schemeTypeRow = {
-      val url: String = routes.SchemeTypeController.onPageLoad().url
+      val url: String = routes.SchemeTypeController.onPageLoad.url
       val visuallyHiddenText = msg"messages__visuallyhidden__schemeType".withArgs(schemeName)
       schemeTypeAnswer match {
         case None => Row(
@@ -82,7 +82,7 @@ class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
 
     val country = request.userAnswers.get(EstablishedCountryId)
     val countryRow = {
-      val url: String = routes.EstablishedCountryController.onPageLoad().url
+      val url: String = routes.EstablishedCountryController.onPageLoad.url
       val visuallyHiddenText = msg"messages__visuallyhidden__schemeEstablishedCountry".withArgs(schemeName)
       country match {
         case None => Row(
@@ -101,7 +101,7 @@ class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
       answerOrAddRow(
         id = WorkingKnowledgeId,
         message = Message("messages__cya__working_knowledge").resolve,
-        url = Some(routes.WorkingKnowledgeController.onPageLoad().url),
+        url = Some(routes.WorkingKnowledgeController.onPageLoad.url),
         visuallyHiddenText = Some(msg"messages__visuallyhidden__working_knowledge"),
         answerTransform = Some(booleanToContent)
       )

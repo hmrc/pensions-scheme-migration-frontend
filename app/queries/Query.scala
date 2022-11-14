@@ -17,7 +17,7 @@
 package queries
 
 
-import play.api.libs.json.{__, JsPath}
+import play.api.libs.json.{JsPath, __}
 import utils.UserAnswers
 
 sealed trait Query {

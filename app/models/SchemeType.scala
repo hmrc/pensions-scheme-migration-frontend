@@ -130,6 +130,7 @@ object SchemeType {
           Json.obj("name" -> "other", "schemeTypeDetails" -> schemeTypeDetails)
         case s if mappings.keySet.contains(s.toString) =>
           Json.obj("name" -> s.toString)
+        case s => throw new RuntimeException(s"Invalid match $s")
       }
     }
   }

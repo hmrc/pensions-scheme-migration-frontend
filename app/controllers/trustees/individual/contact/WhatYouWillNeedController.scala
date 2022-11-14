@@ -17,12 +17,12 @@
 package controllers.trustees.individual.contact
 
 import controllers.Retrievals
-import controllers.actions.{DataRetrievalAction, DataRequiredAction, AuthAction}
+import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import helpers.cya.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.individual.TrusteeNameId
 import models.{Index, NormalMode}
-import play.api.i18n.{MessagesApi, I18nSupport}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -49,7 +49,7 @@ class WhatYouWillNeedController @Inject()(
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        TrusteeNameId(index).retrieve.right.map {
+        TrusteeNameId(index).retrieve.map {
           personName =>
             renderer.render(
               template = "whatYouWillNeedContact.njk",

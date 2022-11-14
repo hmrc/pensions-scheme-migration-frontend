@@ -19,7 +19,7 @@ package controllers.adviser
 import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
-import identifiers.adviser.{AdviserNameId, AddressId}
+import identifiers.adviser.{AddressId, AdviserNameId}
 import identifiers.beforeYouStart.SchemeNameId
 import matchers.JsonMatchers
 import models.Scheme
@@ -33,7 +33,7 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.{UserAnswers, Enumerable, Data}
+import utils.{Data, Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 
@@ -67,8 +67,8 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
     "value" -> Seq.empty
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
     when(mockAppConfig.validCountryCodes).thenReturn(Seq("GB"))
   }
@@ -101,7 +101,7 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad.url
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {

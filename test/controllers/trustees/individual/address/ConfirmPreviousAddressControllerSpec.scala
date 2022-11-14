@@ -23,6 +23,7 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address.PreviousAddressId
 import matchers.JsonMatchers
+import models.{NormalMode, Scheme}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -34,10 +35,8 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.{Data, Enumerable, UserAnswers}
-import models.{NormalMode, Scheme}
 
 import scala.concurrent.Future
-
 class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val mockAddressLookupConnector = mock[AddressLookupConnector]
@@ -68,8 +67,8 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with Nunju
     "value" -> Seq.empty
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
     when(mockAppConfig.validCountryCodes).thenReturn(Seq("GB"))
   }

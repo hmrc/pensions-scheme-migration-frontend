@@ -18,17 +18,17 @@ package navigators
 
 import config.AppConfig
 import controllers.routes._
-import controllers.trustees.individual.address.routes.{SelectAddressController, EnterPreviousPostcodeController, SelectPreviousAddressController}
+import controllers.trustees.individual.address.routes.{EnterPreviousPostcodeController, SelectAddressController, SelectPreviousAddressController}
 import controllers.trustees.individual.contact.routes._
 import controllers.trustees.individual.details.routes._
 import controllers.trustees.individual.routes._
 import controllers.trustees.routes._
 import identifiers._
-import identifiers.trustees.{AnyTrusteesId, _}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address._
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.details._
+import identifiers.trustees._
 import models.requests.DataRequest
 import models.trustees.TrusteeKind
 import models.{CheckMode, Index, Mode, NormalMode}
@@ -49,7 +49,7 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
     case AnyTrusteesId => anyTrusteesRoutes(ua)
     case TrusteeNameId(index) => controllers.trustees.individual.routes.SpokeTaskListController.onPageLoad(index)
     case AddTrusteeId(value) => addTrusteeRoutes(value, ua)
-    case ConfirmDeleteTrusteeId => AddTrusteeController.onPageLoad()
+    case ConfirmDeleteTrusteeId => AddTrusteeController.onPageLoad
     case TrusteeDOBId(index) => TrusteeHasNINOController.onPageLoad(index, NormalMode)
     case TrusteeHasNINOId(index) => trusteeHasNino(index, ua, NormalMode)
     case TrusteeNINOId(index) => TrusteeHasUTRController.onPageLoad(index, NormalMode)
@@ -67,7 +67,7 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
     case PreviousAddressId(index) => cyaAddress(index)
     case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
     case EnterPhoneId(index) => cyaContactDetails(index)
-    case OtherTrusteesId => TaskListController.onPageLoad()
+    case OtherTrusteesId => TaskListController.onPageLoad
     case DirectorAlsoTrusteeId(index) => directorAlsoTrusteeRoutes(index, ua)
     case DirectorsAlsoTrusteesId(index) => directorsAlsoTrusteesRoutes(index, ua)
   }
@@ -118,7 +118,7 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
         controllers.trustees.company.routes.CompanyDetailsController.onPageLoad(index)
       case Some(TrusteeKind.Partnership) =>
         controllers.trustees.partnership.routes.PartnershipDetailsController.onPageLoad(index)
-      case _ => IndexController.onPageLoad()
+      case _ => IndexController.onPageLoad
     }
   }
 
@@ -127,7 +127,7 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
                                 answers: UserAnswers
                               ): Call =
     value match {
-      case Some(false) => TaskListController.onPageLoad()
+      case Some(false) => TaskListController.onPageLoad
       case Some(true) => TrusteeKindController.onPageLoad(answers.trusteesCount)
       case None => controllers.trustees.routes.OtherTrusteesController.onPageLoad
     }
@@ -137,9 +137,9 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
                                ): Call = {
 
     answers.get(AnyTrusteesId) match {
-    case Some(false) => TaskListController.onPageLoad()
+    case Some(false) => TaskListController.onPageLoad
     case Some(true) => TrusteeKindController.onPageLoad(answers.trusteesCount)
-    case None => IndexController.onPageLoad()
+    case None => IndexController.onPageLoad
   }
 }
 
@@ -151,7 +151,7 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
     answers.get(TrusteeHasNINOId(index)) match {
       case Some(true) => TrusteeEnterNINOController.onPageLoad(index, mode)
       case Some(false) => TrusteeNoNINOReasonController.onPageLoad(index, mode)
-      case None => controllers.routes.TaskListController.onPageLoad()
+      case None => controllers.routes.TaskListController.onPageLoad
     }
 
   private def trusteeHasUtr(
@@ -162,7 +162,7 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
     answers.get(TrusteeHasUTRId(index)) match {
       case Some(true) => TrusteeEnterUTRController.onPageLoad(index, mode)
       case Some(false) => TrusteeNoUTRReasonController.onPageLoad(index, mode)
-      case None => controllers.routes.TaskListController.onPageLoad()
+      case None => controllers.routes.TaskListController.onPageLoad
     }
 
   private def directorAlsoTrusteeRoutes(index: Index, answers: UserAnswers): Call = {
@@ -171,7 +171,7 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
       case Some(value) if value == noneValue =>
         controllers.trustees.individual.routes.TrusteeNameController.onPageLoad(index)
       case _ =>
-        AddTrusteeController.onPageLoad()
+        AddTrusteeController.onPageLoad
     }
   }
 
@@ -181,7 +181,7 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
       case Some(value) if value.size == 1 && value.contains(noneValue) =>
         controllers.trustees.individual.routes.TrusteeNameController.onPageLoad(index)
       case _ =>
-        AddTrusteeController.onPageLoad()
+        AddTrusteeController.onPageLoad
     }
   }
 }

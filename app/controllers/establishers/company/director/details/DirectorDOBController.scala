@@ -59,7 +59,7 @@ class DirectorDOBController @Inject()(
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
 
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             get(
               dobId = DirectorDOBId(establisherIndex, directorIndex),
@@ -80,7 +80,7 @@ class DirectorDOBController @Inject()(
                 val formWithErrorsDayIdCorrection = formWithErrors.copy(
                   errors = formWithErrors.errors map { e => if (e.key == "date.day") e.copy(key = "date") else e }
                 )
-                DirectorNameId(establisherIndex, directorIndex).retrieve.right.map {
+                DirectorNameId(establisherIndex, directorIndex).retrieve.map {
                   personName =>
                     renderer.render(
                       template = "dob.njk",

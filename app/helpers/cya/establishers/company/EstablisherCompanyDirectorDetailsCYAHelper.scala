@@ -16,10 +16,10 @@
 
 package helpers.cya.establishers.company
 
-import controllers.establishers.company.director.routes
-import controllers.establishers.company.director.details.{routes => detailsRoutes}
 import controllers.establishers.company.director.address.{routes => addressRoutes}
 import controllers.establishers.company.director.contact.{routes => contactRoutes}
+import controllers.establishers.company.director.details.{routes => detailsRoutes}
+import controllers.establishers.company.director.routes
 import helpers.cya.CYAHelper
 import helpers.cya.CYAHelper.getName
 import identifiers.establishers.company.director._

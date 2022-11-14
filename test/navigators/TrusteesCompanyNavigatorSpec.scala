@@ -19,7 +19,7 @@ package navigators
 import base.SpecBase
 import controllers.trustees.company.details.{routes => detailsRoutes}
 import identifiers.trustees.company.CompanyDetailsId
-import identifiers.trustees.company.address.{AddressYearsId, TradingTimeId, _}
+import identifiers.trustees.company.address._
 import identifiers.trustees.company.contacts.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.company.details._
 import identifiers.{Identifier, TypedIdentifier}
@@ -125,7 +125,7 @@ class TrusteesCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour with
     def editNavigation: TableFor3[Identifier, UserAnswers, Call] =
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
-        row(CompanyDetailsId(index))(controllers.routes.IndexController.onPageLoad()),
+        row(CompanyDetailsId(index))(controllers.routes.IndexController.onPageLoad),
         row(HaveCompanyNumberId(index))(companyNumber(CheckMode), uaWithValue(HaveCompanyNumberId(index), true)),
         row(HaveCompanyNumberId(index))(noCompanyNumber(CheckMode), uaWithValue(HaveCompanyNumberId(index), false)),
         row(CompanyNumberId(index))(cyaDetails),

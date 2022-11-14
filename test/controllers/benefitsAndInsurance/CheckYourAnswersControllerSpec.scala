@@ -41,7 +41,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
 
   private val templateToBeRendered = "check-your-answers.njk"
   private val mockCyaHelper: BenefitsAndInsuranceCYAHelper = mock[BenefitsAndInsuranceCYAHelper]
-  private def httpPathGET: String = controllers.benefitsAndInsurance.routes.CheckYourAnswersController.onPageLoad().url
+  private def httpPathGET: String = controllers.benefitsAndInsurance.routes.CheckYourAnswersController.onPageLoad.url
   val extraModules: Seq[GuiceableModule] = Seq(
     bind[BenefitsAndInsuranceCYAHelper].toInstance(mockCyaHelper)
   )
@@ -65,8 +65,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
     "schemeName" -> schemeName
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(play.twirl.api.Html("")))
     when(mockCyaHelper.rows(any(), any())).thenReturn(rows)
   }

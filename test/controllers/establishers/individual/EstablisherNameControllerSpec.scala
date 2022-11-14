@@ -21,6 +21,7 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import forms.PersonNameFormProvider
 import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
+import models.{Index, PersonName, Scheme}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -31,8 +32,7 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
-import utils.{UserAnswers, Enumerable}
-import models.{PersonName, Index, Scheme}
+import utils.{Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 
@@ -67,8 +67,8 @@ class EstablisherNameControllerSpec extends ControllerSpecBase with NunjucksSupp
       "entityType" -> Messages("messages__individual")
     )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
@@ -125,7 +125,7 @@ class EstablisherNameControllerSpec extends ControllerSpecBase with NunjucksSupp
       val expectedJson = Json.obj()
 
       when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(EstablisherNameId(0)), any(), any())(any()))
-        .thenReturn(controllers.establishers.routes.AddEstablisherController.onPageLoad())
+        .thenReturn(controllers.establishers.routes.AddEstablisherController.onPageLoad)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -141,7 +141,7 @@ class EstablisherNameControllerSpec extends ControllerSpecBase with NunjucksSupp
 
       jsonCaptor.getValue must containJson(expectedJson)
 
-      redirectLocation(result) mustBe Some(controllers.establishers.routes.AddEstablisherController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.establishers.routes.AddEstablisherController.onPageLoad.url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

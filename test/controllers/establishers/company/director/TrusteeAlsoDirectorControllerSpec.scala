@@ -48,7 +48,7 @@ class TrusteeAlsoDirectorControllerSpec extends ControllerSpecBase
   private val companyDetails: CompanyDetails = CompanyDetails("test company")
   private val formProvider: DataPrefillRadioFormProvider = new DataPrefillRadioFormProvider()
   private val form = formProvider("")
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(0), companyDetails).success.value
   private val templateToBeRendered: String = "dataPrefillRadio.njk"
   private val mockDataPrefillService = mock[DataPrefillService]
@@ -58,7 +58,7 @@ class TrusteeAlsoDirectorControllerSpec extends ControllerSpecBase
       "form" -> form,
       "schemeName" -> Data.schemeName
     )
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(
       mockRenderer,
       mockUserAnswersCacheConnector,

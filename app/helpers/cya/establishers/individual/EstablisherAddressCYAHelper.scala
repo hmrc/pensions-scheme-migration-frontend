@@ -20,8 +20,8 @@ import helpers.cya.CYAHelper
 import helpers.cya.CYAHelper.getName
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{AddressId, AddressYearsId, PreviousAddressId}
-import models.{CheckMode, Index}
 import models.requests.DataRequest
+import models.{CheckMode, Index}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.viewmodels.MessageInterpolators
@@ -58,7 +58,7 @@ class EstablisherAddressCYAHelper
       )
     )
 
-    val seqRowPreviousAddress = if (ua.get(AddressYearsId(index)).getOrElse(true).equals(true)) {
+    val seqRowPreviousAddress = if (ua.get(AddressYearsId(index)).getOrElse(true)) {
       Nil
     } else {
       Seq(

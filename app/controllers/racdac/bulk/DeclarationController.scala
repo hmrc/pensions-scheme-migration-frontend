@@ -48,7 +48,7 @@ class DeclarationController @Inject()(
       implicit request =>
         val json = Json.obj(
           "psaName" -> request.md.name,
-          "submitUrl" -> routes.DeclarationController.onSubmit().url,
+          "submitUrl" -> routes.DeclarationController.onSubmit.url,
           "returnUrl" -> appConfig.psaOverviewUrl
         )
         renderer.render("racdac/declaration.njk", json).map(Ok(_))
@@ -72,12 +72,12 @@ class DeclarationController @Inject()(
             )
           )
           schemeCacheConnector.save(confirmationData).map { _ =>
-            Redirect(routes.ProcessingRequestController.onPageLoad().url)
+            Redirect(routes.ProcessingRequestController.onPageLoad.url)
           }
         } recoverWith {
           case ex =>
             logger.warn(ex.getMessage, ex)
-            Future.successful(Redirect(routes.RequestNotProcessedController.onPageLoad()))
+            Future.successful(Redirect(routes.RequestNotProcessedController.onPageLoad))
         }
     }
 }

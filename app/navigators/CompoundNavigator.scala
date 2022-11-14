@@ -24,7 +24,8 @@ import play.api.Logger
 import play.api.mvc.{AnyContent, Call}
 import utils.UserAnswers
 
-import scala.collection.JavaConverters._
+
+import scala.jdk.CollectionConverters._
 
 trait CompoundNavigator {
   def nextPage(id: Identifier, userAnswers: UserAnswers, mode: Mode = NormalMode)
@@ -38,7 +39,7 @@ class CompoundNavigatorImpl @Inject()(navigators: java.util.Set[Navigator])
 
   private def defaultPage(id: Identifier): Call = {
     logger.warn(s"No navigation defined for id $id")
-    controllers.routes.TaskListController.onPageLoad()
+    controllers.routes.TaskListController.onPageLoad
   }
 
   def nextPage(

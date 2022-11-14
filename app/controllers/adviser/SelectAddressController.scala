@@ -57,7 +57,7 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async { implicit request =>
     retrieve(SchemeNameId) { schemeName =>
-      getFormToJson(schemeName, mode).retrieve.right.map(get)
+      getFormToJson(schemeName, mode).retrieve.map(get)
     }
   }
 
@@ -65,14 +65,14 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       val addressPages: AddressPages = AddressPages(EnterPostCodeId, AddressListId, AddressId)
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName,mode).retrieve.right.map(post(_, addressPages,manualUrlCall = ConfirmAddressController.onPageLoad))
+        getFormToJson(schemeName,mode).retrieve.map(post(_, addressPages,manualUrlCall = ConfirmAddressController.onPageLoad))
       }
     }
 
   def getFormToJson(schemeName: String, mode: Mode): Retrieval[Form[Int] => JsObject] =
     Retrieval(
       implicit request =>
-        EnterPostCodeId.retrieve.right.map { addresses =>
+        EnterPostCodeId.retrieve.map { addresses =>
 
           val msg = request2Messages(request)
 

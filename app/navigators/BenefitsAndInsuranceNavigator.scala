@@ -33,33 +33,33 @@ class BenefitsAndInsuranceNavigator
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case HowProvideBenefitsId if ua.get(HowProvideBenefitsId).contains(DefinedBenefitsOnly) => cya
-    case HowProvideBenefitsId => BenefitsTypeController.onPageLoad()
+    case HowProvideBenefitsId => BenefitsTypeController.onPageLoad
     case BenefitsTypeId => cya
     case AreBenefitsSecuredId if ua.get(AreBenefitsSecuredId).contains(false) => cya
-    case AreBenefitsSecuredId => BenefitsInsuranceNameController.onPageLoad()
-    case BenefitsInsuranceNameId => BenefitsInsurancePolicyController.onPageLoad()
-    case InsurerEnterPostCodeId => InsurerSelectAddressController.onPageLoad()
+    case AreBenefitsSecuredId => BenefitsInsuranceNameController.onPageLoad
+    case BenefitsInsuranceNameId => BenefitsInsurancePolicyController.onPageLoad
+    case InsurerEnterPostCodeId => InsurerSelectAddressController.onPageLoad
     case InsurerAddressListId => cya
-    case BenefitsInsurancePolicyId => InsurerEnterPostcodeController.onPageLoad()
+    case BenefitsInsurancePolicyId => InsurerEnterPostcodeController.onPageLoad
     case InsurerAddressId => cya
   }
 
   override protected def editRouteMap(ua: UserAnswers)
                                      (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case HowProvideBenefitsId if ua.get(HowProvideBenefitsId).contains(DefinedBenefitsOnly) => cya
-    case HowProvideBenefitsId => BenefitsTypeController.onPageLoad()
+    case HowProvideBenefitsId => BenefitsTypeController.onPageLoad
     case BenefitsTypeId => cya
     case AreBenefitsSecuredId if ua.get(AreBenefitsSecuredId).contains(false) => cya
-    case AreBenefitsSecuredId => BenefitsInsuranceNameController.onPageLoad()
-    case BenefitsInsuranceNameId => BenefitsInsurancePolicyController.onPageLoad()
-    case InsurerEnterPostCodeId => InsurerSelectAddressController.onPageLoad()
+    case AreBenefitsSecuredId => BenefitsInsuranceNameController.onPageLoad
+    case BenefitsInsuranceNameId => BenefitsInsurancePolicyController.onPageLoad
+    case InsurerEnterPostCodeId => InsurerSelectAddressController.onPageLoad
     case InsurerAddressListId => cya
-    case BenefitsInsurancePolicyId => InsurerEnterPostcodeController.onPageLoad()
+    case BenefitsInsurancePolicyId => InsurerEnterPostcodeController.onPageLoad
     case InsurerAddressId => cya
   }
 }
 
 object BenefitsAndInsuranceNavigator {
-  private def cya = CheckYourAnswersController.onPageLoad()
+  private def cya = CheckYourAnswersController.onPageLoad
 }
 

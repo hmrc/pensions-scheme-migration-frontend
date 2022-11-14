@@ -41,7 +41,7 @@ class WhatYouWillNeedController @Inject()(override val messagesApi: MessagesApi,
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
-      SchemeNameId.retrieve.right.map { schemeName =>
+      SchemeNameId.retrieve.map { schemeName =>
         val json = Json.obj(
           "schemeName" -> schemeName
         )

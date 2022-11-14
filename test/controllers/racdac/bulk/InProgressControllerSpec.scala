@@ -32,7 +32,6 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Enumerable
 
 import scala.concurrent.Future
-
 class InProgressControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val templateToBeRendered = "racdac/inProgress.njk"
@@ -43,7 +42,7 @@ class InProgressControllerSpec extends ControllerSpecBase with NunjucksSupport w
   )
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
-  private def httpPathGET: String = controllers.racdac.bulk.routes.InProgressController.onPageLoad().url
+  private def httpPathGET: String = controllers.racdac.bulk.routes.InProgressController.onPageLoad.url
 
   private val jsonToPassToTemplate: JsObject =
     Json.obj(
@@ -51,8 +50,8 @@ class InProgressControllerSpec extends ControllerSpecBase with NunjucksSupport w
       "returnUrl" -> mockAppConfig.psaOverviewUrl
     )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 

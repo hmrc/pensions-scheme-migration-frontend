@@ -69,7 +69,7 @@ class BenefitsInsurancePolicyController @Inject()(override val messagesApi: Mess
             "form" -> preparedForm
           )
           renderer.render("benefitsAndInsurance/benefitsInsurancePolicy.njk", json).map(Ok(_))
-        case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
+        case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad))
       }
     }
 
@@ -97,7 +97,7 @@ class BenefitsInsurancePolicyController @Inject()(override val messagesApi: Mess
               }
             }
           )
-        case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
+        case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad))
       }
     }
 

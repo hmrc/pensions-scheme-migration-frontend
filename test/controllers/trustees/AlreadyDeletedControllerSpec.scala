@@ -33,7 +33,6 @@ import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
 
 import scala.concurrent.Future
-
 class AlreadyDeletedControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val index: Index = Index(0)
@@ -53,11 +52,11 @@ class AlreadyDeletedControllerSpec extends ControllerSpecBase with NunjucksSuppo
       "title" -> messages("messages__alreadyDeleted__trustee_title"),
       "name" -> name.fullName,
       "schemeName" -> schemeName,
-      "submitUrl" -> controllers.trustees.routes.AddTrusteeController.onPageLoad().url
+      "submitUrl" -> controllers.trustees.routes.AddTrusteeController.onPageLoad.url
     )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 

@@ -55,7 +55,7 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (TrusteeNameId(index) and SchemeNameId).retrieve.right.map {
+      (TrusteeNameId(index) and SchemeNameId).retrieve.map {
         case trusteeName ~ schemeName =>
           get(Some(schemeName), trusteeName.fullName, Messages("trusteeEntityTypeIndividual"), form, AddressYearsId(index))
       }
@@ -63,7 +63,7 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (TrusteeNameId(index) and SchemeNameId).retrieve.right.map {
+      (TrusteeNameId(index) and SchemeNameId).retrieve.map {
         case trusteeName ~ schemeName =>
           form
             .bindFromRequest()

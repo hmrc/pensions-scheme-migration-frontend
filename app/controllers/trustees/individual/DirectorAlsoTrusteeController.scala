@@ -16,7 +16,6 @@
 
 package controllers.trustees.individual
 
-import uk.gov.hmrc.viewmodels.MessageInterpolators
 import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
@@ -34,6 +33,7 @@ import renderer.Renderer
 import services.DataPrefillService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.{Enumerable, UserAnswers}
 
 import javax.inject.Inject
@@ -58,7 +58,7 @@ class DirectorAlsoTrusteeController @Inject()(override val messagesApi: Messages
 
   def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
-      SchemeNameId.retrieve.right.map { schemeName =>
+      SchemeNameId.retrieve.map { schemeName =>
         implicit val ua: UserAnswers = request.userAnswers
         val seqDirector = dataPrefillService.getListOfDirectorsToBeCopied
 
@@ -72,7 +72,7 @@ class DirectorAlsoTrusteeController @Inject()(override val messagesApi: Messages
           )
           renderer.render("dataPrefillRadio.njk", json).map(Ok(_))
         } else {
-          Future(Redirect(controllers.routes.TaskListController.onPageLoad()))
+          Future(Redirect(controllers.routes.TaskListController.onPageLoad))
         }
       }
   }
@@ -80,7 +80,7 @@ class DirectorAlsoTrusteeController @Inject()(override val messagesApi: Messages
   def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
       implicit val ua: UserAnswers = request.userAnswers
-      SchemeNameId.retrieve.right.map { schemeName =>
+      SchemeNameId.retrieve.map { schemeName =>
         val seqDirector = dataPrefillService.getListOfDirectorsToBeCopied
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {

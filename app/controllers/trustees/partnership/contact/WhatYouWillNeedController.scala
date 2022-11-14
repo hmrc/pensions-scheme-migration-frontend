@@ -17,8 +17,8 @@
 package controllers.trustees.partnership.contact
 
 import controllers.Retrievals
-import controllers.trustees.partnership.contact.routes.EnterEmailController
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.trustees.partnership.contact.routes.EnterEmailController
 import helpers.cya.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.partnership.PartnershipDetailsId
@@ -50,7 +50,7 @@ class WhatYouWillNeedController @Inject()(
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        PartnershipDetailsId(index).retrieve.right.map {
+        PartnershipDetailsId(index).retrieve.map {
           details =>
             renderer.render(
               template = "whatYouWillNeedContact.njk",

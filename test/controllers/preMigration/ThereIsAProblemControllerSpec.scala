@@ -26,10 +26,9 @@ import play.api.libs.json.JsObject
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.{UserAnswers, Enumerable}
+import utils.{Enumerable, UserAnswers}
 
 import scala.concurrent.Future
-
 class ThereIsAProblemControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val templateToBeRendered = "preMigration/thereIsAProblem.njk"
@@ -38,11 +37,11 @@ class ThereIsAProblemControllerSpec extends ControllerSpecBase with NunjucksSupp
 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
-  private def httpPathGET: String = routes.ThereIsAProblemController.onPageLoad().url
+  private def httpPathGET: String = routes.ThereIsAProblemController.onPageLoad.url
 
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 

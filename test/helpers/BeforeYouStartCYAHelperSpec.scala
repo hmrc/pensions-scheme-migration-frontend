@@ -23,11 +23,11 @@ import models.SchemeType
 import org.scalatest.TryValues
 import org.scalatest.matchers.must.Matchers
 import play.api.i18n.Messages
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Value, Row, Key}
-import uk.gov.hmrc.viewmodels.Text.{Message, Literal}
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, Html}
+import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
+import uk.gov.hmrc.viewmodels.Text.{Literal, Message}
+import uk.gov.hmrc.viewmodels.{Html, MessageInterpolators}
 import utils.Data.schemeName
-import utils.{UserAnswers, CountryOptions, Enumerable, InputOption}
+import utils.{CountryOptions, Enumerable, InputOption, UserAnswers}
 
 class BeforeYouStartCYAHelperSpec
   extends SpecBase
@@ -60,7 +60,7 @@ class BeforeYouStartCYAHelperSpec
           value = Value(msg"messages__scheme_type_other", classes = Seq("govuk-!-width-one-third")),
           actions = Seq(Action(
             content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
-            href =  controllers.beforeYouStartSpoke.routes.SchemeTypeController.onPageLoad().url,
+            href =  controllers.beforeYouStartSpoke.routes.SchemeTypeController.onPageLoad.url,
             visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyhidden__schemeType", schemeName))),
             attributes = Map("id" -> "cya-0-1-change")
           ))
@@ -70,7 +70,7 @@ class BeforeYouStartCYAHelperSpec
           value = Value(msg"country.AF", classes = Seq("govuk-!-width-one-third")),
           actions = Seq(Action(
             content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
-            href =  controllers.beforeYouStartSpoke.routes.EstablishedCountryController.onPageLoad().url,
+            href =  controllers.beforeYouStartSpoke.routes.EstablishedCountryController.onPageLoad.url,
             visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyhidden__schemeEstablishedCountry", schemeName))),
             attributes = Map("id" -> "cya-0-2-change")
           ))
@@ -80,7 +80,7 @@ class BeforeYouStartCYAHelperSpec
           value = Value(msg"site.yes"),
           actions = Seq(Action(
             content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
-            href =  controllers.beforeYouStartSpoke.routes.WorkingKnowledgeController.onPageLoad().url,
+            href =  controllers.beforeYouStartSpoke.routes.WorkingKnowledgeController.onPageLoad.url,
             visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("messages__visuallyhidden__working_knowledge"))),
             attributes = Map("id" -> "cya-0-3-change")
           ))

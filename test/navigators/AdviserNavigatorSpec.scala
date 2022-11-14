@@ -18,9 +18,9 @@ package navigators
 
 import base.SpecBase
 import controllers.adviser.routes._
-import identifiers.adviser.{AddressId, AddressListId, AdviserNameId, EnterEmailId, EnterPhoneId, EnterPostCodeId}
+import identifiers.adviser._
 import identifiers.{Identifier, TypedIdentifier}
-import models.{CheckMode, Mode, NormalMode, _}
+import models._
 import org.scalatest.TryValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes
@@ -37,7 +37,7 @@ class AdviserNavigatorSpec
 
   private val navigator: CompoundNavigator = injector.instanceOf[CompoundNavigator]
   private def cya: Call =CheckYourAnswersController.onPageLoad
-  private def selectAddress: Call = SelectAddressController.onPageLoad
+  private def selectAddress: Call = SelectAddressController.onPageLoad()
 
 
   private val detailsUa: UserAnswers =
@@ -51,7 +51,7 @@ class AdviserNavigatorSpec
     TolerantAddress(Some("2"),Some("2"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")),
   )
 
-  val address = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
+  private val address = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
 
   private def postcode(mode: Mode): Call = EnterPostcodeController.onPageLoad(mode)
 

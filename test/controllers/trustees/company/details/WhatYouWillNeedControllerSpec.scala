@@ -35,7 +35,6 @@ import utils.Data.ua
 import utils.UserAnswers
 
 import scala.concurrent.Future
-
 class WhatYouWillNeedControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues {
 
   private val index: Index = Index(0)

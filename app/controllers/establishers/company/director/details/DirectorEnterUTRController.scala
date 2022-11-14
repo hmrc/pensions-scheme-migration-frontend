@@ -57,7 +57,7 @@ class DirectorEnterUTRController @Inject()(
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             get(
               pageTitle = Message("messages__enterUTR", Message("messages__director")),
@@ -84,7 +84,7 @@ class DirectorEnterUTRController @Inject()(
   def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        SchemeNameId.retrieve.right.map {
+        SchemeNameId.retrieve.map {
           schemeName =>
             form.bindFromRequest().fold(
               (formWithErrors: Form[_]) =>

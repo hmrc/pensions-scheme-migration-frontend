@@ -20,8 +20,8 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import matchers.JsonMatchers
 import models.Scheme
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, MockitoSugar}
 import org.scalatest.TryValues
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.mvc.Result
@@ -33,15 +33,14 @@ import utils.Data
 import utils.Data.ua
 
 import scala.concurrent.Future
-
-class BeforeYouStartControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with MockitoSugar {
+class BeforeYouStartControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues  {
   private val psaName: String = "Nigel"
   private val templateToBeRendered: String = "preMigration/beforeYouStart.njk"
   private def json: JsObject =
     Json.obj(
-      "continueUrl" -> controllers.routes.TaskListController.onPageLoad().url,
+      "continueUrl" -> controllers.routes.TaskListController.onPageLoad.url,
       "psaName" -> psaName,
-      "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad().url
+      "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad.url
     )
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 
@@ -61,7 +60,7 @@ class BeforeYouStartControllerSpec extends ControllerSpecBase with NunjucksSuppo
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result: Future[Result] = controller().onPageLoad()(fakeDataRequest())
+      val result: Future[Result] = controller().onPageLoad(fakeDataRequest())
 
       status(result) mustBe OK
 
@@ -82,7 +81,7 @@ class BeforeYouStartControllerSpec extends ControllerSpecBase with NunjucksSuppo
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result: Future[Result] = controller().onPageLoad()(fakeDataRequest())
+      val result: Future[Result] = controller().onPageLoad(fakeDataRequest())
 
       status(result) mustBe OK
 
@@ -95,7 +94,7 @@ class BeforeYouStartControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
     "redirect to List of schemes if lock can not be retrieved " in {
       mutableFakeDataRetrievalAction.setLockToReturn(None)
-      val result: Future[Result] = controller().onPageLoad()(fakeDataRequest())
+      val result: Future[Result] = controller().onPageLoad(fakeDataRequest())
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url)

@@ -19,7 +19,6 @@ package controllers.actions
 import base.SpecBase
 import models.requests.{DataRequest, OptionalDataRequest}
 import models.{RacDac, Scheme}
-import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures.whenReady
 import play.api.mvc.Result
@@ -33,7 +32,7 @@ import scala.concurrent.Future
 class DataRequiredActionSpec
   extends SpecBase
     with BeforeAndAfterEach
-    with MockitoSugar {
+    {
 
   class Harness(isRacDac:Boolean)
     extends DataRequiredImpl(isRacDac) {
@@ -54,7 +53,7 @@ class DataRequiredActionSpec
           )
         )
         whenReady(futureResult) { result =>
-          val response = result.left.get
+          val response = result.swap.toOption.get
           response.header.headers.get(LOCATION) mustBe Some(controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url)
         }
       }
@@ -72,7 +71,7 @@ class DataRequiredActionSpec
           )
         )
         whenReady(futureResult) { result =>
-          val response = result.left.get
+          val response = result.swap.toOption.get
           response.header.headers.get(LOCATION) mustBe Some(controllers.preMigration.routes.ListOfSchemesController.onPageLoad(RacDac).url)
         }
       }
@@ -91,7 +90,7 @@ class DataRequiredActionSpec
           )
         )
         whenReady(futureResult) { result =>
-          val response = result.right.get
+          val response = result.toOption.get
           response.userAnswers mustBe ua
           response.lock mustBe migrationLock
           response.viewOnly mustBe false

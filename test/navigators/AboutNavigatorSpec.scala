@@ -35,8 +35,8 @@ class AboutNavigatorSpec
     def navigation: TableFor3[Identifier, UserAnswers, Call] =
       Table(
         ("Id", "UserAnswers", "Next Page"),
-        row(CurrentMembersId)(CheckYourAnswersController.onPageLoad()),
-        row(FutureMembersId)(CheckYourAnswersController.onPageLoad())
+        row(CurrentMembersId)(CheckYourAnswersController.onPageLoad),
+        row(FutureMembersId)(CheckYourAnswersController.onPageLoad)
       )
 
     "in NormalMode" must {

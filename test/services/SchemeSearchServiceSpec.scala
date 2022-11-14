@@ -27,7 +27,9 @@ import models.MigrationType.isRacDac
 import models._
 import models.requests.AuthenticatedRequest
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, ArgumentMatchers, MockitoSugar}
+import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.MockitoSugar.mock
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
@@ -49,7 +51,7 @@ import utils.SchemeFuzzyMatcher
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar with ScalaFutures with NunjucksSupport with JsonMatchers {
+class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with ScalaFutures with NunjucksSupport with JsonMatchers {
 
   import SchemeSearchServiceSpec._
 
@@ -102,9 +104,10 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
   val service = new SchemeSearchService(mockAppConfig, mockFuzzyMatching, mockListOfSchemesConnector,
     mockMinimalDetailsConnector, paginationService, new Renderer(mockAppConfig, mockRenderer))
 
-  override def beforeEach: Unit = {
-    super.beforeEach
-    reset(mockAppConfig, mockRenderer)
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockAppConfig)
+    reset(mockRenderer)
     when(mockAppConfig.psaOverviewUrl) thenReturn dummyUrl
     when(mockAppConfig.listSchemePagination) thenReturn pagination
     when(mockAppConfig.psaUpdateContactDetailsUrl).thenReturn(dummyUrl)
@@ -410,7 +413,7 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Mock
 }
 
 
-object SchemeSearchServiceSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
+object SchemeSearchServiceSpec extends SpecBase  with BeforeAndAfterEach {
 
   private implicit lazy val hc: HeaderCarrier = HeaderCarrier()
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global

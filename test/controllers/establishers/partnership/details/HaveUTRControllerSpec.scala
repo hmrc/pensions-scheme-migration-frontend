@@ -47,7 +47,7 @@ class HaveUTRControllerSpec extends ControllerSpecBase with NunjucksSupport with
 
   private val formProvider: HasReferenceNumberFormProvider = new HasReferenceNumberFormProvider()
   private val form: Form[Boolean] = formProvider(Message("messages__genericHasUtr__error__required", partnershipDetails.partnershipName))
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val templateToBeRendered: String = "hasReferenceValueWithHint.njk"
 
   private val commonJson: JsObject =
@@ -64,7 +64,7 @@ class HaveUTRControllerSpec extends ControllerSpecBase with NunjucksSupport with
     new HaveUTRController(messagesApi, new FakeNavigator(desiredRoute = onwardRoute), new FakeAuthAction(), dataRetrievalAction,
       new DataRequiredActionImpl, formProvider, controllerComponents, mockUserAnswersCacheConnector, new Renderer(mockAppConfig, mockRenderer))
 
-  override def beforeEach: Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
+  override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
 
   "HaveUTRController" must {
     "return OK and the correct view for a GET" in {

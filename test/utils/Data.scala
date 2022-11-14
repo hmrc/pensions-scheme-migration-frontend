@@ -24,7 +24,7 @@ import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{AddressId, AddressYearsId}
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
-import identifiers.establishers.individual.details.{EstablisherDOBId, EstablisherHasNINOId, EstablisherHasUTRId, EstablisherNINOId, EstablisherUTRId}
+import identifiers.establishers.individual.details._
 import models._
 import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
 import models.establishers.EstablisherKind

@@ -23,7 +23,7 @@ import controllers.actions._
 import controllers.address.ManualAddressController
 import forms.address.AddressFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.benefitsAndInsurance.{BenefitsInsuranceNameId, InsurerAddressId,InsurerAddressListId}
+import identifiers.benefitsAndInsurance.{BenefitsInsuranceNameId, InsurerAddressId, InsurerAddressListId}
 import models.{Address, AddressConfiguration}
 import navigators.CompoundNavigator
 import play.api.data.Form
@@ -54,14 +54,14 @@ class InsurerConfirmAddressController @Inject()(override val messagesApi: Messag
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (BenefitsInsuranceNameId and SchemeNameId).retrieve.right.map { case insuranceCompanyName ~ schemeName =>
+      (BenefitsInsuranceNameId and SchemeNameId).retrieve.map { case insuranceCompanyName ~ schemeName =>
           get(Some(schemeName), insuranceCompanyName, InsurerAddressId,InsurerAddressListId, AddressConfiguration.PostcodeFirst)
       }
     }
 
   def onSubmit: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (BenefitsInsuranceNameId and SchemeNameId).retrieve.right.map { case insuranceCompanyName ~ schemeName =>
+      (BenefitsInsuranceNameId and SchemeNameId).retrieve.map { case insuranceCompanyName ~ schemeName =>
         post(Some(schemeName), insuranceCompanyName, InsurerAddressId, AddressConfiguration.PostcodeFirst)
       }
     }

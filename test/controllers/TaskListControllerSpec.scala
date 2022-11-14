@@ -20,8 +20,8 @@ import connectors.LegacySchemeDetailsConnector
 import controllers.actions._
 import matchers.JsonMatchers
 import models.{Scheme, TaskListLink}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, MockitoSugar}
 import org.scalatest.BeforeAndAfterEach
 import play.api.Application
 import play.api.inject.bind
@@ -34,8 +34,7 @@ import utils.Data
 import utils.Data._
 
 import scala.concurrent.Future
-
-class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach with MockitoSugar with JsonMatchers {
+class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach  with JsonMatchers {
 
   private val mockTaskListService = mock[TaskListService]
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -50,9 +49,9 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
   private def httpPathGET: String = controllers.routes.TaskListController.onPageLoad.url
 
   private val basicDetailsSection = Some(TaskListLink("Change Test scheme name basic details",
-    controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad().url, None, false))
+    controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad.url, None, false))
   private val membershipDetailsSection = Some(TaskListLink("Change Test scheme name membership details",
-    controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad().url, None, true))
+    controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad.url, None, true))
 
   private val declarationSection =
     TaskListLink(
@@ -75,14 +74,14 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
     "schemeName" -> schemeName,
     "declarationEnabled" -> false,
     "declaration" -> declarationSection,
-    "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad().url
+    "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad.url
   )
  val expectedJson = Json.obj("anyTrustees" -> false)
 
   val itemList : JsValue = json
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
     when(mockTaskListService.schemeCompletionStatus(any(), any())).thenReturn("Scheme Details are incomplete")
     when(mockTaskListService.schemeCompletionDescription(any(), any())).thenReturn("You have completed 1 of 2 sections")

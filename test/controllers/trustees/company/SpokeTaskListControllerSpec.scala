@@ -36,7 +36,6 @@ import utils.UserAnswers
 import viewmodels.Message
 
 import scala.concurrent.Future
-
 class SpokeTaskListControllerSpec
   extends ControllerSpecBase
     with NunjucksSupport
@@ -56,7 +55,7 @@ class SpokeTaskListControllerSpec
       "totalSpokes" -> 0,
       "completedCount" -> 0,
       "entityType" -> Message("messages__tasklist__trustee"),
-      "submitUrl" -> controllers.trustees.routes.AddTrusteeController.onPageLoad().url
+      "submitUrl" -> controllers.trustees.routes.AddTrusteeController.onPageLoad.url
     )
 
   private def controller(
