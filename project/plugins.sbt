@@ -7,9 +7,7 @@ resolvers += Resolver.url(
 
 resolvers += "Typesafe Releases" at "https://repo.typesafe.com/typesafe/releases/"
 
-addSbtPlugin("uk.gov.hmrc"          % "sbt-auto-build"          % "3.6.0")
-
-//addSbtPlugin("uk.gov.hmrc"          % "sbt-git-versioning"      % "2.4.0")
+addSbtPlugin("uk.gov.hmrc"          % "sbt-auto-build"          % "3.8.0")
 
 addSbtPlugin("uk.gov.hmrc"          % "sbt-distributables"      % "2.1.0")
 
@@ -26,7 +24,3 @@ addSbtPlugin("net.ground5hark.sbt"  % "sbt-concat"              % "0.2.0")
 addSbtPlugin("com.typesafe.sbt"     % "sbt-uglify"              % "2.0.0")
 
 addSbtPlugin("com.typesafe.sbt"     % "sbt-digest"              % "1.1.4")
-
-
-
-
