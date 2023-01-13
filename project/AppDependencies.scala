@@ -12,7 +12,7 @@ object AppDependencies {
     "org.webjars.npm"               %  "govuk-frontend"                 % "4.3.1",
     "org.webjars.npm"               %  "hmrc-frontend"                  % "1.35.2",
     "uk.gov.hmrc"                   %% "play-conditional-form-mapping"  % "1.12.0-play-28",
-    "uk.gov.hmrc"                   %% "play-language"                  % "5.3.0-play-28",
+    "uk.gov.hmrc"                   %% "play-language"                  % "6.1.0-play-28",
     "com.google.inject.extensions"  %  "guice-multibindings"            % "4.2.3",
     "uk.gov.hmrc"                   %% "domain"                         % "8.1.0-play-28",
     "com.fasterxml.jackson.module"  %% "jackson-module-scala"           % "2.14.0"
