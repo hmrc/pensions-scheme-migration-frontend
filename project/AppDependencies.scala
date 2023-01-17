@@ -7,8 +7,8 @@ object AppDependencies {
   private val compile: Seq[ModuleID] = Seq(
     play.sbt.PlayImport.ws,
     "uk.gov.hmrc"                   %% "bootstrap-frontend-play-28"     % hmrcBootstrapVersion,
-    "uk.gov.hmrc"                   %% "play-nunjucks"                  % "0.40.0-play-28",
-    "uk.gov.hmrc"                   %% "play-nunjucks-viewmodel"        % "0.16.0-play-28",
+    "uk.gov.hmrc"                   %% "play-nunjucks"                  % "0.41.0-play-28",
+    "uk.gov.hmrc"                   %% "play-nunjucks-viewmodel"        % "0.17.0-play-28",
     "org.webjars.npm"               %  "govuk-frontend"                 % "4.3.1",
     "org.webjars.npm"               %  "hmrc-frontend"                  % "1.35.2",
     "uk.gov.hmrc"                   %% "play-conditional-form-mapping"  % "1.12.0-play-28",
@@ -24,7 +24,7 @@ object AppDependencies {
     "org.mockito"             %% "mockito-scala"            % "1.17.5"              % Test,
     "org.jsoup"               % "jsoup"                     % "1.15.3"              % Test,
     "com.vladsch.flexmark"    % "flexmark-all"              % "0.62.2"              % "test, it",
-    "org.scalatestplus"       %% "scalacheck-1-17"          % "3.2.14.0"            % Test,
+    "org.scalatestplus"       %% "scalacheck-1-17"          % "3.2.15.0"            % Test,
     "com.github.tomakehurst"  % "wiremock-jre8"             % "2.35.0"              % Test,
     "org.pegdown"             % "pegdown"                   % "1.6.0"               % Test
   )

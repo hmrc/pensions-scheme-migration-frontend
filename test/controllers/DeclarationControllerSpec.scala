@@ -21,6 +21,7 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.beforeYouStart.{SchemeNameId, WorkingKnowledgeId}
 import matchers.JsonMatchers
 import models.MinPSA
+import org.apache.commons.lang3.StringUtils
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
@@ -66,6 +67,11 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
   override def beforeEach(): Unit = {
     super.beforeEach()
+    reset(mockRenderer)
+    reset(mockEmailConnector)
+    reset(mockMinimalDetailsConnector)
+    reset(mockPensionsSchemeConnector)
+    reset(mockAppConfig)
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
@@ -137,8 +143,24 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
       verify(mockEmailConnector, times(1)).sendEmail(
         ArgumentMatchers.eq("test@test.com"),
         ArgumentMatchers.eq("test template name"),
-        ArgumentMatchers.eq(Map("psaName" -> psaName.toString, "schemeName" -> schemeName)),
+        ArgumentMatchers.eq(Map("psaName" -> psaName, "schemeName" -> schemeName)),
         any())(any(), any())
+
+      redirectLocation(result) mustBe Some(controllers.routes.SchemeSuccessController.onPageLoad.url)
+    }
+
+    "redirect to next page when button is clicked more than one (declaration is already submitted)" in {
+
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+      when(mockPensionsSchemeConnector.registerScheme(any(), any(), any())(any(), any())).thenReturn(Future.successful(StringUtils.EMPTY))
+
+      val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
+
+      status(result) mustEqual SEE_OTHER
+
+      verify(mockEmailConnector, never).sendEmail(any(), any(), any(), any())(any(), any())
+      verify(mockMinimalDetailsConnector, never).getPSADetails(any())(any(), any())
+      verify(mockAppConfig, never).schemeConfirmationEmailTemplateId
 
       redirectLocation(result) mustBe Some(controllers.routes.SchemeSuccessController.onPageLoad.url)
     }
