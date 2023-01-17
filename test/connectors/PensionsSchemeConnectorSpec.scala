@@ -19,12 +19,13 @@ package connectors
 import com.fasterxml.jackson.core.JsonParseException
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models.RacDac
+import org.apache.commons.lang3.StringUtils
 import org.scalatest.matchers.must.Matchers._
 import org.scalatest.wordspec.AsyncWordSpec
 import org.scalatest.{OptionValues, RecoverMethods}
 import play.api.http.Status
-import play.api.http.Status.OK
-import play.api.libs.json.{JsResultException, Json}
+import play.api.http.Status.{NO_CONTENT, OK}
+import play.api.libs.json.{JsObject, JsResultException, Json}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, UpstreamErrorResponse}
 import utils.{Data, WireMockHelper}
 
@@ -38,7 +39,7 @@ class PensionsSchemeConnectorSpec extends AsyncWordSpec with WireMockHelper with
   private val registerSchemeUrl = "/pensions-scheme-migration/register-scheme/racdac"
   private val psaId = "test-psaId"
   private val schemeId = "test-scheme-id"
-  val json = Json.obj(
+  val json: JsObject = Json.obj(
     fields = "schemeName" -> "Test scheme name"
   )
 
@@ -50,6 +51,23 @@ class PensionsSchemeConnectorSpec extends AsyncWordSpec with WireMockHelper with
       )
     )
   "registerScheme" must {
+
+    "return EMPTY STRING for NO_CONTENT response" in {
+      server.stubFor(
+        post(urlEqualTo(registerSchemeUrl))
+          .withHeader("Content-Type", equalTo("application/json"))
+          .withHeader("psaId", equalTo(psaId))
+          .withRequestBody(equalToJson(Json.stringify(Data.ua.data)))
+          .willReturn(
+            aResponse.withStatus(NO_CONTENT)
+              .withHeader("Content-Type", "application/json")
+          )
+      )
+
+      connector.registerScheme(Data.ua, psaId, RacDac) map { res =>
+        res mustBe StringUtils.EMPTY
+      }
+    }
 
     "return right schemeReferenceNumber for a valid request/response" in {
       server.stubFor(
@@ -64,8 +82,8 @@ class PensionsSchemeConnectorSpec extends AsyncWordSpec with WireMockHelper with
           )
       )
 
-      connector.registerScheme(Data.ua,psaId,RacDac) map { res =>
-        res mustBe  schemeId
+      connector.registerScheme(Data.ua, psaId, RacDac) map { res =>
+        res mustBe schemeId
       }
     }
 
@@ -76,13 +94,13 @@ class PensionsSchemeConnectorSpec extends AsyncWordSpec with WireMockHelper with
           .withRequestBody(equalTo(Json.stringify(Json.toJson(Data.ua.data))))
           .willReturn(
             aResponse()
-          .withStatus(Status.INTERNAL_SERVER_ERROR)
-          .withHeader("Content-Type", "application/json")
-          .withBody(invalidPayloadResponse)
+              .withStatus(Status.INTERNAL_SERVER_ERROR)
+              .withHeader("Content-Type", "application/json")
+              .withBody(invalidPayloadResponse)
           )
       )
       recoverToSucceededIf[UpstreamErrorResponse] {
-        connector.registerScheme(Data.ua,psaId,RacDac)
+        connector.registerScheme(Data.ua, psaId, RacDac)
       }
     }
 
@@ -99,7 +117,7 @@ class PensionsSchemeConnectorSpec extends AsyncWordSpec with WireMockHelper with
           )
       )
       recoverToSucceededIf[BadRequestException] {
-        connector.registerScheme(Data.ua,psaId,RacDac)
+        connector.registerScheme(Data.ua, psaId, RacDac)
       }
     }
 
@@ -116,7 +134,7 @@ class PensionsSchemeConnectorSpec extends AsyncWordSpec with WireMockHelper with
           )
       )
       recoverToSucceededIf[JsonParseException] {
-        connector.registerScheme(Data.ua,psaId,RacDac)
+        connector.registerScheme(Data.ua, psaId, RacDac)
       }
     }
 
@@ -133,7 +151,7 @@ class PensionsSchemeConnectorSpec extends AsyncWordSpec with WireMockHelper with
           )
       )
       recoverToSucceededIf[JsResultException] {
-        connector.registerScheme(Data.ua,psaId,RacDac)
+        connector.registerScheme(Data.ua, psaId, RacDac)
       }
     }
 

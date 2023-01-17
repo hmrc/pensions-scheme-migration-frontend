@@ -92,7 +92,7 @@ class DeclarationController @Inject()(
               Future.successful(Redirect(controllers.routes.YourActionWasNotProcessedController.onPageLoadScheme))
             case ex: UpstreamErrorResponse if ex.statusCode == UNPROCESSABLE_ENTITY =>
               Future.successful(Redirect(controllers.routes.AddingSchemeController.onPageLoad))
-            case e =>
+            case _ =>
               Future.successful(Redirect(controllers.routes.TaskListController.onPageLoad))
           }
         }
