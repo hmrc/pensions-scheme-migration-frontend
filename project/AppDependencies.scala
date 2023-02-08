@@ -2,7 +2,7 @@ import sbt._
 
 object AppDependencies {
 
-  private val hmrcBootstrapVersion = "7.11.0"
+  private val hmrcBootstrapVersion = "7.13.0"
 
   private val compile: Seq[ModuleID] = Seq(
     play.sbt.PlayImport.ws,
@@ -15,7 +15,7 @@ object AppDependencies {
     "uk.gov.hmrc"                   %% "play-language"                  % "6.1.0-play-28",
     "com.google.inject.extensions"  %  "guice-multibindings"            % "4.2.3",
     "uk.gov.hmrc"                   %% "domain"                         % "8.1.0-play-28",
-    "com.fasterxml.jackson.module"  %% "jackson-module-scala"           % "2.14.0"
+    "com.fasterxml.jackson.module"  %% "jackson-module-scala"           % "2.14.2"
   )
 
 
