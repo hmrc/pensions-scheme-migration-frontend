@@ -193,9 +193,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
       val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
       status(result) mustEqual SEE_OTHER
-      //controllers.routes.YourActionWasNotProcessedController.onPageLoadScheme)
       redirectLocation(result) mustBe Some(controllers.routes.YourActionWasNotProcessedController.onPageLoadScheme.url)
-      //redirectLocation(result) mustBe Some(controllers.routes.TaskListController.onPageLoad.url)
     }
 
     "directs to correct page if 422 response is returned" in {
