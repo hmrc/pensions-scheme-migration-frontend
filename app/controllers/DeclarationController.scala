@@ -88,12 +88,10 @@ class DeclarationController @Inject()(
           } yield {
             Redirect(routes.SchemeSuccessController.onPageLoad)
           }) recoverWith {
-            case ex: UpstreamErrorResponse if is5xx(ex.statusCode) =>
-              Future.successful(Redirect(controllers.routes.YourActionWasNotProcessedController.onPageLoadScheme))
             case ex: UpstreamErrorResponse if ex.statusCode == UNPROCESSABLE_ENTITY =>
               Future.successful(Redirect(controllers.routes.AddingSchemeController.onPageLoad))
             case _ =>
-              Future.successful(Redirect(controllers.routes.TaskListController.onPageLoad))
+              Future.successful(Redirect(controllers.routes.YourActionWasNotProcessedController.onPageLoadScheme))
           }
         }
     }
