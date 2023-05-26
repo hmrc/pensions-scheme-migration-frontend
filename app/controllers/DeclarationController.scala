@@ -30,7 +30,6 @@ import play.api.libs.json.{JsString, Json, __}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
-import uk.gov.hmrc.http.HttpReads.is5xx
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswers
@@ -88,12 +87,10 @@ class DeclarationController @Inject()(
           } yield {
             Redirect(routes.SchemeSuccessController.onPageLoad)
           }) recoverWith {
-            case ex: UpstreamErrorResponse if is5xx(ex.statusCode) =>
-              Future.successful(Redirect(controllers.routes.YourActionWasNotProcessedController.onPageLoadScheme))
             case ex: UpstreamErrorResponse if ex.statusCode == UNPROCESSABLE_ENTITY =>
               Future.successful(Redirect(controllers.routes.AddingSchemeController.onPageLoad))
             case _ =>
-              Future.successful(Redirect(controllers.routes.TaskListController.onPageLoad))
+              Future.successful(Redirect(controllers.routes.YourActionWasNotProcessedController.onPageLoadScheme))
           }
         }
     }
