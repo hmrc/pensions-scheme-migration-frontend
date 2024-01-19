@@ -45,7 +45,7 @@ class DataCompletionTrusteesSpec
       "return true when all answers are present" in {
         val ua =
           UserAnswers()
-            .set(TrusteeKindId(0), TrusteeKind.Individual).success.value
+            .set(TrusteeKindId(0, TrusteeKind.Individual), TrusteeKind.Individual).success.value
             .set(TrusteeNameId(0), PersonName("a", "b")).success.value
             .set(TrusteeDOBId(0), LocalDate.parse("2001-01-01")).success.value
             .set(TrusteeHasNINOId(0), true).success.value
@@ -63,9 +63,9 @@ class DataCompletionTrusteesSpec
       "return false when some answer is missing" in {
         val ua =
           UserAnswers()
-            .set(TrusteeKindId(0), TrusteeKind.Individual).success.value
+            .set(TrusteeKindId(0, TrusteeKind.Individual), TrusteeKind.Individual).success.value
             .set(TrusteeNameId(0), PersonName("a", "b")).success.value
-            .set(TrusteeKindId(1), TrusteeKind.Individual).success.value
+            .set(TrusteeKindId(1, TrusteeKind.Individual), TrusteeKind.Individual).success.value
 
         ua.isTrusteeIndividualComplete(1) mustBe false
       }
@@ -171,7 +171,7 @@ class DataCompletionTrusteesSpec
       "return true when all answers are present" in {
         val ua =
           UserAnswers()
-            .set(TrusteeKindId(0), TrusteeKind.Company).success.value
+            .set(TrusteeKindId(0, TrusteeKind.Company), TrusteeKind.Company).success.value
             .set(CompanyDetailsId(0), CompanyDetails("test company")).success.value
             .set(HaveCompanyNumberId(0), true).success.value
             .set(CompanyNumberId(0), ReferenceValue("AB123456C")).success.value
@@ -192,9 +192,9 @@ class DataCompletionTrusteesSpec
       "return false when some answer is missing" in {
         val ua =
           UserAnswers()
-            .set(TrusteeKindId(0), TrusteeKind.Company).success.value
+            .set(TrusteeKindId(0, TrusteeKind.Company), TrusteeKind.Company).success.value
             .set(CompanyDetailsId(0), CompanyDetails("test company")).success.value
-            .set(TrusteeKindId(1), TrusteeKind.Company).success.value
+            .set(TrusteeKindId(1, TrusteeKind.Company), TrusteeKind.Company).success.value
 
         ua.isTrusteeCompanyComplete(1) mustBe false
       }
@@ -248,7 +248,7 @@ class DataCompletionTrusteesSpec
       "return true when address is complete and address years is true" in {
         val ua =
           UserAnswers()
-            .set(TrusteeKindId(0), TrusteeKind.Company).success.value
+            .set(TrusteeKindId(0, TrusteeKind.Company), TrusteeKind.Company).success.value
             .set(CompanyDetailsId(0), CompanyDetails("test company")).success.value
             .set(companyAddress.AddressId(0), Data.address).success.value
             .set(companyAddress.AddressYearsId(0), true).success.value
@@ -259,7 +259,7 @@ class DataCompletionTrusteesSpec
       "return true when address is complete and address years is false and trading time is false" in {
         val ua =
           UserAnswers()
-            .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
+            .set(TrusteeKindId(0, TrusteeKind.Partnership), TrusteeKind.Partnership).success.value
             .set(CompanyDetailsId(0), CompanyDetails("test company")).success.value
             .set(companyAddress.AddressId(0), Data.address).success.value
             .set(companyAddress.AddressYearsId(0), false).success.value
@@ -271,7 +271,7 @@ class DataCompletionTrusteesSpec
       "return true when address is complete and previous address is complete" in {
         val ua =
           UserAnswers()
-            .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
+            .set(TrusteeKindId(0, TrusteeKind.Partnership), TrusteeKind.Partnership).success.value
             .set(CompanyDetailsId(0), CompanyDetails("test company")).success.value
             .set(companyAddress.AddressId(0), Data.address).success.value
             .set(companyAddress.AddressYearsId(0), false).success.value
@@ -284,7 +284,7 @@ class DataCompletionTrusteesSpec
       "return false when address is complete but no address years is present" in {
         val ua =
           UserAnswers()
-            .set(TrusteeKindId(0), TrusteeKind.Company).success.value
+            .set(TrusteeKindId(0, TrusteeKind.Company), TrusteeKind.Company).success.value
             .set(CompanyDetailsId(0), CompanyDetails("test company")).success.value
             .set(companyAddress.AddressId(0), Data.address).success.value
 
@@ -294,7 +294,7 @@ class DataCompletionTrusteesSpec
       "return false when address is complete but no previous address is present" in {
         val ua =
           UserAnswers()
-            .set(TrusteeKindId(0), TrusteeKind.Company).success.value
+            .set(TrusteeKindId(0, TrusteeKind.Company), TrusteeKind.Company).success.value
             .set(CompanyDetailsId(0), CompanyDetails("test company")).success.value
             .set(companyAddress.AddressId(0), Data.address).success.value
             .set(companyAddress.AddressYearsId(0), false).success.value
@@ -333,7 +333,7 @@ class DataCompletionTrusteesSpec
       "return true when all answers are present" in {
         val ua =
           UserAnswers()
-            .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
+            .set(TrusteeKindId(0, TrusteeKind.Partnership), TrusteeKind.Partnership).success.value
             .set(PartnershipDetailsId(0), PartnershipDetails("test partnership")).success.value
             .set(partnershipDetails.HaveUTRId(0), false).success.value
             .set(partnershipDetails.NoUTRReasonId(0), "Reason").success.value
@@ -350,9 +350,9 @@ class DataCompletionTrusteesSpec
       "return false when some answer is missing" in {
         val ua =
           UserAnswers()
-            .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
+            .set(TrusteeKindId(0, TrusteeKind.Partnership), TrusteeKind.Partnership).success.value
             .set(PartnershipDetailsId(0), PartnershipDetails("test partnership")).success.value
-            .set(TrusteeKindId(1), TrusteeKind.Partnership).success.value
+            .set(TrusteeKindId(1, TrusteeKind.Partnership), TrusteeKind.Partnership).success.value
 
         ua.isTrusteePartnershipComplete(1) mustBe false
       }
@@ -362,7 +362,7 @@ class DataCompletionTrusteesSpec
       "return true when address is complete and address years is true" in {
         val ua =
           UserAnswers()
-            .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
+            .set(TrusteeKindId(0, TrusteeKind.Partnership), TrusteeKind.Partnership).success.value
             .set(PartnershipDetailsId(0), PartnershipDetails("test partnership")).success.value
             .set(AddressId(0), Data.address).success.value
             .set(AddressYearsId(0), true).success.value
@@ -373,7 +373,7 @@ class DataCompletionTrusteesSpec
       "return true when address is complete and address years is false and trading time is false" in {
         val ua =
           UserAnswers()
-            .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
+            .set(TrusteeKindId(0, TrusteeKind.Partnership), TrusteeKind.Partnership).success.value
             .set(PartnershipDetailsId(0), PartnershipDetails("test partnership")).success.value
             .set(AddressId(0), Data.address).success.value
             .set(AddressYearsId(0), false).success.value
@@ -385,7 +385,7 @@ class DataCompletionTrusteesSpec
       "return true when address is complete and previous address is complete" in {
         val ua =
           UserAnswers()
-            .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
+            .set(TrusteeKindId(0, TrusteeKind.Partnership), TrusteeKind.Partnership).success.value
             .set(PartnershipDetailsId(0), PartnershipDetails("test partnership")).success.value
             .set(AddressId(0), Data.address).success.value
             .set(AddressYearsId(0), false).success.value
@@ -398,7 +398,7 @@ class DataCompletionTrusteesSpec
       "return false when address is complete but no address years is present" in {
         val ua =
           UserAnswers()
-            .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
+            .set(TrusteeKindId(0, TrusteeKind.Partnership), TrusteeKind.Partnership).success.value
             .set(PartnershipDetailsId(0), PartnershipDetails("test partnership")).success.value
             .set(AddressId(0), Data.address).success.value
 
@@ -408,7 +408,7 @@ class DataCompletionTrusteesSpec
       "return false when address is complete but no previous address is present" in {
         val ua =
           UserAnswers()
-            .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
+            .set(TrusteeKindId(0, TrusteeKind.Partnership), TrusteeKind.Partnership).success.value
             .set(PartnershipDetailsId(0), PartnershipDetails("test partnership")).success.value
             .set(AddressId(0), Data.address).success.value
             .set(AddressYearsId(0), false).success.value
