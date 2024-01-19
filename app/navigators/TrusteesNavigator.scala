@@ -45,7 +45,7 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
   //scalastyle:off cyclomatic.complexity
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
-    case TrusteeKindId(index) => trusteeKindRoutes(index, ua)
+    case TrusteeKindId(index, kind) => trusteeKindRoutes(index, kind, ua)
     case AnyTrusteesId => anyTrusteesRoutes(ua)
     case TrusteeNameId(index) => controllers.trustees.individual.routes.SpokeTaskListController.onPageLoad(index)
     case AddTrusteeId(value) => addTrusteeRoutes(value, ua)
@@ -104,19 +104,20 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
 
   private def trusteeKindRoutes(
                                  index: Index,
+                                 kind: TrusteeKind,
                                  ua: UserAnswers
                                ): Call = {
     val noOfDirectors = dataPrefillService.getListOfDirectorsToBeCopied(ua).size
-    ua.get(TrusteeKindId(index)) match {
-      case Some(TrusteeKind.Individual) if noOfDirectors == 1 =>
+    kind match {
+      case TrusteeKind.Individual if noOfDirectors == 1 =>
         controllers.trustees.individual.routes.DirectorAlsoTrusteeController.onPageLoad(index)
-      case Some(TrusteeKind.Individual) if noOfDirectors > 1 =>
+      case TrusteeKind.Individual if noOfDirectors > 1 =>
         controllers.trustees.individual.routes.DirectorsAlsoTrusteesController.onPageLoad(index)
-      case Some(TrusteeKind.Individual) =>
+      case TrusteeKind.Individual =>
         TrusteeNameController.onPageLoad(index)
-      case Some(TrusteeKind.Company) =>
+      case TrusteeKind.Company =>
         controllers.trustees.company.routes.CompanyDetailsController.onPageLoad(index)
-      case Some(TrusteeKind.Partnership) =>
+      case TrusteeKind.Partnership =>
         controllers.trustees.partnership.routes.PartnershipDetailsController.onPageLoad(index)
       case _ => IndexController.onPageLoad
     }

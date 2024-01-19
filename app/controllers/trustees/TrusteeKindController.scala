@@ -16,11 +16,10 @@
 
 package controllers.trustees
 
-import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.trustees.TrusteeKindFormProvider
-import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId}
+import identifiers.trustees.TrusteeKindId
 import models.Index
 import models.trustees.TrusteeKind
 import navigators.CompoundNavigator
@@ -31,11 +30,10 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.{Enumerable, UserAnswers}
+import utils.Enumerable
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class TrusteeKindController @Inject()(
                                            override val messagesApi: MessagesApi,
@@ -45,7 +43,6 @@ class TrusteeKindController @Inject()(
                                            requireData: DataRequiredAction,
                                            formProvider: TrusteeKindFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
-                                           userAnswersCacheConnector: UserAnswersCacheConnector,
                                            renderer: Renderer
                                          )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits with NunjucksSupport {
@@ -55,7 +52,7 @@ class TrusteeKindController @Inject()(
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        val formWithData = request.userAnswers.get(TrusteeKindId(index)).fold(form)(form.fill)
+        val formWithData = request.userAnswers.get(TrusteeKindId(index, TrusteeKind.Company)).fold(form)(form.fill)
         val json = Json.obj(
           "form" -> formWithData,
           "schemeName" -> existingSchemeName,
@@ -76,14 +73,7 @@ class TrusteeKindController @Inject()(
           renderer.render("trustees/trusteeKind.njk", json).map(BadRequest(_))
         },
         value => {
-
-          val ua: Try[UserAnswers] = request.userAnswers.set(IsTrusteeNewId(index), value = true).flatMap(_.set(TrusteeKindId(index), value))
-
-          for {
-            updatedAnswers <- Future.fromTry(ua)
-            _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
-          } yield
-            Redirect(navigator.nextPage(TrusteeKindId(index), updatedAnswers))
+          Future.successful(Redirect(navigator.nextPage(TrusteeKindId(index, value), request.userAnswers)))
         }
       )
   }

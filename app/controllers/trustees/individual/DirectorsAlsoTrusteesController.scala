@@ -22,7 +22,8 @@ import controllers.Retrievals
 import controllers.actions._
 import forms.dataPrefill.DataPrefillCheckboxFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.trustees.DirectorsAlsoTrusteesId
+import identifiers.trustees.{DirectorsAlsoTrusteesId, IsTrusteeNewId, TrusteeKindId}
+import models.trustees.TrusteeKind
 import models.{DataPrefillCheckbox, Index}
 import navigators.CompoundNavigator
 import play.api.data.Form
@@ -103,6 +104,8 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
                 seqDirector.headOption.flatMap(_.mainIndex).getOrElse(0))
 
             val updatedUa = uaAfterCopy.setOrException(DirectorsAlsoTrusteesId(establisherIndex), value)
+              .setOrException(IsTrusteeNewId(establisherIndex), value = true)
+              .setOrException(TrusteeKindId(establisherIndex, TrusteeKind.Individual), TrusteeKind.Individual)
             userAnswersCacheConnector.save(request.lock, uaAfterCopy.data).map { _ =>
               Redirect(navigator.nextPage(DirectorsAlsoTrusteesId(establisherIndex), updatedUa))
             }

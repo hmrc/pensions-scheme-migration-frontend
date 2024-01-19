@@ -20,7 +20,7 @@ import identifiers.TypedIdentifier
 import models.trustees.TrusteeKind
 import play.api.libs.json.{JsPath, __}
 
-case class TrusteeKindId(index: Int) extends TypedIdentifier[TrusteeKind] {
+case class TrusteeKindId(index: Int, kind: TrusteeKind) extends TypedIdentifier[TrusteeKind] {
   override def path: JsPath = TrusteesId(index).path \ TrusteeKindId.toString
 }
 
