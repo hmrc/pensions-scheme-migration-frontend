@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.PartnershipDetailsFormProvider
 import identifiers.establishers.partnership.PartnershipDetailsId
+import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId}
+import models.trustees.TrusteeKind
 import models.{Index, PartnershipDetails}
 import navigators.CompoundNavigator
 import play.api.data.Form
@@ -30,6 +32,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.Enumerable
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -48,6 +51,7 @@ class PartnershipDetailsController @Inject()(
   extends FrontendBaseController
     with I18nSupport
     with Retrievals
+    with Enumerable.Implicits
     with NunjucksSupport {
 
   private val form = formProvider()
@@ -78,7 +82,10 @@ class PartnershipDetailsController @Inject()(
             ).map(BadRequest(_)),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(PartnershipDetailsId(index), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(PartnershipDetailsId(index), value)
+                .flatMap(_.set(IsTrusteeNewId(index), value = true))
+                .flatMap(_.set(TrusteeKindId(index, TrusteeKind.Partnership), TrusteeKind.Partnership))
+              )
               _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
             } yield
               Redirect(navigator.nextPage(PartnershipDetailsId(index), updatedAnswers))

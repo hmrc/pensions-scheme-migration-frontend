@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import identifiers.TypedIdentifier
 import models.trustees.TrusteeKind
 import play.api.libs.json.{JsPath, __}
 
-case class TrusteeKindId(index: Int) extends TypedIdentifier[TrusteeKind] {
+case class TrusteeKindId(index: Int, kind: TrusteeKind) extends TypedIdentifier[TrusteeKind] {
   override def path: JsPath = TrusteesId(index).path \ TrusteeKindId.toString
 }
 

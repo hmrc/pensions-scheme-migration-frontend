@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,9 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.PersonNameFormProvider
+import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId}
 import identifiers.trustees.individual.TrusteeNameId
+import models.trustees.TrusteeKind
 import models.{Index, PersonName}
 import navigators.CompoundNavigator
 import play.api.data.Form
@@ -30,6 +32,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.Enumerable
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -48,6 +51,7 @@ class TrusteeNameController @Inject()(
   extends FrontendBaseController
     with I18nSupport
     with Retrievals
+    with Enumerable.Implicits
     with NunjucksSupport {
 
   private def form(implicit messages: Messages): Form[PersonName] =
@@ -56,6 +60,7 @@ class TrusteeNameController @Inject()(
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
+//      val thePath = TrusteesId(index).path
         renderer.render(
           template = "personName.njk",
           ctx = Json.obj(
@@ -81,7 +86,10 @@ class TrusteeNameController @Inject()(
             ).map(BadRequest(_)),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(TrusteeNameId(index), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(TrusteeNameId(index), value)
+                .flatMap(_.set(IsTrusteeNewId(index), value = true))
+                .flatMap(_.set(TrusteeKindId(index, TrusteeKind.Individual), TrusteeKind.Individual))
+              )
               _              <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
             } yield
               Redirect(navigator.nextPage(TrusteeNameId(index), updatedAnswers))

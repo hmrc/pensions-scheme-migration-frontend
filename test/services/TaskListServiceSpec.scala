@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -267,7 +267,7 @@ class TaskListServiceSpec extends SpecBase with BeforeAndAfterEach  with Nunjuck
     .setOrException(AddressId(0), Data.address)
     .setOrException(AddressYearsId(0), true)
 
-  private def trusteesUa(ua: UserAnswers): UserAnswers = ua.setOrException(TrusteeKindId(0), TrusteeKind.Individual)
+  private def trusteesUa(ua: UserAnswers): UserAnswers = ua.setOrException(TrusteeKindId(0, TrusteeKind.Individual), TrusteeKind.Individual)
     .setOrException(TrusteeNameId(0), PersonName("a", "b"))
     .setOrException(TrusteeDOBId(0), LocalDate.parse("2001-01-01"))
     .setOrException(TrusteeHasNINOId(0), true)

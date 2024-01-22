@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,8 @@ import controllers.Retrievals
 import controllers.actions._
 import forms.dataPrefill.DataPrefillRadioFormProvider
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.trustees.DirectorAlsoTrusteeId
+import identifiers.trustees.{DirectorAlsoTrusteeId, IsTrusteeNewId, TrusteeKindId}
+import models.trustees.TrusteeKind
 import models.{DataPrefillRadio, Index}
 import navigators.CompoundNavigator
 import play.api.data.Form
@@ -98,6 +99,8 @@ class DirectorAlsoTrusteeController @Inject()(override val messagesApi: Messages
             val uaAfterCopy = if (value < 0) ua else dataPrefillService.copyAllDirectorsToTrustees(ua, Seq(value),
               seqDirector.headOption.flatMap(_.mainIndex).getOrElse(0))
             val updatedUa = uaAfterCopy.setOrException(DirectorAlsoTrusteeId(index), value)
+              .setOrException(IsTrusteeNewId(index), value = true)
+              .setOrException(TrusteeKindId(index, TrusteeKind.Individual), TrusteeKind.Individual)
             userAnswersCacheConnector.save(request.lock, uaAfterCopy.data).map { _ =>
               Redirect(navigator.nextPage(DirectorAlsoTrusteeId(index), updatedUa))
             }

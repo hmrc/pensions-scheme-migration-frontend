@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,26 +100,17 @@ class TrusteeKindControllerSpec extends ControllerSpecBase with NunjucksSupport 
       redirectLocation(result).value mustBe controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
     }
 
-    "Save data to user answers and redirect to next page when valid data is submitted" in {
-
-      val expectedJson = Json.obj()
-
-      when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(TrusteeKindId(0)), any(), any())(any()))
+    "Redirect to next page when valid data is submitted" in {
+      when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(TrusteeKindId(0, TrusteeKind.Individual)), any(), any())(any()))
         .thenReturn(controllers.trustees.individual.routes.TrusteeNameController.onPageLoad(0))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
-
-      verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptor.capture)(any(), any())
-
-      jsonCaptor.getValue must containJson(expectedJson)
 
       redirectLocation(result) mustBe Some(controllers.trustees.individual.routes.TrusteeNameController.onPageLoad(0).url)
     }

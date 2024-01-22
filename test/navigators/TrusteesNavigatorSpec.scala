@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ class TrusteesNavigatorSpec
   private val index: Index = Index(0)
   private val detailsUa: UserAnswers =
     ua.set(TrusteeNameId(0), PersonName("Jane", "Doe")).success.value
-  private val uaWithTrusteeKind: TrusteeKind => UserAnswers = kind => UserAnswers().set(TrusteeKindId(index), kind).get
+  private val uaWithTrusteeKind: TrusteeKind => UserAnswers = kind => UserAnswers().set(TrusteeKindId(index, TrusteeKind.Individual), kind).get
   private val indvDetailsUa: UserAnswers = uaWithTrusteeKind(TrusteeKind.Individual).set(TrusteeNameId(0), PersonName("Jane", "Doe")).success.value
   private val trusteeNamePage: Call = controllers.trustees.individual.routes.TrusteeNameController.onPageLoad(index)
   private val companyPage: Call = controllers.trustees.company.routes.CompanyDetailsController.onPageLoad(index)
@@ -107,9 +107,9 @@ class TrusteesNavigatorSpec
     def navigation: TableFor3[Identifier, UserAnswers, Call] =
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
-        row(TrusteeKindId(index))(trusteeNamePage, Some(uaWithTrusteeKind(TrusteeKind.Individual))),
-        row(TrusteeKindId(index))(companyPage, Some(uaWithTrusteeKind(TrusteeKind.Company))),
-        row(TrusteeKindId(index))(partnershipPage, Some(uaWithTrusteeKind(TrusteeKind.Partnership))),
+        row(TrusteeKindId(index, TrusteeKind.Individual))(trusteeNamePage, Some(uaWithTrusteeKind(TrusteeKind.Individual))),
+        row(TrusteeKindId(index, TrusteeKind.Company))(companyPage, Some(uaWithTrusteeKind(TrusteeKind.Company))),
+        row(TrusteeKindId(index, TrusteeKind.Partnership))(partnershipPage, Some(uaWithTrusteeKind(TrusteeKind.Partnership))),
         row(TrusteeNameId(index))(addTrusteeDetailsPage),
         row(AddTrusteeId(Some(true)))(trusteeKindPage),
         row(AddTrusteeId(Some(false)))(taskListPage),

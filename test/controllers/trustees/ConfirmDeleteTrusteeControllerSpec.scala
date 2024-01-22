@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,11 +43,11 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with Nunjuck
   private val kind: TrusteeKind = TrusteeKind.Individual
   private val userAnswers: Option[UserAnswers] = ua.set(TrusteeNameId(0), PersonName("Jane", "Doe"))
     .flatMap(_.set(TrusteeNameId(1), PersonName("John", "Bose")))
-      .flatMap(_.set(TrusteeKindId(0), kind))
-        .flatMap(_.set(TrusteeKindId(1), kind)).toOption
+      .flatMap(_.set(TrusteeKindId(0, kind), kind))
+        .flatMap(_.set(TrusteeKindId(1, kind), kind)).toOption
 
   private val userAnswers1: Option[UserAnswers] = ua.set(TrusteeNameId(0), PersonName("Jane", "Doe"))
-    .flatMap(_.set(TrusteeKindId(0), kind)).toOption
+    .flatMap(_.set(TrusteeKindId(0, kind), kind)).toOption
 
   private val templateToBeRendered = "delete.njk"
   private val form: Form[Boolean] = new ConfirmDeleteTrusteeFormProvider()(trusteeName)

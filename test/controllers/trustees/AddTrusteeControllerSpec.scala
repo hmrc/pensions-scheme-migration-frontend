@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,10 +43,10 @@ import utils.{Enumerable, UserAnswers}
 import scala.concurrent.Future
 class AddTrusteeControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
   private val trusteeName: String = "Jane Doe"
-  private val userAnswers: Option[UserAnswers] = ua.set(TrusteeKindId(0), TrusteeKind.Individual).flatMap(
+  private val userAnswers: Option[UserAnswers] = ua.set(TrusteeKindId(0, TrusteeKind.Individual), TrusteeKind.Individual).flatMap(
     _.set(TrusteeNameId(0), PersonName("a", "b", true)).flatMap(
       _.set(IsTrusteeNewId(0), true).flatMap(
-        _.set(TrusteeKindId(1), TrusteeKind.Individual).flatMap(
+        _.set(TrusteeKindId(1, TrusteeKind.Individual), TrusteeKind.Individual).flatMap(
           _.set(TrusteeNameId(1), PersonName("c", "d", true)).flatMap(
             _.set(IsTrusteeNewId(1), true)
           ))))).toOption

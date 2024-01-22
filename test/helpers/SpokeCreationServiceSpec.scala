@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -428,7 +428,7 @@ class SpokeCreationServiceSpec
 
       val userAnswers =
         ua
-          .set(TrusteeKindId(0), TrusteeKind.Individual).success.value
+          .set(TrusteeKindId(0, TrusteeKind.Individual), TrusteeKind.Individual).success.value
           .set(TrusteeNameId(0), PersonName("a", "b")).success.value
 
       val expectedSpoke =
@@ -471,7 +471,7 @@ class SpokeCreationServiceSpec
     "display all the spokes with appropriate links and incomplete status when complete data is returned from TPSS" in {
       val userAnswers =
         ua
-          .set(TrusteeKindId(0), TrusteeKind.Individual).success.value
+          .set(TrusteeKindId(0, TrusteeKind.Individual), TrusteeKind.Individual).success.value
           .set(TrusteeNameId(0), PersonName("a", "b")).success.value
           .set(TrusteeDOBId(0), LocalDate.now).success.value
           .set(TrusteeNINOId(0), ReferenceValue("AB123456C")).success.value
@@ -522,7 +522,7 @@ class SpokeCreationServiceSpec
     "display all the spokes with appropriate links and incomplete status when no data is returned from TPSS" in {
       val userAnswers =
         ua
-          .set(TrusteeKindId(0), TrusteeKind.Company).success.value
+          .set(TrusteeKindId(0, TrusteeKind.Company), TrusteeKind.Company).success.value
           .set(trusteeCompany.CompanyDetailsId(0), CompanyDetails("test")).success.value
 
       val expectedSpoke =
@@ -564,7 +564,7 @@ class SpokeCreationServiceSpec
   "display all the spokes with appropriate links and incomplete status when data is returned from TPSS for trustee company spokes" in {
     val userAnswers =
       ua
-        .set(TrusteeKindId(0), TrusteeKind.Company).success.value
+        .set(TrusteeKindId(0, TrusteeKind.Company), TrusteeKind.Company).success.value
         .set(trusteeCompany.CompanyDetailsId(0), CompanyDetails("test")).success.value
         .setOrException(trusteeCompanyDetails.HaveCompanyNumberId(0), true)
         .setOrException(trusteeCompanyDetails.CompanyNumberId(0), ReferenceValue("12345678"))
@@ -666,7 +666,7 @@ class SpokeCreationServiceSpec
 
       val userAnswers =
         ua
-          .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
+          .set(TrusteeKindId(0, TrusteeKind.Partnership), TrusteeKind.Partnership).success.value
           .set(TrusteeNameId(0), PersonName("a", "b")).success.value
           .set(TrusteePartnershipDetailsId(0), PartnershipDetails("a b",false)).success.value
 
@@ -710,7 +710,7 @@ class SpokeCreationServiceSpec
     "display all the spokes with appropriate links and complete status when data is returned from TPSS" in {
       val userAnswers =
         ua
-          .set(TrusteeKindId(0), TrusteeKind.Partnership).success.value
+          .set(TrusteeKindId(0, TrusteeKind.Partnership), TrusteeKind.Partnership).success.value
           .set(TrusteePartnershipDetailsId(0), PartnershipDetails("a b", false)).success.value
           .set(TrusteeHaveUTRId(0), true).success.value
           .set(TrusteeUTRId(0), ReferenceValue("1234567890")).success.value
