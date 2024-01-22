@@ -1,7 +1,6 @@
 import play.sbt.routes.RoutesKeys
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings.integrationTestSettings
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 val appName = "pensions-scheme-migration-frontend"
 
@@ -47,7 +46,6 @@ lazy val microservice = Project(appName, file("."))
 // below line required to force asset pipeline to operate in dev rather than only prod
     Assets / pipelineStages := Seq(concat, uglify)
   )
-  .settings(publishingSettings: _*)
   .configs(IntegrationTest)
   .settings(integrationTestSettings(): _*)
   .settings(resolvers ++= Seq(
