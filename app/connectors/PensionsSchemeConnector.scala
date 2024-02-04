@@ -20,16 +20,18 @@ import com.google.inject.Inject
 import config.AppConfig
 import models.MigrationType
 import org.apache.commons.lang3.StringUtils
+import play.api.Logging
 import play.api.http.Status._
 import play.api.libs.json._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import utils.{HttpResponseHelper, UserAnswers}
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Failure
 
 class PensionsSchemeConnector @Inject()(config: AppConfig,
                                         http: HttpClient
-                                       ) extends HttpResponseHelper {
+                                       ) extends HttpResponseHelper with Logging {
 
   def registerScheme(answers: UserAnswers, psaId: String, migrationType: MigrationType)
                     (implicit hc: HeaderCarrier,
@@ -49,6 +51,34 @@ class PensionsSchemeConnector @Inject()(config: AppConfig,
         case _ =>
           handleErrorResponse("POST", url)(response)
       }
+    }
+  }
+
+  def getSchemeDetails(
+                        psaId: String,
+                        idNumber: String,
+                        schemeIdType: String
+                      )(
+                        implicit hc: HeaderCarrier,
+                        ec: ExecutionContext
+                      ): Future[UserAnswers] = {
+
+    val url = config.schemeDetailsUrl
+    val schemeHc =
+      hc.withExtraHeaders(
+        "idNumber" -> idNumber,
+        "psaId" -> psaId,
+        "schemeIdType" -> schemeIdType
+      )
+    http.GET[HttpResponse](url)(implicitly, schemeHc, implicitly).map { response =>
+      response.status match {
+        case OK =>
+          val json = Json.parse(response.body)
+          UserAnswers(json.as[JsObject])
+        case _ => handleErrorResponse("GET", url)(response)
+      }
+    } andThen {
+      case Failure(t: Throwable) => logger.warn("Unable to get scheme details", t)
     }
   }
 }
