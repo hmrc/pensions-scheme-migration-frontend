@@ -19,7 +19,7 @@ package controllers.preMigration
 import com.google.inject.Inject
 import config.AppConfig
 import connectors.ListOfSchemesConnector
-import controllers.actions.{AuthAction, PsaSchemeAuthAction}
+import controllers.actions.AuthAction
 import forms.ListSchemesFormProvider
 import models.MigrationType.isRacDac
 import models.requests.AuthenticatedRequest
@@ -42,8 +42,7 @@ class ListOfSchemesController @Inject()(
                                          formProvider: ListSchemesFormProvider,
                                          listOfSchemesConnector: ListOfSchemesConnector,
                                          schemeSearchService: SchemeSearchService,
-                                         lockingService: LockingService,
-                                         psaSchemeAuthAction: PsaSchemeAuthAction
+                                         lockingService: LockingService
                                        )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport with NunjucksSupport {
@@ -104,7 +103,7 @@ class ListOfSchemesController @Inject()(
       )
   }
 
-  def clickSchemeLink(pstr: String, isRacDac: Boolean): Action[AnyContent] = (authenticate andThen psaSchemeAuthAction(pstr)).async {
+  def clickSchemeLink(pstr: String, isRacDac: Boolean): Action[AnyContent] = authenticate.async {
     implicit request =>
       lockingService.initialLockSetupAndRedirect(pstr, request, isRacDac)
   }

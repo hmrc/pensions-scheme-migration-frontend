@@ -114,6 +114,4 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val individualMigrationConfirmationEmailTemplateId: String = loadConfig("email.individualMigrationConfirmationTemplateId")
   lazy val emailSendForce: Boolean = config.getOptional[Boolean]("email.force").getOrElse(false)
   lazy val migrationDataTTL: Int = config.get[Int]("migration-data-cache.timeToLiveInDays")
-  val schemeDetailsUrl: String = s"${servicesConfig.baseUrl("pensions-scheme")}${config.underlying
-    .getString("urls.schemeDetails")}"
 }

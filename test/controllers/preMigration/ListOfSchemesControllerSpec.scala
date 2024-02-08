@@ -21,24 +21,22 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.ListSchemesFormProvider
 import matchers.JsonMatchers
-import models.requests.AuthenticatedRequest
 import models.{Items, ListOfLegacySchemes, RacDac, Scheme}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
-import play.api.mvc.{ActionFunction, Result}
+import play.api.mvc.Result
 import play.api.mvc.Results._
 import play.api.test.Helpers.{status, _}
 import services.{LockingService, SchemeSearchService}
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues  {
 
   private val mockSchemeSearchService: SchemeSearchService = mock[SchemeSearchService]
   private val mockLockingService: LockingService = mock[LockingService]
   private val mockListOfSchemesConnector: ListOfSchemesConnector = mock[ListOfSchemesConnector]
-  private val mockPsaSchemeAuthAction = mock[PsaSchemeAuthAction]
   private val schemeDetail = Items("10000678RE", "2020-10-10", racDac = false, "abcdefghi", "2020-12-12", None)
   private val racDacDetail = Items("10000678RF", "2020-10-10", racDac = true, "abcdefghi", "2020-12-12", Some("12345678"))
   private val expectedResponse = ListOfLegacySchemes(1, Some(List(schemeDetail, racDacDetail)))
@@ -48,15 +46,10 @@ class ListOfSchemesControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
   private def controller: ListOfSchemesController =
     new ListOfSchemesController(mockAppConfig, messagesApi, new FakeAuthAction(),
-      controllerComponents, formProvider, mockListOfSchemesConnector, mockSchemeSearchService, mockLockingService, mockPsaSchemeAuthAction)
+      controllerComponents, formProvider, mockListOfSchemesConnector, mockSchemeSearchService, mockLockingService)
 
 
   override def beforeEach(): Unit = {
-    when(mockPsaSchemeAuthAction.apply(any())).thenReturn( new ActionFunction[AuthenticatedRequest, AuthenticatedRequest] {
-      override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = block(request)
-
-      override protected def executionContext: ExecutionContext = scala.concurrent.ExecutionContext.global
-    })
     super.beforeEach()
   }
 
