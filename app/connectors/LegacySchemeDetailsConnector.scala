@@ -43,21 +43,17 @@ class LegacySchemeDetailsConnectorImpl @Inject()(
   private val logger = Logger(classOf[LegacySchemeDetailsConnectorImpl])
 
   def getLegacySchemeDetails(psaId: String, pstr: String)
-                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[HttpResponse, JsValue]] = {
+                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[HttpResponse, JsValue]] = {
     val (url, schemeHc) = (config.legacySchemeDetailsUrl, hc.withExtraHeaders("psaId" -> psaId, "pstr" -> pstr))
 
     http.GET[HttpResponse](url)(implicitly, schemeHc, implicitly).map { response =>
       response.status match {
         case OK =>
-            Right(response.json)
+          Right(response.json)
         case _ =>
           logger.error(response.body)
           Left(response)
       }
     }
   }
-
 }
-
-sealed trait LegacySchemeDetailsConnectorException extends Exception
-
