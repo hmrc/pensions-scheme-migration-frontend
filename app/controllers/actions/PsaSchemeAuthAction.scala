@@ -17,9 +17,8 @@
 package controllers.actions
 
 import config.AppConfig
-import connectors.{LegacySchemeDetailsConnector, ListOfSchemesConnector}
+import connectors.LegacySchemeDetailsConnector
 import models.requests.AuthenticatedRequest
-import models.{Items, ListOfLegacySchemes}
 import play.api.Logging
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.mvc.Results.NotFound
@@ -31,7 +30,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvi
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-private class PsaSchemeAuthActionImpl (pstr:String, listOfSchemesConnector: ListOfSchemesConnector, legacySchemeDetailsConnector: LegacySchemeDetailsConnector,
+private class PsaSchemeAuthActionImpl (pstr:String, legacySchemeDetailsConnector: LegacySchemeDetailsConnector,
                                    renderer: Renderer, config: AppConfig)
                                   (implicit val executionContext: ExecutionContext)
   extends ActionFunction[AuthenticatedRequest, AuthenticatedRequest] with FrontendHeaderCarrierProvider with Logging {
@@ -39,67 +38,39 @@ private class PsaSchemeAuthActionImpl (pstr:String, listOfSchemesConnector: List
   private def notFoundTemplate(implicit request: AuthenticatedRequest[_]): Future[Result] =
     renderer.render("notFound.njk", Json.obj("yourPensionSchemesUrl" -> config.yourPensionSchemesUrl)).map(NotFound(_))
 
-  // TODO: address scalastyle complaints
-  //scalastyle:off cyclomatic.complexity method.length
   override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
 
     val psaIdStr: String = request.psaId.id
 
-    val listOfSchemes: Future[Either[HttpResponse, ListOfLegacySchemes]] = listOfSchemesConnector
-      .getListOfSchemes(psaIdStr)(hc(request), executionContext)
-
     val legacySchemeDetails: Future[Either[HttpResponse, JsValue]] = legacySchemeDetailsConnector
       .getLegacySchemeDetails(psaIdStr, pstr)(hc(request), executionContext)
 
-    val futureMaybeListOfSchemesForPsa: Future[Option[List[Items]]] = listOfSchemes.flatMap {
-      case Right(list) => Future.successful(list.items)
-      case _ =>
-        logger.info("getListOfSchemes returned None for this PsaID")
-        Future.successful(None)
+    val futureSchemeDetailsForPsaWithPstr: Future[JsObject] = legacySchemeDetails.map {
+      case Right(data) => data.as[JsObject]
+      case Left(response) =>
+        logger.error(s"Called getLegacySchemeDetails, IF responded with status ${response.status}, ${response.body}")
+        Json.obj()
     }
 
-    val futureSchemeDetailsForPsaWithPstr: Future[JsObject] = legacySchemeDetails.flatMap {
-      case Right(data) => Future.successful(data.as[JsObject])
-      case _ =>
-        logger.info("getLegacySchemeDetails returned no data for this PsaId and PSTR")
-        Future.successful(Json.obj())
-    }
-
-    val schemeNameFromListOfSchemes: Future[String] = futureMaybeListOfSchemesForPsa.map {
-      case Some(schemes) =>
-        schemes.find(_.pstr == pstr).map { scheme => scheme.schemeName }.getOrElse("")
-      case _ => ""
-    }
-
-    val schemeNameFromSchemeDetails = futureSchemeDetailsForPsaWithPstr.map { schemeDetails =>
-      (schemeDetails \ "schemeName").asOpt[String].getOrElse("")
-    }
-
-    val futures = for {
-      res1 <- schemeNameFromListOfSchemes
-      res2 <- schemeNameFromSchemeDetails
+    (for {
+      result <- futureSchemeDetailsForPsaWithPstr
     } yield {
-      if (res1.isEmpty || res2.isEmpty) {
-        logger.info("Scheme name not retrieved from getListOfSchemes/getLegacySchemeDetails or both")
+      if (result.fields.isEmpty) {
+        logger.info("getLegacySchemeDetails returned no data for this combination of PsaId and PSTR")
         notFoundTemplate(request)
-      } else if (res1 == res2) {
-        block(request)
       } else {
-        logger.info("Scheme name from getListOfSchemes did not match scheme name from getLegacySchemeDetails")
-        notFoundTemplate(request)
+        block(request)
       }
     } recoverWith {
-      case err =>
-        logger.error("Error resolving futures: ", err)
-        notFoundTemplate(request)
-    }
-    futures.flatten
+        case err =>
+          logger.error("Error resolving futureSchemeDetailsForPsaWithPstr: ", err)
+          notFoundTemplate(request)
+    }).flatten
   }
 }
 
-class PsaSchemeAuthAction @Inject()(listOfSchemesConnector: ListOfSchemesConnector,
-                                    legacySchemeDetailsConnector: LegacySchemeDetailsConnector,renderer: Renderer, config: AppConfig)
+class PsaSchemeAuthAction @Inject()(legacySchemeDetailsConnector: LegacySchemeDetailsConnector, renderer: Renderer, config: AppConfig)
                                    (implicit ec: ExecutionContext) {
   def apply(pstr: String): ActionFunction[AuthenticatedRequest, AuthenticatedRequest] =
-    new PsaSchemeAuthActionImpl(pstr, listOfSchemesConnector, legacySchemeDetailsConnector, renderer, config)
+    new PsaSchemeAuthActionImpl(pstr, legacySchemeDetailsConnector, renderer, config)
 }
