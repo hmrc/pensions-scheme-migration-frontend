@@ -1,6 +1,5 @@
 import play.sbt.routes.RoutesKeys
 import scoverage.ScoverageKeys
-import uk.gov.hmrc.DefaultBuildSettings.integrationTestSettings
 
 val appName = "pensions-scheme-migration-frontend"
 
@@ -47,7 +46,6 @@ lazy val microservice = Project(appName, file("."))
     Assets / pipelineStages := Seq(concat, uglify)
   )
   .configs(IntegrationTest)
-  .settings(integrationTestSettings(): _*)
   .settings(resolvers ++= Seq(
     Resolver.jcenterRepo,
     )
