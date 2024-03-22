@@ -212,7 +212,9 @@ class BulkDataActionSpec
 
     "ListOfSchemes5xxException is thrown by list schemes api call" must {
       "redirect to the 'there is a problem' page" in {
-        reset(schemeCacheConnector, minimalDetailsConnector, listOfSchemesConnector)
+        reset(schemeCacheConnector)
+        reset(minimalDetailsConnector)
+        reset(listOfSchemesConnector)
         when(schemeCacheConnector.fetch(any(), any())) thenReturn Future(None)
         when(listOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.failed(ListOfSchemes5xxException()))
 
