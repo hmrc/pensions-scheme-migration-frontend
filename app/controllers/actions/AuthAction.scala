@@ -18,7 +18,6 @@ package controllers.actions
 
 import com.google.inject.{ImplementedBy, Inject}
 import config.AppConfig
-import controllers.routes
 import controllers.routes._
 import models.requests.AuthenticatedRequest
 import play.api.mvc.Results._
@@ -28,7 +27,6 @@ import uk.gov.hmrc.auth.core.retrieve._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,7 +44,7 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector,
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    authorised(ConfidenceLevel.L250).retrieve(Retrievals.externalId and Retrievals.allEnrolments) {
+    authorised().retrieve(Retrievals.externalId and Retrievals.allEnrolments) {
 
       case Some(id) ~ enrolments =>           createAuthRequest(id, enrolments, request, block)
       case _ =>                               Future.successful(Redirect(UnauthorisedController.onPageLoad))
@@ -55,11 +53,7 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector,
 
       case _: NoActiveSession =>              Redirect(config.loginUrl, Map("continue" -> Seq(config.psaOverviewUrl)))
       case _: InsufficientEnrolments =>       Redirect(UnauthorisedController.onPageLoad)
-      case _: InsufficientConfidenceLevel =>
-        val completionURL = RedirectUrl(request.uri)
-        val failureURL = RedirectUrl(routes.UnauthorisedController.onPageLoad.url)
-        val url = config.identityValidationFrontEndEntry(completionURL, failureURL)
-        SeeOther(url)
+      case _: InsufficientConfidenceLevel =>  Redirect(UnauthorisedController.onPageLoad)
       case _: UnsupportedAuthProvider =>      Redirect(UnauthorisedController.onPageLoad)
       case _: UnsupportedAffinityGroup =>     Redirect(UnauthorisedController.onPageLoad)
       case _: UnsupportedCredentialRole =>    Redirect(UnauthorisedController.onPageLoad)
