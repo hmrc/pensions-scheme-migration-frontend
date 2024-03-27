@@ -21,8 +21,6 @@ import models.{MigrationType, ReportTechnicalIssue}
 import play.api.Configuration
 import play.api.i18n.Lang
 import play.api.mvc.Call
-import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.idFunctor
-import uk.gov.hmrc.play.bootstrap.binders.{OnlyRelative, RedirectUrl}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.{Inject, Singleton}
@@ -116,9 +114,4 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val individualMigrationConfirmationEmailTemplateId: String = loadConfig("email.individualMigrationConfirmationTemplateId")
   lazy val emailSendForce: Boolean = config.getOptional[Boolean]("email.force").getOrElse(false)
   lazy val migrationDataTTL: Int = config.get[Int]("migration-data-cache.timeToLiveInDays")
-  def identityValidationFrontEndEntry(relativeCompletionURL: RedirectUrl, relativeFailureURL: RedirectUrl): String = {
-    val url = loadConfig("urls.ivUpliftEntry")
-    val query = s"?origin=pods&confidenceLevel=250&completionURL=${relativeCompletionURL.get(OnlyRelative).url}&failureURL=${relativeFailureURL.get(OnlyRelative).url}"
-    url + query
-  }
 }
