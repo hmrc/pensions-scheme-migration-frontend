@@ -16,7 +16,7 @@
 
 package utils
 
-import org.joda.time.LocalDate
+import java.time.LocalDate
 import org.scalacheck.Gen
 import play.api.libs.json.Reads._
 import play.api.libs.json._
@@ -36,7 +36,7 @@ trait UaJsValueGenerators {
     day <- Gen.choose(1, 28)
     month <- Gen.choose(1, 12)
     year <- Gen.choose(1990, 2000)
-  } yield new LocalDate(year, month, day)
+  } yield LocalDate.of(year, month, day)
 
   protected def optionalWithReason(key: String, element: Option[String], reason: String): JsObject = {
     element.map { value =>
