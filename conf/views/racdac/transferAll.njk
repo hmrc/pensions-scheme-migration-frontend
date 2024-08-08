@@ -23,6 +23,7 @@
           }) }}
         {% endif %}
 
+       <h1 class="govuk-heading-l">{{ messages('messages__transferAll__title') }}</h1>
 
         <form method="post" autocomplete="off" novalidate >
 
@@ -32,7 +33,7 @@
             name: 'value',
             fieldset: {
               legend: {
-                text: messages('messages__transferAll__title'),
+                text: None,
                 isPageHeading: true,
                 classes: "govuk-heading-l govuk-!-margin-bottom-8"
               }
