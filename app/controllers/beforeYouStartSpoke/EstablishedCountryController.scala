@@ -64,7 +64,7 @@ class EstablishedCountryController @Inject()( config: AppConfig,
         val json = Json.obj(
           "form" -> preparedForm,
           "schemeName" -> schemeName,
-          "countries" ->   jsonCountries(preparedForm.data.get("value"), config)
+          "countries" ->   jsonCountries(preparedForm.data.get("country"), config)
         )
 
         renderer.render("beforeYouStart/establishedCountry.njk", json).map(Ok(_))
@@ -79,7 +79,7 @@ class EstablishedCountryController @Inject()( config: AppConfig,
             val json = Json.obj(
               "form" -> formWithErrors,
               "schemeName" -> schemeName,
-              "countries" ->   jsonCountries(form.data.get("country"), config)
+              "countries" ->   jsonCountries(formWithErrors.data.get("country"), config)
             )
 
             renderer.render("beforeYouStart/establishedCountry.njk", json).map(BadRequest(_))
