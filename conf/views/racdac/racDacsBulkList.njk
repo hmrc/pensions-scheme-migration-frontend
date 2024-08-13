@@ -31,7 +31,8 @@
             {% endif %}
 
             <h1 class="govuk-heading-xl">{{ messages("messages__listSchemes__title", messages("messages__racdac")) }}</h1>
-
+        </div>
+        <div class="govuk-grid-column-full">
             <form method="post" autocomplete="off" novalidate>
 
             {{ csrf() | safe }}

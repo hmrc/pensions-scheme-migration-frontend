@@ -41,7 +41,13 @@ import uk.gov.hmrc.viewmodels.{MessageInterpolators, Table}
 import utils.Data._
 
 import scala.concurrent.{ExecutionContext, Future}
-class BulkRacDacServiceSpec extends SpecBase with BeforeAndAfterEach  with ScalaFutures with NunjucksSupport with MockitoSugar with JsonMatchers {
+
+class BulkRacDacServiceSpec extends SpecBase
+  with BeforeAndAfterEach
+  with ScalaFutures
+  with NunjucksSupport
+  with MockitoSugar
+  with JsonMatchers {
 
   import BulkRacDacServiceSpec._
 
@@ -104,9 +110,9 @@ class BulkRacDacServiceSpec extends SpecBase with BeforeAndAfterEach  with Scala
       )
 
       val rows = List(Seq(
-        Cell(Literal("scheme-2"), Seq("govuk-!-width-one-quarter")),
+        Cell(Literal("scheme-2"), Seq("govuk-!-width-one-half")),
         Cell(Literal(pstr2), Seq("govuk-!-width-one-quarter")),
-        Cell(Literal("12 October 2000"), Seq("govuk-!-width-one-half"))))
+        Cell(Literal("12 October 2000"), Seq("govuk-!-width-one-quarter"))))
 
       val table = Table(head, rows, attributes = Map("role" -> "table"))
 
@@ -212,7 +218,6 @@ class BulkRacDacServiceSpec extends SpecBase with BeforeAndAfterEach  with Scala
   }
 }
 
-
 object BulkRacDacServiceSpec extends SpecBase  with BeforeAndAfterEach {
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
   private val pstr1: String = "10000678RE"
@@ -238,20 +243,20 @@ object BulkRacDacServiceSpec extends SpecBase  with BeforeAndAfterEach {
 
   private val tableForScheme = Table(head,
     List(Seq(
-      Cell(Literal("scheme-1"), Seq("govuk-!-width-one-quarter")),
+      Cell(Literal("scheme-1"), Seq("govuk-!-width-one-half")),
       Cell(Literal(pstr1), Seq("govuk-!-width-one-quarter")),
-      Cell(Literal("12 October 2000"), Seq("govuk-!-width-one-half")))
+      Cell(Literal("12 October 2000"), Seq("govuk-!-width-one-quarter")))
     ),
     attributes = Map("role" -> "table"))
 
   val racDacRows = List(Seq(
-    Cell(Literal("scheme-1"), Seq("govuk-!-width-one-quarter")),
+    Cell(Literal("scheme-1"), Seq("govuk-!-width-one-half")),
     Cell(Literal(pstr1), Seq("govuk-!-width-one-quarter")),
-    Cell(Literal("12 December 1989"), Seq("govuk-!-width-one-half"))),
+    Cell(Literal("12 December 1989"), Seq("govuk-!-width-one-quarter"))),
     Seq(
-    Cell(Literal("scheme-2"), Seq("govuk-!-width-one-quarter")),
+    Cell(Literal("scheme-2"), Seq("govuk-!-width-one-half")),
       Cell(Literal(pstr2), Seq("govuk-!-width-one-quarter")),
-      Cell(Literal("12 October 2000"), Seq("govuk-!-width-one-half")))
+      Cell(Literal("12 October 2000"), Seq("govuk-!-width-one-quarter")))
   )
 
   val tableForRacDac: Table = Table(head, racDacRows, attributes = Map("role" -> "table"))

@@ -51,9 +51,9 @@ class BulkRacDacService @Inject()(appConfig: AppConfig,
     val formatter: String => String = date => LocalDate.parse(date).format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
 
     val rows = schemeDetails.map { data =>
-      Seq(Cell(Literal(data.schemeName), Seq("govuk-!-width-one-quarter")),
+      Seq(Cell(Literal(data.schemeName), Seq("govuk-!-width-one-half")),
         Cell(Literal(data.pstr), Seq("govuk-!-width-one-quarter")),
-        Cell(Literal(formatter(data.schemeOpenDate)), Seq("govuk-!-width-one-half")))
+        Cell(Literal(formatter(data.schemeOpenDate)), Seq("govuk-!-width-one-quarter")))
     }
 
     Table(head, rows, attributes = Map("role" -> "table"))
