@@ -49,11 +49,11 @@ class EstablishedCountryControllerSpec extends ControllerSpecBase with NunjucksS
   private def httpPathPOST: String = routes.EstablishedCountryController.onSubmit.url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
-    "value" -> Seq("GB")
+    "country" -> Seq("GB")
   )
 
   private val valuesInvalid: Map[String, Seq[String]] = Map(
-    "value" -> Seq.empty
+    "country" -> Seq.empty
   )
 
   private val jsonToPassToTemplate: (Form[String], Option[String]) => JsObject = (form, countryOpt) =>
