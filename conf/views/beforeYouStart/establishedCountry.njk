@@ -1,12 +1,17 @@
 {% extends "includes/layout.njk" %}
 
 {% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
-{% from "govuk/components/radios/macro.njk"        import govukRadios %}
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/select/macro.njk"        import govukSelect %}
 {% from "macros/title.njk"                         import title %}
+{% from "govuk/components/fieldset/macro.njk"      import govukFieldset %}
 {% from "macros/returnLink.njk"                    import returnLink %}
+{% from "govuk/components/input/macro.njk"         import govukInput %}
+
+{% block pageHead %}
+    <link href="{{ routes.controllers.Assets.versioned("stylesheets/location-autocomplete.min.css").url }}" media="screen" rel="stylesheet" type="text/css" />
+{% endblock %}
 
 {% block pageTitle %}
   {{ title(messages("messages__established_country__title"), form.errors) }}
@@ -29,23 +34,31 @@
 
           {{ csrf() | safe }}
 
-           <div class="autocomplete-wrapper">
-                        {{ govukSelect({
-                          label: {
-                              text: messages("messages__established_country__h1", schemeName),
-                              isPageHeading: true,
-                              classes: "govuk-label--l"
-                          },
-                          id: "value",
-                          classes: "autocomplete",
-                          name: "value",
-                          items: countries,
-                          errorMessage: form.error,
-                          attributes: {
-                              value: form.value
-                          }
-                        }) }}
-                    </div>
+              {% call govukFieldset({
+                   legend: {
+                     text: messages("messages__established_country__h1", schemeName),
+                     classes: "govuk-fieldset__legend--xl govuk-!-margin-bottom-8",
+                     isPageHeading: true
+                   }
+                 }) %}
+
+                  <div class="govuk-form-group autocomplete-wrapper govuk-body govuk-input--width-20">
+                                {{ govukSelect({
+                                  label: {
+                                      classes: "govuk-label--s"
+                                  },
+                                  id: "country",
+                                  classes: "autocomplete",
+                                  name: "country",
+                                  items: countries,
+                                  errorMessage: form.country.error,
+                                  attributes: {
+                                      value: form.country.value
+                                  }
+                                }) }}
+                            </div>
+
+           {% endcall %}
 
           {{ govukButton({
             text: messages("site.save_and_continue"),

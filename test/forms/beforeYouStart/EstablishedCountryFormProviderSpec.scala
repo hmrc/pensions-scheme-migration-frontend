@@ -27,17 +27,17 @@ class EstablishedCountryFormProviderSpec extends FormSpec {
     val formProvider = new EstablishedCountryFormProvider()
 
     "bind a valid country" in {
-      val form = formProvider().bind(Map("value" -> "territory:AE-AZ"))
+      val form = formProvider().bind(Map("country" -> "territory:AE-AZ"))
       form.get mustBe "territory:AE-AZ"
     }
 
     "fail to bind a blank value" in {
-      val expectedError = error("value", requiredKey)
-      checkForError(formProvider(), Map("value" -> ""), expectedError)
+      val expectedError = error("country", requiredKey)
+      checkForError(formProvider(), Map("country" -> ""), expectedError)
     }
 
     "fail to bind when value is omitted" in {
-      val expectedError = error("value", requiredKey)
+      val expectedError = error("country", requiredKey)
       checkForError(formProvider(), emptyForm, expectedError)
     }
   }

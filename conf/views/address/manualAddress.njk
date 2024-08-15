@@ -48,7 +48,7 @@
             id: "line1",
             name: "line1",
             value: form.line1.value,
-            classes: "govuk-input--width-20",
+            classes: "govuk-input",
             errorMessage: form.line1.error
           }) }}
 
@@ -61,7 +61,7 @@
             id: "line2",
             name: "line2",
             value: form.line2.value,
-            classes: "govuk-input--width-20",
+            classes: "govuk-input",
             errorMessage: form.line2.error
           }) }}
 
@@ -74,7 +74,7 @@
             id: "line3",
             name: "line3",
             value: form.line3.value,
-            classes: "govuk-input--width-20",
+            classes: "govuk-input",
             errorMessage: form.line3.error
           }) }}
 
@@ -87,7 +87,7 @@
             id: "line4",
             name: "line4",
             value: form.line4.value,
-            classes: "govuk-input--width-20",
+            classes: "govuk-input",
             errorMessage: form.line4.error
           }) }}
 
@@ -102,21 +102,21 @@
                       id: "postcode",
                       name: "postcode",
                       value: form.postcode.value,
-                      classes: "govuk-input--width-10",
+                      classes: "govuk-input govuk-input--width-10",
                       errorMessage: form.postcode.error
                   }) }}
              {% endif %}
          {% endif %}
 
          {% if countries %}
-              <div class="govuk-form-group autocomplete-wrapper govuk-body govuk-input--width-20">
+              <div class="govuk-!-width-two-thirds">
                   {{ govukSelect({
                     label: {
                         text: messages('address.country'),
                         classes: "govuk-label--s"
                     },
                     id: "country",
-                    classes: "autocomplete",
+                    classes: "govuk-!-width-one-third country",
                     name: "country",
                     hint: {
                         text: messages('address.hint')
@@ -141,7 +141,7 @@
                       id: "postcode",
                       name: "postcode",
                       value: form.postcode.value,
-                      classes: "govuk-input--width-10",
+                      classes: "govuk-input govuk-input--width-10",
                       errorMessage: form.postcode.error
                   }) }}
              {% endif %}

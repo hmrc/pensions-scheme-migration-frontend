@@ -23,6 +23,6 @@ class EstablishedCountryFormProvider extends Mappings {
 
   def apply(): Form[String] =
     Form(
-      "value" -> text("messages__error__scheme_country")
+      "country" -> text("messages__error__scheme_country")
     )
 }

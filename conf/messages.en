@@ -1193,3 +1193,5 @@ messages__processingRequest__h1_processed = We have processed your request
 messages__processingRequest__content_processed = Select continue.
 messages__processingRequest__h1_failure = Sorry, there was a problem with the service
 messages__processingRequest__content_failure = We could not process your request. Select continue to try again.
+
+messages__error__postcode_enterPostcode.noresults = Postcode cannot be found
