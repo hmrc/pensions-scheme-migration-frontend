@@ -61,7 +61,7 @@ class EmailConnectorImpl @Inject()(
     )
     val jsonData = Json.toJson(sendEmailReq)
 
-    logger.debug(s"Data to email: $jsonData for email address $emailAddress")
+    logger.error(s"Data to email: $jsonData for email address $emailAddress")
 
     http.POST[JsValue, HttpResponse](postUrl, jsonData).map { response =>
       response.status match {

@@ -80,6 +80,7 @@ class DeclarationController @Inject()(
           val psaId = request.psaId.id
           val pstrId = request.lock.pstr
           val userAnswers = request.userAnswers
+          sendEmail(schemeName, psaId, pstrId)
           (for {
             updatedUa <- Future.fromTry(userAnswers.set(__ \ "pstr", JsString(request.lock.pstr)))
             apiResult <- pensionsSchemeConnector.registerScheme(UserAnswers(updatedUa.data), psaId, Scheme)

@@ -1,4 +1,5 @@
 # microservice specific routes
+->          /hmrc-frontend                                     hmrcfrontend.Routes
 ->          /establisher                                       establishers.Routes
 ->          /trustee                                           trustees.Routes
 
