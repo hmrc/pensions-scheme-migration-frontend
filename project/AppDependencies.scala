@@ -11,7 +11,6 @@ object AppDependencies {
     "uk.gov.hmrc"                   %% "play-nunjucks-viewmodel-play-30"        % "1.3.0",
     "org.webjars.npm"               %  "govuk-frontend"                         % "4.7.0",
     "uk.gov.hmrc"                   %% "play-conditional-form-mapping-play-30"  % "2.0.0",
-    "uk.gov.hmrc"                   %% "play-language-play-30"                  % "7.0.0",
     "com.google.inject.extensions"  %  "guice-multibindings"                    % "4.2.3",
     "uk.gov.hmrc"                   %% "domain-play-30"                         % "9.0.0",
     "com.fasterxml.jackson.module"  %% "jackson-module-scala"                   % "2.17.0",
