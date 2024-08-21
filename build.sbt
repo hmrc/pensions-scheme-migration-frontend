@@ -30,6 +30,14 @@ lazy val microservice = Project(appName, file("."))
       "models.Scheme",
       "models.RacDac"
     ),
+    TwirlKeys.templateImports ++= Seq(
+      "play.twirl.api.HtmlFormat",
+      "play.twirl.api.HtmlFormat._",
+      "uk.gov.hmrc.govukfrontend.views.html.components._",
+      "uk.gov.hmrc.hmrcfrontend.views.Implicits._",
+      "uk.gov.hmrc.hmrcfrontend.views.html.components._",
+      "uk.gov.hmrc.hmrcfrontend.views.html.helpers._"
+    ),
       // concatenate js
       Concat.groups := Seq(
   "javascripts/application.js" -> group(

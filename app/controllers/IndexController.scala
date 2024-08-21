@@ -20,6 +20,8 @@ import config.AppConfig
 import play.api.mvc._
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import utils.TwirlMigration
+import views.html.IndexView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -28,13 +30,14 @@ import scala.concurrent.ExecutionContext
 class IndexController @Inject()(
                                       appConfig: AppConfig,
                                       mcc: MessagesControllerComponents,
-                                      renderer: Renderer)
+                                      renderer: Renderer,
+                                      indexView: IndexView)
                                     (implicit val ec: ExecutionContext) extends FrontendController(mcc) {
 
   implicit val config: AppConfig = appConfig
 
   val onPageLoad: Action[AnyContent] = Action.async { implicit request =>
-    renderer.render("index.njk").map(Ok(_))
+    TwirlMigration.duoTemplate(renderer.render("index.njk"), indexView()).map { Ok(_) }
   }
 
 }
