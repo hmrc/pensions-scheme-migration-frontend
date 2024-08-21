@@ -20,7 +20,7 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
-@layout(messages("messages__index__title")) {
+@layout(messages("messages__index__title"), canSignOut = false) {
     <h1 class="govuk-heading-xl">@messages("service.name")</h1>
     <p class="govuk-body">@messages("service.text")</p>
 }
