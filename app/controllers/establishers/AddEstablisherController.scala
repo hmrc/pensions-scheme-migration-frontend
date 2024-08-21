@@ -57,7 +57,6 @@ class AddEstablisherController @Inject()(
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         val allEstablishers = request.userAnswers.allEstablishersAfterDelete
-        println("This comes up when we click the save button on SpokeTaskListController!")
         if (allEstablishers.isEmpty) {
           Future.successful(Redirect(NoEstablishersController.onPageLoad))
         } else {

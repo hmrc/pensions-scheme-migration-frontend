@@ -187,7 +187,6 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
       (JsPath \ CompanyDetailsId.toString).read[CompanyDetails] and
         (JsPath \ IsEstablisherNewId.toString).readNullable[Boolean]
       ) ((details, isNew) => {
-      println(s"\n\n\n details are: $details")
       EstablisherCompanyEntity(CompanyDetailsId(index),
         details.companyName, details.isDeleted, isEstablisherCompanyAndDirectorsComplete(index), isNew.fold
         (false)(identity), noOfRecords)
@@ -216,7 +215,6 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
             }
             readsForEstablisherKind.reads(jsValue)
           }
-          println(s"\n\n\n jsResults are: $jsResults")
           asJsResultSeq(jsResults.toSeq)
         case _ => JsSuccess(Nil)
       }
