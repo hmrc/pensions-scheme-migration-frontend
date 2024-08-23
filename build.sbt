@@ -36,7 +36,8 @@ lazy val microservice = Project(appName, file("."))
       "uk.gov.hmrc.govukfrontend.views.html.components._",
       "uk.gov.hmrc.hmrcfrontend.views.Implicits._",
       "uk.gov.hmrc.hmrcfrontend.views.html.components._",
-      "uk.gov.hmrc.hmrcfrontend.views.html.helpers._"
+      "uk.gov.hmrc.hmrcfrontend.views.html.helpers._",
+      "viewmodels.govuk.all._",
     ),
       // concatenate js
       Concat.groups := Seq(
