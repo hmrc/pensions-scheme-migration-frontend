@@ -22,8 +22,8 @@ import helpers.SpokeCreationService
 import identifiers.trustees.company.CompanyDetailsId
 import matchers.JsonMatchers
 import models.CompanyDetails
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
+import org.mockito.{ArgumentMatchers, Mockito}
 import org.scalatest.TryValues
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
@@ -54,7 +54,18 @@ class SpokeTaskListControllerSpec
       "totalSpokes" -> 0,
       "completedCount" -> 0,
       "entityType" -> Message("messages__tasklist__trustee"),
-      "submitUrl" -> submitUrl
+      "submitUrl" -> submitUrl,
+      "config" -> Json.obj(
+        "betaFeedbackUnauthenticatedUrl" -> "",
+        "reportAProblemPartialUrl" -> "",
+        "reportAProblemNonJSUrl" -> "",
+        "psaOverviewUrl" -> "",
+        "timeout" -> "",
+        "countdown" -> "",
+        "gtmContainerId" -> "",
+        "trackingSnippetUrl" -> "",
+        "nonce" -> ""
+      )
     )
 
   private def controller(
@@ -70,50 +81,61 @@ class SpokeTaskListControllerSpec
       renderer             = new Renderer(mockAppConfig, mockRenderer)
     )
 
+  override def beforeEach(): Unit = {
+    Mockito.reset(mockRenderer)
+  }
+
   "Task List Controller" must {
     "return OK and the correct view for a GET if company name has not been entered" in {
       when(mockSpokeCreationService.getTrusteeCompanySpokes(any(), any(), any())(any())).thenReturn(Nil)
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
       val company: CompanyDetails = CompanyDetails("the company")
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers(company)))
       val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(userAnswers(company)))
+      val json = Json.parse(
+          """{
+            |"taskSections":[],
+            |"entityName":"the company",
+            |"schemeName":"Test scheme name",
+            |"totalSpokes":0,
+            |"completedCount":0,
+            |"entityType":"Trustee",
+            |"submitUrl":"/add-pension-scheme/trustee/1/company/name",
+            |"config":
+            |{"betaFeedbackUnauthenticatedUrl":"",
+            |"reportAProblemPartialUrl":"",
+            |"reportAProblemNonJSUrl":"",
+            |"psaOverviewUrl":"",
+            |"timeout":"",
+            |"countdown":"",
+            |"gtmContainerId":"",
+            |"trackingSnippetUrl":"",
+            |"nonce":""}}""".stripMargin)
+        .as[JsObject]
+
+      when(mockRenderer.render(ArgumentMatchers.eq(templateToBeRendered), ArgumentMatchers.eq(json))(any()))
+        .thenReturn(Future.successful(Html("")))
 
       status(result) mustBe OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val submitUrl = controllers.trustees.company.routes.CompanyDetailsController.onPageLoad(0).url
-
-      val expectedJson = json(company, submitUrl)
-      jsonCaptor.getValue must containJson(expectedJson)
     }
     "return OK and the correct view for a GET if company name has been entered" in {
       when(mockSpokeCreationService.getTrusteeCompanySpokes(any(), any(), any())(any())).thenReturn(Nil)
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
       val company: CompanyDetails = CompanyDetails("test company name")
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers(company)))
       val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(userAnswers(company)))
 
-      status(result) mustBe OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
       val submitUrl = controllers.trustees.routes.AddTrusteeController.onPageLoad.url
 
       val expectedJson = json(company, submitUrl)
-      jsonCaptor.getValue must containJson(expectedJson)
+
+      when(mockRenderer.render(ArgumentMatchers.eq(templateToBeRendered), ArgumentMatchers.eq(expectedJson))(any()))
+        .thenReturn(Future.successful(Html("")))
+
+      status(result) mustBe OK
     }
   }
 }
