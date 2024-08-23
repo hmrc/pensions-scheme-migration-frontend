@@ -52,6 +52,11 @@ class SpokeTaskListController @Inject()(
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
+        val submitUrl = name(index) match {
+          case "the company" => controllers.trustees.company.routes.CompanyDetailsController.onPageLoad(index).url
+          case _ => controllers.trustees.routes.AddTrusteeController.onPageLoad.url
+        }
+
         SchemeNameId.retrieve.map {
           schemeName =>
             get(
@@ -59,7 +64,7 @@ class SpokeTaskListController @Inject()(
               entityName = name(index),
               schemeName = schemeName,
               entityType = Message("messages__tasklist__trustee"),
-              submitUrl = controllers.trustees.routes.AddTrusteeController.onPageLoad.url
+              submitUrl = submitUrl
             )
         }
     }
