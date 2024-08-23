@@ -65,8 +65,7 @@ lazy val microservice = Project(appName, file("."))
       ".*ControllerConfiguration;.*LanguageSwitchController;.*LanguageSelect.*;.*TestMongoPage.*;.*ErrorTemplate.*",
     ScoverageKeys.coverageMinimumStmtTotal := 80,
     ScoverageKeys.coverageFailOnMinimum := true,
-    ScoverageKeys.coverageHighlighting := true,
-    scalacOptions ++= Seq("-Xfatal-warnings", "-feature")
+    ScoverageKeys.coverageHighlighting := true
   )
   .settings(
     scalacOptions ++= Seq("-Xfatal-warnings", "-feature"),

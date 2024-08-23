@@ -57,7 +57,6 @@ class AddEstablisherController @Inject()(
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         val allEstablishers = request.userAnswers.allEstablishersAfterDelete
-
         if (allEstablishers.isEmpty) {
           Future.successful(Redirect(NoEstablishersController.onPageLoad))
         } else {
@@ -72,7 +71,6 @@ class AddEstablisherController @Inject()(
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         val allEstablishers = request.userAnswers.allEstablishersAfterDelete
-
         formProvider(allEstablishers).bindFromRequest().fold(
           formWithErrors =>
             renderer.render(

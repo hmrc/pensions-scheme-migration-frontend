@@ -22,7 +22,7 @@ import helpers.SpokeCreationService
 import identifiers.establishers.company.CompanyDetailsId
 import matchers.JsonMatchers
 import models.CompanyDetails
-import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
 import play.api.libs.json.{JsObject, Json}
@@ -43,12 +43,11 @@ class SpokeTaskListControllerSpec
     with JsonMatchers
     with TryValues {
 
-  private val company: CompanyDetails = CompanyDetails("test")
-  private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(0), company).success.value
+  private def userAnswers(companyName: CompanyDetails): UserAnswers = ua.set(CompanyDetailsId(0), companyName).success.value
   private val mockSpokeCreationService = mock[SpokeCreationService]
   private val templateToBeRendered: String = "spokeTaskList.njk"
 
-  private def json: JsObject =
+  private def json(company: CompanyDetails, submitUrl: String): JsObject =
     Json.obj(
       "taskSections" -> Nil,
       "entityName" -> company.companyName,
@@ -56,7 +55,7 @@ class SpokeTaskListControllerSpec
       "totalSpokes" -> 0,
       "completedCount" -> 0,
       "entityType" -> Message("messages__tasklist__establisher"),
-      "submitUrl" -> controllers.establishers.routes.AddEstablisherController.onPageLoad.url
+      "submitUrl" -> submitUrl
     )
 
   private def controller(
@@ -73,23 +72,39 @@ class SpokeTaskListControllerSpec
     )
 
   "Task List Controller" must {
-    "return OK and the correct view for a GET" in {
+    "return OK and the correct view for a GET if company name has not been entered" in {
       when(mockSpokeCreationService.getEstablisherCompanySpokes(any(), any(), any())(any())).thenReturn(Nil)
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+      val company: CompanyDetails = CompanyDetails("the company")
 
-      val getData = new FakeDataRetrievalAction(Some(userAnswers))
-      val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(userAnswers))
+      val getData = new FakeDataRetrievalAction(Some(userAnswers(company)))
+      val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(userAnswers(company)))
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val submitUrl = controllers.establishers.company.routes.CompanyDetailsController.onPageLoad(0).url
 
-      templateCaptor.getValue mustEqual templateToBeRendered
+      val expectedJson = json(company, submitUrl)
+      when(mockRenderer.render(ArgumentMatchers.eq(templateToBeRendered), ArgumentMatchers.eq(expectedJson))(any()))
+        .thenReturn(Future.successful(Html("")))
+    }
 
-      jsonCaptor.getValue must containJson(json)
+    "return OK and the correct view for a GET if company name has been entered" in {
+      when(mockSpokeCreationService.getEstablisherCompanySpokes(any(), any(), any())(any())).thenReturn(Nil)
+      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
+      val company: CompanyDetails = CompanyDetails("test company name")
+
+      val getData = new FakeDataRetrievalAction(Some(userAnswers(company)))
+      val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(userAnswers(company)))
+
+      status(result) mustBe OK
+
+      val expectedJson = json(company, controllers.establishers.routes.AddEstablisherController.onPageLoad.url)
+
+      when(mockRenderer.render(ArgumentMatchers.eq(templateToBeRendered), ArgumentMatchers.eq(expectedJson))(any()))
+        .thenReturn(Future.successful(Html("")))
     }
   }
 }

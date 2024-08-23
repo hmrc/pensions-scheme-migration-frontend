@@ -186,10 +186,11 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
     private def readsCompany(index: Int): Reads[Establisher[_]] = (
       (JsPath \ CompanyDetailsId.toString).read[CompanyDetails] and
         (JsPath \ IsEstablisherNewId.toString).readNullable[Boolean]
-      ) ((details, isNew) =>
+      ) ((details, isNew) => {
       EstablisherCompanyEntity(CompanyDetailsId(index),
         details.companyName, details.isDeleted, isEstablisherCompanyAndDirectorsComplete(index), isNew.fold
         (false)(identity), noOfRecords)
+    }
     )
 
     private def readsPartnership(index: Int): Reads[Establisher[_]] = (
@@ -316,6 +317,7 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
       case JsError(errors) => errors
     }.flatten
 
+    // TODO - just throw an exception here?
     if (allErrors.nonEmpty) { // If any of JSON is invalid then log warning but return the valid ones
       logger.warn("Errors in JSON: " + allErrors)
     }
