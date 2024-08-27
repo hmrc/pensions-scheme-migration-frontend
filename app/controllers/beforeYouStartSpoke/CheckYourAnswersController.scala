@@ -18,13 +18,15 @@ package controllers.beforeYouStartSpoke
 
 import controllers.Retrievals
 import controllers.actions._
-import helpers.cya.BeforeYouStartCYAHelper
+import helpers.cya.{BeforeYouStartCYAHelperForTwirl, CYAHelperForTwirl}
+import identifiers.beforeYouStart.SchemeNameId
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils._
+import views.html.CheckYourAnswersView
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -34,9 +36,10 @@ class CheckYourAnswersController @Inject()(
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            cyaHelper: BeforeYouStartCYAHelper,
+                                            cyaHelper: BeforeYouStartCYAHelperForTwirl,
                                             val controllerComponents: MessagesControllerComponents,
-                                            renderer: Renderer
+                                            renderer: Renderer,
+                                            checkYourAnswersView: CheckYourAnswersView
                                           )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with Enumerable.Implicits
@@ -56,6 +59,15 @@ class CheckYourAnswersController @Inject()(
           "submitUrl" -> controllers.routes.TaskListController.onPageLoad.url
         )
 
-        renderer.render("check-your-answers.njk", json).map(Ok(_))
+        val template = TwirlMigration.duoTemplate(
+          renderer.render("check-your-answers.njk", json),
+          checkYourAnswersView(
+            controllers.routes.TaskListController.onPageLoad.url,
+            CYAHelperForTwirl.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+            cyaHelper.rowsForCYA(isEnabledChange)
+          )
+        )
+
+        template.map(Ok(_))
     }
 }

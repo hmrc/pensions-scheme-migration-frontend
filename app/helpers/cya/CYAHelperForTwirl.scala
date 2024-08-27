@@ -61,6 +61,12 @@ trait CYAHelperForTwirl {
 
   def booleanToText: Boolean => String = bool => if (bool) "site.yes" else "site.no"
 
+  def booleanToContent(implicit messages: Messages): Boolean => HtmlContent = bool =>
+    if (bool) {
+      HtmlContent(Messages("site.yes"))
+    } else
+      HtmlContent(Messages("site.no"))
+
   private val attachDynamicIndexToEachActionItem: (Seq[ActionItem], Int) => Seq[ActionItem] = (actionItemSeq, index) => {
     val updatedActionItems = actionItemSeq.map { actionItem => {
       val attributes: String = actionItem.attributes.getOrElse("id", s"add")
@@ -206,7 +212,7 @@ trait CYAHelperForTwirl {
       key copy (classes = s"${key.classes} $className")
   }
 
-  private object ValueViewModel {
+  object ValueViewModel {
 
     def apply(content: Content): Value =
       Value(content = content)
