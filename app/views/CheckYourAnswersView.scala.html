@@ -16,23 +16,24 @@
 
 @this(
     layout: templates.Layout,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    govukSummaryList : GovukSummaryList
 )
 
-@(title: String, name: String, schemeName: String, submitUrl: String)(implicit request: Request[_], messages: Messages)
+@(submitUrl: String, schemeName: String, list: Seq[SummaryListRow])(implicit request: Request[_], messages: Messages)
 
-@layout(title) {
+@layout(messages("checkYourAnswers.title")) {
     <div>
+
         <h1 class="govuk-heading-l">
-            @messages("messages__alreadyDeleted__title", name)
+            @messages("checkYourAnswers.title")
         </h1>
 
-        <p class="govuk-body">@messages("messages__alreadyDeleted__p1", name)</p>
-        <p class="govuk-body">@messages("messages__alreadyDeleted__p2")</p>
+        @govukSummaryList(SummaryList(list))
 
         @govukButton(
             ButtonViewModel(
-                Text(messages("site.continue"))
+                Text(messages("site.save_and_continue"))
             ).withAttribute(("id", "submit")).asLink(submitUrl)
         )
 

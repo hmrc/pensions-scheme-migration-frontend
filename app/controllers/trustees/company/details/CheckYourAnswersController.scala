@@ -19,7 +19,7 @@ package controllers.trustees.company.details
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import helpers.cya.CYAHelper
-import helpers.cya.trustees.company.TrusteeCompanyDetailsCYAHelper
+import helpers.cya.trustees.company.TrusteeCompanyDetailsCYAHelperForTwirl
 import identifiers.beforeYouStart.SchemeNameId
 import models.Index
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -27,7 +27,8 @@ import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.Enumerable
+import utils.{Enumerable, TwirlMigration}
+import views.html.CheckYourAnswersView
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -37,9 +38,10 @@ class CheckYourAnswersController @Inject()(
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            cyaHelper: TrusteeCompanyDetailsCYAHelper,
+                                            cyaHelper: TrusteeCompanyDetailsCYAHelperForTwirl,
                                             val controllerComponents: MessagesControllerComponents,
-                                            renderer: Renderer
+                                            renderer: Renderer,
+                                            checkYourAnswersView: CheckYourAnswersView
                                           )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with Enumerable.Implicits
@@ -49,13 +51,24 @@ class CheckYourAnswersController @Inject()(
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        renderer.render(
-          template = "check-your-answers.njk",
-          ctx = Json.obj(
-            "list"       -> cyaHelper.detailsRows(index),
-            "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
-            "submitUrl"  -> controllers.trustees.company.routes.SpokeTaskListController.onPageLoad(index).url
+        val submitUrl = controllers.trustees.company.routes.SpokeTaskListController.onPageLoad(index).url
+        val schemeName = CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly)
+
+        val ctx = Json.obj(
+          "list" -> cyaHelper.detailsRows(index),
+          "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+          "submitUrl" -> submitUrl
+        )
+
+        val template = TwirlMigration.duoTemplate(
+          renderer.render("check-your-answers.njk", ctx),
+          checkYourAnswersView(
+            submitUrl,
+            schemeName,
+            cyaHelper.detailsRows(index)
           )
-        ).map(Ok(_))
+        )
+
+        template.map(Ok(_))
     }
 }
