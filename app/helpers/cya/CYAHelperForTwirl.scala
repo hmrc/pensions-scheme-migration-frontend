@@ -24,7 +24,7 @@ import play.api.libs.json.Reads
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Content, HtmlContent}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
-import uk.gov.hmrc.viewmodels.{Html, MessageInterpolators, Text}
+import uk.gov.hmrc.viewmodels.{MessageInterpolators, Text}
 import utils.UserAnswers
 
 import java.time.LocalDate
@@ -36,8 +36,8 @@ trait CYAHelperForTwirl {
     s"""<span class="govuk-!-display-block">$l</span>"""
 
   private def addressAnswer(addr: Address)
-    (implicit messages: Messages): Html =
-    Html(
+    (implicit messages: Messages): HtmlContent =
+    HtmlContent(
       addrLineToHtml(addr.addressLine1) +
         addrLineToHtml(addr.addressLine2) +
         addr.addressLine3.fold("")(addrLineToHtml) +
@@ -46,14 +46,15 @@ trait CYAHelperForTwirl {
         addrLineToHtml(messages("country." + addr.country))
     )
 
-  protected val answerBooleanTransform: Option[Boolean => Text] = Some(opt => msg"booleanAnswer.${opt.toString}")
-  protected val answerStringTransform: Option[String => Text] = Some(opt => lit"$opt")
+  protected def answerBooleanTransform()(implicit messages: Messages): Option[Boolean => HtmlContent] =
+    Some(opt => HtmlContent(Messages(s"booleanAnswer.${opt.toString}")))
+  protected val answerStringTransform: Option[String => HtmlContent] = Some(opt => HtmlContent(opt))
   protected val answerBenefitsProvisionTypeTransform: Option[BenefitsProvisionType => Text] = Some(opt => msg"howProvideBenefits.${opt.toString}")
   protected val answerPersonNameTransform: Option[PersonName => Text] = Some(opt => msg"${opt.fullName}")
   protected val answerBenefitsTypeTransform: Option[BenefitsType => Text] = Some(opt => msg"benefitsType.${opt.toString}")
   protected val referenceValueTransform: Option[ReferenceValue => HtmlContent] = Some(opt => HtmlContent(opt.value))
   protected val answerDateTransform: Option[LocalDate => Text] = Some(date => lit"${date.format(DateTimeFormatter.ofPattern("d-M-yyyy"))}")
-  protected def answerAddressTransform(implicit messages: Messages): Option[Address => Html] = Some(opt => addressAnswer(opt))
+  protected def answerAddressTransform(implicit messages: Messages): Option[Address => HtmlContent] = Some(opt => addressAnswer(opt))
 
   def rows(viewOnly: Boolean, rows: Seq[SummaryListRow]): Seq[SummaryListRow] =
     if (viewOnly) rows.map(_.copy(actions = None)) else rows
