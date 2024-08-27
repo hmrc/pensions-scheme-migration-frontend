@@ -18,7 +18,7 @@ package controllers.trustees.company.details
 
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import helpers.cya.CYAHelper
+import helpers.cya.{CYAHelper, CYAHelperForTwirl}
 import helpers.cya.trustees.company.TrusteeCompanyDetailsCYAHelperForTwirl
 import identifiers.beforeYouStart.SchemeNameId
 import models.Index
@@ -56,7 +56,7 @@ class CheckYourAnswersController @Inject()(
 
         val ctx = Json.obj(
           "list" -> cyaHelper.detailsRows(index),
-          "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+          "schemeName" -> CYAHelperForTwirl.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
           "submitUrl" -> submitUrl
         )
 

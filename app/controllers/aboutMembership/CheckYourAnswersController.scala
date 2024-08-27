@@ -18,7 +18,7 @@ package controllers.aboutMembership
 
 import controllers.Retrievals
 import controllers.actions._
-import helpers.cya.{AboutCYAHelper, CYAHelper}
+import helpers.cya.{AboutCYAHelperForTwirl, CYAHelperForTwirl}
 import identifiers.beforeYouStart.SchemeNameId
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -26,6 +26,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils._
+import views.html.CheckYourAnswersView
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -35,9 +36,10 @@ class CheckYourAnswersController @Inject()(
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            cyaHelper: AboutCYAHelper,
+                                            cyaHelper: AboutCYAHelperForTwirl,
                                             val controllerComponents: MessagesControllerComponents,
-                                            renderer: Renderer
+                                            renderer: Renderer,
+                                            checkYourAnswersView: CheckYourAnswersView
                                           )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with Enumerable.Implicits
@@ -48,13 +50,21 @@ class CheckYourAnswersController @Inject()(
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
 
-        val json = Json.obj(
+        val ctx = Json.obj(
           "list" -> cyaHelper.membershipRows,
-          "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+          "schemeName" -> CYAHelperForTwirl.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
           "submitUrl" -> controllers.routes.TaskListController.onPageLoad.url
         )
 
-        renderer
-          .render("check-your-answers.njk", json).map(Ok(_))
+        val template = TwirlMigration.duoTemplate(
+          renderer.render("check-your-answers.njk", ctx),
+          checkYourAnswersView(
+            controllers.routes.TaskListController.onPageLoad.url,
+            CYAHelperForTwirl.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+            cyaHelper.membershipRows
+          )
+        )
+
+        template.map(Ok(_))
     }
 }
