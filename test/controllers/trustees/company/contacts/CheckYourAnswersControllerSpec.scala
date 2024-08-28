@@ -18,7 +18,7 @@ package controllers.trustees.company.contacts
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import helpers.cya.trustees.company.TrusteeCompanyContactDetailsCYAHelper
+import helpers.cya.trustees.company.TrusteeCompanyContactDetailsCYAHelperForTwirl
 import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.contacts.{EnterEmailId, EnterPhoneId}
 import matchers.JsonMatchers
@@ -27,15 +27,18 @@ import models.requests.DataRequest
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
+import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContent, Result}
 import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.viewmodels.SummaryList
 import utils.Data.ua
 import utils.{Enumerable, UserAnswers}
+import views.html.CheckYourAnswersView
 
 import scala.concurrent.Future
 class CheckYourAnswersControllerSpec
@@ -45,13 +48,13 @@ class CheckYourAnswersControllerSpec
     with Enumerable.Implicits
     with TryValues {
 
-  private val cyaHelper = new TrusteeCompanyContactDetailsCYAHelper
+  private val cyaHelper = new TrusteeCompanyContactDetailsCYAHelperForTwirl
   private val uaEmailPhone: UserAnswers = ua
     .set(CompanyDetailsId(0), CompanyDetails("test")).success.value
     .set(EnterEmailId(0), "test@test.com").success.value
     .set(EnterPhoneId(0), "11111").success.value
 
-  private def rows(implicit request: DataRequest[AnyContent]): Seq[SummaryList.Row] =
+  private def rows(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
     cyaHelper.contactDetailsRows(0)
 
   private val templateToBeRendered: String =
@@ -63,8 +66,17 @@ class CheckYourAnswersControllerSpec
       "submitUrl" -> controllers.trustees.company.routes.SpokeTaskListController.onPageLoad(0).url
     )
 
-  private def jsonToPassToTemplate(answers: Seq[SummaryList.Row]): JsObject =
+  private def jsonToPassToTemplate(answers: Seq[SummaryListRow]): JsObject =
     Json.obj("list" -> Json.toJson(answers))
+
+  private val mockCyaHelper: TrusteeCompanyContactDetailsCYAHelperForTwirl = mock[TrusteeCompanyContactDetailsCYAHelperForTwirl]
+
+  val extraModules: Seq[GuiceableModule] = Seq(
+    bind[TrusteeCompanyContactDetailsCYAHelperForTwirl].toInstance(mockCyaHelper)
+  )
+  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  val application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
+  val view: CheckYourAnswersView = application.injector.instanceOf[CheckYourAnswersView]
 
   private def controller(
                           dataRetrievalAction: DataRetrievalAction
@@ -76,7 +88,8 @@ class CheckYourAnswersControllerSpec
       requireData = new DataRequiredActionImpl,
       cyaHelper = cyaHelper,
       controllerComponents = controllerComponents,
-      renderer = new Renderer(mockAppConfig, mockRenderer)
+      renderer = new Renderer(mockAppConfig, mockRenderer),
+      checkYourAnswersView = view
     )
 
   "CheckYourAnswersController" must {
