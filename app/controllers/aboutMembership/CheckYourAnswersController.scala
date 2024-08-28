@@ -18,7 +18,7 @@ package controllers.aboutMembership
 
 import controllers.Retrievals
 import controllers.actions._
-import helpers.cya.{AboutCYAHelperForTwirl, CYAHelperForTwirl}
+import helpers.cya.{AboutCYAHelper, CYAHelperForTwirl}
 import identifiers.beforeYouStart.SchemeNameId
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -36,7 +36,7 @@ class CheckYourAnswersController @Inject()(
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            cyaHelper: AboutCYAHelperForTwirl,
+                                            cyaHelper: AboutCYAHelper,
                                             val controllerComponents: MessagesControllerComponents,
                                             renderer: Renderer,
                                             checkYourAnswersView: CheckYourAnswersView

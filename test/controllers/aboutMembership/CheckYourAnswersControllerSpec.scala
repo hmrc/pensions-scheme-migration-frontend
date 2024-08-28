@@ -23,12 +23,14 @@ import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
+import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
-import uk.gov.hmrc.viewmodels.{Html, NunjucksSupport}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions, Key, SummaryListRow, Value}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.UserAnswers
 
@@ -48,25 +50,33 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
   private def httpPathGET: String = controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad.url
 
   private val rows = Seq(
-    Row(
-      key = Key(msg"currentMembers.title".withArgs(schemeName), classes = Seq("govuk-!-width-one-half")),
-      value = Value(msg"site.incomplete", classes = Seq("govuk-!-width-one-third")),
-      actions = List(
-        Action(
-          content = Html(s"<span aria-hidden=true >${messages("site.add")}</span>"),
-          href = controllers.aboutMembership.routes.CurrentMembersController.onPageLoad.url,
-          visuallyHiddenText = Some(msg"messages__visuallyhidden__currentMembers")
+    SummaryListRow(
+      key = Key(HtmlContent(Messages("currentMembers.title", schemeName))),
+      value = Value(HtmlContent(Messages("site.incomplete"))),
+      actions = Some(
+        Actions(
+          items = Seq(
+            ActionItem(
+              content = HtmlContent(s"<span aria-hidden=true >${messages("site.add")}</span>"),
+              href = controllers.aboutMembership.routes.CurrentMembersController.onPageLoad.url,
+              visuallyHiddenText = Some(Messages("messages__visuallyhidden__currentMembers"))
+            )
+          )
         )
       )
     ),
-    Row(
-      key = Key(msg"futureMembers.title".withArgs(schemeName), classes = Seq("govuk-!-width-one-half")),
-      value = Value(msg"site.incomplete", classes = Seq("govuk-!-width-one-third")),
-      actions = List(
-        Action(
-          content = Html(s"<span aria-hidden=true >${messages("site.add")}</span>"),
-          href = routes.FutureMembersController.onPageLoad.url,
-          visuallyHiddenText = Some(msg"messages__visuallyhidden__futureMembers")
+    SummaryListRow(
+      key = Key(HtmlContent(Messages("futureMembers.title", schemeName))),
+      value = Value(HtmlContent(Messages("site.incomplete"))),
+      actions = Some(
+        Actions(
+          items = Seq(
+            ActionItem(
+              content = HtmlContent(s"<span aria-hidden=true >${messages("site.add")}</span>"),
+              href = routes.FutureMembersController.onPageLoad.url,
+              visuallyHiddenText = Some(Messages("messages__visuallyhidden__futureMembers"))
+            )
+          )
         )
       )
     )

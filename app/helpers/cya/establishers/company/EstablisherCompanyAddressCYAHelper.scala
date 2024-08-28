@@ -16,28 +16,28 @@
 
 package helpers.cya.establishers.company
 
-import helpers.cya.CYAHelper
-import helpers.cya.CYAHelper.getCompanyName
+import helpers.cya.CYAHelperForTwirl
+import helpers.cya.CYAHelperForTwirl.getCompanyName
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address.{AddressId, AddressYearsId, PreviousAddressId, TradingTimeId}
 import models.requests.DataRequest
 import models.{CheckMode, Index}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.viewmodels.MessageInterpolators
-import uk.gov.hmrc.viewmodels.SummaryList.Row
 import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 
 class EstablisherCompanyAddressCYAHelper
-  extends CYAHelper
+  extends CYAHelperForTwirl
     with Enumerable.Implicits {
 
   //scalastyle:off method.length
   def rows(index: Index)(
                    implicit request: DataRequest[AnyContent],
                    messages: Messages
-                 ): Seq[Row] = {
+                 ): Seq[SummaryListRow] = {
     implicit val ua: UserAnswers =
       request.userAnswers
     val establisherName: String =
@@ -54,7 +54,7 @@ class EstablisherCompanyAddressCYAHelper
         AddressYearsId(index),
         Message("addressYears.title", establisherName).resolve,
         Some(controllers.establishers.company.address.routes.AddressYearsController.onPageLoad(index,CheckMode).url),
-        Some(msg"messages__visuallyhidden__addressYears".withArgs(establisherName)), answerBooleanTransform
+        Some(msg"messages__visuallyhidden__addressYears".withArgs(establisherName)), answerBooleanTransform()
       )
     )
 
@@ -64,7 +64,7 @@ class EstablisherCompanyAddressCYAHelper
           TradingTimeId(index),
           Message("tradingTime.title", establisherName).resolve,
           Some(controllers.establishers.company.address.routes.TradingTimeController.onPageLoad(index,CheckMode).url),
-          Some(msg"messages__visuallyhidden__TradingTime".withArgs(establisherName)), answerBooleanTransform
+          Some(msg"messages__visuallyhidden__TradingTime".withArgs(establisherName)), answerBooleanTransform()
         )
       )
     } else {

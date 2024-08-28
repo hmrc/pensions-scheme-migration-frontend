@@ -23,18 +23,20 @@ import models.Members
 import models.requests.DataRequest
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.viewmodels.MessageInterpolators
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 
-class AboutCYAHelper extends CYAHelper with Enumerable.Implicits {
+class AboutCYAHelper extends CYAHelperForTwirl with Enumerable.Implicits {
 
   def membershipRows(implicit request: DataRequest[AnyContent],
                      messages: Messages
-                    ): Seq[SummaryList.Row] = {
+                    ): Seq[SummaryListRow] = {
     implicit val ua: UserAnswers = request.userAnswers
     val schemeName = getAnswer(SchemeNameId)
-    val answerTransform: Option[Members => Text] = Some(opt => msg"members.${opt.toString}")
+    val answerTransform: Option[Members => HtmlContent] = Some(opt => HtmlContent(Messages(s"members.${opt.toString}")))
 
     val rowsWithoutDynamicIndices = Seq(
       answerOrAddRow(CurrentMembersId, Message("currentMembers.title", schemeName).resolve,

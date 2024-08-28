@@ -209,7 +209,11 @@ trait CYAHelperForTwirl {
   implicit class FluentKey(key: Key) {
 
     def withCssClass(className: String): Key =
-      key copy (classes = s"${key.classes} $className")
+      if (key.classes.isEmpty) {
+        key copy (classes = className)
+      } else {
+        key copy (classes = s"${key.classes} $className")
+      }
   }
 
   object ValueViewModel {
@@ -220,8 +224,13 @@ trait CYAHelperForTwirl {
 
   implicit class FluentValue(value: Value) {
 
-    def withCssClass(className: String): Value =
-      value copy (classes = s"${value.classes} $className")
+    def withCssClass(className: String): Value = {
+      if (value.classes.isEmpty) {
+        value copy (classes = className)
+      } else {
+        value copy (classes = s"${value.classes} $className")
+      }
+    }
   }
 }
 

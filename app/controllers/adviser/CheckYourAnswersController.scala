@@ -18,7 +18,7 @@ package controllers.adviser
 
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import helpers.cya.{AdviserCYAHelperForTwirl, CYAHelperForTwirl}
+import helpers.cya.{AdviserCYAHelper, CYAHelperForTwirl}
 import identifiers.beforeYouStart.SchemeNameId
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -36,7 +36,7 @@ class CheckYourAnswersController @Inject()(
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            cyaHelper: AdviserCYAHelperForTwirl,
+                                            cyaHelper: AdviserCYAHelper,
                                             val controllerComponents: MessagesControllerComponents,
                                             renderer: Renderer,
                                             checkYourAnswersView: CheckYourAnswersView
