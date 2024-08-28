@@ -24,7 +24,6 @@ import models.requests.DataRequest
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
@@ -41,11 +40,11 @@ class AboutCYAHelper extends CYAHelperForTwirl with Enumerable.Implicits {
     val rowsWithoutDynamicIndices = Seq(
       answerOrAddRow(CurrentMembersId, Message("currentMembers.title", schemeName).resolve,
         Some(controllers.aboutMembership.routes.CurrentMembersController.onPageLoad.url),
-        Some(msg"messages__visuallyhidden__currentMembers".withArgs(schemeName)), answerTransform
+        Some(Messages("messages__visuallyhidden__currentMembers", schemeName)), answerTransform
       ),
       answerOrAddRow(FutureMembersId, Message("futureMembers.title", schemeName).resolve,
         Some(controllers.aboutMembership.routes.FutureMembersController.onPageLoad.url),
-        Some(msg"messages__visuallyhidden__futureMembers"), answerTransform
+        Some(Messages("messages__visuallyhidden__futureMembers")), answerTransform
       )
     )
     rowsWithDynamicIndices(rowsWithoutDynamicIndices)

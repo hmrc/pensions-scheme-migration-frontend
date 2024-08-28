@@ -25,7 +25,6 @@ import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, SummaryListRow}
-import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.UserAnswers
 import viewmodels.Message
 
@@ -41,7 +40,7 @@ class BeforeYouStartCYAHelper extends CYAHelperForTwirl with CountriesHelper {
 
     val schemeTypeRow = {
       val url: String = controllers.beforeYouStartSpoke.routes.SchemeTypeController.onPageLoad.url
-      val visuallyHiddenText = msg"messages__visuallyhidden__schemeType".withArgs(schemeName)
+      val visuallyHiddenText = Message("messages__visuallyhidden__schemeType", schemeName)
       schemeTypeAnswer match {
         case None => SummaryListRow(
           key = KeyViewModel(HtmlContent(Messages("messages__cya__scheme_type", schemeName))).withCssClass("govuk-!-width-one-half"),
@@ -83,7 +82,7 @@ class BeforeYouStartCYAHelper extends CYAHelperForTwirl with CountriesHelper {
     val country = request.userAnswers.get(EstablishedCountryId)
     val countryRow = {
       val url: String = controllers.beforeYouStartSpoke.routes.EstablishedCountryController.onPageLoad.url
-      val visuallyHiddenText = msg"messages__visuallyhidden__schemeEstablishedCountry".withArgs(schemeName)
+      val visuallyHiddenText = Message("messages__visuallyhidden__schemeEstablishedCountry", schemeName)
       country match {
         case None => SummaryListRow(
           key = KeyViewModel(HtmlContent(Messages("messages__cya__country", schemeName))).withCssClass("govuk-!-width-one-half"),
@@ -102,7 +101,7 @@ class BeforeYouStartCYAHelper extends CYAHelperForTwirl with CountriesHelper {
         id = WorkingKnowledgeId,
         message = Message("messages__cya__working_knowledge").resolve,
         url = Some(controllers.beforeYouStartSpoke.routes.WorkingKnowledgeController.onPageLoad.url),
-        visuallyHiddenText = Some(msg"messages__visuallyhidden__working_knowledge"),
+        visuallyHiddenText = Some(Message("messages__visuallyhidden__working_knowledge")),
         answerTransform = Some(booleanToContent)
       )
     )

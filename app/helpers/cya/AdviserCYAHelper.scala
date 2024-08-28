@@ -22,7 +22,6 @@ import models.requests.DataRequest
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 
@@ -44,26 +43,26 @@ class AdviserCYAHelper
         id = AdviserNameId,
         message = Message("messages__adviser__name__cya").resolve,
         url = Some(controllers.adviser.routes.AdviserNameController.onPageLoad(CheckMode).url),
-        visuallyHiddenText = Some(msg"messages__adviser__name__cya__visuallyHidden"),
+        visuallyHiddenText = Some(Messages("messages__adviser__name__cya__visuallyHidden")),
         answerTransform = answerStringTransform
       )),
       Some(answerOrAddRow(
         id = EnterEmailId,
         message = Message("messages__enterEmail_cya_label", adviserName).resolve,
         url = Some(controllers.adviser.routes.EnterEmailController.onPageLoad(CheckMode).url),
-        visuallyHiddenText = Some(msg"messages__enterEmail__cya__visuallyHidden".withArgs(adviserName))
+        visuallyHiddenText = Some(Messages("messages__enterEmail__cya__visuallyHidden", adviserName))
       )),
       Some(answerOrAddRow(
         id = EnterPhoneId,
         message = Message("messages__enterPhone_cya_label", adviserName).resolve,
         url = Some(controllers.adviser.routes.EnterPhoneController.onPageLoad(CheckMode).url),
-        visuallyHiddenText = Some(msg"messages__enterPhone__cya__visuallyHidden".withArgs(adviserName))
+        visuallyHiddenText = Some(Messages("messages__enterPhone__cya__visuallyHidden", adviserName))
       )),
       Some(answerOrAddRow(
         id = AddressId,
         message = Message("addressList_cya_label", adviserName).resolve,
         url = Some(controllers.adviser.routes.EnterPostcodeController.onPageLoad(CheckMode).url),
-        visuallyHiddenText = Some(msg"messages__visuallyHidden__address".withArgs(adviserName)), answerAddressTransform
+        visuallyHiddenText = Some(Messages("messages__visuallyHidden__address", adviserName)), answerAddressTransform
       ))
 
     ).flatten

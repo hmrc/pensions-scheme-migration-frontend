@@ -24,7 +24,7 @@ import play.api.libs.json.Reads
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Content, HtmlContent}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, Text}
+//import uk.gov.hmrc.viewmodels.{MessageInterpolators, Text}
 import utils.UserAnswers
 
 import java.time.LocalDate
@@ -49,11 +49,13 @@ trait CYAHelperForTwirl {
   protected def answerBooleanTransform()(implicit messages: Messages): Option[Boolean => HtmlContent] =
     Some(opt => HtmlContent(Messages(s"booleanAnswer.${opt.toString}")))
   protected val answerStringTransform: Option[String => HtmlContent] = Some(opt => HtmlContent(opt))
-  protected val answerBenefitsProvisionTypeTransform: Option[BenefitsProvisionType => Text] = Some(opt => msg"howProvideBenefits.${opt.toString}")
-  protected val answerPersonNameTransform: Option[PersonName => Text] = Some(opt => msg"${opt.fullName}")
-  protected val answerBenefitsTypeTransform: Option[BenefitsType => Text] = Some(opt => msg"benefitsType.${opt.toString}")
+  protected def answerBenefitsProvisionTypeTransform(implicit messages: Messages): Option[BenefitsProvisionType => HtmlContent] =
+    Some(opt => HtmlContent(Messages(s"howProvideBenefits.${opt.toString}")))
+  protected val answerPersonNameTransform: Option[PersonName => HtmlContent] = Some(opt => HtmlContent(opt.fullName))
+  protected def answerBenefitsTypeTransform(implicit messages: Messages): Option[BenefitsType => HtmlContent] =
+    Some(opt => HtmlContent(Messages(s"benefitsType.${opt.toString}")))
   protected val referenceValueTransform: Option[ReferenceValue => HtmlContent] = Some(opt => HtmlContent(opt.value))
-  protected val answerDateTransform: Option[LocalDate => Text] = Some(date => lit"${date.format(DateTimeFormatter.ofPattern("d-M-yyyy"))}")
+  protected val answerDateTransform: Option[LocalDate => HtmlContent] = Some(date => HtmlContent(s"${date.format(DateTimeFormatter.ofPattern("d-M-yyyy"))}"))
   protected def answerAddressTransform(implicit messages: Messages): Option[Address => HtmlContent] = Some(opt => addressAnswer(opt))
 
   def rows(viewOnly: Boolean, rows: Seq[SummaryListRow]): Seq[SummaryListRow] =
@@ -81,9 +83,9 @@ trait CYAHelperForTwirl {
     row.copy(actions = newActions)
   }
 
-  def actionAdd[A](optionURL: Option[String], visuallyHiddenText: Option[Text])(implicit messages: Messages): Seq[ActionItem] = {
+  def actionAdd[A](optionURL: Option[String], visuallyHiddenText: Option[String])(implicit messages: Messages): Seq[ActionItem] = {
     val addVisuallyHidden = visuallyHiddenText.map {
-      visuallyHiddn => messages("site.add") + " " + visuallyHiddn.resolve
+      visuallyHiddn => messages("site.add") + " " + visuallyHiddn
     }
     optionURL.toSeq.map { url =>
       ActionItem(
@@ -95,10 +97,10 @@ trait CYAHelperForTwirl {
     }
   }
 
-  def actionChange[A](optionURL: Option[String], visuallyHiddenText: Option[Text])(implicit
+  def actionChange[A](optionURL: Option[String], visuallyHiddenText: Option[String])(implicit
     messages: Messages): Option[Actions] = {
     val changeVisuallyHidden = visuallyHiddenText.map {
-      visuallyHiddn => messages("site.change") + " " + visuallyHiddn.resolve
+      visuallyHiddn => messages("site.change") + " " + visuallyHiddn
     }
     optionURL match {
       case Some(url) => Some(
@@ -120,7 +122,7 @@ trait CYAHelperForTwirl {
   def answerOrAddRow[A](id: TypedIdentifier[A],
     message: String,
     url: Option[String] = None,
-    visuallyHiddenText: Option[Text] = None,
+    visuallyHiddenText: Option[String] = None,
     answerTransform: Option[A => Content] = None)
     (implicit ua: UserAnswers, rds: Reads[A], messages: Messages): SummaryListRow =
     ua.get(id) match {
@@ -141,7 +143,7 @@ trait CYAHelperForTwirl {
   def answerRow[A](message: String,
     answer: String,
     url: Option[String] = None,
-    visuallyHiddenText: Option[Text] = None)
+    visuallyHiddenText: Option[String] = None)
     (implicit messages: Messages): SummaryListRow = {
     val value = ValueViewModel(HtmlContent(answer))
 
@@ -154,7 +156,7 @@ trait CYAHelperForTwirl {
 
   def addRow[A](message: String,
                    url: Option[String] = None,
-                   visuallyHiddenText: Option[Text] = None)
+                   visuallyHiddenText: Option[String] = None)
                   (implicit messages: Messages): SummaryListRow = {
     val value = ValueViewModel(
       HtmlContent(

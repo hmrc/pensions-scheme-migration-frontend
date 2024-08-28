@@ -25,7 +25,7 @@ import models.{CheckMode, Index}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.viewmodels.MessageInterpolators
+//import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 
@@ -48,13 +48,13 @@ class EstablisherCompanyAddressCYAHelper
         AddressId(index),
         Message("messages__address__whatYouWillNeed_h1", establisherName).resolve,
         Some(controllers.establishers.company.address.routes.EnterPostcodeController.onPageLoad(index,CheckMode).url),
-        Some(msg"messages__visuallyHidden__address".withArgs(establisherName)), answerAddressTransform
+        Some(Message("messages__visuallyHidden__address", establisherName)), answerAddressTransform
       ),
       answerOrAddRow(
         AddressYearsId(index),
         Message("addressYears.title", establisherName).resolve,
         Some(controllers.establishers.company.address.routes.AddressYearsController.onPageLoad(index,CheckMode).url),
-        Some(msg"messages__visuallyhidden__addressYears".withArgs(establisherName)), answerBooleanTransform()
+        Some(Message("messages__visuallyhidden__addressYears", establisherName)), answerBooleanTransform()
       )
     )
 
@@ -64,7 +64,7 @@ class EstablisherCompanyAddressCYAHelper
           TradingTimeId(index),
           Message("tradingTime.title", establisherName).resolve,
           Some(controllers.establishers.company.address.routes.TradingTimeController.onPageLoad(index,CheckMode).url),
-          Some(msg"messages__visuallyhidden__TradingTime".withArgs(establisherName)), answerBooleanTransform()
+          Some(Message("messages__visuallyhidden__TradingTime", establisherName)), answerBooleanTransform()
         )
       )
     } else {
@@ -78,7 +78,7 @@ class EstablisherCompanyAddressCYAHelper
             PreviousAddressId(index),
             Message("messages__previousAddress", establisherName).resolve,
             Some(controllers.establishers.company.address.routes.EnterPreviousPostcodeController.onPageLoad(index,CheckMode).url),
-            Some(msg"messages__visuallyHidden__previousAddress".withArgs(establisherName)), answerAddressTransform
+            Some(Message("messages__visuallyHidden__previousAddress", establisherName)), answerAddressTransform
           )
         )
       case _ => Nil
