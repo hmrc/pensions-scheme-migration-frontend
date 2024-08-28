@@ -21,6 +21,7 @@ import identifiers.aboutMembership.{CurrentMembersId, FutureMembersId}
 import identifiers.beforeYouStart._
 import identifiers.benefitsAndInsurance._
 import identifiers.establishers.EstablisherKindId
+import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{AddressId, AddressYearsId}
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
@@ -52,6 +53,7 @@ object Data {
   val email = "test@test.com"
   val phone = "1234567890"
   val ua: UserAnswers = UserAnswers().setOrException(SchemeNameId, Data.schemeName)
+    .setOrException(CompanyDetailsId(0), CompanyDetails("Test company name"))
 
 
   val insurerName= "test insurer"
