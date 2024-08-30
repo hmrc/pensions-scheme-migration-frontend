@@ -68,7 +68,7 @@ class TaskListController @Inject()(
               val userAnswers: UserAnswers = UserAnswers(data.as[JsObject])
               val updatedUa = userAnswers.setOrException(AnyTrusteesId, userAnswers.allTrusteesAfterDelete.nonEmpty)
               userAnswersCacheConnector.save(lock, updatedUa.data).flatMap(_ => renderView(updatedUa, implicitly))
-            case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad))
+            case _ => throw new RuntimeException("index page unavailable")
           }
       }
   }

@@ -16,7 +16,6 @@
 
 package navigators
 
-import controllers.routes._
 import controllers.trustees.company.address.routes.{EnterPreviousPostcodeController, SelectAddressController, SelectPreviousAddressController, TradingTimeController}
 import controllers.trustees.company.contacts.routes._
 import controllers.trustees.company.details.{routes => detailsRoutes}
@@ -69,7 +68,7 @@ class TrusteesCompanyNavigator
 
   override protected def editRouteMap(ua: UserAnswers)
                                      (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
-    case CompanyDetailsId(_) => IndexController.onPageLoad
+    case CompanyDetailsId(_) => throw new RuntimeException("index page unavailable")
     case HaveCompanyNumberId(index) => companyNumberRoutes(index, ua, CheckMode)
     case CompanyNumberId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
     case NoCompanyNumberReasonId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)

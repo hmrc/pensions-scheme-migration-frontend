@@ -20,7 +20,6 @@ import identifiers.TypedIdentifier
 import identifiers.beforeYouStart.SchemeNameId
 import models.requests.{DataRequest, OptionalDataRequest}
 import play.api.libs.json.Reads
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContent, Result, WrappedRequest}
 
 import scala.concurrent.Future
@@ -31,7 +30,7 @@ trait Retrievals {
                                       (f: A => Future[Result])
                                       (implicit request: DataRequest[AnyContent], r: Reads[A]): Future[Result] = {
     request.userAnswers.get(id).map(f).getOrElse {
-      Future.successful(Redirect(controllers.routes.IndexController.onPageLoad))
+      throw new RuntimeException("index page unavailable")
     }
   }
 
@@ -72,7 +71,7 @@ trait Retrievals {
       implicit request =>
         request.userAnswers.get(id) match {
           case Some(value) => Right(value)
-          case None => Left(Future.successful(Redirect(controllers.routes.IndexController.onPageLoad)))
+          case None => throw new RuntimeException("index page unavailable")
         }
     }
 

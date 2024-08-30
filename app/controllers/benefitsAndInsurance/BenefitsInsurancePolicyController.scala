@@ -35,7 +35,7 @@ import utils.Enumerable
 import viewmodels.Message
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class BenefitsInsurancePolicyController @Inject()(override val messagesApi: MessagesApi,
                                        userAnswersCacheConnector: UserAnswersCacheConnector,
@@ -69,7 +69,7 @@ class BenefitsInsurancePolicyController @Inject()(override val messagesApi: Mess
             "form" -> preparedForm
           )
           renderer.render("benefitsAndInsurance/benefitsInsurancePolicy.njk", json).map(Ok(_))
-        case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad))
+        case _ => throw new RuntimeException("index page unavailable")
       }
     }
 
@@ -97,7 +97,7 @@ class BenefitsInsurancePolicyController @Inject()(override val messagesApi: Mess
               }
             }
           )
-        case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad))
+        case _ => throw new RuntimeException("index page unavailable")
       }
     }
 

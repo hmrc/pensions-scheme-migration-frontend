@@ -1,6 +1,5 @@
 service.name = Migrating pension schemes
 service.homePageUrl = /add-pension-scheme
-service.text = This is your new service
 
 phaseBanner.1 = This is a new service – your
 phaseBanner.2 = feedback

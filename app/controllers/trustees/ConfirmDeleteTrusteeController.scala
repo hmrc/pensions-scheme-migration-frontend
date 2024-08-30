@@ -74,7 +74,9 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
               )
               renderer.render("delete.njk", json).map(Ok(_))
             }
-        } getOrElse Future.successful(Redirect(controllers.routes.IndexController.onPageLoad))
+        } getOrElse {
+          throw new RuntimeException("index page unavailable")
+        }
     }
 
   private def getDeletableTrustee(index: Index, trusteeKind: TrusteeKind, userAnswers: UserAnswers)
@@ -109,7 +111,7 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
               updateTrusteeKind(trusteeDetails.partnershipName, trusteeKind, trusteeIndex, None, None, Some(trusteeDetails))
             }
           case _ =>
-            Future.successful(Redirect(controllers.routes.IndexController.onPageLoad))
+            throw new RuntimeException("index page unavailable")
         }
     }
 

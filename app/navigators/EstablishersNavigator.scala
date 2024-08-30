@@ -20,7 +20,6 @@ import config.AppConfig
 import controllers.establishers.company.routes.CompanyDetailsController
 import controllers.establishers.partnership.routes._
 import controllers.establishers.routes._
-import controllers.routes._
 import identifiers._
 import identifiers.establishers._
 import identifiers.establishers.individual.EstablisherNameId
@@ -120,7 +119,7 @@ class EstablishersNavigator@Inject()(config: AppConfig)
       case Some(EstablisherKind.Individual) => controllers.establishers.individual.routes.EstablisherNameController.onPageLoad(index)
       case Some(EstablisherKind.Company) => CompanyDetailsController.onPageLoad(index)
       case Some(EstablisherKind.Partnership) => PartnershipDetailsController.onPageLoad(index)
-      case _ => IndexController.onPageLoad
+      case _ => throw new RuntimeException("index page unavailable")
     }
 
   private def addEstablisherRoutes(

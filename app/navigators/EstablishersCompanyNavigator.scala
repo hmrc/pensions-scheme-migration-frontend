@@ -22,7 +22,6 @@ import controllers.establishers.company.contact.routes._
 import controllers.establishers.company.details.{routes => detailsRoutes}
 import controllers.establishers.company.routes._
 import controllers.establishers.routes._
-import controllers.routes._
 import identifiers._
 import identifiers.establishers.company.address._
 import identifiers.establishers.company.contact.{EnterEmailId, EnterPhoneId}
@@ -76,7 +75,7 @@ class EstablishersCompanyNavigator @Inject()(config: AppConfig, dataPrefillServi
 
   override protected def editRouteMap(ua: UserAnswers)
                                      (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
-    case CompanyDetailsId(_) => IndexController.onPageLoad
+    case CompanyDetailsId(_) => throw new RuntimeException("index page unavailable")
     case HaveCompanyNumberId(index) => companyNumberRoutes(index, ua, CheckMode)
     case CompanyNumberId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
     case NoCompanyNumberReasonId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)

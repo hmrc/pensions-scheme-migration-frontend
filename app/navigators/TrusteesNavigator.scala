@@ -119,7 +119,7 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
         controllers.trustees.company.routes.CompanyDetailsController.onPageLoad(index)
       case TrusteeKind.Partnership =>
         controllers.trustees.partnership.routes.PartnershipDetailsController.onPageLoad(index)
-      case _ => IndexController.onPageLoad
+      case _ => throw new RuntimeException("index page unavailable")
     }
   }
 
@@ -140,7 +140,7 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
     answers.get(AnyTrusteesId) match {
     case Some(false) => TaskListController.onPageLoad
     case Some(true) => TrusteeKindController.onPageLoad(answers.trusteesCount)
-    case None => IndexController.onPageLoad
+    case None => throw new RuntimeException("index page unavailable")
   }
 }
 

@@ -20,7 +20,6 @@ import controllers.establishers.partnership.address.routes._
 import controllers.establishers.partnership.contact.routes.EnterPhoneController
 import controllers.establishers.partnership.details.{routes => detailsRoutes}
 import controllers.establishers.partnership.routes._
-import controllers.routes.IndexController
 import identifiers._
 import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.address._
@@ -63,7 +62,7 @@ class EstablishersPartnershipNavigator@Inject()()
   }
 
  override protected def editRouteMap(ua: UserAnswers)(implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
-   case PartnershipDetailsId(_) => IndexController.onPageLoad
+   case PartnershipDetailsId(_) => throw new RuntimeException("index page unavailable")
    case HaveUTRId(index) => utrRoutes(index, ua, CheckMode)
    case PartnershipUTRId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
    case NoUTRReasonId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
