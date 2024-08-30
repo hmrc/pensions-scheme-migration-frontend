@@ -29,6 +29,9 @@ object entities {
     Trustee
   )
 
+  implicit def managementTypePathBinder(implicit stringBinder: PathBindable[String]): PathBindable[PensionManagementType] =
+    namedEntityPathBindable(pensionManagementTypes)
+
   class EntityType(strName: String) extends NamedEntity(strName)
   final object Company extends EntityType("company")
   final object Individual extends EntityType("individual")
@@ -39,6 +42,35 @@ object entities {
     Individual,
     Partnership
   )
+
+  implicit def entityTypePathBinder(implicit stringBinder: PathBindable[String]): PathBindable[EntityType] =
+    namedEntityPathBindable(entityTypes)
+
+  class JourneyType(strName: String) extends NamedEntity(strName)
+  final object Address extends JourneyType("address")
+  final object Contacts extends JourneyType("contacts")
+  final object Details extends JourneyType("details")
+
+  val journeyTypes: Seq[JourneyType] = Seq(
+    Address,
+    Contacts,
+    Details
+  )
+
+  implicit def journeyTypePathBinder(implicit stringBinder: PathBindable[String]): PathBindable[JourneyType] =
+    namedEntityPathBindable(journeyTypes)
+
+  class EntityRepresentetive(strName: String) extends NamedEntity(strName)
+  final object Director extends EntityRepresentetive("director")
+  final object Partner extends EntityRepresentetive("partner")
+
+  val entityRepresentetives: Seq[EntityRepresentetive] = Seq(
+    Director,
+    Partner
+  )
+
+  implicit def entityRepresentetivePathBinder(implicit stringBinder: PathBindable[String]): PathBindable[EntityRepresentetive] =
+    namedEntityPathBindable(entityRepresentetives)
 
   private def namedEntityPathBindable[T <: NamedEntity](list: Seq[T])(implicit stringBinder: PathBindable[String]) = new PathBindable[T] {
     override def bind(key: String, value: String): Either[String, T] = {
@@ -53,11 +85,5 @@ object entities {
       namedEntity.strName
     }
   }
-
-  implicit def managementTypePathBinder(implicit stringBinder: PathBindable[String]): PathBindable[PensionManagementType] =
-    namedEntityPathBindable(pensionManagementTypes)
-  implicit def entityTypePathBinder(implicit stringBinder: PathBindable[String]): PathBindable[EntityType] =
-    namedEntityPathBindable(entityTypes)
-
 
 }

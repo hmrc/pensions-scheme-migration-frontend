@@ -18,8 +18,8 @@ package controllers.trustees.company.details
 
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import helpers.cya.trustees.company.TrusteeCompanyDetailsCYAHelper
 import helpers.cya.{CYAHelper, CYAHelperForTwirl}
-import helpers.cya.trustees.company.TrusteeCompanyDetailsCYAHelperForTwirl
 import identifiers.beforeYouStart.SchemeNameId
 import models.Index
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -27,8 +27,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.{Enumerable, TwirlMigration}
-import views.html.CheckYourAnswersView
+import utils.Enumerable
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -38,10 +37,9 @@ class CheckYourAnswersController @Inject()(
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            cyaHelper: TrusteeCompanyDetailsCYAHelperForTwirl,
+                                            cyaHelper: TrusteeCompanyDetailsCYAHelper,
                                             val controllerComponents: MessagesControllerComponents,
-                                            renderer: Renderer,
-                                            checkYourAnswersView: CheckYourAnswersView
+                                            renderer: Renderer
                                           )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with Enumerable.Implicits
@@ -60,14 +58,7 @@ class CheckYourAnswersController @Inject()(
           "submitUrl" -> submitUrl
         )
 
-        val template = TwirlMigration.duoTemplate(
-          renderer.render("check-your-answers.njk", ctx),
-          checkYourAnswersView(
-            submitUrl,
-            schemeName,
-            cyaHelper.detailsRows(index)
-          )
-        )
+        val template = renderer.render("check-your-answers.njk", ctx)
 
         template.map(Ok(_))
     }

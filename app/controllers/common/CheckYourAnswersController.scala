@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package controllers.establishers.company.contact
+package controllers.common
 
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import helpers.cya.CYAHelper
-import helpers.cya.establishers.company.EstablisherCompanyContactDetailsCYAHelper
+import helpers.cya.establishers.partnership.EstablisherPartnershipAddressCYAHelper
 import identifiers.beforeYouStart.SchemeNameId
 import models.Index
+import models.entities.{EntityRepresentetive, EntityType, JourneyType, PensionManagementType}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -37,7 +38,7 @@ class CheckYourAnswersController @Inject()(
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            cyaHelper: EstablisherCompanyContactDetailsCYAHelper,
+                                            cyaHelper: EstablisherPartnershipAddressCYAHelper,
                                             val controllerComponents: MessagesControllerComponents,
                                             renderer: Renderer
                                           )(implicit val ec: ExecutionContext)
@@ -46,18 +47,16 @@ class CheckYourAnswersController @Inject()(
     with I18nSupport
     with Retrievals {
 
-  def onPageLoad(index: Index): Action[AnyContent] =
+  def onPageLoad(index: Index, pensionManagementType: PensionManagementType, entityType: EntityType, entityRepresentetive: Option[EntityRepresentetive],  journeyType: JourneyType): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        val ctx = Json.obj(
-          "list"       -> cyaHelper.contactDetailsRows(index),
-          "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
-          "submitUrl"  -> controllers.establishers.company.routes.SpokeTaskListController.onPageLoad(index).url
-        )
-
-        val template = renderer.render("check-your-answers.njk", ctx)
-
-        template.map(Ok(_))
+        renderer.render(
+          template = "check-your-answers.njk",
+          ctx = Json.obj(
+            "list"       -> ???,
+            "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+            "submitUrl"  -> controllers.common.routes.SpokeTaskListController.onPageLoad(index, pensionManagementType, entityType).url
+          )
+        ).map(Ok(_))
     }
 }
-

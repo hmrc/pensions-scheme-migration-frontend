@@ -38,7 +38,6 @@ import viewmodels.Message
 class EstablisherPartnerDetailsCYAHelper
   extends CYAHelper
     with Enumerable.Implicits {
-
   //scalastyle:off method.length
   def detailsRows(
                    establisherIndex: Index, partnerIndex: Index
@@ -59,7 +58,6 @@ class EstablisherPartnerDetailsCYAHelper
         visuallyHiddenText = Some(msg"messages__partner__name__cya__visuallyHidden".withArgs(partnerName)),
         answerTransform    = answerPersonNameTransform
       )),
-
       Some(answerOrAddRow(
         id                 =PartnerDOBId(establisherIndex, partnerIndex),
         message            = Message("messages__dob__h1", partnerName).resolve,

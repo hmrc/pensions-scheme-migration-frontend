@@ -3,7 +3,7 @@
 ->          /establisher                                       establishers.Routes
 ->          /trustee                                           trustees.Routes
 
-GET         /:pensionManagementType/:index/:entityType/task-list-2    controllers.common.SpokeTaskListController.onPageLoad(index: Index, pensionManagementType: PensionManagementType, entityType: EntityType)
+GET         /:pensionManagementType/:index/:entityType/task-list    controllers.common.SpokeTaskListController.onPageLoad(index: Index, pensionManagementType: PensionManagementType, entityType: EntityType)
 
 GET         /language/:lang                                    controllers.LanguageSwitchController.switchToLanguage(lang: String)
 GET         /assets/*file                                      controllers.Assets.versioned(path = "/public", file: Asset)

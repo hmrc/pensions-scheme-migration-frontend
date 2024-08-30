@@ -144,9 +144,6 @@ trait CYAHelper {
 
   def changeLink(url: String, visuallyHiddenText: Option[Message] = None)
     (implicit messages: Messages): Option[Link] = Some(Link(messages("site.change"), url, visuallyHiddenText))
-
-  def addLink(url: String, visuallyHiddenText: Option[Message] = None)
-    (implicit messages: Messages): Option[Link] = Some(Link(messages("site.add"), url, visuallyHiddenText))
 }
 
 object CYAHelper {
