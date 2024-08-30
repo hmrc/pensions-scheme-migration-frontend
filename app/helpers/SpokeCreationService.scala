@@ -25,9 +25,10 @@ import helpers.spokes.trustees.individual.{TrusteeIndividualAddress, TrusteeIndi
 import helpers.spokes.trustees.partnership.{TrusteePartnershipAddress, TrusteePartnershipContactDetails, TrusteePartnershipDetails}
 import models.Index._
 import models._
+import models.entities.{EntityType, PensionManagementType}
 import play.api.i18n.Messages
 import services.DataPrefillService
-import utils.{Enumerable, UserAnswers}
+import utils.{Enumerable, UserAnswers, entityTypeError, managementTypeError}
 
 import javax.inject.Inject
 
@@ -150,6 +151,29 @@ class SpokeCreationService @Inject()(dataPrefillService: DataPrefillService) ext
       link = spoke.changeLink(name),
       isCompleted = spoke.completeFlag(answers)
     )
+
+
+  def getSpokes(pensionManagementType: PensionManagementType, entityType: EntityType, answers: UserAnswers, name: String, index: Index)
+               (implicit messages: Messages): Seq[EntitySpoke] = {
+    val function = pensionManagementType match {
+      case entities.Establisher =>
+        entityType match {
+          case entities.Company => getEstablisherCompanySpokes _
+          case entities.Individual => getEstablisherIndividualSpokes _
+          case entities.Partnership => getEstablisherPartnershipSpokes _
+          case e => entityTypeError(e)
+        }
+      case entities.Trustee => entityType match {
+        case entities.Company => getTrusteeCompanySpokes _
+        case entities.Individual => getTrusteeIndividualSpokes _
+        case entities.Partnership => getTrusteePartnershipSpokes _
+        case e => entityTypeError(e)
+      }
+      case e => managementTypeError(e)
+    }
+
+    function(answers, name, index)
+  }
 
 }
 

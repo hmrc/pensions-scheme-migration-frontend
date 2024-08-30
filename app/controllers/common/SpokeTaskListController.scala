@@ -19,20 +19,19 @@ package controllers.common
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import helpers.SpokeCreationService
-import identifiers.TypedIdentifier
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.trustees.company.CompanyDetailsId
-import identifiers.trustees.individual.TrusteeNameId
+import identifiers.common.identifierUtils
 import models.entities._
 import models.requests.DataRequest
-import models.{EntitySpoke, Index}
-import play.api.i18n.{I18nSupport, Messages}
-import play.api.libs.json.{JsObject, Json, OFormat, Reads}
-import play.api.mvc.{AnyContent, Call, MessagesControllerComponents}
+import models.{EntitySpoke, Index, entities}
+import play.api.i18n.I18nSupport
+import play.api.libs.json.{JsObject, Json, OFormat}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.{entityTypeError, managementTypeError}
 import viewmodels.Message
 
 import javax.inject.Inject
@@ -50,23 +49,68 @@ class SpokeTaskListController @Inject() (
   with Retrievals
   with NunjucksSupport {
 
-  private case class TemplateData(spokes: Seq[EntitySpoke],
-                                  entityName: String,
-                                  managementTypeTypeMsg: Message,
-                                  submitUrl: Call) {
-    def toFull(schemeName: String)(implicit messages: Messages): TemplateDataFull = {
-      val totalSpokes = spokes.size
-      val completedCount = spokes.count(_.isCompleted.contains(true))
-      TemplateDataFull(
-        spokes,
-        entityName,
-        schemeName,
-        managementTypeTypeMsg.resolve,
-        submitUrl.url,
-        totalSpokes,
-        completedCount
-      )
+  //scalastyle:off
+  private def getTemplateData(index: Index,
+                                  pensionManagementType: PensionManagementType,
+                                  entityType: EntityType,
+                                  schemeName: String)(implicit request: DataRequest[_]) = {
+
+
+
+    val emptyEntityNameMsg = entityType match {
+      case Company => Message("messages__company")
+      case Individual => Message("messages__individual")
+      case Partnership => Message("messages__partnership")
+      case e => entityTypeError(e)
     }
+
+    val managementTypeTypeMsg = pensionManagementType match {
+      case Establisher => Message("messages__tasklist__establisher")
+      case Trustee => Message("messages__tasklist__trustee")
+      case e => managementTypeError(e)
+    }
+
+    val entityName = identifierUtils.getNameOfEntityType(index, pensionManagementType, entityType, emptyEntityNameMsg)
+
+    val spokes = spokeCreationService.getSpokes(pensionManagementType, entityType, request.userAnswers, entityName, index)
+
+    val totalSpokes = spokes.size
+    val completedCount = spokes.count(_.isCompleted.contains(true))
+
+    val submitUrl = {
+      def defaultRoute = {
+        pensionManagementType match {
+          case entities.Establisher => controllers.establishers.routes.AddEstablisherController.onPageLoad
+          case entities.Trustee => controllers.trustees.routes.AddTrusteeController.onPageLoad
+          case e => managementTypeError(e)
+        }
+
+      }
+      entityType match {
+
+        case entities.Company =>
+          entityName match {
+            case name if name == emptyEntityNameMsg =>
+              pensionManagementType match {
+                case entities.Establisher => controllers.establishers.company.routes.CompanyDetailsController.onPageLoad(index)
+                case entities.Trustee => controllers.trustees.company.routes.CompanyDetailsController.onPageLoad(index)
+                case e => managementTypeError(e)
+              }
+            case _ => defaultRoute
+          }
+        case _ => defaultRoute
+      }
+    }
+
+    TemplateDataFull(
+      spokes,
+      entityName,
+      schemeName,
+      managementTypeTypeMsg.resolve,
+      submitUrl.url,
+      totalSpokes,
+      completedCount
+    )
   }
   private case class TemplateDataFull(
                                    taskSections: Seq[EntitySpoke],
@@ -79,73 +123,12 @@ class SpokeTaskListController @Inject() (
                                  )
 
   implicit private val templateFormat: OFormat[TemplateDataFull] = Json.format[TemplateDataFull]
-  def onPageLoad(index: Index, pensionManagementType: PensionManagementType, entityType: EntityType) =
+  def onPageLoad(index: Index, pensionManagementType: PensionManagementType, entityType: EntityType): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      val data = getTemplateData(index, pensionManagementType, entityType)
       SchemeNameId.retrieve.map { schemeName =>
-        template(data.toFull(schemeName)).map {Ok(_)}
+        template(getTemplateData(index, pensionManagementType, entityType,schemeName)).map {Ok(_)}
       }
     }
-
-  private def getTemplateData(index: Index,
-                                   pensionManagementType: PensionManagementType,
-                                   entityType: EntityType)
-                                  (implicit request: DataRequest[_]) = {
-
-    def getEntityName[T](typedIdentifier: TypedIdentifier[T],
-                      emptyNameMessage: Message)
-                      (block: T => Message)
-                      (implicit request: DataRequest[_],
-                       reads: Reads[T]): Message = {
-      request.userAnswers
-        .get(typedIdentifier)
-        .fold(emptyNameMessage)(block)
-    }
-
-    pensionManagementType match {
-      case Establisher => ???
-      case Trustee =>
-        entityType match {
-          case Company =>
-            val emptyEntityName = Message("messages__company")
-            val entityName = getEntityName(
-              CompanyDetailsId(index), emptyEntityName
-            )(_.companyName)
-            TemplateData(
-              spokes = spokeCreationService.getTrusteeCompanySpokes(
-                request.userAnswers,
-                entityName,
-                index
-              ),
-              entityName,
-              managementTypeTypeMsg = Message("messages__tasklist__trustee"),
-              submitUrl = entityName match {
-                case name if name == emptyEntityName =>
-                  controllers.trustees.company.routes.CompanyDetailsController.onPageLoad(index)
-                case _ => controllers.trustees.routes.AddTrusteeController.onPageLoad
-              }
-            )
-          case Individual =>
-            val emptyEntityName = Message("messages__individual")
-            val entityName = getEntityName(
-              TrusteeNameId(index), emptyEntityName
-            )(_.fullName)
-            TemplateData(
-              spokes = spokeCreationService.getTrusteeIndividualSpokes(
-                request.userAnswers,
-                entityName,
-                index
-              ),
-              entityName,
-              managementTypeTypeMsg = Message("messages__tasklist__trustee"),
-              submitUrl = controllers.trustees.routes.AddTrusteeController.onPageLoad
-            )
-          case Partnership => ???
-          case unknownEntityType => throw new RuntimeException(s"Unknown organisation type $unknownEntityType")
-        }
-      case unknownManagementType => throw new RuntimeException(s"Unknown pension management type $unknownManagementType")
-    }
-  }
 
 
   private def template(
