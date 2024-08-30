@@ -32,8 +32,9 @@ import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.MessageInterpolators
-import utils.Enumerable
+import utils.{Enumerable, TwirlMigration}
 import viewmodels.Message
+import views.html.aboutMembership.MembersView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,7 +47,8 @@ class CurrentMembersController @Inject()(override val messagesApi: MessagesApi,
                                          requireData: DataRequiredAction,
                                          formProvider: MembersFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
-                                         renderer: Renderer
+                                         renderer: Renderer,
+                                         membersView:MembersView
                                     )(implicit val executionContext: ExecutionContext) extends FrontendBaseController
   with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
@@ -69,7 +71,18 @@ class CurrentMembersController @Inject()(override val messagesApi: MessagesApi,
           "radios" -> Members.radios(preparedForm)
         )
 
-        renderer.render("aboutMembership/members.njk", json).map(Ok(_))
+        //renderer.render("aboutMembership/members.njk", json).map(Ok(_))
+
+        val template = TwirlMigration.duoTemplate(
+          renderer.render("aboutMembership/members.njk", json),
+          membersView(
+            preparedForm,
+            schemeName,
+            Members.radios(preparedForm),
+            controllers.aboutMembership.routes.CurrentMembersController.onSubmit.url
+          )
+        )
+        Ok(template)
       }
   }
 
