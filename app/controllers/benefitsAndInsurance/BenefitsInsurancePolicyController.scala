@@ -45,7 +45,6 @@ class BenefitsInsurancePolicyController @Inject()(override val messagesApi: Mess
                                        navigator: CompoundNavigator,
                                        formProvider: BenefitsInsurancePolicyFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
-                                       config: AppConfig,
                                        renderer: Renderer)(implicit ec: ExecutionContext)
   extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 

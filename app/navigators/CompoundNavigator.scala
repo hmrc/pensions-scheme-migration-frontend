@@ -18,34 +18,25 @@ package navigators
 
 import com.google.inject.Inject
 import identifiers.Identifier
-import models.requests.DataRequest
 import models.{Mode, NormalMode}
-import play.api.Logger
+import models.requests.DataRequest
+import play.api.Logging
 import play.api.mvc.{AnyContent, Call}
 import utils.UserAnswers
 
-
 import scala.jdk.CollectionConverters._
 
-trait CompoundNavigator {
-  def nextPage(id: Identifier, userAnswers: UserAnswers, mode: Mode = NormalMode)
-              (implicit request: DataRequest[AnyContent]): Call
-}
-
-class CompoundNavigatorImpl @Inject()(navigators: java.util.Set[Navigator])
-  extends CompoundNavigator {
-
-  private val logger = Logger(classOf[CompoundNavigatorImpl])
+class CompoundNavigator @Inject()(navigators: java.util.Set[Navigator]) extends Logging {
 
   private def defaultPage(id: Identifier): Call = {
-    logger.warn(s"No navigation defined for id $id")
+    logger.error(s"No navigation defined for id $id")
     controllers.routes.TaskListController.onPageLoad
   }
 
   def nextPage(
                 id: Identifier,
                 userAnswers: UserAnswers,
-                mode: Mode
+                mode: Mode  = NormalMode
               )(implicit request: DataRequest[AnyContent]): Call =
     nextPageOptional(id, userAnswers, mode)
       .getOrElse(defaultPage(id))

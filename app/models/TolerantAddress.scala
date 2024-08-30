@@ -76,15 +76,6 @@ case class TolerantAddress(
     case (None, Some(line2), None, Some(line4)) => Some(Address(line2, line4, None, None, postcode, country.get))
     case _ => None
   }
-
-  def equalsAddress(address: Address): Boolean = {
-    address.addressLine1 == addressLine1.getOrElse("") &&
-      address.addressLine2 == addressLine2.getOrElse("") &&
-      address.addressLine3 == addressLine3 &&
-      address.addressLine4 == addressLine4 &&
-      address.country == country.getOrElse("") &&
-      address.postcode == postcode
-  }
 }
 
 object TolerantAddress {
