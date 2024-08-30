@@ -16,9 +16,9 @@
 
 package helpers.spokes.trustees.partnership
 
-import controllers.trustees.partnership.details.routes.{CheckYourAnswersController, WhatYouWillNeedController}
+import controllers.trustees.partnership.details.routes.WhatYouWillNeedController
 import helpers.spokes.Spoke
-import models.{Index, SpokeTaskListLink}
+import models.{Index, SpokeTaskListLink, entities}
 import play.api.i18n.Messages
 import utils.UserAnswers
 
@@ -31,7 +31,7 @@ case class TrusteePartnershipDetails(
 
   val linkKeyAndRoute: (String, String) = {
     if (completeFlag(answers).isDefined)
-      (s"${messageKeyPrefix}changeLink", CheckYourAnswersController.onPageLoad(index).url)
+      (s"${messageKeyPrefix}changeLink", controllers.common.routes.CheckYourAnswersController.onPageLoad(index, entities.Trustee, entities.Partnership, entities.Details).url)
     else
       (s"${messageKeyPrefix}addLink", WhatYouWillNeedController.onPageLoad(index).url)
   }

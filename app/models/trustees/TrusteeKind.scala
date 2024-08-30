@@ -23,6 +23,7 @@ import utils.{Enumerable, WithName}
 
 sealed trait TrusteeKind
 
+//TODO: REMOVE
 object TrusteeKind {
   val values: Seq[TrusteeKind] = Seq(
     Company, Individual, Partnership
@@ -51,34 +52,3 @@ object TrusteeKind {
     }
   }
 }
-
-/*
-object TrusteeKind {
-  val values: Seq[TrusteeKind] = Seq(
-    Company, Individual, Partnership
-  )
-  val options: Seq[InputOption] = values.map {
-    value =>
-      InputOption(value.toString, s"messages__trusteeKind__${value.toString}")
-  }
-
-  case object Company extends WithName("company") with TrusteeKind
-
-  case object Individual extends WithName("individual") with TrusteeKind
-
-  case object Partnership extends WithName("partnership") with TrusteeKind
-
-  implicit val enumerable: Enumerable[TrusteeKind] =
-    Enumerable(values.map(v => v.toString -> v): _*)
-
-  //noinspection ConvertExpressionToSAM
-  implicit val jsLiteral: JavascriptLiteral[TrusteeKind] = new JavascriptLiteral[TrusteeKind] {
-    override def to(value: TrusteeKind): String = value match {
-      case Company => "Company"
-      case Individual => "Individual"
-      case Partnership => "Partnership"
-    }
-  }
-
-}
- */

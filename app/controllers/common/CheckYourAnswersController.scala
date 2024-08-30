@@ -18,11 +18,10 @@ package controllers.common
 
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import helpers.cya.CYAHelper
-import helpers.cya.establishers.partnership.EstablisherPartnershipAddressCYAHelper
+import helpers.cya.{CYAHelper, CommonCYAHelper}
 import identifiers.beforeYouStart.SchemeNameId
-import models.Index
-import models.entities.{EntityRepresentetive, EntityType, JourneyType, PensionManagementType}
+import models.{Index, entities}
+import models.entities.{EntityType, JourneyType, PensionManagementType}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -38,7 +37,7 @@ class CheckYourAnswersController @Inject()(
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            cyaHelper: EstablisherPartnershipAddressCYAHelper,
+                                            cyaHelper: CommonCYAHelper,
                                             val controllerComponents: MessagesControllerComponents,
                                             renderer: Renderer
                                           )(implicit val ec: ExecutionContext)
@@ -47,13 +46,24 @@ class CheckYourAnswersController @Inject()(
     with I18nSupport
     with Retrievals {
 
-  def onPageLoad(index: Index, pensionManagementType: PensionManagementType, entityType: EntityType, entityRepresentetive: Option[EntityRepresentetive],  journeyType: JourneyType): Action[AnyContent] =
+  def onPageLoad(index: Index,
+                 pensionManagementType: PensionManagementType,
+                 entityType: EntityType,
+                 journeyType: JourneyType) = page(index, pensionManagementType, entityType, None, journeyType)
+
+  def onPageLoadWithRepresentative(index: Index,
+                                   pensionManagementType: PensionManagementType,
+                                   entityType: EntityType,
+                                   entityRepresentativeIndex: Index) =
+    page(index, pensionManagementType, entityType, Some(entityRepresentativeIndex), entities.Details)
+
+  private def page(index: Index, pensionManagementType: PensionManagementType, entityType: EntityType, entityRepresentativeIndex: Option[Index],  journeyType: JourneyType): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         renderer.render(
           template = "check-your-answers.njk",
           ctx = Json.obj(
-            "list"       -> ???,
+            "list"       -> cyaHelper.rows(index, pensionManagementType, entityType, entityRepresentativeIndex, journeyType),
             "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
             "submitUrl"  -> controllers.common.routes.SpokeTaskListController.onPageLoad(index, pensionManagementType, entityType).url
           )

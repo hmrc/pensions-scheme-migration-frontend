@@ -19,14 +19,13 @@ package navigators
 import controllers.trustees.company.address.routes.{EnterPreviousPostcodeController, SelectAddressController, SelectPreviousAddressController, TradingTimeController}
 import controllers.trustees.company.contacts.routes._
 import controllers.trustees.company.details.{routes => detailsRoutes}
-import controllers.trustees.company.routes._
 import identifiers._
 import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.address._
 import identifiers.trustees.company.contacts.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.company.details._
 import models.requests.DataRequest
-import models.{CheckMode, Index, Mode, NormalMode}
+import models._
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
 
@@ -34,10 +33,11 @@ class TrusteesCompanyNavigator
   extends Navigator
     with Enumerable.Implicits {
 
+  private def cyaDetails(index: Index) = controllers.common.routes.CheckYourAnswersController.onPageLoad(index: Index, entities.Trustee, entities.Company, entities.Details)
   //scalastyle:off cyclomatic.complexity
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
-    case CompanyDetailsId(index) => SpokeTaskListController.onPageLoad(index:Index)
+    case CompanyDetailsId(index) => controllers.common.routes.SpokeTaskListController.onPageLoad(index:Index, entities.Trustee, entities.Company)
     case HaveCompanyNumberId(index) => companyNumberRoutes(index, ua, NormalMode)
     case CompanyNumberId(index) => detailsRoutes.HaveUTRController.onPageLoad(index, NormalMode)
     case NoCompanyNumberReasonId(index) => detailsRoutes.HaveUTRController.onPageLoad(index, NormalMode)
@@ -47,7 +47,7 @@ class TrusteesCompanyNavigator
     case HaveVATId(index) => vatRoutes(index, ua, NormalMode)
     case VATId(index) => detailsRoutes.HavePAYEController.onPageLoad(index, NormalMode)
     case HavePAYEId(index) => payeRoutes(index, ua, NormalMode)
-    case PAYEId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+    case PAYEId(index) => cyaDetails(index)
     case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index, NormalMode)
     case AddressListId(index) => addressYears(index, NormalMode)
     case AddressId(index) => addressYears(index, NormalMode)
@@ -70,15 +70,15 @@ class TrusteesCompanyNavigator
                                      (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case CompanyDetailsId(_) => throw new RuntimeException("index page unavailable")
     case HaveCompanyNumberId(index) => companyNumberRoutes(index, ua, CheckMode)
-    case CompanyNumberId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
-    case NoCompanyNumberReasonId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+    case CompanyNumberId(index) => cyaDetails(index)
+    case NoCompanyNumberReasonId(index) => cyaDetails(index)
     case HaveUTRId(index) => utrRoutes(index, ua, CheckMode)
-    case CompanyUTRId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
-    case NoUTRReasonId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+    case CompanyUTRId(index) => cyaDetails(index)
+    case NoUTRReasonId(index) => cyaDetails(index)
     case HaveVATId(index) => vatRoutes(index, ua, CheckMode)
-    case VATId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+    case VATId(index) => cyaDetails(index)
     case HavePAYEId(index) => payeRoutes(index, ua, CheckMode)
-    case PAYEId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+    case PAYEId(index) => cyaDetails(index)
     case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
     case EnterPhoneId(index) => cyaContactDetails(index)
     case AddressId(index) => cyaAddress(index)
@@ -124,7 +124,7 @@ class TrusteesCompanyNavigator
     answers.get(HaveVATId(index)) match {
       case Some(true) => detailsRoutes.VATController.onPageLoad(index, mode)
       case Some(false) if mode == NormalMode => detailsRoutes.HavePAYEController.onPageLoad(index, mode)
-      case Some(false) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+      case Some(false) => cyaDetails(index)
       case None => controllers.routes.TaskListController.onPageLoad
     }
 
@@ -135,12 +135,12 @@ class TrusteesCompanyNavigator
                         ): Call =
     answers.get(HavePAYEId(index)) match {
       case Some(true) => detailsRoutes.PAYEController.onPageLoad(index, mode)
-      case Some(false) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+      case Some(false) => cyaDetails(index)
       case None => controllers.routes.TaskListController.onPageLoad
     }
 
-  private def cyaAddress(index:Int): Call = controllers.trustees.company.address.routes.CheckYourAnswersController.onPageLoad(index)
+  private def cyaAddress(index:Int): Call = controllers.common.routes.CheckYourAnswersController.onPageLoad(index, entities.Trustee, entities.Company, entities.Address)
   private def addressYears(index:Int, mode:Mode): Call = controllers.trustees.company.address.routes.AddressYearsController.onPageLoad(index,mode)
 
-  private def cyaContactDetails(index:Int): Call = controllers.trustees.company.contacts.routes.CheckYourAnswersController.onPageLoad(index)
+  private def cyaContactDetails(index:Int): Call = controllers.common.routes.CheckYourAnswersController.onPageLoad(index, entities.Trustee, entities.Company, entities.Contacts)
 }

@@ -4,6 +4,9 @@
 ->          /trustee                                           trustees.Routes
 
 GET         /:pensionManagementType/:index/:entityType/task-list    controllers.common.SpokeTaskListController.onPageLoad(index: Index, pensionManagementType: PensionManagementType, entityType: EntityType)
+GET         /:pensionManagementType/:index/:entityType/:journeyType/check-your-answers    controllers.common.CheckYourAnswersController.onPageLoad(index: Index, pensionManagementType: PensionManagementType, entityType: EntityType,  journeyType: JourneyType)
+GET         /:pensionManagementType/:index/company/director/:directorIndex/details/check-your-answers      controllers.common.CheckYourAnswersController.onPageLoadWithRepresentative(index: Index, pensionManagementType: PensionManagementType, entityType: EntityType = Company, directorIndex: Index)
+GET         /:pensionManagementType/:index/partnership/partner/:partnerIndex/details/check-your-answers    controllers.common.CheckYourAnswersController.onPageLoadWithRepresentative(index: Index, pensionManagementType: PensionManagementType, entityType: EntityType = Partnership, partnerIndex: Index)
 
 GET         /language/:lang                                    controllers.LanguageSwitchController.switchToLanguage(lang: String)
 GET         /assets/*file                                      controllers.Assets.versioned(path = "/public", file: Asset)

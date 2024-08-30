@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,28 +16,28 @@
 
 package helpers.cya.establishers.company
 
-import helpers.cya.CYAHelperForTwirl
-import helpers.cya.CYAHelperForTwirl.getCompanyName
+import helpers.cya.CYAHelper
+import helpers.cya.CYAHelper.getCompanyName
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address.{AddressId, AddressYearsId, PreviousAddressId, TradingTimeId}
 import models.requests.DataRequest
 import models.{CheckMode, Index}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-//import uk.gov.hmrc.viewmodels.MessageInterpolators
+import uk.gov.hmrc.viewmodels.MessageInterpolators
+import uk.gov.hmrc.viewmodels.SummaryList.Row
 import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 
 class EstablisherCompanyAddressCYAHelper
-  extends CYAHelperForTwirl
+  extends CYAHelper
     with Enumerable.Implicits {
 
   //scalastyle:off method.length
   def rows(index: Index)(
                    implicit request: DataRequest[AnyContent],
                    messages: Messages
-                 ): Seq[SummaryListRow] = {
+                 ): Seq[Row] = {
     implicit val ua: UserAnswers =
       request.userAnswers
     val establisherName: String =
@@ -48,13 +48,13 @@ class EstablisherCompanyAddressCYAHelper
         AddressId(index),
         Message("messages__address__whatYouWillNeed_h1", establisherName).resolve,
         Some(controllers.establishers.company.address.routes.EnterPostcodeController.onPageLoad(index,CheckMode).url),
-        Some(Message("messages__visuallyHidden__address", establisherName)), answerAddressTransform
+        Some(msg"messages__visuallyHidden__address".withArgs(establisherName)), answerAddressTransform
       ),
       answerOrAddRow(
         AddressYearsId(index),
         Message("addressYears.title", establisherName).resolve,
         Some(controllers.establishers.company.address.routes.AddressYearsController.onPageLoad(index,CheckMode).url),
-        Some(Message("messages__visuallyhidden__addressYears", establisherName)), answerBooleanTransform()
+        Some(msg"messages__visuallyhidden__addressYears".withArgs(establisherName)), answerBooleanTransform
       )
     )
 
@@ -64,7 +64,7 @@ class EstablisherCompanyAddressCYAHelper
           TradingTimeId(index),
           Message("tradingTime.title", establisherName).resolve,
           Some(controllers.establishers.company.address.routes.TradingTimeController.onPageLoad(index,CheckMode).url),
-          Some(Message("messages__visuallyhidden__TradingTime", establisherName)), answerBooleanTransform()
+          Some(msg"messages__visuallyhidden__TradingTime".withArgs(establisherName)), answerBooleanTransform
         )
       )
     } else {
@@ -78,7 +78,7 @@ class EstablisherCompanyAddressCYAHelper
             PreviousAddressId(index),
             Message("messages__previousAddress", establisherName).resolve,
             Some(controllers.establishers.company.address.routes.EnterPreviousPostcodeController.onPageLoad(index,CheckMode).url),
-            Some(Message("messages__visuallyHidden__previousAddress", establisherName)), answerAddressTransform
+            Some(msg"messages__visuallyHidden__previousAddress".withArgs(establisherName)), answerAddressTransform
           )
         )
       case _ => Nil

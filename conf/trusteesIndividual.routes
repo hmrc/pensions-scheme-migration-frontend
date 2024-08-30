@@ -38,8 +38,6 @@ POST        /:index/individual/reason-for-no-unique-taxpayer-reference          
 GET         /:index/change/individual/reason-for-no-unique-taxpayer-reference        controllers.trustees.individual.details.TrusteeNoUTRReasonController.onPageLoad(index: Index, mode: Mode = CheckMode)
 POST        /:index/change/individual/reason-for-no-unique-taxpayer-reference        controllers.trustees.individual.details.TrusteeNoUTRReasonController.onSubmit(index: Index, mode: Mode = CheckMode)
 
-GET         /:index/individual/check-your-answers-details                           controllers.trustees.individual.details.CheckYourAnswersController.onPageLoad(index: Index)
-
 GET         /:index/individual/address                                              controllers.trustees.individual.address.WhatYouWillNeedController.onPageLoad(index: Index)
 
 GET         /:index/individual/enter-postcode                                       controllers.trustees.individual.address.EnterPostcodeController.onPageLoad(index: Index, mode: Mode = NormalMode)
@@ -56,8 +54,6 @@ GET         /:index/individual/confirm-address                                  
 POST        /:index/individual/confirm-address                                      controllers.trustees.individual.address.ConfirmAddressController.onSubmit(index: Index, mode: Mode = NormalMode)
 GET         /:index/change/individual/confirm-address                               controllers.trustees.individual.address.ConfirmAddressController.onPageLoad(index: Index, mode: Mode = CheckMode)
 POST        /:index/change/individual/confirm-address                               controllers.trustees.individual.address.ConfirmAddressController.onSubmit(index: Index, mode: Mode = CheckMode)
-
-GET         /:index/individual/check-your-answers-address                           controllers.trustees.individual.address.CheckYourAnswersController.onPageLoad(index: Index)
 
 GET         /:index/individual/time-at-address                                      controllers.trustees.individual.address.AddressYearsController.onPageLoad(index: Index, mode: Mode = NormalMode)
 POST        /:index/individual/time-at-address                                      controllers.trustees.individual.address.AddressYearsController.onSubmit(index: Index, mode: Mode = NormalMode)
@@ -90,10 +86,6 @@ GET         /:index/individual/enter-phone-number                               
 POST        /:index/individual/enter-phone-number                                   controllers.trustees.individual.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = NormalMode)
 GET         /:index/change/individual/enter-phone-number                            controllers.trustees.individual.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = CheckMode)
 POST        /:index/change/individual/enter-phone-number                            controllers.trustees.individual.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = CheckMode)
-
-GET         /:index/individual/check-your-answers-contact-details                    controllers.trustees.individual.contact.CheckYourAnswersController.onPageLoad(index: Index)
-
-GET         /:index/individual/task-list                                                   controllers.trustees.individual.SpokeTaskListController.onPageLoad(index:Index)
 
 GET         /:index/individual/director-also-trustee                    controllers.trustees.individual.DirectorAlsoTrusteeController.onPageLoad(index: Index)
 POST         /:index/individual/director-also-trustee                    controllers.trustees.individual.DirectorAlsoTrusteeController.onSubmit(index: Index)

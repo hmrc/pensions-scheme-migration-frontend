@@ -16,7 +16,7 @@
 
 package models
 
-import play.api.mvc.PathBindable
+import play.api.mvc.{JavascriptLiteral, PathBindable}
 
 object entities {
   class NamedEntity(val strName: String)
@@ -43,6 +43,7 @@ object entities {
     Partnership
   )
 
+  implicit val entityTypeJsLiteral: JavascriptLiteral[EntityType] = _.strName
   implicit def entityTypePathBinder(implicit stringBinder: PathBindable[String]): PathBindable[EntityType] =
     namedEntityPathBindable(entityTypes)
 
@@ -59,18 +60,6 @@ object entities {
 
   implicit def journeyTypePathBinder(implicit stringBinder: PathBindable[String]): PathBindable[JourneyType] =
     namedEntityPathBindable(journeyTypes)
-
-  class EntityRepresentetive(strName: String) extends NamedEntity(strName)
-  final object Director extends EntityRepresentetive("director")
-  final object Partner extends EntityRepresentetive("partner")
-
-  val entityRepresentetives: Seq[EntityRepresentetive] = Seq(
-    Director,
-    Partner
-  )
-
-  implicit def entityRepresentetivePathBinder(implicit stringBinder: PathBindable[String]): PathBindable[EntityRepresentetive] =
-    namedEntityPathBindable(entityRepresentetives)
 
   private def namedEntityPathBindable[T <: NamedEntity](list: Seq[T])(implicit stringBinder: PathBindable[String]) = new PathBindable[T] {
     override def bind(key: String, value: String): Either[String, T] = {

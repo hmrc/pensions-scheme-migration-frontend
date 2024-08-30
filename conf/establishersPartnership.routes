@@ -38,8 +38,6 @@ POST        /:index/partnership/enter-employer-paye-reference                   
 GET         /:index/change/partnership/enter-employer-paye-reference                    controllers.establishers.partnership.details.PAYEController.onPageLoad(index: Index, mode: Mode = CheckMode)
 POST        /:index/change/partnership/enter-employer-paye-reference                    controllers.establishers.partnership.details.PAYEController.onSubmit(index: Index, mode: Mode = CheckMode)
 
-GET         /:index/partnership/check-your-answers-details                              controllers.establishers.partnership.details.CheckYourAnswersController.onPageLoad(index: Index)
-
 GET         /:index/partnership/address                                                 controllers.establishers.partnership.address.WhatYouWillNeedController.onPageLoad(index: Index)
 
 GET         /:index/partnership/enter-postcode                                          controllers.establishers.partnership.address.EnterPostcodeController.onPageLoad(index: Index, mode: Mode = NormalMode)
@@ -56,8 +54,6 @@ GET         /:index/partnership/confirm-address                                 
 POST        /:index/partnership/confirm-address                                         controllers.establishers.partnership.address.ConfirmAddressController.onSubmit(index: Index, mode: Mode = NormalMode)
 GET         /:index/change/partnership/confirm-address                                  controllers.establishers.partnership.address.ConfirmAddressController.onPageLoad(index: Index, mode: Mode = CheckMode)
 POST        /:index/change/partnership/confirm-address                                  controllers.establishers.partnership.address.ConfirmAddressController.onSubmit(index: Index, mode: Mode = CheckMode)
-
-GET         /:index/partnership/check-your-answers-address                              controllers.establishers.partnership.address.CheckYourAnswersController.onPageLoad(index: Index)
 
 GET         /:index/partnership/time-at-address                                         controllers.establishers.partnership.address.AddressYearsController.onPageLoad(index: Index, mode: Mode = NormalMode)
 POST        /:index/partnership/time-at-address                                         controllers.establishers.partnership.address.AddressYearsController.onSubmit(index: Index, mode: Mode = NormalMode)
@@ -107,7 +103,3 @@ GET         /:index/partnership/enter-phone-number                              
 POST        /:index/partnership/enter-phone-number                                       controllers.establishers.partnership.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = NormalMode)
 GET         /:index/change/partnership/enter-phone-number                                controllers.establishers.partnership.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = CheckMode)
 POST        /:index/change/partnership/enter-phone-number                                controllers.establishers.partnership.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = CheckMode)
-
-GET         /:index/partnership/check-your-answers-contact-details                       controllers.establishers.partnership.contact.CheckYourAnswersController.onPageLoad(index: Index)
-
-GET         /:index/partnership/task-list                                               controllers.establishers.partnership.SpokeTaskListController.onPageLoad(index:Index)

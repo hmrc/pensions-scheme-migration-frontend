@@ -54,8 +54,6 @@ POST        /:index/company/enter-employer-paye-reference                       
 GET         /:index/change/company/enter-employer-paye-reference                    controllers.establishers.company.details.PAYEController.onPageLoad(index: Index, mode: Mode = CheckMode)
 POST        /:index/change/company/enter-employer-paye-reference                    controllers.establishers.company.details.PAYEController.onSubmit(index: Index, mode: Mode = CheckMode)
 
-GET         /:index/company/check-your-answers-details                      controllers.establishers.company.details.CheckYourAnswersController.onPageLoad(index: Index)
-
 GET         /:index/company/address                                                 controllers.establishers.company.address.WhatYouWillNeedController.onPageLoad(index: Index)
 
 GET         /:index/company/enter-postcode                                          controllers.establishers.company.address.EnterPostcodeController.onPageLoad(index: Index, mode: Mode = NormalMode)
@@ -72,8 +70,6 @@ GET         /:index/company/confirm-address                                     
 POST        /:index/company/confirm-address                                         controllers.establishers.company.address.ConfirmAddressController.onSubmit(index: Index, mode: Mode = NormalMode)
 GET         /:index/change/company/confirm-address                                  controllers.establishers.company.address.ConfirmAddressController.onPageLoad(index: Index, mode: Mode = CheckMode)
 POST        /:index/change/company/confirm-address                                  controllers.establishers.company.address.ConfirmAddressController.onSubmit(index: Index, mode: Mode = CheckMode)
-
-GET         /:index/company/check-your-answers-address                              controllers.establishers.company.address.CheckYourAnswersController.onPageLoad(index: Index)
 
 GET         /:index/company/time-at-address                                         controllers.establishers.company.address.AddressYearsController.onPageLoad(index: Index, mode: Mode = NormalMode)
 POST        /:index/company/time-at-address                                         controllers.establishers.company.address.AddressYearsController.onSubmit(index: Index, mode: Mode = NormalMode)
@@ -112,8 +108,6 @@ POST        /:index/company/enter-phone-number                                  
 GET         /:index/change/company/enter-phone-number                               controllers.establishers.company.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = CheckMode)
 POST        /:index/change/company/enter-phone-number                               controllers.establishers.company.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = CheckMode)
 
-GET         /:index/company/check-your-answers-contact-details                      controllers.establishers.company.contact.CheckYourAnswersController.onPageLoad(index: Index)
-
 GET         /:index/company/list-of-directors                                       controllers.establishers.company.AddCompanyDirectorsController.onPageLoad(index: Index,mode: Mode = NormalMode)
 POST        /:index/company/list-of-directors                                       controllers.establishers.company.AddCompanyDirectorsController.onSubmit(index: Index,mode: Mode = NormalMode)
 GET         /:index/change/company/list-of-directors                                controllers.establishers.company.AddCompanyDirectorsController.onPageLoad(index: Index,mode: Mode = CheckMode)
@@ -123,8 +117,6 @@ GET         /:index/company/other-directors                                     
 POST        /:index/company/other-directors                                         controllers.establishers.company.OtherDirectorsController.onSubmit(index:Index,mode:Mode=NormalMode)
 GET         /:index/change/company/other-directors                                  controllers.establishers.company.OtherDirectorsController.onPageLoad(index:Index,mode:Mode=CheckMode)
 POST        /:index/change/company/other-directors                                  controllers.establishers.company.OtherDirectorsController.onSubmit(index:Index,mode:Mode=CheckMode)
-
-GET         /:index/company/task-list                                               controllers.establishers.company.SpokeTaskListController.onPageLoad(index:Index)
 
 
 ->          /                                                                        establishersCompanyDirector.Routes

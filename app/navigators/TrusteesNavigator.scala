@@ -31,7 +31,7 @@ import identifiers.trustees.individual.details._
 import identifiers.trustees._
 import models.requests.DataRequest
 import models.trustees.TrusteeKind
-import models.{CheckMode, Index, Mode, NormalMode}
+import models.{CheckMode, Index, Mode, NormalMode, entities}
 import play.api.mvc.{AnyContent, Call}
 import services.DataPrefillService
 import utils.{Enumerable, UserAnswers}
@@ -47,7 +47,7 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
     case TrusteeKindId(index, kind) => trusteeKindRoutes(index, kind, ua)
     case AnyTrusteesId => anyTrusteesRoutes(ua)
-    case TrusteeNameId(index) => controllers.trustees.individual.routes.SpokeTaskListController.onPageLoad(index)
+    case TrusteeNameId(index) => controllers.common.routes.SpokeTaskListController.onPageLoad(index, entities.Trustee, entities.Individual)
     case AddTrusteeId(value) => addTrusteeRoutes(value, ua)
     case ConfirmDeleteTrusteeId => AddTrusteeController.onPageLoad
     case TrusteeDOBId(index) => TrusteeHasNINOController.onPageLoad(index, NormalMode)
@@ -94,13 +94,13 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
     case EnterPhoneId(index) => cyaContactDetails(index)
   }
 
-  private def cyaDetails(index:Int): Call = controllers.trustees.individual.details.routes.CheckYourAnswersController.onPageLoad(index)
+  private def cyaDetails(index:Int): Call = controllers.common.routes.CheckYourAnswersController.onPageLoad(index, entities.Trustee, entities.Individual, entities.Details)
 
 
-  private def cyaAddress(index:Int): Call = controllers.trustees.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
+  private def cyaAddress(index:Int): Call = controllers.common.routes.CheckYourAnswersController.onPageLoad(index, entities.Trustee, entities.Individual, entities.Details)
   private def addressYears(index:Int, mode:Mode): Call = controllers.trustees.individual.address.routes.AddressYearsController.onPageLoad(index, mode)
 
-  private def cyaContactDetails(index:Int): Call = controllers.trustees.individual.contact.routes.CheckYourAnswersController.onPageLoad(index)
+  private def cyaContactDetails(index:Int): Call = controllers.common.routes.CheckYourAnswersController.onPageLoad(index, entities.Trustee, entities.Individual, entities.Contacts)
 
   private def trusteeKindRoutes(
                                  index: Index,
