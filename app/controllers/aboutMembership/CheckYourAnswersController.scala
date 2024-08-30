@@ -26,6 +26,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils._
+import views.html.CheckYourAnswersView
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -37,7 +38,8 @@ class CheckYourAnswersController @Inject()(
                                             requireData: DataRequiredAction,
                                             cyaHelper: AboutCYAHelper,
                                             val controllerComponents: MessagesControllerComponents,
-                                            renderer: Renderer
+                                            renderer: Renderer,
+                                            checkYourAnswersView: CheckYourAnswersView
                                           )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with Enumerable.Implicits
@@ -54,7 +56,15 @@ class CheckYourAnswersController @Inject()(
           "submitUrl" -> controllers.routes.TaskListController.onPageLoad.url
         )
 
-        renderer
-          .render("check-your-answers.njk", json).map(Ok(_))
+        val template = TwirlMigration.duoTemplate(
+          renderer.render("check-your-answers.njk", json),
+          checkYourAnswersView(
+            controllers.routes.TaskListController.onPageLoad.url,
+            CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+            TwirlMigration.summaryListRow(cyaHelper.membershipRows)
+          )
+        )
+
+        template.map(Ok(_))
     }
 }

@@ -25,7 +25,8 @@ import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.Enumerable
+import utils.{Enumerable, TwirlMigration}
+import views.html.CheckYourAnswersView
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -37,7 +38,8 @@ class CheckYourAnswersController @Inject()(
                                             requireData: DataRequiredAction,
                                             cyaHelper: AdviserCYAHelper,
                                             val controllerComponents: MessagesControllerComponents,
-                                            renderer: Renderer
+                                            renderer: Renderer,
+                                            checkYourAnswersView: CheckYourAnswersView
                                           )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with Enumerable.Implicits
@@ -47,13 +49,21 @@ class CheckYourAnswersController @Inject()(
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        renderer.render(
-          template = "check-your-answers.njk",
-          ctx = Json.obj(
-            "list"       -> cyaHelper.detailsRows,
-            "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
-            "submitUrl"  -> controllers.routes.TaskListController.onPageLoad.url
+        val ctx = Json.obj(
+          "list"       -> cyaHelper.detailsRows,
+          "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+          "submitUrl"  -> controllers.routes.TaskListController.onPageLoad.url
+        )
+
+        val template = TwirlMigration.duoTemplate(
+          renderer.render("check-your-answers.njk", ctx),
+          checkYourAnswersView(
+            controllers.routes.TaskListController.onPageLoad.url,
+            CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+            TwirlMigration.summaryListRow(cyaHelper.detailsRows)
           )
-        ).map(Ok(_))
+        )
+
+        template.map(Ok(_))
     }
 }

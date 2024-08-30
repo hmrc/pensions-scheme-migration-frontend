@@ -27,7 +27,8 @@ import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.Enumerable
+import utils.{Enumerable, TwirlMigration}
+import views.html.CheckYourAnswersView
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -39,7 +40,8 @@ class CheckYourAnswersController @Inject()(
                                             requireData: DataRequiredAction,
                                             cyaHelper: EstablisherCompanyDetailsCYAHelper,
                                             val controllerComponents: MessagesControllerComponents,
-                                            renderer: Renderer
+                                            renderer: Renderer,
+                                            checkYourAnswersView: CheckYourAnswersView
                                           )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with Enumerable.Implicits
@@ -49,13 +51,21 @@ class CheckYourAnswersController @Inject()(
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        renderer.render(
-          template = "check-your-answers.njk",
-          ctx = Json.obj(
-            "list"       -> cyaHelper.detailsRows(index),
-            "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
-            "submitUrl"  -> controllers.establishers.company.routes.SpokeTaskListController.onPageLoad(index).url
+        val ctx = Json.obj(
+          "list"       -> cyaHelper.detailsRows(index),
+          "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+          "submitUrl"  -> controllers.establishers.company.routes.SpokeTaskListController.onPageLoad(index).url
+        )
+
+        val template = TwirlMigration.duoTemplate(
+          renderer.render("check-your-answers.njk", ctx),
+          checkYourAnswersView(
+            controllers.establishers.company.routes.SpokeTaskListController.onPageLoad(index).url,
+            CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+            TwirlMigration.summaryListRow(cyaHelper.detailsRows(index))
           )
-        ).map(Ok(_))
+        )
+
+        template.map(Ok(_))
     }
 }

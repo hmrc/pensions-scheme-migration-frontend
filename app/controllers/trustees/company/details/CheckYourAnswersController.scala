@@ -19,7 +19,7 @@ package controllers.trustees.company.details
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import helpers.cya.CYAHelper
-import helpers.cya.trustees.company.TrusteeCompanyDetailsCYAHelperForTwirl
+import helpers.cya.trustees.company.TrusteeCompanyDetailsCYAHelper
 import identifiers.beforeYouStart.SchemeNameId
 import models.Index
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -38,7 +38,7 @@ class CheckYourAnswersController @Inject()(
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            cyaHelper: TrusteeCompanyDetailsCYAHelperForTwirl,
+                                            cyaHelper: TrusteeCompanyDetailsCYAHelper,
                                             val controllerComponents: MessagesControllerComponents,
                                             renderer: Renderer,
                                             checkYourAnswersView: CheckYourAnswersView
@@ -65,7 +65,7 @@ class CheckYourAnswersController @Inject()(
           checkYourAnswersView(
             submitUrl,
             schemeName,
-            cyaHelper.detailsRows(index)
+            TwirlMigration.summaryListRow(cyaHelper.detailsRows(index))
           )
         )
 
