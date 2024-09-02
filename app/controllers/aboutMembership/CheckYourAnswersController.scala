@@ -39,7 +39,8 @@ class CheckYourAnswersController @Inject()(
                                             cyaHelper: AboutCYAHelper,
                                             val controllerComponents: MessagesControllerComponents,
                                             renderer: Renderer,
-                                            checkYourAnswersView: CheckYourAnswersView
+                                            checkYourAnswersView: CheckYourAnswersView,
+                                            twirlMigration: TwirlMigration
                                           )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with Enumerable.Implicits
@@ -56,7 +57,7 @@ class CheckYourAnswersController @Inject()(
           "submitUrl" -> controllers.routes.TaskListController.onPageLoad.url
         )
 
-        val template = TwirlMigration.duoTemplate(
+        val template = twirlMigration.duoTemplate(
           renderer.render("check-your-answers.njk", ctx),
           checkYourAnswersView(
             controllers.routes.TaskListController.onPageLoad.url,

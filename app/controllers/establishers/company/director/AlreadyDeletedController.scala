@@ -38,7 +38,8 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
                                          requireData: DataRequiredAction,
                                          val controllerComponents: MessagesControllerComponents,
                                          renderer: Renderer,
-                                         alreadyDeletedView: AlreadyDeletedView
+                                         alreadyDeletedView: AlreadyDeletedView,
+                                         twirlMigration: TwirlMigration
                                         )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits {
 
@@ -51,7 +52,7 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
               case Some(schemeName) => schemeName
               case None => "Scheme"
             }
-            val template = TwirlMigration.duoTemplate(
+            val template = twirlMigration.duoTemplate(
               renderer.render("alreadyDeleted.njk", json(establisherIndex, directorName, existingSchemeName)),
               alreadyDeletedView(
                 "messages__alreadyDeleted__director_title",

@@ -41,7 +41,8 @@ class WhatYouWillNeedController @Inject()(
                                            requireData: DataRequiredAction,
                                            val controllerComponents: MessagesControllerComponents,
                                            val renderer: Renderer,
-                                           whatYouWillNeedCompanyDetailsView: views.html.details.WhatYouWillNeedCompanyDetailsView
+                                           whatYouWillNeedCompanyDetailsView: views.html.details.WhatYouWillNeedCompanyDetailsView,
+                                           twirlMigration: TwirlMigration
                                          )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
@@ -53,7 +54,7 @@ class WhatYouWillNeedController @Inject()(
       implicit request =>
         CompanyDetailsId(index).retrieve.map {
           details =>
-            val template = TwirlMigration.duoTemplate(
+            val template = twirlMigration.duoTemplate(
               renderer.render(
                 template = "details/whatYouWillNeedCompanyDetails.njk",
                 ctx = Json.obj(

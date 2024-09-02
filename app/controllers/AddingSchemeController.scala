@@ -33,7 +33,8 @@ class AddingSchemeController @Inject()(val appConfig: AppConfig,
                                        override val messagesApi: MessagesApi,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer,
-                                       addingSchemeView: AddingSchemeView
+                                       addingSchemeView: AddingSchemeView,
+                                       twirlMigration: TwirlMigration
                                       )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with I18nSupport {
 
@@ -45,7 +46,7 @@ class AddingSchemeController @Inject()(val appConfig: AppConfig,
       "returnUrl" -> returnUrl
     )
 
-    val template = TwirlMigration.duoTemplate(
+    val template = twirlMigration.duoTemplate(
       renderer.render("addingScheme.njk", json),
       addingSchemeView(
         returnUrl,
