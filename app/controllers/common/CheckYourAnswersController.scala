@@ -49,15 +49,19 @@ class CheckYourAnswersController @Inject()(
   def onPageLoad(index: Index,
                  pensionManagementType: PensionManagementType,
                  entityType: EntityType,
-                 journeyType: JourneyType) = page(index, pensionManagementType, entityType, None, journeyType)
+                 journeyType: JourneyType): Action[AnyContent] = page(index, pensionManagementType, entityType, None, journeyType)
 
   def onPageLoadWithRepresentative(index: Index,
                                    pensionManagementType: PensionManagementType,
                                    entityType: EntityType,
-                                   entityRepresentativeIndex: Index) =
+                                   entityRepresentativeIndex: Index): Action[AnyContent] =
     page(index, pensionManagementType, entityType, Some(entityRepresentativeIndex), entities.Details)
 
-  private def page(index: Index, pensionManagementType: PensionManagementType, entityType: EntityType, entityRepresentativeIndex: Option[Index],  journeyType: JourneyType): Action[AnyContent] =
+  private def page(index: Index,
+                   pensionManagementType: PensionManagementType,
+                   entityType: EntityType,
+                   entityRepresentativeIndex: Option[Index],
+                   journeyType: JourneyType): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         renderer.render(

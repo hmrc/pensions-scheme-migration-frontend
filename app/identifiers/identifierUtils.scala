@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package identifiers.common
+package identifiers
 
-import identifiers.TypedIdentifier
 import models.entities.{Company, EntityType, Individual, Partnership, PensionManagementType, Trustee}
 import models.requests.DataRequest
 import models.{Index, entities}

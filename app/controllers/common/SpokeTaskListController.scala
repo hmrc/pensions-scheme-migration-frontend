@@ -20,7 +20,7 @@ import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import helpers.SpokeCreationService
 import identifiers.beforeYouStart.SchemeNameId
-import identifiers.common.identifierUtils
+import identifiers.identifierUtils
 import models.entities._
 import models.requests.DataRequest
 import models.{EntitySpoke, Index, entities}
