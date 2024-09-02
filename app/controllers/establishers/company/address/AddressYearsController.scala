@@ -16,44 +16,36 @@
 
 package controllers.establishers.company.address
 
-import connectors.cache.UserAnswersCacheConnector
+import controllers.Retrievals
 import controllers.actions._
-import controllers.address.CommonAddressYearsController
+import controllers.address.CommonAddressYearsUtils
 import forms.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address.AddressYearsId
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import utils.Enumerable
+import play.api.mvc.{Action, AnyContent}
+import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
-                                       val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                       authenticate: AuthAction,
+class AddressYearsController @Inject()(authenticate: AuthAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
-                                       val navigator: CompoundNavigator,
                                        formProvider: AddressYearsFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       val renderer: Renderer)(implicit ec: ExecutionContext)
-  extends CommonAddressYearsController
-    with Enumerable.Implicits {
+                                       common: CommonAddressYearsUtils)(implicit ec: ExecutionContext)
+    extends Retrievals  {
+
 
   private def form: Form[Boolean] =
     formProvider("companyAddressYears.error.required")
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (CompanyDetailsId(index) and SchemeNameId).retrieve.map {
-        case companyDetails ~ schemeName =>
-          get(Some(schemeName), companyDetails.companyName, Messages("establisherEntityTypeCompany"), form, AddressYearsId(index))
+      (CompanyDetailsId(index) and SchemeNameId).retrieve.map { case companyDetails ~ schemeName =>
+          common.get(Some(schemeName), companyDetails.companyName, Message("establisherEntityTypeCompany"), form, AddressYearsId(index))
       }
     }
 
@@ -61,7 +53,7 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (CompanyDetailsId(index) and SchemeNameId).retrieve.map {
         case companyDetails ~ schemeName =>
-          post(Some(schemeName), companyDetails.companyName, Messages("establisherEntityTypeCompany"), form, AddressYearsId(index),Some(mode))
+          common.post(Some(schemeName), companyDetails.companyName, Message("establisherEntityTypeCompany"), form, AddressYearsId(index),Some(mode))
       }
     }
 }

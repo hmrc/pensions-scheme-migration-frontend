@@ -18,7 +18,7 @@ package controllers.establishers.partnership.partner.address
 
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
-import controllers.address.CommonAddressYearsController
+import controllers.address.CommonAddressYearsUtils
 import forms.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.partnership.partner.PartnerNameId
@@ -44,7 +44,7 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
                                        val controllerComponents: MessagesControllerComponents,
                                        val renderer: Renderer)
                                       (implicit ec: ExecutionContext)
-  extends CommonAddressYearsController
+  extends CommonAddressYearsUtils
     with Enumerable.Implicits
 {
   private def form: Form[Boolean] =

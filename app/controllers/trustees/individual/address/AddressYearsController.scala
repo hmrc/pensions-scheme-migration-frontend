@@ -17,8 +17,9 @@
 package controllers.trustees.individual.address
 
 import connectors.cache.UserAnswersCacheConnector
+import controllers.Retrievals
 import controllers.actions._
-import controllers.address.CommonAddressYearsController
+import controllers.address.CommonAddressYearsUtils
 import forms.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.{address => Director}
@@ -32,23 +33,20 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import services.DataUpdateService
 import utils.{Enumerable, UserAnswers}
+import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
-class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
-                                       val userAnswersCacheConnector: UserAnswersCacheConnector,
+class AddressYearsController @Inject()(
                                        authenticate: AuthAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        dataUpdateService: DataUpdateService,
-                                       val navigator: CompoundNavigator,
                                        formProvider: AddressYearsFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       val renderer: Renderer)(implicit ec: ExecutionContext)
-  extends CommonAddressYearsController
-    with Enumerable.Implicits {
+                                       common: CommonAddressYearsUtils)(implicit ec: ExecutionContext)
+    extends Retrievals {
 
   private def form: Form[Boolean] =
     formProvider("individualAddressYears.error.required")
@@ -57,30 +55,23 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (TrusteeNameId(index) and SchemeNameId).retrieve.map {
         case trusteeName ~ schemeName =>
-          get(Some(schemeName), trusteeName.fullName, Messages("trusteeEntityTypeIndividual"), form, AddressYearsId(index))
+          common.get(Some(schemeName), trusteeName.fullName, Message("trusteeEntityTypeIndividual"), form, AddressYearsId(index))
       }
     }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (TrusteeNameId(index) and SchemeNameId).retrieve.map {
-        case trusteeName ~ schemeName =>
-          form
-            .bindFromRequest()
-            .fold(
-              formWithErrors => {
-                renderer.render(viewTemplate, json(Some(schemeName), trusteeName.fullName,
-                  Messages("trusteeEntityTypeIndividual"), formWithErrors)).map(BadRequest(_))
-              },
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(setUpdatedAnswers(index, value, mode, request.userAnswers))
-                  _ <- userAnswersCacheConnector.save(request.lock,updatedAnswers.data)
-                } yield {
-                  Redirect(navigator.nextPage(AddressYearsId(index), updatedAnswers, mode))
-                }
-            )
-        }
+      (TrusteeNameId(index) and SchemeNameId).retrieve.map { case trusteeName ~ schemeName =>
+        common.post(
+          Some(schemeName),
+          trusteeName.fullName,
+          Message("trusteeEntityTypeIndividual"),
+          form,
+          AddressYearsId(index),
+          Some(mode),
+          Some(value => setUpdatedAnswers(index, value, mode, request.userAnswers))
+        )
+      }
     }
 
   private def setUpdatedAnswers(index: Index, value: Boolean, mode: Mode, ua: UserAnswers): Try[UserAnswers] = {

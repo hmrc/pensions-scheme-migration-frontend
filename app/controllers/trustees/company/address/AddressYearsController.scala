@@ -17,8 +17,9 @@
 package controllers.trustees.company.address
 
 import connectors.cache.UserAnswersCacheConnector
+import controllers.Retrievals
 import controllers.actions._
-import controllers.address.CommonAddressYearsController
+import controllers.address.CommonAddressYearsUtils
 import forms.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.company.CompanyDetailsId
@@ -30,21 +31,18 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import utils.Enumerable
+import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
-                                       val userAnswersCacheConnector: UserAnswersCacheConnector,
+class AddressYearsController @Inject()(
                                        authenticate: AuthAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
-                                       val navigator: CompoundNavigator,
                                        formProvider: AddressYearsFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       val renderer: Renderer)(implicit ec: ExecutionContext)
-  extends CommonAddressYearsController
-    with Enumerable.Implicits {
+                                       common: CommonAddressYearsUtils)(implicit ec: ExecutionContext)
+  extends Retrievals {
 
   private def form: Form[Boolean] =
     formProvider("companyAddressYears.error.required")
@@ -53,7 +51,7 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (CompanyDetailsId(index) and SchemeNameId).retrieve.map {
         case companyDetails ~ schemeName =>
-          get(Some(schemeName), companyDetails.companyName, Messages("messages__company"), form, AddressYearsId(index))
+          common.get(Some(schemeName), companyDetails.companyName, Message("messages__company"), form, AddressYearsId(index))
       }
     }
 
@@ -61,7 +59,7 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (CompanyDetailsId(index) and SchemeNameId).retrieve.map {
         case companyDetails ~ schemeName =>
-          post(Some(schemeName), companyDetails.companyName, Messages("messages__company"), form, AddressYearsId(index),Some(mode))
+          common.post(Some(schemeName), companyDetails.companyName, Message("messages__company"), form, AddressYearsId(index),Some(mode))
       }
     }
 }

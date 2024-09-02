@@ -18,7 +18,7 @@ package controllers.establishers.company.director.address
 
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
-import controllers.address.CommonAddressYearsController
+import controllers.address.CommonAddressYearsUtils
 import forms.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
@@ -48,7 +48,7 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
                                        val controllerComponents: MessagesControllerComponents,
                                        val renderer: Renderer)
                                       (implicit ec: ExecutionContext)
-  extends CommonAddressYearsController
+  extends CommonAddressYearsUtils
     with Enumerable.Implicits {
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
