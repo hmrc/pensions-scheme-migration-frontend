@@ -22,6 +22,7 @@ import models.{Index, entities}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.viewmodels.SummaryList
+import utils.{entityTypeError, journeyTypeError, managementTypeError}
 
 import javax.inject.{Inject, Singleton}
 
@@ -46,7 +47,7 @@ class CommonCYAHelper @Inject() (
                                 tid: trustees.individual.TrusteeDetailsCYAHelper,
                                 tpa: trustees.partnership.TrusteeAddressCYAHelper,
                                 tpc: trustees.partnership.TrusteeContactDetailsCYAHelper,
-                                tpd: trustees.partnership.TrusteePartnershipDetailsCYAHelper,
+                                tpd: trustees.partnership.TrusteePartnershipDetailsCYAHelper
                                 ) {
   def rows(index: Index,
            pensionManagementType: PensionManagementType,
@@ -65,7 +66,7 @@ class CommonCYAHelper @Inject() (
                 case entities.Address => eca.rows(index)
                 case entities.Contacts => ecc.contactDetailsRows(index)
                 case entities.Details => ecd.detailsRows(index)
-                case _ => ???
+                case e => journeyTypeError(e)
               }
           }
         case entities.Individual =>
@@ -73,7 +74,7 @@ class CommonCYAHelper @Inject() (
             case entities.Address => eia.rows(index)
             case entities.Contacts => eic.contactDetailsRows(index)
             case entities.Details => eid.detailsRows(index)
-            case _ => ???
+            case e => journeyTypeError(e)
           }
         case entities.Partnership =>
           entityRepresentativeIndex match {
@@ -83,10 +84,10 @@ class CommonCYAHelper @Inject() (
                 case entities.Address => epa.rows(index)
                 case entities.Contacts => epc.contactDetailsRows(index)
                 case entities.Details => epd.detailsRows(index)
-                case _ => ???
+                case e => journeyTypeError(e)
               }
           }
-        case _ => ???
+        case e => entityTypeError(e)
       }
     }
 
@@ -97,23 +98,23 @@ class CommonCYAHelper @Inject() (
             case entities.Address => tca.rows(index)
             case entities.Contacts => tcc.contactDetailsRows(index)
             case entities.Details => tcd.detailsRows(index)
-            case _ => ???
+            case e => journeyTypeError(e)
           }
         case entities.Individual =>
           journeyType match {
             case entities.Address => tia.rows(index)
             case entities.Contacts => tic.contactDetailsRows(index)
             case entities.Details => tid.detailsRows(index)
-            case _ => ???
+            case e => journeyTypeError(e)
           }
         case entities.Partnership =>
           journeyType match {
             case entities.Address => tpa.rows(index)
             case entities.Contacts => tpc.contactDetailsRows(index)
             case entities.Details => tpd.detailsRows(index)
-            case _ => ???
+            case e => journeyTypeError(e)
           }
-        case _ => ???
+        case e => entityTypeError(e)
       }
     }
 
@@ -121,7 +122,7 @@ class CommonCYAHelper @Inject() (
       case entities.Establisher =>
         establisherResolve
       case entities.Trustee => trusteeResolve
-      case _ => ???
+      case e => managementTypeError(e)
     }
   }
 }
