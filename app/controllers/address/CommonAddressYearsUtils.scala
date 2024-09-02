@@ -19,24 +19,23 @@ package controllers.address
 import connectors.cache.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import models.{Index, Mode, NormalMode}
+import models.{Mode, NormalMode}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.libs.json.{Json, OFormat}
+import play.api.data.FormBinding.Implicits._
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.{Json, OWrites}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Result}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import uk.gov.hmrc.viewmodels.Radios
-
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
-import play.api.data.FormBinding.Implicits._
-import play.api.i18n.{I18nSupport, MessagesApi}
 import utils.UserAnswers
 import viewmodels.Message
 
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 class CommonAddressYearsUtils @Inject()(
@@ -47,6 +46,16 @@ class CommonAddressYearsUtils @Inject()(
                                                val messagesApi: MessagesApi
                                              ) extends NunjucksSupport with FrontendHeaderCarrierProvider with I18nSupport {
   private def viewTemplate = "address/addressYears.njk"
+
+  private case class TemplateData(
+                                   schemeName: Option[String],
+                                   entityName: String,
+                                   entityType : String,
+                                   form : Form[Boolean],
+                                   radios: Seq[Radios.Item]
+                                 )
+
+  implicit private def templateDataWrites(implicit request: DataRequest[AnyContent]): OWrites[TemplateData] = Json.writes[TemplateData]
 
   def get(schemeName: Option[String],
                     entityName: String,
@@ -89,21 +98,13 @@ class CommonAddressYearsUtils @Inject()(
   }
 
 
-  private case class TemplateData(
-                                   schemeName: Option[String],
-                                   entityName: String,
-                                   entityType : String,
-                                   form : Form[Boolean],
-                                   radios: Seq[Radios.Item]
-                                 )
-
-  implicit private val templateDataFormat: OFormat[TemplateData] = Json.format[TemplateData]
 
   private def getTemplateData(
                       schemeName: Option[String],
                       entityName: String,
                       entityType : String,
-                      form : Form[Boolean]): TemplateData =
+                      form : Form[Boolean]): TemplateData = {
+
     TemplateData(
       schemeName,
       entityName,
@@ -111,4 +112,5 @@ class CommonAddressYearsUtils @Inject()(
       form,
       Radios.yesNo(form("value"))
     )
+  }
 }

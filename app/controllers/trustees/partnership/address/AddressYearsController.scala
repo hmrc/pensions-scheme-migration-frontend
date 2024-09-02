@@ -25,8 +25,8 @@ import identifiers.trustees.partnership.PartnershipDetailsId
 import identifiers.trustees.partnership.address.AddressYearsId
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent}
+import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -45,7 +45,7 @@ class AddressYearsController @Inject()(authenticate: AuthAction,
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (PartnershipDetailsId(index) and SchemeNameId).retrieve.map {
         case partnershipDetails ~ schemeName =>
-          common.get(Some(schemeName), partnershipDetails.partnershipName, Messages("messages__partnership"), form, AddressYearsId(index))
+          common.get(Some(schemeName), partnershipDetails.partnershipName, Message("messages__partnership"), form, AddressYearsId(index))
       }
     }
 
@@ -53,7 +53,7 @@ class AddressYearsController @Inject()(authenticate: AuthAction,
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (PartnershipDetailsId(index) and SchemeNameId).retrieve.map {
         case partnershipDetails ~ schemeName =>
-          common.post(Some(schemeName), partnershipDetails.partnershipName, Messages("messages__partnership"), form, AddressYearsId(index),Some(mode))
+          common.post(Some(schemeName), partnershipDetails.partnershipName, Message("messages__partnership"), form, AddressYearsId(index),Some(mode))
       }
     }
 }

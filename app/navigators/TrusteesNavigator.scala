@@ -97,7 +97,7 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
   private def cyaDetails(index:Int): Call = controllers.common.routes.CheckYourAnswersController.onPageLoad(index, entities.Trustee, entities.Individual, entities.Details)
 
 
-  private def cyaAddress(index:Int): Call = controllers.common.routes.CheckYourAnswersController.onPageLoad(index, entities.Trustee, entities.Individual, entities.Details)
+  private def cyaAddress(index:Int): Call = controllers.common.routes.CheckYourAnswersController.onPageLoad(index, entities.Trustee, entities.Individual, entities.Address)
   private def addressYears(index:Int, mode:Mode): Call = controllers.trustees.individual.address.routes.AddressYearsController.onPageLoad(index, mode)
 
   private def cyaContactDetails(index:Int): Call = controllers.common.routes.CheckYourAnswersController.onPageLoad(index, entities.Trustee, entities.Individual, entities.Contacts)
