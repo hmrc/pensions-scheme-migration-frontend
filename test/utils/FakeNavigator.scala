@@ -22,7 +22,7 @@ import models.requests.DataRequest
 import navigators.{CompoundNavigator, Navigator}
 import play.api.mvc.{AnyContent, Call}
 
-class FakeNavigator(desiredRoute: Call) extends CompoundNavigator(new java.util.HashSet[Navigator]) {
+class FakeNavigator(desiredRoute: Call) extends CompoundNavigator(new java.util.HashSet[Navigator]()) {
 
   private[this] var userAnswers: Option[UserAnswers] = None
 

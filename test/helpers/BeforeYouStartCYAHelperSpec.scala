@@ -26,7 +26,7 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import utils.Data.schemeName
-import utils.{CountryOptions, Enumerable, InputOption, UserAnswers}
+import utils.{Enumerable, UserAnswers}
 
 class BeforeYouStartCYAHelperSpec
   extends SpecBase
@@ -34,13 +34,9 @@ class BeforeYouStartCYAHelperSpec
     with TryValues
     with Enumerable.Implicits {
 
-  val options = Seq(InputOption("territory:AE-AZ", "Abu Dhabi"), InputOption("country:AF", "Afghanistan"))
+  private val beforeYouStartCYAHelper = new BeforeYouStartCYAHelper
 
-  override implicit val countryOptions: CountryOptions = new CountryOptions(options)
-
-  val beforeYouStartCYAHelper = new BeforeYouStartCYAHelper
-
-  val ua: UserAnswers = UserAnswers()
+  private val ua: UserAnswers = UserAnswers()
     .set(SchemeNameId, schemeName).success.value
     .set(SchemeTypeId, SchemeType.Other("messages__scheme_type_other")).success.value
     .set(EstablishedCountryId, "AF").success.value

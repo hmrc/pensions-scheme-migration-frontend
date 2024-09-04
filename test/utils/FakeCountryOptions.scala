@@ -14,17 +14,8 @@
  * limitations under the License.
  */
 
-package models
+package utils
 
-import play.api.libs.json._
-
-case class Address(addressLine1: String,
-                   addressLine2: String,
-                   addressLine3: Option[String],
-                   addressLine4: Option[String],
-                   postcode: Option[String],
-                   country: String)
-
-object Address {
-  implicit val formatsAddress: Format[Address] = Json.format[Address]
+case class FakeCountryOptions(_options: Seq[InputOption]) extends CountryOptions(null, null) {
+  override lazy val options: Seq[InputOption] = _options
 }

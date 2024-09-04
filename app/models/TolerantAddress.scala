@@ -32,7 +32,7 @@ case class TolerantAddress(
                             country: Option[String]
                           ) {
 
-  def lines(countryOptions: CountryOptions): Seq[String] = {
+  def lines: Seq[String] = {
     Seq(
       this.addressLine1,
       this.addressLine2,
@@ -43,8 +43,8 @@ case class TolerantAddress(
     ).flatten(s => s)
   }
 
-  def print(countryOptions: CountryOptions): String = {
-    lines(countryOptions).mkString(", ")
+  def print: String = {
+    lines.mkString(", ")
   }
 
   private def prepopAddress: Address =

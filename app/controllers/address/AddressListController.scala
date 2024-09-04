@@ -87,11 +87,11 @@ trait AddressListController extends FrontendBaseController with Retrievals {
     )
   }
 
-  def transformAddressesForTemplate(addresses:Seq[TolerantAddress], countryOptions: CountryOptions):Seq[JsObject] = {
+  def transformAddressesForTemplate(addresses:Seq[TolerantAddress]):Seq[JsObject] = {
     for ((row, i) <- addresses.zipWithIndex) yield {
       Json.obj(
         "value" -> i,
-        "text" -> row.print(countryOptions)
+        "text" -> row.print
       )
     }
   }
