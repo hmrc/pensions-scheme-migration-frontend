@@ -16,7 +16,6 @@
 
 package controllers.benefitsAndInsurance
 
-import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
