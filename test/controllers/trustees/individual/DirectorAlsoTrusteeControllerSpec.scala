@@ -47,7 +47,7 @@ class DirectorAlsoTrusteeControllerSpec extends ControllerSpecBase
   private val personName: PersonName = PersonName("Jane", "Doe")
   private val formProvider: DataPrefillRadioFormProvider = new DataPrefillRadioFormProvider()
   private val form = formProvider("")
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
+  private val onwardRoute: Call = Call("GET", "")
   private val userAnswers: UserAnswers = ua.set(TrusteeNameId(0), personName).success.value
   private val templateToBeRendered: String = "dataPrefillRadio.njk"
   private val mockDataPrefillService = mock[DataPrefillService]

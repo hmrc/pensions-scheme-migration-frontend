@@ -46,7 +46,7 @@ class UTRControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
   private val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
   private val formProvider: UTRFormProvider = new UTRFormProvider()
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
+  private val onwardRoute: Call = Call("GET", "")
   private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
 
   private val commonJson: JsObject =

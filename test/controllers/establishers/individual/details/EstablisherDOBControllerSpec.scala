@@ -52,7 +52,7 @@ class EstablisherDOBControllerSpec
   private val form: Form[LocalDate] =
     formProvider()
   private val onwardRoute: Call =
-    controllers.routes.IndexController.onPageLoad
+    Call("GET", "")
   private val personName: PersonName =
     PersonName("Jane", "Doe")
   private val userAnswers: UserAnswers =

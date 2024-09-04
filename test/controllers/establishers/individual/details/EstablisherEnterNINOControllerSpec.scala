@@ -53,7 +53,7 @@ class EstablisherEnterNINOControllerSpec
   private val form: Form[ReferenceValue] =
     formProvider(personName.fullName)
   private val onwardRoute: Call =
-    controllers.routes.IndexController.onPageLoad
+    Call("GET", "")
   private val userAnswers: UserAnswers =
     ua.set(EstablisherNameId(0), personName).success.value
   private val templateToBeRendered: String =

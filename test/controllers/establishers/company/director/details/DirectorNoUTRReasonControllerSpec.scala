@@ -53,7 +53,7 @@ class DirectorNoUTRReasonControllerSpec
   private val form: Form[String] =
     formProvider(s"Enter a reason why ${personName.fullName} does not have a UTR")
   private val onwardRoute: Call =
-    controllers.routes.IndexController.onPageLoad
+    Call("GET", "")
   private val userAnswers: UserAnswers =
     ua.set(DirectorNameId(0,0), personName).success.value
   private val templateToBeRendered: String =

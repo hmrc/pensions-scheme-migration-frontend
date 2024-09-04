@@ -51,7 +51,7 @@ class TrusteeEnterUTRControllerSpec
 
   private val form: Form[ReferenceValue] = formProvider()
 
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
+  private val onwardRoute: Call = Call("GET", "")
 
   private val userAnswers: UserAnswers = ua.set(TrusteeNameId(0), personName).success.value
 

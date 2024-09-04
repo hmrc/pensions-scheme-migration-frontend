@@ -48,7 +48,7 @@ class OtherPartnersControllerSpec extends ControllerSpecBase
   with BeforeAndAfterEach{
 
   private val onwardRoute: Call =
-    controllers.routes.IndexController.onPageLoad
+    Call("GET", "")
   private val formProvider: HasReferenceNumberFormProvider =
     new HasReferenceNumberFormProvider()
 

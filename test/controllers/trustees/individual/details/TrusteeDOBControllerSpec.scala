@@ -50,7 +50,7 @@ class TrusteeDOBControllerSpec
 
   private val form: Form[LocalDate] = formProvider()
 
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
+  private val onwardRoute: Call = Call("GET", "")
 
   private val personName: PersonName = PersonName("Jane", "Doe")
 

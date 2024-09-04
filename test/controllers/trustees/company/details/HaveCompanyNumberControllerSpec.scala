@@ -46,7 +46,7 @@ class HaveCompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSu
 
   private val formProvider: HasReferenceNumberFormProvider = new HasReferenceNumberFormProvider()
   private val form: Form[Boolean] = formProvider(Message("messages__haveCompanyNumber__error", companyDetails.companyName))
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
+  private val onwardRoute: Call = Call("GET", "")
   private val templateToBeRendered: String = "hasReferenceValueWithHint.njk"
 
   private val commonJson: JsObject =

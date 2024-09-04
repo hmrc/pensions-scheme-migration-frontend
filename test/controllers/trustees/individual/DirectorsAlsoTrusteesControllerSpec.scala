@@ -45,7 +45,7 @@ class DirectorsAlsoTrusteesControllerSpec extends ControllerSpecBase
   //private val personName: PersonName = PersonName("Jane", "Doe")
   private val formProvider: DataPrefillCheckboxFormProvider = new DataPrefillCheckboxFormProvider()
   private val form = formProvider(6,"", "", "")
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
+  private val onwardRoute: Call = Call("GET", "")
   private val templateToBeRendered: String = "dataPrefillCheckbox.njk"
   private val mockDataPrefillService = mock[DataPrefillService]
 

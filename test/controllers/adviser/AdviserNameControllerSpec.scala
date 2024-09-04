@@ -46,7 +46,7 @@ class AdviserNameControllerSpec extends ControllerSpecBase
   private val adviserName = "test"
   private val formProvider: AdviserNameFormProvider = new AdviserNameFormProvider()
   private val form = formProvider()
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
+  private val onwardRoute: Call = Call("GET", "")
   private val templateToBeRendered: String = "adviser/adviserName.njk"
 
   private val commonJson: JsObject = Json.obj("schemeName" -> Data.schemeName)

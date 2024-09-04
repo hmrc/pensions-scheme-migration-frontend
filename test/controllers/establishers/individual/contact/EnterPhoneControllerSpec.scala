@@ -49,7 +49,7 @@ class EnterPhoneControllerSpec extends ControllerSpecBase
   private val phone = "777"
   private val formProvider: PhoneFormProvider = new PhoneFormProvider()
   private val form = formProvider("")
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
+  private val onwardRoute: Call = Call("GET", "")
   private val userAnswers: UserAnswers = ua.set(EstablisherNameId(0), personName).success.value
   private val templateToBeRendered: String = "phone.njk"
 

@@ -43,8 +43,7 @@ class OtherTrusteesControllerSpec extends ControllerSpecBase
   with TryValues
   with BeforeAndAfterEach{
 
-  private val onwardRoute: Call =
-    controllers.routes.IndexController.onPageLoad
+  private val onwardRoute: Call = Call("GET", "")
   private val formProvider: HasReferenceNumberFormProvider =
     new HasReferenceNumberFormProvider()
 

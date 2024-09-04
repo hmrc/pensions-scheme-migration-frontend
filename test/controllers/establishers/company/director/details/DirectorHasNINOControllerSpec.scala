@@ -53,7 +53,7 @@ class DirectorHasNINOControllerSpec
   private val form: Form[Boolean] =
     formProvider("Select Yes if Jane Doe has a National Insurance number")
   private val onwardRoute: Call =
-    controllers.routes.IndexController.onPageLoad
+    Call("GET", "")
   private val userAnswers: UserAnswers =
     ua.set(DirectorNameId(0,0), personName).success.value
   private val templateToBeRendered: String =

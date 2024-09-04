@@ -73,7 +73,7 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
                         ): TrusteesAlsoDirectorsController =
     new TrusteesAlsoDirectorsController(
       messagesApi = messagesApi,
-      navigator = new FakeNavigator(desiredRoute = controllers.routes.IndexController.onPageLoad),
+      navigator = new FakeNavigator(desiredRoute = Call("GET", "")),
       authenticate = new FakeAuthAction(),
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl,
