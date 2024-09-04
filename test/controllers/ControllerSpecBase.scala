@@ -23,8 +23,6 @@ import connectors.cache.UserAnswersCacheConnector
 import connectors.{EmailConnector, LegacySchemeDetailsConnector, MinimalDetailsConnector}
 import controllers.actions._
 import navigators.CompoundNavigator
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{Mockito, MockitoSugar}
 import org.scalatest.BeforeAndAfterEach
@@ -44,10 +42,7 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
 
   implicit val global: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-  val cacheMapId = "id"
   val onwardCall: Call = Call("GET", "onwardCall")
-
-  def asDocument(htmlAsString: String): Document = Jsoup.parse(htmlAsString)
 
   override def beforeEach(): Unit = {
     Mockito.reset(mockRenderer)
@@ -57,7 +52,6 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
       .thenReturn(onwardCall)
   }
 
-  protected def mockDataRetrievalAction: DataRetrievalAction = mock[DataRetrievalAction]
 
   protected val mockAppConfig: AppConfig = mock[AppConfig]
 
@@ -82,7 +76,7 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
   protected def applicationBuilderMutableRetrievalAction(
                                                           mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction,
                                                           extraModules: Seq[GuiceableModule] = Seq.empty
-                                                        ): GuiceApplicationBuilder =
+                                                        ): GuiceApplicationBuilder = {
     new GuiceApplicationBuilder()
       .configure(
         //turn off metrics
@@ -94,6 +88,7 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
           bind[DataRetrievalAction].toInstance(mutableFakeDataRetrievalAction)
         ): _*
       )
+  }
 
   protected def httpGETRequest(path: String): FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, path)
 

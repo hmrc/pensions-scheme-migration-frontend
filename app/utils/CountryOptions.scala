@@ -38,4 +38,3 @@ class CountryOptions @Inject() (environment: Environment, config: AppConfig) {
       throw new ConfigException.BadValue(config.locationCanonicalList, "country json does not exist")
     }
 }
-

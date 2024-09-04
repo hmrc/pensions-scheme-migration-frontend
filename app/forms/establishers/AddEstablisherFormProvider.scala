@@ -19,9 +19,7 @@ package forms.establishers
 import forms.mappings.Mappings
 import play.api.data.{Form, Forms}
 
-import javax.inject.Inject
-
-class AddEstablisherFormProvider @Inject() extends Mappings {
+class AddEstablisherFormProvider extends Mappings {
 
   def apply(establishers: Seq[_]): Form[Option[Boolean]] = {
     if (establishers.isEmpty) {
