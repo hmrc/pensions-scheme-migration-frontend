@@ -29,7 +29,7 @@ import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.Reads._
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Call, Result}
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
@@ -136,7 +136,7 @@ class BenefitsInsurancePolicyControllerSpec extends ControllerSpecBase with Nunj
 
       jsonCaptor.getValue must containJson(expectedJson)
 
-      redirectLocation(result) mustBe Some(onwardCall)
+      redirectLocation(result) mustBe Some(onwardCall.url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

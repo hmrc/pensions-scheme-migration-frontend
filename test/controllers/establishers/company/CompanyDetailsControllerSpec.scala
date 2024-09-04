@@ -78,7 +78,7 @@ class CompanyDetailsControllerSpec extends ControllerSpecBase
   private val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
   private val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-  "CompanyDetailsController" must {
+  "establiser CompanyDetailsController" must {
     "return OK and the correct view for a GET" in {
       val getData = new FakeDataRetrievalAction(Some(ua))
 

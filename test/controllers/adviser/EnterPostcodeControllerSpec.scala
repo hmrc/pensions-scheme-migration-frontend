@@ -107,7 +107,7 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with NunjucksSuppor
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardCall)
+      redirectLocation(result) mustBe Some(onwardCall.url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

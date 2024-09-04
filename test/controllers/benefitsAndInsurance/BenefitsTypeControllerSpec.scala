@@ -137,7 +137,7 @@ class BenefitsTypeControllerSpec extends ControllerSpecBase with NunjucksSupport
 
       jsonCaptor.getValue must containJson(expectedJson)
 
-      redirectLocation(result) mustBe Some(onwardCall)
+      redirectLocation(result) mustBe Some(onwardCall.url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

@@ -121,7 +121,7 @@ class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSuppor
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardCall)
+      redirectLocation(result) mustBe Some(onwardCall.url)
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted when address is incomplete but NotFixable" in {
@@ -136,7 +136,7 @@ class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSuppor
       val result = route(application, httpPOSTRequest(httpPathPOST, incompleteValues)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardCall)
+      redirectLocation(result) mustBe Some(onwardCall.url)
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted when address is incomplete but fixable" in {
@@ -150,7 +150,7 @@ class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
       val result = route(application, httpPOSTRequest(httpPathPOST, fixableValues)).value
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardCall)
+      redirectLocation(result) mustBe Some(onwardCall.url)
 
     }
 

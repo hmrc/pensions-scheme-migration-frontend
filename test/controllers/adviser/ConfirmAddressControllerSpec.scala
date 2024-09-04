@@ -114,7 +114,7 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardCall)
+      redirectLocation(result) mustBe Some(onwardCall.url)
 
       verify(mockUserAnswersCacheConnector, times(1)).save(any(),jsonCaptor.capture())(any(), any())
       val expectedJson = Json.obj(

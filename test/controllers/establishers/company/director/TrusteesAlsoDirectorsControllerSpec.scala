@@ -121,7 +121,7 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
       val result: Future[Result] = controller(getData).onSubmit(0)(request)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardCall)
+      redirectLocation(result) mustBe Some(onwardCall.url)
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
       verify(mockDataPrefillService, times(1)).copyAllTrusteesToDirectors(any(), any(), any())
     }
@@ -134,7 +134,7 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
       val result: Future[Result] = controller(getData).onSubmit(0)(request)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardCall)
+      redirectLocation(result) mustBe Some(onwardCall.url)
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
       verify(mockDataPrefillService, never).copyAllTrusteesToDirectors(any(), any(), any())
     }
