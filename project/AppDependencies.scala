@@ -22,7 +22,6 @@ object AppDependencies {
     "uk.gov.hmrc"             %% "bootstrap-test-play-30"   % hmrcBootstrapVersion  % Test,
     "org.mockito"             %% "mockito-scala"            % "1.17.31"              % Test,
     "org.jsoup"               % "jsoup"                     % "1.17.2"              % Test,
-    "com.vladsch.flexmark"    % "flexmark-all"              % "0.64.8"              % "test, it",
     "org.scalatestplus"       %% "scalacheck-1-17"          % "3.2.18.0"            % Test,
     "org.pegdown"             % "pegdown"                   % "1.6.0"               % Test
   )
