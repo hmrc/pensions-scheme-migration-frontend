@@ -51,7 +51,7 @@ class TrusteeEnterUTRControllerSpec
 
   private val form: Form[ReferenceValue] = formProvider()
 
-  private val onwardRoute: Call = Call("GET", "")
+
 
   private val userAnswers: UserAnswers = ua.set(TrusteeNameId(0), personName).success.value
 
@@ -84,7 +84,7 @@ class TrusteeEnterUTRControllerSpec
                         ): TrusteeEnterUTRController =
     new TrusteeEnterUTRController(
       messagesApi               = messagesApi,
-      navigator                 = new FakeNavigator(desiredRoute = onwardRoute),
+      navigator                 = new FakeNavigator(desiredRoute = onwardCall),
       authenticate              = new FakeAuthAction(),
       getData                   = dataRetrievalAction,
       requireData               = new DataRequiredActionImpl,
@@ -155,7 +155,7 @@ class TrusteeEnterUTRControllerSpec
 
       status(result) mustBe SEE_OTHER
 
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result) mustBe Some(onwardCall.url)
 
       verify(mockUserAnswersCacheConnector, times(1))
         .save(any(), any())(any(), any())

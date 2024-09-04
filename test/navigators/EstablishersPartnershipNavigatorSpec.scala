@@ -30,7 +30,7 @@ import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes
 import play.api.mvc.Call
 import utils.Data.{partnershipDetails, ua}
-import utils.{Data, Enumerable, UserAnswers}
+import utils.{Data, Enumerable, UserAnswers, entityTypeError}
 
 class EstablishersPartnershipNavigatorSpec
   extends SpecBase
@@ -40,7 +40,7 @@ class EstablishersPartnershipNavigatorSpec
 
   private val navigator: CompoundNavigator = injector.instanceOf[CompoundNavigator]
   private val index: Index = Index(0)
-  private val addEstablisherDetailsPage: Call = controllers.establishers.partnership.routes.SpokeTaskListController.onPageLoad(index)
+  private val addEstablisherDetailsPage: Call = controllers.common.routes.SpokeTaskListController.onPageLoad(index, entities.Establisher, entities.Partnership)
   private val detailsUa: UserAnswers =
     ua.set(PartnershipDetailsId(0), partnershipDetails).success.value
   private def uaWithValue[A](idType:TypedIdentifier[A], idValue:A)(implicit writes: Writes[A]) =
@@ -59,10 +59,21 @@ class EstablishersPartnershipNavigatorSpec
   private def vat(mode: Mode = NormalMode): Call = detailsRoutes.VATController.onPageLoad(index, mode)
   private def havePaye(mode: Mode = NormalMode): Call = detailsRoutes.HavePAYEController.onPageLoad(index, mode)
   private def paye(mode: Mode = NormalMode): Call = detailsRoutes.PAYEController.onPageLoad(index, mode)
-  private val cyaDetails: Call = detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+  private val cyaDetails: Call = controllers.common.routes.CheckYourAnswersController.onPageLoad(index,
+    entities.Establisher,
+    entities.Partnership,
+    entities.Details)
 
-  private val cyaAddress: Call = addressRoutes.CheckYourAnswersController.onPageLoad(index)
+  private val cyaAddress: Call = controllers.common.routes.CheckYourAnswersController.onPageLoad(index,
+    entities.Establisher,
+    entities.Partnership,
+    entities.Address)
 
+  private val cyaContacts: Call = controllers.common.routes.CheckYourAnswersController.onPageLoad(index,
+    entities.Establisher,
+    entities.Partnership,
+    entities.Contacts)
+  
   private def enterPreviousPostcode(mode:Mode): Call = addressRoutes.EnterPreviousPostcodeController.onPageLoad(index,mode)
 
   private def tradingTime(mode:Mode): Call = addressRoutes.TradingTimeController.onPageLoad(index,mode)
@@ -81,7 +92,7 @@ class EstablishersPartnershipNavigatorSpec
         row(PartnershipDetailsId(index))(addEstablisherDetailsPage),
 
         row(EnterEmailId(index))(controllers.establishers.partnership.contact.routes.EnterPhoneController.onPageLoad(index, NormalMode)),
-        row(EnterPhoneId(index))(controllers.establishers.partnership.contact.routes.CheckYourAnswersController.onPageLoad(index)),
+        row(EnterPhoneId(index))(cyaContacts),
 
         row(HaveUTRId(index))(utr(), uaWithValue(HaveUTRId(index), true)),
         row(HaveUTRId(index))(noUtr(), uaWithValue(HaveUTRId(index), false)),
@@ -112,10 +123,9 @@ class EstablishersPartnershipNavigatorSpec
     def editNavigation: TableFor3[Identifier, UserAnswers, Call] =
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
-        row(PartnershipDetailsId(index))(controllers.routes.IndexController.onPageLoad),
 
-        row(EnterEmailId(index))(controllers.establishers.partnership.contact.routes.CheckYourAnswersController.onPageLoad(index)),
-        row(EnterPhoneId(index))(controllers.establishers.partnership.contact.routes.CheckYourAnswersController.onPageLoad(index)),
+        row(EnterEmailId(index))(cyaContacts),
+        row(EnterPhoneId(index))(cyaContacts),
 
         row(HaveUTRId(index))(utr(CheckMode), uaWithValue(HaveUTRId(index), true)),
         row(HaveUTRId(index))(noUtr(CheckMode), uaWithValue(HaveUTRId(index), false)),

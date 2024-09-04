@@ -91,14 +91,12 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe Call("GET", "")
+      redirectLocation(result).value mustBe onwardCall
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
       val seqAddresses = Seq(TolerantAddress(Some("a"),Some("b"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")))
 
-      when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
-        .thenReturn(routes.ConfirmAddressController.onPageLoad)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
       when(mockAddressLookupConnector.addressLookupByPostCode(any())(any(), any()))
@@ -109,7 +107,7 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with NunjucksSuppor
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.ConfirmAddressController.onPageLoad.url)
+      redirectLocation(result) mustBe Some(onwardCall)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

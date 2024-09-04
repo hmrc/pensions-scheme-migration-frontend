@@ -47,8 +47,6 @@ class OtherPartnersControllerSpec extends ControllerSpecBase
   with TryValues
   with BeforeAndAfterEach{
 
-  private val onwardRoute: Call =
-    Call("GET", "")
   private val formProvider: HasReferenceNumberFormProvider =
     new HasReferenceNumberFormProvider()
 
@@ -85,7 +83,7 @@ class OtherPartnersControllerSpec extends ControllerSpecBase
                         ): OtherPartnersController =
     new OtherPartnersController(
       messagesApi               = messagesApi,
-      navigator                 = new FakeNavigator(desiredRoute = onwardRoute),
+      navigator                 = new FakeNavigator(desiredRoute = onwardCall),
       authenticate              = new FakeAuthAction(),
       getData                   = dataRetrievalAction,
       requireData               = new DataRequiredActionImpl,
@@ -201,7 +199,7 @@ class OtherPartnersControllerSpec extends ControllerSpecBase
 
       status(result) mustBe SEE_OTHER
 
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result) mustBe Some(onwardCall.url)
 
       verify(mockUserAnswersCacheConnector, times(1))
         .save(any(), any())(any(), any())

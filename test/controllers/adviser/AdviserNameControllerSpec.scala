@@ -46,7 +46,7 @@ class AdviserNameControllerSpec extends ControllerSpecBase
   private val adviserName = "test"
   private val formProvider: AdviserNameFormProvider = new AdviserNameFormProvider()
   private val form = formProvider()
-  private val onwardRoute: Call = Call("GET", "")
+
   private val templateToBeRendered: String = "adviser/adviserName.njk"
 
   private val commonJson: JsObject = Json.obj("schemeName" -> Data.schemeName)
@@ -65,7 +65,7 @@ class AdviserNameControllerSpec extends ControllerSpecBase
                         ): AdviserNameController =
     new AdviserNameController(
       messagesApi = messagesApi,
-      navigator = new FakeNavigator(desiredRoute = onwardRoute),
+      navigator = new FakeNavigator(desiredRoute = onwardCall),
       authenticate = new FakeAuthAction(),
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl,
@@ -113,7 +113,7 @@ class AdviserNameControllerSpec extends ControllerSpecBase
       val result: Future[Result] = controller(getData).onSubmit(NormalMode)(request)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result) mustBe Some(onwardCall.url)
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
     }
 

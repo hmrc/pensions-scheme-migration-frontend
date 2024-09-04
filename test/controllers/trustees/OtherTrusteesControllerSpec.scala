@@ -43,7 +43,7 @@ class OtherTrusteesControllerSpec extends ControllerSpecBase
   with TryValues
   with BeforeAndAfterEach{
 
-  private val onwardRoute: Call = Call("GET", "")
+
   private val formProvider: HasReferenceNumberFormProvider =
     new HasReferenceNumberFormProvider()
 
@@ -76,7 +76,7 @@ class OtherTrusteesControllerSpec extends ControllerSpecBase
                         ): OtherTrusteesController =
     new OtherTrusteesController(
       messagesApi               = messagesApi,
-      navigator                 = new FakeNavigator(desiredRoute = onwardRoute),
+      navigator                 = new FakeNavigator(desiredRoute = onwardCall),
       authenticate              = new FakeAuthAction(),
       getData                   = dataRetrievalAction,
       requireData               = new DataRequiredActionImpl,
@@ -192,7 +192,7 @@ class OtherTrusteesControllerSpec extends ControllerSpecBase
 
       status(result) mustBe SEE_OTHER
 
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result) mustBe Some(onwardCall.url)
 
       verify(mockUserAnswersCacheConnector, times(1))
         .save(any(), any())(any(), any())

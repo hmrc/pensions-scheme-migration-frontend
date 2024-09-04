@@ -53,7 +53,7 @@ class TrusteesNavigatorSpec
   private val partnershipPage: Call = controllers.trustees.partnership.routes.PartnershipDetailsController.onPageLoad(index)
   private def trusteePhonePage(mode: Mode): Call = controllers.trustees.individual.contact.routes.EnterPhoneController.onPageLoad(index, mode)
   private val addTrusteePage: Call = controllers.trustees.routes.AddTrusteeController.onPageLoad
-  private val addTrusteeDetailsPage: Call = controllers.trustees.individual.routes.SpokeTaskListController.onPageLoad(index)
+  private val addTrusteeDetailsPage: Call = controllers.common.routes.SpokeTaskListController.onPageLoad(index, entities.Trustee, entities.Individual)
   private val taskListPage: Call = controllers.routes.TaskListController.onPageLoad
   private val otherTrusteesPage: Call = controllers.trustees.routes.OtherTrusteesController.onPageLoad
   private val trusteeKindPage: Call = routes.TrusteeKindController.onPageLoad(index)
@@ -70,9 +70,15 @@ class TrusteesNavigatorSpec
   private def noUtrPage(mode: Mode): Call =
     detailsRoutes.TrusteeNoUTRReasonController.onPageLoad(index, mode)
   private val cya: Call =
-    detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+    controllers.common.routes.CheckYourAnswersController.onPageLoad(index,
+      entities.Trustee,
+      entities.Individual,
+      entities.Details)
   private val cyaContact: Call =
-    controllers.trustees.individual.contact.routes.CheckYourAnswersController.onPageLoad(index)
+    controllers.common.routes.CheckYourAnswersController.onPageLoad(index,
+      entities.Trustee,
+      entities.Individual,
+      entities.Contacts)
 
 
   private def addressUAWithValue[A](idType:TypedIdentifier[A], idValue:A)(implicit writes: Writes[A]) =
@@ -86,7 +92,10 @@ class TrusteesNavigatorSpec
   val address = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
 
   private val cyaAddress: Call =
-    controllers.trustees.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
+    controllers.common.routes.CheckYourAnswersController.onPageLoad(index,
+      entities.Trustee,
+      entities.Individual,
+      entities.Address)
 
   private def enterPreviousPostcode(mode:Mode): Call =
     controllers.trustees.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index, mode)

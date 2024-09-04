@@ -52,8 +52,6 @@ class DirectorNoNINOReasonControllerSpec
     new ReasonFormProvider()
   private val form: Form[String] =
     formProvider(s"Enter a reason why ${personName.fullName} does not have a NINO")
-  private val onwardRoute: Call =
-    Call("GET", "")
   private val userAnswers: UserAnswers =
     ua.set(DirectorNameId(0,0), personName).success.value
   private val templateToBeRendered: String =
@@ -80,7 +78,7 @@ class DirectorNoNINOReasonControllerSpec
                         ): DirectorNoNINOReasonController =
     new DirectorNoNINOReasonController(
       messagesApi               = messagesApi,
-      navigator                 = new FakeNavigator(desiredRoute = onwardRoute),
+      navigator                 = new FakeNavigator(desiredRoute = onwardCall),
       authenticate              = new FakeAuthAction(),
       getData                   = dataRetrievalAction,
       requireData               = new DataRequiredActionImpl,
@@ -166,7 +164,7 @@ class DirectorNoNINOReasonControllerSpec
 
       status(result) mustBe SEE_OTHER
 
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result) mustBe Some(onwardCall.url)
 
       verify(mockUserAnswersCacheConnector, times(1))
         .save(any(), any())(any(), any())

@@ -47,7 +47,7 @@ class DirectorAlsoTrusteeControllerSpec extends ControllerSpecBase
   private val personName: PersonName = PersonName("Jane", "Doe")
   private val formProvider: DataPrefillRadioFormProvider = new DataPrefillRadioFormProvider()
   private val form = formProvider("")
-  private val onwardRoute: Call = Call("GET", "")
+
   private val userAnswers: UserAnswers = ua.set(TrusteeNameId(0), personName).success.value
   private val templateToBeRendered: String = "dataPrefillRadio.njk"
   private val mockDataPrefillService = mock[DataPrefillService]
@@ -72,7 +72,7 @@ class DirectorAlsoTrusteeControllerSpec extends ControllerSpecBase
                         ): DirectorAlsoTrusteeController =
     new DirectorAlsoTrusteeController(
       messagesApi = messagesApi,
-      navigator = new FakeNavigator(desiredRoute = onwardRoute),
+      navigator = new FakeNavigator(desiredRoute = onwardCall),
       authenticate = new FakeAuthAction(),
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl,
@@ -121,7 +121,7 @@ class DirectorAlsoTrusteeControllerSpec extends ControllerSpecBase
       val result: Future[Result] = controller(getData).onSubmit(0)(request)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result) mustBe Some(onwardCall.url)
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
       verify(mockDataPrefillService, times(1)).copyAllDirectorsToTrustees(any(), any(), any())
     }
@@ -134,7 +134,7 @@ class DirectorAlsoTrusteeControllerSpec extends ControllerSpecBase
       val result: Future[Result] = controller(getData).onSubmit(0)(request)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result) mustBe Some(onwardCall.url)
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
       verify(mockDataPrefillService, never).copyAllDirectorsToTrustees(any(), any(), any())
     }

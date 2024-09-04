@@ -58,9 +58,10 @@ class EstablishersPartnerNavigatorSpec
     details.routes.PartnerEnterUTRController.onPageLoad(establisherIndex,partnerIndex, mode)
   private def noUtrPage(mode: Mode): Call =
     details.routes.PartnerNoUTRReasonController.onPageLoad(establisherIndex,partnerIndex, mode)
-  private val cya: Call =
-    details.routes.CheckYourAnswersController.onPageLoad(establisherIndex,partnerIndex)
-
+  private val cya: Call = controllers.common.routes.CheckYourAnswersController.onPageLoadWithRepresentative(establisherIndex,
+    entities.Establisher,
+    entities.Partnership,
+    partnerIndex)
   private def addressUAWithValue[A](idType:TypedIdentifier[A], idValue:A)(implicit writes: Writes[A]) =
     detailsUa.set(idType, idValue).toOption
 

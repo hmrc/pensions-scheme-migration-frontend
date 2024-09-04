@@ -51,8 +51,6 @@ class EstablisherDOBControllerSpec
     new DOBFormProvider()
   private val form: Form[LocalDate] =
     formProvider()
-  private val onwardRoute: Call =
-    Call("GET", "")
   private val personName: PersonName =
     PersonName("Jane", "Doe")
   private val userAnswers: UserAnswers =
@@ -78,7 +76,7 @@ class EstablisherDOBControllerSpec
                         ): EstablisherDOBController =
     new EstablisherDOBController(
       messagesApi               = messagesApi,
-      navigator                 = new FakeNavigator(desiredRoute = onwardRoute),
+      navigator                 = new FakeNavigator(desiredRoute = onwardCall),
       authenticate              = new FakeAuthAction(),
       getData                   = dataRetrievalAction,
       requireData               = new DataRequiredActionImpl,
@@ -174,7 +172,7 @@ class EstablisherDOBControllerSpec
 
       status(result) mustBe SEE_OTHER
 
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result) mustBe Some(onwardCall.url)
 
       verify(mockUserAnswersCacheConnector, times(1))
         .save(any(), any())(any(), any())

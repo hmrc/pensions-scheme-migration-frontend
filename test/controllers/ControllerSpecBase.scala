@@ -22,15 +22,19 @@ import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import connectors.{EmailConnector, LegacySchemeDetailsConnector, MinimalDetailsConnector}
 import controllers.actions._
+import controllers.establishers.company.routes
+import identifiers.establishers.company.AddCompanyDirectorsId
+import models.NormalMode
 import navigators.CompoundNavigator
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.mockito.{Mockito, MockitoSugar}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.{ArgumentMatchers, Mockito, MockitoSugar}
 import org.scalatest.BeforeAndAfterEach
 import play.api.http.HeaderNames
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
 import play.api.test.Helpers.{GET, POST}
 import play.api.test.{FakeHeaders, FakeRequest}
 import services.DataUpdateService
@@ -44,6 +48,7 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
   implicit val global: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
   val cacheMapId = "id"
+  val onwardCall: Call = Call("GET", "onwardCall")
 
   def asDocument(htmlAsString: String): Document = Jsoup.parse(htmlAsString)
 
@@ -51,6 +56,8 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
     Mockito.reset(mockRenderer)
     Mockito.reset(mockUserAnswersCacheConnector)
     Mockito.reset(mockCompoundNavigator)
+    when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
+      .thenReturn(onwardCall)
   }
 
   protected def mockDataRetrievalAction: DataRetrievalAction = mock[DataRetrievalAction]

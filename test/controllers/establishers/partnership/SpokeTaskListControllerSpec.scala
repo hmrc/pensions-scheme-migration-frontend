@@ -18,15 +18,16 @@ package controllers.establishers.partnership
 
 import controllers.ControllerSpecBase
 import controllers.actions._
+import controllers.common.SpokeTaskListController
 import helpers.SpokeCreationService
 import identifiers.establishers.partnership.PartnershipDetailsId
 import matchers.JsonMatchers
-import models.PartnershipDetails
+import models.{PartnershipDetails, entities}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.Result
+import play.api.mvc.{MessagesControllerComponents, Result}
 import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
@@ -62,7 +63,6 @@ class SpokeTaskListControllerSpec
                           dataRetrievalAction: DataRetrievalAction
                         ): SpokeTaskListController =
     new SpokeTaskListController(
-      messagesApi          = messagesApi,
       authenticate         = new FakeAuthAction(),
       getData              = dataRetrievalAction,
       requireData          = new DataRequiredActionImpl,
@@ -80,7 +80,7 @@ class SpokeTaskListControllerSpec
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
-      val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(userAnswers))
+      val result: Future[Result] = controller(getData).onPageLoad(0, entities.Establisher, entities.Partnership)(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
 

@@ -45,7 +45,7 @@ class VATControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(index), companyDetails).success.value
 
   private val formProvider: VATFormProvider = new VATFormProvider()
-  private val onwardRoute: Call = Call("GET", "")
+
   private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
 
   private val commonJson: JsObject =
@@ -59,7 +59,7 @@ class VATControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
     )
 
   private def controller(dataRetrievalAction: DataRetrievalAction): VATController =
-    new VATController(messagesApi, new FakeNavigator(desiredRoute = onwardRoute), new FakeAuthAction(), dataRetrievalAction,
+    new VATController(messagesApi, new FakeNavigator(desiredRoute = onwardCall), new FakeAuthAction(), dataRetrievalAction,
       new DataRequiredActionImpl, formProvider, controllerComponents, mockUserAnswersCacheConnector, new Renderer(mockAppConfig, mockRenderer))
 
   override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
@@ -109,7 +109,7 @@ class VATControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
       val result: Future[Result] = controller(getData).onSubmit(0, NormalMode)(request)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result) mustBe Some(onwardCall.url)
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
     }
 

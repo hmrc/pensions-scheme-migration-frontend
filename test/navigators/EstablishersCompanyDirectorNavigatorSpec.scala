@@ -59,7 +59,7 @@ class EstablishersCompanyDirectorNavigatorSpec
   private def noUtrPage(mode: Mode): Call =
     details.routes.DirectorNoUTRReasonController.onPageLoad(establisherIndex,directorIndex, mode)
   private val cya: Call =
-    details.routes.CheckYourAnswersController.onPageLoad(establisherIndex,directorIndex)
+    controllers.common.routes.CheckYourAnswersController.onPageLoadWithRepresentative(establisherIndex, entities.Establisher, entities.Company, directorIndex)
 
   private def addressUAWithValue[A](idType:TypedIdentifier[A], idValue:A)(implicit writes: Writes[A]) =
     detailsUa.set(idType, idValue).toOption

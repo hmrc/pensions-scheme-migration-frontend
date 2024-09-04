@@ -52,8 +52,6 @@ class PartnerHasUTRControllerSpec
     new HasReferenceNumberFormProvider()
   private val form: Form[Boolean] =
     formProvider("Select Yes if Jane Doe has a Unique Taxpayer Reference")
-  private val onwardRoute: Call =
-    Call("GET", "")
   private val userAnswers: UserAnswers =
     ua.set(PartnerNameId(0,0), personName).success.value
   private val templateToBeRendered: String =
@@ -76,7 +74,7 @@ class PartnerHasUTRControllerSpec
                         ): PartnerHasUTRController =
     new PartnerHasUTRController(
       messagesApi               = messagesApi,
-      navigator                 = new FakeNavigator(desiredRoute = onwardRoute),
+      navigator                 = new FakeNavigator(desiredRoute = onwardCall),
       authenticate              = new FakeAuthAction(),
       getData                   = dataRetrievalAction,
       requireData               = new DataRequiredActionImpl,
@@ -169,7 +167,7 @@ class PartnerHasUTRControllerSpec
 
       status(result) mustBe SEE_OTHER
 
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result) mustBe Some(onwardCall.url)
 
       verify(mockUserAnswersCacheConnector, times(1))
         .save(any(), any())(any(), any())

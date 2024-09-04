@@ -51,8 +51,6 @@ class DirectorDOBControllerSpec
     new DOBFormProvider()
   private val form: Form[LocalDate] =
     formProvider()
-  private val onwardRoute: Call =
-    Call("GET", "")
   private val personName: PersonName =
     PersonName("Jane", "Doe")
   private val userAnswers: UserAnswers =
@@ -78,7 +76,7 @@ class DirectorDOBControllerSpec
                         ): DirectorDOBController =
     new DirectorDOBController(
       messagesApi               = messagesApi,
-      navigator                 = new FakeNavigator(desiredRoute = onwardRoute),
+      navigator                 = new FakeNavigator(desiredRoute = onwardCall),
       authenticate              = new FakeAuthAction(),
       getData                   = dataRetrievalAction,
       requireData               = new DataRequiredActionImpl,
@@ -175,7 +173,7 @@ class DirectorDOBControllerSpec
 
       status(result) mustBe SEE_OTHER
 
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result) mustBe Some(onwardCall.url)
 
       verify(mockUserAnswersCacheConnector, times(1))
         .save(any(), any())(any(), any())

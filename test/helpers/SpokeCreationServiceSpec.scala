@@ -45,6 +45,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
+import play.api.mvc.Call
 import services.DataPrefillService
 import utils.Data.ua
 import utils.{Data, Enumerable}
@@ -59,6 +60,11 @@ class SpokeCreationServiceSpec
     with TryValues
     with MockitoSugar
     with Enumerable.Implicits {
+
+  private val cyaNoIndex = controllers.common.routes.CheckYourAnswersController.onPageLoad(0,
+    _,
+    _,
+    _)
 
   private val mockDataPrefillService = mock[DataPrefillService]
   val spokeCreationService = new SpokeCreationService(mockDataPrefillService)
@@ -208,7 +214,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = SpokeTaskListLink(
               text = "Change details for test",
-              target = controllers.establishers.company.details.routes.CheckYourAnswersController.onPageLoad(0).url,
+              target = cyaNoIndex(entities.Establisher, entities.Company, entities.Details).url,
               visuallyHiddenText = None
             ),
             isCompleted = Some(false)
@@ -216,7 +222,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = SpokeTaskListLink(
               text = "Change address for test",
-              target = controllers.establishers.company.address.routes.CheckYourAnswersController.onPageLoad(0).url,
+              target = cyaNoIndex(entities.Establisher, entities.Company, entities.Address).url,
               visuallyHiddenText = None
             ),
             isCompleted = Some(false)
@@ -224,7 +230,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = SpokeTaskListLink(
               text = "Change contact details for test",
-              target = controllers.establishers.company.contact.routes.CheckYourAnswersController.onPageLoad(0).url,
+              target = cyaNoIndex(entities.Establisher, entities.Company, entities.Contacts).url,
               visuallyHiddenText = None
             ),
             isCompleted = Some(false)
@@ -264,7 +270,7 @@ class SpokeCreationServiceSpec
         EntitySpoke(
           link = SpokeTaskListLink(
             text = "Change details for test",
-            target = controllers.establishers.company.details.routes.CheckYourAnswersController.onPageLoad(0).url,
+            target = cyaNoIndex(entities.Establisher, entities.Company, entities.Details).url,
             visuallyHiddenText = None
           ),
           isCompleted = Some(false)
@@ -272,7 +278,7 @@ class SpokeCreationServiceSpec
         EntitySpoke(
           link = SpokeTaskListLink(
             text = "Change address for test",
-            target = controllers.establishers.company.address.routes.CheckYourAnswersController.onPageLoad(0).url,
+            target = cyaNoIndex(entities.Establisher, entities.Company, entities.Address).url,
             visuallyHiddenText = None
           ),
           isCompleted = Some(false)
@@ -280,7 +286,7 @@ class SpokeCreationServiceSpec
         EntitySpoke(
           link = SpokeTaskListLink(
             text = "Change contact details for test",
-            target = controllers.establishers.company.contact.routes.CheckYourAnswersController.onPageLoad(0).url,
+            target = cyaNoIndex(entities.Establisher, entities.Company, entities.Contacts).url,
             visuallyHiddenText = None
           ),
           isCompleted = Some(false)
@@ -382,7 +388,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = SpokeTaskListLink(
               text = "Change details for test",
-              target = controllers.establishers.partnership.details.routes.CheckYourAnswersController.onPageLoad(0).url,
+              target = cyaNoIndex(entities.Establisher, entities.Partnership, entities.Details).url,
               visuallyHiddenText = None
             ),
             isCompleted = Some(false)
@@ -390,7 +396,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = SpokeTaskListLink(
               text = "Change address for test",
-              target = controllers.establishers.partnership.address.routes.CheckYourAnswersController.onPageLoad(0).url,
+              target = cyaNoIndex(entities.Establisher, entities.Partnership, entities.Address).url,
               visuallyHiddenText = None
             ),
             isCompleted = Some(false)
@@ -398,7 +404,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = SpokeTaskListLink(
               text = "Change contact details for test",
-              target = controllers.establishers.partnership.contact.routes.CheckYourAnswersController.onPageLoad(0).url,
+              target = cyaNoIndex(entities.Establisher, entities.Partnership, entities.Contacts).url,
               visuallyHiddenText = None
             ),
             isCompleted = Some(false)
@@ -485,7 +491,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = SpokeTaskListLink(
               text = "Change details for a b",
-              target = controllers.trustees.individual.details.routes.CheckYourAnswersController.onPageLoad(0).url,
+              target = cyaNoIndex(entities.Trustee, entities.Individual, entities.Details).url,
               visuallyHiddenText = None
             ),
             isCompleted = Some(true)
@@ -493,7 +499,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = SpokeTaskListLink(
               text = "Change address for a b",
-              target = controllers.trustees.individual.address.routes.CheckYourAnswersController.onPageLoad(0).url,
+              target = cyaNoIndex(entities.Trustee, entities.Individual, entities.Address).url,
               visuallyHiddenText = None
             ),
             isCompleted = Some(false)
@@ -501,7 +507,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = SpokeTaskListLink(
               text = "Change contact details for a b",
-              target = controllers.trustees.individual.contact.routes.CheckYourAnswersController.onPageLoad(0).url,
+              target = cyaNoIndex(entities.Trustee, entities.Individual, entities.Contacts).url,
               visuallyHiddenText = None
             ),
             isCompleted = Some(true)
@@ -575,7 +581,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = SpokeTaskListLink(
               text = "Change details for test",
-              target = controllers.trustees.company.details.routes.CheckYourAnswersController.onPageLoad(0).url,
+              target = cyaNoIndex(entities.Trustee, entities.Company, entities.Details).url,
               visuallyHiddenText = None
             ),
             isCompleted = Some(false)
@@ -627,7 +633,7 @@ class SpokeCreationServiceSpec
             EntitySpoke(
               link = SpokeTaskListLink(
                 text = "Change details for test",
-                target = controllers.trustees.company.details.routes.CheckYourAnswersController.onPageLoad(0).url,
+                target =cyaNoIndex(entities.Trustee, entities.Company, entities.Details).url,
                 visuallyHiddenText = None
               ),
               isCompleted = Some(true)
@@ -729,7 +735,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = SpokeTaskListLink(
               text = "Change details for a b",
-              target = controllers.trustees.partnership.details.routes.CheckYourAnswersController.onPageLoad(0).url,
+              target = cyaNoIndex(entities.Trustee, entities.Partnership, entities.Details).url,
               visuallyHiddenText = None
             ),
             isCompleted = Some(true)
@@ -737,7 +743,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = SpokeTaskListLink(
               text = "Change address for a b",
-              target = controllers.trustees.partnership.address.routes.CheckYourAnswersController.onPageLoad(0).url,
+              target = cyaNoIndex(entities.Trustee, entities.Partnership, entities.Address).url,
               visuallyHiddenText = None
             ),
             isCompleted = Some(true)
@@ -745,7 +751,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = SpokeTaskListLink(
               text = "Change contact details for a b",
-              target = controllers.trustees.partnership.contact.routes.CheckYourAnswersController.onPageLoad(0).url,
+              target = cyaNoIndex(entities.Trustee, entities.Partnership, entities.Contacts).url,
               visuallyHiddenText = None
             ),
             isCompleted = Some(true)

@@ -44,7 +44,7 @@ class EstablishersCompanyNavigatorSpec
 
   private val index: Index = Index(0)
 
-  private val addEstablisherDetailsPage: Call = controllers.establishers.company.routes.SpokeTaskListController.onPageLoad(index)
+  private val addEstablisherDetailsPage: Call = controllers.common.routes.SpokeTaskListController.onPageLoad(index, entities.Establisher, entities.Company)
   private val detailsUa: UserAnswers =
     ua.set(CompanyDetailsId(0), companyDetails).success.value
 
@@ -67,9 +67,16 @@ class EstablishersCompanyNavigatorSpec
   private def vat(mode: Mode = NormalMode): Call = detailsRoutes.VATController.onPageLoad(index, mode)
   private def havePaye(mode: Mode = NormalMode): Call = detailsRoutes.HavePAYEController.onPageLoad(index, mode)
   private def paye(mode: Mode = NormalMode): Call = detailsRoutes.PAYEController.onPageLoad(index, mode)
-  private val cyaDetails: Call = detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+  private val cyaDetails: Call = controllers.common.routes.CheckYourAnswersController.onPageLoad(index,
+    entities.Establisher,
+    entities.Company,
+    entities.Details)
 
-  private val cyaAddress: Call = addressRoutes.CheckYourAnswersController.onPageLoad(index)
+
+  private val cyaAddress: Call = controllers.common.routes.CheckYourAnswersController.onPageLoad(index,
+    entities.Establisher,
+    entities.Company,
+    entities.Address)
 
   private def enterPreviousPostcode(mode:Mode): Call = addressRoutes.EnterPreviousPostcodeController.onPageLoad(index,mode)
 
@@ -91,7 +98,10 @@ class EstablishersCompanyNavigatorSpec
       .onPageLoad(index,directorSize, mode)
 
   private val cyaContact: Call =
-    controllers.establishers.company.contact.routes.CheckYourAnswersController.onPageLoad(index)
+    controllers.common.routes.CheckYourAnswersController.onPageLoad(index,
+      entities.Establisher,
+      entities.Company,
+      entities.Contacts)
 
   private val johnDoe = PersonName("John", "Doe")
 
@@ -153,7 +163,6 @@ class EstablishersCompanyNavigatorSpec
     def editNavigation: TableFor3[Identifier, UserAnswers, Call] =
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
-        row(CompanyDetailsId(index))(controllers.routes.IndexController.onPageLoad),
         row(HaveCompanyNumberId(index))(companyNumber(CheckMode), uaWithValue(HaveCompanyNumberId(index), true)),
         row(HaveCompanyNumberId(index))(noCompanyNumber(CheckMode), uaWithValue(HaveCompanyNumberId(index), false)),
         row(CompanyNumberId(index))(cyaDetails),

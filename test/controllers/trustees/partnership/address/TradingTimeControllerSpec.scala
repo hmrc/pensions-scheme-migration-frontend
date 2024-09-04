@@ -116,15 +116,13 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe Call("GET", "").url
+      redirectLocation(result).value mustBe onwardCall.url
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
 
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
-        .thenReturn(routes.CheckYourAnswersController.onPageLoad(0))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -140,7 +138,7 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
       jsonCaptor.getValue must containJson(expectedJson)
 
-      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad(0).url)
+      redirectLocation(result) mustBe Some(onwardCall.url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

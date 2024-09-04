@@ -49,7 +49,7 @@ class EnterPhoneControllerSpec extends ControllerSpecBase
   private val phone = "777"
   private val formProvider: PhoneFormProvider = new PhoneFormProvider()
   private val form = formProvider(Message("messages__error__common__phone__required"),Some(Message("messages__phone__invalid")))
-  private val onwardRoute: Call = Call("GET", "")
+
   private val userAnswers: UserAnswers = ua.set(AdviserNameId, advisorName).success.value
   private val templateToBeRendered: String = "phone.njk"
 
@@ -74,7 +74,7 @@ class EnterPhoneControllerSpec extends ControllerSpecBase
                         ): EnterPhoneController =
     new EnterPhoneController(
       messagesApi = messagesApi,
-      navigator = new FakeNavigator(desiredRoute = onwardRoute),
+      navigator = new FakeNavigator(desiredRoute = onwardCall),
       authenticate = new FakeAuthAction(),
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl,
@@ -125,7 +125,7 @@ class EnterPhoneControllerSpec extends ControllerSpecBase
       val result: Future[Result] = controller(getData).onSubmit(NormalMode)(request)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result) mustBe Some(onwardCall.url)
       verify(mockUserAnswersCacheConnector, times(1))
         .save(any(), any())(any(), any())
     }

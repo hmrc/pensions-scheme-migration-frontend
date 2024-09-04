@@ -29,7 +29,7 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.Result
+import play.api.mvc.{Call, Result}
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
@@ -101,13 +101,11 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe Call("GET", "").url
+      redirectLocation(result).value mustBe onwardCall.url
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
 
-      when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
-        .thenReturn(routes.CheckYourAnswersController.onPageLoad)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -116,7 +114,7 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad.url)
+      redirectLocation(result) mustBe Some(onwardCall)
 
       verify(mockUserAnswersCacheConnector, times(1)).save(any(),jsonCaptor.capture())(any(), any())
       val expectedJson = Json.obj(

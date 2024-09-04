@@ -47,7 +47,7 @@ class HaveUTRControllerSpec extends ControllerSpecBase with NunjucksSupport with
   private val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
   private val formProvider: HasReferenceNumberFormProvider = new HasReferenceNumberFormProvider()
   private val form: Form[Boolean] = formProvider(Message("messages__genericHasUtr__error__required", partnershipDetails.partnershipName))
-  private val onwardRoute: Call = Call("GET", "")
+
   private val templateToBeRendered: String = "hasReferenceValueWithHint.njk"
 
   private val commonJson: JsObject =
@@ -61,7 +61,7 @@ class HaveUTRControllerSpec extends ControllerSpecBase with NunjucksSupport with
     )
 
   private def controller(dataRetrievalAction: DataRetrievalAction): HaveUTRController =
-    new HaveUTRController(messagesApi, new FakeNavigator(desiredRoute = onwardRoute), new FakeAuthAction(), dataRetrievalAction,
+    new HaveUTRController(messagesApi, new FakeNavigator(desiredRoute = onwardCall), new FakeAuthAction(), dataRetrievalAction,
       new DataRequiredActionImpl, formProvider, controllerComponents, mockUserAnswersCacheConnector, new Renderer(mockAppConfig, mockRenderer))
 
   override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
@@ -109,7 +109,7 @@ class HaveUTRControllerSpec extends ControllerSpecBase with NunjucksSupport with
       val result: Future[Result] = controller(getData).onSubmit(0, NormalMode)(request)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result) mustBe Some(onwardCall.url)
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
     }
 

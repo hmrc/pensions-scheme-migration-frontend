@@ -29,7 +29,7 @@ import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.Reads._
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.Result
+import play.api.mvc.{Call, Result}
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
@@ -112,7 +112,7 @@ class BenefitsInsurancePolicyControllerSpec extends ControllerSpecBase with Nunj
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.IndexController.onPageLoad.url
+      redirectLocation(result).value mustBe Call("GET", "").url
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
@@ -121,8 +121,6 @@ class BenefitsInsurancePolicyControllerSpec extends ControllerSpecBase with Nunj
         BenefitsInsurancePolicyId.toString -> "abcdef"
       )
 
-      when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
-        .thenReturn(routes.CheckYourAnswersController.onPageLoad)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -138,7 +136,7 @@ class BenefitsInsurancePolicyControllerSpec extends ControllerSpecBase with Nunj
 
       jsonCaptor.getValue must containJson(expectedJson)
 
-      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad.url)
+      redirectLocation(result) mustBe Some(onwardCall)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

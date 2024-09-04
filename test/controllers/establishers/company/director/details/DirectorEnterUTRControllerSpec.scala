@@ -52,8 +52,6 @@ class DirectorEnterUTRControllerSpec
     new UTRFormProvider()
   private val form: Form[ReferenceValue] =
     formProvider()
-  private val onwardRoute: Call =
-    Call("GET", "")
   private val userAnswers: UserAnswers =
     ua.set(DirectorNameId(0,0), personName).success.value
   private val templateToBeRendered: String =
@@ -85,7 +83,7 @@ class DirectorEnterUTRControllerSpec
                         ): DirectorEnterUTRController =
     new DirectorEnterUTRController(
       messagesApi               = messagesApi,
-      navigator                 = new FakeNavigator(desiredRoute = onwardRoute),
+      navigator                 = new FakeNavigator(desiredRoute = onwardCall),
       authenticate              = new FakeAuthAction(),
       getData                   = dataRetrievalAction,
       requireData               = new DataRequiredActionImpl,
@@ -171,7 +169,7 @@ class DirectorEnterUTRControllerSpec
 
       status(result) mustBe SEE_OTHER
 
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result) mustBe Some(onwardCall.url)
 
       verify(mockUserAnswersCacheConnector, times(1))
         .save(any(), any())(any(), any())

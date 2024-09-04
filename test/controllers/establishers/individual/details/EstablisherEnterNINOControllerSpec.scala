@@ -52,8 +52,6 @@ class EstablisherEnterNINOControllerSpec
     new NINOFormProvider()
   private val form: Form[ReferenceValue] =
     formProvider(personName.fullName)
-  private val onwardRoute: Call =
-    Call("GET", "")
   private val userAnswers: UserAnswers =
     ua.set(EstablisherNameId(0), personName).success.value
   private val templateToBeRendered: String =
@@ -81,7 +79,7 @@ class EstablisherEnterNINOControllerSpec
                         ): EstablisherEnterNINOController =
     new EstablisherEnterNINOController(
       messagesApi               = messagesApi,
-      navigator                 = new FakeNavigator(desiredRoute = onwardRoute),
+      navigator                 = new FakeNavigator(desiredRoute = onwardCall),
       authenticate              = new FakeAuthAction(),
       getData                   = dataRetrievalAction,
       requireData               = new DataRequiredActionImpl,
@@ -166,7 +164,7 @@ class EstablisherEnterNINOControllerSpec
 
       status(result) mustBe SEE_OTHER
 
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result) mustBe Some(onwardCall.url)
 
       verify(mockUserAnswersCacheConnector, times(1))
         .save(any(), any())(any(), any())
