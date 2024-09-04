@@ -8,8 +8,11 @@ GET         /:pensionManagementType/:index/:entityType/:journeyType/check-your-a
 GET         /:pensionManagementType/:index/company/director/:directorIndex/details/check-your-answers      controllers.common.CheckYourAnswersController.onPageLoadWithRepresentative(index: Index, pensionManagementType: PensionManagementType, entityType: EntityType = Company, directorIndex: Index)
 GET         /:pensionManagementType/:index/partnership/partner/:partnerIndex/details/check-your-answers    controllers.common.CheckYourAnswersController.onPageLoadWithRepresentative(index: Index, pensionManagementType: PensionManagementType, entityType: EntityType = Partnership, partnerIndex: Index)
 
+
 GET         /language/:lang                                    controllers.LanguageSwitchController.switchToLanguage(lang: String)
 GET         /assets/*file                                      controllers.Assets.versioned(path = "/public", file: Asset)
+
+GET         /this-service-has-been-reset                       controllers.SessionExpiredController.onPageLoad()
 
 GET         /unauthorised                                      controllers.UnauthorisedController.onPageLoad
 GET         /you-need-to-register                              controllers.YouNeedToRegisterController.onPageLoad
