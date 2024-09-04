@@ -23,7 +23,6 @@ import utils.{Enumerable, WithName}
 
 sealed trait EstablisherKind
 
-//TODO Remove
 object EstablisherKind {
   val values: Seq[EstablisherKind] = Seq(
     Company, Individual, Partnership

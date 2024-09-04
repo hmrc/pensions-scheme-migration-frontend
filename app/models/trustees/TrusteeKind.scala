@@ -23,7 +23,6 @@ import utils.{Enumerable, WithName}
 
 sealed trait TrusteeKind
 
-//TODO: REMOVE
 object TrusteeKind {
   val values: Seq[TrusteeKind] = Seq(
     Company, Individual, Partnership
