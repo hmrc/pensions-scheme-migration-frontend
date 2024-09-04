@@ -19,10 +19,10 @@ package models
 import play.api.mvc.{JavascriptLiteral, PathBindable}
 
 object entities {
-  class NamedEntity(val strName: String)
-  class PensionManagementType(strName: String) extends NamedEntity(strName)
-  final object Establisher extends PensionManagementType("establisher")
-  final object Trustee extends PensionManagementType("trustee")
+  sealed abstract class NamedEntity(val strName: String)
+  sealed abstract class PensionManagementType(strName: String) extends NamedEntity(strName)
+  case object Establisher extends PensionManagementType("establisher")
+  case object Trustee extends PensionManagementType("trustee")
 
   val pensionManagementTypes: Seq[PensionManagementType] = Seq(
     Establisher,
@@ -32,10 +32,10 @@ object entities {
   implicit def managementTypePathBinder(implicit stringBinder: PathBindable[String]): PathBindable[PensionManagementType] =
     namedEntityPathBindable(pensionManagementTypes)
 
-  class EntityType(strName: String) extends NamedEntity(strName)
-  final object Company extends EntityType("company")
-  final object Individual extends EntityType("individual")
-  final object Partnership extends EntityType("partnership")
+  sealed abstract class EntityType(strName: String) extends NamedEntity(strName)
+  case object Company extends EntityType("company")
+  case object Individual extends EntityType("individual")
+  case object Partnership extends EntityType("partnership")
 
   val entityTypes: Seq[EntityType] = Seq(
     Company,
@@ -47,10 +47,10 @@ object entities {
   implicit def entityTypePathBinder(implicit stringBinder: PathBindable[String]): PathBindable[EntityType] =
     namedEntityPathBindable(entityTypes)
 
-  class JourneyType(strName: String) extends NamedEntity(strName)
-  final object Address extends JourneyType("address")
-  final object Contacts extends JourneyType("contacts")
-  final object Details extends JourneyType("details")
+  sealed abstract class JourneyType(strName: String) extends NamedEntity(strName)
+  case object Address extends JourneyType("address")
+  case object Contacts extends JourneyType("contacts")
+  case object Details extends JourneyType("details")
 
   val journeyTypes: Seq[JourneyType] = Seq(
     Address,
