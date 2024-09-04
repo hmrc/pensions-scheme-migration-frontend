@@ -65,5 +65,10 @@ lazy val microservice = Project(appName, file("."))
     ScoverageKeys.coverageHighlighting := true,
     retrieveManaged := true,
     update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
-  ).configs(IntegrationTest)
+  )
 
+lazy val testSettings: Seq[Def.Setting[_]] = Seq(
+  javaOptions ++= Seq(
+    "-Dconfig.resource=test.application.conf"
+  )
+)
