@@ -28,7 +28,6 @@ import play.api.mvc.{AnyContent, Call, Result}
 import renderer.Renderer
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.CountryOptions
 
 import scala.concurrent.{ExecutionContext, Future}
 

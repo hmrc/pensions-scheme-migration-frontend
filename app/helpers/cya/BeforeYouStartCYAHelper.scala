@@ -54,7 +54,7 @@ class BeforeYouStartCYAHelper extends CYAHelperForTwirl with CountriesHelper {
         )
         case Some(Other(details)) if details.nonEmpty => SummaryListRow(
           key = KeyViewModel(HtmlContent(Messages("messages__cya__scheme_type", schemeName))).withCssClass("govuk-!-width-one-half"),
-          value = ValueViewModel(HtmlContent(details)).withCssClass("govuk-!-width-one-third"),
+          value = ValueViewModel(HtmlContent(Messages(details))).withCssClass("govuk-!-width-one-third"),
           actions = actionChange(Some(url), Some(visuallyHiddenText))
         )
         case Some(value) if request.userAnswers.get(IsSchemeTypeOtherId).nonEmpty => SummaryListRow(

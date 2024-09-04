@@ -90,7 +90,7 @@ class EstablishersNavigatorSpec
   private val cyaContact: Call = controllers.common.routes.CheckYourAnswersController.onPageLoad(index,
     entities.Establisher,
     entities.Individual,
-    entities.Address)
+    entities.Contacts)
 
   "EstablishersNavigator" when {
     def navigation: TableFor3[Identifier, UserAnswers, Call] =

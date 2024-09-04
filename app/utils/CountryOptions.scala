@@ -18,7 +18,6 @@ package utils
 
 import com.typesafe.config.ConfigException
 import config.AppConfig
-import models.Address
 import play.api.Environment
 import play.api.libs.json.Json
 

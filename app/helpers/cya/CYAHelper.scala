@@ -55,6 +55,7 @@ trait CYAHelper {
   protected def answerAddressTransform(implicit messages: Messages): Option[Address => Html] = Some(opt => addressAnswer(opt))
 
   def booleanToText: Boolean => String = bool => if (bool) "site.yes" else "site.no"
+  def booleanToContent: Boolean => Content = bool => if (bool) msg"site.yes" else msg"site.no"
 
   private val attachDynamicIndex: (Map[String, String], Int) => Map[String, String] = (attributeMap, index) => {
     val attribute = attributeMap.getOrElse("id", s"add")

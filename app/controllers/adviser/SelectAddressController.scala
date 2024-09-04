@@ -25,7 +25,6 @@ import controllers.adviser.routes.ConfirmAddressController
 import forms.address.AddressListFormProvider
 import identifiers.adviser.{AddressId, AddressListId, AdviserNameId, EnterPostCodeId}
 import identifiers.beforeYouStart.SchemeNameId
-import models.Mode
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -34,7 +33,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.CountryOptions
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -48,28 +46,27 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
                                         formProvider: AddressListFormProvider,
-                                        countryOptions: CountryOptions,
                                         val controllerComponents: MessagesControllerComponents,
                                         val renderer: Renderer)(implicit val ec: ExecutionContext) extends AddressListController with I18nSupport
   with NunjucksSupport with Retrievals {
 
   override def form: Form[Int] = formProvider("selectAddress.required")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async { implicit request =>
+  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async { implicit request =>
     retrieve(SchemeNameId) { schemeName =>
-      getFormToJson(schemeName, mode).retrieve.map(get)
+      getFormToJson(schemeName).retrieve.map(get)
     }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] =
+  def onSubmit(): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       val addressPages: AddressPages = AddressPages(EnterPostCodeId, AddressListId, AddressId)
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName,mode).retrieve.map(post(_, addressPages,manualUrlCall = ConfirmAddressController.onPageLoad))
+        getFormToJson(schemeName).retrieve.map(post(_, addressPages,manualUrlCall = ConfirmAddressController.onPageLoad))
       }
     }
 
-  def getFormToJson(schemeName: String, mode: Mode): Retrieval[Form[Int] => JsObject] =
+  def getFormToJson(schemeName: String): Retrieval[Form[Int] => JsObject] =
     Retrieval(
       implicit request =>
         EnterPostCodeId.retrieve.map { addresses =>

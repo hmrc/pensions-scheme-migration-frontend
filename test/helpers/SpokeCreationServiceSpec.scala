@@ -17,6 +17,7 @@
 package helpers
 
 import base.SpecBase
+import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.contact.EnterPhoneId
@@ -47,7 +48,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
 import services.DataPrefillService
 import utils.Data.ua
-import utils.{Data, Enumerable}
+import utils.{Data, Enumerable, UserAnswers}
 import viewmodels.Message
 
 import java.time.LocalDate
@@ -81,7 +82,7 @@ class SpokeCreationServiceSpec
             controllers.establishers.routes.EstablisherKindController.onPageLoad(0).url), None)
         )
 
-      val result = spokeCreationService.getAddEstablisherHeaderSpokes(ua, viewOnly = false)
+      val result = spokeCreationService.getAddEstablisherHeaderSpokes(UserAnswers().setOrException(SchemeNameId, Data.schemeName), viewOnly = false)
       result mustBe expectedSpoke
     }
 

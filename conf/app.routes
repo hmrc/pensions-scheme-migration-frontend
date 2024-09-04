@@ -8,7 +8,6 @@ GET         /:pensionManagementType/:index/:entityType/:journeyType/check-your-a
 GET         /:pensionManagementType/:index/company/director/:directorIndex/details/check-your-answers      controllers.common.CheckYourAnswersController.onPageLoadWithRepresentative(index: Index, pensionManagementType: PensionManagementType, entityType: EntityType = Company, directorIndex: Index)
 GET         /:pensionManagementType/:index/partnership/partner/:partnerIndex/details/check-your-answers    controllers.common.CheckYourAnswersController.onPageLoadWithRepresentative(index: Index, pensionManagementType: PensionManagementType, entityType: EntityType = Partnership, partnerIndex: Index)
 
-
 GET         /language/:lang                                    controllers.LanguageSwitchController.switchToLanguage(lang: String)
 GET         /assets/*file                                      controllers.Assets.versioned(path = "/public", file: Asset)
 
@@ -147,8 +146,8 @@ GET         /rac-dac/add-all/processing-request                controllers.racda
 
 GET         /rac-dac/confirmation-all                          controllers.racdac.bulk.ConfirmationController.onPageLoad
 
-GET         /adviser-address-results                           controllers.adviser.SelectAddressController.onPageLoad(mode: Mode = NormalMode)
-POST        /adviser-address-results                           controllers.adviser.SelectAddressController.onSubmit(mode: Mode = NormalMode)
+GET         /adviser-address-results                           controllers.adviser.SelectAddressController.onPageLoad()
+POST        /adviser-address-results                           controllers.adviser.SelectAddressController.onSubmit()
 
 GET         /confirm-adviser-address                           controllers.adviser.ConfirmAddressController.onPageLoad
 POST        /confirm-adviser-address                           controllers.adviser.ConfirmAddressController.onSubmit

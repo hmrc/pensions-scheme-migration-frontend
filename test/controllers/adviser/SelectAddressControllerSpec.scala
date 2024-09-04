@@ -16,7 +16,6 @@
 
 package controllers.adviser
 
-import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.TypedIdentifier
@@ -24,10 +23,8 @@ import identifiers.adviser.EnterPostCodeId
 import matchers.JsonMatchers
 import models.{Address, Scheme, TolerantAddress}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers, Mockito}
 import play.api.Application
-import play.api.inject.bind
-import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers._
@@ -39,14 +36,9 @@ import scala.concurrent.Future
 
 class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
-  private val mockAddressLookupConnector = mock[AddressLookupConnector]
 
-  val extraModules: Seq[GuiceableModule] = Seq(
-    bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
-  )
-
-  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
+  private lazy val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  override lazy val app: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
   private val httpPathGET: String = controllers.adviser.routes.SelectAddressController.onPageLoad().url
   private val httpPathPOST: String = controllers.adviser.routes.SelectAddressController.onSubmit().url
   object FakeAddressIdentifier extends TypedIdentifier[Address]
@@ -58,7 +50,7 @@ class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSuppor
   )
 
   private val valuesValid: Map[String, Seq[String]] = Map(
-    "value" -> Seq("1")
+    "value" -> Seq("0")
   )
 
   private val valuesInvalid: Map[String, Seq[String]] = Map(
@@ -75,6 +67,8 @@ class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
   override def beforeEach(): Unit = {
     super.beforeEach()
+    Mockito.reset(mockRenderer)
+    Mockito.reset(mockUserAnswersCacheConnector)
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
@@ -85,7 +79,7 @@ class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSuppor
         .setOrException(EnterPostCodeId, seqAddresses)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val result: Future[Result] = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
 
@@ -102,7 +96,7 @@ class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val result: Future[Result] = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -118,13 +112,13 @@ class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(onwardCall.url)
     }
 
-    "Save data to user answers and redirect to next page when valid data is submitted when address is incomplete but NotFixable" in {
+    "Save data to user answers and redirect to confirm address controller when valid data is submitted when address is incomplete but NotFixable" in {
       val ua: UserAnswers = Data.ua
         .setOrException(EnterPostCodeId, seqAddresses)
 
@@ -133,10 +127,10 @@ class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, incompleteValues)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, incompleteValues)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardCall.url)
+      redirectLocation(result) mustBe Some(routes.ConfirmAddressController.onPageLoad.url)
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted when address is incomplete but fixable" in {
@@ -148,7 +142,7 @@ class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, fixableValues)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, fixableValues)).value
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(onwardCall.url)
 
@@ -159,7 +153,7 @@ class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSuppor
         .setOrException(EnterPostCodeId, seqAddresses)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
 
       status(result) mustEqual BAD_REQUEST
     }
@@ -167,7 +161,7 @@ class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSuppor
     "redirect to Session Expired page for a POST when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 
