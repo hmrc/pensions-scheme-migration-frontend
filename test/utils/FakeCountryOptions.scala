@@ -19,3 +19,12 @@ package utils
 case class FakeCountryOptions(_options: Seq[InputOption]) extends CountryOptions(null, null) {
   override lazy val options: Seq[InputOption] = _options
 }
+
+object FakeCountryOptions {
+  def testData: FakeCountryOptions = FakeCountryOptions(
+    Seq(
+      InputOption("GB", "United Kingdom"),
+      InputOption("PN", "Ponteland")
+    )
+  )
+}

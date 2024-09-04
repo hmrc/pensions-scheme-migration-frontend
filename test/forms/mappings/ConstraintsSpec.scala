@@ -20,7 +20,7 @@ package forms.mappings
 
 import org.scalatestplus.play.PlaySpec
 import play.api.data.validation.{Invalid, Valid}
-import utils.{CountryOptions, FakeCountryOptions, InputOption}
+import utils.{CountryOptions, FakeCountryOptions}
 
 import java.time.LocalDate
 
@@ -128,12 +128,7 @@ class ConstraintsSpec extends PlaySpec with Constraints with RegexBehaviourSpec 
 
     val keyInvalid = "error.invalid"
 
-    val countryOptions: CountryOptions = FakeCountryOptions(
-      Seq(
-        InputOption("GB", "United Kingdom"),
-        InputOption("PN", "Ponteland")
-      )
-    )
+    val countryOptions: CountryOptions = FakeCountryOptions.testData
 
     "return valid when the country code exists" in {
       val result = country(countryOptions, keyInvalid).apply("GB")

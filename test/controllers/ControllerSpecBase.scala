@@ -36,7 +36,7 @@ import play.api.test.Helpers.{GET, POST}
 import play.api.test.{FakeHeaders, FakeRequest}
 import services.DataUpdateService
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
-import utils.{CountryOptions, Enumerable}
+import utils.{CountryOptions, Enumerable, FakeCountryOptions}
 
 import scala.concurrent.ExecutionContext
 
@@ -68,7 +68,6 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
   protected val mockEmailConnector: EmailConnector = mock[EmailConnector]
   protected val mockLegacySchemeDetailsConnector: LegacySchemeDetailsConnector = mock[LegacySchemeDetailsConnector]
   protected val mockDataUpdateService: DataUpdateService = mock[DataUpdateService]
-  protected val mockCountryOptions: CountryOptions = mock[CountryOptions]
 
   def modules: Seq[GuiceableModule] = Seq(
     bind[AuthAction].to[FakeAuthAction],
@@ -77,7 +76,7 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
     bind[AppConfig].toInstance(mockAppConfig),
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
     bind[CompoundNavigator].toInstance(mockCompoundNavigator),
-    bind[CountryOptions].toInstance(mockCountryOptions)
+    bind[CountryOptions].toInstance(FakeCountryOptions.testData)
   )
 
   protected def applicationBuilderMutableRetrievalAction(
