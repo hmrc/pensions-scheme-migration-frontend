@@ -37,7 +37,6 @@ class AdviserNavigator
     case EnterPostCodeId => selectAddress
     case AddressListId => cyaDetails
     case AddressId => cyaDetails
-    case _ => throw new RuntimeException("index page unavailable")
   }
 
   override protected def editRouteMap(ua: UserAnswers)
@@ -48,7 +47,6 @@ class AdviserNavigator
     case EnterPostCodeId => selectAddress
     case AddressListId => cyaDetails
     case AddressId => cyaDetails
-    case _ => throw new RuntimeException("index page unavailable")
   }
 
   private def cyaDetails: Call =CheckYourAnswersController.onPageLoad

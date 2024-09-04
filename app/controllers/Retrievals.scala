@@ -20,6 +20,7 @@ import identifiers.TypedIdentifier
 import identifiers.beforeYouStart.SchemeNameId
 import models.requests.{DataRequest, OptionalDataRequest}
 import play.api.libs.json.Reads
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContent, Result, WrappedRequest}
 
 import scala.concurrent.Future
@@ -71,7 +72,7 @@ trait Retrievals {
       implicit request =>
         request.userAnswers.get(id) match {
           case Some(value) => Right(value)
-          case None => throw new RuntimeException("index page unavailable")
+          case None => Left(Future.successful(Redirect(routes.SessionExpiredController.onPageLoad())))
         }
     }
 

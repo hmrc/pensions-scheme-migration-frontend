@@ -92,7 +92,7 @@ class InsurerEnterPostcodeControllerSpec extends ControllerSpecBase with Nunjuck
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe Call("GET", "")
+      redirectLocation(result).value mustBe controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {

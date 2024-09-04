@@ -117,7 +117,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe onwardCall.url
+      redirectLocation(result).value mustBe controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
