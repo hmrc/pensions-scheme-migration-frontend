@@ -30,7 +30,7 @@ import org.scalatest.prop.TableFor3
 import play.api.libs.json.Writes
 import play.api.mvc.Call
 import utils.Data.{partnershipDetails, ua}
-import utils.{Data, Enumerable, UserAnswers, entityTypeError}
+import utils.{Data, Enumerable, UserAnswers}
 
 class EstablishersPartnershipNavigatorSpec
   extends SpecBase

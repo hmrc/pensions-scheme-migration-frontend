@@ -24,7 +24,7 @@ import org.scalatest.TryValues
 import org.scalatest.matchers.must.Matchers
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions, Key, SummaryListRow, Value}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import utils.Data.schemeName
 import utils.{CountryOptions, Enumerable, InputOption, UserAnswers}
 

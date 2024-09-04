@@ -22,14 +22,11 @@ import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import connectors.{EmailConnector, LegacySchemeDetailsConnector, MinimalDetailsConnector}
 import controllers.actions._
-import controllers.establishers.company.routes
-import identifiers.establishers.company.AddCompanyDirectorsId
-import models.NormalMode
 import navigators.CompoundNavigator
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentMatchers, Mockito, MockitoSugar}
+import org.mockito.{Mockito, MockitoSugar}
 import org.scalatest.BeforeAndAfterEach
 import play.api.http.HeaderNames
 import play.api.inject.bind

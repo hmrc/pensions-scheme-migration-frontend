@@ -21,8 +21,8 @@ import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAut
 import forms.dataPrefill.DataPrefillCheckboxFormProvider
 import identifiers.establishers.company.CompanyDetailsId
 import matchers.JsonMatchers
-import models.{CompanyDetails, entities}
 import models.prefill.IndividualDetails
+import models.{CompanyDetails, entities}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
