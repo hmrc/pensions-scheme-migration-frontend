@@ -38,7 +38,7 @@ class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
 
   private lazy val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  override lazy val app: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
+  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
   private val httpPathGET: String = controllers.adviser.routes.SelectAddressController.onPageLoad().url
   private val httpPathPOST: String = controllers.adviser.routes.SelectAddressController.onSubmit().url
   object FakeAddressIdentifier extends TypedIdentifier[Address]

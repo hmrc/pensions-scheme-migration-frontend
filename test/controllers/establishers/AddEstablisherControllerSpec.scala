@@ -67,7 +67,7 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
     bind[AddToListHelper].toInstance(mockHelper)
   )
 
-  override lazy val app: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
+  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
   private def httpPathGET: String = controllers.establishers.routes.AddEstablisherController.onPageLoad.url
   private def httpPathPOST: String = controllers.establishers.routes.AddEstablisherController.onSubmit.url
