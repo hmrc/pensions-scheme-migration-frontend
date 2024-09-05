@@ -34,10 +34,11 @@ import uk.gov.hmrc.viewmodels.Radios
 import utils.UserAnswers
 import viewmodels.Message
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
+@Singleton
 class CommonAddressYearsUtils @Inject()(
                                                val controllerComponents: MessagesControllerComponents,
                                                val renderer: Renderer,
