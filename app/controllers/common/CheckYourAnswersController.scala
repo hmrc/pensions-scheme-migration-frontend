@@ -20,7 +20,7 @@ import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import helpers.cya.{CYAHelper, CommonCYAHelper}
 import identifiers.beforeYouStart.SchemeNameId
-import models.{Index, entities}
+import models.{CheckMode, Index, entities}
 import models.entities.{EntityType, JourneyType, PensionManagementType}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -62,14 +62,25 @@ class CheckYourAnswersController @Inject()(
                    entityType: EntityType,
                    entityRepresentativeIndex: Option[Index],
                    journeyType: JourneyType): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData()).async {
-      implicit request =>
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
+      val continueUrl = {
+        entityRepresentativeIndex match {
+          case Some(entityRepresentativeIndex) =>
+            entityType match {
+              case entities.Company => controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(index, CheckMode).url
+              case entities.Partnership => controllers.establishers.partnership.routes.AddPartnersController.onPageLoad(index, CheckMode).url
+              case entities.Individual => throw new RuntimeException("Entity Representative can't be individual")
+            }
+          case None => controllers.common.routes.SpokeTaskListController.onPageLoad(index, pensionManagementType, entityType).url
+        }
+
+      }
         renderer.render(
           template = "check-your-answers.njk",
           ctx = Json.obj(
             "list"       -> cyaHelper.rows(index, pensionManagementType, entityType, entityRepresentativeIndex, journeyType),
             "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
-            "submitUrl"  -> controllers.common.routes.SpokeTaskListController.onPageLoad(index, pensionManagementType, entityType).url
+            "submitUrl"  -> continueUrl
           )
         ).map(Ok(_))
     }
