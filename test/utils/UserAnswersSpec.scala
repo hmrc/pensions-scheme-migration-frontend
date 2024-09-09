@@ -21,7 +21,6 @@ import org.scalatest._
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.{JsPath, JsString, Json}
-import utils.Data._
 
 class UserAnswersSpec
   extends AnyWordSpec
@@ -122,10 +121,29 @@ class UserAnswersSpec
         ua2.get[String](SchemeNameId).isDefined mustBe false
       }
     }
+
+    "readEstablishers" must {
+      "throw UnrecognisedEstablisherKindException for unrecognized establisher kind" in {
+        val invalidJson = Json.obj(
+          "establishers" -> Json.arr(
+            Json.obj(
+              "establisherKind" -> "unknownKind"
+            )
+          )
+        )
+
+        val userAnswers = UserAnswers(invalidJson)
+
+        assertThrows[UnrecognisedEstablisherKindException.type] {
+          userAnswers.readEstablishers.reads(invalidJson).get
+        }
+      }
+    }
+
   }
 }
 
 object UserAnswersSpec {
-  private val schemeNameJson =
-    Json.obj("schemeName" -> schemeName)
+  private val schemeName = "Test scheme name"
+  private val schemeNameJson = Json.obj("schemeName" -> schemeName)
 }
