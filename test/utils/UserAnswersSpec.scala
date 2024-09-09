@@ -16,6 +16,7 @@
 
 package utils
 
+import identifiers.TypedIdentifier
 import identifiers.beforeYouStart.SchemeNameId
 import org.scalatest._
 import org.scalatest.matchers.must.Matchers
@@ -137,6 +138,75 @@ class UserAnswersSpec
         assertThrows[UnrecognisedEstablisherKindException.type] {
           userAnswers.readEstablishers.reads(invalidJson).get
         }
+      }
+    }
+
+    ".removeWithPath" must {
+      "remove values if matched" in {
+        val userAnswers: UserAnswers = UserAnswers(schemeNameJson)
+        val ua2: UserAnswers = userAnswers.removeWithPath(JsPath \ "schemeName")
+        ua2.get(JsPath \ "schemeName").isDefined mustBe false
+      }
+    }
+
+    ".removeAll" must {
+      "remove all specified ids" in {
+        val userAnswers: UserAnswers = UserAnswers(schemeNameJson)
+        val ids: Set[TypedIdentifier[_]] = Set(SchemeNameId)
+        val ua2: UserAnswers = userAnswers.removeAll(ids)
+        ua2.get[String](SchemeNameId).isDefined mustBe false
+      }
+    }
+
+    ".allTrusteesAfterDelete" must {
+      "return all trustees that are not deleted" in {
+        val trusteesJson = Json.obj(
+          "trustees" -> Json.arr(
+            Json.obj(
+              "trusteeKind" -> "individual",
+              "trusteeDetails" -> Json.obj(
+                "firstName" -> "John",
+                "lastName" -> "Doe",
+                "isDeleted" -> false
+              )
+            ),
+            Json.obj(
+              "trusteeKind" -> "company",
+              "companyDetails" -> Json.obj(
+                "companyName" -> "Test Company",
+                "isDeleted" -> true
+              )
+            )
+          )
+        )
+        val userAnswers: UserAnswers = UserAnswers(trusteesJson)
+        userAnswers.allTrusteesAfterDelete.size mustBe 1
+      }
+    }
+
+    ".allEstablishersAfterDelete" must {
+      "return all establishers that are not deleted" in {
+        val establishersJson = Json.obj(
+          "establishers" -> Json.arr(
+            Json.obj(
+              "establisherKind" -> "individual",
+              "establisherDetails" -> Json.obj(
+                "firstName" -> "John",
+                "lastName" -> "Doe",
+                "isDeleted" -> false
+              )
+            ),
+            Json.obj(
+              "establisherKind" -> "company",
+              "companyDetails" -> Json.obj(
+                "companyName" -> "Test Company",
+                "isDeleted" -> true
+              )
+            )
+          )
+        )
+        val userAnswers: UserAnswers = UserAnswers(establishersJson)
+        userAnswers.allEstablishersAfterDelete.size mustBe 1
       }
     }
 
