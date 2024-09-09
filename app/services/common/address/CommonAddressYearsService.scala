@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package services.common
+package services.common.address
 
 import connectors.cache.UserAnswersCacheConnector
 import identifiers.TypedIdentifier

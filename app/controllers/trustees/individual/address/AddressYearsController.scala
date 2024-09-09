@@ -27,7 +27,7 @@ import models.{CheckMode, Index, Mode}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
-import services.common.CommonAddressYearsService
+import services.common.address.CommonAddressYearsService
 import utils.UserAnswers
 import viewmodels.Message
 

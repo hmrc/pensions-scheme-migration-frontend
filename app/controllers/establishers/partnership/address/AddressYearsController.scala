@@ -25,7 +25,7 @@ import identifiers.establishers.partnership.address.AddressYearsId
 import models.{Index, Mode}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent}
-import services.common.CommonAddressYearsService
+import services.common.address.CommonAddressYearsService
 import viewmodels.Message
 
 import javax.inject.Inject
