@@ -18,7 +18,6 @@ package controllers.trustees.individual.address
 
 import controllers.Retrievals
 import controllers.actions._
-import controllers.address.CommonAddressYearsUtils
 import forms.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.{address => Director}
@@ -28,6 +27,7 @@ import models.{CheckMode, Index, Mode}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
+import services.common.CommonAddressYearsService
 import utils.UserAnswers
 import viewmodels.Message
 
@@ -41,7 +41,7 @@ class AddressYearsController @Inject()(
                                        requireData: DataRequiredAction,
                                        dataUpdateService: DataUpdateService,
                                        formProvider: AddressYearsFormProvider,
-                                       common: CommonAddressYearsUtils)(implicit ec: ExecutionContext)
+                                       common: CommonAddressYearsService)(implicit ec: ExecutionContext)
     extends Retrievals {
 
   private def form: Form[Boolean] =

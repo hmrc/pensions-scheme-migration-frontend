@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.address
+package services.common
 
 import connectors.cache.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
@@ -39,7 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 @Singleton
-class CommonAddressYearsUtils @Inject()(
+class CommonAddressYearsService @Inject()(
                                                val controllerComponents: MessagesControllerComponents,
                                                val renderer: Renderer,
                                                val userAnswersCacheConnector: UserAnswersCacheConnector,

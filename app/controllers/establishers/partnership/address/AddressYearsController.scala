@@ -18,7 +18,6 @@ package controllers.establishers.partnership.address
 
 import controllers.Retrievals
 import controllers.actions._
-import controllers.address.CommonAddressYearsUtils
 import forms.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
@@ -26,6 +25,7 @@ import identifiers.establishers.partnership.address.AddressYearsId
 import models.{Index, Mode}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent}
+import services.common.CommonAddressYearsService
 import viewmodels.Message
 
 import javax.inject.Inject
@@ -36,7 +36,7 @@ class AddressYearsController @Inject()(
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        formProvider: AddressYearsFormProvider,
-                                       common: CommonAddressYearsUtils
+                                       common: CommonAddressYearsService
                                        )(implicit ec: ExecutionContext)
   extends Retrievals {
 

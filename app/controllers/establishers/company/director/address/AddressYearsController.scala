@@ -18,7 +18,6 @@ package controllers.establishers.company.director.address
 
 import controllers.Retrievals
 import controllers.actions._
-import controllers.address.CommonAddressYearsUtils
 import forms.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
@@ -28,6 +27,7 @@ import models.{CheckMode, Index, Mode}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
+import services.common.CommonAddressYearsService
 import utils.UserAnswers
 import viewmodels.Message
 
@@ -40,7 +40,7 @@ class AddressYearsController @Inject()(authenticate: AuthAction,
                                        requireData: DataRequiredAction,
                                        formProvider: AddressYearsFormProvider,
                                        dataUpdateService: DataUpdateService,
-                                       common: CommonAddressYearsUtils)
+                                       common: CommonAddressYearsService)
                                       (implicit ec: ExecutionContext)
   extends Retrievals {
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
