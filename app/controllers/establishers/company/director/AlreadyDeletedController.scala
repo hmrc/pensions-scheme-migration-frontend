@@ -48,16 +48,12 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
       implicit request =>
         directorName(establisherIndex, directorIndex) match {
           case Right(directorName) =>
-            val schemeName = existingSchemeName match {
-              case Some(schemeName) => schemeName
-              case None => "Scheme"
-            }
             val template = twirlMigration.duoTemplate(
               renderer.render("alreadyDeleted.njk", json(establisherIndex, directorName, existingSchemeName)),
               alreadyDeletedView(
                 "messages__alreadyDeleted__director_title",
                 directorName,
-                schemeName,
+                existingSchemeName,
                 controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(establisherIndex, NormalMode).url
               )
             )
