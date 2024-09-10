@@ -19,7 +19,7 @@
     govukButton: GovukButton
 )
 
-@(title: String, name: String, schemeName: String, submitUrl: String)(implicit request: Request[_], messages: Messages)
+@(title: String, name: String, schemeName: Option[String], submitUrl: String)(implicit request: Request[_], messages: Messages)
 
 @layout(title) {
     <div>
@@ -36,6 +36,6 @@
             ).withAttribute(("id", "submit")).asLink(submitUrl)
         )
 
-        @templates.ReturnLink(schemeName)
+        @schemeName.map { schemeName => @templates.ReturnLink(schemeName) }
     </div>
 }
