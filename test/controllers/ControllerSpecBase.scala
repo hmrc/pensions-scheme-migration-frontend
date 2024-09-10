@@ -23,19 +23,18 @@ import connectors.cache.UserAnswersCacheConnector
 import connectors.{EmailConnector, LegacySchemeDetailsConnector, MinimalDetailsConnector}
 import controllers.actions._
 import navigators.CompoundNavigator
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
+import org.mockito.ArgumentMatchers.any
 import org.mockito.{Mockito, MockitoSugar}
 import org.scalatest.BeforeAndAfterEach
 import play.api.http.HeaderNames
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
 import play.api.test.Helpers.{GET, POST}
 import play.api.test.{FakeHeaders, FakeRequest}
 import services.DataUpdateService
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
-import utils.{CountryOptions, Enumerable}
+import utils.{CountryOptions, Enumerable, FakeCountryOptions}
 
 import scala.concurrent.ExecutionContext
 
@@ -43,17 +42,16 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
 
   implicit val global: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-  val cacheMapId = "id"
-
-  def asDocument(htmlAsString: String): Document = Jsoup.parse(htmlAsString)
+  val onwardCall: Call = Call("GET", "onwardCall")
 
   override def beforeEach(): Unit = {
     Mockito.reset(mockRenderer)
     Mockito.reset(mockUserAnswersCacheConnector)
     Mockito.reset(mockCompoundNavigator)
+    when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
+      .thenReturn(onwardCall)
   }
 
-  protected def mockDataRetrievalAction: DataRetrievalAction = mock[DataRetrievalAction]
 
   protected val mockAppConfig: AppConfig = mock[AppConfig]
 
@@ -72,13 +70,13 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
     bind[AppConfig].toInstance(mockAppConfig),
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
     bind[CompoundNavigator].toInstance(mockCompoundNavigator),
-    bind[CountryOptions].toInstance(countryOptions)
+    bind[CountryOptions].toInstance(FakeCountryOptions.testData)
   )
 
   protected def applicationBuilderMutableRetrievalAction(
                                                           mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction,
                                                           extraModules: Seq[GuiceableModule] = Seq.empty
-                                                        ): GuiceApplicationBuilder =
+                                                        ): GuiceApplicationBuilder = {
     new GuiceApplicationBuilder()
       .configure(
         //turn off metrics
@@ -90,6 +88,7 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
           bind[DataRetrievalAction].toInstance(mutableFakeDataRetrievalAction)
         ): _*
       )
+  }
 
   protected def httpGETRequest(path: String): FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, path)
 

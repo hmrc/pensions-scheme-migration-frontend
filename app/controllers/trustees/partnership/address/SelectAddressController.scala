@@ -82,7 +82,7 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
 
           form => Json.obj(
             "form" -> form,
-            "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
+            "addresses" -> transformAddressesForTemplate(addresses),
             "entityType" -> msg("messages__partnership"),
             "entityName" -> name,
             "enterManuallyUrl" -> ConfirmAddressController.onPageLoad(index,mode).url,

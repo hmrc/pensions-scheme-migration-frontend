@@ -23,9 +23,8 @@ import play.api.i18n.Messages
 import play.api.libs.json.Reads
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{Content, Html, MessageInterpolators, SummaryList, Text}
+import uk.gov.hmrc.viewmodels.{Content, Html, MessageInterpolators, Text}
 import utils.UserAnswers
-import viewmodels.Message
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -54,9 +53,6 @@ trait CYAHelper {
   protected val referenceValueTransform: Option[ReferenceValue => Text] = Some(opt => msg"${opt.value}")
   protected val answerDateTransform: Option[LocalDate => Text] = Some(date => lit"${date.format(DateTimeFormatter.ofPattern("d-M-yyyy"))}")
   protected def answerAddressTransform(implicit messages: Messages): Option[Address => Html] = Some(opt => addressAnswer(opt))
-
-  def rows(viewOnly: Boolean, rows: Seq[SummaryList.Row]): Seq[SummaryList.Row] =
-    if (viewOnly) rows.map(_.copy(actions = Nil)) else rows
 
   def booleanToText: Boolean => String = bool => if (bool) "site.yes" else "site.no"
   def booleanToContent: Boolean => Content = bool => if (bool) msg"site.yes" else msg"site.no"
@@ -142,11 +138,6 @@ trait CYAHelper {
       actions = actionAdd(url, visuallyHiddenText)
     )
 
-  def changeLink(url: String, visuallyHiddenText: Option[Message] = None)
-    (implicit messages: Messages): Option[Link] = Some(Link(messages("site.change"), url, visuallyHiddenText))
-
-  def addLink(url: String, visuallyHiddenText: Option[Message] = None)
-    (implicit messages: Messages): Option[Link] = Some(Link(messages("site.add"), url, visuallyHiddenText))
 }
 
 object CYAHelper {

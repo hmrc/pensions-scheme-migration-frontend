@@ -19,9 +19,7 @@ package forms.trustees
 import forms.mappings.Mappings
 import play.api.data.{Form, Forms}
 
-import javax.inject.Inject
-
-class AddTrusteeFormProvider @Inject() extends Mappings {
+class AddTrusteeFormProvider extends Mappings {
 
   def apply(trustees: Seq[_]): Form[Option[Boolean]] = {
     if (trustees.isEmpty) {

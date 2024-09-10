@@ -21,13 +21,13 @@ import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAut
 import forms.dataPrefill.DataPrefillRadioFormProvider
 import identifiers.establishers.company.CompanyDetailsId
 import matchers.JsonMatchers
-import models.CompanyDetails
 import models.prefill.IndividualDetails
+import models.{CompanyDetails, entities}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Result}
+import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
@@ -48,7 +48,7 @@ class TrusteeAlsoDirectorControllerSpec extends ControllerSpecBase
   private val companyDetails: CompanyDetails = CompanyDetails("test company")
   private val formProvider: DataPrefillRadioFormProvider = new DataPrefillRadioFormProvider()
   private val form = formProvider("")
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
+
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(0), companyDetails).success.value
   private val templateToBeRendered: String = "dataPrefillRadio.njk"
   private val mockDataPrefillService = mock[DataPrefillService]
@@ -73,7 +73,7 @@ class TrusteeAlsoDirectorControllerSpec extends ControllerSpecBase
                         ): TrusteeAlsoDirectorController =
     new TrusteeAlsoDirectorController(
       messagesApi = messagesApi,
-      navigator = new FakeNavigator(desiredRoute = onwardRoute),
+      navigator = new FakeNavigator(desiredRoute = onwardCall),
       authenticate = new FakeAuthAction(),
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl,
@@ -109,7 +109,7 @@ class TrusteeAlsoDirectorControllerSpec extends ControllerSpecBase
       val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(userAnswers))
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.establishers.company.routes.SpokeTaskListController.onPageLoad(0).url)
+      redirectLocation(result) mustBe Some(controllers.common.routes.SpokeTaskListController.onPageLoad(0, entities.Establisher, entities.Company).url)
     }
 
     "copy the directors and redirect to the next page when valid data is submitted with valid index" in {
@@ -121,7 +121,7 @@ class TrusteeAlsoDirectorControllerSpec extends ControllerSpecBase
       val result: Future[Result] = controller(getData).onSubmit(0)(request)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result) mustBe Some(onwardCall.url)
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
     }
 
@@ -133,7 +133,7 @@ class TrusteeAlsoDirectorControllerSpec extends ControllerSpecBase
       val result: Future[Result] = controller(getData).onSubmit(0)(request)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result) mustBe Some(onwardCall.url)
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
       verify(mockDataPrefillService, never).copyAllTrusteesToDirectors(any(), any(), any())
     }

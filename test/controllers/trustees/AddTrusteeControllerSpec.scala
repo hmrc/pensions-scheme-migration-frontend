@@ -96,7 +96,7 @@ class AddTrusteeControllerSpec extends ControllerSpecBase with NunjucksSupport w
   override def beforeEach(): Unit = {
     super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-    when(mockHelper.mapTrusteesToList(any(), any(), any())).thenReturn(itemList)
+    when(mockHelper.directorsOrPartnersItemList(any())).thenReturn(itemList)
     when(mockAppConfig.maxTrustees).thenReturn(maxTrustees)
   }
 

@@ -54,8 +54,6 @@ POST        /:index/company/enter-employer-paye-reference                       
 GET         /:index/change/company/enter-employer-paye-reference                        controllers.trustees.company.details.PAYEController.onPageLoad(index: Index, mode: Mode = CheckMode)
 POST        /:index/change/company/enter-employer-paye-reference                        controllers.trustees.company.details.PAYEController.onSubmit(index: Index, mode: Mode = CheckMode)
 
-GET         /:index/company/check-your-answers-details                                  controllers.trustees.company.details.CheckYourAnswersController.onPageLoad(index: Index)
-
 GET         /:index/company/address                                                     controllers.trustees.company.address.WhatYouWillNeedController.onPageLoad(index: Index)
 
 GET         /:index/company/enter-postcode                                              controllers.trustees.company.address.EnterPostcodeController.onPageLoad(index: Index, mode: Mode = NormalMode)
@@ -72,8 +70,6 @@ GET         /:index/company/confirm-address                                     
 POST        /:index/company/confirm-address                                             controllers.trustees.company.address.ConfirmAddressController.onSubmit(index: Index, mode: Mode = NormalMode)
 GET         /:index/change/company/confirm-address                                      controllers.trustees.company.address.ConfirmAddressController.onPageLoad(index: Index, mode: Mode = CheckMode)
 POST        /:index/change/company/confirm-address                                      controllers.trustees.company.address.ConfirmAddressController.onSubmit(index: Index, mode: Mode = CheckMode)
-
-GET         /:index/company/check-your-answers-address                                  controllers.trustees.company.address.CheckYourAnswersController.onPageLoad(index: Index)
 
 GET         /:index/company/time-at-address                                             controllers.trustees.company.address.AddressYearsController.onPageLoad(index: Index, mode: Mode = NormalMode)
 POST        /:index/company/time-at-address                                             controllers.trustees.company.address.AddressYearsController.onSubmit(index: Index, mode: Mode = NormalMode)
@@ -111,7 +107,3 @@ GET         /:index/company/enter-phone-number                                  
 POST        /:index/company/enter-phone-number                                          controllers.trustees.company.contacts.EnterPhoneController.onSubmit(index: Index, mode: Mode = NormalMode)
 GET         /:index/change/company/enter-phone-number                                   controllers.trustees.company.contacts.EnterPhoneController.onPageLoad(index: Index, mode: Mode = CheckMode)
 POST        /:index/change/company/enter-phone-number                                   controllers.trustees.company.contacts.EnterPhoneController.onSubmit(index: Index, mode: Mode = CheckMode)
-
-GET         /:index/company/check-your-answers-contact-details                          controllers.trustees.company.contacts.CheckYourAnswersController.onPageLoad(index: Index)
-
-GET         /:index/company/task-list                                                   controllers.trustees.company.SpokeTaskListController.onPageLoad(index:Index)

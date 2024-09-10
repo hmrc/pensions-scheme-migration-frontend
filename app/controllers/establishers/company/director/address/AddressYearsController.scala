@@ -16,45 +16,38 @@
 
 package controllers.establishers.company.director.address
 
-import connectors.cache.UserAnswersCacheConnector
+import controllers.Retrievals
 import controllers.actions._
-import controllers.address.CommonAddressYearsController
 import forms.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.address.AddressYearsId
 import identifiers.trustees.individual.address.{AddressYearsId => trusteeAddressYearsId}
-import models.{CheckMode, Index, Mode, NormalMode}
-import navigators.CompoundNavigator
+import models.{CheckMode, Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
-import utils.{Enumerable, UserAnswers}
+import services.common.address.CommonAddressYearsService
+import utils.UserAnswers
+import viewmodels.Message
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import scala.util.Try
 
-class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
-                                       val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                       authenticate: AuthAction,
+class AddressYearsController @Inject()(authenticate: AuthAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
-                                       val navigator: CompoundNavigator,
                                        formProvider: AddressYearsFormProvider,
                                        dataUpdateService: DataUpdateService,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       val renderer: Renderer)
+                                       common: CommonAddressYearsService)
                                       (implicit ec: ExecutionContext)
-  extends CommonAddressYearsController
-    with Enumerable.Implicits {
+  extends Retrievals {
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.map {
         case directorName ~ schemeName =>
-          get(Some(schemeName), directorName.fullName, Messages("messages__director"), form, AddressYearsId(establisherIndex, directorIndex))
+          common.get(Some(schemeName), directorName.fullName, Message("messages__director"), form, AddressYearsId(establisherIndex, directorIndex))
       }
     }
 
@@ -65,21 +58,14 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.map {
         case directorName ~ schemeName =>
-          form
-            .bindFromRequest()
-            .fold(
-              formWithErrors => {
-                renderer.render(viewTemplate, json(Some(schemeName), directorName.fullName, Messages("messages__director"), formWithErrors)).map(BadRequest(_))
-              },
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
-                  _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
-                } yield {
-                  val finalMode = Some(mode).getOrElse(NormalMode)
-                  Redirect(navigator.nextPage(AddressYearsId(establisherIndex, directorIndex), updatedAnswers, finalMode))
-                }
-            )
+          common.post(Some(schemeName),
+            directorName.fullName,
+            Message("messages__director"),
+            form,
+            AddressYearsId(establisherIndex, directorIndex),
+            Some(mode),
+            Some(value => setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
+          )
       }
     }
 

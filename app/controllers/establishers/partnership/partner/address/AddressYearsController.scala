@@ -16,36 +16,28 @@
 
 package controllers.establishers.partnership.partner.address
 
-import connectors.cache.UserAnswersCacheConnector
+import controllers.Retrievals
 import controllers.actions._
-import controllers.address.CommonAddressYearsController
 import forms.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.partner.address.AddressYearsId
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import utils.Enumerable
+import play.api.mvc.{Action, AnyContent}
+import services.common.address.CommonAddressYearsService
+import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
-                                       val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                       authenticate: AuthAction,
+class AddressYearsController @Inject()(authenticate: AuthAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
-                                       val navigator: CompoundNavigator,
                                        formProvider: AddressYearsFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       val renderer: Renderer)
+                                       common: CommonAddressYearsService)
                                       (implicit ec: ExecutionContext)
-  extends CommonAddressYearsController
-    with Enumerable.Implicits
+  extends Retrievals
 {
   private def form: Form[Boolean] =
     formProvider("individualAddressYears.partnership.partner.error.required")
@@ -54,7 +46,7 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (PartnerNameId(establisherIndex, partnerIndex) and SchemeNameId).retrieve.map {
         case partnerName ~ schemeName =>
-          get(Some(schemeName), partnerName.fullName, Messages("messages__partner"), form, AddressYearsId(establisherIndex, partnerIndex))
+          common.get(Some(schemeName), partnerName.fullName, Message("messages__partner"), form, AddressYearsId(establisherIndex, partnerIndex))
       }
     }
 
@@ -62,7 +54,7 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (PartnerNameId(establisherIndex, partnerIndex) and SchemeNameId).retrieve.map {
         case partnerName ~ schemeName =>
-          post(Some(schemeName), partnerName.fullName, Messages("messages__partner"), form, AddressYearsId(establisherIndex, partnerIndex), Some(mode))
+          common.post(Some(schemeName), partnerName.fullName, Message("messages__partner"), form, AddressYearsId(establisherIndex, partnerIndex), Some(mode))
       }
     }
 }

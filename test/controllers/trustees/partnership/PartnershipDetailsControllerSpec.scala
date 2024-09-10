@@ -26,7 +26,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Result}
+import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
@@ -45,7 +45,7 @@ class PartnershipDetailsControllerSpec extends ControllerSpecBase
   private val partnershipName = "test partnership"
   private val formProvider: PartnershipDetailsFormProvider = new PartnershipDetailsFormProvider()
   private val form = formProvider()
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
+
   private val templateToBeRendered: String = "partnershipDetails.njk"
 
   private val commonJson: JsObject = Json.obj("schemeName" -> Data.schemeName)
@@ -64,7 +64,7 @@ class PartnershipDetailsControllerSpec extends ControllerSpecBase
                         ): PartnershipDetailsController =
     new PartnershipDetailsController(
       messagesApi = messagesApi,
-      navigator = new FakeNavigator(desiredRoute = onwardRoute),
+      navigator = new FakeNavigator(desiredRoute = onwardCall),
       authenticate = new FakeAuthAction(),
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl,
@@ -112,7 +112,7 @@ class PartnershipDetailsControllerSpec extends ControllerSpecBase
       val result: Future[Result] = controller(getData).onSubmit(0)(request)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result) mustBe Some(onwardCall.url)
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
     }
 

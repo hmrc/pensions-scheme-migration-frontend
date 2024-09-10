@@ -16,10 +16,11 @@
 
 package utils
 
-import java.time.LocalDate
 import org.scalacheck.Gen
 import play.api.libs.json.Reads._
 import play.api.libs.json._
+
+import java.time.LocalDate
 
 trait UaJsValueGenerators {
   val addressLineGen: Gen[String] = Gen.listOfN[Char](35, Gen.alphaChar).map(_.mkString)

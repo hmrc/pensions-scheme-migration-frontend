@@ -1,6 +1,5 @@
 service.name = Migrating pension schemes
 service.homePageUrl = /add-pension-scheme
-service.text = This is your new service
 
 phaseBanner.1 = This is a new service – your
 phaseBanner.2 = feedback
@@ -1195,3 +1194,7 @@ messages__processingRequest__h1_failure = Sorry, there was a problem with the se
 messages__processingRequest__content_failure = We could not process your request. Select continue to try again.
 
 messages__error__postcode_enterPostcode.noresults = Postcode cannot be found
+
+session_expired.title = For your security, this service has been reset
+session_expired.heading = For your security, this service has been reset
+session_expired.guidance = The details you have given have been deleted because you did not continue the service for 15 minutes.

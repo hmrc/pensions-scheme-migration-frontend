@@ -16,7 +16,6 @@
 
 package controllers.benefitsAndInsurance
 
-import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
@@ -45,7 +44,6 @@ class BenefitsInsurancePolicyController @Inject()(override val messagesApi: Mess
                                        navigator: CompoundNavigator,
                                        formProvider: BenefitsInsurancePolicyFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
-                                       config: AppConfig,
                                        renderer: Renderer)(implicit ec: ExecutionContext)
   extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
@@ -69,7 +67,7 @@ class BenefitsInsurancePolicyController @Inject()(override val messagesApi: Mess
             "form" -> preparedForm
           )
           renderer.render("benefitsAndInsurance/benefitsInsurancePolicy.njk", json).map(Ok(_))
-        case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad))
+        case _ => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
       }
     }
 
@@ -97,7 +95,7 @@ class BenefitsInsurancePolicyController @Inject()(override val messagesApi: Mess
               }
             }
           )
-        case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad))
+        case _ => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
       }
     }
 

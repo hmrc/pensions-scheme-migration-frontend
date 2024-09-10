@@ -101,8 +101,6 @@ class SelectPreviousAddressControllerSpec extends ControllerSpecBase with Nunjuc
       val ua: UserAnswers = Data.ua
         .setOrException(EnterPreviousPostCodeId(0, 0), seqAddresses)
 
-      when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
-        .thenReturn(controllers.establishers.company.director.details.routes.CheckYourAnswersController.onPageLoad(0, 0))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -111,7 +109,7 @@ class SelectPreviousAddressControllerSpec extends ControllerSpecBase with Nunjuc
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.establishers.company.director.details.routes.CheckYourAnswersController.onPageLoad(0, 0).url)
+      redirectLocation(result) mustBe Some(onwardCall.url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

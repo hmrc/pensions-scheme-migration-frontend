@@ -25,7 +25,7 @@ import identifiers.establishers.partnership.partner.address._
 import identifiers.establishers.partnership.partner.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.partnership.partner.details._
 import models.requests.DataRequest
-import models.{CheckMode, Index, Mode, NormalMode}
+import models.{CheckMode, Index, Mode, NormalMode, entities}
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
 
@@ -81,7 +81,7 @@ class EstablishersPartnerNavigator
     case EnterPhoneId(estIndex, partnerIndex) => cyaDetails(estIndex,partnerIndex)
   }
 
-  private def cyaDetails(estIndex:Int,partnerIndex:Int): Call = CheckYourAnswersController.onPageLoad(estIndex,partnerIndex)
+  private def cyaDetails(estIndex:Int,partnerIndex:Int): Call = controllers.common.routes.CheckYourAnswersController.onPageLoadWithRepresentative(estIndex, entities.Establisher, entities.Partnership, partnerIndex)
   private def hassUTR(estIndex:Int,partnerIndex:Int,mode: Mode): Call = PartnerHasUTRController.onPageLoad(estIndex, partnerIndex, mode)
   private def addressYears(estIndex:Int,partnerIndex:Int,mode: Mode): Call = AddressYearsController.onPageLoad(estIndex, partnerIndex, mode)
   private def email(estIndex:Int,partnerIndex:Int,mode: Mode): Call = EnterEmailController.onPageLoad(estIndex, partnerIndex, mode)

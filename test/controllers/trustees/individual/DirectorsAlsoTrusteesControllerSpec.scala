@@ -25,7 +25,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{AnyContentAsJson, Call, Result}
+import play.api.mvc.{AnyContentAsJson, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
@@ -45,7 +45,7 @@ class DirectorsAlsoTrusteesControllerSpec extends ControllerSpecBase
   //private val personName: PersonName = PersonName("Jane", "Doe")
   private val formProvider: DataPrefillCheckboxFormProvider = new DataPrefillCheckboxFormProvider()
   private val form = formProvider(6,"", "", "")
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
+
   private val templateToBeRendered: String = "dataPrefillCheckbox.njk"
   private val mockDataPrefillService = mock[DataPrefillService]
 
@@ -69,7 +69,7 @@ class DirectorsAlsoTrusteesControllerSpec extends ControllerSpecBase
                         ): DirectorsAlsoTrusteesController =
     new DirectorsAlsoTrusteesController(
       messagesApi = messagesApi,
-      navigator = new FakeNavigator(desiredRoute = onwardRoute),
+      navigator = new FakeNavigator(desiredRoute = onwardCall),
       authenticate = new FakeAuthAction(),
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl,
@@ -119,7 +119,7 @@ class DirectorsAlsoTrusteesControllerSpec extends ControllerSpecBase
       val result: Future[Result] = controller(getData).onSubmit(0)(request)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result) mustBe Some(onwardCall.url)
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
       verify(mockDataPrefillService, times(1)).copyAllDirectorsToTrustees(any(), any(), any())
     }
@@ -132,7 +132,7 @@ class DirectorsAlsoTrusteesControllerSpec extends ControllerSpecBase
       val result: Future[Result] = controller(getData).onSubmit(0)(request)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result) mustBe Some(onwardCall.url)
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
       verify(mockDataPrefillService, never).copyAllDirectorsToTrustees(any(), any(), any())
     }

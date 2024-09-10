@@ -18,17 +18,20 @@ package controllers.trustees
 
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.partnership.PartnershipDetailsId
 import models.Index
 import models.requests.DataRequest
 import models.trustees.TrusteeKind
-import models.trustees.TrusteeKind.Individual
+import models.trustees.TrusteeKind.{Company, Individual, Partnership}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.Enumerable
+import utils.{Enumerable, TwirlMigration}
+import views.html.AlreadyDeletedView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,7 +41,9 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
                                           val controllerComponents: MessagesControllerComponents,
-                                         renderer: Renderer
+                                         renderer: Renderer,
+                                         alreadyDeletedView: AlreadyDeletedView,
+                                         twirlMigration: TwirlMigration
                                         )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits {
 
@@ -47,7 +52,17 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
       implicit request =>
         trusteeName(index, trusteeKind) match {
           case Right(trusteeName) =>
-            renderer.render("alreadyDeleted.njk", json(trusteeName, existingSchemeName)).map(Ok(_))
+            val template = twirlMigration.duoTemplate(
+              renderer.render("alreadyDeleted.njk", json(trusteeName, existingSchemeName)),
+              alreadyDeletedView(
+                "messages__alreadyDeleted__trustee_title",
+                trusteeName,
+                existingSchemeName,
+                controllers.trustees.routes.AddTrusteeController.onPageLoad.url
+              )
+            )
+
+            template.map(Ok(_))
           case Left(result) => result
         }
     }
@@ -64,6 +79,8 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
   : Either[Future[Result], String] = {
     trusteeKind match {
       case Individual => TrusteeNameId(index).retrieve.map(_.fullName)
+      case Company => CompanyDetailsId(index).retrieve.map(_.companyName)
+      case Partnership => PartnershipDetailsId(index).retrieve.map(_.partnershipName)
       case _ => Right("Unimplemented functionality")
     }
   }

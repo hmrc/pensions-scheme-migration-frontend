@@ -27,7 +27,7 @@ import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Result}
+import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
@@ -48,7 +48,7 @@ class EnterEmailControllerSpec extends ControllerSpecBase
   private val email = "test@test.com"
   private val formProvider: EmailFormProvider = new EmailFormProvider()
   private val form = formProvider("")
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
+
   private val userAnswers: UserAnswers = ua.set(AdviserNameId, advisorName).success.value
   private val templateToBeRendered: String = "email.njk"
 
@@ -73,7 +73,7 @@ class EnterEmailControllerSpec extends ControllerSpecBase
                         ): EnterEmailController =
     new EnterEmailController(
       messagesApi = messagesApi,
-      navigator = new FakeNavigator(desiredRoute = onwardRoute),
+      navigator = new FakeNavigator(desiredRoute = onwardCall),
       authenticate = new FakeAuthAction(),
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl,
@@ -124,7 +124,7 @@ class EnterEmailControllerSpec extends ControllerSpecBase
       val result: Future[Result] = controller(getData).onSubmit( NormalMode)(request)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result) mustBe Some(onwardCall.url)
       verify(mockUserAnswersCacheConnector, times(1))
         .save(any(), any())(any(), any())
     }

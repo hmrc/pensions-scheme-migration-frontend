@@ -63,7 +63,7 @@ class BeforeYouStartController @Inject()(
                 userAnswersCacheConnector.save(lock, data).flatMap { _ =>
                   renderView
                 }
-              case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad))
+              case _ => throw new RuntimeException("index page unavailable")
             }
         }
 

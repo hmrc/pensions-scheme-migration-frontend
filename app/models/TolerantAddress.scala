@@ -19,7 +19,6 @@ package models
 import play.api.Logger
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import utils.CountryOptions
 
 import scala.language.implicitConversions
 
@@ -32,7 +31,7 @@ case class TolerantAddress(
                             country: Option[String]
                           ) {
 
-  def lines(countryOptions: CountryOptions): Seq[String] = {
+  def lines: Seq[String] = {
     Seq(
       this.addressLine1,
       this.addressLine2,
@@ -43,8 +42,8 @@ case class TolerantAddress(
     ).flatten(s => s)
   }
 
-  def print(countryOptions: CountryOptions): String = {
-    lines(countryOptions).mkString(", ")
+  def print: String = {
+    lines.mkString(", ")
   }
 
   private def prepopAddress: Address =
@@ -75,15 +74,6 @@ case class TolerantAddress(
     case (None, Some(line2), Some(line3), al4) => Some(Address(line2, line3, al4, None, postcode, country.get))
     case (None, Some(line2), None, Some(line4)) => Some(Address(line2, line4, None, None, postcode, country.get))
     case _ => None
-  }
-
-  def equalsAddress(address: Address): Boolean = {
-    address.addressLine1 == addressLine1.getOrElse("") &&
-      address.addressLine2 == addressLine2.getOrElse("") &&
-      address.addressLine3 == addressLine3 &&
-      address.addressLine4 == addressLine4 &&
-      address.country == country.getOrElse("") &&
-      address.postcode == postcode
   }
 }
 

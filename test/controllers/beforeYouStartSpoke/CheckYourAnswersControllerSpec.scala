@@ -23,13 +23,14 @@ import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
+import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import uk.gov.hmrc.viewmodels.SummaryList.{Key, Row, Value}
-import uk.gov.hmrc.viewmodels.Text.Literal
 import utils.Data.{schemeName, ua}
 
 import scala.concurrent.Future
@@ -48,10 +49,10 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
   private def httpPathGET: String = controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad.url
 
   private val rows = Seq(
-    Row(
-      key = Key(msg"messages__cya__scheme_name", classes = Seq("govuk-!-width-one-half")),
-      value = Value(Literal(schemeName)),
-      actions = Nil
+    SummaryListRow(
+      key = Key(HtmlContent(Messages("messages__cya__scheme_name"))),
+      value = Value(HtmlContent(schemeName)),
+      actions = None
     )
   )
 

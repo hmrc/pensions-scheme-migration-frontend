@@ -211,7 +211,8 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
               case Some(EstablisherKind.Individual.toString) => readsIndividual(index)
               case Some(EstablisherKind.Company.toString) => readsCompany(index)
               case Some(EstablisherKind.Partnership.toString) => readsPartnership(index)
-              case _ => throw UnrecognisedEstablisherKindException
+              case Some(entityType) => throw UnrecognisedEstablisherKindException(entityType)
+              case None => throw new RuntimeException("Entity type not available")
             }
             readsForEstablisherKind.reads(jsValue)
           }
@@ -394,7 +395,7 @@ def allPartnersAfterDelete(establisherIndex: Int): Seq[PartnerEntity] = {
     }.getOrElse(Seq.empty)
   }
 
-case object UnrecognisedEstablisherKindException extends Exception
+case class UnrecognisedEstablisherKindException(message: String) extends Exception(message)
 
 case object UnrecognisedTrusteeKindException extends Exception
 

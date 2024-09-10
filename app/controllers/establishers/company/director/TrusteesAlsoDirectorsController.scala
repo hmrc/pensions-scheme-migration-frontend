@@ -24,7 +24,7 @@ import forms.dataPrefill.DataPrefillCheckboxFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.director.TrusteesAlsoDirectorsId
-import models.{DataPrefillCheckbox, Index}
+import models.{DataPrefillCheckbox, Index, entities}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -70,7 +70,7 @@ class TrusteesAlsoDirectorsController @Inject()(override val messagesApi: Messag
 
           renderer.render("dataPrefillCheckbox.njk", json).map(Ok(_))
         } else {
-          Future(Redirect(controllers.establishers.company.routes.SpokeTaskListController.onPageLoad(establisherIndex)))
+          Future(Redirect(controllers.common.routes.SpokeTaskListController.onPageLoad(establisherIndex, entities.Establisher, entities.Company)))
         }
       }
   }

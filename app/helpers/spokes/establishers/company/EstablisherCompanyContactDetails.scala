@@ -16,12 +16,10 @@
 
 package helpers.spokes.establishers.company
 
-import controllers.establishers.company.contact.routes._
 import helpers.spokes.Spoke
-import models.{Index, SpokeTaskListLink}
+import models.{Index, SpokeTaskListLink, entities}
 import play.api.i18n.Messages
 import utils.UserAnswers
-
 
 case class EstablisherCompanyContactDetails(
 index: Index,
@@ -30,9 +28,9 @@ index: Index,
   val messageKeyPrefix = "messages__schemeTaskList__contactDetails_"
   val linkKeyAndRoute: (String, String) = {
     if (completeFlag(answers).isDefined)
-      (s"${messageKeyPrefix}changeLink", CheckYourAnswersController.onPageLoad(index).url)
+      (s"${messageKeyPrefix}changeLink", controllers.common.routes.CheckYourAnswersController.onPageLoad(index, entities.Establisher, entities.Company, entities.Contacts).url)
     else
-      (s"${messageKeyPrefix}addLink", WhatYouWillNeedCompanyContactController.onPageLoad(index).url)
+      (s"${messageKeyPrefix}addLink", controllers.establishers.company.contact.routes.WhatYouWillNeedCompanyContactController.onPageLoad(index).url)
   }
   override def changeLink(name: String)
                          (implicit messages: Messages): SpokeTaskListLink =

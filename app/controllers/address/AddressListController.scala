@@ -28,7 +28,6 @@ import play.api.mvc.{AnyContent, Call, Result}
 import renderer.Renderer
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.CountryOptions
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -87,11 +86,11 @@ trait AddressListController extends FrontendBaseController with Retrievals {
     )
   }
 
-  def transformAddressesForTemplate(addresses:Seq[TolerantAddress], countryOptions: CountryOptions):Seq[JsObject] = {
+  def transformAddressesForTemplate(addresses:Seq[TolerantAddress]):Seq[JsObject] = {
     for ((row, i) <- addresses.zipWithIndex) yield {
       Json.obj(
         "value" -> i,
-        "text" -> row.print(countryOptions)
+        "text" -> row.print
       )
     }
   }

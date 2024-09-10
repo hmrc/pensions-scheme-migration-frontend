@@ -19,10 +19,10 @@ package utils
 import identifiers.Identifier
 import models.Mode
 import models.requests.DataRequest
-import navigators.CompoundNavigator
+import navigators.{CompoundNavigator, Navigator}
 import play.api.mvc.{AnyContent, Call}
 
-class FakeNavigator(desiredRoute: Call) extends CompoundNavigator {
+class FakeNavigator(desiredRoute: Call) extends CompoundNavigator(new java.util.HashSet[Navigator]()) {
 
   private[this] var userAnswers: Option[UserAnswers] = None
 

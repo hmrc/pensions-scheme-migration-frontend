@@ -28,7 +28,8 @@ lazy val microservice = Project(appName, file("."))
       "models.NormalMode",
       "models.MigrationType",
       "models.Scheme",
-      "models.RacDac"
+      "models.RacDac",
+      "models.entities._"
     ),
     TwirlKeys.templateImports ++= Seq(
       "play.twirl.api.HtmlFormat",
@@ -36,7 +37,8 @@ lazy val microservice = Project(appName, file("."))
       "uk.gov.hmrc.govukfrontend.views.html.components._",
       "uk.gov.hmrc.hmrcfrontend.views.Implicits._",
       "uk.gov.hmrc.hmrcfrontend.views.html.components._",
-      "uk.gov.hmrc.hmrcfrontend.views.html.helpers._"
+      "uk.gov.hmrc.hmrcfrontend.views.html.helpers._",
+      "viewmodels.govuk.all._",
     ),
       // concatenate js
       Concat.groups := Seq(
@@ -51,24 +53,22 @@ lazy val microservice = Project(appName, file("."))
 // prevent removal of unused code which generates warning errors due to use of third-party libs
     uglifyCompressOptions := Seq("unused=false", "dead_code=false"),
 // below line required to force asset pipeline to operate in dev rather than only prod
-    Assets / pipelineStages := Seq(concat, uglify)
-  )
-  .configs(IntegrationTest)
-  .settings(resolvers ++= Seq(
+    Assets / pipelineStages := Seq(concat, uglify) ,
+    resolvers ++= Seq(
     Resolver.jcenterRepo,
-    )
-  )
-  .settings(
+    ),
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;.*models.*;.*repositories.*;" +
       ".*BuildInfo.*;.*javascript.*;.*Routes.*;.*GuiceInjector;.*UserAnswersCacheConnector;" +
       ".*ControllerConfiguration;.*LanguageSwitchController;.*LanguageSelect.*;.*TestMongoPage.*;.*ErrorTemplate.*",
     ScoverageKeys.coverageMinimumStmtTotal := 80,
     ScoverageKeys.coverageFailOnMinimum := true,
-    ScoverageKeys.coverageHighlighting := true
-  )
-  .settings(
-    scalacOptions ++= Seq("-Xfatal-warnings", "-feature"),
+    ScoverageKeys.coverageHighlighting := true,
     retrieveManaged := true,
     update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
   )
 
+lazy val testSettings: Seq[Def.Setting[_]] = Seq(
+  javaOptions ++= Seq(
+    "-Dconfig.resource=test.application.conf"
+  )
+)

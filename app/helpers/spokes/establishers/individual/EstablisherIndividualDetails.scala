@@ -17,7 +17,7 @@
 package helpers.spokes.establishers.individual
 
 import helpers.spokes.Spoke
-import models.{Index, SpokeTaskListLink}
+import models.{Index, SpokeTaskListLink, entities}
 import play.api.i18n.Messages
 import utils.UserAnswers
 
@@ -30,7 +30,8 @@ case class EstablisherIndividualDetails(
   val linkKeyAndRoute: (String, String) =
     if (completeFlag(answers).isDefined)
       (s"${messageKeyPrefix}changeLink",
-        controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index).url)
+
+        controllers.common.routes.CheckYourAnswersController.onPageLoad(index, entities.Establisher, entities.Individual, entities.Details).url)
     else
       (s"${messageKeyPrefix}addLink", controllers.establishers.individual.details.routes.WhatYouWillNeedController.onPageLoad(index).url)
 

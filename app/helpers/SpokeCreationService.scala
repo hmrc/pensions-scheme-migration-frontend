@@ -23,12 +23,12 @@ import helpers.spokes.establishers.partnership._
 import helpers.spokes.trustees.company.{TrusteeCompanyAddress, TrusteeCompanyContactDetails, TrusteeCompanyDetails}
 import helpers.spokes.trustees.individual.{TrusteeIndividualAddress, TrusteeIndividualContactDetails, TrusteeIndividualDetails}
 import helpers.spokes.trustees.partnership.{TrusteePartnershipAddress, TrusteePartnershipContactDetails, TrusteePartnershipDetails}
-import identifiers.beforeYouStart.SchemeTypeId
 import models.Index._
 import models._
+import models.entities.{EntityType, PensionManagementType}
 import play.api.i18n.Messages
 import services.DataPrefillService
-import utils.{Enumerable, UserAnswers}
+import utils.{Enumerable, UserAnswers, entityTypeError, managementTypeError}
 
 import javax.inject.Inject
 
@@ -110,42 +110,6 @@ class SpokeCreationService @Inject()(dataPrefillService: DataPrefillService) ext
     EntitySpoke(spoke.changeLink(name), isComplete)
   }
 
-  def getAddTrusteeHeaderSpokes(answers: UserAnswers, viewOnly: Boolean)
-                               (implicit messages: Messages): Seq[EntitySpoke] =
-    if (viewOnly)
-      Nil
-    else if (answers.allTrusteesAfterDelete.isEmpty) {
-      if(answers.get(SchemeTypeId).contains(SchemeType.SingleTrust)) {
-        Seq(
-          EntitySpoke(
-            link = SpokeTaskListLink(
-              text = messages("messages__schemeTaskList__sectionTrustees_add_link"),
-              target = controllers.trustees.routes.TrusteeKindController.onPageLoad(answers.allTrustees.size).url
-            ),
-            isCompleted = None
-          )
-        )
-      } else
-        Seq(
-          EntitySpoke(
-            link = SpokeTaskListLink(
-              text = messages("messages__schemeTaskList__sectionTrustees_add_link"),
-              target = controllers.trustees.routes.AnyTrusteesController.onPageLoad.url
-            ),
-            isCompleted = None
-          )
-        )
-    } else
-      Seq(
-        EntitySpoke(
-          link = SpokeTaskListLink(
-            text = messages("messages__schemeTaskList__sectionTrustees_change_link"),
-            target = controllers.trustees.routes.AddTrusteeController.onPageLoad.url
-          ),
-          isCompleted = None
-        )
-      )
-
   def getTrusteeIndividualSpokes(answers: UserAnswers, name: String, index: Index)
                                 (implicit messages: Messages): Seq[EntitySpoke] = {
     Seq(
@@ -187,6 +151,29 @@ class SpokeCreationService @Inject()(dataPrefillService: DataPrefillService) ext
       link = spoke.changeLink(name),
       isCompleted = spoke.completeFlag(answers)
     )
+
+
+  def getSpokes(pensionManagementType: PensionManagementType, entityType: EntityType, answers: UserAnswers, name: String, index: Index)
+               (implicit messages: Messages): Seq[EntitySpoke] = {
+    val function = pensionManagementType match {
+      case entities.Establisher =>
+        entityType match {
+          case entities.Company => getEstablisherCompanySpokes _
+          case entities.Individual => getEstablisherIndividualSpokes _
+          case entities.Partnership => getEstablisherPartnershipSpokes _
+          case e => entityTypeError(e)
+        }
+      case entities.Trustee => entityType match {
+        case entities.Company => getTrusteeCompanySpokes _
+        case entities.Individual => getTrusteeIndividualSpokes _
+        case entities.Partnership => getTrusteePartnershipSpokes _
+        case e => entityTypeError(e)
+      }
+      case e => managementTypeError(e)
+    }
+
+    function(answers, name, index)
+  }
 
 }
 

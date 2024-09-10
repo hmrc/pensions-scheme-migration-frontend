@@ -27,11 +27,13 @@ import scala.concurrent.Future
 import scala.language.implicitConversions
 
 trait Retrievals {
+
+  private val dataNotFoundRedirect = Redirect(routes.SessionExpiredController.onPageLoad())
   private[controllers] def retrieve[A](id: TypedIdentifier[A])
                                       (f: A => Future[Result])
                                       (implicit request: DataRequest[AnyContent], r: Reads[A]): Future[Result] = {
     request.userAnswers.get(id).map(f).getOrElse {
-      Future.successful(Redirect(controllers.routes.IndexController.onPageLoad))
+      Future.successful(dataNotFoundRedirect)
     }
   }
 
@@ -72,7 +74,7 @@ trait Retrievals {
       implicit request =>
         request.userAnswers.get(id) match {
           case Some(value) => Right(value)
-          case None => Left(Future.successful(Redirect(controllers.routes.IndexController.onPageLoad)))
+          case None => Left(Future.successful(dataNotFoundRedirect))
         }
     }
 

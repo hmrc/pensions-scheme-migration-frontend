@@ -88,6 +88,4 @@ class DataRetrievalImpl @Inject()(dataConnector: UserAnswersCacheConnector,
 @ImplementedBy(classOf[DataRetrievalImpl])
 trait DataRetrievalAction extends ActionTransformer[AuthenticatedRequest, OptionalDataRequest]
 
-case class NoSchemeDataWasSaved(e: String) extends Exception(e)
-
 

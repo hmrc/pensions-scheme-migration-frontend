@@ -27,7 +27,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Result}
+import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
@@ -45,7 +45,7 @@ class CompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSuppor
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(index), companyDetails).success.value
 
   private val formProvider: CompanyNumberFormProvider = new CompanyNumberFormProvider()
-  private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
+
   private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
 
   private val commonJson: JsObject =
@@ -59,7 +59,7 @@ class CompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSuppor
     )
 
   private def controller(dataRetrievalAction: DataRetrievalAction): CompanyNumberController =
-    new CompanyNumberController(messagesApi, new FakeNavigator(desiredRoute = onwardRoute), new FakeAuthAction(), dataRetrievalAction,
+    new CompanyNumberController(messagesApi, new FakeNavigator(desiredRoute = onwardCall), new FakeAuthAction(), dataRetrievalAction,
       new DataRequiredActionImpl, formProvider, controllerComponents, mockUserAnswersCacheConnector, new Renderer(mockAppConfig, mockRenderer))
 
   override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
@@ -109,7 +109,7 @@ class CompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSuppor
       val result: Future[Result] = controller(getData).onSubmit(0, NormalMode)(request)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result) mustBe Some(onwardCall.url)
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
     }
 

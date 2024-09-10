@@ -16,35 +16,27 @@
 
 package controllers.trustees.partnership.address
 
-import connectors.cache.UserAnswersCacheConnector
+import controllers.Retrievals
 import controllers.actions._
-import controllers.address.CommonAddressYearsController
 import forms.address.AddressYearsFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.partnership.PartnershipDetailsId
 import identifiers.trustees.partnership.address.AddressYearsId
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import utils.Enumerable
+import play.api.mvc.{Action, AnyContent}
+import services.common.address.CommonAddressYearsService
+import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
-                                       val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                       authenticate: AuthAction,
+class AddressYearsController @Inject()(authenticate: AuthAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
-                                       val navigator: CompoundNavigator,
                                        formProvider: AddressYearsFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       val renderer: Renderer)(implicit ec: ExecutionContext)
-  extends CommonAddressYearsController
-    with Enumerable.Implicits {
+                                       common: CommonAddressYearsService)(implicit ec: ExecutionContext)
+  extends Retrievals {
 
   private def form: Form[Boolean] =
     formProvider("partnershipAddressYears.error.required")
@@ -53,7 +45,7 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (PartnershipDetailsId(index) and SchemeNameId).retrieve.map {
         case partnershipDetails ~ schemeName =>
-          get(Some(schemeName), partnershipDetails.partnershipName, Messages("messages__partnership"), form, AddressYearsId(index))
+          common.get(Some(schemeName), partnershipDetails.partnershipName, Message("messages__partnership"), form, AddressYearsId(index))
       }
     }
 
@@ -61,7 +53,7 @@ class AddressYearsController @Inject()(override val messagesApi: MessagesApi,
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (PartnershipDetailsId(index) and SchemeNameId).retrieve.map {
         case partnershipDetails ~ schemeName =>
-          post(Some(schemeName), partnershipDetails.partnershipName, Messages("messages__partnership"), form, AddressYearsId(index),Some(mode))
+          common.post(Some(schemeName), partnershipDetails.partnershipName, Message("messages__partnership"), form, AddressYearsId(index),Some(mode))
       }
     }
 }

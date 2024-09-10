@@ -38,8 +38,6 @@ POST        /:index/individual/reason-for-no-unique-taxpayer-reference          
 GET         /:index/change/individual/reason-for-no-unique-taxpayer-reference           controllers.establishers.individual.details.EstablisherNoUTRReasonController.onPageLoad(index: Index, mode: Mode = CheckMode)
 POST        /:index/change/individual/reason-for-no-unique-taxpayer-reference           controllers.establishers.individual.details.EstablisherNoUTRReasonController.onSubmit(index: Index, mode: Mode = CheckMode)
 
-GET         /:index/individual/check-your-answers-details                               controllers.establishers.individual.details.CheckYourAnswersController.onPageLoad(index: Index)
-
 GET         /:index/individual/address                                                  controllers.establishers.individual.address.WhatYouWillNeedController.onPageLoad(index: Index)
 
 GET         /:index/individual/enter-postcode                                           controllers.establishers.individual.address.EnterPostcodeController.onPageLoad(index: Index, mode: Mode = NormalMode)
@@ -57,8 +55,6 @@ GET         /:index/individual/confirm-address                                  
 POST        /:index/individual/confirm-address                                          controllers.establishers.individual.address.ConfirmAddressController.onSubmit(index: Index, mode: Mode = NormalMode)
 GET         /:index/change/individual/confirm-address                                   controllers.establishers.individual.address.ConfirmAddressController.onPageLoad(index: Index, mode: Mode = CheckMode)
 POST        /:index/change/individual/confirm-address                                   controllers.establishers.individual.address.ConfirmAddressController.onSubmit(index: Index, mode: Mode = CheckMode)
-
-GET         /:index/individual/check-your-answers-address                               controllers.establishers.individual.address.CheckYourAnswersController.onPageLoad(index: Index)
 
 GET         /:index/individual/time-at-address                                          controllers.establishers.individual.address.AddressYearsController.onPageLoad(index: Index, mode: Mode = NormalMode)
 POST        /:index/individual/time-at-address                                          controllers.establishers.individual.address.AddressYearsController.onSubmit(index: Index, mode: Mode = NormalMode)
@@ -91,8 +87,3 @@ GET         /:index/individual/enter-phone-number                               
 POST        /:index/individual/enter-phone-number                                       controllers.establishers.individual.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = NormalMode)
 GET         /:index/change/individual/enter-phone-number                                controllers.establishers.individual.contact.EnterPhoneController.onPageLoad(index: Index, mode: Mode = CheckMode)
 POST        /:index/change/individual/enter-phone-number                                controllers.establishers.individual.contact.EnterPhoneController.onSubmit(index: Index, mode: Mode = CheckMode)
-
-GET         /:index/individual/check-your-answers-contact-details                       controllers.establishers.individual.contact.CheckYourAnswersController.onPageLoad(index: Index)
-
-GET         /:index/individual/task-list                                               controllers.establishers.individual.SpokeTaskListController.onPageLoad(index:Index)
-

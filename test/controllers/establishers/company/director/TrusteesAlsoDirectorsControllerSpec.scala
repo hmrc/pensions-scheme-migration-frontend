@@ -21,8 +21,8 @@ import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAut
 import forms.dataPrefill.DataPrefillCheckboxFormProvider
 import identifiers.establishers.company.CompanyDetailsId
 import matchers.JsonMatchers
-import models.CompanyDetails
 import models.prefill.IndividualDetails
+import models.{CompanyDetails, entities}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
@@ -47,7 +47,6 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
 
   private val formProvider: DataPrefillCheckboxFormProvider = new DataPrefillCheckboxFormProvider()
   private val form = formProvider(6,"", "", "")
-  private val onwardRoute: String = "/add-pension-scheme/index"
   private val templateToBeRendered: String = "dataPrefillCheckbox.njk"
   private val mockDataPrefillService = mock[DataPrefillService]
   private val companyDetails: CompanyDetails = CompanyDetails("test company")
@@ -73,7 +72,7 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
                         ): TrusteesAlsoDirectorsController =
     new TrusteesAlsoDirectorsController(
       messagesApi = messagesApi,
-      navigator = new FakeNavigator(desiredRoute = controllers.routes.IndexController.onPageLoad),
+      navigator = new FakeNavigator(desiredRoute = onwardCall),
       authenticate = new FakeAuthAction(),
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl,
@@ -110,7 +109,7 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
       val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(userAnswers))
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.establishers.company.routes.SpokeTaskListController.onPageLoad(0).url)
+      redirectLocation(result) mustBe Some(controllers.common.routes.SpokeTaskListController.onPageLoad(0, entities.Establisher, entities.Company).url)
     }
 
     "copy the directors and redirect to the next page when valid data is submitted with value less than max directors" in {
@@ -122,7 +121,7 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
       val result: Future[Result] = controller(getData).onSubmit(0)(request)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute)
+      redirectLocation(result) mustBe Some(onwardCall.url)
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
       verify(mockDataPrefillService, times(1)).copyAllTrusteesToDirectors(any(), any(), any())
     }
@@ -135,7 +134,7 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
       val result: Future[Result] = controller(getData).onSubmit(0)(request)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute)
+      redirectLocation(result) mustBe Some(onwardCall.url)
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
       verify(mockDataPrefillService, never).copyAllTrusteesToDirectors(any(), any(), any())
     }

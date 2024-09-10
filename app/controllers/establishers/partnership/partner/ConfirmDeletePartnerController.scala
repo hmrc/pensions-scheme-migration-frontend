@@ -68,7 +68,9 @@ class ConfirmDeletePartnerController @Inject()(override val messagesApi: Message
             )
             renderer.render("delete.njk", json).map(Ok(_))
           }
-        }getOrElse Future.successful(Redirect(controllers.routes.IndexController.onPageLoad))
+        } getOrElse {
+          throw new RuntimeException("index page unavailable")
+        }
     }
 
   private def form(name: String)(implicit messages: Messages): Form[Boolean] = formProvider(name)

@@ -19,15 +19,13 @@ package navigators
 import controllers.establishers.partnership.address.routes._
 import controllers.establishers.partnership.contact.routes.EnterPhoneController
 import controllers.establishers.partnership.details.{routes => detailsRoutes}
-import controllers.establishers.partnership.routes._
-import controllers.routes.IndexController
 import identifiers._
 import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.address._
 import identifiers.establishers.partnership.contact._
 import identifiers.establishers.partnership.details._
 import models.requests.DataRequest
-import models.{CheckMode, Index, Mode, NormalMode}
+import models._
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
 
@@ -37,10 +35,12 @@ class EstablishersPartnershipNavigator@Inject()()
   extends Navigator
     with Enumerable.Implicits {
 
+
+
   //scalastyle:off cyclomatic.complexity
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
-    case PartnershipDetailsId(index) => SpokeTaskListController.onPageLoad(index)
+    case PartnershipDetailsId(index) => controllers.common.routes.SpokeTaskListController.onPageLoad(index, entities.Establisher, entities.Partnership)
     case EnterEmailId(index) => EnterPhoneController.onPageLoad(index, NormalMode)
     case EnterPhoneId(index) => cyaContactDetails(index)
     case HaveUTRId(index) => utrRoutes(index, ua, NormalMode)
@@ -49,7 +49,7 @@ class EstablishersPartnershipNavigator@Inject()()
     case HaveVATId(index) => vatRoutes(index, ua, NormalMode)
     case VATId(index) => detailsRoutes.HavePAYEController.onPageLoad(index, NormalMode)
     case HavePAYEId(index) => payeRoutes(index, ua, NormalMode)
-    case PAYEId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+    case PAYEId(index) => cyaDetails(index)
     case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index, NormalMode)
     case AddressListId(index) => addressYears(index, NormalMode)
     case AddressId(index) => addressYears(index, NormalMode)
@@ -63,14 +63,14 @@ class EstablishersPartnershipNavigator@Inject()()
   }
 
  override protected def editRouteMap(ua: UserAnswers)(implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
-   case PartnershipDetailsId(_) => IndexController.onPageLoad
+   case PartnershipDetailsId(_) => throw new RuntimeException("index page unavailable")
    case HaveUTRId(index) => utrRoutes(index, ua, CheckMode)
-   case PartnershipUTRId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
-   case NoUTRReasonId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+   case PartnershipUTRId(index) => cyaDetails(index)
+   case NoUTRReasonId(index) => cyaDetails(index)
    case HaveVATId(index) => vatRoutes(index, ua, CheckMode)
-   case VATId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+   case VATId(index) => cyaDetails(index)
    case HavePAYEId(index) => payeRoutes(index, ua, CheckMode)
-   case PAYEId(index) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+   case PAYEId(index) => cyaDetails(index)
    case EnterEmailId(index) => cyaContactDetails(index)
    case EnterPhoneId(index) => cyaContactDetails(index)
    case AddressId(index) => cyaAddress(index)
@@ -86,7 +86,8 @@ class EstablishersPartnershipNavigator@Inject()()
    case PreviousAddressListId(index) => cyaAddress(index)
   }
 
-  private def cyaAddress(index:Int): Call = controllers.establishers.partnership.address.routes.CheckYourAnswersController.onPageLoad(index)
+  private def cyaDetails(index:Int) = controllers.common.routes.CheckYourAnswersController.onPageLoad(index, entities.Establisher, entities.Partnership, entities.Details)
+  private def cyaAddress(index:Int): Call = controllers.common.routes.CheckYourAnswersController.onPageLoad(index, entities.Establisher, entities.Partnership, entities.Address)
   private def addressYears(index:Int, mode:Mode): Call = controllers.establishers.partnership.address.routes.AddressYearsController.onPageLoad(index,mode)
 
   private def utrRoutes(
@@ -100,7 +101,7 @@ class EstablishersPartnershipNavigator@Inject()()
       case None => controllers.routes.TaskListController.onPageLoad
     }
 
-  private def cyaContactDetails(index:Int): Call = controllers.establishers.partnership.contact.routes.CheckYourAnswersController.onPageLoad(index)
+  private def cyaContactDetails(index:Int): Call = controllers.common.routes.CheckYourAnswersController.onPageLoad(index, entities.Establisher, entities.Partnership, entities.Contacts)
 
   private def vatRoutes(
                          index: Index,
@@ -110,7 +111,7 @@ class EstablishersPartnershipNavigator@Inject()()
     answers.get(HaveVATId(index)) match {
       case Some(true) => detailsRoutes.VATController.onPageLoad(index, mode)
       case Some(false) if mode == NormalMode => detailsRoutes.HavePAYEController.onPageLoad(index, mode)
-      case Some(false) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+      case Some(false) => cyaDetails(index)
       case None => controllers.routes.TaskListController.onPageLoad
     }
 
@@ -121,7 +122,7 @@ class EstablishersPartnershipNavigator@Inject()()
                         ): Call =
     answers.get(HavePAYEId(index)) match {
       case Some(true) => detailsRoutes.PAYEController.onPageLoad(index, mode)
-      case Some(false) => detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+      case Some(false) => cyaDetails(index)
       case None => controllers.routes.TaskListController.onPageLoad
     }
 

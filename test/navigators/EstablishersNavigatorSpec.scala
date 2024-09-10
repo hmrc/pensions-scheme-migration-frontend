@@ -48,7 +48,7 @@ class EstablishersNavigatorSpec
   private val companyDetailsPage: Call = controllers.establishers.company.routes.CompanyDetailsController.onPageLoad(index)
   private val partnershipDetailsPage: Call = controllers.establishers.partnership.routes.PartnershipDetailsController.onPageLoad(index)
   private val addEstablisherPage: Call = controllers.establishers.routes.AddEstablisherController.onPageLoad
-  private val addEstablisherDetailsPage: Call = controllers.establishers.individual.routes.SpokeTaskListController.onPageLoad(index)
+  private val addEstablisherDetailsPage: Call = controllers.common.routes.SpokeTaskListController.onPageLoad(index, entities.Establisher, entities.Individual)
   private val taskListPage: Call = controllers.routes.TaskListController.onPageLoad
   private val establisherKindPage: Call = routes.EstablisherKindController.onPageLoad(index)
   private val detailsUa: UserAnswers =
@@ -64,7 +64,14 @@ class EstablishersNavigatorSpec
 
   val address = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
 
-  private val cyaAddress: Call = controllers.establishers.individual.address.routes.CheckYourAnswersController.onPageLoad(index)
+  private val cyaAddress: Call = controllers.common.routes.CheckYourAnswersController.onPageLoad(index,
+    entities.Establisher,
+    entities.Individual,
+    entities.Address)
+  private val cyaDetails: Call = controllers.common.routes.CheckYourAnswersController.onPageLoad(index,
+    entities.Establisher,
+    entities.Individual,
+    entities.Details)
 
   private def enterPreviousPostcode(mode:Mode): Call =
     controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad( index,mode)
@@ -80,8 +87,10 @@ class EstablishersNavigatorSpec
   private def enterPhonePage(mode:Mode): Call =
     controllers.establishers.individual.contact.routes.EnterPhoneController.onPageLoad(index, mode)
 
-  private val cyaContact: Call =
-    controllers.establishers.individual.contact.routes.CheckYourAnswersController.onPageLoad(index)
+  private val cyaContact: Call = controllers.common.routes.CheckYourAnswersController.onPageLoad(index,
+    entities.Establisher,
+    entities.Individual,
+    entities.Contacts)
 
   "EstablishersNavigator" when {
     def navigation: TableFor3[Identifier, UserAnswers, Call] =
@@ -102,8 +111,8 @@ class EstablishersNavigatorSpec
         row(EstablisherNoNINOReasonId(index))(controllers.establishers.individual.details.routes.EstablisherHasUTRController.onPageLoad(index, NormalMode), Some(detailsUa.set(EstablisherNoNINOReasonId(index), "Reason").success.value)),
         row(EstablisherHasUTRId(index))(controllers.establishers.individual.details.routes.EstablisherEnterUTRController.onPageLoad(index, NormalMode), Some(detailsUa.set(EstablisherHasUTRId(index), true).success.value)),
         row(EstablisherHasUTRId(index))(controllers.establishers.individual.details.routes.EstablisherNoUTRReasonController.onPageLoad(index, NormalMode), Some(detailsUa.set(EstablisherHasUTRId(index), false).success.value)),
-        row(EstablisherUTRId(index))(controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index), Some(detailsUa.set(EstablisherUTRId(index), ReferenceValue("1234567890")).success.value)),
-        row(EstablisherNoUTRReasonId(index))(controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index), Some(detailsUa.set(EstablisherNoUTRReasonId(index), "Reason").success.value)),
+        row(EstablisherUTRId(index))(cyaDetails, Some(detailsUa.set(EstablisherUTRId(index), ReferenceValue("1234567890")).success.value)),
+        row(EstablisherNoUTRReasonId(index))(cyaDetails, Some(detailsUa.set(EstablisherNoUTRReasonId(index), "Reason").success.value)),
 
         row(EnterPostCodeId(index))(selectAddress(NormalMode), addressUAWithValue(EnterPostCodeId(index), seqAddresses)),
         row(AddressListId(index))(addressYears(NormalMode), addressUAWithValue(AddressListId(index), Data.tolerantAddress)),
@@ -122,15 +131,15 @@ class EstablishersNavigatorSpec
     def editNavigation: TableFor3[Identifier, UserAnswers, Call] =
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
-        row(EstablisherDOBId(index))(controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index), Some(detailsUa.set(EstablisherDOBId(index), LocalDate.parse("2000-01-01")).success.value)),
+        row(EstablisherDOBId(index))(cyaDetails, Some(detailsUa.set(EstablisherDOBId(index), LocalDate.parse("2000-01-01")).success.value)),
         row(EstablisherHasNINOId(index))(controllers.establishers.individual.details.routes.EstablisherEnterNINOController.onPageLoad(index, CheckMode), Some(detailsUa.set(EstablisherHasNINOId(index), true).success.value)),
         row(EstablisherHasNINOId(index))(controllers.establishers.individual.details.routes.EstablisherNoNINOReasonController.onPageLoad(index, CheckMode), Some(detailsUa.set(EstablisherHasNINOId(index), false).success.value)),
-        row(EstablisherNINOId(index))(controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index), Some(detailsUa.set(EstablisherNINOId(index), ReferenceValue("AB123456C")).success.value)),
-        row(EstablisherNoNINOReasonId(index))(controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index), Some(detailsUa.set(EstablisherNoNINOReasonId(index), "Reason").success.value)),
+        row(EstablisherNINOId(index))(cyaDetails, Some(detailsUa.set(EstablisherNINOId(index), ReferenceValue("AB123456C")).success.value)),
+        row(EstablisherNoNINOReasonId(index))(cyaDetails, Some(detailsUa.set(EstablisherNoNINOReasonId(index), "Reason").success.value)),
         row(EstablisherHasUTRId(index))(controllers.establishers.individual.details.routes.EstablisherEnterUTRController.onPageLoad(index, CheckMode), Some(detailsUa.set(EstablisherHasUTRId(index), true).success.value)),
         row(EstablisherHasUTRId(index))(controllers.establishers.individual.details.routes.EstablisherNoUTRReasonController.onPageLoad(index, CheckMode), Some(detailsUa.set(EstablisherHasUTRId(index), false).success.value)),
-        row(EstablisherUTRId(index))(controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index), Some(detailsUa.set(EstablisherUTRId(index), ReferenceValue("1234567890")).success.value)),
-        row(EstablisherNoUTRReasonId(index))(controllers.establishers.individual.details.routes.CheckYourAnswersController.onPageLoad(index), Some(detailsUa.set(EstablisherNoUTRReasonId(index), "Reason").success.value)),
+        row(EstablisherUTRId(index))(cyaDetails, Some(detailsUa.set(EstablisherUTRId(index), ReferenceValue("1234567890")).success.value)),
+        row(EstablisherNoUTRReasonId(index))(cyaDetails, Some(detailsUa.set(EstablisherNoUTRReasonId(index), "Reason").success.value)),
         row(EnterEmailId(index))(cyaContact, Some(detailsUa.set(EnterEmailId(index), "test@test.com").success.value)),
         row(EnterPhoneId(index))(cyaContact, Some(detailsUa.set(EnterPhoneId(index), "1234").success.value)),
         row(EnterPostCodeId(index))(selectAddress(CheckMode), addressUAWithValue(EnterPostCodeId(index), seqAddresses)),

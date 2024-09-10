@@ -37,7 +37,7 @@ class TrusteesCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour with
   private val navigator: CompoundNavigator = injector.instanceOf[CompoundNavigator]
   private val index: Index = Index(0)
 
-  private val addTrusteeDetailsPage: Call = controllers.trustees.company.routes.SpokeTaskListController.onPageLoad(index)
+  private val addTrusteeDetailsPage: Call = controllers.common.routes.SpokeTaskListController.onPageLoad(index, entities.Trustee, entities.Company)
   private val detailsUa: UserAnswers =
     ua.set(CompanyDetailsId(0), companyDetails).success.value
   private def uaWithValue[A](idType:TypedIdentifier[A], idValue:A)(implicit writes: Writes[A]) =
@@ -51,13 +51,20 @@ class TrusteesCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour with
   private def vat(mode: Mode = NormalMode): Call = detailsRoutes.VATController.onPageLoad(index, mode)
   private def havePaye(mode: Mode = NormalMode): Call = detailsRoutes.HavePAYEController.onPageLoad(index, mode)
   private def paye(mode: Mode = NormalMode): Call = detailsRoutes.PAYEController.onPageLoad(index, mode)
-  private val cyaDetails: Call = detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+
+  private val cyaDetails: Call = controllers.common.routes.CheckYourAnswersController.onPageLoad(index,
+    entities.Trustee,
+    entities.Company,
+    entities.Details)
   private def addressUAWithValue[A](idType:TypedIdentifier[A], idValue:A)(implicit writes: Writes[A]) =
     detailsUa.set(idType, idValue).toOption
   val address = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
 
   private val cyaAddress: Call =
-    controllers.trustees.company.address.routes.CheckYourAnswersController.onPageLoad(index)
+    controllers.common.routes.CheckYourAnswersController.onPageLoad(index,
+      entities.Trustee,
+      entities.Company,
+      entities.Address)
 
   private val seqAddresses = Seq(
     TolerantAddress(Some("1"),Some("1"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")),
@@ -83,7 +90,10 @@ class TrusteesCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour with
     controllers.trustees.company.contacts.routes.EnterPhoneController.onPageLoad(index, mode)
 
   private val cyaContact: Call =
-    controllers.trustees.company.contacts.routes.CheckYourAnswersController.onPageLoad(index)
+    controllers.common.routes.CheckYourAnswersController.onPageLoad(index,
+      entities.Trustee,
+      entities.Company,
+      entities.Contacts)
 
   "TrusteesCompanyNavigator" when {
     def navigation: TableFor3[Identifier, UserAnswers, Call] =
@@ -125,7 +135,6 @@ class TrusteesCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour with
     def editNavigation: TableFor3[Identifier, UserAnswers, Call] =
       Table(
         ("Id", "Next Page", "UserAnswers (Optional)"),
-        row(CompanyDetailsId(index))(controllers.routes.IndexController.onPageLoad),
         row(HaveCompanyNumberId(index))(companyNumber(CheckMode), uaWithValue(HaveCompanyNumberId(index), true)),
         row(HaveCompanyNumberId(index))(noCompanyNumber(CheckMode), uaWithValue(HaveCompanyNumberId(index), false)),
         row(CompanyNumberId(index))(cyaDetails),

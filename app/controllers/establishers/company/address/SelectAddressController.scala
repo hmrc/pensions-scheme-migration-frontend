@@ -49,7 +49,6 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
   formProvider: AddressListFormProvider,
-  countryOptions: CountryOptions,
   val controllerComponents: MessagesControllerComponents,
   val renderer: Renderer)(implicit val ec: ExecutionContext) extends AddressListController with I18nSupport
   with NunjucksSupport with Retrievals {
@@ -82,7 +81,7 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
 
           form => Json.obj(
             "form" -> form,
-            "addresses" -> transformAddressesForTemplate(addresses, countryOptions),
+            "addresses" -> transformAddressesForTemplate(addresses),
             "entityType" -> msg("establisherEntityTypeCompany"),
             "entityName" -> name,
             "enterManuallyUrl" -> ConfirmAddressController.onPageLoad(index,mode).url,

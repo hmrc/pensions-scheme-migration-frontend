@@ -125,8 +125,6 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
 
       val expectedJson = Json.obj()
 
-      when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
-        .thenReturn(controllers.establishers.partnership.partner.details.routes.CheckYourAnswersController.onPageLoad(0,0))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -142,7 +140,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
 
       jsonCaptor.getValue must containJson(expectedJson)
 
-      redirectLocation(result) mustBe Some(controllers.establishers.partnership.partner.details.routes.CheckYourAnswersController.onPageLoad(0,0).url)
+      redirectLocation(result) mustBe Some(onwardCall.url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {

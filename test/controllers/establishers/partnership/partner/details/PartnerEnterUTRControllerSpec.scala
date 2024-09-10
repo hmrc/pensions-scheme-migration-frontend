@@ -28,7 +28,7 @@ import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Result}
+import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
@@ -52,8 +52,7 @@ class PartnerEnterUTRControllerSpec
     new UTRFormProvider()
   private val form: Form[ReferenceValue] =
     formProvider()
-  private val onwardRoute: Call =
-    controllers.routes.IndexController.onPageLoad
+
   private val userAnswers: UserAnswers =
     ua.set(PartnerNameId(0,0), personName).success.value
   private val templateToBeRendered: String =
@@ -85,7 +84,7 @@ class PartnerEnterUTRControllerSpec
                         ): PartnerEnterUTRController =
     new PartnerEnterUTRController(
       messagesApi               = messagesApi,
-      navigator                 = new FakeNavigator(desiredRoute = onwardRoute),
+      navigator                 = new FakeNavigator(desiredRoute = onwardCall),
       authenticate              = new FakeAuthAction(),
       getData                   = dataRetrievalAction,
       requireData               = new DataRequiredActionImpl,
@@ -170,7 +169,7 @@ class PartnerEnterUTRControllerSpec
 
       status(result) mustBe SEE_OTHER
 
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result) mustBe Some(onwardCall.url)
 
       verify(mockUserAnswersCacheConnector, times(1))
         .save(any(), any())(any(), any())

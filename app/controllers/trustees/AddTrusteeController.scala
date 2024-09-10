@@ -87,10 +87,8 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
   private def getJson(form: Form[_], trustees: Seq[Trustee[_]])(implicit request: DataRequest[AnyContent]): JsObject = {
     val trusteesComplete = trustees.filter(_.isCompleted)
     val trusteesIncomplete = trustees.filterNot(_.isCompleted)
-    val completeList = helper.mapTrusteesToList(trusteesComplete,
-      caption = "messages__schemeTaskList__completed", editLinkText = "site.change")
-    val incompleteList  = helper.mapTrusteesToList(trusteesIncomplete,
-      caption = "site.incomplete", editLinkText = "site.add.details")
+    val completeList = helper.directorsOrPartnersItemList(trusteesComplete)
+    val incompleteList  = helper.directorsOrPartnersItemList(trusteesIncomplete)
 
     Json.obj(
       "form" -> form,

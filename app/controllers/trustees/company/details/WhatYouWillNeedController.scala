@@ -29,6 +29,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.TwirlMigration
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -39,7 +40,9 @@ class WhatYouWillNeedController @Inject()(
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
                                            val controllerComponents: MessagesControllerComponents,
-                                           val renderer: Renderer
+                                           val renderer: Renderer,
+                                           whatYouWillNeedCompanyDetailsView: views.html.details.WhatYouWillNeedCompanyDetailsView,
+                                           twirlMigration: TwirlMigration
                                          )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
@@ -51,15 +54,24 @@ class WhatYouWillNeedController @Inject()(
       implicit request =>
         CompanyDetailsId(index).retrieve.map {
           details =>
-            renderer.render(
-              template = "details/whatYouWillNeedCompanyDetails.njk",
-              ctx = Json.obj(
-                "name" -> details.companyName,
-                "entityType" -> Messages("messages__title_company"),
-                "continueUrl" -> HaveCompanyNumberController.onPageLoad(index, NormalMode).url,
-                "schemeName" -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
+            val template = twirlMigration.duoTemplate(
+              renderer.render(
+                template = "details/whatYouWillNeedCompanyDetails.njk",
+                ctx = Json.obj(
+                  "name" -> details.companyName,
+                  "entityType" -> Messages("messages__title_company"),
+                  "continueUrl" -> HaveCompanyNumberController.onPageLoad(index, NormalMode).url,
+                  "schemeName" -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
+                )
+              ),
+              whatYouWillNeedCompanyDetailsView(
+                Messages("messages__title_company"),
+                details.companyName,
+                HaveCompanyNumberController.onPageLoad(index, NormalMode).url,
+                request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
               )
-            ).map(Ok(_))
+            )
+            template.map(Ok(_))
         }
     }
 

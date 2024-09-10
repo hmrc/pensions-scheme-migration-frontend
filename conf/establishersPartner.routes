@@ -85,8 +85,6 @@ POST        /:establisherIndex/partnership/partner/:partnerIndex/enter-partner-p
 GET         /:establisherIndex/change/partnership/partner/:partnerIndex/enter-partner-phone-number                                     controllers.establishers.partnership.partner.contact.EnterPhoneNumberController.onPageLoad(establisherIndex: Index, partnerIndex: Index,mode: Mode = CheckMode)
 POST        /:establisherIndex/change/partnership/partner/:partnerIndex/enter-partner-phone-number                                     controllers.establishers.partnership.partner.contact.EnterPhoneNumberController.onSubmit(establisherIndex: Index, partnerIndex: Index,mode: Mode = CheckMode)
 
-GET         /:establisherIndex/partnership/partner/:partnerIndex/check-your-answers                                                    controllers.establishers.partnership.partner.details.CheckYourAnswersController.onPageLoad(establisherIndex: Index, partnerIndex: Index)
-
 GET         /:establisherIndex/partnership/partner/:partnerIndex/partners-confirm-delete                                               controllers.establishers.partnership.partner.ConfirmDeletePartnerController.onPageLoad(establisherIndex: Index, partnerIndex: Index)
 POST        /:establisherIndex/partnership/partner/:partnerIndex/partners-confirm-delete                                               controllers.establishers.partnership.partner.ConfirmDeletePartnerController.onSubmit(establisherIndex: Index, partnerIndex: Index)
 

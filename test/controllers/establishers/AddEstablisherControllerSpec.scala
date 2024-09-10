@@ -20,6 +20,7 @@ import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.establishers.ConfirmDeleteEstablisherFormProvider
 import helpers.AddToListHelper
+import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.{AddEstablisherId, EstablisherKindId, IsEstablisherNewId}
 import matchers.JsonMatchers
@@ -37,10 +38,10 @@ import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{Enumerable, UserAnswers}
+import utils.{Data, UserAnswers}
 
 import scala.concurrent.Future
-class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers {
   private val establisherName: String = "Jane Doe"
   private val userAnswers: Option[UserAnswers] = ua.set(EstablisherKindId(0), EstablisherKind.Individual).flatMap(
     _.set(EstablisherNameId(0), PersonName("a", "b", isDeleted = true)).flatMap(
@@ -56,16 +57,17 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
   private val form: Form[Boolean] = new ConfirmDeleteEstablisherFormProvider()(establisherName)
   private val itemList: JsValue = Json.obj(
     "name" -> establisherName,
-    "changeUrl" ->  "controllers.establishers.company.routes.SpokeTaskListController.onPageLoad(0)",
-    "removeUrl" ->   "controllers.establishers.ConfirmDeleteEstablisherController.onPageLoad(0,0)"
+    "changeUrl" ->  "changeUrl",
+    "removeUrl" ->   "removeUrl"
   )
-  private val mockHelper: AddToListHelper = mock[AddToListHelper]
+  private lazy val mockHelper: AddToListHelper = mock[AddToListHelper]
 
-  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  val extraModules: Seq[GuiceableModule] = Seq(
+  private lazy val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  private def extraModules: Seq[GuiceableModule] = Seq(
     bind[AddToListHelper].toInstance(mockHelper)
   )
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
+
+  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
   private def httpPathGET: String = controllers.establishers.routes.AddEstablisherController.onPageLoad.url
   private def httpPathPOST: String = controllers.establishers.routes.AddEstablisherController.onSubmit.url
@@ -90,7 +92,7 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
   override def beforeEach(): Unit = {
     super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-    when(mockHelper.mapEstablishersToList(any(), any(), any())).thenReturn(itemList)
+    when(mockHelper.directorsOrPartnersItemList(any())).thenReturn(itemList)
   }
 
 
@@ -101,7 +103,7 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val result = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
 
@@ -115,7 +117,7 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
     "redirect to Session Expired page for a GET when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val result = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -128,7 +130,7 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -138,7 +140,7 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
     "return a BAD REQUEST when invalid data is submitted" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
 
       status(result) mustEqual BAD_REQUEST
 
@@ -148,7 +150,7 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
     "redirect back to list of schemes for a POST when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -156,9 +158,9 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
     }
 
     "redirect to no establishers page if there are no added establishers" in {
-      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val noEstablishersUa = UserAnswers().setOrException(SchemeNameId, Data.schemeName)
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(noEstablishersUa))
+      val result = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual SEE_OTHER
 

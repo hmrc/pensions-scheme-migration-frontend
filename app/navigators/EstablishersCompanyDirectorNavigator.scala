@@ -26,7 +26,7 @@ import identifiers.establishers.company.director.contact.{EnterEmailId, EnterPho
 import identifiers.establishers.company.director.details._
 import models.Index.intToIndex
 import models.requests.DataRequest
-import models.{CheckMode, Index, Mode, NormalMode}
+import models.{CheckMode, Index, Mode, NormalMode, entities}
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
 
@@ -85,7 +85,8 @@ class EstablishersCompanyDirectorNavigator
     case EnterPhoneId(establisherIndex, directorIndex) => cyaDetails(establisherIndex, directorIndex)
   }
 
-  private def cyaDetails(establisherIndex: Int, directorIndex: Int): Call = CheckYourAnswersController.onPageLoad(establisherIndex, directorIndex)
+  private def cyaDetails(establisherIndex: Int, directorIndex: Int): Call =
+    controllers.common.routes.CheckYourAnswersController.onPageLoadWithRepresentative(establisherIndex, entities.Establisher, entities.Company, directorIndex)
 
   private def hassUTR(establisherIndex: Int, directorIndex: Int, mode: Mode): Call = DirectorHasUTRController.onPageLoad(establisherIndex, directorIndex, mode)
 

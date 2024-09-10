@@ -14,9 +14,20 @@
  * limitations under the License.
  */
 
+import models.entities
+import models.entities.EntityType
 import play.api.libs.json._
 
 package object utils {
+
+  def entityTypeError(entityType: EntityType): Nothing =
+    throw new RuntimeException(s"Unknown entity type $entityType")
+
+  def managementTypeError(managementType: entities.PensionManagementType): Nothing =
+    throw new RuntimeException(s"Unknown pension management type $managementType")
+
+  def journeyTypeError(journeyType: entities.JourneyType): Nothing =
+    throw new RuntimeException(s"Unknown journey type $journeyType")
 
   implicit class RichJsObject(jsObject: JsObject) {
 

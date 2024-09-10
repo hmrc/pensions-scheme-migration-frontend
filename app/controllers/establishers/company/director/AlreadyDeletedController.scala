@@ -26,7 +26,8 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.Enumerable
+import utils.{Enumerable, TwirlMigration}
+import views.html.AlreadyDeletedView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,7 +37,9 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
                                          val controllerComponents: MessagesControllerComponents,
-                                         renderer: Renderer
+                                         renderer: Renderer,
+                                         alreadyDeletedView: AlreadyDeletedView,
+                                         twirlMigration: TwirlMigration
                                         )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits {
 
@@ -45,7 +48,17 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
       implicit request =>
         directorName(establisherIndex, directorIndex) match {
           case Right(directorName) =>
-            renderer.render("alreadyDeleted.njk", json(establisherIndex, directorName, existingSchemeName)).map(Ok(_))
+            val template = twirlMigration.duoTemplate(
+              renderer.render("alreadyDeleted.njk", json(establisherIndex, directorName, existingSchemeName)),
+              alreadyDeletedView(
+                "messages__alreadyDeleted__director_title",
+                directorName,
+                existingSchemeName,
+                controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(establisherIndex, NormalMode).url
+              )
+            )
+
+            template.map(Ok(_))
           case Left(result) => result
         }
 

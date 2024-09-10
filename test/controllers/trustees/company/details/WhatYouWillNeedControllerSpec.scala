@@ -32,7 +32,7 @@ import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.ua
-import utils.UserAnswers
+import utils.{TwirlMigration, UserAnswers}
 
 import scala.concurrent.Future
 class WhatYouWillNeedControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues {
@@ -51,7 +51,9 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase with NunjucksSupp
 
   private def controller(dataRetrievalAction: DataRetrievalAction): WhatYouWillNeedController =
     new WhatYouWillNeedController(messagesApi, new FakeAuthAction(), dataRetrievalAction,
-      new DataRequiredActionImpl, controllerComponents, new Renderer(mockAppConfig, mockRenderer))
+      new DataRequiredActionImpl, controllerComponents, new Renderer(mockAppConfig, mockRenderer),
+      app.injector.instanceOf[views.html.details.WhatYouWillNeedCompanyDetailsView],
+      app.injector.instanceOf[TwirlMigration])
 
   "WhatYouWillNeedController" must {
     "return OK and the correct view for a GET" in {

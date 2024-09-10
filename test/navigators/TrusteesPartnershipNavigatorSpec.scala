@@ -46,10 +46,13 @@ class TrusteesPartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour 
   private def vat(mode: Mode = NormalMode): Call = detailsRoutes.VATController.onPageLoad(index, mode)
   private def havePaye(mode: Mode = NormalMode): Call = detailsRoutes.HavePAYEController.onPageLoad(index, mode)
   private def paye(mode: Mode = NormalMode): Call = detailsRoutes.PAYEController.onPageLoad(index, mode)
-  private val cyaDetails: Call = detailsRoutes.CheckYourAnswersController.onPageLoad(index)
+  private val cyaDetails: Call = controllers.common.routes.CheckYourAnswersController.onPageLoad(index,
+    entities.Trustee,
+    entities.Partnership,
+    entities.Details)
 
 
-  private val addTrusteeDetailsPage: Call = controllers.trustees.partnership.routes.SpokeTaskListController.onPageLoad(index)
+  private val addTrusteeDetailsPage: Call = controllers.common.routes.SpokeTaskListController.onPageLoad(index, entities.Trustee, entities.Partnership)
 
   private def addressUAWithValue[A](idType:TypedIdentifier[A], idValue:A)(implicit writes: Writes[A]) =
     detailsUa.set(idType, idValue).toOption
@@ -75,7 +78,10 @@ class TrusteesPartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour 
   private def tradingTime(mode:Mode): Call = controllers.trustees.partnership.address.routes.TradingTimeController.onPageLoad(index,mode)
 
   private val cyaAddress: Call =
-    controllers.trustees.partnership.address.routes.CheckYourAnswersController.onPageLoad(index)
+    controllers.common.routes.CheckYourAnswersController.onPageLoad(index,
+      entities.Trustee,
+      entities.Partnership,
+      entities.Address)
 
   "TrusteesPartnershipNavigator" when {
     def navigation: TableFor3[Identifier, UserAnswers, Call] =

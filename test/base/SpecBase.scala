@@ -18,21 +18,18 @@ package base
 
 import config.AppConfig
 import models.requests.DataRequest
-import org.jsoup.nodes.Document
-import org.scalatest.Assertion
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
+import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, AnyContentAsEmpty, MessagesControllerComponents}
 import play.api.test.FakeRequest
-import play.api.{Application, Environment}
-import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.domain.PsaId
 import utils.Data.{migrationLock, psaId}
-import utils.{CountryOptions, UserAnswers}
+import utils.UserAnswers
 
 import scala.language.implicitConversions
 
@@ -51,11 +48,7 @@ trait SpecBase
 
   def injector: Injector = app.injector
 
-  protected def crypto: ApplicationCrypto = injector.instanceOf[ApplicationCrypto]
-
   def appConfig: AppConfig = injector.instanceOf[AppConfig]
-
-  def countryOptions: CountryOptions = injector.instanceOf[CountryOptions]
 
   def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "/foo")
 
@@ -71,16 +64,7 @@ trait SpecBase
 
   implicit def messages: Messages = messagesApi.preferred(fakeRequest)
 
-  def environment: Environment = injector.instanceOf[Environment]
-
   def controllerComponents: MessagesControllerComponents = injector.instanceOf[MessagesControllerComponents]
-
-  def assertNotRenderedById(doc: Document, id: String): Assertion = {
-    assert(doc.getElementById(id) == null, "\n\nElement " + id + " was rendered on the page.\n")
-  }
-
-  def assertRenderedById(doc: Document, id: String): Assertion =
-    assert(doc.getElementById(id) != null, "\n\nElement " + id + " was not rendered on the page.\n")
 }
 
 object SpecBase extends SpecBase

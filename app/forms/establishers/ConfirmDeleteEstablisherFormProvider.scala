@@ -21,9 +21,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import viewmodels.Message
 
-import javax.inject.Inject
-
-class ConfirmDeleteEstablisherFormProvider @Inject() extends Mappings {
+class ConfirmDeleteEstablisherFormProvider extends Mappings {
 
   def apply(name: String)(implicit messages: Messages): Form[Boolean] =
     Form(

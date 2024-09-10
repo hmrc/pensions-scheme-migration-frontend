@@ -100,8 +100,6 @@ class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSuppor
       val ua: UserAnswers = Data.ua
         .setOrException(EnterPostCodeId(0), seqAddresses)
 
-      when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
-        .thenReturn(routes.CheckYourAnswersController.onPageLoad(0))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
 
@@ -110,7 +108,7 @@ class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSuppor
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad(0).url)
+      redirectLocation(result) mustBe Some(onwardCall.url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {
