@@ -27,7 +27,7 @@ import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import services.common.email.CommonEmailAddressService
+import services.common.contact.CommonEmailAddressService
 import viewmodels.Message
 
 import javax.inject.Inject

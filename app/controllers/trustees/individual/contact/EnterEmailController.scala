@@ -29,7 +29,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
-import services.common.email.CommonEmailAddressService
+import services.common.contact.CommonEmailAddressService
 import utils.UserAnswers
 import viewmodels.Message
 

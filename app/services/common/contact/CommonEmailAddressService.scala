@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package services.common.email
+package services.common.contact
 
 import connectors.cache.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
