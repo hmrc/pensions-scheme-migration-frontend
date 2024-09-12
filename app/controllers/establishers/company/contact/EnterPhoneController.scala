@@ -16,8 +16,7 @@
 
 package controllers.establishers.company.contact
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.{PhoneController, Retrievals}
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.PhoneFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -25,12 +24,10 @@ import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.contact.EnterPhoneId
 import models.requests.DataRequest
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import services.common.phone.CommonPhoneService
+import play.api.mvc.{Action, AnyContent}
+import services.common.contact.CommonPhoneService
 import viewmodels.Message
 
 import javax.inject.Inject
