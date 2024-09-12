@@ -25,6 +25,7 @@ import identifiers.establishers.company.contact.EnterEmailId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.email.CommonEmailAddressService
 import viewmodels.Message
@@ -33,13 +34,14 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class EnterEmailController @Inject()(
-                                            authenticate: AuthAction,
-                                            getData: DataRetrievalAction,
-                                            requireData: DataRequiredAction,
-                                            formProvider: EmailFormProvider,
-                                            common: CommonEmailAddressService
-                                          )(implicit val executionContext: ExecutionContext)
-  extends Retrievals {
+                                      val messagesApi: MessagesApi,
+                                      authenticate: AuthAction,
+                                      getData: DataRetrievalAction,
+                                      requireData: DataRequiredAction,
+                                      formProvider: EmailFormProvider,
+                                      common: CommonEmailAddressService
+                                    )(implicit val executionContext: ExecutionContext)
+  extends Retrievals with I18nSupport {
 
   private def name(index: Index)
                   (implicit request: DataRequest[AnyContent]): String =
@@ -59,9 +61,9 @@ class EnterEmailController @Inject()(
             common.get(
               entityName = name(index),
               entityType = Message("messages__company"),
-              emailId    = EnterEmailId(index),
-              form          = form(index),
-              schemeName    = schemeName,
+              emailId = EnterEmailId(index),
+              form = form(index),
+              schemeName = schemeName,
               paragraphText = Seq(Message("messages__contact_details__email__hint", name(index), schemeName))
             )
         }
@@ -75,11 +77,11 @@ class EnterEmailController @Inject()(
             common.post(
               entityName = name(index),
               entityType = Message("messages__company"),
-              emailId    = EnterEmailId(index),
-              form          = form(index),
-              schemeName    = schemeName,
+              emailId = EnterEmailId(index),
+              form = form(index),
+              schemeName = schemeName,
               paragraphText = Seq(Message("messages__contact_details__email__hint", name(index), schemeName)),
-              mode          = mode
+              mode = Some(mode)
             )
         }
     }

@@ -16,8 +16,7 @@
 
 package controllers.establishers.individual.contact
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.EmailAddressController
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.EmailFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -25,38 +24,34 @@ import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.contact.EnterEmailId
 import models.requests.DataRequest
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.email.CommonEmailAddressService
 import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class EnterEmailController @Inject()(
-                                      override val messagesApi: MessagesApi,
-                                      val navigator: CompoundNavigator,
+                                      val messagesApi: MessagesApi,
                                       authenticate: AuthAction,
                                       getData: DataRetrievalAction,
                                       requireData: DataRequiredAction,
                                       formProvider: EmailFormProvider,
-                                      val controllerComponents: MessagesControllerComponents,
-                                      val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                      val renderer: Renderer
+                                      common: CommonEmailAddressService
                                     )(implicit val executionContext: ExecutionContext)
-  extends EmailAddressController {
+  extends Retrievals with I18nSupport {
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
+            common.get(
               entityName = name(index),
               entityType = Message("messages__individual"),
-              id = EnterEmailId(index),
+              emailId = EnterEmailId(index),
               form = form(index),
               schemeName = schemeName,
               paragraphText = Seq(Message("messages__contact_details__hint", name(index)))
@@ -69,20 +64,20 @@ class EnterEmailController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            post(
+            common.post(
               entityName = name(index),
               entityType = Message("messages__individual"),
-              id = EnterEmailId(index),
+              emailId = EnterEmailId(index),
               form = form(index),
               schemeName = schemeName,
               paragraphText = Seq(Message("messages__contact_details__hint", name(index))),
-              mode = mode
+              mode = Some(mode)
             )
         }
     }
 
   private def form(index: Index)(implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Messages("messages__enterEmail__error_required", name(index)))
+    formProvider(Message("messages__enterEmail__error_required", name(index)))
 
   private def name(index: Index)
                   (implicit request: DataRequest[AnyContent]): String =
