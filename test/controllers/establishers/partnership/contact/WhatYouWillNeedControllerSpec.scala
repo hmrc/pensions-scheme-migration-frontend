@@ -29,6 +29,7 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import renderer.Renderer
+import services.common.contact.CommonWhatYouWillNeedService
 import utils.Data.{schemeName, ua}
 import utils.UserAnswers
 import viewmodels.Message
@@ -60,8 +61,11 @@ class WhatYouWillNeedControllerSpec
       authenticate = new FakeAuthAction(),
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl,
-      controllerComponents = controllerComponents,
-      renderer = new Renderer(mockAppConfig, mockRenderer)
+      common = new CommonWhatYouWillNeedService(
+        controllerComponents = controllerComponents,
+        renderer = new Renderer(mockAppConfig, mockRenderer),
+        messagesApi = messagesApi
+      )
     )
   }
 
