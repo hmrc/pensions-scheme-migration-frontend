@@ -25,7 +25,7 @@ import identifiers.establishers.company.CompanyDetailsId
 import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import services.common.contact.CommonWhatYouWillNeedService
+import services.common.contact.CommonWhatYouWillNeedContactService
 import viewmodels.Message
 
 import javax.inject.Inject
@@ -36,7 +36,7 @@ class WhatYouWillNeedCompanyContactController @Inject()(
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
-                                           common: CommonWhatYouWillNeedService
+                                           common: CommonWhatYouWillNeedContactService
                                          )(implicit val ec: ExecutionContext)
   extends Retrievals
     with I18nSupport {

@@ -24,7 +24,7 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
 import models.{Index, NormalMode}
 import play.api.mvc.{Action, AnyContent}
-import services.common.contact.CommonWhatYouWillNeedService
+import services.common.contact.CommonWhatYouWillNeedContactService
 import viewmodels.Message
 
 import javax.inject.Inject
@@ -34,7 +34,7 @@ class WhatYouWillNeedController @Inject()(
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
-                                           common: CommonWhatYouWillNeedService
+                                           common: CommonWhatYouWillNeedContactService
                                          )(implicit val ec: ExecutionContext)
   extends Retrievals {
 

@@ -26,7 +26,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
-import services.common.contact.CommonWhatYouWillNeedService
+import services.common.contact.CommonWhatYouWillNeedContactService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.Message
@@ -39,7 +39,7 @@ class WhatYouWillNeedController @Inject()(
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
-                                           common: CommonWhatYouWillNeedService
+                                           common: CommonWhatYouWillNeedContactService
                                          )(implicit val ec: ExecutionContext)
   extends Retrievals
     with I18nSupport {

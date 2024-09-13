@@ -46,7 +46,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CommonWhatYouWillNeedService @Inject()(
+class CommonWhatYouWillNeedContactService @Inject()(
                                               val controllerComponents: MessagesControllerComponents,
                                               val renderer: Renderer,
                                               val messagesApi: MessagesApi
