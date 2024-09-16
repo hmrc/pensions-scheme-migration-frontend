@@ -71,7 +71,7 @@ class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
           .bindFromRequest()
           .fold(
             formWithErrors => {
-              renderer.render(viewTemplate, json(Some(schemeName), directorName.fullName, formWithErrors, AddressConfiguration.PostcodeFirst)).map(BadRequest(_))
+              renderer.render(viewTemplate, json(Some(schemeName), directorName.fullName, formWithErrors,AddressConfiguration.PostcodeFirst)).map(BadRequest(_))
             },
             value =>
               for {

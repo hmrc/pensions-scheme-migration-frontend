@@ -57,8 +57,7 @@ class CommonHasReferenceValueService @Inject()(val controllerComponents: Message
                                   radios: Seq[Item],
                                   schemeName: String,
                                   paragraphs: Seq[String] = Seq(),
-                                  legendClass: String = "govuk-fieldset__legend--s",
-                                 )
+                                  legendClass: String = "govuk-fieldset__legend--s")
 
   implicit private def templateDataWrites(implicit request: DataRequest[AnyContent]): OWrites[TemplateData] = Json.writes[TemplateData]
 
