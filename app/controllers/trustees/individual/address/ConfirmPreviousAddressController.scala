@@ -26,13 +26,11 @@ import identifiers.establishers.company.director.{address => Director}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address.{PreviousAddressId, PreviousAddressListId}
 import models._
-import models.benefitsAndInsurance.BenefitsType.reads
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
-import play.api.mvc.Results.{BadRequest, Redirect}
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import services.DataUpdateService
@@ -69,17 +67,18 @@ class ConfirmPreviousAddressController @Inject()(
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (TrusteeNameId(index) and SchemeNameId).retrieve.map { case trusteeName ~ schemeName =>
-        common.get(
-          Some(schemeName),
-          trusteeName.fullName,
-          PreviousAddressId(index),
-          PreviousAddressListId(index),
-          AddressConfiguration.PostcodeFirst,
-          form,
-          pageTitleEntityTypeMessageKey,
-          pageTitleMessageKey
-        )
+      (TrusteeNameId(index) and SchemeNameId).retrieve.map {
+        case trusteeName ~ schemeName =>
+          common.get(
+            Some(schemeName),
+            trusteeName.fullName,
+            PreviousAddressId(index),
+            PreviousAddressListId(index),
+            AddressConfiguration.PostcodeFirst,
+            form,
+            pageTitleEntityTypeMessageKey,
+            pageTitleMessageKey
+          )
       }
     }
 
@@ -87,31 +86,42 @@ class ConfirmPreviousAddressController @Inject()(
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-      (TrusteeNameId(index) and SchemeNameId).retrieve.map { case trusteeName ~ schemeName =>
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => {
-              renderer.render(
-                common.viewTemplate,
-                common.getTemplateData(
+      (TrusteeNameId(index) and SchemeNameId).retrieve.map {
+        case trusteeName ~ schemeName =>
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => {
+                common.get(
                   Some(schemeName),
                   trusteeName.fullName,
-                  formWithErrors,
+                  PreviousAddressId(index),
+                  PreviousAddressListId(index),
                   AddressConfiguration.PostcodeFirst,
+                  formWithErrors,
                   pageTitleEntityTypeMessageKey,
                   pageTitleMessageKey
                 )
-              ).map(BadRequest(_))
-            },
-            value =>
-              for {
-                updatedAnswers <- Future.fromTry(setUpdatedAnswers(index, value, mode, request.userAnswers))
-                _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
-              } yield {
-                Redirect(navigator.nextPage(PreviousAddressId(index), updatedAnswers, mode))
-              }
-          )
+//                renderer.render(
+//                  common.viewTemplate,
+//                  common.getTemplateData(
+//                    Some(schemeName),
+//                    trusteeName.fullName,
+//                    formWithErrors,
+//                    AddressConfiguration.PostcodeFirst,
+//                    pageTitleEntityTypeMessageKey,
+//                    pageTitleMessageKey
+//                  )
+//                ).map(BadRequest(_))
+              },
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(setUpdatedAnswers(index, value, mode, request.userAnswers))
+                  _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+                } yield {
+                  Redirect(navigator.nextPage(PreviousAddressId(index), updatedAnswers, mode))
+                }
+            )
       }
     }
 

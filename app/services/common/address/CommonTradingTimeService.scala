@@ -25,7 +25,7 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{Json, OWrites}
 import play.api.mvc.{AnyContent, Result}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
@@ -46,6 +46,17 @@ class CommonTradingTimeService @Inject()(
 
   private def viewTemplate = "address/tradingTime.njk"
 
+  case class TemplateData(
+                                   schemeName: Option[String],
+                                   entityName: String,
+                                   entityType : String,
+                                   form : Form[Boolean],
+                                   radios: Seq[Radios.Item]
+                                 )
+
+  implicit def templateDataWrites(implicit request: DataRequest[AnyContent]): OWrites[TemplateData] = Json.writes[TemplateData]
+
+
   def get(schemeName: Option[String],
                     entityName: String,
                     entityType : String,
@@ -53,7 +64,7 @@ class CommonTradingTimeService @Inject()(
                     tradingTimeId : TypedIdentifier[Boolean]
                    )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
     val filledForm = request.userAnswers.get(tradingTimeId).fold(form)(form.fill)
-    renderer.render(viewTemplate, json(schemeName, entityName, entityType, filledForm)).map(Ok(_))
+    renderer.render(viewTemplate, getTemplateData(schemeName, entityName, entityType, filledForm)).map(Ok(_))
   }
 
   def post(schemeName: Option[String],
@@ -67,7 +78,7 @@ class CommonTradingTimeService @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => {
-          renderer.render(viewTemplate, json(schemeName, entityName, entityType, formWithErrors)).map(BadRequest(_))
+          renderer.render(viewTemplate, getTemplateData(schemeName, entityName, entityType, formWithErrors)).map(BadRequest(_))
         },
         value =>
           for {
@@ -80,17 +91,12 @@ class CommonTradingTimeService @Inject()(
       )
   }
 
-  protected def json(
+  def getTemplateData(
                       schemeName: Option[String],
                       entityName: String,
                       entityType : String,
                       form : Form[Boolean]
-                    )(implicit request: DataRequest[AnyContent]): JsObject =
-  Json.obj(
-      "schemeName" -> schemeName,
-      "entityName" -> entityName,
-      "entityType" -> entityType,
-      "form" -> form,
-      "radios" -> Radios.yesNo (form("value"))
-    )
+                    )(implicit request: DataRequest[AnyContent]): TemplateData =
+    TemplateData(schemeName, entityName, entityType, form, Radios.yesNo(form("value")))
+
 }

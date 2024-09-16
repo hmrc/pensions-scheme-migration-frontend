@@ -30,7 +30,7 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.mvc.Results.{BadRequest, Redirect}
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import services.DataUpdateService
@@ -83,30 +83,42 @@ class ConfirmAddressController @Inject()(
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-      (TrusteeNameId(index) and SchemeNameId).retrieve.map { case trusteeName ~ schemeName =>
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => {
-              renderer.render(
-                common.viewTemplate,
-                common.getTemplateData(
+      (TrusteeNameId(index) and SchemeNameId).retrieve.map {
+        case trusteeName ~ schemeName =>
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => {
+                common.post(
                   Some(schemeName),
                   trusteeName.fullName,
-                  formWithErrors,
+                  AddressId(index),
+                  //AddressListId(index),
                   AddressConfiguration.PostcodeFirst,
+                  Some(mode),
+                  formWithErrors,
                   pageTitleEntityTypeMessageKey,
                   pageTitleMessageKey = ??? // TODO Fix it,  "confirmAddress.title"
-                )).map(BadRequest(_))
-            },
-            value =>
-              for {
-                updatedAnswers <- Future.fromTry(setUpdatedAnswers(index, value, mode, request.userAnswers))
-                _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
-              } yield {
-                Redirect(navigator.nextPage(AddressId(index), updatedAnswers, mode))
-              }
-          )
+                )
+//                renderer.render(
+//                  common.viewTemplate,
+//                  common.getTemplateData(
+//                    Some(schemeName),
+//                    trusteeName.fullName,
+//                    formWithErrors,
+//                    AddressConfiguration.PostcodeFirst,
+//                    pageTitleEntityTypeMessageKey,
+//                    pageTitleMessageKey = ??? // TODO Fix it,  "confirmAddress.title"
+//                  )).map(BadRequest(_))
+              },
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(setUpdatedAnswers(index, value, mode, request.userAnswers))
+                  _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+                } yield {
+                  Redirect(navigator.nextPage(AddressId(index), updatedAnswers, mode))
+                }
+            )
       }
     }
 

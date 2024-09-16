@@ -30,7 +30,7 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.mvc.Results.{BadRequest, Redirect}
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import services.DataUpdateService
@@ -65,17 +65,18 @@ class ConfirmPreviousAddressController @Inject()(
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.map { case directorName ~ schemeName =>
-        common.get(
-          Some(schemeName),
-          directorName.fullName,
-          PreviousAddressId(establisherIndex, directorIndex),
-          PreviousAddressListId(establisherIndex, directorIndex),
-          AddressConfiguration.PostcodeFirst,
-          form,
-          pageTitleEntityTypeMessageKey,
-          pageTitleMessageKey
-        )
+      (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.map {
+        case directorName ~ schemeName =>
+          common.get(
+            Some(schemeName),
+            directorName.fullName,
+            PreviousAddressId(establisherIndex, directorIndex),
+            PreviousAddressListId(establisherIndex, directorIndex),
+            AddressConfiguration.PostcodeFirst,
+            form,
+            pageTitleEntityTypeMessageKey,
+            pageTitleMessageKey
+          )
       }
     }
 
@@ -85,30 +86,40 @@ class ConfirmPreviousAddressController @Inject()(
 
       (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.map {
         case directorName ~ schemeName =>
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => {
-              renderer.render(
-                common.viewTemplate,
-                common.getTemplateData(
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => {
+                common.post(
                   Some(schemeName),
                   directorName.fullName,
-                  formWithErrors,
+                  PreviousAddressId(establisherIndex, directorIndex),
                   AddressConfiguration.PostcodeFirst,
+                  Some(mode),
+                  formWithErrors,
                   pageTitleEntityTypeMessageKey,
                   pageTitleMessageKey
-                )).map(BadRequest(_))
-            },
-            value =>
-              for {
-                updatedAnswers <- Future.fromTry(setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
-                _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
-              } yield {
-                val finalMode = Some(mode).getOrElse(NormalMode)
-                Redirect(navigator.nextPage(PreviousAddressId(establisherIndex, directorIndex), updatedAnswers, finalMode))
-              }
-          )
+                )
+//                renderer.render(
+//                  common.viewTemplate,
+//                  common.getTemplateData(
+//                    Some(schemeName),
+//                    directorName.fullName,
+//                    formWithErrors,
+//                    AddressConfiguration.PostcodeFirst,
+//                    pageTitleEntityTypeMessageKey,
+//                    pageTitleMessageKey
+//                  )).map(BadRequest(_))
+              },
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
+                  _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+                } yield {
+                  val finalMode = Some(mode).getOrElse(NormalMode)
+                  Redirect(navigator.nextPage(PreviousAddressId(establisherIndex, directorIndex), updatedAnswers, finalMode))
+                }
+            )
       }
     }
 

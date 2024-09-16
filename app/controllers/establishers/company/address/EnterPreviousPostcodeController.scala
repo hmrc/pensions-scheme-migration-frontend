@@ -73,7 +73,7 @@ class EnterPreviousPostcodeController @Inject()(
     implicit request =>
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
       retrieve(SchemeNameId) { schemeName =>
-        common.post(getFormToJson(schemeName, index, mode), EnterPreviousPostCodeId(index), "enterPostcode.noresults", form, Some(mode))
+        common.post(getFormToJson(schemeName, index, mode), EnterPreviousPostCodeId(index), "enterPostcode.noresults", Some(mode), form)
       }
   }
 
