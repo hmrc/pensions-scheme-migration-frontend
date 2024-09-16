@@ -46,7 +46,7 @@ class ConfirmAddressController @Inject()(
 
   private val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__company")
   private val pageTitleMessageKey: String = "address.title"
- // private val h1MessageKey: String = pageTitleMessageKey
+ private val h1MessageKey: String = pageTitleMessageKey
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>

@@ -63,8 +63,7 @@ class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
           AddressListId(index),
           AddressConfiguration.PostcodeFirst,
           form,
-          pageTitleEntityTypeMessageKey,
-          pageTitleMessageKey = ??? // TODO - need to add this
+          pageTitleEntityTypeMessageKey
         )
       }
     }
@@ -79,8 +78,7 @@ class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
           AddressConfiguration.PostcodeFirst,
           Some(mode),
           form,
-          pageTitleEntityTypeMessageKey,
-          pageTitleMessageKey = ??? // TODO - need to add this
+          pageTitleEntityTypeMessageKey
         )
       }
     }

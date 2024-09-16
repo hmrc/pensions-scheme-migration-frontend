@@ -50,7 +50,6 @@ class ConfirmAddressController @Inject()(
 )(implicit ec: ExecutionContext) extends Retrievals with I18nSupport with NunjucksSupport {
 
   private val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__pension__adviser")
-
   private def form: Form[Address] = formProvider()
 
   def onPageLoad: Action[AnyContent] =
@@ -62,8 +61,7 @@ class ConfirmAddressController @Inject()(
           AddressId,AddressListId,
           AddressConfiguration.PostcodeFirst,
           form,
-          pageTitleEntityTypeMessageKey,
-          pageTitleMessageKey = ??? // TODO: need to fix this
+          pageTitleEntityTypeMessageKey
         )
       }
     }
@@ -77,8 +75,7 @@ class ConfirmAddressController @Inject()(
           AddressId,
           AddressConfiguration.PostcodeFirst,
           form = form,
-          pageTitleEntityTypeMessageKey = pageTitleEntityTypeMessageKey,
-          pageTitleMessageKey = ??? // TODO: need to fix this
+          pageTitleEntityTypeMessageKey = pageTitleEntityTypeMessageKey
         )
       }
     }

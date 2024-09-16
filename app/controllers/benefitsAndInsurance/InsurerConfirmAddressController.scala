@@ -50,8 +50,7 @@ class InsurerConfirmAddressController @Inject()(
 )(implicit ec: ExecutionContext) extends Retrievals with I18nSupport with NunjucksSupport {
 
   private val pageTitleEntityTypeMessageKey: Option[String] = Some("benefitsInsuranceUnknown")
-
-  def form: Form[Address] = formProvider()
+  private def form: Form[Address] = formProvider()
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
@@ -62,8 +61,7 @@ class InsurerConfirmAddressController @Inject()(
           InsurerAddressId,InsurerAddressListId,
           AddressConfiguration.PostcodeFirst,
           form,
-          pageTitleEntityTypeMessageKey,
-          pageTitleMessageKey = ??? // TODO: Add message key
+          pageTitleEntityTypeMessageKey
         )
       }
     }
@@ -77,8 +75,7 @@ class InsurerConfirmAddressController @Inject()(
           InsurerAddressId,
           AddressConfiguration.PostcodeFirst,
           form = form,
-          pageTitleEntityTypeMessageKey = pageTitleEntityTypeMessageKey,
-          pageTitleMessageKey = ??? // TODO: Add message key
+          pageTitleEntityTypeMessageKey = pageTitleEntityTypeMessageKey
         )
       }
     }

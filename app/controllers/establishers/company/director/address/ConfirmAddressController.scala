@@ -73,8 +73,7 @@ class ConfirmAddressController @Inject()(
             AddressListId(establisherIndex, directorIndex),
             AddressConfiguration.PostcodeFirst,
             form,
-            pageTitleEntityTypeMessageKey,
-            pageTitleMessageKey = ??? // TODO - what is the message key?
+            pageTitleEntityTypeMessageKey
           )
       }
     }
@@ -96,8 +95,7 @@ class ConfirmAddressController @Inject()(
                   AddressConfiguration.PostcodeFirst,
                   Some(mode),
                   formWithErrors,
-                  pageTitleEntityTypeMessageKey,
-                  pageTitleMessageKey = ??? // TODO - what is the message key?
+                  pageTitleEntityTypeMessageKey
                 )
               },
               value =>

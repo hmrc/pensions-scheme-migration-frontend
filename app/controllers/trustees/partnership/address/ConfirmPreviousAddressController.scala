@@ -51,7 +51,7 @@ class ConfirmPreviousAddressController @Inject()(
 )(implicit ec: ExecutionContext) extends Retrievals with I18nSupport with NunjucksSupport {
 
   private val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__partnership")
-  //private val h1MessageKey: String = "previousAddress.title"
+  private val h1MessageKey: String = "previousAddress.title"
   private val pageTitleMessageKey: String = "previousAddress.title"
 
   def form: Form[Address] = formProvider()
@@ -67,7 +67,7 @@ class ConfirmPreviousAddressController @Inject()(
           AddressConfiguration.PostcodeFirst,
           form,
           pageTitleEntityTypeMessageKey,
-          pageTitleMessageKey = ???
+          pageTitleMessageKey
         )
       }
     }
@@ -83,7 +83,7 @@ class ConfirmPreviousAddressController @Inject()(
           Some(mode),
           form,
           pageTitleEntityTypeMessageKey,
-          pageTitleMessageKey = ??? // todo fix it
+          pageTitleMessageKey
         )
       }
     }

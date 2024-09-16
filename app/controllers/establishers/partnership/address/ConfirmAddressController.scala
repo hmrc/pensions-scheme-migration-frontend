@@ -50,7 +50,6 @@ class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
 )(implicit ec: ExecutionContext) extends Retrievals with I18nSupport with NunjucksSupport {
 
   private val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__partnership")
-
   private def form: Form[Address] = formProvider()
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
@@ -63,8 +62,7 @@ class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
           AddressListId(index),
           AddressConfiguration.PostcodeFirst,
           form,
-          pageTitleEntityTypeMessageKey,
-          pageTitleMessageKey = ??? // TODO: fix it ConfirmAddressController.pageTitleMessageKey
+          pageTitleEntityTypeMessageKey
         )
       }
     }
@@ -79,8 +77,7 @@ class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
           AddressConfiguration.PostcodeFirst,
           Some(mode),
           form,
-          pageTitleEntityTypeMessageKey,
-          pageTitleMessageKey = ??? // TODO: fix it ConfirmAddressController.pageTitleMessageKey
+          pageTitleEntityTypeMessageKey
         )
       }
     }

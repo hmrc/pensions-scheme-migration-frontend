@@ -92,12 +92,12 @@ class ConfirmPreviousAddressController @Inject()(
             .bindFromRequest()
             .fold(
               formWithErrors => {
-                common.get(
+                common.post(
                   Some(schemeName),
                   trusteeName.fullName,
                   PreviousAddressId(index),
-                  PreviousAddressListId(index),
                   AddressConfiguration.PostcodeFirst,
+                  Some(mode),
                   formWithErrors,
                   pageTitleEntityTypeMessageKey,
                   pageTitleMessageKey

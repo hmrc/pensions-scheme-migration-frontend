@@ -51,8 +51,7 @@ class ConfirmAddressController @Inject()(
 )(implicit ec: ExecutionContext) extends Retrievals with I18nSupport with NunjucksSupport {
 
   private val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__partner")
-
-  def form: Form[Address] = formProvider()
+  private def form: Form[Address] = formProvider()
 
   def onPageLoad(establisherIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
@@ -64,8 +63,7 @@ class ConfirmAddressController @Inject()(
           AddressListId(establisherIndex, partnerIndex),
           AddressConfiguration.PostcodeFirst,
           form,
-          pageTitleEntityTypeMessageKey,
-          pageTitleMessageKey = ??? // TODO: Confirm the message key
+          pageTitleEntityTypeMessageKey
         )
       }
     }
@@ -80,8 +78,7 @@ class ConfirmAddressController @Inject()(
           AddressConfiguration.PostcodeFirst,
           Some(mode),
           form,
-          pageTitleEntityTypeMessageKey,
-          pageTitleMessageKey = ???  // TODO: Confirm the message key
+          pageTitleEntityTypeMessageKey
         )
       }
     }

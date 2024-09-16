@@ -49,6 +49,8 @@ class CommonManualAddressService @Inject()(
   with FrontendHeaderCarrierProvider with I18nSupport with CountriesHelper {
 
   private def viewTemplate: String = "address/manualAddress.njk"
+  private val pageTitleMessageKey: String = "address.title"
+  private val h1MessageKey: String = pageTitleMessageKey
 
   private case class TemplateData(
                                    form : Form[Address],
@@ -68,8 +70,8 @@ class CommonManualAddressService @Inject()(
           selectedAddress: TypedIdentifier[TolerantAddress],
           addressLocation: AddressConfiguration,
           form: Form[Address],
-          pageTitleEntityTypeMessageKey: Option[String],
-          pageTitleMessageKey: String
+          pageTitleEntityTypeMessageKey: Option[String] = None,
+          pageTitleMessageKey: String = pageTitleMessageKey
          )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
 
     val preparedForm = request.userAnswers.get(addressPage) match {
@@ -91,8 +93,8 @@ class CommonManualAddressService @Inject()(
            addressLocation: AddressConfiguration,
            mode: Option[Mode] = None,
            form: Form[Address],
-           pageTitleEntityTypeMessageKey: Option[String],
-           pageTitleMessageKey: String
+           pageTitleEntityTypeMessageKey: Option[String] = None,
+            pageTitleMessageKey: String = pageTitleMessageKey
           )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
     form
       .bindFromRequest()
@@ -119,7 +121,7 @@ class CommonManualAddressService @Inject()(
             entityName: String,
             form: Form[Address],
             addressLocation: AddressConfiguration,
-            pageTitleEntityTypeMessageKey: Option[String],
+            pageTitleEntityTypeMessageKey: Option[String] = None,
             pageTitleMessageKey: String
           )(implicit request: DataRequest[AnyContent]): TemplateData = {
     val messages = request2Messages
