@@ -25,7 +25,7 @@ import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address.{AddressId, AddressListId}
 import models.{Address, AddressConfiguration, Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.address.CommonManualAddressService
 
@@ -42,7 +42,7 @@ class ConfirmAddressController @Inject()(
   val messagesApi: MessagesApi
 )(implicit ec: ExecutionContext) extends Retrievals with I18nSupport {
 
-  private def form(implicit messages: Messages): Form[Address] = formProvider()
+  private def form: Form[Address] = formProvider()
 
   private val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__company")
   private val pageTitleMessageKey: String = "address.title"

@@ -29,7 +29,7 @@ import models._
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -100,16 +100,6 @@ class ConfirmPreviousAddressController @Inject()(
                   pageTitleEntityTypeMessageKey,
                   pageTitleMessageKey
                 )
-//                renderer.render(
-//                  common.viewTemplate,
-//                  common.getTemplateData(
-//                    Some(schemeName),
-//                    directorName.fullName,
-//                    formWithErrors,
-//                    AddressConfiguration.PostcodeFirst,
-//                    pageTitleEntityTypeMessageKey,
-//                    pageTitleMessageKey
-//                  )).map(BadRequest(_))
               },
               value =>
                 for {
@@ -123,7 +113,7 @@ class ConfirmPreviousAddressController @Inject()(
       }
     }
 
-  def form(implicit messages: Messages): Form[Address] = formProvider()
+  def form: Form[Address] = formProvider()
 
   private def setUpdatedAnswers(establisherIndex: Index, directorIndex: Index, mode: Mode, value: Address, ua: UserAnswers): Try[UserAnswers] = {
     val updatedUserAnswers =

@@ -27,7 +27,7 @@ import identifiers.trustees.partnership.address.{AddressId, AddressListId}
 import models.{Address, AddressConfiguration, Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import services.common.address.CommonManualAddressService
@@ -51,7 +51,7 @@ class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
 
   private val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__partnership")
 
-  private def form(implicit messages: Messages): Form[Address] = formProvider()
+  private def form: Form[Address] = formProvider()
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>

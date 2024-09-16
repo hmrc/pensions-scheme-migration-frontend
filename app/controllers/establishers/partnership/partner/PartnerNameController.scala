@@ -50,8 +50,7 @@ class PartnerNameController @Inject()(
   with I18nSupport
   with NunjucksSupport {
 
-  private def form(implicit messages: Messages): Form[PersonName] =
-    formProvider("messages__error__partner")
+  private def form(implicit messages: Messages): Form[PersonName] = formProvider("messages__error__partner")
 
   def onPageLoad(establisherIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {

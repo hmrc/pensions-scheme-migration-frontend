@@ -27,7 +27,7 @@ import identifiers.establishers.partnership.address.{PreviousAddressId, Previous
 import models.{Address, AddressConfiguration, Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
@@ -54,7 +54,7 @@ class ConfirmPreviousAddressController @Inject()(
   //private val h1MessageKey: String = "previousAddress.title"
   private val pageTitleMessageKey: String = "previousAddress.title"
 
-  def form(implicit messages: Messages): Form[Address] = formProvider()
+  def form: Form[Address] = formProvider()
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>

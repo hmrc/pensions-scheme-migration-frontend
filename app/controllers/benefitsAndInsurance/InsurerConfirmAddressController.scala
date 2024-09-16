@@ -26,7 +26,7 @@ import identifiers.benefitsAndInsurance.{BenefitsInsuranceNameId, InsurerAddress
 import models.{Address, AddressConfiguration}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import services.common.address.CommonManualAddressService
@@ -51,7 +51,7 @@ class InsurerConfirmAddressController @Inject()(
 
   private val pageTitleEntityTypeMessageKey: Option[String] = Some("benefitsInsuranceUnknown")
 
-  def form(implicit messages: Messages): Form[Address] = formProvider()
+  def form: Form[Address] = formProvider()
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>

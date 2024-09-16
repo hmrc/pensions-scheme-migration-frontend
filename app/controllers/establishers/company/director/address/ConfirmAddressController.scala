@@ -29,7 +29,7 @@ import models._
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -60,7 +60,7 @@ class ConfirmAddressController @Inject()(
 )(implicit ec: ExecutionContext) extends Retrievals with I18nSupport with NunjucksSupport {
 
   private val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__director")
-  private def form(implicit messages: Messages): Form[Address] = formProvider()
+  private def form: Form[Address] = formProvider()
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
@@ -99,16 +99,6 @@ class ConfirmAddressController @Inject()(
                   pageTitleEntityTypeMessageKey,
                   pageTitleMessageKey = ??? // TODO - what is the message key?
                 )
-//                renderer.render(
-//                  common.viewTemplate,
-//                  common.getTemplateData(
-//                    Some(schemeName),
-//                    directorName.fullName,
-//                    formWithErrors,
-//                    AddressConfiguration.PostcodeFirst,
-//                    pageTitleEntityTypeMessageKey,
-//                    pageTitleMessageKey = ??? // TODO - what is the message key?
-//                  )).map(BadRequest(_))
               },
               value =>
                 for {

@@ -46,7 +46,7 @@ class CommonTradingTimeService @Inject()(
 
   private def viewTemplate = "address/tradingTime.njk"
 
-  case class TemplateData(
+  private case class TemplateData(
                                    schemeName: Option[String],
                                    entityName: String,
                                    entityType : String,
@@ -54,7 +54,7 @@ class CommonTradingTimeService @Inject()(
                                    radios: Seq[Radios.Item]
                                  )
 
-  implicit def templateDataWrites(implicit request: DataRequest[AnyContent]): OWrites[TemplateData] = Json.writes[TemplateData]
+  implicit private def templateDataWrites(implicit request: DataRequest[AnyContent]): OWrites[TemplateData] = Json.writes[TemplateData]
 
 
   def get(schemeName: Option[String],
@@ -91,7 +91,7 @@ class CommonTradingTimeService @Inject()(
       )
   }
 
-  def getTemplateData(
+  private def getTemplateData(
                       schemeName: Option[String],
                       entityName: String,
                       entityType : String,

@@ -29,7 +29,7 @@ import models._
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -63,7 +63,7 @@ class ConfirmPreviousAddressController @Inject()(
   //private val h1MessageKey: String = "previousAddress.title"
   private val pageTitleMessageKey: String = "previousAddress.title"
 
-  private def form(implicit messages: Messages): Form[Address] = formProvider()
+  private def form: Form[Address] = formProvider()
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
@@ -102,17 +102,6 @@ class ConfirmPreviousAddressController @Inject()(
                   pageTitleEntityTypeMessageKey,
                   pageTitleMessageKey
                 )
-//                renderer.render(
-//                  common.viewTemplate,
-//                  common.getTemplateData(
-//                    Some(schemeName),
-//                    trusteeName.fullName,
-//                    formWithErrors,
-//                    AddressConfiguration.PostcodeFirst,
-//                    pageTitleEntityTypeMessageKey,
-//                    pageTitleMessageKey
-//                  )
-//                ).map(BadRequest(_))
               },
               value =>
                 for {

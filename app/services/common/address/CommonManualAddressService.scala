@@ -27,7 +27,7 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{Json, OWrites}
+import play.api.libs.json.{JsArray, Json, OWrites}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Result}
 import renderer.Renderer
@@ -48,11 +48,19 @@ class CommonManualAddressService @Inject()(
                                  ) extends NunjucksSupport
   with FrontendHeaderCarrierProvider with I18nSupport with CountriesHelper {
 
-  def viewTemplate: String = "address/manualAddress.njk"
+  private def viewTemplate: String = "address/manualAddress.njk"
 
-  case class TemplateData(form : Form[Address], pageTitle: String, h1Message: String, schemeName: Option[String])
+  private case class TemplateData(
+                                   form : Form[Address],
+                                   pageTitle: String,
+                                   h1Message: String,
+                                   schemeName: Option[String],
+                                   postcodeFirst: Boolean = false,
+                                   postcodeEntry: Boolean = false,
+                                   countries: JsArray = Json.arr()
+                                 )
 
-  implicit def templateDataWrites(implicit request: DataRequest[AnyContent]): OWrites[TemplateData] = Json.writes[TemplateData]
+  implicit private def templateDataWrites(implicit request: DataRequest[AnyContent]): OWrites[TemplateData] = Json.writes[TemplateData]
 
   def get(schemeName: Option[String],
           entityName: String,
@@ -106,7 +114,7 @@ class CommonManualAddressService @Inject()(
       )
   }
 
-  def getTemplateData(
+  private def getTemplateData(
             schemeName: Option[String],
             entityName: String,
             form: Form[Address],
@@ -116,30 +124,29 @@ class CommonManualAddressService @Inject()(
           )(implicit request: DataRequest[AnyContent]): TemplateData = {
     val messages = request2Messages
     val h1MessageKey = pageTitleMessageKey
-    val extraJson = addressLocation match {
-      case AddressConfiguration.PostcodeFirst =>
-        Json.obj(
-          "postcodeFirst" -> true,
-          "postcodeEntry" -> true,
-          "countries" -> jsonCountries(form.data.get("country"), config)(messages)
-        )
-      case AddressConfiguration.CountryFirst =>
-        Json.obj(
-          "postcodeEntry" -> true,
-          "countries" -> jsonCountries(form.data.get("country"), config)(messages)
-        )
-      case AddressConfiguration.CountryOnly =>
-        Json.obj("countries" -> jsonCountries(form.data.get("country"), config)(messages))
-      case _ => Json.obj()
-    }
-
     val pageTitle = pageTitleEntityTypeMessageKey match {
       case Some(key) => messages(pageTitleMessageKey, messages(key))
       case _ => messages(pageTitleMessageKey)
     }
-
     val h1Message =  messages(h1MessageKey, entityName)
 
-    TemplateData(form, pageTitle, h1Message, schemeName)
+    val templateDate = addressLocation match {
+      case AddressConfiguration.PostcodeFirst =>
+        TemplateData(form, pageTitle, h1Message, schemeName,
+          postcodeFirst = true, postcodeEntry = true,
+          countries = jsonCountries(form.data.get("country"), config)(messages))
+
+      case AddressConfiguration.CountryFirst =>
+        TemplateData(form, pageTitle, h1Message, schemeName,
+          postcodeEntry = true,
+          countries = jsonCountries(form.data.get("country"), config)(messages))
+
+      case AddressConfiguration.CountryOnly =>
+        TemplateData(form, pageTitle, h1Message, schemeName,
+          countries = jsonCountries(form.data.get("country"), config)(messages))
+      case _ => TemplateData(form, pageTitle, h1Message, schemeName)
+    }
+
+    templateDate
   }
 }

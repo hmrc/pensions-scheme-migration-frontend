@@ -27,7 +27,7 @@ import identifiers.trustees.company.address.{AddressId, AddressListId}
 import models.{Address, AddressConfiguration, Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import services.common.address.CommonManualAddressService
@@ -49,7 +49,7 @@ class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
   common: CommonManualAddressService
 )(implicit ec: ExecutionContext) extends Retrievals with I18nSupport with NunjucksSupport {
 
-  private def form(implicit messages: Messages): Form[Address] = formProvider()
+  private def form: Form[Address] = formProvider()
 
   private val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__company")
 

@@ -85,7 +85,6 @@ class EstablisherNameController @Inject()(
         )
     }
 
-  private def form(implicit messages: Messages): Form[PersonName] =
-    formProvider("messages__error__establisher")
+  private def form(implicit messages: Messages): Form[PersonName] = formProvider("messages__error__establisher")
 
 }
