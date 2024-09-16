@@ -32,6 +32,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
+import services.common.details.CommonEnterReferenceValueService
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.{partnershipDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
@@ -59,8 +60,15 @@ class PAYEControllerSpec extends ControllerSpecBase with NunjucksSupport with Js
     )
 
   private def controller(dataRetrievalAction: DataRetrievalAction): PAYEController =
-    new PAYEController(messagesApi, new FakeNavigator(desiredRoute = onwardCall), new FakeAuthAction(), dataRetrievalAction,
-      new DataRequiredActionImpl, formProvider, controllerComponents, mockUserAnswersCacheConnector, new Renderer(mockAppConfig, mockRenderer))
+    new PAYEController(messagesApi, new FakeAuthAction(), dataRetrievalAction,
+      new DataRequiredActionImpl, formProvider,
+      common = new CommonEnterReferenceValueService(
+        controllerComponents = controllerComponents,
+        renderer = new Renderer(mockAppConfig, mockRenderer),
+        userAnswersCacheConnector = mockUserAnswersCacheConnector,
+        navigator = new FakeNavigator(desiredRoute = onwardCall),
+        messagesApi = messagesApi
+      ))
 
   override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
 

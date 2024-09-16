@@ -33,6 +33,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
+import services.common.details.CommonHasReferenceValueService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
@@ -82,15 +83,18 @@ class OtherPartnersControllerSpec extends ControllerSpecBase
                           dataRetrievalAction: DataRetrievalAction
                         ): OtherPartnersController =
     new OtherPartnersController(
-      messagesApi               = messagesApi,
-      navigator                 = new FakeNavigator(desiredRoute = onwardCall),
-      authenticate              = new FakeAuthAction(),
-      getData                   = dataRetrievalAction,
-      requireData               = new DataRequiredActionImpl,
-      formProvider              = formProvider,
-      controllerComponents      = controllerComponents,
-      userAnswersCacheConnector = mockUserAnswersCacheConnector,
-      renderer                  = new Renderer(mockAppConfig, mockRenderer)
+      messagesApi = messagesApi,
+      authenticate = new FakeAuthAction(),
+      getData = dataRetrievalAction,
+      requireData = new DataRequiredActionImpl,
+      formProvider = formProvider,
+      common = new CommonHasReferenceValueService(
+        controllerComponents = controllerComponents,
+        renderer = new Renderer(mockAppConfig, mockRenderer),
+        userAnswersCacheConnector = mockUserAnswersCacheConnector,
+        navigator = new FakeNavigator(desiredRoute = onwardCall),
+        messagesApi = messagesApi
+      )
     )
 
   "OtherPartnersController" must {

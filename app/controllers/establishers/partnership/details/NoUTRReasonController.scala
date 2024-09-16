@@ -16,8 +16,7 @@
 
 package controllers.establishers.partnership.details
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.ReasonController
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.ReasonFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -25,28 +24,23 @@ import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.details.NoUTRReasonId
 import models.requests.DataRequest
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.details.CommonReasonService
 import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class NoUTRReasonController @Inject()(
-                                                  override val messagesApi: MessagesApi,
-                                                  val navigator: CompoundNavigator,
-                                                  authenticate: AuthAction,
-                                                  getData: DataRetrievalAction,
-                                                  requireData: DataRequiredAction,
-                                                  formProvider: ReasonFormProvider,
-                                                  val controllerComponents: MessagesControllerComponents,
-                                                  val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                                  val renderer: Renderer
-                                                )(implicit val executionContext: ExecutionContext)
-  extends ReasonController {
+class NoUTRReasonController @Inject()(val messagesApi: MessagesApi,
+                                      authenticate: AuthAction,
+                                      getData: DataRetrievalAction,
+                                      requireData: DataRequiredAction,
+                                      formProvider: ReasonFormProvider,
+                                      common: CommonReasonService
+                                     )(implicit val executionContext: ExecutionContext)
+  extends Retrievals with I18nSupport {
 
   private def name(index: Index)
                   (implicit request: DataRequest[AnyContent]): String =
@@ -61,7 +55,7 @@ class NoUTRReasonController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
+            common.get(
               pageTitle     = Message("messages__whyNoUTR", Message("messages__partnership")),
               pageHeading     = Message("messages__whyNoUTR", name(index)),
               isPageHeading = true,
@@ -77,7 +71,7 @@ class NoUTRReasonController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            post(
+            common.post(
               pageTitle     = Message("messages__whyNoUTR", Message("messages__partnership")),
               pageHeading     = Message("messages__whyNoUTR", name(index)),
               isPageHeading = true,

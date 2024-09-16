@@ -16,8 +16,7 @@
 
 package controllers.establishers.partnership.partner.details
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.EnterReferenceValueController
+import controllers.Retrievals
 import controllers.actions._
 import forms.UTRFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -25,28 +24,23 @@ import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.partner.details.PartnerEnterUTRId
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.details.CommonEnterReferenceValueService
 import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class PartnerEnterUTRController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            val navigator: CompoundNavigator,
-                                            authenticate: AuthAction,
-                                            getData: DataRetrievalAction,
-                                            requireData: DataRequiredAction,
-                                            formProvider: UTRFormProvider,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                            val renderer: Renderer
-                                          )(implicit val executionContext: ExecutionContext)
-  extends EnterReferenceValueController {
+class PartnerEnterUTRController @Inject()(val messagesApi: MessagesApi,
+                                          authenticate: AuthAction,
+                                          getData: DataRetrievalAction,
+                                          requireData: DataRequiredAction,
+                                          formProvider: UTRFormProvider,
+                                          common: CommonEnterReferenceValueService
+                                         )(implicit val executionContext: ExecutionContext)
+  extends Retrievals with I18nSupport {
 
   private def name(establisherIndex: Index, partnerIndex: Index)
                   (implicit request: DataRequest[AnyContent]): String =
@@ -62,7 +56,7 @@ class PartnerEnterUTRController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
+            common.get(
               pageTitle = Message("messages__enterUTR", Message("messages__partner")),
               pageHeading = Message("messages__enterUTR", name(establisherIndex, partnerIndex)),
               isPageHeading = true,
@@ -80,7 +74,7 @@ class PartnerEnterUTRController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            post(
+            common.post(
               pageTitle = Message("messages__enterUTR", Message("messages__partner")),
               pageHeading = Message("messages__enterUTR", name(establisherIndex, partnerIndex)),
               isPageHeading = true,
