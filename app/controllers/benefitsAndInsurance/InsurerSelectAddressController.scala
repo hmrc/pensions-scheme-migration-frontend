@@ -20,7 +20,7 @@ import config.AppConfig
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
-import controllers.address.{AddressListController, AddressPages}
+import models.establishers.AddressPages
 import controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -31,9 +31,11 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
+import controllers.Retrievals
+import services.common.address.CommonAddressListService
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.CountryOptions
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -47,24 +49,33 @@ class InsurerSelectAddressController @Inject()(val appConfig: AppConfig,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
   formProvider: AddressListFormProvider,
-  countryOptions: CountryOptions,
   val controllerComponents: MessagesControllerComponents,
-  val renderer: Renderer)(implicit val ec: ExecutionContext) extends AddressListController with I18nSupport
-  with NunjucksSupport with Retrievals {
+  val renderer: Renderer,
+  common:CommonAddressListService
+)(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
 
-  override def form: Form[Int] = formProvider("insurerSelectAddress.required")
+  private def form: Form[Int] = formProvider("insurerSelectAddress.required")
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async { implicit request =>
     retrieve(SchemeNameId) { schemeName =>
-      getFormToJson(schemeName).retrieve.map(get)
+      getFormToJson(schemeName).retrieve.map(common.get(_, form))
     }
   }
 
   def onSubmit: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-        val addressPages: AddressPages = AddressPages(InsurerEnterPostCodeId, InsurerAddressListId, InsurerAddressId)
+      val addressPages: AddressPages = AddressPages(InsurerEnterPostCodeId, InsurerAddressListId, InsurerAddressId)
+      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName).retrieve.map(post(_, addressPages,manualUrlCall = InsurerConfirmAddressController.onPageLoad))
+        getFormToJson(schemeName).retrieve.map(
+          common.post(
+            _,
+            addressPages,
+            manualUrlCall = InsurerConfirmAddressController.onPageLoad,
+            form = form
+          )
+        )
       }
     }
 
@@ -72,15 +83,12 @@ class InsurerSelectAddressController @Inject()(val appConfig: AppConfig,
     Retrieval(
       implicit request =>
         InsurerEnterPostCodeId.retrieve.map { addresses =>
-
           val msg = request2Messages(request)
-
-          val name = request.userAnswers.get(BenefitsInsuranceNameId)
-            .getOrElse(msg("benefitsInsuranceUnknown"))
+          val name = request.userAnswers.get(BenefitsInsuranceNameId).getOrElse(msg("benefitsInsuranceUnknown"))
 
           form => Json.obj(
             "form" -> form,
-            "addresses" -> transformAddressesForTemplate(addresses),
+            "addresses" -> common.transformAddressesForTemplate(addresses),
             "entityType" -> msg("benefitsInsuranceUnknown"),
             "entityName" -> name,
             "enterManuallyUrl" -> InsurerConfirmAddressController.onPageLoad.url,

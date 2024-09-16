@@ -20,7 +20,7 @@ import config.AppConfig
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
-import controllers.address.{AddressListController, AddressPages}
+import models.establishers.AddressPages
 import controllers.trustees.company.address.routes.ConfirmAddressController
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -33,14 +33,17 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
+import controllers.Retrievals
+import services.common.address.CommonAddressListService
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.CountryOptions
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class SelectAddressController @Inject()(val appConfig: AppConfig,
+class SelectAddressController @Inject()(
+  val appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   val userAnswersCacheConnector: UserAnswersCacheConnector,
   val addressLookupConnector: AddressLookupConnector,
@@ -49,25 +52,34 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
   formProvider: AddressListFormProvider,
-  countryOptions: CountryOptions,
   val controllerComponents: MessagesControllerComponents,
-  val renderer: Renderer)(implicit val ec: ExecutionContext) extends AddressListController with I18nSupport
-  with NunjucksSupport with Retrievals {
+  val renderer: Renderer,
+  common:CommonAddressListService
+)(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
 
-  override def form: Form[Int] = formProvider("selectAddress.required")
+  private def form: Form[Int] = formProvider("selectAddress.required")
 
-  def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async { implicit request =>
-    retrieve(SchemeNameId) { schemeName =>
-      getFormToJson(schemeName, index, mode).retrieve.map(get)
+  def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
+      retrieve(SchemeNameId) { schemeName =>
+        getFormToJson(schemeName, index, mode).retrieve.map(common.get(_, form))
+      }
     }
-  }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-        val addressPages: AddressPages = AddressPages(EnterPostCodeId(index), AddressListId(index), AddressId(index))
+      val addressPages: AddressPages = AddressPages(EnterPostCodeId(index), AddressListId(index), AddressId(index))
+      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, index, mode).retrieve.map(post(_, addressPages,manualUrlCall = ConfirmAddressController.onPageLoad(index,mode)
-          ,mode=Some(mode)))
+        getFormToJson(schemeName, index, mode).retrieve.map(
+          common.post(
+            _,
+            addressPages,
+            manualUrlCall = ConfirmAddressController.onPageLoad(index,mode),
+            mode = Some(mode),
+            form = form
+          ))
       }
     }
 
@@ -75,14 +87,12 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
     Retrieval(
       implicit request =>
         EnterPostCodeId(index).retrieve.map { addresses =>
-
           val msg = request2Messages(request)
-
           val name = request.userAnswers.get(CompanyDetailsId(index)).map(_.companyName).getOrElse(msg("messages__company"))
 
           form => Json.obj(
             "form" -> form,
-            "addresses" -> transformAddressesForTemplate(addresses),
+            "addresses" -> common.transformAddressesForTemplate(addresses),
             "entityType" -> msg("messages__company"),
             "entityName" -> name,
             "enterManuallyUrl" -> ConfirmAddressController.onPageLoad(index,mode).url,

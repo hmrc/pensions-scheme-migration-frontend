@@ -19,8 +19,8 @@ package controllers.establishers.company.address
 import config.AppConfig
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
+import controllers.Retrievals
 import controllers.actions._
-import controllers.address.PostcodeController
 import forms.address.PostcodeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
@@ -33,23 +33,28 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import services.common.address.CommonPostcodeService
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksSupport
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class EnterPostcodeController @Inject()(val appConfig: AppConfig,
-                                               override val messagesApi: MessagesApi,
-                                               val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                               val addressLookupConnector: AddressLookupConnector,
-                                               val navigator: CompoundNavigator,
-                                               authenticate: AuthAction,
-                                               getData: DataRetrievalAction,
-                                               requireData: DataRequiredAction,
-                                               formProvider: PostcodeFormProvider,
-                                               val controllerComponents: MessagesControllerComponents,
-                                               val renderer: Renderer
-                                              )(implicit val ec: ExecutionContext) extends PostcodeController with I18nSupport with NunjucksSupport {
+class EnterPostcodeController @Inject()(
+     val appConfig: AppConfig,
+     val messagesApi: MessagesApi,
+     val userAnswersCacheConnector: UserAnswersCacheConnector,
+     val addressLookupConnector: AddressLookupConnector,
+     val navigator: CompoundNavigator,
+     authenticate: AuthAction,
+     getData: DataRetrievalAction,
+     requireData: DataRequiredAction,
+     formProvider: PostcodeFormProvider,
+     val controllerComponents: MessagesControllerComponents,
+     val renderer: Renderer,
+     val common: CommonPostcodeService
+    )(implicit val ec: ExecutionContext) extends Retrievals with I18nSupport with NunjucksSupport {
 
   def form: Form[String] = formProvider("enterPostcode.required", "enterPostcode.invalid")
 
@@ -60,17 +65,17 @@ class EnterPostcodeController @Inject()(val appConfig: AppConfig,
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        get(getFormToJson(schemeName, index, mode))
+        common.get(getFormToJson(schemeName, index, mode), form)
       }
     }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async{
     implicit request =>
+      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
       retrieve(SchemeNameId) { schemeName =>
-        post(getFormToJson(schemeName, index, mode), EnterPostCodeId(index), "enterPostcode.noresults",Some(mode))
+        common.post(getFormToJson(schemeName, index, mode), EnterPostCodeId(index), "enterPostcode.noresults", Some(mode), form)
       }
   }
-
 
   def getFormToJson(schemeName:String, index: Index, mode: Mode)(implicit request:DataRequest[AnyContent]): Form[String] => JsObject = {
     form => {

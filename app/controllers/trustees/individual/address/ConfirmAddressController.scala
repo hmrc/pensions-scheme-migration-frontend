@@ -20,7 +20,6 @@ import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import controllers.address.ManualAddressController
 import forms.address.AddressFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.{address => Director}
@@ -29,50 +28,76 @@ import identifiers.trustees.individual.address.{AddressId, AddressListId}
 import models._
 import navigators.CompoundNavigator
 import play.api.data.Form
+import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.Results.{BadRequest, Redirect}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import services.DataUpdateService
+import services.common.address.CommonManualAddressService
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksSupport
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.UserAnswers
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
-class ConfirmAddressController @Inject()( override val messagesApi: MessagesApi,
-                                          val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                          val navigator: CompoundNavigator,
-                                          authenticate: AuthAction,
-                                          getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction,
-                                          formProvider: AddressFormProvider,
-                                          dataUpdateService: DataUpdateService,
-                                          val controllerComponents: MessagesControllerComponents,
-                                          val config: AppConfig,
-                                          val renderer: Renderer
-)(implicit ec: ExecutionContext) extends ManualAddressController
-  with Retrievals with I18nSupport with NunjucksSupport {
+class ConfirmAddressController @Inject()(
+    override val messagesApi: MessagesApi,
+    val userAnswersCacheConnector: UserAnswersCacheConnector,
+    val navigator: CompoundNavigator,
+    authenticate: AuthAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: AddressFormProvider,
+    dataUpdateService: DataUpdateService,
+    val controllerComponents: MessagesControllerComponents,
+    val config: AppConfig,
+    val renderer: Renderer,
+    common: CommonManualAddressService
+)(implicit ec: ExecutionContext) extends Retrievals with I18nSupport with NunjucksSupport {
 
-  def form(implicit messages: Messages): Form[Address] = formProvider()
+  private def form(implicit messages: Messages): Form[Address] = formProvider()
 
-  override protected val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__individual")
+  private val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__individual")
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (TrusteeNameId(index) and SchemeNameId).retrieve.map { case trusteeName ~ schemeName =>
-          get(Some(schemeName), trusteeName.fullName, AddressId(index),AddressListId(index), AddressConfiguration.PostcodeFirst)
+        common.get(
+          Some(schemeName),
+          trusteeName.fullName,
+          AddressId(index),
+          AddressListId(index),
+          AddressConfiguration.PostcodeFirst,
+          form,
+          pageTitleEntityTypeMessageKey,
+          pageTitleMessageKey = ??? // TODO Fix it,  "confirmAddress.title"
+        )
       }
     }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
+      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+
       (TrusteeNameId(index) and SchemeNameId).retrieve.map { case trusteeName ~ schemeName =>
         form
           .bindFromRequest()
           .fold(
             formWithErrors => {
-              renderer.render(viewTemplate, json(Some(schemeName), trusteeName.fullName, formWithErrors, AddressConfiguration.PostcodeFirst)).map(BadRequest(_))
+              renderer.render(
+                common.viewTemplate,
+                common.getTemplateData(
+                  Some(schemeName),
+                  trusteeName.fullName,
+                  formWithErrors,
+                  AddressConfiguration.PostcodeFirst,
+                  pageTitleEntityTypeMessageKey,
+                  pageTitleMessageKey = ??? // TODO Fix it,  "confirmAddress.title"
+                )).map(BadRequest(_))
             },
             value =>
               for {
@@ -86,7 +111,7 @@ class ConfirmAddressController @Inject()( override val messagesApi: MessagesApi,
     }
 
   private def setUpdatedAnswers(index: Index, value: Address, mode: Mode, ua: UserAnswers): Try[UserAnswers] = {
-    val updatedUserAnswers =
+     val updatedUserAnswers =
       mode match {
         case CheckMode =>
           val directors = dataUpdateService.findMatchingDirectors(index)(ua)
@@ -98,7 +123,6 @@ class ConfirmAddressController @Inject()( override val messagesApi: MessagesApi,
           }
         case _ => ua
       }
-  val finalUpdatedUserAnswers = updatedUserAnswers.set(AddressId(index), value)
-  finalUpdatedUserAnswers
+    updatedUserAnswers.set(AddressId(index), value)
   }
 }

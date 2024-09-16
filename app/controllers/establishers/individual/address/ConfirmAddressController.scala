@@ -20,7 +20,6 @@ import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import controllers.address.ManualAddressController
 import forms.address.AddressFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
@@ -31,12 +30,14 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import services.common.address.CommonManualAddressService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
+class ConfirmAddressController @Inject()(
+  override val messagesApi: MessagesApi,
   val userAnswersCacheConnector: UserAnswersCacheConnector,
   val navigator: CompoundNavigator,
   authenticate: AuthAction,
@@ -45,25 +46,45 @@ class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
   formProvider: AddressFormProvider,
   val controllerComponents: MessagesControllerComponents,
   val config: AppConfig,
-  val renderer: Renderer
-)(implicit ec: ExecutionContext) extends ManualAddressController
-  with Retrievals with I18nSupport with NunjucksSupport {
+  val renderer: Renderer,
+  common: CommonManualAddressService
+)(implicit ec: ExecutionContext) extends Retrievals with I18nSupport with NunjucksSupport {
 
-  override protected val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__individual")
+  private val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__individual")
 
   def form(implicit messages: Messages): Form[Address] = formProvider()
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (EstablisherNameId(index) and SchemeNameId).retrieve.map { case establisherName ~ schemeName =>
-          get(Some(schemeName), establisherName.fullName, AddressId(index),AddressListId(index), AddressConfiguration.PostcodeFirst)
+      (EstablisherNameId(index) and SchemeNameId).retrieve.map {
+        case establisherName ~ schemeName =>
+          common.get(
+            Some(schemeName),
+            establisherName.fullName,
+            AddressId(index),
+            AddressListId(index),
+            AddressConfiguration.PostcodeFirst,
+            form,
+            pageTitleEntityTypeMessageKey,
+            pageTitleMessageKey = ??? // TODO - confirm address title
+          )
       }
     }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (EstablisherNameId(index) and SchemeNameId).retrieve.map { case establisherName ~ schemeName =>
-        post(Some(schemeName), establisherName.fullName, AddressId(index), AddressConfiguration.PostcodeFirst,Some(mode))
+      (EstablisherNameId(index) and SchemeNameId).retrieve.map {
+        case establisherName ~ schemeName =>
+          common.post(
+            Some(schemeName),
+            establisherName.fullName,
+            AddressId(index),
+            AddressConfiguration.PostcodeFirst,
+            Some(mode),
+            form,
+            pageTitleEntityTypeMessageKey,
+            pageTitleMessageKey = ??? // TODO - confirm address title
+          )
       }
     }
 }

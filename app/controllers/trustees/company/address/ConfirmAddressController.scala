@@ -20,7 +20,6 @@ import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import controllers.address.ManualAddressController
 import forms.address.AddressFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.company.CompanyDetailsId
@@ -31,6 +30,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import services.common.address.CommonManualAddressService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 
 import javax.inject.Inject
@@ -45,25 +45,43 @@ class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
   formProvider: AddressFormProvider,
   val controllerComponents: MessagesControllerComponents,
   val config: AppConfig,
-  val renderer: Renderer
-)(implicit ec: ExecutionContext) extends ManualAddressController
-  with Retrievals with I18nSupport with NunjucksSupport {
+  val renderer: Renderer,
+  common: CommonManualAddressService
+)(implicit ec: ExecutionContext) extends Retrievals with I18nSupport with NunjucksSupport {
 
-  def form(implicit messages: Messages): Form[Address] = formProvider()
+  private def form(implicit messages: Messages): Form[Address] = formProvider()
 
-  override protected val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__company")
+  private val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__company")
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (CompanyDetailsId(index) and SchemeNameId).retrieve.map { case companyDetails ~ schemeName =>
-          get(Some(schemeName), companyDetails.companyName, AddressId(index),AddressListId(index), AddressConfiguration.PostcodeFirst)
+        common.get(
+          Some(schemeName),
+          companyDetails.companyName,
+          AddressId(index),
+          AddressListId(index),
+          AddressConfiguration.PostcodeFirst,
+          form,
+          pageTitleEntityTypeMessageKey,
+          pageTitleMessageKey = ??? // TODO - need to add this
+        )
       }
     }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (CompanyDetailsId(index) and SchemeNameId).retrieve.map { case companyDetails ~ schemeName =>
-        post(Some(schemeName), companyDetails.companyName, AddressId(index), AddressConfiguration.PostcodeFirst,Some(mode))
+        common.post(
+          Some(schemeName),
+          companyDetails.companyName,
+          AddressId(index),
+          AddressConfiguration.PostcodeFirst,
+          Some(mode),
+          form,
+          pageTitleEntityTypeMessageKey,
+          pageTitleMessageKey = ??? // TODO - need to add this
+        )
       }
     }
 }

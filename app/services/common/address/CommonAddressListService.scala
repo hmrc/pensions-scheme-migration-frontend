@@ -14,31 +14,39 @@
  * limitations under the License.
  */
 
-package controllers.address
+package services.common.address
 
+import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
-import identifiers.TypedIdentifier
+import models.establishers.AddressPages
 import models.requests.DataRequest
-import models.{Address, Mode, NormalMode, TolerantAddress}
+import models.{Mode, NormalMode, TolerantAddress}
 import navigators.CompoundNavigator
 import play.api.data.Form
+import play.api.data.FormBinding.Implicits.formBinding
+import play.api.i18n.MessagesApi
 import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, Call, Result}
 import renderer.Renderer
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
-trait AddressListController extends FrontendBaseController with Retrievals {
+@Singleton
+class CommonAddressListService @Inject()(
+                                      val renderer: Renderer,
+                                      val userAnswersCacheConnector: UserAnswersCacheConnector,
+                                      val navigator: CompoundNavigator,
+                                      val messagesApi: MessagesApi,
+                                      val config: AppConfig
+                                    ) extends Retrievals {
 
-  protected def renderer: Renderer
-  protected def userAnswersCacheConnector: UserAnswersCacheConnector
-  protected def navigator: CompoundNavigator
-  protected def form: Form[Int]
-  protected def viewTemplate = "address/addressList.njk"
-  protected def prepareJson(jsObject: JsObject):JsObject = {
+  def viewTemplate: String = "address/addressList.njk"
+
+  def prepareJson(jsObject: JsObject):JsObject = {
     if (jsObject.keys.contains("h1MessageKey")) {
       jsObject
     } else {
@@ -46,12 +54,18 @@ trait AddressListController extends FrontendBaseController with Retrievals {
     }
   }
 
-  def get(json: Form[Int] => JsObject)(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
+  def get(json: Form[Int] => JsObject,
+           form: Form[Int]
+         )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
     renderer.render(viewTemplate, prepareJson(json(form))).map(Ok(_))
   }
 
-  def post(json: Form[Int] => JsObject, pages: AddressPages, mode: Option[Mode] = None,manualUrlCall:Call)
-          (implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
+  def post(json: Form[Int] => JsObject,
+           pages: AddressPages,
+           mode: Option[Mode] = None,
+           manualUrlCall:Call,
+           form: Form[Int]
+          )(implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
     form.bindFromRequest().fold(
       formWithErrors =>
         renderer.render(viewTemplate, prepareJson(json(formWithErrors))).map(BadRequest(_)),
@@ -71,11 +85,10 @@ trait AddressListController extends FrontendBaseController with Retrievals {
             }
           }else{
             for {
-              updatedAnswers <-
-
-                Future.fromTry(request.userAnswers.remove(pages.addressPage).set(pages.addressListPage,
-                address)
-              )
+              updatedAnswers <- Future.fromTry(
+                request.userAnswers.remove(pages.addressPage).set(pages.addressListPage,
+                address
+                ))
               _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
             } yield {
               Redirect(manualUrlCall)
@@ -96,7 +109,3 @@ trait AddressListController extends FrontendBaseController with Retrievals {
   }
 
 }
-
-case class AddressPages(postcodeId: TypedIdentifier[Seq[TolerantAddress]],
-                        addressListPage: TypedIdentifier[TolerantAddress],
-                        addressPage: TypedIdentifier[Address])

@@ -14,37 +14,39 @@
  * limitations under the License.
  */
 
-package controllers.address
+package services.common.address
 
 import config.AppConfig
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
-import controllers.Retrievals
 import forms.FormsHelper.formWithError
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{Mode, NormalMode, TolerantAddress}
 import navigators.CompoundNavigator
 import play.api.data.Form
+import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, JsObject, Json}
+import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, Result}
 import renderer.Renderer
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
-trait PostcodeController extends FrontendBaseController with Retrievals {
+@Singleton
+class CommonPostcodeService @Inject()(
+                                       val renderer: Renderer,
+                                       val navigator: CompoundNavigator,
+                                       val addressLookupConnector: AddressLookupConnector,
+                                       val userAnswersCacheConnector: UserAnswersCacheConnector
+                                     ) {
 
-  protected def renderer: Renderer
-  protected def userAnswersCacheConnector: UserAnswersCacheConnector
-  protected def navigator: CompoundNavigator
-  protected def form: Form[String]
-  protected def addressLookupConnector: AddressLookupConnector
-  protected def viewTemplate = "address/postcode.njk"
+  def viewTemplate: String = "address/postcode.njk"
 
-  protected def prepareJson(jsObject: JsObject):JsObject = {
+  def prepareJson(jsObject: JsObject):JsObject = {
     if (jsObject.keys.contains("h1MessageKey")) {
       jsObject
     } else {
@@ -52,14 +54,19 @@ trait PostcodeController extends FrontendBaseController with Retrievals {
     }
   }
 
-  def get(json: Form[String] => JsObject)
-         (implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
+  def get(json: Form[String] => JsObject,
+          form: Form[String]
+         )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
 
     renderer.render(viewTemplate, prepareJson(json(form))).map(Ok(_))
   }
 
-  def post(formToJson: Form[String] => JsObject, postcodeId: TypedIdentifier[Seq[TolerantAddress]], errorMessage: String, mode: Option[Mode] = None)
-          (implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
+  def post(formToJson: Form[String] => JsObject,
+           postcodeId: TypedIdentifier[Seq[TolerantAddress]],
+           errorMessage: String,
+           mode: Option[Mode] = None,
+           form: Form[String]
+          )(implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
     form.bindFromRequest().fold(
       formWithErrors =>
         renderer.render(viewTemplate, prepareJson(formToJson(formWithErrors))).map(BadRequest(_)),
@@ -82,7 +89,7 @@ trait PostcodeController extends FrontendBaseController with Retrievals {
     )
   }
 
-  private def countryJsonElement(tuple: (String, String), isSelected: Boolean): JsArray = Json.arr(
+  def countryJsonElement(tuple: (String, String), isSelected: Boolean): JsArray = Json.arr(
     if (isSelected) {
       Json.obj(
         "value" -> tuple._1,

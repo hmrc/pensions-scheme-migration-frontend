@@ -31,21 +31,26 @@ import viewmodels.Message
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class AddressYearsController @Inject()(authenticate: AuthAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       formProvider: AddressYearsFormProvider,
-                                       common: CommonAddressYearsService)(implicit ec: ExecutionContext)
-    extends Retrievals  {
+class AddressYearsController @Inject()(
+     authenticate: AuthAction,
+     getData: DataRetrievalAction,
+     requireData: DataRequiredAction,
+     formProvider: AddressYearsFormProvider,
+     common: CommonAddressYearsService
+    )(implicit ec: ExecutionContext) extends Retrievals  {
 
-
-  private def form: Form[Boolean] =
-    formProvider("companyAddressYears.error.required")
+  private def form: Form[Boolean] = formProvider("companyAddressYears.error.required")
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (CompanyDetailsId(index) and SchemeNameId).retrieve.map { case companyDetails ~ schemeName =>
-          common.get(Some(schemeName), companyDetails.companyName, Message("establisherEntityTypeCompany"), form, AddressYearsId(index))
+          common.get(
+            Some(schemeName),
+            companyDetails.companyName,
+            Message("establisherEntityTypeCompany"),
+            form,
+            AddressYearsId(index)
+          )
       }
     }
 
@@ -53,7 +58,13 @@ class AddressYearsController @Inject()(authenticate: AuthAction,
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (CompanyDetailsId(index) and SchemeNameId).retrieve.map {
         case companyDetails ~ schemeName =>
-          common.post(Some(schemeName), companyDetails.companyName, Message("establisherEntityTypeCompany"), form, AddressYearsId(index),Some(mode))
+          common.post(
+            Some(schemeName),
+            companyDetails.companyName,
+            Message("establisherEntityTypeCompany"),
+            form,
+            AddressYearsId(index),Some(mode)
+          )
       }
     }
 }

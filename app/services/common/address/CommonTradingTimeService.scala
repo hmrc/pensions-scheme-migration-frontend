@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.address
+package services.common.address
 
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
@@ -23,45 +23,46 @@ import models.requests.DataRequest
 import models.{Mode, NormalMode}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.I18nSupport
+import play.api.data.FormBinding.Implicits.formBinding
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContent, Result}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.Radios
+import play.api.mvc.Results.{BadRequest, Ok, Redirect}
+import uk.gov.hmrc.http.HeaderCarrier
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
-trait CommonTradingTimeController extends FrontendBaseController
-  with Retrievals
-  with I18nSupport
-  with NunjucksSupport {
+@Singleton
+class CommonTradingTimeService @Inject()(
+    renderer: Renderer,
+    userAnswersCacheConnector: UserAnswersCacheConnector,
+    navigator: CompoundNavigator,
+    val messagesApi: MessagesApi
+) extends Retrievals with I18nSupport with NunjucksSupport {
 
-  protected def renderer: Renderer
-  protected def userAnswersCacheConnector: UserAnswersCacheConnector
-  protected def navigator: CompoundNavigator
-  protected def viewTemplate = "address/tradingTime.njk"
+  private def viewTemplate = "address/tradingTime.njk"
 
-  protected def get(schemeName: Option[String],
+  def get(schemeName: Option[String],
                     entityName: String,
                     entityType : String,
                     form : Form[Boolean],
-                    tradingTimeId : TypedIdentifier[Boolean])(
-                     implicit request: DataRequest[AnyContent],
-                     ec: ExecutionContext): Future[Result] = {
+                    tradingTimeId : TypedIdentifier[Boolean]
+                   )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
     val filledForm = request.userAnswers.get(tradingTimeId).fold(form)(form.fill)
     renderer.render(viewTemplate, json(schemeName, entityName, entityType, filledForm)).map(Ok(_))
   }
 
-  protected def post(schemeName: Option[String],
-                     entityName: String,
-                     entityType : String,
-                     form : Form[Boolean],
-                     tradingTimeId : TypedIdentifier[Boolean],
-                     mode: Option[Mode] = None)(
-                      implicit request: DataRequest[AnyContent],
-                      ec: ExecutionContext): Future[Result] = {
+  def post(schemeName: Option[String],
+           entityName: String,
+           entityType : String,
+           form : Form[Boolean],
+           tradingTimeId : TypedIdentifier[Boolean],
+           mode: Option[Mode] = None
+          )(implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
     form
       .bindFromRequest()
       .fold(
@@ -83,8 +84,8 @@ trait CommonTradingTimeController extends FrontendBaseController
                       schemeName: Option[String],
                       entityName: String,
                       entityType : String,
-                      form : Form[Boolean])
-                    (implicit request: DataRequest[AnyContent]): JsObject =
+                      form : Form[Boolean]
+                    )(implicit request: DataRequest[AnyContent]): JsObject =
   Json.obj(
       "schemeName" -> schemeName,
       "entityName" -> entityName,
