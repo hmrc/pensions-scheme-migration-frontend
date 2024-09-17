@@ -16,7 +16,6 @@
 
 package controllers.trustees.company.address
 
-import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.address.TradingTimeFormProvider
@@ -24,11 +23,9 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.address.TradingTimeId
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import services.common.address.CommonTradingTimeService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -39,19 +36,15 @@ import scala.concurrent.ExecutionContext
 
 class TradingTimeController @Inject()(
     val messagesApi: MessagesApi,
-    val userAnswersCacheConnector: UserAnswersCacheConnector,
     authenticate: AuthAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    val navigator: CompoundNavigator,
     formProvider: TradingTimeFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    val renderer: Renderer,
+    controllerComponents: MessagesControllerComponents,
     common: CommonTradingTimeService
  )(implicit ec: ExecutionContext) extends Retrievals with Enumerable.Implicits {
 
-  private def form: Form[Boolean] =
-    formProvider("companyTradingTime.error.required")
+  private def form: Form[Boolean] = formProvider("companyTradingTime.error.required")
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>

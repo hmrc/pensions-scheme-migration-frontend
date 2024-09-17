@@ -16,7 +16,6 @@
 
 package controllers.establishers.company.address
 
-import config.AppConfig
 import controllers.Retrievals
 import controllers.actions._
 import forms.address.AddressFormProvider
@@ -37,16 +36,13 @@ class ConfirmAddressController @Inject()(
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
   formProvider: AddressFormProvider,
-  val config: AppConfig,
-  val common: CommonManualAddressService,
+  common: CommonManualAddressService,
   val messagesApi: MessagesApi
 )(implicit ec: ExecutionContext) extends Retrievals with I18nSupport {
 
   private def form: Form[Address] = formProvider()
-
   private val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__company")
   private val pageTitleMessageKey: String = "address.title"
- private val h1MessageKey: String = pageTitleMessageKey
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>

@@ -16,9 +16,6 @@
 
 package controllers.establishers.company.address
 
-import config.AppConfig
-import connectors.AddressLookupConnector
-import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import models.establishers.AddressPages
 import controllers.establishers.company.address.routes.ConfirmAddressController
@@ -27,7 +24,6 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address.{AddressId, AddressListId, EnterPostCodeId}
 import models.{Index, Mode, NormalMode}
-import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
@@ -41,11 +37,8 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class SelectAddressController @Inject()(val appConfig: AppConfig,
-  override val messagesApi: MessagesApi,
-  val userAnswersCacheConnector: UserAnswersCacheConnector,
-  val addressLookupConnector: AddressLookupConnector,
-  val navigator: CompoundNavigator,
+class SelectAddressController @Inject()(
+  val messagesApi: MessagesApi,
   authenticate: AuthAction,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
@@ -84,7 +77,6 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
         EnterPostCodeId(index).retrieve.map { addresses =>
 
           val msg = request2Messages(request)
-
           val name = request.userAnswers.get(CompanyDetailsId(index)).map(_.companyName).getOrElse(msg("establisherEntityTypeCompany"))
 
           form => Json.obj(

@@ -16,9 +16,6 @@
 
 package controllers.trustees.partnership.address
 
-import config.AppConfig
-import connectors.AddressLookupConnector
-import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import models.establishers.AddressPages
 import controllers.trustees.partnership.address.routes.ConfirmAddressController
@@ -27,12 +24,10 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.partnership.PartnershipDetailsId
 import identifiers.trustees.partnership.address.{AddressId, AddressListId, EnterPostCodeId}
 import models.{Index, Mode, NormalMode}
-import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.mvc.{Action, AnyContent}
 import controllers.Retrievals
 import services.common.address.CommonAddressListService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -42,27 +37,23 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class SelectAddressController @Inject()(val appConfig: AppConfig,
-  override val messagesApi: MessagesApi,
-  val userAnswersCacheConnector: UserAnswersCacheConnector,
-  val addressLookupConnector: AddressLookupConnector,
-  val navigator: CompoundNavigator,
+class SelectAddressController @Inject()(
+  val messagesApi: MessagesApi,
   authenticate: AuthAction,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
   formProvider: AddressListFormProvider,
-  val controllerComponents: MessagesControllerComponents,
-  val renderer: Renderer,
   common: CommonAddressListService
 )(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
 
   private def form: Form[Int] = formProvider("selectAddress.required")
 
-  def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async { implicit request =>
-    retrieve(SchemeNameId) { schemeName =>
-      getFormToJson(schemeName, index, NormalMode).retrieve.map(common.get(_, form))
+  def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
+      retrieve(SchemeNameId) { schemeName =>
+        getFormToJson(schemeName, index, NormalMode).retrieve.map(common.get(_, form))
+      }
     }
-  }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
@@ -85,7 +76,6 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
     Retrieval(
       implicit request =>
         EnterPostCodeId(index).retrieve.map { addresses =>
-
           val msg = request2Messages(request)
           val name = request.userAnswers.get(PartnershipDetailsId(index)).map(_.partnershipName).getOrElse(msg("messages__partnership"))
 

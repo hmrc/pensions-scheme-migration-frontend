@@ -39,8 +39,7 @@ class AddressYearsController @Inject()(
                                        common: CommonAddressYearsService)(implicit ec: ExecutionContext)
   extends Retrievals {
 
-  private def form: Form[Boolean] =
-    formProvider("companyAddressYears.error.required")
+  private def form: Form[Boolean] = formProvider("companyAddressYears.error.required")
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>

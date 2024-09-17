@@ -51,10 +51,8 @@ class ConfirmPreviousAddressController @Inject()(
 )(implicit ec: ExecutionContext) extends Retrievals with I18nSupport with NunjucksSupport {
 
   private val pageTitleEntityTypeMessageKey: Option[String] = Some("establisherEntityTypePartnership")
-  //private val h1MessageKey: String = "previousAddress.title"
   private val pageTitleMessageKey: String = "previousAddress.title"
-
-  def form: Form[Address] = formProvider()
+  private def form: Form[Address] = formProvider()
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>

@@ -16,21 +16,16 @@
 
 package controllers.benefitsAndInsurance
 
-import config.AppConfig
-import connectors.AddressLookupConnector
-import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.address.PostcodeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.{BenefitsInsuranceNameId, InsurerEnterPostCodeId}
 import models.requests.DataRequest
-import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.mvc.{Action, AnyContent}
 import services.common.address.CommonPostcodeService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksSupport
@@ -40,17 +35,11 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class InsurerEnterPostcodeController @Inject()(
-   val appConfig: AppConfig,
-   override val messagesApi: MessagesApi,
-   val userAnswersCacheConnector: UserAnswersCacheConnector,
-   val addressLookupConnector: AddressLookupConnector,
-   val navigator: CompoundNavigator,
+   val messagesApi: MessagesApi,
    authenticate: AuthAction,
    getData: DataRetrievalAction,
    requireData: DataRequiredAction,
    formProvider: PostcodeFormProvider,
-   val controllerComponents: MessagesControllerComponents,
-   val renderer: Renderer,
    common: CommonPostcodeService
 )(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
 

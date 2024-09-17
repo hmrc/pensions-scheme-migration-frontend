@@ -16,8 +16,6 @@
 
 package controllers.benefitsAndInsurance
 
-import config.AppConfig
-import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.address.AddressFormProvider
@@ -27,8 +25,7 @@ import models.{Address, AddressConfiguration}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.mvc.{Action, AnyContent}
 import services.common.address.CommonManualAddressService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 
@@ -36,16 +33,12 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class InsurerConfirmAddressController @Inject()(
-  override val messagesApi: MessagesApi,
-  val userAnswersCacheConnector: UserAnswersCacheConnector,
-  val navigator: CompoundNavigator,
+  val messagesApi: MessagesApi,
+  navigator: CompoundNavigator,
   authenticate: AuthAction,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
   formProvider: AddressFormProvider,
-  val controllerComponents: MessagesControllerComponents,
-  val config: AppConfig,
-  val renderer: Renderer,
   common: CommonManualAddressService
 )(implicit ec: ExecutionContext) extends Retrievals with I18nSupport with NunjucksSupport {
 

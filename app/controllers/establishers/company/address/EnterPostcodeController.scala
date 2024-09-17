@@ -16,9 +16,6 @@
 
 package controllers.establishers.company.address
 
-import config.AppConfig
-import connectors.AddressLookupConnector
-import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.address.PostcodeFormProvider
@@ -27,12 +24,10 @@ import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address.EnterPostCodeId
 import models.requests.DataRequest
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.mvc.{Action, AnyContent}
 import services.common.address.CommonPostcodeService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksSupport
@@ -42,21 +37,15 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class EnterPostcodeController @Inject()(
-     val appConfig: AppConfig,
      val messagesApi: MessagesApi,
-     val userAnswersCacheConnector: UserAnswersCacheConnector,
-     val addressLookupConnector: AddressLookupConnector,
-     val navigator: CompoundNavigator,
      authenticate: AuthAction,
      getData: DataRetrievalAction,
      requireData: DataRequiredAction,
      formProvider: PostcodeFormProvider,
-     val controllerComponents: MessagesControllerComponents,
-     val renderer: Renderer,
-     val common: CommonPostcodeService
+     common: CommonPostcodeService
     )(implicit val ec: ExecutionContext) extends Retrievals with I18nSupport with NunjucksSupport {
 
-  def form: Form[String] = formProvider("enterPostcode.required", "enterPostcode.invalid")
+  private def form: Form[String] = formProvider("enterPostcode.required", "enterPostcode.invalid")
 
   def formWithError(messageKey: String): Form[String] = {
     form.withError("value", s"messages__error__postcode_$messageKey")

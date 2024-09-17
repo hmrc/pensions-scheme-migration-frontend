@@ -60,7 +60,6 @@ class ConfirmPreviousAddressController @Inject()(
 )(implicit ec: ExecutionContext) extends Retrievals with I18nSupport with NunjucksSupport {
 
   private val pageTitleEntityTypeMessageKey: Option[String] = Some("trusteeEntityTypeIndividual")
-  //private val h1MessageKey: String = "previousAddress.title"
   private val pageTitleMessageKey: String = "previousAddress.title"
 
   private def form: Form[Address] = formProvider()

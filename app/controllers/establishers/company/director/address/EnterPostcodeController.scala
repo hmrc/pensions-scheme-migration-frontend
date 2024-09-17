@@ -16,7 +16,6 @@
 
 package controllers.establishers.company.director.address
 
-import config.AppConfig
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
@@ -34,7 +33,7 @@ import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Results.{BadRequest, Redirect}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent}
 import renderer.Renderer
 import services.DataUpdateService
 import services.common.address.CommonPostcodeService
@@ -48,18 +47,16 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 class EnterPostcodeController @Inject()(
-    val appConfig: AppConfig,
-    override val messagesApi: MessagesApi,
-    val userAnswersCacheConnector: UserAnswersCacheConnector,
-    val addressLookupConnector: AddressLookupConnector,
-    val navigator: CompoundNavigator,
+    val messagesApi: MessagesApi,
+    userAnswersCacheConnector: UserAnswersCacheConnector,
+    addressLookupConnector: AddressLookupConnector,
+    navigator: CompoundNavigator,
     authenticate: AuthAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     dataUpdateService: DataUpdateService,
     formProvider: PostcodeFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    val renderer: Renderer,
+    renderer: Renderer,
     common: CommonPostcodeService
 )(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
 
@@ -127,9 +124,9 @@ class EnterPostcodeController @Inject()(
     finalUpdatedUserAnswers
   }
 
-  def formWithError(messageKey: String): Form[String] = {
+  private def formWithError(messageKey: String): Form[String] = {
     form.withError("value", s"messages__error__postcode_$messageKey")
   }
 
-  def form: Form[String] = formProvider("enterPostcode.required", "enterPostcode.invalid")
+  private def form: Form[String] = formProvider("enterPostcode.required", "enterPostcode.invalid")
 }

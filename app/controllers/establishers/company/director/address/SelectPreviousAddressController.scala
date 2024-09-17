@@ -16,8 +16,6 @@
 
 package controllers.establishers.company.director.address
 
-import config.AppConfig
-import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import models.establishers.AddressPages
@@ -31,7 +29,7 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent}
 import renderer.Renderer
 import services.DataUpdateService
 import controllers.Retrievals
@@ -48,18 +46,15 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 class SelectPreviousAddressController @Inject()(
-    val appConfig: AppConfig,
-    override val messagesApi: MessagesApi,
-    val userAnswersCacheConnector: UserAnswersCacheConnector,
-    val addressLookupConnector: AddressLookupConnector,
-    val navigator: CompoundNavigator,
+    val messagesApi: MessagesApi,
+    userAnswersCacheConnector: UserAnswersCacheConnector,
+    navigator: CompoundNavigator,
     authenticate: AuthAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     formProvider: AddressListFormProvider,
     dataUpdateService: DataUpdateService,
-    val controllerComponents: MessagesControllerComponents,
-    val renderer: Renderer,
+    renderer: Renderer,
     common:CommonAddressListService
 )(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
 

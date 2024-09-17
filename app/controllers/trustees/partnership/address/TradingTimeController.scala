@@ -39,14 +39,11 @@ import scala.concurrent.ExecutionContext
 
 class TradingTimeController @Inject()(
     val messagesApi: MessagesApi,
-    val userAnswersCacheConnector: UserAnswersCacheConnector,
     authenticate: AuthAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    val navigator: CompoundNavigator,
     formProvider: TradingTimeFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    val renderer: Renderer,
+    controllerComponents: MessagesControllerComponents,
     common: CommonTradingTimeService
  )(implicit ec: ExecutionContext) extends Retrievals with Enumerable.Implicits {
 

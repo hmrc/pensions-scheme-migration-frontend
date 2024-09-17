@@ -59,7 +59,6 @@ class TrusteeNameController @Inject()(
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-//      val thePath = TrusteesId(index).path
         renderer.render(
           template = "personName.njk",
           ctx = Json.obj(

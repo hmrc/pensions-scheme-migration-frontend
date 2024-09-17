@@ -16,21 +16,16 @@
 
 package controllers.adviser
 
-import config.AppConfig
-import connectors.AddressLookupConnector
-import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import models.establishers.AddressPages
 import controllers.adviser.routes.ConfirmAddressController
 import forms.address.AddressListFormProvider
 import identifiers.adviser.{AddressId, AddressListId, AdviserNameId, EnterPostCodeId}
 import identifiers.beforeYouStart.SchemeNameId
-import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.mvc.{Action, AnyContent}
 import controllers.Retrievals
 import services.common.address.CommonAddressListService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -41,17 +36,11 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class SelectAddressController @Inject()(
-    val appConfig: AppConfig,
-    override val messagesApi: MessagesApi,
-    val userAnswersCacheConnector: UserAnswersCacheConnector,
-    val addressLookupConnector: AddressLookupConnector,
-    val navigator: CompoundNavigator,
+    val messagesApi: MessagesApi,
     authenticate: AuthAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     formProvider: AddressListFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    val renderer: Renderer,
     common:CommonAddressListService
  )(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
 

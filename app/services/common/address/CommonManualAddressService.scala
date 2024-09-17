@@ -50,7 +50,6 @@ class CommonManualAddressService @Inject()(
 
   private def viewTemplate: String = "address/manualAddress.njk"
   private val pageTitleMessageKey: String = "address.title"
-  private val h1MessageKey: String = pageTitleMessageKey
 
   private case class TemplateData(
                                    form : Form[Address],
