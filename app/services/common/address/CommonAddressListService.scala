@@ -31,9 +31,24 @@ import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, Call, Result}
 import renderer.Renderer
 import uk.gov.hmrc.http.HeaderCarrier
+import viewmodels.Message
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+
+case class CommonAddressListTemplate(
+                                      form: Form[Int],
+                                      addresses: Seq[JsObject], //TODO: Change to Seq[TolerantAddress] during nunjucks migration. -Pavel Vjalicin
+                                      entityType: Message,
+                                      entityName: String,
+                                      enterManuallyUrl: String,
+                                      schemeName: String,
+                                      h1MessageKey: Message = Message("addressList.title")
+                                    )
+
+object CommonAddressListTemplate {
+  implicit val writes = Json.writes[CommonAddressListTemplate]
+}
 
 @Singleton
 class CommonAddressListService @Inject()(
@@ -54,13 +69,15 @@ class CommonAddressListService @Inject()(
     }
   }
 
+  //TODO: Remove after refactor done.
   def get(json: Form[Int] => JsObject,
            form: Form[Int]
          )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
     renderer.render(viewTemplate, prepareJson(json(form))).map(Ok(_))
   }
 
-  def post(json: Form[Int] => JsObject,
+  //TODO: Remove after refactor done.
+  def post(formToTemplate: Form[Int] => JsObject,
            pages: AddressPages,
            mode: Option[Mode] = None,
            manualUrlCall:Call,
@@ -68,7 +85,7 @@ class CommonAddressListService @Inject()(
           )(implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
     form.bindFromRequest().fold(
       formWithErrors =>
-        renderer.render(viewTemplate, prepareJson(json(formWithErrors))).map(BadRequest(_)),
+        renderer.render(viewTemplate, prepareJson(formToTemplate(formWithErrors))).map(BadRequest(_)),
       value =>
         pages.postcodeId.retrieve.map { addresses =>
           val address = addresses(value).copy(country = Some("GB"))
@@ -88,6 +105,50 @@ class CommonAddressListService @Inject()(
               updatedAnswers <- Future.fromTry(
                 request.userAnswers.remove(pages.addressPage).set(pages.addressListPage,
                 address
+                ))
+              _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+            } yield {
+              Redirect(manualUrlCall)
+            }
+
+          }
+        }
+    )
+  }
+
+  //TODO: The above functions need to be replace with the below functions
+  def getNew(template: CommonAddressListTemplate)(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
+    renderer.render(viewTemplate, template).map(Ok(_))
+  }
+
+  def postNew(formToTemplate: Form[Int] => CommonAddressListTemplate,
+           pages: AddressPages,
+           mode: Option[Mode] = None,
+           manualUrlCall:Call,
+           form: Form[Int]
+          )(implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
+    form.bindFromRequest().fold(
+      formWithErrors =>
+        renderer.render(viewTemplate, formToTemplate(formWithErrors)).map(BadRequest(_)),
+      value =>
+        pages.postcodeId.retrieve.map { addresses =>
+          val address = addresses(value).copy(country = Some("GB"))
+          if (address.toAddress.nonEmpty){
+            for {
+              updatedAnswers <- Future.fromTry(
+                request.userAnswers.remove(pages.addressListPage).set(pages.addressPage,
+                  address.toAddress.get)
+              )
+              _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+            } yield {
+              val finalMode = mode.getOrElse(NormalMode)
+              Redirect(navigator.nextPage(pages.addressListPage, updatedAnswers, finalMode))
+            }
+          }else{
+            for {
+              updatedAnswers <- Future.fromTry(
+                request.userAnswers.remove(pages.addressPage).set(pages.addressListPage,
+                  address
                 ))
               _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
             } yield {

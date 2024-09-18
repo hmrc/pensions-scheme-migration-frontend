@@ -27,10 +27,11 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent}
 import controllers.Retrievals
-import services.common.address.CommonAddressListService
+import services.common.address.{CommonAddressListService, CommonAddressListTemplate}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
+import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -49,7 +50,7 @@ class SelectAddressController @Inject()(
   def onPageLoad(): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName).retrieve.map(common.get(_, form))
+        getFormToJson(schemeName).retrieve.map(formToTemplate => common.getNew(formToTemplate(form)))
       }
     }
 
@@ -60,7 +61,7 @@ class SelectAddressController @Inject()(
 
       retrieve(SchemeNameId) { schemeName =>
         getFormToJson(schemeName).retrieve.map(
-          common.post(
+          common.postNew(
             _,
             addressPages,
             manualUrlCall = ConfirmAddressController.onPageLoad,
@@ -69,7 +70,7 @@ class SelectAddressController @Inject()(
       }
     }
 
-  def getFormToJson(schemeName: String): Retrieval[Form[Int] => JsObject] =
+  def getFormToJson(schemeName: String): Retrieval[Form[Int] => CommonAddressListTemplate] =
     Retrieval(
       implicit request =>
         EnterPostCodeId.retrieve.map { addresses =>
@@ -77,13 +78,13 @@ class SelectAddressController @Inject()(
           val name = request.userAnswers.get(AdviserNameId).getOrElse(msg("messages__pension__adviser"))
 
           form =>
-            Json.obj(
-              "form" -> form,
-              "addresses" -> common.transformAddressesForTemplate(addresses),
-              "entityType" -> msg("messages__pension__adviser"),
-              "entityName" -> name,
-              "enterManuallyUrl" -> ConfirmAddressController.onPageLoad.url,
-              "schemeName" -> schemeName
+            CommonAddressListTemplate(
+              form,
+              common.transformAddressesForTemplate(addresses),
+              Message("messages__pension__adviser"),
+              name,
+              ConfirmAddressController.onPageLoad.url,
+              schemeName
             )
         }
     )
