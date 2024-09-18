@@ -16,9 +16,6 @@
 
 package controllers.establishers.partnership.partner.address
 
-import config.AppConfig
-import connectors.AddressLookupConnector
-import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import models.establishers.AddressPages
 import forms.address.AddressListFormProvider
@@ -26,11 +23,9 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.partner.address.{AddressId, AddressListId, EnterPostCodeId}
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.mvc.{Action, AnyContent}
 import controllers.Retrievals
 import services.common.address.{CommonAddressListTemplateData, CommonAddressListService}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -42,17 +37,11 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class SelectAddressController @Inject()(
-    val appConfig: AppConfig,
     override val messagesApi: MessagesApi,
-    val userAnswersCacheConnector: UserAnswersCacheConnector,
-    val addressLookupConnector: AddressLookupConnector,
-    val navigator: CompoundNavigator,
     authenticate: AuthAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     formProvider: AddressListFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    val renderer: Renderer,
     common:CommonAddressListService
  )(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
 
@@ -61,7 +50,7 @@ class SelectAddressController @Inject()(
   def onPageLoad(estIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, estIndex, partnerIndex, mode).retrieve.map(formToTemplate => common.getNew(formToTemplate(form)))
+        getFormToTemplate(schemeName, estIndex, partnerIndex, mode).retrieve.map(formToTemplate => common.get(formToTemplate(form)))
       }
     }
 
@@ -72,8 +61,8 @@ class SelectAddressController @Inject()(
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, estIndex, partnerIndex, mode).retrieve.map(
-          common.postNew(
+        getFormToTemplate(schemeName, estIndex, partnerIndex, mode).retrieve.map(
+          common.post(
             _,
             addressPages, Some(mode),
             routes.ConfirmAddressController.onPageLoad(estIndex, partnerIndex, mode),
@@ -82,7 +71,7 @@ class SelectAddressController @Inject()(
       }
     }
 
-  def getFormToJson(schemeName: String, estIndex: Index, partnerIndex: Index, mode: Mode): Retrieval[Form[Int] => CommonAddressListTemplateData] =
+  def getFormToTemplate(schemeName: String, estIndex: Index, partnerIndex: Index, mode: Mode): Retrieval[Form[Int] => CommonAddressListTemplateData] =
     Retrieval(
       implicit request =>
         EnterPostCodeId(estIndex, partnerIndex).retrieve.map { addresses =>
@@ -93,7 +82,7 @@ class SelectAddressController @Inject()(
             CommonAddressListTemplateData(
               form,
               common.transformAddressesForTemplate(addresses),
-              Message("messages__partner"),
+              Message("messages__partner").resolve,
               name,
               routes.ConfirmAddressController.onPageLoad(estIndex, partnerIndex, mode).url,
               schemeName

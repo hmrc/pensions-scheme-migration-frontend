@@ -16,8 +16,6 @@
 
 package controllers.trustees.individual.address
 
-import config.AppConfig
-import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import models.establishers.AddressPages
@@ -30,7 +28,7 @@ import models._
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent}
 import renderer.Renderer
 import services.DataUpdateService
 import controllers.Retrievals
@@ -48,18 +46,15 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 class SelectAddressController @Inject()(
-    val appConfig: AppConfig,
-    override val messagesApi: MessagesApi,
-    val userAnswersCacheConnector: UserAnswersCacheConnector,
-    val addressLookupConnector: AddressLookupConnector,
-    val navigator: CompoundNavigator,
+    val messagesApi: MessagesApi,
+    userAnswersCacheConnector: UserAnswersCacheConnector,
+    navigator: CompoundNavigator,
     authenticate: AuthAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     formProvider: AddressListFormProvider,
     dataUpdateService: DataUpdateService,
-    val controllerComponents: MessagesControllerComponents,
-    val renderer: Renderer,
+    renderer: Renderer,
     common:CommonAddressListService
 )(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
 
@@ -68,17 +63,16 @@ class SelectAddressController @Inject()(
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, index, mode).retrieve.map(formToTemplate => common.getNew(formToTemplate(form)))
+        getFormToTemplate(schemeName, index, mode).retrieve.map(formToTemplate => common.get(formToTemplate(form)))
       }
     }
 
-  // TODO: try to use postNew method from CommonAddressListService
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       val addressPages: AddressPages = AddressPages(EnterPostCodeId(index), AddressListId(index), AddressId(index))
 
       retrieve(SchemeNameId) { schemeName =>
-        val json: Form[Int] => CommonAddressListTemplateData = getFormToJson(schemeName, index, mode).retrieve.toOption.get
+        val json: Form[Int] => CommonAddressListTemplateData = getFormToTemplate(schemeName, index, mode).retrieve.toOption.get
         implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
         form.bindFromRequest().fold(
@@ -176,7 +170,7 @@ class SelectAddressController @Inject()(
     finalUpdatedUserAnswers
   }
 
-  def getFormToJson(schemeName:String, index: Index, mode: Mode) : Retrieval[Form[Int] => CommonAddressListTemplateData] =
+  def getFormToTemplate(schemeName:String, index: Index, mode: Mode) : Retrieval[Form[Int] => CommonAddressListTemplateData] =
     Retrieval(
       implicit request =>
         EnterPostCodeId(index).retrieve.map { addresses =>
@@ -187,7 +181,7 @@ class SelectAddressController @Inject()(
             CommonAddressListTemplateData(
               form,
               common.transformAddressesForTemplate(addresses),
-              Message("trusteeEntityTypeIndividual"),
+              Message("trusteeEntityTypeIndividual").resolve,
               name,
               controllers.trustees.individual.address.routes.ConfirmAddressController.onPageLoad(index, mode).url,
               schemeName

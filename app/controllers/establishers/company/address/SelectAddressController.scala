@@ -18,7 +18,6 @@ package controllers.establishers.company.address
 
 import controllers.actions._
 import models.establishers.AddressPages
-import controllers.establishers.company.address.routes.ConfirmAddressController
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
@@ -51,7 +50,7 @@ class SelectAddressController @Inject()(
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, index, NormalMode).retrieve.map(formToTemplate => common.getNew(formToTemplate(form)))
+        getFormToTemplate(schemeName, index, NormalMode).retrieve.map(formToTemplate => common.get(formToTemplate(form)))
       }
     }
 
@@ -61,18 +60,18 @@ class SelectAddressController @Inject()(
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, index, NormalMode).retrieve.map(
-          common.postNew(
+        getFormToTemplate(schemeName, index, NormalMode).retrieve.map(
+          common.post(
             _,
             addressPages,
-            manualUrlCall=ConfirmAddressController.onPageLoad(index,mode),
+            manualUrlCall=controllers.establishers.company.address.routes.ConfirmAddressController.onPageLoad(index,mode),
             mode=Some(mode),
             form = form
           ))
       }
     }
 
-  def getFormToJson(schemeName:String, index: Index, mode: Mode) : Retrieval[Form[Int] => CommonAddressListTemplateData] =
+  def getFormToTemplate(schemeName:String, index: Index, mode: Mode) : Retrieval[Form[Int] => CommonAddressListTemplateData] =
     Retrieval(
       implicit request =>
         EnterPostCodeId(index).retrieve.map { addresses =>
@@ -81,13 +80,13 @@ class SelectAddressController @Inject()(
 
           form =>
             CommonAddressListTemplateData(
-            form,
-            common.transformAddressesForTemplate(addresses),
-              Message("establisherEntityTypeCompany"),
-            name,
-            ConfirmAddressController.onPageLoad(index,mode).url,
-            schemeName
-          )
+              form,
+              common.transformAddressesForTemplate(addresses),
+              Message("establisherEntityTypeCompany").resolve,
+              name,
+              controllers.establishers.company.address.routes.ConfirmAddressController.onPageLoad(index,mode).url,
+              schemeName
+            )
         }
     )
 }

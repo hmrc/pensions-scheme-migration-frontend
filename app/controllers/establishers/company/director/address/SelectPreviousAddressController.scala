@@ -64,15 +64,15 @@ class SelectPreviousAddressController @Inject()(
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         retrieve(SchemeNameId) { schemeName =>
-          getFormToJson(schemeName, establisherIndex, directorIndex, mode)
-            .retrieve.map(formToTemplate => common.getNew(formToTemplate(form)))
+          getFormToTemplate(schemeName, establisherIndex, directorIndex, mode)
+            .retrieve.map(formToTemplate => common.get(formToTemplate(form)))
         }
     }
 
-  def getFormToJson(schemeName: String,
-                    establisherIndex: Index,
-                    directorIndex: Index,
-                    mode: Mode): Retrieval[Form[Int] => CommonAddressListTemplateData] =
+  def getFormToTemplate(schemeName: String,
+                        establisherIndex: Index,
+                        directorIndex: Index,
+                        mode: Mode): Retrieval[Form[Int] => CommonAddressListTemplateData] =
     Retrieval(
       implicit request =>
         EnterPreviousPostCodeId(establisherIndex, directorIndex).retrieve.map { addresses =>
@@ -92,7 +92,6 @@ class SelectPreviousAddressController @Inject()(
         }
     )
 
-  // TODO try to use postNew method from CommonAddressListService
   def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
 
@@ -104,7 +103,7 @@ class SelectPreviousAddressController @Inject()(
       )
 
       retrieve(SchemeNameId) { schemeName =>
-        val json: Form[Int] => CommonAddressListTemplateData = getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.toOption.get
+        val json: Form[Int] => CommonAddressListTemplateData = getFormToTemplate(schemeName, establisherIndex, directorIndex, mode).retrieve.toOption.get
         form.bindFromRequest().fold(
           formWithErrors =>
             renderer.render(common.viewTemplate, json(formWithErrors)).map(BadRequest(_)),

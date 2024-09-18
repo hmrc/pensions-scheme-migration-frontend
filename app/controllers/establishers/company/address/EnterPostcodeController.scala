@@ -26,9 +26,9 @@ import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent}
-import services.common.address.CommonPostcodeService
+import services.common.address.{CommonPostcodeService, CommonPostcodeTemplateData}
+import viewmodels.Message
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -54,7 +54,7 @@ class EnterPostcodeController @Inject()(
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        common.get(getFormToJson(schemeName, index, mode), form)
+        common.get(getFormToTemplate(schemeName, index, mode), form)
       }
     }
 
@@ -62,20 +62,21 @@ class EnterPostcodeController @Inject()(
     implicit request =>
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
       retrieve(SchemeNameId) { schemeName =>
-        common.post(getFormToJson(schemeName, index, mode), EnterPostCodeId(index), "enterPostcode.noresults", Some(mode), form)
+        common.post(getFormToTemplate(schemeName, index, mode), EnterPostCodeId(index), "enterPostcode.noresults", Some(mode), form)
       }
   }
 
-  def getFormToJson(schemeName:String, index: Index, mode: Mode)(implicit request:DataRequest[AnyContent]): Form[String] => JsObject = {
+  def getFormToTemplate(schemeName:String, index: Index, mode: Mode)(implicit request:DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
+    val name = request.userAnswers.get(CompanyDetailsId(index))
+      .map(_.companyName).getOrElse(Message("establisherEntityTypeCompany").resolve)
+
     form => {
-      val msg = request2Messages(request)
-      val name = request.userAnswers.get(CompanyDetailsId(index)).map(_.companyName).getOrElse(msg("establisherEntityTypeCompany"))
-      Json.obj(
-        "entityType" -> msg("establisherEntityTypeCompany"),
-        "entityName" -> name,
-        "form" -> form,
-        "enterManuallyUrl" -> controllers.establishers.company.address.routes.ConfirmAddressController.onPageLoad(index,mode).url,
-        "schemeName" -> schemeName
+      CommonPostcodeTemplateData(
+        form,
+        Message("establisherEntityTypeCompany").resolve,
+        name,
+        controllers.establishers.company.address.routes.ConfirmAddressController.onPageLoad(index,mode).url,
+        schemeName
       )
     }
   }

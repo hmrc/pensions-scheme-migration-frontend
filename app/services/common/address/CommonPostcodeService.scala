@@ -27,7 +27,7 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.Messages
-import play.api.libs.json.{JsArray, JsObject, Json}
+import play.api.libs.json.{JsArray, JsObject, Json, OWrites, Writes}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, Result}
 import renderer.Renderer
@@ -36,13 +36,32 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+case class CommonPostcodeTemplateData(
+                                       form: Form[String],
+                                       entityType: String,
+                                       entityName: String,
+                                       enterManuallyUrl: String,
+                                       schemeName: String,
+                                       h1MessageKey: String  = "postcode.title"
+                                     )
+
+object CommonPostcodeTemplateData {
+  implicit val formWrites: Writes[Form[String]] = (form: Form[String]) => Json.obj(
+    "data" -> form.data,
+    "errors" -> form.errors.map(_.message)
+  )
+  implicit val templateDataWrites: OWrites[CommonPostcodeTemplateData] = Json.writes[CommonPostcodeTemplateData]
+}
+
 @Singleton
 class CommonPostcodeService @Inject()(
-                                       val renderer: Renderer,
-                                       val navigator: CompoundNavigator,
-                                       val addressLookupConnector: AddressLookupConnector,
-                                       val userAnswersCacheConnector: UserAnswersCacheConnector
-                                     ) {
+     renderer: Renderer,
+     navigator: CompoundNavigator,
+     addressLookupConnector: AddressLookupConnector,
+     userAnswersCacheConnector: UserAnswersCacheConnector
+   ) {
+
+  import CommonPostcodeTemplateData._
 
   def viewTemplate: String = "address/postcode.njk"
 
@@ -54,14 +73,13 @@ class CommonPostcodeService @Inject()(
     }
   }
 
-  def get(json: Form[String] => JsObject,
+  def get(formToTemplate: Form[String] => CommonPostcodeTemplateData,
           form: Form[String]
          )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
-
-    renderer.render(viewTemplate, prepareJson(json(form))).map(Ok(_))
+    renderer.render(viewTemplate, formToTemplate(form)).map(Ok(_))
   }
 
-  def post(formToJson: Form[String] => JsObject,
+  def post(formToTemplate: Form[String] => CommonPostcodeTemplateData,
            postcodeId: TypedIdentifier[Seq[TolerantAddress]],
            errorMessage: String,
            mode: Option[Mode] = None,
@@ -69,12 +87,12 @@ class CommonPostcodeService @Inject()(
           )(implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
     form.bindFromRequest().fold(
       formWithErrors =>
-        renderer.render(viewTemplate, prepareJson(formToJson(formWithErrors))).map(BadRequest(_)),
+        renderer.render(viewTemplate, formToTemplate(formWithErrors)).map(BadRequest(_)),
       value =>
           addressLookupConnector.addressLookupByPostCode(value).flatMap {
             case Nil =>
-              val json = prepareJson(formToJson(formWithError(form, errorMessage)))
-                renderer.render(viewTemplate, json).map(BadRequest(_))
+              val json = formToTemplate(formWithError(form, errorMessage))
+              renderer.render(viewTemplate, json).map(BadRequest(_))
 
             case addresses =>
               for {

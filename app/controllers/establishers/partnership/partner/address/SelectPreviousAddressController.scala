@@ -16,9 +16,6 @@
 
 package controllers.establishers.partnership.partner.address
 
-import config.AppConfig
-import connectors.AddressLookupConnector
-import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import models.establishers.AddressPages
 import forms.address.AddressListFormProvider
@@ -26,11 +23,9 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.partner.address.{EnterPreviousPostCodeId, PreviousAddressId, PreviousAddressListId}
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.mvc.{Action, AnyContent}
 import controllers.Retrievals
 import services.common.address.{CommonAddressListService, CommonAddressListTemplateData}
 import viewmodels.Message
@@ -42,17 +37,11 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class SelectPreviousAddressController @Inject()(
-    val appConfig: AppConfig,
-    override val messagesApi: MessagesApi,
-    val userAnswersCacheConnector: UserAnswersCacheConnector,
-    val addressLookupConnector: AddressLookupConnector,
-    val navigator: CompoundNavigator,
+    val messagesApi: MessagesApi,
     authenticate: AuthAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     formProvider: AddressListFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    val renderer: Renderer,
     common:CommonAddressListService
  )(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
 
@@ -62,8 +51,8 @@ class SelectPreviousAddressController @Inject()(
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         retrieve(SchemeNameId) { schemeName =>
-          getFormToJson(schemeName, establisherIndex, partnerIndex, mode)
-            .retrieve.map(formToTemplate => common.getNew(formToTemplate(form)))
+          getFormToTemplate(schemeName, establisherIndex, partnerIndex, mode)
+            .retrieve.map(formToTemplate => common.get(formToTemplate(form)))
         }
     }
 
@@ -75,8 +64,8 @@ class SelectPreviousAddressController @Inject()(
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, establisherIndex, partnerIndex, mode).retrieve.map(
-          common.postNew(
+        getFormToTemplate(schemeName, establisherIndex, partnerIndex, mode).retrieve.map(
+          common.post(
             _,
             addressPages,
             Some(mode),
@@ -86,10 +75,10 @@ class SelectPreviousAddressController @Inject()(
       }
     }
 
-  def getFormToJson(schemeName: String,
-                    establisherIndex: Index,
-                    partnerIndex: Index,
-                    mode: Mode): Retrieval[Form[Int] => CommonAddressListTemplateData] =
+  def getFormToTemplate(schemeName: String,
+                        establisherIndex: Index,
+                        partnerIndex: Index,
+                        mode: Mode): Retrieval[Form[Int] => CommonAddressListTemplateData] =
     Retrieval(
       implicit request =>
         EnterPreviousPostCodeId(establisherIndex, partnerIndex).retrieve.map { addresses =>
@@ -100,7 +89,7 @@ class SelectPreviousAddressController @Inject()(
             CommonAddressListTemplateData(
               form,
               common.transformAddressesForTemplate(addresses),
-              Message("messages__partner"),
+              Message("messages__partner").resolve,
               name,
               routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, partnerIndex, mode).url,
               schemeName,

@@ -48,7 +48,7 @@ class InsurerSelectAddressController @Inject()(
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async { implicit request =>
     retrieve(SchemeNameId) { schemeName =>
-      getFormToJson(schemeName).retrieve.map(formToTemplate => common.getNew(formToTemplate(form)))
+      getFormToTemplate(schemeName).retrieve.map(formToTemplate => common.get(formToTemplate(form)))
     }
   }
 
@@ -58,8 +58,8 @@ class InsurerSelectAddressController @Inject()(
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName).retrieve.map(
-          common.postNew(
+        getFormToTemplate(schemeName).retrieve.map(
+          common.post(
             _,
             addressPages,
             manualUrlCall = InsurerConfirmAddressController.onPageLoad,
@@ -69,7 +69,7 @@ class InsurerSelectAddressController @Inject()(
       }
     }
 
-  def getFormToJson(schemeName:String) : Retrieval[Form[Int] => CommonAddressListTemplateData] =
+  def getFormToTemplate(schemeName:String) : Retrieval[Form[Int] => CommonAddressListTemplateData] =
     Retrieval(
       implicit request =>
         InsurerEnterPostCodeId.retrieve.map { addresses =>
@@ -79,7 +79,7 @@ class InsurerSelectAddressController @Inject()(
             CommonAddressListTemplateData(
               form,
               common.transformAddressesForTemplate(addresses),
-              Message("benefitsInsuranceUnknown"),
+              Message("benefitsInsuranceUnknown").resolve,
               name,
               InsurerConfirmAddressController.onPageLoad.url,
               schemeName

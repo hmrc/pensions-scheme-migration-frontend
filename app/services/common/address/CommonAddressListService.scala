@@ -26,7 +26,7 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.MessagesApi
-import play.api.libs.json.{JsObject, Json, Writes}
+import play.api.libs.json.{JsObject, Json, OWrites, Writes}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, Call, Result}
 import renderer.Renderer
@@ -50,7 +50,7 @@ object CommonAddressListTemplateData {
     "data" -> form.data,
     "errors" -> form.errors.map(_.message)
   )
-  implicit val writes = Json.writes[CommonAddressListTemplateData]
+  implicit val templateDataWrites: OWrites[CommonAddressListTemplateData] = Json.writes[CommonAddressListTemplateData]
 }
 
 @Singleton
@@ -62,18 +62,20 @@ class CommonAddressListService @Inject()(
                                       val config: AppConfig
                                     ) extends Retrievals {
 
+  import CommonAddressListTemplateData._
+
   def viewTemplate: String = "address/addressList.njk"
 
-  def getNew(template: CommonAddressListTemplateData
-            )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
+  def get(template: CommonAddressListTemplateData
+         )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
     renderer.render(viewTemplate, template).map(Ok(_))
   }
 
-  def postNew(formToTemplate: Form[Int] => CommonAddressListTemplateData,
-              pages: AddressPages,
-              mode: Option[Mode] = None,
-              manualUrlCall:Call,
-              form: Form[Int]
+  def post(formToTemplate: Form[Int] => CommonAddressListTemplateData,
+           pages: AddressPages,
+           mode: Option[Mode] = None,
+           manualUrlCall:Call,
+           form: Form[Int]
           )(implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
     form.bindFromRequest().fold(
       formWithErrors =>

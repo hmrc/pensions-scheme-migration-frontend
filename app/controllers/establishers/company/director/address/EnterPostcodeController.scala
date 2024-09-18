@@ -31,12 +31,12 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Results.{BadRequest, Redirect}
 import play.api.mvc.{Action, AnyContent}
 import renderer.Renderer
 import services.DataUpdateService
-import services.common.address.CommonPostcodeService
+import services.common.address.{CommonPostcodeService, CommonPostcodeTemplateData}
+import viewmodels.Message
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -63,7 +63,7 @@ class EnterPostcodeController @Inject()(
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        common.get(getFormToJson(schemeName, establisherIndex, directorIndex, mode), form)
+        common.get(getFormToTemplate(schemeName, establisherIndex, directorIndex, mode), form)
       }
     }
 
@@ -73,15 +73,14 @@ class EnterPostcodeController @Inject()(
         implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
         retrieve(SchemeNameId) { schemeName =>
-          val formToJson: Form[String] => JsObject = getFormToJson(schemeName, establisherIndex, directorIndex, mode)
+          val formToTemplate: Form[String] => CommonPostcodeTemplateData = getFormToTemplate(schemeName, establisherIndex, directorIndex, mode)
           form.bindFromRequest().fold(
             formWithErrors =>
-              renderer.render(common.viewTemplate, common.prepareJson(formToJson(formWithErrors))).map(BadRequest(_)),
+              renderer.render(common.viewTemplate, formToTemplate(formWithErrors)).map(BadRequest(_)),
             value =>
               addressLookupConnector.addressLookupByPostCode(value).flatMap {
                 case Nil =>
-                  val json = common.prepareJson(formToJson(formWithError("enterPostcode.noresults")))
-                  renderer.render(common.viewTemplate, json).map(BadRequest(_))
+                  renderer.render(common.viewTemplate, formToTemplate(formWithError("enterPostcode.noresults"))).map(BadRequest(_))
 
                 case addresses =>
                   for {
@@ -96,17 +95,19 @@ class EnterPostcodeController @Inject()(
         }
     }
 
-  def getFormToJson(schemeName: String, establisherIndex: Index, directorIndex: Index, mode: Mode)
-                   (implicit request: DataRequest[AnyContent]): Form[String] => JsObject = {
+  def getFormToTemplate(schemeName: String, establisherIndex: Index, directorIndex: Index, mode: Mode
+                       )(implicit request: DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
+    val name = request.userAnswers.get(DirectorNameId(establisherIndex, directorIndex))
+      .map(_.fullName).getOrElse(Message("messages__director").resolve)
+
     form => {
-      val msg = request2Messages(request)
-      val name = request.userAnswers.get(DirectorNameId(establisherIndex, directorIndex)).map(_.fullName).getOrElse("messages__director")
-      Json.obj(
-        "entityType" -> msg("messages__director"),
-        "entityName" -> name,
-        "form" -> form,
-        "enterManuallyUrl" -> routes.ConfirmAddressController.onPageLoad(establisherIndex, directorIndex, mode).url,
-        "schemeName" -> schemeName
+
+      CommonPostcodeTemplateData(
+        form,
+        Message("messages__director").resolve,
+        name,
+        routes.ConfirmAddressController.onPageLoad(establisherIndex, directorIndex, mode).url,
+        schemeName
       )
     }
   }

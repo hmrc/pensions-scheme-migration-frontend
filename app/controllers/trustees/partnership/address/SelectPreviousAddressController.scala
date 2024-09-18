@@ -18,7 +18,6 @@ package controllers.trustees.partnership.address
 
 import controllers.actions._
 import models.establishers.AddressPages
-import controllers.trustees.partnership.address.routes.ConfirmPreviousAddressController
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.partnership.PartnershipDetailsId
@@ -50,7 +49,7 @@ class SelectPreviousAddressController @Inject()(
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async { implicit request =>
     retrieve(SchemeNameId) { schemeName =>
-      getFormToJson(schemeName, index, mode).retrieve.map(formToTemplate => common.getNew(formToTemplate(form)))
+      getFormToTemplate(schemeName, index, mode).retrieve.map(formToTemplate => common.get(formToTemplate(form)))
     }
   }
 
@@ -60,18 +59,18 @@ class SelectPreviousAddressController @Inject()(
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, index, mode).retrieve.map(
-          common.postNew(
+        getFormToTemplate(schemeName, index, mode).retrieve.map(
+          common.post(
             _,
             addressPages,
-            manualUrlCall = ConfirmPreviousAddressController.onPageLoad(index,mode),
+            manualUrlCall = controllers.trustees.partnership.address.routes.ConfirmPreviousAddressController.onPageLoad(index,mode),
             mode=Some(mode),
             form = form
           ))
       }
     }
 
-  def getFormToJson(schemeName:String, index: Index, mode: Mode) : Retrieval[Form[Int] => CommonAddressListTemplateData] =
+  def getFormToTemplate(schemeName:String, index: Index, mode: Mode) : Retrieval[Form[Int] => CommonAddressListTemplateData] =
     Retrieval(
       implicit request =>
         EnterPreviousPostCodeId(index).retrieve.map { addresses =>
@@ -84,7 +83,7 @@ class SelectPreviousAddressController @Inject()(
               common.transformAddressesForTemplate(addresses),
               Message("messages__partnership"),
               name,
-              ConfirmPreviousAddressController.onPageLoad(index,mode).url,
+              controllers.trustees.partnership.address.routes.ConfirmPreviousAddressController.onPageLoad(index,mode).url,
               schemeName,
               "previousAddressList.title"
             )

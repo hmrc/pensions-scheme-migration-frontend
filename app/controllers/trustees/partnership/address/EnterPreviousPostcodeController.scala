@@ -26,9 +26,9 @@ import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent}
-import services.common.address.CommonPostcodeService
+import services.common.address.{CommonPostcodeService, CommonPostcodeTemplateData}
+import viewmodels.Message
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -54,7 +54,7 @@ class EnterPreviousPostcodeController @Inject()(
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        common.get(getFormToJson(schemeName, index, mode), form)
+        common.get(getFormToTemplate(schemeName, index, mode), form)
       }
     }
 
@@ -64,7 +64,7 @@ class EnterPreviousPostcodeController @Inject()(
 
       retrieve(SchemeNameId) { schemeName =>
         common.post(
-          getFormToJson(schemeName, index, mode),
+          getFormToTemplate(schemeName, index, mode),
           EnterPreviousPostCodeId(index),
           "enterPostcode.noresults",
           Some(mode),
@@ -73,17 +73,19 @@ class EnterPreviousPostcodeController @Inject()(
       }
   }
 
-  def getFormToJson(schemeName:String, index: Index, mode: Mode)(implicit request:DataRequest[AnyContent]): Form[String] => JsObject = {
+  def getFormToTemplate(schemeName:String, index: Index, mode: Mode
+                       )(implicit request:DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
+    val name = request.userAnswers.get(PartnershipDetailsId(index))
+      .map(_.partnershipName).getOrElse(Message("messages__partnership").resolve)
+
     form => {
-      val msg = request2Messages(request)
-      val name = request.userAnswers.get(PartnershipDetailsId(index)).map(_.partnershipName).getOrElse(msg("messages__partnership"))
-      Json.obj(
-        "entityType" -> msg("messages__partnership"),
-        "entityName" -> name,
-        "form" -> form,
-        "enterManuallyUrl" -> controllers.trustees.partnership.address.routes.ConfirmPreviousAddressController.onPageLoad(index,mode).url,
-        "schemeName" -> schemeName,
-        "h1MessageKey" -> "previousPostcode.title"
+      CommonPostcodeTemplateData(
+        form,
+        Message("messages__partnership").resolve,
+        name,
+        controllers.trustees.partnership.address.routes.ConfirmPreviousAddressController.onPageLoad(index,mode).url,
+        schemeName,
+        "previousPostcode.title"
       )
     }
   }

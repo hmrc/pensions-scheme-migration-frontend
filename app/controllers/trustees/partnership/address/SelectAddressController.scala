@@ -51,7 +51,7 @@ class SelectAddressController @Inject()(
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, index, NormalMode).retrieve.map(formToTemplate => common.getNew(formToTemplate(form)))
+        getFormToTemplate(schemeName, index, NormalMode).retrieve.map(formToTemplate => common.get(formToTemplate(form)))
       }
     }
 
@@ -61,8 +61,8 @@ class SelectAddressController @Inject()(
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, index, NormalMode).retrieve.map(
-          common.postNew(
+        getFormToTemplate(schemeName, index, NormalMode).retrieve.map(
+          common.post(
             _,
             addressPages,
             manualUrlCall = ConfirmAddressController.onPageLoad(index,mode),
@@ -72,7 +72,7 @@ class SelectAddressController @Inject()(
       }
     }
 
-  def getFormToJson(schemeName:String, index: Index, mode: Mode) : Retrieval[Form[Int] => CommonAddressListTemplateData] =
+  def getFormToTemplate(schemeName:String, index: Index, mode: Mode) : Retrieval[Form[Int] => CommonAddressListTemplateData] =
     Retrieval(
       implicit request =>
         EnterPostCodeId(index).retrieve.map { addresses =>
@@ -83,7 +83,7 @@ class SelectAddressController @Inject()(
             CommonAddressListTemplateData(
               form,
               common.transformAddressesForTemplate(addresses),
-              Message("messages__partnership"),
+              Message("messages__partnership").resolve,
               name,
               ConfirmAddressController.onPageLoad(index,mode).url,
               schemeName

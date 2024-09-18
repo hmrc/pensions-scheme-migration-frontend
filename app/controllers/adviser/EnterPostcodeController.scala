@@ -25,9 +25,9 @@ import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent}
-import services.common.address.CommonPostcodeService
+import services.common.address.{CommonPostcodeService, CommonPostcodeTemplateData}
+import viewmodels.Message
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -49,7 +49,7 @@ class EnterPostcodeController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        common.get(getFormToJson(schemeName, mode), form)
+        common.get(getFormToTemplate(schemeName, mode), form)
       }
     }
 
@@ -58,20 +58,20 @@ class EnterPostcodeController @Inject()(
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
       retrieve(SchemeNameId) { schemeName =>
-        common.post(getFormToJson(schemeName, mode), EnterPostCodeId, "messages__adviser__enterPostcode__no__results", form = form)
+        common.post(getFormToTemplate(schemeName, mode), EnterPostCodeId, "messages__adviser__enterPostcode__no__results", form = form)
       }
   }
 
-  def getFormToJson(schemeName: String, mode: Mode)(implicit request: DataRequest[AnyContent]): Form[String] => JsObject = {
+  def getFormToTemplate(schemeName: String, mode: Mode)(implicit request: DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
+    val name = request.userAnswers.get(AdviserNameId).getOrElse(Message("messages__pension__adviser").resolve)
+
     form => {
-      val msg = request2Messages(request)
-      val name = request.userAnswers.get(AdviserNameId).getOrElse(msg("messages__pension__adviser"))
-      Json.obj(
-        "entityType" -> msg("messages__pension__adviser"),
-        "entityName" -> name,
-        "form" -> form,
-        "enterManuallyUrl" -> controllers.adviser.routes.ConfirmAddressController.onPageLoad.url,
-        "schemeName" -> schemeName
+      CommonPostcodeTemplateData(
+        form,
+        Message("messages__pension__adviser").resolve,
+        name,
+        controllers.adviser.routes.ConfirmAddressController.onPageLoad.url,
+        schemeName
       )
     }
   }
