@@ -27,7 +27,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent}
 import controllers.Retrievals
-import services.common.address.{CommonAddressListService, CommonAddressListTemplate}
+import services.common.address.{CommonAddressListService, CommonAddressListTemplateData}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -70,7 +70,7 @@ class SelectAddressController @Inject()(
       }
     }
 
-  def getFormToJson(schemeName: String): Retrieval[Form[Int] => CommonAddressListTemplate] =
+  def getFormToJson(schemeName: String): Retrieval[Form[Int] => CommonAddressListTemplateData] =
     Retrieval(
       implicit request =>
         EnterPostCodeId.retrieve.map { addresses =>
@@ -78,7 +78,7 @@ class SelectAddressController @Inject()(
           val name = request.userAnswers.get(AdviserNameId).getOrElse(msg("messages__pension__adviser"))
 
           form =>
-            CommonAddressListTemplate(
+            CommonAddressListTemplateData(
               form,
               common.transformAddressesForTemplate(addresses),
               Message("messages__pension__adviser"),

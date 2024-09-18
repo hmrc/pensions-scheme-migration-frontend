@@ -36,7 +36,7 @@ import viewmodels.Message
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
-case class CommonAddressListTemplate(
+case class CommonAddressListTemplateData(
                                       form: Form[Int],
                                       addresses: Seq[JsObject], //TODO: Change to Seq[TolerantAddress] during nunjucks migration. -Pavel Vjalicin
                                       entityType: Message,
@@ -46,8 +46,8 @@ case class CommonAddressListTemplate(
                                       h1MessageKey: Message = Message("addressList.title")
                                     )
 
-object CommonAddressListTemplate {
-  implicit val writes = Json.writes[CommonAddressListTemplate]
+object CommonAddressListTemplateData {
+  implicit val writes = Json.writes[CommonAddressListTemplateData]
 }
 
 @Singleton
@@ -117,15 +117,15 @@ class CommonAddressListService @Inject()(
   }
 
   //TODO: The above functions need to be replace with the below functions
-  def getNew(template: CommonAddressListTemplate)(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
+  def getNew(template: CommonAddressListTemplateData)(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
     renderer.render(viewTemplate, template).map(Ok(_))
   }
 
-  def postNew(formToTemplate: Form[Int] => CommonAddressListTemplate,
-           pages: AddressPages,
-           mode: Option[Mode] = None,
-           manualUrlCall:Call,
-           form: Form[Int]
+  def postNew(formToTemplate: Form[Int] => CommonAddressListTemplateData,
+              pages: AddressPages,
+              mode: Option[Mode] = None,
+              manualUrlCall:Call,
+              form: Form[Int]
           )(implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
     form.bindFromRequest().fold(
       formWithErrors =>
