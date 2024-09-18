@@ -56,7 +56,6 @@ class CommonTradingTimeService @Inject()(
 
   implicit private def templateDataWrites(implicit request: DataRequest[AnyContent]): OWrites[TemplateData] = Json.writes[TemplateData]
 
-
   def get(schemeName: Option[String],
                     entityName: String,
                     entityType : String,

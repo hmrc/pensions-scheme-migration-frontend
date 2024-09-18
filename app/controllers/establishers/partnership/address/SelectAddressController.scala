@@ -29,11 +29,11 @@ import models.{Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import controllers.Retrievals
-import services.common.address.CommonAddressListService
+import services.common.address.{CommonAddressListTemplateData, CommonAddressListService}
+import viewmodels.Message
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -61,7 +61,7 @@ class SelectAddressController @Inject()(
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, index, mode).retrieve.map(common.get(_, form))
+        getFormToJson(schemeName, index, mode).retrieve.map(formToTemplate => common.getNew(formToTemplate(form)))
       }
     }
 
@@ -72,7 +72,7 @@ class SelectAddressController @Inject()(
 
       retrieve(SchemeNameId) { schemeName =>
         getFormToJson(schemeName, index, mode).retrieve.map(
-          common.post(
+          common.postNew(
             _,
             addressPages,
             manualUrlCall = routes.ConfirmAddressController.onPageLoad(index,mode),mode=Some(mode),
@@ -81,21 +81,22 @@ class SelectAddressController @Inject()(
       }
     }
 
-  def getFormToJson(schemeName:String, index: Index, mode: Mode) : Retrieval[Form[Int] => JsObject] =
+  def getFormToJson(schemeName:String, index: Index, mode: Mode) : Retrieval[Form[Int] => CommonAddressListTemplateData] =
     Retrieval(
       implicit request =>
         EnterPostCodeId(index).retrieve.map { addresses =>
-          val msg = request2Messages(request)
-          val name = request.userAnswers.get(PartnershipDetailsId(index)).map(_.partnershipName).getOrElse(msg("establisherEntityTypePartnership"))
+          val name = request.userAnswers.get(PartnershipDetailsId(index))
+            .map(_.partnershipName).getOrElse(Message("establisherEntityTypePartnership").resolve)
 
-          form => Json.obj(
-            "form" -> form,
-            "addresses" -> common.transformAddressesForTemplate(addresses),
-            "entityType" -> msg("establisherEntityTypePartnership"),
-            "entityName" -> name,
-            "enterManuallyUrl" -> routes.ConfirmAddressController.onPageLoad(index,mode).url,
-            "schemeName" -> schemeName
-          )
+          form =>
+            CommonAddressListTemplateData(
+              form,
+              common.transformAddressesForTemplate(addresses),
+              Message("establisherEntityTypePartnership"),
+              name,
+              routes.ConfirmAddressController.onPageLoad(index,mode).url,
+              schemeName
+            )
         }
     )
 }

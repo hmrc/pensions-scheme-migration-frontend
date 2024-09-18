@@ -39,7 +39,8 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.UserAnswers
 import play.api.mvc.Results.{BadRequest, Redirect}
-import services.common.address.CommonAddressListService
+import services.common.address.{CommonAddressListService, CommonAddressListTemplateData}
+import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -64,33 +65,35 @@ class SelectPreviousAddressController @Inject()(
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         retrieve(SchemeNameId) { schemeName =>
-          getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.map(common.get(_, form))
+          getFormToJson(schemeName, establisherIndex, directorIndex, mode)
+            .retrieve.map(formToTemplate => common.getNew(formToTemplate(form)))
         }
     }
 
   def getFormToJson(schemeName: String,
                     establisherIndex: Index,
                     directorIndex: Index,
-                    mode: Mode): Retrieval[Form[Int] => JsObject] =
+                    mode: Mode): Retrieval[Form[Int] => CommonAddressListTemplateData] =
     Retrieval(
       implicit request =>
         EnterPreviousPostCodeId(establisherIndex, directorIndex).retrieve.map { addresses =>
-          val msg = request2Messages(request)
-          val name = request.userAnswers.get(DirectorNameId(establisherIndex, directorIndex)).map(_.fullName).getOrElse(msg("messages__director"))
+          val name = request.userAnswers.get(DirectorNameId(establisherIndex, directorIndex))
+            .map(_.fullName).getOrElse(Message("messages__director").resolve)
 
           form =>
-            Json.obj(
-              "form" -> form,
-              "addresses" -> common.transformAddressesForTemplate(addresses),
-              "entityType" -> msg("messages__director"),
-              "entityName" -> name,
-              "enterManuallyUrl" -> routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, directorIndex, mode).url,
-              "schemeName" -> schemeName,
-              "h1MessageKey" -> "previousAddressList.title"
+            CommonAddressListTemplateData(
+              form,
+              common.transformAddressesForTemplate(addresses),
+              Message("messages__director"),
+              name,
+              routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, directorIndex, mode).url,
+              schemeName,
+              "previousAddressList.title"
             )
         }
     )
 
+  // TODO try to use postNew method from CommonAddressListService
   def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
 

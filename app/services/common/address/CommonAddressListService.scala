@@ -26,12 +26,11 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.MessagesApi
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, Json, Writes}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, Call, Result}
 import renderer.Renderer
 import uk.gov.hmrc.http.HeaderCarrier
-import viewmodels.Message
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,14 +38,20 @@ import scala.concurrent.{ExecutionContext, Future}
 case class CommonAddressListTemplateData(
                                       form: Form[Int],
                                       addresses: Seq[JsObject], //TODO: Change to Seq[TolerantAddress] during nunjucks migration. -Pavel Vjalicin
-                                      entityType: Message,
+                                      entityType: String,
                                       entityName: String,
                                       enterManuallyUrl: String,
                                       schemeName: String,
-                                      h1MessageKey: Message = Message("addressList.title")
+                                      h1MessageKey: String = "addressList.title"
                                     )
 
 object CommonAddressListTemplateData {
+  implicit val formWrites: Writes[Form[Int]] = new Writes[Form[Int]] {
+    def writes(form: Form[Int]): JsObject = Json.obj(
+      "data" -> form.data,
+      "errors" -> form.errors.map(_.message)
+    )
+  }
   implicit val writes = Json.writes[CommonAddressListTemplateData]
 }
 
@@ -58,6 +63,8 @@ class CommonAddressListService @Inject()(
                                       val messagesApi: MessagesApi,
                                       val config: AppConfig
                                     ) extends Retrievals {
+
+  import CommonAddressListTemplateData._
 
   def viewTemplate: String = "address/addressList.njk"
 

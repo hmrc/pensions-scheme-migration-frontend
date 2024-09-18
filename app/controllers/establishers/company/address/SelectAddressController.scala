@@ -26,9 +26,9 @@ import identifiers.establishers.company.address.{AddressId, AddressListId, Enter
 import models.{Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent}
-import services.common.address.CommonAddressListService
+import services.common.address.{CommonAddressListTemplateData, CommonAddressListService}
+import viewmodels.Message
 import controllers.Retrievals
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksSupport
@@ -48,11 +48,12 @@ class SelectAddressController @Inject()(
 
   private def form: Form[Int] = formProvider("selectAddress.required")
 
-  def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async { implicit request =>
-    retrieve(SchemeNameId) { schemeName =>
-      getFormToJson(schemeName, index, NormalMode).retrieve.map(common.get(_, form))
+  def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
+      retrieve(SchemeNameId) { schemeName =>
+        getFormToJson(schemeName, index, NormalMode).retrieve.map(formToTemplate => common.getNew(formToTemplate(form)))
+      }
     }
-  }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
@@ -61,7 +62,7 @@ class SelectAddressController @Inject()(
 
       retrieve(SchemeNameId) { schemeName =>
         getFormToJson(schemeName, index, NormalMode).retrieve.map(
-          common.post(
+          common.postNew(
             _,
             addressPages,
             manualUrlCall=ConfirmAddressController.onPageLoad(index,mode),
@@ -71,21 +72,21 @@ class SelectAddressController @Inject()(
       }
     }
 
-  def getFormToJson(schemeName:String, index: Index, mode: Mode) : Retrieval[Form[Int] => JsObject] =
+  def getFormToJson(schemeName:String, index: Index, mode: Mode) : Retrieval[Form[Int] => CommonAddressListTemplateData] =
     Retrieval(
       implicit request =>
         EnterPostCodeId(index).retrieve.map { addresses =>
+          val name = request.userAnswers.get(CompanyDetailsId(index))
+            .map(_.companyName).getOrElse(Message("establisherEntityTypeCompany").resolve)
 
-          val msg = request2Messages(request)
-          val name = request.userAnswers.get(CompanyDetailsId(index)).map(_.companyName).getOrElse(msg("establisherEntityTypeCompany"))
-
-          form => Json.obj(
-            "form" -> form,
-            "addresses" -> common.transformAddressesForTemplate(addresses),
-            "entityType" -> msg("establisherEntityTypeCompany"),
-            "entityName" -> name,
-            "enterManuallyUrl" -> ConfirmAddressController.onPageLoad(index,mode).url,
-            "schemeName" -> schemeName
+          form =>
+            CommonAddressListTemplateData(
+            form,
+            common.transformAddressesForTemplate(addresses),
+              Message("establisherEntityTypeCompany"),
+            name,
+            ConfirmAddressController.onPageLoad(index,mode).url,
+            schemeName
           )
         }
     )

@@ -24,13 +24,13 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.{BenefitsInsuranceNameId, InsurerAddressId, InsurerAddressListId, InsurerEnterPostCodeId}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent}
 import controllers.Retrievals
-import services.common.address.CommonAddressListService
+import services.common.address.{CommonAddressListTemplateData,CommonAddressListService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
+import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -48,7 +48,7 @@ class InsurerSelectAddressController @Inject()(
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async { implicit request =>
     retrieve(SchemeNameId) { schemeName =>
-      getFormToJson(schemeName).retrieve.map(common.get(_, form))
+      getFormToJson(schemeName).retrieve.map(formToTemplate => common.getNew(formToTemplate(form)))
     }
   }
 
@@ -59,7 +59,7 @@ class InsurerSelectAddressController @Inject()(
 
       retrieve(SchemeNameId) { schemeName =>
         getFormToJson(schemeName).retrieve.map(
-          common.post(
+          common.postNew(
             _,
             addressPages,
             manualUrlCall = InsurerConfirmAddressController.onPageLoad,
@@ -69,21 +69,21 @@ class InsurerSelectAddressController @Inject()(
       }
     }
 
-  def getFormToJson(schemeName:String) : Retrieval[Form[Int] => JsObject] =
+  def getFormToJson(schemeName:String) : Retrieval[Form[Int] => CommonAddressListTemplateData] =
     Retrieval(
       implicit request =>
         InsurerEnterPostCodeId.retrieve.map { addresses =>
-          val msg = request2Messages(request)
-          val name = request.userAnswers.get(BenefitsInsuranceNameId).getOrElse(msg("benefitsInsuranceUnknown"))
+          val name = request.userAnswers.get(BenefitsInsuranceNameId).getOrElse(Message("benefitsInsuranceUnknown").resolve)
 
-          form => Json.obj(
-            "form" -> form,
-            "addresses" -> common.transformAddressesForTemplate(addresses),
-            "entityType" -> msg("benefitsInsuranceUnknown"),
-            "entityName" -> name,
-            "enterManuallyUrl" -> InsurerConfirmAddressController.onPageLoad.url,
-            "schemeName" -> schemeName
-          )
+          form =>
+            CommonAddressListTemplateData(
+              form,
+              common.transformAddressesForTemplate(addresses),
+              Message("benefitsInsuranceUnknown"),
+              name,
+              InsurerConfirmAddressController.onPageLoad.url,
+              schemeName
+            )
         }
     )
 }

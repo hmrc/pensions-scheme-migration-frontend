@@ -29,11 +29,11 @@ import models.{Index, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import controllers.Retrievals
-import services.common.address.CommonAddressListService
+import services.common.address.{CommonAddressListService, CommonAddressListTemplateData}
+import viewmodels.Message
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -62,23 +62,21 @@ class SelectPreviousAddressController @Inject()(
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         retrieve(SchemeNameId) { schemeName =>
-          getFormToJson(schemeName, establisherIndex, partnerIndex, mode).retrieve.map(common.get(_, form))
+          getFormToJson(schemeName, establisherIndex, partnerIndex, mode)
+            .retrieve.map(formToTemplate => common.getNew(formToTemplate(form)))
         }
     }
 
   def onSubmit(establisherIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
 
-      val addressPages: AddressPages = AddressPages(
-        EnterPreviousPostCodeId(establisherIndex, partnerIndex),
-        PreviousAddressListId(establisherIndex, partnerIndex),
-        PreviousAddressId(establisherIndex, partnerIndex)
-      )
+      val addressPages: AddressPages = AddressPages(EnterPreviousPostCodeId(establisherIndex, partnerIndex),
+        PreviousAddressListId(establisherIndex, partnerIndex), PreviousAddressId(establisherIndex, partnerIndex))
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
       retrieve(SchemeNameId) { schemeName =>
         getFormToJson(schemeName, establisherIndex, partnerIndex, mode).retrieve.map(
-          common.post(
+          common.postNew(
             _,
             addressPages,
             Some(mode),
@@ -91,22 +89,22 @@ class SelectPreviousAddressController @Inject()(
   def getFormToJson(schemeName: String,
                     establisherIndex: Index,
                     partnerIndex: Index,
-                    mode: Mode): Retrieval[Form[Int] => JsObject] =
+                    mode: Mode): Retrieval[Form[Int] => CommonAddressListTemplateData] =
     Retrieval(
       implicit request =>
         EnterPreviousPostCodeId(establisherIndex, partnerIndex).retrieve.map { addresses =>
-          val msg = request2Messages(request)
-          val name = request.userAnswers.get(PartnerNameId(establisherIndex, partnerIndex)).map(_.fullName).getOrElse(msg("messages__partner"))
+          val name = request.userAnswers.get(PartnerNameId(establisherIndex, partnerIndex))
+            .map(_.fullName).getOrElse(Message("messages__partner").resolve)
 
           form =>
-            Json.obj(
-              "form" -> form,
-              "addresses" -> common.transformAddressesForTemplate(addresses),
-              "entityType" -> msg("messages__partner"),
-              "entityName" -> name,
-              "enterManuallyUrl" -> routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, partnerIndex, mode).url,
-              "schemeName" -> schemeName,
-              "h1MessageKey" -> "previousAddressList.title"
+            CommonAddressListTemplateData(
+              form,
+              common.transformAddressesForTemplate(addresses),
+              Message("messages__partner"),
+              name,
+              routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, partnerIndex, mode).url,
+              schemeName,
+              "previousAddressList.title"
             )
         }
     )

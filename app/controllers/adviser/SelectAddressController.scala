@@ -24,7 +24,6 @@ import identifiers.adviser.{AddressId, AddressListId, AdviserNameId, EnterPostCo
 import identifiers.beforeYouStart.SchemeNameId
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent}
 import controllers.Retrievals
 import services.common.address.{CommonAddressListService, CommonAddressListTemplateData}
@@ -74,8 +73,7 @@ class SelectAddressController @Inject()(
     Retrieval(
       implicit request =>
         EnterPostCodeId.retrieve.map { addresses =>
-          val msg = request2Messages(request)
-          val name = request.userAnswers.get(AdviserNameId).getOrElse(msg("messages__pension__adviser"))
+          val name = request.userAnswers.get(AdviserNameId).getOrElse(Message("messages__pension__adviser").resolve)
 
           form =>
             CommonAddressListTemplateData(

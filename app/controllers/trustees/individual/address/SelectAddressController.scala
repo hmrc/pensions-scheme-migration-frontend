@@ -36,7 +36,8 @@ import renderer.Renderer
 import services.DataUpdateService
 import controllers.Retrievals
 import play.api.data.FormBinding.Implicits.formBinding
-import services.common.address.CommonAddressListService
+import services.common.address.{CommonAddressListService, CommonAddressListTemplateData}
+import viewmodels.Message
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.UserAnswers
 import play.api.mvc.Results.{BadRequest, Redirect}
@@ -68,10 +69,11 @@ class SelectAddressController @Inject()(
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, index, mode).retrieve.map(common.get(_, form))
+        getFormToJson(schemeName, index, mode).retrieve.map(formToTemplate => common.getNew(formToTemplate(form)))
       }
     }
 
+  // TODO try to use postNew method from CommonAddressListService
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       val addressPages: AddressPages = AddressPages(EnterPostCodeId(index), AddressListId(index), AddressId(index))
@@ -175,21 +177,22 @@ class SelectAddressController @Inject()(
     finalUpdatedUserAnswers
   }
 
-  def getFormToJson(schemeName:String, index: Index, mode: Mode) : Retrieval[Form[Int] => JsObject] =
+  def getFormToJson(schemeName:String, index: Index, mode: Mode) : Retrieval[Form[Int] => CommonAddressListTemplateData] =
     Retrieval(
       implicit request =>
         EnterPostCodeId(index).retrieve.map { addresses =>
-          val msg = request2Messages(request)
-          val name = request.userAnswers.get(TrusteeNameId(index)).map(_.fullName).getOrElse(msg("trusteeEntityTypeIndividual"))
+          val name = request.userAnswers.get(TrusteeNameId(index))
+            .map(_.fullName).getOrElse(Message("trusteeEntityTypeIndividual").resolve)
 
-          form => Json.obj(
-            "form" -> form,
-            "addresses" -> common.transformAddressesForTemplate(addresses),
-            "entityType" -> msg("trusteeEntityTypeIndividual"),
-            "entityName" -> name,
-            "enterManuallyUrl" -> controllers.trustees.individual.address.routes.ConfirmAddressController.onPageLoad(index, mode).url,
-            "schemeName" -> schemeName
-          )
+          form =>
+            CommonAddressListTemplateData(
+              form,
+              common.transformAddressesForTemplate(addresses),
+              Message("trusteeEntityTypeIndividual"),
+              name,
+              controllers.trustees.individual.address.routes.ConfirmAddressController.onPageLoad(index, mode).url,
+              schemeName
+            )
         }
     )
 }

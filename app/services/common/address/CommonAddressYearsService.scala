@@ -98,8 +98,6 @@ class CommonAddressYearsService @Inject()(
       )
   }
 
-
-
   private def getTemplateData(
                       schemeName: Option[String],
                       entityName: String,
