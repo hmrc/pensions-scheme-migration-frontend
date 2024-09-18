@@ -46,12 +46,10 @@ case class CommonAddressListTemplateData(
                                     )
 
 object CommonAddressListTemplateData {
-  implicit val formWrites: Writes[Form[Int]] = new Writes[Form[Int]] {
-    def writes(form: Form[Int]): JsObject = Json.obj(
-      "data" -> form.data,
-      "errors" -> form.errors.map(_.message)
-    )
-  }
+  implicit val formWrites: Writes[Form[Int]] = (form: Form[Int]) => Json.obj(
+    "data" -> form.data,
+    "errors" -> form.errors.map(_.message)
+  )
   implicit val writes = Json.writes[CommonAddressListTemplateData]
 }
 
@@ -64,67 +62,10 @@ class CommonAddressListService @Inject()(
                                       val config: AppConfig
                                     ) extends Retrievals {
 
-  import CommonAddressListTemplateData._
-
   def viewTemplate: String = "address/addressList.njk"
 
-  def prepareJson(jsObject: JsObject):JsObject = {
-    if (jsObject.keys.contains("h1MessageKey")) {
-      jsObject
-    } else {
-      jsObject ++ Json.obj("h1MessageKey" -> "addressList.title")
-    }
-  }
-
-  //TODO: Remove after refactor done.
-  def get(json: Form[Int] => JsObject,
-           form: Form[Int]
-         )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
-    renderer.render(viewTemplate, prepareJson(json(form))).map(Ok(_))
-  }
-
-  //TODO: Remove after refactor done.
-  def post(formToTemplate: Form[Int] => JsObject,
-           pages: AddressPages,
-           mode: Option[Mode] = None,
-           manualUrlCall:Call,
-           form: Form[Int]
-          )(implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
-    form.bindFromRequest().fold(
-      formWithErrors =>
-        renderer.render(viewTemplate, prepareJson(formToTemplate(formWithErrors))).map(BadRequest(_)),
-      value =>
-        pages.postcodeId.retrieve.map { addresses =>
-          val address = addresses(value).copy(country = Some("GB"))
-          if (address.toAddress.nonEmpty){
-            for {
-              updatedAnswers <- Future.fromTry(
-                request.userAnswers.remove(pages.addressListPage).set(pages.addressPage,
-                address.toAddress.get)
-              )
-              _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
-            } yield {
-              val finalMode = mode.getOrElse(NormalMode)
-              Redirect(navigator.nextPage(pages.addressListPage, updatedAnswers, finalMode))
-            }
-          }else{
-            for {
-              updatedAnswers <- Future.fromTry(
-                request.userAnswers.remove(pages.addressPage).set(pages.addressListPage,
-                address
-                ))
-              _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
-            } yield {
-              Redirect(manualUrlCall)
-            }
-
-          }
-        }
-    )
-  }
-
-  //TODO: The above functions need to be replace with the below functions
-  def getNew(template: CommonAddressListTemplateData)(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
+  def getNew(template: CommonAddressListTemplateData
+            )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
     renderer.render(viewTemplate, template).map(Ok(_))
   }
 

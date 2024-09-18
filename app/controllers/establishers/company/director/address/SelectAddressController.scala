@@ -28,7 +28,6 @@ import models._
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent}
 import renderer.Renderer
 import services.DataUpdateService
@@ -87,27 +86,18 @@ class SelectAddressController @Inject()(
         }
     )
 
+  // TODO Try to remove this method
   def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       val addressPages: AddressPages = AddressPages(EnterPostCodeId(establisherIndex, directorIndex),
         AddressListId(establisherIndex, directorIndex), AddressId(establisherIndex, directorIndex))
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-// TODO: try to use this postNew method in the onSubmit method below
-//      retrieve(SchemeNameId) { schemeName =>
-//        getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.map(
-//          common.postNew(
-//            _,
-//            addressPages,
-//            manualUrlCall = routes.ConfirmAddressController.onPageLoad(establisherIndex, directorIndex, mode),
-//            form = form
-//          ))
-//      }
 
       retrieve(SchemeNameId) { schemeName =>
-        val json: Form[Int] => JsObject = getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.toOption.get
+        val json: Form[Int] => CommonAddressListTemplateData = getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.toOption.get
         form.bindFromRequest().fold(
           formWithErrors =>
-            renderer.render(common.viewTemplate, common.prepareJson(json(formWithErrors))).map(BadRequest(_)),
+            renderer.render(common.viewTemplate, json(formWithErrors)).map(BadRequest(_)),
           value =>
             addressPages.postcodeId.retrieve.map { addresses =>
               val address = addresses(value).copy(country = Some("GB"))
@@ -136,6 +126,23 @@ class SelectAddressController @Inject()(
         )
       }
     }
+
+//  def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
+//    (authenticate andThen getData andThen requireData()).async { implicit request =>
+//      val addressPages: AddressPages = AddressPages(EnterPostCodeId(establisherIndex, directorIndex),
+//        AddressListId(establisherIndex, directorIndex), AddressId(establisherIndex, directorIndex))
+//      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+//
+//      retrieve(SchemeNameId) { schemeName =>
+//        getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.map(
+//          common.postNew(
+//            _,
+//            addressPages,
+//            manualUrlCall = routes.ConfirmAddressController.onPageLoad(establisherIndex, directorIndex, mode),
+//            form = form
+//          ))
+//      }
+//    }
 
   private def setUpdatedAnswersForUkAddr(establisherIndex: Index, directorIndex: Index, mode: Mode, addressPages: AddressPages,
                                    address: TolerantAddress, ua: UserAnswers): Try[UserAnswers] = {

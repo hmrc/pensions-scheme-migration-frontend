@@ -30,7 +30,6 @@ import models._
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import services.DataUpdateService
@@ -85,7 +84,7 @@ class SelectPreviousAddressController @Inject()(
 
         form.bindFromRequest().fold(
           formWithErrors =>
-            renderer.render(common.viewTemplate, common.prepareJson(json(formWithErrors))).map(BadRequest(_)),
+            renderer.render(common.viewTemplate, json(formWithErrors)).map(BadRequest(_)),
           value =>
             addressPages.postcodeId.retrieve.map { addresses =>
               val address = addresses(value).copy(country = Some("GB"))
