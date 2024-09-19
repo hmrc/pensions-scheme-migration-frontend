@@ -116,13 +116,13 @@ class EnterPreviousPostcodeController @Inject()(
 
   def getFormToTemplate(schemeName: String, establisherIndex: Index, directorIndex: Index, mode: Mode
                        )(implicit request: DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
-    val name = request.userAnswers.get(DirectorNameId(establisherIndex, directorIndex))
-      .map(_.fullName).getOrElse(Message("messages__director").resolve)
+    val name: String = request.userAnswers.get(DirectorNameId(establisherIndex, directorIndex))
+      .map(_.fullName).getOrElse(Message("messages__director"))
 
     form => {
       CommonPostcodeTemplateData(
         form,
-        Message("messages__director").resolve,
+        Message("messages__director"),
         name,
         routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, directorIndex, mode).url,
         schemeName,

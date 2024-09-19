@@ -16,9 +16,6 @@
 
 package controllers.establishers.individual.address
 
-import config.AppConfig
-import connectors.AddressLookupConnector
-import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.address.PostcodeFormProvider
@@ -27,11 +24,9 @@ import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.EnterPostCodeId
 import models.requests.DataRequest
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.mvc.{Action, AnyContent}
 import services.common.address.{CommonPostcodeService, CommonPostcodeTemplateData}
 import viewmodels.Message
 import uk.gov.hmrc.http.HeaderCarrier
@@ -42,17 +37,11 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class EnterPostcodeController @Inject()(
-   val appConfig: AppConfig,
-   override val messagesApi: MessagesApi,
-   val userAnswersCacheConnector: UserAnswersCacheConnector,
-   val addressLookupConnector: AddressLookupConnector,
-   val navigator: CompoundNavigator,
+   val messagesApi: MessagesApi,
    authenticate: AuthAction,
    getData: DataRetrievalAction,
    requireData: DataRequiredAction,
    formProvider: PostcodeFormProvider,
-   val controllerComponents: MessagesControllerComponents,
-   val renderer: Renderer,
    common: CommonPostcodeService
 )(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
 
@@ -76,13 +65,13 @@ class EnterPostcodeController @Inject()(
 
   def getFormToTemplate(schemeName:String, index: Index, mode: Mode
                        )(implicit request:DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
-    val name = request.userAnswers.get(EstablisherNameId(index))
-      .map(_.fullName).getOrElse(Message("establisherEntityTypeIndividual").resolve)
+    val name: String = request.userAnswers.get(EstablisherNameId(index))
+      .map(_.fullName).getOrElse(Message("establisherEntityTypeIndividual"))
 
     form => {
       CommonPostcodeTemplateData(
         form,
-        Message("establisherEntityTypeIndividual").resolve,
+        Message("establisherEntityTypeIndividual"),
         name,
         controllers.establishers.individual.address.routes.ConfirmAddressController.onPageLoad(index,mode).url,
         schemeName

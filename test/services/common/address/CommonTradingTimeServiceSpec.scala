@@ -16,75 +16,80 @@
 
 package services.common.address
 
-import base.SpecBase
-import connectors.cache.UserAnswersCacheConnector
-import identifiers.TypedIdentifier
-import matchers.JsonMatchers
-import models.requests.DataRequest
-import navigators.CompoundNavigator
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.data.Forms.boolean
-import play.api.libs.json.{JsObject, Json}
+import org.mockito.ArgumentMatchers.any
+import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import renderer.Renderer
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Data.migrationLock
-import utils.UserAnswers
+import utils.{FakeNavigator, UserAnswers}
+import base.SpecBase
+import identifiers.TypedIdentifier
+import matchers.JsonMatchers
+import models.requests.DataRequest
+import renderer.Renderer
+import services.CommonServiceSpecBase
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import org.scalatest.BeforeAndAfterEach
-import play.api.i18n.MessagesApi
 
-class CommonTradingTimeServiceSpec extends SpecBase with JsonMatchers with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
+class CommonTradingTimeServiceSpec extends CommonServiceSpecBase with SpecBase with JsonMatchers with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
 
-  private val mockRenderer = mock[Renderer]
-  private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-  private val mockNavigator = mock[CompoundNavigator]
-  override val messagesApi: MessagesApi = mock[MessagesApi]
+  val renderer = new Renderer(mockAppConfig, mockRenderer)
+
+  private val navigator = new FakeNavigator(desiredRoute = onwardCall)
   private val form = Form("value" -> boolean)
-  private val service = new CommonTradingTimeService(mockRenderer, mockUserAnswersCacheConnector, mockNavigator, messagesApi)
+  private val service = new CommonTradingTimeService(renderer, mockUserAnswersCacheConnector, navigator, messagesApi)
   private val userAnswersId = "test-user-answers-id"
   private val tradingTimeId = new TypedIdentifier[Boolean] {
     override def toString: String = "tradingTimeId"
   }
   implicit val hc: HeaderCarrier = HeaderCarrier()
-  implicit val request: DataRequest[AnyContent] = fakeDataRequest()
+  implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), migrationLock)
 
   override def beforeEach(): Unit = {
-    reset(mockRenderer, mockUserAnswersCacheConnector, mockNavigator)
+    reset(mockRenderer, mockUserAnswersCacheConnector)
   }
 
   "CommonTradingTimeService" must {
 
-    "render the view correctly on get" ignore {
-      val userAnswers = UserAnswers(Json.obj("id" -> userAnswersId)).set(tradingTimeId, true).toOption.get
-      implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), userAnswers, PsaId("A2110001"), migrationLock)
-
-      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      when(mockRenderer.render(templateCaptor.capture(), jsonCaptor.capture())(any())).thenReturn(Future.successful(Html("")))
+    "render the view correctly on get" in {
+      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
       val result = service.get(Some("test-scheme"), "entityName", "entityType", form, tradingTimeId)(request, global)
 
       status(result) mustBe OK
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustBe "address/tradingTime.njk"
-      (jsonCaptor.getValue \ "schemeName").as[String] mustBe "test-scheme"
-      (jsonCaptor.getValue \ "entityName").as[String] mustBe "entityName"
-      (jsonCaptor.getValue \ "entityType").as[String] mustBe "entityType"
+      verify(mockRenderer, times(1)).render(any(), any())(any())
     }
 
+    "return a BadRequest and errors when invalid data is submitted on post" in {
+      val invalidRequest: DataRequest[AnyContent] = DataRequest(FakeRequest().withFormUrlEncodedBody("value" -> "invalid"), UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), migrationLock)
+
+      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
+      val result = service.post(Some("test-scheme"), "entityName", "entityType", form, tradingTimeId)(invalidRequest, global, hc)
+
+      status(result) mustBe BAD_REQUEST
+      verify(mockRenderer, times(1)).render(any(), any())(any())
+    }
+
+    "save the data and redirect correctly on post" in {
+      val validRequest: DataRequest[AnyContent] = DataRequest(FakeRequest().withFormUrlEncodedBody("value" -> "true"), UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), migrationLock)
+
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
+      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
+      val result = service.post(Some("test-scheme"), "entityName", "entityType", form, tradingTimeId)(validRequest, global, hc)
+
+      status(result) mustBe SEE_OTHER
+      verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
+    }
   }
 }

@@ -75,14 +75,14 @@ class SelectAddressController @Inject()(
     Retrieval(
       implicit request =>
         EnterPostCodeId(index).retrieve.map { addresses =>
-          val name = request.userAnswers.get(CompanyDetailsId(index))
-            .map(_.companyName).getOrElse(Message("establisherEntityTypeCompany").resolve)
+          val name: String = request.userAnswers.get(CompanyDetailsId(index))
+            .map(_.companyName).getOrElse(Message("establisherEntityTypeCompany"))
 
           form =>
             CommonAddressListTemplateData(
               form,
               common.transformAddressesForTemplate(addresses),
-              Message("establisherEntityTypeCompany").resolve,
+              Message("establisherEntityTypeCompany"),
               name,
               controllers.establishers.company.address.routes.ConfirmAddressController.onPageLoad(index,mode).url,
               schemeName

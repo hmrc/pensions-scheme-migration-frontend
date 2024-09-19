@@ -64,7 +64,8 @@ class SelectAddressController @Inject()(
           common.post(
             _,
             addressPages,
-            manualUrlCall = routes.ConfirmAddressController.onPageLoad(index,mode),mode=Some(mode),
+            manualUrlCall = routes.ConfirmAddressController.onPageLoad(index,mode),
+            mode=Some(mode),
             form = form
           ))
       }
@@ -74,8 +75,8 @@ class SelectAddressController @Inject()(
     Retrieval(
       implicit request =>
         EnterPostCodeId(index).retrieve.map { addresses =>
-          val name = request.userAnswers.get(PartnershipDetailsId(index))
-            .map(_.partnershipName).getOrElse(Message("establisherEntityTypePartnership").resolve)
+          val name:String = request.userAnswers.get(PartnershipDetailsId(index))
+            .map(_.partnershipName).getOrElse(Message("establisherEntityTypePartnership"))
 
           form =>
             CommonAddressListTemplateData(

@@ -101,13 +101,13 @@ class EnterPreviousPostcodeController @Inject()(
 
   def getFormToTemplate(schemeName:String, index: Index, mode: Mode
                        )(implicit request:DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
-    val name = request.userAnswers.get(TrusteeNameId(index))
-      .map(_.fullName).getOrElse(Message("trusteeEntityTypeIndividual").resolve)
+    val name: String = request.userAnswers.get(TrusteeNameId(index))
+      .map(_.fullName).getOrElse(Message("trusteeEntityTypeIndividual"))
 
     form => {
       CommonPostcodeTemplateData(
         form,
-        Message("trusteeEntityTypeIndividual").resolve,
+        Message("trusteeEntityTypeIndividual"),
         name,
         controllers.trustees.individual.address.routes.ConfirmPreviousAddressController.onPageLoad(index, mode).url,
         schemeName,

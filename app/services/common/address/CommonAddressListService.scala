@@ -31,6 +31,7 @@ import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, Call, Result}
 import renderer.Renderer
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.nunjucks.NunjucksSupport
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -60,7 +61,7 @@ class CommonAddressListService @Inject()(
                                       val navigator: CompoundNavigator,
                                       val messagesApi: MessagesApi,
                                       val config: AppConfig
-                                    ) extends Retrievals {
+                                    ) extends NunjucksSupport with Retrievals {
 
   import CommonAddressListTemplateData._
 

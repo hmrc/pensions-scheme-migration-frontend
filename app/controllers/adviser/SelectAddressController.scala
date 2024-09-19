@@ -73,13 +73,13 @@ class SelectAddressController @Inject()(
     Retrieval(
       implicit request =>
         EnterPostCodeId.retrieve.map { addresses =>
-          val name = request.userAnswers.get(AdviserNameId).getOrElse(Message("messages__pension__adviser").resolve)
+          val name: String = request.userAnswers.get(AdviserNameId).getOrElse(Message("messages__pension__adviser"))
 
           form =>
             CommonAddressListTemplateData(
               form,
               common.transformAddressesForTemplate(addresses),
-              Message("messages__pension__adviser").resolve,
+              Message("messages__pension__adviser"),
               name,
               ConfirmAddressController.onPageLoad.url,
               schemeName

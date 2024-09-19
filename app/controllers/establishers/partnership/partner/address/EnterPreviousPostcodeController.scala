@@ -47,10 +47,6 @@ class EnterPreviousPostcodeController @Inject()(
 
   private def form: Form[String] = formProvider("individualEnterPreviousPostcode.required", "enterPostcode.invalid")
 
-  def formWithError(messageKey: String): Form[String] = {
-    form.withError("value", s"messages__error__postcode_$messageKey")
-  }
-
   def onPageLoad(establisherIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
@@ -75,13 +71,13 @@ class EnterPreviousPostcodeController @Inject()(
 
   def getFormToTemplate(schemeName: String, establisherIndex: Index, partnerIndex: Index, mode: Mode
                        )(implicit request: DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
-    val name = request.userAnswers.get(PartnerNameId(establisherIndex, partnerIndex)).map(_.fullName)
-      .getOrElse(Message("messages__partner").resolve)
+    val name: String = request.userAnswers.get(PartnerNameId(establisherIndex, partnerIndex)).map(_.fullName)
+      .getOrElse(Message("messages__partner"))
 
     form => {
       CommonPostcodeTemplateData(
         form,
-        Message("messages__partner").resolve,
+        Message("messages__partner"),
         name,
         routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, partnerIndex, mode).url,
         schemeName,

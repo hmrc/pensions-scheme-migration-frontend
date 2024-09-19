@@ -64,12 +64,12 @@ class EnterPreviousPostcodeController @Inject()(
   }
 
   def getFormToTemplate(schemeName:String, index: Index, mode: Mode)(implicit request:DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
-    val name = request.userAnswers.get(CompanyDetailsId(index)).map(_.companyName).getOrElse(Message("messages__company").resolve)
+    val name: String = request.userAnswers.get(CompanyDetailsId(index)).map(_.companyName).getOrElse(Message("messages__company"))
 
     form => {
       CommonPostcodeTemplateData(
         form,
-        Message("messages__company").resolve,
+        Message("messages__company"),
         name,
         controllers.trustees.company.address.routes.ConfirmPreviousAddressController.onPageLoad(index,mode).url,
         schemeName,

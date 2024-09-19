@@ -71,13 +71,13 @@ class EnterPostcodeController @Inject()(
 
   def getFormToTemplate(schemeName:String, index: Index, mode: Mode
                        )(implicit request:DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
-    val name = request.userAnswers.get(PartnershipDetailsId(index))
-      .map(_.partnershipName).getOrElse(Message("messages__partnership").resolve)
+    val name: String = request.userAnswers.get(PartnershipDetailsId(index))
+      .map(_.partnershipName).getOrElse(Message("messages__partnership"))
 
     form => {
       CommonPostcodeTemplateData(
         form,
-        Message("messages__partnership").resolve,
+        Message("messages__partnership"),
         name,
         controllers.trustees.partnership.address.routes.ConfirmAddressController.onPageLoad(index,mode).url,
         schemeName

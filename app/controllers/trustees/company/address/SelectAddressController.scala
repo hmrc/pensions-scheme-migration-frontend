@@ -76,8 +76,8 @@ class SelectAddressController @Inject()(
     Retrieval(
       implicit request =>
         EnterPostCodeId(index).retrieve.map { addresses =>
-          val name = request.userAnswers.get(CompanyDetailsId(index))
-            .map(_.companyName).getOrElse(Message("messages__company").resolve)
+          val name: String = request.userAnswers.get(CompanyDetailsId(index))
+            .map(_.companyName).getOrElse(Message("messages__company"))
 
           form =>
             CommonAddressListTemplateData(

@@ -76,14 +76,14 @@ class SelectAddressController @Inject()(
     Retrieval(
       implicit request =>
         EnterPostCodeId(index).retrieve.map { addresses =>
-          val name = request.userAnswers.get(PartnershipDetailsId(index))
-            .map(_.partnershipName).getOrElse(Message("messages__partnership").resolve)
+          val name: String = request.userAnswers.get(PartnershipDetailsId(index))
+            .map(_.partnershipName).getOrElse(Message("messages__partnership"))
 
           form =>
             CommonAddressListTemplateData(
               form,
               common.transformAddressesForTemplate(addresses),
-              Message("messages__partnership").resolve,
+              Message("messages__partnership"),
               name,
               ConfirmAddressController.onPageLoad(index,mode).url,
               schemeName

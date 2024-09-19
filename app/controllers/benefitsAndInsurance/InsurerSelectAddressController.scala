@@ -18,7 +18,6 @@ package controllers.benefitsAndInsurance
 
 import controllers.actions._
 import models.establishers.AddressPages
-import controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.{BenefitsInsuranceNameId, InsurerAddressId, InsurerAddressListId, InsurerEnterPostCodeId}
@@ -62,7 +61,7 @@ class InsurerSelectAddressController @Inject()(
           common.post(
             _,
             addressPages,
-            manualUrlCall = InsurerConfirmAddressController.onPageLoad,
+            manualUrlCall = controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onPageLoad,
             form = form
           )
         )
@@ -73,15 +72,15 @@ class InsurerSelectAddressController @Inject()(
     Retrieval(
       implicit request =>
         InsurerEnterPostCodeId.retrieve.map { addresses =>
-          val name = request.userAnswers.get(BenefitsInsuranceNameId).getOrElse(Message("benefitsInsuranceUnknown").resolve)
+          val name: String = request.userAnswers.get(BenefitsInsuranceNameId).getOrElse(Message("benefitsInsuranceUnknown"))
 
           form =>
             CommonAddressListTemplateData(
               form,
               common.transformAddressesForTemplate(addresses),
-              Message("benefitsInsuranceUnknown").resolve,
+              Message("benefitsInsuranceUnknown"),
               name,
-              InsurerConfirmAddressController.onPageLoad.url,
+              controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onPageLoad.url,
               schemeName
             )
         }

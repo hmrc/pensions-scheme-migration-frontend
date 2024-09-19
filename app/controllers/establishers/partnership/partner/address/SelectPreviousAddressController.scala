@@ -82,14 +82,14 @@ class SelectPreviousAddressController @Inject()(
     Retrieval(
       implicit request =>
         EnterPreviousPostCodeId(establisherIndex, partnerIndex).retrieve.map { addresses =>
-          val name = request.userAnswers.get(PartnerNameId(establisherIndex, partnerIndex))
-            .map(_.fullName).getOrElse(Message("messages__partner").resolve)
+          val name: String = request.userAnswers.get(PartnerNameId(establisherIndex, partnerIndex))
+            .map(_.fullName).getOrElse(Message("messages__partner"))
 
           form =>
             CommonAddressListTemplateData(
               form,
               common.transformAddressesForTemplate(addresses),
-              Message("messages__partner").resolve,
+              Message("messages__partner"),
               name,
               routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, partnerIndex, mode).url,
               schemeName,

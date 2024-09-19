@@ -16,8 +16,6 @@
 
 package controllers.establishers.partnership.address
 
-import config.AppConfig
-import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.address.AddressFormProvider
@@ -25,11 +23,9 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.address.{PreviousAddressId, PreviousAddressListId}
 import models.{Address, AddressConfiguration, Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import services.common.address.CommonManualAddressService
 
@@ -37,16 +33,11 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class ConfirmPreviousAddressController @Inject()(
-  override val messagesApi: MessagesApi,
-  val userAnswersCacheConnector: UserAnswersCacheConnector,
-  val navigator: CompoundNavigator,
+  val messagesApi: MessagesApi,
   authenticate: AuthAction,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
   formProvider: AddressFormProvider,
-  val controllerComponents: MessagesControllerComponents,
-  val config: AppConfig,
-  val renderer: Renderer,
   common: CommonManualAddressService
 )(implicit ec: ExecutionContext) extends Retrievals with I18nSupport with NunjucksSupport {
 
@@ -56,33 +47,35 @@ class ConfirmPreviousAddressController @Inject()(
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (PartnershipDetailsId(index) and SchemeNameId).retrieve.map { case partnershipDetails ~ schemeName =>
-        common.get(
-          Some(schemeName),
-          partnershipDetails.partnershipName,
-          PreviousAddressId(index),
-          PreviousAddressListId(index),
-          AddressConfiguration.PostcodeFirst,
-          form,
-          pageTitleEntityTypeMessageKey,
-          pageTitleMessageKey
-        )
+      (PartnershipDetailsId(index) and SchemeNameId).retrieve.map {
+        case partnershipDetails ~ schemeName =>
+          common.get(
+            Some(schemeName),
+            partnershipDetails.partnershipName,
+            PreviousAddressId(index),
+            PreviousAddressListId(index),
+            AddressConfiguration.PostcodeFirst,
+            form,
+            pageTitleEntityTypeMessageKey,
+            pageTitleMessageKey
+          )
       }
     }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (PartnershipDetailsId(index) and SchemeNameId).retrieve.map { case partnershipDetails ~ schemeName =>
-        common.post(
-          Some(schemeName),
-          partnershipDetails.partnershipName,
-          PreviousAddressId(index),
-          AddressConfiguration.PostcodeFirst,
-          Some(mode),
-          form,
-          pageTitleEntityTypeMessageKey,
-          pageTitleMessageKey
-        )
+      (PartnershipDetailsId(index) and SchemeNameId).retrieve.map {
+        case partnershipDetails ~ schemeName =>
+          common.post(
+            Some(schemeName),
+            partnershipDetails.partnershipName,
+            PreviousAddressId(index),
+            AddressConfiguration.PostcodeFirst,
+            Some(mode),
+            form,
+            pageTitleEntityTypeMessageKey,
+            pageTitleMessageKey
+          )
       }
     }
 }

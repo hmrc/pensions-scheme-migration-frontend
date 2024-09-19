@@ -56,7 +56,7 @@ class EnterEmailController @Inject()(
       .fold(Message("messages__partnership"))(_.partnershipName)
 
   private def form(index: Index)(implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Messages("messages__enterEmail__type__error_required", Message("messages__partnership").resolve))
+    formProvider(Messages("messages__enterEmail__type__error_required", Message("messages__partnership")))
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {

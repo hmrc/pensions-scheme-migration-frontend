@@ -75,7 +75,8 @@ class SelectPreviousAddressController @Inject()(
     Retrieval(
       implicit request =>
         EnterPreviousPostCodeId(index).retrieve.map { addresses =>
-          val name = request.userAnswers.get(EstablisherNameId(index)).map(_.fullName).getOrElse(Message("establisherEntityTypeIndividual").resolve)
+          val name: String = request.userAnswers.get(EstablisherNameId(index))
+            .map(_.fullName).getOrElse(Message("establisherEntityTypeIndividual"))
 
           form =>
             CommonAddressListTemplateData(

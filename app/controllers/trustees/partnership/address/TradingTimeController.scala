@@ -24,12 +24,13 @@ import identifiers.trustees.partnership.PartnershipDetailsId
 import identifiers.trustees.partnership.address.TradingTimeId
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.common.address.CommonTradingTimeService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.Enumerable
+import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -42,20 +43,18 @@ class TradingTimeController @Inject()(
     formProvider: TradingTimeFormProvider,
     controllerComponents: MessagesControllerComponents,
     common: CommonTradingTimeService
- )(implicit ec: ExecutionContext) extends Retrievals with Enumerable.Implicits {
+ )(implicit ec: ExecutionContext) extends Retrievals with I18nSupport with Enumerable.Implicits {
 
   private def form: Form[Boolean] = formProvider("partnershipTradingTime.error.required")
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      implicit val messages: Messages = controllerComponents.messagesApi.preferred(request)
-
       (PartnershipDetailsId(index) and SchemeNameId).retrieve.map {
         case partnershipDetails ~ schemeName =>
           common.get(
             Some(schemeName),
             partnershipDetails.partnershipName,
-            Messages("messages__partnership"),
+            Message("messages__partnership"),
             form, TradingTimeId(index)
           )
       }
@@ -63,7 +62,6 @@ class TradingTimeController @Inject()(
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      implicit val messages: Messages = controllerComponents.messagesApi.preferred(request)
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
       (PartnershipDetailsId(index) and SchemeNameId).retrieve.map {
@@ -71,7 +69,7 @@ class TradingTimeController @Inject()(
           common.post(
             Some(schemeName),
             partnershipDetails.partnershipName,
-            Messages("messages__partnership"),
+            Message("messages__partnership"),
             form, TradingTimeId(index),
             Some(mode)
           )
