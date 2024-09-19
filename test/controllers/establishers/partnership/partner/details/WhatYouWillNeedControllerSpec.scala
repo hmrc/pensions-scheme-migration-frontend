@@ -29,6 +29,7 @@ import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
+import services.common.details.CommonWhatYouWillNeedDetailsService
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.ua
 import utils.UserAnswers
@@ -61,8 +62,11 @@ class WhatYouWillNeedControllerSpec
       authenticate         = new FakeAuthAction(),
       getData              = dataRetrievalAction,
       requireData          = new DataRequiredActionImpl,
-      controllerComponents = controllerComponents,
-      renderer             = new Renderer(mockAppConfig, mockRenderer)
+      common = new CommonWhatYouWillNeedDetailsService(
+        controllerComponents = controllerComponents,
+        renderer = new Renderer(mockAppConfig, mockRenderer),
+        messagesApi = messagesApi
+      )
     )
 
   "WhatYouWillNeedController" must {

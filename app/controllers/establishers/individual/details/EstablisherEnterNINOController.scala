@@ -16,8 +16,7 @@
 
 package controllers.establishers.individual.details
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.EnterReferenceValueController
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.NINOFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -25,28 +24,23 @@ import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.details.EstablisherNINOId
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.details.CommonEnterReferenceValueService
 import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class EstablisherEnterNINOController @Inject()(
-                                                override val messagesApi: MessagesApi,
-                                                val navigator: CompoundNavigator,
-                                                authenticate: AuthAction,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
-                                                formProvider: NINOFormProvider,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                                val renderer: Renderer
+class EstablisherEnterNINOController @Inject()(val messagesApi: MessagesApi,
+                                               authenticate: AuthAction,
+                                               getData: DataRetrievalAction,
+                                               requireData: DataRequiredAction,
+                                               formProvider: NINOFormProvider,
+                                               common: CommonEnterReferenceValueService
                                               )(implicit val executionContext: ExecutionContext)
-  extends EnterReferenceValueController {
+  extends Retrievals with I18nSupport {
 
   private def name(index: Index)
                   (implicit request: DataRequest[AnyContent]): String =
@@ -64,7 +58,7 @@ class EstablisherEnterNINOController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
+            common.get(
               pageTitle     = Message("messages__enterNINO_title", Message("messages__individual")),
               pageHeading     = Message("messages__enterNINO_title", name(index)),
               isPageHeading = true,
@@ -82,7 +76,7 @@ class EstablisherEnterNINOController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            post(
+            common.post(
               pageTitle     = Message("messages__enterNINO_title", Message("messages__individual")),
               pageHeading     = Message("messages__enterNINO_title", name(index)),
               isPageHeading = true,
