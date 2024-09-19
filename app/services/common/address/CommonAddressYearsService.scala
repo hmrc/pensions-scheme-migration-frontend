@@ -32,7 +32,6 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import uk.gov.hmrc.viewmodels.Radios
 import utils.UserAnswers
-import viewmodels.Message
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -59,19 +58,18 @@ class CommonAddressYearsService @Inject()(
   implicit private def templateDataWrites(implicit request: DataRequest[AnyContent]): OWrites[TemplateData] = Json.writes[TemplateData]
 
   def get(schemeName: Option[String],
-                    entityName: String,
-                    entityType : Message,
-                    form : Form[Boolean],
-                    addressYearsId : TypedIdentifier[Boolean])(
-                     implicit request: DataRequest[AnyContent],
-                     ec: ExecutionContext): Future[Result] = {
+          entityName: String,
+          entityType : String,
+          form : Form[Boolean],
+          addressYearsId : TypedIdentifier[Boolean]
+         )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
     val filledForm = request.userAnswers.get(addressYearsId).fold(form)(form.fill)
-    renderer.render(viewTemplate, getTemplateData(schemeName, entityName, entityType.resolve, filledForm) ).map(Ok(_))
+    renderer.render(viewTemplate, getTemplateData(schemeName, entityName, entityType, filledForm) ).map(Ok(_))
   }
 
   def post(schemeName: Option[String],
            entityName: String,
-           entityType : Message,
+           entityType : String,
            form : Form[Boolean],
            addressYearsId : TypedIdentifier[Boolean],
            mode: Option[Mode] = None,
@@ -82,10 +80,10 @@ class CommonAddressYearsService @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => {
-          renderer.render(viewTemplate, getTemplateData(schemeName, entityName, entityType.resolve, formWithErrors) ).map(BadRequest(_))
+          renderer.render(viewTemplate, getTemplateData(schemeName, entityName, entityType, formWithErrors) ).map(BadRequest(_))
         },
         value => {
-          def defaultSetUserAnswers = (value: Boolean) => request.userAnswers.set(addressYearsId, value)
+          def defaultSetUserAnswers: Boolean => Try[UserAnswers] = (value: Boolean) => request.userAnswers.set(addressYearsId, value)
           val setUserAnswers = optSetUserAnswers.getOrElse(defaultSetUserAnswers)
           for {
             updatedAnswers <- Future.fromTry(setUserAnswers(value))
@@ -97,8 +95,6 @@ class CommonAddressYearsService @Inject()(
         }
       )
   }
-
-
 
   private def getTemplateData(
                       schemeName: Option[String],

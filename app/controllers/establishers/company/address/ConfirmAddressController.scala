@@ -16,54 +16,62 @@
 
 package controllers.establishers.company.address
 
-import config.AppConfig
-import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import controllers.address.ManualAddressController
 import forms.address.AddressFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address.{AddressId, AddressListId}
 import models.{Address, AddressConfiguration, Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.address.CommonManualAddressService
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class ConfirmAddressController @Inject()(override val messagesApi: MessagesApi,
-  val userAnswersCacheConnector: UserAnswersCacheConnector,
-  val navigator: CompoundNavigator,
+class ConfirmAddressController @Inject()(
   authenticate: AuthAction,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
   formProvider: AddressFormProvider,
-  val controllerComponents: MessagesControllerComponents,
-  val config: AppConfig,
-  val renderer: Renderer
-)(implicit ec: ExecutionContext) extends ManualAddressController
-  with Retrievals with I18nSupport with NunjucksSupport {
+  common: CommonManualAddressService,
+  val messagesApi: MessagesApi
+)(implicit ec: ExecutionContext) extends Retrievals with I18nSupport {
 
-  override protected val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__company")
-
-  def form(implicit messages: Messages): Form[Address] = formProvider()
+  private def form: Form[Address] = formProvider()
+  private val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__company")
+  private val pageTitleMessageKey: String = "address.title"
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (CompanyDetailsId(index) and SchemeNameId).retrieve.map { case companyDetails ~ schemeName =>
-          get(Some(schemeName), companyDetails.companyName, AddressId(index),AddressListId(index), AddressConfiguration.PostcodeFirst)
+      (CompanyDetailsId(index) and SchemeNameId).retrieve.map {
+        case companyDetails ~ schemeName =>
+        common.get(
+          Some(schemeName),
+          companyDetails.companyName,
+          AddressId(index),AddressListId(index),
+          AddressConfiguration.PostcodeFirst,
+          form,
+          pageTitleEntityTypeMessageKey,
+          pageTitleMessageKey
+        )
       }
     }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (CompanyDetailsId(index) and SchemeNameId).retrieve.map { case companyDetails ~ schemeName =>
-        post(Some(schemeName), companyDetails.companyName, AddressId(index), AddressConfiguration.PostcodeFirst,Some(mode))
+      (CompanyDetailsId(index) and SchemeNameId).retrieve.map {
+        case companyDetails ~ schemeName =>
+        common.post(
+          Some(schemeName),
+          companyDetails.companyName,
+          AddressId(index),
+          AddressConfiguration.PostcodeFirst,Some(mode),
+          form,
+          pageTitleEntityTypeMessageKey,
+          pageTitleMessageKey)
       }
     }
 }

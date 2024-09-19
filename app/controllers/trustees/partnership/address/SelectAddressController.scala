@@ -16,78 +16,78 @@
 
 package controllers.trustees.partnership.address
 
-import config.AppConfig
-import connectors.AddressLookupConnector
-import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
-import controllers.address.{AddressListController, AddressPages}
+import models.establishers.AddressPages
 import controllers.trustees.partnership.address.routes.ConfirmAddressController
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.partnership.PartnershipDetailsId
 import identifiers.trustees.partnership.address.{AddressId, AddressListId, EnterPostCodeId}
 import models.{Index, Mode, NormalMode}
-import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
+import play.api.mvc.{Action, AnyContent}
+import controllers.Retrievals
+import services.common.address.{CommonAddressListTemplateData, CommonAddressListService}
+import viewmodels.Message
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.CountryOptions
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class SelectAddressController @Inject()(val appConfig: AppConfig,
-  override val messagesApi: MessagesApi,
-  val userAnswersCacheConnector: UserAnswersCacheConnector,
-  val addressLookupConnector: AddressLookupConnector,
-  val navigator: CompoundNavigator,
+class SelectAddressController @Inject()(
+  val messagesApi: MessagesApi,
   authenticate: AuthAction,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
   formProvider: AddressListFormProvider,
-  countryOptions: CountryOptions,
-  val controllerComponents: MessagesControllerComponents,
-  val renderer: Renderer)(implicit val ec: ExecutionContext) extends AddressListController with I18nSupport
-  with NunjucksSupport with Retrievals {
+  common: CommonAddressListService
+)(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
 
-  override def form: Form[Int] = formProvider("selectAddress.required")
+  private def form: Form[Int] = formProvider("selectAddress.required")
 
-  def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async { implicit request =>
-    retrieve(SchemeNameId) { schemeName =>
-      getFormToJson(schemeName, index, NormalMode).retrieve.map(get)
-    }
-  }
-
-  def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-        val addressPages: AddressPages = AddressPages(EnterPostCodeId(index), AddressListId(index), AddressId(index))
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, index, NormalMode).retrieve.map(post(_, addressPages,manualUrlCall = ConfirmAddressController.onPageLoad(index,mode),
-          mode=Some(mode)))
+        getFormToTemplate(schemeName, index, NormalMode).retrieve.map(formToTemplate => common.get(formToTemplate(form)))
       }
     }
 
-  def getFormToJson(schemeName:String, index: Index, mode: Mode) : Retrieval[Form[Int] => JsObject] =
+  def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
+      val addressPages: AddressPages = AddressPages(EnterPostCodeId(index), AddressListId(index), AddressId(index))
+      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+
+      retrieve(SchemeNameId) { schemeName =>
+        getFormToTemplate(schemeName, index, NormalMode).retrieve.map(
+          common.post(
+            _,
+            addressPages,
+            manualUrlCall = ConfirmAddressController.onPageLoad(index,mode),
+            mode=Some(mode),
+            form = form
+          ))
+      }
+    }
+
+  def getFormToTemplate(schemeName:String, index: Index, mode: Mode) : Retrieval[Form[Int] => CommonAddressListTemplateData] =
     Retrieval(
       implicit request =>
         EnterPostCodeId(index).retrieve.map { addresses =>
+          val name: String = request.userAnswers.get(PartnershipDetailsId(index))
+            .map(_.partnershipName).getOrElse(Message("messages__partnership"))
 
-          val msg = request2Messages(request)
-
-          val name = request.userAnswers.get(PartnershipDetailsId(index)).map(_.partnershipName).getOrElse(msg("messages__partnership"))
-
-          form => Json.obj(
-            "form" -> form,
-            "addresses" -> transformAddressesForTemplate(addresses),
-            "entityType" -> msg("messages__partnership"),
-            "entityName" -> name,
-            "enterManuallyUrl" -> ConfirmAddressController.onPageLoad(index,mode).url,
-            "schemeName" -> schemeName
-          )
+          form =>
+            CommonAddressListTemplateData(
+              form,
+              common.transformAddressesForTemplate(addresses),
+              Message("messages__partnership"),
+              name,
+              ConfirmAddressController.onPageLoad(index,mode).url,
+              schemeName
+            )
         }
     )
 }
