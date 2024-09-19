@@ -29,7 +29,7 @@ import services.common.details.CommonWhatYouWillNeedDetailsService
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class WhatYouWillNeedController @Inject()(override val messagesApi: MessagesApi,
+class WhatYouWillNeedController @Inject()(val messagesApi: MessagesApi,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,

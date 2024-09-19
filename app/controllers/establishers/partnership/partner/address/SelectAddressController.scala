@@ -37,7 +37,7 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class SelectAddressController @Inject()(
-    override val messagesApi: MessagesApi,
+    val messagesApi: MessagesApi,
     authenticate: AuthAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
