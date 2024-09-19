@@ -36,7 +36,6 @@ import identifiers.TypedIdentifier
 import matchers.JsonMatchers
 import models.requests.DataRequest
 import renderer.Renderer
-import services.CommonServiceSpecBase
 
 import scala.concurrent.Future
 

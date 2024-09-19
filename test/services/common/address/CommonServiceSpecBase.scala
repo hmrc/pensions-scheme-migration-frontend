@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package services
+package services.common.address
 
 import base.SpecBase
 import config.AppConfig

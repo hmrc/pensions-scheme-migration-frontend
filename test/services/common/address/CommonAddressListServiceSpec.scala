@@ -37,7 +37,6 @@ import identifiers.TypedIdentifier
 import identifiers.establishers.individual.address.AddressId
 import identifiers.trustees.individual.address.AddressListId
 import models.establishers.AddressPages
-import services.CommonServiceSpecBase
 import uk.gov.hmrc.domain.PsaId
 
 import scala.concurrent.Future

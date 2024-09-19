@@ -39,7 +39,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CommonManualAddressService @Inject()(
-                                   val controllerComponents: MessagesControllerComponents,
                                    val renderer: Renderer,
                                    val userAnswersCacheConnector: UserAnswersCacheConnector,
                                    val navigator: CompoundNavigator,
