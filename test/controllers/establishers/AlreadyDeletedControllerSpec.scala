@@ -25,10 +25,8 @@ import identifiers.establishers.partnership.PartnershipDetailsId
 import matchers.JsonMatchers
 import models.establishers.EstablisherKind
 import models.{CompanyDetails, Index, PartnershipDetails, PersonName}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
