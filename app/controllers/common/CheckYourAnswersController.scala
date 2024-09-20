@@ -18,10 +18,11 @@ package controllers.common
 
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import helpers.cya.{CYAHelper, CommonCYAHelper}
+import helpers.cya.{CYAHelper, CommonCYAHelper, MandatoryAnswerMissingException}
 import identifiers.beforeYouStart.SchemeNameId
-import models.{CheckMode, Index, entities}
 import models.entities.{EntityType, JourneyType, PensionManagementType}
+import models.{CheckMode, Index, entities}
+import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -31,6 +32,7 @@ import utils.Enumerable
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
+import scala.util.{Failure, Success, Try}
 
 class CheckYourAnswersController @Inject()(
                                             override val messagesApi: MessagesApi,
@@ -46,6 +48,7 @@ class CheckYourAnswersController @Inject()(
     with I18nSupport
     with Retrievals {
 
+  private val logger = Logger(classOf[CheckYourAnswersController])
   def onPageLoad(index: Index,
                  pensionManagementType: PensionManagementType,
                  entityType: EntityType,
@@ -75,13 +78,27 @@ class CheckYourAnswersController @Inject()(
         }
 
       }
-        renderer.render(
-          template = "check-your-answers.njk",
-          ctx = Json.obj(
-            "list"       -> cyaHelper.rows(index, pensionManagementType, entityType, entityRepresentativeIndex, journeyType),
-            "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
-            "submitUrl"  -> continueUrl
-          )
-        ).map(Ok(_))
+
+      Try {
+        val rows = cyaHelper.rows(index, pensionManagementType, entityType, entityRepresentativeIndex, journeyType)
+        val schemeName = CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly)
+        (rows, schemeName)
+      } match {
+        case Success((rows, schemeName)) =>
+          renderer.render(
+            template = "check-your-answers.njk",
+            ctx = Json.obj(
+              "list" -> rows,
+              "schemeName" -> schemeName,
+              "submitUrl" -> continueUrl
+            )
+          ).map(Ok(_))
+        case Failure(ex: MandatoryAnswerMissingException) =>
+          logger.warn(s"MandatoryAnswerMissingException:  ${ex.getMessage}")
+          renderer.render("badRequest.njk").map(BadRequest(_))
+        case Failure(ex) =>
+          logger.warn(s"Unexpected error occurred: ${ex.getMessage}")
+          renderer.render("internalServerError.njk").map(InternalServerError(_))
+      }
     }
 }
