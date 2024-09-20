@@ -103,10 +103,10 @@ class SpokeTaskListController @Inject() (
     }
 
     TemplateDataFull(
-      spokes,
+      taskSections = spokes,
       entityName,
       schemeName,
-      managementTypeTypeMsg.resolve,
+      entityType = managementTypeTypeMsg.resolve,
       submitUrl.url,
       totalSpokes,
       completedCount

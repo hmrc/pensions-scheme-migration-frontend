@@ -32,6 +32,7 @@ import play.twirl.api.Html
 import services.TaskListService
 import utils.Data
 import utils.Data._
+import views.html.TaskListView
 
 import scala.concurrent.Future
 class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach  with JsonMatchers {
@@ -48,10 +49,10 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
 
   private def httpPathGET: String = controllers.routes.TaskListController.onPageLoad.url
 
-  private val basicDetailsSection = Some(TaskListLink("Change Test scheme name basic details",
-    controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad.url, None, false))
-  private val membershipDetailsSection = Some(TaskListLink("Change Test scheme name membership details",
-    controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad.url, None, true))
+  private val basicDetailsSection = TaskListLink("Change Test scheme name basic details",
+    controllers.beforeYouStartSpoke.routes.CheckYourAnswersController.onPageLoad.url, None, false)
+  private val membershipDetailsSection = TaskListLink("Change Test scheme name membership details",
+    controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad.url, None, true)
 
   private val declarationSection =
     TaskListLink(
@@ -61,7 +62,7 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
     status = false
   )
 
-  private val schemeDetailsTL : Seq[Option[TaskListLink]] =
+  private val schemeDetailsTL : Seq[TaskListLink] =
     Seq(basicDetailsSection,
       membershipDetailsSection)
 
@@ -99,18 +100,25 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
 
     "return OK and the correct view for a GET when data present in userAnswers" in {
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+
 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = application.injector.instanceOf[TaskListView].apply(
+        "Scheme Details are incomplete",
+        "You have completed 1 of 2 sections",
+        "14 November 2021",
+        schemeDetailsTL,
+        schemeName,
+        declarationEnabled = false,
+        declarationSection,
+        controllers.routes.PensionSchemeRedirectController.onPageLoad.url,
+        isCompleted = false
+      )(request, messages)
 
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(json)
+      compareResultAndView(result, view)
     }
 
     "redirect to List of schemes if lock can not be retrieved " in {
