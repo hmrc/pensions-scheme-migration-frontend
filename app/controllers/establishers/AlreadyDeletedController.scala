@@ -25,8 +25,7 @@ import models.Index
 import models.establishers.EstablisherKind
 import models.establishers.EstablisherKind.{Company, Individual, Partnership}
 import models.requests.DataRequest
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Enumerable
@@ -58,13 +57,6 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
           case Left(result) => result
         }
     }
-
-  private def json(establisherName: String, schemeName: Option[String])(implicit messages: Messages): JsObject = Json.obj(
-    "title" -> messages("messages__alreadyDeleted__establisher_title"),
-    "name" -> establisherName,
-    "schemeName" -> schemeName,
-    "submitUrl" -> controllers.establishers.routes.AddEstablisherController.onPageLoad.url
-  )
 
   private def establisherName(index: Index, establisherKind: EstablisherKind)(implicit
                                                                               dataRequest: DataRequest[AnyContent])

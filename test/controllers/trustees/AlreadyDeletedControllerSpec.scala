@@ -24,7 +24,6 @@ import models.trustees.TrusteeKind
 import models.{Index, PersonName}
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
-import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
