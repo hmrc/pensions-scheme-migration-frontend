@@ -16,70 +16,61 @@
 
 package controllers.benefitsAndInsurance
 
-import config.AppConfig
-import connectors.AddressLookupConnector
-import connectors.cache.UserAnswersCacheConnector
+import controllers.Retrievals
 import controllers.actions._
-import controllers.address.PostcodeController
 import forms.address.PostcodeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.{BenefitsInsuranceNameId, InsurerEnterPostCodeId}
 import models.requests.DataRequest
-import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.mvc.{Action, AnyContent}
+import services.common.address.{CommonPostcodeService, CommonPostcodeTemplateData}
+import viewmodels.Message
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksSupport
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class InsurerEnterPostcodeController @Inject()(val appConfig: AppConfig,
-                                               override val messagesApi: MessagesApi,
-                                               val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                               val addressLookupConnector: AddressLookupConnector,
-                                               val navigator: CompoundNavigator,
-                                               authenticate: AuthAction,
-                                               getData: DataRetrievalAction,
-                                               requireData: DataRequiredAction,
-                                               formProvider: PostcodeFormProvider,
-                                               val controllerComponents: MessagesControllerComponents,
-                                               val renderer: Renderer
-                                              )(implicit val ec: ExecutionContext) extends PostcodeController with I18nSupport with NunjucksSupport {
+class InsurerEnterPostcodeController @Inject()(
+   val messagesApi: MessagesApi,
+   authenticate: AuthAction,
+   getData: DataRetrievalAction,
+   requireData: DataRequiredAction,
+   formProvider: PostcodeFormProvider,
+   common: CommonPostcodeService
+)(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
 
-  def form: Form[String] = formProvider("insurerEnterPostcode.required", "insurerEnterPostcode.invalid")
-
-  def formWithError(messageKey: String): Form[String] = {
-    form.withError("value", s"messages__error__postcode_$messageKey")
-  }
+  private def form: Form[String] = formProvider("insurerEnterPostcode.required", "insurerEnterPostcode.invalid")
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        get(getFormToJson(schemeName))
+        common.get(getFormToTemplate(schemeName), form)
       }
     }
 
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async{
     implicit request =>
+      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+
       retrieve(SchemeNameId) { schemeName =>
-        post(getFormToJson(schemeName), InsurerEnterPostCodeId, "insurerEnterPostcode.noresults")
+        common.post(getFormToTemplate(schemeName), InsurerEnterPostCodeId, "insurerEnterPostcode.noresults", form = form)
       }
   }
 
+  def getFormToTemplate(schemeName:String)(implicit request:DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
+    val name: String = request.userAnswers.get(BenefitsInsuranceNameId).getOrElse(Message("benefitsInsuranceUnknown"))
 
-  def getFormToJson(schemeName:String)(implicit request:DataRequest[AnyContent]): Form[String] => JsObject = {
     form => {
-      val msg = request2Messages(request)
-      val name = request.userAnswers.get(BenefitsInsuranceNameId).getOrElse(msg("benefitsInsuranceUnknown"))
-      Json.obj(
-        "entityType" -> msg("benefitsInsuranceUnknown"),
-        "entityName" -> name,
-        "form" -> form,
-        "enterManuallyUrl" -> controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onPageLoad.url,
-        "schemeName" -> schemeName
+      CommonPostcodeTemplateData(
+        form,
+        Message("benefitsInsuranceUnknown"),
+        name,
+        controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onPageLoad.url,
+        schemeName
       )
     }
   }

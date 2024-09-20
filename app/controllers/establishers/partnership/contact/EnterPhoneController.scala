@@ -16,8 +16,7 @@
 
 package controllers.establishers.partnership.contact
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.PhoneController
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.PhoneFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -25,28 +24,24 @@ import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.contact.EnterPhoneId
 import models.requests.DataRequest
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.contact.CommonPhoneService
 import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class EnterPhoneController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            val navigator: CompoundNavigator,
+                                            val messagesApi: MessagesApi,
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
                                             formProvider: PhoneFormProvider,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                            val renderer: Renderer
+                                            common: CommonPhoneService
                                           )(implicit val executionContext: ExecutionContext)
-  extends PhoneController {
+  extends Retrievals with I18nSupport {
 
   private def name(index: Index)
                   (implicit request: DataRequest[AnyContent]): String =
@@ -56,17 +51,17 @@ class EnterPhoneController @Inject()(
       .fold(Message("messages__partnership"))(_.partnershipName)
 
   private def form(index: Index)(implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Message("messages__enterPhone__type__error_required", Message("messages__partnership").resolve))
+    formProvider(Message("messages__enterPhone__type__error_required", Message("messages__partnership")))
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
+            common.get(
               entityName = name(index),
               entityType = Message("messages__partnership"),
-              id = EnterPhoneId(index),
+              phoneId = EnterPhoneId(index),
               form = form(index),
               schemeName = schemeName,
               paragraphText = Seq(Message("messages__contact_details__phone__hint", name(index), schemeName))
@@ -79,14 +74,14 @@ class EnterPhoneController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            post(
+            common.post(
               entityName = name(index),
               entityType = Message("messages__partnership"),
-              id = EnterPhoneId(index),
+              phoneId = EnterPhoneId(index),
               form = form(index),
               schemeName = schemeName,
               paragraphText = Seq(Message("messages__contact_details__phone__hint", name(index), schemeName)),
-              mode = mode
+              mode = Some(mode)
             )
         }
     }

@@ -16,8 +16,7 @@
 
 package controllers.establishers.partnership.partner.details
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.HasReferenceValueController
+import controllers.Retrievals
 import controllers.actions._
 import forms.HasReferenceNumberFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -25,28 +24,23 @@ import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.partner.details.PartnerHasUTRId
 import models.requests.DataRequest
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.details.CommonHasReferenceValueService
 import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class PartnerHasUTRController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         val navigator: CompoundNavigator,
-                                         authenticate: AuthAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
-                                         formProvider: HasReferenceNumberFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                         val renderer: Renderer
-                                        )(implicit val executionContext: ExecutionContext) extends
-  HasReferenceValueController {
+class PartnerHasUTRController @Inject()(val messagesApi: MessagesApi,
+                                        authenticate: AuthAction,
+                                        getData: DataRetrievalAction,
+                                        requireData: DataRequiredAction,
+                                        formProvider: HasReferenceNumberFormProvider,
+                                        common: CommonHasReferenceValueService
+                                       )(implicit val executionContext: ExecutionContext)
+  extends Retrievals with I18nSupport {
 
   private def name(establisherIndex: Index, partnerIndex: Index)
                   (implicit request: DataRequest[AnyContent]): String =
@@ -66,7 +60,7 @@ class PartnerHasUTRController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
+            common.get(
               pageTitle     = Message("messages__hasUTR", Message("messages__partner")),
               pageHeading     = Message("messages__hasUTR", name(establisherIndex,partnerIndex)),
               isPageHeading = true,
@@ -84,7 +78,7 @@ class PartnerHasUTRController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            post(
+            common.post(
               pageTitle     = Message("messages__hasUTR", Message("messages__partner")),
               pageHeading     = Message("messages__hasUTR", name(establisherIndex,partnerIndex)),
               isPageHeading = true,

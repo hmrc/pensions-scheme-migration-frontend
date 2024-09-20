@@ -25,6 +25,7 @@ import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address.AddressYearsId
 import models.{CheckMode, Index, Mode}
 import play.api.data.Form
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
 import services.common.address.CommonAddressYearsService
@@ -36,13 +37,14 @@ import scala.concurrent.ExecutionContext
 import scala.util.Try
 
 class AddressYearsController @Inject()(
-                                       authenticate: AuthAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       dataUpdateService: DataUpdateService,
-                                       formProvider: AddressYearsFormProvider,
-                                       common: CommonAddressYearsService)(implicit ec: ExecutionContext)
-    extends Retrievals {
+    val messagesApi: MessagesApi,
+    authenticate: AuthAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    dataUpdateService: DataUpdateService,
+    formProvider: AddressYearsFormProvider,
+    common: CommonAddressYearsService
+)(implicit ec: ExecutionContext) extends Retrievals with I18nSupport {
 
   private def form: Form[Boolean] =
     formProvider("individualAddressYears.error.required")

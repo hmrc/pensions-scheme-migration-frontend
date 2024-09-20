@@ -16,11 +16,9 @@
 
 package controllers.establishers.company.director.address
 
-import config.AppConfig
-import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
-import controllers.address.{AddressListController, AddressPages}
+import models.establishers.AddressPages
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
@@ -30,57 +28,60 @@ import models._
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent}
 import renderer.Renderer
 import services.DataUpdateService
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
+import controllers.Retrievals
+import play.api.data.FormBinding.Implicits.formBinding
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.{CountryOptions, UserAnswers}
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
+import utils.UserAnswers
+import play.api.mvc.Results.{BadRequest, Redirect}
+import services.common.address.{CommonAddressListService, CommonAddressListTemplateData}
+import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
-class SelectAddressController @Inject()(val appConfig: AppConfig,
-                                        override val messagesApi: MessagesApi,
-                                        val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                        val addressLookupConnector: AddressLookupConnector,
-                                        val navigator: CompoundNavigator,
-                                        authenticate: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: AddressListFormProvider,
-                                        dataUpdateService: DataUpdateService,
-                                        countryOptions: CountryOptions,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        val renderer: Renderer)(implicit val ec: ExecutionContext) extends AddressListController with I18nSupport
-  with NunjucksSupport with Retrievals {
+class SelectAddressController @Inject()(
+    val messagesApi: MessagesApi,
+    userAnswersCacheConnector: UserAnswersCacheConnector,
+    navigator: CompoundNavigator,
+    authenticate: AuthAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: AddressListFormProvider,
+    dataUpdateService: DataUpdateService,
+    renderer: Renderer,
+    common:CommonAddressListService
+ )(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
+
+  private def form: Form[Int] = formProvider("selectAddress.required")
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.map(get)
+        getFormToTemplate(schemeName, establisherIndex, directorIndex, mode).retrieve.map(formToTemplate => common.get(formToTemplate(form)))
       }
     }
 
-  def getFormToJson(schemeName: String, establisherIndex: Index, directorIndex: Index, mode: Mode): Retrieval[Form[Int] => JsObject] =
+  def getFormToTemplate(schemeName: String, establisherIndex: Index, directorIndex: Index, mode: Mode): Retrieval[Form[Int] => CommonAddressListTemplateData] =
     Retrieval(
       implicit request =>
         EnterPostCodeId(establisherIndex, directorIndex).retrieve.map { addresses =>
-
-          val msg = request2Messages(request)
-
-          val name = request.userAnswers.get(DirectorNameId(establisherIndex, directorIndex)).map(_.fullName).getOrElse(msg("messages__director"))
+          val name: String = request.userAnswers.get(DirectorNameId(establisherIndex, directorIndex))
+            .map(_.fullName).getOrElse(Message("messages__director"))
 
           form =>
-            Json.obj(
-              "form" -> form,
-              "addresses" -> transformAddressesForTemplate(addresses),
-              "entityType" -> msg("messages__director"),
-              "entityName" -> name,
-              "enterManuallyUrl" -> routes.ConfirmAddressController.onPageLoad(establisherIndex, directorIndex, mode).url,
-              "schemeName" -> schemeName
+            CommonAddressListTemplateData(
+              form,
+              common.transformAddressesForTemplate(addresses),
+              Message("messages__director"),
+              name,
+              routes.ConfirmAddressController.onPageLoad(establisherIndex, directorIndex, mode).url,
+              schemeName
             )
         }
     )
@@ -89,11 +90,13 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       val addressPages: AddressPages = AddressPages(EnterPostCodeId(establisherIndex, directorIndex),
         AddressListId(establisherIndex, directorIndex), AddressId(establisherIndex, directorIndex))
+      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+
       retrieve(SchemeNameId) { schemeName =>
-        val json: Form[Int] => JsObject = getFormToJson(schemeName, establisherIndex, directorIndex, mode).retrieve.toOption.get
+        val json: Form[Int] => CommonAddressListTemplateData = getFormToTemplate(schemeName, establisherIndex, directorIndex, mode).retrieve.toOption.get
         form.bindFromRequest().fold(
           formWithErrors =>
-            renderer.render(viewTemplate, prepareJson(json(formWithErrors))).map(BadRequest(_)),
+            renderer.render(common.viewTemplate, json(formWithErrors)).map(BadRequest(_)),
           value =>
             addressPages.postcodeId.retrieve.map { addresses =>
               val address = addresses(value).copy(country = Some("GB"))
@@ -109,9 +112,8 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
                 }
               } else {
                 for {
-                  updatedAnswers <-
-
-                    Future.fromTry(setUpdatedAnswersForNonUkAddr(establisherIndex, directorIndex, mode, addressPages, address, request.userAnswers)
+                  updatedAnswers <- Future.fromTry(
+                    setUpdatedAnswersForNonUkAddr(establisherIndex, directorIndex, mode, addressPages, address, request.userAnswers)
                     )
                   _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
                 } yield {
@@ -124,10 +126,9 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
       }
     }
 
-  override def form: Form[Int] = formProvider("selectAddress.required")
-
-  private def setUpdatedAnswersForUkAddr(establisherIndex: Index, directorIndex: Index, mode: Mode, addressPages: AddressPages,
-                                   address: TolerantAddress, ua: UserAnswers): Try[UserAnswers] = {
+  private def setUpdatedAnswersForUkAddr(establisherIndex: Index, directorIndex: Index,
+                                         mode: Mode, addressPages: AddressPages,
+                                         address: TolerantAddress, ua: UserAnswers): Try[UserAnswers] = {
     val updatedUserAnswers =
       mode match {
         case CheckMode =>
@@ -139,26 +140,30 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
           }.getOrElse(ua)
         case _ => ua
       }
-    val finalUpdatedUserAnswers = updatedUserAnswers.remove(addressPages.addressListPage).set(addressPages.addressPage,
-      address.toAddress.get)
+    val finalUpdatedUserAnswers = updatedUserAnswers.remove(addressPages.addressListPage)
+      .set(addressPages.addressPage, address.toAddress.get)
     finalUpdatedUserAnswers
   }
 
-  private def setUpdatedAnswersForNonUkAddr(establisherIndex: Index, directorIndex: Index, mode: Mode, addressPages: AddressPages,
-                                   address: TolerantAddress, ua: UserAnswers): Try[UserAnswers] = {
+  private def setUpdatedAnswersForNonUkAddr(establisherIndex: Index,
+                                            directorIndex: Index,
+                                            mode: Mode,
+                                            addressPages: AddressPages,
+                                            address: TolerantAddress,
+                                            ua: UserAnswers): Try[UserAnswers] = {
     val updatedUserAnswers =
       mode match {
         case CheckMode =>
           dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
            val trusteeAddressPages: AddressPages = AddressPages(trusteeAddress.EnterPostCodeId(trustee.index),
             trusteeAddress.AddressListId(trustee.index), trusteeAddress.AddressId(trustee.index))
-            ua.remove(trusteeAddressPages.addressPage).setOrException(trusteeAddressPages.addressListPage,
-              address)
+            ua.remove(trusteeAddressPages.addressPage)
+              .setOrException(trusteeAddressPages.addressListPage, address)
             }.getOrElse(ua)
         case _ => ua
     }
-    val finalUpdatedUserAnswers = updatedUserAnswers.remove(addressPages.addressPage).set(addressPages.addressListPage,
-      address)
+    val finalUpdatedUserAnswers = updatedUserAnswers.remove(addressPages.addressPage)
+      .set(addressPages.addressListPage, address)
     finalUpdatedUserAnswers
   }
 }

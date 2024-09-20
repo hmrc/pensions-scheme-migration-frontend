@@ -54,13 +54,11 @@ class TrusteeNameController @Inject()(
     with Enumerable.Implicits
     with NunjucksSupport {
 
-  private def form(implicit messages: Messages): Form[PersonName] =
-    formProvider("messages__error__trustee")
+  private def form(implicit messages: Messages): Form[PersonName] = formProvider("messages__error__trustee")
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-//      val thePath = TrusteesId(index).path
         renderer.render(
           template = "personName.njk",
           ctx = Json.obj(

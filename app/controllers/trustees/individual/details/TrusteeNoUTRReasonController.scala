@@ -16,8 +16,7 @@
 
 package controllers.trustees.individual.details
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.ReasonController
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.ReasonFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -26,33 +25,27 @@ import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.details.TrusteeNoUTRReasonId
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
+import services.common.details.CommonReasonService
 import utils.UserAnswers
 import viewmodels.Message
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import scala.util.Try
 
-class TrusteeNoUTRReasonController @Inject()(
-                                                  override val messagesApi: MessagesApi,
-                                                  val navigator: CompoundNavigator,
-                                                  authenticate: AuthAction,
-                                                  getData: DataRetrievalAction,
-                                                  requireData: DataRequiredAction,
-                                                  formProvider: ReasonFormProvider,
-                                                  dataUpdateService: DataUpdateService,
-                                                  val controllerComponents: MessagesControllerComponents,
-                                                  val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                                  val renderer: Renderer
-                                                )(implicit val executionContext: ExecutionContext)
-  extends ReasonController {
+class TrusteeNoUTRReasonController @Inject()(val messagesApi: MessagesApi,
+                                             authenticate: AuthAction,
+                                             getData: DataRetrievalAction,
+                                             requireData: DataRequiredAction,
+                                             formProvider: ReasonFormProvider,
+                                             dataUpdateService: DataUpdateService,
+                                             common: CommonReasonService
+                                            )(implicit val executionContext: ExecutionContext)
+  extends Retrievals with I18nSupport {
 
   private def name(index: Index)
                   (implicit request: DataRequest[AnyContent]): String =
@@ -70,7 +63,7 @@ class TrusteeNoUTRReasonController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
+            common.get(
               pageTitle     = Message("messages__whyNoUTR", Message("messages__individual")),
               pageHeading     = Message("messages__whyNoUTR", name(index)),
               isPageHeading = true,
@@ -86,24 +79,15 @@ class TrusteeNoUTRReasonController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            form(index).bindFromRequest().fold(
-              (formWithErrors: Form[_]) =>
-                renderer.render(
-                  template = "reason.njk",
-                  ctx = Json.obj(
-                    "pageTitle"     -> Message("messages__whyNoUTR", Message("messages__individual")),
-                    "pageHeading" -> Message("messages__whyNoUTR", name(index)),
-                    "isPageHeading" -> true,
-                    "form"          -> formWithErrors,
-                    "schemeName"    -> schemeName
-                  )
-                ).map(BadRequest(_)),
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(setUpdatedAnswers(index, mode, value, request.userAnswers))
-                  _              <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
-                } yield
-                  Redirect(navigator.nextPage(TrusteeNoUTRReasonId(index), updatedAnswers, mode))
+            common.post(
+              pageTitle = Message("messages__whyNoUTR", Message("messages__individual")),
+              pageHeading = Message("messages__whyNoUTR", name(index)),
+              isPageHeading = true,
+              id = TrusteeNoUTRReasonId(index),
+              form = form(index),
+              schemeName = schemeName,
+              mode = mode,
+              optSetUserAnswers = Some(value => setUpdatedAnswers(index, mode, value, request.userAnswers))
             )
         }
     }

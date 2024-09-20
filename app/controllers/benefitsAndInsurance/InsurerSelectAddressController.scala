@@ -16,76 +16,73 @@
 
 package controllers.benefitsAndInsurance
 
-import config.AppConfig
-import connectors.AddressLookupConnector
-import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
-import controllers.address.{AddressListController, AddressPages}
-import controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController
+import models.establishers.AddressPages
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.{BenefitsInsuranceNameId, InsurerAddressId, InsurerAddressListId, InsurerEnterPostCodeId}
-import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
+import play.api.mvc.{Action, AnyContent}
+import controllers.Retrievals
+import services.common.address.{CommonAddressListTemplateData,CommonAddressListService}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.CountryOptions
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
+import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class InsurerSelectAddressController @Inject()(val appConfig: AppConfig,
-  override val messagesApi: MessagesApi,
-  val userAnswersCacheConnector: UserAnswersCacheConnector,
-  val addressLookupConnector: AddressLookupConnector,
-  val navigator: CompoundNavigator,
+class InsurerSelectAddressController @Inject()(
+  val messagesApi: MessagesApi,
   authenticate: AuthAction,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
   formProvider: AddressListFormProvider,
-  countryOptions: CountryOptions,
-  val controllerComponents: MessagesControllerComponents,
-  val renderer: Renderer)(implicit val ec: ExecutionContext) extends AddressListController with I18nSupport
-  with NunjucksSupport with Retrievals {
+  common:CommonAddressListService
+)(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
 
-  override def form: Form[Int] = formProvider("insurerSelectAddress.required")
+  private def form: Form[Int] = formProvider("insurerSelectAddress.required")
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async { implicit request =>
     retrieve(SchemeNameId) { schemeName =>
-      getFormToJson(schemeName).retrieve.map(get)
+      getFormToTemplate(schemeName).retrieve.map(formToTemplate => common.get(formToTemplate(form)))
     }
   }
 
   def onSubmit: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-        val addressPages: AddressPages = AddressPages(InsurerEnterPostCodeId, InsurerAddressListId, InsurerAddressId)
+      val addressPages: AddressPages = AddressPages(InsurerEnterPostCodeId, InsurerAddressListId, InsurerAddressId)
+      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName).retrieve.map(post(_, addressPages,manualUrlCall = InsurerConfirmAddressController.onPageLoad))
+        getFormToTemplate(schemeName).retrieve.map(
+          common.post(
+            _,
+            addressPages,
+            manualUrlCall = controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onPageLoad,
+            form = form
+          )
+        )
       }
     }
 
-  def getFormToJson(schemeName:String) : Retrieval[Form[Int] => JsObject] =
+  def getFormToTemplate(schemeName:String) : Retrieval[Form[Int] => CommonAddressListTemplateData] =
     Retrieval(
       implicit request =>
         InsurerEnterPostCodeId.retrieve.map { addresses =>
+          val name: String = request.userAnswers.get(BenefitsInsuranceNameId).getOrElse(Message("benefitsInsuranceUnknown"))
 
-          val msg = request2Messages(request)
-
-          val name = request.userAnswers.get(BenefitsInsuranceNameId)
-            .getOrElse(msg("benefitsInsuranceUnknown"))
-
-          form => Json.obj(
-            "form" -> form,
-            "addresses" -> transformAddressesForTemplate(addresses),
-            "entityType" -> msg("benefitsInsuranceUnknown"),
-            "entityName" -> name,
-            "enterManuallyUrl" -> InsurerConfirmAddressController.onPageLoad.url,
-            "schemeName" -> schemeName
-          )
+          form =>
+            CommonAddressListTemplateData(
+              form,
+              common.transformAddressesForTemplate(addresses),
+              Message("benefitsInsuranceUnknown"),
+              name,
+              controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onPageLoad.url,
+              schemeName
+            )
         }
     )
 }

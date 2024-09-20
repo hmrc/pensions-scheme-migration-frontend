@@ -25,6 +25,7 @@ import identifiers.establishers.company.director.address.AddressYearsId
 import identifiers.trustees.individual.address.{AddressYearsId => trusteeAddressYearsId}
 import models.{CheckMode, Index, Mode}
 import play.api.data.Form
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
 import services.common.address.CommonAddressYearsService
@@ -35,14 +36,16 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import scala.util.Try
 
-class AddressYearsController @Inject()(authenticate: AuthAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       formProvider: AddressYearsFormProvider,
-                                       dataUpdateService: DataUpdateService,
-                                       common: CommonAddressYearsService)
-                                      (implicit ec: ExecutionContext)
-  extends Retrievals {
+class AddressYearsController @Inject()(
+   val messagesApi: MessagesApi,
+   authenticate: AuthAction,
+   getData: DataRetrievalAction,
+   requireData: DataRequiredAction,
+   formProvider: AddressYearsFormProvider,
+   dataUpdateService: DataUpdateService,
+   common: CommonAddressYearsService
+)(implicit ec: ExecutionContext) extends Retrievals with I18nSupport {
+
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.map {

@@ -16,8 +16,7 @@
 
 package controllers.establishers.company.director.details
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.ReasonController
+import controllers.Retrievals
 import controllers.actions._
 import forms.ReasonFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -26,39 +25,34 @@ import identifiers.establishers.company.director.details.DirectorNoUTRReasonId
 import identifiers.trustees.individual.details.TrusteeNoUTRReasonId
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
+import services.common.details.CommonReasonService
 import utils.UserAnswers
 import viewmodels.Message
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import scala.util.Try
 
-class DirectorNoUTRReasonController @Inject()(override val messagesApi: MessagesApi,
-                                              val navigator: CompoundNavigator,
+class DirectorNoUTRReasonController @Inject()(val messagesApi: MessagesApi,
                                               authenticate: AuthAction,
                                               getData: DataRetrievalAction,
                                               requireData: DataRequiredAction,
                                               formProvider: ReasonFormProvider,
                                               dataUpdateService: DataUpdateService,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                              val renderer: Renderer
+                                              common: CommonReasonService
                                              )(implicit val executionContext: ExecutionContext)
-  extends ReasonController {
+  extends Retrievals with I18nSupport {
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
+            common.get(
               pageTitle = Message("messages__whyNoUTR", Message("messages__director")),
               pageHeading = Message("messages__whyNoUTR", name(establisherIndex, directorIndex)),
               isPageHeading = true,
@@ -74,24 +68,15 @@ class DirectorNoUTRReasonController @Inject()(override val messagesApi: Messages
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            form(establisherIndex, directorIndex).bindFromRequest().fold(
-              (formWithErrors: Form[_]) =>
-                renderer.render(
-                  template = "reason.njk",
-                  ctx = Json.obj(
-                    "pageTitle" -> Message("messages__whyNoUTR", Message("messages__director")),
-                    "pageHeading" -> Message("messages__whyNoUTR", name(establisherIndex, directorIndex)),
-                    "isPageHeading" -> true,
-                    "form" -> formWithErrors,
-                    "schemeName" -> schemeName
-                  )
-                ).map(BadRequest(_)),
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
-                  _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
-                } yield
-                  Redirect(navigator.nextPage(DirectorNoUTRReasonId(establisherIndex, directorIndex), updatedAnswers, mode))
+            common.post(
+              pageTitle = Message("messages__whyNoUTR", Message("messages__director")),
+              pageHeading = Message("messages__whyNoUTR", name(establisherIndex, directorIndex)),
+              isPageHeading = true,
+              id = DirectorNoUTRReasonId(establisherIndex, directorIndex),
+              form = form(establisherIndex, directorIndex),
+              schemeName = schemeName,
+              mode = mode,
+              optSetUserAnswers = Some(value => setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
             )
         }
     }

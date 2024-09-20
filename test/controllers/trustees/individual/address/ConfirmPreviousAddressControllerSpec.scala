@@ -64,7 +64,12 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with Nunju
   )
 
   private val valuesInvalid: Map[String, Seq[String]] = Map(
-    "value" -> Seq.empty
+    "line1" -> Seq("@@@"),
+    "line2" -> Seq(""),
+    "line3" -> Seq(""),
+    "line4" -> Seq(""),
+    "postcode" -> Seq("INVALID"),
+    "country" -> Seq("INVALID")
   )
 
   override def beforeEach(): Unit = {
