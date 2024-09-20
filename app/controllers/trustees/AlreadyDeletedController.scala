@@ -25,12 +25,10 @@ import models.Index
 import models.requests.DataRequest
 import models.trustees.TrusteeKind
 import models.trustees.TrusteeKind.{Company, Individual, Partnership}
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.{Enumerable, TwirlMigration}
+import utils.Enumerable
 import views.html.AlreadyDeletedView
 
 import javax.inject.Inject
@@ -41,9 +39,7 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
                                           val controllerComponents: MessagesControllerComponents,
-                                         renderer: Renderer,
                                          alreadyDeletedView: AlreadyDeletedView,
-                                         twirlMigration: TwirlMigration
                                         )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits {
 
@@ -52,27 +48,15 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
       implicit request =>
         trusteeName(index, trusteeKind) match {
           case Right(trusteeName) =>
-            val template = twirlMigration.duoTemplate(
-              renderer.render("alreadyDeleted.njk", json(trusteeName, existingSchemeName)),
-              alreadyDeletedView(
-                "messages__alreadyDeleted__trustee_title",
-                trusteeName,
-                existingSchemeName,
-                controllers.trustees.routes.AddTrusteeController.onPageLoad.url
-              )
-            )
-
-            template.map(Ok(_))
+            Future.successful(Ok(alreadyDeletedView(
+              "messages__alreadyDeleted__trustee_title",
+              trusteeName,
+              existingSchemeName,
+              controllers.trustees.routes.AddTrusteeController.onPageLoad.url
+            )))
           case Left(result) => result
         }
     }
-
-  private def json(trusteeName: String, schemeName: Option[String])(implicit messages: Messages): JsObject = Json.obj(
-    "title" -> messages("messages__alreadyDeleted__trustee_title"),
-    "name" -> trusteeName,
-    "schemeName" -> schemeName,
-    "submitUrl" -> controllers.trustees.routes.AddTrusteeController.onPageLoad.url
-  )
 
   private def trusteeName(index: Index, trusteeKind: TrusteeKind)(implicit
                                                                               dataRequest: DataRequest[AnyContent])

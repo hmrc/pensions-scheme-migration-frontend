@@ -34,12 +34,12 @@ import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
+import views.html.AlreadyDeletedView
 
 import scala.concurrent.Future
 class AlreadyDeletedControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   private val index: Index = Index(0)
-  private val templateToBeRendered = "alreadyDeleted.njk"
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
@@ -55,31 +55,26 @@ class AlreadyDeletedControllerSpec extends ControllerSpecBase with NunjucksSuppo
       val individualName = PersonName("Jane", "Doe")
       val individualKind: EstablisherKind = EstablisherKind.Individual
 
-      val jsonToPassToTemplate: JsObject =
-        Json.obj(
-          "title" -> messages("messages__alreadyDeleted__establisher_title"),
-          "name" -> individualName.fullName,
-          "schemeName" -> schemeName,
-          "submitUrl" -> AddEstablisherController.onPageLoad.url
-        )
+      val request = httpGETRequest(routes.AlreadyDeletedController.onPageLoad(index, individualKind).url)
 
       val userAnswers: Option[UserAnswers] = ua.set(EstablisherNameId(0), individualName).toOption
 
       def httpPathGET: String = controllers.establishers.routes.AlreadyDeletedController.onPageLoad(index, individualKind).url
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = application.injector.instanceOf[AlreadyDeletedView].apply(
+        messages("messages__alreadyDeleted__establisher_title"),
+        individualName.fullName,
+        Some(schemeName),
+        AddEstablisherController.onPageLoad.url
+      )(request, messages)
 
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate)
+      compareResultAndView(result, view)
     }
 
     "return OK and the correct view for a GET for a company" in {
@@ -87,31 +82,26 @@ class AlreadyDeletedControllerSpec extends ControllerSpecBase with NunjucksSuppo
       val companyName = CompanyDetails("CompanyName")
       val companyKind: EstablisherKind = EstablisherKind.Company
 
-      val jsonToPassToTemplate: JsObject =
-        Json.obj(
-          "title" -> messages("messages__alreadyDeleted__establisher_title"),
-          "name" -> companyName.companyName,
-          "schemeName" -> schemeName,
-          "submitUrl" -> AddEstablisherController.onPageLoad.url
-        )
+      val request = httpGETRequest(routes.AlreadyDeletedController.onPageLoad(index, companyKind).url)
 
       val userAnswers: Option[UserAnswers] = ua.set(CompanyDetailsId(0), companyName).toOption
 
       def httpPathGET: String = controllers.establishers.routes.AlreadyDeletedController.onPageLoad(index, companyKind).url
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = application.injector.instanceOf[AlreadyDeletedView].apply(
+        messages("messages__alreadyDeleted__establisher_title"),
+        companyName.companyName,
+        Some(schemeName),
+        AddEstablisherController.onPageLoad.url
+      )(request, messages)
 
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate)
+      compareResultAndView(result, view)
     }
 
     "return OK and the correct view for a GET for a partnership" in {
@@ -119,31 +109,26 @@ class AlreadyDeletedControllerSpec extends ControllerSpecBase with NunjucksSuppo
       val partnershipName = PartnershipDetails("PartnershipName")
       val partnershipKind: EstablisherKind = EstablisherKind.Partnership
 
-      val jsonToPassToTemplate: JsObject =
-        Json.obj(
-          "title" -> messages("messages__alreadyDeleted__establisher_title"),
-          "name" -> partnershipName.partnershipName,
-          "schemeName" -> schemeName,
-          "submitUrl" -> AddEstablisherController.onPageLoad.url
-        )
+      val request = httpGETRequest(routes.AlreadyDeletedController.onPageLoad(index, partnershipKind).url)
 
       def httpPathGET: String = controllers.establishers.routes.AlreadyDeletedController.onPageLoad(index, partnershipKind).url
 
       val userAnswers: Option[UserAnswers] = ua.set(PartnershipDetailsId(0), partnershipName).toOption
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = application.injector.instanceOf[AlreadyDeletedView].apply(
+        messages("messages__alreadyDeleted__establisher_title"),
+        partnershipName.partnershipName,
+        Some(schemeName),
+        AddEstablisherController.onPageLoad.url
+      )(request, messages)
 
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate)
+      compareResultAndView(result, view)
     }
 
   }

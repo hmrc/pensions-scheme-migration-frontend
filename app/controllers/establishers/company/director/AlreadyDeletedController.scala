@@ -21,8 +21,7 @@ import controllers.actions._
 import identifiers.establishers.company.director.DirectorNameId
 import models.requests.DataRequest
 import models.{Index, NormalMode}
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -37,9 +36,7 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
                                          val controllerComponents: MessagesControllerComponents,
-                                         renderer: Renderer,
                                          alreadyDeletedView: AlreadyDeletedView,
-                                         twirlMigration: TwirlMigration
                                         )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits {
 
@@ -48,28 +45,16 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
       implicit request =>
         directorName(establisherIndex, directorIndex) match {
           case Right(directorName) =>
-            val template = twirlMigration.duoTemplate(
-              renderer.render("alreadyDeleted.njk", json(establisherIndex, directorName, existingSchemeName)),
-              alreadyDeletedView(
-                "messages__alreadyDeleted__director_title",
-                directorName,
-                existingSchemeName,
-                controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(establisherIndex, NormalMode).url
-              )
-            )
-
-            template.map(Ok(_))
+            Future.successful(Ok(alreadyDeletedView(
+              "messages__alreadyDeleted__director_title",
+              directorName,
+              existingSchemeName,
+              controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(establisherIndex, NormalMode).url
+            )))
           case Left(result) => result
         }
 
     }
-
-  private def json(establisherIndex: Index, directorName: String, schemeName: Option[String])(implicit messages: Messages): JsObject = Json.obj(
-    "title" -> messages("messages__alreadyDeleted__director_title"),
-    "name" -> directorName,
-    "schemeName" -> schemeName,
-    "submitUrl" -> controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(establisherIndex, NormalMode).url
-  )
 
   private def directorName(establisherIndex: Index, directorIndex: Index)(implicit
                                                                           dataRequest: DataRequest[AnyContent])
