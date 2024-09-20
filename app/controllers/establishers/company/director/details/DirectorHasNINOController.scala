@@ -16,8 +16,7 @@
 
 package controllers.establishers.company.director.details
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.HasReferenceValueController
+import controllers.Retrievals
 import controllers.actions._
 import forms.HasReferenceNumberFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -26,34 +25,27 @@ import identifiers.establishers.company.director.details.DirectorHasNINOId
 import identifiers.trustees.individual.details.TrusteeHasNINOId
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
-import uk.gov.hmrc.viewmodels.Radios
+import services.common.details.CommonHasReferenceValueService
 import utils.UserAnswers
 import viewmodels.Message
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import scala.util.Try
 
-class DirectorHasNINOController @Inject()(
-                                           override val messagesApi: MessagesApi,
-                                           val navigator: CompoundNavigator,
-                                           authenticate: AuthAction,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           formProvider: HasReferenceNumberFormProvider,
-                                           dataUpdateService: DataUpdateService,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                           val renderer: Renderer
-                                         )(implicit val executionContext: ExecutionContext) extends
-  HasReferenceValueController {
+class DirectorHasNINOController @Inject()(val messagesApi: MessagesApi,
+                                          authenticate: AuthAction,
+                                          getData: DataRetrievalAction,
+                                          requireData: DataRequiredAction,
+                                          formProvider: HasReferenceNumberFormProvider,
+                                          dataUpdateService: DataUpdateService,
+                                          common: CommonHasReferenceValueService
+                                         )(implicit val executionContext: ExecutionContext)
+  extends Retrievals with I18nSupport {
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
@@ -61,7 +53,7 @@ class DirectorHasNINOController @Inject()(
 
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
+            common.get(
               pageTitle = Message("messages__hasNINO", Message("messages__director")),
               pageHeading = Message("messages__hasNINO", name(establisherIndex, directorIndex)),
               isPageHeading = true,
@@ -92,27 +84,17 @@ class DirectorHasNINOController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            form(establisherIndex, directorIndex).bindFromRequest().fold(
-              (formWithErrors: Form[_]) =>
-                renderer.render(
-                  template = templateName(Seq()),
-                  ctx = Json.obj(
-                    "pageTitle" -> Message("messages__hasNINO", Message("messages__director")),
-                    "pageHeading" -> Message("messages__hasNINO", name(establisherIndex, directorIndex)),
-                    "isPageHeading" -> true,
-                    "form" -> formWithErrors,
-                    "radios" -> Radios.yesNo(formWithErrors("value")),
-                    "schemeName" -> schemeName,
-                    "legendClass" -> "govuk-label--xl",
-                    "paragraphs" -> Seq()
-                  )
-                ).map(BadRequest(_)),
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
-                  _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
-                } yield
-                  Redirect(navigator.nextPage(DirectorHasNINOId(establisherIndex, directorIndex), updatedAnswers, mode))
+            common.post(
+              pageTitle = Message("messages__hasNINO", Message("messages__director")),
+              pageHeading = Message("messages__hasNINO", name(establisherIndex, directorIndex)),
+              isPageHeading = true,
+              id = DirectorHasNINOId(establisherIndex, directorIndex),
+              form = form(establisherIndex, directorIndex),
+              schemeName = schemeName,
+              paragraphText = Seq(),
+              legendClass = "govuk-label--xl",
+              mode = mode,
+              optSetUserAnswers = Some(value => setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
             )
         }
     }

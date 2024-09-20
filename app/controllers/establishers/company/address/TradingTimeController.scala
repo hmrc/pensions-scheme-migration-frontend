@@ -16,52 +16,51 @@
 
 package controllers.establishers.company.address
 
-import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
-import controllers.address.CommonTradingTimeController
 import forms.address.TradingTimeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address.TradingTimeId
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.address.CommonTradingTimeService
+import controllers.Retrievals
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.Enumerable
+import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class TradingTimeController @Inject()(override val messagesApi: MessagesApi,
-                                      val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                      authenticate: AuthAction,
-                                      getData: DataRetrievalAction,
-                                      requireData: DataRequiredAction,
-                                      val navigator: CompoundNavigator,
-                                      formProvider: TradingTimeFormProvider,
-                                      val controllerComponents: MessagesControllerComponents,
-                                      val renderer: Renderer)(implicit ec: ExecutionContext)
-  extends CommonTradingTimeController
-    with Enumerable.Implicits {
+class TradingTimeController @Inject()(
+      val messagesApi: MessagesApi,
+      authenticate: AuthAction,
+      getData: DataRetrievalAction,
+      requireData: DataRequiredAction,
+      formProvider: TradingTimeFormProvider,
+      common: CommonTradingTimeService
+  )(implicit ec: ExecutionContext) extends Retrievals with I18nSupport with Enumerable.Implicits {
 
-  private def form: Form[Boolean] =
-    formProvider("companyTradingTime.error.required")
+  private def form: Form[Boolean] = formProvider("companyTradingTime.error.required")
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (CompanyDetailsId(index) and SchemeNameId).retrieve.map {
         case companyDetails ~ schemeName =>
-          get(Some(schemeName), companyDetails.companyName, Messages("messages__company"), form, TradingTimeId(index))
+          common.get(Some(schemeName), companyDetails.companyName, Message("messages__company"), form, TradingTimeId(index))
       }
     }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
+      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+
       (CompanyDetailsId(index) and SchemeNameId).retrieve.map {
         case companyDetails ~ schemeName =>
-          post(Some(schemeName), companyDetails.companyName, Messages("messages__company"), form, TradingTimeId(index),Some(mode))
+          common.post(Some(schemeName), companyDetails.companyName, Message("messages__company"), form, TradingTimeId(index),Some(mode))
       }
     }
 }

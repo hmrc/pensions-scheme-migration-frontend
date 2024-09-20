@@ -29,6 +29,7 @@ import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
+import services.common.details.CommonWhatYouWillNeedDetailsService
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.{partnershipDetails, ua}
 import utils.UserAnswers
@@ -48,7 +49,11 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase with NunjucksSupp
 
   private def controller(dataRetrievalAction: DataRetrievalAction): WhatYouWillNeedController =
     new WhatYouWillNeedController(messagesApi, new FakeAuthAction(), dataRetrievalAction,
-      new DataRequiredActionImpl, controllerComponents, new Renderer(mockAppConfig, mockRenderer))
+      new DataRequiredActionImpl,      common = new CommonWhatYouWillNeedDetailsService(
+        controllerComponents = controllerComponents,
+        renderer = new Renderer(mockAppConfig, mockRenderer),
+        messagesApi = messagesApi
+      ))
 
   "WhatYouWillNeedController" must {
     "return OK and the correct view for a GET" in {

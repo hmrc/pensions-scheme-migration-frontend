@@ -16,8 +16,7 @@
 
 package controllers.establishers.company.details
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.EnterReferenceValueController
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.CompanyNumberFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -25,28 +24,23 @@ import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.details.CompanyNumberId
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.details.CommonEnterReferenceValueService
 import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class CompanyNumberController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         val navigator: CompoundNavigator,
+class CompanyNumberController @Inject()(val messagesApi: MessagesApi,
                                          authenticate: AuthAction,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
                                          formProvider: CompanyNumberFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                         val renderer: Renderer
-                                              )(implicit val executionContext: ExecutionContext)
-  extends EnterReferenceValueController {
+                                         common: CommonEnterReferenceValueService
+                                       )(implicit val executionContext: ExecutionContext)
+  extends Retrievals with I18nSupport {
 
   private def name(index: Index)
                   (implicit request: DataRequest[AnyContent]): String =
@@ -64,7 +58,7 @@ class CompanyNumberController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
+            common.get(
               pageTitle     = Message("messages__companyNumber", Message("messages__company")),
               pageHeading     = Message("messages__companyNumber", name(index)),
               isPageHeading = true,
@@ -82,7 +76,7 @@ class CompanyNumberController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            post(
+            common.post(
               pageTitle     = Message("messages__companyNumber", Message("messages__company")),
               pageHeading     = Message("messages__companyNumber", name(index)),
               isPageHeading = true,

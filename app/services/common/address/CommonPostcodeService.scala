@@ -14,37 +14,58 @@
  * limitations under the License.
  */
 
-package controllers.address
+package services.common.address
 
 import config.AppConfig
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
-import controllers.Retrievals
 import forms.FormsHelper.formWithError
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{Mode, NormalMode, TolerantAddress}
 import navigators.CompoundNavigator
 import play.api.data.Form
+import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.Messages
-import play.api.libs.json.{JsArray, JsObject, Json}
+import play.api.libs.json.{JsArray, JsObject, Json, OWrites, Writes}
+import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, Result}
 import renderer.Renderer
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
-trait PostcodeController extends FrontendBaseController with Retrievals {
+case class CommonPostcodeTemplateData(
+                                       form: Form[String],
+                                       entityType: String,
+                                       entityName: String,
+                                       enterManuallyUrl: String,
+                                       schemeName: String,
+                                       h1MessageKey: String  = "postcode.title"
+                                     )
 
-  protected def renderer: Renderer
-  protected def userAnswersCacheConnector: UserAnswersCacheConnector
-  protected def navigator: CompoundNavigator
-  protected def form: Form[String]
-  protected def addressLookupConnector: AddressLookupConnector
-  protected def viewTemplate = "address/postcode.njk"
+object CommonPostcodeTemplateData {
+  implicit val formWrites: Writes[Form[String]] = (form: Form[String]) => Json.obj(
+    "data" -> form.data,
+    "errors" -> form.errors.map(_.message)
+  )
+  implicit val templateDataWrites: OWrites[CommonPostcodeTemplateData] = Json.writes[CommonPostcodeTemplateData]
+}
 
-  protected def prepareJson(jsObject: JsObject):JsObject = {
+@Singleton
+class CommonPostcodeService @Inject()(
+     renderer: Renderer,
+     navigator: CompoundNavigator,
+     addressLookupConnector: AddressLookupConnector,
+     userAnswersCacheConnector: UserAnswersCacheConnector
+   ) {
+
+  import CommonPostcodeTemplateData._
+
+  def viewTemplate: String = "address/postcode.njk"
+
+  def prepareJson(jsObject: JsObject):JsObject = {
     if (jsObject.keys.contains("h1MessageKey")) {
       jsObject
     } else {
@@ -52,22 +73,26 @@ trait PostcodeController extends FrontendBaseController with Retrievals {
     }
   }
 
-  def get(json: Form[String] => JsObject)
-         (implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
-
-    renderer.render(viewTemplate, prepareJson(json(form))).map(Ok(_))
+  def get(formToTemplate: Form[String] => CommonPostcodeTemplateData,
+          form: Form[String]
+         )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
+    renderer.render(viewTemplate, formToTemplate(form)).map(Ok(_))
   }
 
-  def post(formToJson: Form[String] => JsObject, postcodeId: TypedIdentifier[Seq[TolerantAddress]], errorMessage: String, mode: Option[Mode] = None)
-          (implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
+  def post(formToTemplate: Form[String] => CommonPostcodeTemplateData,
+           postcodeId: TypedIdentifier[Seq[TolerantAddress]],
+           errorMessage: String,
+           mode: Option[Mode] = None,
+           form: Form[String]
+          )(implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
     form.bindFromRequest().fold(
       formWithErrors =>
-        renderer.render(viewTemplate, prepareJson(formToJson(formWithErrors))).map(BadRequest(_)),
+        renderer.render(viewTemplate, formToTemplate(formWithErrors)).map(BadRequest(_)),
       value =>
           addressLookupConnector.addressLookupByPostCode(value).flatMap {
             case Nil =>
-              val json = prepareJson(formToJson(formWithError(form, errorMessage)))
-                renderer.render(viewTemplate, json).map(BadRequest(_))
+              val json = formToTemplate(formWithError(form, errorMessage))
+              renderer.render(viewTemplate, json).map(BadRequest(_))
 
             case addresses =>
               for {
@@ -82,7 +107,7 @@ trait PostcodeController extends FrontendBaseController with Retrievals {
     )
   }
 
-  private def countryJsonElement(tuple: (String, String), isSelected: Boolean): JsArray = Json.arr(
+  def countryJsonElement(tuple: (String, String), isSelected: Boolean): JsArray = Json.arr(
     if (isSelected) {
       Json.obj(
         "value" -> tuple._1,

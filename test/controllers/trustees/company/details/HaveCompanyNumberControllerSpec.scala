@@ -33,6 +33,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
+import services.common.details.CommonHasReferenceValueService
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import utils.Data.{companyDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
@@ -60,8 +61,15 @@ class HaveCompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSu
     )
 
   private def controller(dataRetrievalAction: DataRetrievalAction): HaveCompanyNumberController =
-    new HaveCompanyNumberController(messagesApi, new FakeNavigator(desiredRoute = onwardCall), new FakeAuthAction(), dataRetrievalAction,
-      new DataRequiredActionImpl, formProvider, controllerComponents, mockUserAnswersCacheConnector, new Renderer(mockAppConfig, mockRenderer))
+    new HaveCompanyNumberController(messagesApi, new FakeAuthAction(), dataRetrievalAction,
+      new DataRequiredActionImpl, formProvider,
+      common = new CommonHasReferenceValueService(
+        controllerComponents = controllerComponents,
+        renderer = new Renderer(mockAppConfig, mockRenderer),
+        userAnswersCacheConnector = mockUserAnswersCacheConnector,
+        navigator = new FakeNavigator(desiredRoute = onwardCall),
+        messagesApi = messagesApi
+      ))
 
   override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
 

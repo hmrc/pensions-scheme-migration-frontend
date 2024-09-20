@@ -16,35 +16,30 @@
 
 package controllers.establishers.partnership.partner.details
 
-import connectors.cache.UserAnswersCacheConnector
+import controllers.Retrievals
 import controllers.actions._
-import controllers.dateOfBirth.DateOfBirthController
 import forms.DOBFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.partner.details.PartnerDOBId
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.details.CommonDateOfBirthService
 
 import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class PartnerDOBController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       val navigator: CompoundNavigator,
-                                       authenticate: AuthAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       formProvider: DOBFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                       val renderer: Renderer
-                                     )(implicit val executionContext: ExecutionContext) extends DateOfBirthController {
+class PartnerDOBController @Inject()(val messagesApi: MessagesApi,
+                                     authenticate: AuthAction,
+                                     getData: DataRetrievalAction,
+                                     requireData: DataRequiredAction,
+                                     formProvider: DOBFormProvider,
+                                     common: CommonDateOfBirthService
+                                    )(implicit val executionContext: ExecutionContext)
+  extends Retrievals with I18nSupport {
 
   val form: Form[LocalDate] = formProvider()
 
@@ -54,8 +49,9 @@ class PartnerDOBController @Inject()(
 
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
-              dobId        = PartnerDOBId(establisherIndex, partnerIndex),
+            common.get(
+              form = form,
+              dobId = PartnerDOBId(establisherIndex, partnerIndex),
               personNameId = PartnerNameId(establisherIndex, partnerIndex),
               schemeName   = schemeName,
               entityType   = Messages("messages__partner")
@@ -68,7 +64,8 @@ class PartnerDOBController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            post(
+            common.post(
+              form         = form,
               dobId        = PartnerDOBId(establisherIndex, partnerIndex),
               personNameId = PartnerNameId(establisherIndex, partnerIndex),
               schemeName   = schemeName,

@@ -38,6 +38,7 @@ import utils.Data.ua
 import utils.{Data, FakeNavigator, UserAnswers}
 
 import scala.concurrent.Future
+import services.common.contact.CommonEmailAddressService
 
 class EnterEmailControllerSpec extends ControllerSpecBase
   with NunjucksSupport
@@ -74,14 +75,17 @@ class EnterEmailControllerSpec extends ControllerSpecBase
                         ): EnterEmailController =
     new EnterEmailController(
       messagesApi = messagesApi,
-      navigator = new FakeNavigator(desiredRoute = onwardCall),
       authenticate = new FakeAuthAction(),
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl,
       formProvider = formProvider,
-      controllerComponents = controllerComponents,
-      userAnswersCacheConnector = mockUserAnswersCacheConnector,
-      renderer = new Renderer(mockAppConfig, mockRenderer)
+      common = new CommonEmailAddressService(
+        controllerComponents = controllerComponents,
+        renderer = new Renderer(mockAppConfig, mockRenderer),
+        userAnswersCacheConnector = mockUserAnswersCacheConnector,
+        navigator = new FakeNavigator(desiredRoute = onwardCall),
+        messagesApi = messagesApi
+      )
     )
 
   private val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])

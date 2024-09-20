@@ -33,6 +33,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
+import services.common.details.CommonHasReferenceValueService
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import utils.Data.ua
 import utils.{FakeNavigator, UserAnswers}
@@ -69,15 +70,18 @@ class DirectorHasNINOControllerSpec
                         ): DirectorHasNINOController =
     new DirectorHasNINOController(
       messagesApi               = messagesApi,
-      navigator                 = new FakeNavigator(desiredRoute = onwardCall),
       authenticate              = new FakeAuthAction(),
       getData                   = dataRetrievalAction,
       requireData               = new DataRequiredActionImpl,
       formProvider              = formProvider,
       dataUpdateService         = mockDataUpdateService,
-      controllerComponents      = controllerComponents,
-      userAnswersCacheConnector = mockUserAnswersCacheConnector,
-      renderer                  = new Renderer(mockAppConfig, mockRenderer)
+      common = new CommonHasReferenceValueService(
+        controllerComponents = controllerComponents,
+        renderer = new Renderer(mockAppConfig, mockRenderer),
+        userAnswersCacheConnector = mockUserAnswersCacheConnector,
+        navigator = new FakeNavigator(desiredRoute = onwardCall),
+        messagesApi = messagesApi
+      )
     )
 
   override def beforeEach(): Unit = {

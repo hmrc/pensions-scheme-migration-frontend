@@ -33,6 +33,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
+import services.common.details.CommonHasReferenceValueService
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import utils.Data.{partnershipDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
@@ -60,8 +61,15 @@ class HaveVATControllerSpec extends ControllerSpecBase with NunjucksSupport with
     )
 
   private def controller(dataRetrievalAction: DataRetrievalAction): HaveVATController =
-    new HaveVATController(messagesApi, new FakeNavigator(desiredRoute = onwardCall), new FakeAuthAction(), dataRetrievalAction,
-      new DataRequiredActionImpl, formProvider, controllerComponents, mockUserAnswersCacheConnector, new Renderer(mockAppConfig, mockRenderer))
+    new HaveVATController(messagesApi, new FakeAuthAction(), dataRetrievalAction,
+      new DataRequiredActionImpl, formProvider,
+      common = new CommonHasReferenceValueService(
+        controllerComponents = controllerComponents,
+        renderer = new Renderer(mockAppConfig, mockRenderer),
+        userAnswersCacheConnector = mockUserAnswersCacheConnector,
+        navigator = new FakeNavigator(desiredRoute = onwardCall),
+        messagesApi = messagesApi
+      ))
 
   override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
 

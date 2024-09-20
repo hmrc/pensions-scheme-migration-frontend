@@ -24,44 +24,35 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.partnership.PartnershipDetailsId
 import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import play.api.mvc.{Action, AnyContent}
+import services.common.contact.CommonWhatYouWillNeedContactService
 import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class WhatYouWillNeedController @Inject()(
-                                           override val messagesApi: MessagesApi,
+                                           val messagesApi: MessagesApi,
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           val renderer: Renderer
+                                           common: CommonWhatYouWillNeedContactService
                                          )(implicit val ec: ExecutionContext)
-  extends FrontendBaseController
-    with I18nSupport
-    with Retrievals
-    with NunjucksSupport {
+  extends Retrievals
+    with I18nSupport {
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         PartnershipDetailsId(index).retrieve.map {
           details =>
-            renderer.render(
-              template = "whatYouWillNeedContact.njk",
-              ctx = Json.obj(
-                "name" -> details.partnershipName,
-                "pageHeading" -> Message("messages__title_partnership"),
-                "entityType" -> Message("messages__partnership"),
-                "continueUrl" -> EnterEmailController.onPageLoad(index, NormalMode).url,
-                "schemeName" -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
-              )
-            ).map(Ok(_))
+            common.get(
+              name = details.partnershipName,
+              pageHeading = Message("messages__title_partnership"),
+              entityType = Message("messages__partnership"),
+              continueUrl = EnterEmailController.onPageLoad(index, NormalMode).url,
+              schemeName = request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
+            )
         }
     }
 
