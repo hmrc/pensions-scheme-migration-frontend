@@ -35,6 +35,7 @@ import identifiers.TypedIdentifier
 import play.api.data.Form
 import play.api.data.Forms.{mapping, nonEmptyText, optional, text}
 import uk.gov.hmrc.domain.PsaId
+import services.CommonServiceSpecBase
 
 import scala.concurrent.Future
 
