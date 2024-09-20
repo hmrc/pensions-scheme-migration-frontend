@@ -20,18 +20,18 @@ import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import helpers.cya.BenefitsAndInsuranceCYAHelper
 import matchers.JsonMatchers
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.{JsObject, Json}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels.Text.Literal
 import uk.gov.hmrc.viewmodels.{Html, NunjucksSupport}
 import utils.Data.{schemeName, ua}
-import utils.UserAnswers
+import utils.{TwirlMigration, UserAnswers}
+import views.html.CheckYourAnswersView
 
 import scala.concurrent.Future
 
@@ -39,7 +39,6 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 
-  private val templateToBeRendered = "check-your-answers.njk"
   private val mockCyaHelper: BenefitsAndInsuranceCYAHelper = mock[BenefitsAndInsuranceCYAHelper]
   private def httpPathGET: String = controllers.benefitsAndInsurance.routes.CheckYourAnswersController.onPageLoad.url
   val extraModules: Seq[GuiceableModule] = Seq(
@@ -60,11 +59,6 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
     )
   )
 
-  private val jsonToPassToTemplate: JsObject = Json.obj(
-    "list" -> rows,
-    "schemeName" -> schemeName
-  )
-
   override def beforeEach(): Unit = {
     super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(play.twirl.api.Html("")))
@@ -76,18 +70,21 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
 
     "return OK and the correct view for a GET" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+
+      val request = FakeRequest(GET, httpPathGET)
 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = application.injector.instanceOf[CheckYourAnswersView].apply(
+        controllers.routes.TaskListController.onPageLoad.url,
+        schemeName,
+        TwirlMigration.summaryListRow(rows)
+      )(request, messages)
 
-      templateCaptor.getValue mustEqual templateToBeRendered
+      compareResultAndView(result, view)
 
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate)
     }
 
   }

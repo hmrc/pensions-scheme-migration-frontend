@@ -17,23 +17,20 @@
 package controllers.establishers.company
 
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
+import controllers.actions.MutableFakeDataRetrievalAction
 import forms.CompanyDetailsFormProvider
 import identifiers.establishers.company.CompanyDetailsId
 import matchers.JsonMatchers
 import models.CompanyDetails
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
-import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
-import play.api.test.FakeRequest
+import play.api.Application
+import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
-import utils.{Data, FakeNavigator}
+import utils.{Data, UserAnswers}
 
 import scala.concurrent.Future
 
@@ -44,93 +41,67 @@ class CompanyDetailsControllerSpec extends ControllerSpecBase
   with BeforeAndAfterEach {
 
   private val companyName = "test company"
-  private val formProvider: CompanyDetailsFormProvider = new CompanyDetailsFormProvider()
-  private val form = formProvider()
 
-  private val templateToBeRendered: String = "companyDetails.njk"
-
-  private val commonJson: JsObject = Json.obj("schemeName" -> Data.schemeName)
   private val formData: CompanyDetails = CompanyDetails(companyName)
-
   override def beforeEach(): Unit = {
-    reset(
-      mockRenderer,
-      mockUserAnswersCacheConnector
-    )
+    super.beforeEach()
+    mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+    when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
-  private def controller(
-                          dataRetrievalAction: DataRetrievalAction
-                        ): CompanyDetailsController =
-    new CompanyDetailsController(
-      messagesApi = messagesApi,
-      navigator = new FakeNavigator(desiredRoute = onwardCall),
-      authenticate = new FakeAuthAction(),
-      getData = dataRetrievalAction,
-      requireData = new DataRequiredActionImpl,
-      formProvider = formProvider,
-      controllerComponents = controllerComponents,
-      userAnswersCacheConnector = mockUserAnswersCacheConnector,
-      renderer = new Renderer(mockAppConfig, mockRenderer)
-    )
+  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 
-  private val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-  private val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+  private val application: Application =
+    applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
+
+  private val formProvider = new CompanyDetailsFormProvider()
+  private val form = formProvider()
+  private val request = httpGETRequest(routes.CompanyDetailsController.onPageLoad(0).url)
+
+  private val validValues = Map("companyName" -> Seq(companyName))
+  private val invalidValues = Map("companyName" -> Seq(""))
+
+  private val submitUrl = routes.CompanyDetailsController.onSubmit(0).url
 
   "establiser CompanyDetailsController" must {
     "return OK and the correct view for a GET" in {
-      val getData = new FakeDataRetrievalAction(Some(ua))
-
-      val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(ua))
+      val result = route(application, request).value
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-      templateCaptor.getValue mustEqual templateToBeRendered
-      val json: JsObject = Json.obj("form" -> form)
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      val view = application.injector.instanceOf[views.html.CompanyDetailsView].apply(form, Data.schemeName)(request, messages)
+
+      compareResultAndView(result, view)
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val answers = ua.set(CompanyDetailsId(0), formData).success.value
-      val getData = new FakeDataRetrievalAction(Some(answers))
+      val prepopUA: UserAnswers = ua.set(CompanyDetailsId(0), formData).toOption.value
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(prepopUA))
 
-      val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(answers))
+      val result = route(application, request).value
 
       status(result) mustBe OK
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-      templateCaptor.getValue mustEqual templateToBeRendered
-      val json: JsObject = Json.obj("form" -> form.fill(formData))
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+
+      val filledForm = form.bind(Map("companyName" -> companyName))
+
+      val view = application.injector.instanceOf[views.html.CompanyDetailsView].apply(filledForm, Data.schemeName)(request, messages)
+
+      compareResultAndView(result, view)
     }
 
     "redirect to the next page when valid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-      val request: FakeRequest[AnyContentAsFormUrlEncoded] = fakeRequest.withFormUrlEncodedBody("companyName" -> companyName)
-
-      val getData = new FakeDataRetrievalAction(Some(ua))
-      val result: Future[Result] = controller(getData).onSubmit(0)(request)
+      val result = route(application, httpPOSTRequest(submitUrl, validValues)).value
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardCall.url)
-      verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      val request: FakeRequest[AnyContentAsFormUrlEncoded] = fakeRequest.withFormUrlEncodedBody("companyName" -> "")
-      val getData = new FakeDataRetrievalAction(Some(ua))
-
-      val result: Future[Result] = controller(getData).onSubmit(0)(request)
-      val boundForm = form.bind(Map("companyName" -> ""))
+      val result = route(application, httpPOSTRequest(submitUrl, invalidValues)).value
 
       status(result) mustBe BAD_REQUEST
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-      templateCaptor.getValue mustEqual templateToBeRendered
 
-      val json: JsObject = Json.obj("form" -> Json.toJson(boundForm))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
       verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
     }
   }

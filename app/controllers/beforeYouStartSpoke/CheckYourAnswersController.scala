@@ -21,9 +21,7 @@ import controllers.actions._
 import helpers.cya.{BeforeYouStartCYAHelper, CYAHelperForTwirl}
 import identifiers.beforeYouStart.SchemeNameId
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils._
 import views.html.CheckYourAnswersView
@@ -38,9 +36,7 @@ class CheckYourAnswersController @Inject()(
                                             requireData: DataRequiredAction,
                                             cyaHelper: BeforeYouStartCYAHelper,
                                             val controllerComponents: MessagesControllerComponents,
-                                            renderer: Renderer,
-                                            checkYourAnswersView: CheckYourAnswersView,
-                                            twirlMigration: TwirlMigration
+                                            checkYourAnswersView: CheckYourAnswersView
                                           )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with Enumerable.Implicits
@@ -48,27 +44,16 @@ class CheckYourAnswersController @Inject()(
     with Retrievals {
 
   def onPageLoad: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData()).async {
+    (authenticate andThen getData andThen requireData()) {
       implicit request =>
 
         // Workaround to enabled the Change link for type of scheme:-
         val isEnabledChange = request.request.getQueryString("cgl22").contains("true")
 
-        val json = Json.obj(
-          "list" -> cyaHelper.rowsForCYA(isEnabledChange),
-          "schemeName" -> existingSchemeName,
-          "submitUrl" -> controllers.routes.TaskListController.onPageLoad.url
-        )
-
-        val template = twirlMigration.duoTemplate(
-          renderer.render("check-your-answers.njk", json),
-          checkYourAnswersView(
-            controllers.routes.TaskListController.onPageLoad.url,
-            CYAHelperForTwirl.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
-            cyaHelper.rowsForCYA(isEnabledChange)
-          )
-        )
-
-        template.map(Ok(_))
+        Ok(checkYourAnswersView(
+          controllers.routes.TaskListController.onPageLoad.url,
+          CYAHelperForTwirl.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+          cyaHelper.rowsForCYA(isEnabledChange)
+        ))
     }
 }
