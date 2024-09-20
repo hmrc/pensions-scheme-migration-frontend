@@ -35,6 +35,7 @@ import utils.{Data, FakeNavigator, UserAnswers}
 import identifiers.TypedIdentifier
 import play.twirl.api.Html
 import uk.gov.hmrc.domain.PsaId
+import services.CommonServiceSpecBase
 
 import scala.concurrent.Future
 
