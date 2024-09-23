@@ -21,4 +21,5 @@ package object govuk {
     extends ButtonFluency
       with SummaryListFluency
       with InputFluency
+      with RadiosFluency
 }
