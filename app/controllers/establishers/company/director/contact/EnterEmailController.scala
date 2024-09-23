@@ -59,7 +59,8 @@ class EnterEmailController @Inject()(
               emailId = EnterEmailId(establisherIndex, directorIndex),
               form = form(establisherIndex, directorIndex),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__contact_details__hint", name(establisherIndex, directorIndex)))
+              paragraphText = Seq(Message("messages__contact_details__hint", name(establisherIndex, directorIndex))),
+              routes.EnterEmailController.onSubmit(establisherIndex, directorIndex, mode)
             )
         }
     }
@@ -77,6 +78,7 @@ class EnterEmailController @Inject()(
               schemeName = schemeName,
               paragraphText = Seq(Message("messages__contact_details__hint", name(establisherIndex, directorIndex))),
               mode = Some(mode),
+              routes.EnterEmailController.onSubmit(establisherIndex, directorIndex, mode),
               Some(value => setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
             )
         }

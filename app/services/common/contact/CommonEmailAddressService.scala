@@ -26,12 +26,14 @@ import play.api.data.FormBinding.Implicits._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{Json, OWrites}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{AnyContent, Call, MessagesControllerComponents, Result}
+import play.api.routing.Router.empty.routes
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import utils.UserAnswers
 import viewmodels.Message
+import views.html.EmailView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -43,6 +45,7 @@ class CommonEmailAddressService @Inject()(
                                            val renderer: Renderer,
                                            val userAnswersCacheConnector: UserAnswersCacheConnector,
                                            val navigator: CompoundNavigator,
+                                           emailView: EmailView,
                                            val messagesApi: MessagesApi
                                          ) extends NunjucksSupport
   with FrontendHeaderCarrierProvider
@@ -65,17 +68,19 @@ class CommonEmailAddressService @Inject()(
            emailId: TypedIdentifier[String],
            form: Form[String],
            schemeName: String,
-           paragraphText: Seq[String] = Seq()
+           paragraphText: Seq[String] = Seq(),
+           submitCall: Call
          )(
            implicit request: DataRequest[AnyContent],
            ec: ExecutionContext): Future[Result] = {
     val filledForm = request.userAnswers.get(emailId).fold(form)(form.fill)
-    renderer.render(
-      viewTemplate,
-      getTemplateData(
-        entityName, entityType.resolve, filledForm, schemeName, paragraphText
-      )
-    ).map(Ok(_))
+    Future.successful(Ok(
+      emailView(
+        filledForm,
+        schemeName,
+        entityName,
+        submitCall
+      )))
   }
 
   def post(entityName: String,
@@ -85,6 +90,7 @@ class CommonEmailAddressService @Inject()(
            schemeName: String,
            paragraphText: Seq[String] = Seq(),
            mode: Option[Mode] = None,
+           submitCall: Call,
            optSetUserAnswers: Option[String => Try[UserAnswers]] = None)
           (implicit request: DataRequest[AnyContent],
            ec: ExecutionContext): Future[Result] = {
@@ -92,9 +98,13 @@ class CommonEmailAddressService @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => {
-          renderer.render(viewTemplate,
-            getTemplateData(entityName, entityType.resolve, formWithErrors, schemeName, paragraphText)
-          ).map(BadRequest(_))
+          Future.successful(BadRequest(
+            emailView(
+              formWithErrors,
+              schemeName,
+              entityName,
+              submitCall
+            )))
         },
         value => {
           def defaultSetUserAnswers = (value: String) =>
