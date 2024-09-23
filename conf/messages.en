@@ -261,7 +261,7 @@ messages__schemeTaskList__sectionDeclaration_incomplete_v1 = You need to agree t
 messages__schemeTaskList__sectionDeclaration_incomplete_v2 = You can only see the declaration when you have made any changes.
 
 messages__BeforeYouStart__title = Before you start
-messages__BeforeYouStart__lede = Before you can add your scheme to the Managing Pension Schemes service you will need to enter some additional information to complete the required scheme record.
+messages__BeforeYouStart__lede = Before you can add your scheme to the Managing Pension Schemes service you will need to enter some additional information to complete the required scheme record. This may require you to add information that has been entered before.
 messages__BeforeYouStart__lede2 = The amount of information needed will depend on how much was supplied to the Pension Schemes Online service.
 messages__BeforeYouStart__lede3 = On the next page you will see the ‘scheme details overview’. This will show you what further information you need to supply. You can also change or add to any of the information already supplied.
 messages__BeforeYouStart__list_heading = Depending on the scheme, you may need some or all of the following information:
