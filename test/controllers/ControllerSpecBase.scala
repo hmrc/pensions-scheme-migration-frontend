@@ -16,7 +16,6 @@
 
 package controllers
 
-
 import base.SpecBase
 import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
@@ -25,18 +24,20 @@ import controllers.actions._
 import navigators.CompoundNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{Mockito, MockitoSugar}
-import org.scalatest.BeforeAndAfterEach
+import org.scalatest.{Assertion, BeforeAndAfterEach}
 import play.api.http.HeaderNames
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call, Result}
 import play.api.test.Helpers.{GET, POST}
 import play.api.test.{FakeHeaders, FakeRequest}
+import play.twirl.api.Html
 import services.DataUpdateService
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import utils.{CountryOptions, Enumerable, FakeCountryOptions}
+import scala.concurrent.duration.DurationInt
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerable.Implicits with MockitoSugar {
 
@@ -99,5 +100,19 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
         uri = path,
         headers = FakeHeaders(Seq(HeaderNames.HOST -> "localhost")),
         body = AnyContentAsFormUrlEncoded(values))
+
+
+  protected def compareResultAndView(
+                                      result: Future[Result],
+                                      view: Html
+                                    ): Assertion = {
+    org.scalatest.Assertions.assert(
+      play.api.test.Helpers.contentAsString(result)(1.seconds).removeAllNonces() == view.toString()
+    )
+  }
+
+  implicit class StringOps(s: String) {
+    def removeAllNonces(): String = s.replaceAll("""nonce="[^"]*"""", "")
+  }
 
 }

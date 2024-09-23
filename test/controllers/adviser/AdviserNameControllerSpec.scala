@@ -17,47 +17,41 @@
 package controllers.adviser
 
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction, MutableFakeDataRetrievalAction}
 import forms.adviser.AdviserNameFormProvider
 import identifiers.adviser.AdviserNameId
 import matchers.JsonMatchers
 import models.{CheckMode, NormalMode}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
-import play.api.libs.json.{JsObject, Json}
+import play.api.Application
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{Data, FakeNavigator}
+import views.html.adviser.AdviserNameView
 
 import scala.concurrent.Future
 
 class AdviserNameControllerSpec extends ControllerSpecBase
-  with NunjucksSupport
   with JsonMatchers
   with TryValues
   with BeforeAndAfterEach {
 
+  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
+
   private val adviserName = "test"
   private val formProvider: AdviserNameFormProvider = new AdviserNameFormProvider()
   private val form = formProvider()
-
-  private val templateToBeRendered: String = "adviser/adviserName.njk"
-
-  private val commonJson: JsObject = Json.obj("schemeName" -> Data.schemeName)
-
+  private val mode = NormalMode
 
   override def beforeEach(): Unit = {
     reset(
-      mockRenderer,
       mockUserAnswersCacheConnector
     )
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
   private def controller(
@@ -72,11 +66,8 @@ class AdviserNameControllerSpec extends ControllerSpecBase
       formProvider = formProvider,
       controllerComponents = controllerComponents,
       userAnswersCacheConnector = mockUserAnswersCacheConnector,
-      renderer = new Renderer(mockAppConfig, mockRenderer)
+      adviserNameView = app.injector.instanceOf[AdviserNameView]
     )
-
-  private val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-  private val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
   "AdviserNameController" must {
     "return OK and the correct view for a GET" in {
@@ -86,10 +77,14 @@ class AdviserNameControllerSpec extends ControllerSpecBase
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-      templateCaptor.getValue mustEqual templateToBeRendered
-      val json: JsObject = Json.obj("form" -> form)
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      val view = app.injector.instanceOf[AdviserNameView].apply(
+        form,
+        Some(Data.schemeName),
+        routes.AdviserNameController.onSubmit(mode),
+        Some("messages__adviserName__hint")
+      )(fakeRequest, messages)
+
+      compareResultAndView(result, view)
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
@@ -99,10 +94,8 @@ class AdviserNameControllerSpec extends ControllerSpecBase
       val result: Future[Result] = controller(getData).onPageLoad(CheckMode)(fakeDataRequest(answers))
 
       status(result) mustBe OK
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-      templateCaptor.getValue mustEqual templateToBeRendered
-      val json: JsObject = Json.obj("form" -> form.fill(adviserName))
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      contentAsString(result) must include(messages("messages__adviserName__title"))
+      contentAsString(result) must include(adviserName)
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -125,12 +118,8 @@ class AdviserNameControllerSpec extends ControllerSpecBase
       val boundForm = form.bind(Map("adviserName" -> ""))
 
       status(result) mustBe BAD_REQUEST
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject = Json.obj("form" -> Json.toJson(boundForm))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      contentAsString(result) must include(messages("messages__adviserName__title"))
+      contentAsString(result) must include(messages("messages__adviserName__blank"))
       verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
     }
   }

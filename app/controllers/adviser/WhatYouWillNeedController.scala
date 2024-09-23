@@ -22,32 +22,28 @@ import helpers.cya.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import models.NormalMode
 import play.api.i18n.I18nSupport
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
+import views.html.adviser.WhatYouWillNeedView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class WhatYouWillNeedController @Inject()(
-                                           authenticate: AuthAction,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           val renderer: Renderer
-                                         )(implicit val ec: ExecutionContext)
-  extends FrontendBaseController
-    with I18nSupport
-    with Retrievals
-    with NunjucksSupport {
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
+  authenticate: AuthAction,
+  getData: DataRetrievalAction,
+  requireData: DataRequiredAction,
+  val controllerComponents: MessagesControllerComponents,
+  whatYouWillNeedView: WhatYouWillNeedView
+)(implicit val ec: ExecutionContext)
+  extends FrontendBaseController with I18nSupport with Retrievals {
+
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData()) {
     implicit request =>
-      val json: JsObject = Json.obj(
-        "schemeName" -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString)),
-        "continueUrl" -> routes.AdviserNameController.onPageLoad(NormalMode).url
-      )
-      renderer.render("adviser/whatYouWillNeed.njk", json).map(Ok(_))
+      Ok(whatYouWillNeedView(
+          request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString)),
+          routes.AdviserNameController.onPageLoad(NormalMode)
+        ))
   }
+
 }
