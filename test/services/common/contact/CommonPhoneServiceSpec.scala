@@ -35,6 +35,7 @@ import identifiers.TypedIdentifier
 import uk.gov.hmrc.domain.PsaId
 import viewmodels.Message
 import services.CommonServiceSpecBase
+import views.html.PhoneView
 
 import scala.concurrent.Future
 
@@ -43,14 +44,15 @@ class CommonPhoneServiceSpec extends CommonServiceSpecBase with MockitoSugar wit
   private val navigator = new FakeNavigator(desiredRoute = onwardCall)
   val renderer = new Renderer(mockAppConfig, mockRenderer)
   private val form = Form("value" -> text)
-  private val service = new CommonPhoneService(controllerComponents, renderer, mockUserAnswersCacheConnector, navigator, messagesApi)
+  val phoneView = app.injector.instanceOf[PhoneView]
+  private val service = new CommonPhoneService(
+    controllerComponents, renderer, mockUserAnswersCacheConnector, navigator, messagesApi, phoneView)
 
   private val userAnswersId = "test-user-answers-id"
   implicit val hc: HeaderCarrier = HeaderCarrier()
   implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest(),
     UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), Data.migrationLock)
   private val phoneId: TypedIdentifier[String] = new TypedIdentifier[String] {}
-
   override def beforeEach(): Unit = {
     reset(mockRenderer, mockUserAnswersCacheConnector)
   }
@@ -61,7 +63,7 @@ class CommonPhoneServiceSpec extends CommonServiceSpecBase with MockitoSugar wit
 
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val result = service.get("entityName", Message("entityType"), phoneId, form, "schemeName")(request, global)
+      val result = service.get("entityName", Message("entityType"), phoneId, form, "schemeName", submitCall=onwardCall)(request, global)
 
       status(result) mustBe OK
       verify(mockRenderer, times(1)).render(any(), any())(any())
@@ -74,7 +76,8 @@ class CommonPhoneServiceSpec extends CommonServiceSpecBase with MockitoSugar wit
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val result = service.post("entityName", Message("entityType"), phoneId, form.withError("value", "error.required"), "schemeName")(invalidRequest, global)
+      val result = service.post("entityName", Message("entityType"), phoneId, form.withError("value", "error.required"), "schemeName",
+        submitCall=onwardCall)(invalidRequest, global)
 
       status(result) mustBe BAD_REQUEST
       verify(mockRenderer, times(1)).render(any(), any())(any())
@@ -87,7 +90,7 @@ class CommonPhoneServiceSpec extends CommonServiceSpecBase with MockitoSugar wit
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val result = service.post("entityName", Message("entityType"), phoneId, form, "schemeName")(validRequest, global)
+      val result = service.post("entityName", Message("entityType"), phoneId, form, "schemeName", submitCall=onwardCall)(validRequest, global)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardCall.url)

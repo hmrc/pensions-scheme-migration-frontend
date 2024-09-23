@@ -37,6 +37,7 @@ import services.common.contact.CommonPhoneService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{Data, FakeNavigator, UserAnswers}
+import views.html.PhoneView
 
 import scala.concurrent.Future
 
@@ -84,6 +85,7 @@ class EnterPhoneControllerSpec extends ControllerSpecBase
         renderer = new Renderer(mockAppConfig, mockRenderer),
         userAnswersCacheConnector = mockUserAnswersCacheConnector,
         navigator = new FakeNavigator(desiredRoute = onwardCall),
+        phoneView = mock[PhoneView],
         messagesApi = messagesApi
       )
     )

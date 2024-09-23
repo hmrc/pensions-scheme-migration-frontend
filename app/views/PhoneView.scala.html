@@ -22,17 +22,26 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], schemeName: String, entityName: String, submitCall: Call)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], schemeName: String, entityName: String, entityType: String, paragraphs: Seq[String], submitCall: Call)(implicit request: Request[_], messages: Messages)
 
 @field = @{form("value")}
 
-@layout(messages("messages__enterPhone_pageHeading", entityName)) {
+@layout(messages("messages__enterPhone_pageHeading", entityType)) {
     <div>
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
+
+        @* @if(paragraphs) {
+         *   @for(paragraph <- paragraphs) {
+         *       <p class="govuk-body govuk-!-font-weight-regular">@paragraph</p>
+         *   }
+         * }
+         *@
+
+        <h1 class="govuk-heading-l">@messages("messages__enterPhone_pageHeading", entityName)</h1>
+
         @formHelper(action = submitCall, Symbol("autoComplete") -> "off") {
-            <h1 class="govuk-heading-l">@messages("messages__enterPhone_pageHeading", entityName)</h1>
 
             @govukInput(
                 Input(
@@ -55,6 +64,5 @@
             )
         }
         @templates.ReturnLink(schemeName)
-
     </div>
 }
