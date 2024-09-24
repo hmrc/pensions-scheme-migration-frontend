@@ -20,19 +20,18 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.CompanyDetailsFormProvider
-import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId}
 import identifiers.trustees.company.CompanyDetailsId
+import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId}
 import models.trustees.TrusteeKind
 import models.{CompanyDetails, Index}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Enumerable
+import views.html.CompanyDetailsView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,7 +45,7 @@ class CompanyDetailsController @Inject()(
                                           formProvider: CompanyDetailsFormProvider,
                                           val controllerComponents: MessagesControllerComponents,
                                           userAnswersCacheConnector: UserAnswersCacheConnector,
-                                          renderer: Renderer
+                                          view: CompanyDetailsView
                                         )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
@@ -59,13 +58,10 @@ class CompanyDetailsController @Inject()(
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        renderer.render(
-          template = "companyDetails.njk",
-          ctx = Json.obj(
-            "form" -> request.userAnswers.get[CompanyDetails](CompanyDetailsId(index)).fold(form)(form.fill),
-            "schemeName" -> existingSchemeName
-          )
-        ).flatMap(view => Future.successful(Ok(view)))
+        Future.successful(Ok(view(
+          request.userAnswers.get[CompanyDetails](CompanyDetailsId(index)).fold(form)(form.fill),
+          existingSchemeName.getOrElse("Scheme")
+        )))
     }
 
   def onSubmit(index: Index): Action[AnyContent] =
@@ -73,13 +69,10 @@ class CompanyDetailsController @Inject()(
       implicit request =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            renderer.render(
-              template = "companyDetails.njk",
-              ctx = Json.obj(
-                "form" -> formWithErrors,
-                "schemeName" -> existingSchemeName
-              )
-            ).map(BadRequest(_)),
+            Future.successful(BadRequest(view(
+              formWithErrors,
+              existingSchemeName.getOrElse("Scheme")
+            ))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(CompanyDetailsId(index), value)

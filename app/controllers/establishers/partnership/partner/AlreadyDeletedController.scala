@@ -21,12 +21,10 @@ import controllers.actions._
 import identifiers.establishers.partnership.partner.PartnerNameId
 import models.requests.DataRequest
 import models.{Index, NormalMode}
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.{Enumerable, TwirlMigration}
+import utils.Enumerable
 import views.html.AlreadyDeletedView
 
 import javax.inject.Inject
@@ -37,9 +35,7 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
                                          val controllerComponents: MessagesControllerComponents,
-                                         renderer: Renderer,
-                                         alreadyDeletedView: AlreadyDeletedView,
-                                         twirlMigration: TwirlMigration
+                                         alreadyDeletedView: AlreadyDeletedView
                                         )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits {
 
@@ -48,28 +44,16 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
       implicit request =>
         partnerName(establisherIndex, partnerIndex) match {
           case Right(partnerName) =>
-            val template = twirlMigration.duoTemplate(
-              renderer.render("alreadyDeleted.njk", json(establisherIndex, partnerName, existingSchemeName)),
-              alreadyDeletedView(
-                "messages__alreadyDeleted__partner_title",
-                partnerName,
-                existingSchemeName,
-                controllers.establishers.partnership.routes.AddPartnersController.onPageLoad(establisherIndex, NormalMode).url
-              )
-            )
-
-            template.map(Ok(_))
+            Future.successful(Ok(alreadyDeletedView(
+              "messages__alreadyDeleted__partner_title",
+              partnerName,
+              existingSchemeName,
+              controllers.establishers.partnership.routes.AddPartnersController.onPageLoad(establisherIndex, NormalMode).url
+            )))
           case Left(result) => result
         }
 
     }
-
-  private def json(establisherIndex: Index,partnerName: String, schemeName: Option[String])(implicit messages: Messages): JsObject = Json.obj(
-    "title" -> messages("messages__alreadyDeleted__partner_title"),
-    "name" -> partnerName,
-    "schemeName" -> schemeName,
-    "submitUrl" -> controllers.establishers.partnership.routes.AddPartnersController.onPageLoad(establisherIndex, NormalMode).url
-  )
 
   private def partnerName(establisherIndex: Index, partnerIndex: Index)(implicit
                                                                               dataRequest: DataRequest[AnyContent])

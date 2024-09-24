@@ -19,11 +19,8 @@ package controllers
 import config.AppConfig
 import models.Scheme
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.TwirlMigration
 import views.html.AddingSchemeView
 
 import javax.inject.Inject
@@ -32,30 +29,18 @@ import scala.concurrent.ExecutionContext
 class AddingSchemeController @Inject()(val appConfig: AppConfig,
                                        override val messagesApi: MessagesApi,
                                        val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer,
-                                       addingSchemeView: AddingSchemeView,
-                                       twirlMigration: TwirlMigration
+                                       addingSchemeView: AddingSchemeView
                                       )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = Action.async { implicit request =>
+  def onPageLoad: Action[AnyContent] = Action { implicit request =>
     val returnUrl = controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
-    val json = Json.obj(
-      "listOfSchemeUrl" -> appConfig.yourPensionSchemesUrl,
-      "contactHmrcUrl" -> appConfig.contactHmrcUrl,
-      "returnUrl" -> returnUrl
-    )
 
-    val template = twirlMigration.duoTemplate(
-      renderer.render("addingScheme.njk", json),
-      addingSchemeView(
-        returnUrl,
-        appConfig.yourPensionSchemesUrl,
-        appConfig.contactHmrcUrl
-      )
-    )
-
-    template.map(Ok(_))
+    Ok(addingSchemeView(
+      returnUrl,
+      appConfig.yourPensionSchemesUrl,
+      appConfig.contactHmrcUrl
+    ))
   }
 
 }
