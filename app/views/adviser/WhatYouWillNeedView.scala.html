@@ -38,11 +38,9 @@
             <li>@messages("messages__what_you_will_need_wk__item_3")</li>
             <li>@messages("messages__what_you_will_need_wk__item_4")</li>
         </ul>
-        @formHelper(action = continueUrl, Symbol("autoComplete") -> "off") {
-            @govukButton(
-                ButtonViewModel(content = Text(messages("site.continue"))).asFormSubmit
-            )
-        }
+        @govukButton(
+            ButtonViewModel(content = Text(messages("site.continue"))).asLink(continueUrl.url)
+        )
         @templates.ReturnLink(schemeName)
     </div>
 }
