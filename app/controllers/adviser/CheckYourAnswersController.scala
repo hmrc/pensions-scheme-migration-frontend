@@ -36,7 +36,7 @@ class CheckYourAnswersController @Inject()(
                                             requireData: DataRequiredAction,
                                             cyaHelper: AdviserCYAHelper,
                                             val controllerComponents: MessagesControllerComponents,
-                                            checkYourAnswersView: CheckYourAnswersView,
+                                            checkYourAnswersView: CheckYourAnswersView
                                           )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with Enumerable.Implicits

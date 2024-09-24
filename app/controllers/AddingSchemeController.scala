@@ -29,7 +29,7 @@ import scala.concurrent.ExecutionContext
 class AddingSchemeController @Inject()(val appConfig: AppConfig,
                                        override val messagesApi: MessagesApi,
                                        val controllerComponents: MessagesControllerComponents,
-                                       addingSchemeView: AddingSchemeView,
+                                       addingSchemeView: AddingSchemeView
                                       )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with I18nSupport {
 

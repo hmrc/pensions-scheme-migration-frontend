@@ -107,11 +107,17 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
                                       view: Html
                                     ): Assertion = {
     org.scalatest.Assertions.assert(
-      play.api.test.Helpers.contentAsString(result)(1.seconds).removeAllNonces() == view.toString()
+      play.api.test.Helpers.contentAsString(result)(1.seconds).removeAllNonces().filterAndTrim
+        == view.toString().filterAndTrim
     )
   }
 
   implicit class StringOps(s: String) {
+    def filterAndTrim: String =
+        s.split("\n")
+        .filterNot(_.contains("csrfToken"))
+        .map(_.trim)
+        .mkString
     def removeAllNonces(): String = s.replaceAll("""nonce="[^"]*"""", "")
   }
 }
