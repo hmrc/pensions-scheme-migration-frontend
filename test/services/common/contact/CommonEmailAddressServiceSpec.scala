@@ -35,6 +35,7 @@ import identifiers.TypedIdentifier
 import uk.gov.hmrc.domain.PsaId
 import viewmodels.Message
 import services.CommonServiceSpecBase
+import views.html.EmailView
 
 import scala.concurrent.Future
 
@@ -43,7 +44,11 @@ class CommonEmailAddressServiceSpec extends CommonServiceSpecBase with MockitoSu
   private val navigator = new FakeNavigator(desiredRoute = onwardCall)
   val renderer = new Renderer(mockAppConfig, mockRenderer)
   private val form = Form("value" -> email)
-  private val service = new CommonEmailAddressService(controllerComponents, renderer, mockUserAnswersCacheConnector, navigator, messagesApi)
+
+  val emailView = app.injector.instanceOf[EmailView]
+  private val service = new CommonEmailAddressService(
+    controllerComponents, renderer, mockUserAnswersCacheConnector, navigator, messagesApi, emailView
+  )
 
   private val userAnswersId = "test-user-answers-id"
   implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -60,7 +65,7 @@ class CommonEmailAddressServiceSpec extends CommonServiceSpecBase with MockitoSu
     "render the view correctly on get" in {
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val result = service.get("entityName", Message("entityType"), emailId, form, "schemeName")(request, global)
+      val result = service.get("entityName", Message("entityType"), emailId, form, "schemeName", submitCall = onwardCall)(request, global)
 
       status(result) mustBe OK
       verify(mockRenderer, times(1)).render(any(), any())(any())
@@ -72,7 +77,8 @@ class CommonEmailAddressServiceSpec extends CommonServiceSpecBase with MockitoSu
 
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val result = service.post("entityName", Message("entityType"), emailId, form, "schemeName")(invalidRequest, global)
+      val result = service.post("entityName", Message("entityType"), emailId, form.withError("value", "error.required"), "schemeName",
+        submitCall = onwardCall)(invalidRequest, global)
 
       status(result) mustBe BAD_REQUEST
       verify(mockRenderer, times(1)).render(any(), any())(any())
@@ -85,7 +91,7 @@ class CommonEmailAddressServiceSpec extends CommonServiceSpecBase with MockitoSu
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val result = service.post("entityName", Message("entityType"), emailId, form, "schemeName")(validRequest, global)
+      val result = service.post("entityName", Message("entityType"), emailId, form, "schemeName", submitCall = onwardCall)(validRequest, global)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardCall.url)

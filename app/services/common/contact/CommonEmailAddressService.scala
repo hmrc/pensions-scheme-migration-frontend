@@ -45,22 +45,11 @@ class CommonEmailAddressService @Inject()(
                                            val renderer: Renderer,
                                            val userAnswersCacheConnector: UserAnswersCacheConnector,
                                            val navigator: CompoundNavigator,
-                                           emailView: EmailView,
-                                           val messagesApi: MessagesApi
+                                           val messagesApi: MessagesApi,
+                                           emailView: EmailView
                                          ) extends NunjucksSupport
   with FrontendHeaderCarrierProvider
   with I18nSupport {
-  private def viewTemplate = "email.njk"
-
-  private case class TemplateData(
-                                   entityName: String,
-                                   entityType: String,
-                                   form: Form[String],
-                                   schemeName: String,
-                                   paragraphText: Seq[String] = Seq()
-                                 )
-
-  implicit private def templateDataWrites(implicit request: DataRequest[AnyContent]): OWrites[TemplateData] = Json.writes[TemplateData]
 
   def get(
            entityName: String,
@@ -79,6 +68,8 @@ class CommonEmailAddressService @Inject()(
         filledForm,
         schemeName,
         entityName,
+        entityType.resolve,
+        paragraphText,
         submitCall
       )))
   }
@@ -103,6 +94,8 @@ class CommonEmailAddressService @Inject()(
               formWithErrors,
               schemeName,
               entityName,
+              entityType.resolve,
+              paragraphText,
               submitCall
             )))
         },
@@ -122,18 +115,4 @@ class CommonEmailAddressService @Inject()(
       )
   }
 
-  private def getTemplateData(
-                               entityName: String,
-                               entityType: String,
-                               form: Form[String],
-                               schemeName: String,
-                               paragraphText: Seq[String] = Seq()): TemplateData = {
-    TemplateData(
-      entityName,
-      entityType,
-      form,
-      schemeName,
-      paragraphText
-    )
-  }
 }

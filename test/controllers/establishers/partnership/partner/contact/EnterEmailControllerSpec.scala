@@ -39,6 +39,7 @@ import utils.{Data, FakeNavigator, UserAnswers}
 
 import scala.concurrent.Future
 import services.common.contact.CommonEmailAddressService
+import views.html.EmailView
 
 class EnterEmailControllerSpec extends ControllerSpecBase
   with NunjucksSupport
@@ -84,6 +85,7 @@ class EnterEmailControllerSpec extends ControllerSpecBase
         renderer = new Renderer(mockAppConfig, mockRenderer),
         userAnswersCacheConnector = mockUserAnswersCacheConnector,
         navigator = new FakeNavigator(desiredRoute = onwardCall),
+        emailView = mock[EmailView],
         messagesApi = messagesApi
       )
     )
