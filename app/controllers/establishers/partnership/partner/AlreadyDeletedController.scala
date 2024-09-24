@@ -35,7 +35,7 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
                                          val controllerComponents: MessagesControllerComponents,
-                                         alreadyDeletedView: AlreadyDeletedView,
+                                         alreadyDeletedView: AlreadyDeletedView
                                         )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits {
 
