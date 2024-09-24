@@ -22,6 +22,7 @@ import play.api.mvc.Request
 import play.twirl.api.Html
 import uk.gov.hmrc
 import uk.gov.hmrc.govukfrontend.views.Aliases._
+import uk.gov.hmrc.govukfrontend.views.viewmodels._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Content, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions}
 
@@ -53,6 +54,12 @@ object TwirlMigration extends Logging {
   def toTwirlRadios(nunjucksRadios: Seq[uk.gov.hmrc.viewmodels.Radios.Item])(implicit messages: Messages): Seq[RadioItem] = {
     nunjucksRadios.map(radio => {
       RadioItem(content = Text(radio.text.resolve), value = Some(radio.value))
+    })
+  }
+
+  def toTwirlCheckBoxes(nunjucksCheckboxes: Seq[viewmodels.forNunjucks.Checkboxes.Item])(implicit messages: Messages): Seq[CheckboxItem] = {
+    nunjucksCheckboxes.map(checkbox => {
+      CheckboxItem(content = Text(checkbox.text.map(_.resolve).getOrElse("")), value = checkbox.value)
     })
   }
 

@@ -106,6 +106,7 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
                                       result: Future[Result],
                                       view: Html
                                     ): Assertion = {
+
     org.scalatest.Assertions.assert(
       play.api.test.Helpers.contentAsString(result)(1.seconds).removeAllNonces() == view.toString()
     )

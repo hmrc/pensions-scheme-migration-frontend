@@ -35,7 +35,8 @@ import services.DataPrefillService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.MessageInterpolators
-import utils.{Enumerable, UserAnswers}
+import utils.{Enumerable, TwirlMigration, UserAnswers}
+import views.html.DataPrefillCheckboxView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -49,6 +50,7 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
                                                 formProvider: DataPrefillCheckboxFormProvider,
                                                 dataPrefillService: DataPrefillService,
                                                 config: AppConfig,
+                                                view: DataPrefillCheckboxView,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 renderer: Renderer
                                                )(implicit val executionContext: ExecutionContext) extends FrontendBaseController
@@ -67,15 +69,14 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
         implicit val ua: UserAnswers = request.userAnswers
         val seqDirector = dataPrefillService.getListOfDirectorsToBeCopied
         if (seqDirector.nonEmpty) {
-          val json = Json.obj(
-            "form" -> form,
-            "schemeName" -> schemeName,
-            "pageHeading" -> msg"messages__trustees__prefill__title",
-            "titleMessage" -> msg"messages__trustees__prefill__heading",
-            "dataPrefillCheckboxes" -> DataPrefillCheckbox.checkboxes(form, seqDirector)
-          )
-
-          renderer.render("dataPrefillCheckbox.njk", json).map(Ok(_))
+          Future.successful(Ok(view(
+            form,
+            schemeName,
+            "messages__trustees__prefill__title",
+            "messages__trustees__prefill__heading",
+            TwirlMigration.toTwirlCheckBoxes(DataPrefillCheckbox.checkboxes(form, seqDirector)),
+            routes.DirectorsAlsoTrusteesController.onSubmit(index)
+          )))
         } else {
           Future(Redirect(controllers.routes.TaskListController.onPageLoad))
         }
