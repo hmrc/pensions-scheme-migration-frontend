@@ -23,18 +23,20 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.BenefitsInsurancePolicyId
 import matchers.JsonMatchers
 import models.Scheme
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
-import play.api.libs.json.Reads._
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.Result
+import play.api.mvc.{Call, Result}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
+import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.Data.{insurerPolicyNo, schemeName, ua}
 import utils.{Data, Enumerable, UserAnswers}
+import views.html.benefitsAndInsurance.BenefitsInsurancePolicyView
 
 import scala.concurrent.Future
 
@@ -47,12 +49,6 @@ class BenefitsInsurancePolicyControllerSpec extends ControllerSpecBase with Nunj
   private val httpPathPOST: String = controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onSubmit.url
   private val form: Form[String] = new BenefitsInsurancePolicyFormProvider()()
 
-  private val jsonToPassToTemplate: Form[String] => JsObject = form =>
-    Json.obj(
-      "form" -> form,
-      "schemeName" -> schemeName
-    )
-
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq("abcdef")
   )
@@ -60,6 +56,9 @@ class BenefitsInsurancePolicyControllerSpec extends ControllerSpecBase with Nunj
   private val valuesInvalid: Map[String, Seq[String]] = Map(
     "value" -> Seq.empty
   )
+
+  val request = FakeRequest(GET, httpPathGET)
+  override val onwardCall: Call = Call("POST", httpPathPOST)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -76,12 +75,14 @@ class BenefitsInsurancePolicyControllerSpec extends ControllerSpecBase with Nunj
 
       status(result) mustEqual OK
 
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+      val view = application.injector.instanceOf[BenefitsInsurancePolicyView].apply(
+        form,
+        schemeName,
+        msg"benefitsInsurancePolicy.noCompanyName.h1".resolve,
+        onwardCall
+      )(request, messages)
 
-      verify(mockRenderer, times(1))
-        .render(ArgumentMatchers.eq("benefitsAndInsurance/benefitsInsurancePolicy.njk"), jsonCaptor.capture())(any())
-
-      (jsonCaptor.getValue \ "schemeName").toOption.map(_.as[String]) mustBe Some(Data.schemeName)
+      compareResultAndView(result, view)
     }
 
     "return OK and the correct view for a GET when the question has previously been answered" in {
@@ -95,12 +96,14 @@ class BenefitsInsurancePolicyControllerSpec extends ControllerSpecBase with Nunj
 
       status(result) mustEqual OK
 
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+      val view = application.injector.instanceOf[BenefitsInsurancePolicyView].apply(
+        form.fill(insurerPolicyNo),
+        schemeName,
+        msg"benefitsInsurancePolicy.noCompanyName.h1".resolve,
+        onwardCall
+      )(request, messages)
 
-      verify(mockRenderer, times(1))
-        .render(ArgumentMatchers.eq("benefitsAndInsurance/benefitsInsurancePolicy.njk"), jsonCaptor.capture())(any())
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(insurerPolicyNo)))
+      compareResultAndView(result, view)
     }
 
     "redirect to Session Expired page for a GET when there is no data" in {
