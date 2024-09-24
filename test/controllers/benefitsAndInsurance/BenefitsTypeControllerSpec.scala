@@ -119,11 +119,11 @@ class BenefitsTypeControllerSpec extends ControllerSpecBase with NunjucksSupport
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val result: Future[Result] = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      //TODO
-    //  redirectLocation(result).value mustBe controllers.routes.SessionExpiredController.onPageLoad().url
+
+      redirectLocation(result).value mustBe controllers.routes.SessionExpiredController.onPageLoad().absoluteURL()(request)
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
