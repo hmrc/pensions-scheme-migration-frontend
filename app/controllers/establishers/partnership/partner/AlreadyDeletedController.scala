@@ -21,8 +21,7 @@ import controllers.actions._
 import identifiers.establishers.partnership.partner.PartnerNameId
 import models.requests.DataRequest
 import models.{Index, NormalMode}
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Enumerable
@@ -55,13 +54,6 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
         }
 
     }
-
-  private def json(establisherIndex: Index,partnerName: String, schemeName: Option[String])(implicit messages: Messages): JsObject = Json.obj(
-    "title" -> messages("messages__alreadyDeleted__partner_title"),
-    "name" -> partnerName,
-    "schemeName" -> schemeName,
-    "submitUrl" -> controllers.establishers.partnership.routes.AddPartnersController.onPageLoad(establisherIndex, NormalMode).url
-  )
 
   private def partnerName(establisherIndex: Index, partnerIndex: Index)(implicit
                                                                               dataRequest: DataRequest[AnyContent])

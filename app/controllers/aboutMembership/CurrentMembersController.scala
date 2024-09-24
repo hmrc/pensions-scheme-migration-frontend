@@ -29,7 +29,6 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.{Enumerable, TwirlMigration}
 import viewmodels.Message
 import views.html.aboutMembership.MembersView
@@ -62,8 +61,8 @@ class CurrentMembersController @Inject()(override val messagesApi: MessagesApi,
         Future.successful(Ok(view(
           preparedForm,
           schemeName,
-          msg"currentMembers.title".withArgs(Messages("messages__the_scheme")).resolve,
-          msg"currentMembers.title".withArgs(schemeName).resolve,
+          Messages("currentMembers.title", Messages("messages__the_scheme")),
+          Messages("currentMembers.title", schemeName),
           TwirlMigration.toTwirlRadios(Members.radios(preparedForm)),
           routes.CurrentMembersController.onSubmit
         )))
@@ -78,8 +77,8 @@ class CurrentMembersController @Inject()(override val messagesApi: MessagesApi,
             Future.successful(BadRequest(view(
               formWithErrors,
               schemeName,
-              msg"currentMembers.title".withArgs(Messages("messages__the_scheme")).resolve,
-              msg"currentMembers.title".withArgs(schemeName).resolve,
+              Messages("currentMembers.title", Messages("messages__the_scheme")),
+              Messages("currentMembers.title", schemeName),
               TwirlMigration.toTwirlRadios(Members.radios(formWithErrors)),
               routes.CurrentMembersController.onSubmit
             )))
