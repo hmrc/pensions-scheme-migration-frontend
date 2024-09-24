@@ -39,7 +39,7 @@
             <li>@messages("messages__what_you_will_need_wk__item_4")</li>
         </ul>
         @govukButton(
-            ButtonViewModel(content = Text(messages("site.continue"))).asLink(continueUrl.url)
+            ButtonViewModel(content = Text(messages("site.continue"))).withAttribute(("id", "submit")).asLink(continueUrl.url)
         )
         @templates.ReturnLink(schemeName)
     </div>
