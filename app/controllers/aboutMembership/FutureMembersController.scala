@@ -45,7 +45,7 @@ class FutureMembersController @Inject()(override val messagesApi: MessagesApi,
                                          requireData: DataRequiredAction,
                                          formProvider: MembersFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
-                                         view : MembersView,
+                                         view : MembersView
                                         )(implicit val executionContext: ExecutionContext) extends FrontendBaseController
   with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
