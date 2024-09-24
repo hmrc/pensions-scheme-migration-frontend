@@ -28,7 +28,6 @@ import play.api.libs.json.{Json, OWrites}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, Call, MessagesControllerComponents, Result}
 import play.api.routing.Router.empty.routes
-import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import utils.UserAnswers
@@ -42,7 +41,6 @@ import scala.util.Try
 @Singleton
 class CommonEmailAddressService @Inject()(
                                            val controllerComponents: MessagesControllerComponents,
-                                           val renderer: Renderer,
                                            val userAnswersCacheConnector: UserAnswersCacheConnector,
                                            val navigator: CompoundNavigator,
                                            val messagesApi: MessagesApi,

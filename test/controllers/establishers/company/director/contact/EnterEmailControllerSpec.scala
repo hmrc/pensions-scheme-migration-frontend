@@ -33,7 +33,6 @@ import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import renderer.Renderer
 import services.common.contact.CommonEmailAddressService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
@@ -57,7 +56,6 @@ class EnterEmailControllerSpec extends ControllerSpecBase
   override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
   private val userAnswers: UserAnswers = ua.set(DirectorNameId(0,0), personName).success.value
-  private val templateToBeRendered: String = "email.njk"
 
   private val commonJson: JsObject =
     Json.obj(
@@ -69,10 +67,8 @@ class EnterEmailControllerSpec extends ControllerSpecBase
 
   override def beforeEach(): Unit = {
     reset(
-      mockRenderer,
       mockUserAnswersCacheConnector
     )
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
   private def controller(
@@ -87,7 +83,6 @@ class EnterEmailControllerSpec extends ControllerSpecBase
       dataUpdateService = mockDataUpdateService,
       common = new CommonEmailAddressService(
         controllerComponents = controllerComponents,
-        renderer = new Renderer(mockAppConfig, mockRenderer),
         userAnswersCacheConnector = mockUserAnswersCacheConnector,
         navigator = new FakeNavigator(desiredRoute = onwardCall),
         emailView = app.injector.instanceOf[EmailView],
@@ -114,7 +109,7 @@ class EnterEmailControllerSpec extends ControllerSpecBase
         Seq(),
         routes.EnterEmailController.onSubmit(0, 0, NormalMode)
       )(fakeRequest, messages)
-//      compareResultAndView(result, view)
+      compareResultAndView(result, view)
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {

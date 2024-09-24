@@ -28,7 +28,6 @@ import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import renderer.Renderer
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{Data, FakeNavigator, UserAnswers}
 import identifiers.TypedIdentifier
@@ -42,12 +41,11 @@ import scala.concurrent.Future
 class CommonEmailAddressServiceSpec extends CommonServiceSpecBase with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
 
   private val navigator = new FakeNavigator(desiredRoute = onwardCall)
-  val renderer = new Renderer(mockAppConfig, mockRenderer)
   private val form = Form("value" -> email)
 
   val emailView = app.injector.instanceOf[EmailView]
   private val service = new CommonEmailAddressService(
-    controllerComponents, renderer, mockUserAnswersCacheConnector, navigator, messagesApi, emailView
+    controllerComponents, mockUserAnswersCacheConnector, navigator, messagesApi, emailView
   )
 
   private val userAnswersId = "test-user-answers-id"
@@ -57,7 +55,7 @@ class CommonEmailAddressServiceSpec extends CommonServiceSpecBase with MockitoSu
   private val emailId: TypedIdentifier[String] = new TypedIdentifier[String] {}
 
   override def beforeEach(): Unit = {
-    reset(mockRenderer, mockUserAnswersCacheConnector)
+    reset(mockUserAnswersCacheConnector)
   }
 
   "CommonEmailAddressService" must {

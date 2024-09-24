@@ -33,7 +33,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.Application
 import play.twirl.api.Html
-import renderer.Renderer
 import services.common.contact.CommonEmailAddressService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
@@ -60,10 +59,8 @@ class EnterEmailControllerSpec extends ControllerSpecBase
 
   override def beforeEach(): Unit = {
     reset(
-      mockRenderer,
       mockUserAnswersCacheConnector
     )
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
   private def controller(
@@ -77,7 +74,6 @@ class EnterEmailControllerSpec extends ControllerSpecBase
       formProvider = formProvider,
       common = new CommonEmailAddressService(
         controllerComponents = controllerComponents,
-        renderer = new Renderer(mockAppConfig, mockRenderer),
         userAnswersCacheConnector = mockUserAnswersCacheConnector,
         navigator = new FakeNavigator(desiredRoute = onwardCall),
         emailView = app.injector.instanceOf[EmailView],
@@ -101,7 +97,7 @@ class EnterEmailControllerSpec extends ControllerSpecBase
         Seq(),
         routes.EnterPhoneController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)
-//      compareResultAndView(result, view)
+      compareResultAndView(result, view)
 
     }
 

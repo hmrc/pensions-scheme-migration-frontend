@@ -32,7 +32,6 @@ import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{Data, FakeNavigator, UserAnswers}
@@ -53,7 +52,6 @@ class EnterEmailControllerSpec extends ControllerSpecBase
   private val form = formProvider("")
 
   private val userAnswers: UserAnswers = ua.set(PartnerNameId(0,0), personName).success.value
-  private val templateToBeRendered: String = "email.njk"
 
   private val commonJson: JsObject =
     Json.obj(
@@ -65,10 +63,8 @@ class EnterEmailControllerSpec extends ControllerSpecBase
 
   override def beforeEach(): Unit = {
     reset(
-      mockRenderer,
       mockUserAnswersCacheConnector
     )
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
   private def controller(
@@ -82,7 +78,6 @@ class EnterEmailControllerSpec extends ControllerSpecBase
       formProvider = formProvider,
       common = new CommonEmailAddressService(
         controllerComponents = controllerComponents,
-        renderer = new Renderer(mockAppConfig, mockRenderer),
         userAnswersCacheConnector = mockUserAnswersCacheConnector,
         navigator = new FakeNavigator(desiredRoute = onwardCall),
         emailView = mock[EmailView],
@@ -101,8 +96,6 @@ class EnterEmailControllerSpec extends ControllerSpecBase
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-      templateCaptor.getValue mustEqual templateToBeRendered
       val json: JsObject = Json.obj("form" -> form)
       jsonCaptor.getValue must containJson(commonJson ++ json)
     }
@@ -116,9 +109,6 @@ class EnterEmailControllerSpec extends ControllerSpecBase
           .onPageLoad(0,0, NormalMode)(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
-      templateCaptor.getValue mustEqual templateToBeRendered
       val json: JsObject = Json.obj("form" -> form.fill(formData))
       jsonCaptor.getValue must containJson(commonJson ++ json)
     }
@@ -144,8 +134,6 @@ class EnterEmailControllerSpec extends ControllerSpecBase
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
       status(result) mustBe BAD_REQUEST
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-      templateCaptor.getValue mustEqual templateToBeRendered
 
       val json: JsObject = Json.obj("form" -> Json.toJson(boundForm))
 
