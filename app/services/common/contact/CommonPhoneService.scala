@@ -42,7 +42,6 @@ import play.api.data.FormBinding.Implicits._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, Call, MessagesControllerComponents, Result}
-import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import utils.UserAnswers
@@ -55,13 +54,12 @@ import scala.util.Try
 
 @Singleton
 class CommonPhoneService @Inject()(
-                                           val controllerComponents: MessagesControllerComponents,
-                                           val renderer: Renderer,
-                                           val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                           val navigator: CompoundNavigator,
-                                           val messagesApi: MessagesApi,
-                                           phoneView: PhoneView
-                                         ) extends NunjucksSupport
+                                    val controllerComponents: MessagesControllerComponents,
+                                    val userAnswersCacheConnector: UserAnswersCacheConnector,
+                                    val navigator: CompoundNavigator,
+                                    val messagesApi: MessagesApi,
+                                    phoneView: PhoneView
+                                  ) extends NunjucksSupport
   with FrontendHeaderCarrierProvider
   with I18nSupport {
 
@@ -72,7 +70,7 @@ class CommonPhoneService @Inject()(
            form: Form[String],
            schemeName: String,
            paragraphText: Seq[String] = Seq(),
-           submitCall : Call
+           submitCall: Call
          )(
            implicit request: DataRequest[AnyContent],
            ec: ExecutionContext): Future[Result] = {
@@ -85,7 +83,7 @@ class CommonPhoneService @Inject()(
         entityType.resolve,
         paragraphText,
         submitCall
-    )))
+      )))
   }
 
   def post(entityName: String,
@@ -95,7 +93,7 @@ class CommonPhoneService @Inject()(
            schemeName: String,
            paragraphText: Seq[String] = Seq(),
            mode: Option[Mode] = None,
-           submitCall : Call,
+           submitCall: Call,
            optSetUserAnswers: Option[String => Try[UserAnswers]] = None)
           (implicit request: DataRequest[AnyContent],
            ec: ExecutionContext): Future[Result] = {

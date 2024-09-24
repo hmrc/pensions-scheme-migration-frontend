@@ -17,23 +17,20 @@
 package controllers.trustees.partnership.contact
 
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction, MutableFakeDataRetrievalAction}
+import controllers.actions._
 import forms.PhoneFormProvider
 import identifiers.trustees.partnership.PartnershipDetailsId
 import identifiers.trustees.partnership.contact.EnterPhoneId
 import matchers.JsonMatchers
 import models.NormalMode
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.Application
 import play.api.i18n.Messages
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import renderer.Renderer
 import services.common.contact.CommonPhoneService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
@@ -58,10 +55,8 @@ class EnterPhoneControllerSpec extends ControllerSpecBase
 
   override def beforeEach(): Unit = {
     reset(
-      mockRenderer,
       mockUserAnswersCacheConnector
     )
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
   private def controller(
@@ -75,7 +70,6 @@ class EnterPhoneControllerSpec extends ControllerSpecBase
       formProvider = formProvider,
       common = new CommonPhoneService(
         controllerComponents = controllerComponents,
-        renderer = new Renderer(mockAppConfig, mockRenderer),
         userAnswersCacheConnector = mockUserAnswersCacheConnector,
         navigator = new FakeNavigator(desiredRoute = onwardCall),
         phoneView = app.injector.instanceOf[PhoneView],
