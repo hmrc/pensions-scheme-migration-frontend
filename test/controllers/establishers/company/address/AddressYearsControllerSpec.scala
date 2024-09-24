@@ -70,13 +70,14 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
 
   "AddressYears Controller" must {
 
+    val request = httpGETRequest(httpPathGET)
     "Return OK and the correct view for a GET" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, Data.schemeName)
         .setOrException(CompanyDetailsId(0), Data.companyDetails)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val result: Future[Result] = route(application, request).value
 
       status(result) mustEqual OK
 
@@ -113,11 +114,11 @@ class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val result: Future[Result] = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.routes.SessionExpiredController.onPageLoad().absoluteURL()(request)
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {

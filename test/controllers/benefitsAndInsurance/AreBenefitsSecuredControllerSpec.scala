@@ -113,7 +113,6 @@ class AreBenefitsSecuredControllerSpec extends ControllerSpecBase with NunjucksS
       val result: Future[Result] = route(application, req).value
 
       status(result) mustEqual SEE_OTHER
-      //TODO need to work out
       redirectLocation(result).value mustBe controllers.routes.SessionExpiredController.onPageLoad().absoluteURL()(req)
     }
 
