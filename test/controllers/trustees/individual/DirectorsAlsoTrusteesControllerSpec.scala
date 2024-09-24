@@ -98,8 +98,6 @@ class DirectorsAlsoTrusteesControllerSpec extends ControllerSpecBase
       view = view
     )
 
-  private val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-  private val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
   "DirectorsAlsoTrusteesController" must {
     "return OK and the correct view for a GET" in {
