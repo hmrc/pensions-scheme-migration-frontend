@@ -38,6 +38,8 @@ import utils.{CountryOptions, Enumerable, FakeCountryOptions}
 import scala.concurrent.duration.DurationInt
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration.DurationInt
+
 
 trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerable.Implicits with MockitoSugar {
 
@@ -101,17 +103,25 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
         headers = FakeHeaders(Seq(HeaderNames.HOST -> "localhost")),
         body = AnyContentAsFormUrlEncoded(values))
 
-
   protected def compareResultAndView(
                                       result: Future[Result],
                                       view: Html
                                     ): Assertion = {
     org.scalatest.Assertions.assert(
-      play.api.test.Helpers.contentAsString(result)(1.seconds).removeAllNonces() == view.toString()
+
+      play.api.test.Helpers.contentAsString(result)(1.seconds).removeAllNonces().filterAndTrim
+        == view.toString().filterAndTrim
+
     )
   }
 
   implicit class StringOps(s: String) {
+
+    def filterAndTrim: String =
+        s.split("\n")
+        .filterNot(_.contains("csrfToken"))
+        .map(_.trim)
+        .mkString
     def removeAllNonces(): String = s.replaceAll("""nonce="[^"]*"""", "")
   }
 

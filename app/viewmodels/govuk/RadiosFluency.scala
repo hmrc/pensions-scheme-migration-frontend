@@ -18,34 +18,31 @@ package viewmodels.govuk
 
 import play.api.data.Field
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
-import uk.gov.hmrc.govukfrontend.views.viewmodels.input.Input
-import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
+import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.Fieldset
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.{RadioItem, Radios}
 import viewmodels.ErrorMessageAwareness
 
-object input extends InputFluency
+object radios extends RadiosFluency
 
-trait InputFluency {
+trait RadiosFluency {
 
-  object InputViewModel extends ErrorMessageAwareness {
+  object RadiosViewModel extends ErrorMessageAwareness {
 
     def apply(
                field: Field,
-               label: Label,
-               classes: String = "",
-               hint: Option[Hint] = None,
-               inputType: String = "text"
-             )(implicit messages: Messages): Input =
-      Input(
-        id           = field.id,
+               items: Seq[RadioItem],
+               fieldset: Fieldset,
+               classes: String = ""
+             )(implicit messages: Messages): Radios =
+      Radios(
+        fieldset     = Some(fieldset),
         name         = field.name,
-        value        = field.value,
-        label        = label,
+        items        = items map (item => item copy (checked = field.value.isDefined && field.value == item.value)),
         errorMessage = errorMessage(field),
-        classes = classes,
-        hint = hint,
-        inputType = inputType
+        classes = classes
       )
   }
 
+  implicit class FluentRadios(radios: Radios) {
+  }
 }

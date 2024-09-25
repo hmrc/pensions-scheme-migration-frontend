@@ -16,10 +16,6 @@
 
 package viewmodels
 
-package object govuk {
-  object all
-    extends ButtonFluency
-      with SummaryListFluency
-      with InputFluency
-      with RadiosFluency
+abstract class WithCssClass(className: String) {
+  override val toString: String = className
 }
