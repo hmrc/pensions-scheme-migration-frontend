@@ -134,7 +134,7 @@ class EnterEmailControllerSpec extends ControllerSpecBase
 
       contentAsString(result) must include(messages("messages__enterEmail_pageHeading", advisorName))
       contentAsString(result) must include(messages("messages__error__common__email__required"))
-      contentAsString(result) must include(messages("messages__email__invalid"))
+      contentAsString(result) must include(messages("messages__enterEmail__error_invalid"))
 
       verify(mockUserAnswersCacheConnector, times(0))
         .save(any(), any())(any(), any())

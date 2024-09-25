@@ -110,7 +110,7 @@ class EnterEmailControllerSpec extends ControllerSpecBase
           .onPageLoad(0,0, NormalMode)(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
-      contentAsString(result) must include(messages("messages__enterEmail_pageHeading", "the director"))
+      contentAsString(result) must include(messages("messages__enterEmail_pageHeading"))
       contentAsString(result) must include(formData)
     }
 
@@ -135,7 +135,7 @@ class EnterEmailControllerSpec extends ControllerSpecBase
 
       status(result) mustBe BAD_REQUEST
 
-      contentAsString(result) must include(messages("messages__enterEmail_pageHeading", "the director"))
+      contentAsString(result) must include(messages("messages__enterEmail_pageHeading"))
       contentAsString(result) must include(messages("messages__enterEmail__error_invalid"))
 
       verify(mockUserAnswersCacheConnector, times(0))

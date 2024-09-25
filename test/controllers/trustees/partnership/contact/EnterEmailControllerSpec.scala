@@ -133,7 +133,7 @@ class EnterEmailControllerSpec extends ControllerSpecBase
 
       status(result) mustBe BAD_REQUEST
 
-      contentAsString(result) must include(messages("messages__enterEmail_pageHeading", "the partnership"))
+      contentAsString(result) must include(messages("messages__enterEmail_pageHeading", "test partnership"))
       contentAsString(result) must include(messages("messages__enterEmail__error_invalid"))
 
       verify(mockUserAnswersCacheConnector, times(0))
