@@ -17,22 +17,20 @@
 package controllers.establishers.company.director.contact
 
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction, MutableFakeDataRetrievalAction}
+import controllers.actions._
 import forms.EmailFormProvider
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.contact.EnterEmailId
 import matchers.JsonMatchers
 import models.{NormalMode, PersonName}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.Application
 import play.api.i18n.Messages
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.common.contact.CommonEmailAddressService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
@@ -57,12 +55,6 @@ class EnterEmailControllerSpec extends ControllerSpecBase
 
   private val userAnswers: UserAnswers = ua.set(DirectorNameId(0,0), personName).success.value
 
-  private val commonJson: JsObject =
-    Json.obj(
-      "entityName" -> personName.fullName,
-      "entityType" -> Messages("messages__director"),
-      "schemeName" -> Data.schemeName
-    )
   private val formData: String = email
 
   override def beforeEach(): Unit = {
@@ -89,9 +81,6 @@ class EnterEmailControllerSpec extends ControllerSpecBase
         messagesApi = messagesApi
       )
     )
-
-  private val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-  private val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
   "EnterEmailController" must {
     "return OK and the correct view for a GET" in {

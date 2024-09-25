@@ -23,15 +23,13 @@ import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.contact.EnterEmailId
 import matchers.JsonMatchers
 import models.{NormalMode, PartnershipDetails}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.i18n.Messages
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.common.contact.CommonEmailAddressService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
@@ -46,19 +44,13 @@ class EnterEmailControllerSpec extends ControllerSpecBase
   with TryValues
   with BeforeAndAfterEach {
 
-  private val partnership: PartnershipDetails = PartnershipDetails("test",false)
+  private val partnership: PartnershipDetails = PartnershipDetails("test", false)
   private val email = "test@test.com"
   private val formProvider: EmailFormProvider = new EmailFormProvider()
   private val form = formProvider("")
 
   private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(0), partnership).success.value
 
-  private val commonJson: JsObject =
-    Json.obj(
-      "entityName" -> partnership.partnershipName,
-      "entityType" -> Messages("messages__partnership"),
-      "schemeName" -> Data.schemeName
-    )
   private val formData: String = email
 
   override def beforeEach(): Unit = {
@@ -80,13 +72,10 @@ class EnterEmailControllerSpec extends ControllerSpecBase
         controllerComponents = controllerComponents,
         userAnswersCacheConnector = mockUserAnswersCacheConnector,
         navigator = new FakeNavigator(desiredRoute = onwardCall),
-        emailView = mock[EmailView],
+        emailView = app.injector.instanceOf[EmailView],
         messagesApi = messagesApi
       )
     )
-
-  private val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-  private val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
   "EnterEmailController" must {
     "return OK and the correct view for a GET" in {
@@ -96,8 +85,15 @@ class EnterEmailControllerSpec extends ControllerSpecBase
 
       status(result) mustBe OK
 
-      val json: JsObject = Json.obj("form" -> form)
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      val view = app.injector.instanceOf[EmailView].apply(
+        form,
+        Data.schemeName,
+        partnership.partnershipName,
+        Messages("messages__partnership"),
+        Seq(),
+        routes.EnterEmailController.onSubmit(0, NormalMode)
+      )(fakeRequest, messages)
+      compareResultAndView(result, view)
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
@@ -109,8 +105,9 @@ class EnterEmailControllerSpec extends ControllerSpecBase
           .onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
-      val json: JsObject = Json.obj("form" -> form.fill(formData))
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+
+      contentAsString(result) must include(messages("messages__enterEmail_pageHeading", partnership.partnershipName))
+      contentAsString(result) must include(formData)
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -131,13 +128,12 @@ class EnterEmailControllerSpec extends ControllerSpecBase
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
       val result: Future[Result] = controller(getData).onSubmit(0, NormalMode)(request)
-      val boundForm = form.bind(Map("value" -> "invalid value"))
 
       status(result) mustBe BAD_REQUEST
 
-      val json: JsObject = Json.obj("form" -> Json.toJson(boundForm))
+      contentAsString(result) must include(messages("messages__enterEmail_pageHeading", partnership.partnershipName))
+      contentAsString(result) must include(messages("messages__enterEmail__error_invalid"))
 
-      jsonCaptor.getValue must containJson(commonJson ++ json)
       verify(mockUserAnswersCacheConnector, times(0))
         .save(any(), any())(any(), any())
     }
