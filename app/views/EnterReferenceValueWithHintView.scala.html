@@ -19,29 +19,50 @@ layout: templates.Layout,
 formHelper: FormWithCSRF,
 govukErrorSummary: GovukErrorSummary,
 govukInput: GovukInput,
-govukButton: GovukButton
+govukButton: GovukButton,
 )
 
-@(form: Form[_], schemeName: String, entityName: String, submitCall: Call)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], pageTitle: String, pageHeading: String, hintText: String, paragraphs: Seq[String], schemeName: String, submitCall: Call)(implicit request: Request[_], messages: Messages)
 
 @field = @{form("value")}
 
-@layout(messages("messages__enterEmail_pageHeading", entityName)) {
+@layout(pageTitle) {
+
+@defining({
+if (paragraphs.nonEmpty && hintText.nonEmpty) {
+Html(paragraphs.map(paragraph => s"<p class='govuk-body govuk-!-font-weight-regular'>$paragraph</p>").mkString + hintText)
+} else if (paragraphs.nonEmpty) {
+Html(paragraphs.map(paragraph => s"<p class='govuk-body govuk-!-font-weight-regular'>$paragraph</p>").mkString)
+} else if (hintText.nonEmpty) {
+Html(hintText)
+} else {
+Html("")
+}
+}) { hintHtml =>
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
         @if(form.hasErrors) {
-        @govukErrorSummary(ErrorSummary(form.errors))
+        @govukErrorSummary(ErrorSummary(
+        title = Text(messages("error.summary.title")),
+        errorList = form.errors.map(err => ErrorLink(
+        href = Some(s"#${err.key}"),
+        content = Text(messages(err.message))
+        ))
+        ))
         }
 
         @formHelper(action = submitCall, Symbol("autocomplete") -> "off") {
-        <h1 class="govuk-heading-l">@messages("messages__enterEmail_pageHeading", entityName)</h1>
 
+        <h1 class="govuk-heading-l">@messages(pageHeading)</h1>
+
+        @if(!hintHtml.body.trim.isEmpty) {
         @govukInput(Input(
         label = Label(
-        content = Text(messages("messages__enterEmail_pageHeading", entityName)),
+        content = Text(messages(pageHeading)),
         isPageHeading = true,
-        classes = Some("govuk-label--xl govuk-!-margin-bottom-8")
+        classes = Some("govuk-label--l govuk-!-margin-bottom-8")
         ),
         id = "value",
         name = "value",
@@ -49,8 +70,9 @@ govukButton: GovukButton
         classes = Some("govuk-input--width-10"),
         attributes = Map("autocomplete" -> "off"),
         errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message)))),
-        hint = Some(Hint(content = Text(messages("messages__enterEmail_hint"))))
+        hint = Some(Hint(content = hintHtml))
         ))
+        }
 
         @govukButton(Button(
         content = Text(messages("site.save_and_continue")),
@@ -62,4 +84,5 @@ govukButton: GovukButton
 </div>
 
 @templates.ReturnLink(schemeName)
+}
 }
