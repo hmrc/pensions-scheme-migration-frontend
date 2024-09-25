@@ -59,6 +59,9 @@ class SchemeTypeController @Inject()(
               case None => form
               case Some(value) => form.fill(value)
             }
+            println(SchemeType.radios(preparedForm))
+            println("***********")
+            println(TwirlMigration.toTwirlRadiosWithHintText(SchemeType.radios(preparedForm)))
 
             Ok(schemeTypeView(
               preparedForm,

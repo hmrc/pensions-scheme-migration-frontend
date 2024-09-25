@@ -60,7 +60,20 @@ object TwirlMigration extends Logging {
 
   def toTwirlRadiosWithHintText(nunjucksRadios: Seq[viewmodels.forNunjucks.Radios.Item])(implicit messages: Messages): Seq[RadioItem] = {
     nunjucksRadios.map(radio => {
-      RadioItem(content = Text(radio.text.resolve), value = Some(radio.value), checked = radio.checked, hint = convertHint(radio.hint))
+      RadioItem(
+        content = Text(radio.text.resolve),
+        value = Some(radio.value),
+        checked = radio.checked,
+        hint = convertHint(radio.hint),
+        label = radio.label.map(label =>
+          Label(
+            attributes = label.attributes,
+            classes = label.classes.mkString(" ")
+          )
+        ),
+        conditionalHtml = radio.conditional.map(_.html.value)
+      )
+
     })
   }
 
