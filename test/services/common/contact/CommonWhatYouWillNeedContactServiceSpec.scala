@@ -16,6 +16,7 @@
 
 package services.common.contact
 
+import controllers.ControllerSpecBase
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach

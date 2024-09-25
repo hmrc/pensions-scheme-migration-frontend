@@ -25,10 +25,8 @@ govukSummaryList: GovukSummaryList
 
 @layout(messages("messages__scheme__success__title")) {
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div>
 
-        @* Success Panel *@
         @govukPanel(
             Panel(
                 title= Text(messages("messages__scheme__success__heading", schemeName)),
@@ -39,13 +37,11 @@ govukSummaryList: GovukSummaryList
             )
         )
 
-        @* Email Information *@
         <p class="govuk-body">
             @messages("messages__complete__email")
             <span class="govuk-!-font-weight-bold">@email</span>.
         </p>
 
-        @* What happens next *@
         <h2 class="govuk-heading-m">@messages("messages__what_happens_next")</h2>
 
         <p class="govuk-body">
@@ -56,17 +52,14 @@ govukSummaryList: GovukSummaryList
             @messages("messages__scheme__success__detail__2")
         </p>
 
-        @* Print this page *@
         <p class="govuk-body">
             <a class="govuk-link print-this-page" href="#">@messages("site.printThisPage")</a>
         </p>
 
-        @* Finish Button *@
         @govukButton(
             ButtonViewModel(
                 content = Text(messages("messages__finish"))
             ).withAttribute(("id", "scheme-finish")).asLink(returnUrl)
         )
     </div>
-</div>
 }

@@ -26,62 +26,60 @@
 
 @layout(messages("messages__tasklist__title", entityType)) {
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
+    <div>
 
-            <h1 class="govuk-heading-l">@messages(entityName)</h1>
+        <h1 class="govuk-heading-l">@messages(entityName)</h1>
 
-            <p class="govuk-body govuk-!-font-weight-bold">
-                @if(completedCount == totalSpokes) {
-                    @messages("messages__tasklist__complete", entityType)
-                } else {
-                    @messages("messages__tasklist__incomplete", entityType)
-                }
-            </p>
+        <p class="govuk-body govuk-!-font-weight-bold">
+            @if(completedCount == totalSpokes) {
+                @messages("messages__tasklist__complete", entityType)
+            } else {
+                @messages("messages__tasklist__incomplete", entityType)
+            }
+        </p>
 
-            <p class="govuk-body govuk-!-font-weight-regular">
-                @messages("messages__tasklist__complete__section", completedCount, totalSpokes)
-            </p>
+        <p class="govuk-body govuk-!-font-weight-regular">
+            @messages("messages__tasklist__complete__section", completedCount, totalSpokes)
+        </p>
 
-            <ol class="app-task-list">
-                <li id="spokes">
-                    <ul class="app-task-list__items">
-                        @for((entity, index) <- taskSections.zipWithIndex) {
-                            <li class="app-task-list__item">
-                                <a id="section-spokes-link-@index"
-                                   class="app-task-list__task-name govuk-link"
-                                   href="@entity.link.target"
-                                   aria-describedby="section-spokes-status-@index">
-                                    @messages(entity.link.text)
-                                </a>
-                                @if(entity.isCompleted) {
-                                    <span class="app-task-list__tag task-status--completed" id="section-spokes-status-@index">
-                                        <span class="govuk-visually-hidden">
-                                            @messages("messages__schemeTaskList__status_visuallyHidden")
-                                        </span>
-                                        @messages("messages__schemeTaskList__completed")
+        <ol class="app-task-list">
+            <li id="spokes">
+                <ul class="app-task-list__items">
+                    @for((entity, index) <- taskSections.zipWithIndex) {
+                        <li class="app-task-list__item">
+                            <a id="section-spokes-link-@index"
+                               class="app-task-list__task-name govuk-link"
+                               href="@entity.link.target"
+                               aria-describedby="section-spokes-status-@index">
+                                @messages(entity.link.text)
+                            </a>
+                            @if(entity.isCompleted == Some(true)) {
+                                <span class="app-task-list__tag task-status--completed" id="section-spokes-status-@index">
+                                    <span class="govuk-visually-hidden">
+                                        @messages("messages__schemeTaskList__status_visuallyHidden")
                                     </span>
-                                } else {
-                                    <span class="app-task-list__tag task-status--in-progress" id="section-spokes-status-@index">
-                                        <span class="govuk-visually-hidden">
-                                            @messages("messages__schemeTaskList__status_visuallyHidden")
-                                        </span>
-                                        @messages("site.incomplete")
+                                    @messages("messages__schemeTaskList__completed")
+                                </span>
+                            } else {
+                                <span class="app-task-list__tag task-status--in-progress" id="section-spokes-status-@index">
+                                    <span class="govuk-visually-hidden">
+                                        @messages("messages__schemeTaskList__status_visuallyHidden")
                                     </span>
-                                }
-                            </li>
-                        }
-                    </ul>
-                </li>
-            </ol>
+                                    @messages("site.incomplete")
+                                </span>
+                            }
+                        </li>
+                    }
+                </ul>
+            </li>
+        </ol>
 
-            @govukButton(
-                ButtonViewModel(
-                    content = Text(messages("site.save_and_continue")),
-                ).withAttribute(("id", "submit")).asLink(submitUrl)
-            )
+        @govukButton(
+            ButtonViewModel(
+                content = Text(messages("site.save_and_continue")),
+            ).withAttribute(("id", "submit")).asLink(submitUrl)
+        )
 
-        </div>
     </div>
 
     @templates.ReturnLink(schemeName)

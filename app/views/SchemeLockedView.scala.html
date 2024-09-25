@@ -23,28 +23,21 @@
 
 @layout(messages("messages__scheme__locked__title", schemeType)) {
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
+    <div>
 
-            @* Heading *@
-            <h1 class="govuk-heading-l">
-                @messages("messages__scheme__locked__heading", schemeName)
-            </h1>
+        <h1 class="govuk-heading-l">
+            @messages("messages__scheme__locked__heading", schemeName)
+        </h1>
 
-            @* Paragraph *@
-            <p class="govuk-body">
-                @messages("messages__scheme__locked__p", schemeType)
-            </p>
+        <p class="govuk-body">
+            @messages("messages__scheme__locked__p", schemeType)
+        </p>
 
-            @* Button *@
-            @govukButton(
-                ButtonViewModel(
-                    content = Text(messages("messages__scheme__locked__link", schemeType)),
-                ).withAttribute(("id", "submit")).asLink(returnUrl)
-            )
+        @govukButton(
+            ButtonViewModel(
+                content = Text(messages("messages__scheme__locked__link", schemeType)),
+            ).withAttribute(("id", "submit")).asLink(returnUrl)
+        )
 
-        </div>
     </div>
-
-    @templates.ReturnLink(schemeName)
 }

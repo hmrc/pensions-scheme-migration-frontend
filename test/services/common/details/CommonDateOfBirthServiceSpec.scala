@@ -16,6 +16,7 @@
 
 package services.common.details
 
+import controllers.ControllerSpecBase
 import forms.DOBFormProvider
 import identifiers.TypedIdentifier
 import identifiers.beforeYouStart.SchemeNameId
@@ -33,7 +34,7 @@ import utils.{Data, FakeNavigator, UserAnswers}
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class CommonDateOfBirthServiceSpec extends CommonServiceSpecBase {
+class CommonDateOfBirthServiceSpec extends ControllerSpecBase with CommonServiceSpecBase {
 
   // Instantiate service
   val service = new CommonDateOfBirthService(

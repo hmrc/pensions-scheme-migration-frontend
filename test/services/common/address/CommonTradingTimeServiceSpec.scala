@@ -32,6 +32,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import utils.Data.migrationLock
 import utils.{FakeNavigator, UserAnswers}
 import base.SpecBase
+import controllers.ControllerSpecBase
 import identifiers.TypedIdentifier
 import matchers.JsonMatchers
 import models.requests.DataRequest

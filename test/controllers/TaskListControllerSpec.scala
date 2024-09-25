@@ -27,6 +27,8 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.mvc.AnyContentAsEmpty
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import services.TaskListService
@@ -44,8 +46,6 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
     bind[LegacySchemeDetailsConnector].toInstance(mockLegacySchemeDetailsConnector)
   )
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
-  private val templateToBeRendered = "taskList.njk"
-
 
   private def httpPathGET: String = controllers.routes.TaskListController.onPageLoad.url
 
@@ -95,6 +95,7 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
     when(mockLegacySchemeDetailsConnector.getLegacySchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(Right(itemList)))
   }
 
+  val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, httpPathGET)
 
   "TaskList Controller" must {
 
@@ -130,20 +131,27 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
 
     }
 
-    "retrieved data from API store it and return  OK" in {
+    "retrieved data from API store it and return OK" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
       mutableFakeDataRetrievalAction.setLockToReturn(Some(Data.migrationLock))
 
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
       val result = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = application.injector.instanceOf[TaskListView].apply(
+        "Scheme Details are incomplete",
+        "You have completed 1 of 2 sections",
+        "14 November 2021",
+        schemeDetailsTL,
+        schemeName,
+        declarationEnabled = false,
+        declarationSection,
+        controllers.routes.PensionSchemeRedirectController.onPageLoad.url,
+        isCompleted = false
+      )(request, messages)
 
-      templateCaptor.getValue mustEqual templateToBeRendered
-
+      compareResultAndView(result, view)
     }
 
     "retrieved data from API store it and correct value for AnyTrusteesId and return  OK" in {

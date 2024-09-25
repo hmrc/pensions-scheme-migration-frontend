@@ -23,13 +23,12 @@ import controllers.actions._
 import helpers.cya.CYAHelper
 import identifiers.beforeYouStart.SchemeNameId
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.SchemeSuccessView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class SchemeSuccessController @Inject()(appConfig: AppConfig,
                                         override val messagesApi: MessagesApi,
@@ -38,11 +37,11 @@ class SchemeSuccessController @Inject()(appConfig: AppConfig,
                                         requireData: DataRequiredAction,
                                         val controllerComponents: MessagesControllerComponents,
                                         userAnswersCacheConnector: UserAnswersCacheConnector,
-                                        renderer: Renderer,
                                         minimalDetailsConnector: MinimalDetailsConnector,
                                         currentPstrCacheConnector:CurrentPstrCacheConnector,
                                         lockCacheConnector:LockCacheConnector,
-                                        listOfSchemesConnector:ListOfSchemesConnector
+                                        listOfSchemesConnector:ListOfSchemesConnector,
+                                        schemeSuccessView: SchemeSuccessView
                                        )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
@@ -50,15 +49,14 @@ class SchemeSuccessController @Inject()(appConfig: AppConfig,
   def onPageLoad: Action[AnyContent] =
     (identify andThen getData andThen requireData()).async {
       implicit request =>
-        val jsonFuture =
-          for {
+          val schemeDetails = for {
             email <- minimalDetailsConnector.getPSAEmail
             _ <- currentPstrCacheConnector.remove
             _ <- lockCacheConnector.removeLock(request.lock)
             _ <- userAnswersCacheConnector.remove(request.lock.pstr)
             _ <- listOfSchemesConnector.removeCache(request.psaId.id)
           } yield {
-            Json.obj(
+            Map(
               "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
               "pstr" -> request.lock.pstr,
               "email" -> email,
@@ -66,11 +64,14 @@ class SchemeSuccessController @Inject()(appConfig: AppConfig,
               "returnUrl" -> appConfig.psaOverviewUrl
             )
           }
-        jsonFuture.flatMap { json =>
-          renderer.render("schemeSuccess.njk", json).map { viewHtml =>
-            Ok(viewHtml)
-          }
+        schemeDetails.flatMap { details =>
+          Future.successful(Ok(schemeSuccessView(
+            details("schemeName"),
+            details("pstr"),
+            details("email"),
+            details("yourSchemesLink"),
+            details("returnUrl")
+          )))
         }
     }
-
 }

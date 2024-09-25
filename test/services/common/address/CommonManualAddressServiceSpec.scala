@@ -16,7 +16,7 @@
 
 package services.common.address
 
-import controllers.Retrievals
+import controllers.{ControllerSpecBase, Retrievals}
 import models.{Address, AddressConfiguration, NormalMode, TolerantAddress}
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers.any

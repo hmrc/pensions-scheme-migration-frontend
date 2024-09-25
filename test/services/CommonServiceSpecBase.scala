@@ -18,7 +18,6 @@ package services
 
 import base.SpecBase
 import config.AppConfig
-import connectors.cache.UserAnswersCacheConnector
 import matchers.JsonMatchers
 import models.requests.DataRequest
 import org.mockito.MockitoSugar
@@ -28,17 +27,8 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import utils.UserAnswers
 
-import scala.concurrent.ExecutionContext
-
 trait CommonServiceSpecBase extends SpecBase with JsonMatchers with TryValues
   with BeforeAndAfterEach with MockitoSugar {
-
-  implicit val global: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
-  protected val mockUserAnswersCacheConnector: UserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-  protected val mockRenderer: NunjucksRenderer = mock[NunjucksRenderer]
-  protected val mockAppConfig: AppConfig = mock[AppConfig]
-
-  protected val onwardCall: Call = Call("POST", "onwardCall")
 
   val fakeDataRequest: DataRequest[AnyContent] = fakeDataRequest()
   def fakeDataRequest(answers: UserAnswers, request: FakeRequest[AnyContentAsFormUrlEncoded]): DataRequest[AnyContent] =
