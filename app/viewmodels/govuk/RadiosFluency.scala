@@ -34,7 +34,7 @@ trait RadiosFluency {
                items: Seq[RadioItem],
                fieldset: Fieldset,
                classes: String = "",
-               hint: Option[Hint] = None,
+               hint: Option[Hint] = None
              )(implicit messages: Messages): Radios =
       Radios(
         fieldset     = Some(fieldset),
