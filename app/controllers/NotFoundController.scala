@@ -18,23 +18,25 @@ package controllers
 
 import config.AppConfig
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.NotFoundView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class NotFoundController @Inject()(val appConfig: AppConfig,
                                    override val messagesApi: MessagesApi,
                                    val controllerComponents: MessagesControllerComponents,
-                                   renderer: Renderer
+                                   notFoundView: NotFoundView
                                       )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = Action.async { implicit request =>
-    renderer.render("notFound.njk", Json.obj("yourPensionSchemesUrl" ->
-      appConfig.yourPensionSchemesUrl)).map(Ok(_))
+    Future.successful(Ok(
+      notFoundView(
+        appConfig.yourPensionSchemesUrl
+      )
+    ))
   }
 }
