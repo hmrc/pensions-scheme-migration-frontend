@@ -25,7 +25,6 @@
 @(form: Form[_], schemeName: String, submitUrl: Call, radios: Seq[RadioItem])(implicit request: Request[_], messages: Messages)
 
 @layout(messages("messages__scheme_type__title")) {
-
     <div>
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
@@ -37,19 +36,18 @@
                     name = "schemeType.type",
                     fieldset = Some(Fieldset(
                         legend = Some(Legend(
-                        content = Text(messages("messages__scheme_type__heading", schemeName)),
-                        isPageHeading = true,
-                        classes = "govuk-fieldset__legend--l govuk-!-margin-bottom-8"
-                    ))
-                )),
-                items = radios,
-                classes = "govuk-radios--inline"
+                            content = Text(messages("messages__scheme_type__heading", schemeName)),
+                            isPageHeading = true,
+                            classes = "govuk-fieldset__legend--xl govuk-!-margin-bottom-8"
+                        ))
+                    )),
+                    items = radios,
+                    errorMessage = form.errors.headOption.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
                 )
             )
 
             @govukButton(ButtonViewModel(Text(messages("site.save_and_continue"))).asFormSubmit)
         }
     </div>
-
     @templates.ReturnLink(schemeName)
 }
