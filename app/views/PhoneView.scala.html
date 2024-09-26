@@ -32,13 +32,6 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @* @if(paragraphs) {
-         *   @for(paragraph <- paragraphs) {
-         *       <p class="govuk-body govuk-!-font-weight-regular">@paragraph</p>
-         *   }
-         * }
-         *@
-
         <h1 class="govuk-heading-l">@messages("messages__enterPhone_pageHeading", entityName)</h1>
 
         @formHelper(action = submitCall, Symbol("autoComplete") -> "off") {
