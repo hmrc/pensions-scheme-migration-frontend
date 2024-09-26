@@ -66,6 +66,7 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
   private val valuesInvalid: Map[String, Seq[String]] = Map(
     "value" -> Seq.empty
   )
+  val request = httpGETRequest(httpPathGET)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -82,7 +83,7 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val result: Future[Result] = route(application, request).value
 
       status(result) mustEqual OK
 
@@ -100,11 +101,11 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val result: Future[Result] = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.routes.SessionExpiredController.onPageLoad().absoluteURL()(request)
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {

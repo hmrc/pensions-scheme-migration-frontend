@@ -25,16 +25,15 @@ import identifiers.benefitsAndInsurance.AreBenefitsSecuredId
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.Radios
-import utils.Enumerable
+import utils.{Enumerable, TwirlMigration}
+import views.html.benefitsAndInsurance.AreBenefitsSecuredView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class AreBenefitsSecuredController @Inject()(override val messagesApi: MessagesApi,
                                        userAnswersCacheConnector: UserAnswersCacheConnector,
@@ -44,7 +43,7 @@ class AreBenefitsSecuredController @Inject()(override val messagesApi: MessagesA
                                        navigator: CompoundNavigator,
                                        formProvider: AreBenefitsSecuredFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer)(implicit ec: ExecutionContext)
+                                       view : AreBenefitsSecuredView)(implicit ec: ExecutionContext)
   extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
   private def form: Form[Boolean] =
@@ -57,12 +56,12 @@ class AreBenefitsSecuredController @Inject()(override val messagesApi: MessagesA
           case Some(value) => form.fill(value)
           case None        => form
         }
-        val json = Json.obj(
-          "schemeName" -> schemeName,
-          "form" -> preparedForm,
-          "radios" -> Radios.yesNo (preparedForm("value"))
-        )
-        renderer.render("benefitsAndInsurance/areBenefitsSecured.njk", json).map(Ok(_))
+        Future.successful(Ok(view(
+          preparedForm,
+          schemeName,
+          TwirlMigration.toTwirlRadios(Radios.yesNo(preparedForm("value"))),
+          controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onSubmit
+        )))
       }
     }
 
@@ -73,13 +72,13 @@ class AreBenefitsSecuredController @Inject()(override val messagesApi: MessagesA
           .bindFromRequest()
           .fold(
             formWithErrors => {
-              val json = Json.obj(
-                "schemeName" -> schemeName,
-                "form" -> formWithErrors,
-                "radios" -> Radios.yesNo(form("value"))
-              )
+              Future.successful(BadRequest(view(
+                formWithErrors,
+                schemeName,
+                TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value"))),
+                controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onSubmit
+              )))
 
-              renderer.render("benefitsAndInsurance/areBenefitsSecured.njk", json).map(BadRequest(_))
             },
             value => {
               val updatedUA = request.userAnswers.setOrException(AreBenefitsSecuredId, value)
