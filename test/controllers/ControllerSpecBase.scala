@@ -28,16 +28,15 @@ import org.scalatest.{Assertion, BeforeAndAfterEach}
 import play.api.http.HeaderNames
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call, Result}
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Result}
 import play.api.test.Helpers.{GET, POST}
 import play.api.test.{FakeHeaders, FakeRequest}
 import play.twirl.api.Html
 import services.DataUpdateService
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import utils.{CountryOptions, Enumerable, FakeCountryOptions}
-import scala.concurrent.duration.DurationInt
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
 
 

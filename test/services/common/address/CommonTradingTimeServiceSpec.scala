@@ -16,28 +16,27 @@
 
 package services.common.address
 
+import base.SpecBase
+import identifiers.TypedIdentifier
+import matchers.JsonMatchers
+import models.requests.DataRequest
+import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.data.Forms.boolean
-import org.mockito.ArgumentMatchers.any
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
+import renderer.Renderer
+import services.CommonServiceSpecBase
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Data.migrationLock
 import utils.{FakeNavigator, UserAnswers}
-import base.SpecBase
-import controllers.ControllerSpecBase
-import identifiers.TypedIdentifier
-import matchers.JsonMatchers
-import models.requests.DataRequest
-import renderer.Renderer
-import services.CommonServiceSpecBase
 
 import scala.concurrent.Future
 

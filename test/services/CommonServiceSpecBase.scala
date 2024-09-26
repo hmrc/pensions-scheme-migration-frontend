@@ -17,14 +17,12 @@
 package services
 
 import base.SpecBase
-import config.AppConfig
 import matchers.JsonMatchers
 import models.requests.DataRequest
 import org.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, TryValues}
-import play.api.mvc.{AnyContent, AnyContentAsFormUrlEncoded, Call}
+import play.api.mvc.{AnyContent, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
-import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import utils.UserAnswers
 
 trait CommonServiceSpecBase extends SpecBase with JsonMatchers with TryValues

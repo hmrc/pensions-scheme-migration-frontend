@@ -16,9 +16,13 @@
 
 package services.common.address
 
-import controllers.{ControllerSpecBase, Retrievals}
-import models.{NormalMode, TolerantAddress}
+import controllers.Retrievals
+import identifiers.TypedIdentifier
+import identifiers.establishers.individual.address.AddressId
+import identifiers.trustees.individual.address.AddressListId
+import models.establishers.AddressPages
 import models.requests.DataRequest
+import models.{NormalMode, TolerantAddress}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
@@ -31,14 +35,10 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import renderer.Renderer
+import services.CommonServiceSpecBase
+import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{Data, FakeNavigator, UserAnswers}
-import identifiers.TypedIdentifier
-import identifiers.establishers.individual.address.AddressId
-import identifiers.trustees.individual.address.AddressListId
-import models.establishers.AddressPages
-import uk.gov.hmrc.domain.PsaId
-import services.CommonServiceSpecBase
 
 import scala.concurrent.Future
 
