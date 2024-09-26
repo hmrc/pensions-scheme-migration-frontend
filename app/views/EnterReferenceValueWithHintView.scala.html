@@ -22,7 +22,7 @@ govukInput: GovukInput,
 govukButton: GovukButton,
 )
 
-@(form: Form[_], schemeName, pageTitle: String, pageHeading: String, legendClass, paragraphText: Seq[String], hintText: String, submitCall: Call)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], schemeName: String, pageTitle: String, pageHeading: String, legendClass: String, paragraphs: Seq[String], hintText: Option[String], submitCall: Call)(implicit request: Request[_], messages: Messages)
 
 @field = @{form("value")}
 
@@ -30,11 +30,11 @@ govukButton: GovukButton,
 
 @defining({
 if (paragraphs.nonEmpty && hintText.nonEmpty) {
-Html(paragraphs.map(paragraph => s"<p class='govuk-body govuk-!-font-weight-regular'>$paragraph</p>").mkString + hintText)
+Html(paragraphs.map(paragraph => s"<p class='govuk-body govuk-!-font-weight-regular'>$paragraph</p>").mkString + hintText.get)
 } else if (paragraphs.nonEmpty) {
 Html(paragraphs.map(paragraph => s"<p class='govuk-body govuk-!-font-weight-regular'>$paragraph</p>").mkString)
 } else if (hintText.nonEmpty) {
-Html(hintText)
+Html(hintText.get)
 } else {
 Html("")
 }

@@ -58,14 +58,14 @@ class CommonEnterReferenceValueService @Inject()(val controllerComponents: Messa
            hintText: Option[String] = None,
            paragraphText: Seq[String] = Seq(),
            legendClass: String = "govuk-fieldset__legend--s",
-           submitCall: Call
+         //  submitCall: Call //TODO update calling controller and enable this line
          )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
-
+    val submitCall  = Call("GET", "TODO");
     val filledForm = request.userAnswers.get[ReferenceValue](id).fold(form)(form.fill)
     val view = if (paragraphText.nonEmpty || hintText.nonEmpty) {
       enterReferenceValueWithHintView(filledForm, schemeName, pageTitle, pageHeading, legendClass, paragraphText, hintText, submitCall)
     } else {
-      enterReferenceValueView(filledForm, schemeName, pageTitle, pageHeading, legendClass, submitCall)
+      enterReferenceValueView(filledForm, schemeName, pageTitle, pageHeading, hintText, paragraphText, submitCall)
     }
     Future.successful(Ok(view))
   }
@@ -81,9 +81,11 @@ class CommonEnterReferenceValueService @Inject()(val controllerComponents: Messa
             paragraphText: Seq[String] = Seq(),
             legendClass: String = "govuk-fieldset__legend--s",
             mode: Mode,
-            submitCall: Call,
+//            submitCall: Call, //TODO enable and pass this from calling controllers
             optSetUserAnswers: Option[ReferenceValue => Try[UserAnswers]] = None
           )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
+
+    val submitCall  = Call("POST", "TODO");
 
     form.bindFromRequest().fold(
       formWithErrors => {

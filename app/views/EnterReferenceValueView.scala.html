@@ -24,7 +24,7 @@ govukButton: GovukButton
 
 @(form: Form[_], schemeName: String, pageTitle: String, pageHeading: String, hintText: Option[String], paragraphText: Seq[String], submitCall: Call)(implicit request: Request[_], messages: Messages)
 
-@layout(messages("messages__enterEmail_pageHeading", entityName)) {
+@layout(messages(pageTitle)) {
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
@@ -33,7 +33,7 @@ govukButton: GovukButton
         }
 
         @formHelper(action = submitCall, Symbol("autocomplete") -> "off") {
-        <h1 class="govuk-heading-l">@messages("messages__enterEmail_pageHeading", entityName)</h1>
+        <h1 class="govuk-heading-l">@messages(pageHeading)</h1>
 
         @govukInput(Input(
         label = Label(
