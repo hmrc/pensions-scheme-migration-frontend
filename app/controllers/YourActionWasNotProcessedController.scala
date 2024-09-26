@@ -20,11 +20,9 @@ import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import helpers.cya.CYAHelper
 import identifiers.beforeYouStart.SchemeNameId
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.UserAnswers
+import views.html.YourActionWasNotProcessedView
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -34,38 +32,24 @@ class YourActionWasNotProcessedController @Inject()(override val messagesApi: Me
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     val controllerComponents: MessagesControllerComponents,
-                                                    renderer: Renderer
+                                                    view: YourActionWasNotProcessedView
                                      )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with I18nSupport {
 
-  def onPageLoadScheme: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
+  def onPageLoadScheme: Action[AnyContent] = (authenticate andThen getData andThen requireData()) {
     implicit request =>
-        renderer.render(
-          template = "yourActionWasNotProcessed.njk",
-          ctx =  schemeJson(request.userAnswers)
-        ).map(Ok(_))
+      Ok(view(
+        controllers.routes.TaskListController.onPageLoad.url,
+        CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+      ))
   }
 
-  def onPageLoadRacDac: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
+  def onPageLoadRacDac: Action[AnyContent] = (authenticate andThen getData andThen requireData()) {
     implicit request =>
-        renderer.render(
-          template = "yourActionWasNotProcessed.njk",
-          ctx = racDacJson(request.userAnswers)
-        ).map(Ok(_))
-  }
-
-  private def schemeJson(userAnswers:UserAnswers):JsObject = {
-    Json.obj(
-      "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(userAnswers, implicitly),
-      "returnUrl" -> controllers.routes.TaskListController.onPageLoad.url
-    )
-  }
-
-  private def racDacJson(userAnswers:UserAnswers):JsObject = {
-    Json.obj(
-      "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(userAnswers, implicitly),
-      "returnUrl" -> controllers.racdac.individual.routes.CheckYourAnswersController.onPageLoad.url
-    )
+      Ok(view(
+        controllers.racdac.individual.routes.CheckYourAnswersController.onPageLoad.url,
+        CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly)
+      ))
   }
 }
 
