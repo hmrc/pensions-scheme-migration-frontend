@@ -22,34 +22,36 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], schemeName: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], schemeName: String, submitUrl: Call)(implicit request: Request[_], messages: Messages)
 
 @layout(messages("messages__companyName__title")) {
     <div>
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
-        }
+        @formHelper(action = submitUrl) {
+            @if(form.errors.nonEmpty) {
+                @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+            }
 
-        <form method="post" autocomplete="off" novalidate>
+            <form method="post" autocomplete="off" novalidate>
 
-            @govukInput(
-                InputViewModel(
-                    label = Label(
-                        content = Text(messages("messages__companyName__title")),
-                        isPageHeading = true,
-                        classes = "govuk-label--l govuk-!-margin-bottom-8"
-                    ),
-                    field = form("companyName"),
-                    classes = "govuk-input--width-20"
+                @govukInput(
+                    InputViewModel(
+                        label = Label(
+                            content = Text(messages("messages__companyName__title")),
+                            isPageHeading = true,
+                            classes = "govuk-label--l govuk-!-margin-bottom-8"
+                        ),
+                        field = form("companyName"),
+                        classes = "govuk-input--width-20"
+                    )
                 )
-            )
 
-            @govukButton(
-                ButtonViewModel(
-                    Text(messages("site.save_and_continue"))
-                ).asFormSubmit
-            )
-        </form>
+                @govukButton(
+                    ButtonViewModel(
+                        Text(messages("site.save_and_continue"))
+                    ).asFormSubmit
+                )
+            </form>
+        }
         @templates.ReturnLink(schemeName)
     </div>
 }

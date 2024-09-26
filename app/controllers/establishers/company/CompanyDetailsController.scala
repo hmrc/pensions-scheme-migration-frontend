@@ -56,7 +56,8 @@ class CompanyDetailsController @Inject()(
       implicit request =>
         Ok(view(
           request.userAnswers.get[CompanyDetails](CompanyDetailsId(index)).fold(form)(form.fill),
-          existingSchemeName.getOrElse("Scheme")
+          existingSchemeName.getOrElse("Scheme"),
+          controllers.establishers.company.routes.CompanyDetailsController.onSubmit(index)
         ))
     }
 
@@ -67,7 +68,8 @@ class CompanyDetailsController @Inject()(
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(view(
               formWithErrors,
-              existingSchemeName.getOrElse("Scheme")
+              existingSchemeName.getOrElse("Scheme"),
+              controllers.establishers.company.routes.CompanyDetailsController.onSubmit(index)
             ))),
           value =>
             for {
