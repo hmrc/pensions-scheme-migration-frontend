@@ -23,9 +23,10 @@ import play.api.http.Status._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.Results._
-import play.api.mvc.{RequestHeader, Result, Results}
+import play.api.mvc.{Request, RequestHeader, Result, Results}
 import play.api.{Logger, PlayException}
 import renderer.Renderer
+import views.html.NotFoundView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,7 +36,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class ErrorHandler @Inject()(
                               renderer: Renderer,
                               val messagesApi: MessagesApi,
-                              config: AppConfig
+                              config: AppConfig,
+                              notFoundView: NotFoundView
                             )(implicit ec: ExecutionContext)
   extends HttpErrorHandler
     with I18nSupport {
@@ -44,13 +46,13 @@ class ErrorHandler @Inject()(
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String = ""): Future[Result] = {
 
-    implicit val rh: RequestHeader = request
+    implicit def requestImplicit: Request[_] = Request(request, "")
 
     statusCode match {
       case BAD_REQUEST =>
         renderer.render("badRequest.njk").map(BadRequest(_))
       case NOT_FOUND =>
-        renderer.render("notFound.njk", Json.obj("yourPensionSchemesUrl" -> config.yourPensionSchemesUrl)).map(NotFound(_))
+      Future.successful(NotFound(notFoundView(config.yourPensionSchemesUrl)))
       case _ =>
         renderer.render("error.njk", Json.obj()).map {
           content =>

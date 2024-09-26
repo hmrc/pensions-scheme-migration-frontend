@@ -18,19 +18,14 @@ package controllers
 
 import controllers.actions.MutableFakeDataRetrievalAction
 import matchers.JsonMatchers
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.{Enumerable, UserAnswers}
-
-import scala.concurrent.Future
+import views.html.NotFoundView
 
 class NotFoundControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
-  private val templateToBeRendered = "notFound.njk"
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 
@@ -42,17 +37,19 @@ class NotFoundControllerSpec extends ControllerSpecBase with NunjucksSupport wit
 
     "return OK and the correct view for a GET" in {
       mutableFakeDataRetrievalAction.setDataToReturn(Some(UserAnswers()))
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val yourPensionUrl = "foo"
+      when(mockAppConfig.yourPensionSchemesUrl).thenReturn(yourPensionUrl)
 
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val request = httpGETRequest(httpPathGET)
+      val result = route(application, request).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), any())(any())
+      val view = application.injector.instanceOf[NotFoundView].apply(
+        yourPensionUrl
+      )(request, messages)
 
-      templateCaptor.getValue mustEqual templateToBeRendered
+      compareResultAndView(result, view)
     }
-
   }
 }
