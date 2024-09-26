@@ -56,7 +56,6 @@ class DirectorsAlsoTrusteesControllerSpec extends ControllerSpecBase
   private val formProvider: DataPrefillCheckboxFormProvider = new DataPrefillCheckboxFormProvider()
   private val form = formProvider(6,"", "", "")
 
-  private val mockDataPrefillService = mock[DataPrefillService]
 
   private val commonJson: JsObject =
     Json.obj(

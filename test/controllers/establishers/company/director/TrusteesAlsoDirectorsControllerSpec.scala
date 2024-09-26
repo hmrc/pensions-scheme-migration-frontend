@@ -16,6 +16,7 @@
 
 package controllers.establishers.company.director
 
+import connectors.LegacySchemeDetailsConnector
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction, MutableFakeDataRetrievalAction}
 import controllers.trustees.individual.routes
@@ -29,13 +30,15 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.Application
+import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import renderer.Renderer
-import services.DataPrefillService
+import services.{DataPrefillService, TaskListService}
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{Data, FakeNavigator, TwirlMigration, UserAnswers}
@@ -49,14 +52,16 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
   with TryValues
   with BeforeAndAfterEach {
 
+  val extraModules: Seq[GuiceableModule] = Seq(
+    bind[DataPrefillService].to(mockDataPrefillService)
+  )
   private val index: Index = Index(0)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
   private val formProvider: DataPrefillCheckboxFormProvider = new DataPrefillCheckboxFormProvider()
   private val form = formProvider(6,"", "", "")
-  private val mockDataPrefillService = mock[DataPrefillService]
   private val companyDetails: CompanyDetails = CompanyDetails("test company")
-  private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(0), companyDetails).success.value
+  private val userAnswerss: UserAnswers = ua.set(CompanyDetailsId(0), companyDetails).success.value
   val view = application.injector.instanceOf[DataPrefillCheckboxView]
 
 
@@ -67,6 +72,8 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
       mockDataPrefillService
     )
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+    when(mockDataPrefillService.getListOfTrusteesToBeCopied(any())(any())).thenReturn(Nil)
+
   }
 
   private def controller(
@@ -90,19 +97,22 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
 
   "TrusteesAlsoDirectorsController" must {
     "return OK and the correct view for a GET" in {
-      when(mockDataPrefillService.getListOfTrusteesToBeCopied(index)(ua)).thenReturn(Seq(IndividualDetails("", "", false, None, None, 0, true, None)))
+      when(mockDataPrefillService.getListOfTrusteesToBeCopied(any())(any())).thenReturn(Nil)
+
       val individualName = PersonName("Jane", "Doe")
-      val getData = new FakeDataRetrievalAction(Some(ua))
       val userAnswers: Option[UserAnswers] = ua.set(EstablisherNameId(0), individualName).toOption
+
+      val getData = new FakeDataRetrievalAction(Some(ua))
       val seqCheckBox = TwirlMigration.toTwirlCheckBoxes(DataPrefillCheckbox.checkboxes(form, Seq(IndividualDetails("", "", false, None, None, 0, true, None))))
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
       val request = httpGETRequest(controllers.establishers.company.director.routes.TrusteesAlsoDirectorsController.onPageLoad(index).url)
-      val result: Future[Result] = controller(getData).onPageLoad(0)(request)
+      val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(userAnswers.get))
 
       val view = application.injector.instanceOf[DataPrefillCheckboxView]
         .apply(form, Data.schemeName, "messages__trustees__prefill__heading", "messages__trustees__prefill__title", seqCheckBox,
           controllers.establishers.company.director.routes.TrusteeAlsoDirectorController.onSubmit(Index(0)))(request, messages)
+      verify(mockDataPrefillService, times(1)).getListOfTrusteesToBeCopied(any())(any())
 
       status(result) mustBe OK
       compareResultAndView(result, view)
@@ -110,20 +120,20 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
 
     "redirect to spoke task list page for a GET when there are no trustees to be copied" in {
       when(mockDataPrefillService.getListOfTrusteesToBeCopied(any())(any())).thenReturn(Nil)
-      val getData = new FakeDataRetrievalAction(Some(userAnswers))
+      val getData = new FakeDataRetrievalAction(Some(userAnswerss))
 
-      val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(userAnswers))
+      val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(userAnswerss))
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.common.routes.SpokeTaskListController.onPageLoad(0, entities.Establisher, entities.Company).url)
     }
 
     "copy the directors and redirect to the next page when valid data is submitted with value less than max directors" in {
-      when(mockDataPrefillService.copyAllTrusteesToDirectors(any(), any(), any())).thenReturn(userAnswers)
+      when(mockDataPrefillService.copyAllTrusteesToDirectors(any(), any(), any())).thenReturn(userAnswerss)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
       val request: FakeRequest[AnyContentAsJson] = fakeRequest.withJsonBody(Json.obj("value" -> Seq("0")))
 
-      val getData = new FakeDataRetrievalAction(Some(userAnswers))
+      val getData = new FakeDataRetrievalAction(Some(userAnswerss))
       val result: Future[Result] = controller(getData).onSubmit(0)(request)
 
       status(result) mustBe SEE_OTHER
@@ -136,7 +146,7 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
       val request: FakeRequest[AnyContentAsJson] = fakeRequest.withJsonBody(Json.obj("value" -> Seq("-1")))
 
-      val getData = new FakeDataRetrievalAction(Some(userAnswers))
+      val getData = new FakeDataRetrievalAction(Some(userAnswerss))
       val result: Future[Result] = controller(getData).onSubmit(0)(request)
 
       status(result) mustBe SEE_OTHER
@@ -148,7 +158,7 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
     "return a Bad Request and errors when invalid data is submitted" in {
       when(mockDataPrefillService.getListOfTrusteesToBeCopied(any())(any())).thenReturn(Nil)
       val request: FakeRequest[AnyContentAsJson] = fakeRequest.withJsonBody(Json.obj("value" -> Seq("invalid")))
-      val getData = new FakeDataRetrievalAction(Some(userAnswers))
+      val getData = new FakeDataRetrievalAction(Some(userAnswerss))
 
       val result: Future[Result] = controller(getData).onSubmit(0)(request)
 

@@ -32,11 +32,11 @@ import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call, Result
 import play.api.test.Helpers.{GET, POST}
 import play.api.test.{FakeHeaders, FakeRequest}
 import play.twirl.api.Html
-import services.DataUpdateService
+import services.{DataPrefillService, DataUpdateService}
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import utils.{CountryOptions, Enumerable, FakeCountryOptions}
-import scala.concurrent.duration.DurationInt
 
+import scala.concurrent.duration.DurationInt
 import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration.DurationInt
 
@@ -61,6 +61,7 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
   protected val mockUserAnswersCacheConnector: UserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   protected val mockCompoundNavigator: CompoundNavigator = mock[CompoundNavigator]
   protected val mockRenderer: NunjucksRenderer = mock[NunjucksRenderer]
+  protected val mockDataPrefillService: DataPrefillService = mock[DataPrefillService]
   protected val mockMinimalDetailsConnector: MinimalDetailsConnector = mock[MinimalDetailsConnector]
   protected val mockEmailConnector: EmailConnector = mock[EmailConnector]
   protected val mockLegacySchemeDetailsConnector: LegacySchemeDetailsConnector = mock[LegacySchemeDetailsConnector]

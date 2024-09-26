@@ -68,8 +68,9 @@ class TrusteesAlsoDirectorsController @Inject()(override val messagesApi: Messag
     implicit request =>
       (CompanyDetailsId(establisherIndex) and SchemeNameId).retrieve.map { case companyName ~ schemeName =>
         implicit val ua: UserAnswers = request.userAnswers
-        val seqTrustee = dataPrefillService.getListOfTrusteesToBeCopied(establisherIndex)
-        println(s"*************** ${seqTrustee}")
+        println(s"${request.userAnswers}")
+        val seqTrustee = dataPrefillService.getListOfTrusteesToBeCopied(establisherIndex)(ua)
+        println(s"**** $seqTrustee")
         if (seqTrustee.nonEmpty) {
           Future.successful(Ok(view(
             form,
