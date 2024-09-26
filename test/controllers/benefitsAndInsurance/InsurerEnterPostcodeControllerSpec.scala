@@ -59,6 +59,7 @@ class InsurerEnterPostcodeControllerSpec extends ControllerSpecBase with Nunjuck
   private val valuesInvalid: Map[String, Seq[String]] = Map(
     "value" -> Seq.empty
   )
+  val request = httpGETRequest(httpPathGET)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -71,7 +72,7 @@ class InsurerEnterPostcodeControllerSpec extends ControllerSpecBase with Nunjuck
       val ua: UserAnswers = UserAnswers().setOrException(SchemeNameId, Data.schemeName)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val result: Future[Result] = route(application, request).value
 
       status(result) mustEqual OK
 
@@ -88,11 +89,11 @@ class InsurerEnterPostcodeControllerSpec extends ControllerSpecBase with Nunjuck
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val result: Future[Result] = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.routes.SessionExpiredController.onPageLoad().absoluteURL()(request)
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {

@@ -47,4 +47,5 @@ trait InputFluency {
         inputType = inputType
       )
   }
+
 }

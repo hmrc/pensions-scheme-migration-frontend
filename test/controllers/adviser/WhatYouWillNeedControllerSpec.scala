@@ -21,53 +21,43 @@ import controllers.actions._
 import identifiers.adviser.AdviserNameId
 import matchers.JsonMatchers
 import models.NormalMode
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
-import play.api.libs.json.{JsObject, Json}
+import play.api.Application
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
-import play.twirl.api.Html
-import renderer.Renderer
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.ua
-import utils.UserAnswers
+import utils.{Data, UserAnswers}
+import views.html.adviser.WhatYouWillNeedView
 
 import scala.concurrent.Future
 
-class WhatYouWillNeedControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues {
+class WhatYouWillNeedControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues {
 
   private val advisorName: String = "test"
   private val userAnswers: UserAnswers = ua.set(AdviserNameId, advisorName).success.value
-  private val templateToBeRendered: String = "adviser/whatYouWillNeed.njk"
+  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
-  private def json: JsObject =
-    Json.obj(
-      "continueUrl" -> routes.AdviserNameController.onPageLoad(NormalMode).url,
-      "schemeName"  -> "Test scheme name"
-    )
+  private val mode = NormalMode
 
   private def controller(dataRetrievalAction: DataRetrievalAction): WhatYouWillNeedController =
     new WhatYouWillNeedController(new FakeAuthAction(), dataRetrievalAction,
-      new DataRequiredActionImpl, controllerComponents, new Renderer(mockAppConfig, mockRenderer))
+      new DataRequiredActionImpl, controllerComponents, app.injector.instanceOf[WhatYouWillNeedView])
 
   "WhatYouWillNeedController" must {
     "return OK and the correct view for a GET" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val getData = new FakeDataRetrievalAction(Some(userAnswers))
-      val result: Future[Result] = controller(getData).onPageLoad(fakeDataRequest(userAnswers))
+      val result: Future[Result] = controller(new FakeDataRetrievalAction(Some(userAnswers)))
+        .onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = app.injector.instanceOf[WhatYouWillNeedView].apply(
+        Data.schemeName,
+        routes.AdviserNameController.onPageLoad(mode),
+      )(fakeRequest, messages)
 
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(json)
+      compareResultAndView(result, view)
     }
+
   }
 }
