@@ -26,11 +26,14 @@ import play.api.data.FormBinding.Implicits._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{Json, OWrites}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{AnyContent, Call, MessagesControllerComponents, Result}
+import play.api.routing.Router.empty.routes
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import utils.UserAnswers
+import views.html.EnterReferenceValueView
+import views.html.EnterReferenceValueWithHintView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,26 +41,12 @@ import scala.util.Try
 
 @Singleton
 class CommonEnterReferenceValueService @Inject()(val controllerComponents: MessagesControllerComponents,
-                                                 val renderer: Renderer,
                                                  val userAnswersCacheConnector: UserAnswersCacheConnector,
                                                  val navigator: CompoundNavigator,
-                                                 val messagesApi: MessagesApi
+                                                 val messagesApi: MessagesApi,
+                                                 enterReferenceValueView: EnterReferenceValueView,
+                                                 enterReferenceValueWithHintView: EnterReferenceValueWithHintView
                                                 ) extends NunjucksSupport with FrontendHeaderCarrierProvider with I18nSupport {
-
-  protected def templateName(paragraphText: Seq[String], hintText: Option[String]): String =
-    if (paragraphText.nonEmpty || hintText.nonEmpty) "enterReferenceValueWithHint.njk" else "enterReferenceValue.njk"
-
-  private case class TemplateData(pageTitle: String,
-                                  pageHeading: String,
-                                  isPageHeading: Boolean,
-                                  form: Form[ReferenceValue],
-                                  schemeName: String,
-                                  legendClass: String = "govuk-fieldset__legend--s",
-                                  paragraphs: Seq[String] = Seq(),
-                                  hintText: Option[String] = None
-                                 )
-
-  implicit private def templateDataWrites(implicit request: DataRequest[AnyContent]): OWrites[TemplateData] = Json.writes[TemplateData]
 
   def get(
            pageTitle: String,
@@ -68,14 +57,17 @@ class CommonEnterReferenceValueService @Inject()(val controllerComponents: Messa
            schemeName: String,
            hintText: Option[String] = None,
            paragraphText: Seq[String] = Seq(),
-           legendClass: String = "govuk-fieldset__legend--s"
+           legendClass: String = "govuk-fieldset__legend--s",
+           submitCall: Call
          )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
 
     val filledForm = request.userAnswers.get[ReferenceValue](id).fold(form)(form.fill)
-    renderer.render(
-      template = templateName(paragraphText, hintText),
-      getTemplateData(pageTitle, pageHeading, isPageHeading, filledForm, schemeName, legendClass, paragraphText, hintText)
-    ).map(Ok(_))
+    val view = if (paragraphText.nonEmpty || hintText.nonEmpty) {
+      enterReferenceValueWithHintView(filledForm, schemeName, pageTitle, pageHeading, legendClass, paragraphText, hintText, submitCall)
+    } else {
+      enterReferenceValueView(filledForm, schemeName, pageTitle, pageHeading, legendClass, submitCall)
+    }
+    Future.successful(Ok(view))
   }
 
   def post(
@@ -89,15 +81,19 @@ class CommonEnterReferenceValueService @Inject()(val controllerComponents: Messa
             paragraphText: Seq[String] = Seq(),
             legendClass: String = "govuk-fieldset__legend--s",
             mode: Mode,
+            submitCall: Call,
             optSetUserAnswers: Option[ReferenceValue => Try[UserAnswers]] = None
-          )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] =
+          )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
 
     form.bindFromRequest().fold(
-      (formWithErrors: Form[ReferenceValue]) =>
-        renderer.render(
-          template = templateName(paragraphText, hintText),
-          getTemplateData(pageTitle, pageHeading, isPageHeading, formWithErrors, schemeName, legendClass, paragraphText, hintText))
-          .map(BadRequest(_)),
+      formWithErrors => {
+        val view = if (paragraphText.nonEmpty || hintText.nonEmpty) {
+          enterReferenceValueWithHintView(formWithErrors, schemeName, pageTitle, pageHeading, legendClass, paragraphText, hintText, submitCall)
+        } else {
+          enterReferenceValueView(formWithErrors, schemeName, pageTitle, pageHeading, hintText, paragraphText, submitCall)
+        }
+        Future.successful(BadRequest(view))
+      },
       value => {
         def defaultSetUserAnswers = (value: ReferenceValue) =>
           request.userAnswers.set(id, value)
@@ -110,24 +106,5 @@ class CommonEnterReferenceValueService @Inject()(val controllerComponents: Messa
           Redirect(navigator.nextPage(id, updatedAnswers, mode))
       }
     )
-
-
-  private def getTemplateData(pageTitle: String,
-                              pageHeading: String,
-                              isPageHeading: Boolean,
-                              form: Form[ReferenceValue],
-                              schemeName: String,
-                              legendClass: String = "govuk-fieldset__legend--s",
-                              paragraphText: Seq[String] = Seq(),
-                              hintText: Option[String] = None): TemplateData = {
-    TemplateData(
-      pageTitle,
-      pageHeading,
-      isPageHeading,
-      form,
-      schemeName,
-      legendClass,
-      paragraphText,
-      hintText)
-  }
+}
 }
