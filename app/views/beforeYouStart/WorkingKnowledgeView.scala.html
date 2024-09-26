@@ -31,16 +31,16 @@
         }
 
         @formHelper(action = submitUrl, Symbol("autoComplete") -> "off") {
-            @govukRadios(
+        <h1 class="govuk-heading-l">@messages("messages__workingKnowledge__title")</h1>
+
+        <p id="p1" class="govuk-body govuk-!-font-weight-regular">@messages("messages__workingKnowledge__p1")</p>
+        <p id="p2" class="govuk-body govuk-!-font-weight-regular">@messages("messages__workingKnowledge__p2")</p>
+        <p id="p3" class="govuk-body govuk-!-font-weight-regular">@messages("messages__workingKnowledge__p3")</p>
+
+        @govukRadios(
             RadiosViewModel(
                 field = form("value"),
-                fieldset = Fieldset(
-                legend = Some(Legend(
-                    content = Text(messages("messages__workingKnowledge__title")),
-                    isPageHeading = true,
-                    classes = "govuk-fieldset__legend--l govuk-!-margin-bottom-8"
-                    ))
-                ),
+                fieldset = Fieldset( legend = None ),
                 items = radios,
                 classes = "govuk-radios--inline"
                 )
