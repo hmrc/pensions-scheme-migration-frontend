@@ -18,6 +18,7 @@ package viewmodels.govuk
 
 import play.api.data.Field
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.html.components.Hint
 import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.Fieldset
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.{RadioItem, Radios}
 import viewmodels.ErrorMessageAwareness
@@ -32,10 +33,12 @@ trait RadiosFluency {
                field: Field,
                items: Seq[RadioItem],
                fieldset: Fieldset,
-               classes: String = ""
+               classes: String = "",
+               hint: Option[Hint] = None
              )(implicit messages: Messages): Radios =
       Radios(
         fieldset     = Some(fieldset),
+        hint         = hint,
         name         = field.name,
         items        = items map (item => item copy (checked = field.value.isDefined && field.value == item.value)),
         errorMessage = errorMessage(field),

@@ -62,7 +62,8 @@ class CompanyDetailsControllerSpec extends ControllerSpecBase
   private val validValues = Map("companyName" -> Seq(companyName))
   private val invalidValues = Map("companyName" -> Seq(""))
 
-  private val submitUrl = routes.CompanyDetailsController.onSubmit(0).url
+  private val submitCall = routes.CompanyDetailsController.onSubmit(0)
+  private val submitUrl = submitCall.url
 
   "establiser CompanyDetailsController" must {
     "return OK and the correct view for a GET" in {
@@ -70,7 +71,7 @@ class CompanyDetailsControllerSpec extends ControllerSpecBase
 
       status(result) mustBe OK
 
-      val view = application.injector.instanceOf[views.html.CompanyDetailsView].apply(form, Data.schemeName)(request, messages)
+      val view = application.injector.instanceOf[views.html.CompanyDetailsView].apply(form, Data.schemeName, submitCall)(request, messages)
 
       compareResultAndView(result, view)
     }
@@ -85,7 +86,7 @@ class CompanyDetailsControllerSpec extends ControllerSpecBase
 
       val filledForm = form.bind(Map("companyName" -> companyName))
 
-      val view = application.injector.instanceOf[views.html.CompanyDetailsView].apply(filledForm, Data.schemeName)(request, messages)
+      val view = application.injector.instanceOf[views.html.CompanyDetailsView].apply(filledForm, Data.schemeName, submitCall)(request, messages)
 
       compareResultAndView(result, view)
     }
