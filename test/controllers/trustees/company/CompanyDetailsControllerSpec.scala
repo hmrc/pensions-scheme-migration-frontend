@@ -64,7 +64,8 @@ class CompanyDetailsControllerSpec extends ControllerSpecBase
 
   private val httpPathGET: String = routes.CompanyDetailsController.onPageLoad(index).url
 
-  private val submitUrl = routes.CompanyDetailsController.onSubmit(index).url
+  private val submitCall = routes.CompanyDetailsController.onSubmit(index)
+  private val submitUrl = submitCall.url
 
   private val request = httpGETRequest(httpPathGET)
 
@@ -76,7 +77,8 @@ class CompanyDetailsControllerSpec extends ControllerSpecBase
 
       val view = application.injector.instanceOf[CompanyDetailsView].apply(
         form,
-        Data.schemeName
+        Data.schemeName,
+        submitCall
       )(request, messages)
 
       compareResultAndView(result, view)
@@ -94,7 +96,8 @@ class CompanyDetailsControllerSpec extends ControllerSpecBase
 
       val view = application.injector.instanceOf[CompanyDetailsView].apply(
         filledForm,
-        Data.schemeName
+        Data.schemeName,
+        submitCall
       )(request, messages)
 
       compareResultAndView(result, view)
