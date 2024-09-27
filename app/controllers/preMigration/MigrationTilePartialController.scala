@@ -23,7 +23,7 @@ import models.PageLink
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import views.html.preMigration.MigrationLinksPartialView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 
@@ -36,7 +36,7 @@ class MigrationTilePartialController @Inject()(
                                                 authenticate: AuthAction,
                                                 bulkMigrationQueueConnector: BulkMigrationQueueConnector,
                                                 val controllerComponents: MessagesControllerComponents,
-                                                renderer: Renderer
+                                                migrationLinksPartialView: MigrationLinksPartialView
                                               )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
