@@ -22,14 +22,14 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], entityType: String, entityName: String, enterManuallyUrl: String, schemeName: Option[String])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], entityType: String, entityName: String, submitUrl: play.api.mvc.Call, enterManuallyUrl: String, schemeName: Option[String])(implicit request: Request[_], messages: Messages)
 
 @layout(messages("messages__postcode__title")) {
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @formHelper(action = routes.PostcodeController.submit(), Symbol("autoComplete") -> "off", Symbol("novalidate") -> "true") {
+        @formHelper(action = submitUrl, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "true") {
             @govukInput(
                 InputViewModel(
                     field = form("value"),

@@ -54,7 +54,8 @@ class ConfirmAddressController @Inject()(
           AddressListId(index),
           AddressConfiguration.PostcodeFirst,
           form,
-          pageTitleEntityTypeMessageKey
+          pageTitleEntityTypeMessageKey,
+          submitUrl = routes.ConfirmAddressController.onSubmit(index, mode)
         )
       }
     }
@@ -69,7 +70,8 @@ class ConfirmAddressController @Inject()(
           AddressConfiguration.PostcodeFirst,
           Some(mode),
           form,
-          pageTitleEntityTypeMessageKey
+          pageTitleEntityTypeMessageKey,
+          submitUrl = routes.ConfirmAddressController.onSubmit(index, mode)
         )
       }
     }

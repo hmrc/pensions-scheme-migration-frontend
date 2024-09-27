@@ -29,7 +29,7 @@ import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.{JsArray, Json, OWrites, Writes}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
-import play.api.mvc.{AnyContent, Result}
+import play.api.mvc.{AnyContent, Call, Result}
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.address.PostcodeView
 
@@ -40,6 +40,7 @@ case class CommonPostcodeTemplateData(
                                        form: Form[String],
                                        entityType: String,
                                        entityName: String,
+                                       submitUrl: Call,
                                        enterManuallyUrl: String,
                                        schemeName: String,
                                        h1MessageKey: String  = "postcode.title"
@@ -50,6 +51,7 @@ object CommonPostcodeTemplateData {
     "data" -> form.data,
     "errors" -> form.errors.map(_.message)
   )
+  implicit val callWrites: Writes[Call] = Writes[Call](call => Json.obj("url" -> call.url))
   implicit val templateDataWrites: OWrites[CommonPostcodeTemplateData] = Json.writes[CommonPostcodeTemplateData]
 }
 
@@ -70,6 +72,7 @@ class CommonPostcodeService @Inject()(
       form,
       templateData.entityType,
       templateData.entityName,
+      templateData.submitUrl,
       templateData.enterManuallyUrl,
       Some(templateData.schemeName)
     )))
@@ -88,6 +91,7 @@ class CommonPostcodeService @Inject()(
           formWithErrors,
           templateData.entityType,
           templateData.entityName,
+          templateData.submitUrl,
           templateData.enterManuallyUrl,
           Some(templateData.schemeName)
         )))
@@ -101,6 +105,7 @@ class CommonPostcodeService @Inject()(
                 formWithErrors,
                 templateData.entityType,
                 templateData.entityName,
+                templateData.submitUrl,
                 templateData.enterManuallyUrl,
                 Some(templateData.schemeName)
               )))

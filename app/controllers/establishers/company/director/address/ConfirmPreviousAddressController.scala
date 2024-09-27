@@ -70,7 +70,8 @@ class ConfirmPreviousAddressController @Inject()(
             AddressConfiguration.PostcodeFirst,
             form,
             pageTitleEntityTypeMessageKey,
-            pageTitleMessageKey
+            pageTitleMessageKey,
+            submitUrl = routes.ConfirmPreviousAddressController.onSubmit(establisherIndex, directorIndex, mode)
           )
       }
     }
@@ -93,7 +94,8 @@ class ConfirmPreviousAddressController @Inject()(
                   Some(mode),
                   formWithErrors,
                   pageTitleEntityTypeMessageKey,
-                  pageTitleMessageKey
+                  pageTitleMessageKey,
+                  submitUrl = routes.ConfirmPreviousAddressController.onSubmit(establisherIndex, directorIndex, mode)
                 )
               },
               value =>

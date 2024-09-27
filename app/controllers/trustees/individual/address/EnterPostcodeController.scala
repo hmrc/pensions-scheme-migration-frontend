@@ -41,6 +41,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.UserAnswers
+import views.html.address.PostcodeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -57,7 +58,8 @@ class EnterPostcodeController @Inject()(
    formProvider: PostcodeFormProvider,
    dataUpdateService: DataUpdateService,
    renderer: Renderer,
-   common: CommonPostcodeService
+   common: CommonPostcodeService,
+   postcodeView: PostcodeView
 )(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
 
   private def form: Form[String] = formProvider("enterPostcode.required", "enterPostcode.invalid")
@@ -80,13 +82,30 @@ class EnterPostcodeController @Inject()(
       retrieve(SchemeNameId) { schemeName =>
         val formToTemplate: Form[String] => CommonPostcodeTemplateData = getFormToTemplate(schemeName, index, mode)
         form.bindFromRequest().fold(
-          formWithErrors =>
-            renderer.render(common.viewTemplate, formToTemplate(formWithErrors)).map(BadRequest(_)),
+          formWithErrors => {
+            val templateData = formToTemplate(formWithErrors)
+            Future.successful(BadRequest(postcodeView(
+              formWithErrors,
+              templateData.entityType,
+              templateData.entityName,
+              templateData.submitUrl,
+              templateData.enterManuallyUrl,
+              Some(templateData.schemeName)
+            )))
+          },
           value =>
             addressLookupConnector.addressLookupByPostCode(value).flatMap {
               case Nil =>
-                renderer.render(common.viewTemplate, formToTemplate(formWithError("enterPostcode.noresults"))).map(BadRequest(_))
-
+                val formWithErrors = formWithError("enterPostcode.noresults") // TODO Fix it
+                val templateData = formToTemplate(formWithError("enterPostcode.noresults"))
+                Future.successful(BadRequest(postcodeView(
+                  formWithErrors,
+                  templateData.entityType,
+                  templateData.entityName,
+                  templateData.submitUrl,
+                  templateData.enterManuallyUrl,
+                  Some(templateData.schemeName)
+                )))
               case addresses =>
                 for {
                   updatedAnswers <- Future.fromTry(setUpdatedAnswers(index, mode, addresses, request.userAnswers))
@@ -102,13 +121,16 @@ class EnterPostcodeController @Inject()(
   def getFormToTemplate(schemeName:String, index: Index, mode: Mode)(implicit request:DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
     val name: String = request.userAnswers.get(TrusteeNameId(index))
       .map(_.fullName).getOrElse(Message("trusteeEntityTypeIndividual"))
+    val submitUrl = routes.EnterPostcodeController.onSubmit(index, mode)
+    val enterManuallyUrl = routes.ConfirmAddressController.onPageLoad(index, mode).url
 
     form => {
       CommonPostcodeTemplateData(
         form,
         Message("trusteeEntityTypeIndividual"),
         name,
-        controllers.trustees.individual.address.routes.ConfirmAddressController.onPageLoad(index, mode).url,
+        submitUrl,
+        enterManuallyUrl,
         schemeName
       )
     }

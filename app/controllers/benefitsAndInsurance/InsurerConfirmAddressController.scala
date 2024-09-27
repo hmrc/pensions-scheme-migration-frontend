@@ -54,7 +54,8 @@ class InsurerConfirmAddressController @Inject()(
           InsurerAddressId,InsurerAddressListId,
           AddressConfiguration.PostcodeFirst,
           form,
-          pageTitleEntityTypeMessageKey
+          pageTitleEntityTypeMessageKey,
+          submitUrl = controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onSubmit
         )
       }
     }
@@ -68,7 +69,8 @@ class InsurerConfirmAddressController @Inject()(
           InsurerAddressId,
           AddressConfiguration.PostcodeFirst,
           form = form,
-          pageTitleEntityTypeMessageKey = pageTitleEntityTypeMessageKey
+          pageTitleEntityTypeMessageKey = pageTitleEntityTypeMessageKey,
+          submitUrl = controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onSubmit
         )
       }
     }

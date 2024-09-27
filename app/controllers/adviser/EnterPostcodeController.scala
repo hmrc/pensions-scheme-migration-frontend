@@ -64,13 +64,16 @@ class EnterPostcodeController @Inject()(
 
   def getFormToTemplate(schemeName: String, mode: Mode)(implicit request: DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
     val name: String = request.userAnswers.get(AdviserNameId).getOrElse(Message("messages__pension__adviser"))
+    val submitUrl = routes.EnterPostcodeController.onSubmit(mode)
+    val enterManuallyUrl = routes.ConfirmAddressController.onPageLoad.url
 
     form => {
       CommonPostcodeTemplateData(
         form,
         Message("messages__pension__adviser"),
         name,
-        controllers.adviser.routes.ConfirmAddressController.onPageLoad.url,
+        submitUrl,
+        enterManuallyUrl,
         schemeName
       )
     }

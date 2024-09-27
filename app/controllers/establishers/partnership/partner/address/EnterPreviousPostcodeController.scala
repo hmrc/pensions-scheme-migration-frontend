@@ -73,13 +73,16 @@ class EnterPreviousPostcodeController @Inject()(
                        )(implicit request: DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
     val name: String = request.userAnswers.get(PartnerNameId(establisherIndex, partnerIndex)).map(_.fullName)
       .getOrElse(Message("messages__partner"))
+    val submitUrl = routes.EnterPreviousPostcodeController.onSubmit(establisherIndex, partnerIndex, mode)
+    val enterManuallyUrl = routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, partnerIndex, mode).url
 
     form => {
       CommonPostcodeTemplateData(
         form,
         Message("messages__partner"),
         name,
-        routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, partnerIndex, mode).url,
+        submitUrl,
+        enterManuallyUrl,
         schemeName,
         "previousPostcode.title"
       )

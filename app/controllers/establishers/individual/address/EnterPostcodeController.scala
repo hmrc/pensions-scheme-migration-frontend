@@ -67,13 +67,16 @@ class EnterPostcodeController @Inject()(
                        )(implicit request:DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
     val name: String = request.userAnswers.get(EstablisherNameId(index))
       .map(_.fullName).getOrElse(Message("establisherEntityTypeIndividual"))
+    val submitUrl = routes.EnterPostcodeController.onSubmit(index, mode)
+    val enterManuallyUrl = routes.ConfirmAddressController.onPageLoad(index, mode).url
 
-    form => {
+      form => {
       CommonPostcodeTemplateData(
         form,
         Message("establisherEntityTypeIndividual"),
         name,
-        controllers.establishers.individual.address.routes.ConfirmAddressController.onPageLoad(index,mode).url,
+        submitUrl,
+        enterManuallyUrl,
         schemeName
       )
     }

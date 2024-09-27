@@ -63,13 +63,16 @@ class InsurerEnterPostcodeController @Inject()(
 
   def getFormToTemplate(schemeName:String)(implicit request:DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
     val name: String = request.userAnswers.get(BenefitsInsuranceNameId).getOrElse(Message("benefitsInsuranceUnknown"))
+    val submitUrl = routes.InsurerEnterPostcodeController.onSubmit
+    val enterManuallyUrl = routes.InsurerConfirmAddressController.onPageLoad.url
 
     form => {
       CommonPostcodeTemplateData(
         form,
         Message("benefitsInsuranceUnknown"),
         name,
-        controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onPageLoad.url,
+        submitUrl,
+        enterManuallyUrl,
         schemeName
       )
     }

@@ -33,7 +33,6 @@ import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results.{BadRequest, Redirect}
 import play.api.mvc.{Action, AnyContent}
-import renderer.Renderer
 import services.DataUpdateService
 import services.common.address.{CommonPostcodeService, CommonPostcodeTemplateData}
 import viewmodels.Message
@@ -41,6 +40,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.UserAnswers
+import views.html.address.PostcodeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -56,8 +56,8 @@ class EnterPreviousPostcodeController @Inject()(
     requireData: DataRequiredAction,
     formProvider: PostcodeFormProvider,
     dataUpdateService: DataUpdateService,
-    renderer: Renderer,
-    common: CommonPostcodeService
+    common: CommonPostcodeService,
+    postcodeView: PostcodeView
 )(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
@@ -75,13 +75,30 @@ class EnterPreviousPostcodeController @Inject()(
         retrieve(SchemeNameId) { schemeName =>
           val formToTemplate: Form[String] => CommonPostcodeTemplateData = getFormToTemplate(schemeName, establisherIndex, directorIndex, mode)
           form.bindFromRequest().fold(
-            formWithErrors =>
-              renderer.render(common.viewTemplate, formToTemplate(formWithErrors)).map(BadRequest(_)),
+              formWithErrors => {
+                val templateData = formToTemplate(formWithErrors)
+                Future.successful(BadRequest(postcodeView(
+                  formWithErrors,
+                  templateData.entityType,
+                  templateData.entityName,
+                  templateData.submitUrl,
+                  templateData.enterManuallyUrl,
+                  Some(templateData.schemeName)
+                )))
+              },
             value =>
               addressLookupConnector.addressLookupByPostCode(value).flatMap {
                 case Nil =>
-                  renderer.render(common.viewTemplate, formToTemplate(formWithError("enterPostcode.noresults"))).map(BadRequest(_))
-
+                  val formWithErrors = formWithError("enterPostcode.noresults") // TODO Fix it
+                  val templateData = formToTemplate(formWithError("enterPostcode.noresults"))
+                  Future.successful(BadRequest(postcodeView(
+                    formWithErrors,
+                    templateData.entityType,
+                    templateData.entityName,
+                    templateData.submitUrl,
+                    templateData.enterManuallyUrl,
+                    Some(templateData.schemeName)
+                  )))
                 case addresses =>
                   for {
                     updatedAnswers <- Future.fromTry(setUpdatedAnswers(establisherIndex, directorIndex, mode, addresses, request.userAnswers))
@@ -118,13 +135,16 @@ class EnterPreviousPostcodeController @Inject()(
                        )(implicit request: DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
     val name: String = request.userAnswers.get(DirectorNameId(establisherIndex, directorIndex))
       .map(_.fullName).getOrElse(Message("messages__director"))
+    val submitUrl = routes.EnterPostcodeController.onSubmit(establisherIndex, directorIndex, mode)
+    val enterManuallyUrl = routes.ConfirmAddressController.onPageLoad(establisherIndex, directorIndex, mode).url
 
     form => {
       CommonPostcodeTemplateData(
         form,
         Message("messages__director"),
         name,
-        routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, directorIndex, mode).url,
+        submitUrl,
+        enterManuallyUrl,
         schemeName,
         "previousPostcode.title"
       )
