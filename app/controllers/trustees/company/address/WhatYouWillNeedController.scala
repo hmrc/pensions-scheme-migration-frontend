@@ -49,18 +49,15 @@ class WhatYouWillNeedController @Inject()(
       implicit request =>
         val schemeName = request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
 
+
         CompanyDetailsId(index).retrieve.map {
-          case companyDetails: CompanyDetails =>
-            Right(whatYouWillNeedView(
+          companyDetails: CompanyDetails =>
+            Future.successful(Ok(whatYouWillNeedView(
               Messages("messages__title_company"),
               companyDetails.companyName,
               EnterPostcodeController.onPageLoad(index, NormalMode).url,
               schemeName
-            ))
-          case result: Result => Left(result)
-        }.map {
-          case Right(html) => Ok(html)
-          case Left(result) => result
+            )))
         }
     }
 }
