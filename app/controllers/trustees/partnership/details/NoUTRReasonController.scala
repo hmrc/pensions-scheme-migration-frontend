@@ -61,7 +61,8 @@ class NoUTRReasonController @Inject()(val messagesApi: MessagesApi,
               isPageHeading = true,
               id            = NoUTRReasonId(index),
               form          = form(index),
-              schemeName    = schemeName
+              schemeName    = schemeName,
+              submitUrl     = routes.NoUTRReasonController.onSubmit(index, mode)
             )
         }
     }
@@ -78,7 +79,8 @@ class NoUTRReasonController @Inject()(val messagesApi: MessagesApi,
               id            = NoUTRReasonId(index),
               form          = form(index),
               schemeName    = schemeName,
-              mode          = mode
+              mode          = mode,
+              submitUrl     = routes.NoUTRReasonController.onSubmit(index, mode)
             )
         }
     }

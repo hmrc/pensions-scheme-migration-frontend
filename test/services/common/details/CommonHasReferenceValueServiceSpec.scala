@@ -16,6 +16,7 @@
 
 package services.common.details
 
+import controllers.ControllerSpecBase
 import forms.YesNoFormProvider
 import identifiers.TypedIdentifier
 import models.NormalMode
@@ -31,7 +32,7 @@ import utils.FakeNavigator
 
 import scala.concurrent.Future
 
-class CommonHasReferenceValueServiceSpec extends CommonServiceSpecBase {
+class CommonHasReferenceValueServiceSpec extends ControllerSpecBase with CommonServiceSpecBase {
 
   val service = new CommonHasReferenceValueService(
     controllerComponents = controllerComponents,

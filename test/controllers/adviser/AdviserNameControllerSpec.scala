@@ -17,14 +17,13 @@
 package controllers.adviser
 
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction, MutableFakeDataRetrievalAction}
+import controllers.actions._
 import forms.adviser.AdviserNameFormProvider
 import identifiers.adviser.AdviserNameId
 import matchers.JsonMatchers
 import models.{CheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
-import play.api.Application
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
@@ -39,9 +38,6 @@ class AdviserNameControllerSpec extends ControllerSpecBase
   with JsonMatchers
   with TryValues
   with BeforeAndAfterEach {
-
-  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
   private val adviserName = "test"
   private val formProvider: AdviserNameFormProvider = new AdviserNameFormProvider()

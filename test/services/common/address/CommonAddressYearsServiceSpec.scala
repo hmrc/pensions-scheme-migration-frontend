@@ -16,6 +16,7 @@
 
 package services.common.address
 
+import controllers.ControllerSpecBase
 import identifiers.TypedIdentifier
 import identifiers.establishers.individual.address.AddressYearsId
 import models.NormalMode
@@ -39,7 +40,7 @@ import utils.{Data, FakeNavigator, UserAnswers}
 
 import scala.concurrent.Future
 
-class CommonAddressYearsServiceSpec extends CommonServiceSpecBase with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
+class CommonAddressYearsServiceSpec extends ControllerSpecBase with CommonServiceSpecBase with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
 
   private val navigator = new FakeNavigator(desiredRoute = onwardCall)
   val renderer = new Renderer(mockAppConfig, mockRenderer)
