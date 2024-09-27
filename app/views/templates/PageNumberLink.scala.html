@@ -1,0 +1,6 @@
+@(linkText: String, pageNumber: Int, baseUrl: String)(implicit request: Request[_], messages: Messages)
+@id = @{linkText.toLowerCase}
+@url = @{baseUrl + pageNumber}
+@ariaLabelMessageStr = @{"messages__listSchemes__pagination__"+id+"__ariaLabel"}
+@ariaLabel = @{messages(ariaLabelMessageStr)}
+<span class="nav-item"><a id="@id" href="@url" aria-label="@ariaLabel" class="govuk-link">@linkText</a></span>
