@@ -17,7 +17,7 @@
 package controllers.establishers.company.director.details
 
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction, MutableFakeDataRetrievalAction}
 import forms.NINOFormProvider
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.details.DirectorNINOId
@@ -26,17 +26,20 @@ import models.{NormalMode, PersonName, ReferenceValue}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
+import play.api.Application
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import renderer.Renderer
 import services.common.details.CommonEnterReferenceValueService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.Data.ua
+import utils.Data.{schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
+import viewmodels.Message
+import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
 
 import scala.concurrent.Future
 
@@ -49,31 +52,41 @@ class DirectorEnterNINOControllerSpec
 
   private val personName: PersonName =
     PersonName("Jane", "Doe")
+
   private val formProvider: NINOFormProvider =
     new NINOFormProvider()
+
   private val form: Form[ReferenceValue] =
     formProvider(personName.fullName)
+
   private val userAnswers: UserAnswers =
     ua.set(DirectorNameId(0, 0), personName).success.value
-  private val templateToBeRendered: String =
-    "enterReferenceValueWithHint.njk"
-  private val commonJson: JsObject =
-    Json.obj(
-      "pageTitle" -> "What is the director’s National Insurance number?",
-      "pageHeading" -> "What is Jane Doe’s National Insurance number?",
-      "schemeName" -> "Test scheme name",
-      "legendClass" -> "govuk-label--xl",
-      "isPageHeading" -> true
-    )
+
   private val formData: ReferenceValue =
     ReferenceValue(value = "AB123456C")
 
   override def beforeEach(): Unit = {
     reset(
-      mockRenderer,
       mockUserAnswersCacheConnector
     )
   }
+
+  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
+  private def httpPathGET: String = controllers.establishers.company.director.details.routes.DirectorEnterNINOController.onPageLoad(index,directorIndex,NormalMode).url
+  private def httpPathPOST: String = controllers.establishers.company.director.details.routes.DirectorEnterNINOController.onSubmit(index,directorIndex,NormalMode).url
+
+//  private val templateToBeRendered: String =
+//    "enterReferenceValueWithHint.njk"
+//  private val commonJson: JsObject =
+//    Json.obj(
+//      "pageTitle" -> "What is the director’s National Insurance number?",
+//      "pageHeading" -> "What is Jane Doe’s National Insurance number?",
+//      "schemeName" -> "Test scheme name",
+//      "legendClass" -> "govuk-label--xl",
+//      "isPageHeading" -> true
+//    )
+
 
   private def controller(
                           dataRetrievalAction: DataRetrievalAction
@@ -87,39 +100,58 @@ class DirectorEnterNINOControllerSpec
       dataUpdateService = mockDataUpdateService,
       common = new CommonEnterReferenceValueService(
         controllerComponents = controllerComponents,
-        renderer = new Renderer(mockAppConfig, mockRenderer),
         userAnswersCacheConnector = mockUserAnswersCacheConnector,
         navigator = new FakeNavigator(desiredRoute = onwardCall),
+        enterReferenceValueView = app.injector.instanceOf[EnterReferenceValueView],
+        enterReferenceValueWithHintView = app.injector.instanceOf[EnterReferenceValueWithHintView],
         messagesApi = messagesApi
       )
     )
 
   "DirectorEnterNINOController" must {
     "return OK and the correct view for a GET" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
+      //      when(mockRenderer.render(any(), any())(any()))
+//        .thenReturn(Future.successful(Html("")))
+//      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+//      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+//      val getData = new FakeDataRetrievalAction(Some(userAnswers))
+//      val result: Future[Result] =
+//        controller(getData)
+//          .onPageLoad(0, 0, NormalMode)(fakeDataRequest(userAnswers))
 
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val getData = new FakeDataRetrievalAction(Some(userAnswers))
-
-      val result: Future[Result] =
-        controller(getData)
-          .onPageLoad(0, 0, NormalMode)(fakeDataRequest(userAnswers))
+      val request = httpGETRequest(httpPathGET)
+      val result = route(application, request).value
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = application.injector.instanceOf[EnterReferenceValueWithHintView].apply(
+        form,
+        schemeName,
+        pageTitle = Message("messages__enterNINO_title", Message("messages__director")),
+        pageHeading = Message("messages__enterNINO_title", name(establisherIndex, directorIndex)),
+        legendClass = ,
+        paragraphs = Seq.empty ,
+        hintText = Some(Message("messages__enterNINO__hint")),
+        routes.DirectorEnterNINOController.onSubmit(index,directorIndex,NormalMode)
+      )(request, messages)
+      compareResultAndView(result, view)
 
-      templateCaptor.getValue mustEqual templateToBeRendered
+      //    Json.obj(
+      //      "pageTitle" -> "What is the director’s National Insurance number?",
+      //      "pageHeading" -> "What is Jane Doe’s National Insurance number?",
+      //      "schemeName" -> "Test scheme name",
+      //      "legendClass" -> "govuk-label--xl",
+      //      "isPageHeading" -> true
+      //    )
 
-      val json: JsObject =
-        Json.obj("form" -> form)
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+//      verify(mockRenderer, times(1))
+//        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
+//      templateCaptor.getValue mustEqual templateToBeRendered
+//      val json: JsObject =
+//        Json.obj("form" -> form)
+//      jsonCaptor.getValue must containJson(commonJson ++ json)
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {

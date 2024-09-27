@@ -36,6 +36,7 @@ import services.common.details.CommonEnterReferenceValueService
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.{companyDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
+import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
 
 import scala.concurrent.Future
 class CompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with BeforeAndAfterEach {
@@ -46,7 +47,7 @@ class CompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
   private val formProvider: CompanyNumberFormProvider = new CompanyNumberFormProvider()
 
-  private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
+//  private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
 
   private val commonJson: JsObject =
     Json.obj(
@@ -63,9 +64,10 @@ class CompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSuppor
       new DataRequiredActionImpl, formProvider,
       common = new CommonEnterReferenceValueService(
         controllerComponents = controllerComponents,
-        renderer = new Renderer(mockAppConfig, mockRenderer),
         userAnswersCacheConnector = mockUserAnswersCacheConnector,
         navigator = new FakeNavigator(desiredRoute = onwardCall),
+        enterReferenceValueView = app.injector.instanceOf[EnterReferenceValueView],
+        enterReferenceValueWithHintView = app.injector.instanceOf[EnterReferenceValueWithHintView],
         messagesApi = messagesApi
       ))
 

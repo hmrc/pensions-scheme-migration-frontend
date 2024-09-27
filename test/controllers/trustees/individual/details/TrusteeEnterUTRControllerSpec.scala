@@ -37,6 +37,7 @@ import services.common.details.CommonEnterReferenceValueService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{FakeNavigator, UserAnswers}
+import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
 
 import scala.concurrent.Future
 class TrusteeEnterUTRControllerSpec
@@ -56,7 +57,7 @@ class TrusteeEnterUTRControllerSpec
 
   private val userAnswers: UserAnswers = ua.set(TrusteeNameId(0), personName).success.value
 
-  private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
+//  private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
 
   private val commonJson: JsObject =
     Json.obj(
@@ -92,9 +93,10 @@ class TrusteeEnterUTRControllerSpec
       dataUpdateService         = mockDataUpdateService,
       common = new CommonEnterReferenceValueService(
         controllerComponents = controllerComponents,
-        renderer = new Renderer(mockAppConfig, mockRenderer),
         userAnswersCacheConnector = mockUserAnswersCacheConnector,
         navigator = new FakeNavigator(desiredRoute = onwardCall),
+        enterReferenceValueView = app.injector.instanceOf[EnterReferenceValueView],
+        enterReferenceValueWithHintView = app.injector.instanceOf[EnterReferenceValueWithHintView],
         messagesApi = messagesApi
       )
     )

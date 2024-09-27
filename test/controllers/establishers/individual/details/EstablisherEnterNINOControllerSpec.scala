@@ -37,6 +37,7 @@ import services.common.details.CommonEnterReferenceValueService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{FakeNavigator, UserAnswers}
+import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
 
 import scala.concurrent.Future
 
@@ -55,8 +56,8 @@ class EstablisherEnterNINOControllerSpec
     formProvider(personName.fullName)
   private val userAnswers: UserAnswers =
     ua.set(EstablisherNameId(0), personName).success.value
-  private val templateToBeRendered: String =
-    "enterReferenceValueWithHint.njk"
+//  private val templateToBeRendered: String =
+//    "enterReferenceValueWithHint.njk"
   private val commonJson: JsObject =
     Json.obj(
       "pageTitle"     -> "What is the individual’s National Insurance number?",
@@ -86,9 +87,10 @@ class EstablisherEnterNINOControllerSpec
       formProvider              = formProvider,
       common = new CommonEnterReferenceValueService(
         controllerComponents = controllerComponents,
-        renderer = new Renderer(mockAppConfig, mockRenderer),
         userAnswersCacheConnector = mockUserAnswersCacheConnector,
         navigator = new FakeNavigator(desiredRoute = onwardCall),
+        enterReferenceValueView = app.injector.instanceOf[EnterReferenceValueView],
+        enterReferenceValueWithHintView = app.injector.instanceOf[EnterReferenceValueWithHintView],
         messagesApi = messagesApi
       )
     )
