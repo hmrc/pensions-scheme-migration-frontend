@@ -115,7 +115,6 @@ class AdviserNameControllerSpec extends ControllerSpecBase
       val getData = new FakeDataRetrievalAction(Some(ua))
 
       val result: Future[Result] = controller(getData).onSubmit(NormalMode)(request)
-      val boundForm = form.bind(Map("adviserName" -> ""))
 
       status(result) mustBe BAD_REQUEST
       contentAsString(result) must include(messages("messages__adviserName__title"))

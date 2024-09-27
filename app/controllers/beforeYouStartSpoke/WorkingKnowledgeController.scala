@@ -25,54 +25,53 @@ import identifiers.beforeYouStart.WorkingKnowledgeId
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.Radios
-import utils.Enumerable
+import utils.{Enumerable, TwirlMigration}
+import views.html.beforeYouStart.WorkingKnowledgeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class WorkingKnowledgeController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            userAnswersCacheConnector: UserAnswersCacheConnector,
-                                            navigator: CompoundNavigator,
-                                            authenticate: AuthAction,
-                                            getData: DataRetrievalAction,
-                                            requireData: DataRequiredAction,
-                                            formProvider: WorkingKnowledgeFormProvider,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            renderer: Renderer
-                                          )(implicit val executionContext: ExecutionContext) extends
-  FrontendBaseController with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
+    override val messagesApi: MessagesApi,
+    userAnswersCacheConnector: UserAnswersCacheConnector,
+    navigator: CompoundNavigator,
+    authenticate: AuthAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: WorkingKnowledgeFormProvider,
+    val controllerComponents: MessagesControllerComponents,
+    workingKnowledgeView: WorkingKnowledgeView
+)(implicit val executionContext: ExecutionContext) extends FrontendBaseController
+  with I18nSupport with Retrievals with Enumerable.Implicits {
 
   private val form = formProvider()
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData()) {
     implicit request =>
       val preparedForm = request.userAnswers.get(WorkingKnowledgeId).fold(form)(form.fill)
-      val json: JsObject = Json.obj(
-        "form" -> preparedForm,
-        "schemeName" -> existingSchemeName,
-        "radios" -> Radios.yesNo(preparedForm("value"))
-      )
-      renderer.render("beforeYouStart/workingKnowledge.njk", json).map(Ok(_))
+      Ok(workingKnowledgeView(
+        preparedForm,
+        existingSchemeName,
+        routes.WorkingKnowledgeController.onSubmit,
+        TwirlMigration.toTwirlRadios(Radios.yesNo(preparedForm("value")))
+      ))
   }
 
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) => {
-          val json: JsObject = Json.obj(
-            "form" -> formWithErrors,
-            "schemeName" -> existingSchemeName,
-            "radios" -> Radios.yesNo(formWithErrors("value"))
-          )
-          renderer.render("beforeYouStart/workingKnowledge.njk", json).map(BadRequest(_))
-        },
+        (formWithErrors: Form[_]) =>
+          Future.successful(BadRequest(
+            workingKnowledgeView(
+              formWithErrors,
+              existingSchemeName,
+              routes.WorkingKnowledgeController.onSubmit,
+              TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value")))
+            )
+          )),
           value =>
             for {
               updatedAnswers <- {
