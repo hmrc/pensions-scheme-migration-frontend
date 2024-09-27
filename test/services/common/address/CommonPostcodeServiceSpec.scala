@@ -17,6 +17,7 @@
 package services.common.address
 
 import connectors.AddressLookupConnector
+import controllers.ControllerSpecBase
 import models.{NormalMode, TolerantAddress}
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers.any
@@ -39,7 +40,7 @@ import services.CommonServiceSpecBase
 
 import scala.concurrent.Future
 
-class CommonPostcodeServiceSpec extends CommonServiceSpecBase with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
+class CommonPostcodeServiceSpec extends ControllerSpecBase with CommonServiceSpecBase with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
 
   private val navigator = new FakeNavigator(desiredRoute = onwardCall)
   private val renderer = new Renderer(mockAppConfig, mockRenderer)

@@ -69,7 +69,8 @@ class TrusteeNoUTRReasonController @Inject()(val messagesApi: MessagesApi,
               isPageHeading = true,
               id            = TrusteeNoUTRReasonId(index),
               form          = form(index),
-              schemeName    = schemeName
+              schemeName    = schemeName,
+              submitUrl     = routes.TrusteeNoUTRReasonController.onSubmit(index, mode)
             )
         }
     }
@@ -87,7 +88,8 @@ class TrusteeNoUTRReasonController @Inject()(val messagesApi: MessagesApi,
               form = form(index),
               schemeName = schemeName,
               mode = mode,
-              optSetUserAnswers = Some(value => setUpdatedAnswers(index, mode, value, request.userAnswers))
+              optSetUserAnswers = Some(value => setUpdatedAnswers(index, mode, value, request.userAnswers)),
+              submitUrl     = routes.TrusteeNoUTRReasonController.onSubmit(index, mode)
             )
         }
     }

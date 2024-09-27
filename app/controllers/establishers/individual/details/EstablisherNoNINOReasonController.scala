@@ -64,7 +64,8 @@ class EstablisherNoNINOReasonController @Inject()(val messagesApi: MessagesApi,
               isPageHeading = true,
               id            = EstablisherNoNINOReasonId(index),
               form          = form(index),
-              schemeName    = schemeName
+              schemeName    = schemeName,
+              submitUrl     = routes.EstablisherNoNINOReasonController.onSubmit(index, mode)
             )
         }
     }
@@ -81,7 +82,8 @@ class EstablisherNoNINOReasonController @Inject()(val messagesApi: MessagesApi,
                 id            = EstablisherNoNINOReasonId(index),
                 form          = form(index),
                 schemeName    = schemeName,
-                mode          = mode
+                mode          = mode,
+                submitUrl     = routes.EstablisherNoNINOReasonController.onSubmit(index, mode)
               )
           }
       }

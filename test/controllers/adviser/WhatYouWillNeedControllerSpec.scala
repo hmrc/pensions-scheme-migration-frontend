@@ -36,7 +36,6 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase with JsonMatchers
   private val advisorName: String = "test"
   private val userAnswers: UserAnswers = ua.set(AdviserNameId, advisorName).success.value
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
   private val mode = NormalMode
 

@@ -27,11 +27,11 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import renderer.Renderer
+import services.CommonServiceSpecBase
+import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{Data, UserAnswers}
 import viewmodels.Message
-import uk.gov.hmrc.domain.PsaId
-import services.CommonServiceSpecBase
 
 import scala.concurrent.Future
 

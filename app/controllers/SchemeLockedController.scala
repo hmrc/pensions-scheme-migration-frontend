@@ -21,11 +21,9 @@ import helpers.cya.CYAHelper
 import identifiers.beforeYouStart.SchemeNameId
 import models.{RacDac, Scheme}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.UserAnswers
+import views.html.SchemeLockedView
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -35,40 +33,26 @@ class SchemeLockedController @Inject()(override val messagesApi: MessagesApi,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer
+                                       schemeLockedView: SchemeLockedView
                                      )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with I18nSupport {
 
-  def onPageLoadScheme: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
+  def onPageLoadScheme: Action[AnyContent] = (authenticate andThen getData andThen requireData()) {
     implicit request =>
-        renderer.render(
-          template = "schemeLocked.njk",
-          ctx =  schemeJson(request.userAnswers)
-        ).map(Ok(_))
+        Ok(schemeLockedView(
+          CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+          Messages("messages__scheme"),
+          controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
+        ))
   }
 
-  def onPageLoadRacDac: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
+  def onPageLoadRacDac: Action[AnyContent] = (authenticate andThen getData andThen requireData()) {
     implicit request =>
-        renderer.render(
-          template = "schemeLocked.njk",
-          ctx = racDacJson(request.userAnswers)
-        ).map(Ok(_))
-  }
-
-  private def schemeJson(userAnswers:UserAnswers)(implicit messages: Messages):JsObject = {
-    Json.obj(
-      "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(userAnswers, implicitly),
-      "schemeType" -> messages("messages__scheme"),
-      "returnUrl" -> controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
-    )
-  }
-
-  private def racDacJson(userAnswers:UserAnswers)(implicit messages: Messages):JsObject = {
-    Json.obj(
-      "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(userAnswers, implicitly),
-      "schemeType" -> messages("messages__racdac"),
-      "returnUrl" -> controllers.preMigration.routes.ListOfSchemesController.onPageLoad(RacDac).url
-    )
+        Ok(schemeLockedView(
+          CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+          Messages("messages__racdac"),
+          controllers.preMigration.routes.ListOfSchemesController.onPageLoad(RacDac).url
+        ))
   }
 }
 

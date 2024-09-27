@@ -16,22 +16,38 @@
 
 package services.common.details
 
+import controllers.ControllerSpecBase
+import controllers.actions.MutableFakeDataRetrievalAction
 import forms.ReasonFormProvider
 import identifiers.TypedIdentifier
 import identifiers.beforeYouStart.SchemeNameId
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
+import play.api.Application
 import play.api.data.Form
+import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import renderer.Renderer
 import services.CommonServiceSpecBase
 import utils.{Data, FakeNavigator, UserAnswers}
+import views.html.ReasonView
 
 import scala.concurrent.Future
 
-class CommonReasonServiceSpec extends CommonServiceSpecBase {
+class CommonReasonServiceSpec extends ControllerSpecBase with CommonServiceSpecBase {
+
+  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  private val mockCommonReasonService = mock[CommonReasonService]
+  val extraModules: Seq[GuiceableModule] = Seq(
+    bind[CommonReasonService].to(mockCommonReasonService)
+  )
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
+  val fakeRequestWithFormData = fakeRequest.withFormUrlEncodedBody("value" -> "true")
+
+  val view = application.injector.instanceOf[ReasonView]
 
   // Instantiate service
   val service = new CommonReasonService(
@@ -39,7 +55,8 @@ class CommonReasonServiceSpec extends CommonServiceSpecBase {
     renderer = new Renderer(mockAppConfig, mockRenderer),
     userAnswersCacheConnector = mockUserAnswersCacheConnector,
     navigator = new FakeNavigator(desiredRoute = onwardCall),
-    messagesApi = messagesApi
+    messagesApi = messagesApi,
+    view
   )
 
   override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
@@ -49,7 +66,9 @@ class CommonReasonServiceSpec extends CommonServiceSpecBase {
   private val id: TypedIdentifier[String] = new TypedIdentifier[String] {}
   private val reasonForm: Form[String] = formProvider(messages("error.required"))
   val userAnswers: UserAnswers = UserAnswers().setOrException(SchemeNameId, Data.schemeName)
-  val fakeRequestWithFormData = fakeRequest.withFormUrlEncodedBody("value" -> "true")
+
+
+
   "get" should {
     "return OK and render the correct template" in {
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
@@ -60,15 +79,27 @@ class CommonReasonServiceSpec extends CommonServiceSpecBase {
         isPageHeading = true,
         id = id,
         form = reasonForm,
-        schemeName = "Test Scheme"
+        schemeName = "Test Scheme",
+        submitUrl = onwardCall
       )(fakeDataRequest(userAnswers, fakeRequestWithFormData), global)
 
+      val expectedView = view.apply(
+        pageTitle = "Test Title",
+        pageHeading = "Test Heading",
+        isPageHeading = true,
+        reasonForm,
+        schemeName = "Test Scheme",
+        submitUrl = onwardCall
+      )(fakeDataRequest(userAnswers), messages)
+
       status(result) mustBe OK
-      verify(mockRenderer).render(any(), any())(any())
+      compareResultAndView(result, expectedView)
     }
 
     "populate the form with existing data" in {
       val updatedAnswers = userAnswers.set(id, "Test Reason").success.value
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(updatedAnswers))
+
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
       val result = service.get(
@@ -77,31 +108,44 @@ class CommonReasonServiceSpec extends CommonServiceSpecBase {
         isPageHeading = true,
         id = id,
         form = reasonForm,
-        schemeName = "Test Scheme"
+        schemeName = "Test Scheme",
+        submitUrl = onwardCall
       )(fakeDataRequest(updatedAnswers, fakeRequestWithFormData), global)
 
+      val filledForm = reasonForm.bind(Map("value" -> "Test Reason"))
+
+      val expectedView = view.apply(
+        pageTitle = "Test Title",
+        pageHeading = "Test Heading",
+        isPageHeading = true,
+        filledForm,
+        schemeName = "Test Scheme",
+        submitUrl = onwardCall
+      )(fakeDataRequest(userAnswers), messages)
+
       status(result) mustBe OK
-      verify(mockRenderer).render(any(), any())(any())
+      compareResultAndView(result, expectedView)
     }
   }
 
   "post" should {
     "return a BadRequest when form has errors" in {
-      val formWithErrors = reasonForm.withError("value", "error.required")
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+      val filledForm = reasonForm.bind(Map("value" -> ""))
 
       val result = service.post(
         pageTitle = "Test Title",
         pageHeading = "Test Heading",
         isPageHeading = true,
         id = id,
-        form = formWithErrors,
+        form = filledForm,
         schemeName = "Test Scheme",
-        mode = NormalMode
+        mode = NormalMode,
+        submitUrl = onwardCall
       )(fakeDataRequest(userAnswers, fakeRequestWithFormData), global)
 
       status(result) mustBe BAD_REQUEST
-      verify(mockRenderer).render(any(), any())(any())
+      verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
     }
 
     "redirect to the next page on valid data submission" in {
@@ -114,7 +158,8 @@ class CommonReasonServiceSpec extends CommonServiceSpecBase {
         id = id,
         form = reasonForm.bind(Map("value" -> "Test Reason")),
         schemeName = "Test Scheme",
-        mode = NormalMode
+        mode = NormalMode,
+        submitUrl = onwardCall
       )(fakeDataRequest(userAnswers, fakeRequestWithFormData), global)
 
       status(result) mustBe SEE_OTHER

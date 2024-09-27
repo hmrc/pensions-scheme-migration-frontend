@@ -18,21 +18,14 @@ package controllers
 
 import controllers.actions.MutableFakeDataRetrievalAction
 import matchers.JsonMatchers
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
 import play.api.Application
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{Data, Enumerable}
-
-import scala.concurrent.Future
+import views.html.YourActionWasNotProcessedView
 
 class YourActionWasNotProcessedControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
-
-  private val templateToBeRendered = "yourActionWasNotProcessed.njk"
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 
@@ -41,55 +34,40 @@ class YourActionWasNotProcessedControllerSpec extends ControllerSpecBase with Nu
   private def httpPathSchemeGET: String = controllers.routes.YourActionWasNotProcessedController.onPageLoadScheme.url
   private def httpPathRacDacGET: String = controllers.routes.YourActionWasNotProcessedController.onPageLoadRacDac.url
 
-  private val jsonToPassToTemplateScheme: JsObject =
-    Json.obj(
-      "schemeName" -> Data.schemeName,
-      "returnUrl" ->  controllers.routes.TaskListController.onPageLoad.url
-    )
-
-  private val jsonToPassToTemplateRacDac: JsObject =
-    Json.obj(
-      "schemeName" -> Data.schemeName,
-      "returnUrl" ->  controllers.racdac.individual.routes.CheckYourAnswersController.onPageLoad.url
-    )
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-  }
 
   "YourActionWasNotProcessedController" must {
 
     "return OK and the correct view for Scheme GET" in {
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(application, httpGETRequest(httpPathSchemeGET)).value
+      val request = httpGETRequest(httpPathSchemeGET)
+      val result = route(application, request).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = application.injector.instanceOf[YourActionWasNotProcessedView].apply(
+        controllers.routes.TaskListController.onPageLoad.url,
+        Data.schemeName
+      )(request, messages)
 
-      templateCaptor.getValue mustEqual templateToBeRendered
+      compareResultAndView(result, view)
 
-      jsonCaptor.getValue must containJson(jsonToPassToTemplateScheme)
     }
 
     "return OK and the correct view for RacDac GET" in {
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, httpGETRequest(httpPathRacDacGET)).value
+      val request = httpGETRequest(httpPathRacDacGET)
+      val result = route(application, request).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = application.injector.instanceOf[YourActionWasNotProcessedView].apply(
+        controllers.racdac.individual.routes.CheckYourAnswersController.onPageLoad.url,
+        Data.schemeName
+      )(request, messages)
 
-      templateCaptor.getValue mustEqual templateToBeRendered
+      compareResultAndView(result, view)
 
-      jsonCaptor.getValue must containJson(jsonToPassToTemplateRacDac)
     }
 
   }

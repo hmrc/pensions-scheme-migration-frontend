@@ -25,54 +25,48 @@ import models.SchemeType
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
+import views.html.beforeYouStart.SchemeTypeView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.UserAnswers
+import utils.{TwirlMigration, UserAnswers}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 class SchemeTypeController @Inject()(
-                                      override val messagesApi: MessagesApi,
-                                      userAnswersCacheConnector: UserAnswersCacheConnector,
-                                      navigator: CompoundNavigator,
-                                      authenticate: AuthAction,
-                                      getData: DataRetrievalAction,
-                                      requireData: DataRequiredAction,
-                                      formProvider: SchemeTypeFormProvider,
-                                      val controllerComponents: MessagesControllerComponents,
-                                      renderer: Renderer
-                                    )(implicit val executionContext: ExecutionContext)
-  extends FrontendBaseController
-    with I18nSupport
-    with Retrievals
-    with NunjucksSupport {
+    override val messagesApi: MessagesApi,
+    userAnswersCacheConnector: UserAnswersCacheConnector,
+    navigator: CompoundNavigator,
+    authenticate: AuthAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: SchemeTypeFormProvider,
+    val controllerComponents: MessagesControllerComponents,
+    schemeTypeView: SchemeTypeView
+)(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   private val form = formProvider()
 
   def onPageLoad: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData()).async {
+    (authenticate andThen getData andThen requireData()) {
       implicit request =>
-        SchemeNameId.retrieve.map {
-          schemeName =>
-            val preparedForm = request.userAnswers.get(SchemeTypeId)(SchemeType.optionalReads) match {
-              case None        => form
+        SchemeNameId.retrieve.fold (
+          _ => BadRequest("Error retrieving scheme name"),
+
+          schemeName => {
+            val preparedForm: Form[SchemeType] = request.userAnswers.get(SchemeTypeId)(SchemeType.optionalReads) match {
+              case None => form
               case Some(value) => form.fill(value)
             }
-
-            renderer.render(
-              template = "beforeYouStart/schemeType.njk",
-              ctx = Json.obj(
-                "schemeName" -> schemeName,
-                "form"       -> preparedForm,
-                "radios"     -> SchemeType.radios(preparedForm)
-              )
-            ).map(Ok(_))
-        }
+            Ok(schemeTypeView(
+              preparedForm,
+              schemeName,
+              routes.SchemeTypeController.onSubmit,
+              TwirlMigration.toTwirlRadiosWithHintText(SchemeType.radios(preparedForm))
+            ))
+          }
+      )
     }
 
   def onSubmit: Action[AnyContent] =
@@ -80,19 +74,17 @@ class SchemeTypeController @Inject()(
       implicit request =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            SchemeNameId.retrieve.map {
-              schemeName =>
-                renderer.render(
-                  template = "beforeYouStart/schemeType.njk",
-                  ctx = Json.obj(
-                    "schemeName" -> schemeName,
-                    "form"       -> formWithErrors,
-                    "radios"     -> SchemeType.radios(formWithErrors)
-                  )
-                ).map(BadRequest(_))
+            SchemeNameId.retrieve.map { schemeName =>
+              Future.successful(BadRequest(
+                schemeTypeView(
+                  formWithErrors,
+                  schemeName,
+                  routes.SchemeTypeController.onSubmit,
+                  TwirlMigration.toTwirlRadiosWithHintText(SchemeType.radios(formWithErrors))
+                )
+              ))
             },
           value => {
-
             val ua: Try[UserAnswers] = request.userAnswers.set(IsSchemeTypeOtherId, true).flatMap(_.set(SchemeTypeId, value))
 
             for {
@@ -102,6 +94,4 @@ class SchemeTypeController @Inject()(
           }
         )
     }
-
-
 }

@@ -16,6 +16,7 @@
 
 package services.common.details
 
+import controllers.ControllerSpecBase
 import forms.UTRFormProvider
 import identifiers.TypedIdentifier
 import models.{NormalMode, ReferenceValue}
@@ -30,7 +31,7 @@ import utils.{FakeNavigator, UserAnswers}
 
 import scala.concurrent.Future
 
-class CommonEnterReferenceValueServiceSpec extends CommonServiceSpecBase {
+class CommonEnterReferenceValueServiceSpec extends ControllerSpecBase with CommonServiceSpecBase {
 
   // Instantiate service
   val service = new CommonEnterReferenceValueService(

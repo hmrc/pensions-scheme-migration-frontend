@@ -26,49 +26,50 @@ import identifiers.beforeYouStart.{EstablishedCountryId, SchemeNameId}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
+import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.beforeYouStart.EstablishedCountryView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EstablishedCountryController @Inject()( config: AppConfig,
-                                              override val messagesApi: MessagesApi,
-                                              userAnswersCacheConnector: UserAnswersCacheConnector,
-                                              navigator: CompoundNavigator,
-                                              authenticate: AuthAction,
-                                              getData: DataRetrievalAction,
-                                              requireData: DataRequiredAction,
-                                              formProvider: EstablishedCountryFormProvider,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              renderer: Renderer
-                                            )(implicit val executionContext: ExecutionContext)
-  extends FrontendBaseController
+class EstablishedCountryController @Inject()(
+  config: AppConfig,
+  override val messagesApi: MessagesApi,
+  userAnswersCacheConnector: UserAnswersCacheConnector,
+  navigator: CompoundNavigator,
+  authenticate: AuthAction,
+  getData: DataRetrievalAction,
+  requireData: DataRequiredAction,
+  formProvider: EstablishedCountryFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  establishedCountryView: EstablishedCountryView
+)(implicit val executionContext: ExecutionContext) extends FrontendBaseController
     with I18nSupport
     with Retrievals
-    with NunjucksSupport
     with CountriesHelper {
 
   private val form = formProvider()
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData()) {
     implicit request =>
-      SchemeNameId.retrieve.map { schemeName =>
-        val preparedForm = request.userAnswers.get(EstablishedCountryId) match {
-          case None => form
-          case Some(value) => form.fill(value)
-        }
-        val json = Json.obj(
-          "form" -> preparedForm,
-          "schemeName" -> schemeName,
-          "countries" ->   jsonCountries(preparedForm.data.get("country"), config)
-        )
+      SchemeNameId.retrieve.fold(
+        _ => BadRequest("Error retrieving scheme name"),
+        schemeName => {
+          val preparedForm = request.userAnswers.get(EstablishedCountryId) match {
+            case None => form
+            case Some(value) => form.fill(value)
+          }
 
-        renderer.render("beforeYouStart/establishedCountry.njk", json).map(Ok(_))
-      }
+          Ok(establishedCountryView(
+            preparedForm,
+            schemeName,
+            routes.EstablishedCountryController.onSubmit,
+            jsonCountries(preparedForm.data.get("country"), config).as[Seq[SelectItem]]
+          ))
+        }
+      )
   }
 
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
@@ -76,13 +77,12 @@ class EstablishedCountryController @Inject()( config: AppConfig,
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           SchemeNameId.retrieve.map { schemeName =>
-            val json = Json.obj(
-              "form" -> formWithErrors,
-              "schemeName" -> schemeName,
-              "countries" ->   jsonCountries(formWithErrors.data.get("country"), config)
-            )
-
-            renderer.render("beforeYouStart/establishedCountry.njk", json).map(BadRequest(_))
+            Future.successful(BadRequest(establishedCountryView(
+              formWithErrors,
+              schemeName,
+              routes.EstablishedCountryController.onSubmit,
+              jsonCountries(formWithErrors.data.get("country"), config).as[Seq[SelectItem]]
+            )))
           },
         value =>
           for {

@@ -58,7 +58,8 @@ class DirectorNoNINOReasonController @Inject()(val messagesApi: MessagesApi,
               isPageHeading = true,
               id = DirectorNoNINOReasonId(establisherIndex, directorIndex),
               form = form(establisherIndex, directorIndex),
-              schemeName = schemeName
+              schemeName = schemeName,
+              submitUrl = routes.DirectorNoNINOReasonController.onSubmit(establisherIndex, directorIndex, mode)
             )
         }
     }
@@ -76,7 +77,8 @@ class DirectorNoNINOReasonController @Inject()(val messagesApi: MessagesApi,
               form = form(establisherIndex, directorIndex),
               schemeName = schemeName,
               mode = mode,
-              optSetUserAnswers = Some(value => setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
+              optSetUserAnswers = Some(value => setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers)),
+              submitUrl = routes.DirectorNoNINOReasonController.onSubmit(establisherIndex, directorIndex, mode)
             )
         }
     }
