@@ -19,44 +19,44 @@
     govukButton: GovukButton,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
+    formHelper: FormWithCSRF
 )
 
-@(pageTitle: String, pageHeading: String, isPageHeading: Boolean, form: Form[_], schemeName: String)(implicit request: Request[_], messages: Messages)
+@(pageTitle: String, pageHeading: String, isPageHeading: Boolean, form: Form[_], schemeName: String, submitUrl: Call)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle) {
 
     <div>
+        @formHelper(action = submitUrl) {
+            @if(form.hasErrors) {
+                @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+            }
 
-        @* Error Summary *@
-        @if(form.hasErrors) {
-            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+            @if(!isPageHeading) {
+                <h1 class="govuk-heading-xl">@pageHeading</h1>
+            }
+
+            <form method="post" autocomplete="off" novalidate>
+
+                @govukInput(
+                    InputViewModel(
+                        field = form("value"),
+                        label = Label(
+                            content = Text(pageHeading),
+                            isPageHeading = isPageHeading,
+                            classes = if(isPageHeading) "govuk-label--l" else "govuk-fieldset__legend--s"
+                        )
+                    ).withCssClass("govuk-input--width-20").withAttribute(("autocomplete" -> "off"))
+                )
+
+                @govukButton(
+                    ButtonViewModel(
+                        content = Text(messages("site.save_and_continue"))
+                    ).asFormSubmit
+                )
+
+            </form>
         }
-
-        @* Heading if not page heading *@
-        @if(!isPageHeading) {
-            <h1 class="govuk-heading-xl">@pageHeading</h1>
-        }
-
-        <form method="post" autocomplete="off" novalidate>
-
-            @govukInput(
-                InputViewModel(
-                    field = form("value"),
-                    label = Label(
-                        content = Text(pageHeading),
-                        isPageHeading = isPageHeading,
-                        classes = if(isPageHeading) "govuk-label--l" else "govuk-fieldset__legend--s"
-                    )
-                ).withCssClass("govuk-input--width-20").withAttribute(("autocomplete" -> "off"))
-            )
-
-            @govukButton(
-                ButtonViewModel(
-                    content = Text(messages("site.save_and_continue"))
-                ).withAttribute(("id", "submit"))
-            )
-
-        </form>
     </div>
 
     @templates.ReturnLink(schemeName)

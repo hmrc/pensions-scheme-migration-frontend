@@ -79,7 +79,8 @@ class CommonReasonServiceSpec extends ControllerSpecBase with CommonServiceSpecB
         isPageHeading = true,
         id = id,
         form = reasonForm,
-        schemeName = "Test Scheme"
+        schemeName = "Test Scheme",
+        submitUrl = onwardCall
       )(fakeDataRequest(userAnswers, fakeRequestWithFormData), global)
 
       val expectedView = view.apply(
@@ -87,7 +88,8 @@ class CommonReasonServiceSpec extends ControllerSpecBase with CommonServiceSpecB
         pageHeading = "Test Heading",
         isPageHeading = true,
         reasonForm,
-        schemeName = "Test Scheme"
+        schemeName = "Test Scheme",
+        submitUrl = onwardCall
       )(fakeDataRequest(userAnswers), messages)
 
       status(result) mustBe OK
@@ -106,7 +108,8 @@ class CommonReasonServiceSpec extends ControllerSpecBase with CommonServiceSpecB
         isPageHeading = true,
         id = id,
         form = reasonForm,
-        schemeName = "Test Scheme"
+        schemeName = "Test Scheme",
+        submitUrl = onwardCall
       )(fakeDataRequest(updatedAnswers, fakeRequestWithFormData), global)
 
       val filledForm = reasonForm.bind(Map("value" -> "Test Reason"))
@@ -116,7 +119,8 @@ class CommonReasonServiceSpec extends ControllerSpecBase with CommonServiceSpecB
         pageHeading = "Test Heading",
         isPageHeading = true,
         filledForm,
-        schemeName = "Test Scheme"
+        schemeName = "Test Scheme",
+        submitUrl = onwardCall
       )(fakeDataRequest(userAnswers), messages)
 
       status(result) mustBe OK
@@ -136,7 +140,8 @@ class CommonReasonServiceSpec extends ControllerSpecBase with CommonServiceSpecB
         id = id,
         form = filledForm,
         schemeName = "Test Scheme",
-        mode = NormalMode
+        mode = NormalMode,
+        submitUrl = onwardCall
       )(fakeDataRequest(userAnswers, fakeRequestWithFormData), global)
 
       status(result) mustBe BAD_REQUEST
@@ -153,7 +158,8 @@ class CommonReasonServiceSpec extends ControllerSpecBase with CommonServiceSpecB
         id = id,
         form = reasonForm.bind(Map("value" -> "Test Reason")),
         schemeName = "Test Scheme",
-        mode = NormalMode
+        mode = NormalMode,
+        submitUrl = onwardCall
       )(fakeDataRequest(userAnswers, fakeRequestWithFormData), global)
 
       status(result) mustBe SEE_OTHER

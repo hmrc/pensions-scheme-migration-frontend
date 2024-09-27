@@ -52,16 +52,17 @@ class TrusteeNoUTRReasonControllerSpec
   }
 
   private val httpPathGET = controllers.trustees.individual.details.routes.TrusteeNoUTRReasonController.onPageLoad(index, mode).url
-  private val httpPathPOST = controllers.trustees.individual.details.routes.TrusteeNoUTRReasonController.onSubmit(index, mode).url
+  private val submitCall = controllers.trustees.individual.details.routes.TrusteeNoUTRReasonController.onSubmit(index, mode)
+  private val httpPathPOST = submitCall.url
   val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, httpPathGET)
 
   "TrusteeNoUTRReasonController" must {
     "return OK and the correct view for a GET" in {
       val view = application.injector.instanceOf[ReasonView].apply(
-        pageTitle, pageHeading, isPageHeading, form, schemeName
+        pageTitle, pageHeading, isPageHeading, form, schemeName, submitCall
       )(request, messages)
 
-      when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any())(any(), any()))
+      when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(Ok(view)))
 
       val result = route(application, httpGETRequest(httpPathGET)).value
@@ -79,10 +80,10 @@ class TrusteeNoUTRReasonControllerSpec
       val filledForm = form.bind(Map("form" -> formData))
 
       val view = application.injector.instanceOf[ReasonView].apply(
-        pageTitle, pageHeading, isPageHeading, filledForm, schemeName
+        pageTitle, pageHeading, isPageHeading, filledForm, schemeName, submitCall
       )(request, messages)
 
-      when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any())(any(), any()))
+      when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(Ok(view)))
 
       val result = route(application, httpGETRequest(httpPathGET)).value
@@ -100,12 +101,12 @@ class TrusteeNoUTRReasonControllerSpec
       val filledForm = form.bind(Map("form" -> formData))
 
       val view = application.injector.instanceOf[ReasonView].apply(
-        pageTitle, pageHeading, isPageHeading, filledForm, schemeName
+        pageTitle, pageHeading, isPageHeading, filledForm, schemeName, submitCall
       )(request, messages)
 
-      when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any())(any(), any()))
+      when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(Ok(view)))
-      when(mockCommonReasonService.post(any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
+      when(mockCommonReasonService.post(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(Redirect(onwardCall.url)))
 
       val result = route(application, httpPOSTRequest(httpPathPOST, validValues)).value
@@ -116,7 +117,7 @@ class TrusteeNoUTRReasonControllerSpec
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      when(mockCommonReasonService.post(any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
+      when(mockCommonReasonService.post(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(BadRequest))
 
       val result = route(application, httpPOSTRequest(httpPathPOST, invalidValues)).value

@@ -48,7 +48,8 @@ class EstablisherNoNINOReasonControllerSpec
   private val pageHeading = "Why does Jane Doe not have a National Insurance number?"
 
   private val httpPathGET = controllers.establishers.individual.details.routes.EstablisherNoNINOReasonController.onPageLoad(index, mode).url
-  private val httpPathPOST = controllers.establishers.individual.details.routes.EstablisherNoNINOReasonController.onSubmit(index, mode).url
+  private val submitCall = controllers.establishers.individual.details.routes.EstablisherNoNINOReasonController.onSubmit(index, mode)
+  private val httpPathPOST = submitCall.url
   val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, httpPathGET)
 
   override def beforeEach(): Unit = {
@@ -59,10 +60,10 @@ class EstablisherNoNINOReasonControllerSpec
   "EstablisherNoNINOReasonController" must {
     "return OK and the correct view for a GET" in {
       val view = application.injector.instanceOf[ReasonView].apply(
-        pageTitle, pageHeading, isPageHeading, form, schemeName
+        pageTitle, pageHeading, isPageHeading, form, schemeName, submitCall
       )(request, messages)
 
-      when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any())(any(), any()))
+      when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(Ok(view)))
 
       val result = route(application, httpGETRequest(httpPathGET)).value
@@ -79,10 +80,10 @@ class EstablisherNoNINOReasonControllerSpec
       val filledForm = form.bind(Map("form" -> formData))
 
       val view = application.injector.instanceOf[ReasonView].apply(
-        pageTitle, pageHeading, isPageHeading, filledForm, schemeName
+        pageTitle, pageHeading, isPageHeading, filledForm, schemeName, submitCall
       )(request, messages)
 
-      when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any())(any(), any()))
+      when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(Ok(view)))
 
       val result = route(application, httpGETRequest(httpPathGET)).value
@@ -99,12 +100,12 @@ class EstablisherNoNINOReasonControllerSpec
       val filledForm = form.bind(Map("form" -> formData))
 
       val view = application.injector.instanceOf[ReasonView].apply(
-        pageTitle, pageHeading, isPageHeading, filledForm, schemeName
+        pageTitle, pageHeading, isPageHeading, filledForm, schemeName, submitCall
       )(request, messages)
 
-      when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any())(any(), any()))
+      when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(Ok(view)))
-      when(mockCommonReasonService.post(any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
+      when(mockCommonReasonService.post(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(Redirect(onwardCall.url)))
 
       val result = route(application, httpPOSTRequest(httpPathPOST, validValues)).value
@@ -114,7 +115,7 @@ class EstablisherNoNINOReasonControllerSpec
       redirectLocation(result) mustBe Some(onwardCall.url)
     }
     "return a Bad Request and errors when invalid data is submitted" in {
-      when(mockCommonReasonService.post(any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
+      when(mockCommonReasonService.post(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(BadRequest))
 
       val result = route(application, httpPOSTRequest(httpPathPOST, invalidValues)).value

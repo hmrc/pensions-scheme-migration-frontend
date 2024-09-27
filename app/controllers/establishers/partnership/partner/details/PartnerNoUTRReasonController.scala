@@ -64,7 +64,8 @@ class PartnerNoUTRReasonController @Inject()(val messagesApi: MessagesApi,
               isPageHeading = true,
               id            = PartnerNoUTRReasonId(establisherIndex,partnerIndex),
               form          = form(establisherIndex,partnerIndex),
-              schemeName    = schemeName
+              schemeName    = schemeName,
+              submitUrl     = routes.PartnerNoUTRReasonController.onSubmit(establisherIndex, partnerIndex, mode)
             )
         }
     }
@@ -81,7 +82,8 @@ class PartnerNoUTRReasonController @Inject()(val messagesApi: MessagesApi,
               id            = PartnerNoUTRReasonId(establisherIndex,partnerIndex),
               form          = form(establisherIndex,partnerIndex),
               schemeName    = schemeName,
-              mode          = mode
+              mode          = mode,
+              submitUrl     = routes.PartnerNoUTRReasonController.onSubmit(establisherIndex, partnerIndex, mode)
             )
         }
     }
