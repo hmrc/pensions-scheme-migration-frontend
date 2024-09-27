@@ -40,7 +40,7 @@ class YourActionWasNotProcessedController @Inject()(override val messagesApi: Me
     implicit request =>
       Ok(view(
         controllers.routes.TaskListController.onPageLoad.url,
-        CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+        CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly)
       ))
   }
 
