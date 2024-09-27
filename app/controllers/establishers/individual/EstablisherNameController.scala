@@ -25,11 +25,10 @@ import models.{Index, PersonName}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.PersonNameView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -43,7 +42,7 @@ class EstablisherNameController @Inject()(
                                            formProvider: PersonNameFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
                                            userAnswersCacheConnector: UserAnswersCacheConnector,
-                                           renderer: Renderer
+                                           personNameView: PersonNameView
                                          )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
@@ -53,14 +52,14 @@ class EstablisherNameController @Inject()(
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        renderer.render(
-          template = "personName.njk",
-          ctx = Json.obj(
-            "form" -> request.userAnswers.get[PersonName](EstablisherNameId(index)).fold(form)(form.fill),
-            "schemeName" -> existingSchemeName,
-            "entityType" -> Messages("messages__individual")
+        Future.successful(Ok(
+          personNameView(
+            request.userAnswers.get[PersonName](EstablisherNameId(index)).fold(form)(form.fill),
+            existingSchemeName.getOrElse(""),
+            Messages("messages__individual"),
+            routes.EstablisherNameController.onSubmit(index)
           )
-        ).flatMap(view => Future.successful(Ok(view)))
+        ))
     }
 
   def onSubmit(index: Index): Action[AnyContent] =
@@ -68,14 +67,13 @@ class EstablisherNameController @Inject()(
       implicit request =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            renderer.render(
-              template = "personName.njk",
-              ctx = Json.obj(
-                "form" -> formWithErrors,
-                "schemeName" -> existingSchemeName,
-                "entityType" -> Messages("messages__individual")
-              )
-            ).map(BadRequest(_)),
+            Future.successful(BadRequest(
+              personNameView(
+                formWithErrors, existingSchemeName.getOrElse(""),
+                Messages("messages__individual"),
+                routes.EstablisherNameController.onSubmit(index)
+              ))
+            ),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(EstablisherNameId(index), value))

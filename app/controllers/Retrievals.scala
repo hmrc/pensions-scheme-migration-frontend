@@ -21,14 +21,14 @@ import identifiers.beforeYouStart.SchemeNameId
 import models.requests.{DataRequest, OptionalDataRequest}
 import play.api.libs.json.Reads
 import play.api.mvc.Results.Redirect
-import play.api.mvc.{AnyContent, Result, WrappedRequest}
+import play.api.mvc.{AnyContent, Request, Result, WrappedRequest}
 
 import scala.concurrent.Future
 import scala.language.implicitConversions
 
 trait Retrievals {
 
-  private val dataNotFoundRedirect = Redirect(routes.SessionExpiredController.onPageLoad())
+  private def dataNotFoundRedirect(implicit request: Request[_]) = Redirect(routes.SessionExpiredController.onPageLoad().absoluteURL())
   private[controllers] def retrieve[A](id: TypedIdentifier[A])
                                       (f: A => Future[Result])
                                       (implicit request: DataRequest[AnyContent], r: Reads[A]): Future[Result] = {

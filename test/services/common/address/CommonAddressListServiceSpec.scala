@@ -95,7 +95,7 @@ class CommonAddressListServiceSpec extends CommonServiceSpecBase with MockitoSug
       val result = service.post(_ => templateData, addressPages, Some(NormalMode), Call("GET", "manualUrl"), form)(validRequest, global, hc)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().absoluteURL()(request))
     }
   }
 }

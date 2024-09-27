@@ -26,13 +26,12 @@ import models.{CheckMode, Index, Mode, PersonName}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import services.DataUpdateService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswers
+import views.html.PersonNameView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -48,7 +47,7 @@ class DirectorNameController @Inject()(
                                         dataUpdateService: DataUpdateService,
                                         val controllerComponents: MessagesControllerComponents,
                                         userAnswersCacheConnector: UserAnswersCacheConnector,
-                                        renderer: Renderer
+                                        personNameView: PersonNameView
                                       )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with Retrievals
@@ -58,14 +57,14 @@ class DirectorNameController @Inject()(
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        renderer.render(
-          template = "personName.njk",
-          ctx = Json.obj(
-            "form" -> request.userAnswers.get[PersonName](DirectorNameId(establisherIndex, directorIndex)).fold(form)(form.fill),
-            "schemeName" -> existingSchemeName,
-            "entityType" -> Messages("messages__director")
+        Future.successful(Ok(
+          personNameView(
+            request.userAnswers.get[PersonName](DirectorNameId(establisherIndex, directorIndex)).fold(form)(form.fill),
+            existingSchemeName.getOrElse(""),
+            Messages("messages__director"),
+            routes.DirectorNameController.onSubmit(establisherIndex, directorIndex, mode)
           )
-        ).flatMap(view => Future.successful(Ok(view)))
+        ))
     }
 
   def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
@@ -73,14 +72,14 @@ class DirectorNameController @Inject()(
       implicit request =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            renderer.render(
-              template = "personName.njk",
-              ctx = Json.obj(
-                "form" -> formWithErrors,
-                "schemeName" -> existingSchemeName,
-                "entityType" -> Messages("messages__director")
-              )
-            ).map(BadRequest(_)),
+              Future.successful(BadRequest(
+                personNameView(
+                  formWithErrors,
+                  existingSchemeName.getOrElse(""),
+                  Messages("messages__director"),
+                  routes.DirectorNameController.onSubmit(establisherIndex, directorIndex, mode)
+                ))
+              ),
           value =>
             for {
               updatedAnswers <- Future.fromTry(setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
