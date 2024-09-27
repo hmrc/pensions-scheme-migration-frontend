@@ -20,28 +20,19 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import matchers.JsonMatchers
 import models.Scheme
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
-import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
-import play.twirl.api.Html
-import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data
 import utils.Data.ua
+import views.html.preMigration.BeforeYouStartView
 
 import scala.concurrent.Future
 class BeforeYouStartControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues  {
   private val psaName: String = "Nigel"
-  private val templateToBeRendered: String = "preMigration/beforeYouStart.njk"
-  private def json: JsObject =
-    Json.obj(
-      "continueUrl" -> controllers.routes.TaskListController.onPageLoad.url,
-      "psaName" -> psaName,
-      "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad.url
-    )
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 
   val schemeName: String = "Test scheme name"
@@ -50,46 +41,35 @@ class BeforeYouStartControllerSpec extends ControllerSpecBase with NunjucksSuppo
   )
   private def controller(): BeforeYouStartController =
     new BeforeYouStartController(messagesApi, new FakeAuthAction(), mutableFakeDataRetrievalAction,
-      mockMinimalDetailsConnector,mockUserAnswersCacheConnector, mockLegacySchemeDetailsConnector, controllerComponents, new Renderer(mockAppConfig, mockRenderer))
+      mockMinimalDetailsConnector,mockUserAnswersCacheConnector, mockLegacySchemeDetailsConnector, controllerComponents,
+      beforeYouStartView = app.injector.instanceOf[BeforeYouStartView])
 
   "BeforeYouStartController" must {
     "return OK and the correct view for a GET" in {
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       when(mockMinimalDetailsConnector.getPSAName(any(),any())).thenReturn(Future.successful(psaName))
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result: Future[Result] = controller().onPageLoad(fakeDataRequest())
+     val result: Future[Result] = controller().onPageLoad(fakeDataRequest())
 
       status(result) mustBe OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(json)
+      val view = app.injector.instanceOf[BeforeYouStartView].apply(
+        psaName,
+        controllers.routes.TaskListController.onPageLoad,
+        controllers.routes.PensionSchemeRedirectController.onPageLoad.url
+      )(fakeRequest, messages)
+      compareResultAndView(result, view)
     }
 
     "return OK and the correct view for a GET when data not present in userAnswers" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
       mutableFakeDataRetrievalAction.setLockToReturn(Some(Data.migrationLock))
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       when(mockMinimalDetailsConnector.getPSAName(any(),any())).thenReturn(Future.successful(psaName))
       when( mockUserAnswersCacheConnector.save(any(), any())(any(),any())).thenReturn(Future.successful(Json.obj()))
       when(mockLegacySchemeDetailsConnector.getLegacySchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(Right(itemList)))
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
       val result: Future[Result] = controller().onPageLoad(fakeDataRequest())
 
       status(result) mustBe OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(json)
+      contentAsString(result) must include(messages("messages__BeforeYouStart__list_heading"))
+      contentAsString(result) must include(messages("messages__BeforeYouStart__lede"))
     }
 
     "redirect to List of schemes if lock can not be retrieved " in {
