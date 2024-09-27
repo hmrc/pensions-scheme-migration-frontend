@@ -21,11 +21,10 @@ import connectors.cache.BulkMigrationQueueConnector
 import controllers.actions._
 import models.PageLink
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import views.html.preMigration.MigrationLinksPartialView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.preMigration.MigrationLinksPartialView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -53,11 +52,11 @@ class MigrationTilePartialController @Inject()(
     }
 
     links.flatMap { migrationLinks =>
-      renderer.render(
-        template = "preMigration/migrationLinksPartial.njk",
-        ctx = Json.obj("links" -> Json.toJson(migrationLinks))
-      ).map(Ok(_))
+      Future.successful(Ok(
+        migrationLinksPartialView(
+          migrationLinks
+        )
+      ))
     }
   }
-
 }

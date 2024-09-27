@@ -16,21 +16,25 @@
 
 @import models.PageLink
 
+@this(
+    layout: templates.Layout
+)
 @(links: Seq[PageLink])(implicit request: Request[_], messages: Messages)
-
-<div class="card" id="transfer-schemes">
-    <div class="card-body">
-        <h2 class="card-heading govuk-heading-m">
-            @messages("messages__migrationLink__header")
-        </h2>
+@layout(messages("messages__migrationLink__header")) {
+    <div class="card" id="transfer-schemes">
+        <div class="card-body">
+            <h2 class="card-heading govuk-heading-m">
+                @messages("messages__migrationLink__header")
+            </h2>
+        </div>
+        <div class="card-action">
+            <ul class="govuk-list">
+                  @for(link <- links) {
+                    <li>
+                        <a class="govuk-link" id="@link.id" href="@link.url">@link.linkText</a>
+                    </li>
+                  }
+            </ul>
+        </div>
     </div>
-    <div class="card-action">
-        <ul class="govuk-list">
-              @for(link <- links) {
-                <li>
-                    <a class="govuk-link" id="@link.id" href="@link.url">@link.linkText</a>
-                </li>
-              }
-        </ul>
-    </div>
-</div>
+}
