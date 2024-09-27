@@ -16,34 +16,40 @@
 
 @this(
     layout: templates.Layout,
-    govukButton: GovukButton,
-    govukPanel: GovukPanel
+    formHelper: FormWithCSRF,
+    govukButton: GovukButton
 )
 
-@(finishUrl: String, email: String)(implicit request: Request[_], messages: Messages)
+@(submitCall: Call, returnUrl: String, psaName: String)(implicit request: Request[_], messages: Messages)
 
-@layout(messages("messages__racdac__confirmation__title")) {
+@layout(messages("messages__declaration__title")) {
 
-    @govukPanel(
-        Panel(
-            title = Text(messages("messages__racdac__confirmation__title")),
+
+    <h1 class="govuk-heading-l">
+        {{ messages("messages__declaration__title") }}
+    </h1>
+    @formHelper(submitCall, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "true") {
+        <p class="govuk-body">
+            @messages("messages__declaration__declare")
+        </p>
+        <ul class="govuk-list govuk-list--bullet">
+
+            <li>@messages("messages__declaration__statementRacDac1")</li>
+            <li>@messages("messages__declaration__statementRacDac2")</li>
+            <li>@messages("messages__declaration__statementRacDac3")</li>
+
+        </ul>
+
+        @govukButton(
+            ButtonViewModel(
+                Text(messages("site.agree_and_continue"))
+            ).asFormSubmit
         )
-    )
-    
-    <p class="govuk-body">
-        {{messages("messages__racdac__confirmation__email")}}
-        <span class="govuk-!-font-weight-bold">@email</span>.
-    </p>
+    }
 
-    <h2 class="govuk-heading-m">@messages("messages__what_happens_next")</h2>
-
-    <p class="govuk-body">@messages("messages__racdac__confirmation__detail")</p>
-
-    <p class="govuk-body"><a class="govuk-link print-this-page" href="#">@messages("site.printThisPage")</a></p>
-    
     @govukButton(
         ButtonViewModel(
-            Text(messages("messages__finish"))
-        ).withAttribute(("id", "racdac-finish")).asLink(finishUrl)
+            Text(messages("site.return.to", psaName))
+        ).asLink(returnUrl)
     )
 }

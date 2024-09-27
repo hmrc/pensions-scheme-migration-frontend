@@ -15,41 +15,94 @@
  *@
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukButton: GovukButton
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukButton: GovukButton,
+        govukErrorSummary: GovukErrorSummary,
+        govukTable: GovukTable,
+        govukRadios: GovukRadios,
+        navigationLink: templates.NavigationLink,
+        pageNumberLink: templates.PageNumberLink
 )
 
-@(submitCall: Call, returnUrl: String, psaName: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_],
+        submitCall: Call,
+        schemes: Table,
+        numberOfSchemes: Int,
+        pagination: Int,
+        paginationText: String,
+        pageNumber: Int,
+        numberOfPages: Int,
+        pageNumberLinks: Seq[Int],
+        psaName: String,
+        returnUrl: String,
+        radios: Seq[RadioItem])(implicit request: Request[_], messages: Messages)
 
-@layout(messages("messages__declaration__title")) {
+@listRacDacUrl = @{"/add-pension-scheme/rac-dac/list-rac-dacs-all/page/"}
+
+@layout(messages("messages__listSchemes__title", messages("messages__racdac")), formHasErrors = form.hasErrors) {
 
 
-    <h1 class="govuk-heading-l">
-        {{ messages("messages__declaration__title") }}
-    </h1>
+    <h1 class="govuk-heading-xl">@messages("messages__listSchemes__title", messages("messages__racdac"))</h1>
+
     @formHelper(submitCall, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "true") {
-        <p class="govuk-body">
-            @messages("messages__declaration__declare")
-        </p>
-        <ul class="govuk-list govuk-list--bullet">
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
 
-            <li>@messages("messages__declaration__statementRacDac1")</li>
-            <li>@messages("messages__declaration__statementRacDac2")</li>
-            <li>@messages("messages__declaration__statementRacDac3")</li>
+        @govukTable(schemes)
 
-        </ul>
+        @if(numberOfSchemes > pagination) {
+            <div class="grid-row">
+                <div class="column-two-thirds">
+                    <p class="govuk-body-s govuk-margin-top-5" id="pagination-text">
+                        @paginationText
+                    </p>
+                    <nav class="govuk-margin-top-5 govuk-!-margin-bottom-6" aria-label="page">
+                        @if(pageNumber > 1) {
+                            @navigationLink(messages("messages__listSchemes__pagination__first"), 1, listRacDacUrl)
+                            @navigationLink(messages("messages__listSchemes__pagination__prev"), pageNumber-1, listRacDacUrl)
+                        }
+
+                        @pageNumberLinks.map { linkNumber =>
+                          @pageNumberLink(linkNumber, numberOfPages, listRacDacUrl, pageNumber)
+                        }
+
+                        @if(pageNumber < numberOfPages) {
+                            @navigationLink(messages("messages__listSchemes__pagination__next"), pageNumber+1, listRacDacUrl)
+                            @navigationLink(messages("messages__listSchemes__pagination__last"), numberOfPages, listRacDacUrl)
+                        }
+                    </nav>
+                </div>
+            </div>
+        }
+
+        @govukRadios(
+            RadiosViewModel(
+                form("value"),
+                radios,
+                Fieldset(
+                    legend = Some(
+                        Legend(
+                            content = Text(messages("messages__racdac_bulk_list__radioLabel")),
+                            isPageHeading = false,
+                            classes = "govuk-heading-xl"
+                        )
+                    )
+                )
+            )
+        )
 
         @govukButton(
             ButtonViewModel(
-                Text(messages("site.agree_and_continue"))
+                Text(messages("site.continue"))
             ).asFormSubmit
         )
     }
 
     @govukButton(
         ButtonViewModel(
-            Text(messages("site.return.to", psaName))
-        ).asLink(returnUrl)
+            Text(messages("return.to.link", psaName))
+        ).asLink(returnUrl).withAttribute("id" -> "return_to_psa")
     )
 }

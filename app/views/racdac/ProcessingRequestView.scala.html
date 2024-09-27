@@ -19,23 +19,24 @@
     govukButton: GovukButton
 )
 
-@(listOfSchemesUrl: String, returnUrl: String)(implicit request: Request[_], messages: Messages)
+@(pageTitle: String, heading: String, content: String, continueUrl: String)(implicit request: Request[_], messages: Messages)
 
-@layout(messages("messages__racdac__inprogress__title")) {
+@layout(messages(pageTitle)) {
 
+
+    @if(heading == "messages__processingRequest__h1_processing") {
+        <meta http-equiv="refresh" content="4"/>
+    }
 
     <h1 class="govuk-heading-l">
-        @messages("messages__racdac__inprogress__title")
+        @messages(heading)
     </h1>
 
-    <p class="govuk-body">@messages("messages__racdac__inprogress__p1")</p>
-    <p class="govuk-body">
-        @messages("messages__racdac__inprogress__p2__first") <a id="list-schemes-link" href="@listOfSchemesUrl" class="govuk-link">@messages("messages__racdac__inprogress__p2_link_text")</a> @messages("messages__racdac__inprogress__p2__last")
-    </p>
+    <p class="govuk-body">@messages(content)</p>
 
     @govukButton(
         ButtonViewModel(
-            Text(messages("messages__racdac__inprogress__button__text"))
-        ).withAttribute("id" -> "submit").asLink(returnUrl)
+            Text(messages("site.continue"))
+        ).withAttribute("id" -> "submit").asLink(continueUrl)
     )
 }

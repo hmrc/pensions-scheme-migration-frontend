@@ -16,40 +16,26 @@
 
 @this(
     layout: templates.Layout,
-    formHelper: FormWithCSRF,
     govukButton: GovukButton
 )
 
-@(submitCall: Call, returnUrl: String, psaName: String)(implicit request: Request[_], messages: Messages)
+@(listOfSchemesUrl: String, returnUrl: String)(implicit request: Request[_], messages: Messages)
 
-@layout(messages("messages__declaration__title")) {
+@layout(messages("messages__racdac__inprogress__title")) {
 
 
     <h1 class="govuk-heading-l">
-        {{ messages("messages__declaration__title") }}
+        @messages("messages__racdac__inprogress__title")
     </h1>
-    @formHelper(submitCall, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "true") {
-        <p class="govuk-body">
-            @messages("messages__declaration__declare")
-        </p>
-        <ul class="govuk-list govuk-list--bullet">
 
-            <li>@messages("messages__declaration__statementRacDac1")</li>
-            <li>@messages("messages__declaration__statementRacDac2")</li>
-            <li>@messages("messages__declaration__statementRacDac3")</li>
-
-        </ul>
-
-        @govukButton(
-            ButtonViewModel(
-                Text(messages("site.agree_and_continue"))
-            ).asFormSubmit
-        )
-    }
+    <p class="govuk-body">@messages("messages__racdac__inprogress__p1")</p>
+    <p class="govuk-body">
+        @messages("messages__racdac__inprogress__p2__first") <a id="list-schemes-link" href="@listOfSchemesUrl" class="govuk-link">@messages("messages__racdac__inprogress__p2_link_text")</a> @messages("messages__racdac__inprogress__p2__last")
+    </p>
 
     @govukButton(
         ButtonViewModel(
-            Text(messages("site.return.to", psaName))
-        ).asLink(returnUrl)
+            Text(messages("messages__racdac__inprogress__button__text"))
+        ).withAttribute("id" -> "submit").asLink(returnUrl)
     )
 }

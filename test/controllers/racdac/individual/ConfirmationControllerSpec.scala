@@ -28,7 +28,6 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.mvc.Results.Ok
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{Data, Enumerable, UserAnswers}
@@ -53,7 +52,6 @@ class ConfirmationControllerSpec extends ControllerSpecBase with NunjucksSupport
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
     when(mockUserAnswersCacheConnector.remove(any())(any(), any())).thenReturn(Future.successful(Ok))
     when(mockCurrentPstrCacheConnector.remove(any(), any())).thenReturn(Future.successful(Ok))
     when(mockLockCacheConnector.removeLock(any())(any(), any())).thenReturn(Future.successful(Ok))

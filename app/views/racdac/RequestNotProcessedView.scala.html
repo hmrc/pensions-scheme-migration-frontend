@@ -19,24 +19,14 @@
     govukButton: GovukButton
 )
 
-@(pageTitle: String, heading: String, content: String, continueUrl: String)(implicit request: Request[_], messages: Messages)
+@(tryAgain: String)(implicit request: Request[_], messages: Messages)
 
-@layout(messages(pageTitle)) {
+@layout(messages("messages__racdac__request__not__processed__title")) {
 
 
-    @if(heading == "messages__processingRequest__h1_processing") {
-        <meta http-equiv="refresh" content="4"/>
-    }
-
-    <h1 class="govuk-heading-l">
-        @messages(heading)
-    </h1>
-
-    <p class="govuk-body">@messages(content)</p>
-
-    @govukButton(
-        ButtonViewModel(
-            Text(messages("site.continue"))
-        ).withAttribute("id" -> "submit").asLink(continueUrl)
-    )
+    <h1 class="govuk-heading-l">@messages("messages__racdac__request__not__processed__heading")</h1>
+    <p class="govuk-body">@messages("messages__racdac__request__not__processed__p")</p>
+    <p class="govuk-body">
+        <a id="try-again-rac-dac" href="@tryAgain" class="govuk-link">@messages("messages__racdac__request__not__processed__link")</a>.
+    </p>
 }

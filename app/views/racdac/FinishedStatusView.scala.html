@@ -15,41 +15,21 @@
  *@
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukButton: GovukButton
+    layout: templates.Layout
 )
 
-@(submitCall: Call, returnUrl: String, psaName: String)(implicit request: Request[_], messages: Messages)
+@(listOfSchemesUrl: String, transferRacDacUrl: String)(implicit request: Request[_], messages: Messages)
 
-@layout(messages("messages__declaration__title")) {
-
-
+@layout(messages("messages__racdac__finished__title")) {
     <h1 class="govuk-heading-l">
-        {{ messages("messages__declaration__title") }}
+        @messages("messages__racdac__finished__title")
     </h1>
-    @formHelper(submitCall, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "true") {
-        <p class="govuk-body">
-            @messages("messages__declaration__declare")
-        </p>
-        <ul class="govuk-list govuk-list--bullet">
 
-            <li>@messages("messages__declaration__statementRacDac1")</li>
-            <li>@messages("messages__declaration__statementRacDac2")</li>
-            <li>@messages("messages__declaration__statementRacDac3")</li>
+    <p class="govuk-body">
+        @messages("messages__racdac__finished__p1__first") <a id="list-schemes-link" href="@listOfSchemesUrl" class="govuk-link">@messages("messages__racdac__finished__p1_link_text")</a>.
+    </p>
 
-        </ul>
-
-        @govukButton(
-            ButtonViewModel(
-                Text(messages("site.agree_and_continue"))
-            ).asFormSubmit
-        )
-    }
-
-    @govukButton(
-        ButtonViewModel(
-            Text(messages("site.return.to", psaName))
-        ).asLink(returnUrl)
-    )
+    <p class="govuk-body">
+        @messages("messages__racdac__finished__p2__first") <a id="transfer-racDac-link" href="@transferRacDacUrl" class="govuk-link">@messages("messages__racdac__finished__p2_link_text")</a>.
+    </p>
 }
