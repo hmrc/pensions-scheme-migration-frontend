@@ -19,73 +19,45 @@ package controllers.trustees.individual.details
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.trustees.individual.TrusteeNameId
-import matchers.JsonMatchers
-import models.PersonName
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
+import models.Index
 import org.scalatest.TryValues
+import play.api.Application
 import play.api.i18n.Messages
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
-import play.twirl.api.Html
-import renderer.Renderer
-import services.common.details.CommonWhatYouWillNeedDetailsService
-import uk.gov.hmrc.viewmodels.NunjucksSupport
-import utils.Data.ua
+import utils.Data.{individualName, ua}
 import utils.UserAnswers
+import views.html.details.WhatYouWillNeedIndividualDetailsView
 
 import scala.concurrent.Future
 class WhatYouWillNeedControllerSpec
   extends ControllerSpecBase
-    with NunjucksSupport
-    with JsonMatchers
     with TryValues {
 
-  private val personName: PersonName = PersonName("Jane", "Doe")
-  private val userAnswers: UserAnswers = ua.set(TrusteeNameId(0), personName).success.value
-  private val templateToBeRendered: String = "details/whatYouWillNeedIndividualDetails.njk"
-
-  private val json: JsObject =
-    Json.obj(
-      "name" -> "Jane Doe",
-      "entityType" -> Messages("messages__title_individual"),
-      "continueUrl" -> "/add-pension-scheme/trustee/1/individual/date-of-birth",
-      "schemeName" -> "Test scheme name"
-    )
-
-  private def controller(
-                          dataRetrievalAction: DataRetrievalAction
-                        ): WhatYouWillNeedController =
-    new WhatYouWillNeedController(
-      messagesApi = messagesApi,
-      authenticate = new FakeAuthAction(),
-      getData = dataRetrievalAction,
-      requireData = new DataRequiredActionImpl,
-      common = new CommonWhatYouWillNeedDetailsService(
-        controllerComponents = controllerComponents,
-        renderer = new Renderer(mockAppConfig, mockRenderer),
-        messagesApi = messagesApi
-      )
-    )
+  private val userAnswers: UserAnswers = ua.set(TrusteeNameId(0), individualName).success.value
+  private val index: Index = Index(0)
+  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
+  private def httpPathGETUrl: String = routes.WhatYouWillNeedController.onPageLoad(index).url
 
   "WhatYouWillNeedController" must {
     "return OK and the correct view for a GET" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(userAnswers))
 
-      val getData = new FakeDataRetrievalAction(Some(userAnswers))
-      val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(userAnswers))
+      val request = httpGETRequest(httpPathGETUrl)
+      val result: Future[Result] = route(application, request).value
 
-      status(result) mustBe OK
+      status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = application.injector.instanceOf[WhatYouWillNeedIndividualDetailsView].apply(
+        Messages("messages__title_individual"),
+        individualName.fullName,
+        "/add-pension-scheme/trustee/1/individual/date-of-birth",
+        "Test scheme name"
+      )(request, messages)
 
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(json)
+      compareResultAndView(result, view)
     }
   }
 }
