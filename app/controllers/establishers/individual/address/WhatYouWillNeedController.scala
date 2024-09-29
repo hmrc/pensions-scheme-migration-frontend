@@ -21,16 +21,14 @@ import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import helpers.cya.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
-import models.{Index, NormalMode}
+import models.{Index, NormalMode, PersonName}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
+import views.html.address.WhatYouWillNeedView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class WhatYouWillNeedController @Inject()(
                                            override val messagesApi: MessagesApi,
@@ -38,27 +36,26 @@ class WhatYouWillNeedController @Inject()(
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
                                            val controllerComponents: MessagesControllerComponents,
-                                           val renderer: Renderer
+                                           whatYouWillNeedView: WhatYouWillNeedView
                                          )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
-    with Retrievals
-    with NunjucksSupport {
+    with Retrievals {
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
+        val schemeName = request.userAnswers.get(SchemeNameId)
+          .getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
+
         EstablisherNameId(index).retrieve.map {
-          personName =>
-            renderer.render(
-              template = "address/whatYouWillNeed.njk",
-              ctx = Json.obj(
-                "name"        -> personName.fullName,
-                "entityType" -> Messages("messages__title_individual"),
-                "continueUrl" -> controllers.establishers.individual.address.routes.EnterPostcodeController.onPageLoad(index,NormalMode).url,
-                "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
-              )
-            ).map(Ok(_))
+          personName: PersonName =>
+            Future.successful(Ok(whatYouWillNeedView(
+              Messages("messages__title_company"),
+              personName.fullName,
+              routes.EnterPostcodeController.onPageLoad(index,NormalMode).url,
+              schemeName
+            )))
         }
     }
 

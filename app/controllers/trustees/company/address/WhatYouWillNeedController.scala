@@ -24,8 +24,7 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.company.CompanyDetailsId
 import models.{CompanyDetails, Index, NormalMode}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import views.html.address.WhatYouWillNeedView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
@@ -47,8 +46,8 @@ class WhatYouWillNeedController @Inject()(
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        val schemeName = request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
-
+        val schemeName = request.userAnswers.get(SchemeNameId)
+          .getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
 
         CompanyDetailsId(index).retrieve.map {
           companyDetails: CompanyDetails =>

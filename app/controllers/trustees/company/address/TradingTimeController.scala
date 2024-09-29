@@ -25,7 +25,7 @@ import identifiers.trustees.company.address.TradingTimeId
 import models.{Index, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent}
 import services.common.address.CommonTradingTimeService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -41,7 +41,6 @@ class TradingTimeController @Inject()(
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     formProvider: TradingTimeFormProvider,
-    controllerComponents: MessagesControllerComponents,
     common: CommonTradingTimeService
  )(implicit ec: ExecutionContext) extends Retrievals with I18nSupport with Enumerable.Implicits {
 
@@ -51,7 +50,14 @@ class TradingTimeController @Inject()(
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (CompanyDetailsId(index) and SchemeNameId).retrieve.map {
         case companyDetails ~ schemeName =>
-          common.get(Some(schemeName), companyDetails.companyName, Message("messages__company"), form, TradingTimeId(index))
+          common.get(
+            Some(schemeName),
+            companyDetails.companyName,
+            Message("messages__company"),
+            form,
+            TradingTimeId(index),
+            submitCall = routes.TradingTimeController.onSubmit(index, mode)
+          )
       }
     }
 
@@ -61,7 +67,15 @@ class TradingTimeController @Inject()(
 
       (CompanyDetailsId(index) and SchemeNameId).retrieve.map {
         case companyDetails ~ schemeName =>
-          common.post(Some(schemeName), companyDetails.companyName, Message("messages__company"), form, TradingTimeId(index),Some(mode))
+          common.post(
+            Some(schemeName),
+            companyDetails.companyName,
+            Message("messages__company"),
+            form,
+            TradingTimeId(index),
+            Some(mode),
+            submitCall = routes.TradingTimeController.onSubmit(index, mode)
+          )
       }
     }
 }

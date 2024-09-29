@@ -25,7 +25,7 @@ import identifiers.trustees.partnership.address.TradingTimeId
 import models.{Index, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent}
 import services.common.address.CommonTradingTimeService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -41,7 +41,6 @@ class TradingTimeController @Inject()(
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     formProvider: TradingTimeFormProvider,
-    controllerComponents: MessagesControllerComponents,
     common: CommonTradingTimeService
  )(implicit ec: ExecutionContext) extends Retrievals with I18nSupport with Enumerable.Implicits {
 
@@ -55,7 +54,8 @@ class TradingTimeController @Inject()(
             Some(schemeName),
             partnershipDetails.partnershipName,
             Message("messages__partnership"),
-            form, TradingTimeId(index)
+            form, TradingTimeId(index),
+            submitCall = routes.TradingTimeController.onSubmit(index, mode)
           )
       }
     }
@@ -71,7 +71,8 @@ class TradingTimeController @Inject()(
             partnershipDetails.partnershipName,
             Message("messages__partnership"),
             form, TradingTimeId(index),
-            Some(mode)
+            Some(mode),
+            submitCall = routes.TradingTimeController.onSubmit(index, mode)
           )
       }
     }

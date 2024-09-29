@@ -50,7 +50,14 @@ class TradingTimeController @Inject()(
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (CompanyDetailsId(index) and SchemeNameId).retrieve.map {
         case companyDetails ~ schemeName =>
-          common.get(Some(schemeName), companyDetails.companyName, Message("messages__company"), form, TradingTimeId(index))
+          common.get(
+            Some(schemeName),
+            companyDetails.companyName,
+            Message("messages__company"),
+            form,
+            TradingTimeId(index),
+            submitCall = routes.TradingTimeController.onSubmit(index, mode)
+          )
       }
     }
 
@@ -60,7 +67,15 @@ class TradingTimeController @Inject()(
 
       (CompanyDetailsId(index) and SchemeNameId).retrieve.map {
         case companyDetails ~ schemeName =>
-          common.post(Some(schemeName), companyDetails.companyName, Message("messages__company"), form, TradingTimeId(index),Some(mode))
+          common.post(
+            Some(schemeName),
+            companyDetails.companyName,
+            Message("messages__company"),
+            form,
+            TradingTimeId(index),
+            Some(mode),
+            submitCall = routes.TradingTimeController.onSubmit(index, mode)
+          )
       }
     }
 }

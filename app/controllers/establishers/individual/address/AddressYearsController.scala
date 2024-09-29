@@ -48,7 +48,14 @@ class AddressYearsController @Inject()(
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (EstablisherNameId(index) and SchemeNameId).retrieve.map {
         case establisherName ~ schemeName =>
-          common.get(Some(schemeName), establisherName.fullName, Message("establisherEntityTypeIndividual"), form, AddressYearsId(index))
+          common.get(
+            Some(schemeName),
+            establisherName.fullName,
+            Message("establisherEntityTypeIndividual"),
+            form,
+            AddressYearsId(index),
+            submitCall = routes.AddressYearsController.onSubmit(index, mode)
+          )
       }
     }
 
@@ -56,7 +63,15 @@ class AddressYearsController @Inject()(
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (EstablisherNameId(index) and SchemeNameId).retrieve.map {
         case establisherName ~ schemeName =>
-          common.post(Some(schemeName), establisherName.fullName, Message("establisherEntityTypeIndividual"), form, AddressYearsId(index),Some(mode))
+          common.post(
+            Some(schemeName),
+            establisherName.fullName,
+            Message("establisherEntityTypeIndividual"),
+            form,
+            AddressYearsId(index),
+            Some(mode),
+            submitCall = routes.AddressYearsController.onSubmit(index, mode)
+          )
         }
     }
 

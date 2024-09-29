@@ -51,7 +51,8 @@ class AddressYearsController @Inject()(
             companyDetails.companyName,
             Message("establisherEntityTypeCompany"),
             form,
-            AddressYearsId(index)
+            AddressYearsId(index),
+            submitCall = routes.AddressYearsController.onSubmit(index, mode)
           )
       }
     }
@@ -65,7 +66,8 @@ class AddressYearsController @Inject()(
             companyDetails.companyName,
             Message("establisherEntityTypeCompany"),
             form,
-            AddressYearsId(index),Some(mode)
+            AddressYearsId(index),Some(mode),
+            submitCall = routes.AddressYearsController.onSubmit(index, mode)
           )
       }
     }
