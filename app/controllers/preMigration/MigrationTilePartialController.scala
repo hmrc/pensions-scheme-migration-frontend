@@ -24,7 +24,6 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import views.html.preMigration.MigrationLinksPartialView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,7 +34,7 @@ class MigrationTilePartialController @Inject()(
                                                 authenticate: AuthAction,
                                                 bulkMigrationQueueConnector: BulkMigrationQueueConnector,
                                                 val controllerComponents: MessagesControllerComponents,
-                                                migrationLinksPartialView: MigrationLinksPartialView
+                                                migrationLinksPartial: MigrationLinksPartial
                                               )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
@@ -53,7 +52,7 @@ class MigrationTilePartialController @Inject()(
 
     links.flatMap { migrationLinks =>
       Future.successful(Ok(
-        migrationLinksPartialView(
+        migrationLinksPartial(
           migrationLinks
         )
       ))
