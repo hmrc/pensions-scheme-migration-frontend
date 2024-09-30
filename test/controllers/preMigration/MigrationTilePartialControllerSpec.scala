@@ -30,6 +30,7 @@ import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.preMigration.MigrationLinksPartialView
 
 import scala.concurrent.Future
 class MigrationTilePartialControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues  {
@@ -54,7 +55,7 @@ class MigrationTilePartialControllerSpec extends ControllerSpecBase with Nunjuck
 
   private def controller(): MigrationTilePartialController =
     new MigrationTilePartialController(appConfig, messagesApi, new FakeAuthAction(), mockQueueConnector,
-      controllerComponents, new Renderer(mockAppConfig, mockRenderer))
+      controllerComponents, app.injector.instanceOf[MigrationLinksPartialView])
 
   "MigrationTilePartialController" must {
 
