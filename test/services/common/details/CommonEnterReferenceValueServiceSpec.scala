@@ -63,7 +63,8 @@ class CommonEnterReferenceValueServiceSpec extends CommonServiceSpecBase {
         isPageHeading = true,
         id = id,
         form = referenceValueForm,
-        schemeName = "Test Scheme"
+        schemeName = "Test Scheme",
+        submitCall = onwardCall
       )(fakeDataRequest(userAnswers, fakeRequestWithFormData), global)
 
       status(result) mustBe OK
@@ -80,7 +81,8 @@ class CommonEnterReferenceValueServiceSpec extends CommonServiceSpecBase {
         isPageHeading = true,
         id = id,
         form = referenceValueForm,
-        schemeName = "Test Scheme"
+        schemeName = "Test Scheme",
+        submitCall = onwardCall
       )(fakeDataRequest(updatedAnswers, fakeRequestWithFormData), global)
 
       status(result) mustBe OK
@@ -100,7 +102,8 @@ class CommonEnterReferenceValueServiceSpec extends CommonServiceSpecBase {
         id = id,
         form = formWithErrors,
         schemeName = "Test Scheme",
-        mode = NormalMode
+        mode = NormalMode,
+        submitCall = onwardCall
       )(fakeDataRequest(userAnswers, fakeRequestWithFormData), global)
 
       status(result) mustBe BAD_REQUEST
@@ -118,7 +121,8 @@ class CommonEnterReferenceValueServiceSpec extends CommonServiceSpecBase {
         id = id,
         form = referenceValueForm.bind(Map("value" -> "1234567890")),
         schemeName = "Test Scheme",
-        mode = NormalMode
+        mode = NormalMode,
+        submitCall = onwardCall
       )(fakeDataRequest(userAnswers, fakeRequestWithFormData), global)
 
       status(result) mustBe SEE_OTHER

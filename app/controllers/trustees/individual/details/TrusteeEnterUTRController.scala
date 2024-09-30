@@ -69,7 +69,8 @@ class TrusteeEnterUTRController @Inject()(val messagesApi: MessagesApi,
               form          = form,
               schemeName    = schemeName,
               legendClass   = "govuk-visually-hidden",
-              paragraphText = Seq(Message("messages__UTR__p1"), Messages("messages__UTR__p2"))
+              paragraphText = Seq(Message("messages__UTR__p1"), Messages("messages__UTR__p2")),
+              submitCall = routes.TrusteeEnterUTRController.onSubmit(index, mode)
             )
         }
     }
@@ -90,7 +91,8 @@ class TrusteeEnterUTRController @Inject()(val messagesApi: MessagesApi,
               paragraphText = Seq(Message("messages__UTR__p1"), Message("messages__UTR__p2")),
               legendClass   = "govuk-visually-hidden",
               mode = mode,
-              optSetUserAnswers = Some(value => setUpdatedAnswers(index, mode, value, request.userAnswers))
+              optSetUserAnswers = Some(value => setUpdatedAnswers(index, mode, value, request.userAnswers)),
+              submitCall = routes.TrusteeEnterUTRController.onSubmit(index, mode)
             )
         }
     }

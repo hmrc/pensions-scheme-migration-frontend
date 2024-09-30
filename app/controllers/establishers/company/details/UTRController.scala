@@ -64,7 +64,8 @@ class UTRController @Inject()(val messagesApi: MessagesApi,
               form          = form,
               schemeName    = schemeName,
               legendClass   = "govuk-visually-hidden",
-              paragraphText = Seq(Message("messages__UTR__p1"), Messages("messages__UTR__p2"))
+              paragraphText = Seq(Message("messages__UTR__p1"), Messages("messages__UTR__p2")),
+              submitCall = routes.UTRController.onSubmit(index, mode)
             )
         }
     }
@@ -83,7 +84,8 @@ class UTRController @Inject()(val messagesApi: MessagesApi,
               schemeName    = schemeName,
               legendClass   = "govuk-visually-hidden",
               paragraphText = Seq(Message("messages__UTR__p1"), Message("messages__UTR__p2")),
-              mode          = mode
+              mode          = mode,
+              submitCall = routes.UTRController.onSubmit(index, mode)
             )
         }
     }
