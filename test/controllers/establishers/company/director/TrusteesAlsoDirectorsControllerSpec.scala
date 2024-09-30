@@ -45,6 +45,7 @@ import utils.{Data, FakeNavigator, TwirlMigration, UserAnswers}
 import views.html.DataPrefillCheckboxView
 
 import scala.concurrent.Future
+import scala.concurrent.duration.DurationInt
 
 class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
   with NunjucksSupport
@@ -52,12 +53,10 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
   with TryValues
   with BeforeAndAfterEach {
 
-  val extraModules: Seq[GuiceableModule] = Seq(
-    bind[DataPrefillService].to(mockDataPrefillService)
-  )
+
   private val index: Index = Index(0)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
   private val formProvider: DataPrefillCheckboxFormProvider = new DataPrefillCheckboxFormProvider()
   private val form = formProvider(6,"", "", "")
   private val companyDetails: CompanyDetails = CompanyDetails("test company")
@@ -72,7 +71,7 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
       mockDataPrefillService
     )
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-    when(mockDataPrefillService.getListOfTrusteesToBeCopied(any())(any())).thenReturn(Nil)
+    when(mockDataPrefillService.getListOfTrusteesToBeCopied(any)(any)).thenReturn(Nil)
 
   }
 
@@ -97,22 +96,24 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
 
   "TrusteesAlsoDirectorsController" must {
     "return OK and the correct view for a GET" in {
-      when(mockDataPrefillService.getListOfTrusteesToBeCopied(any())(any())).thenReturn(Nil)
-
+      when(mockDataPrefillService.getListOfTrusteesToBeCopied(any)(any)).thenReturn(Seq(IndividualDetails("", "", false, None, None, 0, true, None)))
       val individualName = PersonName("Jane", "Doe")
-      val userAnswers: Option[UserAnswers] = ua.set(EstablisherNameId(0), individualName).toOption
 
-      val getData = new FakeDataRetrievalAction(Some(ua))
+      val getData = new FakeDataRetrievalAction(Some(userAnswerss))
+      val userAnswers1: UserAnswers = ua.set(CompanyDetailsId(0), companyDetails).success.value
+      val userAnswers: Option[UserAnswers] = userAnswers1.set(EstablisherNameId(0), individualName).toOption
+
       val seqCheckBox = TwirlMigration.toTwirlCheckBoxes(DataPrefillCheckbox.checkboxes(form, Seq(IndividualDetails("", "", false, None, None, 0, true, None))))
-      mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(userAnswerss))
 
       val request = httpGETRequest(controllers.establishers.company.director.routes.TrusteesAlsoDirectorsController.onPageLoad(index).url)
-      val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(userAnswers.get))
+      val result: Future[Result] = controller(getData).onPageLoad(0)(request)
 
       val view = application.injector.instanceOf[DataPrefillCheckboxView]
         .apply(form, Data.schemeName, "messages__trustees__prefill__heading", "messages__trustees__prefill__title", seqCheckBox,
-          controllers.establishers.company.director.routes.TrusteeAlsoDirectorController.onSubmit(Index(0)))(request, messages)
+          controllers.establishers.company.director.routes.TrusteesAlsoDirectorsController.onSubmit(Index(0)))(request, messages)
       verify(mockDataPrefillService, times(1)).getListOfTrusteesToBeCopied(any())(any())
+
 
       status(result) mustBe OK
       compareResultAndView(result, view)

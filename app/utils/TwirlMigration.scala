@@ -26,6 +26,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Content, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions}
 import uk.gov.hmrc.viewmodels.MessageInterpolators
+import viewmodels.forNunjucks.Checkboxes
 
 import javax.inject.Inject
 import scala.concurrent.Future
@@ -59,14 +60,12 @@ object TwirlMigration extends Logging {
   }
 
   def toTwirlCheckBoxes(nunjucksCheckboxes: Seq[viewmodels.forNunjucks.Checkboxes.Item])(implicit messages: Messages): Seq[CheckboxItem] = {
-    nunjucksCheckboxes.map(checkbox => {
-      if(checkbox.name != msg"messages__prefill__label__divider".resolve) {
+    val checkBoxes = nunjucksCheckboxes.map(checkbox => {
         CheckboxItem(content = Text(checkbox.text.map(_.resolve).getOrElse("")), value = checkbox.value)
-      }
-      else{
-        CheckboxItem(content = Text(checkbox.text.map(_.resolve).getOrElse("")), value = checkbox.value, disabled = true)
-      }
     })
+    val divider = CheckboxItem(divider = Some(messages("messages__prefill__label__divider")))
+
+    checkBoxes.patch(checkBoxes.size, List(divider), 0)
   }
 
   private def resolveContent(content: hmrc.viewmodels.Content)(implicit messages: Messages): Content = {
