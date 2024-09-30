@@ -17,8 +17,10 @@
 package helpers
 
 import config.AppConfig
+import models.Country
 import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, Json}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 trait CountriesHelper {
   private def countryJsonElement(tuple: (String, String),
@@ -42,6 +44,19 @@ trait CountriesHelper {
             countrySelected.contains(nextCountryTuple._1)
           )
       }
+  }
+
+  def countrySelectList(value: Map[String, String], countries: Seq[Country]): Seq[SelectItem] = {
+    def containsCountry(country: Country): Boolean =
+      value.get("country") match {
+        case Some(countryCode) => countryCode == country.code
+        case _                 => false
+      }
+    val countryJsonList = countries.map {
+      country =>
+        SelectItem(Some(country.code), country.description, containsCountry(country))
+    }
+    SelectItem(None, "") +: countryJsonList
   }
 
 }

@@ -17,25 +17,25 @@
 package services.common.address
 
 import controllers.Retrievals
-import models.{Address, AddressConfiguration, NormalMode, TolerantAddress}
+import identifiers.TypedIdentifier
 import models.requests.DataRequest
+import models.{Address, AddressConfiguration, NormalMode, TolerantAddress}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.data.Form
+import play.api.data.Forms.{mapping, nonEmptyText, optional, text}
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import renderer.Renderer
+import services.CommonServiceSpecBase
+import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{Data, FakeNavigator, UserAnswers}
-import identifiers.TypedIdentifier
-import play.api.data.Form
-import play.api.data.Forms.{mapping, nonEmptyText, optional, text}
-import uk.gov.hmrc.domain.PsaId
-import services.CommonServiceSpecBase
 
 import scala.concurrent.Future
 
@@ -79,7 +79,6 @@ class CommonManualAddressServiceSpec extends CommonServiceSpecBase with MockitoS
 
     "return a BadRequest and errors when invalid data is submitted on post" in {
       val invalidRequest: DataRequest[AnyContent] = DataRequest(FakeRequest().withFormUrlEncodedBody("line1" -> ""), UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), Data.migrationLock)
-      val formWithErrors = form.withError("line1", "error.required")
 
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 

@@ -49,7 +49,6 @@ class BulkRacDacServiceSpec extends SpecBase
 
   import BulkRacDacServiceSpec._
 
-  private val mockAppConfig = mock[AppConfig]
   private val paginationService = new PaginationService(mockAppConfig)
   private val pagination: Int = 10
   private val formProvider: RacDacBulkListFormProvider = new RacDacBulkListFormProvider()

@@ -16,6 +16,7 @@
 
 package services.common.contact
 
+import controllers.ControllerSpecBase
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers.any
@@ -39,7 +40,7 @@ import views.html.PhoneView
 
 import scala.concurrent.Future
 
-class CommonPhoneServiceSpec extends CommonServiceSpecBase with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
+class CommonPhoneServiceSpec extends ControllerSpecBase with CommonServiceSpecBase with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
 
   private val navigator = new FakeNavigator(desiredRoute = onwardCall)
   private val form = Form("value" -> text)

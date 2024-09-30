@@ -33,7 +33,6 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.domain.PsaId
 import utils.Data.psaId
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class BulkDataActionSpec

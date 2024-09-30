@@ -144,10 +144,14 @@ class TaskListService @Inject()(appConfig: AppConfig) {
   }
 
   private def completionSpokeCount(implicit ua: UserAnswers, messages: Messages): Int =
-    taskSections.count(taskListLink => taskListLink.exists(_.status))
+    taskSections.count(_.status)
+
+  def isComplete(implicit ua: UserAnswers, messages: Messages): Boolean = {
+    completionSpokeCount == taskSections.size
+  }
 
   def schemeCompletionStatus(implicit ua: UserAnswers, messages: Messages): String = {
-    if (completionSpokeCount == taskSections.size)
+    if (isComplete)
       messages("messages__newSchemeTaskList__schemeStatus_heading", messages("messages__newSchemeTaskList__schemeStatus_complete"))
     else
       messages("messages__newSchemeTaskList__schemeStatus_heading", messages("messages__newSchemeTaskList__schemeStatus_incomplete"))
@@ -190,9 +194,13 @@ class TaskListService @Inject()(appConfig: AppConfig) {
         status = declarationEnabled
       )
 
-  def taskSections(implicit ua: UserAnswers, messages: Messages): Seq[Option[TaskListLink]] = {
-    val seqOtherTasks = Seq(Some(basicDetails), Some(membershipDetails), Some(benefitsAndInsuranceDetails))
-    val seqEntityTasks = Seq(Some(establishersDetails), Some(trusteesDetails))
-    if (workingKnowledgeDetails.isEmpty) seqOtherTasks ++ seqEntityTasks else seqOtherTasks ++ Seq(workingKnowledgeDetails) ++ seqEntityTasks
+  def taskSections(implicit ua: UserAnswers, messages: Messages): Seq[TaskListLink] = {
+    val seqOtherTasks: Seq[TaskListLink] = Seq(basicDetails, membershipDetails, benefitsAndInsuranceDetails)
+    val seqEntityTasks: Seq[TaskListLink] = Seq(establishersDetails, trusteesDetails)
+
+    workingKnowledgeDetails match {
+      case Some(workingKnowledgeTaskList) => seqOtherTasks ++ Seq(workingKnowledgeTaskList) ++ seqEntityTasks
+      case None => seqOtherTasks ++ seqEntityTasks
+    }
   }
 }

@@ -28,7 +28,6 @@ import play.api.libs.json.{JsResultException, Json}
 import uk.gov.hmrc.domain.PsaId
 import utils.Data.psaId
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DataRetrievalActionSpec

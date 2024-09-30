@@ -16,6 +16,7 @@
 
 package services.common.contact
 
+import controllers.ControllerSpecBase
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
@@ -38,7 +39,7 @@ import services.CommonServiceSpecBase
 
 import scala.concurrent.Future
 
-class CommonEmailAddressServiceSpec extends CommonServiceSpecBase with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
+class CommonEmailAddressServiceSpec extends ControllerSpecBase with CommonServiceSpecBase with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
 
   private val navigator = new FakeNavigator(desiredRoute = onwardCall)
   val renderer = new Renderer(mockAppConfig, mockRenderer)

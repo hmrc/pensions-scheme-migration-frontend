@@ -64,7 +64,8 @@ class NoCompanyNumberReasonController @Inject()(val messagesApi: MessagesApi,
               isPageHeading = true,
               id            = NoCompanyNumberReasonId(index),
               form          = form(index),
-              schemeName    = schemeName
+              schemeName    = schemeName,
+              submitUrl     = routes.NoCompanyNumberReasonController.onSubmit(index, mode)
             )
         }
     }
@@ -81,7 +82,8 @@ class NoCompanyNumberReasonController @Inject()(val messagesApi: MessagesApi,
                 id            = NoCompanyNumberReasonId(index),
                 form          = form(index),
                 schemeName    = schemeName,
-                mode          = mode
+                mode          = mode,
+                submitUrl     = routes.NoCompanyNumberReasonController.onSubmit(index, mode)
               )
           }
       }
