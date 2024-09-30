@@ -21,21 +21,15 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import matchers.JsonMatchers
 import models.PageLink
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
-import play.twirl.api.Html
-import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import views.html.preMigration.MigrationLinksPartialView
 
 import scala.concurrent.Future
 class MigrationTilePartialControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues  {
 
-  private val templateToBeRendered: String = "preMigration/migrationLinksPartial.njk"
   private val mockQueueConnector = mock[BulkMigrationQueueConnector]
 
   val viewOnlyLinks: Seq[PageLink] = Seq(
@@ -55,42 +49,32 @@ class MigrationTilePartialControllerSpec extends ControllerSpecBase with Nunjuck
 
   private def controller(): MigrationTilePartialController =
     new MigrationTilePartialController(appConfig, messagesApi, new FakeAuthAction(), mockQueueConnector,
-      controllerComponents, app.injector.instanceOf[MigrationLinksPartialView])
+      controllerComponents)
 
   "MigrationTilePartialController" must {
 
     "return OK and the correct partial for a GET when migration feature is transfer-enabled and request is not in progress" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       when(mockQueueConnector.isRequestInProgress(any())(any(), any())).thenReturn(Future.successful(false))
-
-      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
       val result: Future[Result] = controller().migrationPartial()(fakeDataRequest())
 
       status(result) mustBe OK
+      val view = views.html.preMigration.MigrationLinksPartialView(
+        transferLinks
+      )(messages)
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(Json.obj("links" -> Json.toJson(transferLinks)))
+      compareResultAndView(result, view)
     }
 
     "return OK and the correct partial for a GET when migration feature is transfer-enabled and request is in progress" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       when(mockQueueConnector.isRequestInProgress(any())(any(), any())).thenReturn(Future.successful(true))
 
-      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
       val result: Future[Result] = controller().migrationPartial()(fakeDataRequest())
 
       status(result) mustBe OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(Json.obj("links" -> Json.toJson(transferLinksInProgress)))
+      val view = views.html.preMigration.MigrationLinksPartialView(
+        transferLinksInProgress
+      )(messages)
+      compareResultAndView(result, view)
     }
   }
 }

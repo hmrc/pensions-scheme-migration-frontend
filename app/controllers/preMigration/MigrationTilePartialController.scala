@@ -33,8 +33,7 @@ class MigrationTilePartialController @Inject()(
                                                 override val messagesApi: MessagesApi,
                                                 authenticate: AuthAction,
                                                 bulkMigrationQueueConnector: BulkMigrationQueueConnector,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                migrationLinksPartial: MigrationLinksPartial
+                                                val controllerComponents: MessagesControllerComponents
                                               )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
@@ -52,9 +51,7 @@ class MigrationTilePartialController @Inject()(
 
     links.flatMap { migrationLinks =>
       Future.successful(Ok(
-        migrationLinksPartial(
-          migrationLinks
-        )
+        views.html.preMigration.MigrationLinksPartialView(migrationLinks)
       ))
     }
   }
