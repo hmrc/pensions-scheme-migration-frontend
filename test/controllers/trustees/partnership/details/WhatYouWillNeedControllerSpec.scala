@@ -21,16 +21,10 @@ import controllers.actions._
 import identifiers.trustees.partnership.PartnershipDetailsId
 import matchers.JsonMatchers
 import models.{Index, NormalMode}
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
 import play.api.i18n.Messages
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
-import play.twirl.api.Html
-import renderer.Renderer
-import services.common.details.CommonWhatYouWillNeedDetailsService
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.{partnershipDetails, ua}
 import utils.UserAnswers
