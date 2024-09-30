@@ -28,8 +28,8 @@
     entityName: String,
     addresses: Seq[RadioItem],
     enterManuallyUrl: String,
-    schemeName: Option[String],
-    submitCall: Call
+    schemeName: String,
+    submitUrl: Call
 )(implicit request: Request[_], messages: Messages)
 
 @layout(messages("addressList.title", messages(entityType))) {
@@ -37,7 +37,7 @@
         @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
     }
 
-    @formHelper(action = submitCall, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "true") {
+    @formHelper(action = submitUrl, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "true") {
         @govukRadios(
             RadiosViewModel(
                 field = form("value"),
@@ -57,5 +57,5 @@
         )
     }
 
-    @schemeName.map { schemeName => @templates.ReturnLink(schemeName) }
+    @templates.ReturnLink(schemeName)
 }

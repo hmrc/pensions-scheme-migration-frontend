@@ -16,7 +16,6 @@
 
 package services.common.address
 
-import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import models.establishers.AddressPages
@@ -25,20 +24,21 @@ import models.{Mode, NormalMode, TolerantAddress}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
-import play.api.i18n.MessagesApi
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json, OWrites, Writes}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, Call, Result}
 import renderer.Renderer
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.nunjucks.NunjucksSupport
+import utils.TwirlMigration
+import views.html.address.AddressListView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 case class CommonAddressListTemplateData(
                                       form: Form[Int],
-                                      addresses: Seq[JsObject], //TODO: Change to Seq[TolerantAddress] during nunjucks migration. -Pavel Vjalicin
+                                      addresses: Seq[TolerantAddress], //TODO: Change to Seq[TolerantAddress] during nunjucks migration. -Pavel Vjalicin
                                       entityType: String,
                                       entityName: String,
                                       enterManuallyUrl: String,
@@ -56,31 +56,52 @@ object CommonAddressListTemplateData {
 
 @Singleton
 class CommonAddressListService @Inject()(
-                                      val renderer: Renderer,
-                                      val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                      val navigator: CompoundNavigator,
-                                      val messagesApi: MessagesApi,
-                                      val config: AppConfig
-                                    ) extends NunjucksSupport with Retrievals {
+  renderer: Renderer,
+  userAnswersCacheConnector: UserAnswersCacheConnector,
+  navigator: CompoundNavigator,
+  val messagesApi: MessagesApi,
+  addressListView: AddressListView
+) extends Retrievals with  I18nSupport {
 
   import CommonAddressListTemplateData._
 
   def viewTemplate: String = "address/addressList.njk"
 
-  def get(template: CommonAddressListTemplateData
+  def get(template: CommonAddressListTemplateData,
+          form: Form[Int],
+          submitUrl : Call
          )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
-    renderer.render(viewTemplate, template).map(Ok(_))
+    Future.successful(Ok(addressListView(
+      form,
+      template.entityType,
+      template.entityName,
+      template.addresses,
+      template.enterManuallyUrl,
+      template.schemeName,
+      submitUrl = submitUrl
+    )))
   }
 
   def post(formToTemplate: Form[Int] => CommonAddressListTemplateData,
            pages: AddressPages,
            mode: Option[Mode] = None,
            manualUrlCall:Call,
-           form: Form[Int]
+           form: Form[Int],
+           submitUrl : Call
           )(implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
     form.bindFromRequest().fold(
-      formWithErrors =>
-        renderer.render(viewTemplate, formToTemplate(formWithErrors)).map(BadRequest(_)),
+      formWithErrors =>{
+        val template = formToTemplate(formWithErrors)
+        Future.successful(BadRequest(addressListView(
+          form,
+          template.entityType,
+          template.entityName,
+          template.addresses,
+          template.enterManuallyUrl,
+          template.schemeName,
+          submitUrl = submitUrl
+        )))
+      },
       value =>
         pages.postcodeId.retrieve.map { addresses =>
           val address = addresses(value).copy(country = Some("GB"))
