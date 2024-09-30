@@ -39,7 +39,8 @@ import views.html.address.ManualAddressView
 
 import scala.concurrent.Future
 
-class CommonManualAddressServiceSpec extends CommonServiceSpecBase with MockitoSugar with ScalaFutures with BeforeAndAfterEach with Retrievals {
+class CommonManualAddressServiceSpec extends CommonServiceSpecBase
+  with MockitoSugar with ScalaFutures with BeforeAndAfterEach with Retrievals {
 
   private val navigator = new FakeNavigator(desiredRoute = onwardCall)
   private val form = Form(mapping(

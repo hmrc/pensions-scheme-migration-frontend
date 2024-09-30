@@ -26,7 +26,6 @@ import models.{Address, AddressConfiguration, Index, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import services.common.address.CommonManualAddressService
 
 import javax.inject.Inject
@@ -39,7 +38,7 @@ class ConfirmPreviousAddressController @Inject()(
   requireData: DataRequiredAction,
   formProvider: AddressFormProvider,
   common: CommonManualAddressService
-)(implicit ec: ExecutionContext) extends Retrievals with I18nSupport with NunjucksSupport {
+)(implicit ec: ExecutionContext) extends Retrievals with I18nSupport {
 
   private val pageTitleEntityTypeMessageKey: Option[String] = Some("establisherEntityTypePartnership")
   private val pageTitleMessageKey: String = "previousAddress.title"

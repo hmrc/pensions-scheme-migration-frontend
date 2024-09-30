@@ -28,9 +28,9 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json, OWrites, Writes}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, Call, Result}
-import renderer.Renderer
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Label, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.TwirlMigration
 import views.html.address.AddressListView
 
 import javax.inject.{Inject, Singleton}
@@ -38,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 case class CommonAddressListTemplateData(
                                       form: Form[Int],
-                                      addresses: Seq[TolerantAddress], //TODO: Change to Seq[TolerantAddress] during nunjucks migration. -Pavel Vjalicin
+                                      addresses: Seq[TolerantAddress],
                                       entityType: String,
                                       entityName: String,
                                       enterManuallyUrl: String,
@@ -56,16 +56,13 @@ object CommonAddressListTemplateData {
 
 @Singleton
 class CommonAddressListService @Inject()(
-  renderer: Renderer,
-  userAnswersCacheConnector: UserAnswersCacheConnector,
-  navigator: CompoundNavigator,
-  val messagesApi: MessagesApi,
-  addressListView: AddressListView
+    userAnswersCacheConnector: UserAnswersCacheConnector,
+    navigator: CompoundNavigator,
+    val messagesApi: MessagesApi,
+    addressListView: AddressListView
 ) extends Retrievals with  I18nSupport {
 
   import CommonAddressListTemplateData._
-
-  def viewTemplate: String = "address/addressList.njk"
 
   def get(template: CommonAddressListTemplateData,
           form: Form[Int],
@@ -75,11 +72,20 @@ class CommonAddressListService @Inject()(
       form,
       template.entityType,
       template.entityName,
-      template.addresses,
+      convertToRadioItems(template.addresses),
       template.enterManuallyUrl,
       template.schemeName,
       submitUrl = submitUrl
     )))
+  }
+
+  private def convertToRadioItems(addresses: Seq[TolerantAddress]): Seq[RadioItem] = {
+    addresses.zipWithIndex.map { case (address, index) =>
+      RadioItem(
+        label = Some(Label(content = Text(address.print))),
+        value = Some(index.toString)
+      )
+    }
   }
 
   def post(formToTemplate: Form[Int] => CommonAddressListTemplateData,
@@ -96,7 +102,7 @@ class CommonAddressListService @Inject()(
           form,
           template.entityType,
           template.entityName,
-          template.addresses,
+          convertToRadioItems(template.addresses),
           template.enterManuallyUrl,
           template.schemeName,
           submitUrl = submitUrl
@@ -130,15 +136,6 @@ class CommonAddressListService @Inject()(
           }
         }
     )
-  }
-
-  def transformAddressesForTemplate(addresses:Seq[TolerantAddress]):Seq[JsObject] = {
-    for ((row, i) <- addresses.zipWithIndex) yield {
-      Json.obj(
-        "value" -> i,
-        "text" -> row.print
-      )
-    }
   }
 
 }

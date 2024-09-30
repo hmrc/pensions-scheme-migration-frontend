@@ -41,7 +41,8 @@ import views.html.address.TradingTimeView
 
 import scala.concurrent.Future
 
-class CommonTradingTimeServiceSpec extends CommonServiceSpecBase with SpecBase with JsonMatchers with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
+class CommonTradingTimeServiceSpec extends CommonServiceSpecBase with SpecBase with JsonMatchers
+  with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
 
   val renderer = new Renderer(mockAppConfig, mockRenderer)
 

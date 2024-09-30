@@ -29,7 +29,6 @@ import play.api.mvc.{Action, AnyContent}
 import controllers.Retrievals
 import services.common.address.{CommonAddressListTemplateData, CommonAddressListService}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import viewmodels.Message
 
@@ -43,14 +42,19 @@ class SelectAddressController @Inject()(
     requireData: DataRequiredAction,
     formProvider: AddressListFormProvider,
     common:CommonAddressListService
- )(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
+ )(implicit val ec: ExecutionContext) extends I18nSupport with Retrievals {
 
   private def form: Form[Int] = formProvider("selectAddress.required")
 
   def onPageLoad(estIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        getFormToTemplate(schemeName, estIndex, partnerIndex, mode).retrieve.map(formToTemplate => common.get(formToTemplate(form)))
+        getFormToTemplate(schemeName, estIndex, partnerIndex, mode).retrieve.map(formToTemplate =>
+          common.get(
+            formToTemplate(form),
+            form,
+            submitUrl = routes.SelectAddressController.onSubmit(estIndex, partnerIndex, mode)
+          ))
       }
     }
 
@@ -66,7 +70,8 @@ class SelectAddressController @Inject()(
             _,
             addressPages, Some(mode),
             routes.ConfirmAddressController.onPageLoad(estIndex, partnerIndex, mode),
-            form = form
+            form = form,
+            submitUrl = routes.SelectAddressController.onSubmit(estIndex, partnerIndex, mode)
           ))
       }
     }
@@ -81,7 +86,7 @@ class SelectAddressController @Inject()(
           form =>
             CommonAddressListTemplateData(
               form,
-              common.transformAddressesForTemplate(addresses),
+              addresses,
               Message("messages__partner"),
               name,
               routes.ConfirmAddressController.onPageLoad(estIndex, partnerIndex, mode).url,

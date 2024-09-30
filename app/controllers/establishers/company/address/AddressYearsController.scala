@@ -39,7 +39,7 @@ class AddressYearsController @Inject()(
      requireData: DataRequiredAction,
      formProvider: AddressYearsFormProvider,
      common: CommonAddressYearsService
-    )(implicit ec: ExecutionContext) extends Retrievals with I18nSupport  {
+)(implicit ec: ExecutionContext) extends Retrievals with I18nSupport  {
 
   private def form: Form[Boolean] = formProvider("companyAddressYears.error.required")
 

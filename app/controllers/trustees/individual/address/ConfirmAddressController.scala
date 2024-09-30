@@ -34,7 +34,6 @@ import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
 import services.common.address.CommonManualAddressService
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.UserAnswers
 
@@ -52,7 +51,7 @@ class ConfirmAddressController @Inject()(
     formProvider: AddressFormProvider,
     dataUpdateService: DataUpdateService,
     common: CommonManualAddressService
-)(implicit ec: ExecutionContext) extends Retrievals with I18nSupport with NunjucksSupport {
+)(implicit ec: ExecutionContext) extends Retrievals with I18nSupport {
 
   private def form: Form[Address] = formProvider()
   private val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__individual")

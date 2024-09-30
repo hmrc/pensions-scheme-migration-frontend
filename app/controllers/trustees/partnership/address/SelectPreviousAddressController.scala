@@ -30,7 +30,6 @@ import controllers.Retrievals
 import services.common.address.{CommonAddressListTemplateData, CommonAddressListService}
 import viewmodels.Message
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.Inject
@@ -43,13 +42,18 @@ class SelectPreviousAddressController @Inject()(
   requireData: DataRequiredAction,
   formProvider: AddressListFormProvider,
   common:CommonAddressListService
-)(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
+)(implicit val ec: ExecutionContext) extends I18nSupport with Retrievals {
 
   private def form: Form[Int] = formProvider("selectAddress.required")
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async { implicit request =>
     retrieve(SchemeNameId) { schemeName =>
-      getFormToTemplate(schemeName, index, mode).retrieve.map(formToTemplate => common.get(formToTemplate(form)))
+      getFormToTemplate(schemeName, index, mode).retrieve.map(formToTemplate =>
+        common.get(
+          formToTemplate(form),
+          form,
+          submitUrl = routes.SelectPreviousAddressController.onSubmit(index, mode)
+        ))
     }
   }
 
@@ -63,9 +67,10 @@ class SelectPreviousAddressController @Inject()(
           common.post(
             _,
             addressPages,
-            manualUrlCall = controllers.trustees.partnership.address.routes.ConfirmPreviousAddressController.onPageLoad(index,mode),
+            manualUrlCall = routes.ConfirmPreviousAddressController.onPageLoad(index,mode),
             mode=Some(mode),
-            form = form
+            form = form,
+            submitUrl = routes.SelectPreviousAddressController.onSubmit(index, mode)
           ))
       }
     }
@@ -80,10 +85,10 @@ class SelectPreviousAddressController @Inject()(
           form =>
             CommonAddressListTemplateData(
               form,
-              common.transformAddressesForTemplate(addresses),
+              addresses,
               Message("messages__partnership"),
               name,
-              controllers.trustees.partnership.address.routes.ConfirmPreviousAddressController.onPageLoad(index,mode).url,
+              routes.ConfirmPreviousAddressController.onPageLoad(index,mode).url,
               schemeName,
               "previousAddressList.title"
             )

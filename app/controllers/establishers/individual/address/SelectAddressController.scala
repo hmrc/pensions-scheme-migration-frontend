@@ -30,10 +30,7 @@ import controllers.Retrievals
 import services.common.address.{CommonAddressListService, CommonAddressListTemplateData}
 import viewmodels.Message
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
-import controllers.establishers.individual.address.routes.ConfirmAddressController
-import controllers.establishers.individual.address.routes.ConfirmPreviousAddressController
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
@@ -44,14 +41,19 @@ class SelectAddressController @Inject()(
     requireData: DataRequiredAction,
     formProvider: AddressListFormProvider,
     common:CommonAddressListService
-)(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
+)(implicit val ec: ExecutionContext) extends I18nSupport with Retrievals {
 
   private def form: Form[Int] = formProvider("selectAddress.required")
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        getFormToTemplate(schemeName, index, mode).retrieve.map(formToTemplate => common.get(formToTemplate(form)))
+        getFormToTemplate(schemeName, index, mode).retrieve.map(formToTemplate =>
+          common.get(
+            formToTemplate(form),
+            form,
+            submitUrl = routes.SelectAddressController.onSubmit(index, mode)
+          ))
       }
     }
 
@@ -65,9 +67,10 @@ class SelectAddressController @Inject()(
           common.post(
             _,
             addressPages,
-            manualUrlCall = ConfirmAddressController.onPageLoad(index,mode),
+            manualUrlCall = routes.ConfirmAddressController.onPageLoad(index,mode),
             mode = Some(mode),
-            form = form
+            form = form,
+            submitUrl = routes.SelectAddressController.onSubmit(index, mode)
           ))
       }
     }
@@ -82,10 +85,10 @@ class SelectAddressController @Inject()(
           form =>
             CommonAddressListTemplateData(
               form,
-              common.transformAddressesForTemplate(addresses),
+              addresses,
               Message("establisherEntityTypeIndividual"),
               name,
-              ConfirmPreviousAddressController.onPageLoad(index,mode).url,
+              routes.ConfirmAddressController.onPageLoad(index,mode).url,
               schemeName
             )
         }

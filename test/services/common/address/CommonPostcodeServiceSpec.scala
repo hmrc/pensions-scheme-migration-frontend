@@ -40,7 +40,8 @@ import views.html.address.PostcodeView
 
 import scala.concurrent.Future
 
-class CommonPostcodeServiceSpec extends ControllerSpecBase with CommonServiceSpecBase with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
+class CommonPostcodeServiceSpec extends ControllerSpecBase with CommonServiceSpecBase
+  with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
 
   private val navigator = new FakeNavigator(desiredRoute = onwardCall)
   private val mockAddressLookupConnector: AddressLookupConnector = org.scalatestplus.mockito.MockitoSugar.mock[AddressLookupConnector]

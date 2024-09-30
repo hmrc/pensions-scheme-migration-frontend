@@ -30,7 +30,6 @@ import play.api.mvc.{Action, AnyContent}
 import services.common.address.{CommonPostcodeService, CommonPostcodeTemplateData}
 import viewmodels.Message
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.Inject
@@ -43,7 +42,7 @@ class EnterPostcodeController @Inject()(
      requireData: DataRequiredAction,
      formProvider: PostcodeFormProvider,
      common: CommonPostcodeService
-    )(implicit val ec: ExecutionContext) extends Retrievals with I18nSupport with NunjucksSupport {
+    )(implicit val ec: ExecutionContext) extends Retrievals with I18nSupport {
 
   private def form: Form[String] = formProvider("enterPostcode.required", "enterPostcode.invalid")
 
