@@ -52,7 +52,7 @@ class AddressYearsController @Inject()(
             Message("establisherEntityTypeCompany"),
             form,
             AddressYearsId(index),
-            submitCall = routes.AddressYearsController.onSubmit(index, mode)
+            submitUrl = routes.AddressYearsController.onSubmit(index, mode)
           )
       }
     }

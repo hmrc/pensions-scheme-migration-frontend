@@ -29,10 +29,10 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
-import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.ua
 import utils.{Data, UserAnswers}
+import views.html.address.WhatYouWillNeedView
 
 import scala.concurrent.Future
 class WhatYouWillNeedControllerSpec
@@ -62,7 +62,7 @@ class WhatYouWillNeedControllerSpec
       getData              = dataRetrievalAction,
       requireData          = new DataRequiredActionImpl,
       controllerComponents = controllerComponents,
-      renderer             = new Renderer(mockAppConfig, mockRenderer)
+      whatYouWillNeedView = app.injector.instanceOf[WhatYouWillNeedView]
     )
 
   "WhatYouWillNeedController" must {

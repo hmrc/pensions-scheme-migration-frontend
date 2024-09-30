@@ -37,6 +37,7 @@ import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Data.migrationLock
 import utils.{FakeNavigator, UserAnswers}
+import views.html.address.TradingTimeView
 
 import scala.concurrent.Future
 
@@ -46,7 +47,12 @@ class CommonTradingTimeServiceSpec extends CommonServiceSpecBase with SpecBase w
 
   private val navigator = new FakeNavigator(desiredRoute = onwardCall)
   private val form = Form("value" -> boolean)
-  private val service = new CommonTradingTimeService(renderer, mockUserAnswersCacheConnector, navigator, messagesApi)
+  private val service = new CommonTradingTimeService(
+    mockUserAnswersCacheConnector,
+    navigator,
+    messagesApi,
+    tradingTimeView = app.injector.instanceOf[TradingTimeView]
+  )
   private val userAnswersId = "test-user-answers-id"
   private val tradingTimeId = new TypedIdentifier[Boolean] {
     override def toString: String = "tradingTimeId"
@@ -63,30 +69,32 @@ class CommonTradingTimeServiceSpec extends CommonServiceSpecBase with SpecBase w
     "render the view correctly on get" in {
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val result = service.get(Some("test-scheme"), "entityName", "entityType", form, tradingTimeId)(request, global)
+      val result = service.get(Some("test-scheme"), "entityName", "entityType", form, tradingTimeId, submitCall = onwardCall)(request)
 
       status(result) mustBe OK
       verify(mockRenderer, times(1)).render(any(), any())(any())
     }
 
     "return a BadRequest and errors when invalid data is submitted on post" in {
-      val invalidRequest: DataRequest[AnyContent] = DataRequest(FakeRequest().withFormUrlEncodedBody("value" -> "invalid"), UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), migrationLock)
+      val invalidRequest: DataRequest[AnyContent] = DataRequest(FakeRequest()
+        .withFormUrlEncodedBody("value" -> "invalid"), UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), migrationLock)
 
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val result = service.post(Some("test-scheme"), "entityName", "entityType", form, tradingTimeId)(invalidRequest, global, hc)
+      val result = service.post(Some("test-scheme"), "entityName", "entityType", form, tradingTimeId, submitCall = onwardCall)(invalidRequest, global, hc)
 
       status(result) mustBe BAD_REQUEST
       verify(mockRenderer, times(1)).render(any(), any())(any())
     }
 
     "save the data and redirect correctly on post" in {
-      val validRequest: DataRequest[AnyContent] = DataRequest(FakeRequest().withFormUrlEncodedBody("value" -> "true"), UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), migrationLock)
+      val validRequest: DataRequest[AnyContent] = DataRequest(FakeRequest()
+        .withFormUrlEncodedBody("value" -> "true"), UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), migrationLock)
 
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val result = service.post(Some("test-scheme"), "entityName", "entityType", form, tradingTimeId)(validRequest, global, hc)
+      val result = service.post(Some("test-scheme"), "entityName", "entityType", form, tradingTimeId, submitCall = onwardCall)(validRequest, global, hc)
 
       status(result) mustBe SEE_OTHER
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())

@@ -27,7 +27,6 @@ import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{Json, OWrites}
 import play.api.mvc.{AnyContent, Call, Result}
-import renderer.Renderer
 import uk.gov.hmrc.viewmodels.Radios
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -39,7 +38,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CommonTradingTimeService @Inject()(
-    renderer: Renderer,
     userAnswersCacheConnector: UserAnswersCacheConnector,
     navigator: CompoundNavigator,
     val messagesApi: MessagesApi,

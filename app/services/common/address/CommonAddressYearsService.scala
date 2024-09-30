@@ -62,7 +62,7 @@ class CommonAddressYearsService @Inject()(
           entityType : String,
           form : Form[Boolean],
           addressYearsId : TypedIdentifier[Boolean],
-          submitCall: Call
+          submitUrl: Call
          )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
     val filledForm: Form[Boolean] = request.userAnswers.get(addressYearsId).fold(form)(form.fill)
     Future.successful(Ok(
@@ -72,7 +72,7 @@ class CommonAddressYearsService @Inject()(
         entityName,
         TwirlMigration.toTwirlRadios(Radios.yesNo(filledForm("value"))),
         schemeName,
-        submitCall = submitCall
+        submitCall = submitUrl
       )))
   }
 

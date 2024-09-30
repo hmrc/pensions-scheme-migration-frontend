@@ -37,6 +37,7 @@ import services.CommonServiceSpecBase
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{Data, FakeNavigator, UserAnswers}
+import views.html.address.AddressYearsView
 
 import scala.concurrent.Future
 
@@ -45,7 +46,12 @@ class CommonAddressYearsServiceSpec extends ControllerSpecBase with CommonServic
   private val navigator = new FakeNavigator(desiredRoute = onwardCall)
   val renderer = new Renderer(mockAppConfig, mockRenderer)
   private val form = Form("value" -> boolean)
-  private val service = new CommonAddressYearsService(controllerComponents, renderer, mockUserAnswersCacheConnector, navigator, messagesApi)
+  private val service = new CommonAddressYearsService(
+    mockUserAnswersCacheConnector,
+    navigator,
+    messagesApi,
+    addressYearsView = app.injector.instanceOf[AddressYearsView]
+  )
 
   private val userAnswersId = "test-user-answers-id"
   implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -61,7 +67,7 @@ class CommonAddressYearsServiceSpec extends ControllerSpecBase with CommonServic
     "render the view correctly on get" in {
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val result = service.get(Some("schemeName"), "entityName", "entityType", form, addressYearsId)(request, global)
+      val result = service.get(Some("schemeName"), "entityName", "entityType", form, addressYearsId, submitUrl = onwardCall)(request, global)
 
       status(result) mustBe OK
       verify(mockRenderer, times(1)).render(any(), any())(any())
@@ -72,7 +78,7 @@ class CommonAddressYearsServiceSpec extends ControllerSpecBase with CommonServic
 
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val result = service.post(Some("schemeName"), "entityName", "entityType", form, addressYearsId, Some(NormalMode))(invalidRequest, global)
+      val result = service.post(Some("schemeName"), "entityName", "entityType", form, addressYearsId, Some(NormalMode), submitCall = onwardCall)(invalidRequest, global)
 
       status(result) mustBe BAD_REQUEST
       verify(mockRenderer, times(1)).render(any(), any())(any())
@@ -84,7 +90,7 @@ class CommonAddressYearsServiceSpec extends ControllerSpecBase with CommonServic
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val result = service.post(Some("schemeName"), "entityName", "entityType", form, addressYearsId, Some(NormalMode))(validRequest, global)
+      val result = service.post(Some("schemeName"), "entityName", "entityType", form, addressYearsId, Some(NormalMode), submitCall = onwardCall)(validRequest, global)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardCall.url)

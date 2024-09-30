@@ -31,16 +31,13 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class WhatYouWillNeedController @Inject()(
-                                           override val messagesApi: MessagesApi,
-                                           authenticate: AuthAction,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           whatYouWillNeedView: WhatYouWillNeedView
-                                         )(implicit val ec: ExecutionContext)
-  extends FrontendBaseController
-    with I18nSupport
-    with Retrievals {
+  override val messagesApi: MessagesApi,
+  authenticate: AuthAction,
+  getData: DataRetrievalAction,
+  requireData: DataRequiredAction,
+  val controllerComponents: MessagesControllerComponents,
+  whatYouWillNeedView: WhatYouWillNeedView
+)(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
@@ -51,7 +48,7 @@ class WhatYouWillNeedController @Inject()(
         EstablisherNameId(index).retrieve.map {
           personName: PersonName =>
             Future.successful(Ok(whatYouWillNeedView(
-              Messages("messages__title_company"),
+              Messages("messages__title_individual"),
               personName.fullName,
               routes.EnterPostcodeController.onPageLoad(index,NormalMode).url,
               schemeName

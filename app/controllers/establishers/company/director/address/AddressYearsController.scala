@@ -56,7 +56,7 @@ class AddressYearsController @Inject()(
             Message("messages__director"),
             form,
             AddressYearsId(establisherIndex, directorIndex),
-            submitCall = routes.AddressYearsController.onSubmit(establisherIndex, directorIndex, mode)
+            submitUrl = routes.AddressYearsController.onSubmit(establisherIndex, directorIndex, mode)
           )
       }
     }

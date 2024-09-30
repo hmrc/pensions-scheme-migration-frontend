@@ -38,8 +38,7 @@ class WhatYouWillNeedController @Inject()(
    requireData: DataRequiredAction,
    val controllerComponents: MessagesControllerComponents,
    whatYouWillNeedView: WhatYouWillNeedView
-)(implicit val ec: ExecutionContext)
-  extends FrontendBaseController with I18nSupport with Retrievals {
+)(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {

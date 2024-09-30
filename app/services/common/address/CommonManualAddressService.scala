@@ -27,12 +27,10 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsArray, Json, OWrites, Writes}
+import play.api.libs.json.{JsArray, JsValue, Json, OWrites, Writes}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, Call, Result}
-import renderer.Renderer
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import views.html.address.ManualAddressView
 
@@ -41,14 +39,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CommonManualAddressService @Inject()(
-                                   val renderer: Renderer,
-                                   val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                   val navigator: CompoundNavigator,
-                                   val messagesApi: MessagesApi,
-                                   val config: AppConfig,
-                                   manualAddressView: ManualAddressView
-                                 ) extends NunjucksSupport
-  with FrontendHeaderCarrierProvider with I18nSupport with CountriesHelper {
+  userAnswersCacheConnector: UserAnswersCacheConnector,
+  navigator: CompoundNavigator,
+  val messagesApi: MessagesApi,
+  config: AppConfig,
+  manualAddressView: ManualAddressView
+) extends FrontendHeaderCarrierProvider with I18nSupport with CountriesHelper {
 
   private val pageTitleMessageKey: String = "address.title"
 
@@ -63,6 +59,17 @@ class CommonManualAddressService @Inject()(
                                    countries: JsArray = Json.arr()
                                  )
 
+  implicit val addressWrites: Writes[Address] = Json.writes[Address]
+  implicit val formAddressWrites: Writes[Form[Address]] = new Writes[Form[Address]] {
+    def writes(form: Form[Address]): JsValue = Json.obj(
+      "data" -> form.data,
+      "errors" -> form.errors.map(e => Json.obj(
+        "key" -> e.key,
+        "message" -> e.message
+      )),
+      "value" -> form.value
+    )
+  }
   implicit val callWrites: Writes[Call] = Writes[Call](call => Json.obj("url" -> call.url))
   implicit private def templateDataWrites(implicit request: DataRequest[AnyContent]): OWrites[TemplateData] = Json.writes[TemplateData]
 
