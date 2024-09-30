@@ -24,6 +24,7 @@ import models.{Index, NormalMode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
+import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
@@ -39,39 +40,27 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase with NunjucksSupp
 
   private val index: Index = Index(0)
   private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(0), partnershipDetails).success.value
-  private val templateToBeRendered: String = "trustees/partnership/details/whatYouWillNeed.njk"
-  private def json: JsObject =
-    Json.obj(
-      "name"        -> partnershipDetails.partnershipName,
-      "continueUrl" -> routes.HaveUTRController.onPageLoad(index, NormalMode).url,
-      "schemeName"  -> "Test scheme name"
-    )
 
   private def controller(dataRetrievalAction: DataRetrievalAction): WhatYouWillNeedController =
     new WhatYouWillNeedController(messagesApi, new FakeAuthAction(), dataRetrievalAction,
-      new DataRequiredActionImpl,      common = new CommonWhatYouWillNeedDetailsService(
-        controllerComponents = controllerComponents,
-        renderer = new Renderer(mockAppConfig, mockRenderer),
-        messagesApi = messagesApi
-      ))
+      new DataRequiredActionImpl, app.injector.instanceOf[views.html.trustees.partnership.details.WhatYouWillNeedView])
 
   "WhatYouWillNeedController" must {
     "return OK and the correct view for a GET" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
-      val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(userAnswers))
+      val req = fakeDataRequest(userAnswers)
+      val result: Future[Result] = controller(getData).onPageLoad(0)(req)
 
       status(result) mustBe OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(json)
+      compareResultAndView(result,
+        app.injector.instanceOf[views.html.trustees.partnership.details.WhatYouWillNeedView]
+          .apply(
+            Messages("messages__partnershipDetails__whatYouWillNeed_title"),
+            routes.HaveUTRController.onPageLoad(index, NormalMode).url,
+            "test partnership"
+          )(req, implicitly)
+      )
     }
   }
 }
