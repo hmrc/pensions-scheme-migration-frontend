@@ -28,11 +28,12 @@ import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.preMigration.NoSchemeToAddView
 
 import scala.concurrent.Future
 class NoSchemeToAddControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues  {
 
-  private val templateToBeRendered: String = "preMigration/noSchemeToAdd.njk"
+//  private val templateToBeRendered: String = "preMigration/noSchemeToAdd.njk"
   private val psaName: String = "Nigel"
 
   private def schemeJson: JsObject = Json.obj(
@@ -51,12 +52,11 @@ class NoSchemeToAddControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
   private def controller(): NoSchemeToAddController =
     new NoSchemeToAddController(appConfig, messagesApi, new FakeAuthAction(), controllerComponents,
-      mockMinimalDetailsConnector, new Renderer(mockAppConfig, mockRenderer))
+      mockMinimalDetailsConnector, app.injector.instanceOf[NoSchemeToAddView])
 
   "NotRegisterController" must {
     "return OK and the correct view for a GET for scheme" in {
       when(mockMinimalDetailsConnector.getPSAName(any(),any())).thenReturn(Future.successful(psaName))
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -64,11 +64,9 @@ class NoSchemeToAddControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = app.injector.instanceOf[].apply(
 
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(schemeJson)
+      )
     }
 
     "return OK and the correct view for a GET for rac dac" in {
