@@ -56,7 +56,7 @@ class CommonEnterReferenceValueService @Inject()(val controllerComponents: Messa
            hintText: Option[String] = None,
            paragraphText: Seq[String] = Seq(),
            legendClass: String = "govuk-fieldset__legend--s",
-         //  submitCall: Call //TODO update calling controller and enable this line
+           submitCall: Call //TODO update calling controller and enable this line
          )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
     val submitCall  = Call("GET", "TODO");
     val filledForm = request.userAnswers.get[ReferenceValue](id).fold(form)(form.fill)

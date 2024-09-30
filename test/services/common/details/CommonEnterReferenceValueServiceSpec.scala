@@ -27,6 +27,7 @@ import play.twirl.api.Html
 import renderer.Renderer
 import services.CommonServiceSpecBase
 import utils.{FakeNavigator, UserAnswers}
+import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
 
 import scala.concurrent.Future
 
@@ -35,9 +36,11 @@ class CommonEnterReferenceValueServiceSpec extends CommonServiceSpecBase {
   // Instantiate service
   val service = new CommonEnterReferenceValueService(
     controllerComponents = controllerComponents,
-    renderer = new Renderer(mockAppConfig, mockRenderer),
+//    renderer = new Renderer(mockAppConfig, mockRenderer),
     userAnswersCacheConnector = mockUserAnswersCacheConnector,
     navigator = new FakeNavigator(desiredRoute = onwardCall),
+    enterReferenceValueView = app.injector.instanceOf[EnterReferenceValueView],
+    enterReferenceValueWithHintView = app.injector.instanceOf[EnterReferenceValueWithHintView],
     messagesApi = messagesApi
   )
 

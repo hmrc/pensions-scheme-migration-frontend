@@ -64,7 +64,8 @@ class VATController @Inject()(val messagesApi: MessagesApi,
               form          = form(name(index)),
               schemeName    = schemeName,
               legendClass   = "govuk-visually-hidden",
-              paragraphText = Seq(Message("messages__vat__p", name(index)))
+              paragraphText = Seq(Message("messages__vat__p", name(index))),
+              routes.VATController.onSubmit(index, mode)
             )
         }
     }
