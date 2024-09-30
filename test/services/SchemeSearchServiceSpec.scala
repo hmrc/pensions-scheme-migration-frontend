@@ -97,7 +97,7 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Scal
     "noResultsMessageKey" -> noResultsMessageKey,
     "clearLinkUrl" -> routes.ListOfSchemesController.onPageLoad(migrationType).url,
     "returnUrl" -> dummyUrl,
-    "typeOfList" -> typeOfList,
+    "typeOfList" -> typeOfList
   ) ++ (if (schemeTable.isDefined) Json.obj("schemes" -> schemeTable.get) else Json.obj()) ++
     (if (paginationText.isDefined) Json.obj("paginationText" -> paginationText.get) else Json.obj())
 

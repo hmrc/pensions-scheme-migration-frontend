@@ -48,7 +48,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
   val extraModules: Seq[GuiceableModule] = Seq(
     bind[RacDacIndividualCYAHelper].toInstance(mockRacDacIndividualCYAHelper),
     bind[ListOfSchemesConnector].toInstance(mockListOfSchemesConnector),
-    bind[MinimalDetailsConnector].toInstance(mockMinimalDetailsConnector),
+    bind[MinimalDetailsConnector].toInstance(mockMinimalDetailsConnector)
   )
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction,extraModules).build()
   private val templateToBeRendered = "racdac/individual/check-your-answers.njk"

@@ -76,7 +76,7 @@ class BulkRacDacServiceSpec extends SpecBase
     ),
     "numberOfPages" -> numberOfPages,
     "returnUrl" -> dummyUrl,
-    "paginationText" -> paginationService.paginationText(pageNumber, pagination, numberOfSchemes, numberOfPages),
+    "paginationText" -> paginationService.paginationText(pageNumber, pagination, numberOfSchemes, numberOfPages)
   ) ++  (if (schemeTable.isDefined) Json.obj("schemes" -> schemeTable.get) else Json.obj()) ++
     (if (paginationText.isDefined) Json.obj("paginationText" -> paginationText.get) else Json.obj())
 

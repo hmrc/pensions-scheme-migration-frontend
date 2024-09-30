@@ -67,7 +67,7 @@ class EstablishersPartnerNavigatorSpec
 
   private val seqAddresses = Seq(
     TolerantAddress(Some("1"),Some("1"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")),
-    TolerantAddress(Some("2"),Some("2"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")),
+    TolerantAddress(Some("2"),Some("2"),Some("c"),Some("d"), Some("zz11zz"), Some("GB"))
   )
 
   val address = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
