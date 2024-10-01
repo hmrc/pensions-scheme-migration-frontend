@@ -69,7 +69,8 @@ class EstablisherHasNINOController @Inject()(val messagesApi: MessagesApi,
               id            = EstablisherHasNINOId(index),
               form          = form(index),
               schemeName    = schemeName,
-              legendClass   = "govuk-label--xl"
+              legendClass   = "govuk-label--xl",
+              submitCall    = routes.EstablisherHasNINOController.onSubmit(index, mode)
             )
         }
     }
@@ -87,7 +88,8 @@ class EstablisherHasNINOController @Inject()(val messagesApi: MessagesApi,
               form          = form(index),
               schemeName    = schemeName,
               legendClass   = "govuk-label--xl",
-              mode          = mode
+              mode          = mode,
+              submitCall    = routes.EstablisherHasNINOController.onSubmit(index, mode)
             )
         }
     }

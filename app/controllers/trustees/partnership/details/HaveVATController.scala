@@ -63,7 +63,8 @@ class HaveVATController @Inject()(val messagesApi: MessagesApi,
               id = HaveVATId(index),
               form = form(index),
               schemeName = schemeName,
-              legendClass = "govuk-visually-hidden"
+              legendClass = "govuk-visually-hidden",
+              submitCall = routes.HaveVATController.onSubmit(index, mode)
             )
         }
     }
@@ -82,7 +83,8 @@ class HaveVATController @Inject()(val messagesApi: MessagesApi,
               form = form(index),
               schemeName = schemeName,
               legendClass = "govuk-visually-hidden",
-              mode = mode
+              mode = mode,
+              submitCall = routes.HaveVATController.onSubmit(index, mode)
             )
         }
     }

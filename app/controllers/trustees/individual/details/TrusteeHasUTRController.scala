@@ -74,7 +74,8 @@ class TrusteeHasUTRController @Inject()(val messagesApi: MessagesApi,
               form          = form(index),
               schemeName    = schemeName,
               paragraphText = Seq(Message("messages__UTR__p")),
-              legendClass   = "govuk-visually-hidden"
+              legendClass   = "govuk-visually-hidden",
+              submitCall    = routes.TrusteeHasUTRController.onSubmit(index, mode)
             )
         }
     }
@@ -95,6 +96,7 @@ class TrusteeHasUTRController @Inject()(val messagesApi: MessagesApi,
               paragraphText = Seq(Message("messages__UTR__p")),
               legendClass = "govuk-visually-hidden",
               mode = mode,
+              submitCall    = routes.TrusteeHasUTRController.onSubmit(index, mode),
               optSetUserAnswers = Some(value => setUpdatedAnswers(index, mode, value, request.userAnswers))
             )
         }
