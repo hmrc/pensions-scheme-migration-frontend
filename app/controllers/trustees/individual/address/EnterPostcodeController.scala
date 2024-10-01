@@ -32,7 +32,6 @@ import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import renderer.Renderer
 import services.DataUpdateService
 import play.api.mvc.Results.{BadRequest, Redirect}
 import services.common.address.{CommonPostcodeService, CommonPostcodeTemplateData}
@@ -56,7 +55,6 @@ class EnterPostcodeController @Inject()(
    requireData: DataRequiredAction,
    formProvider: PostcodeFormProvider,
    dataUpdateService: DataUpdateService,
-   renderer: Renderer,
    common: CommonPostcodeService,
    postcodeView: PostcodeView
 )(implicit val ec: ExecutionContext) extends I18nSupport with Retrievals {

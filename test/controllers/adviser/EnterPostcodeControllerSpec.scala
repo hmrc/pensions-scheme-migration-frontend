@@ -28,9 +28,11 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.Json
-import play.api.mvc.Result
+import play.api.mvc.{Result, Results}
+import play.api.mvc.Results.{BadRequest, Ok}
 import play.api.test.Helpers._
 import play.twirl.api.Html
+import services.common.address.CommonPostcodeService
 import utils.Data.ua
 import utils.{Data, Enumerable, UserAnswers}
 import views.html.address.PostcodeView
@@ -40,9 +42,11 @@ import scala.concurrent.Future
 class EnterPostcodeControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val mockAddressLookupConnector = mock[AddressLookupConnector]
+  private val mockCommonPostcodeService = mock[CommonPostcodeService]
 
   val extraModules: Seq[GuiceableModule] = Seq(
-    bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
+    bind[AddressLookupConnector].toInstance(mockAddressLookupConnector),
+    bind[CommonPostcodeService].toInstance(mockCommonPostcodeService)
   )
 
   private val formProvider: PostcodeFormProvider = new PostcodeFormProvider()
@@ -74,15 +78,17 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with JsonMatchers w
     "Return OK and the correct view for a GET" in {
       val ua: UserAnswers = UserAnswers().setOrException(SchemeNameId, Data.schemeName)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+      val view = app.injector.instanceOf[PostcodeView]
+      val expectedView = view(form, "entityType", "entityName", routes.EnterPostcodeController.onSubmit(mode),
+        routes.ConfirmAddressController.onPageLoad.url, Some(Data.schemeName))(fakeRequest, messages)
+      when(mockCommonPostcodeService.get(any(), any())(any(), any()))
+        .thenReturn(Future.successful(Ok(expectedView)))
 
       val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
-      val view = app.injector.instanceOf[PostcodeView]
-      val expectedView = view(form, "entityType", "entityName", routes.EnterPostcodeController.onSubmit(mode),
-        routes.ConfirmAddressController.onPageLoad.url, Some(Data.schemeName))(fakeRequest, messages)
 
-      //compareResultAndView(result, expectedView)
+      compareResultAndView(result, expectedView)
     }
 
     "redirect to Session Expired page for a GET when there is no data" in {
@@ -104,6 +110,8 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with JsonMatchers w
         .thenReturn(Future.successful(Json.obj()))
       when(mockAddressLookupConnector.addressLookupByPostCode(any())(any(), any()))
         .thenReturn(Future.successful(seqAddresses))
+      when(mockCommonPostcodeService.post(any(), any(), any(), any(), any())(any(), any(), any()))
+        .thenReturn(Future.successful(Results.SeeOther(onwardCall.url)))
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
@@ -115,6 +123,8 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with JsonMatchers w
 
     "return a BAD REQUEST when invalid data is submitted" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
+      when(mockCommonPostcodeService.post(any(), any(), any(), any(), any())(any(), any(), any()))
+        .thenReturn(Future.successful(BadRequest))
 
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
 
