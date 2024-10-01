@@ -56,9 +56,5 @@
         )
     }
 
-    @govukButton(
-        ButtonViewModel(
-            Text(messages("return.to.link", psaName))
-        ).asLink(returnUrl).withAttribute("id" -> "return_to_psa")
-    )
+    <p class="govuk-body"><a id="return_to_psa" href="@returnUrl" class="govuk-link">@messages("return.to.link", psaName)</a></p>
 }
