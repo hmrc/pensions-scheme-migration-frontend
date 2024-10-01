@@ -36,6 +36,7 @@ import services.common.details.CommonEnterReferenceValueService
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.{companyDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
+import views.html.helper.form
 import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
 
 import scala.concurrent.Future
@@ -45,18 +46,18 @@ class VATControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
   private val index: Index = Index(0)
   private val referenceValue: ReferenceValue = ReferenceValue("123456789")
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(index), companyDetails).success.value
-
+  private val formData: ReferenceValue = ReferenceValue(value = "123456789")
   private val formProvider: VATFormProvider = new VATFormProvider()
 
-//  private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
+  //  private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
 
   private val commonJson: JsObject =
     Json.obj(
-      "pageTitle"     -> messages("messages__vat", messages("messages__company")),
-      "pageHeading"     -> messages("messages__vat", companyDetails.companyName),
-      "schemeName"    -> schemeName,
-      "paragraphs"      -> Json.arr(messages("messages__vat__p", companyDetails.companyName)),
-      "legendClass"   -> "govuk-visually-hidden",
+      "pageTitle" -> messages("messages__vat", messages("messages__company")),
+      "pageHeading" -> messages("messages__vat", companyDetails.companyName),
+      "schemeName" -> schemeName,
+      "paragraphs" -> Json.arr(messages("messages__vat__p", companyDetails.companyName)),
+      "legendClass" -> "govuk-visually-hidden",
       "isPageHeading" -> true
     )
 
@@ -76,39 +77,37 @@ class VATControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
 
   "VATController" must {
     "return OK and the correct view for a GET" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
       val result: Future[Result] = controller(getData).onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-//      templateCaptor.getValue mustEqual templateToBeRendered
-      jsonCaptor.getValue must containJson(commonJson)
+      val view = app.injector.instanceOf[EnterReferenceValueWithHintView].apply(
+        form = formProvider("test company"),
+        schemeName = "Test scheme name",
+        pageTitle = "What is the company’s VAT registration number?",
+        pageHeading = "What is test company’s VAT registration number?",
+        legendClass = "govuk-visually-hidden",
+        paragraphs = Seq(),
+        hintText = Some("<p class='govuk-body govuk-!-font-weight-regular'>This is 9 numbers, sometimes with ‘GB’ at the start, for example 123456789 or GB123456789. You can find it on test company’s VAT registration certificate.</p>"),
+        submitCall = routes.VATController.onSubmit(0, NormalMode)
+      )(fakeRequest, messages)
+      compareResultAndView(result, view)
 
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
       val ua = userAnswers.set(VATId(0), referenceValue).success.value
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
       val getData = new FakeDataRetrievalAction(Some(ua))
 
       val result: Future[Result] = controller(getData).onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-//      templateCaptor.getValue mustEqual templateToBeRendered
-      jsonCaptor.getValue must containJson(commonJson)
+      contentAsString(result) must include(messages("messages__vat", "the company"))
+      contentAsString(result) must include(formData.value)
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -124,21 +123,15 @@ class VATControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
       val request = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
       val result: Future[Result] = controller(getData).onSubmit(0, NormalMode)(request)
 
       status(result) mustBe BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-//      templateCaptor.getValue mustEqual templateToBeRendered
-      jsonCaptor.getValue must containJson(commonJson)
-      verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
+      contentAsString(result) must include(messages("messages__vat", "the company"))
+      contentAsString(result) must include(messages("messages__vat__error_invalid", companyDetails.companyName))
     }
   }
 }
