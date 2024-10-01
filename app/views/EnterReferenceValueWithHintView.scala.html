@@ -40,9 +40,6 @@ Html("")
 }
 }) { hintHtml =>
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-
         @if(form.hasErrors) {
         @govukErrorSummary(ErrorSummary(
         title = Text(messages("error.summary.title")),
@@ -54,8 +51,6 @@ Html("")
         }
 
         @formHelper(action = submitCall, Symbol("autocomplete") -> "off") {
-
-        <h1 class="govuk-heading-l">@messages(pageHeading)</h1>
 
         @if(!hintHtml.body.trim.isEmpty) {
         @govukInput(Input(
@@ -81,8 +76,6 @@ Html("")
         }
 
         @templates.ReturnLink(schemeName)
-    </div>
-</div>
 
 }
 }
