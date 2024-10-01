@@ -23,17 +23,18 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.Results.Ok
 import play.api.mvc.{Action, AnyContent}
-import services.common.details.CommonWhatYouWillNeedDetailsService
+import views.html.details.WhatYouWillNeedIndividualDetailsView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class WhatYouWillNeedController @Inject()(val messagesApi: MessagesApi,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
-                                          common: CommonWhatYouWillNeedDetailsService
+                                          view: WhatYouWillNeedIndividualDetailsView
                                          )(implicit val ec: ExecutionContext)
   extends Retrievals with I18nSupport {
 
@@ -42,13 +43,12 @@ class WhatYouWillNeedController @Inject()(val messagesApi: MessagesApi,
       implicit request =>
         EstablisherNameId(index).retrieve.map {
           personName =>
-            common.get(
-              template = "details/whatYouWillNeedIndividualDetails.njk",
-              name = Some(personName.fullName),
-              entityType = Some(Messages("messages__title_individual")),
-              continueUrl = controllers.establishers.individual.details.routes.EstablisherDOBController.onPageLoad(index, NormalMode).url,
-              schemeName = request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
-            )
+            Future.successful(Ok(view(
+              Messages("messages__title_individual"),
+              personName.fullName,
+              controllers.establishers.individual.details.routes.EstablisherDOBController.onPageLoad(index, NormalMode).url,
+              request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
+            )))
         }
     }
 
