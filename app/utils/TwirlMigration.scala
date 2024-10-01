@@ -97,7 +97,7 @@ object TwirlMigration extends Logging {
     })
     val divider = CheckboxItem(divider = Some(messages("messages__prefill__label__divider")))
 
-    checkBoxes.patch(checkBoxes.size, List(divider), 0)
+    checkBoxes.patch(checkBoxes.size -1, List(divider), 0)
   }
 
   private def resolveContent(content: hmrc.viewmodels.Content)(implicit messages: Messages): Content = {

@@ -54,7 +54,6 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
   }
 
   protected val mockCompoundNavigator: CompoundNavigator = mock[CompoundNavigator]
-  protected val mockRenderer: NunjucksRenderer = mock[NunjucksRenderer]
   protected val mockDataPrefillService: DataPrefillService = mock[DataPrefillService]
   protected val mockMinimalDetailsConnector: MinimalDetailsConnector = mock[MinimalDetailsConnector]
   protected val mockEmailConnector: EmailConnector = mock[EmailConnector]
