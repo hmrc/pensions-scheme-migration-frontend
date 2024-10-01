@@ -59,7 +59,8 @@ class EnterPhoneNumberController @Inject()(
               phoneId = EnterPhoneId(establisherIndex, directorIndex),
               form = form(establisherIndex, directorIndex),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__contact_details__hint", name(establisherIndex, directorIndex)))
+              paragraphText = Seq(Message("messages__contact_details__hint", name(establisherIndex, directorIndex))),
+              routes.EnterPhoneNumberController.onSubmit(establisherIndex, directorIndex, mode)
             )
 
         }
@@ -78,6 +79,7 @@ class EnterPhoneNumberController @Inject()(
               schemeName = schemeName,
               paragraphText = Seq(Message("messages__contact_details__hint", name(establisherIndex, directorIndex))),
               mode = Some(mode),
+              routes.EnterPhoneNumberController.onSubmit(establisherIndex, directorIndex, mode),
               Some(value => setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
             )
         }

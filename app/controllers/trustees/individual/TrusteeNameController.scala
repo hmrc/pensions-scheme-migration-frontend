@@ -20,19 +20,18 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.PersonNameFormProvider
-import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId}
 import identifiers.trustees.individual.TrusteeNameId
+import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId}
 import models.trustees.TrusteeKind
 import models.{Index, PersonName}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Enumerable
+import views.html.PersonNameView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,7 +45,7 @@ class TrusteeNameController @Inject()(
                                            formProvider: PersonNameFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
                                            userAnswersCacheConnector: UserAnswersCacheConnector,
-                                           renderer: Renderer
+                                           personNameView: PersonNameView
                                          )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
@@ -59,14 +58,14 @@ class TrusteeNameController @Inject()(
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        renderer.render(
-          template = "personName.njk",
-          ctx = Json.obj(
-            "form"       -> request.userAnswers.get[PersonName](TrusteeNameId(index)).fold(form)(form.fill),
-            "schemeName" -> existingSchemeName,
-            "entityType" -> Messages("messages__trustee")
-          )
-        ).flatMap(view => Future.successful(Ok(view)))
+       Future.successful(Ok(
+         personNameView(
+           request.userAnswers.get[PersonName](TrusteeNameId(index)).fold(form)(form.fill),
+           existingSchemeName.getOrElse(""),
+           Messages("messages__trustee"),
+           routes.TrusteeNameController.onSubmit(index)
+         )
+       ))
     }
 
   def onSubmit(index: Index): Action[AnyContent] =
@@ -74,14 +73,13 @@ class TrusteeNameController @Inject()(
       implicit request =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            renderer.render(
-              template = "personName.njk",
-              ctx = Json.obj(
-                "form"       -> formWithErrors,
-                "schemeName" -> existingSchemeName,
-                "entityType" -> Messages("messages__trustee")
-              )
-            ).map(BadRequest(_)),
+            Future.successful(BadRequest(
+              personNameView(
+                formWithErrors,
+                existingSchemeName.getOrElse(""),
+                Messages("messages__trustee"),
+                routes.TrusteeNameController.onSubmit(index)
+            ))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(TrusteeNameId(index), value)

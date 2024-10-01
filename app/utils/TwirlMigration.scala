@@ -27,6 +27,8 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Content, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions}
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 import viewmodels.forNunjucks.Checkboxes
+import uk.gov.hmrc.govukfrontend.views.html.components.{Hint => GovukHint}
+import viewmodels.forNunjucks.Hint
 
 import javax.inject.Inject
 import scala.concurrent.Future
@@ -57,6 +59,36 @@ object TwirlMigration extends Logging {
     nunjucksRadios.map(radio => {
       RadioItem(content = Text(radio.text.resolve), value = Some(radio.value))
     })
+  }
+
+  def toTwirlRadiosWithHintText(nunjucksRadios: Seq[viewmodels.forNunjucks.Radios.Item])(implicit messages: Messages): Seq[RadioItem] = {
+    nunjucksRadios.map(radio => {
+      RadioItem(
+        content = Text(radio.text.resolve),
+        value = Some(radio.value),
+        checked = radio.checked,
+        hint = convertHint(radio.hint),
+        label = radio.label.map(label =>
+          Label(
+            attributes = label.attributes,
+            classes = label.classes.mkString(" ")
+          )
+        ),
+        conditionalHtml = radio.conditional.map(_.html.value)
+      )
+
+    })
+  }
+
+  def convertHint(nunjucksHint: Option[Hint])(implicit messages: Messages): Option[GovukHint] = {
+    nunjucksHint.map { hint =>
+      GovukHint(
+        content = resolveContent(hint.content),
+        id = Some(hint.id),
+        classes = hint.classes.mkString(" "),
+        attributes = hint.attributes
+      )
+    }
   }
 
   def toTwirlCheckBoxes(nunjucksCheckboxes: Seq[viewmodels.forNunjucks.Checkboxes.Item])(implicit messages: Messages): Seq[CheckboxItem] = {

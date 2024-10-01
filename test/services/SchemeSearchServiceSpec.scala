@@ -17,7 +17,6 @@
 package services
 
 import base.SpecBase
-import config.AppConfig
 import connectors.{ListOfSchemesConnector, MinimalDetailsConnector}
 import controllers.preMigration.routes
 import controllers.preMigration.routes.ListOfSchemesController
@@ -42,7 +41,7 @@ import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.nunjucks.{NunjucksRenderer, NunjucksSupport}
+import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Table.Cell
 import uk.gov.hmrc.viewmodels.Text.Literal
 import uk.gov.hmrc.viewmodels.{MessageInterpolators, Table, Html => HtmlView}
@@ -56,13 +55,11 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Scal
   import SchemeSearchServiceSpec._
 
   private val templateToBeRendered: String = "preMigration/listOfSchemes.njk"
-  private val mockAppConfig = mock[AppConfig]
   private val mockFuzzyMatching = mock[SchemeFuzzyMatcher]
   private val mockListOfSchemesConnector = mock[ListOfSchemesConnector]
   private val mockMinimalDetailsConnector: MinimalDetailsConnector = mock[MinimalDetailsConnector]
   private val paginationService = new PaginationService(mockAppConfig)
 
-  private val mockRenderer: NunjucksRenderer = mock[NunjucksRenderer]
   private val typeOfList: List[String] = List("pension scheme", "RAC/DAC")
   private val psaName: String = "Nigel"
   private val pagination: Int = 10

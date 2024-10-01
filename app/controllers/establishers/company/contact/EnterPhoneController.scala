@@ -64,7 +64,8 @@ class EnterPhoneController @Inject()(
               phoneId = EnterPhoneId(index),
               form = form(index),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__contact_details__phone__hint", name(index), schemeName))
+              paragraphText = Seq(Message("messages__contact_details__phone__hint", name(index), schemeName)),
+              routes.EnterPhoneController.onSubmit(index, mode)
             )
         }
     }
@@ -81,7 +82,8 @@ class EnterPhoneController @Inject()(
               form = form(index),
               schemeName = schemeName,
               paragraphText = Seq(Message("messages__contact_details__phone__hint", name(index), schemeName)),
-              mode = Some(mode)
+              mode = Some(mode),
+              routes.EnterPhoneController.onSubmit(index, mode)
             )
         }
     }

@@ -21,7 +21,7 @@ import play.api.i18n.Messages
 import play.api.libs.json._
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.WithName
-import viewmodels.forNunjucks._
+import viewmodels.forNunjucks.{Hint, Label, LabelClasses, Radios, TextInput, Conditional}
 
 sealed trait SchemeType
 
