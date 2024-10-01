@@ -19,20 +19,22 @@ package controllers.preMigration
 import config.AppConfig
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.preMigration.ThereIsAProblemView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class ThereIsAProblemController @Inject()(val appConfig: AppConfig,
-                                       override val messagesApi: MessagesApi,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer
+                                          override val messagesApi: MessagesApi,
+                                          val controllerComponents: MessagesControllerComponents,
+                                          thereIsAProblemView: ThereIsAProblemView
                                       )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = Action.async { implicit request =>
-    renderer.render("preMigration/thereIsAProblem.njk").map(Ok(_))
+    Future.successful(Ok(
+      thereIsAProblemView()
+    ))
   }
 }
