@@ -24,15 +24,13 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits._
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{Json, OWrites}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Result}
-import renderer.Renderer
+import play.api.mvc.{AnyContent, Call, MessagesControllerComponents, Result}
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import uk.gov.hmrc.viewmodels.Radios
-import uk.gov.hmrc.viewmodels.Radios.Item
-import utils.UserAnswers
+import utils.{TwirlMigration, UserAnswers}
+import views.html.HasReferenceValueWithHintView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,26 +38,14 @@ import scala.util.Try
 
 @Singleton
 class CommonHasReferenceValueService @Inject()(val controllerComponents: MessagesControllerComponents,
-                                               val renderer: Renderer,
+                                               hasReferenceValueWithHintView: HasReferenceValueWithHintView,
                                                val userAnswersCacheConnector: UserAnswersCacheConnector,
                                                val navigator: CompoundNavigator,
                                                val messagesApi: MessagesApi
                                               ) extends NunjucksSupport with FrontendHeaderCarrierProvider with I18nSupport {
 
-  protected def templateName(paragraphText: Seq[String]): String =
-    if (paragraphText.nonEmpty) "hasReferenceValueWithHint.njk" else "hasReferenceValue.njk"
-
-  private case class TemplateData(pageTitle: String,
-                                  pageHeading: String,
-                                  isPageHeading: Boolean,
-                                  id: TypedIdentifier[Boolean],
-                                  form: Form[Boolean],
-                                  radios: Seq[Item],
-                                  schemeName: String,
-                                  paragraphs: Seq[String] = Seq(),
-                                  legendClass: String = "govuk-fieldset__legend--s")
-
-  implicit private def templateDataWrites(implicit request: DataRequest[AnyContent]): OWrites[TemplateData] = Json.writes[TemplateData]
+//  protected def templateName(paragraphText: Seq[String]): String =
+//    if (paragraphText.nonEmpty) "hasReferenceValueWithHint.njk" else "hasReferenceValue.njk"
 
   def get(
            pageTitle: String,
@@ -69,7 +55,8 @@ class CommonHasReferenceValueService @Inject()(val controllerComponents: Message
            form: Form[Boolean],
            schemeName: String,
            paragraphText: Seq[String] = Seq(),
-           legendClass: String = "govuk-fieldset__legend--s"
+           legendClass: String = "govuk-fieldset__legend--s",
+           submitCall: Call
          )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
 
     val preparedForm: Form[Boolean] =
@@ -77,10 +64,19 @@ class CommonHasReferenceValueService @Inject()(val controllerComponents: Message
         case Some(value) => form.fill(value)
         case _ => form
       }
-    renderer.render(
-      template = templateName(paragraphText),
-      getTemplateData(pageTitle, pageHeading, isPageHeading, id, preparedForm, schemeName, paragraphText, legendClass)
-    ).map(Ok(_))
+
+    Future.successful(Ok(
+      hasReferenceValueWithHintView(
+        preparedForm,
+        schemeName,
+        pageTitle,
+        pageHeading,
+        TwirlMigration.toTwirlRadios(Radios.yesNo(preparedForm("value"))),
+        legendClass,
+        paragraphText,
+        submitCall
+      )
+    ))
   }
   def post(pageTitle: String,
            pageHeading: String,
@@ -91,15 +87,24 @@ class CommonHasReferenceValueService @Inject()(val controllerComponents: Message
            paragraphText: Seq[String] = Seq(),
            legendClass: String = "govuk-fieldset__legend--s",
            mode: Mode,
+           submitCall: Call,
            optSetUserAnswers: Option[Boolean => Try[UserAnswers]] = None
-          )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] =
+          )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
 
     form.bindFromRequest().fold(
       (formWithErrors: Form[Boolean]) =>
-        renderer.render(
-          template = templateName(paragraphText),
-          getTemplateData(pageTitle, pageHeading, isPageHeading, id, formWithErrors, schemeName, paragraphText, legendClass))
-          .map(BadRequest(_)),
+        Future.successful(BadRequest(
+          hasReferenceValueWithHintView(
+            formWithErrors,
+            schemeName,
+            pageTitle,
+            pageHeading,
+            TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value"))),
+            legendClass,
+            paragraphText,
+            submitCall
+          )
+        )),
       value => {
         def defaultSetUserAnswers = (value: Boolean) =>
           request.userAnswers.set(id, value)
@@ -112,25 +117,5 @@ class CommonHasReferenceValueService @Inject()(val controllerComponents: Message
           Redirect(navigator.nextPage(id, updatedAnswers, mode))
       }
     )
-
-  private def getTemplateData(pageTitle: String,
-                              pageHeading: String,
-                              isPageHeading: Boolean,
-                              id: TypedIdentifier[Boolean],
-                              form: Form[Boolean],
-                              schemeName: String,
-                              paragraphText: Seq[String] = Seq(),
-                              legendClass: String = "govuk-fieldset__legend--s"
-                             ): TemplateData = {
-    TemplateData(
-      pageTitle,
-      pageHeading,
-      isPageHeading,
-      id,
-      form,
-      Radios.yesNo(form("value")),
-      schemeName,
-      paragraphText,
-      legendClass)
   }
 }
