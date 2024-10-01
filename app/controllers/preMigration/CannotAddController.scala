@@ -23,10 +23,10 @@ import models.{RacDac, Scheme}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.HttpResponseRedirects._
+import views.html.preMigration.CannotAddView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,7 +36,7 @@ class CannotAddController @Inject()(val appConfig: AppConfig,
                                     authenticate: AuthAction,
                                     val controllerComponents: MessagesControllerComponents,
                                     listOfSchemesConnector: ListOfSchemesConnector,
-                                    renderer: Renderer
+                                    cannotAddView: CannotAddView
                                     )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with I18nSupport {
 
@@ -46,15 +46,14 @@ class CannotAddController @Inject()(val appConfig: AppConfig,
       case Right(list) =>
 
         if (list.items.getOrElse(Nil).exists(!_.racDac)) {
-
-          val json: JsObject = Json.obj(
-            "param1" -> msg"messages__pension_scheme".resolve,
-            "param2" -> msg"messages__scheme".resolve,
-            "continueUrl" -> routes.ListOfSchemesController.onPageLoad(Scheme).url,
-            "contactHmrcUrl" -> appConfig.contactHmrcUrl
-          )
-
-          renderer.render("preMigration/cannotAdd.njk", json).map(Ok(_))
+          Future.successful(Ok(
+            cannotAddView(
+              msg"messages__pension_scheme".resolve,
+              msg"messages__scheme".resolve,
+              appConfig.contactHmrcUrl,
+              routes.ListOfSchemesController.onPageLoad(Scheme)
+            )
+          ))
         } else {
           Future.successful(Redirect(routes.NotRegisterController.onPageLoadScheme))
         }
@@ -68,14 +67,14 @@ class CannotAddController @Inject()(val appConfig: AppConfig,
     listOfSchemesConnector.getListOfSchemes(request.psaId.id).flatMap {
       case Right(list) =>
         if (list.items.getOrElse(Nil).exists(_.racDac)) {
-          val json: JsObject = Json.obj(
-            "param1" -> msg"messages__racdac".resolve,
-            "param2" -> msg"messages__racdac".resolve,
-            "continueUrl" -> routes.ListOfSchemesController.onPageLoad(RacDac).url,
-            "contactHmrcUrl" -> appConfig.contactHmrcUrl
-          )
-
-          renderer.render("preMigration/cannotAdd.njk", json).map(Ok(_))
+          Future.successful(Ok(
+            cannotAddView(
+              msg"messages__racdac".resolve,
+              msg"messages__racdac".resolve,
+              appConfig.contactHmrcUrl,
+              routes.ListOfSchemesController.onPageLoad(RacDac)
+            )
+          ))
         } else {
           Future.successful(Redirect(routes.NotRegisterController.onPageLoadRacDac))
         }
