@@ -1,0 +1,88 @@
+@*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.DirectorEntity;
+
+@this(
+layout: templates.Layout,
+formHelper: FormWithCSRF,
+govukErrorSummary: GovukErrorSummary,
+govukRadios: GovukRadios,
+govukButton: GovukButton
+)
+
+@(form: Form[_], schemeName: String, directorSize: Integer, maxDirectors: Integer, itemList: Seq[DirectorEntity], radios: Seq[RadioItem],submitCall: Call)(implicit request: Request[_], messages: Messages)
+
+@layout(messages("messages__directors__title"), formHasErrors = form.hasErrors) {
+<div>
+    @if(form.errors.nonEmpty) {
+    @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+    }
+
+    @formHelper(action = submitCall, Symbol("autoComplete") -> "off") {
+
+    <h1 id="chargeC_h1" class="govuk-heading-l">@messages("messages__directors__title")</h1>
+
+    @if(directorSize <=0 ) {
+        <p class="govuk-body govuk-!-font-weight-regular">@messages("messages__addCompanyDirectors_lede")</p>
+        @govukButton(ButtonViewModel(Text(messages("messages__addCompanyDirectors_add_director"))).asFormSubmit)
+
+    } else {
+
+    <div class="govuk-form-group govuk-!-margin-bottom-7">
+        <dl class="hmrc-add-to-a-list hmrc-add-to-a-list--short ">
+            @for(item <- itemList) {
+            <div class="hmrc-add-to-a-list__contents">
+                <dt class="hmrc-add-to-a-list__identifier hmrc-add-to-a-list__identifier--light">
+                    @item.name
+                </dt>
+                <dd class="hmrc-add-to-a-list__change">
+                    <a class="govuk-link" href="@item.editLink.getOrElse('#')">
+                        <span aria-hidden="true">@messages("site.change")</span>
+                        <span class="govuk-visually-hidden">@messages("site.change") @item.name</span>
+                    </a>
+                </dd>
+                <dd class="hmrc-add-to-a-list__remove">
+                    <a class="govuk-link" href="@item.deleteLink.getOrElse('#')">
+                        <span aria-hidden="true">@messages("site.remove")</span>
+                        <span class="govuk-visually-hidden">@messages("site.remove") @item.name</span>
+                    </a>
+                </dd>
+            </div>
+           }
+        </dl>
+    </div>
+    @if(directorSize < maxDirectors) {
+        @govukRadios(
+        RadiosViewModel(
+        form("value"),
+        radios,
+        Fieldset(
+        legend = Some(Legend(content = Text(messages("messages__addDirector_radio_label")), isPageHeading = false,
+        classes = "govuk-fieldset__legend--s" ))),
+        classes = "govuk-radios--inline",
+        hint = Some(Hint(content = HtmlContent(s"<p class='govuk-body govuk-!-font-weight-regular'>${messages("messages__addCompanyDirectors_lede")}</p>")))
+        ))
+    } else  {
+    <p class="govuk-body govuk-!-font-weight-regular">@messages("messages__addCompanyDirectors_at_maximum")</p>
+    <p class="govuk-body govuk-!-font-weight-regular">@messages("messages__addCompanyDirectorsPartnersOrTrustees_tell_us_if_you_have_more")</p>
+   }
+    @govukButton(ButtonViewModel(Text(messages("site.save_and_continue"))).asFormSubmit)
+    }
+    @templates.ReturnLink(schemeName)
+</div>
+}
+}
