@@ -51,7 +51,7 @@ class CannotAddController @Inject()(val appConfig: AppConfig,
               msg"messages__pension_scheme".resolve,
               msg"messages__scheme".resolve,
               appConfig.contactHmrcUrl,
-              routes.ListOfSchemesController.onPageLoad(Scheme),
+              routes.ListOfSchemesController.onPageLoad(Scheme)
             )
           ))
         } else {
