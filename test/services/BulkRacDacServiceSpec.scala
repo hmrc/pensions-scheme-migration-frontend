@@ -17,7 +17,6 @@
 package services
 
 import base.SpecBase
-import config.AppConfig
 import forms.racdac.RacDacBulkListFormProvider
 import matchers.JsonMatchers
 import models._
@@ -34,7 +33,7 @@ import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.nunjucks.{NunjucksRenderer, NunjucksSupport}
+import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Table.Cell
 import uk.gov.hmrc.viewmodels.Text.Literal
 import uk.gov.hmrc.viewmodels.{MessageInterpolators, Table}
@@ -52,9 +51,7 @@ class BulkRacDacServiceSpec extends SpecBase
   import BulkRacDacServiceSpec._
 
   private val templateToBeRendered: String = "racdac/racDacsBulkList.njk"
-  private val mockAppConfig = mock[AppConfig]
   private val paginationService = new PaginationService(mockAppConfig)
-  private val mockRenderer: NunjucksRenderer = mock[NunjucksRenderer]
   private val pagination: Int = 10
   private val formProvider: RacDacBulkListFormProvider = new RacDacBulkListFormProvider()
 

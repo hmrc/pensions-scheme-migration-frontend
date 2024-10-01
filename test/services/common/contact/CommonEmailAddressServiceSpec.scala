@@ -16,6 +16,7 @@
 
 package services.common.contact
 
+import controllers.ControllerSpecBase
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchersSugar.eqTo
@@ -39,7 +40,7 @@ import views.html.EmailView
 
 import scala.concurrent.Future
 
-class CommonEmailAddressServiceSpec extends CommonServiceSpecBase with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
+class CommonEmailAddressServiceSpec extends ControllerSpecBase with CommonServiceSpecBase with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
 
   private val navigator = new FakeNavigator(desiredRoute = onwardCall)
   private val form = Form("value" -> email)

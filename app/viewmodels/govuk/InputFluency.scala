@@ -47,4 +47,13 @@ trait InputFluency {
         inputType = inputType
       )
   }
+
+  implicit class FluentInput(input: Input) {
+    def withCssClass(newClass: String): Input =
+      input copy (classes = s"${input.classes} $newClass")
+
+    def withAttribute(attribute: (String, String)): Input =
+      input copy (attributes = input.attributes + attribute)
+
+  }
 }

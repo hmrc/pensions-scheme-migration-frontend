@@ -1,0 +1,92 @@
+@*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@this(
+layout: templates.Layout,
+govukBackLink: GovukBackLink,
+govukRadios: GovukRadios,
+govukButton: GovukButton,
+govukErrorSummary: GovukErrorSummary
+)
+
+@(schemeStatus: String, schemeStatusDescription: String, expiryDate: String, taskSections: Seq[TaskListLink], schemeName: String, declarationEnabled: Boolean, declaration: TaskListLink, returnUrl: String, isCompleted: Boolean)(implicit request: Request[_], messages: Messages)
+
+@layout(messages("messages__schemeTaskList__heading")) {
+
+    <div>
+        <h1 class="govuk-heading-xl">@messages(schemeName)</h1>
+        <h2 class="govuk-heading-m">@schemeStatus</h2>
+        <p class="govuk-body">@schemeStatusDescription</p>
+        <h2 class="govuk-heading-m">@messages("messages__newSchemeTaskList__schemeDetailsExpiryDate")</h2>
+        <p class="govuk-body">@expiryDate</p>
+
+        <div class="app-task-list">
+            <ul class="app-task-list__items">
+                @for((item, index) <- taskSections.zipWithIndex) {
+                <li class="app-task-list__item">
+                    <span class="app-task-list__task-name">
+                        <a id="section-link-@index"
+                           class="app-task-list__task-name govuk-link"
+                           href="@item.target"
+                           aria-describedby="section-status-@index">
+                          @messages(item.text)
+                        </a>
+                    </span>
+                    @if(item.status){
+                        <span class="app-task-list__tag task-status--completed" id="section-status-@index">
+                            <span class="govuk-visually-hidden">
+                              @messages("messages__schemeTaskList__status_visuallyHidden")
+                            </span>
+                            @messages("messages__schemeTaskList__completed")
+                        </span>
+                    } else {
+                        <span class="app-task-list__tag task-status--in-progress" id="section-status-@index">
+                            <span class="govuk-visually-hidden">
+                              @messages("messages__schemeTaskList__status_visuallyHidden")
+                            </span>
+                            @messages("site.incomplete")
+                        </span>
+                    }
+                </li>
+                }
+            </ul>
+        </div>
+
+        <h2 id="section-declaration-header" class="govuk-heading-l">
+            @messages("messages__schemeTaskList__sectionDeclaration_header")
+        </h2>
+
+        <div class="app-task-list__items">
+            <p id="DecSubmit" class="app-task-list__item govuk-body">
+                @if(declarationEnabled) {
+                <a id="section-declaration-link"
+                   class="app-task-list__task-name govuk-link"
+                   href="@declaration.target">
+                    @messages(declaration.text)
+                </a>
+                } else {
+                    @messages(declaration.text)
+                }
+            </p>
+        </div>
+
+        <p class="govuk-body">
+            <a id="save-and-return" class="govuk-link" href="@returnUrl">
+                @messages("messages__complete__returnToSchemeOverview")
+            </a>
+        </p>
+    </div>
+}

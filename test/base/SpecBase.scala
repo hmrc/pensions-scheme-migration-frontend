@@ -17,7 +17,9 @@
 package base
 
 import config.AppConfig
+import connectors.cache.UserAnswersCacheConnector
 import models.requests.DataRequest
+import org.mockito.MockitoSugar.mock
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
 import play.api.Application
@@ -25,17 +27,28 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContent, AnyContentAsEmpty, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, AnyContentAsEmpty, Call, MessagesControllerComponents}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.domain.PsaId
+import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import utils.Data.{migrationLock, psaId}
 import utils.UserAnswers
 
+import scala.concurrent.ExecutionContext
 import scala.language.implicitConversions
 
 trait SpecBase
   extends PlaySpec
     with GuiceOneAppPerSuite {
+
+
+  val onwardCall: Call = Call("GET", "onwardCall")
+
+  protected val mockAppConfig: AppConfig = mock[AppConfig]
+  protected val mockRenderer: NunjucksRenderer = mock[NunjucksRenderer]
+  protected val mockUserAnswersCacheConnector: UserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+
+  implicit val global: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
   override def fakeApplication(): Application = GuiceApplicationBuilder()
     .configure(
