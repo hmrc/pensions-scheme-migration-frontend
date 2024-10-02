@@ -35,8 +35,7 @@ trait InputFluency {
                classes: String = "",
                hint: Option[Hint] = None,
                inputType: String = "text",
-               autocomplete: Option[String] = None,
-               suffix: Option[PrefixOrSuffix]
+               autocomplete: Option[String] = None
              )(implicit messages: Messages): Input =
       Input(
         id           = field.id,
@@ -47,8 +46,7 @@ trait InputFluency {
         classes = classes,
         hint = hint,
         inputType = inputType,
-        autocomplete = autocomplete,
-        suffix = suffix
+        autocomplete = autocomplete
       )
   }
 
