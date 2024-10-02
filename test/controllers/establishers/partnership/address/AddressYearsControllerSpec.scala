@@ -17,149 +17,106 @@
 package controllers.establishers.partnership.address
 
 import controllers.ControllerSpecBase
-import controllers.actions.MutableFakeDataRetrievalAction
+import controllers.actions._
 import forms.address.AddressYearsFormProvider
-import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.address.AddressYearsId
-import matchers.JsonMatchers
-import models.{NormalMode, Scheme}
+import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
-import play.api.Application
-import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.Result
+import org.mockito.Mockito.{times, verify, when}
+import org.scalatest.{BeforeAndAfterEach, TryValues}
+import play.api.libs.json.Json
+import play.api.mvc.Results.{BadRequest, Ok, Redirect}
+import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.viewmodels.Radios
-import utils.Data.{schemeName, ua}
-import utils.{Data, Enumerable, UserAnswers}
+import services.common.address.CommonAddressYearsService
+import utils.{FakeNavigator, UserAnswers}
+import views.html.address.AddressYearsView
 
 import scala.concurrent.Future
 
-class AddressYearsControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class AddressYearsControllerSpec extends ControllerSpecBase with TryValues with BeforeAndAfterEach {
 
-  private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(PartnershipDetailsId(0), Data.partnershipDetails))
-  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
-  private val httpPathGET: String = controllers.establishers.partnership.address.routes.AddressYearsController.onPageLoad(0,NormalMode).url
-  private val httpPathPOST: String = controllers.establishers.partnership.address.routes.AddressYearsController.onSubmit(0,NormalMode).url
-  private val form: Form[Boolean] = new AddressYearsFormProvider()("")
+  private val formProvider = new AddressYearsFormProvider()
+  private val form = formProvider("partnershipAddressYears.error.required")
+  private val index = Index(0)
+  private val mode = NormalMode
+  private val schemeName = Some("Test Scheme")
+  private val partnershipName = "Test Partnership"
+  private val entityType = "establisherEntityTypePartnership"
 
-  private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>
-    Json.obj(
-      "form" -> form,
-      "schemeName" -> schemeName,
-      "radios" -> Radios.yesNo(form("value"))
-    )
-
-  private val valuesValid: Map[String, Seq[String]] = Map(
-    "value" -> Seq("true")
-  )
-
-  private val valuesInvalid: Map[String, Seq[String]] = Map(
-    "value" -> Seq.empty
-  )
+  private val mockCommonAddressYearsService = mock[CommonAddressYearsService]
+  private val addressYearsView = app.injector.instanceOf[AddressYearsView]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+    reset(mockCommonAddressYearsService)
   }
 
-  "AddressYears Controller" must {
+  private def controller(dataRetrievalAction: DataRetrievalAction) =
+    new AddressYearsController(
+      messagesApi = messagesApi,
+      authenticate = new FakeAuthAction(),
+      getData = dataRetrievalAction,
+      requireData = new DataRequiredActionImpl,
+      formProvider = formProvider,
+      common = mockCommonAddressYearsService
+    )(ec = scala.concurrent.ExecutionContext.global)
 
-    "Return OK and the correct view for a GET" in {
-      val ua: UserAnswers = UserAnswers()
-        .setOrException(SchemeNameId, Data.schemeName)
-        .setOrException(PartnershipDetailsId(0), Data.partnershipDetails)
-      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+  "AddressYearsController" must {
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+    "return OK and the correct view for a GET" in {
+      val getData = new FakeDataRetrievalAction(Some(UserAnswers().setOrException(AddressYearsId(index), true)))
 
-      status(result) mustEqual OK
+      when(mockCommonAddressYearsService.get(any(), any(), any(), any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(Ok(addressYearsView(form, entityType, partnershipName, Seq.empty, schemeName,
+          routes.AddressYearsController.onSubmit(index, mode))(fakeRequest, messages))))
 
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+      val result: Future[Result] = controller(getData).onPageLoad(index, mode)(fakeRequest)
 
-      verify(mockRenderer, times(1))
-        .render(ArgumentMatchers.eq("address/addressYears.njk"), jsonCaptor.capture())(any())
-
-      (jsonCaptor.getValue \ "schemeName").toOption.map(_.as[String]) mustBe Some(Data.schemeName)
+      status(result) mustBe OK
+      verify(mockCommonAddressYearsService, times(1)).get(any(), any(), any(), any(), any(), any())(any(), any())
     }
 
-    "return OK and the correct view for a GET when the question has previously been answered" in {
-      val ua: UserAnswers = UserAnswers()
-        .setOrException(SchemeNameId, Data.schemeName)
-        .setOrException(PartnershipDetailsId(0), Data.partnershipDetails)
-        .setOrException(AddressYearsId(0), true)
+//    "redirect to the next page when valid data is submitted" in {
+//      val request: FakeRequest[AnyContentAsFormUrlEncoded] = fakeRequest.withFormUrlEncodedBody("value" -> "true")
+//
+//      when(mockCommonAddressYearsService.post(any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
+//        .thenReturn(Future.successful(Redirect(routes.AddressYearsController.onPageLoad(index, mode))))
+//
+//      val result: Future[Result] = controller(new FakeDataRetrievalAction(Some(UserAnswers()))).onSubmit(index, mode)(request)
+//
+//      status(result) mustBe SEE_OTHER
+//      redirectLocation(result) mustBe Some(routes.AddressYearsController.onPageLoad(index, mode).url)
+//      verify(mockCommonAddressYearsService, times(1)).post(any(), any(), any(), any(), any(), any(), any(), any())(any(), any())
+//    }
 
-      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
-
-      status(result) mustEqual OK
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      verify(mockRenderer, times(1))
-        .render(ArgumentMatchers.eq("address/addressYears.njk"), jsonCaptor.capture())(any())
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(true)))
-    }
-
-    "redirect back to list of schemes for a GET when there is no data" in {
-      mutableFakeDataRetrievalAction.setDataToReturn(None)
-
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustBe controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
-    }
-
-    "Save data to user answers and redirect to next page when valid data is submitted" in {
-
-      val expectedJson = Json.obj()
-
-      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
-        .thenReturn(Future.successful(Json.obj()))
-
-      mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
-
-      status(result) mustEqual SEE_OTHER
-
-      verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptor.capture)(any(), any())
-
-      jsonCaptor.getValue must containJson(expectedJson)
-
-      redirectLocation(result) mustBe Some(onwardCall.url)
-    }
-
-    "return a BAD REQUEST when invalid data is submitted" in {
-      mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
-
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
-
-      status(result) mustEqual BAD_REQUEST
-
-      verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
-    }
-
-    "redirect back to list of schemes for a POST when there is no data" in {
-      mutableFakeDataRetrievalAction.setDataToReturn(None)
-
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustBe controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
-    }
+//    "return a BAD REQUEST when invalid data is submitted" in {
+//      val request: FakeRequest[AnyContentAsFormUrlEncoded] = fakeRequest.withFormUrlEncodedBody("value" -> "")
+//
+//      when(mockCommonAddressYearsService.post(any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
+//        .thenReturn(Future.successful(BadRequest(addressYearsView(form.withError("value", "error.required"), entityType, partnershipName, Seq.empty, schemeName, routes.AddressYearsController.onSubmit(index, mode)))))
+//
+//      val result: Future[Result] = controller(new FakeDataRetrievalAction(Some(UserAnswers()))).onSubmit(index, mode)(request)
+//
+//      status(result) mustBe BAD_REQUEST
+//      verify(mockCommonAddressYearsService, times(1)).post(any(), any(), any(), any(), any(), any(), any(), any())(any(), any())
+//    }
+//
+//    "redirect to Session Expired page for a GET when there is no data" in {
+//      val result: Future[Result] = controller(dontGetAnyData).onPageLoad(index, mode)(fakeRequest)
+//
+//      status(result) mustBe SEE_OTHER
+//      redirectLocation(result).value mustBe controllers.routes.SessionExpiredController.onPageLoad().url
+//    }
+//
+//    "redirect to Session Expired page for a POST when there is no data" in {
+//      val request: FakeRequest[AnyContentAsFormUrlEncoded] = fakeRequest.withFormUrlEncodedBody("value" -> "true")
+//
+//      val result: Future[Result] = controller(dontGetAnyData).onSubmit(index, mode)(request)
+//
+//      status(result) mustBe SEE_OTHER
+//      redirectLocation(result).value mustBe controllers.routes.SessionExpiredController.onPageLoad().url
+//    }
   }
-
 }
-

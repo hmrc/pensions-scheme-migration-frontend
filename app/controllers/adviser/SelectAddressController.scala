@@ -18,7 +18,6 @@ package controllers.adviser
 
 import controllers.actions._
 import models.establishers.AddressPages
-import controllers.adviser.routes.ConfirmAddressController
 import forms.address.AddressListFormProvider
 import identifiers.adviser.{AddressId, AddressListId, AdviserNameId, EnterPostCodeId}
 import identifiers.beforeYouStart.SchemeNameId
@@ -52,7 +51,7 @@ class SelectAddressController @Inject()(
           common.get(
             formToTemplate(form),
             form,
-            submitUrl = controllers.adviser.routes.SelectAddressController.onSubmit()
+            submitUrl = routes.SelectAddressController.onSubmit()
           )
         )
       }
@@ -68,9 +67,9 @@ class SelectAddressController @Inject()(
           common.post(
             _,
             addressPages,
-            manualUrlCall = ConfirmAddressController.onPageLoad,
+            manualUrlCall = routes.ConfirmAddressController.onPageLoad,
             form = form,
-            submitUrl = controllers.adviser.routes.SelectAddressController.onSubmit()
+            submitUrl = routes.SelectAddressController.onSubmit()
           ))
       }
     }
@@ -87,7 +86,7 @@ class SelectAddressController @Inject()(
               addresses,
               Message("messages__pension__adviser"),
               name,
-              ConfirmAddressController.onPageLoad.url,
+              routes.ConfirmAddressController.onPageLoad.url,
               schemeName
             )
         }

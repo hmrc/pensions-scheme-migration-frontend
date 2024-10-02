@@ -49,7 +49,7 @@ class WhatYouWillNeedController @Inject()(
             Future.successful(Ok(whatYouWillNeedView(
               personName.partnershipName,
               Messages("messages__title_partnership"),
-              EnterPostcodeController.onPageLoad(index, NormalMode).url,
+              routes.EnterPostcodeController.onPageLoad(index, NormalMode).url,
               request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
             )))
         }

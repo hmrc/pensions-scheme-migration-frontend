@@ -25,7 +25,7 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json, OWrites, Writes}
+import play.api.libs.json.{Json, OWrites, Writes}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, Call, Result}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Label, Text}
@@ -132,7 +132,6 @@ class CommonAddressListService @Inject()(
             } yield {
               Redirect(manualUrlCall)
             }
-
           }
         }
     )

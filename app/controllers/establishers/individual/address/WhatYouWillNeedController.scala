@@ -48,8 +48,8 @@ class WhatYouWillNeedController @Inject()(
         EstablisherNameId(index).retrieve.map {
           personName: PersonName =>
             Future.successful(Ok(whatYouWillNeedView(
-              Messages("messages__title_individual"),
               personName.fullName,
+              Messages("messages__title_individual"),
               routes.EnterPostcodeController.onPageLoad(index,NormalMode).url,
               schemeName
             )))

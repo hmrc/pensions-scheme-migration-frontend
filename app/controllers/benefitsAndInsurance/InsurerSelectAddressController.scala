@@ -50,7 +50,7 @@ class InsurerSelectAddressController @Inject()(
         common.get(
           formToTemplate(form),
           form,
-          submitUrl = controllers.benefitsAndInsurance.routes.InsurerSelectAddressController.onSubmit
+          submitUrl = routes.InsurerSelectAddressController.onSubmit
         )
       )
     }
@@ -66,9 +66,9 @@ class InsurerSelectAddressController @Inject()(
           common.post(
             _,
             addressPages,
-            manualUrlCall = controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onPageLoad,
+            manualUrlCall = routes.InsurerConfirmAddressController.onPageLoad,
             form = form,
-            submitUrl = controllers.benefitsAndInsurance.routes.InsurerSelectAddressController.onSubmit
+            submitUrl = routes.InsurerSelectAddressController.onSubmit
           )
         )
       }
@@ -86,7 +86,7 @@ class InsurerSelectAddressController @Inject()(
               addresses,
               Message("benefitsInsuranceUnknown"),
               name,
-              controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onPageLoad.url,
+              routes.InsurerConfirmAddressController.onPageLoad.url,
               schemeName
             )
         }
