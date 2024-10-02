@@ -27,7 +27,8 @@ object DataPrefillCheckbox {
   def checkboxes(form: Form[_], values: Seq[DataPrefillIndividualDetails]): Seq[Checkboxes.Item] = {
     val noneValue = "-1"
     val items = values.map(indvDetails => Checkboxes.Checkbox(Literal(indvDetails.fullName), indvDetails.index.toString, None, None))
-    val noneOfTheAbove = Checkboxes.Checkbox(msg"messages__prefill__label__none", noneValue, Some("exclusive"), None)
+    val noneOfTheAbove = Checkboxes.Checkbox(msg"messages__prefill__label__none", (items.size-1).toString, Some("exclusive"), None)
+
     Checkboxes.set(form("value"), items :+ noneOfTheAbove)
   }
 }
