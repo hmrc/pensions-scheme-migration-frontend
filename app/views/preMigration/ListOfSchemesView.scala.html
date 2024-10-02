@@ -105,13 +105,8 @@
                         )
                     }
 
-                    @govukInput(
-                        InputViewModel(
-                            field = form("value"),
-                            label = Label(),
-                            inputType = "search"
-                        ).withCssClass("govuk-input govuk-!-width-one-half govuk-!-margin-bottom-3 @inputErrorClass")
-                    )
+                    @errorMessages
+                    <input class="govuk-input govuk-!-width-one-half govuk-!-margin-bottom-3 @inputErrorClass" id="value" name="value" type="search" value=@form.value>
                     @govukButton(searchButton)
                 </div>
 

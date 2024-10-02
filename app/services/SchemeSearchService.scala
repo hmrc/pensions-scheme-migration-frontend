@@ -196,7 +196,7 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
         val searchButton = Button(
           content = Text(buttonContent),
           attributes = Map("id" -> "search"),
-          classes = "govuk-button--secondary govuk-!-margin-bottom-3"
+          classes = "govuk-!-margin-bottom-3"
         )
 
         Future.successful(Ok(view(
