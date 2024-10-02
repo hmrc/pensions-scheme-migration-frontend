@@ -49,7 +49,6 @@ class UTRControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
   private val formData: ReferenceValue = ReferenceValue("1234567890")
   private val formProvider: UTRFormProvider = new UTRFormProvider()
 
-
 //  private val commonJson: JsObject =
 //    Json.obj(
 //      "pageTitle"     -> messages("messages__enterUTR", messages("messages__partnership")),

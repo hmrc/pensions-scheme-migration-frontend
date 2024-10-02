@@ -33,10 +33,8 @@ import scala.concurrent.Future
 
 class CommonEnterReferenceValueServiceSpec extends CommonServiceSpecBase {
 
-  // Instantiate service
   val service = new CommonEnterReferenceValueService(
     controllerComponents = controllerComponents,
-//    renderer = new Renderer(mockAppConfig, mockRenderer),
     userAnswersCacheConnector = mockUserAnswersCacheConnector,
     navigator = new FakeNavigator(desiredRoute = onwardCall),
     enterReferenceValueView = app.injector.instanceOf[EnterReferenceValueView],
@@ -46,7 +44,6 @@ class CommonEnterReferenceValueServiceSpec extends CommonServiceSpecBase {
 
   override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
 
-  // Define the form provider for the reference value form
   private val formProvider: UTRFormProvider = new UTRFormProvider()
   private val id: TypedIdentifier[ReferenceValue] = new TypedIdentifier[ReferenceValue] {}
   private val referenceValueForm: Form[ReferenceValue] = formProvider()
@@ -55,8 +52,6 @@ class CommonEnterReferenceValueServiceSpec extends CommonServiceSpecBase {
 
   "get" should {
     "return OK and render the correct template" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
       val result = service.get(
         pageTitle = "Test Title",
         pageHeading = "Test Heading",

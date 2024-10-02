@@ -56,16 +56,15 @@ class EstablisherEnterNINOControllerSpec
     formProvider(personName.fullName)
   private val userAnswers: UserAnswers =
     ua.set(EstablisherNameId(0), personName).success.value
-//  private val templateToBeRendered: String =
-//    "enterReferenceValueWithHint.njk"
-  private val commonJson: JsObject =
-    Json.obj(
-      "pageTitle"     -> "What is the individual’s National Insurance number?",
-      "pageHeading"     -> "What is Jane Doe’s National Insurance number?",
-      "schemeName"    -> "Test scheme name",
-      "legendClass"   -> "govuk-label--xl",
-      "isPageHeading" -> true
-    )
+
+//  private val commonJson: JsObject =
+//    Json.obj(
+//      "pageTitle"     -> "What is the individual’s National Insurance number?",
+//      "pageHeading"     -> "What is Jane Doe’s National Insurance number?",
+//      "schemeName"    -> "Test scheme name",
+//      "legendClass"   -> "govuk-label--xl",
+//      "isPageHeading" -> true
+//    )
   private val formData: ReferenceValue =
     ReferenceValue(value = "AB123456C")
 
@@ -97,13 +96,6 @@ class EstablisherEnterNINOControllerSpec
 
   "EstablisherEnterNINOController" must {
     "return OK and the correct view for a GET" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
       val result: Future[Result] =
@@ -112,28 +104,24 @@ class EstablisherEnterNINOControllerSpec
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = app.injector.instanceOf[EnterReferenceValueWithHintView].apply(
+        form = form,
+        schemeName = "Test scheme name",
+        pageTitle = "What is the individual’s National Insurance number?",
+        pageHeading = "What is Jane Doe’s National Insurance number?",
+        legendClass = "govuk-label--xl",
+        paragraphs = Seq(),
+        hintText = Some("For example, QQ 12 34 56 C"),
+        submitCall= routes.EstablisherEnterNINOController.onSubmit(0, NormalMode)
+      )(fakeRequest, messages)
+      compareResultAndView(result, view)
 
-//      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("form" -> form)
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val ua =
         userAnswers
           .set(EstablisherNINOId(0), formData).success.value
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val getData = new FakeDataRetrievalAction(Some(ua))
 
@@ -143,15 +131,8 @@ class EstablisherEnterNINOControllerSpec
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-//      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("form" -> form.fill(formData))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      contentAsString(result) must include(messages("messages__enterNINO_title", "the individual"))
+      contentAsString(result) must include(formData.value)
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -177,36 +158,20 @@ class EstablisherEnterNINOControllerSpec
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
         fakeRequest
           .withFormUrlEncodedBody("value" -> "invalid value")
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
       val result: Future[Result] =
         controller(getData)
           .onSubmit(0, NormalMode)(request)
 
-      val boundForm = form.bind(Map("value" -> "invalid value"))
-
       status(result) mustBe BAD_REQUEST
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-//      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("form" -> Json.toJson(boundForm))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      contentAsString(result) must include(messages("messages__enterNINO_title", "the individual"))
+      contentAsString(result) must include(messages("messages__error__common_nino_invalid", personName.fullName))
 
       verify(mockUserAnswersCacheConnector, times(0))
         .save(any(), any())(any(), any())

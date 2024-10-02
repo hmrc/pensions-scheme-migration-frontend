@@ -61,7 +61,7 @@ class VATControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
         messagesApi = messagesApi
       ))
 
-  override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
+  override def beforeEach(): Unit = reset(mockUserAnswersCacheConnector)
 
   "VATController" must {
     "return OK and the correct view for a GET" in {
@@ -72,7 +72,7 @@ class VATControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
 
       val view = app.injector.instanceOf[EnterReferenceValueWithHintView].apply(
         form = formProvider("test company"),
-        schemeName = "Test scheme name",
+        schemeName = schemeName,
         pageTitle = messages("messages__vat", messages("messages__company")),
         pageHeading = messages("messages__vat", companyDetails.companyName),
         legendClass = "govuk-visually-hidden",
