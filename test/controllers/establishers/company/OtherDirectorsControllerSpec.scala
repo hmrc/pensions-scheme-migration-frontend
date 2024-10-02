@@ -37,7 +37,7 @@ import services.common.details.CommonHasReferenceValueService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{FakeNavigator, UserAnswers}
+import utils.{FakeNavigator, TwirlMigration, UserAnswers}
 import viewmodels.Message
 import views.html.HasReferenceValueWithHintView
 
@@ -57,28 +57,11 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase
   private val userAnswers: UserAnswers =
     ua.set(DirectorNameId(0,0), personName).success.value
 
-  private val templateToBeRendered: String =
-    "hasReferenceValueWithHint.njk"
   private val form: Form[Boolean] =
     formProvider("Select yes if you need to tell us about other directors")
 
-
-  private val commonJson: JsObject =
-
-
-
-    Json.obj(
-      "pageTitle"     -> Message("messages__otherDirectors__title"),
-      "pageHeading"     -> Message("messages__otherDirectors__heading"),
-      "schemeName"    -> schemeName,
-      "paragraphs"    -> Seq(Message("messages__otherDirectors__lede")),
-      "legendClass"   -> "govuk-visually-hidden",
-      "isPageHeading" -> true
-    )
-
   override def beforeEach(): Unit = {
     reset(
-      mockRenderer,
       mockUserAnswersCacheConnector
     )
   }
@@ -104,44 +87,32 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase
   "OtherDirectorsController" must {
 
     "return OK and the correct view for a GET" in{
-
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val result: Future[Result] =
         controller(getData)
           .onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual  templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("radios" -> Radios.yesNo(form("value")))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      val view = app.injector.instanceOf[HasReferenceValueWithHintView].apply(
+        form,
+        schemeName,
+        Message("messages__otherDirectors__title"),
+        Message("messages__otherDirectors__heading"),
+        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        "govuk-visually-hidden",
+        Seq(Message("messages__otherDirectors__lede")),
+        routes.OtherDirectorsController.onSubmit(0, NormalMode)
+      )(fakeRequest, messages)
+      compareResultAndView(result, view)
     }
 
     "populate the view correctly on a GET when the question has previously been answered Yes" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val ua =
         userAnswers
           .set(OtherDirectorsId(0), true).success.value
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
       val getData = new FakeDataRetrievalAction(Some(ua))
+      val filledFrom = form.fill(true)
 
       val result: Future[Result] =
         controller(getData)
@@ -149,30 +120,26 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("radios" -> Radios.yesNo(form.fill(true).apply("value")))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      val view = app.injector.instanceOf[HasReferenceValueWithHintView].apply(
+        filledFrom,
+        schemeName,
+        Message("messages__otherDirectors__title"),
+        Message("messages__otherDirectors__heading"),
+        TwirlMigration.toTwirlRadios(Radios.yesNo(filledFrom("value"))),
+        "govuk-visually-hidden",
+        Seq(Message("messages__otherDirectors__lede")),
+        routes.OtherDirectorsController.onSubmit(0, NormalMode)
+      )(fakeRequest, messages)
+      compareResultAndView(result, view)
     }
 
     "populate the view correctly on a GET when the question has previously been answered No" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val ua =
         userAnswers
           .set(OtherDirectorsId(0), false).success.value
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
       val getData = new FakeDataRetrievalAction(Some(ua))
+      val filledFrom = form.fill(false)
+
 
       val result: Future[Result] =
         controller(getData)
@@ -180,15 +147,17 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("radios" -> Radios.yesNo(form.fill(false).apply("value")))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      val view = app.injector.instanceOf[HasReferenceValueWithHintView].apply(
+        filledFrom,
+        schemeName,
+        Message("messages__otherDirectors__title"),
+        Message("messages__otherDirectors__heading"),
+        TwirlMigration.toTwirlRadios(Radios.yesNo(filledFrom("value"))),
+        "govuk-visually-hidden",
+        Seq(Message("messages__otherDirectors__lede")),
+        routes.OtherDirectorsController.onSubmit(0, NormalMode)
+      )(fakeRequest, messages)
+      compareResultAndView(result, view)
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -214,42 +183,23 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val request =
         fakeRequest
           .withFormUrlEncodedBody(("value", "invalid value"))
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
       val result: Future[Result] =
         controller(getData)
           .onSubmit(0,NormalMode)(request)
 
-      val boundForm = form.bind(Map("value" -> "invalid value"))
-
       status(result) mustBe BAD_REQUEST
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("radios" -> Radios.yesNo(boundForm.apply("value")))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      contentAsString(result) must include(messages("messages__otherDirectors__title"))
+      contentAsString(result) must include(messages("error.summary.title"))
+      contentAsString(result) must include(messages("error.boolean"))
 
       verify(mockUserAnswersCacheConnector, times(0))
         .save(any(), any())(any(), any())
     }
-
-
   }
-
 }

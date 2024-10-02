@@ -23,20 +23,17 @@ import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.details.EstablisherHasNINOId
 import matchers.JsonMatchers
 import models.{NormalMode, PersonName}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
-import play.twirl.api.Html
-import renderer.Renderer
 import services.common.details.CommonHasReferenceValueService
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import utils.Data.ua
-import utils.{FakeNavigator, UserAnswers}
+import utils.{FakeNavigator, TwirlMigration, UserAnswers}
 import views.html.HasReferenceValueWithHintView
 
 import scala.concurrent.Future
@@ -56,16 +53,7 @@ class EstablisherHasNINOControllerSpec
     formProvider("Select Yes if Jane Doe has a National Insurance number")
   private val userAnswers: UserAnswers =
     ua.set(EstablisherNameId(0), personName).success.value
-  private val templateToBeRendered: String =
-    "hasReferenceValue.njk"
-  private val commonJson: JsObject =
-    Json.obj(
-      "pageTitle"     -> "Does the individual have a National Insurance number?",
-      "pageHeading"     -> "Does Jane Doe have a National Insurance number?",
-      "schemeName"    -> "Test scheme name",
-      "legendClass"   -> "govuk-label--xl",
-      "isPageHeading" -> true
-    )
+
   private def controller(
                           dataRetrievalAction: DataRetrievalAction
                         ): EstablisherHasNINOController =
@@ -86,20 +74,12 @@ class EstablisherHasNINOControllerSpec
 
   override def beforeEach(): Unit = {
     reset(
-      mockRenderer,
       mockUserAnswersCacheConnector
     )
   }
 
   "EstablisherHasNINOController" must {
     "return OK and the correct view for a GET" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
       val result: Future[Result] =
@@ -108,31 +88,25 @@ class EstablisherHasNINOControllerSpec
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("radios" -> Radios.yesNo(form("value")))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
-
+      val view = app.injector.instanceOf[HasReferenceValueWithHintView].apply(
+        form,
+        "Test scheme name",
+        "Does the individual have a National Insurance number?",
+        "Does Jane Doe have a National Insurance number?",
+        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        "govuk-label--xl",
+        Seq(),
+        routes.EstablisherHasNINOController.onSubmit(0, NormalMode)
+      )(fakeRequest, messages)
+      compareResultAndView(result, view)
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val ua =
         userAnswers
           .set(EstablisherHasNINOId(0), true).success.value
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
       val getData = new FakeDataRetrievalAction(Some(ua))
+      val filledFrom = form.fill(true)
 
       val result: Future[Result] =
         controller(getData)
@@ -140,15 +114,17 @@ class EstablisherHasNINOControllerSpec
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("radios" -> Radios.yesNo(form.fill(true).apply("value")))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      val view = app.injector.instanceOf[HasReferenceValueWithHintView].apply(
+        filledFrom,
+        "Test scheme name",
+        "Does the individual have a National Insurance number?",
+        "Does Jane Doe have a National Insurance number?",
+        TwirlMigration.toTwirlRadios(Radios.yesNo(filledFrom("value"))),
+        "govuk-label--xl",
+        Seq(),
+        routes.EstablisherHasNINOController.onSubmit(0, NormalMode)
+      )(fakeRequest, messages)
+      compareResultAndView(result, view)
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -174,36 +150,21 @@ class EstablisherHasNINOControllerSpec
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
         fakeRequest
           .withFormUrlEncodedBody(("value", "invalid value"))
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
       val result: Future[Result] =
         controller(getData)
           .onSubmit(0, NormalMode)(request)
 
-      val boundForm = form.bind(Map("value" -> "invalid value"))
-
       status(result) mustBe BAD_REQUEST
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("radios" -> Radios.yesNo(boundForm.apply("value")))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      contentAsString(result) must include( "Does the individual have a National Insurance number?")
+      contentAsString(result) must include(messages("error.summary.title"))
+      contentAsString(result) must include(messages("error.boolean"))
 
       verify(mockUserAnswersCacheConnector, times(0))
         .save(any(), any())(any(), any())
