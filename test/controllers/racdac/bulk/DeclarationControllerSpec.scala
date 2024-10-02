@@ -21,14 +21,13 @@ import connectors.cache.{BulkMigrationQueueConnector, CurrentPstrCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{BulkDataAction, MutableFakeBulkDataAction}
 import matchers.JsonMatchers
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
+import play.api.mvc.Request
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import uk.gov.hmrc.http.HttpException
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Enumerable
@@ -36,7 +35,6 @@ import utils.Enumerable
 import scala.concurrent.Future
 class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
-  private val templateToBeRendered = "racdac/declaration.njk"
   private val mockBulkMigrationConnector = mock[BulkMigrationQueueConnector]
   private val mockCurrentPstrCacheConnector = mock[CurrentPstrCacheConnector]
 
@@ -46,7 +44,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
     bind[EmailConnector].toInstance(mockEmailConnector),
     bind[CurrentPstrCacheConnector].toInstance(mockCurrentPstrCacheConnector)
   )
-  private val application: Application = new GuiceApplicationBuilder()
+  override def fakeApplication(): Application = new GuiceApplicationBuilder()
     .configure(
       "metrics.jvm" -> false,
       "metrics.enabled" -> false
@@ -58,18 +56,17 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
     ).build()
   private val dummyUrl = "/dummyurl"
 
-  private def jsonToPassToTemplate: JsObject =
-    Json.obj(
-      "psaName" -> "test company",
-      "submitUrl" -> routes.DeclarationController.onSubmit.url,
-      "returnUrl" -> dummyUrl
-    )
+  private def getView(request: Request[_]) = app.injector.instanceOf[views.html.racdac.DeclarationView].apply(
+    routes.DeclarationController.onSubmit,
+    dummyUrl,
+    "test company"
+  )(request, implicitly)
+
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockCurrentPstrCacheConnector)
     when(mockAppConfig.psaOverviewUrl) thenReturn dummyUrl
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
   private def httpPathGET: String = controllers.racdac.bulk.routes.DeclarationController.onPageLoad.url
@@ -79,15 +76,10 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
   "onPageLoad" must {
 
     "return OK and the correct view for a GET" in {
-      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val req = httpGETRequest(httpPathGET)
+      val result = route(app, req).value
       status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate)
+      compareResultAndView(result, getView(req))
     }
   }
 
@@ -95,7 +87,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
     "redirect to next page when rac dac schemes exist" in {
       when(mockBulkMigrationConnector.pushAll(any(), any())(any(), any())).thenReturn(Future(Json.obj()))
       when(mockCurrentPstrCacheConnector.save(any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-      val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.racdac.bulk.routes.ProcessingRequestController.onPageLoad.url)
@@ -104,7 +96,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
     "redirect to Request not process page when error while push" in {
       when(mockBulkMigrationConnector.pushAll(any(), any())(any(), any())).thenReturn(Future.failed(new HttpException("No Service", SERVICE_UNAVAILABLE)))
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.racdac.bulk.routes.RequestNotProcessedController.onPageLoad.url)
