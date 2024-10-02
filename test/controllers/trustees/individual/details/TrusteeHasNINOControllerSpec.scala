@@ -37,6 +37,7 @@ import services.common.details.CommonHasReferenceValueService
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import utils.Data.ua
 import utils.{FakeNavigator, UserAnswers}
+import views.html.HasReferenceValueWithHintView
 
 import scala.concurrent.Future
 class TrusteeHasNINOControllerSpec
@@ -76,7 +77,7 @@ class TrusteeHasNINOControllerSpec
       dataUpdateService         = mockDataUpdateService,
       common = new CommonHasReferenceValueService(
         controllerComponents = controllerComponents,
-        renderer = new Renderer(mockAppConfig, mockRenderer),
+        hasReferenceValueWithHintView = app.injector.instanceOf[HasReferenceValueWithHintView],
         userAnswersCacheConnector = mockUserAnswersCacheConnector,
         navigator = new FakeNavigator(desiredRoute = onwardCall),
         messagesApi = messagesApi

@@ -39,6 +39,7 @@ import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.Message
+import views.html.HasReferenceValueWithHintView
 
 import scala.concurrent.Future
 
@@ -93,7 +94,7 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase
       formProvider              = formProvider,
       common = new CommonHasReferenceValueService(
         controllerComponents = controllerComponents,
-        renderer = new Renderer(mockAppConfig, mockRenderer),
+        hasReferenceValueWithHintView = app.injector.instanceOf[HasReferenceValueWithHintView],
         userAnswersCacheConnector = mockUserAnswersCacheConnector,
         navigator = new FakeNavigator(desiredRoute = onwardCall),
         messagesApi = messagesApi

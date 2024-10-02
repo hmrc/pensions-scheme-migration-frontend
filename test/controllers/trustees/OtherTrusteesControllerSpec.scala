@@ -36,6 +36,7 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
 import utils.FakeNavigator
+import views.html.HasReferenceValueWithHintView
 
 import scala.concurrent.Future
 class OtherTrusteesControllerSpec extends ControllerSpecBase
@@ -83,7 +84,7 @@ class OtherTrusteesControllerSpec extends ControllerSpecBase
       formProvider              = formProvider,
       common = new CommonHasReferenceValueService(
         controllerComponents = controllerComponents,
-        renderer = new Renderer(mockAppConfig, mockRenderer),
+        hasReferenceValueWithHintView = app.injector.instanceOf[HasReferenceValueWithHintView],
         userAnswersCacheConnector = mockUserAnswersCacheConnector,
         navigator = new FakeNavigator(desiredRoute = onwardCall),
         messagesApi = messagesApi

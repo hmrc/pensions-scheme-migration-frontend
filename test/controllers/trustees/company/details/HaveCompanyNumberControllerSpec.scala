@@ -38,6 +38,7 @@ import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import utils.Data.{companyDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.Message
+import views.html.HasReferenceValueWithHintView
 
 import scala.concurrent.Future
 class HaveCompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with BeforeAndAfterEach {
@@ -65,7 +66,7 @@ class HaveCompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSu
       new DataRequiredActionImpl, formProvider,
       common = new CommonHasReferenceValueService(
         controllerComponents = controllerComponents,
-        renderer = new Renderer(mockAppConfig, mockRenderer),
+        hasReferenceValueWithHintView = app.injector.instanceOf[HasReferenceValueWithHintView],
         userAnswersCacheConnector = mockUserAnswersCacheConnector,
         navigator = new FakeNavigator(desiredRoute = onwardCall),
         messagesApi = messagesApi

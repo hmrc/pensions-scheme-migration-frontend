@@ -29,6 +29,7 @@ import renderer.Renderer
 import services.CommonServiceSpecBase
 import utils.Data.ua
 import utils.FakeNavigator
+import views.html.HasReferenceValueWithHintView
 
 import scala.concurrent.Future
 
@@ -36,7 +37,7 @@ class CommonHasReferenceValueServiceSpec extends ControllerSpecBase with CommonS
 
   val service = new CommonHasReferenceValueService(
     controllerComponents = controllerComponents,
-    renderer = new Renderer(mockAppConfig, mockRenderer),
+    hasReferenceValueWithHintView = app.injector.instanceOf[HasReferenceValueWithHintView],
     userAnswersCacheConnector = mockUserAnswersCacheConnector,
     navigator = new FakeNavigator(desiredRoute = onwardCall),
     messagesApi = messagesApi
@@ -60,7 +61,8 @@ class CommonHasReferenceValueServiceSpec extends ControllerSpecBase with CommonS
         isPageHeading = true,
         id = id,
         form = yesNoForm,
-        schemeName = "Test Scheme"
+        schemeName = "Test Scheme",
+        submitCall = onwardCall
       )(fakeDataRequest(ua, fakeRequestWithFormData), global)
 
       status(result) mustBe OK
@@ -80,7 +82,8 @@ class CommonHasReferenceValueServiceSpec extends ControllerSpecBase with CommonS
         id = id,
         form = formWithErrors,
         schemeName = "Test Scheme",
-        mode = NormalMode
+        mode = NormalMode,
+        submitCall = onwardCall
       )(fakeDataRequest(ua, fakeRequestWithFormData), global)
 
       status(result) mustBe BAD_REQUEST
@@ -99,7 +102,8 @@ class CommonHasReferenceValueServiceSpec extends ControllerSpecBase with CommonS
         id = id,
         form = yesNoForm,
         schemeName = "Test Scheme",
-        mode = NormalMode
+        mode = NormalMode,
+        submitCall = onwardCall
       )(fakeDataRequest(ua, fakeRequestWithFormData), global)
 
       // Check if the response is a redirect (303)
