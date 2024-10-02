@@ -153,11 +153,6 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
           listUrl
         }
 
-
-
-        val firstPrevNavigationLinks = getFirstPrevNavigationLinks(pageNumber, listSchemeUrl)
-        val nextLastNavigationLinks = getNextLastNavigationLinks(pageNumber, listSchemeUrl, numberOfPages)
-
         val schemes: Option[Table] = mapToTable(schemeDetails, isRacDac(migrationType))
 
 
@@ -167,32 +162,6 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
           pagination,
           numberOfPages
         )
-
-        val json: JsObject = Json.obj(
-          "form" -> form,
-          "psaName" -> md.name,
-          "numberOfSchemes" -> numberOfSchemes,
-          "pagination" -> pagination,
-          "pageNumber" -> pageNumber,
-          "pageNumberLinks" -> paginationService.pageNumberLinks(
-            pageNumber,
-            numberOfSchemes,
-            pagination,
-            numberOfPages
-          ),
-          "racDac" -> isRacDac(migrationType),
-          "numberOfPages" -> numberOfPages,
-          "noResultsMessageKey" -> noResultsMessageKey,
-          "clearLinkUrl" -> routes.ListOfSchemesController.onPageLoad(migrationType).url,
-          "submitUrl" -> routes.ListOfSchemesController.onSearch(migrationType).url,
-          "returnUrl" -> appConfig.psaOverviewUrl,
-          "paginationText" -> paginationService.paginationText(pageNumber, pagination, numberOfSchemes, numberOfPages),
-          "typeOfList" -> typeOfList(migrationType)
-        ) ++ (if (schemeDetails.nonEmpty) Json.obj("schemes" -> mapToTable(schemeDetails, isRacDac(migrationType))) else Json.obj())
-
-        for (linkNumber <- pageNumberLinks) {
-          generatePageNumberLinks(linkNumber, listSchemeUrl, pageNumber, numberOfPages)
-        }
 
         val formErrorClass = if (form.hasErrors) {
           "govuk-form-group--error"
@@ -205,30 +174,6 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
         } else {
           ""
         }
-
-        val searchLabel = if (racDac) {
-          messages("messages__listSchemes__searchText_label_racDac")
-        } else {
-          messages("messages__listSchemes__searchText_label_scheme")
-        }
-
-        val inputLabel = Label(
-          content = Text(searchLabel),
-          isPageHeading = false,
-          classes = "govuk-label--m",
-          forAttr = Some("value")
-        )
-
-//        val hintText = if (racDac) {
-//          messages("messages__listSchemes__searchText_label_hint_racDac")
-//        } else {
-//          messages("messages__listSchemes__searchText_label_hint_scheme")
-//        }
-//
-//        val hint = Hint(
-//          id = Some("value-hint"),
-//          content = Text(hintText)
-//        )
 
         val errorMessages: Option[Seq[ErrorMessage]] = if(form.hasErrors) {
           val messages = form.errors.map((err) => {
@@ -257,7 +202,7 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
         Future.successful(Ok(view(
           heading = heading,
           form = form,
-          submitUrl = routes.ListOfSchemesController.onSearch(migrationType).url,
+          submitCall = routes.ListOfSchemesController.onSearch(migrationType),
           formErrorClass = formErrorClass,
           errorMessages = errorMessages,
           inputErrorClass = inputErrorClass,
@@ -269,12 +214,12 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
           pagination = pagination,
           paginationText = paginationService.paginationText(pageNumber, pagination, numberOfSchemes, numberOfPages),
           pageNumber = pageNumber,
-          firstPrevNavigationLinks = firstPrevNavigationLinks,
-          nextLastNavigationLinks = nextLastNavigationLinks,
           pageNumberLinks = pageNumberLinks,
           returnUrl = appConfig.psaOverviewUrl,
           psaName = md.name,
-          racDac = isRacDac(migrationType)
+          racDac = isRacDac(migrationType),
+          listSchemeUrl = listSchemeUrl,
+          numberOfPages = numberOfPages,
         )))
 
     } recoverWith {
@@ -316,127 +261,4 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
           migrationType
         )
       } recoverWith listOfSchemesRedirects
-
-  private def getFirstPrevNavigationLinks(pageNumber: Int, listSchemeUrl: String)(implicit messages: Messages): Option[(Html, Html)] = {
-    if (pageNumber > 1) {
-      val firstNavigationLink = generateNavigationLink(messages("messages__listSchemes__pagination__first"),"1", listSchemeUrl)
-      val secondNavigationLink = generateNavigationLink(messages("messages__listSchemes__pagination__prev"),(pageNumber - 1).toString, listSchemeUrl)
-      Some((firstNavigationLink, secondNavigationLink))
-    } else {
-      None
-    }
-  }
-
-  private def getNextLastNavigationLinks(pageNumber: Int, listSchemeUrl: String, numberOfPages: Int)(implicit messages: Messages): Option[(Html, Html)] = {
-    if (pageNumber > 1) {
-      val firstNavigationLink = generateNavigationLink(messages("messages__listSchemes__pagination__next"),(pageNumber + 1).toString, listSchemeUrl)
-      val secondNavigationLink = generateNavigationLink(messages("messages__listSchemes__pagination__last"),(numberOfPages).toString, listSchemeUrl)
-      Some((firstNavigationLink, secondNavigationLink))
-    } else {
-      None
-    }
-  }
-
-  def generateNavigationLink(linkText: String, pageNumber: String, baseUrl: String)(implicit messages: Messages): Html = {
-    val url = baseUrl + pageNumber
-    val ariaLabel = messages("messages__listSchemes__pagination__" + linkText + "__ariaLabel")
-    Html(s"""<span class="nav-item">
-        <a id=${linkText} href=${url} aria-label=${ariaLabel} class="govuk-link">
-          ${linkText}
-        </a>
-      </span>""")
-  }
-
-  def generatePageNumberLinks(linkNumber: Int, baseUrl: String, pageNumber: Int, numberOfPages: Int)(implicit messages: Messages): Html = {
-    val id = "pageNumber-" + linkNumber
-    val url = baseUrl + linkNumber
-
-    val ariaLabelLink = messages("messages__listSchemes__pagination__pageNumber__ariaLabel", linkNumber, numberOfPages)
-    val ariaLabelLinkCurrent = messages("messages__listSchemes__pagination__pageNumberCurrent__ariaLabel", linkNumber, numberOfPages)
-    val cssClass = if (linkNumber == pageNumber) {
-      s"""aria-current="page" aria-label=${ariaLabelLinkCurrent}"""
-    } else {
-      s"""aria-label=${ariaLabelLink}"""
-    }
-    Html(
-      s"""Html(<span class="nav-item">
-         |<a id=${id} href=${url} ${cssClass} class="govuk-link">
-         |${linkNumber}
-         |</a>
-         |</span>)""".stripMargin)
-  }
-
-  //noinspection ScalaStyle
-  def generateSearchInput(form: Form[String], racDac: Boolean)(implicit messages: Messages): Html = {
-    val formErrorClass = if (form.hasErrors) {
-      "govuk-form-group--error"
-    } else {
-      ""
-    }
-
-    val inputErrorClass = if (form.hasErrors) {
-      "govuk-input--error"
-    } else {
-      ""
-    }
-
-    val searchLabel = if (racDac) {
-      messages("messages__listSchemes__searchText_label_racDac")
-    } else {
-      messages("messages__listSchemes__searchText_label_scheme")
-    }
-
-    val label = Label(
-      content = Text(searchLabel),
-      isPageHeading = false,
-      classes = "govuk-label--m",
-      forAttr = Some("value")
-    )
-
-    val hintText = if (racDac) {
-      messages("messages__listSchemes__searchText_label_hint_racDac")
-    } else {
-      messages("messages__listSchemes__searchText_label_hint_scheme")
-    }
-
-    val hint = Hint(
-      id = Some("value-hint"),
-      content = Text(hintText)
-    )
-
-    val errorMessages: Option[Seq[ErrorMessage]] = if(form.hasErrors) {
-      val messages = form.errors.map((err) => {
-        ErrorMessage(
-          id = Some(s"value-error-${err.key}"),
-          content = Text(err.message)
-        )
-      })
-      Some(messages)
-    } else {
-      None
-    }
-
-    val buttonContent = form.value match {
-      case Some(_) => messages("messages__listSchemes__search_again")
-      case _ => messages("messages__listSchemes__search_submit")
-    }
-
-
-    val searchButton = Button(
-      content = Text(buttonContent),
-      attributes = Map("id" -> "search"),
-      classes = "govuk-button--secondary govuk-!-margin-bottom-3"
-    )
-
-//    Html(Label())
-
-    Html(s"""<div class="govuk-form-group ${formErrorClass} govuk-!-margin-bottom-0">
-      $label
-      $hint
-      $errorMessages
-    <input class="govuk-input govuk-!-width-one-half govuk-!-margin-bottom-3 ${inputErrorClass}" id="value" name="value" type="search"
-      value=${form.value}>
-      $searchButton
-    </div>""")
-  }
 }

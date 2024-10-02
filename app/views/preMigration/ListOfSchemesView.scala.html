@@ -23,12 +23,16 @@
     govukTable: GovukTable,
     govukHint: GovukHint,
     govukButton: GovukButton,
-    govukLabel: GovukLabel
+    govukLabel: GovukLabel,
+    formHelper: FormWithCSRF,
+    navigationLink: templates.NavigationLink,
+    pageNumberLink: templates.PageNumberLink,
+    govukInput: GovukInput
 )
 
 @(heading: String,
     form: Form[_],
-    submitUrl: String,
+    submitCall: Call,
     formErrorClass: String,
     errorMessages: Option[Seq[ErrorMessage]],
     inputErrorClass: String,
@@ -40,14 +44,14 @@
     pagination: Int,
     paginationText: String,
     pageNumber: Int,
-    firstPrevNavigationLinks: Option[(uk.gov.hmrc.viewmodels.Html, uk.gov.hmrc.viewmodels.Html)],
-    nextLastNavigationLinks: Option[(uk.gov.hmrc.viewmodels.Html, uk.gov.hmrc.viewmodels.Html)],
     pageNumberLinks: Seq[Int],
     returnUrl: String,
     psaName: String,
-    racDac: Boolean)(implicit request: Request[_], messages: Messages)
+    racDac: Boolean,
+    listSchemeUrl: String,
+    numberOfPages: Int)(implicit request: Request[_], messages: Messages)
 
-@layout(heading) {
+@layout(heading, formHasErrors = form.hasErrors, fullWidthLayout = true) {
     <div>
         <div>
 
@@ -66,10 +70,7 @@
             </p>
 
 
-            <form method="post"
-                  autocomplete="off"
-                  action="@submitUrl"
-                  novalidate>
+            @formHelper(action = submitCall, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "true") {
 
                 <div class="govuk-form-group @formErrorClass govuk-!-margin-bottom-0">
                     @if(racDac){
@@ -103,13 +104,18 @@
                             )
                         )
                     }
-                    @errorMessages
-                    <input class="govuk-input govuk-!-width-one-half govuk-!-margin-bottom-3 @inputErrorClass" id="value" name="value" type="search"
-                           value=@form.value>
+
+                    @govukInput(
+                        InputViewModel(
+                            field = form("value"),
+                            label = Label(),
+                            inputType = "search"
+                        ).withCssClass("govuk-input govuk-!-width-one-half govuk-!-margin-bottom-3 @inputErrorClass")
+                    )
                     @govukButton(searchButton)
                 </div>
 
-                @if(Option(form.value)) {
+                @if(form.value.isDefined) {
                     <p class="govuk-body">
                         <a id="clear-search-link" href="@clearLinkUrl" class="govuk-link">
                             @messages("messages__listSchemes__searchText_clearlink")
@@ -117,20 +123,19 @@
                     </p>
                 } else {
                     @if(racDac) {
-                        @govukInsetText(
-                            InsetText(
-                                content = HtmlContent(
-                                    "<p>" + messages("messages__listSchemes__racDacOffset") + "</p>"
+                        <p>
+                            @govukInsetText(
+                                InsetText(
+                                    content = Text(messages("messages__listSchemes__racDacOffset"))
                                 )
                             )
-                        )
+                        </p>
                     }
                 }
-
-            </form>
+            }
         </div>
 
-        @if(Option(form.value)) {
+        @if(form.value.isDefined) {
             @if(numberOfSchemes > 0) {
                 <div class="grid-row">
                     <div class="column-two-thirds" role="status">
@@ -146,7 +151,8 @@
             }
         }
 
-        @if(noResultsMessageKey) {
+
+        @noResultsMessageKey.map { noResultsMessageKey =>
             <div class="grid-row">
                 <div class="column-two-thirds" role="status">
                     <p class="govuk-body" id="noSchemes">@noResultsMessageKey</p>
@@ -154,9 +160,7 @@
             </div>
         }
 
-        @if(Option(schemes)){
-            @schemes.map { schemesTable => @govukTable(schemesTable)}
-        }
+        @schemes.map { schemesTable => @govukTable(schemesTable)}
 
         @if(numberOfSchemes > pagination) {
         <div class="grid-row">
@@ -165,20 +169,18 @@
                     @paginationText
                 </p>
                 <nav class="govuk-margin-top-5" aria-label="page">
-                    @if(Option(firstPrevNavigationLinks)) {
-                        firstPrevNavigationLinks._1
-                    }
-                    @if(Option(firstPrevNavigationLinks)) {
-                        firstPrevNavigationLinks._2
+                    @if(pageNumber > 1) {
+                        @navigationLink(messages("messages__listSchemes__pagination__first"), 1, listSchemeUrl))
+                        @navigationLink(messages("messages__listSchemes__pagination__prev"),pageNumber-1, listSchemeUrl))
                     }
 
-                    @pageNumberLinks
-
-                    @if(Option(nextLastNavigationLinks)) {
-                        nextLastNavigationLinks._1
+                    @pageNumberLinks.map { linkNumber =>
+                        @pageNumberLink(linkNumber, numberOfPages, listSchemeUrl, pageNumber)
                     }
-                    @if(Option(nextLastNavigationLinks)) {
-                        nextLastNavigationLinks._2
+
+                    @if(pageNumber < numberOfPages) {
+                        @navigationLink(messages("messages__listSchemes__pagination__next"), pageNumber+1, listSchemeUrl)
+                        @navigationLink(messages("messages__listSchemes__pagination__last"), numberOfPages, listSchemeUrl)
                     }
                 </nav>
             </div>
