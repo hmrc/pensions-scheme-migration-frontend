@@ -43,7 +43,6 @@ class UTRControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
   private val referenceValue: ReferenceValue = ReferenceValue("1234567890")
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(index), companyDetails).success.value
 
-  private val testHintText: String = "<p class='govuk-body govuk-!-font-weight-regular'>This is a 10-digit or 13-digit number. It may also start or end with the letter ‘k’.</p><p class='govuk-body govuk-!-font-weight-regular'>You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.</p>"
   private val formProvider: UTRFormProvider = new UTRFormProvider()
 
   private val formData: ReferenceValue =
@@ -61,7 +60,7 @@ class UTRControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
         enterReferenceValueWithHintView = app.injector.instanceOf[EnterReferenceValueWithHintView]
       ))
 
-  override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
+  override def beforeEach(): Unit = reset(mockUserAnswersCacheConnector)
 
   "UTRController" must {
     "return OK and the correct view for a GET" in {
@@ -73,16 +72,15 @@ class UTRControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
 
       val view = app.injector.instanceOf[EnterReferenceValueWithHintView].apply(
         form = formProvider(),
-        pageTitle = "What is the company’s UTR?",
-        pageHeading = "What is test company’s UTR?",
-        schemeName = "Test scheme name",
+        pageTitle = messages("messages__enterUTR", messages("messages__company")),
+        pageHeading = messages("messages__enterUTR", companyDetails.companyName),
+        schemeName = schemeName,
         legendClass = "govuk-visually-hidden",
-        paragraphs = Seq(),
-        hintText = Some(testHintText),
+        paragraphs = Seq(messages("messages__UTR__p1"), messages("messages__UTR__p2")),
         submitCall= routes.UTRController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)
-      compareResultAndView(result, view)
 
+      compareResultAndView(result, view)
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
@@ -111,7 +109,6 @@ class UTRControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-
       val request = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 

@@ -49,8 +49,6 @@ class VATControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
   private val formData: ReferenceValue = ReferenceValue(value = "123456789")
   private val formProvider: VATFormProvider = new VATFormProvider()
 
-  private val testHintText: String = "<p class='govuk-body govuk-!-font-weight-regular'>This is 9 numbers, sometimes with ‘GB’ at the start, for example 123456789 or GB123456789. You can find it on test company’s VAT registration certificate.</p>"
-
   private def controller(dataRetrievalAction: DataRetrievalAction): VATController =
     new VATController(messagesApi, new FakeAuthAction(), dataRetrievalAction,
       new DataRequiredActionImpl, formProvider,
@@ -67,9 +65,7 @@ class VATControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
 
   "VATController" must {
     "return OK and the correct view for a GET" in {
-
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
-
       val result: Future[Result] = controller(getData).onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
@@ -77,11 +73,10 @@ class VATControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
       val view = app.injector.instanceOf[EnterReferenceValueWithHintView].apply(
         form = formProvider("test company"),
         schemeName = "Test scheme name",
-        pageTitle = "What is the company’s VAT registration number?",
-        pageHeading = "What is test company’s VAT registration number?",
+        pageTitle = messages("messages__vat", messages("messages__company")),
+        pageHeading = messages("messages__vat", companyDetails.companyName),
         legendClass = "govuk-visually-hidden",
-        paragraphs = Seq(),
-        hintText = Some(testHintText),
+        paragraphs = Seq(messages("messages__vat__p", companyDetails.companyName)),
         submitCall = routes.VATController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)
       compareResultAndView(result, view)
@@ -122,6 +117,8 @@ class VATControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
 
       contentAsString(result) must include(messages("messages__vat", "the company"))
       contentAsString(result) must include(messages("messages__vat__error_invalid", companyDetails.companyName))
+
+      verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
     }
   }
 }
