@@ -35,9 +35,6 @@
 
 @layout(messages("messages__addTrustee_title"), formHasErrors = form.hasErrors) {
 
-
-    <h1 class="govuk-heading-xl">@messages("messages__listSchemes__title", messages("messages__racdac"))</h1>
-
     @formHelper(submitCall, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "true") {
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
