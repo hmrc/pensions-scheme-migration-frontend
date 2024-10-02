@@ -30,8 +30,8 @@ object DataPrefillCheckbox {
       println(s"*******index is ${indvDetails.index.toString}")
       Checkboxes.Checkbox(Literal(indvDetails.fullName), indvDetails.index.toString, None, None)
     })
-    println(s"******* None Index is ${(items.size-1).toString}")
-    val noneOfTheAbove = Checkboxes.Checkbox(msg"messages__prefill__label__none", (items.size-1).toString, None, None)
+    println(s"******* None Index is ${(items.size).toString}")
+    val noneOfTheAbove = Checkboxes.Checkbox(msg"messages__prefill__label__none", (items.size).toString, None, None)
 
     Checkboxes.set(form("value"), items :+ noneOfTheAbove)
   }
