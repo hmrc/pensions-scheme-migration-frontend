@@ -170,8 +170,8 @@
                 </p>
                 <nav class="govuk-margin-top-5" aria-label="page">
                     @if(pageNumber > 1) {
-                        @navigationLink(messages("messages__listSchemes__pagination__first"), 1, listSchemeUrl))
-                        @navigationLink(messages("messages__listSchemes__pagination__prev"),pageNumber-1, listSchemeUrl))
+                        @navigationLink(messages("messages__listSchemes__pagination__first"), 1, listSchemeUrl)
+                        @navigationLink(messages("messages__listSchemes__pagination__prev"),pageNumber-1, listSchemeUrl)
                     }
 
                     @pageNumberLinks.map { linkNumber =>
