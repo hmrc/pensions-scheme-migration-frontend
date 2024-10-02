@@ -49,17 +49,7 @@ class VATControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
   private val formData: ReferenceValue = ReferenceValue(value = "123456789")
   private val formProvider: VATFormProvider = new VATFormProvider()
 
-  //  private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
-
-  private val commonJson: JsObject =
-    Json.obj(
-      "pageTitle" -> messages("messages__vat", messages("messages__company")),
-      "pageHeading" -> messages("messages__vat", companyDetails.companyName),
-      "schemeName" -> schemeName,
-      "paragraphs" -> Json.arr(messages("messages__vat__p", companyDetails.companyName)),
-      "legendClass" -> "govuk-visually-hidden",
-      "isPageHeading" -> true
-    )
+  private val testHintText: String = "<p class='govuk-body govuk-!-font-weight-regular'>This is 9 numbers, sometimes with ‘GB’ at the start, for example 123456789 or GB123456789. You can find it on test company’s VAT registration certificate.</p>"
 
   private def controller(dataRetrievalAction: DataRetrievalAction): VATController =
     new VATController(messagesApi, new FakeAuthAction(), dataRetrievalAction,
@@ -91,7 +81,7 @@ class VATControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
         pageHeading = "What is test company’s VAT registration number?",
         legendClass = "govuk-visually-hidden",
         paragraphs = Seq(),
-        hintText = Some("<p class='govuk-body govuk-!-font-weight-regular'>This is 9 numbers, sometimes with ‘GB’ at the start, for example 123456789 or GB123456789. You can find it on test company’s VAT registration certificate.</p>"),
+        hintText = Some(testHintText),
         submitCall = routes.VATController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)
       compareResultAndView(result, view)

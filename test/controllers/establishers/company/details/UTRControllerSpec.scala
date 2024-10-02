@@ -43,6 +43,7 @@ class UTRControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
   private val referenceValue: ReferenceValue = ReferenceValue("1234567890")
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(index), companyDetails).success.value
 
+  private val testHintText: String = "<p class='govuk-body govuk-!-font-weight-regular'>This is a 10-digit or 13-digit number. It may also start or end with the letter ‘k’.</p><p class='govuk-body govuk-!-font-weight-regular'>You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.</p>"
   private val formProvider: UTRFormProvider = new UTRFormProvider()
 
   private val formData: ReferenceValue =
@@ -77,7 +78,7 @@ class UTRControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
         schemeName = "Test scheme name",
         legendClass = "govuk-visually-hidden",
         paragraphs = Seq(),
-        hintText = Some("<p class='govuk-body govuk-!-font-weight-regular'>This is a 10-digit or 13-digit number. It may also start or end with the letter ‘k’.</p><p class='govuk-body govuk-!-font-weight-regular'>You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.</p>"),
+        hintText = Some(testHintText),
         submitCall= routes.UTRController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)
       compareResultAndView(result, view)

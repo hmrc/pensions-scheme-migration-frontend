@@ -22,7 +22,7 @@ govukInput: GovukInput,
 govukButton: GovukButton,
 )
 
-@(form: Form[_], schemeName: String, pageTitle: String, pageHeading: String, legendClass: String, paragraphs: Seq[String], hintText: Option[String], submitCall: Call)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], schemeName: String, pageTitle: String, pageHeading: String, legendClass: String, paragraphs: Seq[String], hintText: Option[String] = None, submitCall: Call)(implicit request: Request[_], messages: Messages)
 
 @field = @{form("value")}
 
