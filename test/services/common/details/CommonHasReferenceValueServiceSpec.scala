@@ -24,11 +24,10 @@ import org.mockito.ArgumentMatchers.any
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import renderer.Renderer
 import services.CommonServiceSpecBase
+import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.ua
-import utils.FakeNavigator
+import utils.{FakeNavigator, TwirlMigration}
 import views.html.HasReferenceValueWithHintView
 
 import scala.concurrent.Future
@@ -53,7 +52,17 @@ class CommonHasReferenceValueServiceSpec extends ControllerSpecBase with CommonS
 
   "get" should {
     "return OK and render the correct template" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
+      val expectedView = app.injector.instanceOf[HasReferenceValueWithHintView].apply(
+        yesNoForm,
+        "Test Scheme",
+        "Test Title",
+        "Test Heading",
+        TwirlMigration.toTwirlRadios(Radios.yesNo(yesNoForm("value"))),
+        "govuk-fieldset__legend--s",
+        Seq(),
+        onwardCall
+      )(fakeRequest, messages)
 
       val result = service.get(
         pageTitle = "Test Title",
@@ -65,15 +74,16 @@ class CommonHasReferenceValueServiceSpec extends ControllerSpecBase with CommonS
         submitCall = onwardCall
       )(fakeDataRequest(ua, fakeRequestWithFormData), global)
 
+
       status(result) mustBe OK
-      verify(mockRenderer).render(any(), any())(any())
+
+      compareResultAndView(result, expectedView)
     }
   }
 
   "post" should {
     "return a BadRequest when form has errors" in {
       val formWithErrors = yesNoForm.withError("value", "error.required")
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
       val result = service.post(
         pageTitle = "Test Title",
@@ -87,13 +97,11 @@ class CommonHasReferenceValueServiceSpec extends ControllerSpecBase with CommonS
       )(fakeDataRequest(ua, fakeRequestWithFormData), global)
 
       status(result) mustBe BAD_REQUEST
-      verify(mockRenderer).render(any(), any())(any())
     }
 
     "redirect to the next page on valid data submission" in {
 
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
       val result = service.post(
         pageTitle = "Test Title",
