@@ -23,25 +23,22 @@ import identifiers.trustees.partnership.PartnershipDetailsId
 import identifiers.trustees.partnership.details.HaveVATId
 import matchers.JsonMatchers
 import models.{Index, NormalMode}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
-import play.twirl.api.Html
-import renderer.Renderer
 import services.common.details.CommonHasReferenceValueService
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{partnershipDetails, schemeName, ua}
 import utils.{FakeNavigator, TwirlMigration, UserAnswers}
 import viewmodels.Message
-import views.html.HasReferenceValueWithHintView
+import views.html.{HasReferenceValueView, HasReferenceValueWithHintView}
 
 import scala.concurrent.Future
-class HaveVATControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with BeforeAndAfterEach {
+class HaveVATControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues with BeforeAndAfterEach {
 
   private val index: Index = Index(0)
   private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(index), partnershipDetails).success.value
@@ -54,6 +51,7 @@ class HaveVATControllerSpec extends ControllerSpecBase with NunjucksSupport with
       common = new CommonHasReferenceValueService(
         controllerComponents = controllerComponents,
         hasReferenceValueWithHintView = app.injector.instanceOf[HasReferenceValueWithHintView],
+        hasReferenceValueView = app.injector.instanceOf[HasReferenceValueView],
         userAnswersCacheConnector = mockUserAnswersCacheConnector,
         navigator = new FakeNavigator(desiredRoute = onwardCall),
         messagesApi = messagesApi
@@ -68,14 +66,13 @@ class HaveVATControllerSpec extends ControllerSpecBase with NunjucksSupport with
 
       status(result) mustBe OK
 
-      val view = app.injector.instanceOf[HasReferenceValueWithHintView].apply(
+      val view = app.injector.instanceOf[HasReferenceValueView].apply(
         form,
         schemeName,
         messages("messages__haveVAT", messages("messages__partnership")),
         messages("messages__haveVAT", partnershipDetails.partnershipName),
         TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
         "govuk-visually-hidden",
-        Seq(),
         routes.HaveVATController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)
       compareResultAndView(result, view)
@@ -90,14 +87,13 @@ class HaveVATControllerSpec extends ControllerSpecBase with NunjucksSupport with
 
       status(result) mustBe OK
 
-      val view = app.injector.instanceOf[HasReferenceValueWithHintView].apply(
+      val view = app.injector.instanceOf[HasReferenceValueView].apply(
         filledFrom,
         schemeName,
         messages("messages__haveVAT", messages("messages__partnership")),
         messages("messages__haveVAT", partnershipDetails.partnershipName),
         TwirlMigration.toTwirlRadios(Radios.yesNo(filledFrom("value"))),
         "govuk-visually-hidden",
-        Seq(),
         routes.HaveVATController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)
       compareResultAndView(result, view)

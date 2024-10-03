@@ -35,7 +35,7 @@ import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{partnershipDetails, schemeName, ua}
 import utils.{FakeNavigator, TwirlMigration, UserAnswers}
 import viewmodels.Message
-import views.html.HasReferenceValueWithHintView
+import views.html.{HasReferenceValueView, HasReferenceValueWithHintView}
 
 import scala.concurrent.Future
 
@@ -53,6 +53,7 @@ class HavePAYEControllerSpec extends ControllerSpecBase with JsonMatchers with T
       new DataRequiredActionImpl, formProvider, common = new CommonHasReferenceValueService(
         controllerComponents = controllerComponents,
         hasReferenceValueWithHintView = app.injector.instanceOf[HasReferenceValueWithHintView],
+        hasReferenceValueView = app.injector.instanceOf[HasReferenceValueView],
         userAnswersCacheConnector = mockUserAnswersCacheConnector,
         navigator = new FakeNavigator(desiredRoute = onwardCall),
         messagesApi = messagesApi

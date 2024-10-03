@@ -28,7 +28,7 @@ import services.CommonServiceSpecBase
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.ua
 import utils.{FakeNavigator, TwirlMigration}
-import views.html.HasReferenceValueWithHintView
+import views.html.{HasReferenceValueView, HasReferenceValueWithHintView}
 
 import scala.concurrent.Future
 
@@ -37,6 +37,7 @@ class CommonHasReferenceValueServiceSpec extends ControllerSpecBase with CommonS
   val service = new CommonHasReferenceValueService(
     controllerComponents = controllerComponents,
     hasReferenceValueWithHintView = app.injector.instanceOf[HasReferenceValueWithHintView],
+    hasReferenceValueView = app.injector.instanceOf[HasReferenceValueView],
     userAnswersCacheConnector = mockUserAnswersCacheConnector,
     navigator = new FakeNavigator(desiredRoute = onwardCall),
     messagesApi = messagesApi
@@ -53,14 +54,13 @@ class CommonHasReferenceValueServiceSpec extends ControllerSpecBase with CommonS
   "get" should {
     "return OK and render the correct template" in {
 
-      val expectedView = app.injector.instanceOf[HasReferenceValueWithHintView].apply(
+      val expectedView = app.injector.instanceOf[HasReferenceValueView].apply(
         yesNoForm,
         "Test Scheme",
         "Test Title",
         "Test Heading",
         TwirlMigration.toTwirlRadios(Radios.yesNo(yesNoForm("value"))),
         "govuk-fieldset__legend--s",
-        Seq(),
         onwardCall
       )(fakeRequest, messages)
 

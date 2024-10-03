@@ -34,13 +34,12 @@ import services.common.details.CommonHasReferenceValueService
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import utils.Data.ua
 import utils.{FakeNavigator, TwirlMigration, UserAnswers}
-import views.html.HasReferenceValueWithHintView
+import views.html.{HasReferenceValueView, HasReferenceValueWithHintView}
 
 import scala.concurrent.Future
 
 class EstablisherHasNINOControllerSpec
   extends ControllerSpecBase
-    with NunjucksSupport
     with JsonMatchers
     with TryValues
     with BeforeAndAfterEach {
@@ -66,6 +65,7 @@ class EstablisherHasNINOControllerSpec
       common = new CommonHasReferenceValueService(
         controllerComponents = controllerComponents,
         hasReferenceValueWithHintView = app.injector.instanceOf[HasReferenceValueWithHintView],
+        hasReferenceValueView = app.injector.instanceOf[HasReferenceValueView],
         userAnswersCacheConnector = mockUserAnswersCacheConnector,
         navigator = new FakeNavigator(desiredRoute = onwardCall),
         messagesApi = messagesApi
@@ -88,14 +88,13 @@ class EstablisherHasNINOControllerSpec
 
       status(result) mustBe OK
 
-      val view = app.injector.instanceOf[HasReferenceValueWithHintView].apply(
+      val view = app.injector.instanceOf[HasReferenceValueView].apply(
         form,
         "Test scheme name",
         "Does the individual have a National Insurance number?",
         "Does Jane Doe have a National Insurance number?",
         TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
         "govuk-label--xl",
-        Seq(),
         routes.EstablisherHasNINOController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)
       compareResultAndView(result, view)
@@ -114,14 +113,13 @@ class EstablisherHasNINOControllerSpec
 
       status(result) mustBe OK
 
-      val view = app.injector.instanceOf[HasReferenceValueWithHintView].apply(
+      val view = app.injector.instanceOf[HasReferenceValueView].apply(
         filledFrom,
         "Test scheme name",
         "Does the individual have a National Insurance number?",
         "Does Jane Doe have a National Insurance number?",
         TwirlMigration.toTwirlRadios(Radios.yesNo(filledFrom("value"))),
         "govuk-label--xl",
-        Seq(),
         routes.EstablisherHasNINOController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)
       compareResultAndView(result, view)

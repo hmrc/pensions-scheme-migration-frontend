@@ -34,7 +34,7 @@ import services.common.details.CommonHasReferenceValueService
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.ua
 import utils.{FakeNavigator, TwirlMigration, UserAnswers}
-import views.html.HasReferenceValueWithHintView
+import views.html.{HasReferenceValueView, HasReferenceValueWithHintView}
 
 import scala.concurrent.Future
 class TrusteeHasUTRControllerSpec
@@ -65,6 +65,7 @@ class TrusteeHasUTRControllerSpec
       common = new CommonHasReferenceValueService(
         controllerComponents = controllerComponents,
         hasReferenceValueWithHintView = app.injector.instanceOf[HasReferenceValueWithHintView],
+        hasReferenceValueView = app.injector.instanceOf[HasReferenceValueView],
         userAnswersCacheConnector = mockUserAnswersCacheConnector,
         navigator = new FakeNavigator(desiredRoute = onwardCall),
         messagesApi = messagesApi
