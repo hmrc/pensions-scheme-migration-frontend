@@ -44,20 +44,18 @@ class UTRControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
   private val index: Index = Index(0)
   private val referenceValue: ReferenceValue = ReferenceValue("1234567890")
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(index), companyDetails).success.value
-
+  private val formData: ReferenceValue = ReferenceValue("1234567890")
   private val formProvider: UTRFormProvider = new UTRFormProvider()
 
-//  private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
-
-  private val commonJson: JsObject =
-    Json.obj(
-      "pageTitle"     -> messages("messages__enterUTR", messages("messages__company")),
-      "pageHeading"     -> messages("messages__enterUTR", companyDetails.companyName),
-      "schemeName"    -> schemeName,
-      "paragraphs"      -> Json.arr(messages("messages__UTR__p1"), messages("messages__UTR__p2")),
-      "legendClass"   -> "govuk-visually-hidden",
-      "isPageHeading" -> true
-    )
+//  private val commonJson: JsObject =
+//    Json.obj(
+//      "pageTitle"     -> messages("messages__enterUTR", messages("messages__company")),
+//      "pageHeading"     -> messages("messages__enterUTR", companyDetails.companyName),
+//      "schemeName"    -> schemeName,
+//      "paragraphs"      -> Json.arr(messages("messages__UTR__p1"), messages("messages__UTR__p2")),
+//      "legendClass"   -> "govuk-visually-hidden",
+//      "isPageHeading" -> true
+//    )
 
   private def controller(dataRetrievalAction: DataRetrievalAction): UTRController =
     new UTRController(messagesApi, new FakeAuthAction(), dataRetrievalAction,
@@ -75,39 +73,36 @@ class UTRControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
 
   "UTRController" must {
     "return OK and the correct view for a GET" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
       val result: Future[Result] = controller(getData).onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-//      templateCaptor.getValue mustEqual templateToBeRendered
-      jsonCaptor.getValue must containJson(commonJson)
+      val view = app.injector.instanceOf[EnterReferenceValueWithHintView].apply(
+        form = formProvider(),
+        pageTitle = messages("messages__enterUTR", messages("messages__company")),
+        pageHeading = messages("messages__enterUTR", companyDetails.companyName),
+        schemeName = schemeName,
+        legendClass = "govuk-visually-hidden",
+        paragraphs = Seq(messages("messages__UTR__p1"), messages("messages__UTR__p2")),
+        submitCall= routes.UTRController.onSubmit(0, NormalMode)
+      )(fakeRequest, messages)
+      compareResultAndView(result, view)
 
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
       val ua = userAnswers.set(CompanyUTRId(0), referenceValue).success.value
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
       val getData = new FakeDataRetrievalAction(Some(ua))
 
       val result: Future[Result] = controller(getData).onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      contentAsString(result) must include(messages("messages__enterUTR", "the company"))
+      contentAsString(result) must include(formData.value)
 
-//      templateCaptor.getValue mustEqual templateToBeRendered
-      jsonCaptor.getValue must containJson(commonJson)
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -123,20 +118,16 @@ class UTRControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
       val request = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
       val result: Future[Result] = controller(getData).onSubmit(0, NormalMode)(request)
 
       status(result) mustBe BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-//      templateCaptor.getValue mustEqual templateToBeRendered
-      jsonCaptor.getValue must containJson(commonJson)
+      contentAsString(result) must include(messages("messages__enterUTR", "the company"))
+      contentAsString(result) must include(messages("messages__utr__error_invalid", companyDetails.companyName))
+
       verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
     }
   }

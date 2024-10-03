@@ -147,7 +147,9 @@ class DirectorEnterNINOControllerSpec
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
         fakeRequest
           .withFormUrlEncodedBody("value" -> "invalid value")
+
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
+
       val result: Future[Result] =
         controller(getData)
           .onSubmit(0, 0, NormalMode)(request)

@@ -32,7 +32,6 @@ import services.DataUpdateService
 import services.common.details.CommonEnterReferenceValueService
 import utils.UserAnswers
 import viewmodels.Message
-import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -44,7 +43,7 @@ class DirectorEnterNINOController @Inject()( val messagesApi: MessagesApi,
                                              requireData: DataRequiredAction,
                                              formProvider: NINOFormProvider,
                                              dataUpdateService: DataUpdateService,
-                                             common: CommonEnterReferenceValueService,
+                                             common: CommonEnterReferenceValueService
                                            )(implicit val executionContext: ExecutionContext)
   extends Retrievals with I18nSupport {
 

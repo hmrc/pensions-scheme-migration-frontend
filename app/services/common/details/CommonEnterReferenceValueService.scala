@@ -26,12 +26,10 @@ import play.api.data.FormBinding.Implicits._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, Call, MessagesControllerComponents, Result}
-import play.api.routing.Router.empty.routes
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import utils.UserAnswers
-import views.html.EnterReferenceValueView
-import views.html.EnterReferenceValueWithHintView
+import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -56,15 +54,34 @@ class CommonEnterReferenceValueService @Inject()(val controllerComponents: Messa
            hintText: Option[String] = None,
            paragraphText: Seq[String] = Seq(),
            legendClass: String = "govuk-fieldset__legend--s",
-           submitCall: Call //TODO update calling controller and enable this line
-         )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
-        val filledForm = request.userAnswers.get[ReferenceValue](id).fold(form)(form.fill)
-    val view = if (paragraphText.nonEmpty || hintText.nonEmpty) {
-      enterReferenceValueWithHintView(filledForm, schemeName, pageTitle, pageHeading, legendClass, paragraphText, hintText, submitCall)
-    } else {
-      enterReferenceValueView(filledForm, schemeName, pageTitle, pageHeading, hintText, paragraphText, submitCall)
-    }
-    Future.successful(Ok(view))
+           submitCall: Call
+         )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+    val filledForm = request.userAnswers.get[ReferenceValue](id).fold(form)(form.fill)
+
+    Future.successful(Ok(
+      if (paragraphText.nonEmpty || hintText.nonEmpty) {
+        enterReferenceValueWithHintView(
+          filledForm,
+          schemeName,
+          pageTitle,
+          pageHeading,
+          legendClass,
+          paragraphText,
+          hintText,
+          submitCall
+        )
+      } else {
+        enterReferenceValueView(
+          filledForm,
+          schemeName,
+          pageTitle,
+          pageHeading,
+          hintText,
+          paragraphText,
+          submitCall
+        )
+      }
+    ))
   }
 
   def post(
@@ -103,5 +120,5 @@ class CommonEnterReferenceValueService @Inject()(val controllerComponents: Messa
           Redirect(navigator.nextPage(id, updatedAnswers, mode))
       }
     )
-}
+  }
 }
