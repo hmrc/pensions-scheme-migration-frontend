@@ -28,7 +28,7 @@ import services.BulkRacDacService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class BulkListController @Inject()(
                                     val appConfig: AppConfig,
@@ -44,33 +44,33 @@ class BulkListController @Inject()(
 
   val form: Form[Boolean] = formProvider()
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData(false)).async {
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData(false)) {
     implicit request =>
       bulkRacDacService.renderRacDacBulkView(form, pageNumber = 1)
   }
 
-  def onPageLoadWithPageNumber(pageNumber: Int): Action[AnyContent] = (authenticate andThen getData(false)).async {
+  def onPageLoadWithPageNumber(pageNumber: Int): Action[AnyContent] = (authenticate andThen getData(false)) {
     implicit request =>
       bulkRacDacService.renderRacDacBulkView(form, pageNumber)
   }
 
-  def onSubmit: Action[AnyContent] = (authenticate andThen getData(false)).async {
+  def onSubmit: Action[AnyContent] = (authenticate andThen getData(false)) {
     implicit request =>
       submit(pageNumber = 1)
   }
 
-  def onSubmitWithPageNumber(pageNumber: Int): Action[AnyContent] = (authenticate andThen getData(false)).async {
+  def onSubmitWithPageNumber(pageNumber: Int): Action[AnyContent] = (authenticate andThen getData(false)) {
     implicit request =>
       submit(pageNumber)
   }
 
-  private def submit(pageNumber: Int)(implicit request: BulkDataRequest[AnyContent]): Future[Result] = {
+  private def submit(pageNumber: Int)(implicit request: BulkDataRequest[AnyContent]): Result = {
     form.bindFromRequest().fold(formWithErrors =>
       bulkRacDacService.renderRacDacBulkView(formWithErrors, pageNumber),
       { case true =>
-        Future.successful(Redirect(routes.DeclarationController.onPageLoad))
+        Redirect(routes.DeclarationController.onPageLoad)
       case _ =>
-        Future.successful(Redirect(appConfig.psaOverviewUrl))
+        Redirect(appConfig.psaOverviewUrl)
       }
     )
   }

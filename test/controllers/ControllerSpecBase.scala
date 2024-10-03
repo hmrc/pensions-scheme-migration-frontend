@@ -24,20 +24,16 @@ import controllers.actions._
 import navigators.CompoundNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{Mockito, MockitoSugar}
-import org.scalatest.{Assertion, BeforeAndAfterEach}
+import org.scalatest.BeforeAndAfterEach
 import play.api.http.HeaderNames
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Result}
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.Helpers.{GET, POST}
 import play.api.test.{FakeHeaders, FakeRequest}
-import play.twirl.api.Html
 import services.DataUpdateService
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import utils.{CountryOptions, Enumerable, FakeCountryOptions}
-
-import scala.concurrent.Future
-import scala.concurrent.duration.DurationInt
 
 
 trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerable.Implicits with MockitoSugar {
@@ -92,27 +88,5 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
         uri = path,
         headers = FakeHeaders(Seq(HeaderNames.HOST -> "localhost")),
         body = AnyContentAsFormUrlEncoded(values))
-
-  protected def compareResultAndView(
-                                      result: Future[Result],
-                                      view: Html
-                                    ): Assertion = {
-    org.scalatest.Assertions.assert(
-
-      play.api.test.Helpers.contentAsString(result)(1.seconds).removeAllNonces().filterAndTrim
-        == view.toString().filterAndTrim
-
-    )
-  }
-
-  implicit class StringOps(s: String) {
-
-    def filterAndTrim: String =
-        s.split("\n")
-        .filterNot(_.contains("csrfToken"))
-        .map(_.trim)
-        .mkString
-    def removeAllNonces(): String = s.replaceAll("""nonce="[^"]*"""", "")
-  }
 
 }

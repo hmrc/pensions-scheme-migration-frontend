@@ -34,7 +34,7 @@ class NoTrusteesController @Inject()(
                                       getData: DataRetrievalAction,
                                       requireData: DataRequiredAction,
                                       val controllerComponents: MessagesControllerComponents,
-                                      renderer: Renderer
+                                      view: views.html.trustees.NoTrusteesView
                                     )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with Retrievals
@@ -42,15 +42,12 @@ class NoTrusteesController @Inject()(
     with NunjucksSupport {
 
   def onPageLoad: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData()).async {
+    (authenticate andThen getData andThen requireData()) {
       implicit request =>
-        val context = Json.obj(
-          "schemeName" -> existingSchemeName
-        )
-        renderer.render(
-          template = "trustees/NoTrustees.njk",
-          ctx = context
-        ).map(Ok(_))
+        Ok(view(
+          controllers.trustees.routes.NoTrusteesController.onSubmit,
+          existingSchemeName.getOrElse(throw new RuntimeException("Scheme name not available"))
+        ))
     }
 
   def onSubmit: Action[AnyContent] =

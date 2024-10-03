@@ -19,10 +19,9 @@ package controllers.racdac.individual
 import config.AppConfig
 import models.RacDac
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.racdac.individual.AddingRacDacView
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -30,20 +29,15 @@ import scala.concurrent.ExecutionContext
 class AddingRacDacController @Inject()(val appConfig: AppConfig,
                                        override val messagesApi: MessagesApi,
                                        val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer
+                                       addingRacDacView: AddingRacDacView
                                       )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = Action.async { implicit request =>
-    renderer.render("racdac/individual/addingRacDac.njk", racDacSchemeJson).map(Ok(_))
-  }
-
-  private def racDacSchemeJson: JsObject = {
-    Json.obj(
-      "listOfSchemeUrl" -> appConfig.yourPensionSchemesUrl,
-      "contactHmrcUrl" -> appConfig.contactHmrcUrl,
-      "returnUrl" -> controllers.preMigration.routes.ListOfSchemesController.onPageLoad(RacDac).url
+  def onPageLoad: Action[AnyContent] = Action { implicit request =>
+    Ok(
+      addingRacDacView(appConfig.yourPensionSchemesUrl,
+        appConfig.contactHmrcUrl,
+        controllers.preMigration.routes.ListOfSchemesController.onPageLoad(RacDac).url)
     )
   }
-
 }

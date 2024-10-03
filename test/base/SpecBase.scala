@@ -20,6 +20,7 @@ import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import models.requests.DataRequest
 import org.mockito.MockitoSugar.mock
+import org.scalatest.Assertion
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
 import play.api.Application
@@ -27,13 +28,16 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContent, AnyContentAsEmpty, Call, MessagesControllerComponents}
+import play.api.mvc._
 import play.api.test.FakeRequest
+import play.twirl.api.Html
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import utils.Data.{migrationLock, psaId}
 import utils.UserAnswers
 
+import scala.concurrent.Future
+import scala.concurrent.duration.DurationInt
 import scala.concurrent.ExecutionContext
 import scala.language.implicitConversions
 
@@ -78,6 +82,28 @@ trait SpecBase
   implicit def messages: Messages = messagesApi.preferred(fakeRequest)
 
   def controllerComponents: MessagesControllerComponents = injector.instanceOf[MessagesControllerComponents]
+
+  protected def compareResultAndView(
+                                      result: Future[Result],
+                                      view: Html
+                                    ): Assertion = {
+    org.scalatest.Assertions.assert(
+
+      play.api.test.Helpers.contentAsString(result)(1.seconds).removeAllNonces().filterAndTrim
+        == view.toString().filterAndTrim
+
+    )
+  }
+
+  implicit class StringOps(s: String) {
+
+    def filterAndTrim: String =
+      s.split("\n")
+        .filterNot(_.contains("csrfToken"))
+        .map(_.trim)
+        .mkString
+    def removeAllNonces(): String = s.replaceAll("""nonce="[^"]*"""", "")
+  }
 }
 
 object SpecBase extends SpecBase

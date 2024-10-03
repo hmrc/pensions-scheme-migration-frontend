@@ -49,9 +49,9 @@ class DeclarationController @Inject()(
                                        minimalDetailsConnector: MinimalDetailsConnector,
                                        pensionsSchemeConnector:PensionsSchemeConnector,
                                        val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer,
                                        emailConnector: EmailConnector,
-                                       crypto: ApplicationCrypto
+                                       crypto: ApplicationCrypto,
+                                       declarationView: views.html.racdac.DeclarationView
                                      )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
@@ -59,14 +59,15 @@ class DeclarationController @Inject()(
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData(true)).async {
       implicit request =>
-        minimalDetailsConnector.getPSAName.flatMap {
+        minimalDetailsConnector.getPSAName.map {
           psaName =>
-            val json = Json.obj(
-              "psaName" -> psaName,
-              "submitUrl" -> controllers.racdac.individual.routes.DeclarationController.onSubmit.url,
-              "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad.url
+            Ok(
+              declarationView(
+                controllers.racdac.individual.routes.DeclarationController.onSubmit,
+                controllers.routes.PensionSchemeRedirectController.onPageLoad.url,
+                psaName
+              )
             )
-            renderer.render("racdac/declaration.njk", json).map(Ok(_))
         }
     }
 
