@@ -28,12 +28,12 @@ import viewmodels.forNunjucks.Checkboxes
 object DataPrefillCheckbox {
 
   def checkboxes(form: Form[_], values: Seq[DataPrefillIndividualDetails])(implicit messages: Messages): Seq[CheckboxItem] = {
-
-    val checkBoxes = values.map { details =>
+    val checkBoxes = values.zipWithIndex.map { case (details, index) =>
       CheckboxItem(
         content = Text(details.fullName),
         label = Some(Label(content = Text(details.fullName))),
-        value = details.fullName,
+        value = index.toString,
+        name = Some(s"value[$index]"),
         checked = form("value").value.map(_ == details.fullName).getOrElse(false)
       )
     }
@@ -42,6 +42,7 @@ object DataPrefillCheckbox {
       content = Text(msg"messages__prefill__label__none".resolve),
       label = Some(Label(content = Text(msg"messages__prefill__label__none".resolve))),
       value = "-1",
+      name = Some(s"value[${checkBoxes.length}]"),
       checked = form("value").value.map(_ == "-1").getOrElse(false),
       behaviour = Some(ExclusiveCheckbox)
     )

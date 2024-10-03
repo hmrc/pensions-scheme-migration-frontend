@@ -53,31 +53,6 @@
     }
 
     @formHelper(action = submitCall, Symbol("autoComplete") -> "off") {
-
-        @*
-        <div class="govuk-form-group">
-            <fieldset class="govuk-fieldset">
-                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-                    @dataPrefillCheckboxes.zipWithIndex.map { case (item, index) =>
-                        <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" id="value_@index" name="value[@index]" type="checkbox" value="@{item.value}">
-                            <label class="govuk-label govuk-checkboxes__label" for="value_@index">
-                                @{item.value}
-                            </label>
-                        </div>
-                    }
-                    <div class="govuk-checkboxes__divider">or</div>
-                    <div class="govuk-checkboxes__item">
-                        <input class="govuk-checkboxes__input" id="value_@lastCheckBoxIndex" name="value[@lastCheckBoxIndex]" type="checkbox" value="noneOfTheAbove" data-behaviour="exclusive">
-                        <label class="govuk-label govuk-checkboxes__label" for="value_@lastCheckBoxIndex">
-                            @messages("messages__prefill__label__none")
-                        </label>
-                    </div>
-                </div>
-            </fieldset>
-        </div>
-            *@
-
         @govukCheckboxes(Checkboxes(
             name = "value",
             fieldset = Some(Fieldset(
