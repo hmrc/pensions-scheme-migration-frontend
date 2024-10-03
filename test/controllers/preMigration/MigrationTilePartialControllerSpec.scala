@@ -32,11 +32,6 @@ class MigrationTilePartialControllerSpec extends ControllerSpecBase with Nunjuck
 
   private val mockQueueConnector = mock[BulkMigrationQueueConnector]
 
-  val viewOnlyLinks: Seq[PageLink] = Seq(
-    PageLink("view-pension-schemes", appConfig.schemesMigrationViewOnly, msg"messages__migrationLink__viewSchemesLink"),
-    PageLink("view-rac-dacs", appConfig.racDacMigrationViewOnly, msg"messages__migrationLink__viewRacDacsLink")
-  )
-
   val transferLinks: Seq[PageLink] = Seq(
     PageLink("add-pension-schemes", appConfig.schemesMigrationTransfer, msg"messages__migrationLink__addSchemesLink"),
     PageLink("add-rac-dacs", appConfig.racDacMigrationTransfer, msg"messages__migrationLink__addRacDacsLink")
