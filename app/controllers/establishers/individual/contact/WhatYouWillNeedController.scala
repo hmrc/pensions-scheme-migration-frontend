@@ -23,19 +23,20 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.Results.Ok
 import play.api.mvc.{Action, AnyContent}
-import services.common.contact.CommonWhatYouWillNeedContactService
 import viewmodels.Message
+import views.html.WhatYouWillNeedContactView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class WhatYouWillNeedController @Inject()(
                                            val messagesApi: MessagesApi,
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
-                                           common: CommonWhatYouWillNeedContactService
+                                           view: WhatYouWillNeedContactView
                                          )(implicit val ec: ExecutionContext)
   extends Retrievals
     with I18nSupport {
@@ -45,13 +46,12 @@ class WhatYouWillNeedController @Inject()(
       implicit request =>
         EstablisherNameId(index).retrieve.map {
           personName =>
-            common.get(
-              name = personName.fullName,
-              pageHeading =  Message("messages__title_individual"),
-              entityType = Message("messages__individual"),
-              continueUrl = controllers.establishers.individual.contact.routes.EnterEmailController.onPageLoad(index, NormalMode).url,
-              schemeName = request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
-            )
+            Future.successful(Ok(view(
+              Message("messages__title_individual"),
+              controllers.establishers.individual.contact.routes.EnterEmailController.onPageLoad(index, NormalMode).url,
+              personName.fullName,
+              request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
+            )))
         }
     }
 }
