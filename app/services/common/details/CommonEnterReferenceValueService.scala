@@ -56,15 +56,34 @@ class CommonEnterReferenceValueService @Inject()(val controllerComponents: Messa
            hintText: Option[String] = None,
            paragraphText: Seq[String] = Seq(),
            legendClass: String = "govuk-fieldset__legend--s",
-           submitCall: Call //TODO update calling controller and enable this line
+           submitCall: Call
          )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
-        val filledForm = request.userAnswers.get[ReferenceValue](id).fold(form)(form.fill)
-    val view = if (paragraphText.nonEmpty || hintText.nonEmpty) {
-      enterReferenceValueWithHintView(filledForm, schemeName, pageTitle, pageHeading, legendClass, paragraphText, hintText, submitCall)
-    } else {
-      enterReferenceValueView(filledForm, schemeName, pageTitle, pageHeading, hintText, paragraphText, submitCall)
-    }
-    Future.successful(Ok(view))
+    val filledForm = request.userAnswers.get[ReferenceValue](id).fold(form)(form.fill)
+
+    Future.successful(Ok(
+      if (paragraphText.nonEmpty || hintText.nonEmpty) {
+        enterReferenceValueWithHintView(
+          filledForm,
+          schemeName,
+          pageTitle,
+          pageHeading,
+          legendClass,
+          paragraphText,
+          hintText,
+          submitCall
+        )
+      } else {
+        enterReferenceValueView(
+          filledForm,
+          schemeName,
+          pageTitle,
+          pageHeading,
+          hintText,
+          paragraphText,
+          submitCall
+        )
+      }
+    ))
   }
 
   def post(
@@ -103,5 +122,5 @@ class CommonEnterReferenceValueService @Inject()(val controllerComponents: Messa
           Redirect(navigator.nextPage(id, updatedAnswers, mode))
       }
     )
-}
+  }
 }
