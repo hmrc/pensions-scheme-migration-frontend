@@ -29,7 +29,7 @@ import play.api.mvc.{AnyContent, Call, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import uk.gov.hmrc.viewmodels.Radios
 import utils.{TwirlMigration, UserAnswers}
-import views.html.HasReferenceValueWithHintView
+import views.html.{HasReferenceValueView, HasReferenceValueWithHintView}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,13 +38,11 @@ import scala.util.Try
 @Singleton
 class CommonHasReferenceValueService @Inject()(val controllerComponents: MessagesControllerComponents,
                                                hasReferenceValueWithHintView: HasReferenceValueWithHintView,
+                                               hasReferenceValueView:HasReferenceValueView,
                                                val userAnswersCacheConnector: UserAnswersCacheConnector,
                                                val navigator: CompoundNavigator,
                                                val messagesApi: MessagesApi
                                               ) extends FrontendHeaderCarrierProvider with I18nSupport {
-
-//  protected def templateName(paragraphText: Seq[String]): String =
-//    if (paragraphText.nonEmpty) "hasReferenceValueWithHint.njk" else "hasReferenceValue.njk"
 
   def get(
            pageTitle: String,
@@ -65,16 +63,14 @@ class CommonHasReferenceValueService @Inject()(val controllerComponents: Message
       }
 
     Future.successful(Ok(
-      hasReferenceValueWithHintView(
-        preparedForm,
-        schemeName,
-        pageTitle,
-        pageHeading,
-        TwirlMigration.toTwirlRadios(Radios.yesNo(preparedForm("value"))),
-        legendClass,
-        paragraphText,
-        submitCall
-      )
+      if (paragraphText.nonEmpty){
+        hasReferenceValueWithHintView(preparedForm, schemeName, pageTitle, pageHeading,
+          TwirlMigration.toTwirlRadios(Radios.yesNo(preparedForm("value"))), legendClass, paragraphText, submitCall)
+      } else {
+        hasReferenceValueView(
+          preparedForm, schemeName, pageTitle, pageHeading,
+          TwirlMigration.toTwirlRadios(Radios.yesNo(preparedForm("value"))), legendClass, submitCall)
+      }
     ))
   }
   def post(pageTitle: String,
@@ -93,16 +89,14 @@ class CommonHasReferenceValueService @Inject()(val controllerComponents: Message
     form.bindFromRequest().fold(
       (formWithErrors: Form[Boolean]) =>
         Future.successful(BadRequest(
-          hasReferenceValueWithHintView(
-            formWithErrors,
-            schemeName,
-            pageTitle,
-            pageHeading,
-            TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value"))),
-            legendClass,
-            paragraphText,
-            submitCall
-          )
+          if (paragraphText.nonEmpty){
+            hasReferenceValueWithHintView(formWithErrors, schemeName, pageTitle, pageHeading,
+              TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value"))), legendClass, paragraphText, submitCall)
+          } else {
+            hasReferenceValueView(
+              formWithErrors, schemeName, pageTitle, pageHeading,
+              TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value"))), legendClass, submitCall)
+          }
         )),
       value => {
         def defaultSetUserAnswers = (value: Boolean) =>
