@@ -26,7 +26,6 @@ import play.api.data.FormBinding.Implicits._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, Call, MessagesControllerComponents, Result}
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import uk.gov.hmrc.viewmodels.Radios
 import utils.{TwirlMigration, UserAnswers}
@@ -42,7 +41,7 @@ class CommonHasReferenceValueService @Inject()(val controllerComponents: Message
                                                val userAnswersCacheConnector: UserAnswersCacheConnector,
                                                val navigator: CompoundNavigator,
                                                val messagesApi: MessagesApi
-                                              ) extends NunjucksSupport with FrontendHeaderCarrierProvider with I18nSupport {
+                                              ) extends FrontendHeaderCarrierProvider with I18nSupport {
 
 //  protected def templateName(paragraphText: Seq[String]): String =
 //    if (paragraphText.nonEmpty) "hasReferenceValueWithHint.njk" else "hasReferenceValue.njk"

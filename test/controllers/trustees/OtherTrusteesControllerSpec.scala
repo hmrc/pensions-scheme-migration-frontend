@@ -21,26 +21,21 @@ import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAut
 import forms.HasReferenceNumberFormProvider
 import identifiers.trustees.OtherTrusteesId
 import matchers.JsonMatchers
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
-import play.twirl.api.Html
-import renderer.Renderer
 import services.common.details.CommonHasReferenceValueService
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.FakeNavigator
+import utils.{FakeNavigator, TwirlMigration}
 import views.html.HasReferenceValueWithHintView
 
 import scala.concurrent.Future
 class OtherTrusteesControllerSpec extends ControllerSpecBase
-  with NunjucksSupport
   with JsonMatchers
   with TryValues
   with BeforeAndAfterEach{
@@ -49,26 +44,11 @@ class OtherTrusteesControllerSpec extends ControllerSpecBase
   private val formProvider: HasReferenceNumberFormProvider =
     new HasReferenceNumberFormProvider()
 
-  private val templateToBeRendered: String =
-    "hasReferenceValueWithHint.njk"
   private val form: Form[Boolean] =
     formProvider(messages("messages__otherTrustees__error__required"))
 
-  private val commonJson: JsObject =
-    Json.obj(
-      "pageTitle"     -> messages("messages__otherTrustees__title"),
-      "pageHeading"     -> messages("messages__otherTrustees__heading"),
-      "schemeName"    -> schemeName,
-      "paragraphs"    -> Json.arr(
-        messages("messages__otherTrustees__lede")
-      ),
-      "legendClass"   -> "govuk-visually-hidden",
-      "isPageHeading" -> true
-    )
-
   override def beforeEach(): Unit = {
     reset(
-      mockRenderer,
       mockUserAnswersCacheConnector
     )
   }
@@ -94,74 +74,56 @@ class OtherTrusteesControllerSpec extends ControllerSpecBase
   "OtherTrusteesController" must {
 
     "return OK and the correct view for a GET" in{
-
       val getData = new FakeDataRetrievalAction(Some(ua))
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val result: Future[Result] =
         controller(getData)
           .onPageLoad(fakeDataRequest(ua))
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual  templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("radios" -> Radios.yesNo(form("value")))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      val view = app.injector.instanceOf[HasReferenceValueWithHintView].apply(
+        form,
+        schemeName,
+        messages("messages__otherTrustees__title"),
+        messages("messages__otherTrustees__heading"),
+        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        "govuk-visually-hidden",
+        Seq(messages("messages__otherTrustees__lede")),
+        routes.OtherTrusteesController.onSubmit
+      )(fakeRequest, messages)
+      compareResultAndView(result, view)
     }
 
     "populate the view correctly on a GET when the question has previously been answered Yes" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val userAnswers =
         ua
           .set(OtherTrusteesId, true).success.value
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
-
+      val filledFrom = form.fill(true)
       val result: Future[Result] =
         controller(getData)
           .onPageLoad(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("radios" -> Radios.yesNo(form.fill(true).apply("value")))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      val view = app.injector.instanceOf[HasReferenceValueWithHintView].apply(
+        filledFrom,
+        schemeName,
+        messages("messages__otherTrustees__title"),
+        messages("messages__otherTrustees__heading"),
+        TwirlMigration.toTwirlRadios(Radios.yesNo(filledFrom("value"))),
+        "govuk-visually-hidden",
+        Seq(messages("messages__otherTrustees__lede")),
+        routes.OtherTrusteesController.onSubmit
+      )(fakeRequest, messages)
+      compareResultAndView(result, view)
     }
 
     "populate the view correctly on a GET when the question has previously been answered No" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val userAnswers =
         ua
           .set(OtherTrusteesId, false).success.value
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
+      val filledFrom = form.fill(false)
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
       val result: Future[Result] =
@@ -170,15 +132,17 @@ class OtherTrusteesControllerSpec extends ControllerSpecBase
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("radios" -> Radios.yesNo(form.fill(false).apply("value")))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      val view = app.injector.instanceOf[HasReferenceValueWithHintView].apply(
+        filledFrom,
+        schemeName,
+        messages("messages__otherTrustees__title"),
+        messages("messages__otherTrustees__heading"),
+        TwirlMigration.toTwirlRadios(Radios.yesNo(filledFrom("value"))),
+        "govuk-visually-hidden",
+        Seq(messages("messages__otherTrustees__lede")),
+        routes.OtherTrusteesController.onSubmit
+      )(fakeRequest, messages)
+      compareResultAndView(result, view)
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -204,42 +168,21 @@ class OtherTrusteesControllerSpec extends ControllerSpecBase
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val request =
         fakeRequest
           .withFormUrlEncodedBody(("value", "invalid value"))
-
       val getData = new FakeDataRetrievalAction(Some(ua))
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
       val result: Future[Result] =
         controller(getData)
           .onSubmit(request)
 
-      val boundForm = form.bind(Map("value" -> "invalid value"))
-
       status(result) mustBe BAD_REQUEST
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("radios" -> Radios.yesNo(boundForm.apply("value")))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
-
+      contentAsString(result) must include(messages("messages__otherTrustees__title"))
+      contentAsString(result) must include(messages("error.summary.title"))
+      contentAsString(result) must include(messages("error.boolean"))
       verify(mockUserAnswersCacheConnector, times(0))
         .save(any(), any())(any(), any())
     }
-
-
   }
-
 }
