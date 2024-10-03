@@ -77,7 +77,7 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
             schemeName,
             "messages__trustees__prefill__heading",
             "messages__trustees__prefill__title",
-            TwirlMigration.toTwirlCheckBoxes(DataPrefillCheckbox.checkboxes(form, seqDirector)),
+            DataPrefillCheckbox.checkboxes(form, seqDirector),
             routes.DirectorsAlsoTrusteesController.onSubmit(index)
           )))
         } else {
@@ -92,6 +92,7 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
       SchemeNameId.retrieve.map { schemeName =>
         val seqDirector = dataPrefillService.getListOfDirectorsToBeCopied
         println(s">>>>>>>>>><<<<<<<<<<<<<<<<<<*******seqDirectors is $seqDirector")
+        println(request.body)
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
             Future.successful(BadRequest(view(
@@ -99,7 +100,7 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
               schemeName,
               "messages__trustees__prefill__title",
               "messages__trustees__prefill__heading",
-              TwirlMigration.toTwirlCheckBoxes(DataPrefillCheckbox.checkboxes(form, seqDirector)),
+              DataPrefillCheckbox.checkboxes(form, seqDirector),
               routes.DirectorsAlsoTrusteesController.onSubmit(establisherIndex)
             )))
           },

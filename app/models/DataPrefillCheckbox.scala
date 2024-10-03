@@ -18,19 +18,34 @@ package models
 
 import models.prefill.{IndividualDetails => DataPrefillIndividualDetails}
 import play.api.data.Form
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Label, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.{CheckboxBehaviour, CheckboxItem, ExclusiveCheckbox}
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.Text.Literal
 import viewmodels.forNunjucks.Checkboxes
 
 object DataPrefillCheckbox {
 
-  def checkboxes(form: Form[_], values: Seq[DataPrefillIndividualDetails]): Seq[Checkboxes.Item] = {
-    val noneValue = "-1"
-    val items = values.map(indvDetails => {
-      Checkboxes.Checkbox(Literal(indvDetails.fullName), indvDetails.fullName, None, None)
-    })
-    val noneOfTheAbove = Checkboxes.Checkbox(msg"messages__prefill__label__none", noneValue, None, None)
+  def checkboxes(form: Form[_], values: Seq[DataPrefillIndividualDetails])(implicit messages: Messages): Seq[CheckboxItem] = {
 
-    Checkboxes.set(form("value"), items :+ noneOfTheAbove)
+    val checkBoxes = values.map { details =>
+      CheckboxItem(
+        content = Text(details.fullName),
+        label = Some(Label(content = Text(details.fullName))),
+        value = details.fullName,
+        checked = form("value").value.map(_ == details.fullName).getOrElse(false)
+      )
+    }
+
+    val noneOfTheAbove = CheckboxItem(
+      content = Text(msg"messages__prefill__label__none".resolve),
+      label = Some(Label(content = Text(msg"messages__prefill__label__none".resolve))),
+      value = "-1",
+      checked = form("value").value.map(_ == "-1").getOrElse(false),
+      behaviour = Some(ExclusiveCheckbox)
+    )
+
+    checkBoxes :+ CheckboxItem(divider = Some("or")) :+ noneOfTheAbove
   }
 }

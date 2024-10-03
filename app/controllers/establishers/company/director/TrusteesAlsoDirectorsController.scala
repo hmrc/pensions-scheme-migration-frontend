@@ -20,7 +20,6 @@ import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import controllers.trustees.individual.routes
 import forms.dataPrefill.DataPrefillCheckboxFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
@@ -29,13 +28,11 @@ import models.{DataPrefillCheckbox, Index, entities}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import services.DataPrefillService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.{Enumerable, TwirlMigration, UserAnswers}
 import views.html.DataPrefillCheckboxView
 
@@ -52,8 +49,7 @@ class TrusteesAlsoDirectorsController @Inject()(override val messagesApi: Messag
                                                 dataPrefillService: DataPrefillService,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 view: DataPrefillCheckboxView,
-                                                config: AppConfig,
-                                                renderer: Renderer
+                                                config: AppConfig
                                                )(implicit val executionContext: ExecutionContext) extends FrontendBaseController
   with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
@@ -75,7 +71,7 @@ class TrusteesAlsoDirectorsController @Inject()(override val messagesApi: Messag
             schemeName,
             "messages__trustees__prefill__heading",
             "messages__trustees__prefill__title",
-            TwirlMigration.toTwirlCheckBoxes(DataPrefillCheckbox.checkboxes(form, seqTrustee)),
+            DataPrefillCheckbox.checkboxes(form, seqTrustee),
             controllers.establishers.company.director.routes.TrusteesAlsoDirectorsController.onSubmit(establisherIndex)
           )))
         } else {
@@ -96,7 +92,7 @@ class TrusteesAlsoDirectorsController @Inject()(override val messagesApi: Messag
               schemeName,
               "messages__trustees__prefill__title",
               "messages__trustees__prefill__heading",
-              TwirlMigration.toTwirlCheckBoxes(DataPrefillCheckbox.checkboxes(form, seqTrustee)),
+              DataPrefillCheckbox.checkboxes(form, seqTrustee),
               controllers.establishers.company.director.routes.TrusteesAlsoDirectorsController.onSubmit(establisherIndex)
             )))
           },

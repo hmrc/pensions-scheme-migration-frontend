@@ -21,7 +21,7 @@
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
 *
-*     http://www.apache.org/licenses/LICENSE-2.0
+* http://www.apache.org/licenses/LICENSE-2.0
 *
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -29,55 +29,73 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 *@
-
-
 @this(
-layout: templates.Layout,
-formHelper: FormWithCSRF,
-govukErrorSummary: GovukErrorSummary,
-govukButton: GovukButton,
-govukInput: GovukInput,
-govukCheckboxes: GovukCheckboxes
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukButton: GovukButton,
+        govukInput: GovukInput,
+        govukCheckboxes: GovukCheckboxes
 )
 
 @(form: Form[_], schemeName: String, pageHeading: String, titleMessage: String, dataPrefillCheckboxes: Seq[CheckboxItem], submitCall: Call)(implicit request: Request[_], messages: Messages)
-@field = @{form("value")}
+@field = @{
+    form("value")
+}
+
+@lastCheckBoxIndex = @{dataPrefillCheckboxes.length}
 
 @layout(
-pageTitle = messages(pageHeading)
+    pageTitle = messages(pageHeading)
 ) {
-
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-
-        @if(form.errors.nonEmpty) {
+    @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
-        }
+    }
 
-        @formHelper(action = submitCall, Symbol("autoComplete") -> "off") {
+    @formHelper(action = submitCall, Symbol("autoComplete") -> "off") {
 
+        @*
+        <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                    @dataPrefillCheckboxes.zipWithIndex.map { case (item, index) =>
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="value_@index" name="value[@index]" type="checkbox" value="@{item.value}">
+                            <label class="govuk-label govuk-checkboxes__label" for="value_@index">
+                                @{item.value}
+                            </label>
+                        </div>
+                    }
+                    <div class="govuk-checkboxes__divider">or</div>
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="value_@lastCheckBoxIndex" name="value[@lastCheckBoxIndex]" type="checkbox" value="noneOfTheAbove" data-behaviour="exclusive">
+                        <label class="govuk-label govuk-checkboxes__label" for="value_@lastCheckBoxIndex">
+                            @messages("messages__prefill__label__none")
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+            *@
 
         @govukCheckboxes(Checkboxes(
             name = "value",
             fieldset = Some(Fieldset(
-            legend = Some(Legend(
-            content = Text(messages(titleMessage)),
-            isPageHeading = true,
-            classes = "govuk-fieldset__legend--xl govuk-!-margin-bottom-8"
-            ))
+                legend = Some(Legend(
+                    content = Text(messages(titleMessage)),
+                    isPageHeading = true,
+                    classes = "govuk-fieldset__legend--xl govuk-!-margin-bottom-8"
+                ))
             )),
             items = dataPrefillCheckboxes,
             hint = Some(Hint(content = Text(messages("messages__prefill__checkbox__hint")))),
-            errorMessage =  field.error.map(e => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args:_*))))
-            ))
+            errorMessage = field.error.map(e => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args: _*))))
+        ))
 
-            @govukButton(
+        @govukButton(
             ButtonViewModel(Text(messages("site.save_and_continue"))).asFormSubmit
         )
 
-        }
-        @templates.ReturnLink(schemeName)
-
-    </div>
-</div>
+    }
+    @templates.ReturnLink(schemeName)
 }
