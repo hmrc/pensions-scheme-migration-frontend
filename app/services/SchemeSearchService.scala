@@ -26,19 +26,14 @@ import models.requests.AuthenticatedRequest
 import models.{Items, MigrationType}
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.button.Button
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.errormessage.ErrorMessage
-import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
-import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, Table, TableRow}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-//import uk.gov.hmrc.viewmodels.Table.Cell
-import uk.gov.hmrc.viewmodels.Html
 import utils.HttpResponseRedirects.listOfSchemesRedirects
 import utils.{HttpResponseHelper, SchemeFuzzyMatcher}
 import views.html.preMigration.ListOfSchemesView
@@ -85,19 +80,19 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
     }
 
 
-  def mapToTable(schemeDetails: List[Items], isRacDac: Boolean)(implicit messages: Messages): Option[Table] = {
+  def mapToTable(schemeDetails: List[Items], isRacDac: Boolean)(implicit messages: Messages): Table = {
     val head =
       if(isRacDac)
         Seq(
-          HeadCell(HtmlContent(Messages("messages__listSchemes__column_racDacName"))),
-          HeadCell(HtmlContent(Messages("messages__listSchemes__column_pstr"))),
-          HeadCell(HtmlContent(Messages("messages__listSchemes__column_regDate")))
+          HeadCell(Text(Messages("messages__listSchemes__column_racDacName"))),
+          HeadCell(Text(Messages("messages__listSchemes__column_pstr"))),
+          HeadCell(Text(Messages("messages__listSchemes__column_regDate")))
         )
       else
         Seq(
-          HeadCell(HtmlContent(Messages("messages__listSchemes__column_schemeName"))),
-          HeadCell(HtmlContent(Messages("messages__listSchemes__column_pstr"))),
-          HeadCell(HtmlContent(Messages("messages__listSchemes__column_regDate")))
+          HeadCell(Text(Messages("messages__listSchemes__column_schemeName"))),
+          HeadCell(Text(Messages("messages__listSchemes__column_pstr"))),
+          HeadCell(Text(Messages("messages__listSchemes__column_regDate")))
         )
 
     val formatter: String => String = date => LocalDate.parse(date).format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
@@ -112,7 +107,7 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
         TableRow(Text(formatter(data.schemeOpenDate)), classes ="govuk-!-width-one-quarter")
         )
     }
-    Some(Table(rows, Some(head), attributes = Map("role" -> "table")))
+    Table(rows, Some(head), attributes = Map("role" -> "table"))
   }
 
   def typeOfList(migrationType: MigrationType)(implicit messages: Messages): String =
@@ -131,14 +126,13 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
                           messages: Messages,
                           request: AuthenticatedRequest[AnyContent],
                           ec: ExecutionContext): Future[Result] =
-    minimalDetailsConnector.getPSADetails(request.psaId.id).flatMap {
-      case md if md.deceasedFlag => Future.successful(Redirect(appConfig.deceasedContactHmrcUrl))
-      case md if md.rlsFlag => Future.successful(Redirect(appConfig.psaUpdateContactDetailsUrl))
+    minimalDetailsConnector.getPSADetails(request.psaId.id).map {
+      case md if md.deceasedFlag => Redirect(appConfig.deceasedContactHmrcUrl)
+      case md if md.rlsFlag => Redirect(appConfig.psaUpdateContactDetailsUrl)
       case md =>
         val listType = typeOfList(migrationType)
         val racDac = isRacDac(migrationType)
 
-        // TODO - check this works as expected
         val heading = form.value match {
           case Some(_) => messages("messages__listSchemes__search_result_title", listType)
           case None => messages("messages__listSchemes__add_title", listType)
@@ -153,7 +147,7 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
           listUrl
         }
 
-        val schemes: Option[Table] = mapToTable(schemeDetails, isRacDac(migrationType))
+        val schemes: Table = mapToTable(schemeDetails, isRacDac(migrationType))
 
 
         val pageNumberLinks = paginationService.pageNumberLinks(
@@ -199,7 +193,9 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
           classes = "govuk-!-margin-bottom-3"
         )
 
-        Future.successful(Ok(view(
+        val result = if(form.hasErrors) BadRequest else Ok
+
+        result(view(
           heading = heading,
           form = form,
           submitCall = routes.ListOfSchemesController.onSearch(migrationType),
@@ -219,8 +215,8 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
           psaName = md.name,
           racDac = isRacDac(migrationType),
           listSchemeUrl = listSchemeUrl,
-          numberOfPages = numberOfPages,
-        )))
+          numberOfPages = numberOfPages
+        ))
 
     } recoverWith {
       case _: DelimitedAdminException =>

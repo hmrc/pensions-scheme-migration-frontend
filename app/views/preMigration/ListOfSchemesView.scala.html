@@ -38,7 +38,7 @@
     errorMessages: Option[Seq[ErrorMessage]],
     inputErrorClass: String,
     searchButton: Button,
-    schemes: Option[Table],
+    schemes: Table,
     clearLinkUrl: String,
     numberOfSchemes: Int,
     noResultsMessageKey: Option[String],
@@ -160,7 +160,7 @@
             </div>
         }
 
-        @schemes.map { schemesTable => @govukTable(schemesTable)}
+        @govukTable(schemes)
 
         @if(numberOfSchemes > pagination) {
         <div class="grid-row">
