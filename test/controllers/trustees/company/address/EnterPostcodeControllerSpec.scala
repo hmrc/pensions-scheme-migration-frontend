@@ -21,7 +21,7 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import forms.address.PostcodeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import matchers.JsonMatchers
-import models.{NormalMode, Scheme, TolerantAddress}
+import models.{NormalMode, Scheme}
 import play.api.mvc.Results.{BadRequest, Ok}
 import org.mockito.ArgumentMatchers.any
 import play.api.Application

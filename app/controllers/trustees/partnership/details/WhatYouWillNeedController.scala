@@ -19,14 +19,11 @@ package controllers.trustees.partnership.details
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.trustees.partnership.details.routes.HaveUTRController
-import helpers.cya.MandatoryAnswerMissingException
-import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.partnership.PartnershipDetailsId
 import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Results.Ok
 import play.api.mvc.{Action, AnyContent}
-import services.common.details.CommonWhatYouWillNeedDetailsService
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

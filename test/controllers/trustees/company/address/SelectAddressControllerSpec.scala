@@ -50,7 +50,7 @@ class SelectAddressControllerSpec extends ControllerSpecBase with JsonMatchers w
   )
 
   private val formProvider: AddressListFormProvider = new AddressListFormProvider()
-  private val form = formProvider("selectPreviousAddress.required")
+  private val form = formProvider("selectAddress.required")
   private val mode = NormalMode
   private val index = 0
 

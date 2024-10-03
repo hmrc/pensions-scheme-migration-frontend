@@ -20,12 +20,10 @@ import connectors.cache.BulkMigrationQueueConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import matchers.JsonMatchers
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Request
 import play.api.test.Helpers._
 import play.twirl.api.Html

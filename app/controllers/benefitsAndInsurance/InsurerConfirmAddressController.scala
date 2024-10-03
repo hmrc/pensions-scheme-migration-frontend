@@ -22,7 +22,6 @@ import forms.address.AddressFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.{BenefitsInsuranceNameId, InsurerAddressId, InsurerAddressListId}
 import models.{Address, AddressConfiguration}
-import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
@@ -33,7 +32,6 @@ import scala.concurrent.ExecutionContext
 
 class InsurerConfirmAddressController @Inject()(
   val messagesApi: MessagesApi,
-  navigator: CompoundNavigator,
   authenticate: AuthAction,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
