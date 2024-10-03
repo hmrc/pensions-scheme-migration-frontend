@@ -45,7 +45,7 @@ class AddressLookupConnector @Inject()(http: HttpClient, config: AppConfig) {
       }
       case response =>
         val message = s"Address Lookup failed with status ${response.status} Response body :${response.body}"
-        Future.successful(Seq(TolerantAddress(Some("line1"), Some("line1"), Some("line1"),Some("line1"),Some("line1"),Some("GB"))))
+        Future.failed(new HttpException(message, response.status))
     } recoverWith logExceptions
   }
 
