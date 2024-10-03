@@ -51,7 +51,7 @@ import views.html.preMigration.ListOfSchemesView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with ScalaFutures with NunjucksSupport with JsonMatchers {
+class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with ScalaFutures with JsonMatchers {
 
   import SchemeSearchServiceSpec._
 
