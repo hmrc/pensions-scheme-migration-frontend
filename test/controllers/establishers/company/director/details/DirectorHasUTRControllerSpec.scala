@@ -23,18 +23,15 @@ import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.details.DirectorHasUTRId
 import matchers.JsonMatchers
 import models.{NormalMode, PersonName}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
-import play.twirl.api.Html
-import renderer.Renderer
 import services.common.details.CommonHasReferenceValueService
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.ua
 import utils.{FakeNavigator, TwirlMigration, UserAnswers}
 import views.html.HasReferenceValueWithHintView
@@ -43,7 +40,6 @@ import scala.concurrent.Future
 
 class DirectorHasUTRControllerSpec
   extends ControllerSpecBase
-    with NunjucksSupport
     with JsonMatchers
     with TryValues
     with BeforeAndAfterEach {
@@ -56,21 +52,7 @@ class DirectorHasUTRControllerSpec
     formProvider("Select Yes if Jane Doe has a Unique Taxpayer Reference")
   private val userAnswers: UserAnswers =
     ua.set(DirectorNameId(0,0), personName).success.value
-  private val templateToBeRendered: String =
-    "hasReferenceValueWithHint.njk"
-  private val commonJson: JsObject =
-    Json.obj(
-      "pageTitle"     -> "Does the director have a Unique Taxpayer Reference (UTR)?",
-      "pageHeading"     -> "Does Jane Doe have a Unique Taxpayer Reference (UTR)?",
-      "schemeName"    -> "Test scheme name",
-      "paragraphs"    -> Json.arr(
-        "This is a 10-digit or 13-digit number. " +
-        "You can find it on tax returns and other documents from HMRC. " +
-        "It might be called ‘reference’, ‘UTR’ or ‘official use’."
-      ),
-      "legendClass"   -> "govuk-visually-hidden",
-      "isPageHeading" -> true
-    )
+
   private def controller(
                           dataRetrievalAction: DataRetrievalAction
                         ): DirectorHasUTRController =
