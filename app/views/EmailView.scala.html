@@ -21,18 +21,24 @@ govukErrorSummary: GovukErrorSummary,
 govukInput: GovukInput,
 govukButton: GovukButton
 )
-@(form: Form[_], schemeName: String, entityName: String, entityType: String, paragraphs: Seq[String], submitCall: Call)(implicit request: Request[_], messages: Messages)
+@(form: Form[_],
+schemeName: String,
+entityName: String,
+entityType: String,
+paragraphs: Seq[String],
+submitCall: Call)(implicit request: Request[_], messages: Messages)
 
 @field = @{form("value")}
 
 @layout(messages("messages__enterEmail_pageHeading", entityName)) {
 <div>
-    @* @if(paragraphs) {
-    *   @for(paragraph <- paragraphs) {
-    *       <p class="govuk-body govuk-!-font-weight-regular">@paragraph</p>
-    *   }
-    * }
-    *@
+    @if(paragraphs) {
+        @for(paragraph <- paragraphs) {
+           <p class="govuk-body govuk-!-font-weight-regular">@paragraph</p>
+        }
+    }
+    @
+
     <h1 class="govuk-heading-l">@messages("messages__enterEmail_pageHeading", entityName)</h1>
 
     @formHelper(action = submitCall, Symbol("autoComplete") -> "off") {
