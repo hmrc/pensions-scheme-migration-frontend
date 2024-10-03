@@ -21,17 +21,15 @@ import connectors.cache.UserAnswersCacheConnector
 import connectors.{ListOfSchemesConnector, MinimalDetailsConnector}
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRetrievalAction}
-import helpers.cya.{CYAHelper, RacDacIndividualCYAHelper}
-import identifiers.beforeYouStart.SchemeNameId
+import helpers.cya.RacDacIndividualCYAHelper
 import models.RacDac
 import models.requests.OptionalDataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.HttpResponseRedirects.listOfSchemesRedirects
-import utils.{Enumerable, UserAnswers}
+import utils.{Enumerable, TwirlMigration, UserAnswers}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,7 +44,7 @@ class CheckYourAnswersController @Inject()(
                                             userAnswersCacheConnector: UserAnswersCacheConnector,
                                             minimalDetailsConnector: MinimalDetailsConnector,
                                             val controllerComponents: MessagesControllerComponents,
-                                            renderer: Renderer
+                                            checkYourAnswersView: views.html.racdac.individual.CheckYourAnswersView
                                           )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with Enumerable.Implicits
@@ -81,17 +79,13 @@ class CheckYourAnswersController @Inject()(
     }
 
   private def renderView(userAnswers: UserAnswers)(implicit request: OptionalDataRequest[AnyContent]): Future[Result] = {
-    minimalDetailsConnector.getPSAName.flatMap { psaName =>
-      renderer.render(
-        template = "racdac/individual/check-your-answers.njk",
-        ctx = Json.obj(
-          "list" -> cyaHelper.detailsRows(userAnswers),
-          "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(userAnswers, implicitly),
-          "submitUrl" -> controllers.racdac.individual.routes.DeclarationController.onPageLoad.url,
-          "psaName" -> psaName,
-          "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad.url
-        )
-      ).map(Ok(_))
+    minimalDetailsConnector.getPSAName.map { psaName =>
+      Ok(checkYourAnswersView(
+        controllers.racdac.individual.routes.DeclarationController.onPageLoad.url,
+        controllers.routes.PensionSchemeRedirectController.onPageLoad.url,
+        psaName,
+        TwirlMigration.summaryListRow(cyaHelper.detailsRows(userAnswers))
+      ))
     }
   }
 }

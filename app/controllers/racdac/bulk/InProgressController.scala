@@ -31,18 +31,17 @@ class InProgressController @Inject()(appConfig: AppConfig,
                                      override val messagesApi: MessagesApi,
                                      authenticate: AuthAction,
                                      val controllerComponents: MessagesControllerComponents,
-                                     renderer: Renderer
-                                    )(implicit ec: ExecutionContext)
+                                     inProgressView: views.html.racdac.InProgressView
+                                    )
   extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
-    authenticate.async {
+    authenticate {
       implicit request =>
-        val json = Json.obj(
-          "listOfSchemesUrl" -> appConfig.yourPensionSchemesUrl,
-          "returnUrl" -> appConfig.psaOverviewUrl
-        )
-        renderer.render("racdac/inProgress.njk", json).map(Ok(_))
+        Ok(inProgressView(
+          appConfig.yourPensionSchemesUrl,
+          appConfig.psaOverviewUrl
+        ))
     }
 }

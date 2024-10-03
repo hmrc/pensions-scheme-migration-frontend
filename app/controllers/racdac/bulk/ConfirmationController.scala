@@ -35,7 +35,7 @@ class ConfirmationController @Inject()(appConfig: AppConfig,
                                        currentPstrCacheConnector: CurrentPstrCacheConnector,
                                        val controllerComponents: MessagesControllerComponents,
                                        listOfSchemesConnector: ListOfSchemesConnector,
-                                       renderer: Renderer
+                                       confirmationView: views.html.racdac.ConfirmationView
                                       )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
@@ -50,13 +50,9 @@ class ConfirmationController @Inject()(appConfig: AppConfig,
             val optPsaId = (jsValue \ "confirmationData" \ "psaId").asOpt[String]
             (optEmail, optPsaId) match {
               case (Some(email), Some(psaId)) =>
-                val json = Json.obj(
-                  "email" -> email,
-                  "finishUrl" -> appConfig.psaOverviewUrl
-                )
                 listOfSchemesConnector.removeCache(psaId).flatMap { _ =>
-                  currentPstrCacheConnector.remove.flatMap { _ =>
-                    renderer.render("racdac/confirmation.njk", json).map(Ok(_))
+                  currentPstrCacheConnector.remove.map { _ =>
+                    Ok(confirmationView(appConfig.psaOverviewUrl, email))
                   }
                 }
               case _ =>
