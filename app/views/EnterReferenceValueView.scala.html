@@ -22,7 +22,13 @@ govukInput: GovukInput,
 govukButton: GovukButton
 )
 
-@(form: Form[_], schemeName: String, pageTitle: String, pageHeading: String, hintText: Option[String] = None, paragraphs: Seq[String], submitCall: Call)(implicit request: Request[_], messages: Messages)
+@(form: Form[_],
+        schemeName: String,
+        pageTitle: String,
+        pageHeading: String,
+        hintText: Option[String] = None,
+        paragraphs: Seq[String],
+        submitCall: Call)(implicit request: Request[_], messages: Messages)
 
 @layout(messages(pageTitle)) {
 

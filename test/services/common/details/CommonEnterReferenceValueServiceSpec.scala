@@ -24,9 +24,7 @@ import org.mockito.ArgumentMatchers.any
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.CommonServiceSpecBase
-import utils.Data.ua
 import utils.{FakeNavigator, UserAnswers}
 import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
 
@@ -43,26 +41,33 @@ class CommonEnterReferenceValueServiceSpec extends ControllerSpecBase with Commo
     messagesApi = messagesApi
   )
 
-  override def beforeEach(): Unit = reset(mockUserAnswersCacheConnector)
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockUserAnswersCacheConnector)
+  }
 
   private val formProvider: UTRFormProvider = new UTRFormProvider()
   private val id: TypedIdentifier[ReferenceValue] = new TypedIdentifier[ReferenceValue] {}
   private val referenceValueForm: Form[ReferenceValue] = formProvider()
-  val userAnswers: UserAnswers = UserAnswers().setOrException(id, ReferenceValue("1234567890"))
-  val fakeRequestWithFormData = fakeRequest.withFormUrlEncodedBody("value" -> "1234567890")
+  private val userAnswers: UserAnswers = UserAnswers().setOrException(id, ReferenceValue("1234567890"))
+  private val fakeRequestWithFormData = fakeRequest.withFormUrlEncodedBody("value" -> "1234567890")
 
   "get" should {
     "return OK and render the correct template" in {
       val updatedAnswers = userAnswers.set(id, ReferenceValue("1234567890")).success.value
-      val expectedView = app.injector.instanceOf[EnterReferenceValueWithHintView].apply(
-        referenceValueForm,
+      val req = fakeDataRequest(updatedAnswers, fakeRequestWithFormData)
+      val testForm = req.userAnswers.get[ReferenceValue](id).fold(referenceValueForm)(referenceValueForm.fill)
+      val expectedView = app.injector.instanceOf[EnterReferenceValueView].apply(
+        testForm,
         "Test Scheme",
         "Test Title",
         "Test Heading",
-        "govuk-fieldset__legend--s",
+        None,
         Seq(),
         submitCall = onwardCall
-      )(fakeRequest, messages)
+      )(req, implicitly)
+
+
 
       val result = service.get(
         pageTitle = "Test Title",
@@ -72,7 +77,7 @@ class CommonEnterReferenceValueServiceSpec extends ControllerSpecBase with Commo
         form = referenceValueForm,
         schemeName = "Test Scheme",
         submitCall = onwardCall
-      )(fakeDataRequest(updatedAnswers, fakeRequestWithFormData), global)
+      )(req)
 
       status(result) mustBe OK
 

@@ -32,7 +32,6 @@ import services.DataUpdateService
 import services.common.details.CommonEnterReferenceValueService
 import utils.UserAnswers
 import viewmodels.Message
-import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext

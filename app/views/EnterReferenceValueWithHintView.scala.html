@@ -15,68 +15,67 @@
  *@
 
 @this(
-layout: templates.Layout,
-formHelper: FormWithCSRF,
-govukErrorSummary: GovukErrorSummary,
-govukInput: GovukInput,
-govukButton: GovukButton,
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukInput: GovukInput,
+        govukButton: GovukButton,
 )
 
-@(form: Form[_], schemeName: String, pageTitle: String, pageHeading: String, legendClass: String, paragraphs: Seq[String], hintText: Option[String] = None, submitCall: Call)(implicit request: Request[_], messages: Messages)
+@(form: Form[_],
+        schemeName: String,
+        pageTitle: String,
+        pageHeading: String,
+        legendClass: String,
+        paragraphs: Seq[String],
+        hintText: Option[String] = None,
+        submitCall: Call)(implicit request: Request[_], messages: Messages)
 
-@field = @{form("value")}
+@field = @{
+    form("value")
+}
+
+@hintHtml = @{
+    val paragraphsHtml = paragraphs.map(paragraph => s"<p class='govuk-body govuk-!-font-weight-regular'>$paragraph</p>").mkString
+    Html(paragraphsHtml + hintText.getOrElse(""))
+}
 
 @layout(pageTitle) {
-
-@defining({
-if (paragraphs.nonEmpty && hintText.nonEmpty) {
-Html(paragraphs.map(paragraph => s"<p class='govuk-body govuk-!-font-weight-regular'>$paragraph</p>").mkString + hintText.get)
-} else if (paragraphs.nonEmpty) {
-Html(paragraphs.map(paragraph => s"<p class='govuk-body govuk-!-font-weight-regular'>$paragraph</p>").mkString)
-} else if (hintText.nonEmpty) {
-Html(hintText.get)
-} else {
-Html("")
-}
-}) { hintHtml =>
-
-        @if(form.hasErrors) {
+    @if(form.hasErrors) {
         @govukErrorSummary(ErrorSummary(
-        title = Text(messages("error.summary.title")),
-        errorList = form.errors.map(err => ErrorLink(
-        href = Some(s"#${err.key}"),
-        content = Text(messages(err.message))
+            title = Text(messages("error.summary.title")),
+            errorList = form.errors.map(err => ErrorLink(
+                href = Some(s"#${err.key}"),
+                content = Text(messages(err.message))
+            ))
         ))
-        ))
-        }
+    }
 
-        @formHelper(action = submitCall, Symbol("autocomplete") -> "off") {
+    @formHelper(action = submitCall, Symbol("autocomplete") -> "off") {
 
         @if(!hintHtml.body.trim.isEmpty) {
-        @govukInput(Input(
-        label = Label(
-        content = Text(messages(pageHeading)),
-        isPageHeading = true,
-        classes = "govuk-label--l govuk-!-margin-bottom-8"
-        ),
-        id = "value",
-        name = "value",
-        value = form("value").value,
-        classes = "govuk-input--width-10",
-        attributes = Map("autocomplete" -> "off"),
-        errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message)))),
-        hint = Some(Hint(content = HtmlContent(hintHtml.body)))
-        ))
+            @govukInput(Input(
+                label = Label(
+                    content = Text(messages(pageHeading)),
+                    isPageHeading = true,
+                    classes = "govuk-label--l govuk-!-margin-bottom-8"
+                ),
+                id = "value",
+                name = "value",
+                value = field.value,
+                classes = "govuk-input--width-10",
+                attributes = Map("autocomplete" -> "off"),
+                errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message)))),
+                hint = Some(Hint(content = HtmlContent(hintHtml.body)))
+            ))
         }
 
         @govukButton(Button(
-        content = Text(messages("site.save_and_continue")),
-        attributes = Map("id" -> "submit")
+            content = Text(messages("site.save_and_continue")),
+            attributes = Map("id" -> "submit")
         ))
-        }
+    }
 
-        @templates.ReturnLink(schemeName)
+    @templates.ReturnLink(schemeName)
 
 }
-}
-

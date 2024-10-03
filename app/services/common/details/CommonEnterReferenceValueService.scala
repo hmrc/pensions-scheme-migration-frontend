@@ -26,12 +26,10 @@ import play.api.data.FormBinding.Implicits._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, Call, MessagesControllerComponents, Result}
-import play.api.routing.Router.empty.routes
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import utils.UserAnswers
-import views.html.EnterReferenceValueView
-import views.html.EnterReferenceValueWithHintView
+import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -57,7 +55,7 @@ class CommonEnterReferenceValueService @Inject()(val controllerComponents: Messa
            paragraphText: Seq[String] = Seq(),
            legendClass: String = "govuk-fieldset__legend--s",
            submitCall: Call
-         )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
+         )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     val filledForm = request.userAnswers.get[ReferenceValue](id).fold(form)(form.fill)
 
     Future.successful(Ok(
