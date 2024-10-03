@@ -92,9 +92,14 @@ object TwirlMigration extends Logging {
   }
 
   def toTwirlCheckBoxes(nunjucksCheckboxes: Seq[viewmodels.forNunjucks.Checkboxes.Item])(implicit messages: Messages): Seq[CheckboxItem] = {
-    val checkBoxes = nunjucksCheckboxes.map(checkbox => {
-        CheckboxItem(content = Text(checkbox.text.map(_.resolve).getOrElse("")), value = checkbox.value)
-    })
+    val checkBoxes = nunjucksCheckboxes.zipWithIndex.map {
+      case (checkbox, index) =>
+        CheckboxItem(
+          content = Text(checkbox.text.map(_.resolve).getOrElse("")),
+          id = Some(s"value_$index"),
+          name = Some(s"value_$index]"),
+          value = checkbox.value)
+     }
     val divider = CheckboxItem(divider = Some(messages("messages__prefill__label__divider")))
 
     checkBoxes.patch(checkBoxes.size -1, List(divider), 0)
