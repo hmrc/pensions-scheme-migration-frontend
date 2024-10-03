@@ -24,9 +24,11 @@ import javax.inject.Inject
 
 class DataPrefillCheckboxFormProvider @Inject() extends Mappings with DataPrefillConstraints {
 
-  def apply(entityCount: Int, requiredError: String, noneSelectedWithValueError: String, moreThanTenError: String): Form[List[Int]] =
+  def apply(entityCount: Int, requiredError: String, noneSelectedWithValueError: String, moreThanTenError: String): Form[List[Int]] = {
+    println(s"********* entityCount is $entityCount")
     Form(
-      "value" -> list[Int](int(requiredError)).verifying(
+      "value" ->
+        list[Int](int(requiredError)).verifying(
         noValueInList(
           errorKey = requiredError
         ),
@@ -39,4 +41,5 @@ class DataPrefillCheckboxFormProvider @Inject() extends Mappings with DataPrefil
         )
       )
     )
+  }
 }

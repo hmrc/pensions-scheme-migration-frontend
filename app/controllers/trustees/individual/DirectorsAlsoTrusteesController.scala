@@ -57,7 +57,9 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
   with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
   private def form(implicit ua: UserAnswers, messages: Messages): Form[List[Int]] = {
+    println(s"<<<<<<<<<<<<<<<<<<< ${ua.allTrusteesAfterDelete}")
     val existingTrusteeCount = ua.allTrusteesAfterDelete.size
+    println(s">>>>>>>>>existingTrusteeCount $existingTrusteeCount")
     formProvider(existingTrusteeCount, "messages__trustees__prefill__multi__error__required",
       "messages__trustees__prefill__multi__error__noneWithValue",
       messages("messages__trustees__prefill__multi__error__moreThanTen", existingTrusteeCount, config.maxTrustees - existingTrusteeCount))
@@ -68,6 +70,7 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
       SchemeNameId.retrieve.map { schemeName =>
         implicit val ua: UserAnswers = request.userAnswers
         val seqDirector = dataPrefillService.getListOfDirectorsToBeCopied
+        val directorsIndexes = seqDirector.map(_.index).toList
         if (seqDirector.nonEmpty) {
           Future.successful(Ok(view(
             form,
@@ -88,6 +91,7 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
       implicit val ua: UserAnswers = request.userAnswers
       SchemeNameId.retrieve.map { schemeName =>
         val seqDirector = dataPrefillService.getListOfDirectorsToBeCopied
+        println(s">>>>>>>>>><<<<<<<<<<<<<<<<<<*******seqDirectors is $seqDirector")
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
             Future.successful(BadRequest(view(

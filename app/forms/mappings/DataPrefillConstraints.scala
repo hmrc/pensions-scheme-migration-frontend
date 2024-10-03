@@ -24,10 +24,12 @@ trait DataPrefillConstraints {
 
   protected def noValueInList(errorKey: String): Constraint[List[Int]] = {
 
+    println(s"*********** $errorKey")
     Constraint {
       case lst if lst.nonEmpty =>
         Valid
-      case _ =>
+      case x =>
+        println(s"************** Invalid Error $x")
         Invalid(errorKey)
     }
   }
