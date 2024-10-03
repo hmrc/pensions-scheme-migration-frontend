@@ -23,8 +23,9 @@ import helpers.cya.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.Results.Ok
 import play.api.mvc.{Action, AnyContent}
-import services.common.details.CommonWhatYouWillNeedDetailsService
+import views.html.establishers.partnership.partner.WhatYouWillNeedView
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -33,20 +34,19 @@ class WhatYouWillNeedController @Inject()(val messagesApi: MessagesApi,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
-                                          common: CommonWhatYouWillNeedDetailsService
+                                          view: WhatYouWillNeedView
                                          )(implicit val ec: ExecutionContext)
   extends I18nSupport with Retrievals {
 
   def onPageLoad(establisherIndex: Index): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData()).async {
+    (authenticate andThen getData andThen requireData()){
 
       implicit request =>
         val partnerIndex = request.userAnswers.allPartners(establisherIndex).size
-
-        common.get(
-          template = "establishers/partnership/partner/whatYouWillNeed.njk",
-          continueUrl = PartnerNameController.onPageLoad(establisherIndex, partnerIndex, NormalMode).url,
-          schemeName = request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
+        Ok(view(
+          PartnerNameController.onPageLoad(establisherIndex,partnerIndex, NormalMode).url,
+          request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
+        )
         )
     }
 }

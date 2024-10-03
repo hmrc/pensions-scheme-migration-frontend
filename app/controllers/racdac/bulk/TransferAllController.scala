@@ -31,8 +31,9 @@ import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.Radios
-import utils.Enumerable
+import utils.{Enumerable, TwirlMigration}
 import utils.HttpResponseRedirects.listOfSchemesRedirects
+import views.html.racdac.TransferAllView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -45,7 +46,7 @@ class TransferAllController @Inject()(appConfig: AppConfig,
                                       listOfSchemesConnector: ListOfSchemesConnector,
                                       currentPstrCacheConnector: CurrentPstrCacheConnector,
                                       val controllerComponents: MessagesControllerComponents,
-                                      renderer: Renderer
+                                      transferAllView: TransferAllView
                                      )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
@@ -56,14 +57,14 @@ class TransferAllController @Inject()(appConfig: AppConfig,
       listOfSchemesConnector.getListOfSchemes(request.psaId.id).flatMap {
         case Right(list) =>
           if (list.items.getOrElse(Nil).exists(_.racDac)) {
-            minimalDetailsConnector.getPSAName.flatMap { psaName =>
-              val json: JsObject = Json.obj(
-                "form" -> form,
-                "psaName" -> psaName,
-                "returnUrl" -> appConfig.psaOverviewUrl,
-                "radios" -> Radios.yesNo(form("value"))
-              )
-              renderer.render("racdac/transferAll.njk", json).map(Ok(_))
+            minimalDetailsConnector.getPSAName.map { psaName =>
+              Ok(transferAllView(
+                form,
+                routes.TransferAllController.onSubmit,
+                appConfig.psaOverviewUrl,
+                psaName,
+                TwirlMigration.toTwirlRadios(Radios.yesNo(form("value")))
+              ))
             }
           } else {
             Future.successful(Redirect(controllers.preMigration.routes.NoSchemeToAddController.onPageLoadRacDac))
@@ -75,14 +76,14 @@ class TransferAllController @Inject()(appConfig: AppConfig,
   def onSubmit: Action[AnyContent] = authenticate.async {
     implicit request =>
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) => minimalDetailsConnector.getPSAName.flatMap { psaName =>
-          val json: JsObject = Json.obj(
-            "form" -> formWithErrors,
-            "psaName" -> psaName,
-            "returnUrl" -> appConfig.psaOverviewUrl,
-            "radios" -> Radios.yesNo(formWithErrors("value"))
-          )
-          renderer.render("racdac/transferAll.njk", json).map(BadRequest(_))
+        (formWithErrors: Form[_]) => minimalDetailsConnector.getPSAName.map { psaName =>
+          BadRequest(transferAllView(
+            formWithErrors,
+            routes.TransferAllController.onSubmit,
+            appConfig.psaOverviewUrl,
+            psaName,
+            TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value")))
+          ))
         }, { value =>
           currentPstrCacheConnector.remove.map { _ =>
             value match {

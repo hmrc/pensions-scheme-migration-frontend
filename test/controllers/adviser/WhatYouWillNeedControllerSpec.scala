@@ -22,7 +22,6 @@ import identifiers.adviser.AdviserNameId
 import matchers.JsonMatchers
 import models.NormalMode
 import org.scalatest.TryValues
-import play.api.Application
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
 import utils.Data.ua
@@ -35,7 +34,6 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase with JsonMatchers
 
   private val advisorName: String = "test"
   private val userAnswers: UserAnswers = ua.set(AdviserNameId, advisorName).success.value
-  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 
   private val mode = NormalMode
 

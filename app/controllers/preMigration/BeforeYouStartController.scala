@@ -22,12 +22,11 @@ import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRetrievalAction}
 import models.Scheme
 import models.requests.OptionalDataRequest
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.Json
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.preMigration.BeforeYouStartView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,7 +39,7 @@ class BeforeYouStartController @Inject()(
                                            userAnswersCacheConnector: UserAnswersCacheConnector,
                                            legacySchemeDetailsConnector : LegacySchemeDetailsConnector,
                                            val controllerComponents: MessagesControllerComponents,
-                                           val renderer: Renderer
+                                           beforeYouStartView: BeforeYouStartView
                                          )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
@@ -72,15 +71,11 @@ class BeforeYouStartController @Inject()(
 
   private def renderView(implicit request: OptionalDataRequest[_]): Future[Result]= {
     minimalDetailsConnector.getPSAName.flatMap { psaName =>
-      renderer.render(
-        template = "preMigration/beforeYouStart.njk",
-        ctx = Json.obj(
-          "pageTitle" -> Messages("messages__BeforeYouStart__title"),
-          "continueUrl" -> controllers.routes.TaskListController.onPageLoad.url,
-          "psaName" -> psaName,
-          "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad.url
-        )
-      ).map(Ok(_))
+      Future.successful(Ok(beforeYouStartView(
+        psaName,
+        controllers.routes.TaskListController.onPageLoad,
+        controllers.routes.PensionSchemeRedirectController.onPageLoad.url
+      )))
     }
   }
 }

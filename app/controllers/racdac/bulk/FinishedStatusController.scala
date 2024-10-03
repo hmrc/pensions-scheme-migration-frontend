@@ -33,7 +33,7 @@ class FinishedStatusController @Inject()(appConfig: AppConfig,
                                          authenticate: AuthAction,
                                          val controllerComponents: MessagesControllerComponents,
                                          bulkMigrationQueueConnector: BulkMigrationQueueConnector,
-                                         renderer: Renderer
+                                         finishedStatusView: views.html.racdac.FinishedStatusView
                                         )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
@@ -41,12 +41,8 @@ class FinishedStatusController @Inject()(appConfig: AppConfig,
   def onPageLoad: Action[AnyContent] =
     authenticate.async {
       implicit request =>
-        bulkMigrationQueueConnector.deleteAll(request.psaId.id).flatMap { _ =>
-          val json = Json.obj(
-            "listOfSchemesUrl" -> appConfig.yourPensionSchemesUrl,
-            "transferRacDacUrl" -> appConfig.racDacMigrationTransfer
-          )
-          renderer.render("racdac/finishedStatus.njk", json).map(Ok(_))
+        bulkMigrationQueueConnector.deleteAll(request.psaId.id).map { _ =>
+          Ok(finishedStatusView(appConfig.yourPensionSchemesUrl, appConfig.racDacMigrationTransfer))
         }
     }
 }

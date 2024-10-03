@@ -21,15 +21,13 @@ import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import matchers.JsonMatchers
 import models.MinPSA
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.Request
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import uk.gov.hmrc.http.HttpReads.upstreamResponseMessage
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.nunjucks.NunjucksSupport
@@ -38,8 +36,7 @@ import utils.Enumerable
 
 import scala.concurrent.Future
 class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
-
-  private val templateToBeRendered = "racdac/declaration.njk"
+  
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val mockPensionsSchemeConnector:PensionsSchemeConnector = mock[PensionsSchemeConnector]
@@ -50,21 +47,19 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
     bind[PensionsSchemeConnector].toInstance(mockPensionsSchemeConnector)
   )
 
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
+  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
   private def httpPathGET: String = controllers.racdac.individual.routes.DeclarationController.onPageLoad.url
   private def httpPathPOST: String = controllers.racdac.individual.routes.DeclarationController.onSubmit.url
 
-  private val jsonToPassToTemplate: JsObject =
-    Json.obj(
-      "psaName" -> psaName,
-      "submitUrl" -> routes.DeclarationController.onSubmit.url,
-      "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad.url
-    )
+  private def getView(request: Request[_]) = app.injector.instanceOf[views.html.racdac.DeclarationView].apply(
+    routes.DeclarationController.onSubmit,
+    controllers.routes.PensionSchemeRedirectController.onPageLoad.url,
+    psaName
+  )(request, implicitly)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
 
@@ -75,15 +70,13 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
       "return OK and the correct view for a GET" in {
         mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
         when(mockMinimalDetailsConnector.getPSAName(any(), any())).thenReturn(Future.successful(psaName))
-        val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-        val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-        val result = route(application, httpGETRequest(httpPathGET)).value
+        val req = httpGETRequest(httpPathGET)
+        val result = route(app, req).value
         status(result) mustEqual OK
-
-        verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-        templateCaptor.getValue mustEqual templateToBeRendered
-
-        jsonCaptor.getValue must containJson(jsonToPassToTemplate)
+        compareResultAndView(
+          result,
+          getView(req)
+        )
       }
 
       "redirect to next page when rac dac schems exist" in {
@@ -92,7 +85,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
         when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(minPSA))
         when(mockPensionsSchemeConnector.registerScheme(any(),any(), any())(any(),any())).thenReturn(Future.successful(pstr))
         when(mockEmailConnector.sendEmail(any(), any(), any(), any())(any(), any())).thenReturn(Future(EmailSent))
-        val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
+        val result = route(app, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.racdac.individual.routes.ConfirmationController.onPageLoad.url)
@@ -106,7 +99,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
         UpstreamErrorResponse(upstreamResponseMessage("POST", "url",
           Status.INTERNAL_SERVER_ERROR, "response.body"), Status.INTERNAL_SERVER_ERROR, Status.INTERNAL_SERVER_ERROR)))
       when(mockEmailConnector.sendEmail(any(), any(), any(), any())(any(), any())).thenReturn(Future(EmailSent))
-      val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.YourActionWasNotProcessedController.onPageLoadRacDac.url)
@@ -119,7 +112,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
         UpstreamErrorResponse(upstreamResponseMessage("POST", "url",
           Status.UNPROCESSABLE_ENTITY, "response.body"), Status.UNPROCESSABLE_ENTITY, Status.UNPROCESSABLE_ENTITY)))
       when(mockEmailConnector.sendEmail(any(), any(), any(), any())(any(), any())).thenReturn(Future(EmailSent))
-      val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.racdac.individual.routes.AddingRacDacController.onPageLoad.url)

@@ -19,26 +19,23 @@ package controllers.establishers
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.establishers.ConfirmDeleteEstablisherFormProvider
-import helpers.AddToListHelper
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.{AddEstablisherId, EstablisherKindId, IsEstablisherNewId}
 import matchers.JsonMatchers
 import models.establishers.EstablisherKind
-import models.{PersonName, Scheme}
+import models.{EstablisherIndividualEntity, PersonName, Scheme}
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
-import play.api.inject.bind
-import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{Data, UserAnswers}
+import utils.{Data, TwirlMigration, UserAnswers}
+import views.html.establishers.AddEstablisherView
 
 import scala.concurrent.Future
 class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers {
@@ -53,21 +50,11 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
                 _.set(EstablisherNameId(2), PersonName("e", "f", isDeleted = false)).flatMap(
                   _.set(IsEstablisherNewId(2), true)
           )))))))).toOption
-  private val templateToBeRendered = "establishers/addEstablisher.njk"
+
   private val form: Form[Boolean] = new ConfirmDeleteEstablisherFormProvider()(establisherName)
-  private val itemList: JsValue = Json.obj(
-    "name" -> establisherName,
-    "changeUrl" ->  "changeUrl",
-    "removeUrl" ->   "removeUrl"
-  )
-  private lazy val mockHelper: AddToListHelper = mock[AddToListHelper]
-
   private lazy val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private def extraModules: Seq[GuiceableModule] = Seq(
-    bind[AddToListHelper].toInstance(mockHelper)
-  )
 
-  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
+  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
   private def httpPathGET: String = controllers.establishers.routes.AddEstablisherController.onPageLoad.url
   private def httpPathPOST: String = controllers.establishers.routes.AddEstablisherController.onSubmit.url
@@ -80,38 +67,32 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
     "value" -> Seq("invalid")
   )
 
-  private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>
-    Json.obj(
-      "form" -> form,
-      "itemListIncomplete" -> itemList,
-      "itemListComplete" -> itemList,
-      "radios" -> Radios.yesNo(form("value")),
-      "schemeName" -> schemeName
-    )
-
   override def beforeEach(): Unit = {
     super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-    when(mockHelper.directorsOrPartnersItemList(any())).thenReturn(itemList)
   }
 
 
   "AddEstablisherController" must {
 
     "return OK and the correct view for a GET" in {
-      mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
+      mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
+      val request = httpGETRequest(httpPathGET)
       val result = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = app.injector.instanceOf[AddEstablisherView].apply(
+        form,
+        schemeName,
+        Seq(EstablisherIndividualEntity(EstablisherNameId(0), establisherName, false, false, true, 1)),
+        Seq(),
+        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        controllers.establishers.routes.AddEstablisherController.onSubmit
+      )(request, messages)
 
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form))
+      compareResultAndView(result, view)
     }
 
     "redirect to Session Expired page for a GET when there is no data" in {

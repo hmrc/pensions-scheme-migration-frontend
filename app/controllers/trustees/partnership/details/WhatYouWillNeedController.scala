@@ -24,17 +24,18 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.partnership.PartnershipDetailsId
 import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.Results.Ok
 import play.api.mvc.{Action, AnyContent}
 import services.common.details.CommonWhatYouWillNeedDetailsService
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class WhatYouWillNeedController @Inject()(val messagesApi: MessagesApi,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
-                                          common: CommonWhatYouWillNeedDetailsService
+                                          view: views.html.trustees.partnership.details.WhatYouWillNeedView
                                          )(implicit val ec: ExecutionContext)
   extends Retrievals with I18nSupport {
 
@@ -43,13 +44,13 @@ class WhatYouWillNeedController @Inject()(val messagesApi: MessagesApi,
       implicit request =>
         PartnershipDetailsId(index).retrieve.map {
           details =>
-            common.get(
-              template = "trustees/partnership/details/whatYouWillNeed.njk",
-              name = Some(details.partnershipName),
-              pageTitle = Some(Messages("messages__partnershipDetails__whatYouWillNeed_title")),
-              continueUrl = HaveUTRController.onPageLoad(index, NormalMode).url,
-              schemeName = request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
-            )
+            Future.successful(Ok(
+              view(
+                Messages("messages__partnershipDetails__whatYouWillNeed_title"),
+                HaveUTRController.onPageLoad(index, NormalMode).url,
+                details.partnershipName
+              )
+            ))
         }
     }
 
