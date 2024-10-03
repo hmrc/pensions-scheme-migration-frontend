@@ -47,7 +47,7 @@ class SchemeSearchService @Inject()(appConfig: AppConfig,
                                     listOfSchemesConnector: ListOfSchemesConnector,
                                     minimalDetailsConnector: MinimalDetailsConnector,
                                     paginationService: PaginationService,
-                                    view: ListOfSchemesView) extends NunjucksSupport with HttpResponseHelper {
+                                    view: ListOfSchemesView) extends HttpResponseHelper {
 
   private def pagination: Int = appConfig.listSchemePagination
 
