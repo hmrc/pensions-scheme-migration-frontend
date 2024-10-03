@@ -21,6 +21,7 @@ import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import connectors.{EmailConnector, LegacySchemeDetailsConnector, MinimalDetailsConnector}
 import controllers.actions._
+import models.TolerantAddress
 import navigators.CompoundNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{Mockito, MockitoSugar}
@@ -33,12 +34,13 @@ import play.api.test.Helpers.{GET, POST}
 import play.api.test.{FakeHeaders, FakeRequest}
 import play.twirl.api.Html
 import services.DataUpdateService
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Label, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import utils.{CountryOptions, Enumerable, FakeCountryOptions}
 
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
-
 
 trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerable.Implicits with MockitoSugar {
 
@@ -114,5 +116,15 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
         .mkString
     def removeAllNonces(): String = s.replaceAll("""nonce="[^"]*"""", "")
   }
+
+  def convertToRadioItems(addresses: Seq[TolerantAddress]): Seq[RadioItem] = {
+    addresses.zipWithIndex.map { case (address, index) =>
+      RadioItem(
+        label = Some(Label(content = Text(address.print))),
+        value = Some(index.toString)
+      )
+    }
+  }
+
 
 }

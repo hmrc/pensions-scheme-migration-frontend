@@ -16,10 +16,11 @@
 
 package controllers.benefitsAndInsurance
 
+import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.address.AddressListFormProvider
-import identifiers.benefitsAndInsurance.{InsurerEnterPostCodeId}
+import identifiers.benefitsAndInsurance.InsurerEnterPostCodeId
 import identifiers.beforeYouStart.SchemeNameId
 import matchers.JsonMatchers
 import models.{Scheme, TolerantAddress}
@@ -28,13 +29,10 @@ import play.api.mvc.Results.{BadRequest, Ok}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
+import play.api.libs.json.Json
 import play.api.mvc.{Result, Results}
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.common.address.CommonAddressListService
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Label, Text}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import utils.Data.ua
 import utils.{Data, Enumerable, UserAnswers}
 import views.html.address.AddressListView
 
@@ -42,16 +40,17 @@ import scala.concurrent.Future
 
 class InsurerSelectAddressControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
+  private val mockAddressLookupConnector = mock[AddressLookupConnector]
   private val mockCommonAddressListService = mock[CommonAddressListService]
 
   val extraModules: Seq[GuiceableModule] = Seq(
+    bind[AddressLookupConnector].toInstance(mockAddressLookupConnector),
     bind[CommonAddressListService].toInstance(mockCommonAddressListService)
   )
 
   private val formProvider: AddressListFormProvider = new AddressListFormProvider()
   private val form = formProvider("insurerSelectAddress.required")
 
-  private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
   private val httpPathGET: String = routes.InsurerSelectAddressController.onPageLoad.url
@@ -68,16 +67,6 @@ class InsurerSelectAddressControllerSpec extends ControllerSpecBase with JsonMat
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-  }
-
-  private def convertToRadioItems(addresses: Seq[TolerantAddress]): Seq[RadioItem] = {
-    addresses.zipWithIndex.map { case (address, index) =>
-      RadioItem(
-        label = Some(Label(content = Text(address.print))),
-        value = Some(index.toString)
-      )
-    }
   }
 
   val addresses = Seq(
@@ -125,26 +114,31 @@ class InsurerSelectAddressControllerSpec extends ControllerSpecBase with JsonMat
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
-      val onwardCall = routes.InsurerConfirmAddressController.onPageLoad.url
-
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
+        .thenReturn(Future.successful(Json.obj()))
       when(mockCommonAddressListService.post(any(), any(), any(), any(), any(), any())(any(), any(), any()))
-        .thenReturn(Future.successful(Results.SeeOther(onwardCall)))
+        .thenReturn(Future.successful(Results.SeeOther(onwardCall.url)))
+
+      val ua: UserAnswers = Data.ua.setOrException(InsurerEnterPostCodeId, addresses)
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardCall)
+      redirectLocation(result) mustBe Some(onwardCall.url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {
-      mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
+      val ua: UserAnswers = Data.ua
+        .setOrException(InsurerEnterPostCodeId, addresses)
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+
       when(mockCommonAddressListService.post(any(), any(), any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(BadRequest))
 
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
 
       status(result) mustEqual BAD_REQUEST
-      verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
     }
 
     "redirect to Session Expired page for a POST when there is no data" in {

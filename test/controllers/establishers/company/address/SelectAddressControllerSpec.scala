@@ -19,35 +19,45 @@ package controllers.establishers.company.address
 import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
+import controllers.establishers.individual.address.routes
+import forms.address.AddressListFormProvider
 import identifiers.establishers.company.address.EnterPostCodeId
 import matchers.JsonMatchers
 import models.{NormalMode, Scheme, TolerantAddress}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.Result
+import play.api.libs.json.Json
+import play.api.mvc.{Result, Results}
+import play.api.mvc.Results.{BadRequest, Ok}
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
+import services.common.address.CommonAddressListService
+import utils.Data.schemeName
 import utils.{Data, Enumerable, UserAnswers}
+import views.html.address.AddressListView
 
 import scala.concurrent.Future
 
-class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class SelectAddressControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val mockAddressLookupConnector = mock[AddressLookupConnector]
+  private val mockCommonAddressListService = mock[CommonAddressListService]
 
   val extraModules: Seq[GuiceableModule] = Seq(
-    bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
+    bind[AddressLookupConnector].toInstance(mockAddressLookupConnector),
+    bind[CommonAddressListService].toInstance(mockCommonAddressListService)
   )
+
+  private val formProvider: AddressListFormProvider = new AddressListFormProvider()
+  private val form = formProvider("selectPreviousAddress.required")
+  private val mode = NormalMode
+  private val index = 0
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = controllers.establishers.company.address.routes.SelectAddressController.onPageLoad(0,NormalMode).url
-  private val httpPathPOST: String = controllers.establishers.company.address.routes.SelectAddressController.onSubmit(0,NormalMode).url
+  private val httpPathGET: String = controllers.establishers.company.address.routes.SelectAddressController.onPageLoad(index,mode).url
+  private val httpPathPOST: String = controllers.establishers.company.address.routes.SelectAddressController.onSubmit(index,mode).url
 
   private val seqAddresses = Seq(
     TolerantAddress(Some("1"),Some("1"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")),
@@ -65,26 +75,31 @@ class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
   "SelectAddress Controller" must {
 
     "Return OK and the correct view for a GET" in {
       val ua: UserAnswers = Data.ua
-        .setOrException(EnterPostCodeId(0), seqAddresses)
+        .setOrException(EnterPostCodeId(index), seqAddresses)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+
+      val view = app.injector.instanceOf[AddressListView]
+      val expectedView = view(
+        form, "entityType", "entityName",
+        convertToRadioItems(seqAddresses),
+        enterManuallyUrl = routes.ConfirmAddressController.onPageLoad(index,mode).url,
+        schemeName = schemeName,
+        submitUrl = controllers.establishers.partnership.address.routes.AddressYearsController.onSubmit(index, mode)
+      )(fakeRequest, messages)
+
+      when(mockCommonAddressListService.get(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(Ok(expectedView)))
 
       val result: Future[Result] = route(application, request).value
 
       status(result) mustEqual OK
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      verify(mockRenderer, times(1))
-        .render(ArgumentMatchers.eq("address/addressList.njk"), jsonCaptor.capture())(any())
-
-      (jsonCaptor.getValue \ "schemeName").toOption.map(_.as[String]) mustBe Some(Data.schemeName)
+      compareResultAndView(result, expectedView)
     }
 
     "redirect to Session Expired page for a GET when there is no data" in {
@@ -101,10 +116,12 @@ class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
       val ua: UserAnswers = Data.ua
-        .setOrException(EnterPostCodeId(0), seqAddresses)
+        .setOrException(EnterPostCodeId(index), seqAddresses)
 
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
+      when(mockCommonAddressListService.post(any(), any(), any(), any(), any(), any())(any(), any(), any()))
+        .thenReturn(Future.successful(Results.SeeOther(onwardCall.url)))
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
@@ -116,8 +133,10 @@ class SelectAddressControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
     "return a BAD REQUEST when invalid data is submitted" in {
       val ua: UserAnswers = Data.ua
-        .setOrException(EnterPostCodeId(0), seqAddresses)
+        .setOrException(EnterPostCodeId(index), seqAddresses)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+      when(mockCommonAddressListService.post(any(), any(), any(), any(), any(), any())(any(), any(), any()))
+        .thenReturn(Future.successful(BadRequest))
 
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
 

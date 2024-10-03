@@ -56,7 +56,7 @@ class TradingTimeController @Inject()(
             Message("messages__company"),
             form,
             TradingTimeId(index),
-            submitCall = routes.TradingTimeController.onSubmit(index, mode)
+            submitUrl = routes.TradingTimeController.onSubmit(index, mode)
           )
       }
     }
@@ -74,7 +74,7 @@ class TradingTimeController @Inject()(
             form,
             TradingTimeId(index),
             Some(mode),
-            submitCall = routes.TradingTimeController.onSubmit(index, mode)
+            submitUrl = routes.TradingTimeController.onSubmit(index, mode)
           )
       }
     }

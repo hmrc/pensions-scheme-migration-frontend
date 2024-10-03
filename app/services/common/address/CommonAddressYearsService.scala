@@ -72,7 +72,7 @@ class CommonAddressYearsService @Inject()(
         entityName,
         TwirlMigration.toTwirlRadios(Radios.yesNo(filledForm("value"))),
         schemeName,
-        submitCall = submitUrl
+        submitUrl = submitUrl
       )))
   }
 
@@ -83,7 +83,7 @@ class CommonAddressYearsService @Inject()(
            addressYearsId : TypedIdentifier[Boolean],
            mode: Option[Mode] = None,
            optSetUserAnswers:Option[Boolean => Try[UserAnswers]] = None,
-           submitCall: Call
+           submitUrl: Call
           )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
     form
       .bindFromRequest()
@@ -96,7 +96,7 @@ class CommonAddressYearsService @Inject()(
               entityName,
               TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value"))),
               schemeName,
-              submitCall = submitCall
+              submitUrl = submitUrl
             )))
         },
         value => {

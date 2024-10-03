@@ -70,7 +70,7 @@ class AddressYearsController @Inject()(
             form,
             AddressYearsId(index),
             Some(mode),
-            submitCall = routes.AddressYearsController.onSubmit(index, mode)
+            submitUrl = routes.AddressYearsController.onSubmit(index, mode)
           )
       }
     }

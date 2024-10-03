@@ -62,7 +62,7 @@ class CommonTradingTimeService @Inject()(
           entityType : String,
           form : Form[Boolean],
           tradingTimeId : TypedIdentifier[Boolean],
-          submitCall: Call
+          submitUrl: Call
          )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     val filledForm = request.userAnswers.get(tradingTimeId).fold(form)(form.fill)
     val templateData = getTemplateData(schemeName, entityName, entityType, filledForm)
@@ -73,7 +73,7 @@ class CommonTradingTimeService @Inject()(
         entityName,
         TwirlMigration.toTwirlRadios(Radios.yesNo(filledForm("value"))),
         schemeName,
-        submitCall = submitCall
+        submitUrl = submitUrl
     )))
   }
 
@@ -83,7 +83,7 @@ class CommonTradingTimeService @Inject()(
            form : Form[Boolean],
            tradingTimeId : TypedIdentifier[Boolean],
            mode: Option[Mode] = None,
-           submitCall: Call
+           submitUrl: Call
           )(implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
     form
       .bindFromRequest()
@@ -97,7 +97,7 @@ class CommonTradingTimeService @Inject()(
               entityName,
               TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value"))),
               schemeName,
-              submitCall = submitCall
+              submitUrl = submitUrl
             )))
         },
         value =>

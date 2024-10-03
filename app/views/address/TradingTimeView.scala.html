@@ -22,14 +22,14 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], entityType: String, entityName: String, radios: Seq[RadioItem], schemeName: Option[String], submitCall: Call)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], entityType: String, entityName: String, radios: Seq[RadioItem], schemeName: Option[String], submitUrl: Call)(implicit request: Request[_], messages: Messages)
 
 @layout(messages("tradingTime.title", entityType)) {
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
     }
 
-    @formHelper(action = submitCall, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "true") {
+    @formHelper(action = submitUrl, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "true") {
         @govukRadios(
             RadiosViewModel(
             field = form("value"),

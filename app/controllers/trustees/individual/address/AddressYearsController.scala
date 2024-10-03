@@ -75,7 +75,7 @@ class AddressYearsController @Inject()(
           AddressYearsId(index),
           Some(mode),
           Some(value => setUpdatedAnswers(index, value, mode, request.userAnswers)),
-          submitCall = routes.AddressYearsController.onSubmit(index, mode)
+          submitUrl = routes.AddressYearsController.onSubmit(index, mode)
         )
       }
     }

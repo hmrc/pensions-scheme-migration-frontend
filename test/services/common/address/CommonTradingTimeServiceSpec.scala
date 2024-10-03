@@ -70,7 +70,7 @@ class CommonTradingTimeServiceSpec extends CommonServiceSpecBase with SpecBase w
     "render the view correctly on get" in {
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val result = service.get(Some("test-scheme"), "entityName", "entityType", form, tradingTimeId, submitCall = onwardCall)(request)
+      val result = service.get(Some("test-scheme"), "entityName", "entityType", form, tradingTimeId, submitUrl = onwardCall)(request)
 
       status(result) mustBe OK
       verify(mockRenderer, times(1)).render(any(), any())(any())
@@ -82,7 +82,7 @@ class CommonTradingTimeServiceSpec extends CommonServiceSpecBase with SpecBase w
 
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val result = service.post(Some("test-scheme"), "entityName", "entityType", form, tradingTimeId, submitCall = onwardCall)(invalidRequest, global, hc)
+      val result = service.post(Some("test-scheme"), "entityName", "entityType", form, tradingTimeId, submitUrl = onwardCall)(invalidRequest, global, hc)
 
       status(result) mustBe BAD_REQUEST
       verify(mockRenderer, times(1)).render(any(), any())(any())
@@ -95,7 +95,7 @@ class CommonTradingTimeServiceSpec extends CommonServiceSpecBase with SpecBase w
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val result = service.post(Some("test-scheme"), "entityName", "entityType", form, tradingTimeId, submitCall = onwardCall)(validRequest, global, hc)
+      val result = service.post(Some("test-scheme"), "entityName", "entityType", form, tradingTimeId, submitUrl = onwardCall)(validRequest, global, hc)
 
       status(result) mustBe SEE_OTHER
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())

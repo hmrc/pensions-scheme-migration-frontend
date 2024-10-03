@@ -82,7 +82,7 @@ class CommonAddressYearsServiceSpec extends ControllerSpecBase with CommonServic
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
       val result = service.post(Some("schemeName"), "entityName", "entityType", form, addressYearsId, Some(NormalMode),
-        submitCall = onwardCall)(invalidRequest, global)
+        submitUrl = onwardCall)(invalidRequest, global)
 
       status(result) mustBe BAD_REQUEST
       verify(mockRenderer, times(1)).render(any(), any())(any())
@@ -96,7 +96,7 @@ class CommonAddressYearsServiceSpec extends ControllerSpecBase with CommonServic
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
       val result = service.post(Some("schemeName"), "entityName", "entityType", form, addressYearsId, Some(NormalMode),
-        submitCall = onwardCall)(validRequest, global)
+        submitUrl = onwardCall)(validRequest, global)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardCall.url)
