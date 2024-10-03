@@ -32,12 +32,7 @@ submitCall: Call)(implicit request: Request[_], messages: Messages)
 
 @layout(messages("messages__enterEmail_pageHeading", entityName)) {
 <div>
-    @if(paragraphs) {
-        @for(paragraph <- paragraphs) {
-           <p class="govuk-body govuk-!-font-weight-regular">@paragraph</p>
-        }
-    }
-    @
+
 
     <h1 class="govuk-heading-l">@messages("messages__enterEmail_pageHeading", entityName)</h1>
 
