@@ -34,7 +34,8 @@ trait InputFluency {
                label: Label,
                classes: String = "",
                hint: Option[Hint] = None,
-               inputType: String = "text"
+               inputType: String = "text",
+               autocomplete: Option[String] = None
              )(implicit messages: Messages): Input =
       Input(
         id           = field.id,
@@ -44,7 +45,17 @@ trait InputFluency {
         errorMessage = errorMessage(field),
         classes = classes,
         hint = hint,
-        inputType = inputType
+        inputType = inputType,
+        autocomplete = autocomplete
       )
+  }
+
+  implicit class FluentInput(input: Input) {
+    def withCssClass(newClass: String): Input =
+      input copy (classes = s"${input.classes} $newClass")
+
+    def withAttribute(attribute: (String, String)): Input =
+      input copy (attributes = input.attributes + attribute)
+
   }
 }

@@ -26,14 +26,12 @@ import models.Members
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.MessageInterpolators
-import utils.Enumerable
+import utils.{Enumerable, TwirlMigration}
 import viewmodels.Message
+import views.html.aboutMembership.MembersView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,7 +44,7 @@ class CurrentMembersController @Inject()(override val messagesApi: MessagesApi,
                                          requireData: DataRequiredAction,
                                          formProvider: MembersFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
-                                         renderer: Renderer
+                                         view : MembersView
                                     )(implicit val executionContext: ExecutionContext) extends FrontendBaseController
   with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
@@ -60,16 +58,14 @@ class CurrentMembersController @Inject()(override val messagesApi: MessagesApi,
           case None => form(schemeName)
           case Some(value) => form(schemeName).fill(value)
         }
-
-        val json = Json.obj(
-          "form" -> preparedForm,
-          "schemeName" -> schemeName,
-          "pageHeading" -> msg"currentMembers.title".withArgs(Messages("messages__the_scheme")).resolve,
-          "titleMessage" -> msg"currentMembers.title".withArgs(schemeName).resolve,
-          "radios" -> Members.radios(preparedForm)
-        )
-
-        renderer.render("aboutMembership/members.njk", json).map(Ok(_))
+        Future.successful(Ok(view(
+          preparedForm,
+          schemeName,
+          Messages("currentMembers.title", Messages("messages__the_scheme")),
+          Messages("currentMembers.title", schemeName),
+          TwirlMigration.toTwirlRadios(Members.radios(preparedForm)),
+          routes.CurrentMembersController.onSubmit
+        )))
       }
   }
 
@@ -78,15 +74,14 @@ class CurrentMembersController @Inject()(override val messagesApi: MessagesApi,
       SchemeNameId.retrieve.map { schemeName =>
         form(schemeName).bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
-            val json = Json.obj(
-              "form" -> formWithErrors,
-              "schemeName" -> schemeName,
-              "pageHeading" -> msg"currentMembers.title".withArgs(Messages("messages__the_scheme")).resolve,
-              "titleMessage" -> msg"currentMembers.title".withArgs(schemeName).resolve,
-              "radios" -> Members.radios(formWithErrors)
-            )
-
-            renderer.render("aboutMembership/members.njk", json).map(BadRequest(_))
+            Future.successful(BadRequest(view(
+              formWithErrors,
+              schemeName,
+              Messages("currentMembers.title", Messages("messages__the_scheme")),
+              Messages("currentMembers.title", schemeName),
+              TwirlMigration.toTwirlRadios(Members.radios(formWithErrors)),
+              routes.CurrentMembersController.onSubmit
+            )))
           },
           value =>
             for {

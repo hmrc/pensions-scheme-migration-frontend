@@ -17,8 +17,12 @@
 package services.common.address
 
 import controllers.Retrievals
-import models.{NormalMode, TolerantAddress}
+import identifiers.TypedIdentifier
+import identifiers.establishers.individual.address.AddressId
+import identifiers.trustees.individual.address.AddressListId
+import models.establishers.AddressPages
 import models.requests.DataRequest
+import models.{NormalMode, TolerantAddress}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
@@ -31,14 +35,10 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import renderer.Renderer
+import services.CommonServiceSpecBase
+import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{Data, FakeNavigator, UserAnswers}
-import identifiers.TypedIdentifier
-import identifiers.establishers.individual.address.AddressId
-import identifiers.trustees.individual.address.AddressListId
-import models.establishers.AddressPages
-import uk.gov.hmrc.domain.PsaId
-import services.CommonServiceSpecBase
 
 import scala.concurrent.Future
 
@@ -95,7 +95,7 @@ class CommonAddressListServiceSpec extends CommonServiceSpecBase with MockitoSug
       val result = service.post(_ => templateData, addressPages, Some(NormalMode), Call("GET", "manualUrl"), form)(validRequest, global, hc)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().absoluteURL()(request))
     }
   }
 }

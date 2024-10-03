@@ -40,14 +40,13 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits._
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{Json, OWrites}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Result}
-import renderer.Renderer
+import play.api.mvc.{AnyContent, Call, MessagesControllerComponents, Result}
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import utils.UserAnswers
 import viewmodels.Message
+import views.html.PhoneView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -55,25 +54,14 @@ import scala.util.Try
 
 @Singleton
 class CommonPhoneService @Inject()(
-                                           val controllerComponents: MessagesControllerComponents,
-                                           val renderer: Renderer,
-                                           val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                           val navigator: CompoundNavigator,
-                                           val messagesApi: MessagesApi
-                                         ) extends NunjucksSupport
+                                    val controllerComponents: MessagesControllerComponents,
+                                    val userAnswersCacheConnector: UserAnswersCacheConnector,
+                                    val navigator: CompoundNavigator,
+                                    val messagesApi: MessagesApi,
+                                    phoneView: PhoneView
+                                  ) extends NunjucksSupport
   with FrontendHeaderCarrierProvider
   with I18nSupport {
-  private def viewTemplate = "phone.njk"
-
-  private case class TemplateData(
-                                   entityName: String,
-                                   entityType: String,
-                                   form: Form[String],
-                                   schemeName: String,
-                                   paragraphText: Seq[String] = Seq()
-                                 )
-
-  implicit private def templateDataWrites(implicit request: DataRequest[AnyContent]): OWrites[TemplateData] = Json.writes[TemplateData]
 
   def get(
            entityName: String,
@@ -81,17 +69,21 @@ class CommonPhoneService @Inject()(
            phoneId: TypedIdentifier[String],
            form: Form[String],
            schemeName: String,
-           paragraphText: Seq[String] = Seq()
+           paragraphText: Seq[String] = Seq(),
+           submitCall: Call
          )(
            implicit request: DataRequest[AnyContent],
            ec: ExecutionContext): Future[Result] = {
     val filledForm = request.userAnswers.get(phoneId).fold(form)(form.fill)
-    renderer.render(
-      viewTemplate,
-      getTemplateData(
-        entityName, entityType.resolve, filledForm, schemeName, paragraphText
-      )
-    ).map(Ok(_))
+    Future.successful(Ok(
+      phoneView(
+        filledForm,
+        schemeName,
+        entityName,
+        entityType.resolve,
+        paragraphText,
+        submitCall
+      )))
   }
 
   def post(entityName: String,
@@ -101,6 +93,7 @@ class CommonPhoneService @Inject()(
            schemeName: String,
            paragraphText: Seq[String] = Seq(),
            mode: Option[Mode] = None,
+           submitCall: Call,
            optSetUserAnswers: Option[String => Try[UserAnswers]] = None)
           (implicit request: DataRequest[AnyContent],
            ec: ExecutionContext): Future[Result] = {
@@ -108,9 +101,15 @@ class CommonPhoneService @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => {
-          renderer.render(viewTemplate,
-            getTemplateData(entityName, entityType.resolve, formWithErrors, schemeName, paragraphText)
-          ).map(BadRequest(_))
+          Future.successful(BadRequest(
+            phoneView(
+              formWithErrors,
+              schemeName,
+              entityName,
+              entityType.resolve,
+              paragraphText,
+              submitCall
+            )))
         },
         value => {
           def defaultSetUserAnswers = (value: String) =>
@@ -126,20 +125,5 @@ class CommonPhoneService @Inject()(
           }
         }
       )
-  }
-
-  private def getTemplateData(
-                               entityName: String,
-                               entityType: String,
-                               form: Form[String],
-                               schemeName: String,
-                               paragraphText: Seq[String] = Seq()): TemplateData = {
-    TemplateData(
-      entityName,
-      entityType,
-      form,
-      schemeName,
-      paragraphText
-    )
   }
 }

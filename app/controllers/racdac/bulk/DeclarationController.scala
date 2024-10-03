@@ -35,23 +35,22 @@ class DeclarationController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        authenticate: AuthAction,
                                        val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer,
                                        bulkMigrationQueueConnector: BulkMigrationQueueConnector,
                                        getData: BulkDataAction,
-                                       schemeCacheConnector: CurrentPstrCacheConnector
+                                       schemeCacheConnector: CurrentPstrCacheConnector,
+                                       declarationView: views.html.racdac.DeclarationView
                                      )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
-    (authenticate andThen getData(true)).async {
+    (authenticate andThen getData(true)) {
       implicit request =>
-        val json = Json.obj(
-          "psaName" -> request.md.name,
-          "submitUrl" -> routes.DeclarationController.onSubmit.url,
-          "returnUrl" -> appConfig.psaOverviewUrl
-        )
-        renderer.render("racdac/declaration.njk", json).map(Ok(_))
+        Ok(declarationView(
+          routes.DeclarationController.onSubmit,
+          appConfig.psaOverviewUrl,
+          request.md.name
+        ))
     }
 
   private val logger = Logger(classOf[DeclarationController])

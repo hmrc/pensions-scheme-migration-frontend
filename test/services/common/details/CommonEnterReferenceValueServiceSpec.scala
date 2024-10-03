@@ -16,6 +16,7 @@
 
 package services.common.details
 
+import controllers.ControllerSpecBase
 import forms.UTRFormProvider
 import identifiers.TypedIdentifier
 import models.{NormalMode, ReferenceValue}
@@ -31,7 +32,7 @@ import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
 
 import scala.concurrent.Future
 
-class CommonEnterReferenceValueServiceSpec extends CommonServiceSpecBase {
+class CommonEnterReferenceValueServiceSpec extends ControllerSpecBase with CommonServiceSpecBase {
 
   val service = new CommonEnterReferenceValueService(
     controllerComponents = controllerComponents,

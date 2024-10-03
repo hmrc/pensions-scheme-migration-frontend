@@ -25,15 +25,13 @@ import models.trustees.TrusteeKind
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.Enumerable
+import utils.{Enumerable, TwirlMigration}
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class TrusteeKindController @Inject()(
                                            override val messagesApi: MessagesApi,
@@ -43,37 +41,37 @@ class TrusteeKindController @Inject()(
                                            requireData: DataRequiredAction,
                                            formProvider: TrusteeKindFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
-                                           renderer: Renderer
+                                           view: views.html.trustees.TrusteeKindView
                                          )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits with NunjucksSupport {
 
   private val form = formProvider()
 
   def onPageLoad(index: Index): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData()).async {
+    (authenticate andThen getData andThen requireData()) {
       implicit request =>
         val formWithData = request.userAnswers.get(TrusteeKindId(index, TrusteeKind.Company)).fold(form)(form.fill)
-        val json = Json.obj(
-          "form" -> formWithData,
-          "schemeName" -> existingSchemeName,
-          "radios" -> TrusteeKind.radios(formWithData)
-        )
-        renderer.render("trustees/trusteeKind.njk", json).map(Ok(_))
+        Ok(view(
+          formWithData,
+          controllers.trustees.routes.TrusteeKindController.onSubmit(index),
+          existingSchemeName.getOrElse(throw new RuntimeException("Scheme name not available")),
+          TwirlMigration.toTwirlRadios(TrusteeKind.radios(formWithData))
+        ))
     }
 
-  def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
+  def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()) {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
-          val json = Json.obj(
-            "form" -> formWithErrors,
-            "schemeName" -> existingSchemeName,
-            "radios" -> TrusteeKind.radios(formWithErrors)
-          )
-          renderer.render("trustees/trusteeKind.njk", json).map(BadRequest(_))
+          BadRequest(view(
+            formWithErrors,
+            controllers.trustees.routes.TrusteeKindController.onSubmit(index),
+            existingSchemeName.getOrElse(throw new RuntimeException("Scheme name not available")),
+            TwirlMigration.toTwirlRadios(TrusteeKind.radios(formWithErrors))
+          ))
         },
         value => {
-          Future.successful(Redirect(navigator.nextPage(TrusteeKindId(index, value), request.userAnswers)))
+          Redirect(navigator.nextPage(TrusteeKindId(index, value), request.userAnswers))
         }
       )
   }

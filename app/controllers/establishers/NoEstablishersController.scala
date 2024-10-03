@@ -19,11 +19,9 @@ package controllers.establishers
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.establishers.NoEstablishersView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,23 +32,19 @@ class NoEstablishersController @Inject()(
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
                                           val controllerComponents: MessagesControllerComponents,
-                                          renderer: Renderer
+                                          view: NoEstablishersView
                                         )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with Retrievals
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData()).async {
+    (authenticate andThen getData andThen requireData()) {
       implicit request =>
-        val context = Json.obj(
-          "schemeName" -> existingSchemeName
-        )
-        renderer.render(
-          template = "establishers/NoEstablishers.njk",
-          ctx = context
-        ).map(Ok(_))
+        Ok(view(
+          existingSchemeName.getOrElse("Scheme"),
+          routes.NoEstablishersController.onSubmit
+        ))
     }
 
   def onSubmit: Action[AnyContent] =

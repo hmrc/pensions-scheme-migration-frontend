@@ -29,8 +29,6 @@ import services.BulkRacDacService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Table
 import utils.Enumerable
-
-import scala.concurrent.Future
 class BulkListControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
   val table: Table = Table(head = Nil, rows = Nil)
@@ -66,7 +64,7 @@ class BulkListControllerSpec extends ControllerSpecBase with NunjucksSupport wit
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockBulkRacDacService.renderRacDacBulkView(any(), any())(any(), any(), any())).thenReturn(Future.successful(Ok("")))
+    when(mockBulkRacDacService.renderRacDacBulkView(any(), any())(any(), any())).thenReturn(Ok(""))
     when(mockAppConfig.psaOverviewUrl) thenReturn appConfig.psaOverviewUrl
   }
 
@@ -115,7 +113,7 @@ class BulkListControllerSpec extends ControllerSpecBase with NunjucksSupport wit
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {
-      when(mockBulkRacDacService.renderRacDacBulkView(any(), any())(any(), any(), any())).thenReturn(Future.successful(BadRequest("")))
+      when(mockBulkRacDacService.renderRacDacBulkView(any(), any())(any(), any())).thenReturn(BadRequest(""))
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
 
       status(result) mustEqual BAD_REQUEST
