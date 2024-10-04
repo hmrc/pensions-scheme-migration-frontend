@@ -29,7 +29,7 @@ import scala.jdk.CollectionConverters._
 class CompoundNavigator @Inject()(navigators: java.util.Set[Navigator]) extends Logging {
 
   private def defaultPage(id: Identifier): Call = {
-    logger.error(s"No navigation defined for id $id")
+    logger.warn(s"No navigation defined for id $id")
     controllers.routes.TaskListController.onPageLoad
   }
 
