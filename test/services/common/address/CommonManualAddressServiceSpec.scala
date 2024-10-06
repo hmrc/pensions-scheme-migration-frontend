@@ -16,7 +16,7 @@
 
 package services.common.address
 
-import controllers.Retrievals
+import controllers.{ControllerSpecBase, Retrievals}
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{Address, AddressConfiguration, NormalMode, TolerantAddress}
@@ -38,7 +38,7 @@ import views.html.address.ManualAddressView
 
 import scala.concurrent.Future
 
-class CommonManualAddressServiceSpec extends CommonServiceSpecBase
+class CommonManualAddressServiceSpec extends ControllerSpecBase with CommonServiceSpecBase
   with MockitoSugar with ScalaFutures with BeforeAndAfterEach with Retrievals {
 
   private val navigator = new FakeNavigator(desiredRoute = onwardCall)
@@ -50,6 +50,7 @@ class CommonManualAddressServiceSpec extends CommonServiceSpecBase
     "postcode" -> optional(text),
     "country" -> nonEmptyText
   )(Address.apply)(Address.unapply))
+
   private val service = new CommonManualAddressService(
     mockUserAnswersCacheConnector,
     navigator,
@@ -57,6 +58,7 @@ class CommonManualAddressServiceSpec extends CommonServiceSpecBase
     appConfig,
     manualAddressView = app.injector.instanceOf[ManualAddressView]
   )
+
   private val userAnswersId = "test-user-answers-id"
   private val addressPage = new TypedIdentifier[Address] {
     override def toString: String = "addressPage"
@@ -94,7 +96,8 @@ class CommonManualAddressServiceSpec extends CommonServiceSpecBase
     }
 
     "return a BadRequest and errors when invalid data is submitted on post" in {
-      val invalidRequest: DataRequest[AnyContent] = DataRequest(FakeRequest().withFormUrlEncodedBody("line1" -> ""), UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), Data.migrationLock)
+      val invalidRequest: DataRequest[AnyContent] = DataRequest(FakeRequest().withFormUrlEncodedBody("line1" -> ""),
+        UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), Data.migrationLock)
 
       val result = service.post(
         Some("schemeName"),

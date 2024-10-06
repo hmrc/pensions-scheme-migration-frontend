@@ -83,7 +83,8 @@ class InsurerEnterPostcodeControllerSpec extends ControllerSpecBase with JsonMat
         form, "entityType", "entityName",
         routes.InsurerEnterPostcodeController.onSubmit,
         routes.InsurerConfirmAddressController.onPageLoad.url,
-        Some(Data.schemeName)
+        Some(Data.schemeName),
+        h1MessageKey = "postcode.title"
       )(fakeRequest, messages)
 
       when(mockCommonPostcodeService.get(any(), any())(any(), any()))

@@ -43,7 +43,7 @@ case class CommonPostcodeTemplateData(
                                        submitUrl: Call,
                                        enterManuallyUrl: String,
                                        schemeName: String,
-                                       h1MessageKey: String  = "postcode.title"
+                                       h1MessageKey: String
                                      )
 
 object CommonPostcodeTemplateData {
@@ -74,7 +74,8 @@ class CommonPostcodeService @Inject()(
       templateData.entityName,
       templateData.submitUrl,
       templateData.enterManuallyUrl,
-      Some(templateData.schemeName)
+      Some(templateData.schemeName),
+      templateData.h1MessageKey
     )))
   }
 
@@ -93,7 +94,8 @@ class CommonPostcodeService @Inject()(
           templateData.entityName,
           templateData.submitUrl,
           templateData.enterManuallyUrl,
-          Some(templateData.schemeName)
+          Some(templateData.schemeName),
+          templateData.h1MessageKey
         )))
       },
       value =>
@@ -107,7 +109,8 @@ class CommonPostcodeService @Inject()(
                 templateData.entityName,
                 templateData.submitUrl,
                 templateData.enterManuallyUrl,
-                Some(templateData.schemeName)
+                Some(templateData.schemeName),
+                templateData.h1MessageKey
               )))
             case addresses =>
               for {

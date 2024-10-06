@@ -87,7 +87,8 @@ class SelectAddressController @Inject()(
               Message("messages__pension__adviser"),
               name,
               routes.ConfirmAddressController.onPageLoad.url,
-              schemeName
+              schemeName,
+              h1MessageKey = "addressList.title"
             )
         }
     )

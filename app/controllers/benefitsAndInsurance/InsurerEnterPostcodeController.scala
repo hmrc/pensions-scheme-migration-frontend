@@ -72,7 +72,8 @@ class InsurerEnterPostcodeController @Inject()(
         name,
         submitUrl,
         enterManuallyUrl,
-        schemeName
+        schemeName,
+        "postcode.title"
       )
     }
   }

@@ -43,7 +43,7 @@ case class CommonAddressListTemplateData(
                                       entityName: String,
                                       enterManuallyUrl: String,
                                       schemeName: String,
-                                      h1MessageKey: String = "addressList.title"
+                                      h1MessageKey: String
                                     )
 
 object CommonAddressListTemplateData {
@@ -75,13 +75,16 @@ class CommonAddressListService @Inject()(
       convertToRadioItems(template.addresses),
       template.enterManuallyUrl,
       template.schemeName,
-      submitUrl = submitUrl
+      submitUrl = submitUrl,
+      template.h1MessageKey
     )))
   }
 
   private def convertToRadioItems(addresses: Seq[TolerantAddress]): Seq[RadioItem] = {
+
     addresses.zipWithIndex.map { case (address, index) =>
       RadioItem(
+        content = Text(address.print),
         label = Some(Label(content = Text(address.print))),
         value = Some(index.toString)
       )
@@ -105,7 +108,8 @@ class CommonAddressListService @Inject()(
           convertToRadioItems(template.addresses),
           template.enterManuallyUrl,
           template.schemeName,
-          submitUrl = submitUrl
+          submitUrl = submitUrl,
+          template.h1MessageKey
         )))
       },
       value =>

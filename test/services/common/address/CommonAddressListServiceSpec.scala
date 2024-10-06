@@ -34,7 +34,6 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.CommonServiceSpecBase
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.HeaderCarrier
@@ -75,17 +74,15 @@ class CommonAddressListServiceSpec extends CommonServiceSpecBase
         "entityType",
         "entityName",
         "enterManuallyUrl",
-        "schemeName"
+        "schemeName",
+        "addressList.title"
       )
-
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
       val result = service.get(templateData, form,
         submitUrl = routes.SelectAddressController.onSubmit(establisherIndex = 0, directorIndex = 0, mode = NormalMode)
       )(request, global)
 
       status(result) mustBe OK
-      verify(mockRenderer, times(1)).render(any(), any())(any())
     }
 
     "return a BadRequest and errors when invalid data is submitted on post" in {
@@ -98,17 +95,15 @@ class CommonAddressListServiceSpec extends CommonServiceSpecBase
         "entityType",
         "entityName",
         "enterManuallyUrl",
-        "schemeName"
+        "schemeName",
+        "addressList.title"
       )
-
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
       val result = service.post(_ => templateData, addressPages, Some(NormalMode), Call("GET", "manualUrl"), form,
         submitUrl = routes.SelectAddressController.onSubmit(establisherIndex = 0, directorIndex = 0, mode = NormalMode)
       )(invalidRequest, global, hc)
 
       status(result) mustBe BAD_REQUEST
-      verify(mockRenderer, times(1)).render(any(), any())(any())
     }
 
     "save the data and redirect correctly on post" in {
@@ -120,11 +115,11 @@ class CommonAddressListServiceSpec extends CommonServiceSpecBase
         "entityType",
         "entityName",
         "enterManuallyUrl",
-        "schemeName"
+        "schemeName",
+        "addressList.title"
       )
 
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
       val result = service.post(_ => templateData, addressPages, Some(NormalMode), Call("GET", "manualUrl"), form,
         submitUrl = routes.SelectAddressController.onSubmit(establisherIndex = 0, directorIndex = 0, mode = NormalMode)

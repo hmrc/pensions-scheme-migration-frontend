@@ -91,7 +91,8 @@ class SelectAddressController @Inject()(
               Message("establisherEntityTypeCompany"),
               name,
               controllers.establishers.company.address.routes.ConfirmAddressController.onPageLoad(index,mode).url,
-              schemeName
+              schemeName,
+              h1MessageKey = "addressList.title"
             )
         }
     )

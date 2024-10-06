@@ -56,6 +56,7 @@ class EnterPostcodeController @Inject()(
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async{
     implicit request =>
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+
       retrieve(SchemeNameId) { schemeName =>
         common.post(getFormToTemplate(schemeName, index, mode), EnterPostCodeId(index), "enterPostcode.noresults", Some(mode), form)
       }
@@ -74,7 +75,8 @@ class EnterPostcodeController @Inject()(
         name,
         submitUrl,
         enterManuallyUrl,
-        schemeName
+        schemeName,
+        "postcode.title"
       )
     }
   }

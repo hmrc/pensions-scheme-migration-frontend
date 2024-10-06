@@ -27,7 +27,7 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsArray, JsValue, Json, OWrites, Writes}
+import play.api.libs.json.{JsArray, Json, OWrites, Writes}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, Call, Result}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
@@ -60,16 +60,14 @@ class CommonManualAddressService @Inject()(
                                  )
 
   implicit val addressWrites: Writes[Address] = Json.writes[Address]
-  implicit val formAddressWrites: Writes[Form[Address]] = new Writes[Form[Address]] {
-    def writes(form: Form[Address]): JsValue = Json.obj(
-      "data" -> form.data,
-      "errors" -> form.errors.map(e => Json.obj(
-        "key" -> e.key,
-        "message" -> e.message
-      )),
-      "value" -> form.value
-    )
-  }
+  implicit val formAddressWrites: Writes[Form[Address]] = (form: Form[Address]) => Json.obj(
+    "data" -> form.data,
+    "errors" -> form.errors.map(e => Json.obj(
+      "key" -> e.key,
+      "message" -> e.message
+    )),
+    "value" -> form.value
+  )
   implicit val callWrites: Writes[Call] = Writes[Call](call => Json.obj("url" -> call.url))
   implicit private def templateDataWrites(implicit request: DataRequest[AnyContent]): OWrites[TemplateData] = Json.writes[TemplateData]
 
@@ -94,7 +92,6 @@ class CommonManualAddressService @Inject()(
 
     val templateData = getTemplateData(schemeName, entityName, preparedForm, addressLocation,
       pageTitleEntityTypeMessageKey, pageTitleMessageKey, submitUrl)
-
     Future.successful(
       Ok(manualAddressView(
         form,
@@ -102,7 +99,7 @@ class CommonManualAddressService @Inject()(
         templateData.h1Message,
         templateData.submitUrl,
         schemeName = schemeName,
-        countries = templateData.countries.value.toSeq.asInstanceOf[Seq[SelectItem]],
+        countries = templateData.countries.value.toSeq.map(jsValue => jsValue.as[SelectItem]),
         postcodeEntry = templateData.postcodeEntry,
         postcodeFirst = templateData.postcodeFirst
       )))
@@ -132,7 +129,7 @@ class CommonManualAddressService @Inject()(
               templateData.h1Message,
               templateData.submitUrl,
               schemeName = schemeName,
-              countries = templateData.countries.value.toSeq.asInstanceOf[Seq[SelectItem]],
+              countries = templateData.countries.value.toSeq.map(jsValue => jsValue.as[SelectItem]),
               postcodeEntry = templateData.postcodeEntry,
               postcodeFirst = templateData.postcodeFirst
             )))

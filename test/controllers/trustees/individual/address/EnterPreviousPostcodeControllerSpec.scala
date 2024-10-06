@@ -85,7 +85,8 @@ class EnterPreviousPostcodeControllerSpec extends ControllerSpecBase with JsonMa
         form, "entityType", "entityName",
         routes.EnterPreviousPostcodeController.onSubmit(index, mode),
         routes.ConfirmAddressController.onPageLoad(index, mode).url,
-        Some(Data.schemeName)
+        Some(Data.schemeName),
+        h1MessageKey = "previousPostcode.title"
       )(fakeRequest, messages)
 
       when(mockCommonPostcodeService.get(any(), any())(any(), any()))

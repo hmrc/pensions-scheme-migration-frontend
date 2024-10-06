@@ -90,7 +90,8 @@ class SelectAddressController @Inject()(
               Message("messages__partner"),
               name,
               routes.ConfirmAddressController.onPageLoad(estIndex, partnerIndex, mode).url,
-              schemeName
+              schemeName,
+              h1MessageKey = "addressList.title"
             )
         }
     )

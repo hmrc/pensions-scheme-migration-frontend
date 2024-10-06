@@ -89,7 +89,8 @@ class SelectAddressController @Inject()(
               Message("establisherEntityTypeIndividual"),
               name,
               routes.ConfirmAddressController.onPageLoad(index,mode).url,
-              schemeName
+              schemeName,
+              h1MessageKey = "addressList.title"
             )
         }
     )

@@ -82,13 +82,14 @@ class EnterPreviousPostcodeController @Inject()(
                   templateData.entityName,
                   templateData.submitUrl,
                   templateData.enterManuallyUrl,
-                  Some(templateData.schemeName)
+                  Some(templateData.schemeName),
+                  templateData.h1MessageKey
                 )))
               },
             value =>
               addressLookupConnector.addressLookupByPostCode(value).flatMap {
                 case Nil =>
-                  val formWithErrors = formWithError("enterPostcode.noresults") // TODO Fix it
+                  val formWithErrors = formWithError("enterPostcode.noresults")
                   val templateData = formToTemplate(formWithError("enterPostcode.noresults"))
                   Future.successful(BadRequest(postcodeView(
                     formWithErrors,
@@ -96,7 +97,8 @@ class EnterPreviousPostcodeController @Inject()(
                     templateData.entityName,
                     templateData.submitUrl,
                     templateData.enterManuallyUrl,
-                    Some(templateData.schemeName)
+                    Some(templateData.schemeName),
+                    templateData.h1MessageKey
                   )))
                 case addresses =>
                   for {

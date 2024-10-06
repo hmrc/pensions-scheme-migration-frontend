@@ -89,7 +89,8 @@ class SelectAddressControllerSpec extends ControllerSpecBase with JsonMatchers w
         convertToRadioItems(addresses),
         routes.ConfirmAddressController.onPageLoad.url,
         Data.schemeName,
-        routes.SelectAddressController.onSubmit
+        routes.SelectAddressController.onSubmit,
+        h1MessageKey = "addressList.title"
       )(fakeRequest, messages)
 
       when(mockCommonAddressListService.get(any(), any(), any())(any(), any()))

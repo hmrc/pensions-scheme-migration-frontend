@@ -89,7 +89,7 @@ class SelectPreviousAddressController @Inject()(
               name,
               routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, directorIndex, mode).url,
               schemeName,
-              "previousAddressList.title"
+              h1MessageKey = "previousAddressList.title"
             )
         }
     )

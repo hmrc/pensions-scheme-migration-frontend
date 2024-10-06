@@ -89,7 +89,8 @@ class InsurerSelectAddressControllerSpec extends ControllerSpecBase with JsonMat
         convertToRadioItems(addresses),
         routes.InsurerConfirmAddressController.onPageLoad.url,
         Data.schemeName,
-        routes.InsurerSelectAddressController.onSubmit
+        routes.InsurerSelectAddressController.onSubmit,
+        h1MessageKey = "addressList.title"
       )(fakeRequest, messages)
 
       when(mockCommonAddressListService.get(any(), any(), any())(any(), any()))

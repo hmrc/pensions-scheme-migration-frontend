@@ -85,7 +85,8 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with JsonMatchers w
         form, "entityType", "entityName",
         routes.EnterPostcodeController.onSubmit(establisherIndex, partnerIndex, mode),
         routes.ConfirmAddressController.onPageLoad(establisherIndex, partnerIndex, mode).url,
-        Some(Data.schemeName)
+        Some(Data.schemeName),
+        h1MessageKey = "postcode.title"
       )(fakeRequest, messages)
 
       when(mockCommonPostcodeService.get(any(), any())(any(), any()))

@@ -90,7 +90,8 @@ class SelectPreviousAddressControllerSpec extends ControllerSpecBase with JsonMa
         convertToRadioItems(seqAddresses),
         enterManuallyUrl = routes.ConfirmAddressController.onPageLoad(index,mode).url,
         schemeName = schemeName,
-        submitUrl = controllers.establishers.partnership.address.routes.AddressYearsController.onSubmit(index, mode)
+        submitUrl = controllers.establishers.partnership.address.routes.AddressYearsController.onSubmit(index, mode),
+        h1MessageKey = "previousAddressList.title"
       )(fakeRequest, messages)
 
       when(mockCommonAddressListService.get(any(), any(), any())(any(), any()))

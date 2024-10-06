@@ -32,7 +32,6 @@ import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import renderer.Renderer
 import services.CommonServiceSpecBase
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.HeaderCarrier
@@ -45,7 +44,6 @@ class CommonAddressYearsServiceSpec extends ControllerSpecBase with CommonServic
   with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
 
   private val navigator = new FakeNavigator(desiredRoute = onwardCall)
-  val renderer = new Renderer(mockAppConfig, mockRenderer)
   private val form = Form("value" -> boolean)
   private val service = new CommonAddressYearsService(
     mockUserAnswersCacheConnector,
@@ -61,31 +59,24 @@ class CommonAddressYearsServiceSpec extends ControllerSpecBase with CommonServic
   private val addressYearsId: TypedIdentifier[Boolean] = AddressYearsId(0)
 
   override def beforeEach(): Unit = {
-    reset(mockRenderer, mockUserAnswersCacheConnector)
+    reset(mockUserAnswersCacheConnector)
   }
 
   "CommonAddressYearsService" must {
 
     "render the view correctly on get" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
       val result = service.get(Some("schemeName"), "entityName", "entityType", form, addressYearsId, submitUrl = onwardCall)(request, global)
-
       status(result) mustBe OK
-      verify(mockRenderer, times(1)).render(any(), any())(any())
     }
 
     "return a BadRequest and errors when invalid data is submitted on post" in {
       val invalidRequest: DataRequest[AnyContent] = DataRequest(FakeRequest()
         .withFormUrlEncodedBody("value" -> "invalid"), UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), Data.migrationLock)
 
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
       val result = service.post(Some("schemeName"), "entityName", "entityType", form, addressYearsId, Some(NormalMode),
         submitUrl = onwardCall)(invalidRequest, global)
 
       status(result) mustBe BAD_REQUEST
-      verify(mockRenderer, times(1)).render(any(), any())(any())
     }
 
     "save the data and redirect correctly on post" in {
@@ -93,7 +84,6 @@ class CommonAddressYearsServiceSpec extends ControllerSpecBase with CommonServic
         .withFormUrlEncodedBody("value" -> "true"), UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), Data.migrationLock)
 
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
       val result = service.post(Some("schemeName"), "entityName", "entityType", form, addressYearsId, Some(NormalMode),
         submitUrl = onwardCall)(validRequest, global)

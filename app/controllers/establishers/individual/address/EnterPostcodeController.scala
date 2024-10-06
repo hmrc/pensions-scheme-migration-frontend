@@ -58,7 +58,7 @@ class EnterPostcodeController @Inject()(
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
       retrieve(SchemeNameId) { schemeName =>
-        common.post(getFormToTemplate(schemeName, index, mode), EnterPostCodeId(index), "enterPostcode.noresults",Some(mode), form)
+        common.post(getFormToTemplate(schemeName, index, mode), EnterPostCodeId(index), "enterPostcode.noresults", Some(mode), form)
       }
   }
 
@@ -76,7 +76,8 @@ class EnterPostcodeController @Inject()(
         name,
         submitUrl,
         enterManuallyUrl,
-        schemeName
+        schemeName,
+        "postcode.title"
       )
     }
   }

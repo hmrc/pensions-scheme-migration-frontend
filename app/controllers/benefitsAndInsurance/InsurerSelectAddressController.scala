@@ -87,7 +87,8 @@ class InsurerSelectAddressController @Inject()(
               Message("benefitsInsuranceUnknown"),
               name,
               routes.InsurerConfirmAddressController.onPageLoad.url,
-              schemeName
+              schemeName,
+              h1MessageKey = "addressList.title"
             )
         }
     )

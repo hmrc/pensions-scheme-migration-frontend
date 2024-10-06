@@ -22,9 +22,17 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], entityType: String, entityName: String, submitUrl: play.api.mvc.Call, enterManuallyUrl: String, schemeName: Option[String])(implicit request: Request[_], messages: Messages)
+@(
+    form: Form[_],
+    entityType: String,
+    entityName: String,
+    submitUrl: play.api.mvc.Call,
+    enterManuallyUrl: String,
+    schemeName: Option[String],
+    h1MessageKey: String
+)(implicit request: Request[_], messages: Messages)
 
-@layout(messages("messages__postcode__title")) {
+@layout(messages(h1MessageKey, messages(entityType))) {
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
@@ -34,7 +42,7 @@
                 InputViewModel(
                     field = form("value"),
                     label = Label(
-                    content = Text(messages("messages__postcode__heading", entityName)),
+                    content = Text(messages(h1MessageKey, messages(entityType))),
                     isPageHeading = true,
                     classes = "govuk-label--l govuk-!-margin-bottom-8"
                     ),

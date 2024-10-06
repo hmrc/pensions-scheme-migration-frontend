@@ -25,22 +25,18 @@ import models.TolerantAddress
 import navigators.CompoundNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{Mockito, MockitoSugar}
-import org.scalatest.{Assertion, BeforeAndAfterEach}
+import org.scalatest.BeforeAndAfterEach
 import play.api.http.HeaderNames
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Result}
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.Helpers.{GET, POST}
 import play.api.test.{FakeHeaders, FakeRequest}
-import play.twirl.api.Html
 import services.DataUpdateService
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Label, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import utils.{CountryOptions, Enumerable, FakeCountryOptions}
-
-import scala.concurrent.Future
-import scala.concurrent.duration.DurationInt
 
 trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerable.Implicits with MockitoSugar {
 

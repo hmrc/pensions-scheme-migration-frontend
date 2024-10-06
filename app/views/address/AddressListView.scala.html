@@ -29,10 +29,11 @@
     addresses: Seq[RadioItem],
     enterManuallyUrl: String,
     schemeName: String,
-    submitUrl: Call
+    submitUrl: Call,
+    h1MessageKey: String
 )(implicit request: Request[_], messages: Messages)
 
-@layout(messages("addressList.title", messages(entityType))) {
+@layout(messages(h1MessageKey, messages(entityType))) {
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
     }
@@ -44,7 +45,7 @@
                 items = addresses,
                 fieldset = Fieldset(
                     legend = Some(Legend(
-                        content = Text(messages("addressList.title", entityName)),
+                        content = Text(messages(h1MessageKey, entityName)),
                         isPageHeading = true,
                         classes = "govuk-fieldset__legend--l govuk-!-margin-bottom-8"
                     ))
