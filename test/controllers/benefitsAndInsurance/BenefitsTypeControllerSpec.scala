@@ -49,13 +49,6 @@ class BenefitsTypeControllerSpec extends ControllerSpecBase with NunjucksSupport
   private val httpPathPOST: String = controllers.benefitsAndInsurance.routes.BenefitsTypeController.onSubmit.url
   private val form: Form[BenefitsType] = new BenefitsTypeFormProvider()()
 
-  private val jsonToPassToTemplate: Form[BenefitsType] => JsObject = form =>
-    Json.obj(
-      "form" -> form,
-      "schemeName" -> schemeName,
-      "radios" -> BenefitsType.radios(form)
-    )
-
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq("cashBalanceBenefits")
   )
