@@ -46,7 +46,7 @@
 @lastCheckBoxIndex = @{dataPrefillCheckboxes.length}
 
 @layout(
-    pageTitle = messages(pageHeading)
+    pageTitle = messages(titleMessage)
 ) {
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
@@ -57,7 +57,7 @@
             name = "value",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages(titleMessage)),
+                    content = Text(messages(pageHeading)),
                     isPageHeading = true,
                     classes = "govuk-fieldset__legend--xl govuk-!-margin-bottom-8"
                 ))
