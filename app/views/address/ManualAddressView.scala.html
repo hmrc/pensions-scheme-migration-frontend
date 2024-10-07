@@ -36,7 +36,7 @@
         @govukFieldset(
             FieldsetViewModel(
                 legend = LegendViewModel(
-                    content = Text(h1)
+                    content = HtmlContent(s"<h1 class=govuk-heading-l>$h1</h1>")
                 )
             )
         )
@@ -84,7 +84,7 @@
                     isPageHeading = false,
                     classes = "govuk-label--s"
                 ),
-            classes = "govuk-input"
+               classes = "govuk-input"
             )
         )
 
@@ -111,8 +111,8 @@
                         content = Text(messages("address.country")),
                         classes = "govuk-label--s"
                     ),
-                    items = countries
-                )
+                    items = countries,
+                ).withHint(Hint(content = Text(messages("address.hint"))))
             )
         </div>
         }

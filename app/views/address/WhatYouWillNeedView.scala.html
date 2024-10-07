@@ -19,21 +19,21 @@
     govukButton: GovukButton
 )
 
-@(entityType: String, name: String, continueUrl: String, schemeName: String)(implicit request: Request[_], messages: Messages)
+@(entityType: String, entityName: String, continueUrl: String, schemeName: String)(implicit request: Request[_], messages: Messages)
 
-@layout(messages("messages__address__whatYouWillNeed_title", name)) {
+@layout(messages("messages__address__whatYouWillNeed_title", entityType)) {
     <div>
         <h1 class="govuk-heading-l">
-            @messages("messages__address__whatYouWillNeed_h1", name)
+            @messages("messages__address__whatYouWillNeed_h1", entityName)
         </h1>
 
         <p class="govuk-body">
-            @messages("messages__address__whatYouWillNeed_p", name)
+            @messages("messages__address__whatYouWillNeed_p", entityName)
         </p>
 
         <ul class="govuk-list govuk-list--bullet">
             <li>@messages("messages__address__whatYouWillNeed_li_1")</li>
-            <li>@messages("messages__address__whatYouWillNeed_li_2", name)</li>
+            <li>@messages("messages__address__whatYouWillNeed_li_2", entityName)</li>
         </ul>
 
         @govukButton(

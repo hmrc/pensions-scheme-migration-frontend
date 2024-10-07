@@ -46,9 +46,9 @@ class WhatYouWillNeedController @Inject()(
         CompanyDetailsId(index).retrieve.map {
           personName =>
             Future.successful(Ok(whatYouWillNeedView(
-              personName.companyName,
               Messages("messages__title_company"),
-              EnterPostcodeController.onPageLoad(index, NormalMode).url,
+              personName.companyName,
+              routes.EnterPostcodeController.onPageLoad(index, NormalMode).url,
               request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
             )))
         }
