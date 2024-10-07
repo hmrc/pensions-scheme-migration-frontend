@@ -69,7 +69,7 @@ class TrusteesAlsoDirectorsController @Inject()(override val messagesApi: Messag
           Future.successful(Ok(view(
             form,
             schemeName,
-            "messages__directors__prefill__heading",
+            Messages("messages__directors__prefill__heading", companyName.companyName),
             "messages__directors__prefill__title",
             DataPrefillCheckbox.checkboxes(form, seqTrustee),
             controllers.establishers.company.director.routes.TrusteesAlsoDirectorsController.onSubmit(establisherIndex)
