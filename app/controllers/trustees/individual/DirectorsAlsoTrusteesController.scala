@@ -57,9 +57,7 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
   with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
   private def form(implicit ua: UserAnswers, messages: Messages): Form[List[Int]] = {
-    println(s"<<<<<<<<<<<<<<<<<<< ${ua.allTrusteesAfterDelete}")
     val existingTrusteeCount = ua.allTrusteesAfterDelete.size
-    println(s">>>>>>>>>existingTrusteeCount $existingTrusteeCount")
     formProvider(existingTrusteeCount, "messages__trustees__prefill__multi__error__required",
       "messages__trustees__prefill__multi__error__noneWithValue",
       messages("messages__trustees__prefill__multi__error__moreThanTen", existingTrusteeCount, config.maxTrustees - existingTrusteeCount))
