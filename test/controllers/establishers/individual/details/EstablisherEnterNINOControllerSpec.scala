@@ -57,14 +57,6 @@ class EstablisherEnterNINOControllerSpec
   private val userAnswers: UserAnswers =
     ua.set(EstablisherNameId(0), personName).success.value
 
-//  private val commonJson: JsObject =
-//    Json.obj(
-//      "pageTitle"     -> "What is the individual’s National Insurance number?",
-//      "pageHeading"     -> "What is Jane Doe’s National Insurance number?",
-//      "schemeName"    -> "Test scheme name",
-//      "legendClass"   -> "govuk-label--xl",
-//      "isPageHeading" -> true
-//    )
   private val formData: ReferenceValue =
     ReferenceValue(value = "AB123456C")
 

@@ -49,16 +49,6 @@ class UTRControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
   private val formData: ReferenceValue = ReferenceValue("1234567890")
   private val formProvider: UTRFormProvider = new UTRFormProvider()
 
-//  private val commonJson: JsObject =
-//    Json.obj(
-//      "pageTitle"     -> messages("messages__enterUTR", messages("messages__partnership")),
-//      "pageHeading"     -> messages("messages__enterUTR", partnershipDetails.partnershipName),
-//      "schemeName"    -> schemeName,
-//      "paragraphs"      -> Json.arr(messages("messages__UTR__p1"), messages("messages__UTR__p2")),
-//      "legendClass"   -> "govuk-visually-hidden",
-//      "isPageHeading" -> true
-//    )
-
   private def controller(dataRetrievalAction: DataRetrievalAction): UTRController =
     new UTRController(messagesApi, new FakeAuthAction(), dataRetrievalAction,
       new DataRequiredActionImpl, formProvider,
