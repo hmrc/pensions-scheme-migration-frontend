@@ -124,7 +124,7 @@ class CommonManualAddressService @Inject()(
 
           Future.successful(
             BadRequest(manualAddressView(
-              form,
+              formWithErrors,
               templateData.pageTitle,
               templateData.h1Message,
               templateData.submitUrl,

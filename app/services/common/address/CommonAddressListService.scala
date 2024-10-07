@@ -102,7 +102,7 @@ class CommonAddressListService @Inject()(
       formWithErrors =>{
         val template = formToTemplate(formWithErrors)
         Future.successful(BadRequest(addressListView(
-          form,
+          formWithErrors,
           template.entityType,
           template.entityName,
           convertToRadioItems(template.addresses),

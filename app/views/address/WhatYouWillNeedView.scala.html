@@ -21,7 +21,7 @@
 
 @(entityType: String, name: String, continueUrl: String, schemeName: String)(implicit request: Request[_], messages: Messages)
 
-@layout(messages("messages__address__whatYouWillNeed_title", entityType)) {
+@layout(messages("messages__address__whatYouWillNeed_title", name)) {
     <div>
         <h1 class="govuk-heading-l">
             @messages("messages__address__whatYouWillNeed_h1", name)

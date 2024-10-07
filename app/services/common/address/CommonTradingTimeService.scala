@@ -69,10 +69,10 @@ class CommonTradingTimeService @Inject()(
     Future.successful(Ok(
       tradingTimeView(
         filledForm,
-        entityType,
-        entityName,
+        templateData.entityType,
+        templateData.entityName,
         TwirlMigration.toTwirlRadios(Radios.yesNo(filledForm("value"))),
-        schemeName,
+        templateData.schemeName,
         submitUrl = submitUrl
     )))
   }
@@ -93,10 +93,10 @@ class CommonTradingTimeService @Inject()(
           Future.successful(BadRequest(
             tradingTimeView(
               formWithErrors,
-              entityType,
-              entityName,
+              templateData.entityType,
+              templateData.entityName,
               TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value"))),
-              schemeName,
+              templateData.schemeName,
               submitUrl = submitUrl
             )))
         },
