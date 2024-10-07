@@ -29,6 +29,7 @@ import play.api.data.Form
 import play.api.http.Status._
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
+import renderer.Renderer
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Table, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, TableRow}
@@ -79,7 +80,7 @@ class BulkRacDacServiceSpec extends SpecBase
     )(req, implicitly)
   }
 
-  private val service = new BulkRacDacService(mockAppConfig, paginationService, new Renderer(mockAppConfig, mockRenderer))
+  private val service = new BulkRacDacService(mockAppConfig, paginationService, app.injector.instanceOf[RacDacsBulkListView])
   private val minPSA = MinPSA("test@test.com", false, Some("test company"), None, false, false)
   private val listOfSchemes = List(Items(pstr1, "2020-10-10", true, "scheme-1", "2000-10-12", Some("12345678")))
 
@@ -96,7 +97,6 @@ class BulkRacDacServiceSpec extends SpecBase
     when(mockAppConfig.psaUpdateContactDetailsUrl).thenReturn(dummyUrl)
     when(mockAppConfig.deceasedContactHmrcUrl).thenReturn(dummyUrl)
     when(mockAppConfig.listSchemePagination) thenReturn pagination
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
   "mapToTable" must {

@@ -30,6 +30,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.Application
+import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.{JsObject, Json}
@@ -89,7 +90,6 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
       config = appConfig,
       controllerComponents = controllerComponents,
       userAnswersCacheConnector = mockUserAnswersCacheConnector,
-      renderer = new Renderer(mockAppConfig, mockRenderer),
       view = view
     )
 
@@ -103,14 +103,14 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
       val userAnswers1: UserAnswers = ua.set(CompanyDetailsId(0), companyDetails).success.value
       val userAnswers: Option[UserAnswers] = userAnswers1.set(EstablisherNameId(0), individualName).toOption
 
-      val seqCheckBox = TwirlMigration.toTwirlCheckBoxes(DataPrefillCheckbox.checkboxes(form, Seq(IndividualDetails("", "", false, None, None, 0, true, None))))
+      val seqCheckBox = DataPrefillCheckbox.checkboxes(form, Seq(IndividualDetails("", "", false, None, None, 0, true, None)))
       mutableFakeDataRetrievalAction.setDataToReturn(Some(userAnswerss))
 
       val request = httpGETRequest(controllers.establishers.company.director.routes.TrusteesAlsoDirectorsController.onPageLoad(index).url)
       val result: Future[Result] = controller(getData).onPageLoad(0)(request)
 
       val view = application.injector.instanceOf[DataPrefillCheckboxView]
-        .apply(form, Data.schemeName, "messages__trustees__prefill__heading", "messages__trustees__prefill__title", seqCheckBox,
+        .apply(form, Data.schemeName, Messages("messages__directors__prefill__heading", companyDetails.companyName), "messages__directors__prefill__title", seqCheckBox,
           controllers.establishers.company.director.routes.TrusteesAlsoDirectorsController.onSubmit(Index(0)))(request, messages)
       verify(mockDataPrefillService, times(1)).getListOfTrusteesToBeCopied(any())(any())
 

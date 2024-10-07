@@ -104,7 +104,7 @@ class DirectorsAlsoTrusteesControllerSpec extends ControllerSpecBase
       val individualName = PersonName("Jane", "Doe")
       val getData = new FakeDataRetrievalAction(Some(ua))
       val userAnswers: Option[UserAnswers] = ua.set(EstablisherNameId(0), individualName).toOption
-      val seqCheckBox = TwirlMigration.toTwirlCheckBoxes(DataPrefillCheckbox.checkboxes(form, Seq(IndividualDetails("", "", false, None, None, 0, true, None))))
+      val seqCheckBox = DataPrefillCheckbox.checkboxes(form, Seq(IndividualDetails("", "", false, None, None, 0, true, None)))
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
       val request = httpGETRequest(routes.DirectorsAlsoTrusteesController.onPageLoad(index).url)
