@@ -22,26 +22,22 @@ import identifiers.beforeYouStart.{SchemeNameId, WorkingKnowledgeId}
 import matchers.JsonMatchers
 import models.MinPSA
 import org.apache.commons.lang3.StringUtils
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import uk.gov.hmrc.http.HttpReads.upstreamResponseMessage
 import uk.gov.hmrc.http.UpstreamErrorResponse
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{psaName, pstr, schemeName, ua}
 import utils.{Enumerable, UserAnswers}
+import views.html.DeclarationView
 
 import scala.concurrent.Future
 
-class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
-
-  private val templateToBeRendered = "declaration.njk"
+class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val mockPensionsSchemeConnector: PensionsSchemeConnector = mock[PensionsSchemeConnector]
@@ -57,24 +53,13 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
   private def httpPathPOST: String = controllers.routes.DeclarationController.onSubmit.url
 
-  private val jsonToPassToTemplate: JsObject =
-    Json.obj(
-      "schemeName" -> schemeName,
-      "isCompany" -> true,
-      "hasWorkingKnowledge" -> true,
-      "submitUrl" -> routes.DeclarationController.onSubmit.url
-    )
-
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockRenderer)
     reset(mockEmailConnector)
     reset(mockMinimalDetailsConnector)
     reset(mockPensionsSchemeConnector)
     reset(mockAppConfig)
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
-
 
   "DeclarationController" must {
 
@@ -82,21 +67,18 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, schemeName)
         .setOrException(WorkingKnowledgeId, true)
-
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-
-      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(application, httpGETRequest(httpPathGET)).value
-
+      val request = httpGETRequest(httpPathGET)
+      val result = route(application, request).value
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate)
+      val view = application.injector.instanceOf[DeclarationView].apply(
+        schemeName,
+        true,
+        true,
+        routes.DeclarationController.onSubmit
+      )(request, messages)
+      compareResultAndView(result, view)
     }
 
     "return OK with WorkingKnowledgeId false and the correct view for a GET" in {
@@ -104,27 +86,19 @@ class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport 
         .setOrException(SchemeNameId, schemeName)
         .setOrException(WorkingKnowledgeId, false)
 
-      val jsonToPassToTemplate: JsObject =
-        Json.obj(
-          "schemeName" -> schemeName,
-          "isCompany" -> true,
-          "hasWorkingKnowledge" -> false,
-          "submitUrl" -> routes.DeclarationController.onSubmit.url
-        )
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-
-      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val request = httpGETRequest(httpPathGET)
+      val result = route(application, request).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate)
+      val view = application.injector.instanceOf[DeclarationView].apply(
+        schemeName,
+        true,
+        false,
+        routes.DeclarationController.onSubmit
+      )(request, messages)
+      compareResultAndView(result, view)
     }
 
     "redirect to next page when button is clicked" in {
