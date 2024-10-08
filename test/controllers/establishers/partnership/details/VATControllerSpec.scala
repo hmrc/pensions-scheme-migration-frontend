@@ -49,16 +49,6 @@ class VATControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
   private val formData: ReferenceValue = ReferenceValue("123456789")
   private val formProvider: VATFormProvider = new VATFormProvider()
 
-//  private val commonJson: JsObject =
-//    Json.obj(
-//      "pageTitle"     -> messages("messages__vat", messages("messages__partnership")),
-//      "pageHeading"     -> messages("messages__vat", partnershipDetails.partnershipName),
-//      "schemeName"    -> schemeName,
-//      "paragraphs"      -> Json.arr(messages("messages__vat__p", partnershipDetails.partnershipName)),
-//      "legendClass"   -> "govuk-visually-hidden",
-//      "isPageHeading" -> true
-//    )
-
   private def controller(dataRetrievalAction: DataRetrievalAction): VATController =
     new VATController(messagesApi, new FakeAuthAction(), dataRetrievalAction,
       new DataRequiredActionImpl, formProvider,

@@ -51,19 +51,6 @@ class TrusteeEnterUTRControllerSpec
   private val form: Form[ReferenceValue] = formProvider()
   private val userAnswers: UserAnswers = ua.set(TrusteeNameId(0), personName).success.value
 
-//  private val commonJson: JsObject =
-//    Json.obj(
-//      "pageTitle"     -> "What is the individual’s UTR?",
-//      "pageHeading"     -> "What is Jane Doe’s UTR?",
-//      "schemeName"    -> "Test scheme name",
-//      "legendClass"   -> "govuk-visually-hidden",
-//      "paragraphs"    -> Json.arr(
-//        "This is a 10-digit or 13-digit number. It may also start or end with the letter ‘k’.",
-//        "You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’."
-//      ),
-//      "isPageHeading" -> true
-//    )
-
   private val formData: ReferenceValue = ReferenceValue(value = "1234567890")
 
   override def beforeEach(): Unit = {

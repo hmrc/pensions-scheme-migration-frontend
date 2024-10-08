@@ -57,19 +57,6 @@ class DirectorEnterUTRControllerSpec
   private val userAnswers: UserAnswers =
     ua.set(DirectorNameId(0,0), personName).success.value
 
-//  private val commonJson: JsObject =
-//    Json.obj(
-//      "pageTitle"     -> "What is the director’s UTR?",
-//      "pageHeading"     -> "What is Jane Doe’s UTR?",
-//      "schemeName"    -> "Test scheme name",
-//      "legendClass"   -> "govuk-visually-hidden",
-//      "paragraphs"    -> Json.arr(
-//        "This is a 10-digit or 13-digit number. It may also start or end with the letter ‘k’.",
-//        "You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’."
-//      ),
-//      "isPageHeading" -> true
-//    )
-
   private val formData: ReferenceValue =
     ReferenceValue(value = "1234567890")
 
