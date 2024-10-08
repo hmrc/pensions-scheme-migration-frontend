@@ -60,7 +60,8 @@ class DirectorHasUTRController @Inject()(val messagesApi: MessagesApi,
               form = form(establisherIndex, directorIndex),
               schemeName = schemeName,
               paragraphText = Seq(Message("messages__UTR__p")),
-              legendClass = "govuk-visually-hidden"
+              legendClass = "govuk-visually-hidden",
+              submitCall = routes.DirectorHasUTRController.onSubmit(establisherIndex, directorIndex, mode)
             )
         }
     }
@@ -93,6 +94,7 @@ class DirectorHasUTRController @Inject()(val messagesApi: MessagesApi,
               paragraphText = Seq(Message("messages__UTR__p")),
               legendClass = "govuk-visually-hidden",
               mode = mode,
+              submitCall = routes.DirectorHasUTRController.onSubmit(establisherIndex, directorIndex, mode),
               optSetUserAnswers = Some(value => setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
             )
         }

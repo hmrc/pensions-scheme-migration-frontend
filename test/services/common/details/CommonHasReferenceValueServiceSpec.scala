@@ -24,11 +24,11 @@ import org.mockito.ArgumentMatchers.any
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import renderer.Renderer
 import services.CommonServiceSpecBase
+import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.ua
-import utils.FakeNavigator
+import utils.{FakeNavigator, TwirlMigration}
+import views.html.{HasReferenceValueView, HasReferenceValueWithHintView}
 
 import scala.concurrent.Future
 
@@ -36,7 +36,8 @@ class CommonHasReferenceValueServiceSpec extends ControllerSpecBase with CommonS
 
   val service = new CommonHasReferenceValueService(
     controllerComponents = controllerComponents,
-    renderer = new Renderer(mockAppConfig, mockRenderer),
+    hasReferenceValueWithHintView = app.injector.instanceOf[HasReferenceValueWithHintView],
+    hasReferenceValueView = app.injector.instanceOf[HasReferenceValueView],
     userAnswersCacheConnector = mockUserAnswersCacheConnector,
     navigator = new FakeNavigator(desiredRoute = onwardCall),
     messagesApi = messagesApi
@@ -52,7 +53,16 @@ class CommonHasReferenceValueServiceSpec extends ControllerSpecBase with CommonS
 
   "get" should {
     "return OK and render the correct template" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
+      val expectedView = app.injector.instanceOf[HasReferenceValueView].apply(
+        yesNoForm,
+        "Test Scheme",
+        "Test Title",
+        "Test Heading",
+        TwirlMigration.toTwirlRadios(Radios.yesNo(yesNoForm("value"))),
+        "govuk-fieldset__legend--s",
+        onwardCall
+      )(fakeRequest, messages)
 
       val result = service.get(
         pageTitle = "Test Title",
@@ -60,18 +70,20 @@ class CommonHasReferenceValueServiceSpec extends ControllerSpecBase with CommonS
         isPageHeading = true,
         id = id,
         form = yesNoForm,
-        schemeName = "Test Scheme"
+        schemeName = "Test Scheme",
+        submitCall = onwardCall
       )(fakeDataRequest(ua, fakeRequestWithFormData), global)
 
+
       status(result) mustBe OK
-      verify(mockRenderer).render(any(), any())(any())
+
+      compareResultAndView(result, expectedView)
     }
   }
 
   "post" should {
     "return a BadRequest when form has errors" in {
       val formWithErrors = yesNoForm.withError("value", "error.required")
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
       val result = service.post(
         pageTitle = "Test Title",
@@ -80,17 +92,16 @@ class CommonHasReferenceValueServiceSpec extends ControllerSpecBase with CommonS
         id = id,
         form = formWithErrors,
         schemeName = "Test Scheme",
-        mode = NormalMode
+        mode = NormalMode,
+        submitCall = onwardCall
       )(fakeDataRequest(ua, fakeRequestWithFormData), global)
 
       status(result) mustBe BAD_REQUEST
-      verify(mockRenderer).render(any(), any())(any())
     }
 
     "redirect to the next page on valid data submission" in {
 
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
       val result = service.post(
         pageTitle = "Test Title",
@@ -99,7 +110,8 @@ class CommonHasReferenceValueServiceSpec extends ControllerSpecBase with CommonS
         id = id,
         form = yesNoForm,
         schemeName = "Test Scheme",
-        mode = NormalMode
+        mode = NormalMode,
+        submitCall = onwardCall
       )(fakeDataRequest(ua, fakeRequestWithFormData), global)
 
       // Check if the response is a redirect (303)

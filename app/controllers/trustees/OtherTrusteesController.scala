@@ -57,7 +57,8 @@ class OtherTrusteesController @Inject()(val messagesApi: MessagesApi,
               form = form(),
               schemeName = schemeName,
               paragraphText = Seq(Message("messages__otherTrustees__lede")),
-              legendClass = "govuk-visually-hidden"
+              legendClass = "govuk-visually-hidden",
+              submitCall = routes.OtherTrusteesController.onSubmit
             )
         }
     }
@@ -76,7 +77,8 @@ class OtherTrusteesController @Inject()(val messagesApi: MessagesApi,
               schemeName = schemeName,
               paragraphText = Seq(Message("messages__otherTrustees__lede")),
               legendClass = "govuk-visually-hidden",
-              mode = NormalMode
+              mode = NormalMode,
+              submitCall = routes.OtherTrusteesController.onSubmit
             )
         }
     }

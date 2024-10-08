@@ -74,7 +74,8 @@ class TrusteeHasNINOController @Inject()(val messagesApi: MessagesApi,
               id            = TrusteeHasNINOId(index),
               form          = form(index),
               schemeName    = schemeName,
-              legendClass   = "govuk-label--xl"
+              legendClass   = "govuk-label--xl",
+              submitCall    = routes.TrusteeHasNINOController.onSubmit(index, mode)
             )
         }
     }
@@ -93,6 +94,7 @@ class TrusteeHasNINOController @Inject()(val messagesApi: MessagesApi,
               schemeName = schemeName,
               legendClass = "govuk-label--xl",
               mode = mode,
+              submitCall    = routes.TrusteeHasNINOController.onSubmit(index, mode),
               optSetUserAnswers = Some(value => setUpdatedAnswers(index, mode, value, request.userAnswers))
             )
         }

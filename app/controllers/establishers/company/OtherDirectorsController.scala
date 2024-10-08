@@ -60,7 +60,8 @@ class OtherDirectorsController @Inject()(val messagesApi: MessagesApi,
               form = form(),
               schemeName = schemeName,
               paragraphText = Seq(Message("messages__otherDirectors__lede")),
-              legendClass = "govuk-visually-hidden"
+              legendClass = "govuk-visually-hidden",
+              submitCall = routes.OtherDirectorsController.onSubmit(index, mode)
             )
         }
     }
@@ -79,7 +80,8 @@ class OtherDirectorsController @Inject()(val messagesApi: MessagesApi,
               schemeName = schemeName,
               paragraphText = Seq(Message("messages__otherDirectors__lede")),
               legendClass = "govuk-visually-hidden",
-              mode = mode
+              mode = mode,
+              submitCall = routes.OtherDirectorsController.onSubmit(index, mode)
             )
         }
     }
