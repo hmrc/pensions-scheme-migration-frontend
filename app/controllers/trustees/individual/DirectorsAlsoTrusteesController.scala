@@ -51,8 +51,7 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
                                                 dataPrefillService: DataPrefillService,
                                                 config: AppConfig,
                                                 view: DataPrefillCheckboxView,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                renderer: Renderer
+                                                val controllerComponents: MessagesControllerComponents
                                                )(implicit val executionContext: ExecutionContext) extends FrontendBaseController
   with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 

@@ -17,28 +17,24 @@
 package controllers.trustees.individual
 
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction, MutableFakeDataRetrievalAction}
+import controllers.actions._
 import forms.dataPrefill.DataPrefillCheckboxFormProvider
 import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
-import models.establishers.EstablisherKind
-import models.{DataPrefillCheckbox, Index, PersonName}
 import models.prefill.IndividualDetails
-import org.mockito.ArgumentCaptor
+import models.{DataPrefillCheckbox, Index, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.Application
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
-import play.api.test.CSRFTokenHelper.CSRFFRequestHeader
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.Html
 import renderer.Renderer
-import services.DataPrefillService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.Data.{schemeName, ua}
-import utils.{Data, FakeNavigator, TwirlMigration, UserAnswers}
+import utils.Data.ua
+import utils.{Data, FakeNavigator, UserAnswers}
 import views.html.DataPrefillCheckboxView
 
 import scala.concurrent.Future
@@ -93,7 +89,6 @@ class DirectorsAlsoTrusteesControllerSpec extends ControllerSpecBase
       config = appConfig,
       controllerComponents = controllerComponents,
       userAnswersCacheConnector = mockUserAnswersCacheConnector,
-      renderer = new Renderer(mockAppConfig, mockRenderer),
       view = view
     )
 

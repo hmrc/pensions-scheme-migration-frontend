@@ -17,7 +17,6 @@
 package services
 
 import base.SpecBase
-import config.AppConfig
 import forms.racdac.RacDacBulkListFormProvider
 import matchers.JsonMatchers
 import models._
@@ -29,7 +28,6 @@ import play.api.data.Form
 import play.api.http.Status._
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
-import renderer.Renderer
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Table, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, TableRow}
@@ -92,7 +90,7 @@ class BulkRacDacServiceSpec extends SpecBase
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockAppConfig, mockRenderer)
+    reset(mockAppConfig)
     when(mockAppConfig.psaOverviewUrl) thenReturn dummyUrl
     when(mockAppConfig.psaUpdateContactDetailsUrl).thenReturn(dummyUrl)
     when(mockAppConfig.deceasedContactHmrcUrl).thenReturn(dummyUrl)
