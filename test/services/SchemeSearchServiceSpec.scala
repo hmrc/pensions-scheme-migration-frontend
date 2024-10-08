@@ -161,7 +161,7 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Scal
       psaName = psaName,
       racDac = isRacDac(migrationType),
       listSchemeUrl = listSchemeUrl,
-      numberOfPages = numberOfPages,
+      numberOfPages = numberOfPages
     )
   }
 

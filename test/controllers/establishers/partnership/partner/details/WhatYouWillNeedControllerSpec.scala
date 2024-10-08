@@ -60,7 +60,7 @@ class WhatYouWillNeedControllerSpec
 
       val view = app.injector.instanceOf[WhatYouWillNeedView].apply(
         "/add-pension-scheme/establisher/1/partnership/partner/1/name-of-partner",
-        Data.schemeName,
+        Data.schemeName
       )(fakeRequest, messages)
 
       compareResultAndView(result, view)

@@ -50,7 +50,7 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase with JsonMatchers
 
       val view = app.injector.instanceOf[WhatYouWillNeedView].apply(
         Data.schemeName,
-        routes.AdviserNameController.onPageLoad(mode),
+        routes.AdviserNameController.onPageLoad(mode)
       )(fakeRequest, messages)
 
       compareResultAndView(result, view)

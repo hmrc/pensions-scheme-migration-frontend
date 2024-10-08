@@ -154,7 +154,7 @@ trait UaJsValueGenerators {
       "trusteeKind" -> "individual",
       "trusteeDetails" -> Json.obj(
         "firstName" -> "Test",
-        "lastName" -> s"User $index",
+        "lastName" -> s"User $index"
       ),
       "dateOfBirth" -> date,
       "email" -> email,

@@ -47,7 +47,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
   val extraModules: Seq[GuiceableModule] = Seq(
     bind[RacDacIndividualCYAHelper].toInstance(mockRacDacIndividualCYAHelper),
     bind[ListOfSchemesConnector].toInstance(mockListOfSchemesConnector),
-    bind[MinimalDetailsConnector].toInstance(mockMinimalDetailsConnector),
+    bind[MinimalDetailsConnector].toInstance(mockMinimalDetailsConnector)
   )
   override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction,extraModules).build()
 
