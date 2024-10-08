@@ -14,6 +14,8 @@
  * limitations under the License.
  *@
 
+@import views.html.helper.CSPNonce
+
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
@@ -27,6 +29,8 @@
 @(form: Form[_], pageTitle: String, h1: String, submitUrl: play.api.mvc.Call, schemeName: Option[String], countries: Seq[SelectItem], postcodeEntry: Boolean, postcodeFirst: Boolean)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle) {
+
+<link href="@routes.Assets.versioned("stylesheets/location-autocomplete.min.css")" media="screen" rel="stylesheet" type="text/css" />
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
@@ -138,4 +142,7 @@
     }
 
     @schemeName.map { schemeName => @templates.ReturnLink(schemeName) }
+
+    <script @CSPNonce.attr src="@routes.Assets.versioned("javascripts/autocomplete/location-autocomplete.min.js")"></script>
+
 }
