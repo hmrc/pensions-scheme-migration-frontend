@@ -78,8 +78,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val deceasedContactHmrcUrl: String = loadConfig("urls.deceasedContactHmrc")
   lazy val psaDelimitedUrl: String = loadConfig("urls.psaDelimited")
 
-  lazy val schemesMigrationViewOnly: String = config.get[String]("urls.schemes-migration-view-only")
-  lazy val racDacMigrationViewOnly: String = config.get[String]("urls.rac-dacs-migration-view-only")
   lazy val schemesMigrationTransfer: String = config.get[String]("urls.schemes-migration-transfer")
   lazy val racDacMigrationTransfer: String = config.get[String]("urls.rac-dacs-migration-transfer")
   lazy val racDacMigrationCheckStatus: String = config.get[String]("urls.rac-dacs-migration-check-status")
