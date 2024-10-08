@@ -136,7 +136,7 @@ class EnterPreviousPostcodeController @Inject()(
                        )(implicit request: DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
     val name: String = request.userAnswers.get(DirectorNameId(establisherIndex, directorIndex))
       .map(_.fullName).getOrElse(Message("messages__director"))
-    val submitUrl = routes.EnterPostcodeController.onSubmit(establisherIndex, directorIndex, mode)
+    val submitUrl = routes.EnterPreviousPostcodeController.onSubmit(establisherIndex, directorIndex, mode)
     val enterManuallyUrl = routes.ConfirmAddressController.onPageLoad(establisherIndex, directorIndex, mode).url
 
     form => {

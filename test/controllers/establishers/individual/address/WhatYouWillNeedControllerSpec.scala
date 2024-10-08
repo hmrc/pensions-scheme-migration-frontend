@@ -56,8 +56,8 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase with JsonMatchers
       status(result) mustBe OK
 
       val view = app.injector.instanceOf[WhatYouWillNeedView].apply(
-        "Jane Doe",
         Messages("messages__title_individual"),
+        "Jane Doe",
         routes.EnterPostcodeController.onPageLoad(0, NormalMode).url,
         "Test scheme name"
       )(fakeRequest, messages)
