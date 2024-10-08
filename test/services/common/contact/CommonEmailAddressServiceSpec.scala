@@ -19,6 +19,7 @@ package services.common.contact
 import controllers.ControllerSpecBase
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchersSugar.eqTo
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
@@ -29,22 +30,26 @@ import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import renderer.Renderer
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{Data, FakeNavigator, UserAnswers}
 import identifiers.TypedIdentifier
 import uk.gov.hmrc.domain.PsaId
 import viewmodels.Message
 import services.CommonServiceSpecBase
+import views.html.EmailView
 
 import scala.concurrent.Future
 
 class CommonEmailAddressServiceSpec extends ControllerSpecBase with CommonServiceSpecBase with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
 
   private val navigator = new FakeNavigator(desiredRoute = onwardCall)
-  val renderer = new Renderer(mockAppConfig, mockRenderer)
   private val form = Form("value" -> email)
-  private val service = new CommonEmailAddressService(controllerComponents, renderer, mockUserAnswersCacheConnector, navigator, messagesApi)
+
+  val emailView: EmailView = org.mockito.MockitoSugar.mock[views.html.EmailView]
+
+  private val service = new CommonEmailAddressService(
+    controllerComponents, mockUserAnswersCacheConnector, navigator, messagesApi, emailView
+  )
 
   private val userAnswersId = "test-user-answers-id"
   implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -53,30 +58,32 @@ class CommonEmailAddressServiceSpec extends ControllerSpecBase with CommonServic
   private val emailId: TypedIdentifier[String] = new TypedIdentifier[String] {}
 
   override def beforeEach(): Unit = {
-    reset(mockRenderer, mockUserAnswersCacheConnector)
+    reset(emailView, mockUserAnswersCacheConnector)
   }
 
   "CommonEmailAddressService" must {
 
-    "render the view correctly on get" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+    "get the view correctly on get" in {
+      when(emailView.apply(eqTo(form), eqTo("schemeName"), eqTo("entityName"), any(), any(), any())(any(), any())).thenReturn(Html("email content"))
 
-      val result = service.get("entityName", Message("entityType"), emailId, form, "schemeName")(request, global)
+      val result = service.get("entityName", Message("entityType"), emailId, form, "schemeName", submitCall = onwardCall)(request, global)
 
       status(result) mustBe OK
-      verify(mockRenderer, times(1)).render(any(), any())(any())
+
+      verify(emailView, times(1)).apply(eqTo(form), eqTo("schemeName"), eqTo("entityName"), any(), any(), any())(any(), any())
     }
 
     "return a BadRequest and errors when invalid data is submitted on post" in {
       val invalidRequest: DataRequest[AnyContent] = DataRequest(FakeRequest().withFormUrlEncodedBody("value" -> "invalid"),
         UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), Data.migrationLock)
 
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+      when(emailView.apply(any(), eqTo("schemeName"), eqTo("entityName"), any(), any(), any())(any(), any())).thenReturn(Html("email content"))
 
-      val result = service.post("entityName", Message("entityType"), emailId, form, "schemeName")(invalidRequest, global)
+      val result = service.post("entityName", Message("entityType"), emailId, form.withError("value", "error.required"), "schemeName",
+        submitCall = onwardCall)(invalidRequest, global)
 
       status(result) mustBe BAD_REQUEST
-      verify(mockRenderer, times(1)).render(any(), any())(any())
+      verify(emailView, times(1)).apply(any(), eqTo("schemeName"), eqTo("entityName"), any(), any(), any())(any(), any())
     }
 
     "save the data and redirect correctly on post" in {
@@ -84,9 +91,8 @@ class CommonEmailAddressServiceSpec extends ControllerSpecBase with CommonServic
         UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), Data.migrationLock)
 
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val result = service.post("entityName", Message("entityType"), emailId, form, "schemeName")(validRequest, global)
+      val result = service.post("entityName", Message("entityType"), emailId, form, "schemeName", submitCall = onwardCall)(validRequest, global)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardCall.url)

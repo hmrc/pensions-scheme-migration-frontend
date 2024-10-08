@@ -65,7 +65,8 @@ class PAYEController @Inject()(val messagesApi: MessagesApi,
               schemeName    = schemeName,
               legendClass   = "govuk-visually-hidden",
               paragraphText = Seq(Message("messages__paye__p", name(index))),
-              hintText = Some(Message("messages__paye__hint"))
+              hintText = Some(Message("messages__paye__hint")),
+              submitCall = routes.PAYEController.onSubmit(index, mode)
             )
         }
     }
@@ -85,7 +86,8 @@ class PAYEController @Inject()(val messagesApi: MessagesApi,
               legendClass   = "govuk-visually-hidden",
               paragraphText = Seq(Message("messages__paye__p", name(index))),
               mode          = mode,
-              hintText = Some(Message("messages__paye__hint"))
+              hintText = Some(Message("messages__paye__hint")),
+              submitCall = routes.PAYEController.onSubmit(index, mode)
             )
         }
     }

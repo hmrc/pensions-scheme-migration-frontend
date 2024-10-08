@@ -23,20 +23,18 @@ import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.details.TrusteeNINOId
 import matchers.JsonMatchers
 import models.{NormalMode, PersonName, ReferenceValue}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import renderer.Renderer
 import services.common.details.CommonEnterReferenceValueService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{FakeNavigator, UserAnswers}
+import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
 
 import scala.concurrent.Future
 class TrusteeEnterNINOControllerSpec
@@ -47,30 +45,13 @@ class TrusteeEnterNINOControllerSpec
     with BeforeAndAfterEach {
 
   private val personName: PersonName = PersonName("Jane", "Doe")
-
   private val formProvider: NINOFormProvider = new NINOFormProvider()
-
   private val form: Form[ReferenceValue] = formProvider(personName.fullName)
-
-
-
   private val userAnswers: UserAnswers = ua.set(TrusteeNameId(0), personName).success.value
-
-  private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
-
-  private val commonJson: JsObject =
-    Json.obj(
-      "pageTitle"     -> "What is the individual’s National Insurance number?",
-      "pageHeading"     -> "What is the National Insurance number for Jane Doe?",
-      "schemeName"    -> "Test scheme name",
-      "legendClass"   -> "govuk-label--xl",
-      "isPageHeading" -> true
-    )
   private val formData: ReferenceValue = ReferenceValue(value = "AB123456C")
 
   override def beforeEach(): Unit = {
     reset(
-      mockRenderer,
       mockUserAnswersCacheConnector
     )
   }
@@ -87,22 +68,16 @@ class TrusteeEnterNINOControllerSpec
       dataUpdateService         = mockDataUpdateService,
       common = new CommonEnterReferenceValueService(
         controllerComponents = controllerComponents,
-        renderer = new Renderer(mockAppConfig, mockRenderer),
         userAnswersCacheConnector = mockUserAnswersCacheConnector,
         navigator = new FakeNavigator(desiredRoute = onwardCall),
+        enterReferenceValueView = app.injector.instanceOf[EnterReferenceValueView],
+        enterReferenceValueWithHintView = app.injector.instanceOf[EnterReferenceValueWithHintView],
         messagesApi = messagesApi
       )
     )
 
   "TrusteeEnterNINOController" must {
     "return OK and the correct view for a GET" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
       val result: Future[Result] =
@@ -111,26 +86,22 @@ class TrusteeEnterNINOControllerSpec
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = app.injector.instanceOf[EnterReferenceValueWithHintView].apply(
+        form = form,
+        pageTitle = "What is the individual’s National Insurance number?",
+        pageHeading = "What is the National Insurance number for Jane Doe?",
+        schemeName = "Test scheme name",
+        legendClass = "govuk-label--xl",
+        paragraphs = Seq(),
+        hintText = Some("For example, QQ 12 34 56 C"),
+        submitCall= routes.TrusteeEnterNINOController.onSubmit(0, NormalMode)
+      )(fakeRequest, messages)
 
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("form" -> form)
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      compareResultAndView(result, view)
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val ua = userAnswers.set(TrusteeNINOId(0), formData).success.value
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val getData = new FakeDataRetrievalAction(Some(ua))
 
@@ -138,13 +109,9 @@ class TrusteeEnterNINOControllerSpec
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      contentAsString(result) must include(messages("messages__enterNINO", "Jane Doe"))
+      contentAsString(result) must include(formData.value)
 
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject = Json.obj("form" -> form.fill(formData))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -154,41 +121,25 @@ class TrusteeEnterNINOControllerSpec
         fakeRequest.withFormUrlEncodedBody("value" -> "AB123456C")
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
-
       val result: Future[Result] = controller(getData).onSubmit(0, NormalMode)(request)
 
       status(result) mustBe SEE_OTHER
 
       redirectLocation(result) mustBe Some(onwardCall.url)
-
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
         fakeRequest.withFormUrlEncodedBody("value" -> "invalid value")
-
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
       val result: Future[Result] = controller(getData).onSubmit(0, NormalMode)(request)
 
-      val boundForm = form.bind(Map("value" -> "invalid value"))
-
       status(result) mustBe BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject = Json.obj("form" -> Json.toJson(boundForm))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      contentAsString(result) must include(messages("messages__enterNINO", "Jane Doe"))
+      contentAsString(result) must include(messages("messages__error__common_nino_invalid", "Jane Doe"))
 
       verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
     }
