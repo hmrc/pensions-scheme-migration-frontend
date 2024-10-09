@@ -49,7 +49,6 @@ class CommonDateOfBirthService @Inject()(val controllerComponents: MessagesContr
                                          val messagesApi: MessagesApi)
   extends NunjucksSupport with FrontendHeaderCarrierProvider with I18nSupport with Retrievals {
 
-  private val templateName = "dob.njk"
 
   private case class TemplateData(form: Form[LocalDate],
                                   date: ViewModel,

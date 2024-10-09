@@ -36,7 +36,7 @@
 )(implicit request: Request[_], messages: Messages)
 
 
-@layout(messages("messages__dob__title", name), formHasErrors = form.hasErrors) {
+@layout(messages("messages__dob__title", entityType), formHasErrors = form.hasErrors) {
 
         @formHelper(action = submitCall, Symbol("autoComplete") -> "off") {
 
