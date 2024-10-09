@@ -71,6 +71,7 @@ class PartnerDOBControllerSpec
   private val day: Int = formData.getDayOfMonth
   private val month: Int = formData.getMonthValue
   private val year: Int = formData.getYear
+  val view = app.injector.instanceOf[views.html.DobView]
 
   private def controller(
                           dataRetrievalAction: DataRetrievalAction
@@ -83,7 +84,7 @@ class PartnerDOBControllerSpec
       formProvider              = formProvider,
       common = new CommonDateOfBirthService(
         controllerComponents = controllerComponents,
-        renderer = new Renderer(mockAppConfig, mockRenderer),
+        dobView =view,
         userAnswersCacheConnector = mockUserAnswersCacheConnector,
         navigator = new FakeNavigator(desiredRoute = onwardCall),
         messagesApi = messagesApi
