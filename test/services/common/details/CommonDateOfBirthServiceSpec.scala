@@ -75,6 +75,15 @@ class CommonDateOfBirthServiceSpec extends ControllerSpecBase with CommonService
   "get" should {
     "return OK and render the correct template" in {
 
+      val expectedView = view(
+        form,
+        DateInput.localDate(form("date")),
+        "John Doe",
+        "Test Scheme",
+        "individual",
+        routes.TrusteeDOBController.onSubmit(Index(0), NormalMode)
+      )(fakeRequestWithFormData, messages)
+
       val result = service.get(
         form = form,
         dobId = dobId,
@@ -89,7 +98,17 @@ class CommonDateOfBirthServiceSpec extends ControllerSpecBase with CommonService
     }
 
     "populate the form with existing data" in {
-      val updatedAnswers = userAnswers.set(dobId, LocalDate.of(1995, 1, 1)).success.value
+      val dateFilled = LocalDate.of(1995, 1, 1)
+      val updatedAnswers = userAnswers.set(dobId, dateFilled).success.value
+
+      val expectedView = view(
+        form.fill(dateFilled),
+        DateInput.localDate(form("date")),
+        "John Doe",
+        "Test Scheme",
+        "individual",
+        routes.TrusteeDOBController.onSubmit(Index(0), NormalMode)
+      )(fakeRequestWithFormData, messages)
 
       val result = service.get(
         form = form,
