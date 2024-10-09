@@ -60,7 +60,7 @@ class CommonDateOfBirthServiceSpec extends ControllerSpecBase with CommonService
     "John Doe",
     "Test Scheme",
     "individual",
-    routes.TrusteeDOBController.onSubmit(Index(0), NormalMode)
+     routes.TrusteeDOBController.onSubmit(Index(0), NormalMode)
   )(fakeRequestWithFormData, messages)
 
   val service = new CommonDateOfBirthService(
@@ -116,8 +116,7 @@ class CommonDateOfBirthServiceSpec extends ControllerSpecBase with CommonService
         schemeName = "Test Scheme",
         entityType = "individual",
         mode = NormalMode,
-        None,
-        routes.TrusteeDOBController.onSubmit(Index(0), NormalMode)
+        call = routes.TrusteeDOBController.onSubmit(Index(0), NormalMode)
       )(fakeDataRequest(userAnswers, fakeRequestWithFormData), global)
 
       status(result) mustBe BAD_REQUEST
