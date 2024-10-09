@@ -94,7 +94,7 @@ class CommonManualAddressService @Inject()(
       pageTitleEntityTypeMessageKey, pageTitleMessageKey, submitUrl)
     Future.successful(
       Ok(manualAddressView(
-        form,
+        preparedForm,
         templateData.pageTitle,
         templateData.h1Message,
         templateData.submitUrl,

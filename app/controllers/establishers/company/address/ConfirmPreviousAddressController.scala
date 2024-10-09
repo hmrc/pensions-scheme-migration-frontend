@@ -50,7 +50,8 @@ class ConfirmPreviousAddressController @Inject()(
         common.get(
           Some(schemeName),
           companyDetails.companyName,
-          PreviousAddressId(index),PreviousAddressListId(index),
+          PreviousAddressId(index),
+          PreviousAddressListId(index),
           AddressConfiguration.PostcodeFirst,
           form,
           pageTitleEntityTypeMessageKey,
