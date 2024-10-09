@@ -120,8 +120,8 @@ class EnterPreviousPostcodeController @Inject()(
                        )(implicit request:DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
     val name: String = request.userAnswers.get(TrusteeNameId(index))
       .map(_.fullName).getOrElse(Message("trusteeEntityTypeIndividual"))
-    val submitUrl = routes.EnterPostcodeController.onSubmit(index, mode)
-    val enterManuallyUrl = routes.ConfirmAddressController.onPageLoad(index, mode).url
+    val submitUrl = routes.EnterPreviousPostcodeController.onSubmit(index, mode)
+    val enterManuallyUrl = routes.ConfirmPreviousAddressController.onPageLoad(index, mode).url
 
     form => {
       CommonPostcodeTemplateData(
@@ -152,4 +152,5 @@ class EnterPreviousPostcodeController @Inject()(
     val finalUpdatedUserAnswers = updatedUserAnswers.set(EnterPreviousPostCodeId(index), value)
     finalUpdatedUserAnswers
   }
+
 }
