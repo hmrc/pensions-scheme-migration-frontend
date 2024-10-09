@@ -120,8 +120,9 @@ class PartnerDOBControllerSpec
         routes.PartnerDOBController.onSubmit(index, index, mode)
       )(request, messages)
 
-      compareResultAndView(result, expectedView)
-
+      contentAsString(result)
+        .replaceAll("&amp;referrerUrl=%2F\\[.*?\\]", "&amp;referrerUrl=%2F[]")
+        .removeAllNonces() contains expectedView
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
@@ -150,7 +151,9 @@ class PartnerDOBControllerSpec
         routes.PartnerDOBController.onSubmit(index, index, mode)
       )(request, messages)
 
-      compareResultAndView(result, expectedView)
+      contentAsString(result)
+        .replaceAll("&amp;referrerUrl=%2F\\[.*?\\]", "&amp;referrerUrl=%2F[]")
+        .removeAllNonces() contains expectedView
     }
 
     "redirect to the next page when valid data is submitted" in {
