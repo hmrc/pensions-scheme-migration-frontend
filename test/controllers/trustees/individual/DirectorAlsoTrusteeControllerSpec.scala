@@ -36,6 +36,7 @@ import services.DataPrefillService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{Data, FakeNavigator, UserAnswers}
+import views.html.{DataPrefillRadioView, DobView}
 
 import scala.concurrent.Future
 class DirectorAlsoTrusteeControllerSpec extends ControllerSpecBase
@@ -80,7 +81,7 @@ class DirectorAlsoTrusteeControllerSpec extends ControllerSpecBase
       config = appConfig,
       controllerComponents = controllerComponents,
       userAnswersCacheConnector = mockUserAnswersCacheConnector,
-      renderer = new Renderer(mockAppConfig, mockRenderer)
+      dataPrefillRadioView = app.injector.instanceOf[DataPrefillRadioView]
     )
 
   private val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])

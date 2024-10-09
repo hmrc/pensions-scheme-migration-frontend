@@ -31,11 +31,10 @@ import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import renderer.Renderer
-import services.DataPrefillService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{Data, FakeNavigator, UserAnswers}
+import views.html.DataPrefillRadioView
 
 import scala.concurrent.Future
 
@@ -80,7 +79,7 @@ class TrusteeAlsoDirectorControllerSpec extends ControllerSpecBase
       dataPrefillService = mockDataPrefillService,
       controllerComponents = controllerComponents,
       userAnswersCacheConnector = mockUserAnswersCacheConnector,
-      renderer = new Renderer(mockAppConfig, mockRenderer)
+      dataPrefillRadioView = app.injector.instanceOf[DataPrefillRadioView]
     )
 
   private val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
