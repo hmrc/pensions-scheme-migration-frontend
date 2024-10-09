@@ -28,7 +28,6 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import renderer.Renderer
 import services.CommonServiceSpecBase
 import uk.gov.hmrc.viewmodels.DateInput
 import utils.{Data, FakeNavigator, UserAnswers}
@@ -58,7 +57,7 @@ class CommonDateOfBirthServiceSpec extends ControllerSpecBase with CommonService
 
     form.fill(LocalDate.now()),
     DateInput.localDate(form("date")),
-    "Name",
+    "John Doe",
     "Test Scheme",
     "individual",
     routes.TrusteeDOBController.onSubmit(Index(0), NormalMode)
@@ -75,7 +74,6 @@ class CommonDateOfBirthServiceSpec extends ControllerSpecBase with CommonService
 
   "get" should {
     "return OK and render the correct template" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
       val result = service.get(
         form = form,
@@ -92,7 +90,6 @@ class CommonDateOfBirthServiceSpec extends ControllerSpecBase with CommonService
 
     "populate the form with existing data" in {
       val updatedAnswers = userAnswers.set(dobId, LocalDate.of(1995, 1, 1)).success.value
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
       val result = service.get(
         form = form,
@@ -111,7 +108,6 @@ class CommonDateOfBirthServiceSpec extends ControllerSpecBase with CommonService
   "post" should {
     "return a BadRequest when form has errors" in {
       val formWithErrors = form.withError("date", "error.required")
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
       val result = service.post(
         form = formWithErrors,
