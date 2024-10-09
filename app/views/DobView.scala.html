@@ -44,6 +44,8 @@
                 @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
             }
 
+            <h1 class="govuk-heading-xl">@messages("messages__dob__title", name)</h1>
+
             @govukDateInput(
                 DateViewModel(
                     field  = form("deregistrationDate"),
