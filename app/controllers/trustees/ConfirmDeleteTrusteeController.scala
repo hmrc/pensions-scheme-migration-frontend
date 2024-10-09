@@ -31,13 +31,12 @@ import models.trustees.TrusteeKind.{Company, Individual, Partnership}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{MessageInterpolators, Radios}
-import utils.UserAnswers
+import utils.{TwirlMigration, UserAnswers}
+import views.html.DeleteView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -51,7 +50,7 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
                                                     formProvider: ConfirmDeleteTrusteeFormProvider,
                                                     val controllerComponents: MessagesControllerComponents,
                                                     userAnswersCacheConnector: UserAnswersCacheConnector,
-                                                    renderer: Renderer
+                                               deleteView: DeleteView
                                                   )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with I18nSupport with Retrievals with NunjucksSupport {
 
@@ -63,16 +62,17 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
             if (trustee.isDeleted) {
               Future.successful(Redirect(routes.AlreadyDeletedController.onPageLoad(index, trusteeKind)))
             } else {
-              val json = Json.obj(
-                "form" -> form(trustee.name),
-                "titleMessage" -> msg"messages__confirmDeleteTrustee__title".resolve,
-                "name" -> trustee.name,
-                "hint" -> getHintText(trusteeKind),
-                "radios" -> Radios.yesNo(formProvider(trustee.name)(implicitly)("value")),
-                "submitUrl" -> routes.ConfirmDeleteTrusteeController.onSubmit(index, trusteeKind).url,
-                "schemeName" -> existingSchemeName
-              )
-              renderer.render("delete.njk", json).map(Ok(_))
+              Future.successful(Ok(
+                deleteView(
+                  form(trustee.name),
+                  msg"messages__confirmDeleteTrustee__title".resolve,
+                  trustee.name,
+                  getHintText(trusteeKind),
+                  TwirlMigration.toTwirlRadios(Radios.yesNo(formProvider(trustee.name)(implicitly)("value"))),
+                  existingSchemeName.getOrElse(""),
+                  routes.ConfirmDeleteTrusteeController.onSubmit(index, trusteeKind)
+                )
+              ))
             }
         } getOrElse {
           throw new RuntimeException("index page unavailable")
@@ -124,16 +124,15 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
   : Future[Result] = {
     form(name).bindFromRequest().fold(
       (formWithErrors: Form[_]) => {
-        val json = Json.obj(
-          "form" -> formWithErrors,
-          "titleMessage" -> msg"messages__confirmDeleteTrustee__title".resolve,
-          "name" -> name,
-          "hint" -> getHintText(trusteeKind),
-          "radios" -> Radios.yesNo(formProvider(name)(implicitly)("value")),
-          "submitUrl" -> routes.ConfirmDeleteTrusteeController.onSubmit(trusteeIndex, trusteeKind).url,
-          "schemeName" -> existingSchemeName
-        )
-        renderer.render("delete.njk", json).map(BadRequest(_))
+        Future.successful(BadRequest(deleteView(
+            formWithErrors,
+            msg"messages__confirmDeleteTrustee__title".resolve,
+            name,
+            getHintText(trusteeKind),
+            TwirlMigration.toTwirlRadios(Radios.yesNo(formProvider(name)(implicitly)("value"))),
+            existingSchemeName.getOrElse(""),
+            routes.ConfirmDeleteTrusteeController.onSubmit(trusteeIndex, trusteeKind)
+          )))
       },
       value => {
         val deletionResult: Try[UserAnswers] = if (value) {
