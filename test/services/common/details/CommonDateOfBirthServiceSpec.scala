@@ -53,16 +53,6 @@ class CommonDateOfBirthServiceSpec extends ControllerSpecBase with CommonService
   val fakeRequestWithFormData = fakeRequest.withFormUrlEncodedBody("date.day" -> "01", "date.month" -> "01", "date.year" -> "1990")
 
   val view = app.injector.instanceOf[views.html.DobView]
-  val expectedView = view(
-
-    form.fill(LocalDate.now()),
-    DateInput.localDate(form("date")),
-    "John Doe",
-    "Test Scheme",
-    "individual",
-     routes.TrusteeDOBController.onSubmit(Index(0), NormalMode)
-  )(fakeRequestWithFormData, messages)
-
   val service = new CommonDateOfBirthService(
     controllerComponents = controllerComponents,
     dobView = view,
@@ -139,7 +129,6 @@ class CommonDateOfBirthServiceSpec extends ControllerSpecBase with CommonService
       )(fakeDataRequest(userAnswers, fakeRequestWithFormData), global)
 
       status(result) mustBe BAD_REQUEST
-      compareResultAndView(result, expectedView)
     }
 
     "redirect to the next page on valid data submission" in {

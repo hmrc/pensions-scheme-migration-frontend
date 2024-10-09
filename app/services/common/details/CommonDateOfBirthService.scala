@@ -100,7 +100,7 @@ class CommonDateOfBirthService @Inject()(val controllerComponents: MessagesContr
         personNameId.retrieve.map {
           personName: PersonName =>
 
-            Future.successful(Ok(dobView(
+            Future.successful(BadRequest(dobView(
               formWithErrorsDayIdCorrection, DateInput.localDate(formWithErrorsDayIdCorrection("date")),
                 personName.fullName, schemeName, entityType, call)))
         }
