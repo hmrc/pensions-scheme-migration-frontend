@@ -22,18 +22,16 @@ import forms.dataPrefill.DataPrefillRadioFormProvider
 import identifiers.establishers.company.CompanyDetailsId
 import matchers.JsonMatchers
 import models.prefill.IndividualDetails
-import models.{CompanyDetails, entities}
-import org.mockito.ArgumentCaptor
+import models.{CompanyDetails, DataPrefillRadio, entities}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
-import utils.{Data, FakeNavigator, UserAnswers}
+import utils.{Data, FakeNavigator, TwirlMigration, UserAnswers}
 import views.html.DataPrefillRadioView
 
 import scala.concurrent.Future
@@ -47,22 +45,14 @@ class TrusteeAlsoDirectorControllerSpec extends ControllerSpecBase
   private val companyDetails: CompanyDetails = CompanyDetails("test company")
   private val formProvider: DataPrefillRadioFormProvider = new DataPrefillRadioFormProvider()
   private val form = formProvider("")
+  private val seqTrustee: Seq[IndividualDetails] = Seq(IndividualDetails("Jane", "Doe", false, None, None, 0, true, None))
 
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(0), companyDetails).success.value
-  private val templateToBeRendered: String = "dataPrefillRadio.njk"
-
-  private val commonJson: JsObject =
-    Json.obj(
-      "form" -> form,
-      "schemeName" -> Data.schemeName
-    )
   override def beforeEach(): Unit = {
     reset(
-      mockRenderer,
       mockUserAnswersCacheConnector,
       mockDataPrefillService
     )
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
     when(mockDataPrefillService.getListOfTrusteesToBeCopied(any())(any())).thenReturn(Nil)
   }
 
@@ -82,22 +72,24 @@ class TrusteeAlsoDirectorControllerSpec extends ControllerSpecBase
       dataPrefillRadioView = app.injector.instanceOf[DataPrefillRadioView]
     )
 
-  private val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-  private val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
   "TrusteeAlsoDirectorController" must {
     "return OK and the correct view for a GET" in {
-      when(mockDataPrefillService.getListOfTrusteesToBeCopied(any())(any())).thenReturn(Seq(IndividualDetails("", "", false, None, None, 0, true, None)))
+      when(mockDataPrefillService.getListOfTrusteesToBeCopied(any())(any())).thenReturn(seqTrustee)
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
       val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-      templateCaptor.getValue mustEqual templateToBeRendered
-      val json: JsObject = Json.obj("form" -> form)
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      val view = app.injector.instanceOf[DataPrefillRadioView].apply(
+        form,
+        messages("messages__directors__prefill__title"),
+        messages("messages__directors__prefill__heading", companyDetails.companyName),
+        TwirlMigration.toTwirlRadios(DataPrefillRadio.radios(form, seqTrustee)),
+        Data.schemeName,
+        routes.TrusteeAlsoDirectorController.onSubmit(0)
+      )(fakeRequest, messages)
+      compareResultAndView(result, view)
     }
 
     "redirect to spoke task list page for a GET when there are no trustees to be copied" in {
@@ -141,15 +133,8 @@ class TrusteeAlsoDirectorControllerSpec extends ControllerSpecBase
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
       val result: Future[Result] = controller(getData).onSubmit(0)(request)
-      val boundForm = form.bind(Map("value" -> "invalid value"))
 
       status(result) mustBe BAD_REQUEST
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject = Json.obj("form" -> Json.toJson(boundForm))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
     }
   }
 }
