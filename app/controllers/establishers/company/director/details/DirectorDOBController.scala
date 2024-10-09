@@ -58,7 +58,8 @@ class DirectorDOBController @Inject()(val messagesApi: MessagesApi,
               dobId = DirectorDOBId(establisherIndex, directorIndex),
               personNameId = DirectorNameId(establisherIndex, directorIndex),
               schemeName = schemeName,
-              entityType = Messages("messages__director")
+              entityType = Messages("messages__director"),
+              call = routes.DirectorDOBController.onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode)
             )
         }
     }
@@ -75,7 +76,8 @@ class DirectorDOBController @Inject()(val messagesApi: MessagesApi,
               schemeName = schemeName,
               entityType = Messages("messages__director"),
               mode = mode,
-              optSetUserAnswers = Some(value => setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
+              optSetUserAnswers = Some(value => setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers)),
+              call = routes.DirectorDOBController.onSubmit(establisherIndex, directorIndex, mode)
             )
         }
     }

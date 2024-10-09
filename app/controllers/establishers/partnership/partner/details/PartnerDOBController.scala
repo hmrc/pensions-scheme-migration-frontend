@@ -54,7 +54,8 @@ class PartnerDOBController @Inject()(val messagesApi: MessagesApi,
               dobId = PartnerDOBId(establisherIndex, partnerIndex),
               personNameId = PartnerNameId(establisherIndex, partnerIndex),
               schemeName   = schemeName,
-              entityType   = Messages("messages__partner")
+              entityType   = Messages("messages__partner"),
+              call = routes.PartnerDOBController.onSubmit(establisherIndex, partnerIndex, mode)
             )
         }
     }
@@ -70,7 +71,8 @@ class PartnerDOBController @Inject()(val messagesApi: MessagesApi,
               personNameId = PartnerNameId(establisherIndex, partnerIndex),
               schemeName   = schemeName,
               entityType   = Messages("messages__partner"),
-              mode         = mode
+              mode         = mode,
+              call = routes.PartnerDOBController.onSubmit(establisherIndex, partnerIndex, mode)
             )
         }
     }

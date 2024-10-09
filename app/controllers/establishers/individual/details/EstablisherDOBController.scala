@@ -54,7 +54,8 @@ class EstablisherDOBController @Inject()(val messagesApi: MessagesApi,
               dobId        = EstablisherDOBId(index),
               personNameId = EstablisherNameId(index),
               schemeName   = schemeName,
-              entityType   = Messages("messages__individual")
+              entityType   = Messages("messages__individual"),
+              call = routes.EstablisherDOBController.onSubmit(index, mode)
             )
         }
     }
@@ -70,7 +71,8 @@ class EstablisherDOBController @Inject()(val messagesApi: MessagesApi,
               personNameId = EstablisherNameId(index),
               schemeName   = schemeName,
               entityType   = Messages("messages__individual"),
-              mode         = mode
+              mode         = mode,
+              call = routes.EstablisherDOBController.onSubmit(index, mode)
             )
         }
     }
