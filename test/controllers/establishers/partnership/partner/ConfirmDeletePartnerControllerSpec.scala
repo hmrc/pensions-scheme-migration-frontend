@@ -36,18 +36,19 @@ import views.html.DeleteView
 import scala.concurrent.Future
 
 class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
+  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
+
   private val partnerName: String = "Jane Doe"
   private val establisherIndex: Index = Index(0)
   private val dirIndex: Index = Index(0)
-  private val userAnswersPartner: Option[UserAnswers] = ua.set(PartnerNameId(establisherIndex,dirIndex), PersonName("Jane", "Doe")).toOption
+  private val userAnswersPartner: Option[UserAnswers] = ua.set(PartnerNameId(establisherIndex, dirIndex), PersonName("Jane", "Doe")).toOption
   private val form: Form[Boolean] = new ConfirmDeleteEstablisherFormProvider()(partnerName)
 
-  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
-
-  private def httpPathGET(partnerIndex: Index): String = controllers.establishers.partnership.partner.routes.ConfirmDeletePartnerController.onPageLoad(establisherIndex,partnerIndex).url
-  private def httpPathPOST(partnerIndex: Index): String =controllers.establishers.partnership.partner.routes.ConfirmDeletePartnerController.onSubmit(establisherIndex,partnerIndex).url
+  private def httpPathGET(partnerIndex: Index): String = controllers.establishers.partnership.partner.routes.ConfirmDeletePartnerController
+      .onPageLoad(establisherIndex,partnerIndex).url
+  private def httpPathPOST(partnerIndex: Index): String =controllers.establishers.partnership.partner.routes.ConfirmDeletePartnerController
+    .onSubmit(establisherIndex,partnerIndex).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq("true")
@@ -67,11 +68,11 @@ class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase with JsonMat
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswersPartner)
 
       val request = httpGETRequest(httpPathGET(dirIndex))
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual OK
 
-      val deleteView = application.injector.instanceOf[DeleteView].apply(
+      val deleteView = app.injector.instanceOf[DeleteView].apply(
         form,
         messages("messages__confirmDeletePartners__title"),
         partnerName,
@@ -92,7 +93,7 @@ class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase with JsonMat
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswersPartner)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST(dirIndex), valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST(dirIndex), valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.establishers.partnership.routes.AddPartnersController.onPageLoad(establisherIndex,NormalMode).url)
@@ -102,7 +103,7 @@ class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase with JsonMat
     "return a BAD REQUEST when invalid data is submitted" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswersPartner)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST(dirIndex), valuesInvalid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST(dirIndex), valuesInvalid)).value
 
       status(result) mustEqual BAD_REQUEST
       contentAsString(result) must include(messages("messages__confirmDeletePartners__title"))
@@ -113,7 +114,7 @@ class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase with JsonMat
     "redirect back to list of schemes for a POST when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST(dirIndex), valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST(dirIndex), valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 

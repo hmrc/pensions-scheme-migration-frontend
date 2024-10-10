@@ -19,24 +19,20 @@ package controllers.establishers.company.director.details
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.DOBFormProvider
-import controllers.establishers.company.director.details.routes
 import identifiers.establishers.company.director.DirectorNameId
-import identifiers.establishers.company.director.details.DirectorDOBId
 import identifiers.establishers.partnership.partner.details.PartnerDOBId
 import matchers.JsonMatchers
 import models.{Index, NormalMode, PersonName}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import renderer.Renderer
 import services.common.details.CommonDateOfBirthService
-import uk.gov.hmrc.viewmodels.{DateInput, NunjucksSupport}
+import uk.gov.hmrc.viewmodels.DateInput
 import utils.Data.ua
 import utils.{FakeNavigator, UserAnswers}
 
@@ -45,7 +41,6 @@ import scala.concurrent.Future
 
 class DirectorDOBControllerSpec
   extends ControllerSpecBase
-    with NunjucksSupport
     with JsonMatchers
     with TryValues
     with BeforeAndAfterEach {
@@ -58,14 +53,7 @@ class DirectorDOBControllerSpec
     PersonName("Jane", "Doe")
   private val userAnswers: UserAnswers =
     ua.set(DirectorNameId(0,0), personName).success.value
-  private val templateToBeRendered: String =
-    "dob.njk"
-  private val commonJson: JsObject =
-    Json.obj(
-      "name"       -> "Jane Doe",
-      "schemeName" -> "Test scheme name",
-      "entityType" -> "the director"
-    )
+
   val index = Index(0)
   val mode = NormalMode
   private val formData: LocalDate =

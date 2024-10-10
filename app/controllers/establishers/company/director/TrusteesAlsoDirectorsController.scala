@@ -30,7 +30,6 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.DataPrefillService
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{Enumerable, UserAnswers}
 import views.html.DataPrefillCheckboxView
@@ -50,7 +49,7 @@ class TrusteesAlsoDirectorsController @Inject()(override val messagesApi: Messag
                                                 view: DataPrefillCheckboxView,
                                                 config: AppConfig
                                                )(implicit val executionContext: ExecutionContext) extends FrontendBaseController
-  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
+  with I18nSupport with Retrievals with Enumerable.Implicits {
 
   private def form(implicit ua: UserAnswers, messages: Messages): Form[List[Int]] = {
     val existingTrusteeCount = ua.allTrusteesAfterDelete.size

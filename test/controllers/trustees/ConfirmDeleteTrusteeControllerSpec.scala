@@ -37,6 +37,10 @@ import views.html.DeleteView
 
 import scala.concurrent.Future
 class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
+  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+
+  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
+
   private val trusteeName: String = "Jane Doe"
   private val index: Index = Index(0)
   private val kind: TrusteeKind = TrusteeKind.Individual
@@ -49,10 +53,6 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with JsonMat
     .flatMap(_.set(TrusteeKindId(0, kind), kind)).toOption
 
   private val form: Form[Boolean] = new ConfirmDeleteTrusteeFormProvider()(trusteeName)
-
-  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
   private def httpPathGET: String = controllers.trustees.routes.ConfirmDeleteTrusteeController.onPageLoad(index, kind).url
   private def httpPathPOST: String = controllers.trustees.routes.ConfirmDeleteTrusteeController.onSubmit(index, kind).url
@@ -74,10 +74,10 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with JsonMat
     "return OK and the correct view for a GET" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
       val request = httpGETRequest(httpPathGET)
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual OK
-      val deleteView = application.injector.instanceOf[DeleteView].apply(
+      val deleteView = app.injector.instanceOf[DeleteView].apply(
         form,
         messages("messages__confirmDeleteTrustee__title"),
         trusteeName,
@@ -92,7 +92,7 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with JsonMat
     "redirect to Session Expired page for a GET when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val result = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -111,7 +111,7 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with JsonMat
 
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -143,7 +143,7 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with JsonMat
 
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -166,7 +166,7 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with JsonMat
     "return a BAD REQUEST when invalid data is submitted" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
 
       status(result) mustEqual BAD_REQUEST
 
@@ -179,7 +179,7 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with JsonMat
     "redirect back to list of schemes for a POST when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 

@@ -37,17 +37,17 @@ import views.html.DeleteView
 import scala.concurrent.Future
 
 class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
+
+  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
+
   private val directorName: String = "Jane Doe"
   private val establisherIndex: Index = Index(0)
   private val dirIndex: Index = Index(0)
   private val userAnswersDirector: Option[UserAnswers] = ua
-    .set(DirectorNameId(establisherIndex,dirIndex), PersonName("Jane", "Doe")).toOption
+    .set(DirectorNameId(establisherIndex, dirIndex), PersonName("Jane", "Doe")).toOption
 
   private val form: Form[Boolean] = new ConfirmDeleteEstablisherFormProvider()(directorName)
-
-  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
   private def httpPathGET(directorIndex: Index): String =
     controllers.establishers.company.director.routes.ConfirmDeleteDirectorController.onPageLoad(establisherIndex,directorIndex).url
@@ -74,11 +74,11 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with JsonMa
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswersDirector)
       val request = httpGETRequest(httpPathGET(dirIndex))
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual OK
 
-      val deleteView = application.injector.instanceOf[DeleteView].apply(
+      val deleteView = app.injector.instanceOf[DeleteView].apply(
         form,
         messages("messages__confirmDeleteDirectors__title"),
         directorName,
@@ -101,7 +101,7 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with JsonMa
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST(dirIndex), valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST(dirIndex), valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
@@ -120,7 +120,7 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with JsonMa
     "return a BAD REQUEST when invalid data is submitted" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswersDirector)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST(dirIndex), valuesInvalid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST(dirIndex), valuesInvalid)).value
 
       status(result) mustEqual BAD_REQUEST
       contentAsString(result) must include(messages("messages__confirmDeleteDirectors__title"))
@@ -132,7 +132,7 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with JsonMa
     "redirect back to list of schemes for a POST when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST(dirIndex), valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST(dirIndex), valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 

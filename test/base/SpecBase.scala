@@ -87,12 +87,6 @@ trait SpecBase
                                       result: Future[Result],
                                       view: Html
                                     ): Assertion = {
-    println(s"*****")
-    println(s"${play.api.test.Helpers.contentAsString(result)(1.seconds).removeAllNonces().filterAndTrim}")
-    println(s"*****")
-    println(s"${view.toString().filterAndTrim}")
-    println(s"*****")
-
     org.scalatest.Assertions.assert(
       play.api.test.Helpers.contentAsString(result)(1.seconds).removeAllNonces().filterAndTrim
         == view.toString().filterAndTrim

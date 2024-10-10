@@ -47,7 +47,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
     bind[PensionsSchemeConnector].toInstance(mockPensionsSchemeConnector)
   )
 
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
+  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
   private def httpPathGET: String = controllers.routes.DeclarationController.onPageLoad.url
 
@@ -69,10 +69,10 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
         .setOrException(WorkingKnowledgeId, true)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
       val request = httpGETRequest(httpPathGET)
-      val result = route(application, request).value
+      val result = route(app, request).value
       status(result) mustEqual OK
 
-      val view = application.injector.instanceOf[DeclarationView].apply(
+      val view = app.injector.instanceOf[DeclarationView].apply(
         schemeName,
         true,
         true,
@@ -88,11 +88,11 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
       val request = httpGETRequest(httpPathGET)
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual OK
 
-      val view = application.injector.instanceOf[DeclarationView].apply(
+      val view = app.injector.instanceOf[DeclarationView].apply(
         schemeName,
         true,
         false,
@@ -110,7 +110,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
       when(mockPensionsSchemeConnector.registerScheme(any(), any(), any())(any(), any())).thenReturn(Future.successful(pstr))
       when(mockEmailConnector.sendEmail(any(), any(), any(), any())(any(), any())).thenReturn(Future.successful(EmailSent))
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -128,7 +128,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
       when(mockPensionsSchemeConnector.registerScheme(any(), any(), any())(any(), any())).thenReturn(Future.successful(StringUtils.EMPTY))
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -149,7 +149,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
         UpstreamErrorResponse(upstreamResponseMessage("POST", "url",
           Status.INTERNAL_SERVER_ERROR, "response.body"), Status.INTERNAL_SERVER_ERROR, Status.INTERNAL_SERVER_ERROR)))
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.YourActionWasNotProcessedController.onPageLoadScheme.url)
@@ -164,7 +164,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
         UpstreamErrorResponse(upstreamResponseMessage("POST", "url",
           Status.BAD_REQUEST, "response.body"), Status.BAD_REQUEST, Status.BAD_REQUEST)))
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.YourActionWasNotProcessedController.onPageLoadScheme.url)
@@ -180,7 +180,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
         UpstreamErrorResponse(upstreamResponseMessage("POST", "url",
           Status.UNPROCESSABLE_ENTITY, "response.body"), Status.UNPROCESSABLE_ENTITY, Status.UNPROCESSABLE_ENTITY)))
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.AddingSchemeController.onPageLoad.url)

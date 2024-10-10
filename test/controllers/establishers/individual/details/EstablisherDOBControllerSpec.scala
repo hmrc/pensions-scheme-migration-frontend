@@ -19,24 +19,19 @@ package controllers.establishers.individual.details
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.DOBFormProvider
-import controllers.establishers.individual.details.routes
 import identifiers.establishers.individual.EstablisherNameId
-import identifiers.establishers.individual.details.EstablisherDOBId
 import identifiers.establishers.partnership.partner.details.PartnerDOBId
 import matchers.JsonMatchers
 import models.{Index, NormalMode, PersonName}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import renderer.Renderer
 import services.common.details.CommonDateOfBirthService
-import uk.gov.hmrc.viewmodels.{DateInput, NunjucksSupport}
+import uk.gov.hmrc.viewmodels.DateInput
 import utils.Data.ua
 import utils.{FakeNavigator, UserAnswers}
 
@@ -45,7 +40,6 @@ import scala.concurrent.Future
 
 class EstablisherDOBControllerSpec
   extends ControllerSpecBase
-    with NunjucksSupport
     with JsonMatchers
     with TryValues
     with BeforeAndAfterEach {
@@ -58,14 +52,7 @@ class EstablisherDOBControllerSpec
     PersonName("Jane", "Doe")
   private val userAnswers: UserAnswers =
     ua.set(EstablisherNameId(0), personName).success.value
-  private val templateToBeRendered: String =
-    "dob.njk"
-  private val commonJson: JsObject =
-    Json.obj(
-      "name"       -> "Jane Doe",
-      "schemeName" -> "Test scheme name",
-      "entityType" -> "the individual"
-    )
+
   val index = Index(0)
   val mode = NormalMode
   private def onPageLoadUrl: String = routes.EstablisherDOBController.onPageLoad(index, mode).url
@@ -97,7 +84,6 @@ class EstablisherDOBControllerSpec
 
   override def beforeEach(): Unit = {
     reset(
-      mockRenderer,
       mockUserAnswersCacheConnector
     )
   }
@@ -128,8 +114,6 @@ class EstablisherDOBControllerSpec
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
       val request = FakeRequest(GET, onPageLoadUrl)
 
       val ua =
@@ -185,9 +169,6 @@ class EstablisherDOBControllerSpec
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
         fakeRequest
           .withFormUrlEncodedBody("date" -> "invalid value")

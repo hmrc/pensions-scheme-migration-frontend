@@ -39,6 +39,10 @@ import views.html.DeleteView
 
 import scala.concurrent.Future
 class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
+
+  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
+
   private val individualName: String = "Jane Doe"
   private val companyName: String = "test company"
   private val partnershipName: String = "test partnership"
@@ -47,11 +51,6 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Jso
   private val userAnswersCompany: Option[UserAnswers] = ua.set(CompanyDetailsId(0), CompanyDetails(companyName)).toOption
   private val userAnswersPartnership: Option[UserAnswers] = ua.set(PartnershipDetailsId(0), PartnershipDetails(partnershipName)).toOption
   private val form: Form[Boolean] = new ConfirmDeleteEstablisherFormProvider()(individualName)
-
-  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
-
   private def httpPathGET(kind: EstablisherKind): String = controllers.establishers.routes.ConfirmDeleteEstablisherController.onPageLoad(index, kind).url
   private def httpPathPOST(kind: EstablisherKind): String = controllers.establishers.routes.ConfirmDeleteEstablisherController.onSubmit(index, kind).url
 
@@ -74,11 +73,11 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Jso
     "return OK and the correct view for a GET when establisher is an individual" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswersIndividual)
       val request = httpGETRequest(httpPathGET(EstablisherKind.Individual))
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual OK
 
-      val deleteView = application.injector.instanceOf[DeleteView].apply(
+      val deleteView = app.injector.instanceOf[DeleteView].apply(
         form,
         messages("messages__confirmDeleteEstablisher__title"),
         individualName,
@@ -95,11 +94,11 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Jso
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswersCompany)
 
       val request = httpGETRequest(httpPathGET(EstablisherKind.Company))
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual OK
 
-      val deleteView = application.injector.instanceOf[DeleteView].apply(
+      val deleteView = app.injector.instanceOf[DeleteView].apply(
         form,
         messages("messages__confirmDeleteEstablisher__title"),
         companyName,
@@ -115,11 +114,11 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Jso
       val form = new ConfirmDeleteEstablisherFormProvider()(partnershipName)
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswersPartnership)
       val request = httpGETRequest(httpPathGET(EstablisherKind.Partnership))
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual OK
 
-      val deleteView = application.injector.instanceOf[DeleteView].apply(
+      val deleteView = app.injector.instanceOf[DeleteView].apply(
         form,
         messages("messages__confirmDeleteEstablisher__title"),
         partnershipName,
@@ -134,7 +133,7 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Jso
     "redirect to Session Expired page for a GET when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
-      val result = route(application, httpGETRequest(httpPathGET(EstablisherKind.Individual))).value
+      val result = route(app, httpGETRequest(httpPathGET(EstablisherKind.Individual))).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -149,7 +148,7 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Jso
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswersIndividual)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST(EstablisherKind.Individual), valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST(EstablisherKind.Individual), valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -166,7 +165,7 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Jso
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswersCompany)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST(EstablisherKind.Company), valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST(EstablisherKind.Company), valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -183,7 +182,7 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Jso
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswersPartnership)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST(EstablisherKind.Partnership), valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST(EstablisherKind.Partnership), valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -194,7 +193,7 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Jso
     "return a BAD REQUEST when invalid data is submitted" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswersIndividual)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST(EstablisherKind.Individual), valuesInvalid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST(EstablisherKind.Individual), valuesInvalid)).value
 
       status(result) mustEqual BAD_REQUEST
       contentAsString(result) must include(messages("messages__confirmDeleteEstablisher__title"))
@@ -205,7 +204,7 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Jso
     "redirect back to list of schemes for a POST when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST(EstablisherKind.Individual), valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST(EstablisherKind.Individual), valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 

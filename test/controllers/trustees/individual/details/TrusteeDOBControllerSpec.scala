@@ -18,25 +18,21 @@ package controllers.trustees.individual.details
 
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
-import controllers.trustees.individual.details.routes
 import forms.DOBFormProvider
 import identifiers.establishers.partnership.partner.details.PartnerDOBId
 import identifiers.trustees.individual.TrusteeNameId
-import identifiers.trustees.individual.details.TrusteeDOBId
 import matchers.JsonMatchers
 import models.{Index, NormalMode, PersonName}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import renderer.Renderer
 import services.common.details.CommonDateOfBirthService
-import uk.gov.hmrc.viewmodels.{DateInput, NunjucksSupport}
+import uk.gov.hmrc.viewmodels.DateInput
 import utils.Data.ua
 import utils.{FakeNavigator, UserAnswers}
 
@@ -44,7 +40,6 @@ import java.time.LocalDate
 import scala.concurrent.Future
 class TrusteeDOBControllerSpec
   extends ControllerSpecBase
-    with NunjucksSupport
     with JsonMatchers
     with TryValues
     with BeforeAndAfterEach {
@@ -54,19 +49,10 @@ class TrusteeDOBControllerSpec
   private val form: Form[LocalDate] = formProvider()
 
 
-
   private val personName: PersonName = PersonName("Jane", "Doe")
 
   private val userAnswers: UserAnswers = ua.set(TrusteeNameId(0), personName).success.value
 
-  private val templateToBeRendered: String = "dob.njk"
-
-  private val commonJson: JsObject =
-    Json.obj(
-      "name"       -> "Jane Doe",
-      "schemeName" -> "Test scheme name",
-      "entityType" -> "the individual"
-    )
   val view = app.injector.instanceOf[views.html.DobView]
 
   private val formData: LocalDate =
@@ -100,7 +86,6 @@ class TrusteeDOBControllerSpec
 
   override def beforeEach(): Unit = {
     reset(
-      mockRenderer,
       mockUserAnswersCacheConnector
     )
   }

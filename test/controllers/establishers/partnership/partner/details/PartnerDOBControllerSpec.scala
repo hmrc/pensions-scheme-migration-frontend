@@ -18,24 +18,20 @@ package controllers.establishers.partnership.partner.details
 
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
-import controllers.establishers.partnership.partner.details.routes
 import forms.DOBFormProvider
 import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.partner.details.PartnerDOBId
 import matchers.JsonMatchers
 import models.{Index, NormalMode, PersonName}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import renderer.Renderer
 import services.common.details.CommonDateOfBirthService
-import uk.gov.hmrc.viewmodels.{DateInput, NunjucksSupport}
+import uk.gov.hmrc.viewmodels.DateInput
 import utils.Data.ua
 import utils.{FakeNavigator, UserAnswers}
 
@@ -44,7 +40,6 @@ import scala.concurrent.Future
 
 class PartnerDOBControllerSpec
   extends ControllerSpecBase
-    with NunjucksSupport
     with JsonMatchers
     with TryValues
     with BeforeAndAfterEach {
@@ -71,7 +66,6 @@ class PartnerDOBControllerSpec
   val index = Index(0)
   val mode = NormalMode
   private def onPageLoadUrl: String = routes.PartnerDOBController.onPageLoad(index, index, mode).url
-  private def submitUrl: String = routes.PartnerDOBController.onSubmit(index, index, mode).url
   private def controller(
                           dataRetrievalAction: DataRetrievalAction
                         ): PartnerDOBController =
@@ -92,7 +86,6 @@ class PartnerDOBControllerSpec
 
   override def beforeEach(): Unit = {
     reset(
-      mockRenderer,
       mockUserAnswersCacheConnector
     )
   }
@@ -126,8 +119,6 @@ class PartnerDOBControllerSpec
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
       val request = FakeRequest(GET, onPageLoadUrl)
 
       val ua =
@@ -183,9 +174,6 @@ class PartnerDOBControllerSpec
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
         fakeRequest
           .withFormUrlEncodedBody("date" -> "invalid value")
