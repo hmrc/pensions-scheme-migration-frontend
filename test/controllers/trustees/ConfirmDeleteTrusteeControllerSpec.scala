@@ -30,11 +30,11 @@ import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{Enumerable, UserAnswers}
+import utils.{Enumerable, TwirlMigration, UserAnswers}
+import views.html.DeleteView
 
 import scala.concurrent.Future
 class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
@@ -49,7 +49,6 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with Nunjuck
   private val userAnswers1: Option[UserAnswers] = ua.set(TrusteeNameId(0), PersonName("Jane", "Doe"))
     .flatMap(_.set(TrusteeKindId(0, kind), kind)).toOption
 
-  private val templateToBeRendered = "delete.njk"
   private val form: Form[Boolean] = new ConfirmDeleteTrusteeFormProvider()(trusteeName)
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -67,40 +66,28 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with Nunjuck
     "value" -> Seq.empty
   )
 
-  private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>
-  Json.obj(
-    "form" -> form,
-    "titleMessage" -> messages("messages__confirmDeleteTrustee__title"),
-    "name" -> trusteeName,
-    "radios" -> Radios.yesNo(form("value")),
-    "submitUrl" -> routes.ConfirmDeleteTrusteeController.onSubmit(index, kind).url,
-    "schemeName" -> schemeName
-  )
-
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
-
 
   "ConfirmDeleteTrusteeController" must {
 
     "return OK and the correct view for a GET" in {
-
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val request = httpGETRequest(httpPathGET)
+      val result = route(application, request).value
 
       status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form))
+      val deleteView = application.injector.instanceOf[DeleteView].apply(
+        form,
+        messages("messages__confirmDeleteTrustee__title"),
+        trusteeName,
+        None,
+        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        schemeName,
+        routes.ConfirmDeleteTrusteeController.onSubmit(index, kind)
+      )(request, messages)
+      compareResultAndView(result, deleteView)
     }
 
     "redirect to Session Expired page for a GET when there is no data" in {

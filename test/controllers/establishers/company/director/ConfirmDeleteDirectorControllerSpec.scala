@@ -29,11 +29,11 @@ import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{Enumerable, UserAnswers}
+import utils.{Enumerable, TwirlMigration, UserAnswers}
+import views.html.DeleteView
 
 import scala.concurrent.Future
 
@@ -44,7 +44,6 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Nunjuc
   private val userAnswersDirector: Option[UserAnswers] = ua
     .set(DirectorNameId(establisherIndex,dirIndex), PersonName("Jane", "Doe")).toOption
 
-  private val templateToBeRendered = "delete.njk"
   private val form: Form[Boolean] = new ConfirmDeleteEstablisherFormProvider()(directorName)
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -64,42 +63,35 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Nunjuc
     "value" -> Seq.empty
   )
 
-  private def submitUrl(directorIndex:Index) = routes.ConfirmDeleteDirectorController.onSubmit(establisherIndex, directorIndex).url
-
-  private def jsonToPassToTemplate(directorIndex:Index, directorName: String): Form[Boolean] => JsObject = form =>
-  Json.obj(
-    "form" -> form,
-    "titleMessage" -> messages("messages__confirmDeleteDirectors__title"),
-    "name" -> directorName,
-    "radios" -> Radios.yesNo(form("value")),
-    "submitUrl" -> submitUrl(directorIndex),
-    "schemeName" -> schemeName
-  )
+  private def submitUrl(directorIndex:Index) = routes.ConfirmDeleteDirectorController.onSubmit(establisherIndex, directorIndex)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
-
-  private val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-  private val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
   "ConfirmDeleteDirectorController" must {
 
     "return OK and the correct view for a GET director" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswersDirector)
-      val result = route(application, httpGETRequest(httpPathGET(dirIndex))).value
+      val request = httpGETRequest(httpPathGET(dirIndex))
+
+      val result = route(application, request).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(dirIndex, directorName)(form))
+      val deleteView = application.injector.instanceOf[DeleteView].apply(
+        form,
+        messages("messages__confirmDeleteDirectors__title"),
+        directorName,
+        None,
+        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        schemeName,
+        submitUrl(dirIndex)
+      )(request, messages)
+      compareResultAndView(result, deleteView)
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted for director" in {
-      val expectedJson = Json.obj()
 
       when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(ConfirmDeleteDirectorId(dirIndex)), any(), any())(any()))
         .thenReturn(controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(establisherIndex,NormalMode))
@@ -113,8 +105,7 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Nunjuc
       val result = route(application, httpPOSTRequest(httpPathPOST(dirIndex), valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
-      verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptor.capture)(any(), any())
-      jsonCaptor.getValue must containJson(expectedJson)
+      verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
       redirectLocation(result) mustBe Some(controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(establisherIndex,NormalMode).url)
 
       val jsonCaptorUA = ArgumentCaptor.forClass(classOf[JsValue])
