@@ -60,7 +60,7 @@ class SelectAddressControllerSpec extends ControllerSpecBase with JsonMatchers w
 
   private val seqAddresses = Seq(
     TolerantAddress(Some("1"),Some("1"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")),
-    TolerantAddress(Some("2"),Some("2"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")),
+    TolerantAddress(Some("2"),Some("2"),Some("c"),Some("d"), Some("zz11zz"), Some("GB"))
   )
 
   private val valuesValid: Map[String, Seq[String]] = Map(

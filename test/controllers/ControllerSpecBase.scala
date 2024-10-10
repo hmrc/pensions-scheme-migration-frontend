@@ -35,6 +35,7 @@ import play.api.test.{FakeHeaders, FakeRequest}
 import services.DataUpdateService
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Label, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
+import services.{DataPrefillService, DataUpdateService}
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import utils.{CountryOptions, Enumerable, FakeCountryOptions}
 
@@ -49,6 +50,7 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
   }
 
   protected val mockCompoundNavigator: CompoundNavigator = mock[CompoundNavigator]
+  protected val mockDataPrefillService: DataPrefillService = mock[DataPrefillService]
   protected val mockMinimalDetailsConnector: MinimalDetailsConnector = mock[MinimalDetailsConnector]
   protected val mockEmailConnector: EmailConnector = mock[EmailConnector]
   protected val mockLegacySchemeDetailsConnector: LegacySchemeDetailsConnector = mock[LegacySchemeDetailsConnector]
@@ -99,5 +101,5 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
       )
     }
   }
-  
+
 }

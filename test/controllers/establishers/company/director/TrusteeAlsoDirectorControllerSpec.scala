@@ -51,7 +51,6 @@ class TrusteeAlsoDirectorControllerSpec extends ControllerSpecBase
 
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(0), companyDetails).success.value
   private val templateToBeRendered: String = "dataPrefillRadio.njk"
-  private val mockDataPrefillService = mock[DataPrefillService]
 
   private val commonJson: JsObject =
     Json.obj(

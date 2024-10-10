@@ -23,19 +23,20 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.individual.TrusteeNameId
 import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.Results.Ok
 import play.api.mvc.{Action, AnyContent}
-import services.common.contact.CommonWhatYouWillNeedContactService
 import viewmodels.Message
+import views.html.WhatYouWillNeedContactView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class WhatYouWillNeedController @Inject()(
                                            val messagesApi: MessagesApi,
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
-                                           common: CommonWhatYouWillNeedContactService
+                                           view: WhatYouWillNeedContactView
                                          )(implicit val ec: ExecutionContext)
   extends Retrievals
     with I18nSupport {
@@ -45,13 +46,12 @@ class WhatYouWillNeedController @Inject()(
       implicit request =>
         TrusteeNameId(index).retrieve.map {
           personName =>
-            common.get(
-              name = personName.fullName,
+            Future.successful(Ok(view(
               pageHeading = Message("messages__title_individual"),
-              entityType = Message("messages__individual"),
               continueUrl = controllers.trustees.individual.contact.routes.EnterEmailController.onPageLoad(index, NormalMode).url,
+              name = personName.fullName,
               schemeName = request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
-            )
+            )))
         }
     }
 }

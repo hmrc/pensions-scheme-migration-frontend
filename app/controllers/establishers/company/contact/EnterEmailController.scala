@@ -64,7 +64,8 @@ class EnterEmailController @Inject()(
               emailId = EnterEmailId(index),
               form = form(index),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__contact_details__email__hint", name(index), schemeName))
+              paragraphText = Seq(Message("messages__contact_details__email__hint", name(index), schemeName)),
+              routes.EnterEmailController.onSubmit(index, mode)
             )
         }
     }
@@ -81,7 +82,8 @@ class EnterEmailController @Inject()(
               form = form(index),
               schemeName = schemeName,
               paragraphText = Seq(Message("messages__contact_details__email__hint", name(index), schemeName)),
-              mode = Some(mode)
+              mode = Some(mode),
+              routes.EnterEmailController.onSubmit(index, mode)
             )
         }
     }

@@ -53,8 +53,13 @@ class InsurerSelectAddressControllerSpec extends ControllerSpecBase with JsonMat
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = routes.InsurerSelectAddressController.onPageLoad.url
-  private val httpPathPOST: String = routes.InsurerSelectAddressController.onSubmit.url
+  private val httpPathGET: String = controllers.benefitsAndInsurance.routes.InsurerSelectAddressController.onPageLoad.url
+  private val httpPathPOST: String = controllers.benefitsAndInsurance.routes.InsurerSelectAddressController.onSubmit.url
+
+  private val seqAddresses = Seq(
+    TolerantAddress(Some("1"),Some("1"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")),
+    TolerantAddress(Some("2"),Some("2"),Some("c"),Some("d"), Some("zz11zz"), Some("GB"))
+  )
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq("1")
@@ -152,4 +157,5 @@ class InsurerSelectAddressControllerSpec extends ControllerSpecBase with JsonMat
       redirectLocation(result).value mustBe controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
     }
   }
+
 }

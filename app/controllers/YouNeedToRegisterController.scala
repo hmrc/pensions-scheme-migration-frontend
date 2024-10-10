@@ -18,10 +18,9 @@ package controllers
 
 import config.AppConfig
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.YouNeedToRegisterView
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -29,18 +28,17 @@ import scala.concurrent.ExecutionContext
 class YouNeedToRegisterController @Inject()(appConfig: AppConfig,
                                             override val messagesApi: MessagesApi,
                                             val controllerComponents: MessagesControllerComponents,
-                                            renderer: Renderer
+                                            view: YouNeedToRegisterView
                                            )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = Action.async {
+  def onPageLoad: Action[AnyContent] = Action {
     implicit request =>
-      val json: JsObject = Json.obj(
-        "psaUrl" -> appConfig.pensionAdministratorGovUkLink,
-        "pspUrl" ->  appConfig.pensionAdministratorGovUkLink,
-        "registerPsaUrl" -> appConfig.registerSchemeAdministratorUrl,
-        "govUkUrl" -> appConfig.govUkLink
-      )
-      renderer.render("youNeedToRegister.njk", json).map(Ok(_))
+      Ok(view(
+        appConfig.pensionAdministratorGovUkLink,
+        appConfig.pensionPractitionerGovUkLink,
+        appConfig.registerSchemeAdministratorUrl,
+        appConfig.govUkLink
+      ))
   }
 }
