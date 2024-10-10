@@ -26,7 +26,6 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{MessageInterpolators, Radios}
 import utils.{TwirlMigration, UserAnswers}
@@ -47,7 +46,7 @@ class ConfirmDeletePartnerController @Inject()(override val messagesApi: Message
                                                  deleteView: DeleteView
                                                )(implicit val executionContext: ExecutionContext
                                                )
-  extends FrontendBaseController with I18nSupport with Retrievals with NunjucksSupport {
+  extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad(establisherIndex: Index, partnerIndex: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {

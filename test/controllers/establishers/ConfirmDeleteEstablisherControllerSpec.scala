@@ -32,14 +32,13 @@ import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, TwirlMigration, UserAnswers}
 import views.html.DeleteView
 
 import scala.concurrent.Future
-class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
   private val individualName: String = "Jane Doe"
   private val companyName: String = "test company"
   private val partnershipName: String = "test partnership"
@@ -198,7 +197,8 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Nun
       val result = route(application, httpPOSTRequest(httpPathPOST(EstablisherKind.Individual), valuesInvalid)).value
 
       status(result) mustEqual BAD_REQUEST
-
+      contentAsString(result) must include(messages("messages__confirmDeleteEstablisher__title"))
+      contentAsString(result) must include(messages("error.summary.title"))
       verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
     }
 

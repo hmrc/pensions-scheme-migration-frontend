@@ -30,14 +30,13 @@ import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.test.Helpers._
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, TwirlMigration, UserAnswers}
 import views.html.DeleteView
 
 import scala.concurrent.Future
-class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
   private val trusteeName: String = "Jane Doe"
   private val index: Index = Index(0)
   private val kind: TrusteeKind = TrusteeKind.Individual
@@ -170,6 +169,9 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with Nunjuck
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
 
       status(result) mustEqual BAD_REQUEST
+
+      contentAsString(result) must include(messages("messages__confirmDeleteTrustee__title"))
+      contentAsString(result) must include(messages("error.summary.title"))
 
       verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
     }
