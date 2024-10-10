@@ -25,7 +25,6 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{Json, OWrites}
 import play.api.mvc.{AnyContent, Call, Result}
 import uk.gov.hmrc.viewmodels.Radios
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
@@ -51,11 +50,6 @@ class CommonTradingTimeService @Inject()(
                                    form : Form[Boolean],
                                    radios: Seq[Radios.Item]
                                  )
-
-  implicit private val formBooleanWrites: OWrites[Form[Boolean]] = OWrites[Form[Boolean]] { form =>
-    Json.obj("value" -> form.value)
-  }
-  implicit private def templateDataWrites(implicit request: DataRequest[AnyContent]): OWrites[TemplateData] = Json.writes[TemplateData]
 
   def get(schemeName: Option[String],
           entityName: String,

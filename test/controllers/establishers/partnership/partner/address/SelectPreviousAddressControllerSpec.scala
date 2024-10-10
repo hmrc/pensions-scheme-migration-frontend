@@ -47,14 +47,14 @@ class SelectPreviousAddressControllerSpec extends ControllerSpecBase with JsonMa
     bind[AddressLookupConnector].toInstance(mockAddressLookupConnector),
     bind[CommonAddressListService].toInstance(mockCommonAddressListService)
   )
+  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
   private val formProvider: AddressListFormProvider = new AddressListFormProvider()
   private val form = formProvider("selectAddress.required")
   private val mode = NormalMode
   private val index = 0
 
-  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
   private val httpPathGET: String = controllers.establishers.partnership.partner.address.routes.SelectPreviousAddressController.onPageLoad(index, index, mode).url
   private val httpPathPOST: String = controllers.establishers.partnership.partner.address.routes.SelectPreviousAddressController.onSubmit(index, index, mode).url
 
@@ -95,7 +95,7 @@ class SelectPreviousAddressControllerSpec extends ControllerSpecBase with JsonMa
       when(mockCommonAddressListService.get(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(Ok(expectedView)))
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val result: Future[Result] = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
       compareResultAndView(result, expectedView)
@@ -105,7 +105,7 @@ class SelectPreviousAddressControllerSpec extends ControllerSpecBase with JsonMa
 
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val result: Future[Result] = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -123,7 +123,7 @@ class SelectPreviousAddressControllerSpec extends ControllerSpecBase with JsonMa
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(onwardCall.url)
@@ -137,7 +137,7 @@ class SelectPreviousAddressControllerSpec extends ControllerSpecBase with JsonMa
       when(mockCommonAddressListService.post(any(), any(), any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(BadRequest))
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
 
       status(result) mustEqual BAD_REQUEST
     }
@@ -145,7 +145,7 @@ class SelectPreviousAddressControllerSpec extends ControllerSpecBase with JsonMa
     "redirect back to list of schemes for a POST when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 

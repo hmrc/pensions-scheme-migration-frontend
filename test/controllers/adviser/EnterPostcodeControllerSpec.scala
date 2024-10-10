@@ -48,14 +48,14 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with JsonMatchers w
     bind[AddressLookupConnector].toInstance(mockAddressLookupConnector),
     bind[CommonPostcodeService].toInstance(mockCommonPostcodeService)
   )
+  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
   private val formProvider: PostcodeFormProvider = new PostcodeFormProvider()
   private val form = formProvider("enterPostcode.required", "messages__adviser__enterPostcode__invalid")
   private val mode = NormalMode
 
   private val userAnswers: Option[UserAnswers] = Some(ua)
-  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
   private val httpPathGET: String = controllers.adviser.routes.EnterPostcodeController.onPageLoad(NormalMode).url
   private val httpPathPOST: String = controllers.adviser.routes.EnterPostcodeController.onSubmit(NormalMode).url
 
@@ -84,7 +84,7 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with JsonMatchers w
       when(mockCommonPostcodeService.get(any(), any())(any(), any()))
         .thenReturn(Future.successful(Ok(expectedView)))
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val result: Future[Result] = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
 
@@ -96,7 +96,7 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with JsonMatchers w
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, request).value
+      val result: Future[Result] = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -115,7 +115,7 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with JsonMatchers w
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(onwardCall.url)
@@ -126,7 +126,7 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with JsonMatchers w
       when(mockCommonPostcodeService.post(any(), any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(BadRequest))
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
 
       status(result) mustEqual BAD_REQUEST
 
@@ -136,7 +136,7 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with JsonMatchers w
     "redirect to Session Expired page for a POST when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 

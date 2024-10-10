@@ -50,6 +50,9 @@ class TradingTimeControllerSpec extends ControllerSpecBase with JsonMatchers wit
     bind[AddressLookupConnector].toInstance(mockAddressLookupConnector),
     bind[CommonTradingTimeService].toInstance(mockCommonTradingTimeService)
   )
+  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+
+  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
   private val formProvider: TradingTimeFormProvider = new TradingTimeFormProvider()
   private val form = formProvider("partnershipTradingTime.error.required")
@@ -57,8 +60,6 @@ class TradingTimeControllerSpec extends ControllerSpecBase with JsonMatchers wit
   private val index = 0
 
   private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(CompanyDetailsId(index), Data.companyDetails))
-  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
   private val httpPathGET: String = controllers.establishers.company.address.routes.TradingTimeController.onPageLoad(index,mode).url
   private val httpPathPOST: String = controllers.establishers.company.address.routes.TradingTimeController.onSubmit(index,mode).url
 
@@ -94,7 +95,7 @@ class TradingTimeControllerSpec extends ControllerSpecBase with JsonMatchers wit
       when(mockCommonTradingTimeService.get(any(), any(), any(), any(), any(), any())(any()))
         .thenReturn(Future.successful(Ok(expectedView)))
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val result: Future[Result] = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
       compareResultAndView(result, expectedView)
@@ -108,7 +109,7 @@ class TradingTimeControllerSpec extends ControllerSpecBase with JsonMatchers wit
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val result: Future[Result] = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
     }
@@ -118,7 +119,7 @@ class TradingTimeControllerSpec extends ControllerSpecBase with JsonMatchers wit
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, request).value
+      val result: Future[Result] = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -134,7 +135,7 @@ class TradingTimeControllerSpec extends ControllerSpecBase with JsonMatchers wit
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(onwardCall.url)
@@ -145,7 +146,7 @@ class TradingTimeControllerSpec extends ControllerSpecBase with JsonMatchers wit
       when(mockCommonTradingTimeService.post(any(), any(), any(), any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(BadRequest))
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
 
       status(result) mustEqual BAD_REQUEST
 
@@ -155,7 +156,7 @@ class TradingTimeControllerSpec extends ControllerSpecBase with JsonMatchers wit
     "redirect back to list of schemes for a POST when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 

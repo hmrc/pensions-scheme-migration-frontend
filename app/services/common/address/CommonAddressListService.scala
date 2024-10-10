@@ -25,7 +25,6 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{Json, OWrites, Writes}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, Call, Result}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Label, Text}
@@ -46,14 +45,6 @@ case class CommonAddressListTemplateData(
                                       h1MessageKey: String
                                     )
 
-object CommonAddressListTemplateData {
-  implicit val formWrites: Writes[Form[Int]] = (form: Form[Int]) => Json.obj(
-    "data" -> form.data,
-    "errors" -> form.errors.map(_.message)
-  )
-  implicit val templateDataWrites: OWrites[CommonAddressListTemplateData] = Json.writes[CommonAddressListTemplateData]
-}
-
 @Singleton
 class CommonAddressListService @Inject()(
     userAnswersCacheConnector: UserAnswersCacheConnector,
@@ -61,8 +52,6 @@ class CommonAddressListService @Inject()(
     val messagesApi: MessagesApi,
     addressListView: AddressListView
 ) extends Retrievals with  I18nSupport {
-
-  import CommonAddressListTemplateData._
 
   def get(template: CommonAddressListTemplateData,
           form: Form[Int],

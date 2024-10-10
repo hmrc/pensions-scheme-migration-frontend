@@ -52,6 +52,8 @@ class AddressYearsControllerSpec extends ControllerSpecBase with JsonMatchers wi
     bind[AddressLookupConnector].toInstance(mockAddressLookupConnector),
     bind[CommonAddressYearsService].toInstance(mockCommonAddressYearsService)
   )
+  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
   private val formProvider: AddressYearsFormProvider = new AddressYearsFormProvider()
   private val form: Form[Boolean]  = formProvider("")
@@ -60,8 +62,6 @@ class AddressYearsControllerSpec extends ControllerSpecBase with JsonMatchers wi
 
   private val personName: PersonName = PersonName("Jane", "Doe")
   private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(DirectorNameId(index,index), personName))
-  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
   private val httpPathGET: String = controllers.establishers.company.director.address.routes.AddressYearsController.onPageLoad(index, index, mode).url
   private val httpPathGETCheck: String = controllers.establishers.company.director.address.routes.AddressYearsController.onPageLoad(index, index, CheckMode).url
   private val httpPathPOST: String = controllers.establishers.company.director.address.routes.AddressYearsController.onSubmit(index, index, mode).url
@@ -99,7 +99,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with JsonMatchers wi
       when(mockCommonAddressYearsService.get(any(), any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(Ok(expectedView)))
 
-      val result: Future[Result] = route(application, request).value
+      val result: Future[Result] = route(app, request).value
 
       status(result) mustEqual OK
       compareResultAndView(result, expectedView)
@@ -113,7 +113,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with JsonMatchers wi
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGETCheck)).value
+      val result: Future[Result] = route(app, httpGETRequest(httpPathGETCheck)).value
 
       status(result) mustEqual OK
     }
@@ -123,7 +123,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with JsonMatchers wi
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, request).value
+      val result: Future[Result] = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -138,7 +138,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with JsonMatchers wi
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(onwardCall.url)
@@ -149,7 +149,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with JsonMatchers wi
       when(mockCommonAddressYearsService.post(any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(BadRequest))
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
 
       status(result) mustEqual BAD_REQUEST
 
@@ -159,7 +159,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with JsonMatchers wi
     "redirect back to list of schemes for a POST when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 

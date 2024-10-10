@@ -50,6 +50,8 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with JsonM
     bind[AddressLookupConnector].toInstance(mockAddressLookupConnector),
     bind[CommonManualAddressService].toInstance(mockCommonManualAddressService)
   )
+  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
   private val countryOptions: CountryOptions = new CountryOptions(environment, appConfig)
   private val formProvider: AddressFormProvider = new AddressFormProvider(countryOptions)
@@ -61,8 +63,6 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with JsonM
     Data.ua.setOrException(CompanyDetailsId(index), Data.companyDetails)
 
   private val userAnswers: Option[UserAnswers] = Some(ua)
-  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
   private val httpPathGET: String = controllers.establishers.company.address.routes.ConfirmPreviousAddressController.onPageLoad(index,mode).url
   private val httpPathPOST: String = controllers.establishers.company.address.routes.ConfirmPreviousAddressController.onSubmit(index,mode).url
 
@@ -106,7 +106,7 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with JsonM
       when(mockCommonManualAddressService.get(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(Ok(expectedView)))
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val result: Future[Result] = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
       compareResultAndView(result, expectedView)
@@ -117,7 +117,7 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with JsonM
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, request).value
+      val result: Future[Result] = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -132,7 +132,7 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with JsonM
         .thenReturn(Future.successful(Results.SeeOther(onwardCall.url)))
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(onwardCall.url)
@@ -143,7 +143,7 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with JsonM
       when(mockCommonManualAddressService.post(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(BadRequest))
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
 
       status(result) mustEqual BAD_REQUEST
 
@@ -153,7 +153,7 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with JsonM
     "redirect back to list of schemes for a POST when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 

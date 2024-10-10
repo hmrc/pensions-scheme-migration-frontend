@@ -32,7 +32,7 @@
     h1MessageKey: String
 )(implicit request: Request[_], messages: Messages)
 
-@layout(messages(h1MessageKey, messages(entityType))) {
+@layout(messages(h1MessageKey, messages(entityType)), formHasErrors = form.hasErrors) {
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }

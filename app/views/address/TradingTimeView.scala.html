@@ -24,7 +24,7 @@
 
 @(form: Form[_], entityType: String, entityName: String, radios: Seq[RadioItem], schemeName: Option[String], submitUrl: Call)(implicit request: Request[_], messages: Messages)
 
-@layout(messages("tradingTime.title", entityType)) {
+@layout(messages("tradingTime.title", entityType), formHasErrors = form.hasErrors) {
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
     }

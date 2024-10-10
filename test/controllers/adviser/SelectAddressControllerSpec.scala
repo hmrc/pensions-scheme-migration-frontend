@@ -47,12 +47,12 @@ class SelectAddressControllerSpec extends ControllerSpecBase with JsonMatchers w
     bind[AddressLookupConnector].toInstance(mockAddressLookupConnector),
     bind[CommonAddressListService].toInstance(mockCommonAddressListService)
   )
+  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
   private val formProvider: AddressListFormProvider = new AddressListFormProvider()
   private val form = formProvider("selectAddress.required")
 
-  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
   private val httpPathGET: String = routes.SelectAddressController.onPageLoad.url
   private val httpPathPOST: String = routes.SelectAddressController.onSubmit.url
 
@@ -96,7 +96,7 @@ class SelectAddressControllerSpec extends ControllerSpecBase with JsonMatchers w
       when(mockCommonAddressListService.get(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(Ok(expectedView)))
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val result: Future[Result] = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
       compareResultAndView(result, expectedView)
@@ -107,7 +107,7 @@ class SelectAddressControllerSpec extends ControllerSpecBase with JsonMatchers w
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, request).value
+      val result: Future[Result] = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -123,7 +123,7 @@ class SelectAddressControllerSpec extends ControllerSpecBase with JsonMatchers w
       when(mockCommonAddressListService.post(any(), any(), any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(Results.SeeOther(onwardCall.url)))
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(onwardCall.url)
@@ -136,7 +136,7 @@ class SelectAddressControllerSpec extends ControllerSpecBase with JsonMatchers w
       when(mockCommonAddressListService.post(any(), any(), any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(BadRequest))
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
 
       status(result) mustEqual BAD_REQUEST
     }
@@ -144,7 +144,7 @@ class SelectAddressControllerSpec extends ControllerSpecBase with JsonMatchers w
     "redirect to Session Expired page for a POST when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 

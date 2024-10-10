@@ -27,7 +27,7 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.{JsArray, Json, OWrites, Writes}
+import play.api.libs.json.{JsArray, Json}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, Call, Result}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -45,15 +45,6 @@ case class CommonPostcodeTemplateData(
                                        schemeName: String,
                                        h1MessageKey: String
                                      )
-
-object CommonPostcodeTemplateData {
-  implicit val formWrites: Writes[Form[String]] = (form: Form[String]) => Json.obj(
-    "data" -> form.data,
-    "errors" -> form.errors.map(_.message)
-  )
-  implicit val callWrites: Writes[Call] = Writes[Call](call => Json.obj("url" -> call.url))
-  implicit val templateDataWrites: OWrites[CommonPostcodeTemplateData] = Json.writes[CommonPostcodeTemplateData]
-}
 
 @Singleton
 class CommonPostcodeService @Inject()(
