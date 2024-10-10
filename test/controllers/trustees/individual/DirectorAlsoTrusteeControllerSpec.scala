@@ -29,14 +29,12 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{Data, FakeNavigator, TwirlMigration, UserAnswers}
 import views.html.DataPrefillRadioView
 
 import scala.concurrent.Future
 class DirectorAlsoTrusteeControllerSpec extends ControllerSpecBase
-  with NunjucksSupport
   with JsonMatchers
   with TryValues
   with BeforeAndAfterEach {
@@ -66,7 +64,6 @@ class DirectorAlsoTrusteeControllerSpec extends ControllerSpecBase
       requireData = new DataRequiredActionImpl,
       formProvider = formProvider,
       dataPrefillService = mockDataPrefillService,
-      config = appConfig,
       controllerComponents = controllerComponents,
       userAnswersCacheConnector = mockUserAnswersCacheConnector,
       dataPrefillRadioView = app.injector.instanceOf[DataPrefillRadioView]
@@ -136,6 +133,13 @@ class DirectorAlsoTrusteeControllerSpec extends ControllerSpecBase
       val result: Future[Result] = controller(getData).onSubmit(0)(request)
 
       status(result) mustBe BAD_REQUEST
+
+      contentAsString(result) must include(messages("messages__trustees__prefill__heading"))
+      contentAsString(result) must include(messages("error.summary.title"))
+
+      verify(mockUserAnswersCacheConnector, times(0))
+        .save(any(), any())(any(), any())
+
     }
   }
 }

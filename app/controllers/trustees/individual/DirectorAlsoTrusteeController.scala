@@ -16,7 +16,6 @@
 
 package controllers.trustees.individual
 
-import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
@@ -30,7 +29,6 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.DataPrefillService
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.{Enumerable, TwirlMigration, UserAnswers}
@@ -47,11 +45,10 @@ class DirectorAlsoTrusteeController @Inject()(override val messagesApi: Messages
                                               requireData: DataRequiredAction,
                                               formProvider: DataPrefillRadioFormProvider,
                                               dataPrefillService: DataPrefillService,
-                                              config: AppConfig,
                                               val controllerComponents: MessagesControllerComponents,
                                               dataPrefillRadioView: DataPrefillRadioView
                                              )(implicit val executionContext: ExecutionContext) extends FrontendBaseController
-  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
+  with I18nSupport with Retrievals with Enumerable.Implicits {
 
   private def form: Form[Int] =
     formProvider("messages__trustees__prefill__single__error__required")

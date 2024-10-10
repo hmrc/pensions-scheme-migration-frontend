@@ -29,7 +29,6 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{Data, FakeNavigator, TwirlMigration, UserAnswers}
 import views.html.DataPrefillRadioView
@@ -37,7 +36,6 @@ import views.html.DataPrefillRadioView
 import scala.concurrent.Future
 
 class TrusteeAlsoDirectorControllerSpec extends ControllerSpecBase
-  with NunjucksSupport
   with JsonMatchers
   with TryValues
   with BeforeAndAfterEach {
@@ -135,6 +133,12 @@ class TrusteeAlsoDirectorControllerSpec extends ControllerSpecBase
       val result: Future[Result] = controller(getData).onSubmit(0)(request)
 
       status(result) mustBe BAD_REQUEST
+
+      contentAsString(result) must include(messages("messages__directors__prefill__heading", companyDetails.companyName))
+      contentAsString(result) must include(messages("error.summary.title"))
+
+      verify(mockUserAnswersCacheConnector, times(0))
+        .save(any(), any())(any(), any())
     }
   }
 }
