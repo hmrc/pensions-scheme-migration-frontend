@@ -19,10 +19,12 @@ package controllers.establishers.company.director.details
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.DOBFormProvider
+import controllers.establishers.company.director.details.routes
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.details.DirectorDOBId
+import identifiers.establishers.partnership.partner.details.PartnerDOBId
 import matchers.JsonMatchers
-import models.{NormalMode, PersonName}
+import models.{Index, NormalMode, PersonName}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
@@ -64,9 +66,11 @@ class DirectorDOBControllerSpec
       "schemeName" -> "Test scheme name",
       "entityType" -> "the director"
     )
-
+  val index = Index(0)
+  val mode = NormalMode
   private val formData: LocalDate =
     LocalDate.parse("2000-01-01")
+  private def onPageLoadUrl: String = routes.DirectorDOBController.onPageLoad(index, index, mode).url
 
   private val day: Int = formData.getDayOfMonth
   private val month: Int = formData.getMonthValue
@@ -101,43 +105,37 @@ class DirectorDOBControllerSpec
 
   "DirectorDOBController" must {
     "return OK and the correct view for a GET" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, onPageLoadUrl)
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
       val result: Future[Result] =
         controller(getData)
           .onPageLoad(0,0, NormalMode)(fakeDataRequest(userAnswers))
+      status(result) mustEqual OK
 
-      status(result) mustBe OK
+      val expectedView = view(
+        form,
+        DateInput.localDate(form("date")),
+        "John Doe",
+        "Test scheme name",
+        "the partner",
+        routes.DirectorDOBController.onSubmit(index, index, mode)
+      )(request, messages)
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("date" -> DateInput.localDate(form("date")))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      contentAsString(result)
+        .replaceAll("&amp;referrerUrl=%2F\\[.*?\\]", "&amp;referrerUrl=%2F[]")
+        .removeAllNonces() contains expectedView
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+      val request = FakeRequest(GET, onPageLoadUrl)
 
       val ua =
         userAnswers
-          .set(DirectorDOBId(0,0), formData).success.value
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+          .set(PartnerDOBId(0,0), formData).success.value
 
       val getData = new FakeDataRetrievalAction(Some(ua))
 
@@ -147,15 +145,18 @@ class DirectorDOBControllerSpec
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val expectedView = view(
+        form,
+        DateInput.localDate(form("date")),
+        "John Doe",
+        "Test scheme name",
+        "the partner",
+        routes.DirectorDOBController.onSubmit(index, index, mode)
+      )(request, messages)
 
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("date" -> DateInput.localDate(form.fill(formData).apply("date")))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      contentAsString(result)
+        .replaceAll("&amp;referrerUrl=%2F\\[.*?\\]", "&amp;referrerUrl=%2F[]")
+        .removeAllNonces() contains expectedView
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -194,27 +195,12 @@ class DirectorDOBControllerSpec
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
       val result: Future[Result] =
         controller(getData)
           .onSubmit(0,0, NormalMode)(request)
 
-      val boundForm = form.bind(Map("date" -> "invalid value"))
-
       status(result) mustBe BAD_REQUEST
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("date" -> DateInput.localDate(boundForm.apply("date")))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
 
       verify(mockUserAnswersCacheConnector, times(0))
         .save(any(), any())(any(), any())
