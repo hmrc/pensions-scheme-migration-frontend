@@ -88,10 +88,8 @@ trait SpecBase
                                       view: Html
                                     ): Assertion = {
     org.scalatest.Assertions.assert(
-
       play.api.test.Helpers.contentAsString(result)(1.seconds).removeAllNonces().filterAndTrim
         == view.toString().filterAndTrim
-
     )
   }
 

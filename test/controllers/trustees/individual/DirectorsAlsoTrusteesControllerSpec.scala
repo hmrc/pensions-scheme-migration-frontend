@@ -26,52 +26,37 @@ import models.{DataPrefillCheckbox, Index, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.Application
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsJson, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{Data, FakeNavigator, UserAnswers}
 import views.html.DataPrefillCheckboxView
 
 import scala.concurrent.Future
 class DirectorsAlsoTrusteesControllerSpec extends ControllerSpecBase
-  with NunjucksSupport
   with JsonMatchers
   with TryValues
   with BeforeAndAfterEach {
 
-  private val index: Index = Index(0)
-  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
-  private val personName: PersonName = PersonName("Jane", "Doe")
+  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
+
+  private val index: Index = Index(0)
   private val formProvider: DataPrefillCheckboxFormProvider = new DataPrefillCheckboxFormProvider()
   private val form = formProvider(6,"", "", "")
 
-
-  private val commonJson: JsObject =
-    Json.obj(
-      "form" -> form,
-      "schemeName" -> Data.schemeName
-    )
   val request = httpGETRequest(routes.DirectorsAlsoTrusteesController.onPageLoad(0).url)
 
-  val view = application.injector.instanceOf[DataPrefillCheckboxView]
-
+  val view = app.injector.instanceOf[DataPrefillCheckboxView]
 
   override def beforeEach(): Unit = {
     reset(
-      mockRenderer,
       mockUserAnswersCacheConnector,
       mockDataPrefillService
     )
-
-
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
     when(mockDataPrefillService.getListOfDirectorsToBeCopied(any())).thenReturn(Nil)
   }
 
@@ -105,7 +90,7 @@ class DirectorsAlsoTrusteesControllerSpec extends ControllerSpecBase
       val request = httpGETRequest(routes.DirectorsAlsoTrusteesController.onPageLoad(index).url)
       val result: Future[Result] = controller(getData).onPageLoad(0)(request)
 
-      val view = application.injector.instanceOf[DataPrefillCheckboxView]
+      val view = app.injector.instanceOf[DataPrefillCheckboxView]
         .apply(form, Data.schemeName, "messages__trustees__prefill__heading", "messages__trustees__prefill__title", seqCheckBox,
           routes.DirectorsAlsoTrusteesController.onSubmit(Index(0)))(request, messages)
 

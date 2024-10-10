@@ -27,6 +27,7 @@ site.error = Error:
 site.yes = Yes
 site.no = No
 site.add = Add
+site.date.example = For example, 31 3 2020
 site.change = Change
 site.remove = Remove
 site.add.details = Add details

@@ -26,13 +26,13 @@ import models.Scheme
 import models.requests.DataRequest
 import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsString, Json, __}
+import play.api.libs.json.{JsString, __}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswers
+import views.html.DeclarationView
 
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -51,7 +51,7 @@ class DeclarationController @Inject()(
                                        minimalDetailsConnector: MinimalDetailsConnector,
                                        pensionsSchemeConnector: PensionsSchemeConnector,
                                        crypto: ApplicationCrypto,
-                                       renderer: Renderer
+                                       declarationView: DeclarationView
                                      )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
@@ -62,14 +62,11 @@ class DeclarationController @Inject()(
       implicit request =>
         val hasWorkingKnowledge = if (request.userAnswers.get(WorkingKnowledgeId).contains(true)) true else false
         SchemeNameId.retrieve.map { schemeName =>
-
-          val json = Json.obj(
-            "schemeName" -> schemeName,
-            "isCompany" -> true,
-            "hasWorkingKnowledge" -> hasWorkingKnowledge,
-            "submitUrl" -> routes.DeclarationController.onSubmit.url
-          )
-          renderer.render("declaration.njk", json).map(Ok(_))
+            Future.successful(Ok(declarationView(
+              schemeName, true, hasWorkingKnowledge,
+              routes.DeclarationController.onSubmit
+              ))
+            )
         }
     }
 

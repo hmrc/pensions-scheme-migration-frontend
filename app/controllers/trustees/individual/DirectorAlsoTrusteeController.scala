@@ -16,7 +16,6 @@
 
 package controllers.trustees.individual
 
-import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
@@ -28,14 +27,12 @@ import models.{DataPrefillRadio, Index}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import services.DataPrefillService
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.MessageInterpolators
-import utils.{Enumerable, UserAnswers}
+import utils.{Enumerable, TwirlMigration, UserAnswers}
+import views.html.DataPrefillRadioView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -48,11 +45,10 @@ class DirectorAlsoTrusteeController @Inject()(override val messagesApi: Messages
                                               requireData: DataRequiredAction,
                                               formProvider: DataPrefillRadioFormProvider,
                                               dataPrefillService: DataPrefillService,
-                                              config: AppConfig,
                                               val controllerComponents: MessagesControllerComponents,
-                                              renderer: Renderer
+                                              dataPrefillRadioView: DataPrefillRadioView
                                              )(implicit val executionContext: ExecutionContext) extends FrontendBaseController
-  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
+  with I18nSupport with Retrievals with Enumerable.Implicits {
 
   private def form: Form[Int] =
     formProvider("messages__trustees__prefill__single__error__required")
@@ -64,14 +60,16 @@ class DirectorAlsoTrusteeController @Inject()(override val messagesApi: Messages
         val seqDirector = dataPrefillService.getListOfDirectorsToBeCopied
 
         if (seqDirector.nonEmpty) {
-          val json = Json.obj(
-            "form" -> form,
-            "schemeName" -> schemeName,
-            "pageHeading" -> msg"messages__trustees__prefill__title",
-            "titleMessage" -> msg"messages__trustees__prefill__heading",
-            "radios" -> DataPrefillRadio.radios(form, seqDirector)
-          )
-          renderer.render("dataPrefillRadio.njk", json).map(Ok(_))
+          Future.successful(Ok(
+            dataPrefillRadioView(
+              form,
+              msg"messages__trustees__prefill__title".resolve,
+              msg"messages__trustees__prefill__heading".resolve,
+              TwirlMigration.toTwirlRadios(DataPrefillRadio.radios(form, seqDirector)),
+              schemeName,
+              routes.DirectorAlsoTrusteeController.onSubmit(index)
+            )
+          ))
         } else {
           Future(Redirect(controllers.routes.TaskListController.onPageLoad))
         }
@@ -85,15 +83,16 @@ class DirectorAlsoTrusteeController @Inject()(override val messagesApi: Messages
         val seqDirector = dataPrefillService.getListOfDirectorsToBeCopied
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
-
-            val json = Json.obj(
-              "form" -> formWithErrors,
-              "schemeName" -> schemeName,
-              "pageHeading" -> msg"messages__trustees__prefill__title",
-              "titleMessage" -> msg"messages__trustees__prefill__heading",
-              "radios" -> DataPrefillRadio.radios(form, seqDirector)
-            )
-            renderer.render("dataPrefillRadio.njk", json).map(BadRequest(_))
+            Future.successful(BadRequest(
+              dataPrefillRadioView(
+                formWithErrors,
+                msg"messages__trustees__prefill__title".resolve,
+                msg"messages__trustees__prefill__heading".resolve,
+                TwirlMigration.toTwirlRadios(DataPrefillRadio.radios(form, seqDirector)),
+                schemeName,
+                routes.DirectorAlsoTrusteeController.onSubmit(index)
+              )
+            ))
           },
           value => {
             val uaAfterCopy = if (value < 0) ua else dataPrefillService.copyAllDirectorsToTrustees(ua, Seq(value),

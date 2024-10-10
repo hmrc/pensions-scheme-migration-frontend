@@ -59,7 +59,8 @@ class TrusteeDOBController @Inject()(val messagesApi: MessagesApi,
               dobId        = TrusteeDOBId(index),
               personNameId = TrusteeNameId(index),
               schemeName   = schemeName,
-              entityType   = Messages("messages__individual")
+              entityType   = Messages("messages__individual"),
+              call = routes.TrusteeDOBController.onSubmit(index, mode)
             )
         }
     }
@@ -76,7 +77,8 @@ class TrusteeDOBController @Inject()(val messagesApi: MessagesApi,
               schemeName = schemeName,
               entityType = Messages("messages__individual"),
               mode = mode,
-              optSetUserAnswers = Some(value => setUpdatedAnswers(index, mode, value, request.userAnswers))
+              optSetUserAnswers = Some(value => setUpdatedAnswers(index, mode, value, request.userAnswers)),
+              call = routes.TrusteeDOBController.onSubmit(index, mode)
             )
         }
     }
