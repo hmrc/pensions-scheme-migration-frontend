@@ -20,10 +20,8 @@ import models.prefill.{IndividualDetails => DataPrefillIndividualDetails}
 import play.api.data.Form
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Label, Text}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.{CheckboxBehaviour, CheckboxItem, ExclusiveCheckbox}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.{CheckboxItem, ExclusiveCheckbox}
 import uk.gov.hmrc.viewmodels.MessageInterpolators
-import uk.gov.hmrc.viewmodels.Text.Literal
-import viewmodels.forNunjucks.Checkboxes
 
 object DataPrefillCheckbox {
 

@@ -33,14 +33,13 @@ import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results.{BadRequest, Redirect}
 import play.api.mvc.{Action, AnyContent}
-import renderer.Renderer
 import services.DataUpdateService
 import services.common.address.{CommonPostcodeService, CommonPostcodeTemplateData}
 import viewmodels.Message
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.UserAnswers
+import views.html.address.PostcodeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -56,9 +55,9 @@ class EnterPreviousPostcodeController @Inject()(
    requireData: DataRequiredAction,
    formProvider: PostcodeFormProvider,
    dataUpdateService: DataUpdateService,
-   renderer: Renderer,
-   common: CommonPostcodeService
-)(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
+   common: CommonPostcodeService,
+   postcodeView: PostcodeView
+)(implicit val ec: ExecutionContext) extends I18nSupport with Retrievals {
 
   private def form: Form[String] = formProvider("individualEnterPreviousPostcode.required", "enterPostcode.invalid")
 
@@ -80,13 +79,31 @@ class EnterPreviousPostcodeController @Inject()(
       retrieve(SchemeNameId) { schemeName =>
         val formToTemplate: Form[String] => CommonPostcodeTemplateData = getFormToTemplate(schemeName, index, mode)
         form.bindFromRequest().fold(
-          formWithErrors =>
-            renderer.render(common.viewTemplate, formToTemplate(formWithErrors)).map(BadRequest(_)),
-          value =>
+            formWithErrors => {
+              val templateData = formToTemplate(formWithErrors)
+              Future.successful(BadRequest(postcodeView(
+                formWithErrors,
+                templateData.entityType,
+                templateData.entityName,
+                templateData.submitUrl,
+                templateData.enterManuallyUrl,
+                Some(templateData.schemeName),
+                templateData.h1MessageKey
+              )))
+            },          value =>
             addressLookupConnector.addressLookupByPostCode(value).flatMap {
               case Nil =>
-                renderer.render(common.viewTemplate, formToTemplate(formWithError("enterPostcode.noresults"))).map(BadRequest(_))
-
+                val formWithErrors = formWithError("enterPostcode.noresults")
+                val templateData = formToTemplate(formWithError("enterPostcode.noresults"))
+                Future.successful(BadRequest(postcodeView(
+                  formWithErrors,
+                  templateData.entityType,
+                  templateData.entityName,
+                  templateData.submitUrl,
+                  templateData.enterManuallyUrl,
+                  Some(templateData.schemeName),
+                  templateData.h1MessageKey
+                )))
               case addresses =>
                 for {
                   updatedAnswers <- Future.fromTry(setUpdatedAnswers(index, mode, addresses, request.userAnswers))
@@ -103,13 +120,16 @@ class EnterPreviousPostcodeController @Inject()(
                        )(implicit request:DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
     val name: String = request.userAnswers.get(TrusteeNameId(index))
       .map(_.fullName).getOrElse(Message("trusteeEntityTypeIndividual"))
+    val submitUrl = routes.EnterPreviousPostcodeController.onSubmit(index, mode)
+    val enterManuallyUrl = routes.ConfirmPreviousAddressController.onPageLoad(index, mode).url
 
     form => {
       CommonPostcodeTemplateData(
         form,
         Message("trusteeEntityTypeIndividual"),
         name,
-        controllers.trustees.individual.address.routes.ConfirmPreviousAddressController.onPageLoad(index, mode).url,
+        submitUrl,
+        enterManuallyUrl,
         schemeName,
         "previousPostcode.title"
       )
@@ -132,4 +152,5 @@ class EnterPreviousPostcodeController @Inject()(
     val finalUpdatedUserAnswers = updatedUserAnswers.set(EnterPreviousPostCodeId(index), value)
     finalUpdatedUserAnswers
   }
+
 }

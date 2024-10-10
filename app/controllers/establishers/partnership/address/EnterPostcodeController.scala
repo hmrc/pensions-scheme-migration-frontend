@@ -30,7 +30,6 @@ import play.api.mvc.{Action, AnyContent}
 import services.common.address.{CommonPostcodeService, CommonPostcodeTemplateData}
 import viewmodels.Message
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.Inject
@@ -43,7 +42,7 @@ class EnterPostcodeController @Inject()(
    requireData: DataRequiredAction,
    formProvider: PostcodeFormProvider,
    common: CommonPostcodeService
-)(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
+)(implicit val ec: ExecutionContext) extends I18nSupport with Retrievals {
 
   private def form: Form[String] = formProvider("enterPostcode.required", "enterPostcode.invalid")
 
@@ -66,14 +65,18 @@ class EnterPostcodeController @Inject()(
   def getFormToTemplate(schemeName:String, index: Index, mode: Mode)(implicit request:DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
     val name: String = request.userAnswers.get(PartnershipDetailsId(index))
       .map(_.partnershipName).getOrElse(Message("establisherEntityTypePartnership"))
+    val submitUrl = routes.EnterPostcodeController.onSubmit(index, mode)
+    val enterManuallyUrl = routes.ConfirmAddressController.onPageLoad(index, mode).url
 
     form => {
       CommonPostcodeTemplateData(
         form,
         Message("establisherEntityTypePartnership"),
         name,
-        routes.ConfirmAddressController.onPageLoad(index,mode).url,
-        schemeName
+        submitUrl,
+        enterManuallyUrl,
+        schemeName,
+        "postcode.title"
       )
     }
   }

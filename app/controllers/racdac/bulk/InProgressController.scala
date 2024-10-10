@@ -19,13 +19,10 @@ package controllers.racdac.bulk
 import config.AppConfig
 import controllers.actions._
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
 class InProgressController @Inject()(appConfig: AppConfig,
                                      override val messagesApi: MessagesApi,

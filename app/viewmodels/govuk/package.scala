@@ -22,4 +22,7 @@ package object govuk {
       with SummaryListFluency
       with InputFluency
       with RadiosFluency
+      with CheckboxFluency
+      with FieldsetFluency
+      with SelectFluency
 }

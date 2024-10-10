@@ -16,6 +16,7 @@
 
 package controllers.trustees.partnership.address
 
+import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.address.TradingTimeFormProvider
@@ -25,34 +26,41 @@ import identifiers.trustees.partnership.address.TradingTimeId
 import matchers.JsonMatchers
 import models.{NormalMode, Scheme}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
-import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.Result
+import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
+import play.api.libs.json.Json
+import play.api.mvc.{Result, Results}
+import play.api.mvc.Results.{BadRequest, Ok}
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
+import services.common.address.CommonTradingTimeService
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{Data, Enumerable, UserAnswers}
+import utils.{Data, Enumerable, TwirlMigration, UserAnswers}
+import views.html.address.TradingTimeView
 
 import scala.concurrent.Future
-class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
 
-  private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(PartnershipDetailsId(0), Data.partnershipDetails))
+class TradingTimeControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
+
+  private val mockAddressLookupConnector = mock[AddressLookupConnector]
+  private val mockCommonTradingTimeService = mock[CommonTradingTimeService]
+
+  val extraModules: Seq[GuiceableModule] = Seq(
+    bind[AddressLookupConnector].toInstance(mockAddressLookupConnector),
+    bind[CommonTradingTimeService].toInstance(mockCommonTradingTimeService)
+  )
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
-  private val httpPathGET: String = controllers.trustees.partnership.address.routes.TradingTimeController.onPageLoad(0,NormalMode).url
-  private val httpPathPOST: String = controllers.trustees.partnership.address.routes.TradingTimeController.onSubmit(0,NormalMode).url
-  private val form: Form[Boolean] = new TradingTimeFormProvider()("")
+  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
-  private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>
-    Json.obj(
-      "form" -> form,
-      "schemeName" -> schemeName,
-      "radios" -> Radios.yesNo(form("value"))
-    )
+  private val formProvider: TradingTimeFormProvider = new TradingTimeFormProvider()
+  private val form = formProvider("partnershipTradingTime.error.required")
+  private val mode = NormalMode
+  private val index = 0
+
+  private val userAnswers: Option[UserAnswers] = Some(ua.setOrException(PartnershipDetailsId(index), Data.partnershipDetails))
+  private val httpPathGET: String = controllers.trustees.partnership.address.routes.TradingTimeController.onPageLoad(index,mode).url
+  private val httpPathPOST: String = controllers.trustees.partnership.address.routes.TradingTimeController.onSubmit(index,mode).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq("true")
@@ -66,7 +74,6 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
   "TradingTime Controller" must {
@@ -74,39 +81,38 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
     "Return OK and the correct view for a GET" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, Data.schemeName)
-        .setOrException(PartnershipDetailsId(0), Data.partnershipDetails)
+        .setOrException(PartnershipDetailsId(index), Data.partnershipDetails)
+
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val view = app.injector.instanceOf[TradingTimeView]
+      val expectedView = view(
+        form, "entityType", "entityName",
+        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        Some(schemeName),
+        submitUrl = controllers.trustees.partnership.address.routes.TradingTimeController.onSubmit(index, mode)
+      )(fakeRequest, messages)
+
+      when(mockCommonTradingTimeService.get(any(), any(), any(), any(), any(), any())(any()))
+        .thenReturn(Future.successful(Ok(expectedView)))
+
+      val result: Future[Result] = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      verify(mockRenderer, times(1))
-        .render(ArgumentMatchers.eq("address/tradingTime.njk"), jsonCaptor.capture())(any())
-
-      (jsonCaptor.getValue \ "schemeName").toOption.map(_.as[String]) mustBe Some(Data.schemeName)
+      compareResultAndView(result, expectedView)
     }
 
     "return OK and the correct view for a GET when the question has previously been answered" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, Data.schemeName)
-        .setOrException(PartnershipDetailsId(0), Data.partnershipDetails)
-        .setOrException(TradingTimeId(0), true)
+        .setOrException(PartnershipDetailsId(index), Data.partnershipDetails)
+        .setOrException(TradingTimeId(index), true)
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val result: Future[Result] = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      verify(mockRenderer, times(1))
-        .render(ArgumentMatchers.eq("address/tradingTime.njk"), jsonCaptor.capture())(any())
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(true)))
     }
 
     "redirect to Session Expired page for a GET when there is no data" in {
@@ -114,7 +120,7 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, request).value
+      val result: Future[Result] = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -123,30 +129,26 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
 
-      val expectedJson = Json.obj()
-
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
+      when(mockCommonTradingTimeService.post(any(), any(), any(), any(), any(), any(), any())(any(), any(), any()))
+        .thenReturn(Future.successful(Results.SeeOther(onwardCall.url)))
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
-
-      verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptor.capture)(any(), any())
-
-      jsonCaptor.getValue must containJson(expectedJson)
-
       redirectLocation(result) mustBe Some(onwardCall.url)
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
+      when(mockCommonTradingTimeService.post(any(), any(), any(), any(), any(), any(), any())(any(), any(), any()))
+        .thenReturn(Future.successful(BadRequest))
+
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
 
       status(result) mustEqual BAD_REQUEST
 
@@ -156,7 +158,7 @@ class TradingTimeControllerSpec extends ControllerSpecBase with NunjucksSupport 
     "redirect back to list of schemes for a POST when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 

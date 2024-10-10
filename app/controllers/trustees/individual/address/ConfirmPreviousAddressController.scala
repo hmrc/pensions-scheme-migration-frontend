@@ -34,7 +34,6 @@ import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
 import services.common.address.CommonManualAddressService
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.UserAnswers
 
@@ -52,7 +51,7 @@ class ConfirmPreviousAddressController @Inject()(
    formProvider: AddressFormProvider,
    dataUpdateService: DataUpdateService,
    common: CommonManualAddressService
-)(implicit ec: ExecutionContext) extends Retrievals with I18nSupport with NunjucksSupport {
+)(implicit ec: ExecutionContext) extends Retrievals with I18nSupport {
 
   private val pageTitleEntityTypeMessageKey: Option[String] = Some("trusteeEntityTypeIndividual")
   private val pageTitleMessageKey: String = "previousAddress.title"
@@ -71,7 +70,8 @@ class ConfirmPreviousAddressController @Inject()(
             AddressConfiguration.PostcodeFirst,
             form,
             pageTitleEntityTypeMessageKey,
-            pageTitleMessageKey
+            pageTitleMessageKey,
+            submitUrl = routes.ConfirmPreviousAddressController.onSubmit(index, mode)
           )
       }
     }
@@ -94,7 +94,8 @@ class ConfirmPreviousAddressController @Inject()(
                   Some(mode),
                   formWithErrors,
                   pageTitleEntityTypeMessageKey,
-                  pageTitleMessageKey
+                  pageTitleMessageKey,
+                  submitUrl = routes.ConfirmPreviousAddressController.onSubmit(index, mode)
                 )
               },
               value =>

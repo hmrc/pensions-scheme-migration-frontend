@@ -50,11 +50,13 @@ class ConfirmPreviousAddressController @Inject()(
         common.get(
           Some(schemeName),
           companyDetails.companyName,
-          PreviousAddressId(index),PreviousAddressListId(index),
+          PreviousAddressId(index),
+          PreviousAddressListId(index),
           AddressConfiguration.PostcodeFirst,
           form,
           pageTitleEntityTypeMessageKey,
-          pageTitleMessageKey
+          pageTitleMessageKey,
+          submitUrl = routes.ConfirmPreviousAddressController.onSubmit(index, mode)
         )
       }
     }
@@ -69,7 +71,8 @@ class ConfirmPreviousAddressController @Inject()(
           AddressConfiguration.PostcodeFirst,Some(mode),
           form,
           pageTitleEntityTypeMessageKey,
-          pageTitleMessageKey
+          pageTitleMessageKey,
+          submitUrl = routes.ConfirmPreviousAddressController.onSubmit(index, mode)
         )
       }
     }

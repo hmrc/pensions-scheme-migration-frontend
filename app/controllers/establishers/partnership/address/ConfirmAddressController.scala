@@ -27,7 +27,6 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.address.CommonManualAddressService
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -39,7 +38,7 @@ class ConfirmAddressController @Inject()(
   requireData: DataRequiredAction,
   formProvider: AddressFormProvider,
   common: CommonManualAddressService
-)(implicit ec: ExecutionContext) extends Retrievals with I18nSupport with NunjucksSupport {
+)(implicit ec: ExecutionContext) extends Retrievals with I18nSupport {
 
   private val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__partnership")
   private def form: Form[Address] = formProvider()
@@ -55,7 +54,8 @@ class ConfirmAddressController @Inject()(
             AddressListId(index),
             AddressConfiguration.PostcodeFirst,
             form,
-            pageTitleEntityTypeMessageKey
+            pageTitleEntityTypeMessageKey,
+            submitUrl = routes.ConfirmAddressController.onSubmit(index, mode)
           )
       }
     }
@@ -71,7 +71,8 @@ class ConfirmAddressController @Inject()(
             AddressConfiguration.PostcodeFirst,
             Some(mode),
             form,
-            pageTitleEntityTypeMessageKey
+            pageTitleEntityTypeMessageKey,
+            submitUrl = routes.ConfirmAddressController.onSubmit(index, mode)
           )
       }
     }

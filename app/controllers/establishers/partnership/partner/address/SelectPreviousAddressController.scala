@@ -30,7 +30,6 @@ import controllers.Retrievals
 import services.common.address.{CommonAddressListService, CommonAddressListTemplateData}
 import viewmodels.Message
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.Inject
@@ -43,7 +42,7 @@ class SelectPreviousAddressController @Inject()(
     requireData: DataRequiredAction,
     formProvider: AddressListFormProvider,
     common:CommonAddressListService
- )(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
+ )(implicit val ec: ExecutionContext) extends I18nSupport with Retrievals {
 
   private def form: Form[Int] = formProvider("selectAddress.required")
 
@@ -52,7 +51,12 @@ class SelectPreviousAddressController @Inject()(
       implicit request =>
         retrieve(SchemeNameId) { schemeName =>
           getFormToTemplate(schemeName, establisherIndex, partnerIndex, mode)
-            .retrieve.map(formToTemplate => common.get(formToTemplate(form)))
+            .retrieve.map(formToTemplate =>
+              common.get(
+                formToTemplate(form),
+                form,
+                submitUrl = routes.SelectPreviousAddressController.onSubmit(establisherIndex, partnerIndex, mode)
+              ))
         }
     }
 
@@ -70,7 +74,8 @@ class SelectPreviousAddressController @Inject()(
             addressPages,
             Some(mode),
             routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, partnerIndex, mode),
-            form = form
+            form = form,
+            submitUrl = routes.SelectPreviousAddressController.onSubmit(establisherIndex, partnerIndex, mode)
           ))
       }
     }
@@ -88,7 +93,7 @@ class SelectPreviousAddressController @Inject()(
           form =>
             CommonAddressListTemplateData(
               form,
-              common.transformAddressesForTemplate(addresses),
+              addresses,
               Message("messages__partner"),
               name,
               routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, partnerIndex, mode).url,

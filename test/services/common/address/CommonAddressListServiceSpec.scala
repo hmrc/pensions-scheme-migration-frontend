@@ -17,6 +17,7 @@
 package services.common.address
 
 import controllers.Retrievals
+import controllers.establishers.company.director.address.routes
 import identifiers.TypedIdentifier
 import identifiers.establishers.individual.address.AddressId
 import identifiers.trustees.individual.address.AddressListId
@@ -33,66 +34,96 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import renderer.Renderer
 import services.CommonServiceSpecBase
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{Data, FakeNavigator, UserAnswers}
+import views.html.address.AddressListView
 
 import scala.concurrent.Future
 
-class CommonAddressListServiceSpec extends CommonServiceSpecBase with MockitoSugar with ScalaFutures with BeforeAndAfterEach with Retrievals {
+class CommonAddressListServiceSpec extends CommonServiceSpecBase
+  with MockitoSugar with ScalaFutures with BeforeAndAfterEach with Retrievals {
 
   private val navigator = new FakeNavigator(desiredRoute = onwardCall)
-  val renderer = new Renderer(mockAppConfig, mockRenderer)
   private val form = Form("value" -> number)
-  private val service = new CommonAddressListService(renderer, mockUserAnswersCacheConnector, navigator, messagesApi, mockAppConfig)
+  private val service = new CommonAddressListService(
+    mockUserAnswersCacheConnector,
+    navigator,
+    messagesApi,
+    addressListView = app.injector.instanceOf[AddressListView]
+   )
 
   private val userAnswersId = "test-user-answers-id"
   implicit val hc: HeaderCarrier = HeaderCarrier()
-  implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), Data.migrationLock)
+  implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest(),
+    UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), Data.migrationLock)
   private val postcodeId: TypedIdentifier[Seq[TolerantAddress]] = new TypedIdentifier[Seq[TolerantAddress]] {}
   private val addressPages = new AddressPages(postcodeId, AddressListId(0), AddressId(0))
 
   override def beforeEach(): Unit = {
-    reset(mockRenderer, mockUserAnswersCacheConnector)
+    reset(mockUserAnswersCacheConnector)
   }
 
   "CommonAddressListService" must {
 
     "render the view correctly on get" in {
-      val templateData = CommonAddressListTemplateData(form, Seq(Json.obj("value" -> 0, "text" -> "Test Address")), "entityType", "entityName", "enterManuallyUrl", "schemeName")
+      val templateData = CommonAddressListTemplateData(
+        form,
+        Seq(TolerantAddress(Some("line1"), Some("line2"), None, None, Some("Test Address"), None)),
+        "entityType",
+        "entityName",
+        "enterManuallyUrl",
+        "schemeName",
+        "addressList.title"
+      )
 
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
-      val result = service.get(templateData)(request, global)
+      val result = service.get(templateData, form,
+        submitUrl = routes.SelectAddressController.onSubmit(establisherIndex = 0, directorIndex = 0, mode = NormalMode)
+      )(request, global)
 
       status(result) mustBe OK
-      verify(mockRenderer, times(1)).render(any(), any())(any())
     }
 
     "return a BadRequest and errors when invalid data is submitted on post" in {
-      val invalidRequest: DataRequest[AnyContent] = DataRequest(FakeRequest().withFormUrlEncodedBody("value" -> "invalid"), UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), Data.migrationLock)
+      val invalidRequest: DataRequest[AnyContent] = DataRequest(FakeRequest()
+        .withFormUrlEncodedBody("value" -> "invalid"), UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), Data.migrationLock)
       val formWithErrors = form.withError("value", "error.required")
-      val templateData = CommonAddressListTemplateData(formWithErrors, Seq(Json.obj("value" -> 0, "text" -> "Test Address")), "entityType", "entityName", "enterManuallyUrl", "schemeName")
+      val templateData = CommonAddressListTemplateData(
+        formWithErrors,
+        Seq(TolerantAddress(Some("line1"), Some("line2"), None, None, Some("Test Address"), None)),
+        "entityType",
+        "entityName",
+        "enterManuallyUrl",
+        "schemeName",
+        "addressList.title"
+      )
 
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
-      val result = service.post(_ => templateData, addressPages, Some(NormalMode), Call("GET", "manualUrl"), form)(invalidRequest, global, hc)
+      val result = service.post(_ => templateData, addressPages, Some(NormalMode), Call("GET", "manualUrl"), form,
+        submitUrl = routes.SelectAddressController.onSubmit(establisherIndex = 0, directorIndex = 0, mode = NormalMode)
+      )(invalidRequest, global, hc)
 
       status(result) mustBe BAD_REQUEST
-      verify(mockRenderer, times(1)).render(any(), any())(any())
     }
 
     "save the data and redirect correctly on post" in {
-      val validRequest: DataRequest[AnyContent] = DataRequest(FakeRequest().withFormUrlEncodedBody("value" -> "0"), UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), Data.migrationLock)
-      val templateData = CommonAddressListTemplateData(form, Seq(Json.obj("value" -> 0, "text" -> "Test Address")), "entityType", "entityName", "enterManuallyUrl", "schemeName")
+      val validRequest: DataRequest[AnyContent] = DataRequest(FakeRequest()
+        .withFormUrlEncodedBody("value" -> "0"), UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), Data.migrationLock)
+      val templateData = CommonAddressListTemplateData(
+        form,
+        Seq(TolerantAddress(Some("line1"), Some("line2"), None, None, Some("Test Address"), None)),
+        "entityType",
+        "entityName",
+        "enterManuallyUrl",
+        "schemeName",
+        "addressList.title"
+      )
 
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val result = service.post(_ => templateData, addressPages, Some(NormalMode), Call("GET", "manualUrl"), form)(validRequest, global, hc)
+      val result = service.post(_ => templateData, addressPages, Some(NormalMode), Call("GET", "manualUrl"), form,
+        submitUrl = routes.SelectAddressController.onSubmit(establisherIndex = 0, directorIndex = 0, mode = NormalMode)
+      )(validRequest, global, hc)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().absoluteURL()(request))

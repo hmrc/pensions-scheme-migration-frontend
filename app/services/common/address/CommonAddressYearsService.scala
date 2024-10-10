@@ -24,14 +24,12 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits._
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{Json, OWrites}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Result}
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
+import play.api.mvc.{AnyContent, Call, Result}
+import views.html.address.AddressYearsView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import uk.gov.hmrc.viewmodels.Radios
-import utils.UserAnswers
+import utils.{TwirlMigration, UserAnswers}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,13 +37,11 @@ import scala.util.Try
 
 @Singleton
 class CommonAddressYearsService @Inject()(
-                                               val controllerComponents: MessagesControllerComponents,
-                                               val renderer: Renderer,
-                                               val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                               val navigator: CompoundNavigator,
-                                               val messagesApi: MessagesApi
-                                             ) extends NunjucksSupport with FrontendHeaderCarrierProvider with I18nSupport {
-  private def viewTemplate = "address/addressYears.njk"
+   userAnswersCacheConnector: UserAnswersCacheConnector,
+   navigator: CompoundNavigator,
+   val messagesApi: MessagesApi,
+   addressYearsView: AddressYearsView
+) extends FrontendHeaderCarrierProvider with I18nSupport {
 
   private case class TemplateData(
                                    schemeName: Option[String],
@@ -55,16 +51,23 @@ class CommonAddressYearsService @Inject()(
                                    radios: Seq[Radios.Item]
                                  )
 
-  implicit private def templateDataWrites(implicit request: DataRequest[AnyContent]): OWrites[TemplateData] = Json.writes[TemplateData]
-
   def get(schemeName: Option[String],
           entityName: String,
           entityType : String,
           form : Form[Boolean],
-          addressYearsId : TypedIdentifier[Boolean]
+          addressYearsId : TypedIdentifier[Boolean],
+          submitUrl: Call
          )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
-    val filledForm = request.userAnswers.get(addressYearsId).fold(form)(form.fill)
-    renderer.render(viewTemplate, getTemplateData(schemeName, entityName, entityType, filledForm) ).map(Ok(_))
+    val filledForm: Form[Boolean] = request.userAnswers.get(addressYearsId).fold(form)(form.fill)
+    Future.successful(Ok(
+      addressYearsView(
+        filledForm,
+        entityType,
+        entityName,
+        TwirlMigration.toTwirlRadios(Radios.yesNo(filledForm("value"))),
+        schemeName,
+        submitUrl = submitUrl
+      )))
   }
 
   def post(schemeName: Option[String],
@@ -73,14 +76,22 @@ class CommonAddressYearsService @Inject()(
            form : Form[Boolean],
            addressYearsId : TypedIdentifier[Boolean],
            mode: Option[Mode] = None,
-           optSetUserAnswers:Option[Boolean => Try[UserAnswers]] = None)
-          (implicit request: DataRequest[AnyContent],
-           ec: ExecutionContext): Future[Result] = {
+           optSetUserAnswers:Option[Boolean => Try[UserAnswers]] = None,
+           submitUrl: Call
+          )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
     form
       .bindFromRequest()
       .fold(
         formWithErrors => {
-          renderer.render(viewTemplate, getTemplateData(schemeName, entityName, entityType, formWithErrors) ).map(BadRequest(_))
+          Future.successful(BadRequest(
+            addressYearsView(
+              formWithErrors,
+              entityType,
+              entityName,
+              TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value"))),
+              schemeName,
+              submitUrl = submitUrl
+            )))
         },
         value => {
           def defaultSetUserAnswers: Boolean => Try[UserAnswers] = (value: Boolean) => request.userAnswers.set(addressYearsId, value)

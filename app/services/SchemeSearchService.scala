@@ -33,7 +33,6 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.errormessage.ErrorMessage
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, Table, TableRow}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.HttpResponseRedirects.listOfSchemesRedirects
 import utils.{HttpResponseHelper, SchemeFuzzyMatcher}
 import views.html.preMigration.ListOfSchemesView

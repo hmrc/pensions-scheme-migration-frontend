@@ -22,15 +22,14 @@ import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.address.{EnterPreviousPostCodeId, PreviousAddressId, PreviousAddressListId}
-import models.{Index, Mode}
+import models.{Index, Mode, TolerantAddress}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import controllers.Retrievals
-import services.common.address.{CommonAddressListTemplateData, CommonAddressListService}
+import services.common.address.{CommonAddressListService, CommonAddressListTemplateData}
 import viewmodels.Message
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.Inject
@@ -43,14 +42,20 @@ class SelectPreviousAddressController @Inject()(
   requireData: DataRequiredAction,
   formProvider: AddressListFormProvider,
   common:CommonAddressListService
-)(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
+)(implicit val ec: ExecutionContext) extends I18nSupport with Retrievals {
 
   private def form: Form[Int] = formProvider("selectAddress.required")
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        getFormToTemplate(schemeName, index, mode).retrieve.map(formToTemplate => common.get(formToTemplate(form)))
+        getFormToTemplate(schemeName, index, mode).retrieve.map(formToTemplate =>
+          common.get(
+            formToTemplate(form),
+            form,
+            submitUrl = routes.SelectPreviousAddressController.onSubmit(index, mode)
+          )
+        )
       }
    }
 
@@ -66,7 +71,8 @@ class SelectPreviousAddressController @Inject()(
             addressPages,
             manualUrlCall = routes.ConfirmPreviousAddressController.onPageLoad(index,mode),
             mode=Some(mode),
-            form = form
+            form = form,
+            submitUrl = routes.SelectPreviousAddressController.onSubmit(index, mode)
           ))
       }
     }
@@ -74,13 +80,13 @@ class SelectPreviousAddressController @Inject()(
   def getFormToTemplate(schemeName:String, index: Index, mode: Mode) : Retrieval[Form[Int] => CommonAddressListTemplateData] =
     Retrieval(
       implicit request =>
-        EnterPreviousPostCodeId(index).retrieve.map { addresses =>
+        EnterPreviousPostCodeId(index).retrieve.map { (addresses: Seq[TolerantAddress]) =>
           val name: String = request.userAnswers.get(PartnershipDetailsId(index))
             .map(_.partnershipName).getOrElse(Message("establisherEntityTypePartnership"))
 
           form => CommonAddressListTemplateData(
             form,
-            common.transformAddressesForTemplate(addresses),
+            addresses,
             Message("establisherEntityTypePartnership"),
             name,
             routes.ConfirmPreviousAddressController.onPageLoad(index,mode).url,

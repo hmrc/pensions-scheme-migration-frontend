@@ -51,11 +51,13 @@ class ConfirmAddressController @Inject()(
         common.get(
           Some(schemeName),
           companyDetails.companyName,
-          AddressId(index),AddressListId(index),
+          AddressId(index),
+          AddressListId(index),
           AddressConfiguration.PostcodeFirst,
           form,
           pageTitleEntityTypeMessageKey,
-          pageTitleMessageKey
+          pageTitleMessageKey,
+          submitUrl = routes.ConfirmAddressController.onSubmit(index, mode)
         )
       }
     }
@@ -68,10 +70,13 @@ class ConfirmAddressController @Inject()(
           Some(schemeName),
           companyDetails.companyName,
           AddressId(index),
-          AddressConfiguration.PostcodeFirst,Some(mode),
+          AddressConfiguration.PostcodeFirst,
+          Some(mode),
           form,
           pageTitleEntityTypeMessageKey,
-          pageTitleMessageKey)
+          pageTitleMessageKey,
+          submitUrl = routes.ConfirmAddressController.onSubmit(index, mode)
+        )
       }
     }
 }

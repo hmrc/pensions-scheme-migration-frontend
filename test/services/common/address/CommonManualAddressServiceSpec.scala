@@ -16,7 +16,7 @@
 
 package services.common.address
 
-import controllers.Retrievals
+import controllers.{ControllerSpecBase, Retrievals}
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{Address, AddressConfiguration, NormalMode, TolerantAddress}
@@ -30,19 +30,18 @@ import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import renderer.Renderer
 import services.CommonServiceSpecBase
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{Data, FakeNavigator, UserAnswers}
+import views.html.address.ManualAddressView
 
 import scala.concurrent.Future
 
-class CommonManualAddressServiceSpec extends CommonServiceSpecBase with MockitoSugar with ScalaFutures with BeforeAndAfterEach with Retrievals {
+class CommonManualAddressServiceSpec extends ControllerSpecBase with CommonServiceSpecBase
+  with MockitoSugar with ScalaFutures with BeforeAndAfterEach with Retrievals {
 
   private val navigator = new FakeNavigator(desiredRoute = onwardCall)
-  val renderer = new Renderer(mockAppConfig, mockRenderer)
   private val form = Form(mapping(
     "line1" -> nonEmptyText,
     "line2" -> text,
@@ -51,7 +50,15 @@ class CommonManualAddressServiceSpec extends CommonServiceSpecBase with MockitoS
     "postcode" -> optional(text),
     "country" -> nonEmptyText
   )(Address.apply)(Address.unapply))
-  private val service = new CommonManualAddressService(renderer, mockUserAnswersCacheConnector, navigator, messagesApi, appConfig)
+
+  private val service = new CommonManualAddressService(
+    mockUserAnswersCacheConnector,
+    navigator,
+    messagesApi,
+    appConfig,
+    manualAddressView = app.injector.instanceOf[ManualAddressView]
+  )
+
   private val userAnswersId = "test-user-answers-id"
   private val addressPage = new TypedIdentifier[Address] {
     override def toString: String = "addressPage"
@@ -60,32 +67,49 @@ class CommonManualAddressServiceSpec extends CommonServiceSpecBase with MockitoS
     override def toString: String = "selectedAddress"
   }
   implicit val hc: HeaderCarrier = HeaderCarrier()
-  implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), Data.migrationLock)
+  implicit val request: DataRequest[AnyContent] = DataRequest(
+    FakeRequest(),
+    UserAnswers(Json.obj("id" -> userAnswersId)),
+    PsaId("A2110001"),
+    Data.migrationLock
+  )
 
   override def beforeEach(): Unit = {
-    reset(mockRenderer, mockUserAnswersCacheConnector)
+    reset(mockUserAnswersCacheConnector)
   }
 
   "CommonManualAddressService" must {
 
     "render the view correctly on get" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val result = service.get(Some("schemeName"), "entityName", addressPage, selectedAddress, AddressConfiguration.PostcodeFirst, form)(request, global)
+      val result = service.get(
+        Some("schemeName"),
+        "entityName",
+        addressPage,
+        selectedAddress,
+        AddressConfiguration.PostcodeFirst,
+        form,
+        submitUrl = onwardCall
+      )(request, global)
 
       status(result) mustBe OK
-      verify(mockRenderer, times(1)).render(any(), any())(any())
     }
 
     "return a BadRequest and errors when invalid data is submitted on post" in {
-      val invalidRequest: DataRequest[AnyContent] = DataRequest(FakeRequest().withFormUrlEncodedBody("line1" -> ""), UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), Data.migrationLock)
+      val invalidRequest: DataRequest[AnyContent] = DataRequest(FakeRequest().withFormUrlEncodedBody("line1" -> ""),
+        UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), Data.migrationLock)
 
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
-      val result = service.post(Some("schemeName"), "entityName", addressPage, AddressConfiguration.PostcodeFirst, Some(NormalMode), form)(invalidRequest, global)
+      val result = service.post(
+        Some("schemeName"),
+        "entityName",
+        addressPage,
+        AddressConfiguration.PostcodeFirst,
+        Some(NormalMode),
+        form,
+        submitUrl = onwardCall
+      )(invalidRequest, global)
 
       status(result) mustBe BAD_REQUEST
-      verify(mockRenderer, times(1)).render(any(), any())(any())
     }
 
     "save the data and redirect correctly on post" in {
@@ -96,10 +120,17 @@ class CommonManualAddressServiceSpec extends CommonServiceSpecBase with MockitoS
         Data.migrationLock
       )
 
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
 
-      val result = service.post(Some("schemeName"), "entityName", addressPage, AddressConfiguration.PostcodeFirst, Some(NormalMode), form)(validRequest, global)
+      val result = service.post(
+        Some("schemeName"),
+        "entityName",
+        addressPage,
+        AddressConfiguration.PostcodeFirst,
+        Some(NormalMode),
+        form,
+        submitUrl = onwardCall
+      )(validRequest, global)
 
       status(result) mustBe SEE_OTHER
       verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())

@@ -18,41 +18,53 @@ package controllers.trustees.individual.address
 
 import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
+import controllers.actions.AuthActionSpec.app.environment
 import controllers.actions.MutableFakeDataRetrievalAction
+import controllers.establishers.individual.address.routes
+import forms.address.AddressFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.individual.TrusteeNameId
-import identifiers.trustees.individual.address.PreviousAddressId
 import matchers.JsonMatchers
 import models.{NormalMode, Scheme}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.Result
+import play.api.libs.json.Json
+import play.api.mvc.{Result, Results}
+import play.api.mvc.Results.{BadRequest, Ok}
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.{Data, Enumerable, UserAnswers}
+import services.common.address.CommonManualAddressService
+import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
+import utils.{CountryOptions, Data, Enumerable, UserAnswers}
+import views.html.address.ManualAddressView
 
 import scala.concurrent.Future
-class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+
+class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val mockAddressLookupConnector = mock[AddressLookupConnector]
+  private val mockCommonManualAddressService = mock[CommonManualAddressService]
 
   val extraModules: Seq[GuiceableModule] = Seq(
-    bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
+    bind[AddressLookupConnector].toInstance(mockAddressLookupConnector),
+    bind[CommonManualAddressService].toInstance(mockCommonManualAddressService)
   )
+  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
+
+  private val countryOptions: CountryOptions = new CountryOptions(environment, appConfig)
+  private val formProvider: AddressFormProvider = new AddressFormProvider(countryOptions)
+  private val form = formProvider()
+  private val mode = NormalMode
+  private val index = 0
 
   private val ua: UserAnswers =
-    Data.ua.setOrException(TrusteeNameId(0), Data.individualName)
+    Data.ua.setOrException(TrusteeNameId(index), Data.individualName)
 
   private val userAnswers: Option[UserAnswers] = Some(ua)
-  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
-  private val httpPathGET: String = controllers.trustees.individual.address.routes.ConfirmPreviousAddressController.onPageLoad(0, NormalMode).url
-  private val httpPathPOST: String = controllers.trustees.individual.address.routes.ConfirmPreviousAddressController.onSubmit(0, NormalMode).url
+  private val httpPathGET: String = controllers.trustees.individual.address.routes.ConfirmPreviousAddressController.onPageLoad(index, mode).url
+  private val httpPathPOST: String = controllers.trustees.individual.address.routes.ConfirmPreviousAddressController.onSubmit(index, mode).url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "line1" -> Seq("1"),
@@ -74,7 +86,6 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with Nunju
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
     when(mockAppConfig.validCountryCodes).thenReturn(Seq("GB"))
   }
 
@@ -83,26 +94,33 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with Nunju
     "Return OK and the correct view for a GET" in {
       val ua: UserAnswers = UserAnswers()
         .setOrException(SchemeNameId, Data.schemeName)
-        .setOrException(TrusteeNameId(0), Data.individualName)
+        .setOrException(TrusteeNameId(index), Data.individualName)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val view = app.injector.instanceOf[ManualAddressView]
+
+      val expectedView = view(
+        form = form, pageTitle = "previousAddress.title", h1 = "previousAddress.title",
+        submitUrl = routes.ConfirmAddressController.onPageLoad(index, mode),
+        schemeName = Some(Data.schemeName),
+        countries =  mock[Seq[SelectItem]],
+        postcodeEntry = false, postcodeFirst = false
+      )(fakeRequest, messages)
+
+      when(mockCommonManualAddressService.get(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(Ok(expectedView)))
+
+      val result: Future[Result] = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      verify(mockRenderer, times(1))
-        .render(ArgumentMatchers.eq("address/manualAddress.njk"), jsonCaptor.capture())(any())
-
-      (jsonCaptor.getValue \ "schemeName").toOption.map(_.as[String]) mustBe Some(Data.schemeName)
+      compareResultAndView(result, expectedView)
     }
 
     "redirect back to list of schemes for a GET when there is no data" in {
 
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val result: Future[Result] = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -113,31 +131,22 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with Nunju
 
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
+      when(mockCommonManualAddressService.post(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(Results.SeeOther(onwardCall.url)))
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(onwardCall.url)
-
-      verify(mockUserAnswersCacheConnector, times(1)).save(any(),jsonCaptor.capture())(any(), any())
-      val expectedJson = Json.obj(
-          "addressLine1" -> "1",
-          "addressLine2" -> "2",
-          "addressLine3" -> "3",
-          "addressLine4" -> "4",
-          "postcode" -> "ZZ1 1ZZ",
-          "country" -> "GB"
-        )
-
-      (jsonCaptor.getValue \ "trustees" \ 0 \ PreviousAddressId.toString).get mustBe expectedJson
     }
 
     "return a BAD REQUEST when invalid data is submitted" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
+      when(mockCommonManualAddressService.post(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(BadRequest))
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
 
       status(result) mustEqual BAD_REQUEST
 
@@ -147,7 +156,7 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with Nunju
     "redirect back to list of schemes for a POST when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 

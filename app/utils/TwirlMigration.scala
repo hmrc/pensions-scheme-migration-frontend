@@ -22,11 +22,8 @@ import play.api.mvc.Request
 import play.twirl.api.Html
 import uk.gov.hmrc
 import uk.gov.hmrc.govukfrontend.views.Aliases._
-import uk.gov.hmrc.govukfrontend.views.viewmodels._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Content, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions}
-import uk.gov.hmrc.viewmodels.MessageInterpolators
-import viewmodels.forNunjucks.Checkboxes
 import uk.gov.hmrc.govukfrontend.views.html.components.{Hint => GovukHint}
 import viewmodels.forNunjucks.Hint
 

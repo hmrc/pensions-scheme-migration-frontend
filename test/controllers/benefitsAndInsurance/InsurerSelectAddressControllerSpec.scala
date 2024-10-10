@@ -19,34 +19,40 @@ package controllers.benefitsAndInsurance
 import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
+import forms.address.AddressListFormProvider
 import identifiers.benefitsAndInsurance.InsurerEnterPostCodeId
+import identifiers.beforeYouStart.SchemeNameId
 import matchers.JsonMatchers
 import models.{Scheme, TolerantAddress}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
+import play.api.mvc.Results.{BadRequest, Ok}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.Reads._
-import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.Result
+import play.api.libs.json.Json
+import play.api.mvc.{Result, Results}
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
+import services.common.address.CommonAddressListService
 import utils.{Data, Enumerable, UserAnswers}
+import views.html.address.AddressListView
 
 import scala.concurrent.Future
 
-class InsurerSelectAddressControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class InsurerSelectAddressControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val mockAddressLookupConnector = mock[AddressLookupConnector]
+  private val mockCommonAddressListService = mock[CommonAddressListService]
 
   val extraModules: Seq[GuiceableModule] = Seq(
-    bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
+    bind[AddressLookupConnector].toInstance(mockAddressLookupConnector),
+    bind[CommonAddressListService].toInstance(mockCommonAddressListService)
   )
-
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
+  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
+
+  private val formProvider: AddressListFormProvider = new AddressListFormProvider()
+  private val form = formProvider("insurerSelectAddress.required")
+
   private val httpPathGET: String = controllers.benefitsAndInsurance.routes.InsurerSelectAddressController.onPageLoad.url
   private val httpPathPOST: String = controllers.benefitsAndInsurance.routes.InsurerSelectAddressController.onSubmit.url
 
@@ -66,26 +72,39 @@ class InsurerSelectAddressControllerSpec extends ControllerSpecBase with Nunjuck
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
+
+  val addresses = Seq(
+    TolerantAddress(Some("123 Test Street"), Some("Test Town"), Some("Test County"), Some("Test Postcode"), Some("Test Country"), None),
+    TolerantAddress(Some("456 Example Road"), Some("Example Town"), Some("Example County"), Some("Example Postcode"), Some("Example Country"), None)
+  )
 
   "InsurerSelectAddress Controller" must {
 
     "Return OK and the correct view for a GET" in {
-      val ua: UserAnswers = Data.ua
-        .setOrException(InsurerEnterPostCodeId, seqAddresses)
+      val ua: UserAnswers = UserAnswers()
+        .setOrException(SchemeNameId, Data.schemeName)
+        .setOrException(InsurerEnterPostCodeId, addresses)
+
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val view = app.injector.instanceOf[AddressListView]
+      val expectedView = view(
+        form, "benefitsInsuranceUnknown", "benefitsInsuranceUnknown",
+        convertToRadioItems(addresses),
+        routes.InsurerConfirmAddressController.onPageLoad.url,
+        Data.schemeName,
+        routes.InsurerSelectAddressController.onSubmit,
+        h1MessageKey = "addressList.title"
+      )(fakeRequest, messages)
+
+      when(mockCommonAddressListService.get(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(Ok(expectedView)))
+
+      val result: Future[Result] = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      verify(mockRenderer, times(1))
-        .render(ArgumentMatchers.eq("address/addressList.njk"), jsonCaptor.capture())(any())
-
-      (jsonCaptor.getValue \ "schemeName").toOption.map(_.as[String]) mustBe Some(Data.schemeName)
+      compareResultAndView(result, expectedView)
     }
 
     "redirect to Session Expired page for a GET when there is no data" in {
@@ -93,7 +112,7 @@ class InsurerSelectAddressControllerSpec extends ControllerSpecBase with Nunjuck
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, request).value
+      val result: Future[Result] = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -101,15 +120,15 @@ class InsurerSelectAddressControllerSpec extends ControllerSpecBase with Nunjuck
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
-      val ua: UserAnswers = Data.ua
-        .setOrException(InsurerEnterPostCodeId, seqAddresses)
-
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
+      when(mockCommonAddressListService.post(any(), any(), any(), any(), any(), any())(any(), any(), any()))
+        .thenReturn(Future.successful(Results.SeeOther(onwardCall.url)))
 
+      val ua: UserAnswers = Data.ua.setOrException(InsurerEnterPostCodeId, addresses)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(onwardCall.url)
@@ -117,18 +136,21 @@ class InsurerSelectAddressControllerSpec extends ControllerSpecBase with Nunjuck
 
     "return a BAD REQUEST when invalid data is submitted" in {
       val ua: UserAnswers = Data.ua
-        .setOrException(InsurerEnterPostCodeId, seqAddresses)
+        .setOrException(InsurerEnterPostCodeId, addresses)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
+      when(mockCommonAddressListService.post(any(), any(), any(), any(), any(), any())(any(), any(), any()))
+        .thenReturn(Future.successful(BadRequest))
+
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
 
       status(result) mustEqual BAD_REQUEST
     }
 
-    "redirect back to list of schemes for a POST when there is no data" in {
+    "redirect to Session Expired page for a POST when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 
