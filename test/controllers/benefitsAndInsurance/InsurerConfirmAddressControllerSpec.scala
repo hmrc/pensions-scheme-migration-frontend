@@ -100,7 +100,7 @@ class InsurerConfirmAddressControllerSpec extends ControllerSpecBase with JsonMa
         form = form, pageTitle = "address.title", h1 = "address.title",
         submitUrl = routes.ConfirmAddressController.onPageLoad(0, NormalMode),
         schemeName = Some(Data.schemeName),
-        countries = countryOptions.options.map(option => SelectItem(Some(option.value), option.label)),
+        countries =  mock[Seq[SelectItem]],
         postcodeEntry = false, postcodeFirst = false
       )(fakeRequest, messages)
 

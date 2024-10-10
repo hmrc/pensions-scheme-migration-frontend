@@ -99,7 +99,7 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with JsonM
         form = form, pageTitle = "previousAddress.title", h1 = "previousAddress.title",
         submitUrl = routes.ConfirmAddressController.onPageLoad(index, mode),
         schemeName = Some(Data.schemeName),
-        countries = countryOptions.options.map(option => SelectItem(Some(option.value), option.label)),
+        countries =  mock[Seq[SelectItem]],
         postcodeEntry = false, postcodeFirst = false
       )(fakeRequest, messages)
 

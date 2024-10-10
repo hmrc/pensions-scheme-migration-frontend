@@ -35,7 +35,7 @@ import play.api.mvc.{Result, Results}
 import play.api.mvc.Results.{BadRequest, Ok}
 import play.api.test.Helpers._
 import services.common.address.CommonManualAddressService
-import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
+import uk.gov.hmrc.govukfrontend.views.html.components.SelectItem
 import utils.Data.ua
 import utils.{CountryOptions, Data, Enumerable, UserAnswers}
 import views.html.address.ManualAddressView
@@ -97,7 +97,7 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with JsonM
         form = form, pageTitle = "previousAddress.title", h1 = "previousAddress.title",
         submitUrl = routes.ConfirmAddressController.onPageLoad(index, mode),
         schemeName = Some(Data.schemeName),
-        countries = countryOptions.options.map(option => SelectItem(Some(option.value), option.label)),
+        countries =  mock[Seq[SelectItem]],
         postcodeEntry = false, postcodeFirst = false
       )(fakeRequest, messages)
 
