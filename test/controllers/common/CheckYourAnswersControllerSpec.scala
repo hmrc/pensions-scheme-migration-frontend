@@ -24,19 +24,18 @@ import matchers.JsonMatchers
 import models.entities.{Details, Establisher}
 import models.{Index, entities}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchersSugar.eqTo
+import org.scalatest.RecoverMethods.recoverToSucceededIf
 import org.scalatest.{BeforeAndAfterEach, TryValues}
+import play.api.i18n.MessagesApi
 import play.api.mvc.{MessagesControllerComponents, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels.Text.Literal
 import utils.Data.{companyDetails, ua}
-import utils.UserAnswers
+import utils.{TwirlMigration, UserAnswers}
 import views.html.CheckYourAnswersView
 
 import scala.concurrent.Future
@@ -49,7 +48,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
 
   private def controller(dataRetrievalAction: DataRetrievalAction): CheckYourAnswersController =
    new CheckYourAnswersController(
-    messagesApi = messagesControllerComponents.messagesApi,
+    messagesApi = app.injector.instanceOf[MessagesApi],
     authenticate = new FakeAuthAction(),
     getData = dataRetrievalAction,
     requireData = new DataRequiredActionImpl,
@@ -83,32 +82,26 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
 
     "return OK and render the check-your-answers template when successful" in {
       when(mockCYAHelper.rows(any(), any(), any(), any(), any())(any(), any())).thenReturn(rows)
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val result: Future[Result] = controller(getData).onPageLoad(Index(0), Establisher, entities.Company, Details)(fakeDataRequest(userAnswers))
+      val req = fakeDataRequest(userAnswers)
+      val result: Future[Result] = controller(getData).onPageLoad(Index(0), Establisher, entities.Company, Details)(req)
+      val view = app.injector.instanceOf[CheckYourAnswersView].apply(
+        controllers.common.routes.SpokeTaskListController.onPageLoad(index, Establisher, entities.Company).url,
+        "Test scheme name",
+        TwirlMigration.summaryListRow(rows)
+      )(req, implicitly)
+
 
       status(result) mustBe OK
-      verify(mockRenderer).render(eqTo("check-your-answers.njk"), any())(any())
+      compareResultAndView(result, view)
     }
 
-    "return BadRequest when MandatoryAnswerMissingException is thrown" in {
+    "return throw an exception when MandatoryAnswerMissingException is thrown" in {
       when(mockCYAHelper.rows(any(), any(), any(), any(), any())(any(), any())).thenThrow(MandatoryAnswerMissingException("Mandatory answer missing"))
-      when(mockRenderer.render(eqTo("badRequest.njk"), any())(any())).thenReturn(Future.successful(Html("bad request")))
 
       val result: Future[Result] = controller(getData).onPageLoad(Index(0), Establisher, entities.Company, Details)(FakeRequest())
 
-      status(result) mustBe BAD_REQUEST
-      verify(mockRenderer).render(eqTo("badRequest.njk"), any())(any())
-    }
-
-    "return InternalServerError for unexpected exceptions" in {
-      when(mockCYAHelper.rows(any(), any(), any(), any(), any())(any(), any())).thenThrow(new RuntimeException("Internal server error"))
-      when(mockRenderer.render(eqTo("internalServerError.njk"), any())(any())).thenReturn(Future.successful(Html("internal server error")))
-
-      val result: Future[Result] = controller(getData).onPageLoad(Index(0), Establisher, entities.Company, Details)(FakeRequest())
-
-      status(result) mustBe INTERNAL_SERVER_ERROR
-      verify(mockRenderer).render(eqTo("internalServerError.njk"), any())(any())
+      recoverToSucceededIf[MandatoryAnswerMissingException](result)
     }
   }
 }
