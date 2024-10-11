@@ -37,6 +37,7 @@ import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels.Text.Literal
 import utils.Data.{companyDetails, ua}
 import utils.UserAnswers
+import views.html.CheckYourAnswersView
 
 import scala.concurrent.Future
 
@@ -54,7 +55,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
     requireData = new DataRequiredActionImpl,
     cyaHelper = mockCYAHelper,
     controllerComponents = messagesControllerComponents,
-    renderer = new Renderer(mockAppConfig, mockRenderer)
+     view = app.injector.instanceOf[CheckYourAnswersView]
   )
 
   override def beforeEach(): Unit = {
