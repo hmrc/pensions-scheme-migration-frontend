@@ -23,9 +23,7 @@ import controllers.actions._
 import helpers.cya.CYAHelper
 import identifiers.beforeYouStart.SchemeNameId
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
@@ -42,7 +40,7 @@ class ConfirmationController @Inject()(appConfig: AppConfig,
                                        lockCacheConnector:LockCacheConnector,
                                        listOfSchemesConnector:ListOfSchemesConnector,
                                        val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer
+                                       confirmationView: views.html.racdac.individual.ConfirmationView
                                        )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
@@ -50,26 +48,20 @@ class ConfirmationController @Inject()(appConfig: AppConfig,
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData(true)).async {
       implicit request =>
-        val jsonFuture =
-          for {
-            email <- minimalDetailsConnector.getPSAEmail
-            _ <- currentPstrCacheConnector.remove
-            _ <- lockCacheConnector.removeLock(request.lock)
-            _ <- userAnswersCacheConnector.remove(request.lock.pstr)
-            _ <- listOfSchemesConnector.removeCache(request.psaId.id)
-          } yield {
-            Json.obj(
-              "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
-              "pstr" -> request.lock.pstr,
-              "email" -> email,
-              "yourSchemesLink" -> appConfig.yourPensionSchemesUrl,
-              "returnUrl" -> appConfig.psaOverviewUrl
-            )
-          }
-
-        jsonFuture.flatMap {
-          json =>
-            renderer.render("racdac/individual/confirmation.njk", json).map(Ok(_))
+        for {
+          email <- minimalDetailsConnector.getPSAEmail
+          _ <- currentPstrCacheConnector.remove
+          _ <- lockCacheConnector.removeLock(request.lock)
+          _ <- userAnswersCacheConnector.remove(request.lock.pstr)
+          _ <- listOfSchemesConnector.removeCache(request.psaId.id)
+        } yield {
+          Ok(confirmationView(
+            request.lock.pstr,
+            CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+            email,
+            appConfig.yourPensionSchemesUrl,
+            appConfig.psaOverviewUrl
+          ))
         }
     }
 }

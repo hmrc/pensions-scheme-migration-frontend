@@ -16,82 +16,107 @@
 
 package services.common.details
 
+import controllers.ControllerSpecBase
+import controllers.trustees.individual.details.routes
 import forms.DOBFormProvider
 import identifiers.TypedIdentifier
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
-import models.{NormalMode, PersonName}
+import models.{Index, NormalMode, PersonName}
 import org.mockito.ArgumentMatchers.any
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import renderer.Renderer
 import services.CommonServiceSpecBase
+import uk.gov.hmrc.viewmodels.DateInput
 import utils.{Data, FakeNavigator, UserAnswers}
 
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class CommonDateOfBirthServiceSpec extends CommonServiceSpecBase {
+class CommonDateOfBirthServiceSpec extends ControllerSpecBase with CommonServiceSpecBase {
 
   // Instantiate service
+
+
+  override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
+
+  // Define the form provider for the date of birth form
+  private val minDate: LocalDate = LocalDate.of(2020,2, 1)
+  private val formProvider: DOBFormProvider = new DOBFormProvider()
+  private val dobId: TypedIdentifier[LocalDate] = new TypedIdentifier[LocalDate] {}
+  private val personNameId: TypedIdentifier[PersonName] = EstablisherNameId(0)
+  private val form: Form[LocalDate] = formProvider()
+  val userAnswers: UserAnswers = UserAnswers().setOrException(SchemeNameId, Data.schemeName)
+    .setOrException(personNameId, PersonName("John", "Doe"))
+  val fakeRequestWithFormData = fakeRequest.withFormUrlEncodedBody("date.day" -> "01", "date.month" -> "01", "date.year" -> "1990")
+
+  val view = app.injector.instanceOf[views.html.DobView]
   val service = new CommonDateOfBirthService(
     controllerComponents = controllerComponents,
-    renderer = new Renderer(mockAppConfig, mockRenderer),
+    dobView = view,
     userAnswersCacheConnector = mockUserAnswersCacheConnector,
     navigator = new FakeNavigator(desiredRoute = onwardCall),
     messagesApi = messagesApi
   )
 
-  override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
-
-  // Define the form provider for the date of birth form
-  private val formProvider: DOBFormProvider = new DOBFormProvider()
-  private val dobId: TypedIdentifier[LocalDate] = new TypedIdentifier[LocalDate] {}
-  private val personNameId: TypedIdentifier[PersonName] = EstablisherNameId(0)
-  private val dobForm: Form[LocalDate] = formProvider()
-  val userAnswers: UserAnswers = UserAnswers().setOrException(SchemeNameId, Data.schemeName)
-    .setOrException(personNameId, PersonName("John", "Doe"))
-  val fakeRequestWithFormData = fakeRequest.withFormUrlEncodedBody("date.day" -> "01", "date.month" -> "01", "date.year" -> "1990")
 
   "get" should {
     "return OK and render the correct template" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
+      val expectedView = view(
+        form,
+        DateInput.localDate(form("date")),
+        "John Doe",
+        "Test Scheme",
+        "individual",
+        routes.TrusteeDOBController.onSubmit(Index(0), NormalMode)
+      )(fakeRequestWithFormData, messages)
 
       val result = service.get(
-        form = dobForm,
+        form = form,
         dobId = dobId,
         personNameId = personNameId,
         schemeName = "Test Scheme",
-        entityType = "individual"
+        entityType = "individual",
+        routes.TrusteeDOBController.onSubmit(Index(0), NormalMode)
       )(fakeDataRequest(userAnswers, fakeRequestWithFormData), global)
 
       status(result) mustBe OK
-      verify(mockRenderer).render(any(), any())(any())
+      compareResultAndView(result, expectedView)
     }
 
     "populate the form with existing data" in {
-      val updatedAnswers = userAnswers.set(dobId, LocalDate.of(1995, 1, 1)).success.value
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+      val dateFilled = LocalDate.of(1995, 1, 1)
+      val updatedAnswers = userAnswers.set(dobId, dateFilled).success.value
+
+      val expectedView = view(
+        form.fill(dateFilled),
+        DateInput.localDate(form("date")),
+        "John Doe",
+        "Test Scheme",
+        "individual",
+        routes.TrusteeDOBController.onSubmit(Index(0), NormalMode)
+      )(fakeRequestWithFormData, messages)
 
       val result = service.get(
-        form = dobForm,
+        form = form,
         dobId = dobId,
         personNameId = personNameId,
         schemeName = "Test Scheme",
-        entityType = "individual"
+        entityType = "individual",
+        routes.TrusteeDOBController.onSubmit(Index(0), NormalMode)
       )(fakeDataRequest(updatedAnswers, fakeRequestWithFormData), global)
 
       status(result) mustBe OK
-      verify(mockRenderer).render(any(), any())(any())
+      compareResultAndView(result, expectedView)
     }
   }
 
   "post" should {
     "return a BadRequest when form has errors" in {
-      val formWithErrors = dobForm.withError("date", "error.required")
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+      val formWithErrors = form.withError("date", "error.required")
 
       val result = service.post(
         form = formWithErrors,
@@ -99,11 +124,11 @@ class CommonDateOfBirthServiceSpec extends CommonServiceSpecBase {
         personNameId = personNameId,
         schemeName = "Test Scheme",
         entityType = "individual",
-        mode = NormalMode
+        mode = NormalMode,
+        call = routes.TrusteeDOBController.onSubmit(Index(0), NormalMode)
       )(fakeDataRequest(userAnswers, fakeRequestWithFormData), global)
 
       status(result) mustBe BAD_REQUEST
-      verify(mockRenderer).render(any(), any())(any())
     }
 
     "redirect to the next page on valid data submission" in {
@@ -111,12 +136,14 @@ class CommonDateOfBirthServiceSpec extends CommonServiceSpecBase {
       when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
       val result = service.post(
-        form = dobForm.bind(Map("date.day" -> "01", "date.month" -> "01", "date.year" -> "1990")),
+        form = form.bind(Map("date.day" -> "01", "date.month" -> "01", "date.year" -> "1990")),
         dobId = dobId,
         personNameId = personNameId,
         schemeName = "Test Scheme",
         entityType = "individual",
-        mode = NormalMode
+        mode = NormalMode,
+        None,
+        routes.TrusteeDOBController.onSubmit(Index(0), NormalMode)
       )(fakeDataRequest(userAnswers, fakeRequestWithFormData), global)
 
       status(result) mustBe SEE_OTHER

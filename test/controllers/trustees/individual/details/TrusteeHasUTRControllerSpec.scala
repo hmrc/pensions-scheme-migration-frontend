@@ -23,25 +23,22 @@ import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.details.TrusteeHasUTRId
 import matchers.JsonMatchers
 import models.{NormalMode, PersonName}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
-import play.twirl.api.Html
-import renderer.Renderer
 import services.common.details.CommonHasReferenceValueService
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.ua
-import utils.{FakeNavigator, UserAnswers}
+import utils.{FakeNavigator, TwirlMigration, UserAnswers}
+import views.html.{HasReferenceValueView, HasReferenceValueWithHintView}
 
 import scala.concurrent.Future
 class TrusteeHasUTRControllerSpec
   extends ControllerSpecBase
-    with NunjucksSupport
     with JsonMatchers
     with TryValues
     with BeforeAndAfterEach {
@@ -54,21 +51,7 @@ class TrusteeHasUTRControllerSpec
     formProvider("Select Yes if Jane Doe has a Unique Taxpayer Reference")
   private val userAnswers: UserAnswers =
     ua.set(TrusteeNameId(0), personName).success.value
-  private val templateToBeRendered: String =
-    "hasReferenceValueWithHint.njk"
-  private val commonJson: JsObject =
-    Json.obj(
-      "pageTitle"     -> "Does the individual have a Unique Taxpayer Reference (UTR)?",
-      "pageHeading"     -> "Does Jane Doe have a Unique Taxpayer Reference (UTR)?",
-      "schemeName"    -> "Test scheme name",
-      "paragraphs"    -> Json.arr(
-        "This is a 10-digit or 13-digit number. " +
-        "You can find it on tax returns and other documents from HMRC. " +
-        "It might be called ‘reference’, ‘UTR’ or ‘official use’."
-      ),
-      "legendClass"   -> "govuk-visually-hidden",
-      "isPageHeading" -> true
-    )
+
   private def controller(
                           dataRetrievalAction: DataRetrievalAction
                         ): TrusteeHasUTRController =
@@ -81,7 +64,8 @@ class TrusteeHasUTRControllerSpec
       dataUpdateService         = mockDataUpdateService,
       common = new CommonHasReferenceValueService(
         controllerComponents = controllerComponents,
-        renderer = new Renderer(mockAppConfig, mockRenderer),
+        hasReferenceValueWithHintView = app.injector.instanceOf[HasReferenceValueWithHintView],
+        hasReferenceValueView = app.injector.instanceOf[HasReferenceValueView],
         userAnswersCacheConnector = mockUserAnswersCacheConnector,
         navigator = new FakeNavigator(desiredRoute = onwardCall),
         messagesApi = messagesApi
@@ -90,69 +74,59 @@ class TrusteeHasUTRControllerSpec
 
   override def beforeEach(): Unit = {
     reset(
-      mockRenderer,
       mockUserAnswersCacheConnector
     )
   }
 
   "TrusteeHasUTRController" must {
     "return OK and the correct view for a GET" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
-
       val result: Future[Result] =
         controller(getData)
           .onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("radios" -> Radios.yesNo(form("value")))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
-
+      val view = app.injector.instanceOf[HasReferenceValueWithHintView].apply(
+        form,
+        "Test scheme name",
+        "Does the individual have a Unique Taxpayer Reference (UTR)?",
+        "Does Jane Doe have a Unique Taxpayer Reference (UTR)?",
+        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        "govuk-visually-hidden",
+        Seq("This is a 10-digit or 13-digit number. " +
+          "You can find it on tax returns and other documents from HMRC. " +
+          "It might be called ‘reference’, ‘UTR’ or ‘official use’."),
+        routes.TrusteeHasUTRController.onSubmit(0, NormalMode)
+      )(fakeRequest, messages)
+      compareResultAndView(result, view)
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val ua =
         userAnswers
           .set(TrusteeHasUTRId(0), true).success.value
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
       val getData = new FakeDataRetrievalAction(Some(ua))
-
+      val filledFrom = form.fill(true)
       val result: Future[Result] =
         controller(getData)
           .onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("radios" -> Radios.yesNo(form.fill(true).apply("value")))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      val view = app.injector.instanceOf[HasReferenceValueWithHintView].apply(
+        filledFrom,
+        "Test scheme name",
+        "Does the individual have a Unique Taxpayer Reference (UTR)?",
+        "Does Jane Doe have a Unique Taxpayer Reference (UTR)?",
+        TwirlMigration.toTwirlRadios(Radios.yesNo(filledFrom("value"))),
+        "govuk-visually-hidden",
+        Seq("This is a 10-digit or 13-digit number. " +
+          "You can find it on tax returns and other documents from HMRC. " +
+          "It might be called ‘reference’, ‘UTR’ or ‘official use’."),
+        routes.TrusteeHasUTRController.onSubmit(0, NormalMode)
+      )(fakeRequest, messages)
+      compareResultAndView(result, view)
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -178,37 +152,20 @@ class TrusteeHasUTRControllerSpec
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val request =
         fakeRequest
           .withFormUrlEncodedBody(("value", "invalid value"))
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
       val result: Future[Result] =
         controller(getData)
           .onSubmit(0, NormalMode)(request)
 
-      val boundForm = form.bind(Map("value" -> "invalid value"))
-
       status(result) mustBe BAD_REQUEST
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("radios" -> Radios.yesNo(boundForm.apply("value")))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
-
+      contentAsString(result) must include("Does the individual have a Unique Taxpayer Reference (UTR)?")
+      contentAsString(result) must include(messages("error.summary.title"))
+      contentAsString(result) must include(messages("error.boolean"))
       verify(mockUserAnswersCacheConnector, times(0))
         .save(any(), any())(any(), any())
     }

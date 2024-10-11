@@ -28,14 +28,11 @@ import models.{DataPrefillCheckbox, Index}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import services.DataPrefillService
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.{Enumerable, UserAnswers}
+import views.html.DataPrefillCheckboxView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -49,10 +46,10 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
                                                 formProvider: DataPrefillCheckboxFormProvider,
                                                 dataPrefillService: DataPrefillService,
                                                 config: AppConfig,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                renderer: Renderer
+                                                view: DataPrefillCheckboxView,
+                                                val controllerComponents: MessagesControllerComponents
                                                )(implicit val executionContext: ExecutionContext) extends FrontendBaseController
-  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
+  with I18nSupport with Retrievals with Enumerable.Implicits {
 
   private def form(implicit ua: UserAnswers, messages: Messages): Form[List[Int]] = {
     val existingTrusteeCount = ua.allTrusteesAfterDelete.size
@@ -66,16 +63,16 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
       SchemeNameId.retrieve.map { schemeName =>
         implicit val ua: UserAnswers = request.userAnswers
         val seqDirector = dataPrefillService.getListOfDirectorsToBeCopied
+        val directorsIndexes = seqDirector.map(_.index).toList
         if (seqDirector.nonEmpty) {
-          val json = Json.obj(
-            "form" -> form,
-            "schemeName" -> schemeName,
-            "pageHeading" -> msg"messages__trustees__prefill__title",
-            "titleMessage" -> msg"messages__trustees__prefill__heading",
-            "dataPrefillCheckboxes" -> DataPrefillCheckbox.checkboxes(form, seqDirector)
-          )
-
-          renderer.render("dataPrefillCheckbox.njk", json).map(Ok(_))
+          Future.successful(Ok(view(
+            form,
+            schemeName,
+            "messages__trustees__prefill__heading",
+            "messages__trustees__prefill__title",
+            DataPrefillCheckbox.checkboxes(form, seqDirector),
+            routes.DirectorsAlsoTrusteesController.onSubmit(index)
+          )))
         } else {
           Future(Redirect(controllers.routes.TaskListController.onPageLoad))
         }
@@ -89,14 +86,14 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
         val seqDirector = dataPrefillService.getListOfDirectorsToBeCopied
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
-            val json = Json.obj(
-              "form" -> formWithErrors,
-              "schemeName" -> schemeName,
-              "pageHeading" -> msg"messages__trustees__prefill__title",
-              "titleMessage" -> msg"messages__trustees__prefill__heading",
-              "dataPrefillCheckboxes" -> DataPrefillCheckbox.checkboxes(form, seqDirector)
-            )
-            renderer.render("dataPrefillCheckbox.njk", json).map(BadRequest(_))
+            Future.successful(BadRequest(view(
+              formWithErrors,
+              schemeName,
+              "messages__trustees__prefill__title",
+              "messages__trustees__prefill__heading",
+              DataPrefillCheckbox.checkboxes(form, seqDirector),
+              routes.DirectorsAlsoTrusteesController.onSubmit(establisherIndex)
+            )))
           },
           value => {
             val uaAfterCopy = if (value.headOption.getOrElse(-1) < 0) ua else

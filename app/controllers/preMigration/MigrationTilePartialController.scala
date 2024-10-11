@@ -21,9 +21,7 @@ import connectors.cache.BulkMigrationQueueConnector
 import controllers.actions._
 import models.PageLink
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 
@@ -35,8 +33,7 @@ class MigrationTilePartialController @Inject()(
                                                 override val messagesApi: MessagesApi,
                                                 authenticate: AuthAction,
                                                 bulkMigrationQueueConnector: BulkMigrationQueueConnector,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                renderer: Renderer
+                                                val controllerComponents: MessagesControllerComponents
                                               )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
@@ -53,11 +50,9 @@ class MigrationTilePartialController @Inject()(
     }
 
     links.flatMap { migrationLinks =>
-      renderer.render(
-        template = "preMigration/migrationLinksPartial.njk",
-        ctx = Json.obj("links" -> Json.toJson(migrationLinks))
-      ).map(Ok(_))
+      Future.successful(Ok(
+        views.html.preMigration.MigrationLinksPartialView(migrationLinks)
+      ))
     }
   }
-
 }

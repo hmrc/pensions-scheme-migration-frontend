@@ -24,13 +24,13 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits._
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{Json, OWrites}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{AnyContent, Call, MessagesControllerComponents, Result}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import utils.UserAnswers
+import views.html.ReasonView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,33 +41,23 @@ class CommonReasonService @Inject()(val controllerComponents: MessagesController
                                     val renderer: Renderer,
                                     val userAnswersCacheConnector: UserAnswersCacheConnector,
                                     val navigator: CompoundNavigator,
-                                    val messagesApi: MessagesApi
+                                    val messagesApi: MessagesApi,
+                                    reasonView: ReasonView
                                    ) extends NunjucksSupport with FrontendHeaderCarrierProvider with I18nSupport {
-
-  private val  templateName = "reason.njk"
-
-  private case class TemplateData(pageTitle: String,
-                                  pageHeading: String,
-                                  isPageHeading: Boolean,
-                                  id: TypedIdentifier[String],
-                                  form: Form[String],
-                                  schemeName: String)
-
-  implicit private def templateDataWrites(implicit request: DataRequest[AnyContent]): OWrites[TemplateData] = Json.writes[TemplateData]
 
   def get(pageTitle: String,
           pageHeading: String,
           isPageHeading: Boolean,
           id: TypedIdentifier[String],
           form: Form[String],
-          schemeName: String
+          schemeName: String,
+          submitUrl: Call
          )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
 
     val filledForm = request.userAnswers.get[String](id).fold(form)(form.fill)
-    renderer.render(
-      template = templateName,
-      getTemplateData(pageTitle, pageHeading, isPageHeading, id, filledForm, schemeName)
-    ).map(Ok(_))
+    Future.successful(Ok(reasonView(
+      pageTitle, pageHeading, isPageHeading, filledForm, schemeName, submitUrl
+    )))
   }
 
   def post(pageTitle: String,
@@ -77,15 +67,15 @@ class CommonReasonService @Inject()(val controllerComponents: MessagesController
            form: Form[String],
            schemeName: String,
            mode: Mode,
-           optSetUserAnswers: Option[String => Try[UserAnswers]] = None
+           optSetUserAnswers: Option[String => Try[UserAnswers]] = None,
+           submitUrl: Call
           )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] =
 
     form.bindFromRequest().fold(
       (formWithErrors: Form[String]) =>
-        renderer.render(
-          template = templateName,
-          getTemplateData(pageTitle, pageHeading, isPageHeading, id, formWithErrors, schemeName))
-          .map(BadRequest(_)),
+          Future.successful(BadRequest(reasonView(
+            pageTitle, pageHeading, isPageHeading, formWithErrors, schemeName, submitUrl
+          ))),
       value => {
         def defaultSetUserAnswers = (value: String) =>
           request.userAnswers.set(id, value)
@@ -99,20 +89,4 @@ class CommonReasonService @Inject()(val controllerComponents: MessagesController
           Redirect(navigator.nextPage(id, updatedAnswers, mode))
       }
     )
-
-
-  private def getTemplateData(pageTitle: String,
-                              pageHeading: String,
-                              isPageHeading: Boolean,
-                              id: TypedIdentifier[String],
-                              form: Form[String],
-                              schemeName: String): TemplateData = {
-    TemplateData(
-      pageTitle,
-      pageHeading,
-      isPageHeading,
-      id,
-      form,
-      schemeName)
-  }
 }

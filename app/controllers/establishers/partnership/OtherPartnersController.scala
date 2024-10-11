@@ -60,7 +60,8 @@ class OtherPartnersController @Inject()(val messagesApi: MessagesApi,
               form = form(),
               schemeName = schemeName,
               paragraphText = Seq(Message("messages__otherPartners__lede")),
-              legendClass = "govuk-visually-hidden"
+              legendClass = "govuk-visually-hidden",
+              submitCall = routes.OtherPartnersController.onSubmit(index, mode)
             )
         }
     }
@@ -79,7 +80,8 @@ class OtherPartnersController @Inject()(val messagesApi: MessagesApi,
               schemeName = schemeName,
               paragraphText = Seq(Message("messages__otherPartners__lede")),
               legendClass = "govuk-visually-hidden",
-              mode = mode
+              mode = mode,
+              submitCall = routes.OtherPartnersController.onSubmit(index, mode)
             )
         }
     }

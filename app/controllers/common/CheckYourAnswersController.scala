@@ -18,21 +18,18 @@ package controllers.common
 
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import helpers.cya.{CYAHelper, CommonCYAHelper, MandatoryAnswerMissingException}
+import helpers.cya.{CYAHelper, CommonCYAHelper}
 import identifiers.beforeYouStart.SchemeNameId
-import models.entities.{EntityType, JourneyType, PensionManagementType}
 import models.{CheckMode, Index, entities}
-import play.api.Logger
+import models.entities.{EntityType, JourneyType, PensionManagementType}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.Enumerable
+import utils.{Enumerable, TwirlMigration}
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
-import scala.util.{Failure, Success, Try}
+import views.html.CheckYourAnswersView
 
 class CheckYourAnswersController @Inject()(
                                             override val messagesApi: MessagesApi,
@@ -41,14 +38,13 @@ class CheckYourAnswersController @Inject()(
                                             requireData: DataRequiredAction,
                                             cyaHelper: CommonCYAHelper,
                                             val controllerComponents: MessagesControllerComponents,
-                                            renderer: Renderer
+                                            view: CheckYourAnswersView
                                           )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with Enumerable.Implicits
     with I18nSupport
     with Retrievals {
 
-  private val logger = Logger(classOf[CheckYourAnswersController])
   def onPageLoad(index: Index,
                  pensionManagementType: PensionManagementType,
                  entityType: EntityType,
@@ -65,10 +61,10 @@ class CheckYourAnswersController @Inject()(
                    entityType: EntityType,
                    entityRepresentativeIndex: Option[Index],
                    journeyType: JourneyType): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData()).async { implicit request =>
+    (authenticate andThen getData andThen requireData()) { implicit request =>
       val continueUrl = {
         entityRepresentativeIndex match {
-          case Some(entityRepresentativeIndex) =>
+          case Some(_) =>
             entityType match {
               case entities.Company => controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(index, CheckMode).url
               case entities.Partnership => controllers.establishers.partnership.routes.AddPartnersController.onPageLoad(index, CheckMode).url
@@ -78,27 +74,9 @@ class CheckYourAnswersController @Inject()(
         }
 
       }
-
-      Try {
-        val rows = cyaHelper.rows(index, pensionManagementType, entityType, entityRepresentativeIndex, journeyType)
-        val schemeName = CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly)
-        (rows, schemeName)
-      } match {
-        case Success((rows, schemeName)) =>
-          renderer.render(
-            template = "check-your-answers.njk",
-            ctx = Json.obj(
-              "list" -> rows,
-              "schemeName" -> schemeName,
-              "submitUrl" -> continueUrl
-            )
-          ).map(Ok(_))
-        case Failure(ex: MandatoryAnswerMissingException) =>
-          logger.warn(s"MandatoryAnswerMissingException:  ${ex.getMessage}")
-          renderer.render("badRequest.njk").map(BadRequest(_))
-        case Failure(ex) =>
-          logger.warn(s"Unexpected error occurred: ${ex.getMessage}")
-          renderer.render("internalServerError.njk").map(InternalServerError(_))
-      }
+        Ok(view(continueUrl,
+          CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+          TwirlMigration.summaryListRow(cyaHelper.rows(index, pensionManagementType, entityType, entityRepresentativeIndex, journeyType))
+        ))
     }
 }

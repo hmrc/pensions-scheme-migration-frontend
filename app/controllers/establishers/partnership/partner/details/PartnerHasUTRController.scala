@@ -68,7 +68,8 @@ class PartnerHasUTRController @Inject()(val messagesApi: MessagesApi,
               form          = form(establisherIndex,partnerIndex),
               schemeName    = schemeName,
               paragraphText = Seq(Message("messages__UTR__p")),
-              legendClass   = "govuk-visually-hidden"
+              legendClass   = "govuk-visually-hidden",
+              submitCall    = routes.PartnerHasUTRController.onSubmit(establisherIndex, partnerIndex, mode)
             )
         }
     }
@@ -87,7 +88,8 @@ class PartnerHasUTRController @Inject()(val messagesApi: MessagesApi,
               schemeName    = schemeName,
               paragraphText = Seq(Message("messages__UTR__p")),
               legendClass   = "govuk-visually-hidden",
-              mode          = mode
+              mode          = mode,
+              submitCall    = routes.PartnerHasUTRController.onSubmit(establisherIndex, partnerIndex, mode)
             )
         }
     }

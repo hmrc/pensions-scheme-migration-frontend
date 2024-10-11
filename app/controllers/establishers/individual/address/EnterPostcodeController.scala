@@ -30,7 +30,6 @@ import play.api.mvc.{Action, AnyContent}
 import services.common.address.{CommonPostcodeService, CommonPostcodeTemplateData}
 import viewmodels.Message
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.Inject
@@ -43,7 +42,7 @@ class EnterPostcodeController @Inject()(
    requireData: DataRequiredAction,
    formProvider: PostcodeFormProvider,
    common: CommonPostcodeService
-)(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
+)(implicit val ec: ExecutionContext) extends I18nSupport with Retrievals {
 
   private def form: Form[String] = formProvider("enterPostcode.required", "enterPostcode.invalid")
 
@@ -59,7 +58,7 @@ class EnterPostcodeController @Inject()(
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
       retrieve(SchemeNameId) { schemeName =>
-        common.post(getFormToTemplate(schemeName, index, mode), EnterPostCodeId(index), "enterPostcode.noresults",Some(mode), form)
+        common.post(getFormToTemplate(schemeName, index, mode), EnterPostCodeId(index), "enterPostcode.noresults", Some(mode), form)
       }
   }
 
@@ -67,14 +66,18 @@ class EnterPostcodeController @Inject()(
                        )(implicit request:DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
     val name: String = request.userAnswers.get(EstablisherNameId(index))
       .map(_.fullName).getOrElse(Message("establisherEntityTypeIndividual"))
+    val submitUrl = routes.EnterPostcodeController.onSubmit(index, mode)
+    val enterManuallyUrl = routes.ConfirmAddressController.onPageLoad(index, mode).url
 
-    form => {
+      form => {
       CommonPostcodeTemplateData(
         form,
         Message("establisherEntityTypeIndividual"),
         name,
-        controllers.establishers.individual.address.routes.ConfirmAddressController.onPageLoad(index,mode).url,
-        schemeName
+        submitUrl,
+        enterManuallyUrl,
+        schemeName,
+        "postcode.title"
       )
     }
   }

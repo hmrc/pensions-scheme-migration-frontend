@@ -30,7 +30,6 @@ import services.common.address.{CommonAddressListTemplateData, CommonAddressList
 import viewmodels.Message
 import controllers.Retrievals
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.Inject
@@ -43,14 +42,20 @@ class SelectAddressController @Inject()(
   requireData: DataRequiredAction,
   formProvider: AddressListFormProvider,
   common:CommonAddressListService
-)(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals{
+)(implicit val ec: ExecutionContext) extends I18nSupport with Retrievals{
 
   private def form: Form[Int] = formProvider("selectAddress.required")
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        getFormToTemplate(schemeName, index, NormalMode).retrieve.map(formToTemplate => common.get(formToTemplate(form)))
+        getFormToTemplate(schemeName, index, NormalMode).retrieve.map(formToTemplate =>
+          common.get(
+            formToTemplate(form),
+            form,
+            submitUrl = routes.SelectAddressController.onSubmit(index, mode)
+          )
+        )
       }
     }
 
@@ -64,9 +69,10 @@ class SelectAddressController @Inject()(
           common.post(
             _,
             addressPages,
-            manualUrlCall=controllers.establishers.company.address.routes.ConfirmAddressController.onPageLoad(index,mode),
-            mode=Some(mode),
-            form = form
+            manualUrlCall = routes.ConfirmAddressController.onPageLoad(index,mode),
+            mode = Some(mode),
+            form = form,
+            submitUrl = routes.SelectAddressController.onSubmit(index, mode)
           ))
       }
     }
@@ -81,11 +87,12 @@ class SelectAddressController @Inject()(
           form =>
             CommonAddressListTemplateData(
               form,
-              common.transformAddressesForTemplate(addresses),
+              addresses,
               Message("establisherEntityTypeCompany"),
               name,
               controllers.establishers.company.address.routes.ConfirmAddressController.onPageLoad(index,mode).url,
-              schemeName
+              schemeName,
+              h1MessageKey = "addressList.title"
             )
         }
     )

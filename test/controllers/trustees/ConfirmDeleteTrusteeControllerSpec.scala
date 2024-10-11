@@ -30,14 +30,17 @@ import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{Enumerable, UserAnswers}
+import utils.{Enumerable, TwirlMigration, UserAnswers}
+import views.html.DeleteView
 
 import scala.concurrent.Future
-class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
+  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+
+  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
+
   private val trusteeName: String = "Jane Doe"
   private val index: Index = Index(0)
   private val kind: TrusteeKind = TrusteeKind.Individual
@@ -49,12 +52,7 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with Nunjuck
   private val userAnswers1: Option[UserAnswers] = ua.set(TrusteeNameId(0), PersonName("Jane", "Doe"))
     .flatMap(_.set(TrusteeKindId(0, kind), kind)).toOption
 
-  private val templateToBeRendered = "delete.njk"
   private val form: Form[Boolean] = new ConfirmDeleteTrusteeFormProvider()(trusteeName)
-
-  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
   private def httpPathGET: String = controllers.trustees.routes.ConfirmDeleteTrusteeController.onPageLoad(index, kind).url
   private def httpPathPOST: String = controllers.trustees.routes.ConfirmDeleteTrusteeController.onSubmit(index, kind).url
@@ -67,46 +65,34 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with Nunjuck
     "value" -> Seq.empty
   )
 
-  private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>
-  Json.obj(
-    "form" -> form,
-    "titleMessage" -> messages("messages__confirmDeleteTrustee__title"),
-    "name" -> trusteeName,
-    "radios" -> Radios.yesNo(form("value")),
-    "submitUrl" -> routes.ConfirmDeleteTrusteeController.onSubmit(index, kind).url,
-    "schemeName" -> schemeName
-  )
-
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
-
 
   "ConfirmDeleteTrusteeController" must {
 
     "return OK and the correct view for a GET" in {
-
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val request = httpGETRequest(httpPathGET)
+      val result = route(app, request).value
 
       status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form))
+      val deleteView = app.injector.instanceOf[DeleteView].apply(
+        form,
+        messages("messages__confirmDeleteTrustee__title"),
+        trusteeName,
+        None,
+        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        schemeName,
+        routes.ConfirmDeleteTrusteeController.onSubmit(index, kind)
+      )(request, messages)
+      compareResultAndView(result, deleteView)
     }
 
     "redirect to Session Expired page for a GET when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val result = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -125,7 +111,7 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with Nunjuck
 
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -157,7 +143,7 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with Nunjuck
 
       val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -180,9 +166,12 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with Nunjuck
     "return a BAD REQUEST when invalid data is submitted" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
 
       status(result) mustEqual BAD_REQUEST
+
+      contentAsString(result) must include(messages("messages__confirmDeleteTrustee__title"))
+      contentAsString(result) must include(messages("error.summary.title"))
 
       verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
     }
@@ -190,7 +179,7 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with Nunjuck
     "redirect back to list of schemes for a POST when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 

@@ -48,7 +48,7 @@ class EstablishersPartnershipNavigatorSpec
 
   private val seqAddresses = Seq(
     TolerantAddress(Some("1"),Some("1"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")),
-    TolerantAddress(Some("2"),Some("2"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")),
+    TolerantAddress(Some("2"),Some("2"),Some("c"),Some("d"), Some("zz11zz"), Some("GB"))
   )
 
   val address: Address = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
@@ -116,7 +116,7 @@ class EstablishersPartnershipNavigatorSpec
 
         row(EnterPreviousPostCodeId(index))(selectPreviousAddress(NormalMode), uaWithValue(EnterPreviousPostCodeId(index), seqAddresses)),
         row(PreviousAddressListId(index))(cyaAddress, uaWithValue(PreviousAddressListId(index), Data.tolerantAddress)),
-        row(PreviousAddressId(index))(cyaAddress, uaWithValue(PreviousAddressId(index), address)),
+        row(PreviousAddressId(index))(cyaAddress, uaWithValue(PreviousAddressId(index), address))
 
       )
 

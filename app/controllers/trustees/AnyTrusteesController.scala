@@ -25,13 +25,11 @@ import identifiers.trustees.AnyTrusteesId
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.Radios
-import utils.{Enumerable, UserAnswers}
+import utils.{Enumerable, TwirlMigration, UserAnswers}
 import viewmodels.Message
 
 import javax.inject.Inject
@@ -46,7 +44,7 @@ class AnyTrusteesController @Inject()(navigator: CompoundNavigator,
                                       formProvider: YesNoFormProvider,
                                       userAnswersCacheConnector: UserAnswersCacheConnector,
                                       val controllerComponents: MessagesControllerComponents,
-                                      renderer: Renderer
+                                      view: views.html.trustees.AnyTrusteesView
                                      )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
 
@@ -58,13 +56,13 @@ class AnyTrusteesController @Inject()(navigator: CompoundNavigator,
         val formWithData = request.userAnswers.get(AnyTrusteesId).fold(form)(form.fill)
         SchemeNameId.retrieve.map {
           schemeName =>
-            val json: JsObject = Json.obj(
-              "form" -> formWithData,
-              "entityType" -> Message("messages__the_scheme"),
-              "radios" -> Radios.yesNo(formWithData("value")),
-              "schemeName" -> schemeName
-            )
-            renderer.render("trustees/anyTrustees.njk", json).map(Ok(_))
+            Future.successful(Ok(view(
+              formWithData,
+              controllers.trustees.routes.AnyTrusteesController.onSubmit,
+              Message("messages__the_scheme"),
+              schemeName,
+              TwirlMigration.toTwirlRadios(Radios.yesNo(formWithData("value")))
+            )))
         }
       }
     }
@@ -76,13 +74,13 @@ class AnyTrusteesController @Inject()(navigator: CompoundNavigator,
           (formWithErrors: Form[_]) => {
             SchemeNameId.retrieve.map {
               schemeName =>
-                val json: JsObject = Json.obj(
-                  "form" -> formWithErrors,
-                  "entityType" -> Message("messages__the_scheme"),
-                  "radios" -> Radios.yesNo(formWithErrors("value")),
-                  "schemeName" -> schemeName
-                )
-                renderer.render("trustees/anyTrustees.njk", json).map(BadRequest(_))
+                Future.successful(BadRequest(view(
+                  formWithErrors,
+                  controllers.trustees.routes.AnyTrusteesController.onSubmit,
+                  Message("messages__the_scheme"),
+                  schemeName,
+                  TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value")))
+                )))
             }
           },
           value => {

@@ -60,7 +60,8 @@ class DirectorHasNINOController @Inject()(val messagesApi: MessagesApi,
               id = DirectorHasNINOId(establisherIndex, directorIndex),
               form = form(establisherIndex, directorIndex),
               schemeName = schemeName,
-              legendClass = "govuk-label--xl"
+              legendClass = "govuk-label--xl",
+              submitCall = routes.DirectorHasNINOController.onSubmit(establisherIndex, directorIndex, mode)
             )
         }
     }
@@ -94,6 +95,7 @@ class DirectorHasNINOController @Inject()(val messagesApi: MessagesApi,
               paragraphText = Seq(),
               legendClass = "govuk-label--xl",
               mode = mode,
+              submitCall = routes.DirectorHasNINOController.onSubmit(establisherIndex, directorIndex, mode),
               optSetUserAnswers = Some(value => setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
             )
         }

@@ -16,6 +16,7 @@
 
 package services.common.address
 
+import controllers.ControllerSpecBase
 import identifiers.TypedIdentifier
 import identifiers.establishers.individual.address.AddressYearsId
 import models.NormalMode
@@ -30,60 +31,61 @@ import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import renderer.Renderer
 import services.CommonServiceSpecBase
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{Data, FakeNavigator, UserAnswers}
+import views.html.address.AddressYearsView
 
 import scala.concurrent.Future
 
-class CommonAddressYearsServiceSpec extends CommonServiceSpecBase with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
+class CommonAddressYearsServiceSpec extends ControllerSpecBase with CommonServiceSpecBase
+  with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
 
   private val navigator = new FakeNavigator(desiredRoute = onwardCall)
-  val renderer = new Renderer(mockAppConfig, mockRenderer)
   private val form = Form("value" -> boolean)
-  private val service = new CommonAddressYearsService(controllerComponents, renderer, mockUserAnswersCacheConnector, navigator, messagesApi)
+  private val service = new CommonAddressYearsService(
+    mockUserAnswersCacheConnector,
+    navigator,
+    messagesApi,
+    addressYearsView = app.injector.instanceOf[AddressYearsView]
+  )
 
   private val userAnswersId = "test-user-answers-id"
   implicit val hc: HeaderCarrier = HeaderCarrier()
-  implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), Data.migrationLock)
+  implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest(),
+    UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), Data.migrationLock)
   private val addressYearsId: TypedIdentifier[Boolean] = AddressYearsId(0)
 
   override def beforeEach(): Unit = {
-    reset(mockRenderer, mockUserAnswersCacheConnector)
+    reset(mockUserAnswersCacheConnector)
   }
 
   "CommonAddressYearsService" must {
 
     "render the view correctly on get" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
-      val result = service.get(Some("schemeName"), "entityName", "entityType", form, addressYearsId)(request, global)
-
+      val result = service.get(Some("schemeName"), "entityName", "entityType", form, addressYearsId, submitUrl = onwardCall)(request, global)
       status(result) mustBe OK
-      verify(mockRenderer, times(1)).render(any(), any())(any())
     }
 
     "return a BadRequest and errors when invalid data is submitted on post" in {
-      val invalidRequest: DataRequest[AnyContent] = DataRequest(FakeRequest().withFormUrlEncodedBody("value" -> "invalid"), UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), Data.migrationLock)
+      val invalidRequest: DataRequest[AnyContent] = DataRequest(FakeRequest()
+        .withFormUrlEncodedBody("value" -> "invalid"), UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), Data.migrationLock)
 
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
-      val result = service.post(Some("schemeName"), "entityName", "entityType", form, addressYearsId, Some(NormalMode))(invalidRequest, global)
+      val result = service.post(Some("schemeName"), "entityName", "entityType", form, addressYearsId, Some(NormalMode),
+        submitUrl = onwardCall)(invalidRequest, global)
 
       status(result) mustBe BAD_REQUEST
-      verify(mockRenderer, times(1)).render(any(), any())(any())
     }
 
     "save the data and redirect correctly on post" in {
-      val validRequest: DataRequest[AnyContent] = DataRequest(FakeRequest().withFormUrlEncodedBody("value" -> "true"), UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), Data.migrationLock)
+      val validRequest: DataRequest[AnyContent] = DataRequest(FakeRequest()
+        .withFormUrlEncodedBody("value" -> "true"), UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), Data.migrationLock)
 
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val result = service.post(Some("schemeName"), "entityName", "entityType", form, addressYearsId, Some(NormalMode))(validRequest, global)
+      val result = service.post(Some("schemeName"), "entityName", "entityType", form, addressYearsId, Some(NormalMode),
+        submitUrl = onwardCall)(validRequest, global)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardCall.url)

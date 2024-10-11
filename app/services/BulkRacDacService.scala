@@ -22,82 +22,75 @@ import models.Items
 import models.requests.BulkDataRequest
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Result}
-import renderer.Renderer
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Table, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, TableRow}
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.viewmodels.Table.Cell
-import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, Radios, Table}
+import uk.gov.hmrc.viewmodels.{MessageInterpolators, Radios}
+import utils.TwirlMigration
+import views.html.racdac.RacDacsBulkListView
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import scala.concurrent.{ExecutionContext, Future}
 
 class BulkRacDacService @Inject()(appConfig: AppConfig,
                                   paginationService: PaginationService,
-                                  renderer: Renderer) extends NunjucksSupport {
+                                  view: RacDacsBulkListView) extends NunjucksSupport {
 
   private def pagination: Int = appConfig.listSchemePagination
 
-  def mapToTable(schemeDetails: List[Items]): Table = {
+  def mapToTable(schemeDetails: List[Items])(implicit messages: Messages): Table = {
     val head = Seq(
-      Cell(msg"messages__listSchemes__column_racDacName"),
-      Cell(msg"messages__listSchemes__column_pstr"),
-      Cell(msg"messages__listSchemes__column_regDate")
+      HeadCell(Text(msg"messages__listSchemes__column_racDacName".resolve)),
+      HeadCell(Text(msg"messages__listSchemes__column_pstr".resolve)),
+      HeadCell(Text(msg"messages__listSchemes__column_regDate".resolve))
     )
 
     val formatter: String => String = date => LocalDate.parse(date).format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
 
     val rows = schemeDetails.map { data =>
-      Seq(Cell(Literal(data.schemeName), Seq("govuk-!-width-one-half")),
-        Cell(Literal(data.pstr), Seq("govuk-!-width-one-quarter")),
-        Cell(Literal(formatter(data.schemeOpenDate)), Seq("govuk-!-width-one-quarter")))
+      Seq(TableRow(Text(data.schemeName), classes = "govuk-!-width-one-half"),
+        TableRow(Text(data.pstr), classes = "govuk-!-width-one-quarter"),
+        TableRow(Text(formatter(data.schemeOpenDate)), classes = "govuk-!-width-one-quarter"))
     }
-
-    Table(head, rows, attributes = Map("role" -> "table"))
+    Table(rows, Some(head), attributes = Map("role" -> "table"))
   }
 
   def renderRacDacBulkView(
                             form: Form[Boolean],
                             pageNumber: Int
                           )(implicit request: BulkDataRequest[AnyContent],
-                            messages: Messages,
-                            ec: ExecutionContext): Future[Result] = {
+                            messages: Messages): Result = {
 
     val numberOfSchemes: Int = request.lisOfSchemes.length
     val numberOfPages: Int = paginationService.divide(numberOfSchemes, pagination)
     val schemeDetails = paginationService.selectPageOfResults(request.lisOfSchemes, pageNumber, numberOfPages)
 
     request.md match {
-      case md if md.deceasedFlag => Future.successful(Redirect(appConfig.deceasedContactHmrcUrl))
-      case md if md.rlsFlag => Future.successful(Redirect(appConfig.psaUpdateContactDetailsUrl))
+      case md if md.deceasedFlag => Redirect(appConfig.deceasedContactHmrcUrl)
+      case md if md.rlsFlag => Redirect(appConfig.psaUpdateContactDetailsUrl)
       case md =>
-
-        val json: JsObject = Json.obj(
-          "form" -> form,
-          "psaName" -> md.name,
-          "numberOfSchemes" -> numberOfSchemes,
-          "pagination" -> pagination,
-          "pageNumber" -> pageNumber,
-          "pageNumberLinks" -> paginationService.pageNumberLinks(
+        val viewHtml = view(
+          form,
+          controllers.racdac.bulk.routes.BulkListController.onSubmit,
+          mapToTable(schemeDetails),
+          numberOfSchemes,
+          pagination,
+          paginationService.paginationText(pageNumber, pagination, numberOfSchemes, numberOfPages),
+          pageNumber,
+          numberOfPages,
+          paginationService.pageNumberLinks(
             pageNumber,
             numberOfSchemes,
             pagination,
             numberOfPages
           ),
-          "numberOfPages" -> numberOfPages,
-          "returnUrl" -> appConfig.psaOverviewUrl,
-          "paginationText" -> paginationService.paginationText(pageNumber, pagination, numberOfSchemes, numberOfPages),
-          "schemes" -> mapToTable(schemeDetails),
-          "radios" -> Radios.yesNo(form("value"))
+          md.name,
+          appConfig.psaOverviewUrl,
+          TwirlMigration.toTwirlRadios(Radios.yesNo(form("value")))
         )
-        renderer.render("racdac/racDacsBulkList.njk", json)
-          .map(body => if (form.hasErrors) BadRequest(body) else Ok(body))
+        if(form.hasErrors) BadRequest(viewHtml) else Ok(viewHtml)
     }
-  } recoverWith {
-    case e: IllegalArgumentException =>
-      Future.successful(Redirect(controllers.routes.NotFoundController.onPageLoad))
   }
 }

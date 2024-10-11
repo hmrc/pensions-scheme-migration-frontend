@@ -25,43 +25,37 @@ import models.Mode
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.adviser.AdviserNameView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AdviserNameController @Inject()(
-                                          override val messagesApi: MessagesApi,
-                                          val navigator: CompoundNavigator,
-                                          authenticate: AuthAction,
-                                          getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction,
-                                          formProvider: AdviserNameFormProvider,
-                                          val controllerComponents: MessagesControllerComponents,
-                                          userAnswersCacheConnector: UserAnswersCacheConnector,
-                                          renderer: Renderer
-                                        )(implicit val executionContext: ExecutionContext)
-  extends FrontendBaseController
-    with I18nSupport
-    with Retrievals
-    with NunjucksSupport {
+  override val messagesApi: MessagesApi,
+  val navigator: CompoundNavigator,
+  authenticate: AuthAction,
+  getData: DataRetrievalAction,
+  requireData: DataRequiredAction,
+  formProvider: AdviserNameFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  userAnswersCacheConnector: UserAnswersCacheConnector,
+  adviserNameView: AdviserNameView
+)(implicit val executionContext: ExecutionContext)
+  extends FrontendBaseController with I18nSupport with Retrievals {
 
   private val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData()).async {
+    (authenticate andThen getData andThen requireData()) {
       implicit request =>
-        renderer.render(
-          template = "adviser/adviserName.njk",
-          ctx = Json.obj(
-            "form" -> request.userAnswers.get(AdviserNameId).fold(form)(form.fill),
-            "schemeName" -> existingSchemeName
-          )
-        ).flatMap(view => Future.successful(Ok(view)))
+        Ok(adviserNameView(
+          request.userAnswers.get(AdviserNameId).fold(form)(form.fill),
+            existingSchemeName,
+            routes.AdviserNameController.onSubmit(mode),
+            Some("messages__adviserName__hint")
+          ))
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
@@ -69,19 +63,20 @@ class AdviserNameController @Inject()(
       implicit request =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            renderer.render(
-              template = "adviser/adviserName.njk",
-              ctx = Json.obj(
-                "form" -> formWithErrors,
-                "schemeName" -> existingSchemeName
-              )
-            ).map(BadRequest(_)),
+            Future.successful(BadRequest(
+              adviserNameView(
+                formWithErrors,
+                existingSchemeName,
+                routes.AdviserNameController.onSubmit(mode),
+                Some("messages__adviserName__hint")
+              ))
+            ),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(AdviserNameId, value))
               _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
             } yield
-              Redirect(navigator.nextPage(AdviserNameId, updatedAnswers,mode))
+              Redirect(navigator.nextPage(AdviserNameId, updatedAnswers, mode))
         )
     }
 }

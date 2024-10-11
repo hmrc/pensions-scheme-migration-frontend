@@ -19,9 +19,7 @@ package controllers.trustees
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
@@ -34,7 +32,7 @@ class NoTrusteesController @Inject()(
                                       getData: DataRetrievalAction,
                                       requireData: DataRequiredAction,
                                       val controllerComponents: MessagesControllerComponents,
-                                      renderer: Renderer
+                                      view: views.html.trustees.NoTrusteesView
                                     )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with Retrievals
@@ -42,15 +40,12 @@ class NoTrusteesController @Inject()(
     with NunjucksSupport {
 
   def onPageLoad: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData()).async {
+    (authenticate andThen getData andThen requireData()) {
       implicit request =>
-        val context = Json.obj(
-          "schemeName" -> existingSchemeName
-        )
-        renderer.render(
-          template = "trustees/NoTrustees.njk",
-          ctx = context
-        ).map(Ok(_))
+        Ok(view(
+          controllers.trustees.routes.NoTrusteesController.onSubmit,
+          existingSchemeName.getOrElse(throw new RuntimeException("Scheme name not available"))
+        ))
     }
 
   def onSubmit: Action[AnyContent] =

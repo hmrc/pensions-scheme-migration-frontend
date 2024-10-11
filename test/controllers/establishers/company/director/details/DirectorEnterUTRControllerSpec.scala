@@ -35,8 +35,9 @@ import play.twirl.api.Html
 import renderer.Renderer
 import services.common.details.CommonEnterReferenceValueService
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.Data.ua
+import utils.Data.{schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
+import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
 
 import scala.concurrent.Future
 
@@ -55,26 +56,12 @@ class DirectorEnterUTRControllerSpec
     formProvider()
   private val userAnswers: UserAnswers =
     ua.set(DirectorNameId(0,0), personName).success.value
-  private val templateToBeRendered: String =
-    "enterReferenceValueWithHint.njk"
-  private val commonJson: JsObject =
-    Json.obj(
-      "pageTitle"     -> "What is the director’s UTR?",
-      "pageHeading"     -> "What is Jane Doe’s UTR?",
-      "schemeName"    -> "Test scheme name",
-      "legendClass"   -> "govuk-visually-hidden",
-      "paragraphs"    -> Json.arr(
-        "This is a 10-digit or 13-digit number. It may also start or end with the letter ‘k’.",
-        "You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’."
-      ),
-      "isPageHeading" -> true
-    )
+
   private val formData: ReferenceValue =
     ReferenceValue(value = "1234567890")
 
   override def beforeEach(): Unit = {
     reset(
-      mockRenderer,
       mockUserAnswersCacheConnector
     )
   }
@@ -91,22 +78,16 @@ class DirectorEnterUTRControllerSpec
       dataUpdateService         = mockDataUpdateService,
       common = new CommonEnterReferenceValueService(
         controllerComponents = controllerComponents,
-        renderer = new Renderer(mockAppConfig, mockRenderer),
         userAnswersCacheConnector = mockUserAnswersCacheConnector,
         navigator = new FakeNavigator(desiredRoute = onwardCall),
+        enterReferenceValueView = app.injector.instanceOf[EnterReferenceValueView],
+        enterReferenceValueWithHintView = app.injector.instanceOf[EnterReferenceValueWithHintView],
         messagesApi = messagesApi
       )
     )
 
   "DirectorEnterUTRController" must {
     "return OK and the correct view for a GET" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
       val result: Future[Result] =
@@ -115,29 +96,24 @@ class DirectorEnterUTRControllerSpec
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = app.injector.instanceOf[EnterReferenceValueWithHintView].apply(
+        form = formProvider(),
+        pageTitle = messages("messages__enterUTR", messages("messages__director")),
+        pageHeading = messages("messages__enterUTR", personName.fullName),
+        schemeName = schemeName,
+        legendClass = "govuk-visually-hidden",
+        paragraphs = Seq(messages("messages__UTR__p1"), messages("messages__UTR__p2")),
+        submitCall= routes.DirectorEnterUTRController.onSubmit(0, 0, NormalMode)
+      )(fakeRequest, messages)
 
-      templateCaptor.getValue mustEqual templateToBeRendered
+      compareResultAndView(result, view)
 
-      val json: JsObject =
-        Json.obj("form" -> form)
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val ua =
         userAnswers
           .set(DirectorEnterUTRId(0,0), formData).success.value
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
       val getData = new FakeDataRetrievalAction(Some(ua))
 
       val result: Future[Result] =
@@ -146,15 +122,9 @@ class DirectorEnterUTRControllerSpec
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      contentAsString(result) must include(messages("messages__enterUTR", "the director"))
+      contentAsString(result) must include(formData.value)
 
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("form" -> form.fill(formData))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -180,36 +150,17 @@ class DirectorEnterUTRControllerSpec
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
         fakeRequest
           .withFormUrlEncodedBody("value" -> "invalid value")
-
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
       val result: Future[Result] =
         controller(getData)
           .onSubmit(0,0, NormalMode)(request)
 
-      val boundForm = form.bind(Map("value" -> "invalid value"))
-
-      status(result) mustBe BAD_REQUEST
-
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("form" -> Json.toJson(boundForm))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      contentAsString(result) must include(messages("messages__enterUTR", "the director"))
+      contentAsString(result) must include(messages("messages__utr__error_invalid", personName.fullName))
 
       verify(mockUserAnswersCacheConnector, times(0))
         .save(any(), any())(any(), any())

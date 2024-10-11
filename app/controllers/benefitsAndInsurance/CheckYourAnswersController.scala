@@ -21,11 +21,10 @@ import controllers.actions._
 import helpers.cya.{BenefitsAndInsuranceCYAHelper, CYAHelper}
 import identifiers.beforeYouStart.SchemeNameId
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils._
+import views.html.CheckYourAnswersView
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -37,7 +36,7 @@ class CheckYourAnswersController @Inject()(
                                             requireData: DataRequiredAction,
                                             cyaHelper: BenefitsAndInsuranceCYAHelper,
                                             val controllerComponents: MessagesControllerComponents,
-                                            renderer: Renderer
+                                            checkYourAnswersView: CheckYourAnswersView
                                           )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with Enumerable.Implicits
@@ -45,14 +44,12 @@ class CheckYourAnswersController @Inject()(
     with Retrievals {
 
   def onPageLoad: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData()).async {
+    (authenticate andThen getData andThen requireData()) {
       implicit request =>
-        val json = Json.obj(
-          "list" -> cyaHelper.rows,
-          "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
-          "submitUrl" -> controllers.routes.TaskListController.onPageLoad.url
-        )
-
-        renderer.render("check-your-answers.njk", json).map(Ok(_))
+        Ok(checkYourAnswersView(
+          controllers.routes.TaskListController.onPageLoad.url,
+          CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+          TwirlMigration.summaryListRow(cyaHelper.rows)
+        ))
     }
 }

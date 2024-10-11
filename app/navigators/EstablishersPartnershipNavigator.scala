@@ -35,8 +35,6 @@ class EstablishersPartnershipNavigator@Inject()()
   extends Navigator
     with Enumerable.Implicits {
 
-
-
   //scalastyle:off cyclomatic.complexity
   override protected def routeMap(ua: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {

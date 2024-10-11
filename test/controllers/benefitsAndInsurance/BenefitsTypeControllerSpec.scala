@@ -24,18 +24,19 @@ import identifiers.benefitsAndInsurance.BenefitsTypeId
 import matchers.JsonMatchers
 import models.Scheme
 import models.benefitsAndInsurance.BenefitsType
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
-import play.api.libs.json.Reads._
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.Result
+import play.api.mvc.{Call, Result}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
-import utils.{Data, Enumerable, UserAnswers}
+import utils.{Data, Enumerable, TwirlMigration, UserAnswers}
+import views.html.benefitsAndInsurance.BenefitsTypeView
 
 import scala.concurrent.Future
 
@@ -47,13 +48,6 @@ class BenefitsTypeControllerSpec extends ControllerSpecBase with NunjucksSupport
   private val httpPathGET: String = controllers.benefitsAndInsurance.routes.BenefitsTypeController.onPageLoad.url
   private val httpPathPOST: String = controllers.benefitsAndInsurance.routes.BenefitsTypeController.onSubmit.url
   private val form: Form[BenefitsType] = new BenefitsTypeFormProvider()()
-
-  private val jsonToPassToTemplate: Form[BenefitsType] => JsObject = form =>
-    Json.obj(
-      "form" -> form,
-      "schemeName" -> schemeName,
-      "radios" -> BenefitsType.radios(form)
-    )
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq("cashBalanceBenefits")
@@ -67,6 +61,8 @@ class BenefitsTypeControllerSpec extends ControllerSpecBase with NunjucksSupport
     super.beforeEach()
     when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
+  val request = FakeRequest(GET, httpPathGET)
+  override val onwardCall: Call = Call("POST", httpPathPOST)
 
   "BenefitsType Controller" must {
 
@@ -78,12 +74,14 @@ class BenefitsTypeControllerSpec extends ControllerSpecBase with NunjucksSupport
 
       status(result) mustEqual OK
 
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+      val view = application.injector.instanceOf[BenefitsTypeView].apply(
+        form,
+        schemeName,
+        TwirlMigration.toTwirlRadios(BenefitsType.radios(form)),
+        onwardCall
+      )(request, messages)
 
-      verify(mockRenderer, times(1))
-        .render(ArgumentMatchers.eq("benefitsAndInsurance/benefitsType.njk"), jsonCaptor.capture())(any())
-
-      (jsonCaptor.getValue \ "schemeName").toOption.map(_.as[String]) mustBe Some(Data.schemeName)
+      compareResultAndView(result, view)
     }
 
     "return OK and the correct view for a GET when the question has previously been answered" in {
@@ -93,16 +91,20 @@ class BenefitsTypeControllerSpec extends ControllerSpecBase with NunjucksSupport
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
+      val filledFrom = form.fill(BenefitsType.CashBalanceBenefits)
+
       val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
 
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+      val view = application.injector.instanceOf[BenefitsTypeView].apply(
+        filledFrom,
+        schemeName,
+        TwirlMigration.toTwirlRadios(BenefitsType.radios(filledFrom)),
+        onwardCall
+      )(request, messages)
 
-      verify(mockRenderer, times(1))
-        .render(ArgumentMatchers.eq("benefitsAndInsurance/benefitsType.njk"), jsonCaptor.capture())(any())
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(BenefitsType.CashBalanceBenefits)))
+      compareResultAndView(result, view)
     }
 
     "redirect to Session Expired page for a GET when there is no data" in {
@@ -110,11 +112,11 @@ class BenefitsTypeControllerSpec extends ControllerSpecBase with NunjucksSupport
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val result: Future[Result] = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.routes.SessionExpiredController.onPageLoad().absoluteURL()(request)
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {

@@ -22,25 +22,22 @@ import forms.address.AddressFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.{BenefitsInsuranceNameId, InsurerAddressId, InsurerAddressListId}
 import models.{Address, AddressConfiguration}
-import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.address.CommonManualAddressService
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class InsurerConfirmAddressController @Inject()(
   val messagesApi: MessagesApi,
-  navigator: CompoundNavigator,
   authenticate: AuthAction,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
   formProvider: AddressFormProvider,
   common: CommonManualAddressService
-)(implicit ec: ExecutionContext) extends Retrievals with I18nSupport with NunjucksSupport {
+)(implicit ec: ExecutionContext) extends Retrievals with I18nSupport {
 
   private val pageTitleEntityTypeMessageKey: Option[String] = Some("benefitsInsuranceUnknown")
   private def form: Form[Address] = formProvider()
@@ -54,7 +51,8 @@ class InsurerConfirmAddressController @Inject()(
           InsurerAddressId,InsurerAddressListId,
           AddressConfiguration.PostcodeFirst,
           form,
-          pageTitleEntityTypeMessageKey
+          pageTitleEntityTypeMessageKey,
+          submitUrl = controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onSubmit
         )
       }
     }
@@ -68,7 +66,8 @@ class InsurerConfirmAddressController @Inject()(
           InsurerAddressId,
           AddressConfiguration.PostcodeFirst,
           form = form,
-          pageTitleEntityTypeMessageKey = pageTitleEntityTypeMessageKey
+          pageTitleEntityTypeMessageKey = pageTitleEntityTypeMessageKey,
+          submitUrl = controllers.benefitsAndInsurance.routes.InsurerConfirmAddressController.onSubmit
         )
       }
     }

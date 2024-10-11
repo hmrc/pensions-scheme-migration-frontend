@@ -20,9 +20,7 @@ import config.AppConfig
 import connectors.cache.BulkMigrationEventsLogConnector
 import controllers.actions._
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
@@ -32,8 +30,8 @@ class ProcessingRequestController @Inject()(val appConfig: AppConfig,
                                              override val messagesApi: MessagesApi,
                                             authenticate: AuthAction,
                                             val controllerComponents: MessagesControllerComponents,
-                                            renderer: Renderer,
-                                            bulkMigrationEventsLogConnector: BulkMigrationEventsLogConnector
+                                            bulkMigrationEventsLogConnector: BulkMigrationEventsLogConnector,
+                                            processingRequestView: views.html.racdac.ProcessingRequestView
                                            )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
@@ -41,15 +39,14 @@ class ProcessingRequestController @Inject()(val appConfig: AppConfig,
   def onPageLoad: Action[AnyContent] =
     authenticate.async {
       implicit request =>
-        bulkMigrationEventsLogConnector.getStatus.flatMap { status =>
+        bulkMigrationEventsLogConnector.getStatus.map { status =>
           val (header, content, redirect) = headerContentAndRedirect(status)
-          val json = Json.obj(
-            "pageTitle" -> header,
-            "heading" -> header,
-            "content" -> content,
-            "continueUrl" -> redirect
-          )
-          renderer.render("racdac/processingRequest.njk", json).map(Ok(_))
+          Ok(processingRequestView(
+            header,
+            header,
+            content,
+            redirect
+          ))
         }
     }
 

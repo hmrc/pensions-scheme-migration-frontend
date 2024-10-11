@@ -25,26 +25,23 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{Json, OWrites}
-import play.api.mvc.{AnyContent, Result}
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
+import play.api.mvc.{AnyContent, Call, Result}
 import uk.gov.hmrc.viewmodels.Radios
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.TwirlMigration
+import views.html.address.TradingTimeView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CommonTradingTimeService @Inject()(
-    renderer: Renderer,
     userAnswersCacheConnector: UserAnswersCacheConnector,
     navigator: CompoundNavigator,
-    val messagesApi: MessagesApi
-) extends Retrievals with I18nSupport with NunjucksSupport {
-
-  private def viewTemplate = "address/tradingTime.njk"
+    val messagesApi: MessagesApi,
+    tradingTimeView: TradingTimeView
+) extends Retrievals with I18nSupport {
 
   private case class TemplateData(
                                    schemeName: Option[String],
@@ -54,16 +51,24 @@ class CommonTradingTimeService @Inject()(
                                    radios: Seq[Radios.Item]
                                  )
 
-  implicit private def templateDataWrites(implicit request: DataRequest[AnyContent]): OWrites[TemplateData] = Json.writes[TemplateData]
-
   def get(schemeName: Option[String],
-                    entityName: String,
-                    entityType : String,
-                    form : Form[Boolean],
-                    tradingTimeId : TypedIdentifier[Boolean]
-                   )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
+          entityName: String,
+          entityType : String,
+          form : Form[Boolean],
+          tradingTimeId : TypedIdentifier[Boolean],
+          submitUrl: Call
+         )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     val filledForm = request.userAnswers.get(tradingTimeId).fold(form)(form.fill)
-    renderer.render(viewTemplate, getTemplateData(schemeName, entityName, entityType, filledForm)).map(Ok(_))
+    val templateData = getTemplateData(schemeName, entityName, entityType, filledForm)
+    Future.successful(Ok(
+      tradingTimeView(
+        filledForm,
+        templateData.entityType,
+        templateData.entityName,
+        TwirlMigration.toTwirlRadios(Radios.yesNo(filledForm("value"))),
+        templateData.schemeName,
+        submitUrl = submitUrl
+    )))
   }
 
   def post(schemeName: Option[String],
@@ -71,13 +76,23 @@ class CommonTradingTimeService @Inject()(
            entityType : String,
            form : Form[Boolean],
            tradingTimeId : TypedIdentifier[Boolean],
-           mode: Option[Mode] = None
+           mode: Option[Mode] = None,
+           submitUrl: Call
           )(implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
     form
       .bindFromRequest()
       .fold(
         formWithErrors => {
-          renderer.render(viewTemplate, getTemplateData(schemeName, entityName, entityType, formWithErrors)).map(BadRequest(_))
+          val templateData = getTemplateData(schemeName, entityName, entityType, formWithErrors)
+          Future.successful(BadRequest(
+            tradingTimeView(
+              formWithErrors,
+              templateData.entityType,
+              templateData.entityName,
+              TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value"))),
+              templateData.schemeName,
+              submitUrl = submitUrl
+            )))
         },
         value =>
           for {

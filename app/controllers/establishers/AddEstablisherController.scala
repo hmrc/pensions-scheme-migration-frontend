@@ -20,19 +20,14 @@ import controllers.Retrievals
 import controllers.actions._
 import controllers.establishers.routes.NoEstablishersController
 import forms.establishers.AddEstablisherFormProvider
-import helpers.AddToListHelper
 import identifiers.establishers.AddEstablisherId
-import models.Establisher
-import models.requests.DataRequest
 import navigators.CompoundNavigator
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.Radios
+import utils.TwirlMigration
+import views.html.establishers.AddEstablisherView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,26 +39,29 @@ class AddEstablisherController @Inject()(
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
                                              formProvider: AddEstablisherFormProvider,
-                                             helper: AddToListHelper,
                                              val controllerComponents: MessagesControllerComponents,
-                                             renderer: Renderer
+                                             view: AddEstablisherView
                                            )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with Retrievals
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData()).async {
+    (authenticate andThen getData andThen requireData()) {
       implicit request =>
         val allEstablishers = request.userAnswers.allEstablishersAfterDelete
         if (allEstablishers.isEmpty) {
-          Future.successful(Redirect(NoEstablishersController.onPageLoad))
+          Redirect(NoEstablishersController.onPageLoad)
         } else {
-          renderer.render(
-            template = "establishers/addEstablisher.njk",
-            ctx = getJson(formProvider(allEstablishers), allEstablishers)
-          ).map(Ok(_))
+          val form = formProvider(allEstablishers)
+          Ok(view(
+            form,
+            existingSchemeName.getOrElse("Scheme"),
+            allEstablishers.filterNot(_.isCompleted),
+            allEstablishers.filter(_.isCompleted),
+            TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+            routes.AddEstablisherController.onSubmit
+          ))
         }
     }
 
@@ -73,10 +71,14 @@ class AddEstablisherController @Inject()(
         val allEstablishers = request.userAnswers.allEstablishersAfterDelete
         formProvider(allEstablishers).bindFromRequest().fold(
           formWithErrors =>
-            renderer.render(
-              template = "establishers/addEstablisher.njk",
-              ctx = getJson(formWithErrors, Nil)
-            ).map(BadRequest(_)),
+          Future.successful(BadRequest(view(
+            formWithErrors,
+            existingSchemeName.getOrElse("Scheme"),
+            allEstablishers.filterNot(_.isCompleted),
+            allEstablishers.filter(_.isCompleted),
+            TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value"))),
+            routes.AddEstablisherController.onSubmit
+          ))),
           value =>
             Future.successful(Redirect(
               navigator.nextPage(
@@ -86,18 +88,4 @@ class AddEstablisherController @Inject()(
             ))
         )
     }
-
-  private def getJson(form: Form[_], establishers: Seq[Establisher[_]])(implicit request: DataRequest[AnyContent]): JsObject = {
-    val establishersComplete = establishers.filter(_.isCompleted)
-    val establishersIncomplete = establishers.filterNot(_.isCompleted)
-    val completeList = helper.directorsOrPartnersItemList(establishersComplete)
-    val incompleteList = helper.directorsOrPartnersItemList(establishersIncomplete)
-    Json.obj(
-      "form" -> form,
-      "itemListIncomplete" -> incompleteList,
-      "itemListComplete" -> completeList,
-      "radios" -> Radios.yesNo(form("value")),
-      "schemeName" -> existingSchemeName
-    )
-  }
 }

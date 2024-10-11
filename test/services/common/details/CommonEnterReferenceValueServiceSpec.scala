@@ -16,6 +16,7 @@
 
 package services.common.details
 
+import controllers.ControllerSpecBase
 import forms.UTRFormProvider
 import identifiers.TypedIdentifier
 import models.{NormalMode, ReferenceValue}
@@ -23,53 +24,50 @@ import org.mockito.ArgumentMatchers.any
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import renderer.Renderer
 import services.CommonServiceSpecBase
 import utils.{FakeNavigator, UserAnswers}
+import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
 
 import scala.concurrent.Future
 
-class CommonEnterReferenceValueServiceSpec extends CommonServiceSpecBase {
+class CommonEnterReferenceValueServiceSpec extends ControllerSpecBase with CommonServiceSpecBase {
 
-  // Instantiate service
   val service = new CommonEnterReferenceValueService(
     controllerComponents = controllerComponents,
-    renderer = new Renderer(mockAppConfig, mockRenderer),
     userAnswersCacheConnector = mockUserAnswersCacheConnector,
     navigator = new FakeNavigator(desiredRoute = onwardCall),
+    enterReferenceValueView = app.injector.instanceOf[EnterReferenceValueView],
+    enterReferenceValueWithHintView = app.injector.instanceOf[EnterReferenceValueWithHintView],
     messagesApi = messagesApi
   )
 
-  override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockUserAnswersCacheConnector)
+  }
 
-  // Define the form provider for the reference value form
   private val formProvider: UTRFormProvider = new UTRFormProvider()
   private val id: TypedIdentifier[ReferenceValue] = new TypedIdentifier[ReferenceValue] {}
   private val referenceValueForm: Form[ReferenceValue] = formProvider()
-  val userAnswers: UserAnswers = UserAnswers().setOrException(id, ReferenceValue("1234567890"))
-  val fakeRequestWithFormData = fakeRequest.withFormUrlEncodedBody("value" -> "1234567890")
+  private val userAnswers: UserAnswers = UserAnswers().setOrException(id, ReferenceValue("1234567890"))
+  private val fakeRequestWithFormData = fakeRequest.withFormUrlEncodedBody("value" -> "1234567890")
 
   "get" should {
     "return OK and render the correct template" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
-      val result = service.get(
-        pageTitle = "Test Title",
-        pageHeading = "Test Heading",
-        isPageHeading = true,
-        id = id,
-        form = referenceValueForm,
-        schemeName = "Test Scheme"
-      )(fakeDataRequest(userAnswers, fakeRequestWithFormData), global)
-
-      status(result) mustBe OK
-      verify(mockRenderer).render(any(), any())(any())
-    }
-
-    "populate the form with existing data" in {
       val updatedAnswers = userAnswers.set(id, ReferenceValue("1234567890")).success.value
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+      val req = fakeDataRequest(updatedAnswers, fakeRequestWithFormData)
+      val testForm = req.userAnswers.get[ReferenceValue](id).fold(referenceValueForm)(referenceValueForm.fill)
+      val expectedView = app.injector.instanceOf[EnterReferenceValueView].apply(
+        testForm,
+        "Test Scheme",
+        "Test Title",
+        "Test Heading",
+        None,
+        Seq(),
+        submitCall = onwardCall
+      )(req, implicitly)
+
+
 
       val result = service.get(
         pageTitle = "Test Title",
@@ -77,50 +75,51 @@ class CommonEnterReferenceValueServiceSpec extends CommonServiceSpecBase {
         isPageHeading = true,
         id = id,
         form = referenceValueForm,
-        schemeName = "Test Scheme"
-      )(fakeDataRequest(updatedAnswers, fakeRequestWithFormData), global)
+        schemeName = "Test Scheme",
+        submitCall = onwardCall
+      )(req)
 
       status(result) mustBe OK
-      verify(mockRenderer).render(any(), any())(any())
+
+      compareResultAndView(result, expectedView)
     }
   }
 
-  "post" should {
-    "return a BadRequest when form has errors" in {
-      val formWithErrors = referenceValueForm.withError("value", "error.required")
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+    "post" should {
+      "return a BadRequest when form has errors" in {
+        val formWithErrors = referenceValueForm.withError("value", "error.required")
 
-      val result = service.post(
-        pageTitle = "Test Title",
-        pageHeading = "Test Heading",
-        isPageHeading = true,
-        id = id,
-        form = formWithErrors,
-        schemeName = "Test Scheme",
-        mode = NormalMode
-      )(fakeDataRequest(userAnswers, fakeRequestWithFormData), global)
+        val result = service.post(
+          pageTitle = "Test Title",
+          pageHeading = "Test Heading",
+          isPageHeading = true,
+          id = id,
+          form = formWithErrors,
+          schemeName = "Test Scheme",
+          mode = NormalMode,
+          submitCall = onwardCall
+        )(fakeDataRequest(userAnswers, fakeRequestWithFormData), global)
 
-      status(result) mustBe BAD_REQUEST
-      verify(mockRenderer).render(any(), any())(any())
+        status(result) mustBe BAD_REQUEST
+      }
+
+      "redirect to the next page on valid data submission" in {
+        when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
+
+        val result = service.post(
+          pageTitle = "Test Title",
+          pageHeading = "Test Heading",
+          isPageHeading = true,
+          id = id,
+          form = referenceValueForm.bind(Map("value" -> "1234567890")),
+          schemeName = "Test Scheme",
+          mode = NormalMode,
+          submitCall = onwardCall
+        )(fakeDataRequest(userAnswers, fakeRequestWithFormData), global)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(onwardCall.url)
+        verify(mockUserAnswersCacheConnector).save(any(), any())(any(), any())
+      }
     }
-
-    "redirect to the next page on valid data submission" in {
-      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
-      val result = service.post(
-        pageTitle = "Test Title",
-        pageHeading = "Test Heading",
-        isPageHeading = true,
-        id = id,
-        form = referenceValueForm.bind(Map("value" -> "1234567890")),
-        schemeName = "Test Scheme",
-        mode = NormalMode
-      )(fakeDataRequest(userAnswers, fakeRequestWithFormData), global)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardCall.url)
-      verify(mockUserAnswersCacheConnector).save(any(), any())(any(), any())
-    }
-  }
 }

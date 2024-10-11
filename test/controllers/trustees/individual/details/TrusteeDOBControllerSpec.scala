@@ -19,22 +19,20 @@ package controllers.trustees.individual.details
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.DOBFormProvider
+import identifiers.establishers.partnership.partner.details.PartnerDOBId
 import identifiers.trustees.individual.TrusteeNameId
-import identifiers.trustees.individual.details.TrusteeDOBId
 import matchers.JsonMatchers
-import models.{NormalMode, PersonName}
-import org.mockito.ArgumentCaptor
+import models.{Index, NormalMode, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import renderer.Renderer
 import services.common.details.CommonDateOfBirthService
-import uk.gov.hmrc.viewmodels.{DateInput, NunjucksSupport}
+import uk.gov.hmrc.viewmodels.DateInput
 import utils.Data.ua
 import utils.{FakeNavigator, UserAnswers}
 
@@ -42,7 +40,6 @@ import java.time.LocalDate
 import scala.concurrent.Future
 class TrusteeDOBControllerSpec
   extends ControllerSpecBase
-    with NunjucksSupport
     with JsonMatchers
     with TryValues
     with BeforeAndAfterEach {
@@ -52,19 +49,11 @@ class TrusteeDOBControllerSpec
   private val form: Form[LocalDate] = formProvider()
 
 
-
   private val personName: PersonName = PersonName("Jane", "Doe")
 
   private val userAnswers: UserAnswers = ua.set(TrusteeNameId(0), personName).success.value
 
-  private val templateToBeRendered: String = "dob.njk"
-
-  private val commonJson: JsObject =
-    Json.obj(
-      "name"       -> "Jane Doe",
-      "schemeName" -> "Test scheme name",
-      "entityType" -> "the individual"
-    )
+  val view = app.injector.instanceOf[views.html.DobView]
 
   private val formData: LocalDate =
     LocalDate.parse("2000-01-01")
@@ -72,6 +61,9 @@ class TrusteeDOBControllerSpec
   private val day: Int = formData.getDayOfMonth
   private val month: Int = formData.getMonthValue
   private val year: Int = formData.getYear
+  val index = Index(0)
+  val mode = NormalMode
+  private def onPageLoadUrl: String = routes.TrusteeDOBController.onPageLoad(index, mode).url
 
   private def controller(
                           dataRetrievalAction: DataRetrievalAction
@@ -85,7 +77,7 @@ class TrusteeDOBControllerSpec
       dataUpdateService         = mockDataUpdateService,
       common = new CommonDateOfBirthService(
         controllerComponents = controllerComponents,
-        renderer = new Renderer(mockAppConfig, mockRenderer),
+        dobView =view,
         userAnswersCacheConnector = mockUserAnswersCacheConnector,
         navigator = new FakeNavigator(desiredRoute = onwardCall),
         messagesApi = messagesApi
@@ -94,50 +86,43 @@ class TrusteeDOBControllerSpec
 
   override def beforeEach(): Unit = {
     reset(
-      mockRenderer,
       mockUserAnswersCacheConnector
     )
   }
 
   "TrusteeDOBController" must {
     "return OK and the correct view for a GET" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, onPageLoadUrl)
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
       val result: Future[Result] =
         controller(getData)
           .onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
+      status(result) mustEqual OK
 
-      status(result) mustBe OK
+      val expectedView = view(
+        form,
+        DateInput.localDate(form("date")),
+        "John Doe",
+        "Test scheme name",
+        "the individual",
+        routes.TrusteeDOBController.onSubmit(index, mode)
+      )(request, messages)
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("date" -> DateInput.localDate(form("date")))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      contentAsString(result)
+        .replaceAll("&amp;referrerUrl=%2F\\[.*?\\]", "&amp;referrerUrl=%2F[]")
+        .removeAllNonces() contains expectedView
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+      val request = FakeRequest(GET, onPageLoadUrl)
 
       val ua =
         userAnswers
-          .set(TrusteeDOBId(0), formData).success.value
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+          .set(PartnerDOBId(0,0), formData).success.value
 
       val getData = new FakeDataRetrievalAction(Some(ua))
 
@@ -147,15 +132,18 @@ class TrusteeDOBControllerSpec
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val expectedView = view(
+        form,
+        DateInput.localDate(form("date")),
+        "John Doe",
+        "Test scheme name",
+        "the individual",
+        routes.TrusteeDOBController.onSubmit(index, mode)
+      )(request, messages)
 
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("date" -> DateInput.localDate(form.fill(formData).apply("date")))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      contentAsString(result)
+        .replaceAll("&amp;referrerUrl=%2F\\[.*?\\]", "&amp;referrerUrl=%2F[]")
+        .removeAllNonces() contains expectedView
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -194,27 +182,12 @@ class TrusteeDOBControllerSpec
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
       val result: Future[Result] =
         controller(getData)
           .onSubmit(0, NormalMode)(request)
 
-      val boundForm = form.bind(Map("date" -> "invalid value"))
-
       status(result) mustBe BAD_REQUEST
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("date" -> DateInput.localDate(boundForm.apply("date")))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
 
       verify(mockUserAnswersCacheConnector, times(0))
         .save(any(), any())(any(), any())

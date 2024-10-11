@@ -26,12 +26,12 @@ import models.{Mode, NormalMode, TolerantAddress}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
-import play.api.i18n.Messages
-import play.api.libs.json.{JsArray, JsObject, Json, OWrites, Writes}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.libs.json.{JsArray, Json}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
-import play.api.mvc.{AnyContent, Result}
-import renderer.Renderer
+import play.api.mvc.{AnyContent, Call, Result}
 import uk.gov.hmrc.http.HeaderCarrier
+import views.html.address.PostcodeView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,43 +40,34 @@ case class CommonPostcodeTemplateData(
                                        form: Form[String],
                                        entityType: String,
                                        entityName: String,
+                                       submitUrl: Call,
                                        enterManuallyUrl: String,
                                        schemeName: String,
-                                       h1MessageKey: String  = "postcode.title"
+                                       h1MessageKey: String
                                      )
-
-object CommonPostcodeTemplateData {
-  implicit val formWrites: Writes[Form[String]] = (form: Form[String]) => Json.obj(
-    "data" -> form.data,
-    "errors" -> form.errors.map(_.message)
-  )
-  implicit val templateDataWrites: OWrites[CommonPostcodeTemplateData] = Json.writes[CommonPostcodeTemplateData]
-}
 
 @Singleton
 class CommonPostcodeService @Inject()(
-     renderer: Renderer,
+     val messagesApi: MessagesApi,
      navigator: CompoundNavigator,
      addressLookupConnector: AddressLookupConnector,
-     userAnswersCacheConnector: UserAnswersCacheConnector
-   ) {
-
-  import CommonPostcodeTemplateData._
-
-  def viewTemplate: String = "address/postcode.njk"
-
-  def prepareJson(jsObject: JsObject):JsObject = {
-    if (jsObject.keys.contains("h1MessageKey")) {
-      jsObject
-    } else {
-      jsObject ++ Json.obj("h1MessageKey" -> "postcode.title")
-    }
-  }
+     userAnswersCacheConnector: UserAnswersCacheConnector,
+     postcodeView: PostcodeView
+   ) extends I18nSupport {
 
   def get(formToTemplate: Form[String] => CommonPostcodeTemplateData,
           form: Form[String]
          )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
-    renderer.render(viewTemplate, formToTemplate(form)).map(Ok(_))
+    val templateData = formToTemplate(form)
+    Future.successful(Ok(postcodeView(
+      form,
+      templateData.entityType,
+      templateData.entityName,
+      templateData.submitUrl,
+      templateData.enterManuallyUrl,
+      Some(templateData.schemeName),
+      templateData.h1MessageKey
+    )))
   }
 
   def post(formToTemplate: Form[String] => CommonPostcodeTemplateData,
@@ -86,14 +77,32 @@ class CommonPostcodeService @Inject()(
            form: Form[String]
           )(implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
     form.bindFromRequest().fold(
-      formWithErrors =>
-        renderer.render(viewTemplate, formToTemplate(formWithErrors)).map(BadRequest(_)),
+      formWithErrors => {
+        val templateData = formToTemplate(formWithErrors)
+        Future.successful(BadRequest(postcodeView(
+          formWithErrors,
+          templateData.entityType,
+          templateData.entityName,
+          templateData.submitUrl,
+          templateData.enterManuallyUrl,
+          Some(templateData.schemeName),
+          templateData.h1MessageKey
+        )))
+      },
       value =>
           addressLookupConnector.addressLookupByPostCode(value).flatMap {
             case Nil =>
-              val json = formToTemplate(formWithError(form, errorMessage))
-              renderer.render(viewTemplate, json).map(BadRequest(_))
-
+              val formWithErrors = formWithError(form, errorMessage)
+              val templateData = formToTemplate(formWithErrors)
+              Future.successful(BadRequest(postcodeView(
+                formWithErrors,
+                templateData.entityType,
+                templateData.entityName,
+                templateData.submitUrl,
+                templateData.enterManuallyUrl,
+                Some(templateData.schemeName),
+                templateData.h1MessageKey
+              )))
             case addresses =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(postcodeId, addresses))

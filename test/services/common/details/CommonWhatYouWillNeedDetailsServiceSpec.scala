@@ -16,6 +16,7 @@
 
 package services.common.details
 
+import controllers.ControllerSpecBase
 import identifiers.beforeYouStart.SchemeNameId
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers.any
@@ -28,7 +29,7 @@ import utils.{Data, UserAnswers}
 
 import scala.concurrent.Future
 
-class CommonWhatYouWillNeedDetailsServiceSpec extends CommonServiceSpecBase {
+class CommonWhatYouWillNeedDetailsServiceSpec extends ControllerSpecBase with CommonServiceSpecBase {
 
   // Instantiate service
   val service = new CommonWhatYouWillNeedDetailsService(

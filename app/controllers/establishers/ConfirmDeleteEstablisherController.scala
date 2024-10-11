@@ -31,13 +31,11 @@ import models.requests.DataRequest
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{MessageInterpolators, Radios}
-import utils.UserAnswers
+import utils.{TwirlMigration, UserAnswers}
+import views.html.DeleteView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -51,9 +49,9 @@ class ConfirmDeleteEstablisherController @Inject()(override val messagesApi: Mes
                                                     formProvider: ConfirmDeleteEstablisherFormProvider,
                                                     val controllerComponents: MessagesControllerComponents,
                                                     userAnswersCacheConnector: UserAnswersCacheConnector,
-                                                    renderer: Renderer
+                                                   deleteView: DeleteView
                                                   )(implicit val executionContext: ExecutionContext) extends
-  FrontendBaseController with I18nSupport with Retrievals with NunjucksSupport {
+  FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad(index: Index, establisherKind: EstablisherKind): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
@@ -63,16 +61,17 @@ class ConfirmDeleteEstablisherController @Inject()(override val messagesApi: Mes
             if (establisher.isDeleted) {
               Future.successful(Redirect(routes.AlreadyDeletedController.onPageLoad(index, establisherKind)))
             } else {
-              val json = Json.obj(
-                "form" -> form(establisher.name),
-                "titleMessage" -> msg"messages__confirmDeleteEstablisher__title".resolve,
-                "name" -> establisher.name,
-                "hint" -> getHintText(establisherKind),
-                "radios" -> Radios.yesNo(formProvider(establisher.name)(implicitly)("value")),
-                "submitUrl" -> routes.ConfirmDeleteEstablisherController.onSubmit(index, establisherKind).url,
-                "schemeName" -> existingSchemeName
-              )
-              renderer.render("delete.njk", json).map(Ok(_))
+              Future.successful(Ok(
+                deleteView(
+                  form(establisher.name),
+                  msg"messages__confirmDeleteEstablisher__title".resolve,
+                  establisher.name,
+                  getHintText(establisherKind),
+                  TwirlMigration.toTwirlRadios(Radios.yesNo(formProvider(establisher.name)(implicitly)("value"))),
+                  existingSchemeName.getOrElse(""),
+                  routes.ConfirmDeleteEstablisherController.onSubmit(index, establisherKind)
+                )
+              ))
             }
         } getOrElse {
           throw new RuntimeException("index page unavailable")
@@ -124,16 +123,17 @@ class ConfirmDeleteEstablisherController @Inject()(override val messagesApi: Mes
   : Future[Result] = {
     form(name).bindFromRequest().fold(
       (formWithErrors: Form[_]) => {
-        val json = Json.obj(
-          "form" -> formWithErrors,
-          "titleMessage" -> msg"messages__confirmDeleteEstablisher__title".resolve,
-          "name" -> name,
-          "hint" -> getHintText(establisherKind),
-          "radios" -> Radios.yesNo(formProvider(name)(implicitly)("value")),
-          "submitUrl" -> routes.ConfirmDeleteEstablisherController.onSubmit(establisherIndex, establisherKind).url,
-          "schemeName" -> existingSchemeName
-        )
-        renderer.render("delete.njk", json).map(BadRequest(_))
+        Future.successful(BadRequest(
+          deleteView(
+            formWithErrors,
+            msg"messages__confirmDeleteEstablisher__title".resolve,
+            name,
+            getHintText(establisherKind),
+            TwirlMigration.toTwirlRadios(Radios.yesNo(formProvider(name)(implicitly)("value"))),
+            existingSchemeName.getOrElse(""),
+            routes.ConfirmDeleteEstablisherController.onSubmit(establisherIndex, establisherKind)
+          )
+        ))
       },
       value => {
         val deletionResult: Try[UserAnswers] = if (value) {

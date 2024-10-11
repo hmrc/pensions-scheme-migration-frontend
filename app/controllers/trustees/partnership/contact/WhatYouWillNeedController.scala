@@ -24,19 +24,20 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.partnership.PartnershipDetailsId
 import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.Results.Ok
 import play.api.mvc.{Action, AnyContent}
-import services.common.contact.CommonWhatYouWillNeedContactService
 import viewmodels.Message
+import views.html.WhatYouWillNeedContactView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class WhatYouWillNeedController @Inject()(
                                            val messagesApi: MessagesApi,
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
-                                           common: CommonWhatYouWillNeedContactService
+                                           view: WhatYouWillNeedContactView
                                          )(implicit val ec: ExecutionContext)
   extends Retrievals
     with I18nSupport {
@@ -46,13 +47,12 @@ class WhatYouWillNeedController @Inject()(
       implicit request =>
         PartnershipDetailsId(index).retrieve.map {
           details =>
-            common.get(
-              name = details.partnershipName,
-              pageHeading = Message("messages__title_partnership"),
-              entityType = Message("messages__partnership"),
-              continueUrl = EnterEmailController.onPageLoad(index, NormalMode).url,
-              schemeName = request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
-            )
+            Future.successful(Ok(view(
+              Message("messages__title_partnership"),
+              EnterEmailController.onPageLoad(index, NormalMode).url,
+              details.partnershipName,
+              request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
+            )))
         }
     }
 

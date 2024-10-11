@@ -33,14 +33,13 @@ import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results.{BadRequest, Redirect}
 import play.api.mvc.{Action, AnyContent}
-import renderer.Renderer
 import services.DataUpdateService
 import services.common.address.{CommonPostcodeService, CommonPostcodeTemplateData}
 import viewmodels.Message
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.UserAnswers
+import views.html.address.PostcodeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -56,9 +55,9 @@ class EnterPostcodeController @Inject()(
     requireData: DataRequiredAction,
     dataUpdateService: DataUpdateService,
     formProvider: PostcodeFormProvider,
-    renderer: Renderer,
-    common: CommonPostcodeService
-)(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
+    common: CommonPostcodeService,
+    postcodeView: PostcodeView
+)(implicit val ec: ExecutionContext) extends I18nSupport with Retrievals {
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
@@ -72,16 +71,35 @@ class EnterPostcodeController @Inject()(
       implicit request =>
         implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-        retrieve(SchemeNameId) { schemeName =>
+      retrieve(SchemeNameId) { schemeName =>
           val formToTemplate: Form[String] => CommonPostcodeTemplateData = getFormToTemplate(schemeName, establisherIndex, directorIndex, mode)
           form.bindFromRequest().fold(
-            formWithErrors =>
-              renderer.render(common.viewTemplate, formToTemplate(formWithErrors)).map(BadRequest(_)),
+            formWithErrors => {
+              val templateData = formToTemplate(formWithErrors)
+              Future.successful(BadRequest(postcodeView(
+                formWithErrors,
+                templateData.entityType,
+                templateData.entityName,
+                templateData.submitUrl,
+                templateData.enterManuallyUrl,
+                Some(templateData.schemeName),
+                templateData.h1MessageKey
+              )))
+            },
             value =>
               addressLookupConnector.addressLookupByPostCode(value).flatMap {
                 case Nil =>
-                  renderer.render(common.viewTemplate, formToTemplate(formWithError("enterPostcode.noresults"))).map(BadRequest(_))
-
+                  val formWithErrors = formWithError("enterPostcode.noresults")
+                  val templateData = formToTemplate(formWithError("enterPostcode.noresults"))
+                  Future.successful(BadRequest(postcodeView(
+                    formWithErrors,
+                    templateData.entityType,
+                    templateData.entityName,
+                    templateData.submitUrl,
+                    templateData.enterManuallyUrl,
+                    Some(templateData.schemeName),
+                    templateData.h1MessageKey
+                  )))
                 case addresses =>
                   for {
                     updatedAnswers <- Future.fromTry(setUpdatedAnswers(establisherIndex, directorIndex, mode, addresses, request.userAnswers))
@@ -99,15 +117,18 @@ class EnterPostcodeController @Inject()(
                        )(implicit request: DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
     val name: String = request.userAnswers.get(DirectorNameId(establisherIndex, directorIndex))
       .map(_.fullName).getOrElse(Message("messages__director"))
+    val submitUrl = routes.EnterPostcodeController.onSubmit(establisherIndex, directorIndex, mode)
+    val enterManuallyUrl = routes.ConfirmAddressController.onPageLoad(establisherIndex, directorIndex, mode).url
 
     form => {
-
       CommonPostcodeTemplateData(
         form,
         Message("messages__director"),
         name,
-        routes.ConfirmAddressController.onPageLoad(establisherIndex, directorIndex, mode).url,
-        schemeName
+        submitUrl,
+        enterManuallyUrl,
+        schemeName,
+        h1MessageKey = "postcode.title"
       )
     }
   }

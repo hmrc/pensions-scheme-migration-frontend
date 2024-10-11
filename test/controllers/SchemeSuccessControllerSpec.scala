@@ -24,26 +24,25 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
 import models.PersonName
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.AnyContentAsEmpty
 import play.api.mvc.Results.Ok
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{Data, Enumerable, UserAnswers}
+import views.html.SchemeSuccessView
 
 import scala.concurrent.Future
 
-class SchemeSuccessControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class SchemeSuccessControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val name = PersonName("Jane", "Doe")
   private val userAnswers: Option[UserAnswers] = ua.set(EstablisherNameId(0), name).toOption
-  private val templateToBeRendered = "schemeSuccess.njk"
   private val mockCurrentPstrCacheConnector: CurrentPstrCacheConnector = mock[CurrentPstrCacheConnector]
   private val mockLockCacheConnector: LockCacheConnector = mock[LockCacheConnector]
   private val mockListOfSchemesConnector: ListOfSchemesConnector = mock[ListOfSchemesConnector]
@@ -58,15 +57,13 @@ class SchemeSuccessControllerSpec extends ControllerSpecBase with NunjucksSuppor
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
   private def httpPathGET: String = controllers.routes.SchemeSuccessController.onPageLoad.url
+  val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, httpPathGET)
 
-  private val jsonToPassToTemplate: JsObject =
-    Json.obj(
-      "schemeName" -> Data.schemeName,
-      "pstr" -> "pstr",
-      "email" -> Data.email,
-      "yourSchemesLink" -> mockAppConfig.yourPensionSchemesUrl,
-      "returnUrl" -> mockAppConfig.psaOverviewUrl
-    )
+  private val schemeName = Data.schemeName
+  private val pstr = "pstr"
+  private val email = Data.email
+  private val yourSchemesLink = mockAppConfig.yourPensionSchemesUrl
+  private val returnUrl = mockAppConfig.psaOverviewUrl
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -83,18 +80,16 @@ class SchemeSuccessControllerSpec extends ControllerSpecBase with NunjucksSuppor
     "return OK and the correct view for a GET" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
       when(mockMinimalDetailsConnector.getPSAEmail(any(), any())).thenReturn(Future.successful(Data.email))
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+
+      val view = application.injector.instanceOf[SchemeSuccessView].apply(
+        schemeName, pstr, email, yourSchemesLink, returnUrl
+      )(request, messages)
 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate)
+      compareResultAndView(result, view)
     }
 
   }

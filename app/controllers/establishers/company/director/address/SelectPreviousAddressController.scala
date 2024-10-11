@@ -29,15 +29,13 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import renderer.Renderer
 import services.DataUpdateService
 import controllers.Retrievals
 import play.api.data.FormBinding.Implicits.formBinding
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.UserAnswers
-import play.api.mvc.Results.{BadRequest, Redirect}
+import play.api.mvc.Results.Redirect
 import services.common.address.{CommonAddressListService, CommonAddressListTemplateData}
 import viewmodels.Message
 
@@ -54,9 +52,8 @@ class SelectPreviousAddressController @Inject()(
     requireData: DataRequiredAction,
     formProvider: AddressListFormProvider,
     dataUpdateService: DataUpdateService,
-    renderer: Renderer,
     common:CommonAddressListService
-)(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
+)(implicit val ec: ExecutionContext) extends I18nSupport with Retrievals {
 
   private def form: Form[Int] = formProvider("selectAddress.required")
 
@@ -65,7 +62,12 @@ class SelectPreviousAddressController @Inject()(
       implicit request =>
         retrieve(SchemeNameId) { schemeName =>
           getFormToTemplate(schemeName, establisherIndex, directorIndex, mode)
-            .retrieve.map(formToTemplate => common.get(formToTemplate(form)))
+            .retrieve.map(formToTemplate =>
+              common.get(
+                formToTemplate(form),
+                form,
+                submitUrl = routes.SelectPreviousAddressController.onSubmit(establisherIndex, directorIndex, mode)
+              ))
         }
     }
 
@@ -82,12 +84,12 @@ class SelectPreviousAddressController @Inject()(
           form =>
             CommonAddressListTemplateData(
               form,
-              common.transformAddressesForTemplate(addresses),
+              addresses,
               Message("messages__director"),
               name,
               routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, directorIndex, mode).url,
               schemeName,
-              "previousAddressList.title"
+              h1MessageKey = "previousAddressList.title"
             )
         }
     )
@@ -103,10 +105,18 @@ class SelectPreviousAddressController @Inject()(
       )
 
       retrieve(SchemeNameId) { schemeName =>
-        val json: Form[Int] => CommonAddressListTemplateData = getFormToTemplate(schemeName, establisherIndex, directorIndex, mode).retrieve.toOption.get
+        val formToTempalte: Form[Int] => CommonAddressListTemplateData =
+          getFormToTemplate(schemeName, establisherIndex, directorIndex, mode).retrieve.toOption.get
         form.bindFromRequest().fold(
           formWithErrors =>
-            renderer.render(common.viewTemplate, json(formWithErrors)).map(BadRequest(_)),
+            common.post(
+              formToTempalte,
+              addressPages,
+              Some(mode),
+              manualUrlCall = routes.SelectPreviousAddressController.onPageLoad(establisherIndex, directorIndex, mode),
+              formWithErrors,
+              submitUrl = routes.SelectPreviousAddressController.onSubmit(establisherIndex, directorIndex, mode)
+            ),
           value =>
             addressPages.postcodeId.retrieve.map { addresses =>
               val address = addresses(value).copy(country = Some("GB"))
@@ -129,7 +139,6 @@ class SelectPreviousAddressController @Inject()(
                 } yield {
                   Redirect(routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, directorIndex, mode))
                 }
-
               }
             }
         )

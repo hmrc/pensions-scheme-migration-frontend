@@ -16,196 +16,114 @@
 
 package controllers.trustees.company.details
 
-import controllers.ControllerSpecBase
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
-import forms.ReasonFormProvider
+import controllers.ReasonControllerSpecBase
 import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.details.NoUTRReasonId
 import matchers.JsonMatchers
-import models.{CompanyDetails, NormalMode}
-import org.mockito.ArgumentCaptor
+import models.CompanyDetails
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
+import play.api.mvc.AnyContentAsEmpty
+import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import renderer.Renderer
-import services.common.details.CommonReasonService
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
-import utils.{Data, FakeNavigator, UserAnswers}
+import utils.UserAnswers
 import viewmodels.Message
+import views.html.ReasonView
 
 import scala.concurrent.Future
 class NoUTRReasonControllerSpec
-  extends ControllerSpecBase
-    with NunjucksSupport
+  extends ReasonControllerSpecBase
     with JsonMatchers
     with TryValues
     with BeforeAndAfterEach {
 
-  private val companyName = "test company"
-  private val formProvider: ReasonFormProvider =
-    new ReasonFormProvider()
   private val form: Form[String] =
     formProvider(Message("messages__reason__error_utrRequired", companyName))
   private val userAnswers: UserAnswers =
     ua.set(CompanyDetailsId(0), CompanyDetails(companyName)).success.value
-  private val templateToBeRendered: String =
-    "reason.njk"
-  private val commonJson: JsObject =
-    Json.obj(
-      "pageTitle"     -> Message("messages__whyNoUTR", Message("messages__company")),
-      "pageHeading"     -> Message("messages__whyNoUTR", companyName),
-      "schemeName"    -> Data.schemeName,
-      "isPageHeading" -> true
-    )
-  private val formData: String =
-    "Reason"
+
+  private val pageTitle = Message("messages__whyNoUTR", Message("messages__company"))
+  private val pageHeading = Message("messages__whyNoUTR", companyName)
 
   override def beforeEach(): Unit = {
-    reset(
-      mockRenderer,
-      mockUserAnswersCacheConnector
-    )
+    super.beforeEach()
+    mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
   }
 
-  private def controller(
-                          dataRetrievalAction: DataRetrievalAction
-                        ): NoUTRReasonController =
-    new NoUTRReasonController(
-      messagesApi               = messagesApi,
-      authenticate              = new FakeAuthAction(),
-      getData                   = dataRetrievalAction,
-      requireData               = new DataRequiredActionImpl,
-      formProvider              = formProvider,
-      common = new CommonReasonService(
-        controllerComponents = controllerComponents,
-        renderer = new Renderer(mockAppConfig, mockRenderer),
-        userAnswersCacheConnector = mockUserAnswersCacheConnector,
-        navigator = new FakeNavigator(desiredRoute = onwardCall),
-        messagesApi = messagesApi
-      )
-    )
+  private val httpPathGET = controllers.trustees.company.details.routes.NoUTRReasonController.onPageLoad(index, mode).url
+  private val submitCall = controllers.trustees.company.details.routes.NoUTRReasonController.onSubmit(index, mode)
+  private val httpPathPOST = submitCall.url
+  val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, httpPathGET)
 
   "NoUTRReasonController" must {
     "return OK and the correct view for a GET" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
+      val view = application.injector.instanceOf[ReasonView].apply(
+        pageTitle, pageHeading, isPageHeading, form, schemeName, submitCall
+      )(request, messages)
 
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(Ok(view)))
 
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val getData = new FakeDataRetrievalAction(Some(userAnswers))
-
-      val result: Future[Result] =
-        controller(getData)
-          .onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
+      val result = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("form" -> form)
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      compareResultAndView(result, view)
     }
-
     "populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
+      val ua = userAnswers.set(NoUTRReasonId(0), formData).success.value
 
-      val ua =
-        userAnswers
-          .set(NoUTRReasonId(0), formData).success.value
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val filledForm = form.bind(Map("form" -> formData))
 
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+      val view = application.injector.instanceOf[ReasonView].apply(
+        pageTitle, pageHeading, isPageHeading, filledForm, schemeName, submitCall
+      )(request, messages)
 
-      val getData = new FakeDataRetrievalAction(Some(ua))
+      when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(Ok(view)))
 
-      val result: Future[Result] =
-        controller(getData)
-          .onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
+      val result = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("form" -> form.fill(formData))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      compareResultAndView(result, view)
     }
-
     "redirect to the next page when valid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
-        .thenReturn(Future.successful(Json.obj()))
+      val ua = userAnswers.set(NoUTRReasonId(0), formData).success.value
 
-      val request: FakeRequest[AnyContentAsFormUrlEncoded] =
-        fakeRequest
-          .withFormUrlEncodedBody("value" -> "1234567890")
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val getData = new FakeDataRetrievalAction(Some(userAnswers))
+      val filledForm = form.bind(Map("form" -> formData))
 
-      val result: Future[Result] =
-        controller(getData)
-          .onSubmit(0, NormalMode)(request)
+      val view = application.injector.instanceOf[ReasonView].apply(
+        pageTitle, pageHeading, isPageHeading, filledForm, schemeName, submitCall
+      )(request, messages)
+
+      when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(Ok(view)))
+      when(mockCommonReasonService.post(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(Redirect(onwardCall.url)))
+
+      val result = route(application, httpPOSTRequest(httpPathPOST, validValues)).value
 
       status(result) mustBe SEE_OTHER
 
       redirectLocation(result) mustBe Some(onwardCall.url)
-
-      verify(mockUserAnswersCacheConnector, times(1))
-        .save(any(), any())(any(), any())
     }
-
     "return a Bad Request and errors when invalid data is submitted" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
+      when(mockCommonReasonService.post(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(BadRequest))
 
-      val request: FakeRequest[AnyContentAsFormUrlEncoded] =
-        fakeRequest
-          .withFormUrlEncodedBody("value" -> "")
-
-      val getData = new FakeDataRetrievalAction(Some(userAnswers))
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
-      val result: Future[Result] =
-        controller(getData)
-          .onSubmit(0, NormalMode)(request)
-
-      val boundForm = form.bind(Map("value" -> ""))
+      val result = route(application, httpPOSTRequest(httpPathPOST, invalidValues)).value
 
       status(result) mustBe BAD_REQUEST
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("form" -> Json.toJson(boundForm))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
-
-      verify(mockUserAnswersCacheConnector, times(0))
-        .save(any(), any())(any(), any())
+      verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
     }
   }
 }

@@ -24,6 +24,8 @@ import uk.gov.hmrc
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Content, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions}
+import uk.gov.hmrc.govukfrontend.views.html.components.{Hint => GovukHint}
+import viewmodels.forNunjucks.Hint
 
 import javax.inject.Inject
 import scala.concurrent.Future
@@ -52,8 +54,38 @@ object TwirlMigration extends Logging {
 
   def toTwirlRadios(nunjucksRadios: Seq[uk.gov.hmrc.viewmodels.Radios.Item])(implicit messages: Messages): Seq[RadioItem] = {
     nunjucksRadios.map(radio => {
-      RadioItem(content = Text(radio.text.resolve), value = Some(radio.value))
+      RadioItem(content = Text(radio.text.resolve), value = Some(radio.value), checked = radio.checked)
     })
+  }
+
+  def toTwirlRadiosWithHintText(nunjucksRadios: Seq[viewmodels.forNunjucks.Radios.Item])(implicit messages: Messages): Seq[RadioItem] = {
+    nunjucksRadios.map(radio => {
+      RadioItem(
+        content = Text(radio.text.resolve),
+        value = Some(radio.value),
+        checked = radio.checked,
+        hint = convertHint(radio.hint),
+        label = radio.label.map(label =>
+          Label(
+            attributes = label.attributes,
+            classes = label.classes.mkString(" ")
+          )
+        ),
+        conditionalHtml = radio.conditional.map(_.html.value)
+      )
+
+    })
+  }
+
+  def convertHint(nunjucksHint: Option[Hint])(implicit messages: Messages): Option[GovukHint] = {
+    nunjucksHint.map { hint =>
+      GovukHint(
+        content = resolveContent(hint.content),
+        id = Some(hint.id),
+        classes = hint.classes.mkString(" "),
+        attributes = hint.attributes
+      )
+    }
   }
 
   private def resolveContent(content: hmrc.viewmodels.Content)(implicit messages: Messages): Content = {

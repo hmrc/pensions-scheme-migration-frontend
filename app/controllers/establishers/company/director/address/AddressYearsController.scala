@@ -50,7 +50,14 @@ class AddressYearsController @Inject()(
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.map {
         case directorName ~ schemeName =>
-          common.get(Some(schemeName), directorName.fullName, Message("messages__director"), form, AddressYearsId(establisherIndex, directorIndex))
+          common.get(
+            Some(schemeName),
+            directorName.fullName,
+            Message("messages__director"),
+            form,
+            AddressYearsId(establisherIndex, directorIndex),
+            submitUrl = routes.AddressYearsController.onSubmit(establisherIndex, directorIndex, mode)
+          )
       }
     }
 
@@ -67,7 +74,8 @@ class AddressYearsController @Inject()(
             form,
             AddressYearsId(establisherIndex, directorIndex),
             Some(mode),
-            Some(value => setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
+            Some(value => setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers)),
+            submitUrl = routes.AddressYearsController.onSubmit(establisherIndex, directorIndex, mode)
           )
       }
     }

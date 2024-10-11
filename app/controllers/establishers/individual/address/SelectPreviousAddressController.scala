@@ -28,8 +28,6 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import controllers.Retrievals
 import services.common.address.{CommonAddressListTemplateData, CommonAddressListService}
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import controllers.establishers.individual.address.routes.ConfirmPreviousAddressController
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import viewmodels.Message
@@ -44,14 +42,19 @@ class SelectPreviousAddressController @Inject()(
    requireData: DataRequiredAction,
    formProvider: AddressListFormProvider,
    common:CommonAddressListService
-)(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
+)(implicit val ec: ExecutionContext) extends I18nSupport with Retrievals {
 
   private def form: Form[Int] = formProvider("selectAddress.required")
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        getFormToTemplate(schemeName, index, mode).retrieve.map(formToTemplate => common.get(formToTemplate(form)))
+        getFormToTemplate(schemeName, index, mode).retrieve.map(formToTemplate =>
+          common.get(
+            formToTemplate(form),
+            form = form,
+            submitUrl = routes.SelectPreviousAddressController.onSubmit(index, mode)
+          ))
       }
     }
 
@@ -65,8 +68,9 @@ class SelectPreviousAddressController @Inject()(
           common.post(
             _,
             addressPages,
-            manualUrlCall = ConfirmPreviousAddressController.onPageLoad(index,mode),
-            form = form
+            manualUrlCall = routes.ConfirmPreviousAddressController.onPageLoad(index,mode),
+            form = form,
+            submitUrl = routes.ConfirmPreviousAddressController.onSubmit(index, mode)
           ))
       }
     }
@@ -81,12 +85,12 @@ class SelectPreviousAddressController @Inject()(
           form =>
             CommonAddressListTemplateData(
               form,
-              common.transformAddressesForTemplate(addresses),
+              addresses,
               Message("establisherEntityTypeIndividual"),
               name,
-              ConfirmPreviousAddressController.onPageLoad(index, mode).url,
+              routes.ConfirmPreviousAddressController.onPageLoad(index, mode).url,
               schemeName,
-              "previousAddressList.title"
+              h1MessageKey = "previousAddressList.title"
             )
         }
     )

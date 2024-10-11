@@ -11,10 +11,10 @@ GET         /:pensionManagementType/:index/partnership/partner/:partnerIndex/det
 GET         /language/:lang                                    controllers.LanguageSwitchController.switchToLanguage(lang: String)
 GET         /assets/*file                                      controllers.Assets.versioned(path = "/public", file: Asset)
 
-GET         /this-service-has-been-reset                       controllers.SessionExpiredController.onPageLoad()
-
 GET         /unauthorised                                      controllers.UnauthorisedController.onPageLoad
 GET         /you-need-to-register                              controllers.YouNeedToRegisterController.onPageLoad
+
+GET         /this-service-has-been-reset                       controllers.SessionExpiredController.onPageLoad()
 
 GET         /not-found                                         controllers.NotFoundController.onPageLoad
 
@@ -62,8 +62,6 @@ GET         /check-your-answers-benefits-insurance             controllers.benef
 
 GET         /check-your-answers-members                        controllers.aboutMembership.CheckYourAnswersController.onPageLoad
 
-GET         /what-you-will-need-benefits-insurance             controllers.benefitsAndInsurance.WhatYouWillNeedController.onPageLoad
-
 GET         /declaration                                       controllers.DeclarationController.onPageLoad
 POST        /declaration                                       controllers.DeclarationController.onSubmit
 
@@ -79,11 +77,9 @@ POST        /insurance-confirm-address                         controllers.benef
 GET         /confirmation                                      controllers.SchemeSuccessController.onPageLoad
 
 GET         /migration-tile                                    controllers.preMigration.MigrationTilePartialController.migrationPartial
-GET         /cannot-add-pension-scheme                         controllers.preMigration.CannotAddController.onPageLoadScheme
 GET         /cannot-migrate                                    controllers.preMigration.CannotMigrateController.onPageLoad
 GET         /there-is-a-problem                                controllers.preMigration.ThereIsAProblemController.onPageLoad
 
-GET         /rac-dac/cannot-add-rac-dac                        controllers.preMigration.CannotAddController.onPageLoadRacDac
 GET         /what-you-will-need-before-start                   controllers.preMigration.BeforeYouStartController.onPageLoad
 
 GET         /no-pension-schemes-registered                     controllers.preMigration.NotRegisterController.onPageLoadScheme

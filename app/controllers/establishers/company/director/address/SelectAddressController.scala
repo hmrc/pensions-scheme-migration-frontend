@@ -29,15 +29,13 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import renderer.Renderer
 import services.DataUpdateService
 import controllers.Retrievals
 import play.api.data.FormBinding.Implicits.formBinding
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.UserAnswers
-import play.api.mvc.Results.{BadRequest, Redirect}
+import play.api.mvc.Results.Redirect
 import services.common.address.{CommonAddressListService, CommonAddressListTemplateData}
 import viewmodels.Message
 
@@ -54,16 +52,21 @@ class SelectAddressController @Inject()(
     requireData: DataRequiredAction,
     formProvider: AddressListFormProvider,
     dataUpdateService: DataUpdateService,
-    renderer: Renderer,
     common:CommonAddressListService
- )(implicit val ec: ExecutionContext) extends I18nSupport with NunjucksSupport with Retrievals {
+ )(implicit val ec: ExecutionContext) extends I18nSupport with Retrievals {
 
   private def form: Form[Int] = formProvider("selectAddress.required")
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        getFormToTemplate(schemeName, establisherIndex, directorIndex, mode).retrieve.map(formToTemplate => common.get(formToTemplate(form)))
+        getFormToTemplate(schemeName, establisherIndex, directorIndex, mode).retrieve.map(formToTemplate =>
+          common.get(
+            formToTemplate(form),
+            form,
+            submitUrl = routes.SelectAddressController.onSubmit(establisherIndex, directorIndex, mode)
+          )
+        )
       }
     }
 
@@ -77,11 +80,12 @@ class SelectAddressController @Inject()(
           form =>
             CommonAddressListTemplateData(
               form,
-              common.transformAddressesForTemplate(addresses),
+              addresses,
               Message("messages__director"),
               name,
               routes.ConfirmAddressController.onPageLoad(establisherIndex, directorIndex, mode).url,
-              schemeName
+              schemeName,
+              h1MessageKey = "addressList.title"
             )
         }
     )
@@ -93,10 +97,18 @@ class SelectAddressController @Inject()(
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
       retrieve(SchemeNameId) { schemeName =>
-        val json: Form[Int] => CommonAddressListTemplateData = getFormToTemplate(schemeName, establisherIndex, directorIndex, mode).retrieve.toOption.get
+        val formToTempalte: Form[Int] => CommonAddressListTemplateData =
+          getFormToTemplate(schemeName, establisherIndex, directorIndex, mode).retrieve.toOption.get
         form.bindFromRequest().fold(
           formWithErrors =>
-            renderer.render(common.viewTemplate, json(formWithErrors)).map(BadRequest(_)),
+            common.post(
+              formToTempalte,
+              addressPages,
+              Some(mode),
+              manualUrlCall = routes.SelectAddressController.onPageLoad(establisherIndex, directorIndex, mode),
+              formWithErrors,
+              submitUrl = routes.SelectAddressController.onSubmit(establisherIndex, directorIndex, mode)
+            ),
           value =>
             addressPages.postcodeId.retrieve.map { addresses =>
               val address = addresses(value).copy(country = Some("GB"))
