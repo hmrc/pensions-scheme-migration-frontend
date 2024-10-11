@@ -16,7 +16,6 @@
 
 @this(
     layout: templates.Layout,
-    formHelper: FormWithCSRF,
     govukButton: GovukButton
 )
 
@@ -36,11 +35,9 @@
             <li>@messages("messages__BeforeYouStart__item5")</li>
         </ul>
 
-        @formHelper(action = continueUrl, Symbol("autoComplete") -> "off") {
-            @govukButton(
-                ButtonViewModel(Text(messages("site.continue"))).asFormSubmit
-            )
-        }
+        @govukButton(
+            ButtonViewModel(Text(messages("site.continue"))).asLink(continueUrl.url).withAttribute("id", "submit")
+        )
 
         <p class="govuk-body">
             <a id="return_to_psa" href="@returnUrl" class="govuk-link">@messages("return.to.link", psaName)</a>

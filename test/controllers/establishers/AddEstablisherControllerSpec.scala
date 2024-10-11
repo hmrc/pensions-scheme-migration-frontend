@@ -30,16 +30,13 @@ import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.data.Form
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
 import utils.{Data, TwirlMigration, UserAnswers}
 import views.html.establishers.AddEstablisherView
-
-import scala.concurrent.Future
 class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers {
-  private val establisherName: String = "Jane Doe"
+  private val establisherName: String = "e f"
   private val userAnswers: Option[UserAnswers] = ua.set(EstablisherKindId(0), EstablisherKind.Individual).flatMap(
     _.set(EstablisherNameId(0), PersonName("a", "b", isDeleted = true)).flatMap(
       _.set(IsEstablisherNewId(0), true).flatMap(
@@ -69,7 +66,6 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
 
@@ -86,7 +82,7 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
       val view = app.injector.instanceOf[AddEstablisherView].apply(
         form,
         schemeName,
-        Seq(EstablisherIndividualEntity(EstablisherNameId(0), establisherName, false, false, true, 1)),
+        Seq(EstablisherIndividualEntity(EstablisherNameId(2), establisherName, false, false, true, 1)),
         Seq(),
         TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
         controllers.establishers.routes.AddEstablisherController.onSubmit

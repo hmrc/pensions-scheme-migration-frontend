@@ -23,7 +23,7 @@
 )
 
 @(form: Form[_], schemeName: String, entityType: String, submitCall: Call)(implicit request: Request[_], messages: Messages)
-@layout(messages("messages__name_title", entityType)) {
+@layout(messages("messages__name_title", entityType), formHasErrors = form.hasErrors) {
     <div>
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))

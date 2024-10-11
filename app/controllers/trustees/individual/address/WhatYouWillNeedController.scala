@@ -46,8 +46,8 @@ class WhatYouWillNeedController @Inject()(
         TrusteeNameId(index).retrieve.map {
           personName =>
             Future.successful(Ok(whatYouWillNeedView(
-              personName.fullName,
               Messages("messages__title_individual"),
+              personName.fullName,
               controllers.trustees.individual.address.routes.EnterPostcodeController.onPageLoad(index, NormalMode).url,
               request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
             )))
