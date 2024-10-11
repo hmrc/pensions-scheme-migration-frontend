@@ -50,16 +50,17 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase with JsonMatchers
   "WhatYouWillNeedController" must {
     "return OK and the correct view for a GET" in {
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
-      val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(userAnswers))
+      val req = fakeDataRequest(userAnswers)
+      val result: Future[Result] = controller(getData).onPageLoad(0)(req)
 
       status(result) mustBe OK
 
       val view = app.injector.instanceOf[WhatYouWillNeedView].apply(
-        Data.individualName.fullName,
         Messages("messages__title_individual"),
+        Data.individualName.fullName,
         routes.EnterPostcodeController.onPageLoad(0, NormalMode).url,
         "Test scheme name"
-      )(fakeRequest, messages)
+      )(req, implicitly)
 
       compareResultAndView(result, view)
     }
