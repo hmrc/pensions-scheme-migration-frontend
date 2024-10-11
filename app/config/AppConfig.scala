@@ -37,6 +37,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val govUkLink: String = loadConfig("urls.govUkLink")
   lazy val contactHmrcUrl: String = loadConfig("urls.contactHmrcLink")
   lazy val pensionAdministratorGovUkLink: String = loadConfig("urls.pensionAdministratorGovUkLink")
+  lazy val pensionPractitionerGovUkLink: String = loadConfig("urls.pensionPractitionerGovUkLink")
 
   lazy val gtmContainerId: String = loadConfig("tracking-consent-frontend.gtm.container")
   lazy val trackingSnippetUrl: String = loadConfig("tracking-consent-frontend.url")
