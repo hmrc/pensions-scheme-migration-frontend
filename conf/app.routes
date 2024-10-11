@@ -62,8 +62,6 @@ GET         /check-your-answers-benefits-insurance             controllers.benef
 
 GET         /check-your-answers-members                        controllers.aboutMembership.CheckYourAnswersController.onPageLoad
 
-GET         /what-you-will-need-benefits-insurance             controllers.benefitsAndInsurance.WhatYouWillNeedController.onPageLoad
-
 GET         /declaration                                       controllers.DeclarationController.onPageLoad
 POST        /declaration                                       controllers.DeclarationController.onSubmit
 
