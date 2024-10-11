@@ -16,11 +16,8 @@
 
 package config
 
-import controllers.routes
-import models.{MigrationType, ReportTechnicalIssue}
+import models.MigrationType
 import play.api.Configuration
-import play.api.i18n.Lang
-import play.api.mvc.Call
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.{Inject, Singleton}
@@ -30,11 +27,9 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   val welshLanguageSupportEnabled: Boolean = config.getOptional[Boolean]("features.welsh-language-support").getOrElse(false)
 
   lazy val locationCanonicalList: String = loadConfig("location.canonical.list.all")
-  lazy val locationCanonicalListEUAndEEA: String = loadConfig("location.canonical.list.EUAndEEA")
 
   val en: String            = "en"
   val cy: String            = "cy"
-  val defaultLanguage: Lang = Lang(en)
   private def loadConfig(key: String): String = config.getOptional[String](key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
   lazy val appName: String = config.get[String](path = "appName")
@@ -42,7 +37,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val govUkLink: String = loadConfig("urls.govUkLink")
   lazy val contactHmrcUrl: String = loadConfig("urls.contactHmrcLink")
   lazy val pensionAdministratorGovUkLink: String = loadConfig("urls.pensionAdministratorGovUkLink")
-  lazy val pensionPractitionerGovUkLink: String = loadConfig("urls.pensionPractitionerGovUkLink")
 
   lazy val gtmContainerId: String = loadConfig("tracking-consent-frontend.gtm.container")
   lazy val trackingSnippetUrl: String = loadConfig("tracking-consent-frontend.url")
@@ -84,16 +78,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   val reportAProblemPartialUrl: String = getConfigString("contact-frontend.report-problem-url.with-js")
   val reportAProblemNonJSUrl: String = getConfigString("contact-frontend.report-problem-url.non-js")
-  val betaFeedbackUrl: String = getConfigString("contact-frontend.beta-feedback-url.authenticated")
   val betaFeedbackUnauthenticatedUrl: String = getConfigString("contact-frontend.beta-feedback-url.unauthenticated")
-  val reportTechnicalIssues: ReportTechnicalIssue = ReportTechnicalIssue(serviceId = "PODS", baseUrl = Some(reportAProblemNonJSUrl))
-  lazy val languageTranslationEnabled: Boolean = config.getOptional[Boolean]("features" +
-    ".welsh-translation").getOrElse(false)
-  def languageMap: Map[String, Lang] = Map(
-    "english" -> Lang("en"),
-    "cymraeg" -> Lang("cy"))
-
-  def routeToSwitchLanguage: String => Call = (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
 
   private def getConfigString(key: String) = servicesConfig.getConfString(key, throw new Exception(s"Could not find " +
     s"config '$key'"))
