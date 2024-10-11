@@ -20,7 +20,6 @@ import controllers.Retrievals
 import controllers.actions._
 import controllers.establishers.routes.NoEstablishersController
 import forms.establishers.AddEstablisherFormProvider
-import helpers.AddToListHelper
 import identifiers.establishers.AddEstablisherId
 import navigators.CompoundNavigator
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -40,7 +39,6 @@ class AddEstablisherController @Inject()(
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
                                              formProvider: AddEstablisherFormProvider,
-                                             helper: AddToListHelper,
                                              val controllerComponents: MessagesControllerComponents,
                                              view: AddEstablisherView
                                            )(implicit val ec: ExecutionContext)
