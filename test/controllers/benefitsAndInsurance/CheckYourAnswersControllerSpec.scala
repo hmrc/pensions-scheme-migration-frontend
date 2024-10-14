@@ -61,7 +61,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with JsonMatcher
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockCyaHelper.rows(any(), any())).thenReturn(rows)
+    when(mockCyaHelper.rows(any(), any())).thenReturn(TwirlMigration.summaryListRow(rows))
   }
 
 

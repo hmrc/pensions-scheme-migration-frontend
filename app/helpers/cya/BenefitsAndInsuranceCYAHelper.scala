@@ -22,55 +22,55 @@ import models.benefitsAndInsurance.BenefitsProvisionType.DefinedBenefitsOnly
 import models.requests.DataRequest
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList}
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 
-class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
+class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits {
   def rows(implicit request: DataRequest[AnyContent],
-    messages: Messages
-  ): Seq[SummaryList.Row] = {
-      implicit val ua: UserAnswers = request.userAnswers
-      val schemeName = CYAHelper.getAnswer(SchemeNameId)
+           messages: Messages
+          ): Seq[SummaryListRow] = {
+    implicit val ua: UserAnswers = request.userAnswers
+    val schemeName = CYAHelper.getAnswer(SchemeNameId)
 
-      val seqTop = topSection(schemeName)
-      val seqBottom = if(ua.get(AreBenefitsSecuredId).contains(true)) {
+    val seqTop = topSection(schemeName)
+    val seqBottom = if (ua.get(AreBenefitsSecuredId).contains(true)) {
 
       val (msgHeadingInsurancePolicy, msgHeadingInsurerAddress) = {
-          val optionInsuranceName = ua.get(BenefitsInsuranceNameId)
-          Tuple2(
-            optionInsuranceName.fold(Message("benefitsInsurancePolicy.noCompanyName.h1"))(Message("benefitsInsurancePolicy.h1", _)),
-            optionInsuranceName.fold(Message("addressList.noInsuranceName.title"))(Message("addressList.title", _))
-          )
-        }
+        val optionInsuranceName = ua.get(BenefitsInsuranceNameId)
+        Tuple2(
+          optionInsuranceName.fold(Message("benefitsInsurancePolicy.noCompanyName.h1"))(Message("benefitsInsurancePolicy.h1", _)),
+          optionInsuranceName.fold(Message("addressList.noInsuranceName.title"))(Message("addressList.title", _))
+        )
+      }
 
-        Seq(
-          answerOrAddRow(
-            BenefitsInsuranceNameId,
-            Message("benefitsInsuranceName.title").resolve,
-            Some(controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onPageLoad.url),
-            Some(msg"benefitsInsuranceName.visuallyHidden"), answerStringTransform
-          ),
-          answerOrAddRow(
-            BenefitsInsurancePolicyId,
-            msgHeadingInsurancePolicy.resolve,
-            Some(controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onPageLoad.url),
-            Some(msg"benefitsInsurancePolicy.visuallyHidden"), answerStringTransform
-          ),
-          answerOrAddRow(
-            InsurerAddressId,
-            msgHeadingInsurerAddress.resolve,
-            Some(controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onPageLoad.url),
-            Some(msg"addressList.visuallyHidden"), answerAddressTransform
-          )
+      Seq(
+        answerOrAddRow(
+          BenefitsInsuranceNameId,
+          Message("benefitsInsuranceName.title").resolve,
+          Some(controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onPageLoad.url),
+          Some(Text(Messages("benefitsInsuranceName.visuallyHidden"))), answerStringTransform
+        ),
+        answerOrAddRow(
+          BenefitsInsurancePolicyId,
+          msgHeadingInsurancePolicy.resolve,
+          Some(controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onPageLoad.url),
+          Some(Text(Messages("benefitsInsurancePolicy.visuallyHidden"))), answerStringTransform
+        ),
+        answerOrAddRow(
+          InsurerAddressId,
+          msgHeadingInsurerAddress.resolve,
+          Some(controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onPageLoad.url),
+          Some(Text(Messages("addressList.visuallyHidden"))), answerAddressTransform
+        )
       )
     } else
       Nil
 
-   val rowsWithoutDynamicIndices =  seqTop ++ seqBottom
+    val rowsWithoutDynamicIndices = seqTop ++ seqBottom
     rowsWithDynamicIndices(rowsWithoutDynamicIndices)
   }
-
 
 
   private def topSection(schemeName: String)(implicit messages: Messages, ua: UserAnswers) = {
@@ -79,27 +79,27 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
         IsInvestmentRegulatedId,
         Message("isInvestmentRegulated.h1", schemeName).resolve,
         None,
-        Some(msg"messages__visuallyhidden__currentMembers"), answerBooleanTransform
+        Some(Text(Messages("messages__visuallyhidden__currentMembers"))), answerBooleanTransform
       ),
       answerOrAddRow(
         IsOccupationalId,
         Message("isOccupational.h1", schemeName).resolve,
         None,
-        Some(msg"messages__visuallyhidden__currentMembers"), answerBooleanTransform
+        Some(Text(Messages("messages__visuallyhidden__currentMembers"))), answerBooleanTransform
       ),
       answerOrAddRow(
         HowProvideBenefitsId,
         Message("howProvideBenefits.h1", schemeName).resolve,
         Some(controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onPageLoad.url),
-        Some(msg"howProvideBenefits.visuallyHidden".withArgs(schemeName)), answerBenefitsProvisionTypeTransform
+        Some(Text(Messages("howProvideBenefits.visuallyHidden",schemeName))), answerBenefitsProvisionTypeTransform
       )
     )
-    val seqRowBenefitsType = if((ua.get(HowProvideBenefitsId).contains(DefinedBenefitsOnly)) || ua.get(HowProvideBenefitsId).isEmpty ) Nil else Seq(
+    val seqRowBenefitsType = if ((ua.get(HowProvideBenefitsId).contains(DefinedBenefitsOnly)) || ua.get(HowProvideBenefitsId).isEmpty) Nil else Seq(
       answerOrAddRow(
         BenefitsTypeId,
         Message("benefitsType.h1", schemeName).resolve,
         Some(controllers.benefitsAndInsurance.routes.BenefitsTypeController.onPageLoad.url),
-        Some(msg"benefitsType.visuallyHidden".withArgs(schemeName)), answerBenefitsTypeTransform
+        Some(Text(Messages("benefitsType.visuallyHidden", schemeName))), answerBenefitsTypeTransform
       )
     )
 
@@ -108,7 +108,7 @@ class BenefitsAndInsuranceCYAHelper extends CYAHelper with Enumerable.Implicits{
         AreBenefitsSecuredId,
         Message("areBenefitsSecured.title").resolve,
         Some(controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onPageLoad.url),
-        Some(msg"areBenefitsSecured.visuallyHidden"), answerBooleanTransform
+        Some(Text(Messages("areBenefitsSecured.visuallyHidden"))), answerBooleanTransform
       )
     )
     seqRowFirstItems ++ seqRowBenefitsType ++ seqRowBenefitsSecured

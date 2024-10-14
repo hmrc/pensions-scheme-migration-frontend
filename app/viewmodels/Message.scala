@@ -21,21 +21,30 @@ import play.twirl.api.{Html, HtmlFormat}
 
 import scala.language.implicitConversions
 
+@deprecated("Use Messages instead, leftover after migration to twirl from nunjucks", since = "0.248.0")
 sealed trait Message {
+
+  @deprecated("Use Messages instead, leftover after migration to twirl from nunjucks", since = "0.248.0")
   def resolve(implicit messages: Messages): String
 
+  @deprecated("Use Messages instead, leftover after migration to twirl from nunjucks", since = "0.248.0")
   def withArgs(args: Any*): Message
 
+  @deprecated("Use Messages instead, leftover after migration to twirl from nunjucks", since = "0.248.0")
   def html(implicit messages: Messages): HtmlFormat.Appendable
 }
 
+@deprecated("Use Messages instead, leftover after migration to twirl from nunjucks", since = "0.248.0")
 object Message {
 
+  @deprecated("Use Messages instead, leftover after migration to twirl from nunjucks", since = "0.248.0")
   def apply(key: String, args: Any*): Message =
     Resolvable(key, args)
 
+  @deprecated("Use Messages instead, leftover after migration to twirl from nunjucks", since = "0.248.0")
   case class Resolvable(key: String, args: Seq[Any]) extends Message {
 
+    @deprecated("Use Messages instead, leftover after migration to twirl from nunjucks", since = "0.248.0")
     override def resolve(implicit messages: Messages): String = {
       val transformedArgs = args.map {
         case r@Resolvable(_, _) => r.resolve
@@ -44,31 +53,39 @@ object Message {
       messages(key, transformedArgs: _*)
     }
 
+    @deprecated("Use Messages instead, leftover after migration to twirl from nunjucks", since = "0.248.0")
     override def withArgs(args: Any*): Message =
       copy(args = args)
 
 
+    @deprecated("Use Messages instead, leftover after migration to twirl from nunjucks", since = "0.248.0")
     override def html(implicit messages: Messages): HtmlFormat.Appendable =
       Html(resolve)
   }
 
+  @deprecated("Use Messages instead, leftover after migration to twirl from nunjucks", since = "0.248.0")
   case class Literal(value: String) extends Message {
 
+    @deprecated("Use Messages instead, leftover after migration to twirl from nunjucks", since = "0.248.0")
     override def resolve(implicit messages: Messages): String =
       value
 
-    // should this log a warning?
+    @deprecated("Use Messages instead, leftover after migration to twirl from nunjucks", since = "0.248.0")
     override def withArgs(args: Any*): Message = this
 
+    @deprecated("Use Messages instead, leftover after migration to twirl from nunjucks", since = "0.248.0")
     override def html(implicit messages: Messages): HtmlFormat.Appendable =
       Html(resolve)
   }
 
+  @deprecated("Use Messages instead, leftover after migration to twirl from nunjucks", since = "0.248.0")
   implicit def literal(string: String): Message = Literal(string)
 
+  @deprecated("Use Messages instead, leftover after migration to twirl from nunjucks", since = "0.248.0")
   implicit def resolve(message: Message)(implicit messages: Messages): String =
     message.resolve
 
+  @deprecated("Use Messages instead, leftover after migration to twirl from nunjucks", since = "0.248.0")
   implicit def resolveOption(message: Option[Message])(implicit messages: Messages): Option[String] =
     message.map(_.resolve)
 }

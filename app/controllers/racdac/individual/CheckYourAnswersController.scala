@@ -84,7 +84,7 @@ class CheckYourAnswersController @Inject()(
         controllers.racdac.individual.routes.DeclarationController.onPageLoad.url,
         controllers.routes.PensionSchemeRedirectController.onPageLoad.url,
         psaName,
-        TwirlMigration.summaryListRow(cyaHelper.detailsRows(userAnswers))
+        cyaHelper.detailsRows(userAnswers)
       ))
     }
   }

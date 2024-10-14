@@ -76,7 +76,7 @@ class CheckYourAnswersController @Inject()(
       }
         Ok(view(continueUrl,
           CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
-          TwirlMigration.summaryListRow(cyaHelper.rows(index, pensionManagementType, entityType, entityRepresentativeIndex, journeyType))
+          cyaHelper.rows(index, pensionManagementType, entityType, entityRepresentativeIndex, journeyType)
         ))
     }
 }

@@ -81,7 +81,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase
   "CheckYourAnswersController" should {
 
     "return OK and render the check-your-answers template when successful" in {
-      when(mockCYAHelper.rows(any(), any(), any(), any(), any())(any(), any())).thenReturn(rows)
+      when(mockCYAHelper.rows(any(), any(), any(), any(), any())(any(), any())).thenReturn(TwirlMigration.summaryListRow(rows))
 
       val req = fakeDataRequest(userAnswers)
       val result: Future[Result] = controller(getData).onPageLoad(Index(0), Establisher, entities.Company, Details)(req)

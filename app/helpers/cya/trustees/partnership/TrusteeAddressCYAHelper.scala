@@ -24,6 +24,8 @@ import models.requests.DataRequest
 import models.{CheckMode, Index}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.SummaryList.Row
 import utils.{Enumerable, UserAnswers}
@@ -37,7 +39,7 @@ class TrusteeAddressCYAHelper
   def rows(index: Index)(
                    implicit request: DataRequest[AnyContent],
                    messages: Messages
-                 ): Seq[Row] = {
+                 ): Seq[SummaryListRow] = {
     implicit val ua: UserAnswers =
       request.userAnswers
     val trusteeName: String =
@@ -48,13 +50,13 @@ class TrusteeAddressCYAHelper
         AddressId(index),
         Message("messages__address__whatYouWillNeed_h1", trusteeName).resolve,
         Some(controllers.trustees.partnership.address.routes.EnterPostcodeController.onPageLoad(index,CheckMode).url),
-        Some(msg"messages__visuallyHidden__address".withArgs(trusteeName)), answerAddressTransform
+        Some(Text(Messages("messages__visuallyHidden__address", trusteeName))), answerAddressTransform
       ),
       answerOrAddRow(
         AddressYearsId(index),
         Message("addressYears.title", trusteeName).resolve,
         Some(controllers.trustees.partnership.address.routes.AddressYearsController.onPageLoad(index,CheckMode).url),
-        Some(msg"messages__visuallyhidden__addressYears".withArgs(trusteeName)), answerBooleanTransform
+        Some(Text(Messages("messages__visuallyhidden__addressYears", trusteeName))), answerBooleanTransform
       )
     )
 
@@ -64,7 +66,7 @@ class TrusteeAddressCYAHelper
           TradingTimeId(index),
           Message("tradingTime.title", trusteeName).resolve,
           Some(controllers.trustees.partnership.address.routes.TradingTimeController.onPageLoad(index,CheckMode).url),
-          Some(msg"messages__visuallyhidden__TradingTime".withArgs(trusteeName)), answerBooleanTransform
+          Some(Text(Messages("messages__visuallyhidden__TradingTime", trusteeName))), answerBooleanTransform
         )
       )
     } else {
@@ -78,7 +80,7 @@ class TrusteeAddressCYAHelper
             PreviousAddressId(index),
             Message("messages__previousAddress", trusteeName).resolve,
             Some(controllers.trustees.partnership.address.routes.EnterPreviousPostcodeController.onPageLoad(index,CheckMode).url),
-            Some(msg"messages__visuallyHidden__previousAddress".withArgs(trusteeName)), answerAddressTransform
+            Some(Text(Messages("messages__visuallyHidden__previousAddress", trusteeName))), answerAddressTransform
           )
         )
       case _ => Nil

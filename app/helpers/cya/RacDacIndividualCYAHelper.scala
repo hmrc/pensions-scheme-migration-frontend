@@ -19,6 +19,7 @@ package helpers.cya
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.racdac.ContractOrPolicyNumberId
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.viewmodels.SummaryList.Row
 import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
@@ -29,7 +30,7 @@ class RacDacIndividualCYAHelper
 
   def detailsRows(userAnswers:UserAnswers)(
                          implicit messages: Messages
-                        ): Seq[Row] = {
+                        ): Seq[SummaryListRow] = {
     val racDacName: String =
       userAnswers.get(SchemeNameId)
         .getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))

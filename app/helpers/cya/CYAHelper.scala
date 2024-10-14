@@ -21,9 +21,9 @@ import models._
 import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
-import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{Content, Html, MessageInterpolators, Text}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Key, Value}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Content, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions, SummaryListRow}
 import utils.UserAnswers
 
 import java.time.LocalDate
@@ -35,8 +35,8 @@ trait CYAHelper {
     s"""<span class="govuk-!-display-block">$l</span>"""
 
   private def addressAnswer(addr: Address)
-    (implicit messages: Messages): Html =
-    Html(
+    (implicit messages: Messages): HtmlContent =
+    HtmlContent(
       addrLineToHtml(addr.addressLine1) +
         addrLineToHtml(addr.addressLine2) +
         addr.addressLine3.fold("")(addrLineToHtml) +
@@ -45,55 +45,59 @@ trait CYAHelper {
         addrLineToHtml(messages("country." + addr.country))
     )
 
-  protected val answerBooleanTransform: Option[Boolean => Text] = Some(opt => msg"booleanAnswer.${opt.toString}")
-  protected val answerStringTransform: Option[String => Text] = Some(opt => lit"$opt")
-  protected val answerBenefitsProvisionTypeTransform: Option[BenefitsProvisionType => Text] = Some(opt => msg"howProvideBenefits.${opt.toString}")
-  protected val answerPersonNameTransform: Option[PersonName => Text] = Some(opt => msg"${opt.fullName}")
-  protected val answerBenefitsTypeTransform: Option[BenefitsType => Text] = Some(opt => msg"benefitsType.${opt.toString}")
-  protected val referenceValueTransform: Option[ReferenceValue => Text] = Some(opt => msg"${opt.value}")
-  protected val answerDateTransform: Option[LocalDate => Text] = Some(date => lit"${date.format(DateTimeFormatter.ofPattern("d-M-yyyy"))}")
-  protected def answerAddressTransform(implicit messages: Messages): Option[Address => Html] = Some(opt => addressAnswer(opt))
+  protected def answerBooleanTransform(implicit messages: Messages): Option[Boolean => Text] = Some(opt => Text(Messages(s"booleanAnswer.${opt.toString}")))
+  protected val answerStringTransform: Option[String => Text] = Some(opt => Text(opt))
+  protected def answerBenefitsProvisionTypeTransform(implicit messages: Messages): Option[BenefitsProvisionType => Text] = Some(opt => Text(Messages(s"howProvideBenefits.${opt.toString}")))
+  protected def answerPersonNameTransform(implicit messages: Messages): Option[PersonName => Text] = Some(opt => Text(Messages(s"${opt.fullName}")))
+  protected def answerBenefitsTypeTransform(implicit messages: Messages): Option[BenefitsType => Text] = Some(opt => Text(Messages(s"benefitsType.${opt.toString}")))
+  protected def referenceValueTransform(implicit messages: Messages): Option[ReferenceValue => Text] = Some(opt => Text(Messages(s"${opt.value}")))
+  protected val answerDateTransform: Option[LocalDate => Text] = Some(date => Text(date.format(DateTimeFormatter.ofPattern("d-M-yyyy"))))
+  protected def answerAddressTransform(implicit messages: Messages): Option[Address => HtmlContent] = Some(opt => addressAnswer(opt))
 
   def booleanToText: Boolean => String = bool => if (bool) "site.yes" else "site.no"
-  def booleanToContent: Boolean => Content = bool => if (bool) msg"site.yes" else msg"site.no"
+  def booleanToContent(implicit messages: Messages): Boolean => Content = bool => if (bool) Text(Messages("site.yes")) else Text(Messages("site.no"))
 
   private val attachDynamicIndex: (Map[String, String], Int) => Map[String, String] = (attributeMap, index) => {
     val attribute = attributeMap.getOrElse("id", s"add")
     Map("id" -> s"cya-0-${index.toString}-$attribute")
   }
-  val rowsWithDynamicIndices: Seq[Row] => Seq[Row] = rows => rows.zipWithIndex.map { case (row, index) =>
-    val newActions = row.actions.map { act => act.copy(attributes = attachDynamicIndex(act.attributes, index)) }
+  val rowsWithDynamicIndices: Seq[SummaryListRow] => Seq[SummaryListRow] = rows => rows.zipWithIndex.map { case (row, index) =>
+    val newActions = row.actions.map { act =>
+      val newItems = act.items.map { item =>
+        item.copy(attributes = attachDynamicIndex(item.attributes, index))
+      }
+      act.copy(items = newItems)
+    }
     row.copy(actions = newActions)
   }
 
-  def actionAdd[A](optionURL: Option[String], visuallyHiddenText: Option[Text])(implicit messages: Messages): Seq[Action] = {
+  def actionAdd(optionURL: Option[String], visuallyHiddenText: Option[Text])(implicit messages: Messages): Actions = {
     val addVisuallyHidden = visuallyHiddenText.map {
-      visuallyHiddn => Literal(messages("site.add") + " " + visuallyHiddn.resolve)
+      visuallyHiddn => messages("site.add") + " " + visuallyHiddn.value
     }
-    optionURL.toSeq.map { url =>
-      Action(
-        content = Html(s"<span aria-hidden=true >${messages("site.add")}</span>"),
+    Actions( items = optionURL.toSeq.map { url =>
+      ActionItem(
+        content = HtmlContent(s"<span aria-hidden=true >${messages("site.add")}</span>"),
         href = url,
         visuallyHiddenText = addVisuallyHidden,
         attributes = Map("id" -> "change")
       )
-    }
+    })
   }
 
-  def actionChange[A](optionURL: Option[String], visuallyHiddenText: Option[Text])(implicit
-    messages: Messages): Seq[Action] = {
+  def actionChange(optionURL: Option[String], visuallyHiddenText: Option[Text])(implicit
+    messages: Messages): Actions = {
     val changeVisuallyHidden = visuallyHiddenText.map {
-      visuallyHiddn => Literal(messages("site.change") + " " + visuallyHiddn.resolve)
+      visuallyHiddn => messages("site.change") + " " + visuallyHiddn.value
     }
-    optionURL.toSeq.map { url =>
-      Action(
-        content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
+    Actions( items = optionURL.toSeq.map { url =>
+      ActionItem(
+        content = HtmlContent(s"<span aria-hidden=true >${messages("site.change")}</span>"),
         href = url,
         visuallyHiddenText = changeVisuallyHidden,
         attributes = Map("id" -> "change")
-
       )
-    }
+    })
   }
 
   def answerOrAddRow[A](id: TypedIdentifier[A],
@@ -101,42 +105,44 @@ trait CYAHelper {
     url: Option[String] = None,
     visuallyHiddenText: Option[Text] = None,
     answerTransform: Option[A => Content] = None)
-    (implicit ua: UserAnswers, rds: Reads[A], messages: Messages): Row =
+    (implicit ua: UserAnswers, rds: Reads[A], messages: Messages): SummaryListRow =
     ua.get(id) match {
       case None =>
-        Row(
-          key = Key(msg"$message", classes = Seq("govuk-!-width-one-half")),
-          value = Value(msg"site.incomplete", classes = Seq("govuk-!-width-one-third")),
-          actions = actionAdd(url, visuallyHiddenText)
+        SummaryListRow(
+          key = Key(content = Text(Messages(message)), classes = "govuk-!-width-one-half"),
+          value = Value(content = Text(Messages("site.incomplete")), classes = "govuk-!-width-one-third"),
+          actions = Some(actionAdd(url, visuallyHiddenText))
         )
       case Some(answer) =>
-        Row(
-          key = Key(msg"$message", classes = Seq("govuk-!-width-one-half")),
-          value = answerTransform.fold(Value(Literal(answer.toString)))(transform => Value(transform(answer))),
-          actions = actionChange(url, visuallyHiddenText)
+        SummaryListRow(
+          key = Key(content = Text(Messages(message)), classes = "govuk-!-width-one-half"),
+          value = answerTransform.fold(Value(Text(answer.toString)))(transform => Value(transform(answer))),
+          actions = Some(actionChange(url, visuallyHiddenText))
         )
     }
 
-  def answerRow[A](message: String,
+  def answerRow(message: String,
     answer: String,
     url: Option[String] = None,
     visuallyHiddenText: Option[Text] = None)
-    (implicit messages: Messages): Row =
-    Row(
-      key = Key(msg"$message", classes = Seq("govuk-!-width-one-half")),
-      value = Value(Literal(answer)),
-      actions = actionChange(url, visuallyHiddenText)
+    (implicit messages: Messages): SummaryListRow = {
+    SummaryListRow(
+      key = Key(content = Text(Messages(message)), classes = "govuk-!-width-one-half"),
+      value = Value(content = Text(answer)),
+      actions = Some(actionChange(url, visuallyHiddenText))
     )
+  }
 
-  def addRow[A](message: String,
+  def addRow(message: String,
                    url: Option[String] = None,
                    visuallyHiddenText: Option[Text] = None)
-                  (implicit messages: Messages): Row =
-    Row(
-      key = Key(msg"$message", classes = Seq("govuk-!-width-one-half")),
-      value = Value(msg"site.incomplete", classes = Seq("govuk-!-width-one-third")),
-      actions = actionAdd(url, visuallyHiddenText)
+                  (implicit messages: Messages): SummaryListRow = {
+    SummaryListRow(
+      key = Key(content = Text(Messages(message)), classes = "govuk-!-width-one-half"),
+      value = Value(content = Text(Messages("site.incomplete")), classes = "govuk-!-width-one-third"),
+      actions = Some(actionAdd(url, visuallyHiddenText))
     )
+  }
 
 }
 

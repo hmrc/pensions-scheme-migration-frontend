@@ -25,6 +25,8 @@ import models.requests.DataRequest
 import models.{CheckMode, Index}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.SummaryList.Row
 import utils.{Enumerable, UserAnswers}
@@ -39,7 +41,7 @@ class TrusteePartnershipDetailsCYAHelper
                  )(
                    implicit request: DataRequest[AnyContent],
                    messages: Messages
-                 ): Seq[Row] = {
+                 ): Seq[SummaryListRow] = {
     implicit val ua: UserAnswers = request.userAnswers
 
     val partnershipName: String = getPartnershipName(PartnershipDetailsId(index))
@@ -53,10 +55,10 @@ class TrusteePartnershipDetailsCYAHelper
   }
 
 
-  private def utrAnswers(index: Index, partnershipName: String)(implicit ua: UserAnswers, messages: Messages): Seq[Row] = {
+  private def utrAnswers(index: Index, partnershipName: String)(implicit ua: UserAnswers, messages: Messages): Seq[SummaryListRow] = {
     val message = Message("messages__hasUTR", partnershipName)
     val url = Some(routes.HaveUTRController.onPageLoad(index, CheckMode).url)
-    val visuallyHidden = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(partnershipName))
+    val visuallyHidden = Some(Text(Messages("messages__hasUTR__cya__visuallyHidden", partnershipName)))
 
     ua.get(HaveUTRId(index)) match {
       case None => Seq(addRow(message, url, visuallyHidden))
@@ -66,7 +68,7 @@ class TrusteePartnershipDetailsCYAHelper
           id = PartnershipUTRId(index),
           message = Message("messages__enterUTR__cya_label", partnershipName),
           url = Some(routes.UTRController.onPageLoad(index, CheckMode).url),
-          visuallyHiddenText = Some(msg"messages__enterUTR__cya__visuallyHidden".withArgs(partnershipName)),
+          visuallyHiddenText = Some(Text(Messages("messages__enterUTR__cya__visuallyHidden", partnershipName))),
           answerTransform = referenceValueTransform
         ))
       case Some(false) => Seq(
@@ -75,15 +77,15 @@ class TrusteePartnershipDetailsCYAHelper
           id = NoUTRReasonId(index),
           message = Message("messages__whyNoUTR", partnershipName),
           url = Some(routes.NoUTRReasonController.onPageLoad(index, CheckMode).url),
-          visuallyHiddenText = Some(msg"messages__whyNoUTR__cya__visuallyHidden".withArgs(partnershipName))
+          visuallyHiddenText = Some(Text(Messages("messages__whyNoUTR__cya__visuallyHidden", partnershipName)))
         ))
     }
   }
 
-  private def vatAnswers(index: Index, partnershipName: String)(implicit ua: UserAnswers, messages: Messages): Seq[Row] = {
+  private def vatAnswers(index: Index, partnershipName: String)(implicit ua: UserAnswers, messages: Messages): Seq[SummaryListRow] = {
     val message = Message("messages__haveVAT", partnershipName)
     val url = Some(routes.HaveVATController.onPageLoad(index, CheckMode).url)
-    val visuallyHidden = Some(msg"messages__haveVAT__cya__visuallyHidden".withArgs(partnershipName))
+    val visuallyHidden = Some(Text(Messages("messages__haveVAT__cya__visuallyHidden", partnershipName)))
 
     ua.get(HaveVATId(index)) match {
       case None => Seq(addRow(message, url, visuallyHidden))
@@ -94,7 +96,7 @@ class TrusteePartnershipDetailsCYAHelper
           id = VATId(index),
           message = Message("messages__vat__cya", partnershipName),
           url = Some(routes.VATController.onPageLoad(index, CheckMode).url),
-          visuallyHiddenText = Some(msg"messages__vat__cya__visuallyHidden".withArgs(partnershipName)),
+          visuallyHiddenText = Some(Text(Messages("messages__vat__cya__visuallyHidden", partnershipName))),
           answerTransform = referenceValueTransform
         ))
 
@@ -102,10 +104,10 @@ class TrusteePartnershipDetailsCYAHelper
     }
   }
 
-  private def payeAnswers(index: Index, partnershipName: String)(implicit ua: UserAnswers, messages: Messages): Seq[Row] = {
+  private def payeAnswers(index: Index, partnershipName: String)(implicit ua: UserAnswers, messages: Messages): Seq[SummaryListRow] = {
     val message = Message("messages__havePAYE", partnershipName)
     val url = Some(routes.HavePAYEController.onPageLoad(index, CheckMode).url)
-    val visuallyHidden = Some(msg"messages__havePAYE__cya__visuallyHidden".withArgs(partnershipName))
+    val visuallyHidden = Some(Text(Messages("messages__havePAYE__cya__visuallyHidden", partnershipName)))
 
     ua.get(HavePAYEId(index)) match {
       case None => Seq(addRow(message, url, visuallyHidden))
@@ -116,7 +118,7 @@ class TrusteePartnershipDetailsCYAHelper
           id = PAYEId(index),
           message = Message("messages__paye_cya", partnershipName),
           url = Some(routes.PAYEController.onPageLoad(index, CheckMode).url),
-          visuallyHiddenText = Some(msg"messages__paye__cya__visuallyHidden".withArgs(partnershipName)),
+          visuallyHiddenText = Some(Text(Messages("messages__paye__cya__visuallyHidden", partnershipName))),
           answerTransform = referenceValueTransform
         ))
 

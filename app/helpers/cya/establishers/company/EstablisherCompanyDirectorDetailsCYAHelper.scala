@@ -30,6 +30,8 @@ import models.requests.DataRequest
 import models.{CheckMode, Index}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.SummaryList.Row
 import utils.{Enumerable, UserAnswers}
@@ -45,7 +47,7 @@ class EstablisherCompanyDirectorDetailsCYAHelper
                  )(
                    implicit request: DataRequest[AnyContent],
                    messages: Messages
-                 ): Seq[Row] = {
+                 ): Seq[SummaryListRow] = {
     implicit val ua: UserAnswers =
       request.userAnswers
     val directorName: String =
@@ -56,7 +58,7 @@ class EstablisherCompanyDirectorDetailsCYAHelper
         id                 = DirectorNameId(establisherIndex, directorIndex),
         message            = Message("messages__director__name").resolve,
         url                = Some(routes.DirectorNameController.onPageLoad(establisherIndex,directorIndex, CheckMode).url),
-        visuallyHiddenText = Some(msg"messages__director__name__cya__visuallyHidden".withArgs(directorName)),
+        visuallyHiddenText = Some(Text(Messages("messages__director__name__cya__visuallyHidden", directorName))),
         answerTransform    = answerPersonNameTransform
       )),
 
@@ -64,14 +66,14 @@ class EstablisherCompanyDirectorDetailsCYAHelper
         id                 = DirectorDOBId(establisherIndex, directorIndex),
         message            = Message("messages__dob__h1", directorName).resolve,
         url                = Some(detailsRoutes.DirectorDOBController.onPageLoad(establisherIndex,directorIndex,CheckMode).url),
-        visuallyHiddenText = Some(msg"messages__dob__cya__visuallyHidden".withArgs(directorName)),
+        visuallyHiddenText = Some(Text(Messages("messages__dob__cya__visuallyHidden", directorName))),
         answerTransform = answerDateTransform
       )),
       Some(answerOrAddRow(
         id                 = DirectorHasNINOId(establisherIndex, directorIndex),
         message            = Message("messages__hasNINO", directorName).resolve,
         url                = Some(detailsRoutes.DirectorHasNINOController.onPageLoad(establisherIndex, directorIndex, CheckMode).url),
-        visuallyHiddenText = Some(msg"messages__hasNINO__cya__visuallyHidden".withArgs(directorName)),
+        visuallyHiddenText = Some(Text(Messages("messages__hasNINO__cya__visuallyHidden", directorName))),
         answerTransform    = answerBooleanTransform
       )),
       ua.get(DirectorHasNINOId(establisherIndex, directorIndex)) map {
@@ -80,7 +82,7 @@ class EstablisherCompanyDirectorDetailsCYAHelper
             id                 = DirectorNINOId(establisherIndex, directorIndex),
             message            = Message("messages__enterNINO__cya", directorName),
             url                = Some(detailsRoutes.DirectorEnterNINOController.onPageLoad(establisherIndex, directorIndex, CheckMode).url),
-            visuallyHiddenText = Some(msg"messages__hasNINO__cya__visuallyHidden".withArgs(directorName)),
+            visuallyHiddenText = Some(Text(Messages("messages__hasNINO__cya__visuallyHidden", directorName))),
             answerTransform    = referenceValueTransform
           )
         case false =>
@@ -88,14 +90,14 @@ class EstablisherCompanyDirectorDetailsCYAHelper
             id                 = DirectorNoNINOReasonId(establisherIndex, directorIndex),
             message            = Message("messages__whyNoNINO", directorName),
             url                = Some(detailsRoutes.DirectorNoNINOReasonController.onPageLoad(establisherIndex, directorIndex, CheckMode).url),
-            visuallyHiddenText = Some(msg"messages__whyNoNINO__cya__visuallyHidden".withArgs(directorName))
+            visuallyHiddenText = Some(Text(Messages("messages__whyNoNINO__cya__visuallyHidden", directorName)))
           )
       },
       Some(answerOrAddRow(
         id                 = DirectorHasUTRId(establisherIndex, directorIndex),
         message            = Message("messages__hasUTR", directorName).resolve,
         url                = Some(detailsRoutes.DirectorHasUTRController.onPageLoad(establisherIndex, directorIndex,CheckMode).url),
-        visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(directorName)),
+        visuallyHiddenText = Some(Text(Messages("messages__hasUTR__cya__visuallyHidden", directorName))),
         answerTransform    = answerBooleanTransform
       )),
       ua.get(DirectorHasUTRId(establisherIndex, directorIndex)) map {
@@ -104,7 +106,7 @@ class EstablisherCompanyDirectorDetailsCYAHelper
             id                 = DirectorEnterUTRId(establisherIndex, directorIndex),
             message            = Message("messages__enterUTR__cya_label", directorName),
             url                = Some(detailsRoutes.DirectorEnterUTRController.onPageLoad(establisherIndex, directorIndex,CheckMode).url),
-            visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(directorName)),
+            visuallyHiddenText = Some(Text(Messages("messages__hasUTR__cya__visuallyHidden", directorName))),
             answerTransform    = referenceValueTransform
           )
         case false =>
@@ -112,14 +114,14 @@ class EstablisherCompanyDirectorDetailsCYAHelper
             id                 = DirectorNoUTRReasonId(establisherIndex, directorIndex),
             message            = Message("messages__whyNoUTR", directorName),
             url                = Some(detailsRoutes.DirectorNoUTRReasonController.onPageLoad(establisherIndex, directorIndex,CheckMode).url),
-            visuallyHiddenText = Some(msg"messages__whyNoUTR__cya__visuallyHidden".withArgs(directorName))
+            visuallyHiddenText = Some(Text(Messages("messages__whyNoUTR__cya__visuallyHidden", directorName)))
           )
       },
       Some( answerOrAddRow(
             id                  = AddressId(establisherIndex, directorIndex),
             message             = Message("addressList_cya_label", directorName).resolve,
             url                 = Some(addressRoutes.EnterPostcodeController.onPageLoad(establisherIndex, directorIndex,  CheckMode).url),
-            visuallyHiddenText  = Some(msg"messages__visuallyHidden__address".withArgs(directorName)), answerAddressTransform
+            visuallyHiddenText  = Some(Text(Messages("messages__visuallyHidden__address", directorName))), answerAddressTransform
           ))
      ,
       Some(
@@ -127,7 +129,7 @@ class EstablisherCompanyDirectorDetailsCYAHelper
             id                  = AddressYearsId(establisherIndex, directorIndex),
             message             = Message("addressYears.title", directorName).resolve,
             url                 = Some(addressRoutes.AddressYearsController.onPageLoad(establisherIndex, directorIndex, CheckMode).url),
-            visuallyHiddenText  = Some(msg"messages__visuallyhidden__addressYears".withArgs(directorName)), answerBooleanTransform
+            visuallyHiddenText  = Some(Text(Messages("messages__visuallyhidden__addressYears", directorName))), answerBooleanTransform
           ))
       ,
       if (ua.get(AddressYearsId(establisherIndex, directorIndex)).contains(true)) {
@@ -137,20 +139,20 @@ class EstablisherCompanyDirectorDetailsCYAHelper
           id = PreviousAddressId(establisherIndex, directorIndex),
           message = Message("previousAddressList_cya_label", directorName).resolve,
           url = Some(addressRoutes.EnterPreviousPostcodeController.onPageLoad(establisherIndex, directorIndex, CheckMode).url),
-          visuallyHiddenText = Some(msg"messages__visuallyHidden__previousAddress".withArgs(directorName)), answerAddressTransform
+          visuallyHiddenText = Some(Text(Messages("messages__visuallyHidden__previousAddress", directorName))), answerAddressTransform
         ))
       },
       Some(answerOrAddRow(
         id                  = EnterEmailId(establisherIndex, directorIndex),
         message             = Message("messages__enterEmail_cya_label", directorName).resolve,
         url                 = Some(contactRoutes.EnterEmailController.onPageLoad(establisherIndex, directorIndex,CheckMode).url),
-        visuallyHiddenText  = Some(msg"messages__enterEmail__cya__visuallyHidden".withArgs(directorName))
+        visuallyHiddenText  = Some(Text(Messages("messages__enterEmail__cya__visuallyHidden", directorName)))
       )),
       Some(answerOrAddRow(
         id                  = EnterPhoneId(establisherIndex, directorIndex),
         message             = Message("messages__enterPhone_cya_label", directorName).resolve,
         url                 = Some(contactRoutes.EnterPhoneNumberController.onPageLoad(establisherIndex, directorIndex, CheckMode).url),
-        visuallyHiddenText  = Some(msg"messages__enterPhone__cya__visuallyHidden".withArgs(directorName))
+        visuallyHiddenText  = Some(Text(Messages("messages__enterPhone__cya__visuallyHidden", directorName)))
       ))
     ).flatten
     rowsWithDynamicIndices(rowsWithoutDynamicIndices)

@@ -18,7 +18,7 @@ package controllers.beforeYouStartSpoke
 
 import controllers.Retrievals
 import controllers.actions._
-import helpers.cya.{BeforeYouStartCYAHelper, CYAHelperForTwirl}
+import helpers.cya.{BeforeYouStartCYAHelper, CYAHelper}
 import identifiers.beforeYouStart.SchemeNameId
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -52,7 +52,7 @@ class CheckYourAnswersController @Inject()(
 
         Ok(checkYourAnswersView(
           controllers.routes.TaskListController.onPageLoad.url,
-          CYAHelperForTwirl.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+          CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
           cyaHelper.rowsForCYA(isEnabledChange)
         ))
     }
