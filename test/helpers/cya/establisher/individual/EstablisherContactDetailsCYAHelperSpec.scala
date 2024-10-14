@@ -29,9 +29,10 @@ import org.scalatest.wordspec.AnyWordSpec
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
-import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{Html, MessageInterpolators}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, Text, Value}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Key, SummaryListRow}
+import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.Data.{credId, psaId, pstr, schemeName}
 import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
@@ -56,28 +57,33 @@ class EstablisherContactDetailsCYAHelperSpec extends AnyWordSpec with Matchers w
 
       val result = establisherContactDetailsCYAHelper.contactDetailsRows(0)(dataRequest(ua), messages)
 
-      result.head mustBe Row(
-        key = Key(msg"${Message("messages__enterEmail_cya_label", establisherName.fullName).resolve}", classes = Seq("govuk-!-width-one-half")),
-        value = Value(Literal("test@test.com")),
-        actions = Seq(Action(
-          content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
-          href = controllers.establishers.individual.contact.routes.EnterEmailController.onPageLoad(0, CheckMode).url,
-          visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__enterEmail__cya__visuallyHidden", establisherName.fullName))),
-          attributes = Map("id" -> "cya-0-0-change")
+      result.head mustBe SummaryListRow(
+        key = Key(Text(Messages("messages__enterEmail_cya_label", establisherName.fullName)), classes = "govuk-!-width-one-half"),
+        value = Value(Text("test@test.com")),
+        actions = Some(Actions(
+          items = Seq(ActionItem(
+            content = HtmlContent(s"<span aria-hidden=true >${messages("site.change")}</span>"),
+            href = controllers.establishers.individual.contact.routes.EnterEmailController.onPageLoad(0, CheckMode).url,
+            visuallyHiddenText = Some(
+              Messages("site.change") + " " +
+              Messages("messages__enterEmail__cya__visuallyHidden", establisherName.fullName)
+            ),
+            attributes = Map("id" -> "cya-0-0-change")
+          ))
         ))
       )
 
-      result(1) mustBe Row(
-        key = Key(msg"${Message("messages__enterPhone_cya_label", establisherName.fullName).resolve}", classes = Seq("govuk-!-width-one-half")),
-        value = Value(Literal("123")),
-        actions = Seq(Action(
-          content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
+      result(1) mustBe SummaryListRow(
+        key = Key(Text(Messages("messages__enterPhone_cya_label", establisherName.fullName)), classes = "govuk-!-width-one-half"),
+        value = Value(Text("123")),
+        actions = Some(Actions(items = Seq(ActionItem(
+          content = HtmlContent(s"<span aria-hidden=true >${messages("site.change")}</span>"),
           href = controllers.establishers.individual.contact.routes.EnterPhoneController.onPageLoad(0, CheckMode).url,
-          visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__enterPhone__cya__visuallyHidden", establisherName.fullName))),
+          visuallyHiddenText = Some(Messages("site.change") + " " +
+            Messages("messages__enterPhone__cya__visuallyHidden", establisherName.fullName)
+          ),
           attributes = Map("id" -> "cya-0-1-change")
-        ))
+        ))))
       )
 
     }
