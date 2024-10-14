@@ -27,7 +27,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import utils.Data.{credId, psaId, pstr}
 import utils.{Data, Enumerable, UserAnswers}
@@ -46,7 +46,7 @@ class AdviserCYAHelperSpec extends AnyWordSpec with Matchers with TryValues with
 
   private def summaryListRowHtml(key: String, value: HtmlContent, target: Option[Link]): SummaryListRow = {
     SummaryListRow(
-      Key(HtmlContent(Messages(key)), "govuk-!-width-one-half"),
+      Key(Text(Messages(key)), "govuk-!-width-one-half"),
       Value(value),
       actions = Some(
         Actions(
@@ -86,8 +86,8 @@ class AdviserCYAHelperSpec extends AnyWordSpec with Matchers with TryValues with
       val result = cyaHelper.detailsRows(dataRequest(ua), messages)
 
       result.head mustBe SummaryListRow(
-        key = Key(HtmlContent(Message("messages__adviser__name__cya")), classes = "govuk-!-width-one-half"),
-        value = Value(HtmlContent(adviserName)),
+        key = Key(Text(Message("messages__adviser__name__cya")), classes = "govuk-!-width-one-half"),
+        value = Value(Text(adviserName)),
         actions = Some(
          Actions(
            items = Seq(
@@ -104,8 +104,8 @@ class AdviserCYAHelperSpec extends AnyWordSpec with Matchers with TryValues with
       )
 
       result(1) mustBe SummaryListRow(
-        key = Key(HtmlContent(Message("messages__enterEmail_cya_label", adviserName)), classes = "govuk-!-width-one-half"),
-        value = Value(HtmlContent(Data.email)),
+        key = Key(Text(Message("messages__enterEmail_cya_label", adviserName)), classes = "govuk-!-width-one-half"),
+        value = Value(Text(Data.email)),
         actions = Some(
           Actions(
             items = Seq(
@@ -122,8 +122,8 @@ class AdviserCYAHelperSpec extends AnyWordSpec with Matchers with TryValues with
       )
 
       result(2) mustBe SummaryListRow(
-        key = Key(HtmlContent(Message("messages__enterPhone_cya_label", adviserName)), classes = "govuk-!-width-one-half"),
-        value = Value(HtmlContent(Data.phone)),
+        key = Key(Text(Message("messages__enterPhone_cya_label", adviserName)), classes = "govuk-!-width-one-half"),
+        value = Value(Text(Data.phone)),
         actions = Some(
           Actions(
             items = Seq(

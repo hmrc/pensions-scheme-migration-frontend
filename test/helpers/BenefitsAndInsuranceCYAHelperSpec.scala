@@ -29,9 +29,8 @@ import org.scalatest.wordspec.AnyWordSpec
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.viewmodels.SummaryList._
-import uk.gov.hmrc.viewmodels.Text.{Literal, Message => GovUKMsg}
-import uk.gov.hmrc.viewmodels.{Html, SummaryList, Text}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Key, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions, SummaryListRow, Value}
 import utils.Data.{credId, psaId, pstr, schemeName}
 import utils.{Enumerable, UserAnswers}
 
@@ -49,33 +48,51 @@ class BenefitsAndInsuranceCYAHelperSpec extends AnyWordSpec with Matchers with T
   case class Link(text: String, target: String, visuallyHiddenText: Option[Text] = None,
     attributes: Map[String, String] = Map.empty)
 
-  private def summaryListRow(key: String, valueMsgKey: String, target: Option[Link] = None): Row = {
-    SummaryList.Row(Key(GovUKMsg(key), List("govuk-!-width-one-half")), Value(GovUKMsg(valueMsgKey)), target.toSeq.map(
-      t => Action(content = Html(s"<span aria-hidden=true >${t.text}</span>"), href = t.target,
-        visuallyHiddenText = t.visuallyHiddenText, attributes = t.attributes)))
+  private def summaryListRow(key: String, valueMsgKey: String, target: Option[Link] = None): SummaryListRow = {
+    SummaryListRow(key = Key(Text(Messages(key)), classes ="govuk-!-width-one-half"), value = Value(Text(Messages(valueMsgKey))),
+      actions = Some(Actions(
+        items = target.toSeq.map( t =>
+          ActionItem(
+            content = HtmlContent(s"<span aria-hidden=true >${t.text}</span>"), href = t.target,
+            visuallyHiddenText = t.visuallyHiddenText.map(_.value), attributes = t.attributes
+          ))
+      ))
+    )
   }
 
-  private def summaryListRowLiteral(key: String, value: String, target: Option[Link]): Row = {
-    SummaryList.Row(Key(GovUKMsg(key), List("govuk-!-width-one-half")), Value(Literal(value)), target.toSeq.map(
-      t => Action(content = Html(s"<span aria-hidden=true >${t.text}</span>"), href = t.target,
-        visuallyHiddenText = t.visuallyHiddenText, attributes = t.attributes)))
+  private def summaryListRowText(key: String, value: String, target: Option[Link]): SummaryListRow = {
+    SummaryListRow(key = Key(Text(Messages(key)), classes ="govuk-!-width-one-half"), value = Value(Text(value)),
+      actions = Some(Actions(
+        items = target.toSeq.map( t =>
+          ActionItem(
+            content = HtmlContent(s"<span aria-hidden=true >${t.text}</span>"), href = t.target,
+            visuallyHiddenText = t.visuallyHiddenText.map(_.value), attributes = t.attributes
+          ))
+      ))
+    )
   }
 
-  private def summaryListRowHtml(key: String, value: Html, target: Option[Link]): Row = {
-    SummaryList.Row(Key(GovUKMsg(key), List("govuk-!-width-one-half")), Value(value), target.toSeq.map(
-      t => Action(content = Html(s"<span aria-hidden=true >${t.text}</span>"), href = t.target,
-        visuallyHiddenText = t.visuallyHiddenText, attributes = t.attributes)))
+  private def summaryListRowHtml(key: String, value: HtmlContent, target: Option[Link]): SummaryListRow = {
+    SummaryListRow(key = Key(Text(Messages(key)), classes ="govuk-!-width-one-half"), value = Value(value),
+      actions = Some(Actions(
+        items = target.toSeq.map( t =>
+          ActionItem(
+            content = HtmlContent(s"<span aria-hidden=true >${t.text}</span>"), href = t.target,
+            visuallyHiddenText = t.visuallyHiddenText.map(_.value), attributes = t.attributes
+          ))
+      ))
+    )
   }
 
-  private def addressAnswer(addr: Address)(implicit messages: Messages): Html = {
+  private def addressAnswer(addr: Address)(implicit messages: Messages): HtmlContent = {
     def addrLineToHtml(l: String): String = s"""<span class="govuk-!-display-block">$l</span>"""
 
-    Html(addrLineToHtml(addr.addressLine1) + addrLineToHtml(addr.addressLine2) + addr.addressLine3
+    HtmlContent(addrLineToHtml(addr.addressLine1) + addrLineToHtml(addr.addressLine2) + addr.addressLine3
       .fold("")(addrLineToHtml) + addr.addressLine4.fold("")(addrLineToHtml) + addr.postcode
       .fold("")(addrLineToHtml) + addrLineToHtml(messages("country." + addr.country)))
   }
 
-  private def answerBenefitsAddressTransform(addr: Address)(implicit messages: Messages): Html = addressAnswer(addr)
+  private def answerBenefitsAddressTransform(addr: Address)(implicit messages: Messages): HtmlContent = addressAnswer(addr)
 
   // scalastyle:off magic.number
   "BenefitsAndInsuranceCYAHelper" must {
@@ -98,13 +115,13 @@ class BenefitsAndInsuranceCYAHelperSpec extends AnyWordSpec with Matchers with T
       result(2) mustBe summaryListRow(key = Messages("howProvideBenefits.h1", schemeName),
         valueMsgKey = "howProvideBenefits.moneyPurchaseOnly", Some(Link(text = Messages("site.change"),
           target = controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onPageLoad.url,
-          visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("howProvideBenefits.visuallyHidden", schemeName))),
+          visuallyHiddenText = Some(Text(Messages("site.change") + " " + Messages("howProvideBenefits.visuallyHidden", schemeName))),
           attributes = Map("id" -> "cya-0-2-change"))))
 
       result(3) mustBe summaryListRow(key = Messages("benefitsType.h1", schemeName),
         valueMsgKey = "benefitsType.cashBalanceBenefits", Some(Link(text = Messages("site.change"),
           target = controllers.benefitsAndInsurance.routes.BenefitsTypeController.onPageLoad.url,
-          visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("benefitsType.visuallyHidden", schemeName))),
+          visuallyHiddenText = Some(Text(Messages("site.change") + " " + Messages("benefitsType.visuallyHidden", schemeName))),
           attributes = Map("id" -> "cya-0-3-change"))))
 
 
@@ -114,25 +131,25 @@ class BenefitsAndInsuranceCYAHelperSpec extends AnyWordSpec with Matchers with T
       result(4) mustBe summaryListRow(key = Messages("areBenefitsSecured.title"), valueMsgKey = "booleanAnswer.true",
         Some(Link(text = Messages("site.change"),
           target = controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onPageLoad.url,
-          visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("areBenefitsSecured.visuallyHidden"))),
+          visuallyHiddenText = Some(Text(Messages("site.change") + " " + Messages("areBenefitsSecured.visuallyHidden"))),
           attributes = Map("id" -> "cya-0-4-change"))))
 
-      result(5) mustBe summaryListRowLiteral(key = Messages("benefitsInsuranceName.title"), value = insurerName, Some(
+      result(5) mustBe summaryListRowText(key = Messages("benefitsInsuranceName.title"), value = insurerName, Some(
         Link(text = Messages("site.change"),
           target = controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onPageLoad.url,
-          visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("benefitsInsuranceName.visuallyHidden"))),
+          visuallyHiddenText = Some(Text(Messages("site.change") + " " + Messages("benefitsInsuranceName.visuallyHidden"))),
           attributes = Map("id" -> "cya-0-5-change"))))
 
-      result(6) mustBe summaryListRowLiteral(key = Messages("benefitsInsurancePolicy.h1", insurerName),
+      result(6) mustBe summaryListRowText(key = Messages("benefitsInsurancePolicy.h1", insurerName),
         value = insurerPolicyNo, Some(Link(text = Messages("site.change"),
           target = controllers.benefitsAndInsurance.routes.BenefitsInsurancePolicyController.onPageLoad.url,
-          visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("benefitsInsurancePolicy.visuallyHidden"))),
+          visuallyHiddenText = Some(Text(Messages("site.change") + " " + Messages("benefitsInsurancePolicy.visuallyHidden"))),
           attributes = Map("id" -> "cya-0-6-change"))))
 
       result(7) mustBe summaryListRowHtml(key = messages("addressList.title", insurerName),
         value = answerBenefitsAddressTransform(insurerAddress), Some(Link(text = Messages("site.change"),
           target = controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onPageLoad.url,
-          visuallyHiddenText = Some(Literal(Messages("site.change") + " " + Messages("addressList.visuallyHidden"))),
+          visuallyHiddenText = Some(Text(Messages("site.change") + " " + Messages("addressList.visuallyHidden"))),
           attributes = Map("id" -> "cya-0-7-change"))))
     }
   }
