@@ -62,7 +62,7 @@ class BenefitsInsurancePolicyControllerSpec extends ControllerSpecBase with Nunj
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
   }
 
   "BenefitsInsurancePolicy Controller" must {

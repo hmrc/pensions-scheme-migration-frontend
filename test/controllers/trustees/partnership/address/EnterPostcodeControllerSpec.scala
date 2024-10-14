@@ -67,7 +67,7 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with JsonMatchers w
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
   }
 
   "EnterPostcode Controller" must {

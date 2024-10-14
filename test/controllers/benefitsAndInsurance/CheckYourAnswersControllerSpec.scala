@@ -61,7 +61,6 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(play.twirl.api.Html("")))
     when(mockCyaHelper.rows(any(), any())).thenReturn(rows)
   }
 

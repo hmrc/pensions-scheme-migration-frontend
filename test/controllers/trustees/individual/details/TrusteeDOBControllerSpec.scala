@@ -116,8 +116,6 @@ class TrusteeDOBControllerSpec
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
       val request = FakeRequest(GET, onPageLoadUrl)
 
       val ua =
@@ -173,8 +171,6 @@ class TrusteeDOBControllerSpec
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
         fakeRequest

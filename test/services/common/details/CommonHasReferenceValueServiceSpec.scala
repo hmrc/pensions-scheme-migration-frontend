@@ -43,7 +43,7 @@ class CommonHasReferenceValueServiceSpec extends ControllerSpecBase with CommonS
     messagesApi = messagesApi
   )
 
-  override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
+  override def beforeEach(): Unit = reset(mockUserAnswersCacheConnector)
 
   private val formProviderYesNo: YesNoFormProvider = new YesNoFormProvider()
   private val id: TypedIdentifier[Boolean] = new TypedIdentifier[Boolean] {}

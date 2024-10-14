@@ -62,7 +62,6 @@ class CurrentMembersControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
 

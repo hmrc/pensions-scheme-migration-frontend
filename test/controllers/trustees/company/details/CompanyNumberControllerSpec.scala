@@ -73,7 +73,7 @@ class CompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSuppor
         messagesApi = messagesApi
       ))
 
-  override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
+  override def beforeEach(): Unit = reset(mockUserAnswersCacheConnector)
 
   "CompanyNumberController" must {
     "return OK and the correct view for a GET" in {

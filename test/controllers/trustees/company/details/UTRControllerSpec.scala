@@ -59,7 +59,7 @@ class UTRControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
         messagesApi = messagesApi
       ))
 
-  override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
+  override def beforeEach(): Unit = reset(mockUserAnswersCacheConnector)
 
   "UTRController" must {
     "return OK and the correct view for a GET" in {

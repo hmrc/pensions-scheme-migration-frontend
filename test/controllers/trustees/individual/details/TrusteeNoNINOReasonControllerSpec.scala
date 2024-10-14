@@ -52,7 +52,7 @@ class TrusteeNoNINOReasonControllerSpec
     super.beforeEach()
     mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
     when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
   }
 
   private val httpPathGET = controllers.trustees.individual.details.routes.TrusteeNoNINOReasonController.onPageLoad(index, mode).url

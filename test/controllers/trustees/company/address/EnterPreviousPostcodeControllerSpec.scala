@@ -67,7 +67,7 @@ class EnterPreviousPostcodeControllerSpec extends ControllerSpecBase with JsonMa
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
   }
 
   "EnterPreviousPostcode Controller" must {

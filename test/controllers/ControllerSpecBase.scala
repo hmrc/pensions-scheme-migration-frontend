@@ -42,7 +42,6 @@ import utils.{CountryOptions, Enumerable, FakeCountryOptions}
 trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerable.Implicits with MockitoSugar {
 
   override def beforeEach(): Unit = {
-    Mockito.reset(mockRenderer)
     Mockito.reset(mockUserAnswersCacheConnector)
     Mockito.reset(mockCompoundNavigator)
     when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
@@ -59,7 +58,6 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
   def modules: Seq[GuiceableModule] = Seq(
     bind[AuthAction].to[FakeAuthAction],
     bind[DataRequiredAction].to[DataRequiredActionImpl],
-    bind[NunjucksRenderer].toInstance(mockRenderer),
     bind[AppConfig].toInstance(mockAppConfig),
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
     bind[CompoundNavigator].toInstance(mockCompoundNavigator),

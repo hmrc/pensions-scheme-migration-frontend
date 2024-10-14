@@ -67,7 +67,6 @@ class SchemeSuccessControllerSpec extends ControllerSpecBase with JsonMatchers w
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
     when(mockUserAnswersCacheConnector.remove(any())(any(), any())).thenReturn(Future.successful(Ok))
     when(mockCurrentPstrCacheConnector.remove(any(), any())).thenReturn(Future.successful(Ok))
     when(mockLockCacheConnector.removeLock(any())(any(), any())).thenReturn(Future.successful(Ok))

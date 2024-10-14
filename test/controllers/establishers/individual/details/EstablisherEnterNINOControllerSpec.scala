@@ -62,7 +62,6 @@ class EstablisherEnterNINOControllerSpec
 
   override def beforeEach(): Unit = {
     reset(
-      mockRenderer,
       mockUserAnswersCacheConnector
     )
   }

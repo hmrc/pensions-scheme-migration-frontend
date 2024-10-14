@@ -32,7 +32,6 @@ import play.api.mvc._
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import utils.Data.{migrationLock, psaId}
 import utils.UserAnswers
 
@@ -49,7 +48,6 @@ trait SpecBase
   val onwardCall: Call = Call("GET", "onwardCall")
 
   protected val mockAppConfig: AppConfig = mock[AppConfig]
-  protected val mockRenderer: NunjucksRenderer = mock[NunjucksRenderer]
   protected val mockUserAnswersCacheConnector: UserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   implicit val global: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global

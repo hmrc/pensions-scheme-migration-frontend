@@ -63,7 +63,6 @@ class PartnerEnterUTRControllerSpec
 
   override def beforeEach(): Unit = {
     reset(
-      mockRenderer,
       mockUserAnswersCacheConnector
     )
   }

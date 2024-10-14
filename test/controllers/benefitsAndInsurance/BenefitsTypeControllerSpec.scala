@@ -59,7 +59,7 @@ class BenefitsTypeControllerSpec extends ControllerSpecBase with NunjucksSupport
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
   }
   val request = FakeRequest(GET, httpPathGET)
   override val onwardCall: Call = Call("POST", httpPathPOST)

@@ -69,7 +69,7 @@ class InsurerEnterPostcodeControllerSpec extends ControllerSpecBase with JsonMat
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
   }
 
   "InsurerEnterPostcode Controller" must {

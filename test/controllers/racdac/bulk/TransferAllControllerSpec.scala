@@ -134,9 +134,6 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val request = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
 
       val result: Future[Result] = controller.onSubmit(request)

@@ -66,7 +66,7 @@ class WhatYouWillNeedControllerSpec
 
   "WhatYouWillNeedController" must {
     "return OK and the correct view for a GET" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
 
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
       val req = fakeDataRequest(userAnswers)

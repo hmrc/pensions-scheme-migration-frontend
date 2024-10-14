@@ -62,7 +62,7 @@ class HowProvideBenefitsControllerSpec extends ControllerSpecBase with NunjucksS
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
   }
 
   "HowProvideBEnefits Controller" must {

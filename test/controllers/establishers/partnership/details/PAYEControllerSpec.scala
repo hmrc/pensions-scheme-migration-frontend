@@ -61,7 +61,7 @@ class PAYEControllerSpec extends ControllerSpecBase with NunjucksSupport with Js
         messagesApi = messagesApi
       ))
 
-  override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
+  override def beforeEach(): Unit = reset(mockUserAnswersCacheConnector)
 
   "PAYEController" must {
     "return OK and the correct view for a GET" in {

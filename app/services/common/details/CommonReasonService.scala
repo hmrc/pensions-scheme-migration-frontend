@@ -38,7 +38,6 @@ import scala.util.Try
 
 @Singleton
 class CommonReasonService @Inject()(val controllerComponents: MessagesControllerComponents,
-                                    val renderer: Renderer,
                                     val userAnswersCacheConnector: UserAnswersCacheConnector,
                                     val navigator: CompoundNavigator,
                                     val messagesApi: MessagesApi,

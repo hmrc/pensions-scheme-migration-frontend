@@ -77,7 +77,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with JsonMatchers wi
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
   }
 
   "AddressYears Controller" must {
