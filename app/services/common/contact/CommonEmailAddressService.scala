@@ -44,8 +44,7 @@ class CommonEmailAddressService @Inject()(
                                            val navigator: CompoundNavigator,
                                            val messagesApi: MessagesApi,
                                            emailView: EmailView
-                                         ) extends NunjucksSupport
-  with FrontendHeaderCarrierProvider
+                                         ) extends FrontendHeaderCarrierProvider
   with I18nSupport {
 
   def get(

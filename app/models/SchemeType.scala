@@ -19,9 +19,13 @@ package models
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json._
+import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.Aliases.Label
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.WithName
-import viewmodels.forNunjucks.{Hint, Label, LabelClasses, Radios, TextInput, Conditional}
 
 sealed trait SchemeType
 
@@ -36,51 +40,55 @@ object SchemeType {
   val mappings: Map[String, SchemeType] =
     values.map(v => (v.toString, v)).toMap
 
-  def radios(form: Form[_])(implicit messages: Messages): Seq[Radios.Item] = {
-    val items: Seq[Radios.Radio] = values.map(
+  def radios(form: Form[_])(implicit messages: Messages): Seq[RadioItem] = {
+    val field = form("schemeType.type")
+    val items: Seq[RadioItem] = values.map(
       value =>
-        Radios.Radio(
-          label = msg"messages__scheme_type_${value.toString}",
-          value = value.toString,
-          hint = Some(Hint(msg"messages__scheme_type_${value.toString}_hint", "hint-id")),
-          labelClasses = Some(LabelClasses(Seq("govuk-!-font-weight-bold")))
+      RadioItem(
+        label = Some(Label(
+          classes = "govuk-!-font-weight-bold",
+          content = Text(msg"messages__scheme_type_${value.toString}".resolve)
+        )),
+        value = Some(value.toString),
+        hint = Some(Hint(
+          content = Text(msg"messages__scheme_type_${value.toString}_hint".resolve),
+          id = Some("hint-id")
+        )),
+        checked = field.value.contains(value.toString)
+      )
+    )
+
+    val inputHtml: Messages => Html = {
+      val id = "schemeType.schemeTypeDetails"
+      val value = form("schemeType.schemeTypeDetails").value.getOrElse("")
+
+      messages =>
+        Html(
+          s"<div class='govuk-form-group'>" +
+            s"<label class='govuk-label govuk-label--s' for='${id.replace(".", "_")}'>${msg"messages__scheme_details__type_other_more".resolve(messages)}</label>" +
+            s"<input class='govuk-input govuk-!-width-one-third' id='${id.replace(".", "_")}' name='schemeType.schemeTypeDetails' value='$value' type='text'>" +
+            s"</div>"
         )
-    )
-
-    val input = TextInput(
-      id = "schemeType.schemeTypeDetails",
-      value = form("schemeType.schemeTypeDetails").value.getOrElse(""),
-      name = "schemeType.schemeTypeDetails",
-      label = Label(msg"messages__scheme_details__type_other_more", Seq("govuk-label govuk-label--s"))
-    )
-
-    val otherItem: Radios.Radio = Radios.Radio(
-      label = msg"messages__scheme_type_other",
-      value = Other.toString.toLowerCase,
-      hint = Some(Hint(msg"messages__scheme_type_other_hint", "hint-id")),
-      conditional = Some(Conditional(TextInput.inputHtml(input, messages))),
-      labelClasses = Some(LabelClasses(Seq("govuk-!-font-weight-bold")))
-    )
-
-    Radios(form("schemeType.type"), items :+ otherItem)
-  }
-
-  def getSchemeType(schemeTypeStr: Option[String]): Option[String] =
-    schemeTypeStr.flatMap {
-      schemeStr =>
-        List(
-          SingleTrust.toString,
-          GroupLifeDeath.toString,
-          BodyCorporate.toString,
-          "other"
-        ).find(
-          scheme =>
-            schemeStr.toLowerCase.contains(scheme.toLowerCase)
-        ).map {
-          str =>
-            s"messages__scheme_details__type_$str"
-        }
     }
+
+    val otherItem = {
+      RadioItem(
+        label = Some(Label(
+          classes = "govuk-!-font-weight-bold",
+          content = Text(msg"messages__scheme_type_other".resolve)
+        )),
+        value = Some(Other.toString.toLowerCase),
+        hint = Some(Hint(
+          content = Text(msg"messages__scheme_type_other_hint".resolve),
+          id = Some("hint-id")
+        )),
+        conditionalHtml = Some(inputHtml(messages)),
+        checked = field.value.contains(Other.toString.toLowerCase)
+      )
+    }
+
+    items :+ otherItem
+  }
 
   case class Other(schemeTypeDetails: String) extends WithName("other") with SchemeType
 

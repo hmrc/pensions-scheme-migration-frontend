@@ -86,7 +86,7 @@ class SchemeTypeControllerSpec extends ControllerSpecBase
         form,
         Data.schemeName,
         routes.SchemeTypeController.onSubmit,
-        TwirlMigration.toTwirlRadiosWithHintText(SchemeType.radios(form))
+        SchemeType.radios(form)
       )(fakeRequest, messages)
 
       status(result) mustBe OK

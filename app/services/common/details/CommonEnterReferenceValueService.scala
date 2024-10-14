@@ -42,7 +42,7 @@ class CommonEnterReferenceValueService @Inject()(val controllerComponents: Messa
                                                  val messagesApi: MessagesApi,
                                                  enterReferenceValueView: EnterReferenceValueView,
                                                  enterReferenceValueWithHintView: EnterReferenceValueWithHintView
-                                                ) extends NunjucksSupport with FrontendHeaderCarrierProvider with I18nSupport {
+                                                ) extends FrontendHeaderCarrierProvider with I18nSupport {
 
   def get(
            pageTitle: String,

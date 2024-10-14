@@ -63,7 +63,7 @@ class SchemeTypeController @Inject()(
               preparedForm,
               schemeName,
               routes.SchemeTypeController.onSubmit,
-              TwirlMigration.toTwirlRadiosWithHintText(SchemeType.radios(preparedForm))
+              SchemeType.radios(preparedForm)
             ))
           }
       )
@@ -80,7 +80,7 @@ class SchemeTypeController @Inject()(
                   formWithErrors,
                   schemeName,
                   routes.SchemeTypeController.onSubmit,
-                  TwirlMigration.toTwirlRadiosWithHintText(SchemeType.radios(formWithErrors))
+                  SchemeType.radios(formWithErrors)
                 )
               ))
             },

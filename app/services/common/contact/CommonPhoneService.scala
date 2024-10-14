@@ -59,8 +59,7 @@ class CommonPhoneService @Inject()(
                                     val navigator: CompoundNavigator,
                                     val messagesApi: MessagesApi,
                                     phoneView: PhoneView
-                                  ) extends NunjucksSupport
-  with FrontendHeaderCarrierProvider
+                                  ) extends FrontendHeaderCarrierProvider
   with I18nSupport {
 
   def get(

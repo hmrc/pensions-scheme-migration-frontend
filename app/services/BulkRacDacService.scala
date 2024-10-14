@@ -36,7 +36,7 @@ import java.time.format.DateTimeFormatter
 
 class BulkRacDacService @Inject()(appConfig: AppConfig,
                                   paginationService: PaginationService,
-                                  view: RacDacsBulkListView) extends NunjucksSupport {
+                                  view: RacDacsBulkListView) {
 
   private def pagination: Int = appConfig.listSchemePagination
 
