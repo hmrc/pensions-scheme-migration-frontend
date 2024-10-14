@@ -62,7 +62,7 @@ class FutureMembersController @Inject()(override val messagesApi: MessagesApi,
           schemeName,
           Messages("futureMembers.title", Messages("messages__the_scheme")),
           Messages("futureMembers.title", schemeName),
-          TwirlMigration.toTwirlRadios(Members.radios(preparedForm)),
+          Members.radios(preparedForm),
           routes.FutureMembersController.onSubmit
         )))
       }
@@ -78,7 +78,7 @@ class FutureMembersController @Inject()(override val messagesApi: MessagesApi,
               schemeName,
               Messages("futureMembers.title", Messages("messages__the_scheme")),
               Messages("futureMembers.title", schemeName),
-              TwirlMigration.toTwirlRadios(Members.radios(formWithErrors)),
+              Members.radios(formWithErrors),
               routes.FutureMembersController.onSubmit
             )))
           },

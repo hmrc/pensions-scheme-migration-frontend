@@ -55,7 +55,7 @@ class TrusteeKindController @Inject()(
           formWithData,
           controllers.trustees.routes.TrusteeKindController.onSubmit(index),
           existingSchemeName.getOrElse(throw new RuntimeException("Scheme name not available")),
-          TwirlMigration.toTwirlRadios(TrusteeKind.radios(formWithData))
+          TrusteeKind.radios(formWithData)
         ))
     }
 
@@ -67,7 +67,7 @@ class TrusteeKindController @Inject()(
             formWithErrors,
             controllers.trustees.routes.TrusteeKindController.onSubmit(index),
             existingSchemeName.getOrElse(throw new RuntimeException("Scheme name not available")),
-            TwirlMigration.toTwirlRadios(TrusteeKind.radios(formWithErrors))
+            TrusteeKind.radios(formWithErrors)
           ))
         },
         value => {

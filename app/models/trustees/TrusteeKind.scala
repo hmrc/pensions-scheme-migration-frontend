@@ -17,7 +17,10 @@
 package models.trustees
 
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.mvc.JavascriptLiteral
+import uk.gov.hmrc.govukfrontend.views.Aliases.Label
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import uk.gov.hmrc.viewmodels.{MessageInterpolators, Radios}
 import utils.{Enumerable, WithName}
 
@@ -28,9 +31,16 @@ object TrusteeKind {
     Company, Individual, Partnership
   )
 
-  def radios(form: Form[_]): Seq[Radios.Item] = {
-    val items = values.map(value => Radios.Radio(msg"kind.${value.toString}", value.toString))
-    Radios(form("value"), items)
+  def radios(form: Form[_])(implicit messages: Messages): Seq[RadioItem] = {
+    values.map(value =>
+      RadioItem(
+        label = Some(Label(
+          Some(Messages(s"kind.${value.toString}"))
+        )),
+        value = Some(value.toString),
+        checked = form("value").value.contains(value.toString)
+      )
+    )
   }
 
   case object Company extends WithName("company") with TrusteeKind

@@ -17,6 +17,8 @@
 package models
 
 import play.api.data.Form
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Label, RadioItem, Text}
 import uk.gov.hmrc.viewmodels.{MessageInterpolators, Radios}
 import utils.{Enumerable, WithName}
 
@@ -27,9 +29,16 @@ object Members {
     None, One, TwoToEleven, TwelveToFifty, FiftyOneToTenThousand, MoreThanTenThousand
   )
 
-  def radios(form: Form[_]): Seq[Radios.Item] = {
-    val items = values.map(value => Radios.Radio(msg"members.${value.toString}", value.toString))
-    Radios(form("value"), items)
+  def radios(form: Form[_])(implicit messages: Messages): Seq[RadioItem] = {
+    values.map(value =>
+      RadioItem(
+        label = Some(Label(
+          Some(Messages("members.${value.toString}"))
+        )),
+        value = Some(value.toString),
+        checked = form("value").value.contains(value.toString)
+      )
+    )
   }
 
   case object None extends WithName("opt1") with Members

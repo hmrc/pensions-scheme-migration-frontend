@@ -81,7 +81,7 @@ class CurrentMembersControllerSpec extends ControllerSpecBase with JsonMatchers 
         schemeName,
         messages("currentMembers.title", Messages("messages__the_scheme")),
         messages("currentMembers.title", schemeName),
-        TwirlMigration.toTwirlRadios(Members.radios(form)),
+        Members.radios(form),
         onwardCall
       )(request, messages)
 
@@ -103,7 +103,7 @@ class CurrentMembersControllerSpec extends ControllerSpecBase with JsonMatchers 
         schemeName,
         messages("currentMembers.title", Messages("messages__the_scheme")),
         messages("currentMembers.title", schemeName),
-        TwirlMigration.toTwirlRadios(Members.radios(form)),
+        Members.radios(form),
         onwardCall
       )(request, messages)
 

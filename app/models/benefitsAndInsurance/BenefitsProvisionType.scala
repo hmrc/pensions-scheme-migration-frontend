@@ -17,6 +17,9 @@
 package models.benefitsAndInsurance
 
 import play.api.data.Form
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import uk.gov.hmrc.viewmodels.{Radios, _}
 import utils.{Enumerable, InputOption, WithName}
 
@@ -39,16 +42,25 @@ object BenefitsProvisionType extends Enumerable.Implicits {
       InputOption(value.toString, s"benefitsProvisionType.${value.toString}")
     }
 
-  def radios(form: Form[_]): Seq[Radios.Item] = {
-
+  def radios(form: Form[_])(implicit messages: Messages): Seq[RadioItem] = {
     val field = form("value")
-    val items = Seq(
-      Radios.Radio(msg"howProvideBenefits.moneyPurchaseOnly", MoneyPurchaseOnly.toString),
-      Radios.Radio(msg"howProvideBenefits.definedBenefitsOnly", DefinedBenefitsOnly.toString),
-      Radios.Radio(msg"howProvideBenefits.mixedBenefits", MixedBenefits.toString)
+    Seq(
+      RadioItem(
+        label = Some(Label(Some(Messages("howProvideBenefits.moneyPurchaseOnly")))),
+        value = Some(MoneyPurchaseOnly.toString),
+        checked = field.value.contains(MoneyPurchaseOnly.toString)
+      ),
+      RadioItem(
+        label = Some(Label(Some(Messages("howProvideBenefits.definedBenefitsOnly")))),
+        value = Some(DefinedBenefitsOnly.toString),
+        checked = field.value.contains(DefinedBenefitsOnly.toString)
+      ),
+      RadioItem(
+        label = Some(Label(Some(Messages("howProvideBenefits.mixedBenefits")))),
+        value = Some(MixedBenefits.toString),
+        checked = field.value.contains(MixedBenefits.toString)
+      )
     )
-
-    Radios(field, items)
   }
 
   implicit val enumerable: Enumerable[BenefitsProvisionType] =

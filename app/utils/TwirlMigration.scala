@@ -25,12 +25,6 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actio
 
 object TwirlMigration extends Logging {
 
-  def toTwirlRadios(nunjucksRadios: Seq[uk.gov.hmrc.viewmodels.Radios.Item])(implicit messages: Messages): Seq[RadioItem] = {
-    nunjucksRadios.map(radio => {
-      RadioItem(content = Text(radio.text.resolve), value = Some(radio.value), checked = radio.checked)
-    })
-  }
-
   private def resolveContent(content: hmrc.viewmodels.Content)(implicit messages: Messages): Content = {
     content match {
       case text: hmrc.viewmodels.Text => Text(text.resolve)

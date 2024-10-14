@@ -28,7 +28,7 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import renderer.Renderer
+
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.UserAnswers

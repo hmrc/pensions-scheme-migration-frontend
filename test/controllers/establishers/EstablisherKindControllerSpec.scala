@@ -78,7 +78,7 @@ class EstablisherKindControllerSpec extends ControllerSpecBase with JsonMatchers
       val view = application.injector.instanceOf[EstablisherKindView].apply(
         form,
         schemeName,
-        TwirlMigration.toTwirlRadios(EstablisherKind.radios(form)),
+        EstablisherKind.radios(form),
         routes.EstablisherKindController.onSubmit(index)
       )(request, messages)
 

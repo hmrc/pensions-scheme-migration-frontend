@@ -78,7 +78,7 @@ class HowProvideBenefitsControllerSpec extends ControllerSpecBase with JsonMatch
       val view = application.injector.instanceOf[HowProvideBenefitsView].apply(
         form,
         schemeName,
-        TwirlMigration.toTwirlRadios(BenefitsProvisionType.radios(form)),
+        BenefitsProvisionType.radios(form),
         onwardCall
       )(request, messages)
 
@@ -102,7 +102,7 @@ class HowProvideBenefitsControllerSpec extends ControllerSpecBase with JsonMatch
       val view = application.injector.instanceOf[HowProvideBenefitsView].apply(
         filledFrom,
         schemeName,
-        TwirlMigration.toTwirlRadios(BenefitsProvisionType.radios(filledFrom)),
+        BenefitsProvisionType.radios(filledFrom),
         onwardCall
       )(request, messages)
 
@@ -115,11 +115,11 @@ class HowProvideBenefitsControllerSpec extends ControllerSpecBase with JsonMatch
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val req = httpGETRequest(httpPathGET)
+      val result: Future[Result] = route(application, req).value
 
       status(result) mustEqual SEE_OTHER
-      // TODO
-//    redirectLocation(result).value mustBe controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.routes.SessionExpiredController.onPageLoad().absoluteURL()(req)
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {

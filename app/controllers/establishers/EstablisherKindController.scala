@@ -57,7 +57,7 @@ class EstablisherKindController @Inject()(
         Ok(view(
           formWithData,
           existingSchemeName.getOrElse("Scheme"),
-          TwirlMigration.toTwirlRadios(EstablisherKind.radios(formWithData)),
+          EstablisherKind.radios(formWithData),
           routes.EstablisherKindController.onSubmit(index)
         ))
     }
@@ -69,7 +69,7 @@ class EstablisherKindController @Inject()(
           Future.successful(BadRequest(view(
             formWithErrors,
             existingSchemeName.getOrElse("Scheme"),
-            TwirlMigration.toTwirlRadios(EstablisherKind.radios(formWithErrors)),
+            EstablisherKind.radios(formWithErrors),
             routes.EstablisherKindController.onSubmit(index)
           )))
         },

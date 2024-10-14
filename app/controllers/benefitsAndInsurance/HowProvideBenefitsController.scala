@@ -62,7 +62,7 @@ class HowProvideBenefitsController @Inject()(override val messagesApi: MessagesA
         Future.successful(Ok(view(
           preparedForm,
           schemeName,
-          TwirlMigration.toTwirlRadios(BenefitsProvisionType.radios(preparedForm)),
+          BenefitsProvisionType.radios(preparedForm),
           controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onSubmit
         )))
     }
@@ -78,7 +78,7 @@ class HowProvideBenefitsController @Inject()(override val messagesApi: MessagesA
               Future.successful(BadRequest(view(
                 formWithErrors,
                 schemeName,
-                TwirlMigration.toTwirlRadios(BenefitsProvisionType.radios(formWithErrors)),
+                BenefitsProvisionType.radios(formWithErrors),
                 controllers.benefitsAndInsurance.routes.BenefitsTypeController.onSubmit
               )))
             },

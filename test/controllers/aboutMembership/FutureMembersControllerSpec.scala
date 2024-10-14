@@ -79,7 +79,7 @@ class FutureMembersControllerSpec extends ControllerSpecBase with JsonMatchers w
         schemeName,
         messages("futureMembers.title", Messages("messages__the_scheme")),
         messages("futureMembers.title", schemeName),
-        TwirlMigration.toTwirlRadios(Members.radios(form)),
+        Members.radios(form),
         onwardCall
       )(request, messages)
 
@@ -102,7 +102,7 @@ class FutureMembersControllerSpec extends ControllerSpecBase with JsonMatchers w
         schemeName,
         messages("futureMembers.title", Messages("messages__the_scheme")),
         messages("futureMembers.title", schemeName),
-        TwirlMigration.toTwirlRadios(Members.radios(form)),
+        Members.radios(form),
         onwardCall
       )(request, messages)
 

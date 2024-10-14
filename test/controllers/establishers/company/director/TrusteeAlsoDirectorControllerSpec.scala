@@ -83,7 +83,7 @@ class TrusteeAlsoDirectorControllerSpec extends ControllerSpecBase
         form,
         messages("messages__directors__prefill__title"),
         messages("messages__directors__prefill__heading", companyDetails.companyName),
-        TwirlMigration.toTwirlRadios(DataPrefillRadio.radios(form, seqTrustee)),
+        DataPrefillRadio.radios(form, seqTrustee),
         Data.schemeName,
         routes.TrusteeAlsoDirectorController.onSubmit(0)
       )(fakeRequest, messages)

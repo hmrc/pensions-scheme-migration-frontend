@@ -75,7 +75,7 @@ class TrusteeKindControllerSpec extends ControllerSpecBase with JsonMatchers wit
           form,
           controllers.trustees.routes.TrusteeKindController.onSubmit(index),
           schemeName,
-          TwirlMigration.toTwirlRadios(TrusteeKind.radios(form))
+          TrusteeKind.radios(form)
         )(req, implicitly)
       )
     }

@@ -61,7 +61,7 @@ class TrusteeAlsoDirectorController @Inject()(override val messagesApi: Messages
               form,
               msg"messages__directors__prefill__title".resolve,
               msg"messages__directors__prefill__heading".withArgs(companyName.companyName).resolve,
-              TwirlMigration.toTwirlRadios(DataPrefillRadio.radios(form, seqTrustee)),
+              DataPrefillRadio.radios(form, seqTrustee),
               schemeName,
               routes.TrusteeAlsoDirectorController.onSubmit(establisherIndex)
             )
@@ -84,7 +84,7 @@ class TrusteeAlsoDirectorController @Inject()(override val messagesApi: Messages
                 formWithErrors,
                 msg"messages__directors__prefill__title".resolve,
                 msg"messages__directors__prefill__heading".withArgs(companyName.companyName).resolve,
-                TwirlMigration.toTwirlRadios(DataPrefillRadio.radios(form, seqTrustee)),
+                DataPrefillRadio.radios(form, seqTrustee),
                 schemeName,
                 routes.TrusteeAlsoDirectorController.onSubmit(establisherIndex)
               )

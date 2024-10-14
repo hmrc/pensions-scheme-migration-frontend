@@ -77,7 +77,7 @@ class BenefitsTypeControllerSpec extends ControllerSpecBase with JsonMatchers wi
       val view = application.injector.instanceOf[BenefitsTypeView].apply(
         form,
         schemeName,
-        TwirlMigration.toTwirlRadios(BenefitsType.radios(form)),
+        BenefitsType.radios(form),
         onwardCall
       )(request, messages)
 
@@ -100,7 +100,7 @@ class BenefitsTypeControllerSpec extends ControllerSpecBase with JsonMatchers wi
       val view = application.injector.instanceOf[BenefitsTypeView].apply(
         filledFrom,
         schemeName,
-        TwirlMigration.toTwirlRadios(BenefitsType.radios(filledFrom)),
+        BenefitsType.radios(filledFrom),
         onwardCall
       )(request, messages)
 

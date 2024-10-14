@@ -31,7 +31,7 @@ import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
-import renderer.Renderer
+
 import services.common.details.CommonEnterReferenceValueService
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.{partnershipDetails, schemeName, ua}
