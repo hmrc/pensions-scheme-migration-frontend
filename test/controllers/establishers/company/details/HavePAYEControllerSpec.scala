@@ -73,7 +73,7 @@ class HavePAYEControllerSpec extends ControllerSpecBase with JsonMatchers with T
         schemeName,
         messages("messages__havePAYE", messages("messages__company")),
         messages("messages__havePAYE", companyDetails.companyName),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         "govuk-visually-hidden",
         Seq(messages("messages__havePAYE__hint")),
         routes.HavePAYEController.onSubmit(0, NormalMode)
@@ -94,7 +94,7 @@ class HavePAYEControllerSpec extends ControllerSpecBase with JsonMatchers with T
         schemeName,
         messages("messages__havePAYE", messages("messages__company")),
         messages("messages__havePAYE", companyDetails.companyName),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(filledFrom("value"))),
+        utils.Radios.yesNo(filledFrom("value")),
         "govuk-visually-hidden",
         Seq(messages("messages__havePAYE__hint")),
         routes.HavePAYEController.onSubmit(0, NormalMode)

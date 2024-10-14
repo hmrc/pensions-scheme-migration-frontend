@@ -27,7 +27,7 @@ import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Table, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, TableRow}
 import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, Radios}
+import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.TwirlMigration
 import views.html.racdac.RacDacsBulkListView
 
@@ -88,7 +88,7 @@ class BulkRacDacService @Inject()(appConfig: AppConfig,
           ),
           md.name,
           appConfig.psaOverviewUrl,
-          TwirlMigration.toTwirlRadios(Radios.yesNo(form("value")))
+          utils.Radios.yesNo(form("value"))
         )
         if(form.hasErrors) BadRequest(viewHtml) else Ok(viewHtml)
     }

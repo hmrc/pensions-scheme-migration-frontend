@@ -88,7 +88,7 @@ class WorkingKnowledgeControllerSpec extends ControllerSpecBase
         form,
         Some(Data.schemeName),
         routes.WorkingKnowledgeController.onSubmit,
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value")))
+        utils.Radios.yesNo(form("value"))
       )(fakeRequest, messages)
 
       status(result) mustBe OK

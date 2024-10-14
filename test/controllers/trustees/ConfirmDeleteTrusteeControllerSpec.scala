@@ -82,7 +82,7 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with JsonMat
         messages("messages__confirmDeleteTrustee__title"),
         trusteeName,
         None,
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         schemeName,
         routes.ConfirmDeleteTrusteeController.onSubmit(index, kind)
       )(request, messages)

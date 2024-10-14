@@ -76,7 +76,7 @@ class AreBenefitsSecuredControllerSpec extends ControllerSpecBase with JsonMatch
       val view = application.injector.instanceOf[AreBenefitsSecuredView].apply(
         form,
         schemeName,
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         onwardCall
       )(request, messages)
 
@@ -96,7 +96,7 @@ class AreBenefitsSecuredControllerSpec extends ControllerSpecBase with JsonMatch
       val view = application.injector.instanceOf[AreBenefitsSecuredView].apply(
         form.fill(true),
         schemeName,
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         onwardCall
       )(request, messages)
 

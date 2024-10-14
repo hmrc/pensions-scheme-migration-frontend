@@ -101,7 +101,7 @@ class AddPartnersControllerSpec extends ControllerSpecBase with JsonMatchers wit
         1,
         mockAppConfig.maxPartners,
         Seq(PartnerEntity(PartnerNameId(0,0), partnerName.fullName, false, false, true, 1)),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         controllers.establishers.partnership.routes.AddPartnersController.onSubmit(0,NormalMode)
       )(request, messages)
 

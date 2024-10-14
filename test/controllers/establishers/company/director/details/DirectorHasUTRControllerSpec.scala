@@ -94,7 +94,7 @@ class DirectorHasUTRControllerSpec
         "Test scheme name",
         "Does the director have a Unique Taxpayer Reference (UTR)?",
         "Does Jane Doe have a Unique Taxpayer Reference (UTR)?",
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         "govuk-visually-hidden",
         Seq("This is a 10-digit or 13-digit number. " +
           "You can find it on tax returns and other documents from HMRC. " +
@@ -123,7 +123,7 @@ class DirectorHasUTRControllerSpec
         "Test scheme name",
         "Does the director have a Unique Taxpayer Reference (UTR)?",
         "Does Jane Doe have a Unique Taxpayer Reference (UTR)?",
-        TwirlMigration.toTwirlRadios(Radios.yesNo(filledFrom("value"))),
+        utils.Radios.yesNo(filledFrom("value")),
         "govuk-visually-hidden",
         Seq("This is a 10-digit or 13-digit number. " +
           "You can find it on tax returns and other documents from HMRC. " +

@@ -77,7 +77,7 @@ class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase with JsonMat
         messages("messages__confirmDeletePartners__title"),
         partnerName,
         None,
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         schemeName,
         routes.ConfirmDeletePartnerController.onSubmit(establisherIndex, dirIndex)
       )(request, messages)

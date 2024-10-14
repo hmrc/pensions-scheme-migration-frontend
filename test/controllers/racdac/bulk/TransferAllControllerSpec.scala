@@ -100,9 +100,7 @@ class TransferAllControllerSpec extends ControllerSpecBase with JsonMatchers wit
       compareResultAndView(result,
         getView(
           req,
-          TwirlMigration.toTwirlRadios(
-            Radios.yesNo(form("value"))
-          ),
+          utils.Radios.yesNo(form("value")),
           form
         )
       )
@@ -144,9 +142,7 @@ class TransferAllControllerSpec extends ControllerSpecBase with JsonMatchers wit
       compareResultAndView(result,
         getView(
           request,
-          TwirlMigration.toTwirlRadios(
-            Radios.yesNo(boundForm.apply("value"))
-          ),
+          utils.Radios.yesNo(boundForm.apply("value")),
           boundForm
         )
       )

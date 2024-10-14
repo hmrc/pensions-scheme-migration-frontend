@@ -95,7 +95,7 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase with JsonMatchers
         schemeName,
         Message("messages__otherDirectors__title"),
         Message("messages__otherDirectors__heading"),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         "govuk-visually-hidden",
         Seq(Message("messages__otherDirectors__lede")),
         routes.OtherDirectorsController.onSubmit(0, NormalMode)
@@ -121,7 +121,7 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase with JsonMatchers
         schemeName,
         Message("messages__otherDirectors__title"),
         Message("messages__otherDirectors__heading"),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(filledFrom("value"))),
+        utils.Radios.yesNo(filledFrom("value")),
         "govuk-visually-hidden",
         Seq(Message("messages__otherDirectors__lede")),
         routes.OtherDirectorsController.onSubmit(0, NormalMode)
@@ -148,7 +148,7 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase with JsonMatchers
         schemeName,
         Message("messages__otherDirectors__title"),
         Message("messages__otherDirectors__heading"),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(filledFrom("value"))),
+        utils.Radios.yesNo(filledFrom("value")),
         "govuk-visually-hidden",
         Seq(Message("messages__otherDirectors__lede")),
         routes.OtherDirectorsController.onSubmit(0, NormalMode)

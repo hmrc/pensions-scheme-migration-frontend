@@ -81,7 +81,7 @@ class AddTrusteeControllerSpec extends ControllerSpecBase with JsonMatchers with
     Seq(),
     userAnswers.map(_.allTrusteesAfterDelete.size).getOrElse(0),
     maxTrustees,
-    TwirlMigration.toTwirlRadios(Radios.yesNo(form("value")))
+    utils.Radios.yesNo(form("value"))
   )(req, implicitly)
 
   override def beforeEach(): Unit = {

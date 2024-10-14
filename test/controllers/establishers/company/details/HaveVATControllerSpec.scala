@@ -73,7 +73,7 @@ class HaveVATControllerSpec extends ControllerSpecBase with JsonMatchers with Tr
         schemeName,
         messages("messages__haveVAT", messages("messages__company")),
         messages("messages__haveVAT", companyDetails.companyName),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         "govuk-visually-hidden",
         routes.HaveVATController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)
@@ -94,7 +94,7 @@ class HaveVATControllerSpec extends ControllerSpecBase with JsonMatchers with Tr
         schemeName,
         messages("messages__haveVAT", messages("messages__company")),
         messages("messages__haveVAT", companyDetails.companyName),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(filledFrom("value"))),
+        utils.Radios.yesNo(filledFrom("value")),
         "govuk-visually-hidden",
         routes.HaveVATController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)

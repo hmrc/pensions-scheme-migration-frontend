@@ -62,7 +62,7 @@ class ConfirmDeleteDirectorController @Inject()(override val messagesApi: Messag
                 msg"messages__confirmDeleteDirectors__title".resolve,
                 director.fullName,
                 Some(Messages(s"messages__confirmDeleteDirectors__companyHint")),
-                TwirlMigration.toTwirlRadios(Radios.yesNo(formProvider(director.fullName)(implicitly)("value"))),
+                utils.Radios.yesNo(formProvider(director.fullName)(implicitly)("value")),
                 existingSchemeName.getOrElse(""),
                 routes.ConfirmDeleteDirectorController.onSubmit(establisherIndex, directorIndex)
               )
@@ -87,7 +87,7 @@ class ConfirmDeleteDirectorController @Inject()(override val messagesApi: Messag
                   msg"messages__confirmDeleteDirectors__title".resolve,
                   director.fullName,
                   Some(Messages(s"messages__confirmDeleteDirectors__companyHint")),
-                  TwirlMigration.toTwirlRadios(Radios.yesNo(formProvider(director.fullName)(implicitly)("value"))),
+                  utils.Radios.yesNo(formProvider(director.fullName)(implicitly)("value")),
                   existingSchemeName.getOrElse(""),
                   routes.ConfirmDeleteDirectorController.onSubmit(establisherIndex, directorIndex)
                 )

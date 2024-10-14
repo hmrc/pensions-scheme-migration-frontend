@@ -93,7 +93,7 @@ class EstablisherHasNINOControllerSpec
         "Test scheme name",
         "Does the individual have a National Insurance number?",
         "Does Jane Doe have a National Insurance number?",
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         "govuk-label--xl",
         routes.EstablisherHasNINOController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)
@@ -118,7 +118,7 @@ class EstablisherHasNINOControllerSpec
         "Test scheme name",
         "Does the individual have a National Insurance number?",
         "Does Jane Doe have a National Insurance number?",
-        TwirlMigration.toTwirlRadios(Radios.yesNo(filledFrom("value"))),
+        utils.Radios.yesNo(filledFrom("value")),
         "govuk-label--xl",
         routes.EstablisherHasNINOController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)

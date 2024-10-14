@@ -80,7 +80,7 @@ class AddPartnersController @Inject()(
           partners.size,
           config.maxPartners,
           partners,
-          TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+          utils.Radios.yesNo(form("value")),
           routes.AddPartnersController.onSubmit(index, mode)
         ))
     }
@@ -106,7 +106,7 @@ class AddPartnersController @Inject()(
                 partners.size,
                 config.maxPartners,
                 partners,
-                TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value"))),
+                utils.Radios.yesNo(formWithErrors("value")),
                 routes.AddPartnersController.onSubmit(index, mode)
               ))),
             value => {

@@ -61,7 +61,7 @@ class AnyTrusteesController @Inject()(navigator: CompoundNavigator,
               controllers.trustees.routes.AnyTrusteesController.onSubmit,
               Message("messages__the_scheme"),
               schemeName,
-              TwirlMigration.toTwirlRadios(Radios.yesNo(formWithData("value")))
+              utils.Radios.yesNo(formWithData("value"))
             )))
         }
       }
@@ -79,7 +79,7 @@ class AnyTrusteesController @Inject()(navigator: CompoundNavigator,
                   controllers.trustees.routes.AnyTrusteesController.onSubmit,
                   Message("messages__the_scheme"),
                   schemeName,
-                  TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value")))
+                  utils.Radios.yesNo(formWithErrors("value"))
                 )))
             }
           },

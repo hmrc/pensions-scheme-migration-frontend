@@ -59,7 +59,7 @@ class AddEstablisherController @Inject()(
             existingSchemeName.getOrElse("Scheme"),
             allEstablishers.filterNot(_.isCompleted),
             allEstablishers.filter(_.isCompleted),
-            TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+            utils.Radios.yesNo(form("value")),
             routes.AddEstablisherController.onSubmit
           ))
         }
@@ -76,7 +76,7 @@ class AddEstablisherController @Inject()(
             existingSchemeName.getOrElse("Scheme"),
             allEstablishers.filterNot(_.isCompleted),
             allEstablishers.filter(_.isCompleted),
-            TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value"))),
+            utils.Radios.yesNo(formWithErrors("value")),
             routes.AddEstablisherController.onSubmit
           ))),
           value =>

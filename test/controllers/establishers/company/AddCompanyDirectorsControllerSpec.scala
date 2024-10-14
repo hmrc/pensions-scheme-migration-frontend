@@ -101,7 +101,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with JsonMatc
         1,
         mockAppConfig.maxDirectors,
         Seq(DirectorEntity(DirectorNameId(0,0), directorName.fullName, false, false, true, 1)),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         controllers.establishers.company.routes.AddCompanyDirectorsController.onSubmit(0,NormalMode)
       )(request, messages)
 

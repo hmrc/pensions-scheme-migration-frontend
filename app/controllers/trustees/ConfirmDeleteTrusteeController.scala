@@ -67,7 +67,7 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
                   msg"messages__confirmDeleteTrustee__title".resolve,
                   trustee.name,
                   getHintText(trusteeKind),
-                  TwirlMigration.toTwirlRadios(Radios.yesNo(formProvider(trustee.name)(implicitly)("value"))),
+                  utils.Radios.yesNo(formProvider(trustee.name)(implicitly)("value")),
                   existingSchemeName.getOrElse(""),
                   routes.ConfirmDeleteTrusteeController.onSubmit(index, trusteeKind)
                 )
@@ -128,7 +128,7 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
             msg"messages__confirmDeleteTrustee__title".resolve,
             name,
             getHintText(trusteeKind),
-            TwirlMigration.toTwirlRadios(Radios.yesNo(formProvider(name)(implicitly)("value"))),
+            utils.Radios.yesNo(formProvider(name)(implicitly)("value")),
             existingSchemeName.getOrElse(""),
             routes.ConfirmDeleteTrusteeController.onSubmit(trusteeIndex, trusteeKind)
           )))

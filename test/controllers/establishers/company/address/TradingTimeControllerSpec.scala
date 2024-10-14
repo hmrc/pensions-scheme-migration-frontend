@@ -87,7 +87,7 @@ class TradingTimeControllerSpec extends ControllerSpecBase with JsonMatchers wit
       val view = app.injector.instanceOf[TradingTimeView]
       val expectedView = view(
         form, "entityType", "entityName",
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         Some(schemeName),
         submitUrl = controllers.trustees.partnership.address.routes.TradingTimeController.onSubmit(index, mode)
       )(fakeRequest, messages)

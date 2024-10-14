@@ -61,7 +61,7 @@ class ConfirmDeletePartnerController @Inject()(override val messagesApi: Message
                 msg"messages__confirmDeletePartners__title".resolve,
                 partner.fullName,
                 Some(Messages(s"messages__confirmDeletePartners__partnershipHint")),
-                TwirlMigration.toTwirlRadios(Radios.yesNo(formProvider(partner.fullName)(implicitly)("value"))),
+                utils.Radios.yesNo(formProvider(partner.fullName)(implicitly)("value")),
                 existingSchemeName.getOrElse(""),
                 routes.ConfirmDeletePartnerController.onSubmit(establisherIndex, partnerIndex)
               )
@@ -88,7 +88,7 @@ class ConfirmDeletePartnerController @Inject()(override val messagesApi: Message
                   msg"messages__confirmDeletePartners__title".resolve,
                   partner.fullName,
                   Some(Messages(s"messages__confirmDeletePartners__partnershipHint")),
-                  TwirlMigration.toTwirlRadios(Radios.yesNo(formProvider(partner.fullName)(implicitly)("value"))),
+                  utils.Radios.yesNo(formProvider(partner.fullName)(implicitly)("value")),
                   existingSchemeName.getOrElse(""),
                   routes.ConfirmDeletePartnerController.onSubmit(establisherIndex, partnerIndex)
                 )

@@ -67,7 +67,7 @@ class ConfirmDeleteEstablisherController @Inject()(override val messagesApi: Mes
                   msg"messages__confirmDeleteEstablisher__title".resolve,
                   establisher.name,
                   getHintText(establisherKind),
-                  TwirlMigration.toTwirlRadios(Radios.yesNo(formProvider(establisher.name)(implicitly)("value"))),
+                  utils.Radios.yesNo(formProvider(establisher.name)(implicitly)("value")),
                   existingSchemeName.getOrElse(""),
                   routes.ConfirmDeleteEstablisherController.onSubmit(index, establisherKind)
                 )
@@ -129,7 +129,7 @@ class ConfirmDeleteEstablisherController @Inject()(override val messagesApi: Mes
             msg"messages__confirmDeleteEstablisher__title".resolve,
             name,
             getHintText(establisherKind),
-            TwirlMigration.toTwirlRadios(Radios.yesNo(formProvider(name)(implicitly)("value"))),
+            utils.Radios.yesNo(formProvider(name)(implicitly)("value")),
             existingSchemeName.getOrElse(""),
             routes.ConfirmDeleteEstablisherController.onSubmit(establisherIndex, establisherKind)
           )

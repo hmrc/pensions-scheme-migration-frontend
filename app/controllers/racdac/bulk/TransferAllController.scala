@@ -61,7 +61,7 @@ class TransferAllController @Inject()(appConfig: AppConfig,
                 routes.TransferAllController.onSubmit,
                 appConfig.psaOverviewUrl,
                 psaName,
-                TwirlMigration.toTwirlRadios(Radios.yesNo(form("value")))
+                utils.Radios.yesNo(form("value"))
               ))
             }
           } else {
@@ -80,7 +80,7 @@ class TransferAllController @Inject()(appConfig: AppConfig,
             routes.TransferAllController.onSubmit,
             appConfig.psaOverviewUrl,
             psaName,
-            TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value")))
+            utils.Radios.yesNo(formWithErrors("value"))
           ))
         }, { value =>
           currentPstrCacheConnector.remove.map { _ =>

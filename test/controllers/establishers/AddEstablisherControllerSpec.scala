@@ -84,7 +84,7 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with JsonMatchers 
         schemeName,
         Seq(EstablisherIndividualEntity(EstablisherNameId(2), establisherName, false, false, true, 1)),
         Seq(),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         controllers.establishers.routes.AddEstablisherController.onSubmit
       )(request, messages)
 

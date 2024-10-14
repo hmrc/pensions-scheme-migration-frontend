@@ -84,7 +84,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with JsonMatchers wi
       val view = app.injector.instanceOf[AddressYearsView]
       val expectedView = view(
         form, "entityType", "entityName",
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         Some(schemeName),
         controllers.establishers.partnership.address.routes.AddressYearsController.onSubmit(index, mode)
       )(fakeRequest, messages)

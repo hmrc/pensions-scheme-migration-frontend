@@ -82,7 +82,7 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Jso
         messages("messages__confirmDeleteEstablisher__title"),
         individualName,
         None,
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         schemeName,
         submitUrl(EstablisherKind.Individual)
       )(request, messages)
@@ -103,7 +103,7 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Jso
         messages("messages__confirmDeleteEstablisher__title"),
         companyName,
         None,
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         schemeName,
         submitUrl(EstablisherKind.Company)
       )(request, messages)
@@ -123,7 +123,7 @@ class ConfirmDeleteEstablisherControllerSpec extends ControllerSpecBase with Jso
         messages("messages__confirmDeleteEstablisher__title"),
         partnershipName,
         None,
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         schemeName,
         submitUrl(EstablisherKind.Partnership)
       )(request, messages)

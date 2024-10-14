@@ -74,7 +74,7 @@ class BulkRacDacServiceSpec extends SpecBase
       ),
       "test company",
       dummyUrl,
-      TwirlMigration.toTwirlRadios(Radios.yesNo(form("value")))
+      utils.Radios.yesNo(form("value"))
     )(req, implicitly)
   }
 

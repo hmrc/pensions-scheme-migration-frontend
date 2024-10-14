@@ -59,7 +59,7 @@ class CommonHasReferenceValueServiceSpec extends ControllerSpecBase with CommonS
         "Test Scheme",
         "Test Title",
         "Test Heading",
-        TwirlMigration.toTwirlRadios(Radios.yesNo(yesNoForm("value"))),
+        utils.Radios.yesNo(yesNoForm("value")),
         "govuk-fieldset__legend--s",
         onwardCall
       )(fakeRequest, messages)

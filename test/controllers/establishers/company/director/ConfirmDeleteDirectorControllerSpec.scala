@@ -83,7 +83,7 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with JsonMa
         messages("messages__confirmDeleteDirectors__title"),
         directorName,
         None,
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         schemeName,
         submitUrl(dirIndex)
       )(request, messages)

@@ -80,7 +80,7 @@ class AddCompanyDirectorsController @Inject()(
           directors.size,
           config.maxDirectors,
           directors,
-          TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+          utils.Radios.yesNo(form("value")),
           routes.AddCompanyDirectorsController.onSubmit(index, mode)
          ))
     }
@@ -106,7 +106,7 @@ class AddCompanyDirectorsController @Inject()(
                 directors.size,
                 config.maxDirectors,
                 directors,
-                TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value"))),
+                utils.Radios.yesNo(formWithErrors("value")),
                 routes.AddCompanyDirectorsController.onSubmit(index, mode)
               ))),
             value => {

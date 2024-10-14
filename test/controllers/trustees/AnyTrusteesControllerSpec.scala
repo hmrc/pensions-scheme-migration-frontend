@@ -91,7 +91,7 @@ class AnyTrusteesControllerSpec extends ControllerSpecBase
           .onPageLoad(req)
 
       status(result) mustBe OK
-      compareResultAndView(result, getView(req, form, TwirlMigration.toTwirlRadios(Radios.yesNo(form("value")))))
+      compareResultAndView(result, getView(req, form, utils.Radios.yesNo(form("value"))))
     }
 
     "populate the view correctly on a GET when the question has previously been answered Yes" in {
@@ -109,9 +109,7 @@ class AnyTrusteesControllerSpec extends ControllerSpecBase
       val testForm = form.fill(true)
 
       status(result) mustBe OK
-      compareResultAndView(result, getView(req, testForm, TwirlMigration.toTwirlRadios(
-        Radios.yesNo(testForm.apply("value"))
-      )))
+      compareResultAndView(result, getView(req, testForm, utils.Radios.yesNo(testForm.apply("value"))))
     }
 
     "populate the view correctly on a GET when the question has previously been answered No" in {
@@ -129,9 +127,8 @@ class AnyTrusteesControllerSpec extends ControllerSpecBase
       val testForm = form.fill(false)
 
       status(result) mustBe OK
-      compareResultAndView(result, getView(req, testForm, TwirlMigration.toTwirlRadios(
-        Radios.yesNo(testForm.apply("value"))
-      )))
+      compareResultAndView(result, getView(req, testForm, utils.Radios.yesNo(testForm.apply("value"))
+      ))
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -170,7 +167,7 @@ class AnyTrusteesControllerSpec extends ControllerSpecBase
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
       status(result) mustBe BAD_REQUEST
-      compareResultAndView(result, getView(request, boundForm, TwirlMigration.toTwirlRadios(Radios.yesNo(boundForm.apply("value")))))
+      compareResultAndView(result, getView(request, boundForm, utils.Radios.yesNo(boundForm.apply("value"))))
 
       verify(mockUserAnswersCacheConnector, times(0))
         .save(any(), any())(any(), any())

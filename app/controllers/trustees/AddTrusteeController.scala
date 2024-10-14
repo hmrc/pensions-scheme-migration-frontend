@@ -92,7 +92,7 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
       trusteesComplete,
       trustees.size,
       config.maxTrustees,
-      TwirlMigration.toTwirlRadios(Radios.yesNo(form("value")))
+      utils.Radios.yesNo(form("value"))
     )
   }
 

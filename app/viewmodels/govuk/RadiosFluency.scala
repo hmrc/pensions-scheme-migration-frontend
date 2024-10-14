@@ -19,7 +19,8 @@ package viewmodels.govuk
 import play.api.data.Field
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.Hint
-import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.Fieldset
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.{Fieldset, Legend}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.{RadioItem, Radios}
 import viewmodels.ErrorMessageAwareness
 
@@ -44,8 +45,23 @@ trait RadiosFluency {
         errorMessage = errorMessage(field),
         classes = classes
       )
+    def apply(
+               field: Field,
+               items: Seq[RadioItem],
+               fieldset: Fieldset
+             )(implicit messages: Messages): Radios =
+      Radios(
+        fieldset     = Some(fieldset),
+        name         = field.name,
+        items        = items map (item => item copy (checked = field.value.isDefined && field.value == item.value)),
+        errorMessage = errorMessage(field)
+      )
   }
 
   implicit class FluentRadios(radios: Radios) {
+    def withCssClass(newClass: String): Radios =
+      radios copy (classes = s"${radios.classes} $newClass")
+
+    def inline(): Radios = radios.withCssClass("govuk-radios--inline")
   }
 }

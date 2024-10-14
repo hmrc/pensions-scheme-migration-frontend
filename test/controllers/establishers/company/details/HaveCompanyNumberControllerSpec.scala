@@ -73,7 +73,7 @@ class HaveCompanyNumberControllerSpec extends ControllerSpecBase with JsonMatche
         schemeName,
         messages("messages__haveCompanyNumber", messages("messages__company")),
         messages("messages__haveCompanyNumber", companyDetails.companyName),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         "govuk-label--xl",
         Seq(messages("messages__haveCompanyNumber__p")),
         routes.HaveCompanyNumberController.onSubmit(0, NormalMode)
@@ -95,7 +95,7 @@ class HaveCompanyNumberControllerSpec extends ControllerSpecBase with JsonMatche
         schemeName,
         messages("messages__haveCompanyNumber", messages("messages__company")),
         messages("messages__haveCompanyNumber", companyDetails.companyName),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(filledFrom("value"))),
+        utils.Radios.yesNo(filledFrom("value")),
         "govuk-label--xl",
         Seq(messages("messages__haveCompanyNumber__p")),
         routes.HaveCompanyNumberController.onSubmit(0, NormalMode)

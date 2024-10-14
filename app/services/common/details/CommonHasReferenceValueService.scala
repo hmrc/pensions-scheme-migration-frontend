@@ -65,11 +65,11 @@ class CommonHasReferenceValueService @Inject()(val controllerComponents: Message
     Future.successful(Ok(
       if (paragraphText.nonEmpty){
         hasReferenceValueWithHintView(preparedForm, schemeName, pageTitle, pageHeading,
-          TwirlMigration.toTwirlRadios(Radios.yesNo(preparedForm("value"))), legendClass, paragraphText, submitCall)
+          utils.Radios.yesNo(preparedForm("value")), legendClass, paragraphText, submitCall)
       } else {
         hasReferenceValueView(
           preparedForm, schemeName, pageTitle, pageHeading,
-          TwirlMigration.toTwirlRadios(Radios.yesNo(preparedForm("value"))), legendClass, submitCall)
+          utils.Radios.yesNo(preparedForm("value")), legendClass, submitCall)
       }
     ))
   }
@@ -91,11 +91,11 @@ class CommonHasReferenceValueService @Inject()(val controllerComponents: Message
         Future.successful(BadRequest(
           if (paragraphText.nonEmpty){
             hasReferenceValueWithHintView(formWithErrors, schemeName, pageTitle, pageHeading,
-              TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value"))), legendClass, paragraphText, submitCall)
+              utils.Radios.yesNo(formWithErrors("value")), legendClass, paragraphText, submitCall)
           } else {
             hasReferenceValueView(
               formWithErrors, schemeName, pageTitle, pageHeading,
-              TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value"))), legendClass, submitCall)
+              utils.Radios.yesNo(formWithErrors("value")), legendClass, submitCall)
           }
         )),
       value => {

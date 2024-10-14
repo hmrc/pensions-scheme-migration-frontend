@@ -56,7 +56,7 @@ class WorkingKnowledgeController @Inject()(
         preparedForm,
         existingSchemeName,
         routes.WorkingKnowledgeController.onSubmit,
-        TwirlMigration.toTwirlRadios(Radios.yesNo(preparedForm("value")))
+        utils.Radios.yesNo(preparedForm("value"))
       ))
   }
 
@@ -69,7 +69,7 @@ class WorkingKnowledgeController @Inject()(
               formWithErrors,
               existingSchemeName,
               routes.WorkingKnowledgeController.onSubmit,
-              TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value")))
+              utils.Radios.yesNo(formWithErrors("value"))
             )
           )),
           value =>

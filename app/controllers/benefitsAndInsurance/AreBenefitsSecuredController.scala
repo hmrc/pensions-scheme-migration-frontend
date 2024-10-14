@@ -59,7 +59,7 @@ class AreBenefitsSecuredController @Inject()(override val messagesApi: MessagesA
         Future.successful(Ok(view(
           preparedForm,
           schemeName,
-          TwirlMigration.toTwirlRadios(Radios.yesNo(preparedForm("value"))),
+          utils.Radios.yesNo(preparedForm("value")),
           controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onSubmit
         )))
       }
@@ -75,7 +75,7 @@ class AreBenefitsSecuredController @Inject()(override val messagesApi: MessagesA
               Future.successful(BadRequest(view(
                 formWithErrors,
                 schemeName,
-                TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value"))),
+                utils.Radios.yesNo(formWithErrors("value")),
                 controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onSubmit
               )))
 

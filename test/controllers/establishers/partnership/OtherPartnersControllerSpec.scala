@@ -95,7 +95,7 @@ class OtherPartnersControllerSpec extends ControllerSpecBase
         schemeName,
         Message("messages__otherPartners__title"),
         Message("messages__otherPartners__heading"),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         "govuk-visually-hidden",
         Seq(Message("messages__otherPartners__lede")),
         routes.OtherPartnersController.onSubmit(0, NormalMode)
@@ -120,7 +120,7 @@ class OtherPartnersControllerSpec extends ControllerSpecBase
         schemeName,
         Message("messages__otherPartners__title"),
         Message("messages__otherPartners__heading"),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(filledFrom("value"))),
+        utils.Radios.yesNo(filledFrom("value")),
         "govuk-visually-hidden",
         Seq(Message("messages__otherPartners__lede")),
         routes.OtherPartnersController.onSubmit(0, NormalMode)
@@ -145,7 +145,7 @@ class OtherPartnersControllerSpec extends ControllerSpecBase
         schemeName,
         Message("messages__otherPartners__title"),
         Message("messages__otherPartners__heading"),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(filledFrom("value"))),
+        utils.Radios.yesNo(filledFrom("value")),
         "govuk-visually-hidden",
         Seq(Message("messages__otherPartners__lede")),
         routes.OtherPartnersController.onSubmit(0, NormalMode)

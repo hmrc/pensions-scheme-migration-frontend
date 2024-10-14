@@ -43,14 +43,6 @@ class CommonAddressYearsService @Inject()(
    addressYearsView: AddressYearsView
 ) extends FrontendHeaderCarrierProvider with I18nSupport {
 
-  private case class TemplateData(
-                                   schemeName: Option[String],
-                                   entityName: String,
-                                   entityType : String,
-                                   form : Form[Boolean],
-                                   radios: Seq[Radios.Item]
-                                 )
-
   def get(schemeName: Option[String],
           entityName: String,
           entityType : String,
@@ -64,7 +56,7 @@ class CommonAddressYearsService @Inject()(
         filledForm,
         entityType,
         entityName,
-        TwirlMigration.toTwirlRadios(Radios.yesNo(filledForm("value"))),
+        utils.Radios.yesNo(filledForm("value")),
         schemeName,
         submitUrl = submitUrl
       )))
@@ -88,7 +80,7 @@ class CommonAddressYearsService @Inject()(
               formWithErrors,
               entityType,
               entityName,
-              TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value"))),
+              utils.Radios.yesNo(formWithErrors("value")),
               schemeName,
               submitUrl = submitUrl
             )))
@@ -105,20 +97,5 @@ class CommonAddressYearsService @Inject()(
           }
         }
       )
-  }
-
-  private def getTemplateData(
-                      schemeName: Option[String],
-                      entityName: String,
-                      entityType : String,
-                      form : Form[Boolean]): TemplateData = {
-
-    TemplateData(
-      schemeName,
-      entityName,
-      entityType,
-      form,
-      Radios.yesNo(form("value"))
-    )
   }
 }
