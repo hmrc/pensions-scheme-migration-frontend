@@ -38,7 +38,7 @@ import utils.{Enumerable, TwirlMigration, UserAnswers}
 import views.html.establishers.EstablisherKindView
 
 import scala.concurrent.Future
-class EstablisherKindControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class EstablisherKindControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val index: Index = Index(0)
   private val kind: EstablisherKind = EstablisherKind.Individual

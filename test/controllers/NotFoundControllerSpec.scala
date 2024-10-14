@@ -24,7 +24,7 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.{Enumerable, UserAnswers}
 import views.html.NotFoundView
 
-class NotFoundControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class NotFoundControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()

@@ -48,7 +48,7 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
                                      val controllerComponents: MessagesControllerComponents,
                                      view: views.html.trustees.AddTrusteeView
                                     )(implicit val ec: ExecutionContext)
-  extends FrontendBaseController with Retrievals with I18nSupport with NunjucksSupport {
+  extends FrontendBaseController with Retrievals with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {

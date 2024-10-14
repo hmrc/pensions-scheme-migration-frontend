@@ -46,7 +46,7 @@ class SpokeTaskListController @Inject() (
                                         (implicit val ec: ExecutionContext) extends FrontendBaseController
   with I18nSupport
   with Retrievals
-  with NunjucksSupport {
+  {
 
   //scalastyle:off
   private def getTemplateData(index: Index,

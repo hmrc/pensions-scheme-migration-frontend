@@ -47,7 +47,7 @@ class PartnerNameController @Inject()(
   extends FrontendBaseController
   with Retrievals
   with I18nSupport
-  with NunjucksSupport {
+  {
 
   private def form(implicit messages: Messages): Form[PersonName] = formProvider("messages__error__partner")
 

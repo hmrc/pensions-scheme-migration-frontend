@@ -40,7 +40,7 @@ import views.html.benefitsAndInsurance.BenefitsInsurancePolicyView
 
 import scala.concurrent.Future
 
-class BenefitsInsurancePolicyControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class BenefitsInsurancePolicyControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()

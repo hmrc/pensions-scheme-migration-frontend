@@ -40,7 +40,7 @@ class BulkListController @Inject()(
                                     bulkRacDacService: BulkRacDacService
                                   )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
-    with I18nSupport with NunjucksSupport {
+    with I18nSupport {
 
   val form: Form[Boolean] = formProvider()
 

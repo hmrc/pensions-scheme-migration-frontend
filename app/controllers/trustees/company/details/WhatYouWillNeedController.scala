@@ -43,7 +43,7 @@ class WhatYouWillNeedController @Inject()(
   extends FrontendBaseController
     with I18nSupport
     with Retrievals
-    with NunjucksSupport {
+    {
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {

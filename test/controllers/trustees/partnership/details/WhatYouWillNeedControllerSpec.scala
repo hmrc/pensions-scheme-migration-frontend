@@ -30,7 +30,7 @@ import utils.Data.{partnershipDetails, ua}
 import utils.UserAnswers
 
 import scala.concurrent.Future
-class WhatYouWillNeedControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues {
+class WhatYouWillNeedControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues {
 
   private val index: Index = Index(0)
   private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(0), partnershipDetails).success.value

@@ -46,7 +46,7 @@ class TransferAllController @Inject()(appConfig: AppConfig,
                                       val controllerComponents: MessagesControllerComponents,
                                       transferAllView: TransferAllView
                                      )(implicit val executionContext: ExecutionContext) extends
-  FrontendBaseController with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
+  FrontendBaseController with I18nSupport with Retrievals with Enumerable.Implicits {
 
   private val form = formProvider("messages__transferAll__error")
 

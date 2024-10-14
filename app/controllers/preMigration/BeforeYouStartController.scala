@@ -44,7 +44,7 @@ class BeforeYouStartController @Inject()(
   extends FrontendBaseController
     with I18nSupport
     with Retrievals
-    with NunjucksSupport {
+    {
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData).async {

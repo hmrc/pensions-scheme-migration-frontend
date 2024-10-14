@@ -30,7 +30,7 @@ import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Enumerable
 
 import scala.concurrent.Future
-class ProcessingRequestControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class ProcessingRequestControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val mockQueueConnector = mock[BulkMigrationQueueConnector]
   private val mockBulkMigrationEventsLogConnector = mock[BulkMigrationEventsLogConnector]

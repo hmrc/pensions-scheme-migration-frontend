@@ -51,7 +51,7 @@ class TrusteeNameController @Inject()(
     with I18nSupport
     with Retrievals
     with Enumerable.Implicits
-    with NunjucksSupport {
+    {
 
   private def form(implicit messages: Messages): Form[PersonName] = formProvider("messages__error__trustee")
 

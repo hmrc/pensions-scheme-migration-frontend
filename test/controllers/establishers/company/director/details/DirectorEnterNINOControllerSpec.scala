@@ -40,7 +40,7 @@ import scala.concurrent.Future
 
 class DirectorEnterNINOControllerSpec
   extends ControllerSpecBase
-    with NunjucksSupport
+
     with JsonMatchers
     with TryValues
     with BeforeAndAfterEach {

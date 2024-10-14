@@ -39,7 +39,7 @@ import views.html.aboutMembership.MembersView
 
 import scala.concurrent.Future
 
-class CurrentMembersControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class CurrentMembersControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val form: Form[Members] = new MembersFormProvider()(messages("currentMembers.error.required", schemeName))
 

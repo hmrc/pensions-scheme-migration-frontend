@@ -43,7 +43,7 @@ class TrusteeKindController @Inject()(
                                            val controllerComponents: MessagesControllerComponents,
                                            view: views.html.trustees.TrusteeKindView
                                          )(implicit val executionContext: ExecutionContext) extends
-  FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits with NunjucksSupport {
+  FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits {
 
   private val form = formProvider()
 

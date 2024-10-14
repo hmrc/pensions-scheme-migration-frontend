@@ -27,7 +27,7 @@
         <ul class="govuk-list">
               @for(link <- links) {
                 <li>
-                    <a class="govuk-link" id="@link.id" href="@link.url">@link.linkText.resolve</a>
+                    <a class="govuk-link" id="@link.id" href="@link.url">@link.linkText.value</a>
                 </li>
               }
         </ul>

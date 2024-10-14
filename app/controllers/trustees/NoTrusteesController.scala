@@ -37,7 +37,7 @@ class NoTrusteesController @Inject()(
   extends FrontendBaseController
     with Retrievals
     with I18nSupport
-    with NunjucksSupport {
+    {
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()) {

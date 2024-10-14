@@ -39,7 +39,7 @@ import views.html.EmailView
 import scala.concurrent.Future
 
 class EnterEmailControllerSpec extends ControllerSpecBase
-  with NunjucksSupport
+
   with JsonMatchers
   with TryValues
   with BeforeAndAfterEach {

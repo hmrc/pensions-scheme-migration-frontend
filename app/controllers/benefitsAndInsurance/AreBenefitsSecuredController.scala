@@ -44,7 +44,7 @@ class AreBenefitsSecuredController @Inject()(override val messagesApi: MessagesA
                                        formProvider: AreBenefitsSecuredFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        view : AreBenefitsSecuredView)(implicit ec: ExecutionContext)
-  extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
+  extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits {
 
   private def form: Form[Boolean] =
     formProvider()

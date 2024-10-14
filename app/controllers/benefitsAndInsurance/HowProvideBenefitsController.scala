@@ -46,7 +46,7 @@ class HowProvideBenefitsController @Inject()(override val messagesApi: MessagesA
                                        val controllerComponents: MessagesControllerComponents,
                                        config: AppConfig,
                                        view:HowProvideBenefitsView)(implicit ec: ExecutionContext)
-  extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
+  extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits {
 
   private def form: Form[BenefitsProvisionType] =
     formProvider()

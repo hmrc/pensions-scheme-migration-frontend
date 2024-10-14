@@ -35,7 +35,7 @@ import views.html.PartnershipDetailsView
 
 import scala.concurrent.Future
 class PartnershipDetailsControllerSpec extends ControllerSpecBase
-  with NunjucksSupport
+
   with JsonMatchers
   with TryValues
   with BeforeAndAfterEach {

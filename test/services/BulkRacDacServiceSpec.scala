@@ -42,7 +42,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class BulkRacDacServiceSpec extends SpecBase
   with BeforeAndAfterEach
   with ScalaFutures
-  with NunjucksSupport
+
   with MockitoSugar
   with JsonMatchers {
 

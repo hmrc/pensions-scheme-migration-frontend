@@ -42,7 +42,7 @@ import scala.concurrent.Future
 
 class PartnerEnterNINOControllerSpec
   extends ControllerSpecBase
-    with NunjucksSupport
+
     with JsonMatchers
     with TryValues
     with BeforeAndAfterEach {

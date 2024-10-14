@@ -20,8 +20,9 @@ import config.AppConfig
 import connectors.cache.BulkMigrationQueueConnector
 import controllers.actions._
 import models.PageLink
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 
@@ -37,16 +38,16 @@ class MigrationTilePartialController @Inject()(
                                               )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
-    with NunjucksSupport {
+    {
 
   def migrationPartial: Action[AnyContent] = authenticate.async { implicit request =>
     val links: Future[Seq[PageLink]] = bulkMigrationQueueConnector.isRequestInProgress(request.psaId.id).map {
       case false =>
-        Seq(PageLink("add-pension-schemes", appConfig.schemesMigrationTransfer, msg"messages__migrationLink__addSchemesLink"),
-          PageLink("add-rac-dacs", appConfig.racDacMigrationTransfer, msg"messages__migrationLink__addRacDacsLink"))
+        Seq(PageLink("add-pension-schemes", appConfig.schemesMigrationTransfer, Text(Messages("messages__migrationLink__addSchemesLink"))),
+          PageLink("add-rac-dacs", appConfig.racDacMigrationTransfer, Text(Messages("messages__migrationLink__addRacDacsLink"))))
       case true =>
-        Seq(PageLink("add-pension-schemes", appConfig.schemesMigrationTransfer, msg"messages__migrationLink__addSchemesLink"),
-          PageLink("check-rac-dacs", appConfig.racDacMigrationCheckStatus, msg"messages__migrationLink__checkStatusRacDacsLink"))
+        Seq(PageLink("add-pension-schemes", appConfig.schemesMigrationTransfer, Text(Messages("messages__migrationLink__addSchemesLink"))),
+          PageLink("check-rac-dacs", appConfig.racDacMigrationCheckStatus, Text(Messages("messages__migrationLink__checkStatusRacDacsLink"))))
     }
 
     links.flatMap { migrationLinks =>

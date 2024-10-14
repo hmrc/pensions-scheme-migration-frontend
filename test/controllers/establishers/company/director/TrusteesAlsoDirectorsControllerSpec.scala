@@ -49,7 +49,7 @@ import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
 
 class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
-  with NunjucksSupport
+
   with JsonMatchers
   with TryValues
   with BeforeAndAfterEach {

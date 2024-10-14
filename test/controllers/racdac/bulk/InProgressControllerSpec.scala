@@ -27,7 +27,7 @@ import play.api.mvc.Request
 import play.api.test.Helpers._
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Enumerable
-class InProgressControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class InProgressControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val mockQueueConnector = mock[BulkMigrationQueueConnector]
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()

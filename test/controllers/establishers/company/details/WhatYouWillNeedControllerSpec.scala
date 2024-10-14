@@ -33,7 +33,7 @@ import views.html.details.WhatYouWillNeedCompanyDetailsView
 
 import scala.concurrent.Future
 
-class WhatYouWillNeedControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues {
+class WhatYouWillNeedControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues {
 
   private val index: Index = Index(0)
   private val companyName: CompanyDetails = CompanyDetails("test company")

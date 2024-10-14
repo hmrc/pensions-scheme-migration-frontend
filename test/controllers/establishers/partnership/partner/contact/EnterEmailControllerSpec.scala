@@ -39,7 +39,7 @@ import services.common.contact.CommonEmailAddressService
 import views.html.EmailView
 
 class EnterEmailControllerSpec extends ControllerSpecBase
-  with NunjucksSupport
+
   with JsonMatchers
   with TryValues
   with BeforeAndAfterEach {

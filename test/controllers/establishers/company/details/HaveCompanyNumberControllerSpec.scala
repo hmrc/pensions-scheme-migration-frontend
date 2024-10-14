@@ -39,7 +39,7 @@ import views.html.{HasReferenceValueView, HasReferenceValueWithHintView}
 
 import scala.concurrent.Future
 
-class HaveCompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with BeforeAndAfterEach {
+class HaveCompanyNumberControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues with BeforeAndAfterEach {
 
   private val index: Index = Index(0)
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(index), companyDetails).success.value

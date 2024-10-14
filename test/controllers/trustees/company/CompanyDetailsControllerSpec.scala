@@ -35,7 +35,7 @@ import views.html.CompanyDetailsView
 
 import scala.concurrent.Future
 class CompanyDetailsControllerSpec extends ControllerSpecBase
-  with NunjucksSupport
+
   with JsonMatchers
   with TryValues
   with BeforeAndAfterEach {

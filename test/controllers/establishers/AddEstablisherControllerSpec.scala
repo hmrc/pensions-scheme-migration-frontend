@@ -35,7 +35,7 @@ import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
 import utils.{Data, TwirlMigration, UserAnswers}
 import views.html.establishers.AddEstablisherView
-class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers {
+class AddEstablisherControllerSpec extends ControllerSpecBase with JsonMatchers {
   private val establisherName: String = "e f"
   private val userAnswers: Option[UserAnswers] = ua.set(EstablisherKindId(0), EstablisherKind.Individual).flatMap(
     _.set(EstablisherNameId(0), PersonName("a", "b", isDeleted = true)).flatMap(

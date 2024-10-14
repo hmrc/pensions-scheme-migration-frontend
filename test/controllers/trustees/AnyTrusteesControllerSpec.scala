@@ -36,7 +36,7 @@ import utils.{FakeNavigator, TwirlMigration}
 
 import scala.concurrent.Future
 class AnyTrusteesControllerSpec extends ControllerSpecBase
-  with NunjucksSupport
+
   with JsonMatchers
   with TryValues
   with BeforeAndAfterEach{

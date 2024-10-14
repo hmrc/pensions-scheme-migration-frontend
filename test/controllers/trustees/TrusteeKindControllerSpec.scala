@@ -35,7 +35,7 @@ import utils.Data.{schemeName, ua}
 import utils.{Enumerable, TwirlMigration, UserAnswers}
 
 import scala.concurrent.Future
-class TrusteeKindControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class TrusteeKindControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val index: Index = Index(0)
   private val kind: TrusteeKind = TrusteeKind.Individual

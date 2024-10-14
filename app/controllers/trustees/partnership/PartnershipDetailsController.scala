@@ -51,7 +51,7 @@ class PartnershipDetailsController @Inject()(
     with I18nSupport
     with Retrievals
     with Enumerable.Implicits
-    with NunjucksSupport {
+    {
 
   private val form = formProvider()
 

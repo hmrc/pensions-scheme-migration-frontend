@@ -40,7 +40,7 @@ import scala.concurrent.Future
 
 class EstablisherHasUTRControllerSpec
   extends ControllerSpecBase
-    with NunjucksSupport
+
     with JsonMatchers
     with TryValues
     with BeforeAndAfterEach {

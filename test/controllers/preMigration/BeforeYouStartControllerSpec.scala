@@ -31,7 +31,7 @@ import utils.Data.ua
 import views.html.preMigration.BeforeYouStartView
 
 import scala.concurrent.Future
-class BeforeYouStartControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues  {
+class BeforeYouStartControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues  {
   private val psaName: String = "Nigel"
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 

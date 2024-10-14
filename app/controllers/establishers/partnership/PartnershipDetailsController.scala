@@ -47,7 +47,7 @@ class PartnershipDetailsController @Inject()(
   extends FrontendBaseController
     with I18nSupport
     with Retrievals
-    with NunjucksSupport {
+    {
 
   private val form = formProvider()
 

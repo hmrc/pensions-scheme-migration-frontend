@@ -52,7 +52,7 @@ class DirectorNameController @Inject()(
   extends FrontendBaseController
     with Retrievals
     with I18nSupport
-    with NunjucksSupport {
+    {
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {

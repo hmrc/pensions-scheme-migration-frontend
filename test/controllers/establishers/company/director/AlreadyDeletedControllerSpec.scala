@@ -32,7 +32,7 @@ import views.html.AlreadyDeletedView
 
 import scala.concurrent.Future
 
-class AlreadyDeletedControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class AlreadyDeletedControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val index: Index = Index(0)
   private val directorIndex: Index = Index(0)

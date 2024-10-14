@@ -25,7 +25,7 @@ import utils.Data.ua
 import utils.{Data, Enumerable}
 import views.html.YourActionWasNotProcessedView
 
-class YourActionWasNotProcessedControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class YourActionWasNotProcessedControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 

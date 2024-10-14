@@ -36,7 +36,7 @@ import views.html.PersonNameView
 
 import scala.concurrent.Future
 
-class EstablisherNameControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class EstablisherNameControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val index: Index = Index(0)
   private val personName: PersonName = PersonName("Jane", "Doe")

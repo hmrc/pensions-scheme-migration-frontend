@@ -43,7 +43,7 @@ import scala.concurrent.Future
 
 class EstablisherEnterNINOControllerSpec
   extends ControllerSpecBase
-    with NunjucksSupport
+
     with JsonMatchers
     with TryValues
     with BeforeAndAfterEach {

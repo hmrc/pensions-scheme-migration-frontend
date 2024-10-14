@@ -27,6 +27,7 @@ import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import play.api.Application
+import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.Json
@@ -34,12 +35,12 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{Html, NunjucksSupport}
+import uk.gov.hmrc.viewmodels.{Html, MessageInterpolators, NunjucksSupport}
 import utils.Data._
 import utils.{Data, TwirlMigration, UserAnswers}
 
 import scala.concurrent.Future
-class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAfterEach  with JsonMatchers with NunjucksSupport  {
+class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAfterEach  with JsonMatchers  {
 
   private val mockListOfSchemesConnector = mock[ListOfSchemesConnector]
   private val mockRacDacIndividualCYAHelper = mock[RacDacIndividualCYAHelper]

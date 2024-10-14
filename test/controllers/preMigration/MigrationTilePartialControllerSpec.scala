@@ -23,23 +23,25 @@ import matchers.JsonMatchers
 import models.PageLink
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
+import play.api.i18n.Messages
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.viewmodels.MessageInterpolators
 
 import scala.concurrent.Future
-class MigrationTilePartialControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues  {
+class MigrationTilePartialControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues  {
 
   private val mockQueueConnector = mock[BulkMigrationQueueConnector]
 
   val transferLinks: Seq[PageLink] = Seq(
-    PageLink("add-pension-schemes", appConfig.schemesMigrationTransfer, msg"messages__migrationLink__addSchemesLink"),
-    PageLink("add-rac-dacs", appConfig.racDacMigrationTransfer, msg"messages__migrationLink__addRacDacsLink")
+    PageLink("add-pension-schemes", appConfig.schemesMigrationTransfer, Text(Messages("messages__migrationLink__addSchemesLink"))),
+    PageLink("add-rac-dacs", appConfig.racDacMigrationTransfer, Text(Messages("messages__migrationLink__addRacDacsLink")))
   )
 
   val transferLinksInProgress: Seq[PageLink] = Seq(
-    PageLink("add-pension-schemes", appConfig.schemesMigrationTransfer, msg"messages__migrationLink__addSchemesLink"),
-    PageLink("check-rac-dacs", appConfig.racDacMigrationCheckStatus, msg"messages__migrationLink__checkStatusRacDacsLink")
+    PageLink("add-pension-schemes", appConfig.schemesMigrationTransfer, Text(Messages("messages__migrationLink__addSchemesLink"))),
+    PageLink("check-rac-dacs", appConfig.racDacMigrationCheckStatus, Text(Messages("messages__migrationLink__checkStatusRacDacsLink")))
   )
 
   private def controller(): MigrationTilePartialController =

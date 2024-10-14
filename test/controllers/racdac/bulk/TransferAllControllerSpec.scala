@@ -38,7 +38,7 @@ import utils.Data.ua
 import utils.TwirlMigration
 
 import scala.concurrent.Future
-class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with BeforeAndAfterEach{
+class TransferAllControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues with BeforeAndAfterEach{
 
   private val psaName: String = "Psa Name"
   private val formProvider: YesNoFormProvider = new YesNoFormProvider()

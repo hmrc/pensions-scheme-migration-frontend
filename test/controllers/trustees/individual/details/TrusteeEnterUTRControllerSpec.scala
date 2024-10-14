@@ -41,7 +41,7 @@ import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
 import scala.concurrent.Future
 class TrusteeEnterUTRControllerSpec
   extends ControllerSpecBase
-    with NunjucksSupport
+
     with JsonMatchers
     with TryValues
     with BeforeAndAfterEach {
