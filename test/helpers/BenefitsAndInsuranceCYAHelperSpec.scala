@@ -16,77 +16,24 @@
 
 package helpers
 
-import base.SpecBase._
 import helpers.cya.BenefitsAndInsuranceCYAHelper
 import identifiers.beforeYouStart.{SchemeNameId, SchemeTypeId}
 import identifiers.benefitsAndInsurance._
 import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
-import models.requests.DataRequest
-import models.{Address, MigrationLock, SchemeType}
-import org.scalatest.TryValues
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import models.{Address, SchemeType}
 import play.api.i18n.Messages
-import play.api.mvc.AnyContent
-import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Key, Text}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions, SummaryListRow, Value}
-import utils.Data.{credId, psaId, pstr, schemeName}
-import utils.{Enumerable, UserAnswers}
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import utils.Data.schemeName
+import utils.UserAnswers
 
-class BenefitsAndInsuranceCYAHelperSpec extends AnyWordSpec with Matchers with TryValues with Enumerable.Implicits {
+class BenefitsAndInsuranceCYAHelperSpec extends CYAHelperSpecBase {
 
   val benefitsAndInsuranceCYAHelper = new BenefitsAndInsuranceCYAHelper
-
-  private def dataRequest(ua: UserAnswers) = DataRequest[AnyContent](request = fakeRequest, userAnswers = ua,
-    psaId = PsaId(psaId), lock = MigrationLock(pstr = pstr, credId = credId, psaId = psaId), viewOnly = false)
 
   private val insurerName = "test insurer"
   private val insurerPolicyNo = "test"
   private val insurerAddress = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
 
-  case class Link(text: String, target: String, visuallyHiddenText: Option[Text] = None,
-    attributes: Map[String, String] = Map.empty)
-
-  private def actions(target: Option[Link]) = {
-    target.map { t =>
-      Actions(
-        items =
-          Seq(ActionItem(
-            content = HtmlContent(s"<span aria-hidden=true >${t.text}</span>"), href = t.target,
-            visuallyHiddenText = t.visuallyHiddenText.map(_.value), attributes = t.attributes
-          ))
-      )
-    }
-  }
-
-  private def summaryListRow(key: String, valueMsgKey: String, target: Option[Link] = None): SummaryListRow = {
-    SummaryListRow(key = Key(Text(Messages(key)), classes ="govuk-!-width-one-half"), value = Value(Text(Messages(valueMsgKey))),
-      actions = actions(target)
-    )
-  }
-
-  private def summaryListRowText(key: String, value: String, target: Option[Link]): SummaryListRow = {
-    SummaryListRow(key = Key(Text(Messages(key)), classes ="govuk-!-width-one-half"), value = Value(Text(value)),
-      actions = actions(target)
-    )
-  }
-
-  private def summaryListRowHtml(key: String, value: HtmlContent, target: Option[Link]): SummaryListRow = {
-    SummaryListRow(key = Key(Text(Messages(key)), classes ="govuk-!-width-one-half"), value = Value(value),
-      actions = actions(target)
-    )
-  }
-
-  private def addressAnswer(addr: Address)(implicit messages: Messages): HtmlContent = {
-    def addrLineToHtml(l: String): String = s"""<span class="govuk-!-display-block">$l</span>"""
-
-    HtmlContent(addrLineToHtml(addr.addressLine1) + addrLineToHtml(addr.addressLine2) + addr.addressLine3
-      .fold("")(addrLineToHtml) + addr.addressLine4.fold("")(addrLineToHtml) + addr.postcode
-      .fold("")(addrLineToHtml) + addrLineToHtml(messages("country." + addr.country)))
-  }
-
-  private def answerBenefitsAddressTransform(addr: Address)(implicit messages: Messages): HtmlContent = addressAnswer(addr)
 
   // scalastyle:off magic.number
   "BenefitsAndInsuranceCYAHelper" must {
@@ -141,7 +88,7 @@ class BenefitsAndInsuranceCYAHelperSpec extends AnyWordSpec with Matchers with T
           attributes = Map("id" -> "cya-0-6-change"))))
 
       result(7) mustBe summaryListRowHtml(key = messages("addressList.title", insurerName),
-        value = answerBenefitsAddressTransform(insurerAddress), Some(Link(text = Messages("site.change"),
+        value = answerAddressTransform(insurerAddress), Some(Link(text = Messages("site.change"),
           target = controllers.benefitsAndInsurance.routes.InsurerEnterPostcodeController.onPageLoad.url,
           visuallyHiddenText = Some(Text(Messages("site.change") + " " + Messages("addressList.visuallyHidden"))),
           attributes = Map("id" -> "cya-0-7-change"))))

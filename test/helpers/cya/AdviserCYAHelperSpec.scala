@@ -16,63 +16,21 @@
 
 package helpers.cya
 
-import base.SpecBase._
 import controllers.adviser.routes
+import helpers.CYAHelperSpecBase
 import identifiers.adviser._
 import models._
-import models.requests.DataRequest
-import org.scalatest.TryValues
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 import play.api.i18n.Messages
-import play.api.mvc.AnyContent
-import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
-import utils.Data.{credId, psaId, pstr}
-import utils.{Data, Enumerable, UserAnswers}
-import viewmodels.Message
+import utils.{Data, UserAnswers}
 
-class AdviserCYAHelperSpec extends AnyWordSpec with Matchers with TryValues with Enumerable.Implicits {
+class AdviserCYAHelperSpec extends CYAHelperSpecBase {
 
   val cyaHelper = new AdviserCYAHelper
 
   private val adviserName: String = "test"
   private val adviserAddress = Address("addr1", "addr2", None, None, Some("ZZ11ZZ"), "GB")
-
-  case class Link(text: String, target: String, visuallyHiddenText: Option[String] = None,
-                  attributes: Map[String, String] = Map.empty)
-
-
-  private def summaryListRowHtml(key: String, value: HtmlContent, target: Option[Link]): SummaryListRow = {
-    SummaryListRow(
-      Key(Text(Messages(key)), "govuk-!-width-one-half"),
-      Value(value),
-      actions = Some(
-        Actions(
-          items = target.toSeq.map { t =>
-            ActionItem(
-              content = HtmlContent(s"<span aria-hidden=true >${t.text}</span>"),
-              href = t.target,
-              visuallyHiddenText = t.visuallyHiddenText,
-              attributes = t.attributes
-            )
-          })
-        )
-      )
-  }
-  private def answerAddressTransform(addr: Address)(implicit messages: Messages): HtmlContent = addressAnswer(addr)
-
-  private def addressAnswer(addr: Address)(implicit messages: Messages): HtmlContent = {
-    def addrLineToHtml(l: String): String = s"""<span class="govuk-!-display-block">$l</span>"""
-
-    HtmlContent(addrLineToHtml(addr.addressLine1) + addrLineToHtml(addr.addressLine2) + addr.addressLine3
-      .fold("")(addrLineToHtml) + addr.addressLine4.fold("")(addrLineToHtml) + addr.postcode
-      .fold("")(addrLineToHtml) + addrLineToHtml(messages("country." + addr.country)))
-  }
-
-  private def dataRequest(ua: UserAnswers): DataRequest[AnyContent] = DataRequest[AnyContent](request = fakeRequest, userAnswers = ua,
-    psaId = PsaId(psaId), lock = MigrationLock(pstr = pstr, credId = credId, psaId = psaId), viewOnly = false)
 
   // scalastyle:off magic.number
   "AdviserCYAHelper" must {
@@ -86,7 +44,7 @@ class AdviserCYAHelperSpec extends AnyWordSpec with Matchers with TryValues with
       val result = cyaHelper.detailsRows(dataRequest(ua), messages)
 
       result.head mustBe SummaryListRow(
-        key = Key(Text(Message("messages__adviser__name__cya")), classes = "govuk-!-width-one-half"),
+        key = Key(Text(Messages("messages__adviser__name__cya")), classes = "govuk-!-width-one-half"),
         value = Value(Text(adviserName)),
         actions = Some(
          Actions(
@@ -104,7 +62,7 @@ class AdviserCYAHelperSpec extends AnyWordSpec with Matchers with TryValues with
       )
 
       result(1) mustBe SummaryListRow(
-        key = Key(Text(Message("messages__enterEmail_cya_label", adviserName)), classes = "govuk-!-width-one-half"),
+        key = Key(Text(Messages("messages__enterEmail_cya_label", adviserName)), classes = "govuk-!-width-one-half"),
         value = Value(Text(Data.email)),
         actions = Some(
           Actions(
@@ -122,7 +80,7 @@ class AdviserCYAHelperSpec extends AnyWordSpec with Matchers with TryValues with
       )
 
       result(2) mustBe SummaryListRow(
-        key = Key(Text(Message("messages__enterPhone_cya_label", adviserName)), classes = "govuk-!-width-one-half"),
+        key = Key(Text(Messages("messages__enterPhone_cya_label", adviserName)), classes = "govuk-!-width-one-half"),
         value = Value(Text(Data.phone)),
         actions = Some(
           Actions(
@@ -142,8 +100,8 @@ class AdviserCYAHelperSpec extends AnyWordSpec with Matchers with TryValues with
       result(3) mustBe summaryListRowHtml(key = messages("addressList_cya_label", adviserName),
         value = answerAddressTransform(adviserAddress), Some(Link(text = Messages("site.change"),
           target = routes.EnterPostcodeController.onPageLoad(CheckMode).url,
-          visuallyHiddenText = Some(Messages("site.change") + " " +
-            Messages("messages__visuallyHidden__address", adviserName)),
+          visuallyHiddenText = Some(Text(Messages("site.change") + " " +
+            Messages("messages__visuallyHidden__address", adviserName))),
           attributes = Map("id" -> "cya-0-3-change")))
       )
 

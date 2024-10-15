@@ -16,32 +16,22 @@
 
 package helpers.cya.trustees.company
 
-import base.SpecBase._
 import controllers.trustees.company.contacts.routes
+import helpers.CYAHelperSpecBase
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.contacts.{EnterEmailId, EnterPhoneId}
-import models.requests.DataRequest
-import models.{CheckMode, CompanyDetails, MigrationLock}
-import org.scalatest.TryValues
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import models.{CheckMode, CompanyDetails}
 import play.api.i18n.Messages
-import play.api.mvc.AnyContent
-import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
-import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{Html, MessageInterpolators}
-import utils.Data.{credId, psaId, pstr, schemeName}
-import utils.{Enumerable, UserAnswers}
-import viewmodels.Message
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Key, SummaryListRow, Value}
+import utils.Data.schemeName
+import utils.UserAnswers
 
-class TrusteeCompanyContactDetailsCYAHelperSpec extends AnyWordSpec with Matchers with TryValues with Enumerable.Implicits {
+class TrusteeCompanyContactDetailsCYAHelperSpec extends CYAHelperSpecBase {
 
   val trusteeCompanyContactDetailsCYAHelper = new TrusteeCompanyContactDetailsCYAHelper
-
-  private def dataRequest(ua: UserAnswers) = DataRequest[AnyContent](request = fakeRequest, userAnswers = ua,
-    psaId = PsaId(psaId), lock = MigrationLock(pstr = pstr, credId = credId, psaId = psaId), viewOnly = false)
 
   private val company: CompanyDetails = CompanyDetails("test")
 
@@ -56,28 +46,28 @@ class TrusteeCompanyContactDetailsCYAHelperSpec extends AnyWordSpec with Matcher
 
       val result = trusteeCompanyContactDetailsCYAHelper.contactDetailsRows(0)(dataRequest(ua), messages)
 
-      result.head mustBe Row(
-        key = Key(msg"${Message("messages__enterEmail_cya_label", company.companyName).resolve}", classes = Seq("govuk-!-width-one-half")),
-        value = Value(Literal("test@test.com")),
-        actions = Seq(Action(
-          content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
+      result.head mustBe SummaryListRow(
+        key = Key(Text(Messages("messages__enterEmail_cya_label", company.companyName)), classes = "govuk-!-width-one-half"),
+        value = Value(Text("test@test.com")),
+        actions = Some(Actions(items =Seq(ActionItem(
+          content = HtmlContent(s"<span aria-hidden=true >${messages("site.change")}</span>"),
           href = routes.EnterEmailController.onPageLoad(0, CheckMode).url,
-          visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__enterEmail__cya__visuallyHidden", company.companyName))),
+          visuallyHiddenText = Some(Messages("site.change") + " " +
+            Messages("messages__enterEmail__cya__visuallyHidden", company.companyName)),
           attributes = Map("id" -> "cya-0-0-change")
-        ))
+        ))))
       )
 
-      result(1) mustBe Row(
-        key = Key(msg"${Message("messages__enterPhone_cya_label", company.companyName).resolve}", classes = Seq("govuk-!-width-one-half")),
-        value = Value(Literal("123")),
-        actions = Seq(Action(
-          content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
+      result(1) mustBe SummaryListRow(
+        key = Key(Text(Messages("messages__enterPhone_cya_label", company.companyName)), classes ="govuk-!-width-one-half"),
+        value = Value(Text("123")),
+        actions = Some(Actions(items = Seq(ActionItem(
+          content = HtmlContent(s"<span aria-hidden=true >${messages("site.change")}</span>"),
           href = routes.EnterPhoneController.onPageLoad(0, CheckMode).url,
-          visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__enterPhone__cya__visuallyHidden", company.companyName))),
+          visuallyHiddenText = Some(Messages("site.change") + " " +
+            Messages("messages__enterPhone__cya__visuallyHidden", company.companyName)),
           attributes = Map("id" -> "cya-0-1-change")
-        ))
+        ))))
       )
 
     }

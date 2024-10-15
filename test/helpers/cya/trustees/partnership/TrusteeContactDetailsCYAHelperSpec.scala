@@ -16,31 +16,22 @@
 
 package helpers.cya.trustees.partnership
 
-import base.SpecBase._
 import controllers.trustees.partnership.contact.routes
+import helpers.CYAHelperSpecBase
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.partnership.PartnershipDetailsId
 import identifiers.trustees.partnership.contact.{EnterEmailId, EnterPhoneId}
-import models.requests.DataRequest
-import models.{CheckMode, MigrationLock}
-import org.scalatest.TryValues
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import models.CheckMode
 import play.api.i18n.Messages
-import play.api.mvc.AnyContent
-import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Key, Value}
-import utils.Data.{credId, partnershipDetails, psaId, pstr, schemeName}
-import utils.{Enumerable, UserAnswers}
+import utils.Data.{partnershipDetails, schemeName}
+import utils.UserAnswers
 
-class TrusteeContactDetailsCYAHelperSpec extends AnyWordSpec with Matchers with TryValues with Enumerable.Implicits {
+class TrusteeContactDetailsCYAHelperSpec extends CYAHelperSpecBase {
 
   val cyaHelper = new TrusteeContactDetailsCYAHelper
-
-  private def dataRequest(ua: UserAnswers): DataRequest[AnyContent] = DataRequest[AnyContent](request = fakeRequest, userAnswers = ua,
-    psaId = PsaId(psaId), lock = MigrationLock(pstr = pstr, credId = credId, psaId = psaId), viewOnly = false)
 
   // scalastyle:off magic.number
   "TrusteeContactDetailsCYAHelper" must {
