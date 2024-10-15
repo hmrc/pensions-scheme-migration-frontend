@@ -25,10 +25,9 @@ import identifiers.establishers.company.details.CompanyNumberId
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.details.CommonEnterReferenceValueService
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -47,7 +46,7 @@ class CompanyNumberController @Inject()(val messagesApi: MessagesApi,
     request
       .userAnswers
       .get(CompanyDetailsId(index))
-      .fold(Message("messages__company"))(_.companyName)
+      .fold(Messages("messages__company"))(_.companyName)
 
   private def form(index: Index)
                   (implicit request: DataRequest[AnyContent]): Form[ReferenceValue] =
@@ -59,13 +58,13 @@ class CompanyNumberController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.get(
-              pageTitle     = Message("messages__companyNumber", Message("messages__company")),
-              pageHeading     = Message("messages__companyNumber", name(index)),
+              pageTitle     = Messages("messages__companyNumber", Messages("messages__company")),
+              pageHeading     = Messages("messages__companyNumber", name(index)),
               isPageHeading = true,
               id            = CompanyNumberId(index),
               form          = form(index),
               schemeName    = schemeName,
-              hintText      = Some(Message("messages__companyNumber__hint")),
+              hintText      = Some(Messages("messages__companyNumber__hint")),
               legendClass   = "govuk-label--xl",
               submitCall    = routes.CompanyNumberController.onSubmit(index, mode)
             )
@@ -78,13 +77,13 @@ class CompanyNumberController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.post(
-              pageTitle     = Message("messages__companyNumber", Message("messages__company")),
-              pageHeading     = Message("messages__companyNumber", name(index)),
+              pageTitle     = Messages("messages__companyNumber", Messages("messages__company")),
+              pageHeading     = Messages("messages__companyNumber", name(index)),
               isPageHeading = true,
               id            = CompanyNumberId(index),
               form          = form(index),
               schemeName    = schemeName,
-              hintText      = Some(Message("messages__companyNumber__hint")),
+              hintText      = Some(Messages("messages__companyNumber__hint")),
               legendClass   = "govuk-label--xl",
               mode          = mode,
               submitCall    = routes.CompanyNumberController.onSubmit(index, mode)

@@ -25,10 +25,9 @@ import identifiers.establishers.individual.details.EstablisherHasUTRId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.details.CommonHasReferenceValueService
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -52,7 +51,7 @@ class EstablisherHasUTRController @Inject()(val messagesApi: MessagesApi,
   private def form(index: Index)
                   (implicit request: DataRequest[AnyContent]): Form[Boolean] =
     formProvider(
-      errorMsg = Message("messages__genericHasUtr__error__required", name(index))
+      errorMsg = Messages("messages__genericHasUtr__error__required", name(index))
     )
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
@@ -62,13 +61,13 @@ class EstablisherHasUTRController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.get(
-              pageTitle     = Message("messages__hasUTR", Message("messages__individual")),
-              pageHeading     = Message("messages__hasUTR", name(index)),
+              pageTitle     = Messages("messages__hasUTR", Messages("messages__individual")),
+              pageHeading     = Messages("messages__hasUTR", name(index)),
               isPageHeading = true,
               id            = EstablisherHasUTRId(index),
               form          = form(index),
               schemeName    = schemeName,
-              paragraphText = Seq(Message("messages__UTR__p")),
+              paragraphText = Seq(Messages("messages__UTR__p")),
               legendClass   = "govuk-visually-hidden",
               submitCall    = routes.EstablisherHasUTRController.onSubmit(index, mode)
             )
@@ -82,13 +81,13 @@ class EstablisherHasUTRController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.post(
-              pageTitle     = Message("messages__hasUTR", Message("messages__individual")),
-              pageHeading     = Message("messages__hasUTR", name(index)),
+              pageTitle     = Messages("messages__hasUTR", Messages("messages__individual")),
+              pageHeading     = Messages("messages__hasUTR", name(index)),
               isPageHeading = true,
               id            = EstablisherHasUTRId(index),
               form          = form(index),
               schemeName    = schemeName,
-              paragraphText = Seq(Message("messages__UTR__p")),
+              paragraphText = Seq(Messages("messages__UTR__p")),
               legendClass   = "govuk-visually-hidden",
               mode          = mode,
               submitCall    = routes.EstablisherHasUTRController.onSubmit(index, mode)

@@ -25,12 +25,11 @@ import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address.AddressYearsId
 import models.{CheckMode, Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
 import services.common.address.CommonAddressYearsService
 import utils.UserAnswers
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -56,7 +55,7 @@ class AddressYearsController @Inject()(
           common.get(
             Some(schemeName),
             trusteeName.fullName,
-            Message("trusteeEntityTypeIndividual"),
+            Messages("trusteeEntityTypeIndividual"),
             form,
             AddressYearsId(index),
             submitUrl = routes.AddressYearsController.onSubmit(index, mode)
@@ -70,7 +69,7 @@ class AddressYearsController @Inject()(
         common.post(
           Some(schemeName),
           trusteeName.fullName,
-          Message("trusteeEntityTypeIndividual"),
+          Messages("trusteeEntityTypeIndividual"),
           form,
           AddressYearsId(index),
           Some(mode),

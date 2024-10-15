@@ -26,12 +26,11 @@ import identifiers.trustees.individual.contact.{EnterPhoneId => trusteeEnterPhon
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
 import services.common.contact.CommonPhoneService
 import utils.UserAnswers
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -55,11 +54,11 @@ class EnterPhoneNumberController @Inject()(
           schemeName =>
             common.get(
               entityName = name(establisherIndex, directorIndex),
-              entityType = Message("messages__director"),
+              entityType = Messages("messages__director"),
               phoneId = EnterPhoneId(establisherIndex, directorIndex),
               form = form(establisherIndex, directorIndex),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__contact_details__hint", name(establisherIndex, directorIndex))),
+              paragraphText = Seq(Messages("messages__contact_details__hint", name(establisherIndex, directorIndex))),
               routes.EnterPhoneNumberController.onSubmit(establisherIndex, directorIndex, mode)
             )
 
@@ -73,11 +72,11 @@ class EnterPhoneNumberController @Inject()(
           schemeName =>
             common.post(
               entityName = name(establisherIndex, directorIndex),
-              entityType = Message("messages__director"),
+              entityType = Messages("messages__director"),
               phoneId = EnterPhoneId(establisherIndex, directorIndex),
               form = form(establisherIndex, directorIndex),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__contact_details__hint", name(establisherIndex, directorIndex))),
+              paragraphText = Seq(Messages("messages__contact_details__hint", name(establisherIndex, directorIndex))),
               mode = Some(mode),
               routes.EnterPhoneNumberController.onSubmit(establisherIndex, directorIndex, mode),
               Some(value => setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
@@ -94,7 +93,7 @@ class EnterPhoneNumberController @Inject()(
 
   private def form(establisherIndex: Index, directorIndex: Index)
                   (implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Message("messages__enterPhone__error_required", name(establisherIndex, directorIndex)))
+    formProvider(Messages("messages__enterPhone__error_required", name(establisherIndex, directorIndex)))
 
   private def setUpdatedAnswers(establisherIndex: Index, directorIndex: Index, mode: Mode, value: String, ua: UserAnswers): Try[UserAnswers] = {
     val updatedUserAnswers =

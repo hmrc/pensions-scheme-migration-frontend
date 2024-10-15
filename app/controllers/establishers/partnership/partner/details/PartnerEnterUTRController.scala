@@ -25,10 +25,9 @@ import identifiers.establishers.partnership.partner.details.PartnerEnterUTRId
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.details.CommonEnterReferenceValueService
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -57,14 +56,14 @@ class PartnerEnterUTRController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.get(
-              pageTitle = Message("messages__enterUTR", Message("messages__partner")),
-              pageHeading = Message("messages__enterUTR", name(establisherIndex, partnerIndex)),
+              pageTitle = Messages("messages__enterUTR", Messages("messages__partner")),
+              pageHeading = Messages("messages__enterUTR", name(establisherIndex, partnerIndex)),
               isPageHeading = true,
               id = PartnerEnterUTRId(establisherIndex, partnerIndex),
               form = form,
               schemeName = schemeName,
               legendClass = "govuk-visually-hidden",
-              paragraphText = Seq(Message("messages__UTR__p1"), Message("messages__UTR__p2")),
+              paragraphText = Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2")),
               submitCall = routes.PartnerEnterUTRController.onSubmit(establisherIndex, partnerIndex, mode)
             )
         }
@@ -76,14 +75,14 @@ class PartnerEnterUTRController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.post(
-              pageTitle = Message("messages__enterUTR", Message("messages__partner")),
-              pageHeading = Message("messages__enterUTR", name(establisherIndex, partnerIndex)),
+              pageTitle = Messages("messages__enterUTR", Messages("messages__partner")),
+              pageHeading = Messages("messages__enterUTR", name(establisherIndex, partnerIndex)),
               isPageHeading = true,
               id = PartnerEnterUTRId(establisherIndex, partnerIndex),
               form = form,
               schemeName =schemeName,
               legendClass = "govuk-visually-hidden",
-              paragraphText = Seq(Message("messages__UTR__p1"), Message("messages__UTR__p2")),
+              paragraphText = Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2")),
               mode = mode,
               submitCall = routes.PartnerEnterUTRController.onSubmit(establisherIndex, partnerIndex, mode)
             )

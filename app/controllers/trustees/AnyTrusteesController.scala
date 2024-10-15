@@ -24,11 +24,10 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.AnyTrusteesId
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{Enumerable, UserAnswers}
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -57,7 +56,7 @@ class AnyTrusteesController @Inject()(navigator: CompoundNavigator,
             Future.successful(Ok(view(
               formWithData,
               controllers.trustees.routes.AnyTrusteesController.onSubmit,
-              Message("messages__the_scheme"),
+              Messages("messages__the_scheme"),
               schemeName,
               utils.Radios.yesNo(formWithData("value"))
             )))
@@ -75,7 +74,7 @@ class AnyTrusteesController @Inject()(navigator: CompoundNavigator,
                 Future.successful(BadRequest(view(
                   formWithErrors,
                   controllers.trustees.routes.AnyTrusteesController.onSubmit,
-                  Message("messages__the_scheme"),
+                  Messages("messages__the_scheme"),
                   schemeName,
                   utils.Radios.yesNo(formWithErrors("value"))
                 )))

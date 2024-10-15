@@ -26,6 +26,7 @@ import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
@@ -33,7 +34,6 @@ import play.api.test.Helpers.{status, _}
 import services.common.details.CommonHasReferenceValueService
 import utils.Data.{companyDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
-import viewmodels.Message
 import views.html.{HasReferenceValueView, HasReferenceValueWithHintView}
 
 import scala.concurrent.Future
@@ -43,7 +43,7 @@ class HaveVATControllerSpec extends ControllerSpecBase with JsonMatchers with Tr
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(index), companyDetails).success.value
 
   private val formProvider: HasReferenceNumberFormProvider = new HasReferenceNumberFormProvider()
-  private val form: Form[Boolean] = formProvider(Message("messages__genericHaveVat__error__required", companyDetails.companyName))
+  private val form: Form[Boolean] = formProvider(Messages("messages__genericHaveVat__error__required", companyDetails.companyName))
 
   private def controller(dataRetrievalAction: DataRetrievalAction): HaveVATController =
     new HaveVATController(messagesApi, new FakeAuthAction(), dataRetrievalAction,

@@ -24,13 +24,12 @@ import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address.TradingTimeId
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.address.CommonTradingTimeService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.Enumerable
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -53,7 +52,7 @@ class TradingTimeController @Inject()(
           common.get(
             Some(schemeName),
             companyDetails.companyName,
-            Message("messages__company"),
+            Messages("messages__company"),
             form,
             TradingTimeId(index),
             submitUrl = routes.TradingTimeController.onSubmit(index, mode)
@@ -70,7 +69,7 @@ class TradingTimeController @Inject()(
           common.post(
             Some(schemeName),
             companyDetails.companyName,
-            Message("messages__company"),
+            Messages("messages__company"),
             form,
             TradingTimeId(index),
             Some(mode),

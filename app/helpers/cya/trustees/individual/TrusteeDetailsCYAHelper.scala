@@ -28,7 +28,6 @@ import play.api.mvc.AnyContent
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.{Enumerable, UserAnswers}
-import viewmodels.Message
 
 class TrusteeDetailsCYAHelper
   extends CYAHelper
@@ -43,14 +42,14 @@ class TrusteeDetailsCYAHelper
     val rowsWithoutDynamicIndices = Seq(
       Some(answerOrAddRow(
         id                 = TrusteeDOBId(index),
-        message            = Message("messages__dob__h1", trusteeName).resolve,
+        message            = Messages("messages__dob__h1", trusteeName),
         url                = Some(routes.TrusteeDOBController.onPageLoad(index, CheckMode).url),
         visuallyHiddenText = Some(Text(Messages("messages__dob__cya__visuallyHidden", trusteeName))),
         answerTransform = answerDateTransform
       )),
       Some(answerOrAddRow(
         id                 = TrusteeHasNINOId(index),
-        message            = Message("messages__hasNINO", trusteeName).resolve,
+        message            = Messages("messages__hasNINO", trusteeName),
         url                = Some(routes.TrusteeHasNINOController.onPageLoad(index, CheckMode).url),
         visuallyHiddenText = Some(Text(Messages("messages__hasUTR__cya__visuallyHidden", trusteeName))),
         answerTransform    = answerBooleanTransform
@@ -59,7 +58,7 @@ class TrusteeDetailsCYAHelper
         case true =>
           answerOrAddRow(
             id                 = TrusteeNINOId(index),
-            message            = Message("messages__enterNINO__cya", trusteeName),
+            message            = Messages("messages__enterNINO__cya", trusteeName),
             url                = Some(routes.TrusteeEnterNINOController.onPageLoad(index, CheckMode).url),
             visuallyHiddenText = Some(Text(Messages("messages__hasNINO__cya__visuallyHidden", trusteeName))),
             answerTransform    = referenceValueTransform
@@ -67,14 +66,14 @@ class TrusteeDetailsCYAHelper
         case false =>
           answerOrAddRow(
             id                 = TrusteeNoNINOReasonId(index),
-            message            = Message("messages__whyNoNINO", trusteeName),
+            message            = Messages("messages__whyNoNINO", trusteeName),
             url                = Some(routes.TrusteeNoNINOReasonController.onPageLoad(index, CheckMode).url),
             visuallyHiddenText = Some(Text(Messages("messages__whyNoNINO__cya__visuallyHidden", trusteeName)))
           )
       },
       Some(answerOrAddRow(
         id                 = TrusteeHasUTRId(index),
-        message            = Message("messages__hasUTR", trusteeName).resolve,
+        message            = Messages("messages__hasUTR", trusteeName),
         url                = Some(routes.TrusteeHasUTRController.onPageLoad(index, CheckMode).url),
         visuallyHiddenText = Some(Text(Messages("messages__hasUTR__cya__visuallyHidden", trusteeName))),
         answerTransform    = answerBooleanTransform
@@ -83,7 +82,7 @@ class TrusteeDetailsCYAHelper
         case true =>
           answerOrAddRow(
             id                 = TrusteeUTRId(index),
-            message            = Message("messages__enterUTR__cya_label", trusteeName),
+            message            = Messages("messages__enterUTR__cya_label", trusteeName),
             url                = Some(routes.TrusteeEnterUTRController.onPageLoad(index, CheckMode).url),
             visuallyHiddenText = Some(Text(Messages("messages__hasUTR__cya__visuallyHidden", trusteeName))),
             answerTransform    = referenceValueTransform
@@ -91,7 +90,7 @@ class TrusteeDetailsCYAHelper
         case false =>
           answerOrAddRow(
             id                 = TrusteeNoUTRReasonId(index),
-            message            = Message("messages__whyNoUTR", trusteeName),
+            message            = Messages("messages__whyNoUTR", trusteeName),
             url                = Some(routes.TrusteeNoUTRReasonController.onPageLoad(index, CheckMode).url),
             visuallyHiddenText = Some(Text(Messages("messages__whyNoUTR__cya__visuallyHidden", trusteeName)))
           )

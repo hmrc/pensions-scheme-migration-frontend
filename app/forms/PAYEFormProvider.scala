@@ -21,7 +21,6 @@ import models.ReferenceValue
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.i18n.Messages
-import viewmodels.Message
 
 import javax.inject.Inject
 
@@ -32,8 +31,8 @@ class PAYEFormProvider @Inject() extends PayeMapping {
       mapping(
         "value" -> payeMapping(
           requiredPayeKey = "messages__paye__error_required",
-          payeLengthKey = Message("messages__paye__error_length", name),
-          invalidPayeKey = Message("messages__paye__error_invalid", name)
+          payeLengthKey = Messages("messages__paye__error_length", name),
+          invalidPayeKey = Messages("messages__paye__error_invalid", name)
         )
       )(ReferenceValue.applyEditable)(ReferenceValue.unapplyEditable)
     )

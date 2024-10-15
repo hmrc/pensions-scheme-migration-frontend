@@ -24,13 +24,13 @@ import models.PartnershipDetails
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.Data.ua
 import utils.UserAnswers
-import viewmodels.Message
 import views.html.ReasonView
 
 import scala.concurrent.Future
@@ -42,12 +42,12 @@ class NoUTRReasonControllerSpec
     with BeforeAndAfterEach {
 
   private val form: Form[String] =
-    formProvider(Message("messages__reason__error_utrRequired", partnershipName))
+    formProvider(Messages("messages__reason__error_utrRequired", partnershipName))
   private val userAnswers: UserAnswers =
     ua.set(PartnershipDetailsId(0), PartnershipDetails(partnershipName)).success.value
 
-  private val pageTitle = Message("messages__whyNoUTR", Message("messages__partnership"))
-  private val pageHeading = Message("messages__whyNoUTR", partnershipName)
+  private val pageTitle = Messages("messages__whyNoUTR", Messages("messages__partnership"))
+  private val pageHeading = Messages("messages__whyNoUTR", partnershipName)
 
   override def beforeEach(): Unit = {
     super.beforeEach()

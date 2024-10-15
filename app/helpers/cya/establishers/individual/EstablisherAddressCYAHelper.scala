@@ -27,7 +27,6 @@ import play.api.mvc.AnyContent
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.{Enumerable, UserAnswers}
-import viewmodels.Message
 
 class EstablisherAddressCYAHelper
   extends CYAHelper
@@ -46,13 +45,13 @@ class EstablisherAddressCYAHelper
     val seqRowAddressAndYears = Seq(
       answerOrAddRow(
         AddressId(index),
-        Message("messages__address__whatYouWillNeed_h1", establisherName).resolve,
+        Messages("messages__address__whatYouWillNeed_h1", establisherName),
         Some(controllers.establishers.individual.address.routes.EnterPostcodeController.onPageLoad(index,CheckMode).url),
         Some(Text(Messages("messages__visuallyHidden__address", establisherName))), answerAddressTransform
       ),
       answerOrAddRow(
         AddressYearsId(index),
-        Message("addressYears.title", establisherName).resolve,
+        Messages("addressYears.title", establisherName),
         Some(controllers.establishers.individual.address.routes.AddressYearsController.onPageLoad(index,CheckMode).url),
         Some(Text(Messages("messages__visuallyhidden__addressYears", establisherName))), answerBooleanTransform
       )
@@ -64,7 +63,7 @@ class EstablisherAddressCYAHelper
       Seq(
         answerOrAddRow(
           PreviousAddressId(index),
-          Message("messages__previousAddress", establisherName).resolve,
+          Messages("messages__previousAddress", establisherName),
           Some(controllers.establishers.individual.address.routes.EnterPreviousPostcodeController.onPageLoad(index,CheckMode).url),
           Some(Text(Messages("messages__visuallyHidden__previousAddress", establisherName))), answerAddressTransform
         )

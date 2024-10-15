@@ -25,7 +25,6 @@ import play.api.mvc.AnyContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.{Enumerable, UserAnswers}
-import viewmodels.Message
 
 class AboutCYAHelper extends CYAHelper with Enumerable.Implicits {
 
@@ -37,11 +36,11 @@ class AboutCYAHelper extends CYAHelper with Enumerable.Implicits {
     val answerTransform: Option[Members => HtmlContent] = Some(opt => HtmlContent(Messages(s"members.${opt.toString}")))
 
     val rowsWithoutDynamicIndices = Seq(
-      answerOrAddRow(CurrentMembersId, Message("currentMembers.title", schemeName).resolve,
+      answerOrAddRow(CurrentMembersId, Messages("currentMembers.title", schemeName),
         Some(controllers.aboutMembership.routes.CurrentMembersController.onPageLoad.url),
         Some(Text(Messages("messages__visuallyhidden__currentMembers", schemeName))), answerTransform
       ),
-      answerOrAddRow(FutureMembersId, Message("futureMembers.title", schemeName).resolve,
+      answerOrAddRow(FutureMembersId, Messages("futureMembers.title", schemeName),
         Some(controllers.aboutMembership.routes.FutureMembersController.onPageLoad.url),
         Some(Text(Messages("messages__visuallyhidden__futureMembers"))), answerTransform
       )

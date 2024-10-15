@@ -26,6 +26,7 @@ import models.{NormalMode, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
@@ -33,7 +34,6 @@ import play.api.test.Helpers.{status, _}
 import services.common.details.CommonHasReferenceValueService
 import utils.Data.{schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
-import viewmodels.Message
 import views.html.{HasReferenceValueView, HasReferenceValueWithHintView}
 
 import scala.concurrent.Future
@@ -92,11 +92,11 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase with JsonMatchers
       val view = app.injector.instanceOf[HasReferenceValueWithHintView].apply(
         form,
         schemeName,
-        Message("messages__otherDirectors__title"),
-        Message("messages__otherDirectors__heading"),
+        Messages("messages__otherDirectors__title"),
+        Messages("messages__otherDirectors__heading"),
         utils.Radios.yesNo(form("value")),
         "govuk-visually-hidden",
-        Seq(Message("messages__otherDirectors__lede")),
+        Seq(Messages("messages__otherDirectors__lede")),
         routes.OtherDirectorsController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)
       compareResultAndView(result, view)
@@ -118,11 +118,11 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase with JsonMatchers
       val view = app.injector.instanceOf[HasReferenceValueWithHintView].apply(
         filledFrom,
         schemeName,
-        Message("messages__otherDirectors__title"),
-        Message("messages__otherDirectors__heading"),
+        Messages("messages__otherDirectors__title"),
+        Messages("messages__otherDirectors__heading"),
         utils.Radios.yesNo(filledFrom("value")),
         "govuk-visually-hidden",
-        Seq(Message("messages__otherDirectors__lede")),
+        Seq(Messages("messages__otherDirectors__lede")),
         routes.OtherDirectorsController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)
       compareResultAndView(result, view)
@@ -145,11 +145,11 @@ class OtherDirectorsControllerSpec extends ControllerSpecBase with JsonMatchers
       val view = app.injector.instanceOf[HasReferenceValueWithHintView].apply(
         filledFrom,
         schemeName,
-        Message("messages__otherDirectors__title"),
-        Message("messages__otherDirectors__heading"),
+        Messages("messages__otherDirectors__title"),
+        Messages("messages__otherDirectors__heading"),
         utils.Radios.yesNo(filledFrom("value")),
         "govuk-visually-hidden",
-        Seq(Message("messages__otherDirectors__lede")),
+        Seq(Messages("messages__otherDirectors__lede")),
         routes.OtherDirectorsController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)
       compareResultAndView(result, view)

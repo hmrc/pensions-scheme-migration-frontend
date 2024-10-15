@@ -28,7 +28,6 @@ import play.api.mvc.AnyContent
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.{Enumerable, UserAnswers}
-import viewmodels.Message
 
 class TrusteeCompanyContactDetailsCYAHelper
   extends CYAHelper
@@ -48,13 +47,13 @@ class TrusteeCompanyContactDetailsCYAHelper
     val rowsWithoutDynamicIndices = Seq(
       Some(answerOrAddRow(
         id = EnterEmailId(index),
-        message = Message("messages__enterEmail_cya_label", trusteeName).resolve,
+        message = Messages("messages__enterEmail_cya_label", trusteeName),
         url = Some(routes.EnterEmailController.onPageLoad(index, CheckMode).url),
         visuallyHiddenText = Some(Text(Messages("messages__enterEmail__cya__visuallyHidden", trusteeName)))
       )),
       Some(answerOrAddRow(
         id = EnterPhoneId(index),
-        message = Message("messages__enterPhone_cya_label", trusteeName).resolve,
+        message = Messages("messages__enterPhone_cya_label", trusteeName),
         url = Some(routes.EnterPhoneController.onPageLoad(index, CheckMode).url),
         visuallyHiddenText = Some(Text(Messages("messages__enterPhone__cya__visuallyHidden", trusteeName)))
       ))).flatten

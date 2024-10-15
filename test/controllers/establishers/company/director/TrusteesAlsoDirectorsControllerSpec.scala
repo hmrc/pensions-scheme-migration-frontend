@@ -22,8 +22,8 @@ import forms.dataPrefill.DataPrefillCheckboxFormProvider
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
-import models.prefill.IndividualDetails
 import models._
+import models.prefill.IndividualDetails
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.Application

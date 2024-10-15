@@ -23,12 +23,11 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.{BenefitsInsuranceNameId, InsurerEnterPostCodeId}
 import models.requests.DataRequest
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.address.{CommonPostcodeService, CommonPostcodeTemplateData}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -61,14 +60,14 @@ class InsurerEnterPostcodeController @Inject()(
   }
 
   def getFormToTemplate(schemeName:String)(implicit request:DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
-    val name: String = request.userAnswers.get(BenefitsInsuranceNameId).getOrElse(Message("benefitsInsuranceUnknown"))
+    val name: String = request.userAnswers.get(BenefitsInsuranceNameId).getOrElse(Messages("benefitsInsuranceUnknown"))
     val submitUrl = routes.InsurerEnterPostcodeController.onSubmit
     val enterManuallyUrl = routes.InsurerConfirmAddressController.onPageLoad.url
 
     form => {
       CommonPostcodeTemplateData(
         form,
-        Message("benefitsInsuranceUnknown"),
+        Messages("benefitsInsuranceUnknown"),
         name,
         submitUrl,
         enterManuallyUrl,

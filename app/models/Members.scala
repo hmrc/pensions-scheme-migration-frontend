@@ -32,7 +32,7 @@ object Members {
     values.map(value =>
       RadioItem(
         label = Some(Label(
-          Some(Messages("members.${value.toString}"))
+          Some(Messages(s"members.${value.toString}"))
         )),
         value = Some(value.toString),
         checked = form("value").value.contains(value.toString)

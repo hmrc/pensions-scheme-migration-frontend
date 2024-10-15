@@ -29,7 +29,7 @@ import models.establishers.AddressPages
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
@@ -37,7 +37,6 @@ import services.common.address.{CommonAddressListService, CommonAddressListTempl
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.UserAnswers
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -184,13 +183,13 @@ class SelectAddressController @Inject()(
       implicit request =>
         EnterPostCodeId(index).retrieve.map { addresses =>
           val name: String = request.userAnswers.get(TrusteeNameId(index))
-            .map(_.fullName).getOrElse(Message("trusteeEntityTypeIndividual"))
+            .map(_.fullName).getOrElse(Messages("trusteeEntityTypeIndividual"))
 
           form =>
             CommonAddressListTemplateData(
               form,
               addresses,
-              Message("trusteeEntityTypeIndividual"),
+              Messages("trusteeEntityTypeIndividual"),
               name,
               routes.ConfirmAddressController.onPageLoad(index, mode).url,
               schemeName,

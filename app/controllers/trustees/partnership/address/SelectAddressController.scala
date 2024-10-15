@@ -25,12 +25,11 @@ import identifiers.trustees.partnership.address.{AddressId, AddressListId, Enter
 import models.establishers.AddressPages
 import models.{Index, Mode, NormalMode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.address.{CommonAddressListService, CommonAddressListTemplateData}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -81,13 +80,13 @@ class SelectAddressController @Inject()(
       implicit request =>
         EnterPostCodeId(index).retrieve.map { addresses =>
           val name: String = request.userAnswers.get(PartnershipDetailsId(index))
-            .map(_.partnershipName).getOrElse(Message("messages__partnership"))
+            .map(_.partnershipName).getOrElse(Messages("messages__partnership"))
 
           form =>
             CommonAddressListTemplateData(
               form,
               addresses,
-              Message("messages__partnership"),
+              Messages("messages__partnership"),
               name,
               routes.ConfirmAddressController.onPageLoad(index,mode).url,
               schemeName,

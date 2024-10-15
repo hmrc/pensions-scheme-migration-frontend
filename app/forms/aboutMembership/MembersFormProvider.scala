@@ -19,13 +19,11 @@ package forms.aboutMembership
 import forms.mappings.Mappings
 import models.Members
 import play.api.data.Form
-import play.api.i18n.Messages
-import viewmodels.Message
 
 import javax.inject.Inject
 
 class MembersFormProvider @Inject() extends Mappings {
 
-  def apply(message: Message)(implicit messages: Messages): Form[Members] =
-    Form("value" -> enumerable[Members](message))
+  def apply(value: String): Form[Members] =
+    Form("value" -> enumerable[Members](value))
 }

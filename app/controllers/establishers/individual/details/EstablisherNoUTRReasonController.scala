@@ -25,10 +25,9 @@ import identifiers.establishers.individual.details.EstablisherNoUTRReasonId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.details.CommonReasonService
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -51,7 +50,7 @@ class EstablisherNoUTRReasonController @Inject()(val messagesApi: MessagesApi,
 
   private def form(index: Index)
                   (implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Message("messages__reason__error_utrRequired", name(index)))
+    formProvider(Messages("messages__reason__error_utrRequired", name(index)))
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
@@ -59,8 +58,8 @@ class EstablisherNoUTRReasonController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.get(
-              pageTitle     = Message("messages__whyNoUTR", Message("messages__individual")),
-              pageHeading     = Message("messages__whyNoUTR", name(index)),
+              pageTitle     = Messages("messages__whyNoUTR", Messages("messages__individual")),
+              pageHeading     = Messages("messages__whyNoUTR", name(index)),
               isPageHeading = true,
               id            = EstablisherNoUTRReasonId(index),
               form          = form(index),
@@ -76,8 +75,8 @@ class EstablisherNoUTRReasonController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.post(
-              pageTitle     = Message("messages__whyNoUTR", Message("messages__individual")),
-              pageHeading     = Message("messages__whyNoUTR", name(index)),
+              pageTitle     = Messages("messages__whyNoUTR", Messages("messages__individual")),
+              pageHeading     = Messages("messages__whyNoUTR", name(index)),
               isPageHeading = true,
               id            = EstablisherNoUTRReasonId(index),
               form          = form(index),

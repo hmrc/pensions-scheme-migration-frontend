@@ -44,7 +44,6 @@ import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, Call, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import utils.UserAnswers
-import viewmodels.Message
 import views.html.PhoneView
 
 import javax.inject.{Inject, Singleton}
@@ -63,7 +62,7 @@ class CommonPhoneService @Inject()(
 
   def get(
            entityName: String,
-           entityType: Message,
+           entityType: String,
            phoneId: TypedIdentifier[String],
            form: Form[String],
            schemeName: String,
@@ -78,14 +77,14 @@ class CommonPhoneService @Inject()(
         filledForm,
         schemeName,
         entityName,
-        entityType.resolve,
+        entityType,
         paragraphText,
         submitCall
       )))
   }
 
   def post(entityName: String,
-           entityType: Message,
+           entityType: String,
            phoneId: TypedIdentifier[String],
            form: Form[String],
            schemeName: String,
@@ -104,7 +103,7 @@ class CommonPhoneService @Inject()(
               formWithErrors,
               schemeName,
               entityName,
-              entityType.resolve,
+              entityType,
               paragraphText,
               submitCall
             )))

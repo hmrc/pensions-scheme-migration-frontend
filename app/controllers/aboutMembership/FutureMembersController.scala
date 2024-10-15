@@ -29,7 +29,6 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Enumerable
-import viewmodels.Message
 import views.html.aboutMembership.MembersView
 
 import javax.inject.Inject
@@ -48,7 +47,7 @@ class FutureMembersController @Inject()(override val messagesApi: MessagesApi,
   with I18nSupport with Retrievals with Enumerable.Implicits {
 
   private def form(schemeName: String)(implicit messages: Messages): Form[Members] =
-    formProvider(Message("futureMembers.error.required", schemeName))
+    formProvider(Messages("futureMembers.error.required", schemeName))
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>

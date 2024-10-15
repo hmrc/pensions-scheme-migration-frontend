@@ -26,12 +26,11 @@ import identifiers.trustees.individual.details.TrusteeUTRId
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode, ReferenceValue}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
 import services.common.details.CommonEnterReferenceValueService
 import utils.UserAnswers
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -53,14 +52,14 @@ class DirectorEnterUTRController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.get(
-              pageTitle = Message("messages__enterUTR", Message("messages__director")),
-              pageHeading = Message("messages__enterUTR", name(establisherIndex, directorIndex)),
+              pageTitle = Messages("messages__enterUTR", Messages("messages__director")),
+              pageHeading = Messages("messages__enterUTR", name(establisherIndex, directorIndex)),
               isPageHeading = true,
               id = DirectorEnterUTRId(establisherIndex, directorIndex),
               form = form,
               schemeName = schemeName,
               legendClass = "govuk-visually-hidden",
-              paragraphText = Seq(Message("messages__UTR__p1"), Message("messages__UTR__p2")),
+              paragraphText = Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2")),
               submitCall = routes.DirectorEnterUTRController.onSubmit(establisherIndex, directorIndex, mode)
             )
         }
@@ -81,14 +80,14 @@ class DirectorEnterUTRController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.post(
-              pageTitle     = Message("messages__enterUTR", Message("messages__director")),
-              pageHeading     = Message("messages__enterUTR", name(establisherIndex, directorIndex)),
+              pageTitle     = Messages("messages__enterUTR", Messages("messages__director")),
+              pageHeading     = Messages("messages__enterUTR", name(establisherIndex, directorIndex)),
               isPageHeading = true,
               id            = DirectorEnterUTRId(establisherIndex, directorIndex),
               form          = form,
               schemeName    = schemeName,
               hintText      = None,
-              paragraphText = Seq(Message("messages__UTR__p1"), Message("messages__UTR__p2")),
+              paragraphText = Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2")),
               legendClass = "govuk-visually-hidden",
               mode          = mode,
               optSetUserAnswers = Some(value => setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers)),

@@ -25,12 +25,11 @@ import identifiers.trustees.company.address.{EnterPreviousPostCodeId, PreviousAd
 import models.establishers.AddressPages
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.address.{CommonAddressListService, CommonAddressListTemplateData}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -81,13 +80,13 @@ class SelectPreviousAddressController @Inject()(
       implicit request =>
         EnterPreviousPostCodeId(index).retrieve.map { addresses =>
           val name: String = request.userAnswers.get(CompanyDetailsId(index))
-            .map(_.companyName).getOrElse(Message("messages__company"))
+            .map(_.companyName).getOrElse(Messages("messages__company"))
 
           form =>
             CommonAddressListTemplateData(
               form,
               addresses,
-              Message("messages__company"),
+              Messages("messages__company"),
               name,
               controllers.trustees.company.address.routes.ConfirmPreviousAddressController.onPageLoad(index,mode).url,
               schemeName,

@@ -28,7 +28,6 @@ import play.api.mvc.AnyContent
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.{Enumerable, UserAnswers}
-import viewmodels.Message
 
 class TrusteePartnershipDetailsCYAHelper
   extends CYAHelper
@@ -54,26 +53,26 @@ class TrusteePartnershipDetailsCYAHelper
 
 
   private def utrAnswers(index: Index, partnershipName: String)(implicit ua: UserAnswers, messages: Messages): Seq[SummaryListRow] = {
-    val message = Message("messages__hasUTR", partnershipName)
+    val message = Messages("messages__hasUTR", partnershipName)
     val url = Some(routes.HaveUTRController.onPageLoad(index, CheckMode).url)
     val visuallyHidden = Some(Text(Messages("messages__hasUTR__cya__visuallyHidden", partnershipName)))
 
     ua.get(HaveUTRId(index)) match {
       case None => Seq(addRow(message, url, visuallyHidden))
       case Some(true) => Seq(
-        answerRow(message, Message(booleanToText(true)), url, visuallyHidden),
+        answerRow(message, Messages(booleanToText(true)), url, visuallyHidden),
         answerOrAddRow(
           id = PartnershipUTRId(index),
-          message = Message("messages__enterUTR__cya_label", partnershipName),
+          message = Messages("messages__enterUTR__cya_label", partnershipName),
           url = Some(routes.UTRController.onPageLoad(index, CheckMode).url),
           visuallyHiddenText = Some(Text(Messages("messages__enterUTR__cya__visuallyHidden", partnershipName))),
           answerTransform = referenceValueTransform
         ))
       case Some(false) => Seq(
-        answerRow(message, Message(booleanToText(false)), url, visuallyHidden),
+        answerRow(message, Messages(booleanToText(false)), url, visuallyHidden),
         answerOrAddRow(
           id = NoUTRReasonId(index),
-          message = Message("messages__whyNoUTR", partnershipName),
+          message = Messages("messages__whyNoUTR", partnershipName),
           url = Some(routes.NoUTRReasonController.onPageLoad(index, CheckMode).url),
           visuallyHiddenText = Some(Text(Messages("messages__whyNoUTR__cya__visuallyHidden", partnershipName)))
         ))
@@ -81,7 +80,7 @@ class TrusteePartnershipDetailsCYAHelper
   }
 
   private def vatAnswers(index: Index, partnershipName: String)(implicit ua: UserAnswers, messages: Messages): Seq[SummaryListRow] = {
-    val message = Message("messages__haveVAT", partnershipName)
+    val message = Messages("messages__haveVAT", partnershipName)
     val url = Some(routes.HaveVATController.onPageLoad(index, CheckMode).url)
     val visuallyHidden = Some(Text(Messages("messages__haveVAT__cya__visuallyHidden", partnershipName)))
 
@@ -89,21 +88,21 @@ class TrusteePartnershipDetailsCYAHelper
       case None => Seq(addRow(message, url, visuallyHidden))
 
       case Some(true) => Seq(
-        answerRow(message, Message(booleanToText(true)), url, visuallyHidden),
+        answerRow(message, Messages(booleanToText(true)), url, visuallyHidden),
         answerOrAddRow(
           id = VATId(index),
-          message = Message("messages__vat__cya", partnershipName),
+          message = Messages("messages__vat__cya", partnershipName),
           url = Some(routes.VATController.onPageLoad(index, CheckMode).url),
           visuallyHiddenText = Some(Text(Messages("messages__vat__cya__visuallyHidden", partnershipName))),
           answerTransform = referenceValueTransform
         ))
 
-      case Some(false) => Seq(answerRow(message, Message(booleanToText(false)), url, visuallyHidden))
+      case Some(false) => Seq(answerRow(message, Messages(booleanToText(false)), url, visuallyHidden))
     }
   }
 
   private def payeAnswers(index: Index, partnershipName: String)(implicit ua: UserAnswers, messages: Messages): Seq[SummaryListRow] = {
-    val message = Message("messages__havePAYE", partnershipName)
+    val message = Messages("messages__havePAYE", partnershipName)
     val url = Some(routes.HavePAYEController.onPageLoad(index, CheckMode).url)
     val visuallyHidden = Some(Text(Messages("messages__havePAYE__cya__visuallyHidden", partnershipName)))
 
@@ -111,16 +110,16 @@ class TrusteePartnershipDetailsCYAHelper
       case None => Seq(addRow(message, url, visuallyHidden))
 
       case Some(true) => Seq(
-        answerRow(message, Message(booleanToText(true)), url, visuallyHidden),
+        answerRow(message, Messages(booleanToText(true)), url, visuallyHidden),
         answerOrAddRow(
           id = PAYEId(index),
-          message = Message("messages__paye_cya", partnershipName),
+          message = Messages("messages__paye_cya", partnershipName),
           url = Some(routes.PAYEController.onPageLoad(index, CheckMode).url),
           visuallyHiddenText = Some(Text(Messages("messages__paye__cya__visuallyHidden", partnershipName))),
           answerTransform = referenceValueTransform
         ))
 
-      case Some(false) => Seq(answerRow(message, Message(booleanToText(false)), url, visuallyHidden))
+      case Some(false) => Seq(answerRow(message, Messages(booleanToText(false)), url, visuallyHidden))
     }
   }
 

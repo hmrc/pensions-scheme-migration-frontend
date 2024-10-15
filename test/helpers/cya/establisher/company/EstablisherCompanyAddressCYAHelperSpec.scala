@@ -26,7 +26,6 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import utils.Data.schemeName
 import utils.UserAnswers
-import viewmodels.Message
 
 class EstablisherCompanyAddressCYAHelperSpec extends CYAHelperSpecBase {
 
@@ -70,7 +69,7 @@ class EstablisherCompanyAddressCYAHelperSpec extends CYAHelperSpecBase {
             Messages("messages__visuallyhidden__TradingTime", establisherCompanyName.companyName))),
           attributes = Map("id" -> "cya-0-2-change"))))
 
-      result(3) mustBe summaryListRowHtml(key = Message("messages__previousAddress", establisherCompanyName.companyName).resolve,
+      result(3) mustBe summaryListRowHtml(key = Messages("messages__previousAddress", establisherCompanyName.companyName),
         value = answerAddressTransform(establisherPreviousAddress), Some(Link(text = Messages("site.change"),
           target = controllers.establishers.company.address.routes.EnterPreviousPostcodeController.onPageLoad(0, CheckMode).url,
           visuallyHiddenText = Some(Text(Messages("site.change") + " " + Messages("messages__visuallyHidden__previousAddress",

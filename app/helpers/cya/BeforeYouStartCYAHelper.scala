@@ -27,7 +27,6 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.Value
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow}
 import utils.UserAnswers
-import viewmodels.Message
 
 class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
   //scalastyle:off method.length
@@ -41,7 +40,7 @@ class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
 
     val schemeTypeRow = {
       val url: String = controllers.beforeYouStartSpoke.routes.SchemeTypeController.onPageLoad.url
-      val visuallyHiddenText = Message("messages__visuallyhidden__schemeType", schemeName)
+      val visuallyHiddenText = Messages("messages__visuallyhidden__schemeType", schemeName)
       schemeTypeAnswer match {
         case None => SummaryListRow(
           key = Key(content = Text(Messages("messages__cya__scheme_type", schemeName)), classes = "govuk-!-width-one-half"),
@@ -83,7 +82,7 @@ class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
     val country = request.userAnswers.get(EstablishedCountryId)
     val countryRow = {
       val url: String = controllers.beforeYouStartSpoke.routes.EstablishedCountryController.onPageLoad.url
-      val visuallyHiddenText = Message("messages__visuallyhidden__schemeEstablishedCountry", schemeName)
+      val visuallyHiddenText = Messages("messages__visuallyhidden__schemeEstablishedCountry", schemeName)
       country match {
         case None => SummaryListRow(
           key = Key(content = Text(Messages("messages__cya__country", schemeName)), classes = "govuk-!-width-one-half"),
@@ -100,9 +99,9 @@ class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
       countryRow,
       answerOrAddRow(
         id = WorkingKnowledgeId,
-        message = Message("messages__cya__working_knowledge").resolve,
+        message = Messages("messages__cya__working_knowledge"),
         url = Some(controllers.beforeYouStartSpoke.routes.WorkingKnowledgeController.onPageLoad.url),
-        visuallyHiddenText = Some(Text(Message("messages__visuallyhidden__working_knowledge"))),
+        visuallyHiddenText = Some(Text(Messages("messages__visuallyhidden__working_knowledge"))),
         answerTransform = Some(booleanToContent)
       )
     )
