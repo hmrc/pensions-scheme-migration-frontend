@@ -71,33 +71,38 @@ trait CYAHelper {
     row.copy(actions = newActions)
   }
 
-  def actionAdd(optionURL: Option[String], visuallyHiddenText: Option[Text])(implicit messages: Messages): Actions = {
+  def actionAdd(optionURL: Option[String], visuallyHiddenText: Option[Text])(implicit messages: Messages): Option[Actions] = {
     val addVisuallyHidden = visuallyHiddenText.map {
       visuallyHiddn => messages("site.add") + " " + visuallyHiddn.value
     }
-    Actions( items = optionURL.toSeq.map { url =>
-      ActionItem(
-        content = HtmlContent(s"<span aria-hidden=true >${messages("site.add")}</span>"),
-        href = url,
-        visuallyHiddenText = addVisuallyHidden,
-        attributes = Map("id" -> "change")
+    optionURL.map { url =>
+      Actions(items =
+        Seq(ActionItem(
+          content = HtmlContent(s"<span aria-hidden=true >${messages("site.add")}</span>"),
+          href = url,
+          visuallyHiddenText = addVisuallyHidden,
+          attributes = Map("id" -> "change")
+        ))
       )
-    })
+    }
   }
 
   def actionChange(optionURL: Option[String], visuallyHiddenText: Option[Text])(implicit
-    messages: Messages): Actions = {
+    messages: Messages): Option[Actions] = {
     val changeVisuallyHidden = visuallyHiddenText.map {
       visuallyHiddn => messages("site.change") + " " + visuallyHiddn.value
     }
-    Actions( items = optionURL.toSeq.map { url =>
-      ActionItem(
-        content = HtmlContent(s"<span aria-hidden=true >${messages("site.change")}</span>"),
-        href = url,
-        visuallyHiddenText = changeVisuallyHidden,
-        attributes = Map("id" -> "change")
+    optionURL.map { url =>
+      Actions( items =
+        Seq(ActionItem(
+          content = HtmlContent(s"<span aria-hidden=true >${messages("site.change")}</span>"),
+          href = url,
+          visuallyHiddenText = changeVisuallyHidden,
+          attributes = Map("id" -> "change")
+        ))
       )
-    })
+    }
+
   }
 
   def answerOrAddRow[A](id: TypedIdentifier[A],
@@ -111,13 +116,13 @@ trait CYAHelper {
         SummaryListRow(
           key = Key(content = Text(Messages(message)), classes = "govuk-!-width-one-half"),
           value = Value(content = Text(Messages("site.incomplete")), classes = "govuk-!-width-one-third"),
-          actions = Some(actionAdd(url, visuallyHiddenText))
+          actions = actionAdd(url, visuallyHiddenText)
         )
       case Some(answer) =>
         SummaryListRow(
           key = Key(content = Text(Messages(message)), classes = "govuk-!-width-one-half"),
           value = answerTransform.fold(Value(Text(answer.toString)))(transform => Value(transform(answer))),
-          actions = Some(actionChange(url, visuallyHiddenText))
+          actions = actionChange(url, visuallyHiddenText)
         )
     }
 
@@ -129,7 +134,7 @@ trait CYAHelper {
     SummaryListRow(
       key = Key(content = Text(Messages(message)), classes = "govuk-!-width-one-half"),
       value = Value(content = Text(answer)),
-      actions = Some(actionChange(url, visuallyHiddenText))
+      actions = actionChange(url, visuallyHiddenText)
     )
   }
 
@@ -140,7 +145,7 @@ trait CYAHelper {
     SummaryListRow(
       key = Key(content = Text(Messages(message)), classes = "govuk-!-width-one-half"),
       value = Value(content = Text(Messages("site.incomplete")), classes = "govuk-!-width-one-third"),
-      actions = Some(actionAdd(url, visuallyHiddenText))
+      actions = actionAdd(url, visuallyHiddenText)
     )
   }
 

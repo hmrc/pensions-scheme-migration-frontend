@@ -48,39 +48,33 @@ class BenefitsAndInsuranceCYAHelperSpec extends AnyWordSpec with Matchers with T
   case class Link(text: String, target: String, visuallyHiddenText: Option[Text] = None,
     attributes: Map[String, String] = Map.empty)
 
-  private def summaryListRow(key: String, valueMsgKey: String, target: Option[Link] = None): SummaryListRow = {
-    SummaryListRow(key = Key(Text(Messages(key)), classes ="govuk-!-width-one-half"), value = Value(Text(Messages(valueMsgKey))),
-      actions = Some(Actions(
-        items = target.toSeq.map( t =>
-          ActionItem(
+  private def actions(target: Option[Link]) = {
+    target.map { t =>
+      Actions(
+        items =
+          Seq(ActionItem(
             content = HtmlContent(s"<span aria-hidden=true >${t.text}</span>"), href = t.target,
             visuallyHiddenText = t.visuallyHiddenText.map(_.value), attributes = t.attributes
           ))
-      ))
+      )
+    }
+  }
+
+  private def summaryListRow(key: String, valueMsgKey: String, target: Option[Link] = None): SummaryListRow = {
+    SummaryListRow(key = Key(Text(Messages(key)), classes ="govuk-!-width-one-half"), value = Value(Text(Messages(valueMsgKey))),
+      actions = actions(target)
     )
   }
 
   private def summaryListRowText(key: String, value: String, target: Option[Link]): SummaryListRow = {
     SummaryListRow(key = Key(Text(Messages(key)), classes ="govuk-!-width-one-half"), value = Value(Text(value)),
-      actions = Some(Actions(
-        items = target.toSeq.map( t =>
-          ActionItem(
-            content = HtmlContent(s"<span aria-hidden=true >${t.text}</span>"), href = t.target,
-            visuallyHiddenText = t.visuallyHiddenText.map(_.value), attributes = t.attributes
-          ))
-      ))
+      actions = actions(target)
     )
   }
 
   private def summaryListRowHtml(key: String, value: HtmlContent, target: Option[Link]): SummaryListRow = {
     SummaryListRow(key = Key(Text(Messages(key)), classes ="govuk-!-width-one-half"), value = Value(value),
-      actions = Some(Actions(
-        items = target.toSeq.map( t =>
-          ActionItem(
-            content = HtmlContent(s"<span aria-hidden=true >${t.text}</span>"), href = t.target,
-            visuallyHiddenText = t.visuallyHiddenText.map(_.value), attributes = t.attributes
-          ))
-      ))
+      actions = actions(target)
     )
   }
 

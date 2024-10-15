@@ -46,27 +46,27 @@ class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
         case None => SummaryListRow(
           key = Key(content = Text(Messages("messages__cya__scheme_type", schemeName)), classes = "govuk-!-width-one-half"),
           value = Value(content = Text(Messages("site.incomplete")), classes = "govuk-!-width-one-third"),
-          actions = Some(actionAdd(Some(url), Some(Text(visuallyHiddenText))))
+          actions = actionChange(Some(url), Some(Text(visuallyHiddenText)))
         )
         case Some(Other(details)) if details.equals("") => SummaryListRow(
           key = Key(content = Text(Messages("messages__cya__scheme_type", schemeName)), classes = "govuk-!-width-one-half"),
           value = Value(content = Text(Messages("site.incomplete")), classes = "govuk-!-width-one-third"),
-          actions = Some(actionAdd(Some(url), Some(Text(visuallyHiddenText))))
+          actions = actionChange(Some(url), Some(Text(visuallyHiddenText)))
         )
         case Some(Other(details)) if details.nonEmpty => SummaryListRow(
           key = Key(content = Text(Messages("messages__cya__scheme_type", schemeName)), classes = "govuk-!-width-one-half"),
           value = Value(content = Text(Messages(details)), classes = "govuk-!-width-one-third"),
-          actions = Some(actionChange(Some(url), Some(Text(visuallyHiddenText))))
+          actions = actionChange(Some(url), Some(Text(visuallyHiddenText)))
         )
         case Some(value) if request.userAnswers.get(IsSchemeTypeOtherId).nonEmpty => SummaryListRow(
           key = Key(content = Text(Messages("messages__cya__scheme_type", schemeName)), classes = "govuk-!-width-one-half"),
           value = Value(content = Text(Messages(s"messages__scheme_type_$value")), classes = "govuk-!-width-one-third"),
-          actions = Some(actionChange(Some(url), Some(Text(visuallyHiddenText))))
+          actions = actionChange(Some(url), Some(Text(visuallyHiddenText)))
         )
         case Some(value) if isEnabledChange => SummaryListRow(
           key = Key(content = Text(Messages("messages__cya__scheme_type", schemeName)), classes = "govuk-!-width-one-half"),
           value = Value(content = Text(Messages(s"messages__scheme_type_$value")), classes = "govuk-!-width-one-third"),
-          actions = Some(actionChange(Some(url), Some(Text(visuallyHiddenText))))
+          actions = actionChange(Some(url), Some(Text(visuallyHiddenText)))
         )
         case Some(value) => SummaryListRow(
           key = Key(content = Text(Messages("messages__cya__scheme_type", schemeName)), classes = "govuk-!-width-one-half"),
@@ -88,11 +88,11 @@ class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
         case None => SummaryListRow(
           key = Key(content = Text(Messages("messages__cya__country", schemeName)), classes = "govuk-!-width-one-half"),
           value = Value(content = Text(Messages("site.incomplete")), classes = "govuk-!-width-one-third"),
-          actions = Some(actionAdd(Some(url), Some(Text(visuallyHiddenText)))))
+          actions = actionChange(Some(url), Some(Text(visuallyHiddenText))))
         case Some(details) => SummaryListRow(
           key = Key(content = Text(Messages("messages__cya__country", schemeName)), classes = "govuk-!-width-one-half"),
           value = Value(content = Text(Messages(s"country.$details")), classes = "govuk-!-width-one-third"),
-          actions = Some(actionChange(Some(url), Some(Text(visuallyHiddenText))))
+          actions = actionChange(Some(url), Some(Text(visuallyHiddenText)))
         )
       }
     }

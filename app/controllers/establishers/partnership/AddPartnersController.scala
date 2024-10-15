@@ -36,7 +36,6 @@ import config.AppConfig
 import controllers.Retrievals
 import controllers.actions._
 import forms.establishers.partnership.partner.AddPartnersFormProvider
-import helpers.AddToListHelper
 import identifiers.establishers.partnership.AddPartnersId
 import models.{Mode, PartnerEntity}
 import navigators.CompoundNavigator
@@ -58,7 +57,6 @@ class AddPartnersController @Inject()(
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
                                                formProvider: AddPartnersFormProvider,
-                                               helper: AddToListHelper,
                                                config: AppConfig,
                                                val controllerComponents: MessagesControllerComponents,
                                                view: AddPartnerView
