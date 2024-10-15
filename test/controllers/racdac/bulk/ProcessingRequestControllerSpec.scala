@@ -26,7 +26,6 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.mvc.Request
 import play.api.test.Helpers._
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Enumerable
 
 import scala.concurrent.Future

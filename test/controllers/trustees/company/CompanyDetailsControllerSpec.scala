@@ -27,8 +27,6 @@ import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.Application
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data
 import utils.Data.ua
 import views.html.CompanyDetailsView

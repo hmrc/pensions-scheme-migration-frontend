@@ -30,11 +30,8 @@ import play.api.libs.json.Json
 import play.api.mvc.{Call, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{Data, Enumerable, TwirlMigration, UserAnswers}
+import utils.{Data, Enumerable, UserAnswers}
 import views.html.benefitsAndInsurance.AreBenefitsSecuredView
 
 import scala.concurrent.Future

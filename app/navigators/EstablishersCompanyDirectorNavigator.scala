@@ -26,7 +26,7 @@ import identifiers.establishers.company.director.contact.{EnterEmailId, EnterPho
 import identifiers.establishers.company.director.details._
 import models.Index.intToIndex
 import models.requests.DataRequest
-import models.{CheckMode, Index, Mode, NormalMode, entities}
+import models._
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
 

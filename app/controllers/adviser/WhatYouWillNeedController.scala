@@ -23,8 +23,8 @@ import identifiers.beforeYouStart.SchemeNameId
 import models.NormalMode
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import views.html.adviser.WhatYouWillNeedView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.adviser.WhatYouWillNeedView
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext

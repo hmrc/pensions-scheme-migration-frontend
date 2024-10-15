@@ -30,7 +30,7 @@ import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.Data.ua
-import utils.{Data, FakeNavigator, TwirlMigration, UserAnswers}
+import utils.{Data, FakeNavigator, UserAnswers}
 import views.html.DataPrefillRadioView
 
 import scala.concurrent.Future

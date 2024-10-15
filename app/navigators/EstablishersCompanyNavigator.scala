@@ -28,7 +28,7 @@ import identifiers.establishers.company.details._
 import identifiers.establishers.company.{AddCompanyDirectorsId, CompanyDetailsId, OtherDirectorsId}
 import identifiers.establishers.individual.EstablisherNameId
 import models.requests.DataRequest
-import models.{CheckMode, Index, Mode, NormalMode, entities}
+import models._
 import play.api.mvc.{AnyContent, Call}
 import services.DataPrefillService
 import utils.{Enumerable, UserAnswers}

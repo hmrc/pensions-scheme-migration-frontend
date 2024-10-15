@@ -27,7 +27,6 @@ import models.requests.DataRequest
 import models.{EntitySpoke, Index, entities}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{entityTypeError, managementTypeError}
 import viewmodels.Message

@@ -26,9 +26,7 @@ import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Table, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, TableRow}
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.viewmodels.MessageInterpolators
-import utils.TwirlMigration
 import views.html.racdac.RacDacsBulkListView
 
 import java.time.LocalDate

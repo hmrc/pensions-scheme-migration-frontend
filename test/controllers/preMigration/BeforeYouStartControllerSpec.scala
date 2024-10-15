@@ -25,7 +25,6 @@ import org.scalatest.TryValues
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data
 import utils.Data.ua
 import views.html.preMigration.BeforeYouStartView

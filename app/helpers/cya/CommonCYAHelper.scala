@@ -22,7 +22,6 @@ import models.{Index, entities}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
-import uk.gov.hmrc.viewmodels.SummaryList
 
 import javax.inject.{Inject, Singleton}
 

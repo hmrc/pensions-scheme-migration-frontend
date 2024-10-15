@@ -35,10 +35,10 @@ import play.api.mvc.Results.{BadRequest, Redirect}
 import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
 import services.common.address.{CommonPostcodeService, CommonPostcodeTemplateData}
-import viewmodels.Message
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.UserAnswers
+import viewmodels.Message
 import views.html.address.PostcodeView
 
 import javax.inject.Inject

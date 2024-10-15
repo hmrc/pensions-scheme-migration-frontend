@@ -25,7 +25,6 @@ import org.scalatest.TryValues
 import play.api.i18n.Messages
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.{partnershipDetails, ua}
 import utils.UserAnswers
 

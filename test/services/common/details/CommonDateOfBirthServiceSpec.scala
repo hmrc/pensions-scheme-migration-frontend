@@ -27,7 +27,6 @@ import org.mockito.ArgumentMatchers.any
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.CommonServiceSpecBase
 import uk.gov.hmrc.viewmodels.DateInput
 import utils.{Data, FakeNavigator, UserAnswers}

@@ -29,8 +29,6 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import play.twirl.api.Html
-
 import services.CommonServiceSpecBase
 import utils.{Data, FakeNavigator, UserAnswers}
 import views.html.ReasonView

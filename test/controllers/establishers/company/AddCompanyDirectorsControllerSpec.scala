@@ -29,9 +29,8 @@ import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.test.Helpers._
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{companyDetails, schemeName, ua}
-import utils.{Enumerable, TwirlMigration, UserAnswers}
+import utils.{Enumerable, UserAnswers}
 import views.html.establishers.company.AddDirectorView
 
 class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {

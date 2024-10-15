@@ -24,8 +24,8 @@ import identifiers.establishers.individual.EstablisherNameId
 import models.{Index, NormalMode, PersonName}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import views.html.address.WhatYouWillNeedView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.address.WhatYouWillNeedView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

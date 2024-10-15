@@ -18,8 +18,8 @@ package navigators
 
 import com.google.inject.Inject
 import identifiers.Identifier
-import models.{Mode, NormalMode}
 import models.requests.DataRequest
+import models.{Mode, NormalMode}
 import play.api.Logging
 import play.api.mvc.{AnyContent, Call}
 import utils.UserAnswers

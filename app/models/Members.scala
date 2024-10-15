@@ -18,8 +18,7 @@ package models
 
 import play.api.data.Form
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Label, RadioItem, Text}
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, Radios}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Label, RadioItem}
 import utils.{Enumerable, WithName}
 
 sealed trait Members

@@ -25,9 +25,8 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import services.CommonServiceSpecBase
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.ua
-import utils.{FakeNavigator, TwirlMigration}
+import utils.FakeNavigator
 import views.html.{HasReferenceValueView, HasReferenceValueWithHintView}
 
 import scala.concurrent.Future

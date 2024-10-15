@@ -29,12 +29,9 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.UserAnswers
 import views.html.CheckYourAnswersView
-
-import scala.concurrent.Future
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase with JsonMatchers {
   private val userAnswers: Option[UserAnswers] = Some(ua)

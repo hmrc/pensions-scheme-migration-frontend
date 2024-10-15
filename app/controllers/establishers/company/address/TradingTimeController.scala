@@ -16,6 +16,7 @@
 
 package controllers.establishers.company.address
 
+import controllers.Retrievals
 import controllers.actions._
 import forms.address.TradingTimeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -26,7 +27,6 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.address.CommonTradingTimeService
-import controllers.Retrievals
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.Enumerable

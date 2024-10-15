@@ -17,7 +17,7 @@
 package controllers.beforeYouStartSpoke
 
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction, MutableFakeDataRetrievalAction}
+import controllers.actions._
 import forms.beforeYouStart.WorkingKnowledgeFormProvider
 import identifiers.beforeYouStart.WorkingKnowledgeId
 import matchers.JsonMatchers
@@ -29,9 +29,8 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.ua
-import utils.{Data, FakeNavigator, TwirlMigration}
+import utils.{Data, FakeNavigator}
 import views.html.beforeYouStart.WorkingKnowledgeView
 
 import scala.concurrent.Future

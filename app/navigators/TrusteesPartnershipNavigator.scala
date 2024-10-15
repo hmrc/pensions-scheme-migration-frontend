@@ -25,8 +25,8 @@ import identifiers.trustees.partnership.PartnershipDetailsId
 import identifiers.trustees.partnership.address._
 import identifiers.trustees.partnership.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.partnership.details._
-import models.requests.DataRequest
 import models._
+import models.requests.DataRequest
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
 

@@ -21,16 +21,11 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.establishers.company.director.DirectorNameId
 import matchers.JsonMatchers
 import models.{Index, NormalMode, PersonName}
-import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
 import views.html.AlreadyDeletedView
-
-import scala.concurrent.Future
 
 class AlreadyDeletedControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 

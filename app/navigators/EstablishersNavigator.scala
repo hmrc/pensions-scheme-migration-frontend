@@ -29,7 +29,7 @@ import identifiers.establishers.individual.details._
 import identifiers.establishers.partnership.AddPartnersId
 import models.establishers.EstablisherKind
 import models.requests.DataRequest
-import models.{CheckMode, Index, Mode, NormalMode, entities}
+import models._
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
 

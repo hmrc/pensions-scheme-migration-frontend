@@ -21,7 +21,6 @@ import play.api.i18n.Messages
 import play.api.mvc.JavascriptLiteral
 import uk.gov.hmrc.govukfrontend.views.Aliases.Label
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, Radios}
 import utils.{Enumerable, WithName}
 
 sealed trait EstablisherKind

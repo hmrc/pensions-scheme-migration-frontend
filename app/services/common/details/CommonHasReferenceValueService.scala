@@ -27,8 +27,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, Call, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
-import uk.gov.hmrc.viewmodels.Radios
-import utils.{TwirlMigration, UserAnswers}
+import utils.UserAnswers
 import views.html.{HasReferenceValueView, HasReferenceValueWithHintView}
 
 import javax.inject.{Inject, Singleton}

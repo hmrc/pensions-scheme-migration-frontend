@@ -31,10 +31,8 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
-import utils.{Enumerable, TwirlMigration, UserAnswers}
+import utils.{Enumerable, UserAnswers}
 import views.html.aboutMembership.MembersView
 
 import scala.concurrent.Future

@@ -30,7 +30,6 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.common.details.CommonDateOfBirthService
 import uk.gov.hmrc.viewmodels.DateInput
 import utils.Data.ua

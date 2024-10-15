@@ -30,10 +30,10 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.Json
+import play.api.mvc.Results.{BadRequest, Ok}
 import play.api.mvc.{Result, Results}
 import play.api.test.Helpers._
 import services.common.address.CommonManualAddressService
-import play.api.mvc.Results.{BadRequest, Ok}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 import utils.{CountryOptions, Data, Enumerable, UserAnswers}
 import views.html.address.ManualAddressView

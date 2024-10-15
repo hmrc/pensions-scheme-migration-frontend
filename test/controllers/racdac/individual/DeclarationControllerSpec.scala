@@ -30,7 +30,6 @@ import play.api.mvc.Request
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpReads.upstreamResponseMessage
 import uk.gov.hmrc.http.UpstreamErrorResponse
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{psaName, pstr, ua}
 import utils.Enumerable
 

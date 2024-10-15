@@ -20,7 +20,6 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import uk.gov.hmrc.viewmodels.{Radios, _}
 import utils.{Enumerable, InputOption, WithName}
 
 sealed trait BenefitsProvisionType

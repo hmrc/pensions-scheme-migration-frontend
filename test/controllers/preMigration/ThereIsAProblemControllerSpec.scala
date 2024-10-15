@@ -21,7 +21,6 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import matchers.JsonMatchers
 import play.api.Application
 import play.api.test.Helpers._
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.{Enumerable, UserAnswers}
 import views.html.preMigration.ThereIsAProblemView
 class ThereIsAProblemControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {

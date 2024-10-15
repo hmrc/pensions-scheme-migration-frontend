@@ -32,11 +32,9 @@ import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.Helpers.{GET, POST}
 import play.api.test.{FakeHeaders, FakeRequest}
-import services.DataUpdateService
+import services.{DataPrefillService, DataUpdateService}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Label, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import services.{DataPrefillService, DataUpdateService}
-import uk.gov.hmrc.nunjucks.NunjucksRenderer
 import utils.{CountryOptions, Enumerable, FakeCountryOptions}
 
 trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerable.Implicits with MockitoSugar {

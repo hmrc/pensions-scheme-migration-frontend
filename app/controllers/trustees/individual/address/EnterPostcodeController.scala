@@ -31,14 +31,14 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.Results.{BadRequest, Redirect}
 import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
-import play.api.mvc.Results.{BadRequest, Redirect}
 import services.common.address.{CommonPostcodeService, CommonPostcodeTemplateData}
-import viewmodels.Message
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.UserAnswers
+import viewmodels.Message
 import views.html.address.PostcodeView
 
 import javax.inject.Inject

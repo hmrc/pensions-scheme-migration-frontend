@@ -38,7 +38,6 @@ import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
 import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind
 import org.scalatest.BeforeAndAfterEach
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.schemeName
 import utils.{Data, Enumerable, UserAnswers}
 

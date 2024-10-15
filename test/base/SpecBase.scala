@@ -35,9 +35,8 @@ import uk.gov.hmrc.domain.PsaId
 import utils.Data.{migrationLock, psaId}
 import utils.UserAnswers
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration.DurationInt
-import scala.concurrent.ExecutionContext
 import scala.language.implicitConversions
 
 trait SpecBase

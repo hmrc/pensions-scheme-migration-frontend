@@ -17,26 +17,26 @@
 package controllers.establishers.company.director.address
 
 import connectors.cache.UserAnswersCacheConnector
+import controllers.Retrievals
 import controllers.actions._
-import models.establishers.AddressPages
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.address.{EnterPreviousPostCodeId, PreviousAddressId, PreviousAddressListId}
 import identifiers.trustees.individual.{address => trusteeAddress}
 import models._
+import models.establishers.AddressPages
 import navigators.CompoundNavigator
 import play.api.data.Form
+import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
-import controllers.Retrievals
-import play.api.data.FormBinding.Implicits.formBinding
+import services.common.address.{CommonAddressListService, CommonAddressListTemplateData}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.UserAnswers
-import play.api.mvc.Results.Redirect
-import services.common.address.{CommonAddressListService, CommonAddressListTemplateData}
 import viewmodels.Message
 
 import javax.inject.Inject

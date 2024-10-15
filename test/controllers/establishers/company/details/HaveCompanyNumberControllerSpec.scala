@@ -31,9 +31,8 @@ import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 import services.common.details.CommonHasReferenceValueService
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import utils.Data.{companyDetails, schemeName, ua}
-import utils.{FakeNavigator, TwirlMigration, UserAnswers}
+import utils.{FakeNavigator, UserAnswers}
 import viewmodels.Message
 import views.html.{HasReferenceValueView, HasReferenceValueWithHintView}
 

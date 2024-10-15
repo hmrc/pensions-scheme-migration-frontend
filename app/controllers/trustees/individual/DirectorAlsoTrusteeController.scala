@@ -31,7 +31,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.DataPrefillService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.MessageInterpolators
-import utils.{Enumerable, TwirlMigration, UserAnswers}
+import utils.{Enumerable, UserAnswers}
 import views.html.DataPrefillRadioView
 
 import javax.inject.Inject

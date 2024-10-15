@@ -43,8 +43,6 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.Radios
-import utils.TwirlMigration
 import views.html.establishers.partnership.AddPartnerView
 
 import javax.inject.Inject

@@ -31,7 +31,7 @@ import play.api.mvc.{MessagesControllerComponents, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, NunjucksSupport}
+import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels.Text.Literal
 import utils.Data.{companyDetails, ua}

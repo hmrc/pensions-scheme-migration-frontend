@@ -33,8 +33,8 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, Radios}
-import utils.{TwirlMigration, UserAnswers}
+import uk.gov.hmrc.viewmodels.MessageInterpolators
+import utils.UserAnswers
 import views.html.DeleteView
 
 import javax.inject.Inject

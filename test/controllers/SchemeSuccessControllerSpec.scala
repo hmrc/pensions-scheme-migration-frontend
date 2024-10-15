@@ -32,7 +32,6 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.mvc.Results.Ok
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import utils.Data.ua
 import utils.{Data, Enumerable, UserAnswers}
 import views.html.SchemeSuccessView

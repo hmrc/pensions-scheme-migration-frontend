@@ -29,10 +29,8 @@ import play.api.mvc.{AnyContentAsFormUrlEncoded, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{FakeNavigator, TwirlMigration}
+import utils.FakeNavigator
 
 import scala.concurrent.Future
 class AnyTrusteesControllerSpec extends ControllerSpecBase

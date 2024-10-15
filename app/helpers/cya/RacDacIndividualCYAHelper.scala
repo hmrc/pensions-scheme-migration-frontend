@@ -20,7 +20,6 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.racdac.ContractOrPolicyNumberId
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.viewmodels.SummaryList.Row
 import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 

@@ -27,9 +27,9 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.address.{CommonPostcodeService, CommonPostcodeTemplateData}
-import viewmodels.Message
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
+import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext

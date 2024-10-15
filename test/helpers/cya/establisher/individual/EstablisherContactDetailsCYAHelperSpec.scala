@@ -32,10 +32,8 @@ import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, Text, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Key, SummaryListRow}
-import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.Data.{credId, psaId, pstr, schemeName}
 import utils.{Enumerable, UserAnswers}
-import viewmodels.Message
 
 class EstablisherContactDetailsCYAHelperSpec extends AnyWordSpec with Matchers with TryValues with Enumerable.Implicits {
 

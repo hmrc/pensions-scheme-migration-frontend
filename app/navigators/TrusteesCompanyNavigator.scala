@@ -24,8 +24,8 @@ import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.address._
 import identifiers.trustees.company.contacts.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.company.details._
-import models.requests.DataRequest
 import models._
+import models.requests.DataRequest
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
 

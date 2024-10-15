@@ -29,7 +29,6 @@ import play.api.mvc.Result
 import play.api.mvc.Results._
 import play.api.test.Helpers.{status, _}
 import services.{LockingService, SchemeSearchService}
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 
 import scala.concurrent.Future
 class ListOfSchemesControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues  {

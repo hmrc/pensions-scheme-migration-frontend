@@ -26,8 +26,6 @@ import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.viewmodels.MessageInterpolators
-import uk.gov.hmrc.viewmodels.SummaryList.Row
 import utils.{Enumerable, UserAnswers}
 import viewmodels.Message
 

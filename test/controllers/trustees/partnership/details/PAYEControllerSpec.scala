@@ -22,16 +22,15 @@ import forms.PAYEFormProvider
 import identifiers.trustees.partnership.PartnershipDetailsId
 import identifiers.trustees.partnership.details.PAYEId
 import matchers.JsonMatchers
-import play.api.data.Form
 import models.{Index, NormalMode, ReferenceValue}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
+import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 import services.common.details.CommonEnterReferenceValueService
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.{partnershipDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
 import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}

@@ -31,7 +31,6 @@ import play.api.mvc.{AnyContentAsFormUrlEncoded, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 import services.common.details.CommonEnterReferenceValueService
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.{companyDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
 import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}

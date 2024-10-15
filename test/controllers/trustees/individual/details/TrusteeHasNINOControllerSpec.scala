@@ -31,9 +31,8 @@ import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 import services.common.details.CommonHasReferenceValueService
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.ua
-import utils.{FakeNavigator, TwirlMigration, UserAnswers}
+import utils.{FakeNavigator, UserAnswers}
 import views.html.{HasReferenceValueView, HasReferenceValueWithHintView}
 
 import scala.concurrent.Future

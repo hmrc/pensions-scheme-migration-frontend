@@ -28,7 +28,6 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import utils.Data.ua
 import utils.UserAnswers
 import views.html.ReasonView

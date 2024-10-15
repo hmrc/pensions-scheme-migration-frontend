@@ -34,7 +34,6 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Key, Value}
 import utils.Data.{credId, partnershipDetails, psaId, pstr, schemeName}
 import utils.{Enumerable, UserAnswers}
-import viewmodels.Message
 
 class TrusteeContactDetailsCYAHelperSpec extends AnyWordSpec with Matchers with TryValues with Enumerable.Implicits {
 

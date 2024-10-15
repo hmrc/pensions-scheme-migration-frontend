@@ -21,13 +21,9 @@ import controllers.actions._
 import identifiers.trustees.company.CompanyDetailsId
 import matchers.JsonMatchers
 import models.{CompanyDetails, NormalMode}
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
-import play.api.libs.json.JsObject
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import utils.Data.{schemeName, ua}
 import utils.UserAnswers
 import viewmodels.Message

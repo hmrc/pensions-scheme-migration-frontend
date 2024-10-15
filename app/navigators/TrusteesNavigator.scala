@@ -24,14 +24,14 @@ import controllers.trustees.individual.details.routes._
 import controllers.trustees.individual.routes._
 import controllers.trustees.routes._
 import identifiers._
+import identifiers.trustees._
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address._
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.details._
-import identifiers.trustees._
 import models.requests.DataRequest
 import models.trustees.TrusteeKind
-import models.{CheckMode, Index, Mode, NormalMode, entities}
+import models._
 import play.api.mvc.{AnyContent, Call}
 import services.DataPrefillService
 import utils.{Enumerable, UserAnswers}

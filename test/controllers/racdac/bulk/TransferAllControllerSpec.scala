@@ -30,12 +30,8 @@ import play.api.mvc.Results.Ok
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
-import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.ua
-import utils.TwirlMigration
 
 import scala.concurrent.Future
 class TransferAllControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues with BeforeAndAfterEach{

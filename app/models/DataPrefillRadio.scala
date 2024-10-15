@@ -22,7 +22,6 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, Radios}
 
 object DataPrefillRadio {
 

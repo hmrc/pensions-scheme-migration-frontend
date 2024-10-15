@@ -26,12 +26,11 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.CompanyDetailsView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import views.html.CompanyDetailsView
 
 class CompanyDetailsController @Inject()(
                                           override val messagesApi: MessagesApi,

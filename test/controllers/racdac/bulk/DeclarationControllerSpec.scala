@@ -29,7 +29,6 @@ import play.api.libs.json.Json
 import play.api.mvc.Request
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpException
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Enumerable
 
 import scala.concurrent.Future

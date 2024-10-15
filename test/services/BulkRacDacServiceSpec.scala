@@ -31,10 +31,8 @@ import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Table, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, TableRow}
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, Radios}
+import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.Data._
-import utils.TwirlMigration
 import views.html.racdac.RacDacsBulkListView
 
 import scala.concurrent.{ExecutionContext, Future}

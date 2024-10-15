@@ -27,7 +27,6 @@ import play.api.i18n.Messages
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-import uk.gov.hmrc.viewmodels.MessageInterpolators
 
 import scala.concurrent.Future
 class MigrationTilePartialControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues  {

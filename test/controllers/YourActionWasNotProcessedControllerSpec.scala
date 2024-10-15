@@ -20,7 +20,6 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import matchers.JsonMatchers
 import play.api.Application
 import play.api.test.Helpers._
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{Data, Enumerable}
 import views.html.YourActionWasNotProcessedView

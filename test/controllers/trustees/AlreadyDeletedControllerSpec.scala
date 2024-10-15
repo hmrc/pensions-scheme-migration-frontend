@@ -22,16 +22,11 @@ import identifiers.trustees.individual.TrusteeNameId
 import matchers.JsonMatchers
 import models.trustees.TrusteeKind
 import models.{Index, PersonName}
-import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
 import views.html.AlreadyDeletedView
-
-import scala.concurrent.Future
 class AlreadyDeletedControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val index: Index = Index(0)

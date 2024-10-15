@@ -17,6 +17,7 @@
 package services.common.contact
 
 import controllers.ControllerSpecBase
+import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchersSugar.eqTo
@@ -30,12 +31,11 @@ import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
+import services.CommonServiceSpecBase
+import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{Data, FakeNavigator, UserAnswers}
-import identifiers.TypedIdentifier
-import uk.gov.hmrc.domain.PsaId
 import viewmodels.Message
-import services.CommonServiceSpecBase
 import views.html.EmailView
 
 import scala.concurrent.Future

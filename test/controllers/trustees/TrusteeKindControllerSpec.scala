@@ -30,9 +30,8 @@ import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
-import utils.{Enumerable, TwirlMigration, UserAnswers}
+import utils.{Enumerable, UserAnswers}
 
 import scala.concurrent.Future
 class TrusteeKindControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {

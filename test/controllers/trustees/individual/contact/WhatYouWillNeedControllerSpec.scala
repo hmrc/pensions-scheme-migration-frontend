@@ -21,15 +21,9 @@ import controllers.actions._
 import identifiers.trustees.individual.TrusteeNameId
 import matchers.JsonMatchers
 import models.{NormalMode, PersonName}
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
-import play.twirl.api.Html
-
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.UserAnswers
 import viewmodels.Message

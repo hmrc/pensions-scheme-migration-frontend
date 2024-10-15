@@ -30,7 +30,6 @@ import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.TaskListService
 import utils.Data
 import utils.Data._

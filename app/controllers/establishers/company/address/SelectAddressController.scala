@@ -16,21 +16,21 @@
 
 package controllers.establishers.company.address
 
+import controllers.Retrievals
 import controllers.actions._
-import models.establishers.AddressPages
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.company.address.{AddressId, AddressListId, EnterPostCodeId}
+import models.establishers.AddressPages
 import models.{Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import services.common.address.{CommonAddressListTemplateData, CommonAddressListService}
-import viewmodels.Message
-import controllers.Retrievals
+import services.common.address.{CommonAddressListService, CommonAddressListTemplateData}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
+import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext

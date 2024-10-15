@@ -29,7 +29,7 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.HttpResponseRedirects.listOfSchemesRedirects
-import utils.{Enumerable, TwirlMigration, UserAnswers}
+import utils.{Enumerable, UserAnswers}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
