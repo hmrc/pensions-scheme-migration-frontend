@@ -18,10 +18,9 @@ package controllers.preMigration
 
 import config.AppConfig
 import controllers.actions.AuthAction
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.MessageInterpolators
 import views.html.preMigration.CannotMigrateView
 
 import javax.inject.Inject
@@ -38,7 +37,7 @@ class CannotMigrateController @Inject()(val appConfig: AppConfig,
   def onPageLoad: Action[AnyContent] = authenticate.async { implicit request =>
     Future.successful(Ok(
       cannotMigrateView(
-        msg"messages__administrator__overview".resolve,
+        Messages("messages__administrator__overview"),
         Call("GET", appConfig.psaOverviewUrl)
       )
     ))

@@ -26,12 +26,12 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.http.Status._
+import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Table, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, TableRow}
-import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.Data._
 import views.html.racdac.RacDacsBulkListView
 
@@ -99,9 +99,9 @@ class BulkRacDacServiceSpec extends SpecBase
 
     "return correct table of scheme details" in {
       val head = Seq(
-        HeadCell(Text(msg"messages__listSchemes__column_racDacName".resolve)),
-        HeadCell(Text(msg"messages__listSchemes__column_pstr".resolve)),
-        HeadCell(Text(msg"messages__listSchemes__column_regDate".resolve))
+        HeadCell(Text(Messages("messages__listSchemes__column_racDacName"))),
+        HeadCell(Text(Messages("messages__listSchemes__column_pstr"))),
+        HeadCell(Text(Messages("messages__listSchemes__column_regDate")))
       )
 
       val rows = List(Seq(
@@ -217,9 +217,9 @@ object BulkRacDacServiceSpec extends SpecBase  with BeforeAndAfterEach {
     )
 
   private val head = Seq(
-    HeadCell(Text(msg"messages__listSchemes__column_racDacName".resolve)),
-    HeadCell(Text(msg"messages__listSchemes__column_pstr".resolve)),
-    HeadCell(Text(msg"messages__listSchemes__column_regDate".resolve))
+    HeadCell(Text(Messages("messages__listSchemes__column_racDacName"))),
+    HeadCell(Text(Messages("messages__listSchemes__column_pstr"))),
+    HeadCell(Text(Messages("messages__listSchemes__column_regDate")))
   )
 
   val racDacRows: Seq[Seq[TableRow]] = List(Seq(

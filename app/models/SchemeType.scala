@@ -24,7 +24,6 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.Label
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.WithName
 
 sealed trait SchemeType
@@ -47,11 +46,11 @@ object SchemeType {
       RadioItem(
         label = Some(Label(
           classes = "govuk-!-font-weight-bold",
-          content = Text(msg"messages__scheme_type_${value.toString}".resolve)
+          content = Text(Messages("messages__scheme_type_${value.toString}"))
         )),
         value = Some(value.toString),
         hint = Some(Hint(
-          content = Text(msg"messages__scheme_type_${value.toString}_hint".resolve),
+          content = Text(Messages("messages__scheme_type_${value.toString}_hint")),
           id = Some("hint-id")
         )),
         checked = field.value.contains(value.toString)
@@ -65,7 +64,7 @@ object SchemeType {
       messages =>
         Html(
           s"<div class='govuk-form-group'>" +
-            s"<label class='govuk-label govuk-label--s' for='${id.replace(".", "_")}'>${msg"messages__scheme_details__type_other_more".resolve(messages)}</label>" +
+            s"<label class='govuk-label govuk-label--s' for='${id.replace(".", "_")}'>${Messages("messages__scheme_details__type_other_more")(messages)}</label>" +
             s"<input class='govuk-input govuk-!-width-one-third' id='${id.replace(".", "_")}' name='schemeType.schemeTypeDetails' value='$value' type='text'>" +
             s"</div>"
         )
@@ -75,11 +74,11 @@ object SchemeType {
       RadioItem(
         label = Some(Label(
           classes = "govuk-!-font-weight-bold",
-          content = Text(msg"messages__scheme_type_other".resolve)
+          content = Text(Messages("messages__scheme_type_other"))
         )),
         value = Some(Other.toString.toLowerCase),
         hint = Some(Hint(
-          content = Text(msg"messages__scheme_type_other_hint".resolve),
+          content = Text(Messages("messages__scheme_type_other_hint")),
           id = Some("hint-id")
         )),
         conditionalHtml = Some(inputHtml(messages)),

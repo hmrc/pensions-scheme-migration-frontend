@@ -28,7 +28,6 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import services.CommonServiceSpecBase
-import uk.gov.hmrc.viewmodels.DateInput
 import utils.{Data, FakeNavigator, UserAnswers}
 
 import java.time.LocalDate
@@ -66,7 +65,6 @@ class CommonDateOfBirthServiceSpec extends ControllerSpecBase with CommonService
 
       val expectedView = view(
         form,
-        DateInput.localDate(form("date")),
         "John Doe",
         "Test Scheme",
         "individual",
@@ -92,7 +90,6 @@ class CommonDateOfBirthServiceSpec extends ControllerSpecBase with CommonService
 
       val expectedView = view(
         form.fill(dateFilled),
-        DateInput.localDate(form("date")),
         "John Doe",
         "Test Scheme",
         "individual",

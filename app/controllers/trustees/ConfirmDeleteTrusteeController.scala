@@ -33,7 +33,6 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.UserAnswers
 import views.html.DeleteView
 
@@ -64,7 +63,7 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
               Future.successful(Ok(
                 deleteView(
                   form(trustee.name),
-                  msg"messages__confirmDeleteTrustee__title".resolve,
+                  Messages("messages__confirmDeleteTrustee__title"),
                   trustee.name,
                   getHintText(trusteeKind),
                   utils.Radios.yesNo(formProvider(trustee.name)(implicitly)("value")),
@@ -125,7 +124,7 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
       (formWithErrors: Form[_]) => {
         Future.successful(BadRequest(deleteView(
             formWithErrors,
-            msg"messages__confirmDeleteTrustee__title".resolve,
+            Messages("messages__confirmDeleteTrustee__title"),
             name,
             getHintText(trusteeKind),
             utils.Radios.yesNo(formProvider(name)(implicitly)("value")),

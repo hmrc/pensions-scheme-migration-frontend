@@ -25,8 +25,8 @@ import identifiers.establishers.company.director.address._
 import identifiers.establishers.company.director.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.company.director.details._
 import models.Index.intToIndex
-import models.requests.DataRequest
 import models._
+import models.requests.DataRequest
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
 

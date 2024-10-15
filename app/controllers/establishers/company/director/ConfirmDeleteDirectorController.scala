@@ -28,7 +28,6 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.UserAnswers
 import views.html.DeleteView
 
@@ -59,7 +58,7 @@ class ConfirmDeleteDirectorController @Inject()(override val messagesApi: Messag
             Future.successful(Ok(
               deleteView(
                 form(director.fullName),
-                msg"messages__confirmDeleteDirectors__title".resolve,
+                Messages("messages__confirmDeleteDirectors__title"),
                 director.fullName,
                 Some(Messages(s"messages__confirmDeleteDirectors__companyHint")),
                 utils.Radios.yesNo(formProvider(director.fullName)(implicitly)("value")),
@@ -84,7 +83,7 @@ class ConfirmDeleteDirectorController @Inject()(override val messagesApi: Messag
               Future.successful(BadRequest(
                 deleteView(
                   formWithErrors,
-                  msg"messages__confirmDeleteDirectors__title".resolve,
+                  Messages("messages__confirmDeleteDirectors__title"),
                   director.fullName,
                   Some(Messages(s"messages__confirmDeleteDirectors__companyHint")),
                   utils.Radios.yesNo(formProvider(director.fullName)(implicitly)("value")),

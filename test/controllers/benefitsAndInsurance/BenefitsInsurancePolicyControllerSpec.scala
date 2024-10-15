@@ -27,11 +27,11 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Call, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.Data.{insurerPolicyNo, schemeName, ua}
 import utils.{Data, Enumerable, UserAnswers}
 import views.html.benefitsAndInsurance.BenefitsInsurancePolicyView
@@ -76,7 +76,7 @@ class BenefitsInsurancePolicyControllerSpec extends ControllerSpecBase with Json
       val view = application.injector.instanceOf[BenefitsInsurancePolicyView].apply(
         form,
         schemeName,
-        msg"benefitsInsurancePolicy.noCompanyName.h1".resolve,
+        Messages("benefitsInsurancePolicy.noCompanyName.h1"),
         onwardCall
       )(request, messages)
 
@@ -97,7 +97,7 @@ class BenefitsInsurancePolicyControllerSpec extends ControllerSpecBase with Json
       val view = application.injector.instanceOf[BenefitsInsurancePolicyView].apply(
         form.fill(insurerPolicyNo),
         schemeName,
-        msg"benefitsInsurancePolicy.noCompanyName.h1".resolve,
+        Messages("benefitsInsurancePolicy.noCompanyName.h1"),
         onwardCall
       )(request, messages)
 

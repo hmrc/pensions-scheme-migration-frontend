@@ -27,8 +27,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, Radios}
-import utils.{TwirlMigration, UserAnswers}
+import utils.UserAnswers
 import views.html.DeleteView
 
 import javax.inject.Inject
@@ -58,7 +57,7 @@ class ConfirmDeletePartnerController @Inject()(override val messagesApi: Message
             Future.successful(Ok(
               deleteView(
                 form(partner.fullName),
-                msg"messages__confirmDeletePartners__title".resolve,
+                Messages("messages__confirmDeletePartners__title"),
                 partner.fullName,
                 Some(Messages(s"messages__confirmDeletePartners__partnershipHint")),
                 utils.Radios.yesNo(formProvider(partner.fullName)(implicitly)("value")),
@@ -85,7 +84,7 @@ class ConfirmDeletePartnerController @Inject()(override val messagesApi: Message
               Future.successful(BadRequest(
                 deleteView(
                   formWithErrors,
-                  msg"messages__confirmDeletePartners__title".resolve,
+                  Messages("messages__confirmDeletePartners__title"),
                   partner.fullName,
                   Some(Messages(s"messages__confirmDeletePartners__partnershipHint")),
                   utils.Radios.yesNo(formProvider(partner.fullName)(implicitly)("value")),

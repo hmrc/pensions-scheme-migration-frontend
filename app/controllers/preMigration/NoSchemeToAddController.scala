@@ -19,10 +19,9 @@ package controllers.preMigration
 import config.AppConfig
 import connectors.MinimalDetailsConnector
 import controllers.actions.AuthAction
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.MessageInterpolators
 import views.html.preMigration.NoSchemeToAddView
 
 import javax.inject.Inject
@@ -42,8 +41,8 @@ class NoSchemeToAddController @Inject()(val appConfig: AppConfig,
       minimalDetailsConnector.getPSAName.flatMap { psaName =>
         Future.successful(Ok(
           noSchemeToAddView(
-            msg"messages__pension_scheme".resolve,
-            msg"messages__scheme".resolve,
+            Messages("messages__pension_scheme"),
+            Messages("messages__scheme"),
             appConfig.contactHmrcUrl,
             appConfig.yourPensionSchemesUrl,
             appConfig.psaOverviewUrl,
@@ -58,8 +57,8 @@ class NoSchemeToAddController @Inject()(val appConfig: AppConfig,
       minimalDetailsConnector.getPSAName.flatMap { psaName =>
         Future.successful(Ok(
           noSchemeToAddView(
-            msg"messages__racdac".resolve,
-            msg"messages__racdac".resolve,
+            Messages("messages__racdac"),
+            Messages("messages__racdac"),
             appConfig.contactHmrcUrl,
             appConfig.yourPensionSchemesUrl,
             appConfig.psaOverviewUrl,

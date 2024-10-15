@@ -26,11 +26,10 @@ import models.trustees.TrusteeKind
 import models.{DataPrefillRadio, Index}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.DataPrefillService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.{Enumerable, UserAnswers}
 import views.html.DataPrefillRadioView
 
@@ -63,8 +62,8 @@ class DirectorAlsoTrusteeController @Inject()(override val messagesApi: Messages
           Future.successful(Ok(
             dataPrefillRadioView(
               form,
-              msg"messages__trustees__prefill__title".resolve,
-              msg"messages__trustees__prefill__heading".resolve,
+              Messages("messages__trustees__prefill__title"),
+              Messages("messages__trustees__prefill__heading"),
               DataPrefillRadio.radios(form, seqDirector),
               schemeName,
               routes.DirectorAlsoTrusteeController.onSubmit(index)
@@ -86,8 +85,8 @@ class DirectorAlsoTrusteeController @Inject()(override val messagesApi: Messages
             Future.successful(BadRequest(
               dataPrefillRadioView(
                 formWithErrors,
-                msg"messages__trustees__prefill__title".resolve,
-                msg"messages__trustees__prefill__heading".resolve,
+                Messages("messages__trustees__prefill__title"),
+                Messages("messages__trustees__prefill__heading"),
                 DataPrefillRadio.radios(form, seqDirector),
                 schemeName,
                 routes.DirectorAlsoTrusteeController.onSubmit(index)

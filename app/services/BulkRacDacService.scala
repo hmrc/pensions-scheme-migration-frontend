@@ -26,7 +26,6 @@ import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Table, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, TableRow}
-import uk.gov.hmrc.viewmodels.MessageInterpolators
 import views.html.racdac.RacDacsBulkListView
 
 import java.time.LocalDate
@@ -40,9 +39,9 @@ class BulkRacDacService @Inject()(appConfig: AppConfig,
 
   def mapToTable(schemeDetails: List[Items])(implicit messages: Messages): Table = {
     val head = Seq(
-      HeadCell(Text(msg"messages__listSchemes__column_racDacName".resolve)),
-      HeadCell(Text(msg"messages__listSchemes__column_pstr".resolve)),
-      HeadCell(Text(msg"messages__listSchemes__column_regDate".resolve))
+      HeadCell(Text(Messages("messages__listSchemes__column_racDacName"))),
+      HeadCell(Text(Messages("messages__listSchemes__column_pstr"))),
+      HeadCell(Text(Messages("messages__listSchemes__column_regDate")))
     )
 
     val formatter: String => String = date => LocalDate.parse(date).format(DateTimeFormatter.ofPattern("d MMMM yyyy"))

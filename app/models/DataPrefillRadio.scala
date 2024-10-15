@@ -21,7 +21,6 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import uk.gov.hmrc.viewmodels.Text.Literal
 
 object DataPrefillRadio {
 
@@ -29,7 +28,7 @@ object DataPrefillRadio {
     val noneValue = "-1"
     values.map { indvDetails => {
       RadioItem(
-        label = Some(Label(Some(Literal(indvDetails.fullName).resolve))),
+        label = Some(Label(Some(indvDetails.fullName))),
         value = Some(indvDetails.index.toString),
         checked = form("value").value.contains(indvDetails.index.toString)
       )

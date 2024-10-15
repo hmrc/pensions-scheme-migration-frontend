@@ -16,16 +16,16 @@
 
 package controllers.benefitsAndInsurance
 
+import controllers.Retrievals
 import controllers.actions._
-import models.establishers.AddressPages
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.{BenefitsInsuranceNameId, InsurerAddressId, InsurerAddressListId, InsurerEnterPostCodeId}
+import models.establishers.AddressPages
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import controllers.Retrievals
-import services.common.address.{CommonAddressListTemplateData,CommonAddressListService}
+import services.common.address.{CommonAddressListService, CommonAddressListTemplateData}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import viewmodels.Message

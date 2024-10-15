@@ -29,9 +29,9 @@ import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address._
 import identifiers.trustees.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.trustees.individual.details._
+import models._
 import models.requests.DataRequest
 import models.trustees.TrusteeKind
-import models._
 import play.api.mvc.{AnyContent, Call}
 import services.DataPrefillService
 import utils.{Enumerable, UserAnswers}
