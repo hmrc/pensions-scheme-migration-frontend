@@ -46,11 +46,11 @@ object SchemeType {
       RadioItem(
         label = Some(Label(
           classes = "govuk-!-font-weight-bold",
-          content = Text(Messages("messages__scheme_type_${value.toString}"))
+          content = Text(Messages(s"messages__scheme_type_${value.toString}"))
         )),
         value = Some(value.toString),
         hint = Some(Hint(
-          content = Text(Messages("messages__scheme_type_${value.toString}_hint")),
+          content = Text(Messages(s"messages__scheme_type_${value.toString}_hint")),
           id = Some("hint-id")
         )),
         checked = field.value.contains(value.toString)
