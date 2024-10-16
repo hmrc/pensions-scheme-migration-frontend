@@ -450,9 +450,9 @@ messages__error__establisher = establisher’s
 messages__error__first_name = Enter the {0} first name
 messages__error__last_name = Enter the {0} last name
 messages__error__first_name_length = The first name cannot be more than 35 characters
-messages__error__first_name_invalid = Name must only include letters and punctuation marks
+messages__error__first_name_invalid = The first name must only include letters, spaces, apostrophes, hyphens, full stops and carets (^)
 messages__error__last_name_length = The last name cannot be more than 35 characters
-messages__error__last_name_invalid = Name must only include letters and punctuation marks
+messages__error__last_name_invalid = The last name must only include letters, spaces, apostrophes, hyphens, full stops and carets (^)
 messages__individualName__title = What is the individual’s name?
 
 messages__confirmDelete__error_required = Select yes if you want to delete {0}
