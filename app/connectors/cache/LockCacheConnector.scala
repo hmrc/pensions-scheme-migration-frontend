@@ -24,12 +24,13 @@ import play.api.libs.json._
 import play.api.mvc.Result
 import play.api.mvc.Results._
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpException, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse, StringContextOps}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class LockCacheConnector @Inject()(config: AppConfig,
-                                   http: HttpClient
+                                   http: HttpClientV2
                                   ) {
 
 
@@ -40,8 +41,7 @@ class LockCacheConnector @Inject()(config: AppConfig,
     val headers: Seq[(String, String)] = Seq(("pstr", lock.pstr),("psaId", lock.psaId), ("Content-Type", "application/json"))
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    http.POST[JsValue, HttpResponse](config.lockUrl, Json.obj())(implicitly, implicitly, hc, implicitly)
-      .map { response =>
+    http.post(url"${config.lockUrl}")(hc).withBody(Json.obj()).execute[HttpResponse].map { response =>
         response.status match {
           case OK => Json.toJson(lock)
           case CONFLICT => throw new HttpException("Trying to lock a scheme that is already locked", CONFLICT)
@@ -81,18 +81,17 @@ class LockCacheConnector @Inject()(config: AppConfig,
   private def get(url: String, hc: HeaderCarrier)
                  (implicit ec: ExecutionContext): Future[Option[MigrationLock]] = {
 
-  http.GET[HttpResponse](url)(implicitly, hc, implicitly)
-      .map { response =>
-            response.status match {
-              case NOT_FOUND =>
-                None
-              case OK =>
-                response.json.asOpt[MigrationLock]
-              case _ =>
-                throw new HttpException(response.body, response.status)
-            }
+    http.get(url"$url")(hc).execute[HttpResponse].map { response =>
+          response.status match {
+            case NOT_FOUND =>
+              None
+            case OK =>
+              response.json.asOpt[MigrationLock]
+            case _ =>
+              throw new HttpException(response.body, response.status)
           }
-      }
+        }
+    }
 
   def removeLock(lock: MigrationLock)
             (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Result] = {
@@ -125,7 +124,7 @@ class LockCacheConnector @Inject()(config: AppConfig,
   private def remove(url: String, hc: HeaderCarrier)
             (implicit ec: ExecutionContext): Future[Result] = {
 
-      http.DELETE[HttpResponse](url)(implicitly, hc, implicitly).map { _ =>
+    http.delete(url"$url")(hc).execute[HttpResponse].map { _ =>
       Ok
     }
   }
