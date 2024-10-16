@@ -371,7 +371,7 @@ postcode.label = Postcode
 postcode.title = What is {0}’s postcode?
 previousPostcode.title = What was {0}’s previous postcode?
 postcode.youCan = You can
-error.postcode.required = Enter a postcode
+error.postcode.required = Enter a full UK postcode
 error.postcode.invalid = Enter a full UK postcode
 address.linkText.enterManually = enter the address manually
 
