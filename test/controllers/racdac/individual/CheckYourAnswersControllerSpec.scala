@@ -27,19 +27,19 @@ import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import play.api.Application
+import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, HtmlContent, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, Key, SummaryListRow, Value}
 import uk.gov.hmrc.http.HttpResponse
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
-import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{Html, NunjucksSupport}
 import utils.Data._
-import utils.{Data, TwirlMigration, UserAnswers}
+import utils.{Data, UserAnswers}
 
 import scala.concurrent.Future
-class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAfterEach  with JsonMatchers with NunjucksSupport  {
+class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAfterEach  with JsonMatchers  {
 
   private val mockListOfSchemesConnector = mock[ListOfSchemesConnector]
   private val mockRacDacIndividualCYAHelper = mock[RacDacIndividualCYAHelper]
@@ -52,23 +52,23 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
   override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction,extraModules).build()
 
   private val rows = Seq(
-    Row(
-      key = Key(Literal("test-key"), classes = Seq("govuk-!-width-one-half")),
-      value = Value(msg"site.incomplete", classes = Seq("govuk-!-width-one-third")),
-      actions = List(
-        Action(
-          content = Html(s"<span  aria-hidden=true >${messages("site.add")}</span>"),
+    SummaryListRow(
+      key = Key(Text("test-key"), classes ="govuk-!-width-one-half"),
+      value = Value(Text(Messages("site.incomplete")), classes = "govuk-!-width-one-third"),
+      actions = Some(Actions( items = List(
+        ActionItem(
+          content = HtmlContent(s"<span aria-hidden=true >${messages("site.add")}</span>"),
           href = "",
           visuallyHiddenText = None
         )
-      )
+      )))
     )
   )
   private def getView() = app.injector.instanceOf[views.html.racdac.individual.CheckYourAnswersView].apply(
     controllers.racdac.individual.routes.DeclarationController.onPageLoad.url,
     controllers.routes.PensionSchemeRedirectController.onPageLoad.url,
     Data.psaName,
-    TwirlMigration.summaryListRow(rows)
+    rows
   )(httpGETRequest(httpPathGET),implicitly)
 
   def listOfSchemes: ListOfLegacySchemes = ListOfLegacySchemes(2, Some(fullSchemes))

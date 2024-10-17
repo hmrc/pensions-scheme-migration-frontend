@@ -26,15 +26,14 @@ import models.{NormalMode, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 import services.common.details.CommonHasReferenceValueService
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{FakeNavigator, TwirlMigration, UserAnswers}
-import viewmodels.Message
+import utils.{FakeNavigator, UserAnswers}
 import views.html.{HasReferenceValueView, HasReferenceValueWithHintView}
 
 import scala.concurrent.Future
@@ -93,11 +92,11 @@ class OtherPartnersControllerSpec extends ControllerSpecBase
       val view = app.injector.instanceOf[HasReferenceValueWithHintView].apply(
         form,
         schemeName,
-        Message("messages__otherPartners__title"),
-        Message("messages__otherPartners__heading"),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        Messages("messages__otherPartners__title"),
+        Messages("messages__otherPartners__heading"),
+        utils.Radios.yesNo(form("value")),
         "govuk-visually-hidden",
-        Seq(Message("messages__otherPartners__lede")),
+        Seq(Messages("messages__otherPartners__lede")),
         routes.OtherPartnersController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)
       compareResultAndView(result, view)
@@ -118,11 +117,11 @@ class OtherPartnersControllerSpec extends ControllerSpecBase
       val view = app.injector.instanceOf[HasReferenceValueWithHintView].apply(
         filledFrom,
         schemeName,
-        Message("messages__otherPartners__title"),
-        Message("messages__otherPartners__heading"),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(filledFrom("value"))),
+        Messages("messages__otherPartners__title"),
+        Messages("messages__otherPartners__heading"),
+        utils.Radios.yesNo(filledFrom("value")),
         "govuk-visually-hidden",
-        Seq(Message("messages__otherPartners__lede")),
+        Seq(Messages("messages__otherPartners__lede")),
         routes.OtherPartnersController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)
       compareResultAndView(result, view)
@@ -143,11 +142,11 @@ class OtherPartnersControllerSpec extends ControllerSpecBase
       val view = app.injector.instanceOf[HasReferenceValueWithHintView].apply(
         filledFrom,
         schemeName,
-        Message("messages__otherPartners__title"),
-        Message("messages__otherPartners__heading"),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(filledFrom("value"))),
+        Messages("messages__otherPartners__title"),
+        Messages("messages__otherPartners__heading"),
+        utils.Radios.yesNo(filledFrom("value")),
         "govuk-visually-hidden",
-        Seq(Message("messages__otherPartners__lede")),
+        Seq(Messages("messages__otherPartners__lede")),
         routes.OtherPartnersController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)
       compareResultAndView(result, view)
@@ -186,7 +185,7 @@ class OtherPartnersControllerSpec extends ControllerSpecBase
 
       status(result) mustBe BAD_REQUEST
 
-      contentAsString(result) must include(Message("messages__otherPartners__title"))
+      contentAsString(result) must include(Messages("messages__otherPartners__title"))
       contentAsString(result) must include(messages("error.summary.title"))
       contentAsString(result) must include(messages("error.boolean"))
       verify(mockUserAnswersCacheConnector, times(0))

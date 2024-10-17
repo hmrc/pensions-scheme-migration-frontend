@@ -32,7 +32,6 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.mvc.Results.Ok
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import utils.Data.ua
 import utils.{Data, Enumerable, UserAnswers}
 import views.html.SchemeSuccessView
@@ -67,7 +66,6 @@ class SchemeSuccessControllerSpec extends ControllerSpecBase with JsonMatchers w
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
     when(mockUserAnswersCacheConnector.remove(any())(any(), any())).thenReturn(Future.successful(Ok))
     when(mockCurrentPstrCacheConnector.remove(any(), any())).thenReturn(Future.successful(Ok))
     when(mockLockCacheConnector.removeLock(any())(any(), any())).thenReturn(Future.successful(Ok))

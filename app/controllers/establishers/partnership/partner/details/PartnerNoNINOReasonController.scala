@@ -25,10 +25,9 @@ import identifiers.establishers.partnership.partner.details.PartnerNoNINOReasonI
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.details.CommonReasonService
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -47,11 +46,11 @@ class PartnerNoNINOReasonController @Inject()(val messagesApi: MessagesApi,
     request
       .userAnswers
       .get(PartnerNameId(establisherIndex, partnerIndex))
-      .fold(Message("messages__partner"))(_.fullName)
+      .fold(Messages("messages__partner"))(_.fullName)
 
   private def form(establisherIndex: Index, partnerIndex: Index)
                   (implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Message("messages__reason__error_ninoRequired", name(establisherIndex, partnerIndex)))
+    formProvider(Messages("messages__reason__error_ninoRequired", name(establisherIndex, partnerIndex)))
 
   def onPageLoad(establisherIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
@@ -59,8 +58,8 @@ class PartnerNoNINOReasonController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.get(
-              pageTitle     = Message("messages__whyNoNINO", Message("messages__partner")),
-              pageHeading     = Message("messages__whyNoNINO", name(establisherIndex, partnerIndex)),
+              pageTitle     = Messages("messages__whyNoNINO", Messages("messages__partner")),
+              pageHeading     = Messages("messages__whyNoNINO", name(establisherIndex, partnerIndex)),
               isPageHeading = true,
               id            = PartnerNoNINOReasonId(establisherIndex, partnerIndex),
               form          = form(establisherIndex, partnerIndex),
@@ -76,8 +75,8 @@ class PartnerNoNINOReasonController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.post(
-              pageTitle     = Message("messages__whyNoNINO", Message("messages__partner")),
-              pageHeading     = Message("messages__whyNoNINO", name(establisherIndex, partnerIndex)),
+              pageTitle     = Messages("messages__whyNoNINO", Messages("messages__partner")),
+              pageHeading     = Messages("messages__whyNoNINO", name(establisherIndex, partnerIndex)),
               isPageHeading = true,
               id            = PartnerNoNINOReasonId(establisherIndex, partnerIndex),
               form          = form(establisherIndex, partnerIndex),

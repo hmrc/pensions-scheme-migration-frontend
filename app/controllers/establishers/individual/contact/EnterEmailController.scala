@@ -25,10 +25,9 @@ import identifiers.establishers.individual.contact.EnterEmailId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.contact.CommonEmailAddressService
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -50,11 +49,11 @@ class EnterEmailController @Inject()(
           schemeName =>
             common.get(
               entityName = name(index),
-              entityType = Message("messages__individual"),
+              entityType = Messages("messages__individual"),
               emailId = EnterEmailId(index),
               form = form(index),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__contact_details__hint", name(index))),
+              paragraphText = Seq(Messages("messages__contact_details__hint", name(index))),
               routes.EnterEmailController.onSubmit(index, mode)
             )
         }
@@ -67,11 +66,11 @@ class EnterEmailController @Inject()(
           schemeName =>
             common.post(
               entityName = name(index),
-              entityType = Message("messages__individual"),
+              entityType = Messages("messages__individual"),
               emailId = EnterEmailId(index),
               form = form(index),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__contact_details__hint", name(index))),
+              paragraphText = Seq(Messages("messages__contact_details__hint", name(index))),
               mode = Some(mode),
               routes.EnterEmailController.onSubmit(index, mode)
             )
@@ -79,12 +78,12 @@ class EnterEmailController @Inject()(
     }
 
   private def form(index: Index)(implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Message("messages__enterEmail__error_required", name(index)))
+    formProvider(Messages("messages__enterEmail__error_required", name(index)))
 
   private def name(index: Index)
                   (implicit request: DataRequest[AnyContent]): String =
     request
       .userAnswers
       .get(EstablisherNameId(index))
-      .fold(Message("messages__individual"))(_.fullName)
+      .fold(Messages("messages__individual"))(_.fullName)
 }

@@ -29,9 +29,8 @@ import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.test.Helpers._
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{partnershipDetails, schemeName, ua}
-import utils.{Enumerable, TwirlMigration, UserAnswers}
+import utils.{Enumerable, UserAnswers}
 import views.html.establishers.partnership.AddPartnerView
 
 class AddPartnersControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
@@ -101,7 +100,7 @@ class AddPartnersControllerSpec extends ControllerSpecBase with JsonMatchers wit
         1,
         mockAppConfig.maxPartners,
         Seq(PartnerEntity(PartnerNameId(0,0), partnerName.fullName, false, false, true, 1)),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         controllers.establishers.partnership.routes.AddPartnersController.onSubmit(0,NormalMode)
       )(request, messages)
 

@@ -21,7 +21,7 @@ import models.requests.DataRequest
 import models.{Index, entities}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
-import uk.gov.hmrc.viewmodels.SummaryList
+import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
 
 import javax.inject.{Inject, Singleton}
 
@@ -53,7 +53,7 @@ class CommonCYAHelper @Inject() (
            entityType: EntityType,
            entityRepresentativeIndex: Option[Index],
            journeyType: JourneyType)
-          (implicit request: DataRequest[AnyContent], messages: Messages): Seq[SummaryList.Row] = {
+          (implicit request: DataRequest[AnyContent], messages: Messages): Seq[SummaryListRow] = {
 
     def establisherResolve = {
       entityType match {

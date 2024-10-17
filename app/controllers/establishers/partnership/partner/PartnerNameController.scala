@@ -26,7 +26,6 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.PersonNameView
 
@@ -47,7 +46,7 @@ class PartnerNameController @Inject()(
   extends FrontendBaseController
   with Retrievals
   with I18nSupport
-  with NunjucksSupport {
+  {
 
   private def form(implicit messages: Messages): Form[PersonName] = formProvider("messages__error__partner")
 

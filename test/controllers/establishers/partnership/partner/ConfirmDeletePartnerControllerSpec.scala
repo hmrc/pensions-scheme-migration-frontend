@@ -28,9 +28,8 @@ import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{Enumerable, TwirlMigration, UserAnswers}
+import utils.{Enumerable, UserAnswers}
 import views.html.DeleteView
 
 import scala.concurrent.Future
@@ -77,7 +76,7 @@ class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase with JsonMat
         messages("messages__confirmDeletePartners__title"),
         partnerName,
         None,
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         schemeName,
         routes.ConfirmDeletePartnerController.onSubmit(establisherIndex, dirIndex)
       )(request, messages)

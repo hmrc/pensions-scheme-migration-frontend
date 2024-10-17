@@ -21,13 +21,13 @@ import controllers.actions._
 import matchers.JsonMatchers
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
+import play.api.i18n.Messages
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import views.html.preMigration.NotRegisterView
 
 import scala.concurrent.Future
-class NotRegisterControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues  {
+class NotRegisterControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues  {
 
   private val psaName: String = "Nigel"
 
@@ -42,7 +42,7 @@ class NotRegisterControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
       status(result) mustBe OK
       val view = app.injector.instanceOf[NotRegisterView].apply(
-        msg"messages__pension_scheme".resolve,
+        Messages("messages__pension_scheme"),
         appConfig.contactHmrcUrl,
         appConfig.psaOverviewUrl,
         psaName
@@ -58,7 +58,7 @@ class NotRegisterControllerSpec extends ControllerSpecBase with NunjucksSupport 
       status(result) mustBe OK
 
       val view = app.injector.instanceOf[NotRegisterView].apply(
-        msg"messages__racdac".resolve,
+        Messages("messages__racdac"),
         appConfig.contactHmrcUrl,
         appConfig.psaOverviewUrl,
         psaName

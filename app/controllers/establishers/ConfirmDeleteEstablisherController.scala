@@ -33,8 +33,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, Radios}
-import utils.{TwirlMigration, UserAnswers}
+import utils.UserAnswers
 import views.html.DeleteView
 
 import javax.inject.Inject
@@ -64,10 +63,10 @@ class ConfirmDeleteEstablisherController @Inject()(override val messagesApi: Mes
               Future.successful(Ok(
                 deleteView(
                   form(establisher.name),
-                  msg"messages__confirmDeleteEstablisher__title".resolve,
+                  Messages("messages__confirmDeleteEstablisher__title"),
                   establisher.name,
                   getHintText(establisherKind),
-                  TwirlMigration.toTwirlRadios(Radios.yesNo(formProvider(establisher.name)(implicitly)("value"))),
+                  utils.Radios.yesNo(formProvider(establisher.name)(implicitly)("value")),
                   existingSchemeName.getOrElse(""),
                   routes.ConfirmDeleteEstablisherController.onSubmit(index, establisherKind)
                 )
@@ -126,10 +125,10 @@ class ConfirmDeleteEstablisherController @Inject()(override val messagesApi: Mes
         Future.successful(BadRequest(
           deleteView(
             formWithErrors,
-            msg"messages__confirmDeleteEstablisher__title".resolve,
+            Messages("messages__confirmDeleteEstablisher__title"),
             name,
             getHintText(establisherKind),
-            TwirlMigration.toTwirlRadios(Radios.yesNo(formProvider(name)(implicitly)("value"))),
+            utils.Radios.yesNo(formProvider(name)(implicitly)("value")),
             existingSchemeName.getOrElse(""),
             routes.ConfirmDeleteEstablisherController.onSubmit(establisherIndex, establisherKind)
           )

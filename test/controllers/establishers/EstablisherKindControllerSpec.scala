@@ -31,14 +31,12 @@ import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
-import utils.{Enumerable, TwirlMigration, UserAnswers}
+import utils.{Enumerable, UserAnswers}
 import views.html.establishers.EstablisherKindView
 
 import scala.concurrent.Future
-class EstablisherKindControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class EstablisherKindControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val index: Index = Index(0)
   private val kind: EstablisherKind = EstablisherKind.Individual
@@ -62,7 +60,7 @@ class EstablisherKindControllerSpec extends ControllerSpecBase with NunjucksSupp
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
   }
 
 
@@ -78,7 +76,7 @@ class EstablisherKindControllerSpec extends ControllerSpecBase with NunjucksSupp
       val view = application.injector.instanceOf[EstablisherKindView].apply(
         form,
         schemeName,
-        TwirlMigration.toTwirlRadios(EstablisherKind.radios(form)),
+        EstablisherKind.radios(form),
         routes.EstablisherKindController.onSubmit(index)
       )(request, messages)
 

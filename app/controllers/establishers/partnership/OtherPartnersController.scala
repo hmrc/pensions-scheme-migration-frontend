@@ -24,10 +24,9 @@ import identifiers.establishers.partnership.OtherPartnersId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.details.CommonHasReferenceValueService
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -44,7 +43,7 @@ class OtherPartnersController @Inject()(val messagesApi: MessagesApi,
   private def form()
                   (implicit request: DataRequest[AnyContent]): Form[Boolean] =
     formProvider(
-      errorMsg = Message("messages__otherPartners__error__required")
+      errorMsg = Messages("messages__otherPartners__error__required")
     )
 
   def onPageLoad(index: Index,mode: Mode): Action[AnyContent] =
@@ -53,13 +52,13 @@ class OtherPartnersController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.get(
-              pageTitle = Message("messages__otherPartners__title"),
-              pageHeading = Message("messages__otherPartners__heading"),
+              pageTitle = Messages("messages__otherPartners__title"),
+              pageHeading = Messages("messages__otherPartners__heading"),
               isPageHeading = true,
               id = OtherPartnersId(index),
               form = form(),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__otherPartners__lede")),
+              paragraphText = Seq(Messages("messages__otherPartners__lede")),
               legendClass = "govuk-visually-hidden",
               submitCall = routes.OtherPartnersController.onSubmit(index, mode)
             )
@@ -72,13 +71,13 @@ class OtherPartnersController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.post(
-              pageTitle = Message("messages__otherPartners__title"),
-              pageHeading = Message("messages__otherPartners__heading"),
+              pageTitle = Messages("messages__otherPartners__title"),
+              pageHeading = Messages("messages__otherPartners__heading"),
               isPageHeading = true,
               id = OtherPartnersId(index),
               form = form(),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__otherPartners__lede")),
+              paragraphText = Seq(Messages("messages__otherPartners__lede")),
               legendClass = "govuk-visually-hidden",
               mode = mode,
               submitCall = routes.OtherPartnersController.onSubmit(index, mode)

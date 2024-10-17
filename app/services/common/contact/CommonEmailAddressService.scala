@@ -26,10 +26,8 @@ import play.api.data.FormBinding.Implicits._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, Call, MessagesControllerComponents, Result}
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import utils.UserAnswers
-import viewmodels.Message
 import views.html.EmailView
 
 import javax.inject.{Inject, Singleton}
@@ -43,13 +41,12 @@ class CommonEmailAddressService @Inject()(
                                            val navigator: CompoundNavigator,
                                            val messagesApi: MessagesApi,
                                            emailView: EmailView
-                                         ) extends NunjucksSupport
-  with FrontendHeaderCarrierProvider
+                                         ) extends FrontendHeaderCarrierProvider
   with I18nSupport {
 
   def get(
            entityName: String,
-           entityType: Message,
+           entityType: String,
            emailId: TypedIdentifier[String],
            form: Form[String],
            schemeName: String,
@@ -64,14 +61,14 @@ class CommonEmailAddressService @Inject()(
         filledForm,
         schemeName,
         entityName,
-        entityType.resolve,
+        entityType,
         paragraphText,
         submitCall
       )))
   }
 
   def post(entityName: String,
-           entityType: Message,
+           entityType: String,
            emailId: TypedIdentifier[String],
            form: Form[String],
            schemeName: String,
@@ -90,7 +87,7 @@ class CommonEmailAddressService @Inject()(
               formWithErrors,
               schemeName,
               entityName,
-              entityType.resolve,
+              entityType,
               paragraphText,
               submitCall
             )))

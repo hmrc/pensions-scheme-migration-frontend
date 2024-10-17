@@ -33,8 +33,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, Radios}
-import utils.{TwirlMigration, UserAnswers}
+import utils.UserAnswers
 import views.html.DeleteView
 
 import javax.inject.Inject
@@ -64,10 +63,10 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
               Future.successful(Ok(
                 deleteView(
                   form(trustee.name),
-                  msg"messages__confirmDeleteTrustee__title".resolve,
+                  Messages("messages__confirmDeleteTrustee__title"),
                   trustee.name,
                   getHintText(trusteeKind),
-                  TwirlMigration.toTwirlRadios(Radios.yesNo(formProvider(trustee.name)(implicitly)("value"))),
+                  utils.Radios.yesNo(formProvider(trustee.name)(implicitly)("value")),
                   existingSchemeName.getOrElse(""),
                   routes.ConfirmDeleteTrusteeController.onSubmit(index, trusteeKind)
                 )
@@ -125,10 +124,10 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
       (formWithErrors: Form[_]) => {
         Future.successful(BadRequest(deleteView(
             formWithErrors,
-            msg"messages__confirmDeleteTrustee__title".resolve,
+            Messages("messages__confirmDeleteTrustee__title"),
             name,
             getHintText(trusteeKind),
-            TwirlMigration.toTwirlRadios(Radios.yesNo(formProvider(name)(implicitly)("value"))),
+            utils.Radios.yesNo(formProvider(name)(implicitly)("value")),
             existingSchemeName.getOrElse(""),
             routes.ConfirmDeleteTrusteeController.onSubmit(trusteeIndex, trusteeKind)
           )))

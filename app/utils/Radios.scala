@@ -14,22 +14,29 @@
  * limitations under the License.
  */
 
-package helpers
+package utils
 
-import models.Entity
-import play.api.libs.json.{JsValue, Json}
+import play.api.data.Field
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
-class AddToListHelper {
+object Radios {
+  def yesNo(
+             field: Field
+           )(implicit messages: Messages): Seq[RadioItem] = {
 
-   def directorsOrPartnersItemList[A <: Entity[_]](entities: Seq[A]): JsValue  = {
-
-    Json.toJson(
-      entities.map { data =>
-        Map("name" -> data.name,
-          "changeUrl" ->   data.editLink.getOrElse("#"),
-          "removeUrl" ->   data.deleteLink.getOrElse("#")
-        )
-      }
+    Seq(
+      RadioItem(
+        id = Some(field.id),
+        value = Some("true"),
+        content = Text(messages("site.yes"))
+      ),
+      RadioItem(
+        id = Some(s"${field.id}-no"),
+        value = Some("false"),
+        content = Text(messages("site.no"))
+      )
     )
   }
 }

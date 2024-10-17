@@ -30,12 +30,10 @@ import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.data.Form
 import play.api.test.Helpers._
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{Data, TwirlMigration, UserAnswers}
+import utils.{Data, UserAnswers}
 import views.html.establishers.AddEstablisherView
-class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers {
+class AddEstablisherControllerSpec extends ControllerSpecBase with JsonMatchers {
   private val establisherName: String = "e f"
   private val userAnswers: Option[UserAnswers] = ua.set(EstablisherKindId(0), EstablisherKind.Individual).flatMap(
     _.set(EstablisherNameId(0), PersonName("a", "b", isDeleted = true)).flatMap(
@@ -84,7 +82,7 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with NunjucksSuppo
         schemeName,
         Seq(EstablisherIndividualEntity(EstablisherNameId(2), establisherName, false, false, true, 1)),
         Seq(),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         controllers.establishers.routes.AddEstablisherController.onSubmit
       )(request, messages)
 

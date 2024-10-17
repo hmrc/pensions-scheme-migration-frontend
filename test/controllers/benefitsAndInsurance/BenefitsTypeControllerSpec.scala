@@ -32,15 +32,13 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Call, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
-import utils.{Data, Enumerable, TwirlMigration, UserAnswers}
+import utils.{Data, Enumerable, UserAnswers}
 import views.html.benefitsAndInsurance.BenefitsTypeView
 
 import scala.concurrent.Future
 
-class BenefitsTypeControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class BenefitsTypeControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -59,7 +57,7 @@ class BenefitsTypeControllerSpec extends ControllerSpecBase with NunjucksSupport
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
   }
   val request = FakeRequest(GET, httpPathGET)
   override val onwardCall: Call = Call("POST", httpPathPOST)
@@ -77,7 +75,7 @@ class BenefitsTypeControllerSpec extends ControllerSpecBase with NunjucksSupport
       val view = application.injector.instanceOf[BenefitsTypeView].apply(
         form,
         schemeName,
-        TwirlMigration.toTwirlRadios(BenefitsType.radios(form)),
+        BenefitsType.radios(form),
         onwardCall
       )(request, messages)
 
@@ -100,7 +98,7 @@ class BenefitsTypeControllerSpec extends ControllerSpecBase with NunjucksSupport
       val view = application.injector.instanceOf[BenefitsTypeView].apply(
         filledFrom,
         schemeName,
-        TwirlMigration.toTwirlRadios(BenefitsType.radios(filledFrom)),
+        BenefitsType.radios(filledFrom),
         onwardCall
       )(request, messages)
 

@@ -25,10 +25,9 @@ import identifiers.trustees.partnership.details.HavePAYEId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.details.CommonHasReferenceValueService
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -48,7 +47,7 @@ class HavePAYEController @Inject()(val messagesApi: MessagesApi,
 
   private def form(index: Index)
                   (implicit request: DataRequest[AnyContent]): Form[Boolean] =
-    formProvider(Message("messages__genericHavePaye__error__required", name(index)))
+    formProvider(Messages("messages__genericHavePaye__error__required", name(index)))
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
@@ -57,13 +56,13 @@ class HavePAYEController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.get(
-              pageTitle     = Message("messages__havePAYE", Message("messages__partnership")),
-              pageHeading     = Message("messages__havePAYE", name(index)),
+              pageTitle     = Messages("messages__havePAYE", Messages("messages__partnership")),
+              pageHeading     = Messages("messages__havePAYE", name(index)),
               isPageHeading = true,
               id            = HavePAYEId(index),
               form          = form(index),
               schemeName    = schemeName,
-              paragraphText = Seq(Message("messages__havePAYE__hint")),
+              paragraphText = Seq(Messages("messages__havePAYE__hint")),
               legendClass   = "govuk-visually-hidden",
               submitCall    = routes.HavePAYEController.onSubmit(index, mode)
             )
@@ -77,13 +76,13 @@ class HavePAYEController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.post(
-              pageTitle     = Message("messages__havePAYE", Message("messages__partnership")),
-              pageHeading     = Message("messages__havePAYE", name(index)),
+              pageTitle     = Messages("messages__havePAYE", Messages("messages__partnership")),
+              pageHeading     = Messages("messages__havePAYE", name(index)),
               isPageHeading = true,
               id            = HavePAYEId(index),
               form          = form(index),
               schemeName    = schemeName,
-              paragraphText = Seq(Message("messages__havePAYE__hint")),
+              paragraphText = Seq(Messages("messages__havePAYE__hint")),
               legendClass   = "govuk-visually-hidden",
               mode          = mode,
               submitCall    = routes.HavePAYEController.onSubmit(index, mode)

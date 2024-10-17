@@ -29,8 +29,6 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import renderer.Renderer
 import services.CommonServiceSpecBase
 import utils.{Data, FakeNavigator, UserAnswers}
 import views.html.ReasonView
@@ -52,14 +50,13 @@ class CommonReasonServiceSpec extends ControllerSpecBase with CommonServiceSpecB
   // Instantiate service
   val service = new CommonReasonService(
     controllerComponents = controllerComponents,
-    renderer = new Renderer(mockAppConfig, mockRenderer),
     userAnswersCacheConnector = mockUserAnswersCacheConnector,
     navigator = new FakeNavigator(desiredRoute = onwardCall),
     messagesApi = messagesApi,
     view
   )
 
-  override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
+  override def beforeEach(): Unit = reset(mockUserAnswersCacheConnector)
 
   // Define the form provider for the reason form
   private val formProvider: ReasonFormProvider = new ReasonFormProvider()
@@ -71,7 +68,7 @@ class CommonReasonServiceSpec extends ControllerSpecBase with CommonServiceSpecB
 
   "get" should {
     "return OK and render the correct template" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
 
       val result = service.get(
         pageTitle = "Test Title",
@@ -100,7 +97,7 @@ class CommonReasonServiceSpec extends ControllerSpecBase with CommonServiceSpecB
       val updatedAnswers = userAnswers.set(id, "Test Reason").success.value
       mutableFakeDataRetrievalAction.setDataToReturn(Some(updatedAnswers))
 
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
 
       val result = service.get(
         pageTitle = "Test Title",
@@ -130,7 +127,7 @@ class CommonReasonServiceSpec extends ControllerSpecBase with CommonServiceSpecB
 
   "post" should {
     "return a BadRequest when form has errors" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
       val filledForm = reasonForm.bind(Map("value" -> ""))
 
       val result = service.post(
@@ -150,7 +147,7 @@ class CommonReasonServiceSpec extends ControllerSpecBase with CommonServiceSpecB
 
     "redirect to the next page on valid data submission" in {
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
       val result = service.post(
         pageTitle = "Test Title",
         pageHeading = "Test Heading",

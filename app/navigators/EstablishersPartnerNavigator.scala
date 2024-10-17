@@ -24,8 +24,8 @@ import identifiers.establishers.partnership.partner._
 import identifiers.establishers.partnership.partner.address._
 import identifiers.establishers.partnership.partner.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.partnership.partner.details._
+import models._
 import models.requests.DataRequest
-import models.{CheckMode, Index, Mode, NormalMode, entities}
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
 

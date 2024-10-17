@@ -28,7 +28,6 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.details.CommonEnterReferenceValueService
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -57,15 +56,15 @@ class PAYEController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.get(
-              pageTitle     = Message("messages__paye", Message("messages__company")),
-              pageHeading     = Message("messages__paye", name(index)),
+              pageTitle     = Messages("messages__paye", Messages("messages__company")),
+              pageHeading     = Messages("messages__paye", name(index)),
               isPageHeading = true,
               id            = PAYEId(index),
               form          = form(name(index)),
               schemeName    = schemeName,
               legendClass   = "govuk-visually-hidden",
-              paragraphText = Seq(Message("messages__paye__p", name(index))),
-              hintText = Some(Message("messages__paye__hint")),
+              paragraphText = Seq(Messages("messages__paye__p", name(index))),
+              hintText = Some(Messages("messages__paye__hint")),
               submitCall = routes.PAYEController.onSubmit(index, mode)
             )
         }
@@ -77,16 +76,16 @@ class PAYEController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.post(
-              pageTitle     = Message("messages__paye", Message("messages__company")),
-              pageHeading     = Message("messages__paye", name(index)),
+              pageTitle     = Messages("messages__paye", Messages("messages__company")),
+              pageHeading     = Messages("messages__paye", name(index)),
               isPageHeading = true,
               id            = PAYEId(index),
               form          = form(name(index)),
               schemeName    = schemeName,
               legendClass   = "govuk-visually-hidden",
-              paragraphText = Seq(Message("messages__paye__p", name(index))),
+              paragraphText = Seq(Messages("messages__paye__p", name(index))),
               mode          = mode,
-              hintText = Some(Message("messages__paye__hint")),
+              hintText = Some(Messages("messages__paye__hint")),
               submitCall = routes.PAYEController.onSubmit(index, mode)
             )
         }

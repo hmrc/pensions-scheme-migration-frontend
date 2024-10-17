@@ -24,10 +24,9 @@ import models.requests.DataRequest
 import models.{CheckMode, Index}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
-import uk.gov.hmrc.viewmodels.MessageInterpolators
-import uk.gov.hmrc.viewmodels.SummaryList.Row
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.{Enumerable, UserAnswers}
-import viewmodels.Message
 
 class EstablisherCompanyAddressCYAHelper
   extends CYAHelper
@@ -37,7 +36,7 @@ class EstablisherCompanyAddressCYAHelper
   def rows(index: Index)(
                    implicit request: DataRequest[AnyContent],
                    messages: Messages
-                 ): Seq[Row] = {
+                 ): Seq[SummaryListRow] = {
     implicit val ua: UserAnswers =
       request.userAnswers
     val establisherName: String =
@@ -46,15 +45,15 @@ class EstablisherCompanyAddressCYAHelper
     val seqRowAddressAndYears = Seq(
       answerOrAddRow(
         AddressId(index),
-        Message("messages__address__whatYouWillNeed_h1", establisherName).resolve,
+        Messages("messages__address__whatYouWillNeed_h1", establisherName),
         Some(controllers.establishers.company.address.routes.EnterPostcodeController.onPageLoad(index,CheckMode).url),
-        Some(msg"messages__visuallyHidden__address".withArgs(establisherName)), answerAddressTransform
+        Some(Text(Messages("messages__visuallyHidden__address", establisherName))), answerAddressTransform
       ),
       answerOrAddRow(
         AddressYearsId(index),
-        Message("addressYears.title", establisherName).resolve,
+        Messages("addressYears.title", establisherName),
         Some(controllers.establishers.company.address.routes.AddressYearsController.onPageLoad(index,CheckMode).url),
-        Some(msg"messages__visuallyhidden__addressYears".withArgs(establisherName)), answerBooleanTransform
+        Some(Text(Messages("messages__visuallyhidden__addressYears", establisherName))), answerBooleanTransform
       )
     )
 
@@ -62,9 +61,9 @@ class EstablisherCompanyAddressCYAHelper
       Seq(
         answerOrAddRow(
           TradingTimeId(index),
-          Message("tradingTime.title", establisherName).resolve,
+          Messages("tradingTime.title", establisherName),
           Some(controllers.establishers.company.address.routes.TradingTimeController.onPageLoad(index,CheckMode).url),
-          Some(msg"messages__visuallyhidden__TradingTime".withArgs(establisherName)), answerBooleanTransform
+          Some(Text(Messages("messages__visuallyhidden__TradingTime", establisherName))), answerBooleanTransform
         )
       )
     } else {
@@ -76,9 +75,9 @@ class EstablisherCompanyAddressCYAHelper
         Seq(
           answerOrAddRow(
             PreviousAddressId(index),
-            Message("messages__previousAddress", establisherName).resolve,
+            Messages("messages__previousAddress", establisherName),
             Some(controllers.establishers.company.address.routes.EnterPreviousPostcodeController.onPageLoad(index,CheckMode).url),
-            Some(msg"messages__visuallyHidden__previousAddress".withArgs(establisherName)), answerAddressTransform
+            Some(Text(Messages("messages__visuallyHidden__previousAddress", establisherName))), answerAddressTransform
           )
         )
       case _ => Nil

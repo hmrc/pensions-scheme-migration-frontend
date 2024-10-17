@@ -1,7 +1,0 @@
-{% macro navigationLink(linkText,pageNumber, baseUrl) %}
-{%- set id = linkText | lower  -%}
-{%- set url = baseUrl+pageNumber  -%}
-{%- set ariaLabelMessageStr = "messages__listSchemes__pagination__"+id+"__ariaLabel"  -%}
-{%- set ariaLabel = messages(ariaLabelMessageStr)  -%}
-  <span class="nav-item"><a id="{{id}}" href="{{url}}" aria-label="{{ariaLabel}}" class="govuk-link">{{linkText}}</a></span>
-{% endmacro %}

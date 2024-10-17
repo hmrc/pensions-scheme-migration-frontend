@@ -25,10 +25,9 @@ import identifiers.establishers.partnership.partner.contact.EnterEmailId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.contact.CommonEmailAddressService
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -52,7 +51,7 @@ class EnterEmailController @Inject()(
 
   private def form(establisherIndex: Index, partnerIndex: Index)
                   (implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Message("messages__enterEmail__error_required", name(establisherIndex, partnerIndex)))
+    formProvider(Messages("messages__enterEmail__error_required", name(establisherIndex, partnerIndex)))
 
   def onPageLoad(establisherIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
@@ -61,11 +60,11 @@ class EnterEmailController @Inject()(
           schemeName =>
             common.get(
               entityName = name(establisherIndex, partnerIndex),
-              entityType = Message("messages__partner"),
+              entityType = Messages("messages__partner"),
               emailId = EnterEmailId(establisherIndex, partnerIndex),
               form = form(establisherIndex, partnerIndex),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__contact_details__hint", name(establisherIndex, partnerIndex))),
+              paragraphText = Seq(Messages("messages__contact_details__hint", name(establisherIndex, partnerIndex))),
               routes.EnterEmailController.onSubmit(establisherIndex, partnerIndex, mode)
             )
         }
@@ -78,11 +77,11 @@ class EnterEmailController @Inject()(
           schemeName =>
             common.post(
               entityName = name(establisherIndex, partnerIndex),
-              entityType = Message("messages__partner"),
+              entityType = Messages("messages__partner"),
               emailId = EnterEmailId(establisherIndex, partnerIndex),
               form = form(establisherIndex, partnerIndex),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__contact_details__hint", name(establisherIndex, partnerIndex))),
+              paragraphText = Seq(Messages("messages__contact_details__hint", name(establisherIndex, partnerIndex))),
               mode = Some(mode),
               routes.EnterEmailController.onSubmit(establisherIndex, partnerIndex, mode)
             )

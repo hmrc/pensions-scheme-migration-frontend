@@ -26,12 +26,11 @@ import identifiers.trustees.individual.contact.{EnterEmailId => trusteeEnterEmai
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
 import services.common.contact.CommonEmailAddressService
 import utils.UserAnswers
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -55,11 +54,11 @@ class EnterEmailController @Inject()(
           schemeName =>
             common.get(
               entityName = name(establisherIndex, directorIndex),
-              entityType = Message("messages__director"),
+              entityType = Messages("messages__director"),
               emailId = EnterEmailId(establisherIndex, directorIndex),
               form = form(establisherIndex, directorIndex),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__contact_details__hint", name(establisherIndex, directorIndex))),
+              paragraphText = Seq(Messages("messages__contact_details__hint", name(establisherIndex, directorIndex))),
               routes.EnterEmailController.onSubmit(establisherIndex, directorIndex, mode)
             )
         }
@@ -72,11 +71,11 @@ class EnterEmailController @Inject()(
           schemeName =>
             common.post(
               entityName = name(establisherIndex, directorIndex),
-              entityType = Message("messages__director"),
+              entityType = Messages("messages__director"),
               emailId = EnterEmailId(establisherIndex, directorIndex),
               form = form(establisherIndex, directorIndex),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__contact_details__hint", name(establisherIndex, directorIndex))),
+              paragraphText = Seq(Messages("messages__contact_details__hint", name(establisherIndex, directorIndex))),
               mode = Some(mode),
               routes.EnterEmailController.onSubmit(establisherIndex, directorIndex, mode),
               Some(value => setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
@@ -86,7 +85,7 @@ class EnterEmailController @Inject()(
 
   private def form(establisherIndex: Index, directorIndex: Index)
                   (implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Message("messages__enterEmail__error_required", name(establisherIndex, directorIndex)))
+    formProvider(Messages("messages__enterEmail__error_required", name(establisherIndex, directorIndex)))
 
   private def name(establisherIndex: Index, directorIndex: Index)
                   (implicit request: DataRequest[AnyContent]): String =

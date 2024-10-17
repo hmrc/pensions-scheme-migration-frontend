@@ -32,15 +32,13 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Call, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
-import utils.{Data, Enumerable, TwirlMigration, UserAnswers}
+import utils.{Data, Enumerable, UserAnswers}
 import views.html.benefitsAndInsurance.HowProvideBenefitsView
 
 import scala.concurrent.Future
 
-class HowProvideBenefitsControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class HowProvideBenefitsControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -62,7 +60,7 @@ class HowProvideBenefitsControllerSpec extends ControllerSpecBase with NunjucksS
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
   }
 
   "HowProvideBEnefits Controller" must {
@@ -78,7 +76,7 @@ class HowProvideBenefitsControllerSpec extends ControllerSpecBase with NunjucksS
       val view = application.injector.instanceOf[HowProvideBenefitsView].apply(
         form,
         schemeName,
-        TwirlMigration.toTwirlRadios(BenefitsProvisionType.radios(form)),
+        BenefitsProvisionType.radios(form),
         onwardCall
       )(request, messages)
 
@@ -102,7 +100,7 @@ class HowProvideBenefitsControllerSpec extends ControllerSpecBase with NunjucksS
       val view = application.injector.instanceOf[HowProvideBenefitsView].apply(
         filledFrom,
         schemeName,
-        TwirlMigration.toTwirlRadios(BenefitsProvisionType.radios(filledFrom)),
+        BenefitsProvisionType.radios(filledFrom),
         onwardCall
       )(request, messages)
 
@@ -115,11 +113,11 @@ class HowProvideBenefitsControllerSpec extends ControllerSpecBase with NunjucksS
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val req = httpGETRequest(httpPathGET)
+      val result: Future[Result] = route(application, req).value
 
       status(result) mustEqual SEE_OTHER
-      // TODO
-//    redirectLocation(result).value mustBe controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.routes.SessionExpiredController.onPageLoad().absoluteURL()(req)
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {

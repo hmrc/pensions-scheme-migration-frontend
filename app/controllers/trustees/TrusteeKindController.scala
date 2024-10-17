@@ -26,9 +26,8 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.{Enumerable, TwirlMigration}
+import utils.Enumerable
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -43,7 +42,7 @@ class TrusteeKindController @Inject()(
                                            val controllerComponents: MessagesControllerComponents,
                                            view: views.html.trustees.TrusteeKindView
                                          )(implicit val executionContext: ExecutionContext) extends
-  FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits with NunjucksSupport {
+  FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits {
 
   private val form = formProvider()
 
@@ -55,7 +54,7 @@ class TrusteeKindController @Inject()(
           formWithData,
           controllers.trustees.routes.TrusteeKindController.onSubmit(index),
           existingSchemeName.getOrElse(throw new RuntimeException("Scheme name not available")),
-          TwirlMigration.toTwirlRadios(TrusteeKind.radios(formWithData))
+          TrusteeKind.radios(formWithData)
         ))
     }
 
@@ -67,7 +66,7 @@ class TrusteeKindController @Inject()(
             formWithErrors,
             controllers.trustees.routes.TrusteeKindController.onSubmit(index),
             existingSchemeName.getOrElse(throw new RuntimeException("Scheme name not available")),
-            TwirlMigration.toTwirlRadios(TrusteeKind.radios(formWithErrors))
+            TrusteeKind.radios(formWithErrors)
           ))
         },
         value => {

@@ -20,16 +20,16 @@ import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.address.AddressListFormProvider
-import identifiers.benefitsAndInsurance.InsurerEnterPostCodeId
 import identifiers.beforeYouStart.SchemeNameId
+import identifiers.benefitsAndInsurance.InsurerEnterPostCodeId
 import matchers.JsonMatchers
 import models.{Scheme, TolerantAddress}
 import org.mockito.ArgumentMatchers.any
-import play.api.mvc.Results.{BadRequest, Ok}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.Json
+import play.api.mvc.Results.{BadRequest, Ok}
 import play.api.mvc.{Result, Results}
 import play.api.test.Helpers._
 import services.common.address.CommonAddressListService

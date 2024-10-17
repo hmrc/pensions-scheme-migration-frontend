@@ -30,7 +30,6 @@ import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.common.contact.CommonEmailAddressService
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{Data, FakeNavigator, UserAnswers}
 import views.html.EmailView
@@ -38,7 +37,7 @@ import views.html.EmailView
 import scala.concurrent.Future
 
 class EnterEmailControllerSpec extends ControllerSpecBase
-  with NunjucksSupport
+
   with JsonMatchers
   with TryValues
   with BeforeAndAfterEach {

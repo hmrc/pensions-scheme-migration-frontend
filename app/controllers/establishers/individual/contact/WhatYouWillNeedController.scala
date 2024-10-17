@@ -22,10 +22,9 @@ import helpers.cya.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import models.{Index, NormalMode}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Results.Ok
 import play.api.mvc.{Action, AnyContent}
-import viewmodels.Message
 import views.html.WhatYouWillNeedContactView
 
 import javax.inject.Inject
@@ -47,7 +46,7 @@ class WhatYouWillNeedController @Inject()(
         EstablisherNameId(index).retrieve.map {
           personName =>
             Future.successful(Ok(view(
-              Message("messages__title_individual"),
+              Messages("messages__title_individual"),
               controllers.establishers.individual.contact.routes.EnterEmailController.onPageLoad(index, NormalMode).url,
               personName.fullName,
               request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))

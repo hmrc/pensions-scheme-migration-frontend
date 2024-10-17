@@ -29,11 +29,10 @@ import play.api.libs.json.Json
 import play.api.mvc.Request
 import play.api.mvc.Results.Ok
 import play.api.test.Helpers._
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.{Data, Enumerable}
 
 import scala.concurrent.Future
-class ConfirmationControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class ConfirmationControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val mockSchemeCacheConnector = mock[CurrentPstrCacheConnector]
   private val mockListOfSchemesConnector: ListOfSchemesConnector = mock[ListOfSchemesConnector]

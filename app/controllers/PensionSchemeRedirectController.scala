@@ -21,7 +21,6 @@ import controllers.actions.AuthAction
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.LockingService
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.{Inject, Singleton}
@@ -35,7 +34,7 @@ class PensionSchemeRedirectController @Inject()(
                                                  val controllerComponents: MessagesControllerComponents
                                                )
                                                (implicit val ec: ExecutionContext) extends FrontendBaseController
-  with I18nSupport with NunjucksSupport {
+  with I18nSupport {
 
   implicit val config: AppConfig = appConfig
 

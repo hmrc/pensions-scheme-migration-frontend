@@ -26,23 +26,21 @@ import models.{NormalMode, PersonName, ReferenceValue}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
+import play.api.i18n.Messages
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.common.details.CommonEnterReferenceValueService
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{FakeNavigator, UserAnswers}
-import viewmodels.Message
 import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
 
 import scala.concurrent.Future
 
 class PartnerEnterNINOControllerSpec
   extends ControllerSpecBase
-    with NunjucksSupport
+
     with JsonMatchers
     with TryValues
     with BeforeAndAfterEach {
@@ -64,7 +62,7 @@ class PartnerEnterNINOControllerSpec
       "What is Jane Doe’s National Insurance number?",
       "govuk-label--xl",
       Seq(),
-      Some(Message("messages__enterNINO__hint")),
+      Some(Messages("messages__enterNINO__hint")),
       routes.PartnerEnterNINOController.onSubmit(0, 0, NormalMode)
     )(req, implicitly)
   }

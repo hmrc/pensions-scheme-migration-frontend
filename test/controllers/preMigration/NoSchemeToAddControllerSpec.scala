@@ -21,13 +21,13 @@ import controllers.actions._
 import matchers.JsonMatchers
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
+import play.api.i18n.Messages
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import views.html.preMigration.NoSchemeToAddView
 
 import scala.concurrent.Future
-class NoSchemeToAddControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues  {
+class NoSchemeToAddControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues  {
 
   private val psaName: String = "Nigel"
   private def controller(): NoSchemeToAddController =
@@ -42,8 +42,8 @@ class NoSchemeToAddControllerSpec extends ControllerSpecBase with NunjucksSuppor
       status(result) mustBe OK
 
       val view = app.injector.instanceOf[NoSchemeToAddView].apply(
-        msg"messages__pension_scheme".resolve,
-        msg"messages__scheme".resolve,
+        Messages("messages__pension_scheme"),
+        Messages("messages__scheme"),
         appConfig.contactHmrcUrl,
         appConfig.yourPensionSchemesUrl,
         appConfig.psaOverviewUrl,
@@ -59,8 +59,8 @@ class NoSchemeToAddControllerSpec extends ControllerSpecBase with NunjucksSuppor
       status(result) mustBe OK
 
       val view = app.injector.instanceOf[NoSchemeToAddView].apply(
-        msg"messages__racdac".resolve,
-        msg"messages__racdac".resolve,
+        Messages("messages__racdac"),
+        Messages("messages__racdac"),
         appConfig.contactHmrcUrl,
         appConfig.yourPensionSchemesUrl,
         appConfig.psaOverviewUrl,

@@ -21,18 +21,13 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.establishers.partnership.partner.PartnerNameId
 import matchers.JsonMatchers
 import models.{Index, NormalMode, PersonName}
-import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
 import views.html.AlreadyDeletedView
 
-import scala.concurrent.Future
-
-class AlreadyDeletedControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class AlreadyDeletedControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val index: Index = Index(0)
   private val partnerIndex: Index = Index(0)
@@ -49,7 +44,7 @@ class AlreadyDeletedControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
   }
 
 

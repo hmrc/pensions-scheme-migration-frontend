@@ -23,17 +23,14 @@ import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.details.TrusteeUTRId
 import matchers.JsonMatchers
 import models.{NormalMode, PersonName, ReferenceValue}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.common.details.CommonEnterReferenceValueService
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
 import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
@@ -41,7 +38,7 @@ import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
 import scala.concurrent.Future
 class TrusteeEnterUTRControllerSpec
   extends ControllerSpecBase
-    with NunjucksSupport
+
     with JsonMatchers
     with TryValues
     with BeforeAndAfterEach {

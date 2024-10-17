@@ -21,16 +21,12 @@ import controllers.actions._
 import identifiers.trustees.company.CompanyDetailsId
 import matchers.JsonMatchers
 import models.{CompanyDetails, NormalMode}
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
-import play.api.libs.json.JsObject
+import play.api.i18n.Messages
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import utils.Data.{schemeName, ua}
 import utils.UserAnswers
-import viewmodels.Message
 import views.html.WhatYouWillNeedContactView
 
 import scala.concurrent.Future
@@ -44,7 +40,7 @@ class WhatYouWillNeedCompanyContactControllerSpec
 
   private def getView(req: Request[_]) = {
     app.injector.instanceOf[WhatYouWillNeedContactView].apply(
-      Message("messages__title_company"),
+      Messages("messages__title_company"),
       controllers.trustees.company.contacts.routes.EnterEmailController.onPageLoad(0, NormalMode).url,
       company.companyName,
       schemeName

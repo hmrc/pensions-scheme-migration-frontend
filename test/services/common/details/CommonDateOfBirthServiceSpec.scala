@@ -27,9 +27,7 @@ import org.mockito.ArgumentMatchers.any
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.CommonServiceSpecBase
-import uk.gov.hmrc.viewmodels.DateInput
 import utils.{Data, FakeNavigator, UserAnswers}
 
 import java.time.LocalDate
@@ -40,7 +38,7 @@ class CommonDateOfBirthServiceSpec extends ControllerSpecBase with CommonService
   // Instantiate service
 
 
-  override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
+  override def beforeEach(): Unit = reset(mockUserAnswersCacheConnector)
 
   // Define the form provider for the date of birth form
   private val minDate: LocalDate = LocalDate.of(2020,2, 1)
@@ -67,7 +65,6 @@ class CommonDateOfBirthServiceSpec extends ControllerSpecBase with CommonService
 
       val expectedView = view(
         form,
-        DateInput.localDate(form("date")),
         "John Doe",
         "Test Scheme",
         "individual",
@@ -93,7 +90,6 @@ class CommonDateOfBirthServiceSpec extends ControllerSpecBase with CommonService
 
       val expectedView = view(
         form.fill(dateFilled),
-        DateInput.localDate(form("date")),
         "John Doe",
         "Test Scheme",
         "individual",
@@ -133,7 +129,7 @@ class CommonDateOfBirthServiceSpec extends ControllerSpecBase with CommonService
 
     "redirect to the next page on valid data submission" in {
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
 
       val result = service.post(
         form = form.bind(Map("date.day" -> "01", "date.month" -> "01", "date.year" -> "1990")),
