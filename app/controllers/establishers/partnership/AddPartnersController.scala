@@ -36,7 +36,6 @@ import config.AppConfig
 import controllers.Retrievals
 import controllers.actions._
 import forms.establishers.partnership.partner.AddPartnersFormProvider
-import helpers.AddToListHelper
 import identifiers.establishers.partnership.AddPartnersId
 import models.{Mode, PartnerEntity}
 import navigators.CompoundNavigator
@@ -44,8 +43,6 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.Radios
-import utils.TwirlMigration
 import views.html.establishers.partnership.AddPartnerView
 
 import javax.inject.Inject
@@ -58,7 +55,6 @@ class AddPartnersController @Inject()(
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
                                                formProvider: AddPartnersFormProvider,
-                                               helper: AddToListHelper,
                                                config: AppConfig,
                                                val controllerComponents: MessagesControllerComponents,
                                                view: AddPartnerView
@@ -80,7 +76,7 @@ class AddPartnersController @Inject()(
           partners.size,
           config.maxPartners,
           partners,
-          TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+          utils.Radios.yesNo(form("value")),
           routes.AddPartnersController.onSubmit(index, mode)
         ))
     }
@@ -106,7 +102,7 @@ class AddPartnersController @Inject()(
                 partners.size,
                 config.maxPartners,
                 partners,
-                TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value"))),
+                utils.Radios.yesNo(formWithErrors("value")),
                 routes.AddPartnersController.onSubmit(index, mode)
               ))),
             value => {

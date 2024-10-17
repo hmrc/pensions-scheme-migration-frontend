@@ -29,15 +29,13 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
 import views.html.PersonNameView
 
 import scala.concurrent.Future
 
-class PartnerNameControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class PartnerNameControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val index: Index = Index(0)
   private val partnerIndex: Index = Index(0)
@@ -64,7 +62,7 @@ class PartnerNameControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
   }
 
 

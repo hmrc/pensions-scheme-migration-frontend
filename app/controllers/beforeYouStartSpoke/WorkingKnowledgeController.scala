@@ -27,8 +27,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.Radios
-import utils.{Enumerable, TwirlMigration}
+import utils.Enumerable
 import views.html.beforeYouStart.WorkingKnowledgeView
 
 import javax.inject.Inject
@@ -56,7 +55,7 @@ class WorkingKnowledgeController @Inject()(
         preparedForm,
         existingSchemeName,
         routes.WorkingKnowledgeController.onSubmit,
-        TwirlMigration.toTwirlRadios(Radios.yesNo(preparedForm("value")))
+        utils.Radios.yesNo(preparedForm("value"))
       ))
   }
 
@@ -69,7 +68,7 @@ class WorkingKnowledgeController @Inject()(
               formWithErrors,
               existingSchemeName,
               routes.WorkingKnowledgeController.onSubmit,
-              TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value")))
+              utils.Radios.yesNo(formWithErrors("value"))
             )
           )),
           value =>

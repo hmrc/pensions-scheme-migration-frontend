@@ -26,12 +26,9 @@ import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.mvc.Results.{BadRequest, Ok}
 import play.api.test.Helpers._
 import services.BulkRacDacService
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.viewmodels.Table
 import utils.Enumerable
-class BulkListControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
-
-  val table: Table = Table(head = Nil, rows = Nil)
+class BulkListControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
+  
   private val mockBulkRacDacService: BulkRacDacService = mock[BulkRacDacService]
 
   private val mutableFakeBulkDataAction: MutableFakeBulkDataAction = new MutableFakeBulkDataAction(false)

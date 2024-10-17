@@ -26,14 +26,13 @@ import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.ua
 import utils.UserAnswers
 import views.html.details.WhatYouWillNeedCompanyDetailsView
 
 import scala.concurrent.Future
 
-class WhatYouWillNeedControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues {
+class WhatYouWillNeedControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues {
 
   private val index: Index = Index(0)
   private val companyName: CompanyDetails = CompanyDetails("test company")

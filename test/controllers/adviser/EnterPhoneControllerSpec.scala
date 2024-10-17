@@ -30,16 +30,14 @@ import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.common.contact.CommonPhoneService
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{Data, FakeNavigator, UserAnswers}
-import viewmodels.Message
 import views.html.PhoneView
 
 import scala.concurrent.Future
 
 class EnterPhoneControllerSpec extends ControllerSpecBase
-  with NunjucksSupport
+
   with JsonMatchers
   with TryValues
   with BeforeAndAfterEach {
@@ -47,7 +45,7 @@ class EnterPhoneControllerSpec extends ControllerSpecBase
   private val advisorName: String = "test"
   private val phone = "777"
   private val formProvider: PhoneFormProvider = new PhoneFormProvider()
-  private val form = formProvider(Message("messages__error__common__phone__required"),Some(Message("messages__phone__invalid")))
+  private val form = formProvider(Messages("messages__error__common__phone__required"),Some(Messages("messages__phone__invalid")))
 
   private val userAnswers: UserAnswers = ua.set(AdviserNameId, advisorName).success.value
 

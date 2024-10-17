@@ -26,12 +26,11 @@ import identifiers.trustees.individual.details.TrusteeNoUTRReasonId
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
 import services.common.details.CommonReasonService
 import utils.UserAnswers
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -52,11 +51,11 @@ class TrusteeNoUTRReasonController @Inject()(val messagesApi: MessagesApi,
     request
       .userAnswers
       .get(TrusteeNameId(index))
-      .fold(Message("messages__trustee"))(_.fullName)
+      .fold(Messages("messages__trustee"))(_.fullName)
 
   private def form(index: Index)
                   (implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Message("messages__reason__error_utrRequired", name(index)))
+    formProvider(Messages("messages__reason__error_utrRequired", name(index)))
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
@@ -64,8 +63,8 @@ class TrusteeNoUTRReasonController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.get(
-              pageTitle     = Message("messages__whyNoUTR", Message("messages__individual")),
-              pageHeading     = Message("messages__whyNoUTR", name(index)),
+              pageTitle     = Messages("messages__whyNoUTR", Messages("messages__individual")),
+              pageHeading     = Messages("messages__whyNoUTR", name(index)),
               isPageHeading = true,
               id            = TrusteeNoUTRReasonId(index),
               form          = form(index),
@@ -81,8 +80,8 @@ class TrusteeNoUTRReasonController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.post(
-              pageTitle = Message("messages__whyNoUTR", Message("messages__individual")),
-              pageHeading = Message("messages__whyNoUTR", name(index)),
+              pageTitle = Messages("messages__whyNoUTR", Messages("messages__individual")),
+              pageHeading = Messages("messages__whyNoUTR", name(index)),
               isPageHeading = true,
               id = TrusteeNoUTRReasonId(index),
               form = form(index),

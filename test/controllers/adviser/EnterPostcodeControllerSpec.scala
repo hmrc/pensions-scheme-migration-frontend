@@ -28,10 +28,9 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.Json
-import play.api.mvc.{Result, Results}
 import play.api.mvc.Results.{BadRequest, Ok}
+import play.api.mvc.{Result, Results}
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.common.address.CommonPostcodeService
 import utils.Data.ua
 import utils.{Data, Enumerable, UserAnswers}
@@ -70,7 +69,7 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with JsonMatchers w
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
   }
 
   "EnterPostcode Controller" must {

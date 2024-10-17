@@ -26,9 +26,9 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import views.html.beforeYouStart.SchemeTypeView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.{TwirlMigration, UserAnswers}
+import utils.UserAnswers
+import views.html.beforeYouStart.SchemeTypeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -63,7 +63,7 @@ class SchemeTypeController @Inject()(
               preparedForm,
               schemeName,
               routes.SchemeTypeController.onSubmit,
-              TwirlMigration.toTwirlRadiosWithHintText(SchemeType.radios(preparedForm))
+              SchemeType.radios(preparedForm)
             ))
           }
       )
@@ -80,7 +80,7 @@ class SchemeTypeController @Inject()(
                   formWithErrors,
                   schemeName,
                   routes.SchemeTypeController.onSubmit,
-                  TwirlMigration.toTwirlRadiosWithHintText(SchemeType.radios(formWithErrors))
+                  SchemeType.radios(formWithErrors)
                 )
               ))
             },

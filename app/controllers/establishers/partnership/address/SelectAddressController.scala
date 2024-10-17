@@ -16,19 +16,18 @@
 
 package controllers.establishers.partnership.address
 
+import controllers.Retrievals
 import controllers.actions._
-import models.establishers.AddressPages
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.address.{AddressId, AddressListId, EnterPostCodeId}
+import models.establishers.AddressPages
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import controllers.Retrievals
-import services.common.address.{CommonAddressListTemplateData, CommonAddressListService}
-import viewmodels.Message
+import services.common.address.{CommonAddressListService, CommonAddressListTemplateData}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
@@ -81,13 +80,13 @@ class SelectAddressController @Inject()(
       implicit request =>
         EnterPostCodeId(index).retrieve.map { addresses =>
           val name:String = request.userAnswers.get(PartnershipDetailsId(index))
-            .map(_.partnershipName).getOrElse(Message("establisherEntityTypePartnership"))
+            .map(_.partnershipName).getOrElse(Messages("establisherEntityTypePartnership"))
 
           form =>
             CommonAddressListTemplateData(
               form,
               addresses,
-              Message("establisherEntityTypePartnership"),
+              Messages("establisherEntityTypePartnership"),
               name,
               routes.ConfirmAddressController.onPageLoad(index,mode).url,
               schemeName,

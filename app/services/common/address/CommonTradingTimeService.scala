@@ -25,11 +25,10 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{AnyContent, Call, Result}
-import uk.gov.hmrc.viewmodels.Radios
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
+import play.api.mvc.{AnyContent, Call, Result}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.TwirlMigration
 import views.html.address.TradingTimeView
 
 import javax.inject.{Inject, Singleton}
@@ -48,7 +47,7 @@ class CommonTradingTimeService @Inject()(
                                    entityName: String,
                                    entityType : String,
                                    form : Form[Boolean],
-                                   radios: Seq[Radios.Item]
+                                   radios: Seq[RadioItem]
                                  )
 
   def get(schemeName: Option[String],
@@ -65,7 +64,7 @@ class CommonTradingTimeService @Inject()(
         filledForm,
         templateData.entityType,
         templateData.entityName,
-        TwirlMigration.toTwirlRadios(Radios.yesNo(filledForm("value"))),
+        utils.Radios.yesNo(filledForm("value")),
         templateData.schemeName,
         submitUrl = submitUrl
     )))
@@ -89,7 +88,7 @@ class CommonTradingTimeService @Inject()(
               formWithErrors,
               templateData.entityType,
               templateData.entityName,
-              TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value"))),
+              utils.Radios.yesNo(formWithErrors("value")),
               templateData.schemeName,
               submitUrl = submitUrl
             )))
@@ -111,6 +110,6 @@ class CommonTradingTimeService @Inject()(
                       entityType : String,
                       form : Form[Boolean]
                     )(implicit request: DataRequest[AnyContent]): TemplateData =
-    TemplateData(schemeName, entityName, entityType, form, Radios.yesNo(form("value")))
+    TemplateData(schemeName, entityName, entityType, form, utils.Radios.yesNo(form("value")))
 
 }

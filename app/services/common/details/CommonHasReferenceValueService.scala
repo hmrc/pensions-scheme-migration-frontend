@@ -27,8 +27,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, Call, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
-import uk.gov.hmrc.viewmodels.Radios
-import utils.{TwirlMigration, UserAnswers}
+import utils.UserAnswers
 import views.html.{HasReferenceValueView, HasReferenceValueWithHintView}
 
 import javax.inject.{Inject, Singleton}
@@ -65,11 +64,11 @@ class CommonHasReferenceValueService @Inject()(val controllerComponents: Message
     Future.successful(Ok(
       if (paragraphText.nonEmpty){
         hasReferenceValueWithHintView(preparedForm, schemeName, pageTitle, pageHeading,
-          TwirlMigration.toTwirlRadios(Radios.yesNo(preparedForm("value"))), legendClass, paragraphText, submitCall)
+          utils.Radios.yesNo(preparedForm("value")), legendClass, paragraphText, submitCall)
       } else {
         hasReferenceValueView(
           preparedForm, schemeName, pageTitle, pageHeading,
-          TwirlMigration.toTwirlRadios(Radios.yesNo(preparedForm("value"))), legendClass, submitCall)
+          utils.Radios.yesNo(preparedForm("value")), legendClass, submitCall)
       }
     ))
   }
@@ -91,11 +90,11 @@ class CommonHasReferenceValueService @Inject()(val controllerComponents: Message
         Future.successful(BadRequest(
           if (paragraphText.nonEmpty){
             hasReferenceValueWithHintView(formWithErrors, schemeName, pageTitle, pageHeading,
-              TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value"))), legendClass, paragraphText, submitCall)
+              utils.Radios.yesNo(formWithErrors("value")), legendClass, paragraphText, submitCall)
           } else {
             hasReferenceValueView(
               formWithErrors, schemeName, pageTitle, pageHeading,
-              TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value"))), legendClass, submitCall)
+              utils.Radios.yesNo(formWithErrors("value")), legendClass, submitCall)
           }
         )),
       value => {

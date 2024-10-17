@@ -18,8 +18,9 @@ package services.common.address
 
 import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
-import models.{NormalMode, TolerantAddress}
+import identifiers.TypedIdentifier
 import models.requests.DataRequest
+import models.{NormalMode, TolerantAddress}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
@@ -30,11 +31,10 @@ import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.CommonServiceSpecBase
+import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{Data, FakeNavigator, UserAnswers}
-import identifiers.TypedIdentifier
-import uk.gov.hmrc.domain.PsaId
-import services.CommonServiceSpecBase
 import views.html.address.PostcodeView
 
 import scala.concurrent.Future

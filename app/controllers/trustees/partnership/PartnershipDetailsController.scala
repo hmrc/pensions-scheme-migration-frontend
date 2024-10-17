@@ -28,7 +28,6 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Enumerable
 import views.html.PartnershipDetailsView
@@ -51,7 +50,7 @@ class PartnershipDetailsController @Inject()(
     with I18nSupport
     with Retrievals
     with Enumerable.Implicits
-    with NunjucksSupport {
+    {
 
   private val form = formProvider()
 

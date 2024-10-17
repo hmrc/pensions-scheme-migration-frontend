@@ -26,12 +26,11 @@ import identifiers.trustees.individual.contact.EnterEmailId
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
 import services.common.contact.CommonEmailAddressService
 import utils.UserAnswers
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -56,7 +55,7 @@ class EnterEmailController @Inject()(
       .fold("the trustee")(_.fullName)
 
   private def form(index: Index)(implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Message("messages__enterEmail__error_required", name(index)))
+    formProvider(Messages("messages__enterEmail__error_required", name(index)))
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
@@ -65,11 +64,11 @@ class EnterEmailController @Inject()(
           schemeName =>
             common.get(
               entityName = name(index),
-              entityType = Message("messages__individual"),
+              entityType = Messages("messages__individual"),
               emailId = EnterEmailId(index),
               form = form(index),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__contact_details__hint", name(index))),
+              paragraphText = Seq(Messages("messages__contact_details__hint", name(index))),
               routes.EnterEmailController.onSubmit(index, mode)
             )
         }
@@ -82,11 +81,11 @@ class EnterEmailController @Inject()(
           schemeName =>
             common.post(
               entityName = name(index),
-              entityType = Message("messages__individual"),
+              entityType = Messages("messages__individual"),
               emailId = EnterEmailId(index),
               form = form(index),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__contact_details__hint", name(index))),
+              paragraphText = Seq(Messages("messages__contact_details__hint", name(index))),
               mode = Some(mode),
               routes.EnterEmailController.onSubmit(index, mode),
               Some(value => setUpdatedAnswers(index, mode, value, request.userAnswers))

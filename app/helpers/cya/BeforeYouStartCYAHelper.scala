@@ -23,12 +23,12 @@ import models.SchemeType.Other
 import models.requests.DataRequest
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, SummaryListRow}
+import uk.gov.hmrc.govukfrontend.views.Aliases.Value
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow}
 import utils.UserAnswers
-import viewmodels.Message
 
-class BeforeYouStartCYAHelper extends CYAHelperForTwirl with CountriesHelper {
+class BeforeYouStartCYAHelper extends CYAHelper with CountriesHelper {
   //scalastyle:off method.length
   //scalastyle:off cyclomatic.complexity
   def rowsForCYA(isEnabledChange: Boolean)(implicit request: DataRequest[AnyContent],
@@ -40,36 +40,36 @@ class BeforeYouStartCYAHelper extends CYAHelperForTwirl with CountriesHelper {
 
     val schemeTypeRow = {
       val url: String = controllers.beforeYouStartSpoke.routes.SchemeTypeController.onPageLoad.url
-      val visuallyHiddenText = Message("messages__visuallyhidden__schemeType", schemeName)
+      val visuallyHiddenText = Messages("messages__visuallyhidden__schemeType", schemeName)
       schemeTypeAnswer match {
         case None => SummaryListRow(
-          key = KeyViewModel(HtmlContent(Messages("messages__cya__scheme_type", schemeName))).withCssClass("govuk-!-width-one-half"),
-          value = ValueViewModel(HtmlContent(Messages("site.incomplete"))).withCssClass("govuk-!-width-one-third"),
-          actions = Some(Actions(items = actionAdd(Some(url), Some(visuallyHiddenText))))
+          key = Key(content = Text(Messages("messages__cya__scheme_type", schemeName)), classes = "govuk-!-width-one-half"),
+          value = Value(content = Text(Messages("site.incomplete")), classes = "govuk-!-width-one-third"),
+          actions = actionChange(Some(url), Some(Text(visuallyHiddenText)))
         )
         case Some(Other(details)) if details.equals("") => SummaryListRow(
-          key = KeyViewModel(HtmlContent(Messages("messages__cya__scheme_type", schemeName))).withCssClass("govuk-!-width-one-half"),
-          value = ValueViewModel(HtmlContent(Messages("site.incomplete"))).withCssClass("govuk-!-width-one-third"),
-          actions = Some(Actions(items = actionAdd(Some(url), Some(visuallyHiddenText))))
+          key = Key(content = Text(Messages("messages__cya__scheme_type", schemeName)), classes = "govuk-!-width-one-half"),
+          value = Value(content = Text(Messages("site.incomplete")), classes = "govuk-!-width-one-third"),
+          actions = actionChange(Some(url), Some(Text(visuallyHiddenText)))
         )
         case Some(Other(details)) if details.nonEmpty => SummaryListRow(
-          key = KeyViewModel(HtmlContent(Messages("messages__cya__scheme_type", schemeName))).withCssClass("govuk-!-width-one-half"),
-          value = ValueViewModel(HtmlContent(Messages(details))).withCssClass("govuk-!-width-one-third"),
-          actions = actionChange(Some(url), Some(visuallyHiddenText))
+          key = Key(content = Text(Messages("messages__cya__scheme_type", schemeName)), classes = "govuk-!-width-one-half"),
+          value = Value(content = Text(Messages(details)), classes = "govuk-!-width-one-third"),
+          actions = actionChange(Some(url), Some(Text(visuallyHiddenText)))
         )
         case Some(value) if request.userAnswers.get(IsSchemeTypeOtherId).nonEmpty => SummaryListRow(
-          key = KeyViewModel(HtmlContent(Messages("messages__cya__scheme_type", schemeName))).withCssClass("govuk-!-width-one-half"),
-          value = ValueViewModel(HtmlContent(Messages(s"messages__scheme_type_$value"))).withCssClass("govuk-!-width-one-third"),
-          actions = actionChange(Some(url), Some(visuallyHiddenText))
+          key = Key(content = Text(Messages("messages__cya__scheme_type", schemeName)), classes = "govuk-!-width-one-half"),
+          value = Value(content = Text(Messages(s"messages__scheme_type_$value")), classes = "govuk-!-width-one-third"),
+          actions = actionChange(Some(url), Some(Text(visuallyHiddenText)))
         )
         case Some(value) if isEnabledChange => SummaryListRow(
-          key = KeyViewModel(HtmlContent(Messages("messages__cya__scheme_type", schemeName))).withCssClass("govuk-!-width-one-half"),
-          value = ValueViewModel(HtmlContent(Messages(s"messages__scheme_type_$value"))).withCssClass("govuk-!-width-one-third"),
-          actions = actionChange(Some(url), Some(visuallyHiddenText))
+          key = Key(content = Text(Messages("messages__cya__scheme_type", schemeName)), classes = "govuk-!-width-one-half"),
+          value = Value(content = Text(Messages(s"messages__scheme_type_$value")), classes = "govuk-!-width-one-third"),
+          actions = actionChange(Some(url), Some(Text(visuallyHiddenText)))
         )
         case Some(value) => SummaryListRow(
-          key = KeyViewModel(HtmlContent(Messages("messages__cya__scheme_type", schemeName))).withCssClass("govuk-!-width-one-half"),
-          value = ValueViewModel(HtmlContent(Messages(s"messages__scheme_type_$value"))).withCssClass("govuk-!-width-one-third"),
+          key = Key(content = Text(Messages("messages__cya__scheme_type", schemeName)), classes = "govuk-!-width-one-half"),
+          value = Value(content = Text(Messages(s"messages__scheme_type_$value")), classes = "govuk-!-width-one-third"),
           actions = None
         )
       }
@@ -82,16 +82,16 @@ class BeforeYouStartCYAHelper extends CYAHelperForTwirl with CountriesHelper {
     val country = request.userAnswers.get(EstablishedCountryId)
     val countryRow = {
       val url: String = controllers.beforeYouStartSpoke.routes.EstablishedCountryController.onPageLoad.url
-      val visuallyHiddenText = Message("messages__visuallyhidden__schemeEstablishedCountry", schemeName)
+      val visuallyHiddenText = Messages("messages__visuallyhidden__schemeEstablishedCountry", schemeName)
       country match {
         case None => SummaryListRow(
-          key = KeyViewModel(HtmlContent(Messages("messages__cya__country", schemeName))).withCssClass("govuk-!-width-one-half"),
-          value = ValueViewModel(HtmlContent(Messages("site.incomplete"))).withCssClass("govuk-!-width-one-third"),
-          actions = Some(Actions(items = actionAdd(Some(url), Some(visuallyHiddenText)))))
+          key = Key(content = Text(Messages("messages__cya__country", schemeName)), classes = "govuk-!-width-one-half"),
+          value = Value(content = Text(Messages("site.incomplete")), classes = "govuk-!-width-one-third"),
+          actions = actionChange(Some(url), Some(Text(visuallyHiddenText))))
         case Some(details) => SummaryListRow(
-          key = KeyViewModel(HtmlContent(Messages("messages__cya__country", schemeName))).withCssClass("govuk-!-width-one-half"),
-          value = ValueViewModel(HtmlContent(Messages(s"country.$details"))).withCssClass("govuk-!-width-one-third"),
-          actions = actionChange(Some(url), Some(visuallyHiddenText))
+          key = Key(content = Text(Messages("messages__cya__country", schemeName)), classes = "govuk-!-width-one-half"),
+          value = Value(content = Text(Messages(s"country.$details")), classes = "govuk-!-width-one-third"),
+          actions = actionChange(Some(url), Some(Text(visuallyHiddenText)))
         )
       }
     }
@@ -99,9 +99,9 @@ class BeforeYouStartCYAHelper extends CYAHelperForTwirl with CountriesHelper {
       countryRow,
       answerOrAddRow(
         id = WorkingKnowledgeId,
-        message = Message("messages__cya__working_knowledge").resolve,
+        message = Messages("messages__cya__working_knowledge"),
         url = Some(controllers.beforeYouStartSpoke.routes.WorkingKnowledgeController.onPageLoad.url),
-        visuallyHiddenText = Some(Message("messages__visuallyhidden__working_knowledge")),
+        visuallyHiddenText = Some(Text(Messages("messages__visuallyhidden__working_knowledge"))),
         answerTransform = Some(booleanToContent)
       )
     )

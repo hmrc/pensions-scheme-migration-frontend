@@ -26,21 +26,21 @@ import models.{Index, entities}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.RecoverMethods.recoverToSucceededIf
 import org.scalatest.{BeforeAndAfterEach, TryValues}
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{MessagesControllerComponents, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, SummaryListRow, Value}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.Key
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
-import uk.gov.hmrc.viewmodels.NunjucksSupport
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
-import uk.gov.hmrc.viewmodels.Text.Literal
 import utils.Data.{companyDetails, ua}
-import utils.{TwirlMigration, UserAnswers}
+import utils.UserAnswers
 import views.html.CheckYourAnswersView
 
 import scala.concurrent.Future
 
-class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSupport
+class CheckYourAnswersControllerSpec extends ControllerSpecBase
   with JsonMatchers with TryValues with BeforeAndAfterEach {
 
   val mockCYAHelper: CommonCYAHelper = mock[CommonCYAHelper]
@@ -64,16 +64,16 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
   private val index: Index = Index(0)
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(index), companyDetails).success.value
   private val rows = Seq(
-    Row(
-      key = Key(Literal("test-key"), classes = Seq("govuk-!-width-one-half")),
-      value = Value(msg"site.incomplete", classes = Seq("govuk-!-width-one-third")),
-      actions = List(
-        Action(
-          content = uk.gov.hmrc.viewmodels.Html(s"<span aria-hidden=true >${messages("site.add")}</span>"),
+    SummaryListRow(
+      key = Key(Text("test-key"), classes = "govuk-!-width-one-half"),
+      value = Value(Text(Messages("site.incomplete")), classes = "govuk-!-width-one-third"),
+      actions = Some(Actions( items = List(
+        ActionItem(
+          content = HtmlContent(s"<span aria-hidden=true >${messages("site.add")}</span>"),
           href = "/test-url",
-          visuallyHiddenText = Some(Literal("hidden-text"))
+          visuallyHiddenText = Some("hidden-text")
         )
-      )
+      )))
     )
   )
   private val getData = new FakeDataRetrievalAction(Some(userAnswers))
@@ -88,7 +88,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
       val view = app.injector.instanceOf[CheckYourAnswersView].apply(
         controllers.common.routes.SpokeTaskListController.onPageLoad(index, Establisher, entities.Company).url,
         "Test scheme name",
-        TwirlMigration.summaryListRow(rows)
+        rows
       )(req, implicitly)
 
 

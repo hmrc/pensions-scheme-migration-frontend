@@ -29,9 +29,8 @@ import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.test.Helpers._
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{companyDetails, schemeName, ua}
-import utils.{Enumerable, TwirlMigration, UserAnswers}
+import utils.{Enumerable, UserAnswers}
 import views.html.establishers.company.AddDirectorView
 
 class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
@@ -101,7 +100,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with JsonMatc
         1,
         mockAppConfig.maxDirectors,
         Seq(DirectorEntity(DirectorNameId(0,0), directorName.fullName, false, false, true, 1)),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         controllers.establishers.company.routes.AddCompanyDirectorsController.onSubmit(0,NormalMode)
       )(request, messages)
 

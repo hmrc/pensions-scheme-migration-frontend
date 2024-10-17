@@ -32,7 +32,6 @@ import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.common.contact.CommonPhoneService
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{Data, FakeNavigator, UserAnswers}
 import views.html.PhoneView
@@ -40,7 +39,7 @@ import views.html.PhoneView
 import scala.concurrent.Future
 
 class EnterPhoneNumberControllerSpec extends ControllerSpecBase
-  with NunjucksSupport
+
   with JsonMatchers
   with TryValues
   with BeforeAndAfterEach {

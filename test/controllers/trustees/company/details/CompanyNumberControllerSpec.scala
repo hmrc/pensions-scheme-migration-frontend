@@ -23,24 +23,20 @@ import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.details.CompanyNumberId
 import matchers.JsonMatchers
 import models.{Index, NormalMode, ReferenceValue}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.{Form, FormBinding}
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
-import play.twirl.api.Html
-import renderer.Renderer
 import services.common.details.CommonEnterReferenceValueService
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.{companyDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
 import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
 
 import scala.concurrent.Future
-class CompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with BeforeAndAfterEach {
+class CompanyNumberControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues with BeforeAndAfterEach {
 
   private val index: Index = Index(0)
   private val referenceValue: ReferenceValue = ReferenceValue("12345678")
@@ -73,7 +69,7 @@ class CompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSuppor
         messagesApi = messagesApi
       ))
 
-  override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
+  override def beforeEach(): Unit = reset(mockUserAnswersCacheConnector)
 
   "CompanyNumberController" must {
     "return OK and the correct view for a GET" in {

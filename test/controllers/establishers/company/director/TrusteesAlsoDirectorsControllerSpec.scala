@@ -16,40 +16,30 @@
 
 package controllers.establishers.company.director
 
-import connectors.LegacySchemeDetailsConnector
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction, MutableFakeDataRetrievalAction}
-import controllers.trustees.individual.routes
+import controllers.actions._
 import forms.dataPrefill.DataPrefillCheckboxFormProvider
 import identifiers.establishers.company.CompanyDetailsId
 import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
+import models._
 import models.prefill.IndividualDetails
-import models.{CompanyDetails, DataPrefillCheckbox, Index, PersonName, entities}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.Application
 import play.api.i18n.Messages
-import play.api.inject.bind
-import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsJson, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import renderer.Renderer
-import services.{DataPrefillService, TaskListService}
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
-import utils.{Data, FakeNavigator, TwirlMigration, UserAnswers}
+import utils.{Data, FakeNavigator, UserAnswers}
 import views.html.DataPrefillCheckboxView
 
 import scala.concurrent.Future
-import scala.concurrent.duration.DurationInt
 
 class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
-  with NunjucksSupport
+
   with JsonMatchers
   with TryValues
   with BeforeAndAfterEach {
@@ -67,11 +57,10 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
 
   override def beforeEach(): Unit = {
     reset(
-      mockRenderer,
       mockUserAnswersCacheConnector,
       mockDataPrefillService
     )
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
     when(mockDataPrefillService.getListOfTrusteesToBeCopied(any)(any)).thenReturn(Nil)
 
   }

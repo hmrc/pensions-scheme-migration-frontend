@@ -26,15 +26,14 @@ import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 import services.common.details.CommonHasReferenceValueService
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{companyDetails, schemeName, ua}
-import utils.{FakeNavigator, TwirlMigration, UserAnswers}
-import viewmodels.Message
+import utils.{FakeNavigator, UserAnswers}
 import views.html.{HasReferenceValueView, HasReferenceValueWithHintView}
 
 import scala.concurrent.Future
@@ -44,7 +43,7 @@ class HavePAYEControllerSpec extends ControllerSpecBase with JsonMatchers with T
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(index), companyDetails).success.value
 
   private val formProvider: HasReferenceNumberFormProvider = new HasReferenceNumberFormProvider()
-  private val form: Form[Boolean] = formProvider(Message("messages__genericHavePaye__error__required", companyDetails.companyName))
+  private val form: Form[Boolean] = formProvider(Messages("messages__genericHavePaye__error__required", companyDetails.companyName))
 
   private def controller(dataRetrievalAction: DataRetrievalAction): HavePAYEController =
     new HavePAYEController(messagesApi, new FakeAuthAction(), dataRetrievalAction,
@@ -72,7 +71,7 @@ class HavePAYEControllerSpec extends ControllerSpecBase with JsonMatchers with T
         schemeName,
         messages("messages__havePAYE", messages("messages__company")),
         messages("messages__havePAYE", companyDetails.companyName),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         "govuk-visually-hidden",
         Seq(messages("messages__havePAYE__hint")),
         routes.HavePAYEController.onSubmit(0, NormalMode)
@@ -93,7 +92,7 @@ class HavePAYEControllerSpec extends ControllerSpecBase with JsonMatchers with T
         schemeName,
         messages("messages__havePAYE", messages("messages__company")),
         messages("messages__havePAYE", companyDetails.companyName),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(filledFrom("value"))),
+        utils.Radios.yesNo(filledFrom("value")),
         "govuk-visually-hidden",
         Seq(messages("messages__havePAYE__hint")),
         routes.HavePAYEController.onSubmit(0, NormalMode)

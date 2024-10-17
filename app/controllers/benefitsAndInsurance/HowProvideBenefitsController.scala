@@ -28,9 +28,8 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.{Enumerable, TwirlMigration}
+import utils.Enumerable
 import views.html.benefitsAndInsurance.HowProvideBenefitsView
 
 import javax.inject.Inject
@@ -46,7 +45,7 @@ class HowProvideBenefitsController @Inject()(override val messagesApi: MessagesA
                                        val controllerComponents: MessagesControllerComponents,
                                        config: AppConfig,
                                        view:HowProvideBenefitsView)(implicit ec: ExecutionContext)
-  extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
+  extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits {
 
   private def form: Form[BenefitsProvisionType] =
     formProvider()
@@ -62,7 +61,7 @@ class HowProvideBenefitsController @Inject()(override val messagesApi: MessagesA
         Future.successful(Ok(view(
           preparedForm,
           schemeName,
-          TwirlMigration.toTwirlRadios(BenefitsProvisionType.radios(preparedForm)),
+          BenefitsProvisionType.radios(preparedForm),
           controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onSubmit
         )))
     }
@@ -78,7 +77,7 @@ class HowProvideBenefitsController @Inject()(override val messagesApi: MessagesA
               Future.successful(BadRequest(view(
                 formWithErrors,
                 schemeName,
-                TwirlMigration.toTwirlRadios(BenefitsProvisionType.radios(formWithErrors)),
+                BenefitsProvisionType.radios(formWithErrors),
                 controllers.benefitsAndInsurance.routes.BenefitsTypeController.onSubmit
               )))
             },

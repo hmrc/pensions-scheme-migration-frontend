@@ -24,10 +24,9 @@ import models.requests.DataRequest
 import models.{CheckMode, Index}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
-import uk.gov.hmrc.viewmodels.MessageInterpolators
-import uk.gov.hmrc.viewmodels.SummaryList.Row
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.{Enumerable, UserAnswers}
-import viewmodels.Message
 
 class EstablisherContactDetailsCYAHelper
   extends CYAHelper
@@ -38,7 +37,7 @@ class EstablisherContactDetailsCYAHelper
                         )(
                           implicit request: DataRequest[AnyContent],
                           messages: Messages
-                        ): Seq[Row] = {
+                        ): Seq[SummaryListRow] = {
     implicit val ua: UserAnswers =
       request.userAnswers
     val establisherName: String =
@@ -47,15 +46,15 @@ class EstablisherContactDetailsCYAHelper
     val rowsWithoutDynamicIndices = Seq(
       Some(answerOrAddRow(
         id = EnterEmailId(index),
-        message = Message("messages__enterEmail_cya_label", establisherName).resolve,
+        message = Messages("messages__enterEmail_cya_label", establisherName),
         url = Some(controllers.establishers.individual.contact.routes.EnterEmailController.onPageLoad(index, CheckMode).url),
-        visuallyHiddenText = Some(msg"messages__enterEmail__cya__visuallyHidden".withArgs(establisherName))
+        visuallyHiddenText = Some(Text(Messages("messages__enterEmail__cya__visuallyHidden", establisherName)))
       )),
       Some(answerOrAddRow(
         id = EnterPhoneId(index),
-        message = Message("messages__enterPhone_cya_label", establisherName).resolve,
+        message = Messages("messages__enterPhone_cya_label", establisherName),
         url = Some(controllers.establishers.individual.contact.routes.EnterPhoneController.onPageLoad(index, CheckMode).url),
-        visuallyHiddenText = Some(msg"messages__enterPhone__cya__visuallyHidden".withArgs(establisherName))
+        visuallyHiddenText = Some(Text(Messages("messages__enterPhone__cya__visuallyHidden", establisherName)))
       ))).flatten
 
     rowsWithDynamicIndices(rowsWithoutDynamicIndices)

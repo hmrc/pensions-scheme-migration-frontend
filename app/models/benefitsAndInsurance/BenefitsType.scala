@@ -17,7 +17,8 @@
 package models.benefitsAndInsurance
 
 import play.api.data.Form
-import uk.gov.hmrc.viewmodels.{Radios, _}
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Label, RadioItem}
 import utils.{Enumerable, WithName}
 
 sealed trait BenefitsType
@@ -35,9 +36,16 @@ object BenefitsType extends Enumerable.Implicits {
     CashBalanceAndOtherMoneyPurchaseBenefits
   )
 
-  def radios(form: Form[_]): Seq[Radios.Item] = {
-    val items = values.map(value => Radios.Radio(msg"benefitsType.${value.toString}", value.toString))
-    Radios(form("value"), items)
+  def radios(form: Form[_])(implicit messages: Messages): Seq[RadioItem] = {
+    values.map(value =>
+      RadioItem(
+        label = Some(Label(
+          Some(Messages(s"benefitsType.${value.toString}"))
+        )),
+        value = Some(value.toString),
+        checked = form("value").value.contains(value.toString)
+      )
+    )
   }
 
   implicit val enumerable: Enumerable[BenefitsType] =

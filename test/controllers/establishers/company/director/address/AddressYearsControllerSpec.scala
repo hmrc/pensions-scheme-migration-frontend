@@ -31,14 +31,12 @@ import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.Json
-import play.api.mvc.{Result, Results}
 import play.api.mvc.Results.{BadRequest, Ok}
+import play.api.mvc.{Result, Results}
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.common.address.CommonAddressYearsService
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{Data, Enumerable, TwirlMigration, UserAnswers}
+import utils.{Data, Enumerable, UserAnswers}
 import views.html.address.AddressYearsView
 
 import scala.concurrent.Future
@@ -77,7 +75,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with JsonMatchers wi
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
   }
 
   "AddressYears Controller" must {
@@ -91,7 +89,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with JsonMatchers wi
       val view = app.injector.instanceOf[AddressYearsView]
       val expectedView = view(
         form, "eventType", "eventName",
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         Some(schemeName),
         controllers.establishers.partnership.address.routes.AddressYearsController.onSubmit(index, mode)
       )(fakeRequest, messages)

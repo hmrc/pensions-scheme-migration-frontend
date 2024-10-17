@@ -31,9 +31,8 @@ import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 import services.common.details.CommonHasReferenceValueService
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.ua
-import utils.{FakeNavigator, TwirlMigration, UserAnswers}
+import utils.{FakeNavigator, UserAnswers}
 import views.html.{HasReferenceValueView, HasReferenceValueWithHintView}
 
 import scala.concurrent.Future
@@ -92,7 +91,7 @@ class TrusteeHasUTRControllerSpec
         "Test scheme name",
         "Does the individual have a Unique Taxpayer Reference (UTR)?",
         "Does Jane Doe have a Unique Taxpayer Reference (UTR)?",
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         "govuk-visually-hidden",
         Seq("This is a 10-digit or 13-digit number. " +
           "You can find it on tax returns and other documents from HMRC. " +
@@ -119,7 +118,7 @@ class TrusteeHasUTRControllerSpec
         "Test scheme name",
         "Does the individual have a Unique Taxpayer Reference (UTR)?",
         "Does Jane Doe have a Unique Taxpayer Reference (UTR)?",
-        TwirlMigration.toTwirlRadios(Radios.yesNo(filledFrom("value"))),
+        utils.Radios.yesNo(filledFrom("value")),
         "govuk-visually-hidden",
         Seq("This is a 10-digit or 13-digit number. " +
           "You can find it on tax returns and other documents from HMRC. " +

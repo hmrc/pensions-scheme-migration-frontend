@@ -28,7 +28,6 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import utils.Data.ua
 import utils.UserAnswers
 import views.html.ReasonView
@@ -52,7 +51,7 @@ class TrusteeNoNINOReasonControllerSpec
     super.beforeEach()
     mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
     when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
   }
 
   private val httpPathGET = controllers.trustees.individual.details.routes.TrusteeNoNINOReasonController.onPageLoad(index, mode).url

@@ -22,11 +22,11 @@ import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
 import models.{NormalMode, PersonName}
 import org.scalatest.TryValues
+import play.api.i18n.Messages
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
 import utils.Data.{schemeName, ua}
 import utils.UserAnswers
-import viewmodels.Message
 import views.html.WhatYouWillNeedContactView
 
 import scala.concurrent.Future
@@ -41,7 +41,7 @@ class WhatYouWillNeedControllerSpec
 
   private def getView(req: Request[_]) = {
     app.injector.instanceOf[WhatYouWillNeedContactView].apply(
-      Message("messages__title_individual"),
+      Messages("messages__title_individual"),
       controllers.establishers.individual.contact.routes.EnterEmailController.onPageLoad(0, NormalMode).url,
       personName.fullName,
       schemeName

@@ -22,20 +22,19 @@ import helpers.cya.BenefitsAndInsuranceCYAHelper
 import matchers.JsonMatchers
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
+import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
-import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{Html, NunjucksSupport}
+import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import utils.Data.{schemeName, ua}
-import utils.{TwirlMigration, UserAnswers}
+import utils.UserAnswers
 import views.html.CheckYourAnswersView
 
-import scala.concurrent.Future
-
-class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers {
+class CheckYourAnswersControllerSpec extends ControllerSpecBase with JsonMatchers {
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 
@@ -46,22 +45,21 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
   )
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
   private val rows = Seq(
-    Row(
-      key = Key(Literal("test-key"), classes = Seq("govuk-!-width-one-half")),
-      value = Value(msg"site.incomplete", classes = Seq("govuk-!-width-one-third")),
-      actions = List(
-        Action(
-          content = Html(s"<span aria-hidden=true >${messages("site.add")}</span>"),
+    SummaryListRow(
+      key = Key(Text("test-key"), classes = "govuk-!-width-one-half"),
+      value = Value(Text(Messages("site.incomplete")), classes = "govuk-!-width-one-third"),
+      actions = Some(Actions( items = List(
+        ActionItem(
+          content = HtmlContent(s"<span aria-hidden=true >${messages("site.add")}</span>"),
           href = "/test-url",
-          visuallyHiddenText = Some(Literal("hidden-text"))
+          visuallyHiddenText = Some("hidden-text")
         )
-      )
+      )))
     )
   )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(play.twirl.api.Html("")))
     when(mockCyaHelper.rows(any(), any())).thenReturn(rows)
   }
 
@@ -80,7 +78,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
       val view = application.injector.instanceOf[CheckYourAnswersView].apply(
         controllers.routes.TaskListController.onPageLoad.url,
         schemeName,
-        TwirlMigration.summaryListRow(rows)
+        rows
       )(request, messages)
 
       compareResultAndView(result, view)

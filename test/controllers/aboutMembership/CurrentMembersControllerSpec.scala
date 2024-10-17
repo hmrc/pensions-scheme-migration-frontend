@@ -31,15 +31,13 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
-import utils.{Enumerable, TwirlMigration, UserAnswers}
+import utils.{Enumerable, UserAnswers}
 import views.html.aboutMembership.MembersView
 
 import scala.concurrent.Future
 
-class CurrentMembersControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class CurrentMembersControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val form: Form[Members] = new MembersFormProvider()(messages("currentMembers.error.required", schemeName))
 
@@ -62,7 +60,6 @@ class CurrentMembersControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
 
@@ -82,7 +79,7 @@ class CurrentMembersControllerSpec extends ControllerSpecBase with NunjucksSuppo
         schemeName,
         messages("currentMembers.title", Messages("messages__the_scheme")),
         messages("currentMembers.title", schemeName),
-        TwirlMigration.toTwirlRadios(Members.radios(form)),
+        Members.radios(form),
         onwardCall
       )(request, messages)
 
@@ -104,7 +101,7 @@ class CurrentMembersControllerSpec extends ControllerSpecBase with NunjucksSuppo
         schemeName,
         messages("currentMembers.title", Messages("messages__the_scheme")),
         messages("currentMembers.title", schemeName),
-        TwirlMigration.toTwirlRadios(Members.radios(form)),
+        Members.radios(form),
         onwardCall
       )(request, messages)
 

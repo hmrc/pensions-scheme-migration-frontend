@@ -24,8 +24,8 @@ import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.address._
 import identifiers.establishers.partnership.contact._
 import identifiers.establishers.partnership.details._
-import models.requests.DataRequest
 import models._
+import models.requests.DataRequest
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
 

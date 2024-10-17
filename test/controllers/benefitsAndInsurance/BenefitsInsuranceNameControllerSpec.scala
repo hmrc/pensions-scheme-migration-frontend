@@ -31,15 +31,13 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Call, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{insurerName, schemeName, ua}
 import utils.{Data, Enumerable, UserAnswers}
 import views.html.benefitsAndInsurance.BenefitsInsuranceNameView
 
 import scala.concurrent.Future
 
-class BenefitsInsuranceNameControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class BenefitsInsuranceNameControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -61,7 +59,7 @@ class BenefitsInsuranceNameControllerSpec extends ControllerSpecBase with Nunjuc
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
   }
 
   "BenefitsInsuranceName Controller" must {

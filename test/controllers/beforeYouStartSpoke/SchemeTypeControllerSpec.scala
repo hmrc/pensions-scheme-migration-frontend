@@ -17,12 +17,11 @@
 package controllers.beforeYouStartSpoke
 
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction, MutableFakeDataRetrievalAction}
+import controllers.actions._
 import forms.beforeYouStart.SchemeTypeFormProvider
 import identifiers.beforeYouStart.SchemeTypeId
 import matchers.JsonMatchers
-import models.Scheme
-import models.SchemeType
+import models.{Scheme, SchemeType}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.Application
@@ -31,7 +30,7 @@ import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.Data.ua
-import utils.{Data, FakeNavigator, TwirlMigration}
+import utils.{Data, FakeNavigator}
 import views.html.beforeYouStart.SchemeTypeView
 
 import scala.concurrent.Future
@@ -86,7 +85,7 @@ class SchemeTypeControllerSpec extends ControllerSpecBase
         form,
         Data.schemeName,
         routes.SchemeTypeController.onSubmit,
-        TwirlMigration.toTwirlRadiosWithHintText(SchemeType.radios(form))
+        SchemeType.radios(form)
       )(fakeRequest, messages)
 
       status(result) mustBe OK

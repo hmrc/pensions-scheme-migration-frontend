@@ -20,16 +20,16 @@ import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import helpers.cya.{CYAHelper, CommonCYAHelper}
 import identifiers.beforeYouStart.SchemeNameId
-import models.{CheckMode, Index, entities}
 import models.entities.{EntityType, JourneyType, PensionManagementType}
+import models.{CheckMode, Index, entities}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.{Enumerable, TwirlMigration}
+import utils.Enumerable
+import views.html.CheckYourAnswersView
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
-import views.html.CheckYourAnswersView
 
 class CheckYourAnswersController @Inject()(
                                             override val messagesApi: MessagesApi,
@@ -76,7 +76,7 @@ class CheckYourAnswersController @Inject()(
       }
         Ok(view(continueUrl,
           CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
-          TwirlMigration.summaryListRow(cyaHelper.rows(index, pensionManagementType, entityType, entityRepresentativeIndex, journeyType))
+          cyaHelper.rows(index, pensionManagementType, entityType, entityRepresentativeIndex, journeyType)
         ))
     }
 }

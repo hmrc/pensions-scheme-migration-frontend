@@ -30,9 +30,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.common.details.CommonDateOfBirthService
-import uk.gov.hmrc.viewmodels.DateInput
 import utils.Data.ua
 import utils.{FakeNavigator, UserAnswers}
 
@@ -86,7 +84,6 @@ class DirectorDOBControllerSpec
 
   override def beforeEach(): Unit = {
     reset(
-      mockRenderer,
       mockUserAnswersCacheConnector
     )
   }
@@ -104,7 +101,6 @@ class DirectorDOBControllerSpec
 
       val expectedView = view(
         form,
-        DateInput.localDate(form("date")),
         "John Doe",
         "Test scheme name",
         "the partner",
@@ -117,8 +113,6 @@ class DirectorDOBControllerSpec
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
       val request = FakeRequest(GET, onPageLoadUrl)
 
       val ua =
@@ -135,7 +129,6 @@ class DirectorDOBControllerSpec
 
       val expectedView = view(
         form,
-        DateInput.localDate(form("date")),
         "John Doe",
         "Test scheme name",
         "the partner",
@@ -174,8 +167,6 @@ class DirectorDOBControllerSpec
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
         fakeRequest

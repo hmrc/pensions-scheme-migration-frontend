@@ -38,13 +38,12 @@ import models.benefitsAndInsurance.{BenefitsProvisionType, BenefitsType}
 import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind
 import org.scalatest.BeforeAndAfterEach
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.schemeName
 import utils.{Data, Enumerable, UserAnswers}
 
 import java.time.LocalDate
 
-class TaskListServiceSpec extends SpecBase with BeforeAndAfterEach  with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class TaskListServiceSpec extends SpecBase with BeforeAndAfterEach  with JsonMatchers with Enumerable.Implicits {
 
   private val taskListService = new TaskListService(appConfig)
 

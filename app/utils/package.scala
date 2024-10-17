@@ -26,9 +26,6 @@ package object utils {
   def managementTypeError(managementType: entities.PensionManagementType): Nothing =
     throw new RuntimeException(s"Unknown pension management type $managementType")
 
-  def journeyTypeError(journeyType: entities.JourneyType): Nothing =
-    throw new RuntimeException(s"Unknown journey type $journeyType")
-
   implicit class RichJsObject(jsObject: JsObject) {
 
     def setObject(path: JsPath, value: JsValue): JsResult[JsObject] =

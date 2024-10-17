@@ -30,7 +30,7 @@ import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.Data.ua
-import utils.{Data, FakeNavigator, TwirlMigration, UserAnswers}
+import utils.{Data, FakeNavigator, UserAnswers}
 import views.html.DataPrefillRadioView
 
 import scala.concurrent.Future
@@ -83,7 +83,7 @@ class TrusteeAlsoDirectorControllerSpec extends ControllerSpecBase
         form,
         messages("messages__directors__prefill__title"),
         messages("messages__directors__prefill__heading", companyDetails.companyName),
-        TwirlMigration.toTwirlRadios(DataPrefillRadio.radios(form, seqTrustee)),
+        DataPrefillRadio.radios(form, seqTrustee),
         Data.schemeName,
         routes.TrusteeAlsoDirectorController.onSubmit(0)
       )(fakeRequest, messages)

@@ -30,12 +30,11 @@ import models.requests.DataRequest
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Results.{BadRequest, Redirect}
 import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
 import services.common.address.{CommonPostcodeService, CommonPostcodeTemplateData}
-import viewmodels.Message
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.UserAnswers
@@ -135,14 +134,14 @@ class EnterPreviousPostcodeController @Inject()(
   def getFormToTemplate(schemeName: String, establisherIndex: Index, directorIndex: Index, mode: Mode
                        )(implicit request: DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
     val name: String = request.userAnswers.get(DirectorNameId(establisherIndex, directorIndex))
-      .map(_.fullName).getOrElse(Message("messages__director"))
+      .map(_.fullName).getOrElse(Messages("messages__director"))
     val submitUrl = routes.EnterPreviousPostcodeController.onSubmit(establisherIndex, directorIndex, mode)
     val enterManuallyUrl = routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, directorIndex, mode).url
 
     form => {
       CommonPostcodeTemplateData(
         form,
-        Message("messages__director"),
+        Messages("messages__director"),
         name,
         submitUrl,
         enterManuallyUrl,

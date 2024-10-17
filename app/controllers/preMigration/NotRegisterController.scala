@@ -19,10 +19,9 @@ package controllers.preMigration
 import config.AppConfig
 import connectors.MinimalDetailsConnector
 import controllers.actions.AuthAction
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.MessageInterpolators
 import views.html.preMigration.NotRegisterView
 
 import javax.inject.Inject
@@ -42,7 +41,7 @@ class NotRegisterController @Inject()(val appConfig: AppConfig,
       minimalDetailsConnector.getPSAName.flatMap { psaName =>
         Future.successful(Ok(
           notRegisterView(
-            msg"messages__pension_scheme".resolve,
+            Messages("messages__pension_scheme"),
             appConfig.contactHmrcUrl,
             appConfig.psaOverviewUrl,
             psaName
@@ -56,7 +55,7 @@ class NotRegisterController @Inject()(val appConfig: AppConfig,
       minimalDetailsConnector.getPSAName.flatMap { psaName =>
         Future.successful(Ok(
           notRegisterView(
-            msg"messages__racdac".resolve,
+            Messages("messages__racdac"),
             appConfig.contactHmrcUrl,
             appConfig.psaOverviewUrl,
             psaName

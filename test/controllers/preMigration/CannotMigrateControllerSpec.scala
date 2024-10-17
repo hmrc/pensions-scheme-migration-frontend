@@ -20,13 +20,13 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import matchers.JsonMatchers
 import org.scalatest.TryValues
+import play.api.i18n.Messages
 import play.api.mvc.{Call, Result}
 import play.api.test.Helpers.{status, _}
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import views.html.preMigration.CannotMigrateView
 
 import scala.concurrent.Future
-class CannotMigrateControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues{
+class CannotMigrateControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues{
 
   private def controller(): CannotMigrateController =
     new CannotMigrateController(appConfig, messagesApi, new FakeAuthAction(), controllerComponents,
@@ -38,7 +38,7 @@ class CannotMigrateControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
       status(result) mustBe OK
       val view = app.injector.instanceOf[CannotMigrateView].apply(
-        msg"messages__administrator__overview".resolve,
+        Messages("messages__administrator__overview"),
         Call("GET", appConfig.psaOverviewUrl)
       )(fakeRequest, messages)
       compareResultAndView(result, view)

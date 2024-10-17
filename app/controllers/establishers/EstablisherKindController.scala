@@ -28,7 +28,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.{Enumerable, TwirlMigration, UserAnswers}
+import utils.{Enumerable, UserAnswers}
 import views.html.establishers.EstablisherKindView
 
 import javax.inject.Inject
@@ -57,7 +57,7 @@ class EstablisherKindController @Inject()(
         Ok(view(
           formWithData,
           existingSchemeName.getOrElse("Scheme"),
-          TwirlMigration.toTwirlRadios(EstablisherKind.radios(formWithData)),
+          EstablisherKind.radios(formWithData),
           routes.EstablisherKindController.onSubmit(index)
         ))
     }
@@ -69,7 +69,7 @@ class EstablisherKindController @Inject()(
           Future.successful(BadRequest(view(
             formWithErrors,
             existingSchemeName.getOrElse("Scheme"),
-            TwirlMigration.toTwirlRadios(EstablisherKind.radios(formWithErrors)),
+            EstablisherKind.radios(formWithErrors),
             routes.EstablisherKindController.onSubmit(index)
           )))
         },
