@@ -19,7 +19,7 @@ package handlers
 import config.AppConfig
 import play.api.http.HeaderNames.CACHE_CONTROL
 import play.api.http.Status._
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Results._
 import play.api.mvc.{Request, RequestHeader, Result}
 import play.api.{Logger, PlayException}
@@ -46,6 +46,15 @@ class ErrorHandler @Inject()(
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html = {
     errorTemplate(pageTitle, heading, Some(message))
   }
+
+//  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: RequestHeader): Future[Html] = {
+//    implicit def requestImplicit: Request[_] = Request(request, "")
+//    implicit def messages: Messages = messagesApi.preferred(requestImplicit)
+//    Future.successful(errorTemplate(pageTitle, heading, Some(message)))
+//  }
+//
+//  override protected implicit val ec: ExecutionContext = ???
+
   private val logger = Logger(classOf[ErrorHandler])
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String = ""): Future[Result] = {
