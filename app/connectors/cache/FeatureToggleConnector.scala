@@ -21,13 +21,14 @@ import config.AppConfig
 import models.FeatureToggle
 import play.api.Logger
 import play.api.http.Status._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import utils.HttpResponseHelper
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
 
-class FeatureToggleConnector @Inject()(http: HttpClient, config: AppConfig)
+class FeatureToggleConnector @Inject()(http: HttpClientV2, config: AppConfig)
   extends HttpResponseHelper {
 
   private val logger = Logger(classOf[FeatureToggleConnector])
@@ -35,7 +36,7 @@ class FeatureToggleConnector @Inject()(http: HttpClient, config: AppConfig)
   def get(name: String)
          (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[FeatureToggle] = {
     val endPoint = config.featureToggleUrl(name)
-    http.GET[HttpResponse](endPoint) map {
+    http.get(url"$endPoint").execute[HttpResponse] map {
       response =>
         response.status match {
           case OK => response.json.as[FeatureToggle]

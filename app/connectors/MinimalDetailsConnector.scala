@@ -22,7 +22,8 @@ import models.MinPSA
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsResultException, JsSuccess, Json}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import utils.HttpResponseHelper
 
 import javax.inject.{Inject, Singleton}
@@ -41,7 +42,7 @@ trait MinimalDetailsConnector {
 }
 
 @Singleton
-class MinimalDetailsConnectorImpl @Inject()(http: HttpClient, config: AppConfig)
+class MinimalDetailsConnectorImpl @Inject()(http: HttpClientV2, config: AppConfig)
   extends MinimalDetailsConnector with HttpResponseHelper {
 
   private val logger  = Logger(classOf[MinimalDetailsConnectorImpl])
@@ -50,7 +51,7 @@ class MinimalDetailsConnectorImpl @Inject()(http: HttpClient, config: AppConfig)
 
     val url = config.getPSAEmail
 
-    http.GET[HttpResponse](url) map { response =>
+    http.get(url"$url").execute[HttpResponse] map { response =>
       require(response.status == OK)
 
       response.body
@@ -71,7 +72,7 @@ class MinimalDetailsConnectorImpl @Inject()(http: HttpClient, config: AppConfig)
 
     val url = config.getPSAName
 
-    http.GET[HttpResponse](url) map { response =>
+    http.get(url"$url").execute[HttpResponse] map { response =>
       require(response.status == OK)
 
       response.body
@@ -81,8 +82,8 @@ class MinimalDetailsConnectorImpl @Inject()(http: HttpClient, config: AppConfig)
 
   private val delimitedErrorMsg: String = "DELIMITED_PSAID"
 
-  def getPSADetails(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinPSA] =
-    http.GET[HttpResponse](config.getPSAMinDetails)(implicitly, hc.withExtraHeaders("psaId" -> psaId), implicitly) map { response =>
+  def getPSADetails(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinPSA] = {
+    http.get(url"${config.getPSAMinDetails}")(hc.withExtraHeaders("psaId" -> psaId)).execute[HttpResponse] map { response =>
       response.status match {
         case OK =>
           Json.parse(response.body).validate[MinPSA] match {
@@ -94,6 +95,7 @@ class MinimalDetailsConnectorImpl @Inject()(http: HttpClient, config: AppConfig)
       }
 
     } andThen logExceptions
+  }
 }
 
 class DelimitedAdminException extends

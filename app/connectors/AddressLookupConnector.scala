@@ -21,13 +21,14 @@ import config.AppConfig
 import models.TolerantAddress
 import play.api.Logger
 import play.api.http.Status._
-import play.api.libs.json.{JsObject, Json, Reads}
+import play.api.libs.json.{Json, Reads}
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpException, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse, StringContextOps}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddressLookupConnector @Inject()(http: HttpClient, config: AppConfig) {
+class AddressLookupConnector @Inject()(http: HttpClientV2, config: AppConfig) {
   def addressLookupByPostCode(postCode: String)
                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[TolerantAddress]] = {
 
@@ -38,7 +39,7 @@ class AddressLookupConnector @Inject()(http: HttpClient, config: AppConfig) {
     implicit val reads: Reads[Seq[TolerantAddress]] = TolerantAddress.postCodeLookupReads
 
     val lookupAddressByPostcode =Json.obj("postcode"->postCode)
-    http.POST[JsObject , HttpResponse](addressLookupUrl , lookupAddressByPostcode)(implicitly , implicitly, schemeHc, implicitly) flatMap {
+    http.post(url"$addressLookupUrl")(schemeHc).withBody(lookupAddressByPostcode).execute[HttpResponse].flatMap {
       case response if response.status equals OK => Future.successful {
         response.json.as[Seq[TolerantAddress]]
           .filterNot(a => a.addressLine1.isEmpty && a.addressLine2.isEmpty && a.addressLine3.isEmpty && a.addressLine4.isEmpty)

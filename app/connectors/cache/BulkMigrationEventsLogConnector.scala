@@ -20,7 +20,8 @@ import com.google.inject.{ImplementedBy, Inject}
 import config.AppConfig
 import play.api.http.Status._
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, NotFoundException}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, NotFoundException, StringContextOps}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -29,7 +30,7 @@ trait BulkMigrationEventsLogConnector {
   def getStatus(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Int]
 }
 
-class BulkMigrationEventsLogConnectorImpl @Inject()(config: AppConfig, http: HttpClient) extends BulkMigrationEventsLogConnector {
+class BulkMigrationEventsLogConnectorImpl @Inject()(config: AppConfig, http: HttpClientV2) extends BulkMigrationEventsLogConnector {
 
   private def url = s"${config.bulkMigrationEventsLogStatusUrl}"
 
@@ -38,7 +39,7 @@ class BulkMigrationEventsLogConnectorImpl @Inject()(config: AppConfig, http: Htt
     val headers: Seq[(String, String)] = Seq(("Content-Type", "application/json"))
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    http.GET[HttpResponse](url)(implicitly, hc, implicitly)
+    http.get(url"$url")(hc).execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
         response.status
