@@ -43,17 +43,17 @@ class ErrorHandler @Inject()(
   extends uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
     with I18nSupport {
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html = {
-    errorTemplate(pageTitle, heading, Some(message))
+//  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html = {
+//    errorTemplate(pageTitle, heading, Some(message))
+//  }
+
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: RequestHeader): Future[Html] = {
+    implicit def requestImplicit: Request[_] = Request(request, "")
+    implicit def messages: Messages = messagesApi.preferred(requestImplicit)
+    Future.successful(errorTemplate(pageTitle, heading, Some(message)))
   }
 
-//  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: RequestHeader): Future[Html] = {
-//    implicit def requestImplicit: Request[_] = Request(request, "")
-//    implicit def messages: Messages = messagesApi.preferred(requestImplicit)
-//    Future.successful(errorTemplate(pageTitle, heading, Some(message)))
-//  }
-//
-//  override protected implicit val ec: ExecutionContext = ???
+  override protected implicit val ec: ExecutionContext = ???
 
   private val logger = Logger(classOf[ErrorHandler])
 
