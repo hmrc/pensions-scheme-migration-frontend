@@ -18,7 +18,7 @@ package models.benefitsAndInsurance
 
 import play.api.data.Form
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Label, RadioItem}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{RadioItem, Text}
 import utils.{Enumerable, WithName}
 
 sealed trait BenefitsType
@@ -39,9 +39,7 @@ object BenefitsType extends Enumerable.Implicits {
   def radios(form: Form[_])(implicit messages: Messages): Seq[RadioItem] = {
     values.map(value =>
       RadioItem(
-        label = Some(Label(
-          Some(Messages(s"benefitsType.${value.toString}"))
-        )),
+        content = Text(Messages(s"benefitsType.${value.toString}")),
         value = Some(value.toString),
         checked = form("value").value.contains(value.toString)
       )

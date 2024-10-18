@@ -127,7 +127,7 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with JsonMatchers 
 
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
-      when(mockCommonManualAddressService.post(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
+      when(mockCommonManualAddressService.post(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(Results.SeeOther(onwardCall.url)))
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
@@ -140,7 +140,7 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with JsonMatchers 
     "return a BAD REQUEST when invalid data is submitted" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
-      when(mockCommonManualAddressService.post(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
+      when(mockCommonManualAddressService.post(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(BadRequest))
 
       val result = route(app, httpPOSTRequest(httpPathPOST, valuesInvalid)).value

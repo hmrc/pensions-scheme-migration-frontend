@@ -19,7 +19,7 @@ package models
 import models.prefill.{IndividualDetails => DataPrefillIndividualDetails}
 import play.api.data.Form
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
 object DataPrefillRadio {
@@ -28,12 +28,12 @@ object DataPrefillRadio {
     val noneValue = "-1"
     values.map { indvDetails => {
       RadioItem(
-        label = Some(Label(Some(indvDetails.fullName))),
+        content = Text(indvDetails.fullName),
         value = Some(indvDetails.index.toString),
         checked = form("value").value.contains(indvDetails.index.toString)
       )
     }} :+ RadioItem(
-      label = Some(Label(Some(Messages("messages__prefill__label__none")))),
+      content = Text(Messages("messages__prefill__label__none")),
       value = Some(noneValue),
       checked = form("value").value.contains(noneValue)
     )

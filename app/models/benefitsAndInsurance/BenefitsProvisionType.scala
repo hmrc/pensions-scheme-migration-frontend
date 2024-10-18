@@ -18,7 +18,7 @@ package models.benefitsAndInsurance
 
 import play.api.data.Form
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import utils.{Enumerable, InputOption, WithName}
 
@@ -45,17 +45,17 @@ object BenefitsProvisionType extends Enumerable.Implicits {
     val field = form("value")
     Seq(
       RadioItem(
-        label = Some(Label(Some(Messages("howProvideBenefits.moneyPurchaseOnly")))),
+        content = Text(Messages("howProvideBenefits.moneyPurchaseOnly")),
         value = Some(MoneyPurchaseOnly.toString),
         checked = field.value.contains(MoneyPurchaseOnly.toString)
       ),
       RadioItem(
-        label = Some(Label(Some(Messages("howProvideBenefits.definedBenefitsOnly")))),
+        content = Text(Messages("howProvideBenefits.definedBenefitsOnly")),
         value = Some(DefinedBenefitsOnly.toString),
         checked = field.value.contains(DefinedBenefitsOnly.toString)
       ),
       RadioItem(
-        label = Some(Label(Some(Messages("howProvideBenefits.mixedBenefits")))),
+        content = Text(Messages("howProvideBenefits.mixedBenefits")),
         value = Some(MixedBenefits.toString),
         checked = field.value.contains(MixedBenefits.toString)
       )

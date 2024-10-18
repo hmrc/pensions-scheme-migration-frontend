@@ -19,6 +19,7 @@ package models
 import play.api.data.Form
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Label, RadioItem}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import utils.{Enumerable, WithName}
 
 sealed trait Members
@@ -31,9 +32,7 @@ object Members {
   def radios(form: Form[_])(implicit messages: Messages): Seq[RadioItem] = {
     values.map(value =>
       RadioItem(
-        label = Some(Label(
-          Some(Messages(s"members.${value.toString}"))
-        )),
+        content = Text(Messages(s"members.${value.toString}")),
         value = Some(value.toString),
         checked = form("value").value.contains(value.toString)
       )
