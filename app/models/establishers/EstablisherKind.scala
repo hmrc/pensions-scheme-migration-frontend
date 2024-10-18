@@ -19,7 +19,7 @@ package models.establishers
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.JavascriptLiteral
-import uk.gov.hmrc.govukfrontend.views.Aliases.Label
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import utils.{Enumerable, WithName}
 
@@ -33,9 +33,7 @@ object EstablisherKind {
   def radios(form: Form[_])(implicit messages:Messages): Seq[RadioItem] = {
     values.map(value =>
       RadioItem(
-        label = Some(Label(
-          Some(Messages(s"kind.${value.toString}"))
-        )),
+        content = Text(Messages(s"kind.${value.toString}")),
         value = Some(value.toString),
         checked = form("value").value.contains(value.toString)
       )
