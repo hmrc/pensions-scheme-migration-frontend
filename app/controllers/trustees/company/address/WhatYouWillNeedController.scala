@@ -25,8 +25,8 @@ import identifiers.trustees.company.CompanyDetailsId
 import models.{CompanyDetails, Index, NormalMode}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import views.html.address.WhatYouWillNeedView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.address.WhatYouWillNeedView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

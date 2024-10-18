@@ -43,7 +43,6 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.errormessage.ErrorMessage
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, TableRow}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.Data._
 import utils.SchemeFuzzyMatcher
 import views.html.preMigration.ListOfSchemesView
@@ -254,9 +253,9 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Scal
 
     "return correct table of scheme details" in {
       val head = Seq(
-        HeadCell(content = Text(msg"messages__listSchemes__column_schemeName".resolve)),
-        HeadCell(content = Text(msg"messages__listSchemes__column_pstr".resolve)),
-        HeadCell(content = Text(msg"messages__listSchemes__column_regDate".resolve))
+        HeadCell(content = Text(Messages("messages__listSchemes__column_schemeName"))),
+        HeadCell(content = Text(Messages("messages__listSchemes__column_pstr"))),
+        HeadCell(content = Text(Messages("messages__listSchemes__column_regDate")))
       )
 
       val rows = List(Seq(
@@ -272,9 +271,9 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Scal
 
     "return correct table of scheme details with rac dac" in {
       val head = Seq(
-        HeadCell(content = Text(msg"messages__listSchemes__column_racDacName".resolve)),
-        HeadCell(content = Text(msg"messages__listSchemes__column_pstr".resolve)),
-        HeadCell(content = Text(msg"messages__listSchemes__column_regDate".resolve))
+        HeadCell(content = Text(Messages("messages__listSchemes__column_racDacName"))),
+        HeadCell(content = Text(Messages("messages__listSchemes__column_pstr"))),
+        HeadCell(content = Text(Messages("messages__listSchemes__column_regDate")))
       )
 
       val rows = List(Seq(
@@ -490,15 +489,15 @@ object SchemeSearchServiceSpec extends SpecBase  with BeforeAndAfterEach {
     )
 
   private val head = Seq(
-    HeadCell(content = Text(msg"messages__listSchemes__column_racDacName".resolve)),
-    HeadCell(content = Text(msg"messages__listSchemes__column_pstr".resolve)),
-    HeadCell(content = Text(msg"messages__listSchemes__column_regDate".resolve))
+    HeadCell(content = Text(Messages("messages__listSchemes__column_racDacName"))),
+    HeadCell(content = Text(Messages("messages__listSchemes__column_pstr"))),
+    HeadCell(content = Text(Messages("messages__listSchemes__column_regDate")))
   )
 
   private val schemeHead = Seq(
-    HeadCell(content = Text(msg"messages__listSchemes__column_schemeName".resolve)),
-    HeadCell(content = Text(msg"messages__listSchemes__column_pstr".resolve)),
-    HeadCell(content = Text(msg"messages__listSchemes__column_regDate".resolve))
+    HeadCell(content = Text(Messages("messages__listSchemes__column_schemeName"))),
+    HeadCell(content = Text(Messages("messages__listSchemes__column_pstr"))),
+    HeadCell(content = Text(Messages("messages__listSchemes__column_regDate")))
   )
 
   private val tableForScheme = components.Table(

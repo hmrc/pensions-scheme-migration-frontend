@@ -25,19 +25,18 @@ import matchers.JsonMatchers
 import models.{Index, NormalMode, ReferenceValue}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 import services.common.details.CommonEnterReferenceValueService
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.{companyDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
 import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
 
 import scala.concurrent.Future
 
-class UTRControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with BeforeAndAfterEach {
+class UTRControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues with BeforeAndAfterEach {
 
   private val index: Index = Index(0)
   private val referenceValue: ReferenceValue = ReferenceValue("1234567890")

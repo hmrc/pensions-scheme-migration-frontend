@@ -18,15 +18,24 @@ package models
 
 import models.prefill.{IndividualDetails => DataPrefillIndividualDetails}
 import play.api.data.Form
-import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, Radios}
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
 object DataPrefillRadio {
 
-  def radios(form: Form[_], values: Seq[DataPrefillIndividualDetails]): Seq[Radios.Item] = {
+  def radios(form: Form[_], values: Seq[DataPrefillIndividualDetails])(implicit messages: Messages): Seq[RadioItem] = {
     val noneValue = "-1"
-    val items = values.map(indvDetails => Radios.Radio(Literal(indvDetails.fullName), indvDetails.index.toString)) :+
-      Radios.Radio(msg"messages__prefill__label__none", noneValue)
-    Radios(form("value"), items)
+    values.map { indvDetails => {
+      RadioItem(
+        label = Some(Label(Some(indvDetails.fullName))),
+        value = Some(indvDetails.index.toString),
+        checked = form("value").value.contains(indvDetails.index.toString)
+      )
+    }} :+ RadioItem(
+      label = Some(Label(Some(Messages("messages__prefill__label__none")))),
+      value = Some(noneValue),
+      checked = form("value").value.contains(noneValue)
+    )
   }
 }

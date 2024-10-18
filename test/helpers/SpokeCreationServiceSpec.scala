@@ -46,10 +46,10 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
+import play.api.i18n.Messages
 import services.DataPrefillService
 import utils.Data.ua
 import utils.{Data, Enumerable, UserAnswers}
-import viewmodels.Message
 
 import java.time.LocalDate
 
@@ -78,7 +78,7 @@ class SpokeCreationServiceSpec
     "return all the spokes with appropriate links when no establishers and NOT view only" in {
       val expectedSpoke =
         Seq(EntitySpoke(
-          SpokeTaskListLink(Message("messages__schemeTaskList__sectionEstablishers_add_link"),
+          SpokeTaskListLink(Messages("messages__schemeTaskList__sectionEstablishers_add_link"),
             controllers.establishers.routes.EstablisherKindController.onPageLoad(0).url), None)
         )
 
@@ -92,7 +92,7 @@ class SpokeCreationServiceSpec
 
       val expectedSpoke =
         Seq(EntitySpoke(
-          SpokeTaskListLink(Message("messages__schemeTaskList__sectionEstablishers_change_link"),
+          SpokeTaskListLink(Messages("messages__schemeTaskList__sectionEstablishers_change_link"),
             controllers.establishers.routes.AddEstablisherController.onPageLoad.url), None)
         )
 

@@ -31,7 +31,6 @@ import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
 import services.common.details.CommonEnterReferenceValueService
 import utils.UserAnswers
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -52,7 +51,7 @@ class TrusteeEnterUTRController @Inject()(val messagesApi: MessagesApi,
     request
       .userAnswers
       .get(TrusteeNameId(index))
-      .fold(Message("messages__trustee"))(_.fullName)
+      .fold(Messages("messages__trustee"))(_.fullName)
 
   private def form: Form[ReferenceValue] = formProvider()
 
@@ -62,14 +61,14 @@ class TrusteeEnterUTRController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.get(
-              pageTitle     = Message("messages__enterUTR", Message("messages__individual")),
-              pageHeading     = Message("messages__enterUTR", name(index)),
+              pageTitle     = Messages("messages__enterUTR", Messages("messages__individual")),
+              pageHeading     = Messages("messages__enterUTR", name(index)),
               isPageHeading = true,
               id            = TrusteeUTRId(index),
               form          = form,
               schemeName    = schemeName,
               legendClass   = "govuk-visually-hidden",
-              paragraphText = Seq(Message("messages__UTR__p1"), Messages("messages__UTR__p2")),
+              paragraphText = Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2")),
               submitCall = routes.TrusteeEnterUTRController.onSubmit(index, mode)
             )
         }
@@ -81,14 +80,14 @@ class TrusteeEnterUTRController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.post(
-              pageTitle = Message("messages__enterUTR", Message("messages__individual")),
-              pageHeading = Message("messages__enterUTR", name(index)),
+              pageTitle = Messages("messages__enterUTR", Messages("messages__individual")),
+              pageHeading = Messages("messages__enterUTR", name(index)),
               isPageHeading = true,
               id = TrusteeUTRId(index),
               form = form,
               schemeName = schemeName,
               hintText = None,
-              paragraphText = Seq(Message("messages__UTR__p1"), Message("messages__UTR__p2")),
+              paragraphText = Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2")),
               legendClass   = "govuk-visually-hidden",
               mode = mode,
               optSetUserAnswers = Some(value => setUpdatedAnswers(index, mode, value, request.userAnswers)),

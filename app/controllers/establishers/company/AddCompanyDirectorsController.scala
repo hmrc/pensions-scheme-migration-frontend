@@ -36,7 +36,6 @@ import config.AppConfig
 import controllers.Retrievals
 import controllers.actions._
 import forms.establishers.company.director.AddCompanyDirectorsFormProvider
-import helpers.AddToListHelper
 import identifiers.establishers.company.AddCompanyDirectorsId
 import models.{DirectorEntity, Mode}
 import navigators.CompoundNavigator
@@ -44,8 +43,6 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.Radios
-import utils.TwirlMigration
 import views.html.establishers.company.AddDirectorView
 
 import javax.inject.Inject
@@ -58,7 +55,6 @@ class AddCompanyDirectorsController @Inject()(
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
                                                formProvider: AddCompanyDirectorsFormProvider,
-                                               helper: AddToListHelper,
                                                config: AppConfig,
                                                val controllerComponents: MessagesControllerComponents,
                                                view: AddDirectorView
@@ -80,7 +76,7 @@ class AddCompanyDirectorsController @Inject()(
           directors.size,
           config.maxDirectors,
           directors,
-          TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+          utils.Radios.yesNo(form("value")),
           routes.AddCompanyDirectorsController.onSubmit(index, mode)
          ))
     }
@@ -106,7 +102,7 @@ class AddCompanyDirectorsController @Inject()(
                 directors.size,
                 config.maxDirectors,
                 directors,
-                TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value"))),
+                utils.Radios.yesNo(formWithErrors("value")),
                 routes.AddCompanyDirectorsController.onSubmit(index, mode)
               ))),
             value => {

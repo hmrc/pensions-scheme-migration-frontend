@@ -21,12 +21,12 @@ import models.CheckMode
 import models.requests.DataRequest
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.{Enumerable, UserAnswers}
-import viewmodels.Message
 
 class AdviserCYAHelper
-  extends CYAHelperForTwirl
+  extends CYAHelper
     with Enumerable.Implicits {
 
   //scalastyle:off method.length
@@ -41,28 +41,28 @@ class AdviserCYAHelper
     val rowsWithoutDynamicIndices = Seq(
       Some(answerOrAddRow(
         id = AdviserNameId,
-        message = Message("messages__adviser__name__cya").resolve,
+        message = Messages("messages__adviser__name__cya"),
         url = Some(controllers.adviser.routes.AdviserNameController.onPageLoad(CheckMode).url),
-        visuallyHiddenText = Some(Messages("messages__adviser__name__cya__visuallyHidden")),
+        visuallyHiddenText = Some(Text(Messages("messages__adviser__name__cya__visuallyHidden"))),
         answerTransform = answerStringTransform
       )),
       Some(answerOrAddRow(
         id = EnterEmailId,
-        message = Message("messages__enterEmail_cya_label", adviserName).resolve,
+        message = Messages("messages__enterEmail_cya_label", adviserName),
         url = Some(controllers.adviser.routes.EnterEmailController.onPageLoad(CheckMode).url),
-        visuallyHiddenText = Some(Messages("messages__enterEmail__cya__visuallyHidden", adviserName))
+        visuallyHiddenText = Some(Text(Messages("messages__enterEmail__cya__visuallyHidden", adviserName)))
       )),
       Some(answerOrAddRow(
         id = EnterPhoneId,
-        message = Message("messages__enterPhone_cya_label", adviserName).resolve,
+        message = Messages("messages__enterPhone_cya_label", adviserName),
         url = Some(controllers.adviser.routes.EnterPhoneController.onPageLoad(CheckMode).url),
-        visuallyHiddenText = Some(Messages("messages__enterPhone__cya__visuallyHidden", adviserName))
+        visuallyHiddenText = Some(Text(Messages("messages__enterPhone__cya__visuallyHidden", adviserName)))
       )),
       Some(answerOrAddRow(
         id = AddressId,
-        message = Message("addressList_cya_label", adviserName).resolve,
+        message = Messages("addressList_cya_label", adviserName),
         url = Some(controllers.adviser.routes.EnterPostcodeController.onPageLoad(CheckMode).url),
-        visuallyHiddenText = Some(Messages("messages__visuallyHidden__address", adviserName)), answerAddressTransform
+        visuallyHiddenText = Some(Text(Messages("messages__visuallyHidden__address", adviserName))), answerAddressTransform
       ))
 
     ).flatten

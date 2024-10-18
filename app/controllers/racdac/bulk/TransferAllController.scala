@@ -26,10 +26,8 @@ import models.RacDac
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.Radios
-import utils.{Enumerable, TwirlMigration}
+import utils.Enumerable
 import utils.HttpResponseRedirects.listOfSchemesRedirects
 import views.html.racdac.TransferAllView
 
@@ -46,7 +44,7 @@ class TransferAllController @Inject()(appConfig: AppConfig,
                                       val controllerComponents: MessagesControllerComponents,
                                       transferAllView: TransferAllView
                                      )(implicit val executionContext: ExecutionContext) extends
-  FrontendBaseController with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
+  FrontendBaseController with I18nSupport with Retrievals with Enumerable.Implicits {
 
   private val form = formProvider("messages__transferAll__error")
 
@@ -61,7 +59,7 @@ class TransferAllController @Inject()(appConfig: AppConfig,
                 routes.TransferAllController.onSubmit,
                 appConfig.psaOverviewUrl,
                 psaName,
-                TwirlMigration.toTwirlRadios(Radios.yesNo(form("value")))
+                utils.Radios.yesNo(form("value"))
               ))
             }
           } else {
@@ -80,7 +78,7 @@ class TransferAllController @Inject()(appConfig: AppConfig,
             routes.TransferAllController.onSubmit,
             appConfig.psaOverviewUrl,
             psaName,
-            TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value")))
+            utils.Radios.yesNo(formWithErrors("value"))
           ))
         }, { value =>
           currentPstrCacheConnector.remove.map { _ =>

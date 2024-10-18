@@ -25,10 +25,9 @@ import identifiers.establishers.individual.details.EstablisherNoNINOReasonId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.details.CommonReasonService
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -47,11 +46,11 @@ class EstablisherNoNINOReasonController @Inject()(val messagesApi: MessagesApi,
     request
       .userAnswers
       .get(EstablisherNameId(index))
-      .fold(Message("messages__establisher"))(_.fullName)
+      .fold(Messages("messages__establisher"))(_.fullName)
 
   private def form(index: Index)
                   (implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Message("messages__reason__error_ninoRequired", name(index)))
+    formProvider(Messages("messages__reason__error_ninoRequired", name(index)))
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
@@ -59,8 +58,8 @@ class EstablisherNoNINOReasonController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.get(
-              pageTitle     = Message("messages__whyNoNINO", Message("messages__individual")),
-              pageHeading     = Message("messages__whyNoNINO", name(index)),
+              pageTitle     = Messages("messages__whyNoNINO", Messages("messages__individual")),
+              pageHeading     = Messages("messages__whyNoNINO", name(index)),
               isPageHeading = true,
               id            = EstablisherNoNINOReasonId(index),
               form          = form(index),
@@ -76,8 +75,8 @@ class EstablisherNoNINOReasonController @Inject()(val messagesApi: MessagesApi,
           SchemeNameId.retrieve.map {
             schemeName =>
               common.post(
-                pageTitle     = Message("messages__whyNoNINO", Message("messages__individual")),
-                pageHeading     = Message("messages__whyNoNINO", name(index)),
+                pageTitle     = Messages("messages__whyNoNINO", Messages("messages__individual")),
+                pageHeading     = Messages("messages__whyNoNINO", name(index)),
                 isPageHeading = true,
                 id            = EstablisherNoNINOReasonId(index),
                 form          = form(index),

@@ -26,7 +26,6 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.PersonNameView
 
@@ -47,7 +46,7 @@ class EstablisherNameController @Inject()(
   extends FrontendBaseController
     with I18nSupport
     with Retrievals
-    with NunjucksSupport {
+    {
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {

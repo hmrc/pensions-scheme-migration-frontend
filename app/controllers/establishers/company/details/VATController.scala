@@ -28,7 +28,6 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.details.CommonEnterReferenceValueService
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -57,14 +56,14 @@ class VATController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.get(
-              pageTitle     = Message("messages__vat", Message("messages__company")),
-              pageHeading     = Message("messages__vat", name(index)),
+              pageTitle     = Messages("messages__vat", Messages("messages__company")),
+              pageHeading     = Messages("messages__vat", name(index)),
               isPageHeading = true,
               id            = VATId(index),
               form          = form(name(index)),
               schemeName    = schemeName,
               legendClass   = "govuk-visually-hidden",
-              paragraphText = Seq(Message("messages__vat__p", name(index))),
+              paragraphText = Seq(Messages("messages__vat__p", name(index))),
               submitCall = routes.VATController.onSubmit(index, mode)
             )
         }
@@ -76,14 +75,14 @@ class VATController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.post(
-              pageTitle     = Message("messages__vat", Message("messages__company")),
-              pageHeading     = Message("messages__vat", name(index)),
+              pageTitle     = Messages("messages__vat", Messages("messages__company")),
+              pageHeading     = Messages("messages__vat", name(index)),
               isPageHeading = true,
               id            = VATId(index),
               form          = form(name(index)),
               schemeName    = schemeName,
               legendClass   = "govuk-visually-hidden",
-              paragraphText = Seq(Message("messages__vat__p", name(index))),
+              paragraphText = Seq(Messages("messages__vat__p", name(index))),
               mode          = mode,
               submitCall = routes.VATController.onSubmit(index, mode)
             )

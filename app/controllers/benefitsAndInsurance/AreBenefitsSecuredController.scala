@@ -26,10 +26,8 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.Radios
-import utils.{Enumerable, TwirlMigration}
+import utils.Enumerable
 import views.html.benefitsAndInsurance.AreBenefitsSecuredView
 
 import javax.inject.Inject
@@ -44,7 +42,7 @@ class AreBenefitsSecuredController @Inject()(override val messagesApi: MessagesA
                                        formProvider: AreBenefitsSecuredFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        view : AreBenefitsSecuredView)(implicit ec: ExecutionContext)
-  extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
+  extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits {
 
   private def form: Form[Boolean] =
     formProvider()
@@ -59,7 +57,7 @@ class AreBenefitsSecuredController @Inject()(override val messagesApi: MessagesA
         Future.successful(Ok(view(
           preparedForm,
           schemeName,
-          TwirlMigration.toTwirlRadios(Radios.yesNo(preparedForm("value"))),
+          utils.Radios.yesNo(preparedForm("value")),
           controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onSubmit
         )))
       }
@@ -75,7 +73,7 @@ class AreBenefitsSecuredController @Inject()(override val messagesApi: MessagesA
               Future.successful(BadRequest(view(
                 formWithErrors,
                 schemeName,
-                TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value"))),
+                utils.Radios.yesNo(formWithErrors("value")),
                 controllers.benefitsAndInsurance.routes.AreBenefitsSecuredController.onSubmit
               )))
 

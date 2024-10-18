@@ -23,18 +23,14 @@ import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.partner.details.PartnerEnterUTRId
 import matchers.JsonMatchers
 import models.{NormalMode, PersonName, ReferenceValue}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import renderer.Renderer
 import services.common.details.CommonEnterReferenceValueService
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{partnershipDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
 import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
@@ -43,7 +39,7 @@ import scala.concurrent.Future
 
 class PartnerEnterUTRControllerSpec
   extends ControllerSpecBase
-    with NunjucksSupport
+
     with JsonMatchers
     with TryValues
     with BeforeAndAfterEach {
@@ -63,7 +59,6 @@ class PartnerEnterUTRControllerSpec
 
   override def beforeEach(): Unit = {
     reset(
-      mockRenderer,
       mockUserAnswersCacheConnector
     )
   }

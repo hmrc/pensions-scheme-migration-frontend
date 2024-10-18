@@ -26,12 +26,11 @@ import identifiers.trustees.individual.details.TrusteeNINOId
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode, ReferenceValue}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
 import services.common.details.CommonEnterReferenceValueService
 import utils.UserAnswers
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -53,13 +52,13 @@ class DirectorEnterNINOController @Inject()( val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.get(
-              pageTitle = Message("messages__enterNINO_title", Message("messages__director")),
-              pageHeading = Message("messages__enterNINO_title", name(establisherIndex, directorIndex)),
+              pageTitle = Messages("messages__enterNINO_title", Messages("messages__director")),
+              pageHeading = Messages("messages__enterNINO_title", name(establisherIndex, directorIndex)),
               isPageHeading = true,
               id = DirectorNINOId(establisherIndex, directorIndex),
               form = form(establisherIndex, directorIndex),
               schemeName = schemeName,
-              hintText = Some(Message("messages__enterNINO__hint")),
+              hintText = Some(Messages("messages__enterNINO__hint")),
               legendClass = "govuk-label--xl",
               submitCall = routes.DirectorEnterNINOController.onSubmit(establisherIndex, directorIndex, mode)
             )
@@ -75,7 +74,7 @@ class DirectorEnterNINOController @Inject()( val messagesApi: MessagesApi,
     request
       .userAnswers
       .get(DirectorNameId(establisherIndex, directorIndex))
-      .fold(Message("messages__director"))(_.fullName)
+      .fold(Messages("messages__director"))(_.fullName)
 
   def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
@@ -83,13 +82,13 @@ class DirectorEnterNINOController @Inject()( val messagesApi: MessagesApi,
         retrieve(SchemeNameId) {
           schemeName =>
             common.post(
-              pageTitle     = Message("messages__enterNINO_title", Message("messages__director")),
-              pageHeading     = Message("messages__enterNINO_title", name(establisherIndex, directorIndex)),
+              pageTitle     = Messages("messages__enterNINO_title", Messages("messages__director")),
+              pageHeading     = Messages("messages__enterNINO_title", name(establisherIndex, directorIndex)),
               isPageHeading = true,
               id            = DirectorNINOId(establisherIndex, directorIndex),
               form          = form(establisherIndex,directorIndex),
               schemeName    = schemeName,
-              hintText      = Some(Message("messages__enterNINO__hint")),
+              hintText      = Some(Messages("messages__enterNINO__hint")),
               legendClass   = "govuk-label--xl",
               mode          = mode,
               optSetUserAnswers = Some(value => setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers)),

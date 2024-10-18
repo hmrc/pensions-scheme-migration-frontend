@@ -21,7 +21,6 @@ import models.ReferenceValue
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.i18n.Messages
-import viewmodels.Message
 
 import javax.inject.Inject
 
@@ -34,10 +33,10 @@ class NINOFormProvider @Inject()
            (implicit messages: Messages): Form[ReferenceValue] =
     Form(
       mapping(
-        "value" -> text(Message("messages__error__common_nino", personName).resolve)
+        "value" -> text(Messages("messages__error__common_nino", personName))
           .transform(noSpaceWithUpperCaseTransform, noTransform)
           .verifying(
-            validNino(Message("messages__error__common_nino_invalid", personName))
+            validNino(Messages("messages__error__common_nino_invalid", personName))
           )
       )(ReferenceValue.applyEditable)(ReferenceValue.unapplyEditable)
     )

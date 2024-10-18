@@ -18,7 +18,7 @@ package controllers.adviser
 
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import helpers.cya.{AdviserCYAHelper, CYAHelperForTwirl}
+import helpers.cya.{AdviserCYAHelper, CYAHelper}
 import identifiers.beforeYouStart.SchemeNameId
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -48,7 +48,7 @@ class CheckYourAnswersController @Inject()(
       implicit request =>
         Ok(checkYourAnswersView(
           controllers.routes.TaskListController.onPageLoad.url,
-          CYAHelperForTwirl.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+          CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
           cyaHelper.detailsRows
         ))
     }

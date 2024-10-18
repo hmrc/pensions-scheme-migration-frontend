@@ -31,7 +31,6 @@ import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.common.details.CommonEnterReferenceValueService
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{FakeNavigator, UserAnswers}
 import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
@@ -39,7 +38,7 @@ import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
 import scala.concurrent.Future
 class TrusteeEnterNINOControllerSpec
   extends ControllerSpecBase
-    with NunjucksSupport
+
     with JsonMatchers
     with TryValues
     with BeforeAndAfterEach {

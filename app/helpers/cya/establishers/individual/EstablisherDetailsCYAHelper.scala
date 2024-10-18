@@ -24,10 +24,9 @@ import models.requests.DataRequest
 import models.{CheckMode, Index}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
-import uk.gov.hmrc.viewmodels.MessageInterpolators
-import uk.gov.hmrc.viewmodels.SummaryList.Row
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.{Enumerable, UserAnswers}
-import viewmodels.Message
 
 class EstablisherDetailsCYAHelper
   extends CYAHelper
@@ -38,7 +37,7 @@ class EstablisherDetailsCYAHelper
                  )(
                    implicit request: DataRequest[AnyContent],
                    messages: Messages
-                 ): Seq[Row] = {
+                 ): Seq[SummaryListRow] = {
     implicit val ua: UserAnswers =
       request.userAnswers
     val establisherName: String =
@@ -47,57 +46,57 @@ class EstablisherDetailsCYAHelper
     val rowsWithoutDynamicIndices = Seq(
       Some(answerOrAddRow(
         id                 = EstablisherDOBId(index),
-        message            = Message("messages__dob__h1", establisherName).resolve,
+        message            = Messages("messages__dob__h1", establisherName),
         url                = Some(controllers.establishers.individual.details.routes.EstablisherDOBController.onPageLoad(index, CheckMode).url),
-        visuallyHiddenText = Some(msg"messages__dob__cya__visuallyHidden".withArgs(establisherName)),
+        visuallyHiddenText = Some(Text(Messages("messages__dob__cya__visuallyHidden", establisherName))),
         answerTransform = answerDateTransform
       )),
       Some(answerOrAddRow(
         id                 = EstablisherHasNINOId(index),
-        message            = Message("messages__hasNINO", establisherName).resolve,
+        message            = Messages("messages__hasNINO", establisherName),
         url                = Some(controllers.establishers.individual.details.routes.EstablisherHasNINOController.onPageLoad(index, CheckMode).url),
-        visuallyHiddenText = Some(msg"messages__hasNINO__cya__visuallyHidden".withArgs(establisherName)),
+        visuallyHiddenText = Some(Text(Messages("messages__hasNINO__cya__visuallyHidden", establisherName))),
         answerTransform    = answerBooleanTransform
       )),
       ua.get(EstablisherHasNINOId(index)) map {
         case true =>
           answerOrAddRow(
             id                 = EstablisherNINOId(index),
-            message            = Message("messages__enterNINO__cya", establisherName),
+            message            = Messages("messages__enterNINO__cya", establisherName),
             url                = Some(controllers.establishers.individual.details.routes.EstablisherEnterNINOController.onPageLoad(index, CheckMode).url),
-            visuallyHiddenText = Some(msg"messages__enterNINO__cya_visuallyHidden".withArgs(establisherName)),
+            visuallyHiddenText = Some(Text(Messages("messages__enterNINO__cya_visuallyHidden", establisherName))),
             answerTransform    = referenceValueTransform
           )
       case false =>
           answerOrAddRow(
             id                 = EstablisherNoNINOReasonId(index),
-            message            = Message("messages__whyNoNINO", establisherName),
+            message            = Messages("messages__whyNoNINO", establisherName),
             url                = Some(controllers.establishers.individual.details.routes.EstablisherNoNINOReasonController.onPageLoad(index, CheckMode).url),
-            visuallyHiddenText = Some(msg"messages__whyNoNINO__cya__visuallyHidden".withArgs(establisherName))
+            visuallyHiddenText = Some(Text(Messages("messages__whyNoNINO__cya__visuallyHidden", establisherName)))
           )
       },
       Some(answerOrAddRow(
         id                 = EstablisherHasUTRId(index),
-        message            = Message("messages__hasUTR", establisherName).resolve,
+        message            = Messages("messages__hasUTR", establisherName),
         url                = Some(controllers.establishers.individual.details.routes.EstablisherHasUTRController.onPageLoad(index, CheckMode).url),
-        visuallyHiddenText = Some(msg"messages__hasUTR__cya__visuallyHidden".withArgs(establisherName)),
+        visuallyHiddenText = Some(Text(Messages("messages__hasUTR__cya__visuallyHidden", establisherName))),
         answerTransform    = answerBooleanTransform
       )),
       ua.get(EstablisherHasUTRId(index)) map {
         case true =>
           answerOrAddRow(
             id                 = EstablisherUTRId(index),
-            message            = Message("messages__enterUTR__cya_label", establisherName),
+            message            = Messages("messages__enterUTR__cya_label", establisherName),
             url                = Some(controllers.establishers.individual.details.routes.EstablisherEnterUTRController.onPageLoad(index, CheckMode).url),
-            visuallyHiddenText = Some(msg"messages__enterUTR__cya_visuallyHidden".withArgs(establisherName)),
+            visuallyHiddenText = Some(Text(Messages("messages__enterUTR__cya_visuallyHidden", establisherName))),
             answerTransform    = referenceValueTransform
           )
         case false =>
           answerOrAddRow(
             id                 = EstablisherNoUTRReasonId(index),
-            message            = Message("messages__whyNoUTR", establisherName),
+            message            = Messages("messages__whyNoUTR", establisherName),
             url                = Some(controllers.establishers.individual.details.routes.EstablisherNoUTRReasonController.onPageLoad(index, CheckMode).url),
-            visuallyHiddenText = Some(msg"messages__whyNoUTR__cya__visuallyHidden".withArgs(establisherName))
+            visuallyHiddenText = Some(Text(Messages("messages__whyNoUTR__cya__visuallyHidden", establisherName)))
           )
       }
     ).flatten

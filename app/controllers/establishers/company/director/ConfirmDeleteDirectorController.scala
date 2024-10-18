@@ -28,8 +28,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, Radios}
-import utils.{TwirlMigration, UserAnswers}
+import utils.UserAnswers
 import views.html.DeleteView
 
 import javax.inject.Inject
@@ -59,10 +58,10 @@ class ConfirmDeleteDirectorController @Inject()(override val messagesApi: Messag
             Future.successful(Ok(
               deleteView(
                 form(director.fullName),
-                msg"messages__confirmDeleteDirectors__title".resolve,
+                Messages("messages__confirmDeleteDirectors__title"),
                 director.fullName,
                 Some(Messages(s"messages__confirmDeleteDirectors__companyHint")),
-                TwirlMigration.toTwirlRadios(Radios.yesNo(formProvider(director.fullName)(implicitly)("value"))),
+                utils.Radios.yesNo(formProvider(director.fullName)(implicitly)("value")),
                 existingSchemeName.getOrElse(""),
                 routes.ConfirmDeleteDirectorController.onSubmit(establisherIndex, directorIndex)
               )
@@ -84,10 +83,10 @@ class ConfirmDeleteDirectorController @Inject()(override val messagesApi: Messag
               Future.successful(BadRequest(
                 deleteView(
                   formWithErrors,
-                  msg"messages__confirmDeleteDirectors__title".resolve,
+                  Messages("messages__confirmDeleteDirectors__title"),
                   director.fullName,
                   Some(Messages(s"messages__confirmDeleteDirectors__companyHint")),
-                  TwirlMigration.toTwirlRadios(Radios.yesNo(formProvider(director.fullName)(implicitly)("value"))),
+                  utils.Radios.yesNo(formProvider(director.fullName)(implicitly)("value")),
                   existingSchemeName.getOrElse(""),
                   routes.ConfirmDeleteDirectorController.onSubmit(establisherIndex, directorIndex)
                 )

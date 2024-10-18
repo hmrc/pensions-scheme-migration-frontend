@@ -26,12 +26,10 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.mvc.Request
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Enumerable
 
 import scala.concurrent.Future
-class FinishedStatusControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class FinishedStatusControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val mockQueueConnector = mock[BulkMigrationQueueConnector]
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -51,7 +49,7 @@ class FinishedStatusControllerSpec extends ControllerSpecBase with NunjucksSuppo
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
   }
 
   "FinishedStatusController" must {

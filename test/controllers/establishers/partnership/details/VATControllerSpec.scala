@@ -23,25 +23,20 @@ import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.details.VATId
 import matchers.JsonMatchers
 import models.{Index, NormalMode, ReferenceValue}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
-import play.twirl.api.Html
-import renderer.Renderer
 import services.common.details.CommonEnterReferenceValueService
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.{partnershipDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
-import views.html.helper.form
 import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
 
 import scala.concurrent.Future
 
-class VATControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with BeforeAndAfterEach {
+class VATControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues with BeforeAndAfterEach {
 
   private val index: Index = Index(0)
   private val referenceValue: ReferenceValue = ReferenceValue("123456789")
@@ -61,7 +56,7 @@ class VATControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
         messagesApi = messagesApi
       ))
 
-  override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
+  override def beforeEach(): Unit = reset(mockUserAnswersCacheConnector)
 
   "VATController" must {
     "return OK and the correct view for a GET" in {

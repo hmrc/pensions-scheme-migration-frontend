@@ -25,12 +25,10 @@ import identifiers.identifierUtils
 import models.entities._
 import models.requests.DataRequest
 import models.{EntitySpoke, Index, entities}
-import play.api.i18n.I18nSupport
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{entityTypeError, managementTypeError}
-import viewmodels.Message
 import views.html.SpokeTaskListView
 
 import javax.inject.Inject
@@ -46,7 +44,7 @@ class SpokeTaskListController @Inject() (
                                         (implicit val ec: ExecutionContext) extends FrontendBaseController
   with I18nSupport
   with Retrievals
-  with NunjucksSupport {
+  {
 
   //scalastyle:off
   private def getTemplateData(index: Index,
@@ -57,15 +55,15 @@ class SpokeTaskListController @Inject() (
 
 
     val emptyEntityNameMsg = entityType match {
-      case Company => Message("messages__company")
-      case Individual => Message("messages__individual")
-      case Partnership => Message("messages__partnership")
+      case Company => Messages("messages__company")
+      case Individual => Messages("messages__individual")
+      case Partnership => Messages("messages__partnership")
       case e => entityTypeError(e)
     }
 
     val managementTypeTypeMsg = pensionManagementType match {
-      case Establisher => Message("messages__tasklist__establisher")
-      case Trustee => Message("messages__tasklist__trustee")
+      case Establisher => Messages("messages__tasklist__establisher")
+      case Trustee => Messages("messages__tasklist__trustee")
       case e => managementTypeError(e)
     }
 
@@ -105,7 +103,7 @@ class SpokeTaskListController @Inject() (
       taskSections = spokes,
       entityName,
       schemeName,
-      entityType = managementTypeTypeMsg.resolve,
+      entityType = managementTypeTypeMsg,
       submitUrl.url,
       totalSpokes,
       completedCount

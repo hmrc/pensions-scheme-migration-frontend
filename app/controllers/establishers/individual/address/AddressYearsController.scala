@@ -24,10 +24,9 @@ import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressYearsId
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.address.CommonAddressYearsService
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -51,7 +50,7 @@ class AddressYearsController @Inject()(
           common.get(
             Some(schemeName),
             establisherName.fullName,
-            Message("establisherEntityTypeIndividual"),
+            Messages("establisherEntityTypeIndividual"),
             form,
             AddressYearsId(index),
             submitUrl = routes.AddressYearsController.onSubmit(index, mode)
@@ -66,7 +65,7 @@ class AddressYearsController @Inject()(
           common.post(
             Some(schemeName),
             establisherName.fullName,
-            Message("establisherEntityTypeIndividual"),
+            Messages("establisherEntityTypeIndividual"),
             form,
             AddressYearsId(index),
             Some(mode),

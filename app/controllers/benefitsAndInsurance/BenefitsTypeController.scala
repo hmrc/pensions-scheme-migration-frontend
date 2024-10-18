@@ -28,9 +28,8 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.{Enumerable, TwirlMigration}
+import utils.Enumerable
 import views.html.benefitsAndInsurance.BenefitsTypeView
 
 import javax.inject.Inject
@@ -47,7 +46,7 @@ class BenefitsTypeController @Inject()(override val messagesApi: MessagesApi,
                                        config: AppConfig,
                                        view: BenefitsTypeView
                                        )(implicit ec: ExecutionContext)
-  extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
+  extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits {
 
   private def form: Form[BenefitsType] =
     formProvider()
@@ -63,7 +62,7 @@ class BenefitsTypeController @Inject()(override val messagesApi: MessagesApi,
         Future.successful(Ok(view(
           preparedForm,
           schemeName,
-          TwirlMigration.toTwirlRadios(BenefitsType.radios(preparedForm)),
+          BenefitsType.radios(preparedForm),
           controllers.benefitsAndInsurance.routes.BenefitsTypeController.onSubmit
         )))
       }
@@ -79,7 +78,7 @@ class BenefitsTypeController @Inject()(override val messagesApi: MessagesApi,
               Future.successful(BadRequest(view(
                 formWithErrors,
                 schemeName,
-                TwirlMigration.toTwirlRadios(BenefitsType.radios(formWithErrors)),
+                BenefitsType.radios(formWithErrors),
                 controllers.benefitsAndInsurance.routes.BenefitsTypeController.onSubmit
               )))
             },

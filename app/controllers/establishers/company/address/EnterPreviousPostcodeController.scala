@@ -16,8 +16,8 @@
 
 package controllers.establishers.company.address
 
-import controllers.actions._
 import controllers.Retrievals
+import controllers.actions._
 import forms.address.PostcodeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
@@ -25,10 +25,9 @@ import identifiers.establishers.company.address.EnterPreviousPostCodeId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.address.{CommonPostcodeService, CommonPostcodeTemplateData}
-import viewmodels.Message
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
@@ -63,14 +62,14 @@ class EnterPreviousPostcodeController @Inject()(
 
   def getFormToTemplate(schemeName:String, index: Index, mode: Mode)(implicit request:DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
     val name: String = request.userAnswers.get(CompanyDetailsId(index))
-      .map(_.companyName).getOrElse(Message("establisherEntityTypeCompany"))
+      .map(_.companyName).getOrElse(Messages("establisherEntityTypeCompany"))
     val submitUrl = routes.EnterPreviousPostcodeController.onSubmit(index, mode)
     val enterManuallyUrl = routes.ConfirmPreviousAddressController.onPageLoad(index, mode).url
 
       form => {
       CommonPostcodeTemplateData(
         form,
-        Message("establisherEntityTypeCompany"),
+        Messages("establisherEntityTypeCompany"),
         name,
         submitUrl,
         enterManuallyUrl,
