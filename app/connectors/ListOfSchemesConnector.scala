@@ -24,8 +24,8 @@ import play.api.http.Status._
 import play.api.libs.json.{JsError, JsResultException, JsSuccess, Json}
 import play.api.mvc.Result
 import play.api.mvc.Results.Ok
+import uk.gov.hmrc.http.HttpErrorFunctions.is5xx
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.HttpReads.is5xx
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}

@@ -3,8 +3,6 @@ import sbt._
 object AppDependencies {
 
   private val hmrcBootstrapVersion = "9.5.0"
-  //TODO: Update play-frontend-hmrc-play-30, bootstrap-frontend-play-30, govuk-frontend after migration to twirl. -Pavel Vjalicin
-  //TODO: Remove unused libraries. -Pavel Vjalicin
   private val compile: Seq[ModuleID] = Seq(
     play.sbt.PlayImport.ws,
     "uk.gov.hmrc"                   %% "bootstrap-frontend-play-30"             % hmrcBootstrapVersion,
