@@ -21,8 +21,7 @@
         govukErrorSummary: GovukErrorSummary,
         govukTable: GovukTable,
         govukRadios: GovukRadios,
-        navigationLink: templates.NavigationLink,
-        pageNumberLink: templates.PageNumberLink
+        paginationLinks: templates.PaginationLinks
 )
 
 @(form: Form[_],
@@ -51,31 +50,7 @@
 
         @govukTable(schemes)
 
-        @if(numberOfSchemes > pagination) {
-            <div class="grid-row">
-                <div class="column-two-thirds">
-                    <p class="govuk-body-s govuk-margin-top-5" id="pagination-text">
-                        @paginationText
-                    </p>
-                    <nav class="govuk-margin-top-5 govuk-!-margin-bottom-6" aria-label="page">
-                        @if(pageNumber > 1) {
-                            @navigationLink(messages("messages__listSchemes__pagination__first"), 1, listRacDacUrl)
-                            @navigationLink(messages("messages__listSchemes__pagination__prev"), pageNumber-1, listRacDacUrl)
-                        }
-
-                        @pageNumberLinks.map { linkNumber =>
-                          @pageNumberLink(linkNumber, numberOfPages, listRacDacUrl, pageNumber)
-                        }
-
-                        @if(pageNumber < numberOfPages) {
-                            @navigationLink(messages("messages__listSchemes__pagination__next"), pageNumber+1, listRacDacUrl)
-                            @navigationLink(messages("messages__listSchemes__pagination__last"), numberOfPages, listRacDacUrl)
-                        }
-                    </nav>
-                </div>
-            </div>
-        }
-
+@paginationLinks(numberOfSchemes, pagination, numberOfPages, pageNumber, listRacDacUrl)
         @govukRadios(
             RadiosViewModel(
                 form("value"),
