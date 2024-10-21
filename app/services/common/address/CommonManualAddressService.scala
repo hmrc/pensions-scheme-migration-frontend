@@ -32,10 +32,12 @@ import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, Call, Result}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
+import utils.UserAnswers
 import views.html.address.ManualAddressView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 @Singleton
 class CommonManualAddressService @Inject()(
@@ -101,8 +103,11 @@ class CommonManualAddressService @Inject()(
            form: Form[Address],
            pageTitleEntityTypeMessageKey: Option[String] = None,
            pageTitleMessageKey: String = pageTitleMessageKey,
-           submitUrl: Call
+           submitUrl: Call,
+           setUserAnswersOverride: Option[Address => Try[UserAnswers]] = None
           )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
+    def setUserAnswer(value: Address) = setUserAnswersOverride.map(f => f(value))
+      .getOrElse(request.userAnswers.set(addressPage, value))
     form
       .bindFromRequest()
       .fold(
@@ -124,7 +129,7 @@ class CommonManualAddressService @Inject()(
         },
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(addressPage, value))
+            updatedAnswers <- Future.fromTry(setUserAnswer(value))
             _ <- userAnswersCacheConnector.save(request.lock,updatedAnswers.data)
           } yield {
             val finalMode = mode.getOrElse(NormalMode)
