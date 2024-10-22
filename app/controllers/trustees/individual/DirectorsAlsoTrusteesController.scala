@@ -63,7 +63,6 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
       SchemeNameId.retrieve.map { schemeName =>
         implicit val ua: UserAnswers = request.userAnswers
         val seqDirector = dataPrefillService.getListOfDirectorsToBeCopied
-        val directorsIndexes = seqDirector.map(_.index).toList
         if (seqDirector.nonEmpty) {
           Future.successful(Ok(view(
             form,

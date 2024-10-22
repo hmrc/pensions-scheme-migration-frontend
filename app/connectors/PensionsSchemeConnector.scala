@@ -22,13 +22,14 @@ import models.MigrationType
 import org.apache.commons.lang3.StringUtils
 import play.api.http.Status._
 import play.api.libs.json._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import utils.{HttpResponseHelper, UserAnswers}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class PensionsSchemeConnector @Inject()(config: AppConfig,
-                                        http: HttpClient
+                                        http: HttpClientV2
                                        ) extends HttpResponseHelper {
 
   def registerScheme(answers: UserAnswers, psaId: String, migrationType: MigrationType)
@@ -36,8 +37,10 @@ class PensionsSchemeConnector @Inject()(config: AppConfig,
                      ec: ExecutionContext): Future[String] = {
 
     val url = config.registerSchemeUrl(migrationType)
-    http
-      .POST[JsValue, HttpResponse](url, Json.toJson(answers.data), Seq("psaId" -> psaId)).map { response =>
+    val headers = Seq(("psaId", psaId))
+    http.post(url"$url")(hc)
+      .setHeader(headers: _*)
+      .withBody(Json.toJson(answers.data)).execute[HttpResponse]. map { response =>
       response.status match {
         case OK =>
           val json = Json.parse(response.body)
