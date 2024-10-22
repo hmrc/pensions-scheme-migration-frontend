@@ -27,18 +27,14 @@ import identifiers.trustees.individual.address.{AddressId => trusteeAddressId}
 import models._
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
 import services.common.address.CommonManualAddressService
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.UserAnswers
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import scala.util.Try
 
 class ConfirmAddressController @Inject()(
@@ -75,34 +71,19 @@ class ConfirmAddressController @Inject()(
 
   def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-
       (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.map {
         case directorName ~ schemeName =>
-          form
-            .bindFromRequest()
-            .fold(
-              formWithErrors => {
-                common.post(
-                  Some(schemeName),
-                  directorName.fullName,
-                  AddressId(establisherIndex, directorIndex),
-                  AddressConfiguration.PostcodeFirst,
-                  Some(mode),
-                  formWithErrors,
-                  pageTitleEntityTypeMessageKey,
-                  submitUrl = routes.ConfirmAddressController.onSubmit(establisherIndex, directorIndex, mode)
-                )
-              },
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
-                  _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
-                } yield {
-                  val finalMode = Some(mode).getOrElse(NormalMode)
-                  Redirect(navigator.nextPage(AddressId(establisherIndex, directorIndex), updatedAnswers, finalMode))
-                }
-            )
+          common.post(
+            Some(schemeName),
+            directorName.fullName,
+            AddressId(establisherIndex, directorIndex),
+            AddressConfiguration.PostcodeFirst,
+            Some(mode),
+            form,
+            pageTitleEntityTypeMessageKey,
+            submitUrl = routes.ConfirmAddressController.onSubmit(establisherIndex, directorIndex, mode),
+            setUserAnswersOverride = Some(setUpdatedAnswers(establisherIndex, directorIndex, mode, _, request.userAnswers))
+          )
       }
     }
 
