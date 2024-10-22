@@ -20,7 +20,6 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json._
 import play.twirl.api.Html
-import uk.gov.hmrc.govukfrontend.views.Aliases.Label
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
@@ -44,10 +43,7 @@ object SchemeType {
     val items: Seq[RadioItem] = values.map(
       value =>
       RadioItem(
-        label = Some(Label(
-          classes = "govuk-!-font-weight-bold",
-          content = Text(Messages(s"messages__scheme_type_${value.toString}"))
-        )),
+        content = Text(Messages(s"messages__scheme_type_${value.toString}")),
         value = Some(value.toString),
         hint = Some(Hint(
           content = Text(Messages(s"messages__scheme_type_${value.toString}_hint")),
@@ -72,10 +68,7 @@ object SchemeType {
 
     val otherItem = {
       RadioItem(
-        label = Some(Label(
-          classes = "govuk-!-font-weight-bold",
-          content = Text(Messages("messages__scheme_type_other"))
-        )),
+        content = Text(Messages("messages__scheme_type_other")),
         value = Some(Other.toString.toLowerCase),
         hint = Some(Hint(
           content = Text(Messages("messages__scheme_type_other_hint")),

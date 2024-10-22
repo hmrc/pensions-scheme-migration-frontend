@@ -33,7 +33,7 @@ import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.Helpers.{GET, POST}
 import play.api.test.{FakeHeaders, FakeRequest}
 import services.{DataPrefillService, DataUpdateService}
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Label, Text}
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import utils.{CountryOptions, Enumerable, FakeCountryOptions}
 
@@ -92,7 +92,7 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
   def convertToRadioItems(addresses: Seq[TolerantAddress]): Seq[RadioItem] = {
     addresses.zipWithIndex.map { case (address, index) =>
       RadioItem(
-        label = Some(Label(content = Text(address.print))),
+        content = Text(address.print),
         value = Some(index.toString)
       )
     }
