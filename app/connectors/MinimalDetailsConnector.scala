@@ -83,7 +83,10 @@ class MinimalDetailsConnectorImpl @Inject()(http: HttpClientV2, config: AppConfi
   private val delimitedErrorMsg: String = "DELIMITED_PSAID"
 
   def getPSADetails(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinPSA] = {
-    http.get(url"${config.getPSAMinDetails}")(hc.withExtraHeaders("psaId" -> psaId)).execute[HttpResponse] map { response =>
+    val headers = Seq(("psaId", psaId))
+    http.get(url"${config.getPSAMinDetails}")(hc)
+      .setHeader(headers: _*)
+      .execute[HttpResponse] map { response =>
       response.status match {
         case OK =>
           Json.parse(response.body).validate[MinPSA] match {

@@ -39,7 +39,7 @@ class BulkMigrationEventsLogConnectorImpl @Inject()(config: AppConfig, http: Htt
     val headers: Seq[(String, String)] = Seq(("Content-Type", "application/json"))
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    http.get(url"$url")(hc).execute[HttpResponse]
+    http.get(url"$url")(hc).setHeader(headers: _*).execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
         response.status

@@ -37,7 +37,9 @@ class PensionsSchemeConnector @Inject()(config: AppConfig,
                      ec: ExecutionContext): Future[String] = {
 
     val url = config.registerSchemeUrl(migrationType)
-    http.post(url"$url")(hc.withExtraHeaders("psaId" -> psaId))
+    val headers = Seq(("psaId", psaId))
+    http.post(url"$url")(hc)
+      .setHeader(headers: _*)
       .withBody(Json.toJson(answers.data)).execute[HttpResponse]. map { response =>
       response.status match {
         case OK =>

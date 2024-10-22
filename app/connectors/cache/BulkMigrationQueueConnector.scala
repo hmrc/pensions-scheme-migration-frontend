@@ -37,7 +37,8 @@ class BulkMigrationQueueConnector @Inject()(config: AppConfig,
     val headers: Seq[(String, String)] = Seq(("psaId", psaId), ("Content-Type", "application/json"))
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    http.post(url"${config.bulkMigrationEnqueueUrl}")(hc).withBody(requests).execute[HttpResponse]
+    http.post(url"${config.bulkMigrationEnqueueUrl}")(hc)
+      .setHeader(headers: _*).withBody(requests).execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
         response.status match {
@@ -52,7 +53,8 @@ class BulkMigrationQueueConnector @Inject()(config: AppConfig,
     val headers: Seq[(String, String)] = Seq(("psaId", psaId), ("Content-Type", "application/json"))
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    http.get(url"${config.bulkMigrationIsInProgressUrl}")(hc).execute[HttpResponse]
+    http.get(url"${config.bulkMigrationIsInProgressUrl}")(hc)
+      .setHeader(headers: _*).execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
         response.status match {
@@ -70,7 +72,9 @@ class BulkMigrationQueueConnector @Inject()(config: AppConfig,
     val headers: Seq[(String, String)] = Seq(("psaId", psaId), ("Content-Type", "application/json"))
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    http.get(url"${config.bulkMigrationIsAllFailedUrl}")(hc).execute[HttpResponse]
+    http.get(url"${config.bulkMigrationIsAllFailedUrl}")(hc)
+      .setHeader(headers: _*)
+      .execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
         response.status match {
@@ -94,7 +98,9 @@ class BulkMigrationQueueConnector @Inject()(config: AppConfig,
     val headers: Seq[(String, String)] = Seq(("psaId", psaId), ("Content-Type", "application/json"))
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    http.delete(url"${config.bulkMigrationDeleteAllUrl}")(hc).execute[HttpResponse].map { response =>
+    http.delete(url"${config.bulkMigrationDeleteAllUrl}")(hc)
+      .setHeader(headers: _*)
+      .execute[HttpResponse].map { response =>
       response.status match {
         case OK =>
           response.json.as[Boolean]

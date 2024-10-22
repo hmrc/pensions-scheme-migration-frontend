@@ -46,8 +46,10 @@ class LegacySchemeDetailsConnectorImpl @Inject()(
   def getLegacySchemeDetails(psaId: String, pstr: String)
                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[HttpResponse, JsValue]] = {
     val (url, schemeHc) = (config.legacySchemeDetailsUrl, hc.withExtraHeaders("psaId" -> psaId, "pstr" -> pstr))
-
-    http.get(url"$url")(schemeHc).execute[HttpResponse].map { response =>
+    val headers = Seq(("psaId", psaId), ("pstr", pstr))
+    http.get(url"$url")(schemeHc)
+      .setHeader(headers: _*)
+      .execute[HttpResponse].map { response =>
       response.status match {
         case OK =>
             Right(response.json)

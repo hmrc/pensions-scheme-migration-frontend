@@ -53,7 +53,11 @@ class ListOfSchemesConnectorImpl @Inject()(
                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[HttpResponse, ListOfLegacySchemes]] = {
     val (url, schemeHc) = (config.listOfSchemesUrl, hc.withExtraHeaders("psaId" -> psaId))
 
-    http.get(url"$url")(schemeHc).execute[HttpResponse].map { response =>
+    val headers = Seq(("psaId", psaId))
+
+    http.get(url"$url")(schemeHc)
+      .setHeader(headers: _*)
+      .execute[HttpResponse].map { response =>
       response.status match {
         case OK =>
             Json.parse(response.body).validate[ListOfLegacySchemes] match {
@@ -72,7 +76,8 @@ class ListOfSchemesConnectorImpl @Inject()(
   def removeCache(psaId: String)
             (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
     val (url, schemeHc) = (config.listOfSchemesRemoveCacheUrl, hc.withExtraHeaders("psaId" -> psaId))
-    http.delete(url"$url")(schemeHc).execute[HttpResponse].map(_ => Ok)
+    val headers = Seq(("psaId", psaId))
+    http.delete(url"$url")(schemeHc).setHeader(headers: _*).execute[HttpResponse].map(_ => Ok)
   }
   private val ancillaryPsaError: String = "Administrator is a subordinate in mapping table"
 

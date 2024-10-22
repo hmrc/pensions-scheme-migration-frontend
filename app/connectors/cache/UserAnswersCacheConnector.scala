@@ -53,7 +53,7 @@ class UserAnswersCacheConnectorImpl @Inject()(config: AppConfig,
     val headers: Seq[(String, String)] = Seq(("Content-Type", "application/json"), ("pstr", pstr))
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    http.get(url"$url")(hc).execute[HttpResponse]
+    http.get(url"$url")(hc).setHeader(headers: _*).execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
         response.status match {
@@ -72,7 +72,7 @@ class UserAnswersCacheConnectorImpl @Inject()(config: AppConfig,
     val headers: Seq[(String, String)] = Seq(("pstr", lock.pstr),("psaId", lock.psaId), ("Content-Type", "application/json"))
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    http.post(url"${config.dataCacheUrl}")(hc).withBody(value).execute[HttpResponse]
+    http.post(url"${config.dataCacheUrl}")(hc).setHeader(headers: _*).withBody(value).execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
             response.status match {
@@ -88,7 +88,7 @@ class UserAnswersCacheConnectorImpl @Inject()(config: AppConfig,
                         (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Result] = {
     val headers: Seq[(String, String)] = Seq(("pstr", pstr))
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
-    http.delete(url"$url")(hc).execute[HttpResponse].map { _ =>
+    http.delete(url"$url")(hc).setHeader(headers: _*).execute[HttpResponse].map { _ =>
       Ok
     }
   }
