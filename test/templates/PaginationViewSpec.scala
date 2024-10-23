@@ -47,18 +47,18 @@ class PaginationViewSpec extends ControllerSpecBase with JsonMatchers with Enume
       val content = contentAsString(view)
 
       //current page
-      content must include("""<a class="govuk-link govuk-pagination__link" href="/test/url?page=5" aria-current="page">5</a>""")
+      content must include("""<a class="govuk-link govuk-pagination__link" id="pageNumber-5" href="/test/url?page=5" aria-current="page">5</a>""")
 
       // previous link
       content must include("""<a class="govuk-link govuk-pagination__link" href="/test/url?page=4" rel="prev">""")
       content must include("Previous")
 
       // next link
-      content must include("""<a class="govuk-link govuk-pagination__link" href="/test/url?page=6" rel="next">""")
+      content must include("""<a class="govuk-link govuk-pagination__link" id="pageNumber-6" href="/test/url?page=6" rel="next">""")
       content must include("Next")
 
       // last page
-      content must include("""<a class="govuk-link govuk-pagination__link" href="/test/url?page=10" aria-label="Page 10">10</a>""")
+      content must include("""<a class="govuk-link govuk-pagination__link" id="pageNumber-10" href="/test/url?page=10" aria-label="Page 10">10</a>""")
     }
 
     "not display pagination when total items are less than or equal to the pagination limit" in {
@@ -94,10 +94,10 @@ class PaginationViewSpec extends ControllerSpecBase with JsonMatchers with Enume
       content must include("""<a class="govuk-link govuk-pagination__link" href="/test/url?page=1" aria-label="Page 1">1</a>""")
 
       // last page
-      content must include("""<a class="govuk-link govuk-pagination__link" href="/test/url?page=10" aria-label="Page 10">10</a>""")
+      content must include("""<a class="govuk-link govuk-pagination__link" id="pageNumber-10" href="/test/url?page=10" aria-label="Page 10">10</a>""")
 
       // next page
-      content must include("""<a class="govuk-link govuk-pagination__link" href="/test/url?page=2" rel="next">""")
+      content must include("""<a class="govuk-link govuk-pagination__link" id="pageNumber-2" href="/test/url?page=2" rel="next">""")
     }
 
     "display previous link when on the second page" in {
@@ -130,7 +130,7 @@ class PaginationViewSpec extends ControllerSpecBase with JsonMatchers with Enume
       val content = contentAsString(view)
 
       // next page
-      content must include("""<a class="govuk-link govuk-pagination__link" href="/test/url?page=10" rel="next">""")
+      content must include("""<a class="govuk-link govuk-pagination__link" id="pageNumber-10" href="/test/url?page=10" rel="next">""")
     }
   }
 }
