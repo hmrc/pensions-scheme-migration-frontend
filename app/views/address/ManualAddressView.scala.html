@@ -107,7 +107,7 @@
         }
 
         @if(countries.nonEmpty) {
-        <div class="govuk-!-width-two-thirds">
+        <div class="govuk-form-group autocomplete-wrapper govuk-body govuk-input--width-20">
             @govukSelect(
                 SelectViewModel(
                     field = form("country"),
