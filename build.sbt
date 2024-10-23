@@ -40,16 +40,6 @@ lazy val microservice = Project(appName, file("."))
       "uk.gov.hmrc.hmrcfrontend.views.html.helpers._",
       "viewmodels.govuk.all._",
     ),
-      // concatenate js
-      Concat.groups := Seq(
-  "javascripts/application.js" -> group(
-        Seq(
-          "lib/govuk-frontend/govuk/all.js",
-          "lib/hmrc-frontend/hmrc/all.js",
-          "javascripts/psm.js"
-        )
-      )
-    ),
 // prevent removal of unused code which generates warning errors due to use of third-party libs
     uglifyCompressOptions := Seq("unused=false", "dead_code=false"),
 // below line required to force asset pipeline to operate in dev rather than only prod

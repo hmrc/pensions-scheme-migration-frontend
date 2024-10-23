@@ -28,7 +28,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.mvc.Request
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.HttpReads.upstreamResponseMessage
+import uk.gov.hmrc.http.HttpErrorFunctions.upstreamResponseMessage
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.Data.{psaName, pstr, ua}
 import utils.Enumerable

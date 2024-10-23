@@ -30,7 +30,6 @@ import views.html.{BadRequestView, InternalServerErrorView, NotFoundView}
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
-// NOTE: There should be changes to bootstrap to make this easier, the API in bootstrap should allow a `Future[Html]` rather than just an `Html`
 @Singleton
 class ErrorHandler @Inject()(
                               val messagesApi: MessagesApi,
@@ -39,13 +38,16 @@ class ErrorHandler @Inject()(
                               badRequestView: BadRequestView,
                               internalServerErrorView: InternalServerErrorView,
                               notFoundView: NotFoundView
-                            )(implicit ec: ExecutionContext)
+                            )(implicit val ec: ExecutionContext)
   extends uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
     with I18nSupport {
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html = {
-    errorTemplate(pageTitle, heading, Some(message))
+
+  def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: RequestHeader): Future[Html] = {
+    implicit def requestImplicit: Request[_] = Request(request, "")
+    Future.successful(errorTemplate(pageTitle, heading, Some(message)))
   }
+
   private val logger = Logger(classOf[ErrorHandler])
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String = ""): Future[Result] = {

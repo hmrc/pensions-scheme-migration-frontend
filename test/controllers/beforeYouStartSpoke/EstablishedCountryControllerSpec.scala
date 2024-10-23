@@ -88,7 +88,7 @@ class EstablishedCountryControllerSpec extends ControllerSpecBase
         form,
         Data.schemeName,
         routes.EstablishedCountryController.onSubmit,
-        Seq(SelectItem.apply(), SelectItem(Some("GB"), "United Kingdom"))
+        Seq(SelectItem(Some("")), SelectItem(Some("GB"), "United Kingdom"))
       )(fakeRequest, messages)
 
       status(result) mustBe OK
