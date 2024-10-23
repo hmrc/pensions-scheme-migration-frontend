@@ -21,7 +21,8 @@ layout: templates.Layout,
 formHelper: FormWithCSRF,
 govukErrorSummary: GovukErrorSummary,
 govukRadios: GovukRadios,
-govukButton: GovukButton
+govukButton: GovukButton,
+summaryList: templates.SummaryList
 )
 
 @(form: Form[_], schemeName: String, directorSize: Integer, maxDirectors: Integer, itemList: Seq[DirectorEntity], radios: Seq[RadioItem],submitCall: Call)(implicit request: Request[_], messages: Messages)
@@ -42,29 +43,8 @@ govukButton: GovukButton
 
     } else {
 
-    <div class="govuk-form-group govuk-!-margin-bottom-7">
-        <dl class="hmrc-add-to-a-list hmrc-add-to-a-list--short ">
-            @for(item <- itemList) {
-            <div class="hmrc-add-to-a-list__contents">
-                <dt class="hmrc-add-to-a-list__identifier hmrc-add-to-a-list__identifier--light">
-                    @item.name
-                </dt>
-                <dd class="hmrc-add-to-a-list__change">
-                    <a class="govuk-link" href="@item.editLink.getOrElse('#')">
-                        <span aria-hidden="true">@messages("site.change")</span>
-                        <span class="govuk-visually-hidden">@messages("site.change") @item.name</span>
-                    </a>
-                </dd>
-                <dd class="hmrc-add-to-a-list__remove">
-                    <a class="govuk-link" href="@item.deleteLink.getOrElse('#')">
-                        <span aria-hidden="true">@messages("site.remove")</span>
-                        <span class="govuk-visually-hidden">@messages("site.remove") @item.name</span>
-                    </a>
-                </dd>
-            </div>
-           }
-        </dl>
-    </div>
+    @summaryList(itemList, None, "site.change", "site.remove", "edit")
+
     @if(directorSize < maxDirectors) {
         @govukRadios(
         RadiosViewModel(
