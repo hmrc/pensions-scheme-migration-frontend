@@ -23,7 +23,8 @@ import play.api.libs.json._
 import play.api.mvc.Result
 import play.api.mvc.Results._
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpException, HttpResponse, NotFoundException}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse, NotFoundException, StringContextOps}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -37,7 +38,7 @@ trait CurrentPstrCacheConnector {
   def remove(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result]
 }
 
-class CurrentPstrCacheConnectorImpl @Inject()(config: AppConfig, http: HttpClient) extends CurrentPstrCacheConnector {
+class CurrentPstrCacheConnectorImpl @Inject()(config: AppConfig, http: HttpClientV2) extends CurrentPstrCacheConnector {
 
   private def url = s"${config.schemeDataCacheUrl}"
 
@@ -46,7 +47,9 @@ class CurrentPstrCacheConnectorImpl @Inject()(config: AppConfig, http: HttpClien
     val headers: Seq[(String, String)] = Seq(("Content-Type", "application/json"))
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    http.GET[HttpResponse](url)(implicitly, hc, implicitly)
+    http.get(url"$url")(hc)
+      .setHeader(headers: _*)
+      .execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
         response.status match {
@@ -66,7 +69,9 @@ class CurrentPstrCacheConnectorImpl @Inject()(config: AppConfig, http: HttpClien
     val headers: Seq[(String, String)] = Seq(("Content-Type", "application/json"))
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    http.POST[JsValue, HttpResponse](url, value)(implicitly, implicitly, hc, implicitly)
+    http.post(url"$url")(hc)
+      .setHeader(headers: _*)
+      .withBody(value).execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
           response.status match {
@@ -82,7 +87,9 @@ class CurrentPstrCacheConnectorImpl @Inject()(config: AppConfig, http: HttpClien
     val headers: Seq[(String, String)] = Seq(("Content-Type", "application/json"))
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    http.DELETE[HttpResponse](url)(implicitly, hc, implicitly).map { _ =>
+    http.delete(url"$url")(hc)
+      .setHeader(headers: _*)
+      .execute[HttpResponse].map { _ =>
       Ok
     }
   }

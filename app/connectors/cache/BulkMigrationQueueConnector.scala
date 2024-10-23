@@ -21,12 +21,13 @@ import config.AppConfig
 import play.api.http.Status._
 import play.api.libs.json._
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpException, HttpResponse, NotFoundException}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse, NotFoundException, StringContextOps}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class BulkMigrationQueueConnector @Inject()(config: AppConfig,
-                                            http: HttpClient
+                                            http: HttpClientV2
                                            ) {
 
 
@@ -36,7 +37,8 @@ class BulkMigrationQueueConnector @Inject()(config: AppConfig,
     val headers: Seq[(String, String)] = Seq(("psaId", psaId), ("Content-Type", "application/json"))
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    http.POST[JsValue, HttpResponse](config.bulkMigrationEnqueueUrl, requests)(implicitly, implicitly, hc, implicitly)
+    http.post(url"${config.bulkMigrationEnqueueUrl}")(hc)
+      .setHeader(headers: _*).withBody(requests).execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
         response.status match {
@@ -51,7 +53,8 @@ class BulkMigrationQueueConnector @Inject()(config: AppConfig,
     val headers: Seq[(String, String)] = Seq(("psaId", psaId), ("Content-Type", "application/json"))
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    http.GET[HttpResponse](config.bulkMigrationIsInProgressUrl)(implicitly, hc, implicitly)
+    http.get(url"${config.bulkMigrationIsInProgressUrl}")(hc)
+      .setHeader(headers: _*).execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
         response.status match {
@@ -69,7 +72,9 @@ class BulkMigrationQueueConnector @Inject()(config: AppConfig,
     val headers: Seq[(String, String)] = Seq(("psaId", psaId), ("Content-Type", "application/json"))
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    http.GET[HttpResponse](config.bulkMigrationIsAllFailedUrl)(implicitly, hc, implicitly)
+    http.get(url"${config.bulkMigrationIsAllFailedUrl}")(hc)
+      .setHeader(headers: _*)
+      .execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
         response.status match {
@@ -93,7 +98,9 @@ class BulkMigrationQueueConnector @Inject()(config: AppConfig,
     val headers: Seq[(String, String)] = Seq(("psaId", psaId), ("Content-Type", "application/json"))
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    http.DELETE[HttpResponse](config.bulkMigrationDeleteAllUrl)(implicitly, hc, implicitly).map { response =>
+    http.delete(url"${config.bulkMigrationDeleteAllUrl}")(hc)
+      .setHeader(headers: _*)
+      .execute[HttpResponse].map { response =>
       response.status match {
         case OK =>
           response.json.as[Boolean]
