@@ -21,6 +21,7 @@ import controllers.actions._
 import controllers.establishers.routes.NoEstablishersController
 import forms.establishers.AddEstablisherFormProvider
 import identifiers.establishers.AddEstablisherId
+import models.Establisher
 import navigators.CompoundNavigator
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -47,7 +48,7 @@ class AddEstablisherController @Inject()(
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()) {
       implicit request =>
-        val allEstablishers = request.userAnswers.allEstablishersAfterDelete
+        val allEstablishers: Seq[Establisher[_]] = request.userAnswers.allEstablishersAfterDelete
         if (allEstablishers.isEmpty) {
           Redirect(NoEstablishersController.onPageLoad)
         } else {
