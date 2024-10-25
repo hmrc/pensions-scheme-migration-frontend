@@ -252,7 +252,7 @@ messages__utr__error_maxLength = Enter a UTR in the correct format
 messages__utr__error_invalid = Enter a Unique Taxpayer Reference (UTR) in the correct format
 
 messages__reason__error_maxLength = Reason must be 160 characters or less
-messages__reason__error_invalid = Reason must only include letters, numbers and punctuation marks
+messages__reason__error_invalid = The reason must only include letters, numbers, spaces, ampersands (&), apostrophes, hyphens and full stops.
 messages__whyNoUTR = Why does {0} not have a UTR?
 messages__reason__error_utrRequired = Enter a reason why {0} does not have a UTR
 messages__whyNoUTR__cya__visuallyHidden = the reason why {0} does not have a UTR

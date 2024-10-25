@@ -25,4 +25,5 @@ package object govuk {
       with CheckboxFluency
       with FieldsetFluency
       with SelectFluency
+      with TextareaFluency
 }
