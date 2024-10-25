@@ -347,6 +347,7 @@ benefitsInsuranceName.h1 = What is the name of the insurance company that secure
 benefitsInsuranceName.visuallyHidden = the name of the insurance company that secures the scheme benefits
 benefitsInsuranceName.error.required = Enter the name of the insurance company that secures the scheme benefits
 benefitsInsuranceName.error.length = Name of insurance company must be fewer than 161 characters
+benefitsInsuranceName.error.invalid = Enter the insurance company’s name only using European characters
 benefitsInsuranceUnknown = the insurance company
 
 benefitsInsurancePolicy.title = What is the policy number?
@@ -354,6 +355,7 @@ benefitsInsurancePolicy.h1 = What is the policy number with {0}?
 benefitsInsurancePolicy.noCompanyName.h1 = What is the policy number of the insurance company that secures the scheme benefits?
 benefitsInsurancePolicy.error.required = Enter the policy number of the insurance company that secures the scheme benefits
 benefitsInsurancePolicy.error.length = Policy number must be fewer than 56 characters
+benefitsInsurancePolicy.error.invalid = Enter the policy number only using European characters
 benefitsInsurancePolicy.visuallyHidden = the policy number with the insurance company that secures the scheme benefits
 
 addressList.title = What is {0}’s address?
