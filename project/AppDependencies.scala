@@ -18,9 +18,7 @@ object AppDependencies {
   val test: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"             %% "bootstrap-test-play-30"   % hmrcBootstrapVersion  % Test,
     "org.mockito"             %% "mockito-scala"            % "1.17.37"              % Test,
-    "org.jsoup"               % "jsoup"                     % "1.18.1"              % Test,
-    "org.scalatestplus"       %% "scalacheck-1-17"          % "3.2.18.0"            % Test,
-    "org.pegdown"             % "pegdown"                   % "1.6.0"               % Test
+    "org.scalatestplus"       %% "scalacheck-1-17"          % "3.2.18.0"            % Test
   )
 
   val all: Seq[ModuleID] = compile ++ test
