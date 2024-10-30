@@ -36,12 +36,9 @@ import scala.concurrent.Future
 class CommonDateOfBirthServiceSpec extends ControllerSpecBase with CommonServiceSpecBase {
 
   // Instantiate service
-
-
   override def beforeEach(): Unit = reset(mockUserAnswersCacheConnector)
 
   // Define the form provider for the date of birth form
-  private val minDate: LocalDate = LocalDate.of(2020,2, 1)
   private val formProvider: DOBFormProvider = new DOBFormProvider()
   private val dobId: TypedIdentifier[LocalDate] = new TypedIdentifier[LocalDate] {}
   private val personNameId: TypedIdentifier[PersonName] = EstablisherNameId(0)
@@ -58,7 +55,6 @@ class CommonDateOfBirthServiceSpec extends ControllerSpecBase with CommonService
     navigator = new FakeNavigator(desiredRoute = onwardCall),
     messagesApi = messagesApi
   )
-
 
   "get" should {
     "return OK and render the correct template" in {
@@ -129,7 +125,6 @@ class CommonDateOfBirthServiceSpec extends ControllerSpecBase with CommonService
 
     "redirect to the next page on valid data submission" in {
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-
 
       val result = service.post(
         form = form.bind(Map("date.day" -> "01", "date.month" -> "01", "date.year" -> "1990")),
