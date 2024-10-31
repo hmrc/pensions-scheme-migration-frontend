@@ -23,7 +23,7 @@
     appConfig: AppConfig,
     govukLayout: GovukLayout,
     hmrcHead: HmrcHead,
-    hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
+    hmrcTimeoutDialog: HmrcTimeoutDialog,
     hmrcStandardFooter: HmrcStandardFooter,
     hmrcStandardHeader: HmrcStandardHeader,
     standardBetaBanner: StandardBetaBanner,
@@ -43,15 +43,19 @@
 )(mainContent: Html)(implicit request: Request[_], messages: Messages)
 
 @headScripts = {
-    @if(timeoutEnabled) {
-        @hmrcTimeoutDialogHelper(
-            signOutUrl = controllers.routes.LogoutController.onPageLoad.url,
-            keepAliveUrl = Some(controllers.routes.LogoutController.keepAlive.url),
-            timeout = Some(900),
-            countdown = Some(120)
-        )
-    }
-    <link rel="stylesheet" media="all" type="text/css" href='@routes.Assets.versioned("stylesheets/application.css")' />
+    @println(s"timeoutSeconds in Layout: ${appConfig.timeoutSeconds}")
+    @println(s"countdownInSeconds in Layout: ${appConfig.countdownInSeconds}")
+    @hmrcHead(
+        headBlock = if(timeoutEnabled) { Some(
+            hmrcTimeoutDialog(TimeoutDialog(
+                timeout = Some(appConfig.timeoutSeconds),
+                countdown = Some(appConfig.countdownInSeconds),
+                keepAliveUrl = Some(controllers.routes.LogoutController.keepAlive.url),
+                signOutUrl = Some(controllers.routes.LogoutController.onPageLoad.url)
+            )))
+        } else None
+    )
+    <link rel="stylesheet" media="all" type="text/css" href='@routes.Assets.versioned("stylesheets/pensionschemeeventreportingfrontend-app.css")' />
 }
 
 @beforeContentBlock = {
@@ -81,7 +85,7 @@
 
 @govukLayout(
     pageTitle = Some(_pageTitle),
-    headBlock = Some(hmrcHead(headBlock = Some(headScripts))),
+    headBlock = Some(headScripts),
     headerBlock = Some(hmrcStandardHeader(
         serviceName = Some(messages("site.service_name")),
         serviceUrl = Some(appConfig.psaOverviewUrl),
