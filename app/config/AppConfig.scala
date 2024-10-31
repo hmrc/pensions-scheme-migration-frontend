@@ -87,8 +87,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val serviceSignOut: String = s"${config.get[String](path = "urls.logout")}"
   lazy val timeoutSeconds: Int = config.get[Int](path = "session.timeoutSeconds")
   lazy val countdownInSeconds: Int = config.get[Int](path = "session.countdownInSeconds")
-  println(s"\n\n\n timeoutSeconds is: $timeoutSeconds")
-  println(s"\n\n\n countdownInSeconds is: $countdownInSeconds")
   lazy val validCountryCodes: Seq[String] = s"${config.get[String](path = "validCountryCodes")}".split(",").toSeq
   lazy val maxDirectors: Int = loadConfig("company.maxDirectors").toInt
   lazy val maxTrustees: Int = loadConfig("company.maxTrustees").toInt

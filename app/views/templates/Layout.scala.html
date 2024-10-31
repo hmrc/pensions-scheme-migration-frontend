@@ -43,8 +43,6 @@
 )(mainContent: Html)(implicit request: Request[_], messages: Messages)
 
 @headScripts = {
-    @println(s"timeoutSeconds in Layout: ${appConfig.timeoutSeconds}")
-    @println(s"countdownInSeconds in Layout: ${appConfig.countdownInSeconds}")
     @hmrcHead(
         headBlock = if(timeoutEnabled) { Some(
             hmrcTimeoutDialog(TimeoutDialog(
