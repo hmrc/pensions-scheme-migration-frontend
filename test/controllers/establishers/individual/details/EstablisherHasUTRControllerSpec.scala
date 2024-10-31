@@ -96,6 +96,7 @@ class EstablisherHasUTRControllerSpec
         "govuk-visually-hidden",
         Seq(
           "This is a 10-digit or 13-digit number. " +
+            "For example, 12345 67890. " +
             "You can find it on tax returns and other documents from HMRC. " +
             "It might be called ‘reference’, ‘UTR’ or ‘official use’."
         ),
@@ -126,6 +127,7 @@ class EstablisherHasUTRControllerSpec
         "govuk-visually-hidden",
         Seq(
           "This is a 10-digit or 13-digit number. " +
+            "For example, 12345 67890. " +
             "You can find it on tax returns and other documents from HMRC. " +
             "It might be called ‘reference’, ‘UTR’ or ‘official use’."
         ),
