@@ -23,7 +23,7 @@
     appConfig: AppConfig,
     govukLayout: GovukLayout,
     hmrcHead: HmrcHead,
-    hmrcTimeoutDialog: HmrcTimeoutDialog,
+    hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
     hmrcStandardFooter: HmrcStandardFooter,
     hmrcStandardHeader: HmrcStandardHeader,
     standardBetaBanner: StandardBetaBanner,
@@ -44,16 +44,17 @@
 
 @headScripts = {
     @hmrcHead(
-        headBlock = if(timeoutEnabled) { Some(
-            hmrcTimeoutDialog(TimeoutDialog(
+        headBlock = if(timeoutEnabled) {
+            Some(
+            hmrcTimeoutDialogHelper(
                 timeout = Some(appConfig.timeoutSeconds),
                 countdown = Some(appConfig.countdownInSeconds),
                 keepAliveUrl = Some(controllers.routes.LogoutController.keepAlive.url),
-                signOutUrl = Some(controllers.routes.LogoutController.onPageLoad.url)
-            )))
+                signOutUrl = routes.LogoutController.onPageLoad.url
+            ))
         } else None
     )
-    <link rel="stylesheet" media="all" type="text/css" href='@routes.Assets.versioned("stylesheets/pensionschemeeventreportingfrontend-app.css")' />
+    <link rel="stylesheet" media="all" type="text/css" href='@routes.Assets.versioned("stylesheets/application.css")' />
 }
 
 @beforeContentBlock = {

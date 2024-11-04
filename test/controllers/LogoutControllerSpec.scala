@@ -16,37 +16,27 @@
 
 package controllers
 
-import connectors.ListOfSchemesConnector
-import connectors.cache.LockCacheConnector
-import controllers.actions.FakeAuthAction
-import org.mockito.ArgumentMatchers.any
 import play.api.mvc.Results
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 
-import scala.concurrent.Future
-
 
 class LogoutControllerSpec extends ControllerSpecBase with Results {
   private val mockAuthConnector: AuthConnector = mock[AuthConnector]
-  private val mockLockCacheConnector = mock[LockCacheConnector]
-  private val mockListOfSchemesConnector: ListOfSchemesConnector = mock[ListOfSchemesConnector]
 
   def logoutController: LogoutController =
-    new LogoutController(mockAuthConnector, mockAppConfig, controllerComponents, FakeAuthAction, mockLockCacheConnector, mockListOfSchemesConnector)
+    new LogoutController(mockAuthConnector, mockAppConfig, controllerComponents)
+
+  private def httpPathGET: String = routes.LogoutController.onPageLoad.url
 
   "Logout Controller" must {
 
-    "redirect to feedback survey page for an Individual and clear down session data cache" in {
-      when(mockAuthConnector.authorise[Option[String]](any(), any())(any(), any())).thenReturn(Future.successful(Some("id")))
-      when(mockLockCacheConnector.removeLockByUser(any(), any())).thenReturn(Future.successful(Ok))
-      when(mockListOfSchemesConnector.removeCache(any())(any(), any())).thenReturn(Future.successful(Ok))
-      when(mockAppConfig.serviceSignOut).thenReturn("signout")
-      val result = logoutController.onPageLoad(fakeRequest)
+    "redirect to feedback survey page" in {
+      val request = httpGETRequest(httpPathGET)
+      val result = route(app, request).value
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some("signout")
-      verify(mockAppConfig, times(1)).serviceSignOut
+      redirectLocation(result) mustBe Some("http://localhost:9514/feedback/PODS")
     }
   }
 }
