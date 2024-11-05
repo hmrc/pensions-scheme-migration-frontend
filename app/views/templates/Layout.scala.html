@@ -43,14 +43,17 @@
 )(mainContent: Html)(implicit request: Request[_], messages: Messages)
 
 @headScripts = {
-    @if(timeoutEnabled) {
-        @hmrcTimeoutDialogHelper(
-            signOutUrl = controllers.routes.LogoutController.onPageLoad.url,
-            keepAliveUrl = Some(controllers.routes.LogoutController.keepAlive.url),
-            timeout = Some(900),
-            countdown = Some(120)
-        )
-    }
+    @hmrcHead(
+        headBlock = if(timeoutEnabled) {
+            Some(
+            hmrcTimeoutDialogHelper(
+                timeout = Some(appConfig.timeoutSeconds),
+                countdown = Some(appConfig.countdownInSeconds),
+                keepAliveUrl = Some(controllers.routes.LogoutController.keepAlive.url),
+                signOutUrl = routes.LogoutController.onPageLoad.url
+            ))
+        } else None
+    )
     <link rel="stylesheet" media="all" type="text/css" href='@routes.Assets.versioned("stylesheets/application.css")' />
 }
 
@@ -81,7 +84,7 @@
 
 @govukLayout(
     pageTitle = Some(_pageTitle),
-    headBlock = Some(hmrcHead(headBlock = Some(headScripts))),
+    headBlock = Some(headScripts),
     headerBlock = Some(hmrcStandardHeader(
         serviceName = Some(messages("site.service_name")),
         serviceUrl = Some(appConfig.psaOverviewUrl),
