@@ -33,9 +33,6 @@ submitCall: Call)(implicit request: Request[_], messages: Messages)
 @layout(messages("messages__enterEmail_pageHeading", entityType)) {
 <div>
 
-
-    <h1 class="govuk-heading-l">@messages("messages__enterEmail_pageHeading", entityName)</h1>
-
     @formHelper(action = submitCall, Symbol("autoComplete") -> "off") {
 
     @govukInput(
@@ -46,9 +43,9 @@ submitCall: Call)(implicit request: Request[_], messages: Messages)
     inputType = "tel",
     classes = "govuk-input--width-10",
     label = Label(
-    isPageHeading = false,
-    classes = "govuk-fieldset__legend--s govuk-visually-hidden",
-    content = Text(messages("messages__enterEmail_pageHeading"))
+    isPageHeading = true,
+    classes = "govuk-fieldset__legend--l govuk-heading--l",
+    content = Text(messages("messages__enterEmail_pageHeading", entityName))
     ),
     errorMessage = field.error.map(e => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args:_*))))
     )
