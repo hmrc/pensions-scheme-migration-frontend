@@ -43,12 +43,13 @@
                 @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
             }
 
-            <h2 class="govuk-heading-l">@messages("messages__dob__title", name)</h2>
-
             @govukDateInput(
                 DateViewModel(
                     field  = form("date"),
-                    legend = Legend()
+                    legend = Legend(
+                        content = HtmlContent(s"<h1 class='govuk-heading-l'>${messages("messages__dob__title", name)}</h1>"),
+                        isPageHeading = true
+                    )
                 ).copy(hint = Some(HintViewModel(Text(messages("site.date.example")))))
             )
 
