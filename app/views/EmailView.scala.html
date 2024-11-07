@@ -32,6 +32,9 @@ submitCall: Call)(implicit request: Request[_], messages: Messages)
 
 @layout(messages("messages__enterEmail_pageHeading", entityType)) {
 <div>
+    @if(form.errors.nonEmpty) {
+    @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+    }
 
     @formHelper(action = submitCall, Symbol("autoComplete") -> "off") {
 
