@@ -90,7 +90,7 @@ class TrusteeEnterNINOControllerSpec
         pageTitle = "What is the individual’s National Insurance number?",
         pageHeading = "What is the National Insurance number for Jane Doe?",
         schemeName = "Test scheme name",
-        legendClass = "govuk-label--xl",
+        legendClass = "govuk-label--l",
         paragraphs = Seq(),
         hintText = Some("For example, QQ 12 34 56 C"),
         submitCall= routes.TrusteeEnterNINOController.onSubmit(0, NormalMode)

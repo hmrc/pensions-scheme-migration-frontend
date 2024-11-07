@@ -50,7 +50,7 @@ class CompanyNumberControllerSpec extends ControllerSpecBase with JsonMatchers w
       schemeName,
       messages("messages__companyNumber", messages("messages__company")),
       messages("messages__companyNumber", companyDetails.companyName),
-      "govuk-label--xl",
+      "govuk-label--l",
       Seq(),
       Some(messages("messages__companyNumber__hint")),
       routes.CompanyNumberController.onSubmit(index, NormalMode)

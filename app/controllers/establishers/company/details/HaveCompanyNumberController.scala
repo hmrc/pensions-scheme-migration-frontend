@@ -62,7 +62,7 @@ class HaveCompanyNumberController @Inject()(val messagesApi: MessagesApi,
               id            = HaveCompanyNumberId(index),
               form          = form(index),
               schemeName    = schemeName,
-              legendClass   = "govuk-label--xl",
+              legendClass   = "govuk-label--l",
               paragraphText = Seq(Messages("messages__haveCompanyNumber__p")),
               submitCall    = routes.HaveCompanyNumberController.onSubmit(index, mode)
             )
@@ -81,7 +81,7 @@ class HaveCompanyNumberController @Inject()(val messagesApi: MessagesApi,
               id            = HaveCompanyNumberId(index),
               form          = form(index),
               schemeName    = schemeName,
-              legendClass   = "govuk-label--xl",
+              legendClass   = "govuk-label--l",
               mode          = mode,
               paragraphText = Seq(Messages("messages__haveCompanyNumber__p")),
               submitCall    = routes.HaveCompanyNumberController.onSubmit(index, mode)
