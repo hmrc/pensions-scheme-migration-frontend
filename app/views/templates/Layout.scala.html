@@ -39,7 +39,8 @@
     canSignOut: Boolean = true,
     showBackLink: Boolean = true,
     fullWidthLayout: Boolean = false,
-    formHasErrors: Boolean = false
+    formHasErrors: Boolean = false,
+    additionalScripts: Seq[String] = Seq()
 )(mainContent: Html)(implicit request: Request[_], messages: Messages)
 
 @headScripts = {
@@ -69,6 +70,9 @@
     <script @CSPNonce.attr src='@controllers.routes.Assets.versioned("lib/govuk-frontend/dist/govuk/all.bundle.js")'></script>
     <script @CSPNonce.attr src='@controllers.routes.Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
     <script @CSPNonce.attr src='@routes.Assets.versioned("javascripts/psm.js")'></script>
+    @additionalScripts.map { script =>
+        <script @CSPNonce.attr src='@routes.Assets.versioned(script)'></script>
+    }
 }
 
 @mainContentWithGetHelp = {
