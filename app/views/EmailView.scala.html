@@ -21,6 +21,7 @@ govukErrorSummary: GovukErrorSummary,
 govukInput: GovukInput,
 govukButton: GovukButton
 )
+
 @(form: Form[_],
 schemeName: String,
 entityName: String,
@@ -31,34 +32,33 @@ submitCall: Call)(implicit request: Request[_], messages: Messages)
 @field = @{form("value")}
 
 @layout(messages("messages__enterEmail_pageHeading", entityType)) {
-<div>
-    @if(form.errors.nonEmpty) {
-    @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
-    }
 
-    @formHelper(action = submitCall, Symbol("autoComplete") -> "off") {
+        @formHelper(action = submitCall, Symbol("autoComplete") -> "off") {
 
-    @govukInput(
-    Input(
-    id = field.id,
-    name = field.name,
-    value = field.value,
-    inputType = "tel",
-    classes = "govuk-input--width-10",
-    label = Label(
-    isPageHeading = true,
-    classes = "govuk-fieldset__legend--l govuk-heading--l",
-    content = Text(messages("messages__enterEmail_pageHeading", entityName))
-    ),
-    errorMessage = field.error.map(e => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args:_*))))
-    )
-    )
-    @govukButton(
-    ButtonViewModel(Text(messages("site.save_and_continue"))).asFormSubmit
-    )
-    }
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
 
-    @templates.ReturnLink(schemeName)
+        @govukInput(
+            Input(
+                id = field.id,
+                name = field.name,
+                value = field.value,
+                inputType = "tel",
+                classes = "govuk-input--width-10",
+                label = Label(
+                    isPageHeading = true,
+                    classes = "govuk-fieldset__legend--l govuk-heading--l",
+                    content = Text(messages("messages__enterEmail_pageHeading", entityName))
+                ),
+                errorMessage = field.error.map(e => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args:_*))))
+            )
+        )
+        @govukButton(
+        ButtonViewModel(Text(messages("site.save_and_continue"))).asFormSubmit
+        )
+     }
 
-</div>
+     @templates.ReturnLink(schemeName)
+
 }
