@@ -43,7 +43,7 @@
                             ))
                         ),
                         classes = "govuk-radios--inline",
-                        hint = Some(Hint(content = HtmlContent(Html(paragraphs.map(paragraph => s"<p class='govuk-body govuk-!-font-weight-regular'>$paragraph</p>").mkString))))
+                        hint = Some(Hint(content = HtmlContent(Html(paragraphs.map(paragraph => s"<p>$paragraph</p>").mkString))))
                     )
                 )
 
