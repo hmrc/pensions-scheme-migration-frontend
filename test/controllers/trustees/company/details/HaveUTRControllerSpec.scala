@@ -72,7 +72,7 @@ class HaveUTRControllerSpec extends ControllerSpecBase with JsonMatchers with Tr
         messages("messages__hasUTR", companyDetails.companyName),
         utils.Radios.yesNo(form("value")),
         "govuk-visually-hidden",
-        Seq(messages("messages__UTR__p")),
+        Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2")),
         routes.HaveUTRController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)
       compareResultAndView(result, view)
@@ -93,7 +93,7 @@ class HaveUTRControllerSpec extends ControllerSpecBase with JsonMatchers with Tr
         messages("messages__hasUTR", companyDetails.companyName),
         utils.Radios.yesNo(filledFrom("value")),
         "govuk-visually-hidden",
-        Seq(messages("messages__UTR__p")),
+        Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2")),
         routes.HaveUTRController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)
       compareResultAndView(result, view)

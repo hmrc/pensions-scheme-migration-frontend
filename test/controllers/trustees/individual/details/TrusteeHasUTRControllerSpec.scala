@@ -94,6 +94,8 @@ class TrusteeHasUTRControllerSpec
         utils.Radios.yesNo(form("value")),
         "govuk-visually-hidden",
         Seq("This is a 10-digit or 13-digit number. " +
+          "For example, 12345 67890. " +
+          "It may also start or end with the letter ‘k’.",
           "You can find it on tax returns and other documents from HMRC. " +
           "It might be called ‘reference’, ‘UTR’ or ‘official use’."),
         routes.TrusteeHasUTRController.onSubmit(0, NormalMode)
@@ -121,8 +123,10 @@ class TrusteeHasUTRControllerSpec
         utils.Radios.yesNo(filledFrom("value")),
         "govuk-visually-hidden",
         Seq("This is a 10-digit or 13-digit number. " +
+          "For example, 12345 67890. " +
+          "It may also start or end with the letter ‘k’.",
           "You can find it on tax returns and other documents from HMRC. " +
-          "It might be called ‘reference’, ‘UTR’ or ‘official use’."),
+            "It might be called ‘reference’, ‘UTR’ or ‘official use’."),
         routes.TrusteeHasUTRController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)
       compareResultAndView(result, view)

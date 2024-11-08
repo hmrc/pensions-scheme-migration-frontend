@@ -94,11 +94,11 @@ class EstablisherHasUTRControllerSpec
         "Does Jane Doe have a Unique Taxpayer Reference (UTR)?",
         utils.Radios.yesNo(form("value")),
         "govuk-visually-hidden",
-        Seq(
-          "This is a 10-digit or 13-digit number. " +
-            "You can find it on tax returns and other documents from HMRC. " +
-            "It might be called ‘reference’, ‘UTR’ or ‘official use’."
-        ),
+        Seq("This is a 10-digit or 13-digit number. " +
+          "For example, 12345 67890. " +
+          "It may also start or end with the letter ‘k’.",
+          "You can find it on tax returns and other documents from HMRC. " +
+            "It might be called ‘reference’, ‘UTR’ or ‘official use’."),
         routes.EstablisherHasUTRController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)
       compareResultAndView(result, view)
@@ -124,11 +124,11 @@ class EstablisherHasUTRControllerSpec
         "Does Jane Doe have a Unique Taxpayer Reference (UTR)?",
         utils.Radios.yesNo(filledFrom("value")),
         "govuk-visually-hidden",
-        Seq(
-          "This is a 10-digit or 13-digit number. " +
-            "You can find it on tax returns and other documents from HMRC. " +
-            "It might be called ‘reference’, ‘UTR’ or ‘official use’."
-        ),
+        Seq("This is a 10-digit or 13-digit number. " +
+          "For example, 12345 67890. " +
+          "It may also start or end with the letter ‘k’.",
+          "You can find it on tax returns and other documents from HMRC. " +
+            "It might be called ‘reference’, ‘UTR’ or ‘official use’."),
         routes.EstablisherHasUTRController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)
       compareResultAndView(result, view)

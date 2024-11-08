@@ -36,7 +36,7 @@
 }
 
 @hintHtml = @{
-    val paragraphsHtml = paragraphs.map(paragraph => s"<p class='govuk-body govuk-!-font-weight-regular'>$paragraph</p>").mkString
+    val paragraphsHtml = paragraphs.map(paragraph => s"<p>$paragraph</p>").mkString
     Html(paragraphsHtml + hintText.getOrElse(""))
 }
 
