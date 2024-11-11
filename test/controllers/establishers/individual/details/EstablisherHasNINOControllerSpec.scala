@@ -93,7 +93,7 @@ class EstablisherHasNINOControllerSpec
         "Does the individual have a National Insurance number?",
         "Does Jane Doe have a National Insurance number?",
         utils.Radios.yesNo(form("value")),
-        "govuk-label--xl",
+        "govuk-label--l",
         routes.EstablisherHasNINOController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)
       compareResultAndView(result, view)
@@ -118,7 +118,7 @@ class EstablisherHasNINOControllerSpec
         "Does the individual have a National Insurance number?",
         "Does Jane Doe have a National Insurance number?",
         utils.Radios.yesNo(filledFrom("value")),
-        "govuk-label--xl",
+        "govuk-label--l",
         routes.EstablisherHasNINOController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)
       compareResultAndView(result, view)

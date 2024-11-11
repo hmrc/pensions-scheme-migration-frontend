@@ -59,7 +59,7 @@ class DirectorEnterNINOController @Inject()( val messagesApi: MessagesApi,
               form = form(establisherIndex, directorIndex),
               schemeName = schemeName,
               hintText = Some(Messages("messages__enterNINO__hint")),
-              legendClass = "govuk-label--xl",
+              legendClass = "govuk-label--l",
               submitCall = routes.DirectorEnterNINOController.onSubmit(establisherIndex, directorIndex, mode)
             )
         }
@@ -89,7 +89,7 @@ class DirectorEnterNINOController @Inject()( val messagesApi: MessagesApi,
               form          = form(establisherIndex,directorIndex),
               schemeName    = schemeName,
               hintText      = Some(Messages("messages__enterNINO__hint")),
-              legendClass   = "govuk-label--xl",
+              legendClass   = "govuk-label--l",
               mode          = mode,
               optSetUserAnswers = Some(value => setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers)),
               submitCall = routes.DirectorEnterNINOController.onSubmit(establisherIndex, directorIndex, mode)

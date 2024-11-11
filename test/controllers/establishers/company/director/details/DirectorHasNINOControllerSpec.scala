@@ -92,7 +92,7 @@ class DirectorHasNINOControllerSpec
         "Does the director have a National Insurance number?",
         "Does Jane Doe have a National Insurance number?",
         utils.Radios.yesNo(form("value")),
-        "govuk-label--xl",
+        "govuk-label--l",
         routes.DirectorHasNINOController.onSubmit(0,0,NormalMode)
       )(fakeRequest, messages)
       compareResultAndView(result, view)
@@ -117,7 +117,7 @@ class DirectorHasNINOControllerSpec
         "Does the director have a National Insurance number?",
         "Does Jane Doe have a National Insurance number?",
         utils.Radios.yesNo(filledFrom("value")),
-        "govuk-label--xl",
+        "govuk-label--l",
         routes.DirectorHasNINOController.onSubmit(0, 0, NormalMode)
       )(fakeRequest, messages)
       compareResultAndView(result, view)

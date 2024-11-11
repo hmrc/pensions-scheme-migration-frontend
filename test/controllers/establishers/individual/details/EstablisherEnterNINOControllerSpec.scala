@@ -96,7 +96,7 @@ class EstablisherEnterNINOControllerSpec
         schemeName = "Test scheme name",
         pageTitle = "What is the individual’s National Insurance number?",
         pageHeading = "What is Jane Doe’s National Insurance number?",
-        legendClass = "govuk-label--xl",
+        legendClass = "govuk-label--l",
         paragraphs = Seq(),
         hintText = Some("For example, QQ 12 34 56 C"),
         submitCall= routes.EstablisherEnterNINOController.onSubmit(0, NormalMode)
