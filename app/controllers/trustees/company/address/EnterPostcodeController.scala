@@ -25,10 +25,9 @@ import identifiers.trustees.company.address.EnterPostCodeId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.address.{CommonPostcodeService, CommonPostcodeTemplateData}
-import viewmodels.Message
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
@@ -64,14 +63,14 @@ class EnterPostcodeController @Inject()(
 
   def getFormToTemplate(schemeName:String, index: Index, mode: Mode
                        )(implicit request:DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
-    val name: String = request.userAnswers.get(CompanyDetailsId(index)).map(_.companyName).getOrElse(Message("messages__company"))
+    val name: String = request.userAnswers.get(CompanyDetailsId(index)).map(_.companyName).getOrElse(Messages("messages__company"))
     val submitUrl = routes.EnterPostcodeController.onSubmit(index, mode)
     val enterManuallyUrl = routes.ConfirmAddressController.onPageLoad(index, mode).url
 
     form => {
       CommonPostcodeTemplateData(
         form,
-        Message("messages__company"),
+        Messages("messages__company"),
         name,
         submitUrl,
         enterManuallyUrl,

@@ -25,10 +25,9 @@ import identifiers.establishers.partnership.partner.details.PartnerHasNINOId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.details.CommonHasReferenceValueService
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -47,12 +46,12 @@ class PartnerHasNINOController @Inject()(val messagesApi: MessagesApi,
     request
       .userAnswers
       .get(PartnerNameId(establisherIndex, partnerIndex))
-      .fold(Message("messages__partner"))(_.fullName)
+      .fold(Messages("messages__partner"))(_.fullName)
 
   private def form(establisherIndex: Index, partnerIndex: Index)
                   (implicit request: DataRequest[AnyContent]): Form[Boolean] = {
     formProvider(
-      errorMsg = Message("messages__genericHasNino__error__required", name(establisherIndex, partnerIndex))
+      errorMsg = Messages("messages__genericHasNino__error__required", name(establisherIndex, partnerIndex))
     )
   }
 
@@ -63,13 +62,13 @@ class PartnerHasNINOController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.get(
-              pageTitle     = Message("messages__hasNINO", Message("messages__partner")),
-              pageHeading     = Message("messages__hasNINO", name(establisherIndex, partnerIndex)),
+              pageTitle     = Messages("messages__hasNINO", Messages("messages__partner")),
+              pageHeading     = Messages("messages__hasNINO", name(establisherIndex, partnerIndex)),
               isPageHeading = true,
               id            = PartnerHasNINOId(establisherIndex, partnerIndex),
               form          = form(establisherIndex, partnerIndex),
               schemeName    = schemeName,
-              legendClass   = "govuk-label--xl",
+              legendClass   = "govuk-label--l",
               submitCall    = routes.PartnerHasNINOController.onSubmit(establisherIndex, partnerIndex, mode)
             )
         }
@@ -81,13 +80,13 @@ class PartnerHasNINOController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.post(
-              pageTitle     = Message("messages__hasNINO", Message("messages__partner")),
-              pageHeading     = Message("messages__hasNINO", name(establisherIndex, partnerIndex)),
+              pageTitle     = Messages("messages__hasNINO", Messages("messages__partner")),
+              pageHeading     = Messages("messages__hasNINO", name(establisherIndex, partnerIndex)),
               isPageHeading = true,
               id            = PartnerHasNINOId(establisherIndex, partnerIndex),
               form          = form(establisherIndex, partnerIndex),
               schemeName    = schemeName,
-              legendClass   = "govuk-label--xl",
+              legendClass   = "govuk-label--l",
               mode          = mode,
               submitCall    = routes.PartnerHasNINOController.onSubmit(establisherIndex, partnerIndex, mode)
             )

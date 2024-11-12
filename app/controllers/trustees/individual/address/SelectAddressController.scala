@@ -17,27 +17,26 @@
 package controllers.trustees.individual.address
 
 import connectors.cache.UserAnswersCacheConnector
+import controllers.Retrievals
 import controllers.actions._
-import models.establishers.AddressPages
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.{address => Director}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address.{AddressId, AddressListId, EnterPostCodeId}
 import models._
+import models.establishers.AddressPages
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.data.FormBinding.Implicits.formBinding
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
-import controllers.Retrievals
-import play.api.data.FormBinding.Implicits.formBinding
 import services.common.address.{CommonAddressListService, CommonAddressListTemplateData}
-import viewmodels.Message
-import utils.UserAnswers
-import play.api.mvc.Results.Redirect
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
+import utils.UserAnswers
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -184,13 +183,13 @@ class SelectAddressController @Inject()(
       implicit request =>
         EnterPostCodeId(index).retrieve.map { addresses =>
           val name: String = request.userAnswers.get(TrusteeNameId(index))
-            .map(_.fullName).getOrElse(Message("trusteeEntityTypeIndividual"))
+            .map(_.fullName).getOrElse(Messages("trusteeEntityTypeIndividual"))
 
           form =>
             CommonAddressListTemplateData(
               form,
               addresses,
-              Message("trusteeEntityTypeIndividual"),
+              Messages("trusteeEntityTypeIndividual"),
               name,
               routes.ConfirmAddressController.onPageLoad(index, mode).url,
               schemeName,

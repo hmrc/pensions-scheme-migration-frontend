@@ -23,7 +23,7 @@ import models.SchemeType
 import org.scalatest.TryValues
 import org.scalatest.matchers.must.Matchers
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import utils.Data.schemeName
 import utils.{Enumerable, UserAnswers}
@@ -46,13 +46,13 @@ class BeforeYouStartCYAHelperSpec
     "return all rows" in {
       val result = beforeYouStartCYAHelper.rowsForCYA(isEnabledChange = false)(fakeDataRequest(ua), messages)
       val rows: Seq[SummaryListRow] = Seq(SummaryListRow(
-        key = Key(HtmlContent(Messages("messages__cya__scheme_name")), classes = "govuk-!-width-one-half"),
-        value = Value(HtmlContent(schemeName)),
+        key = Key(Text(Messages("messages__cya__scheme_name")), classes = "govuk-!-width-one-half"),
+        value = Value(Text(schemeName)),
         actions = None
       ),
         SummaryListRow(
-          key = Key(HtmlContent(Messages("messages__cya__scheme_type",schemeName)), classes = "govuk-!-width-one-half"),
-          value = Value(HtmlContent(Messages("messages__scheme_type_other")), classes = "govuk-!-width-one-third"),
+          key = Key(Text(Messages("messages__cya__scheme_type",schemeName)), classes = "govuk-!-width-one-half"),
+          value = Value(Text(Messages("messages__scheme_type_other")), classes = "govuk-!-width-one-third"),
           actions = Some(Actions(
             items = Seq(
               ActionItem(
@@ -65,8 +65,8 @@ class BeforeYouStartCYAHelperSpec
           ))
         ),
         SummaryListRow(
-          key = Key(HtmlContent(Messages("messages__cya__country",schemeName)), classes = "govuk-!-width-one-half"),
-          value = Value(HtmlContent(Messages("country.AF")), classes = "govuk-!-width-one-third"),
+          key = Key(Text(Messages("messages__cya__country",schemeName)), classes = "govuk-!-width-one-half"),
+          value = Value(Text(Messages("country.AF")), classes = "govuk-!-width-one-third"),
           actions = Some(Actions(
             items = Seq(
               ActionItem(
@@ -79,8 +79,8 @@ class BeforeYouStartCYAHelperSpec
           ))
         ),
         SummaryListRow(
-          key = Key(HtmlContent(Messages("messages__cya__working_knowledge")), classes = "govuk-!-width-one-half"),
-          value = Value(HtmlContent(Messages("site.yes"))),
+          key = Key(Text(Messages("messages__cya__working_knowledge")), classes = "govuk-!-width-one-half"),
+          value = Value(Text(Messages("site.yes"))),
           actions = Some(Actions(
             items = Seq(
               ActionItem(

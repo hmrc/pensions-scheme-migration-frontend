@@ -24,13 +24,13 @@ import models.CompanyDetails
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.Data.ua
 import utils.UserAnswers
-import viewmodels.Message
 import views.html.ReasonView
 
 import scala.concurrent.Future
@@ -41,12 +41,12 @@ class NoCompanyNumberReasonControllerSpec
     with BeforeAndAfterEach {
 
   private val form: Form[String] =
-    formProvider(Message("messages__reason__error_companyNumber_required", companyName))
+    formProvider(Messages("messages__reason__error_companyNumber_required", companyName))
   private val userAnswers: UserAnswers =
     ua.set(CompanyDetailsId(0), CompanyDetails(companyName)).success.value
 
-  private val pageTitle = Message("messages__whyNoCompanyNumber", Message("messages__company"))
-  private val pageHeading = Message("messages__whyNoCompanyNumber", companyName)
+  private val pageTitle = Messages("messages__whyNoCompanyNumber", Messages("messages__company"))
+  private val pageHeading = Messages("messages__whyNoCompanyNumber", companyName)
 
   override def beforeEach(): Unit = {
     super.beforeEach()

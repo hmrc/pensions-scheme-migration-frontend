@@ -26,10 +26,8 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Enumerable
-import viewmodels.Message
 import views.html.benefitsAndInsurance.BenefitsInsurancePolicyView
 
 import javax.inject.Inject
@@ -44,7 +42,7 @@ class BenefitsInsurancePolicyController @Inject()(override val messagesApi: Mess
                                        formProvider: BenefitsInsurancePolicyFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        view: BenefitsInsurancePolicyView)(implicit ec: ExecutionContext)
-  extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
+  extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits {
 
   private def form: Form[String] =
     formProvider()
@@ -57,7 +55,7 @@ class BenefitsInsurancePolicyController @Inject()(override val messagesApi: Mess
             case Some(value) => form.fill(value)
             case None        => form
           }
-          val heading = optionInsurancePolicyName.fold(Messages("benefitsInsurancePolicy.noCompanyName.h1"))(Message("benefitsInsurancePolicy.h1", _))
+          val heading = optionInsurancePolicyName.fold(Messages("benefitsInsurancePolicy.noCompanyName.h1"))(Messages("benefitsInsurancePolicy.h1", _))
           Future.successful(Ok(view(
             preparedForm,
             schemeName,
@@ -76,7 +74,7 @@ class BenefitsInsurancePolicyController @Inject()(override val messagesApi: Mess
           .bindFromRequest()
           .fold(
             formWithErrors => {
-              val heading = optionInsurancePolicyName.fold(Messages("benefitsInsurancePolicy.noCompanyName.h1"))(Message("benefitsInsurancePolicy.h1", _))
+              val heading = optionInsurancePolicyName.fold(Messages("benefitsInsurancePolicy.noCompanyName.h1"))(Messages("benefitsInsurancePolicy.h1", _))
               Future.successful(BadRequest(view(
                 formWithErrors,
                 schemeName,

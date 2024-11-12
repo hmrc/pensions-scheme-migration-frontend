@@ -27,20 +27,18 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Call, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.Data.{insurerPolicyNo, schemeName, ua}
 import utils.{Data, Enumerable, UserAnswers}
 import views.html.benefitsAndInsurance.BenefitsInsurancePolicyView
 
 import scala.concurrent.Future
 
-class BenefitsInsurancePolicyControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class BenefitsInsurancePolicyControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -62,7 +60,7 @@ class BenefitsInsurancePolicyControllerSpec extends ControllerSpecBase with Nunj
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
   }
 
   "BenefitsInsurancePolicy Controller" must {
@@ -78,7 +76,7 @@ class BenefitsInsurancePolicyControllerSpec extends ControllerSpecBase with Nunj
       val view = application.injector.instanceOf[BenefitsInsurancePolicyView].apply(
         form,
         schemeName,
-        msg"benefitsInsurancePolicy.noCompanyName.h1".resolve,
+        Messages("benefitsInsurancePolicy.noCompanyName.h1"),
         onwardCall
       )(request, messages)
 
@@ -99,7 +97,7 @@ class BenefitsInsurancePolicyControllerSpec extends ControllerSpecBase with Nunj
       val view = application.injector.instanceOf[BenefitsInsurancePolicyView].apply(
         form.fill(insurerPolicyNo),
         schemeName,
-        msg"benefitsInsurancePolicy.noCompanyName.h1".resolve,
+        Messages("benefitsInsurancePolicy.noCompanyName.h1"),
         onwardCall
       )(request, messages)
 

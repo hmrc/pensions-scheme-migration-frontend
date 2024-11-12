@@ -30,16 +30,13 @@ import play.api.libs.json.Json
 import play.api.mvc.{Call, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{Data, Enumerable, TwirlMigration, UserAnswers}
+import utils.{Data, Enumerable, UserAnswers}
 import views.html.benefitsAndInsurance.AreBenefitsSecuredView
 
 import scala.concurrent.Future
 
-class AreBenefitsSecuredControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class AreBenefitsSecuredControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -60,7 +57,7 @@ class AreBenefitsSecuredControllerSpec extends ControllerSpecBase with NunjucksS
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
   }
 
   "AreBenefitsSecured Controller" must {
@@ -76,7 +73,7 @@ class AreBenefitsSecuredControllerSpec extends ControllerSpecBase with NunjucksS
       val view = application.injector.instanceOf[AreBenefitsSecuredView].apply(
         form,
         schemeName,
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         onwardCall
       )(request, messages)
 
@@ -96,7 +93,7 @@ class AreBenefitsSecuredControllerSpec extends ControllerSpecBase with NunjucksS
       val view = application.injector.instanceOf[AreBenefitsSecuredView].apply(
         form.fill(true),
         schemeName,
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         onwardCall
       )(request, messages)
 

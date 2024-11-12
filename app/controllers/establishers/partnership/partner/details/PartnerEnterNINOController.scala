@@ -25,10 +25,9 @@ import identifiers.establishers.partnership.partner.details.PartnerNINOId
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.details.CommonEnterReferenceValueService
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -47,7 +46,7 @@ class PartnerEnterNINOController @Inject()(val messagesApi: MessagesApi,
     request
       .userAnswers
       .get(PartnerNameId(establisherIndex, partnerIndex))
-      .fold(Message("messages__partner"))(_.fullName)
+      .fold(Messages("messages__partner"))(_.fullName)
 
   private def form(establisherIndex: Index, partnerIndex: Index)
                   (implicit request: DataRequest[AnyContent]): Form[ReferenceValue] =
@@ -59,14 +58,14 @@ class PartnerEnterNINOController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.get(
-              pageTitle     = Message("messages__enterNINO_title", Message("messages__partner")),
-              pageHeading     = Message("messages__enterNINO_title", name(establisherIndex, partnerIndex)),
+              pageTitle     = Messages("messages__enterNINO_title", Messages("messages__partner")),
+              pageHeading     = Messages("messages__enterNINO_title", name(establisherIndex, partnerIndex)),
               isPageHeading = true,
               id            = PartnerNINOId(establisherIndex, partnerIndex),
               form          = form(establisherIndex, partnerIndex),
               schemeName    = schemeName,
-              hintText      = Some(Message("messages__enterNINO__hint")),
-              legendClass   = "govuk-label--xl",
+              hintText      = Some(Messages("messages__enterNINO__hint")),
+              legendClass   = "govuk-label--l",
               submitCall = routes.PartnerEnterNINOController.onSubmit(establisherIndex, partnerIndex, mode)
             )
         }
@@ -78,14 +77,14 @@ class PartnerEnterNINOController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.post(
-              pageTitle     = Message("messages__enterNINO_title", Message("messages__partner")),
-              pageHeading     = Message("messages__enterNINO_title", name(establisherIndex, partnerIndex)),
+              pageTitle     = Messages("messages__enterNINO_title", Messages("messages__partner")),
+              pageHeading     = Messages("messages__enterNINO_title", name(establisherIndex, partnerIndex)),
               isPageHeading = true,
               id            = PartnerNINOId(establisherIndex, partnerIndex),
               form          = form(establisherIndex, partnerIndex),
               schemeName    = schemeName,
-              hintText      = Some(Message("messages__enterNINO__hint")),
-              legendClass   = "govuk-label--xl",
+              hintText      = Some(Messages("messages__enterNINO__hint")),
+              legendClass   = "govuk-label--l",
               mode          = mode,
               submitCall = routes.PartnerEnterNINOController.onSubmit(establisherIndex, partnerIndex, mode)
             )

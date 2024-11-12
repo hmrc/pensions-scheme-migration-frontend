@@ -107,7 +107,7 @@
         }
 
         @if(countries.nonEmpty) {
-        <div class="govuk-!-width-two-thirds">
+        <div class="govuk-form-group autocomplete-wrapper govuk-body govuk-input--width-20">
             @govukSelect(
                 SelectViewModel(
                     field = form("country"),
@@ -143,6 +143,6 @@
 
     @schemeName.map { schemeName => @templates.ReturnLink(schemeName) }
 
-    <script @CSPNonce.attr src="@routes.Assets.versioned("javascripts/autocomplete/location-autocomplete.min.js")"></script>
+    <script @CSPNonce.attr src='@routes.Assets.versioned("javascripts/autocomplete/location-autocomplete.min.js")'></script>
 
 }

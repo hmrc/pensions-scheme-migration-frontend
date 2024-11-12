@@ -31,9 +31,8 @@ import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 import services.common.details.CommonHasReferenceValueService
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.ua
-import utils.{FakeNavigator, TwirlMigration, UserAnswers}
+import utils.{FakeNavigator, UserAnswers}
 import views.html.{HasReferenceValueView, HasReferenceValueWithHintView}
 
 import scala.concurrent.Future
@@ -92,8 +91,8 @@ class DirectorHasNINOControllerSpec
         "Test scheme name",
         "Does the director have a National Insurance number?",
         "Does Jane Doe have a National Insurance number?",
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
-        "govuk-label--xl",
+        utils.Radios.yesNo(form("value")),
+        "govuk-label--l",
         routes.DirectorHasNINOController.onSubmit(0,0,NormalMode)
       )(fakeRequest, messages)
       compareResultAndView(result, view)
@@ -117,8 +116,8 @@ class DirectorHasNINOControllerSpec
         "Test scheme name",
         "Does the director have a National Insurance number?",
         "Does Jane Doe have a National Insurance number?",
-        TwirlMigration.toTwirlRadios(Radios.yesNo(filledFrom("value"))),
-        "govuk-label--xl",
+        utils.Radios.yesNo(filledFrom("value")),
+        "govuk-label--l",
         routes.DirectorHasNINOController.onSubmit(0, 0, NormalMode)
       )(fakeRequest, messages)
       compareResultAndView(result, view)

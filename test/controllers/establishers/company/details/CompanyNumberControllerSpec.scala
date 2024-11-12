@@ -31,14 +31,13 @@ import play.api.mvc.{AnyContentAsFormUrlEncoded, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 import services.common.details.CommonEnterReferenceValueService
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.{companyDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
 import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
 
 import scala.concurrent.Future
 
-class CompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with BeforeAndAfterEach {
+class CompanyNumberControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues with BeforeAndAfterEach {
 
   private val index: Index = Index(0)
   private val referenceValue: ReferenceValue = ReferenceValue("12345678")
@@ -51,7 +50,7 @@ class CompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSuppor
       schemeName,
       messages("messages__companyNumber", messages("messages__company")),
       messages("messages__companyNumber", companyDetails.companyName),
-      "govuk-label--xl",
+      "govuk-label--l",
       Seq(),
       Some(messages("messages__companyNumber__hint")),
       routes.CompanyNumberController.onSubmit(index, NormalMode)

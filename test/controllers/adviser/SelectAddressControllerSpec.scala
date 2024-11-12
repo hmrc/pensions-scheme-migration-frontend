@@ -25,11 +25,11 @@ import identifiers.beforeYouStart.SchemeNameId
 import matchers.JsonMatchers
 import models.{Scheme, TolerantAddress}
 import org.mockito.ArgumentMatchers.any
-import play.api.mvc.Results.{BadRequest, Ok}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.Json
+import play.api.mvc.Results.{BadRequest, Ok}
 import play.api.mvc.{Result, Results}
 import play.api.test.Helpers._
 import services.common.address.CommonAddressListService
@@ -53,8 +53,8 @@ class SelectAddressControllerSpec extends ControllerSpecBase with JsonMatchers w
   private val formProvider: AddressListFormProvider = new AddressListFormProvider()
   private val form = formProvider("selectAddress.required")
 
-  private val httpPathGET: String = routes.SelectAddressController.onPageLoad.url
-  private val httpPathPOST: String = routes.SelectAddressController.onSubmit.url
+  private val httpPathGET: String = routes.SelectAddressController.onPageLoad().url
+  private val httpPathPOST: String = routes.SelectAddressController.onSubmit().url
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq("1")
@@ -89,7 +89,7 @@ class SelectAddressControllerSpec extends ControllerSpecBase with JsonMatchers w
         convertToRadioItems(addresses),
         routes.ConfirmAddressController.onPageLoad.url,
         Data.schemeName,
-        routes.SelectAddressController.onSubmit,
+        routes.SelectAddressController.onSubmit(),
         h1MessageKey = "addressList.title"
       )(fakeRequest, messages)
 

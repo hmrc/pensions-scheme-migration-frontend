@@ -27,18 +27,14 @@ import identifiers.trustees.individual.address.{AddressId, AddressListId}
 import models._
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
 import services.common.address.CommonManualAddressService
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.UserAnswers
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import scala.util.Try
 
 class ConfirmAddressController @Inject()(
@@ -74,33 +70,19 @@ class ConfirmAddressController @Inject()(
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-
       (TrusteeNameId(index) and SchemeNameId).retrieve.map {
         case trusteeName ~ schemeName =>
-          form
-            .bindFromRequest()
-            .fold(
-              formWithErrors => {
-                common.post(
-                  Some(schemeName),
-                  trusteeName.fullName,
-                  AddressId(index),
-                  AddressConfiguration.PostcodeFirst,
-                  Some(mode),
-                  formWithErrors,
-                  pageTitleEntityTypeMessageKey,
-                  submitUrl = routes.ConfirmAddressController.onSubmit(index, mode)
-                )
-              },
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(setUpdatedAnswers(index, value, mode, request.userAnswers))
-                  _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
-                } yield {
-                  Redirect(navigator.nextPage(AddressId(index), updatedAnswers, mode))
-                }
-            )
+          common.post(
+            Some(schemeName),
+            trusteeName.fullName,
+            AddressId(index),
+            AddressConfiguration.PostcodeFirst,
+            Some(mode),
+            form,
+            pageTitleEntityTypeMessageKey,
+            submitUrl = routes.ConfirmAddressController.onSubmit(index, mode),
+            setUserAnswersOverride = Some(setUpdatedAnswers(index, _, mode, request.userAnswers))
+          )
       }
     }
 

@@ -31,7 +31,6 @@ import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.common.details.CommonEnterReferenceValueService
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{FakeNavigator, UserAnswers}
 import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
@@ -40,7 +39,7 @@ import scala.concurrent.Future
 
 class DirectorEnterNINOControllerSpec
   extends ControllerSpecBase
-    with NunjucksSupport
+
     with JsonMatchers
     with TryValues
     with BeforeAndAfterEach {
@@ -98,7 +97,7 @@ class DirectorEnterNINOControllerSpec
         schemeName = "Test scheme name",
         pageTitle = "What is the director’s National Insurance number?",
         pageHeading = "What is Jane Doe’s National Insurance number?",
-        legendClass = "govuk-label--xl",
+        legendClass = "govuk-label--l",
         paragraphs = Seq(),
         hintText = Some("For example, QQ 12 34 56 C"),
         submitCall= routes.DirectorEnterNINOController.onSubmit(0,0, NormalMode)

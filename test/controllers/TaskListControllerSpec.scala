@@ -30,7 +30,6 @@ import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.TaskListService
 import utils.Data
 import utils.Data._
@@ -90,7 +89,6 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
     when(mockTaskListService.getSchemeName(any())).thenReturn(schemeName)
     when(mockTaskListService.declarationEnabled(any())).thenReturn(false)
     when(mockTaskListService.declarationSection(any(), any())).thenReturn(declarationSection)
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
     when(mockTaskListService.getExpireAt(any())).thenReturn("14 November 2021")
     when(mockLegacySchemeDetailsConnector.getLegacySchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(Right(itemList)))
   }

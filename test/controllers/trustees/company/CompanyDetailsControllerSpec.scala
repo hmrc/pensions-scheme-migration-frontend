@@ -27,15 +27,13 @@ import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.Application
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data
 import utils.Data.ua
 import views.html.CompanyDetailsView
 
 import scala.concurrent.Future
 class CompanyDetailsControllerSpec extends ControllerSpecBase
-  with NunjucksSupport
+
   with JsonMatchers
   with TryValues
   with BeforeAndAfterEach {
@@ -59,7 +57,7 @@ class CompanyDetailsControllerSpec extends ControllerSpecBase
     super.beforeEach()
     mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
     when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
   }
 
   private val httpPathGET: String = routes.CompanyDetailsController.onPageLoad(index).url

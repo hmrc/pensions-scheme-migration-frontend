@@ -17,6 +17,7 @@
 package services.common.contact
 
 import controllers.ControllerSpecBase
+import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchersSugar.eqTo
@@ -25,17 +26,16 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
+import services.CommonServiceSpecBase
+import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{Data, FakeNavigator, UserAnswers}
-import identifiers.TypedIdentifier
-import uk.gov.hmrc.domain.PsaId
-import viewmodels.Message
-import services.CommonServiceSpecBase
 import views.html.EmailView
 
 import scala.concurrent.Future
@@ -66,7 +66,7 @@ class CommonEmailAddressServiceSpec extends ControllerSpecBase with CommonServic
     "get the view correctly on get" in {
       when(emailView.apply(eqTo(form), eqTo("schemeName"), eqTo("entityName"), any(), any(), any())(any(), any())).thenReturn(Html("email content"))
 
-      val result = service.get("entityName", Message("entityType"), emailId, form, "schemeName", submitCall = onwardCall)(request, global)
+      val result = service.get("entityName", Messages("entityType"), emailId, form, "schemeName", submitCall = onwardCall)(request, global)
 
       status(result) mustBe OK
 
@@ -79,7 +79,7 @@ class CommonEmailAddressServiceSpec extends ControllerSpecBase with CommonServic
 
       when(emailView.apply(any(), eqTo("schemeName"), eqTo("entityName"), any(), any(), any())(any(), any())).thenReturn(Html("email content"))
 
-      val result = service.post("entityName", Message("entityType"), emailId, form.withError("value", "error.required"), "schemeName",
+      val result = service.post("entityName", Messages("entityType"), emailId, form.withError("value", "error.required"), "schemeName",
         submitCall = onwardCall)(invalidRequest, global)
 
       status(result) mustBe BAD_REQUEST
@@ -92,7 +92,7 @@ class CommonEmailAddressServiceSpec extends ControllerSpecBase with CommonServic
 
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
 
-      val result = service.post("entityName", Message("entityType"), emailId, form, "schemeName", submitCall = onwardCall)(validRequest, global)
+      val result = service.post("entityName", Messages("entityType"), emailId, form, "schemeName", submitCall = onwardCall)(validRequest, global)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardCall.url)

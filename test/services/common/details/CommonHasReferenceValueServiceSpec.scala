@@ -25,9 +25,8 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import services.CommonServiceSpecBase
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.ua
-import utils.{FakeNavigator, TwirlMigration}
+import utils.FakeNavigator
 import views.html.{HasReferenceValueView, HasReferenceValueWithHintView}
 
 import scala.concurrent.Future
@@ -43,7 +42,7 @@ class CommonHasReferenceValueServiceSpec extends ControllerSpecBase with CommonS
     messagesApi = messagesApi
   )
 
-  override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
+  override def beforeEach(): Unit = reset(mockUserAnswersCacheConnector)
 
   private val formProviderYesNo: YesNoFormProvider = new YesNoFormProvider()
   private val id: TypedIdentifier[Boolean] = new TypedIdentifier[Boolean] {}
@@ -59,7 +58,7 @@ class CommonHasReferenceValueServiceSpec extends ControllerSpecBase with CommonS
         "Test Scheme",
         "Test Title",
         "Test Heading",
-        TwirlMigration.toTwirlRadios(Radios.yesNo(yesNoForm("value"))),
+        utils.Radios.yesNo(yesNoForm("value")),
         "govuk-fieldset__legend--s",
         onwardCall
       )(fakeRequest, messages)

@@ -16,19 +16,18 @@
 
 package controllers.establishers.partnership.partner.address
 
+import controllers.Retrievals
 import controllers.actions._
-import models.establishers.AddressPages
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.partner.address.{EnterPreviousPostCodeId, PreviousAddressId, PreviousAddressListId}
+import models.establishers.AddressPages
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import controllers.Retrievals
 import services.common.address.{CommonAddressListService, CommonAddressListTemplateData}
-import viewmodels.Message
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
@@ -88,13 +87,13 @@ class SelectPreviousAddressController @Inject()(
       implicit request =>
         EnterPreviousPostCodeId(establisherIndex, partnerIndex).retrieve.map { addresses =>
           val name: String = request.userAnswers.get(PartnerNameId(establisherIndex, partnerIndex))
-            .map(_.fullName).getOrElse(Message("messages__partner"))
+            .map(_.fullName).getOrElse(Messages("messages__partner"))
 
           form =>
             CommonAddressListTemplateData(
               form,
               addresses,
-              Message("messages__partner"),
+              Messages("messages__partner"),
               name,
               routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, partnerIndex, mode).url,
               schemeName,

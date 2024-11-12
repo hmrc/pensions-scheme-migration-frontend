@@ -24,10 +24,9 @@ import identifiers.establishers.company.OtherDirectorsId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.details.CommonHasReferenceValueService
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -44,7 +43,7 @@ class OtherDirectorsController @Inject()(val messagesApi: MessagesApi,
   private def form()
                   (implicit request: DataRequest[AnyContent]): Form[Boolean] =
     formProvider(
-      errorMsg = Message("messages__otherDirectors__error__required")
+      errorMsg = Messages("messages__otherDirectors__error__required")
     )
 
   def onPageLoad(index: Index,mode: Mode): Action[AnyContent] =
@@ -53,13 +52,13 @@ class OtherDirectorsController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.get(
-              pageTitle = Message("messages__otherDirectors__title"),
-              pageHeading = Message("messages__otherDirectors__heading"),
+              pageTitle = Messages("messages__otherDirectors__title"),
+              pageHeading = Messages("messages__otherDirectors__heading"),
               isPageHeading = true,
               id = OtherDirectorsId(index),
               form = form(),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__otherDirectors__lede")),
+              paragraphText = Seq(Messages("messages__otherDirectors__lede")),
               legendClass = "govuk-visually-hidden",
               submitCall = routes.OtherDirectorsController.onSubmit(index, mode)
             )
@@ -72,13 +71,13 @@ class OtherDirectorsController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.post(
-              pageTitle = Message("messages__otherDirectors__title"),
-              pageHeading = Message("messages__otherDirectors__heading"),
+              pageTitle = Messages("messages__otherDirectors__title"),
+              pageHeading = Messages("messages__otherDirectors__heading"),
               isPageHeading = true,
               id = OtherDirectorsId(index),
               form = form(),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__otherDirectors__lede")),
+              paragraphText = Seq(Messages("messages__otherDirectors__lede")),
               legendClass = "govuk-visually-hidden",
               mode = mode,
               submitCall = routes.OtherDirectorsController.onSubmit(index, mode)

@@ -26,10 +26,9 @@ import play.api.data.FormBinding.Implicits._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.mvc.{AnyContent, Call, Result}
-import views.html.address.AddressYearsView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
-import uk.gov.hmrc.viewmodels.Radios
-import utils.{TwirlMigration, UserAnswers}
+import utils.UserAnswers
+import views.html.address.AddressYearsView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,14 +41,6 @@ class CommonAddressYearsService @Inject()(
    val messagesApi: MessagesApi,
    addressYearsView: AddressYearsView
 ) extends FrontendHeaderCarrierProvider with I18nSupport {
-
-  private case class TemplateData(
-                                   schemeName: Option[String],
-                                   entityName: String,
-                                   entityType : String,
-                                   form : Form[Boolean],
-                                   radios: Seq[Radios.Item]
-                                 )
 
   def get(schemeName: Option[String],
           entityName: String,
@@ -64,7 +55,7 @@ class CommonAddressYearsService @Inject()(
         filledForm,
         entityType,
         entityName,
-        TwirlMigration.toTwirlRadios(Radios.yesNo(filledForm("value"))),
+        utils.Radios.yesNo(filledForm("value")),
         schemeName,
         submitUrl = submitUrl
       )))
@@ -88,7 +79,7 @@ class CommonAddressYearsService @Inject()(
               formWithErrors,
               entityType,
               entityName,
-              TwirlMigration.toTwirlRadios(Radios.yesNo(formWithErrors("value"))),
+              utils.Radios.yesNo(formWithErrors("value")),
               schemeName,
               submitUrl = submitUrl
             )))
@@ -105,20 +96,5 @@ class CommonAddressYearsService @Inject()(
           }
         }
       )
-  }
-
-  private def getTemplateData(
-                      schemeName: Option[String],
-                      entityName: String,
-                      entityType : String,
-                      form : Form[Boolean]): TemplateData = {
-
-    TemplateData(
-      schemeName,
-      entityName,
-      entityType,
-      form,
-      Radios.yesNo(form("value"))
-    )
   }
 }

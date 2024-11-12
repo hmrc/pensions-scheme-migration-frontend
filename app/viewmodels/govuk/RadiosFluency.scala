@@ -44,8 +44,23 @@ trait RadiosFluency {
         errorMessage = errorMessage(field),
         classes = classes
       )
+    def apply(
+               field: Field,
+               items: Seq[RadioItem],
+               fieldset: Fieldset
+             )(implicit messages: Messages): Radios =
+      Radios(
+        fieldset     = Some(fieldset),
+        name         = field.name,
+        items        = items map (item => item copy (checked = field.value.isDefined && field.value == item.value)),
+        errorMessage = errorMessage(field)
+      )
   }
 
   implicit class FluentRadios(radios: Radios) {
+    def withCssClass(newClass: String): Radios =
+      radios copy (classes = s"${radios.classes} $newClass")
+
+    def inline(): Radios = radios.withCssClass("govuk-radios--inline")
   }
 }

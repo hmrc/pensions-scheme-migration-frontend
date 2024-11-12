@@ -29,11 +29,10 @@ import play.api.libs.json.Json
 import play.api.mvc.Request
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpException
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Enumerable
 
 import scala.concurrent.Future
-class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val mockBulkMigrationConnector = mock[BulkMigrationQueueConnector]
   private val mockCurrentPstrCacheConnector = mock[CurrentPstrCacheConnector]

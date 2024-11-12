@@ -26,12 +26,11 @@ import identifiers.trustees.individual.details.TrusteeHasNINOId
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
 import services.common.details.CommonHasReferenceValueService
 import utils.UserAnswers
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -54,13 +53,13 @@ class DirectorHasNINOController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.get(
-              pageTitle = Message("messages__hasNINO", Message("messages__director")),
-              pageHeading = Message("messages__hasNINO", name(establisherIndex, directorIndex)),
+              pageTitle = Messages("messages__hasNINO", Messages("messages__director")),
+              pageHeading = Messages("messages__hasNINO", name(establisherIndex, directorIndex)),
               isPageHeading = true,
               id = DirectorHasNINOId(establisherIndex, directorIndex),
               form = form(establisherIndex, directorIndex),
               schemeName = schemeName,
-              legendClass = "govuk-label--xl",
+              legendClass = "govuk-label--l",
               submitCall = routes.DirectorHasNINOController.onSubmit(establisherIndex, directorIndex, mode)
             )
         }
@@ -71,12 +70,12 @@ class DirectorHasNINOController @Inject()(val messagesApi: MessagesApi,
     request
       .userAnswers
       .get(DirectorNameId(establisherIndex, directorIndex))
-      .fold(Message("messages__director"))(_.fullName)
+      .fold(Messages("messages__director"))(_.fullName)
 
   private def form(establisherIndex: Index, directorIndex: Index)
                   (implicit request: DataRequest[AnyContent]): Form[Boolean] = {
     formProvider(
-      errorMsg = Message("messages__genericHasNino__error__required", name(establisherIndex, directorIndex))
+      errorMsg = Messages("messages__genericHasNino__error__required", name(establisherIndex, directorIndex))
     )
   }
 
@@ -86,14 +85,14 @@ class DirectorHasNINOController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.post(
-              pageTitle = Message("messages__hasNINO", Message("messages__director")),
-              pageHeading = Message("messages__hasNINO", name(establisherIndex, directorIndex)),
+              pageTitle = Messages("messages__hasNINO", Messages("messages__director")),
+              pageHeading = Messages("messages__hasNINO", name(establisherIndex, directorIndex)),
               isPageHeading = true,
               id = DirectorHasNINOId(establisherIndex, directorIndex),
               form = form(establisherIndex, directorIndex),
               schemeName = schemeName,
               paragraphText = Seq(),
-              legendClass = "govuk-label--xl",
+              legendClass = "govuk-label--l",
               mode = mode,
               submitCall = routes.DirectorHasNINOController.onSubmit(establisherIndex, directorIndex, mode),
               optSetUserAnswers = Some(value => setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))

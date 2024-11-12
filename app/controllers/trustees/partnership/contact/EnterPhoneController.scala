@@ -25,10 +25,9 @@ import identifiers.trustees.partnership.contact.EnterPhoneId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.contact.CommonPhoneService
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -48,10 +47,10 @@ class EnterPhoneController @Inject()(
     request
       .userAnswers
       .get(PartnershipDetailsId(index))
-      .fold(Message("messages__partnership"))(_.partnershipName)
+      .fold(Messages("messages__partnership"))(_.partnershipName)
 
   private def form(index: Index)(implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Message("messages__enterPhone__error_required", name(index)))
+    formProvider(Messages("messages__enterPhone__error_required", name(index)))
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
@@ -60,11 +59,11 @@ class EnterPhoneController @Inject()(
           schemeName =>
             common.get(
               entityName = name(index),
-              entityType = Message("messages__partnership"),
+              entityType = Messages("messages__partnership"),
               phoneId = EnterPhoneId(index),
               form = form(index),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__contact_details__phone__hint", name(index), schemeName)),
+              paragraphText = Seq(Messages("messages__contact_details__phone__hint", name(index), schemeName)),
               routes.EnterPhoneController.onSubmit(index, mode)
             )
         }
@@ -77,11 +76,11 @@ class EnterPhoneController @Inject()(
           schemeName =>
             common.post(
               entityName = name(index),
-              entityType = Message("messages__partnership"),
+              entityType = Messages("messages__partnership"),
               phoneId = EnterPhoneId(index),
               form = form(index),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__contact_details__phone__hint", name(index), schemeName)),
+              paragraphText = Seq(Messages("messages__contact_details__phone__hint", name(index), schemeName)),
               mode = Some(mode),
               routes.EnterPhoneController.onSubmit(index, mode)
             )

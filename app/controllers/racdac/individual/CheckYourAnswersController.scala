@@ -29,7 +29,7 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.HttpResponseRedirects.listOfSchemesRedirects
-import utils.{Enumerable, TwirlMigration, UserAnswers}
+import utils.{Enumerable, UserAnswers}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -84,7 +84,7 @@ class CheckYourAnswersController @Inject()(
         controllers.racdac.individual.routes.DeclarationController.onPageLoad.url,
         controllers.routes.PensionSchemeRedirectController.onPageLoad.url,
         psaName,
-        TwirlMigration.summaryListRow(cyaHelper.detailsRows(userAnswers))
+        cyaHelper.detailsRows(userAnswers)
       ))
     }
   }

@@ -26,12 +26,11 @@ import identifiers.trustees.individual.details.TrusteeNINOId
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode, ReferenceValue}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
 import services.common.details.CommonEnterReferenceValueService
 import utils.UserAnswers
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -52,7 +51,7 @@ class TrusteeEnterNINOController @Inject()(val messagesApi: MessagesApi,
     request
       .userAnswers
       .get(TrusteeNameId(index))
-      .fold(Message("messages__trustee"))(_.fullName)
+      .fold(Messages("messages__trustee"))(_.fullName)
 
   private def form(index: Index)
                   (implicit request: DataRequest[AnyContent]): Form[ReferenceValue] =
@@ -64,14 +63,14 @@ class TrusteeEnterNINOController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.get(
-              pageTitle     = Message("messages__enterNINO_title", Message("messages__individual")),
-              pageHeading     = Message("messages__enterNINO", name(index)),
+              pageTitle     = Messages("messages__enterNINO_title", Messages("messages__individual")),
+              pageHeading     = Messages("messages__enterNINO", name(index)),
               isPageHeading = true,
               id            = TrusteeNINOId(index),
               form          = form(index),
               schemeName    = schemeName,
-              hintText      = Some(Message("messages__enterNINO__hint")),
-              legendClass   = "govuk-label--xl",
+              hintText      = Some(Messages("messages__enterNINO__hint")),
+              legendClass   = "govuk-label--l",
               submitCall = routes.TrusteeEnterNINOController.onSubmit(index, mode)
             )
         }
@@ -83,15 +82,15 @@ class TrusteeEnterNINOController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.post(
-              pageTitle = Message("messages__enterNINO_title", Message("messages__individual")),
-              pageHeading = Message("messages__enterNINO", name(index)),
+              pageTitle = Messages("messages__enterNINO_title", Messages("messages__individual")),
+              pageHeading = Messages("messages__enterNINO", name(index)),
               isPageHeading = true,
               id = TrusteeNINOId(index),
               form = form(index),
               schemeName = schemeName,
-              hintText = Some(Message("messages__enterNINO__hint")),
+              hintText = Some(Messages("messages__enterNINO__hint")),
               paragraphText = Seq(),
-              legendClass = "govuk-label--xl",
+              legendClass = "govuk-label--l",
               mode = mode,
               optSetUserAnswers = Some(value => setUpdatedAnswers(index, mode, value, request.userAnswers)),
               submitCall = routes.TrusteeEnterNINOController.onSubmit(index, mode)

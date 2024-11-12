@@ -21,7 +21,6 @@ import models.ReferenceValue
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
-import viewmodels.Message
 
 import javax.inject.Inject
 
@@ -29,7 +28,7 @@ class VATFormProvider @Inject() extends VatMapping {
 
   def apply(name: String)(implicit messages: Messages): Form[ReferenceValue] =
     Form(
-      mapping("value" -> vatMapping(Message("messages__vat__error_invalid", name)))
+      mapping("value" -> vatMapping(Messages("messages__vat__error_invalid", name)))
       (ReferenceValue.applyEditable)(ReferenceValue.unapplyEditable)
     )
 }

@@ -20,7 +20,6 @@ import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
@@ -37,7 +36,7 @@ class NoTrusteesController @Inject()(
   extends FrontendBaseController
     with Retrievals
     with I18nSupport
-    with NunjucksSupport {
+    {
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()) {

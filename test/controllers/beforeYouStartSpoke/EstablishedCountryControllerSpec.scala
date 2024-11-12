@@ -17,7 +17,7 @@
 package controllers.beforeYouStartSpoke
 
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction, MutableFakeDataRetrievalAction}
+import controllers.actions._
 import forms.beforeYouStart.EstablishedCountryFormProvider
 import identifiers.beforeYouStart.EstablishedCountryId
 import matchers.JsonMatchers
@@ -88,7 +88,7 @@ class EstablishedCountryControllerSpec extends ControllerSpecBase
         form,
         Data.schemeName,
         routes.EstablishedCountryController.onSubmit,
-        Seq(SelectItem.apply(), SelectItem(Some("GB"), "United Kingdom"))
+        Seq(SelectItem(Some("")), SelectItem(Some("GB"), "United Kingdom"))
       )(fakeRequest, messages)
 
       status(result) mustBe OK

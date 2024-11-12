@@ -26,9 +26,6 @@ import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Table, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, TableRow}
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, Radios}
-import utils.TwirlMigration
 import views.html.racdac.RacDacsBulkListView
 
 import java.time.LocalDate
@@ -36,15 +33,15 @@ import java.time.format.DateTimeFormatter
 
 class BulkRacDacService @Inject()(appConfig: AppConfig,
                                   paginationService: PaginationService,
-                                  view: RacDacsBulkListView) extends NunjucksSupport {
+                                  view: RacDacsBulkListView) {
 
   private def pagination: Int = appConfig.listSchemePagination
 
   def mapToTable(schemeDetails: List[Items])(implicit messages: Messages): Table = {
     val head = Seq(
-      HeadCell(Text(msg"messages__listSchemes__column_racDacName".resolve)),
-      HeadCell(Text(msg"messages__listSchemes__column_pstr".resolve)),
-      HeadCell(Text(msg"messages__listSchemes__column_regDate".resolve))
+      HeadCell(Text(Messages("messages__listSchemes__column_racDacName"))),
+      HeadCell(Text(Messages("messages__listSchemes__column_pstr"))),
+      HeadCell(Text(Messages("messages__listSchemes__column_regDate")))
     )
 
     val formatter: String => String = date => LocalDate.parse(date).format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
@@ -88,7 +85,7 @@ class BulkRacDacService @Inject()(appConfig: AppConfig,
           ),
           md.name,
           appConfig.psaOverviewUrl,
-          TwirlMigration.toTwirlRadios(Radios.yesNo(form("value")))
+          utils.Radios.yesNo(form("value"))
         )
         if(form.hasErrors) BadRequest(viewHtml) else Ok(viewHtml)
     }

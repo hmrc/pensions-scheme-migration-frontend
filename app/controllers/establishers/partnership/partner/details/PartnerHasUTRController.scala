@@ -25,10 +25,9 @@ import identifiers.establishers.partnership.partner.details.PartnerHasUTRId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.details.CommonHasReferenceValueService
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -52,7 +51,7 @@ class PartnerHasUTRController @Inject()(val messagesApi: MessagesApi,
   private def form(establisherIndex: Index, partnerIndex: Index)
                   (implicit request: DataRequest[AnyContent]): Form[Boolean] =
     formProvider(
-      errorMsg = Message("messages__genericHasUtr__error__required", name(establisherIndex,partnerIndex))
+      errorMsg = Messages("messages__genericHasUtr__error__required", name(establisherIndex,partnerIndex))
     )
 
   def onPageLoad( establisherIndex: Index, partnerIndex: Index,mode: Mode): Action[AnyContent] =
@@ -61,13 +60,13 @@ class PartnerHasUTRController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.get(
-              pageTitle     = Message("messages__hasUTR", Message("messages__partner")),
-              pageHeading     = Message("messages__hasUTR", name(establisherIndex,partnerIndex)),
+              pageTitle     = Messages("messages__hasUTR", Messages("messages__partner")),
+              pageHeading     = Messages("messages__hasUTR", name(establisherIndex,partnerIndex)),
               isPageHeading = true,
               id            = PartnerHasUTRId(establisherIndex, partnerIndex),
               form          = form(establisherIndex,partnerIndex),
               schemeName    = schemeName,
-              paragraphText = Seq(Message("messages__UTR__p")),
+              paragraphText = Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2")),
               legendClass   = "govuk-visually-hidden",
               submitCall    = routes.PartnerHasUTRController.onSubmit(establisherIndex, partnerIndex, mode)
             )
@@ -80,13 +79,13 @@ class PartnerHasUTRController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.post(
-              pageTitle     = Message("messages__hasUTR", Message("messages__partner")),
-              pageHeading     = Message("messages__hasUTR", name(establisherIndex,partnerIndex)),
+              pageTitle     = Messages("messages__hasUTR", Messages("messages__partner")),
+              pageHeading     = Messages("messages__hasUTR", name(establisherIndex,partnerIndex)),
               isPageHeading = true,
               id            = PartnerHasUTRId(establisherIndex, partnerIndex),
               form          = form(establisherIndex,partnerIndex),
               schemeName    = schemeName,
-              paragraphText = Seq(Message("messages__UTR__p")),
+              paragraphText = Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2")),
               legendClass   = "govuk-visually-hidden",
               mode          = mode,
               submitCall    = routes.PartnerHasUTRController.onSubmit(establisherIndex, partnerIndex, mode)

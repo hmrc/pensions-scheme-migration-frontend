@@ -28,7 +28,6 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{Data, FakeNavigator}
 import views.html.PartnershipDetailsView
@@ -36,7 +35,7 @@ import views.html.PartnershipDetailsView
 import scala.concurrent.Future
 
 class PartnershipDetailsControllerSpec extends ControllerSpecBase
-  with NunjucksSupport
+
   with JsonMatchers
   with TryValues
   with BeforeAndAfterEach {

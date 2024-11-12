@@ -21,7 +21,6 @@ import models.requests.DataRequest
 import models.{Index, entities}
 import play.api.libs.json.Reads
 import utils.{entityTypeError, managementTypeError}
-import viewmodels.Message
 
 object identifierUtils {
 
@@ -29,15 +28,15 @@ object identifierUtils {
   def getNameOfEntityType(index: Index,
                           pensionManagementType: PensionManagementType,
                           entityType: EntityType,
-                          emptyEntityNameMsg: Message)(implicit request: DataRequest[_]): Message = {
+                          emptyEntityName: String)(implicit request: DataRequest[_]): String = {
 
     def getEntityName[T](typedIdentifier: TypedIdentifier[T])
-                        (block: T => Message)
+                        (block: T => String)
                         (implicit request: DataRequest[_],
-                         reads: Reads[T]): Message = {
+                         reads: Reads[T]): String = {
       request.userAnswers
         .get(typedIdentifier)
-        .fold(emptyEntityNameMsg)(block)
+        .fold(emptyEntityName)(block)
     }
 
     pensionManagementType match {

@@ -32,8 +32,8 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.Json
-import play.api.mvc.{Result, Results}
 import play.api.mvc.Results.{BadRequest, Ok}
+import play.api.mvc.{Result, Results}
 import play.api.test.Helpers._
 import services.common.address.CommonManualAddressService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
@@ -129,7 +129,7 @@ class InsurerConfirmAddressControllerSpec extends ControllerSpecBase with JsonMa
 
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.obj()))
-      when(mockCommonManualAddressService.post(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
+      when(mockCommonManualAddressService.post(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(Results.SeeOther(onwardCall.url)))
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
@@ -141,7 +141,7 @@ class InsurerConfirmAddressControllerSpec extends ControllerSpecBase with JsonMa
 
     "return a BAD REQUEST when invalid data is submitted" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
-      when(mockCommonManualAddressService.post(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
+      when(mockCommonManualAddressService.post(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(BadRequest))
 
       val result = route(app, httpPOSTRequest(httpPathPOST, valuesInvalid)).value

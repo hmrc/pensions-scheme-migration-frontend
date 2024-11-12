@@ -29,9 +29,8 @@ import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 import services.common.details.CommonHasReferenceValueService
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{FakeNavigator, TwirlMigration}
+import utils.FakeNavigator
 import views.html.{HasReferenceValueView, HasReferenceValueWithHintView}
 
 import scala.concurrent.Future
@@ -87,7 +86,7 @@ class OtherTrusteesControllerSpec extends ControllerSpecBase
         schemeName,
         messages("messages__otherTrustees__title"),
         messages("messages__otherTrustees__heading"),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         "govuk-visually-hidden",
         Seq(messages("messages__otherTrustees__lede")),
         routes.OtherTrusteesController.onSubmit
@@ -112,7 +111,7 @@ class OtherTrusteesControllerSpec extends ControllerSpecBase
         schemeName,
         messages("messages__otherTrustees__title"),
         messages("messages__otherTrustees__heading"),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(filledFrom("value"))),
+        utils.Radios.yesNo(filledFrom("value")),
         "govuk-visually-hidden",
         Seq(messages("messages__otherTrustees__lede")),
         routes.OtherTrusteesController.onSubmit
@@ -138,7 +137,7 @@ class OtherTrusteesControllerSpec extends ControllerSpecBase
         schemeName,
         messages("messages__otherTrustees__title"),
         messages("messages__otherTrustees__heading"),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(filledFrom("value"))),
+        utils.Radios.yesNo(filledFrom("value")),
         "govuk-visually-hidden",
         Seq(messages("messages__otherTrustees__lede")),
         routes.OtherTrusteesController.onSubmit

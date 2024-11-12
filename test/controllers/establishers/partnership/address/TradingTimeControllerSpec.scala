@@ -30,13 +30,12 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.Json
-import play.api.mvc.{Result, Results}
 import play.api.mvc.Results.{BadRequest, Ok}
+import play.api.mvc.{Result, Results}
 import play.api.test.Helpers._
 import services.common.address.CommonTradingTimeService
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{Data, Enumerable, TwirlMigration, UserAnswers}
+import utils.{Data, Enumerable, UserAnswers}
 import views.html.address.TradingTimeView
 
 import scala.concurrent.Future
@@ -85,7 +84,7 @@ class TradingTimeControllerSpec extends ControllerSpecBase with JsonMatchers wit
       val view = app.injector.instanceOf[TradingTimeView]
       val expectedView = view(
         form, "entityType", "entityName",
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         Some(schemeName),
         submitUrl = controllers.trustees.partnership.address.routes.TradingTimeController.onSubmit(index, mode)
       )(fakeRequest, messages)

@@ -30,12 +30,11 @@ import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
-import utils.{Enumerable, TwirlMigration, UserAnswers}
+import utils.{Enumerable, UserAnswers}
 
 import scala.concurrent.Future
-class TrusteeKindControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class TrusteeKindControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val index: Index = Index(0)
   private val kind: TrusteeKind = TrusteeKind.Individual
@@ -75,7 +74,7 @@ class TrusteeKindControllerSpec extends ControllerSpecBase with NunjucksSupport 
           form,
           controllers.trustees.routes.TrusteeKindController.onSubmit(index),
           schemeName,
-          TwirlMigration.toTwirlRadios(TrusteeKind.radios(form))
+          TrusteeKind.radios(form)
         )(req, implicitly)
       )
     }

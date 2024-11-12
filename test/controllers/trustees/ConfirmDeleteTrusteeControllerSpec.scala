@@ -30,9 +30,8 @@ import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.test.Helpers._
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{schemeName, ua}
-import utils.{Enumerable, TwirlMigration, UserAnswers}
+import utils.{Enumerable, UserAnswers}
 import views.html.DeleteView
 
 import scala.concurrent.Future
@@ -82,7 +81,7 @@ class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with JsonMat
         messages("messages__confirmDeleteTrustee__title"),
         trusteeName,
         None,
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
+        utils.Radios.yesNo(form("value")),
         schemeName,
         routes.ConfirmDeleteTrusteeController.onSubmit(index, kind)
       )(request, messages)

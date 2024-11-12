@@ -21,7 +21,6 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Label, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.{CheckboxItem, ExclusiveCheckbox}
-import uk.gov.hmrc.viewmodels.MessageInterpolators
 
 object DataPrefillCheckbox {
 
@@ -37,8 +36,8 @@ object DataPrefillCheckbox {
     }
 
     val noneOfTheAbove = CheckboxItem(
-      content = Text(msg"messages__prefill__label__none".resolve),
-      label = Some(Label(content = Text(msg"messages__prefill__label__none".resolve))),
+      content = Text(Messages("messages__prefill__label__none")),
+      label = Some(Label(content = Text(Messages("messages__prefill__label__none")))),
       value = "-1",
       name = Some(s"value[${checkBoxes.length}]"),
       checked = form("value").value.map(_ == "-1").getOrElse(false),

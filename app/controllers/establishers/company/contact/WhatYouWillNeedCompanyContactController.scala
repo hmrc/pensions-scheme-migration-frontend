@@ -23,10 +23,9 @@ import helpers.cya.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.CompanyDetailsId
 import models.{Index, NormalMode}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Results.Ok
 import play.api.mvc.{Action, AnyContent}
-import viewmodels.Message
 import views.html.WhatYouWillNeedContactView
 
 import javax.inject.Inject
@@ -48,7 +47,7 @@ class WhatYouWillNeedCompanyContactController @Inject()(
         CompanyDetailsId(index).retrieve.map {
           details =>
             Future.successful(Ok(view(
-              Message("messages__title_company"),
+              Messages("messages__title_company"),
               EnterEmailController.onPageLoad(index, NormalMode).url,
               details.companyName,
               request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))

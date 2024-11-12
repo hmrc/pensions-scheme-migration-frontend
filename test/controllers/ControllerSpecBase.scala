@@ -32,17 +32,14 @@ import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.Helpers.{GET, POST}
 import play.api.test.{FakeHeaders, FakeRequest}
-import services.DataUpdateService
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Label, Text}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import services.{DataPrefillService, DataUpdateService}
-import uk.gov.hmrc.nunjucks.NunjucksRenderer
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import utils.{CountryOptions, Enumerable, FakeCountryOptions}
 
 trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerable.Implicits with MockitoSugar {
 
   override def beforeEach(): Unit = {
-    Mockito.reset(mockRenderer)
     Mockito.reset(mockUserAnswersCacheConnector)
     Mockito.reset(mockCompoundNavigator)
     when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
@@ -59,7 +56,6 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
   def modules: Seq[GuiceableModule] = Seq(
     bind[AuthAction].to[FakeAuthAction],
     bind[DataRequiredAction].to[DataRequiredActionImpl],
-    bind[NunjucksRenderer].toInstance(mockRenderer),
     bind[AppConfig].toInstance(mockAppConfig),
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
     bind[CompoundNavigator].toInstance(mockCompoundNavigator),
@@ -96,7 +92,7 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
   def convertToRadioItems(addresses: Seq[TolerantAddress]): Seq[RadioItem] = {
     addresses.zipWithIndex.map { case (address, index) =>
       RadioItem(
-        label = Some(Label(content = Text(address.print))),
+        content = Text(address.print),
         value = Some(index.toString)
       )
     }

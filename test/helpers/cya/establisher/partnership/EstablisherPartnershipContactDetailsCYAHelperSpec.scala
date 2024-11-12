@@ -30,12 +30,10 @@ import org.scalatest.wordspec.AnyWordSpec
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
-import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{Html, MessageInterpolators}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, HtmlContent, Text, Value}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Key, SummaryListRow}
 import utils.Data.{credId, psaId, pstr, schemeName}
 import utils.{Enumerable, UserAnswers}
-import viewmodels.Message
 
 class EstablisherPartnershipContactDetailsCYAHelperSpec
   extends AnyWordSpec
@@ -61,28 +59,28 @@ class EstablisherPartnershipContactDetailsCYAHelperSpec
 
       val result = establisherPartnershipContactDetailsCYAHelper.contactDetailsRows(0)(dataRequest(ua), messages)
 
-      result.head mustBe Row(
-        key = Key(msg"${Message("messages__enterEmail_cya_label", partnership.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
-        value = Value(Literal("test@test.com")),
-        actions = Seq(Action(
-          content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
+      result.head mustBe SummaryListRow(
+        key = Key(Text(Messages("messages__enterEmail_cya_label", partnership.partnershipName)), classes = "govuk-!-width-one-half"),
+        value = Value(Text("test@test.com")),
+        actions = Some(Actions( items = Seq(ActionItem(
+          content = HtmlContent(s"<span aria-hidden=true >${messages("site.change")}</span>"),
           href = routes.EnterEmailController.onPageLoad(0, CheckMode).url,
-          visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__enterEmail__cya__visuallyHidden", partnership.partnershipName))),
+          visuallyHiddenText = Some(Messages("site.change") + " " +
+            Messages("messages__enterEmail__cya__visuallyHidden", partnership.partnershipName)),
           attributes = Map("id" -> "cya-0-0-change")
-        ))
+        ))))
       )
 
-      result(1) mustBe Row(
-        key = Key(msg"${Message("messages__enterPhone_cya_label", partnership.partnershipName).resolve}", classes = Seq("govuk-!-width-one-half")),
-        value = Value(Literal("123")),
-        actions = Seq(Action(
-          content = Html(s"<span aria-hidden=true >${messages("site.change")}</span>"),
+      result(1) mustBe SummaryListRow(
+        key = Key(Text(Messages("messages__enterPhone_cya_label", partnership.partnershipName)), classes = "govuk-!-width-one-half"),
+        value = Value(Text("123")),
+        actions = Some(Actions( items = Seq(ActionItem(
+          content = HtmlContent(s"<span aria-hidden=true >${messages("site.change")}</span>"),
           href = routes.EnterPhoneController.onPageLoad(0, CheckMode).url,
-          visuallyHiddenText = Some(Literal(Messages("site.change") + " " +
-            Messages("messages__enterPhone__cya__visuallyHidden", partnership.partnershipName))),
+          visuallyHiddenText = Some(Messages("site.change") + " " +
+            Messages("messages__enterPhone__cya__visuallyHidden", partnership.partnershipName)),
           attributes = Map("id" -> "cya-0-1-change")
-        ))
+        ))))
       )
 
     }

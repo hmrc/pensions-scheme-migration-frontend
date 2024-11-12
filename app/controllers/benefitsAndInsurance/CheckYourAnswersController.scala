@@ -49,7 +49,7 @@ class CheckYourAnswersController @Inject()(
         Ok(checkYourAnswersView(
           controllers.routes.TaskListController.onPageLoad.url,
           CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
-          TwirlMigration.summaryListRow(cyaHelper.rows)
+          cyaHelper.rows
         ))
     }
 }

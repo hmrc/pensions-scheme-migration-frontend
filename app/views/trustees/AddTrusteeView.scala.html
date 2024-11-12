@@ -19,7 +19,8 @@
         formHelper: FormWithCSRF,
         govukButton: GovukButton,
         govukErrorSummary: GovukErrorSummary,
-        govukRadios: GovukRadios
+        govukRadios: GovukRadios,
+        summaryList: templates.SummaryList
 )
 
 @(form: Form[_],
@@ -41,61 +42,9 @@
         }
 
         <h1 id="addTrustee_h1" class="govuk-heading-l">@messages("messages__addTrustee_title")</h1>
-        @if(itemListIncomplete.nonEmpty) {
-            <h2 class="govuk-heading-s">@messages("site.incomplete")</h2>
-            <div class="govuk-form-group govuk-!-margin-bottom-7">
-                <dl class="hmrc-add-to-a-list hmrc-add-to-a-list--short ">
-                    @itemListIncomplete.zipWithIndex.map { case (item, index) =>
-                        <div class="hmrc-add-to-a-list__contents">
-                            <dt class="hmrc-add-to-a-list__identifier hmrc-add-to-a-list__identifier--light">
-                                @item.name
-                            </dt>
-                            <dd class="hmrc-add-to-a-list__change">
-                                <a class="govuk-link" id="edit-@index" href="@item.editLink.getOrElse("#")">
-                                    <span aria-hidden="true">@messages("site.add.details")</span>
-                                    <span class="govuk-visually-hidden">
-                                        @messages("site.add.details") @item.name </span>
-                                </a>
-                            </dd>
-                            <dd class="hmrc-add-to-a-list__remove">
-                                <a class="govuk-link" href="@item.deleteLink.getOrElse("#")">
-                                    <span aria-hidden="true">@messages("site.remove")</span>
-                                    <span class="govuk-visually-hidden">@messages("site.remove") @item.name</span>
-                                </a>
-                            </dd>
-                        </div>
-                    }
-                </dl>
-            </div>
-        }
+        @summaryList(itemListIncomplete, Some("site.incomplete"), "site.add.details", "site.remove", "edit")
 
-        @if(itemListComplete.nonEmpty) {
-            <h2 class="govuk-heading-s">@messages("messages__schemeTaskList__completed")</h2>
-            <div class="govuk-form-group govuk-!-margin-bottom-7">
-                <dl class="hmrc-add-to-a-list hmrc-add-to-a-list--short ">
-                    @itemListComplete.zipWithIndex.map { case (item, index) =>
-                        <div class="hmrc-add-to-a-list__contents">
-                            <dt class="hmrc-add-to-a-list__identifier hmrc-add-to-a-list__identifier--light">
-                                @item.name
-                            </dt>
-                            <dd class="hmrc-add-to-a-list__change">
-                                <a class="govuk-link" id="edit-complete-@index" href="@item.editLink.getOrElse("#")">
-                                    <span aria-hidden="true">@messages("site.change")</span>
-                                    <span class="govuk-visually-hidden">@messages("site.change") @item.name</span>
-                                </a>
-                            </dd>
-                            <dd class="hmrc-add-to-a-list__remove">
-                                <a class="govuk-link" href="@item.deleteLink.getOrElse("#")">
-                                    <span aria-hidden="true">@messages("site.remove")</span>
-                                    <span class="govuk-visually-hidden">@messages("site.remove") @item.name</span>
-                                </a>
-                            </dd>
-                        </div>
-                    }
-                </dl>
-            </div>
-        }
-
+        @summaryList(itemListComplete, Some("messages__schemeTaskList__completed"), "site.change", "site.remove", "edit-complete")
 
         @if(trusteeSize < maxTrustees) {
             @govukRadios(

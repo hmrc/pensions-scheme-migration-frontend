@@ -24,13 +24,12 @@ import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.mvc.Request
+import play.api.mvc.{Call, Request}
 import play.api.test.Helpers._
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Enumerable
 
 import scala.concurrent.Future
-class ProcessingRequestControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class ProcessingRequestControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val mockQueueConnector = mock[BulkMigrationQueueConnector]
   private val mockBulkMigrationEventsLogConnector = mock[BulkMigrationEventsLogConnector]
@@ -43,7 +42,7 @@ class ProcessingRequestControllerSpec extends ControllerSpecBase with NunjucksSu
 
   private def httpPathGET: String = controllers.racdac.bulk.routes.ProcessingRequestController.onPageLoad.url
 
-  private def getView(req: Request[_], heading: String, content: String, redirect: String) = {
+  private def getView(req: Request[_], heading: String, content: String, redirect: Option[Call]) = {
     app.injector.instanceOf[views.html.racdac.ProcessingRequestView].apply(
       heading,
       heading,
@@ -59,19 +58,13 @@ class ProcessingRequestControllerSpec extends ControllerSpecBase with NunjucksSu
 
   "ProcessingRequestController" must {
 
-    "return OK and the correct view for a GET when migration events log is ACCEPTED" in {
+    "return OK and redirect for a GET when migration events log is ACCEPTED" in {
       when(mockBulkMigrationEventsLogConnector.getStatus(any(), any())).thenReturn(Future.successful(ACCEPTED))
 
       val req = httpGETRequest(httpPathGET)
       val result = route(app, req).value
 
-      status(result) mustEqual OK
-      compareResultAndView(result, getView(
-        req,
-        "messages__processingRequest__h1_processed",
-        "messages__processingRequest__content_processed",
-        routes.ConfirmationController.onPageLoad.url
-      ))
+      status(result) mustEqual SEE_OTHER
     }
 
     "return OK and the correct view for a GET when migration events log is NOT_FOUND" in {
@@ -85,7 +78,7 @@ class ProcessingRequestControllerSpec extends ControllerSpecBase with NunjucksSu
         req,
         "messages__processingRequest__h1_processing",
         "messages__processingRequest__content_processing",
-        routes.ProcessingRequestController.onPageLoad.url
+        Some(routes.ProcessingRequestController.onPageLoad)
       ))
     }
 
@@ -99,8 +92,8 @@ class ProcessingRequestControllerSpec extends ControllerSpecBase with NunjucksSu
       compareResultAndView(result, getView(
         req,
         "messages__processingRequest__h1_failure",
-        "messages__processingRequest__content_failure",
-        routes.DeclarationController.onPageLoad.url
+        "messages__thereIsAProblem__p1",
+        None
       ))
     }
   }

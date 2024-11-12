@@ -30,15 +30,11 @@ import play.api.mvc.Results.Ok
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
-import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.ua
-import utils.TwirlMigration
 
 import scala.concurrent.Future
-class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with BeforeAndAfterEach{
+class TransferAllControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues with BeforeAndAfterEach{
 
   private val psaName: String = "Psa Name"
   private val formProvider: YesNoFormProvider = new YesNoFormProvider()
@@ -100,9 +96,7 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
       compareResultAndView(result,
         getView(
           req,
-          TwirlMigration.toTwirlRadios(
-            Radios.yesNo(form("value"))
-          ),
+          utils.Radios.yesNo(form("value")),
           form
         )
       )
@@ -134,9 +128,6 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val request = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
 
       val result: Future[Result] = controller.onSubmit(request)
@@ -147,9 +138,7 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
       compareResultAndView(result,
         getView(
           request,
-          TwirlMigration.toTwirlRadios(
-            Radios.yesNo(boundForm.apply("value"))
-          ),
+          utils.Radios.yesNo(boundForm.apply("value")),
           boundForm
         )
       )

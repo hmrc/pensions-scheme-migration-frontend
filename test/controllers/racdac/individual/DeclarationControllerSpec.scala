@@ -28,14 +28,13 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.mvc.Request
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.HttpReads.upstreamResponseMessage
+import uk.gov.hmrc.http.HttpErrorFunctions.upstreamResponseMessage
 import uk.gov.hmrc.http.UpstreamErrorResponse
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{psaName, pstr, ua}
 import utils.Enumerable
 
 import scala.concurrent.Future
-class DeclarationControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
   
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()

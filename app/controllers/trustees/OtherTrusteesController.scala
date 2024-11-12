@@ -24,10 +24,9 @@ import identifiers.trustees.OtherTrusteesId
 import models.NormalMode
 import models.requests.DataRequest
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.details.CommonHasReferenceValueService
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -42,7 +41,7 @@ class OtherTrusteesController @Inject()(val messagesApi: MessagesApi,
   extends Retrievals with I18nSupport {
 
   private def form()(implicit request: DataRequest[AnyContent]): Form[Boolean] =
-    formProvider(errorMsg = Message("messages__otherTrustees__error__required"))
+    formProvider(errorMsg = Messages("messages__otherTrustees__error__required"))
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
@@ -50,13 +49,13 @@ class OtherTrusteesController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.get(
-              pageTitle = Message("messages__otherTrustees__title"),
-              pageHeading = Message("messages__otherTrustees__heading"),
+              pageTitle = Messages("messages__otherTrustees__title"),
+              pageHeading = Messages("messages__otherTrustees__heading"),
               isPageHeading = true,
               id = OtherTrusteesId,
               form = form(),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__otherTrustees__lede")),
+              paragraphText = Seq(Messages("messages__otherTrustees__lede")),
               legendClass = "govuk-visually-hidden",
               submitCall = routes.OtherTrusteesController.onSubmit
             )
@@ -69,13 +68,13 @@ class OtherTrusteesController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.post(
-              pageTitle = Message("messages__otherTrustees__title"),
-              pageHeading = Message("messages__otherTrustees__heading"),
+              pageTitle = Messages("messages__otherTrustees__title"),
+              pageHeading = Messages("messages__otherTrustees__heading"),
               isPageHeading = true,
               id = OtherTrusteesId,
               form = form(),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__otherTrustees__lede")),
+              paragraphText = Seq(Messages("messages__otherTrustees__lede")),
               legendClass = "govuk-visually-hidden",
               mode = NormalMode,
               submitCall = routes.OtherTrusteesController.onSubmit

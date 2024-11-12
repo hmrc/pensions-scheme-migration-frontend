@@ -27,9 +27,9 @@ import identifiers.establishers.individual.address._
 import identifiers.establishers.individual.contact.{EnterEmailId, EnterPhoneId}
 import identifiers.establishers.individual.details._
 import identifiers.establishers.partnership.AddPartnersId
+import models._
 import models.establishers.EstablisherKind
 import models.requests.DataRequest
-import models.{CheckMode, Index, Mode, NormalMode, entities}
 import play.api.mvc.{AnyContent, Call}
 import utils.{Enumerable, UserAnswers}
 

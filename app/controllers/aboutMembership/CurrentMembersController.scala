@@ -27,10 +27,8 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.{Enumerable, TwirlMigration}
-import viewmodels.Message
+import utils.Enumerable
 import views.html.aboutMembership.MembersView
 
 import javax.inject.Inject
@@ -46,10 +44,10 @@ class CurrentMembersController @Inject()(override val messagesApi: MessagesApi,
                                          val controllerComponents: MessagesControllerComponents,
                                          view : MembersView
                                     )(implicit val executionContext: ExecutionContext) extends FrontendBaseController
-  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
+  with I18nSupport with Retrievals with Enumerable.Implicits {
 
   private def form(schemeName: String)(implicit messages: Messages): Form[Members] =
-    formProvider(Message("currentMembers.error.required", schemeName))
+    formProvider(Messages("currentMembers.error.required", schemeName))
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
@@ -63,7 +61,7 @@ class CurrentMembersController @Inject()(override val messagesApi: MessagesApi,
           schemeName,
           Messages("currentMembers.title", Messages("messages__the_scheme")),
           Messages("currentMembers.title", schemeName),
-          TwirlMigration.toTwirlRadios(Members.radios(preparedForm)),
+          Members.radios(preparedForm),
           routes.CurrentMembersController.onSubmit
         )))
       }
@@ -79,7 +77,7 @@ class CurrentMembersController @Inject()(override val messagesApi: MessagesApi,
               schemeName,
               Messages("currentMembers.title", Messages("messages__the_scheme")),
               Messages("currentMembers.title", schemeName),
-              TwirlMigration.toTwirlRadios(Members.radios(formWithErrors)),
+              Members.radios(formWithErrors),
               routes.CurrentMembersController.onSubmit
             )))
           },

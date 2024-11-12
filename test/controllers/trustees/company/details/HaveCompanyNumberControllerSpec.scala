@@ -26,15 +26,14 @@ import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 import services.common.details.CommonHasReferenceValueService
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{companyDetails, schemeName, ua}
-import utils.{FakeNavigator, TwirlMigration, UserAnswers}
-import viewmodels.Message
+import utils.{FakeNavigator, UserAnswers}
 import views.html.{HasReferenceValueView, HasReferenceValueWithHintView}
 
 import scala.concurrent.Future
@@ -44,7 +43,7 @@ class HaveCompanyNumberControllerSpec extends ControllerSpecBase with JsonMatche
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(index), companyDetails).success.value
 
   private val formProvider: HasReferenceNumberFormProvider = new HasReferenceNumberFormProvider()
-  private val form: Form[Boolean] = formProvider(Message("messages__haveCompanyNumber__error", companyDetails.companyName))
+  private val form: Form[Boolean] = formProvider(Messages("messages__haveCompanyNumber__error", companyDetails.companyName))
 
   private def controller(dataRetrievalAction: DataRetrievalAction): HaveCompanyNumberController =
     new HaveCompanyNumberController(messagesApi, new FakeAuthAction(), dataRetrievalAction,
@@ -73,8 +72,8 @@ class HaveCompanyNumberControllerSpec extends ControllerSpecBase with JsonMatche
         schemeName,
         messages("messages__haveCompanyNumber", messages("messages__company")),
         messages("messages__haveCompanyNumber", companyDetails.companyName),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(form("value"))),
-        "govuk-label--xl",
+        utils.Radios.yesNo(form("value")),
+        "govuk-label--l",
         Seq(messages("messages__haveCompanyNumber__p")),
         routes.HaveCompanyNumberController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)
@@ -94,8 +93,8 @@ class HaveCompanyNumberControllerSpec extends ControllerSpecBase with JsonMatche
         schemeName,
         messages("messages__haveCompanyNumber", messages("messages__company")),
         messages("messages__haveCompanyNumber", companyDetails.companyName),
-        TwirlMigration.toTwirlRadios(Radios.yesNo(filledFrom("value"))),
-        "govuk-label--xl",
+        utils.Radios.yesNo(filledFrom("value")),
+        "govuk-label--l",
         Seq(messages("messages__haveCompanyNumber__p")),
         routes.HaveCompanyNumberController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)

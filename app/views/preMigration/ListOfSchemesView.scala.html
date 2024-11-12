@@ -14,8 +14,6 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.viewmodels.Html
-
 @this(
     layout: templates.Layout,
     govukInsetText: GovukInsetText,
@@ -25,8 +23,7 @@
     govukButton: GovukButton,
     govukLabel: GovukLabel,
     formHelper: FormWithCSRF,
-    navigationLink: templates.NavigationLink,
-    pageNumberLink: templates.PageNumberLink,
+    paginationLinks: templates.PaginationLinks,
     govukInput: GovukInput,
     govukErrorMessage: GovukErrorMessage
 )
@@ -162,30 +159,7 @@
 
         @govukTable(schemes)
 
-        @if(numberOfSchemes > pagination) {
-        <div class="grid-row">
-            <div class="column-two-thirds">
-                <p class="govuk-margin-top-5 govuk-body-s" id="pagination-text">
-                    @paginationText
-                </p>
-                <nav class="govuk-margin-top-5" aria-label="page">
-                    @if(pageNumber > 1) {
-                        @navigationLink(messages("messages__listSchemes__pagination__first"), 1, listSchemeUrl)
-                        @navigationLink(messages("messages__listSchemes__pagination__prev"),pageNumber-1, listSchemeUrl)
-                    }
-
-                    @pageNumberLinks.map { linkNumber =>
-                        @pageNumberLink(linkNumber, numberOfPages, listSchemeUrl, pageNumber)
-                    }
-
-                    @if(pageNumber < numberOfPages) {
-                        @navigationLink(messages("messages__listSchemes__pagination__next"), pageNumber+1, listSchemeUrl)
-                        @navigationLink(messages("messages__listSchemes__pagination__last"), numberOfPages, listSchemeUrl)
-                    }
-                </nav>
-            </div>
-        </div>
-        }
+        @paginationLinks(numberOfSchemes, pagination, numberOfPages, pageNumber, listSchemeUrl)
 
         <p class="govuk-body govuk-!-margin-top-4">
             <a id="return_to_psa" href="@returnUrl" class="govuk-link">

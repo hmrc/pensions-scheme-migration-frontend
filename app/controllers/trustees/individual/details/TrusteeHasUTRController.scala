@@ -26,12 +26,11 @@ import identifiers.trustees.individual.details.TrusteeHasUTRId
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
 import services.common.details.CommonHasReferenceValueService
 import utils.UserAnswers
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -52,12 +51,12 @@ class TrusteeHasUTRController @Inject()(val messagesApi: MessagesApi,
     request
       .userAnswers
       .get(TrusteeNameId(index))
-      .fold(Message("messages__trustee"))(_.fullName)
+      .fold(Messages("messages__trustee"))(_.fullName)
 
   private def form(index: Index)
                   (implicit request: DataRequest[AnyContent]): Form[Boolean] =
     formProvider(
-      errorMsg = Message("messages__genericHasUtr__error__required", name(index))
+      errorMsg = Messages("messages__genericHasUtr__error__required", name(index))
     )
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
@@ -67,13 +66,13 @@ class TrusteeHasUTRController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.get(
-              pageTitle     = Message("messages__hasUTR", Message("messages__individual")),
-              pageHeading     = Message("messages__hasUTR", name(index)),
+              pageTitle     = Messages("messages__hasUTR", Messages("messages__individual")),
+              pageHeading     = Messages("messages__hasUTR", name(index)),
               isPageHeading = true,
               id            = TrusteeHasUTRId(index),
               form          = form(index),
               schemeName    = schemeName,
-              paragraphText = Seq(Message("messages__UTR__p")),
+              paragraphText = Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2")),
               legendClass   = "govuk-visually-hidden",
               submitCall    = routes.TrusteeHasUTRController.onSubmit(index, mode)
             )
@@ -87,13 +86,13 @@ class TrusteeHasUTRController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.post(
-              pageTitle = Message("messages__hasUTR", Message("messages__individual")),
-              pageHeading = Message("messages__hasUTR", name(index)),
+              pageTitle = Messages("messages__hasUTR", Messages("messages__individual")),
+              pageHeading = Messages("messages__hasUTR", name(index)),
               isPageHeading = true,
               id = TrusteeHasUTRId(index),
               form = form(index),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__UTR__p")),
+              paragraphText = Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2")),
               legendClass = "govuk-visually-hidden",
               mode = mode,
               submitCall    = routes.TrusteeHasUTRController.onSubmit(index, mode),

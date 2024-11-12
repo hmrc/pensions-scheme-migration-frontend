@@ -41,7 +41,7 @@
                 Fieldset(
                 legend = Some(Legend(
                 content = Text(messages("messages__established_country__h1", schemeName)),
-                classes = "govuk-fieldset__legend--xl govuk-!-margin-bottom-8",
+                classes = "govuk-fieldset__legend--l govuk-!-margin-bottom-4",
                 isPageHeading = true
                 )))
             )
@@ -63,5 +63,5 @@
    @templates.ReturnLink(schemeName)
    </div>
 
-  <script @CSPNonce.attr src="@routes.Assets.versioned("javascripts/autocomplete/location-autocomplete.min.js")"></script>
+  <script @CSPNonce.attr src='@routes.Assets.versioned("javascripts/autocomplete/location-autocomplete.min.js")'></script>
 }

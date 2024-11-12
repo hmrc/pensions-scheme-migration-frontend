@@ -25,10 +25,9 @@ import identifiers.establishers.individual.details.EstablisherNINOId
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.details.CommonEnterReferenceValueService
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -47,7 +46,7 @@ class EstablisherEnterNINOController @Inject()(val messagesApi: MessagesApi,
     request
       .userAnswers
       .get(EstablisherNameId(index))
-      .fold(Message("messages__establisher"))(_.fullName)
+      .fold(Messages("messages__establisher"))(_.fullName)
 
   private def form(index: Index)
                   (implicit request: DataRequest[AnyContent]): Form[ReferenceValue] =
@@ -59,14 +58,14 @@ class EstablisherEnterNINOController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.get(
-              pageTitle     = Message("messages__enterNINO_title", Message("messages__individual")),
-              pageHeading     = Message("messages__enterNINO_title", name(index)),
+              pageTitle     = Messages("messages__enterNINO_title", Messages("messages__individual")),
+              pageHeading     = Messages("messages__enterNINO_title", name(index)),
               isPageHeading = true,
               id            = EstablisherNINOId(index),
               form          = form(index),
               schemeName    = schemeName,
-              hintText      = Some(Message("messages__enterNINO__hint")),
-              legendClass   = "govuk-label--xl",
+              hintText      = Some(Messages("messages__enterNINO__hint")),
+              legendClass   = "govuk-label--l",
               submitCall = routes.EstablisherEnterNINOController.onSubmit(index, mode)
             )
         }
@@ -78,14 +77,14 @@ class EstablisherEnterNINOController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.post(
-              pageTitle     = Message("messages__enterNINO_title", Message("messages__individual")),
-              pageHeading     = Message("messages__enterNINO_title", name(index)),
+              pageTitle     = Messages("messages__enterNINO_title", Messages("messages__individual")),
+              pageHeading     = Messages("messages__enterNINO_title", name(index)),
               isPageHeading = true,
               id            = EstablisherNINOId(index),
               form          = form(index),
               schemeName    = schemeName,
-              hintText      = Some(Message("messages__enterNINO__hint")),
-              legendClass   = "govuk-label--xl",
+              hintText      = Some(Messages("messages__enterNINO__hint")),
+              legendClass   = "govuk-label--l",
               mode          = mode,
               submitCall = routes.EstablisherEnterNINOController.onSubmit(index, mode)
             )

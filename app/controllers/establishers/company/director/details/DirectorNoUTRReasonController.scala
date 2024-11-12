@@ -26,12 +26,11 @@ import identifiers.trustees.individual.details.TrusteeNoUTRReasonId
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
 import services.common.details.CommonReasonService
 import utils.UserAnswers
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -53,8 +52,8 @@ class DirectorNoUTRReasonController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.get(
-              pageTitle = Message("messages__whyNoUTR", Message("messages__director")),
-              pageHeading = Message("messages__whyNoUTR", name(establisherIndex, directorIndex)),
+              pageTitle = Messages("messages__whyNoUTR", Messages("messages__director")),
+              pageHeading = Messages("messages__whyNoUTR", name(establisherIndex, directorIndex)),
               isPageHeading = true,
               id = DirectorNoUTRReasonId(establisherIndex, directorIndex),
               form = form(establisherIndex, directorIndex),
@@ -70,8 +69,8 @@ class DirectorNoUTRReasonController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.post(
-              pageTitle = Message("messages__whyNoUTR", Message("messages__director")),
-              pageHeading = Message("messages__whyNoUTR", name(establisherIndex, directorIndex)),
+              pageTitle = Messages("messages__whyNoUTR", Messages("messages__director")),
+              pageHeading = Messages("messages__whyNoUTR", name(establisherIndex, directorIndex)),
               isPageHeading = true,
               id = DirectorNoUTRReasonId(establisherIndex, directorIndex),
               form = form(establisherIndex, directorIndex),
@@ -85,7 +84,7 @@ class DirectorNoUTRReasonController @Inject()(val messagesApi: MessagesApi,
 
   private def form(establisherIndex: Index, directorIndex: Index)
                   (implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Message("messages__reason__error_utrRequired", name(establisherIndex, directorIndex)))
+    formProvider(Messages("messages__reason__error_utrRequired", name(establisherIndex, directorIndex)))
 
   private def name(establisherIndex: Index, directorIndex: Index)
                   (implicit request: DataRequest[AnyContent]): String =
