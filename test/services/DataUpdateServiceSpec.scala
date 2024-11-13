@@ -20,11 +20,16 @@ import base.SpecBase
 import matchers.JsonMatchers
 import models.prefill.IndividualDetails
 import utils.{Enumerable, UaJsValueGenerators, UserAnswers}
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
 
 import java.time.LocalDate
 
-class DataUpdateServiceSpec extends SpecBase with JsonMatchers with Enumerable.Implicits with UaJsValueGenerators {
-  private val dataUpdateService = new DataUpdateService()
+class DataUpdateServiceSpec
+    extends SpecBase
+    with JsonMatchers
+    with Enumerable.Implicits
+    with UaJsValueGenerators {
+  val dataUpdateService = new DataUpdateService()
 
   "findMatchingTrustee" must {
     "return the trustee which is non deleted and their nino, name and dob matched with the directors" in {
@@ -64,10 +69,14 @@ class DataUpdateServiceSpec extends SpecBase with JsonMatchers with Enumerable.I
         }
       }
     }
+
+    "return empty list when trustee is not found" in {
+      forAll(uaJsValueWithNoTrustee) {
+        ua => {
+          val result = dataUpdateService.findMatchingDirectors(1)(UserAnswers(ua))
+          result mustBe Nil
+        }
+      }
+    }
   }
 }
-
-
-
-
-
