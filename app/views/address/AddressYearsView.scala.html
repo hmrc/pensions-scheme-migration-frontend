@@ -46,7 +46,7 @@
         )
 
         @govukButton(
-            ButtonViewModel(Text(messages("site.save_and_continue"))).withAttribute("id", "submit")
+            ButtonViewModel(Text(messages("site.save_and_continue"))).withAttribute(("id", "submit"): (String, String))
         )
     }
 

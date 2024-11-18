@@ -71,7 +71,7 @@ class CommonPostcodeServiceSpec extends ControllerSpecBase with CommonServiceSpe
         "enterManuallyUrl",
         "schemeName",
         "h1MessageKey"
-      ), form)(request, global)
+      ), form)(request)
 
       status(result) mustBe OK
     }

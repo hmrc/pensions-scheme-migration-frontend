@@ -100,7 +100,7 @@ class ConfirmAddressControllerSpec extends ControllerSpecBase with JsonMatchers 
         postcodeEntry = false, postcodeFirst = false
       )(fakeRequest, messages)
 
-      when(mockCommonManualAddressService.get(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
+      when(mockCommonManualAddressService.get(any(), any(), any(), any(), any(), any(), any(), any(), any())(any()))
         .thenReturn(Future.successful(Ok(expectedView)))
 
       val result: Future[Result] = route(app, httpGETRequest(httpPathGET)).value

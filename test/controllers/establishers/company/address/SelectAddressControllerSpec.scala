@@ -95,7 +95,7 @@ class SelectAddressControllerSpec extends ControllerSpecBase with JsonMatchers w
         h1MessageKey = "addressList.title"
       )(fakeRequest, messages)
 
-      when(mockCommonAddressListService.get(any(), any(), any())(any(), any()))
+      when(mockCommonAddressListService.get(any(), any(), any())(any()))
         .thenReturn(Future.successful(Ok(expectedView)))
 
       val result: Future[Result] = route(app, request).value

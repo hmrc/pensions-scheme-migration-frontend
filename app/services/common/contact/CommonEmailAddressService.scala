@@ -52,9 +52,7 @@ class CommonEmailAddressService @Inject()(
            schemeName: String,
            paragraphText: Seq[String] = Seq(),
            submitCall: Call
-         )(
-           implicit request: DataRequest[AnyContent],
-           ec: ExecutionContext): Future[Result] = {
+         )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     val filledForm = request.userAnswers.get(emailId).fold(form)(form.fill)
     Future.successful(Ok(
       emailView(
