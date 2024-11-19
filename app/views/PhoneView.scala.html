@@ -32,8 +32,6 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        <h1 class="govuk-heading-l">@messages("messages__enterPhone_pageHeading", entityName)</h1>
-
         @formHelper(action = submitCall, Symbol("autoComplete") -> "off") {
 
             @govukInput(
@@ -44,9 +42,9 @@
                     inputType = "tel",
                     classes = "govuk-input--width-10",
                     label = Label(
-                        isPageHeading = false,
-                        classes = "govuk-fieldset__legend--s govuk-visually-hidden",
-                        content = Text(messages("messages__enterPhone_pageHeading"))
+                        isPageHeading = true,
+                        classes = "govuk-fieldset__legend--l",
+                        content = Text(messages("messages__enterPhone_pageHeading", entityName))
                     ),
                     errorMessage = field.error.map(e => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args:_*))))
                 )

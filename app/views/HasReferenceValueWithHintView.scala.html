@@ -39,11 +39,11 @@
                         radios,
                         Fieldset(
                             legend = Some(Legend(content = Text(messages(pageHeading)), isPageHeading = true,
-                            classes = "govuk-fieldset__legend--l govuk-!-margin-bottom-8"
+                            classes = "govuk-fieldset__legend--l govuk-!-margin-bottom-4"
                             ))
                         ),
                         classes = "govuk-radios--inline",
-                        hint = Some(Hint(content = HtmlContent(Html(paragraphs.map(paragraph => s"<p class='govuk-body govuk-!-font-weight-regular'>$paragraph</p>").mkString))))
+                        hint = Some(Hint(content = HtmlContent(Html(paragraphs.map(paragraph => s"<p>$paragraph</p>").mkString))))
                     )
                 )
 

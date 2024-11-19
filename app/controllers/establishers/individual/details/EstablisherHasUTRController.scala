@@ -67,7 +67,7 @@ class EstablisherHasUTRController @Inject()(val messagesApi: MessagesApi,
               id            = EstablisherHasUTRId(index),
               form          = form(index),
               schemeName    = schemeName,
-              paragraphText = Seq(Messages("messages__UTR__p")),
+              paragraphText = Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2")),
               legendClass   = "govuk-visually-hidden",
               submitCall    = routes.EstablisherHasUTRController.onSubmit(index, mode)
             )
@@ -87,7 +87,7 @@ class EstablisherHasUTRController @Inject()(val messagesApi: MessagesApi,
               id            = EstablisherHasUTRId(index),
               form          = form(index),
               schemeName    = schemeName,
-              paragraphText = Seq(Messages("messages__UTR__p")),
+              paragraphText = Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2")),
               legendClass   = "govuk-visually-hidden",
               mode          = mode,
               submitCall    = routes.EstablisherHasUTRController.onSubmit(index, mode)

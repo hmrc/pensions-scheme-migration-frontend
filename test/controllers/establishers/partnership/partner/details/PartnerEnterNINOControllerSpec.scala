@@ -60,7 +60,7 @@ class PartnerEnterNINOControllerSpec
       "Test scheme name",
       "What is the partner’s National Insurance number?",
       "What is Jane Doe’s National Insurance number?",
-      "govuk-label--xl",
+      "govuk-label--l",
       Seq(),
       Some(Messages("messages__enterNINO__hint")),
       routes.PartnerEnterNINOController.onSubmit(0, 0, NormalMode)

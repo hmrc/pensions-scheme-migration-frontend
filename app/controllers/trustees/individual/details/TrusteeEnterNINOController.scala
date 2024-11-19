@@ -70,7 +70,7 @@ class TrusteeEnterNINOController @Inject()(val messagesApi: MessagesApi,
               form          = form(index),
               schemeName    = schemeName,
               hintText      = Some(Messages("messages__enterNINO__hint")),
-              legendClass   = "govuk-label--xl",
+              legendClass   = "govuk-label--l",
               submitCall = routes.TrusteeEnterNINOController.onSubmit(index, mode)
             )
         }
@@ -90,7 +90,7 @@ class TrusteeEnterNINOController @Inject()(val messagesApi: MessagesApi,
               schemeName = schemeName,
               hintText = Some(Messages("messages__enterNINO__hint")),
               paragraphText = Seq(),
-              legendClass = "govuk-label--xl",
+              legendClass = "govuk-label--l",
               mode = mode,
               optSetUserAnswers = Some(value => setUpdatedAnswers(index, mode, value, request.userAnswers)),
               submitCall = routes.TrusteeEnterNINOController.onSubmit(index, mode)
