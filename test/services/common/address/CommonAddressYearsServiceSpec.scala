@@ -64,7 +64,7 @@ class CommonAddressYearsServiceSpec extends ControllerSpecBase with CommonServic
   "CommonAddressYearsService" must {
 
     "render the view correctly on get" in {
-      val result = service.get(Some("schemeName"), "entityName", "entityType", form, addressYearsId, submitUrl = onwardCall)(request, global)
+      val result = service.get(Some("schemeName"), "entityName", "entityType", form, addressYearsId, submitUrl = onwardCall)(request)
       status(result) mustBe OK
     }
 

@@ -89,7 +89,7 @@ class AddressYearsControllerSpec extends ControllerSpecBase with JsonMatchers wi
         controllers.establishers.partnership.address.routes.AddressYearsController.onSubmit(index, mode)
       )(fakeRequest, messages)
 
-      when(mockCommonAddressYearsService.get(any(), any(), any(), any(), any(), any())(any(), any()))
+      when(mockCommonAddressYearsService.get(any(), any(), any(), any(), any(), any())(any()))
         .thenReturn(Future.successful(Ok(expectedView)))
 
       val result: Future[Result] = route(app, httpGETRequest(httpPathGET)).value

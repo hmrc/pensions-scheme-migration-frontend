@@ -78,7 +78,7 @@ class CommonReasonServiceSpec extends ControllerSpecBase with CommonServiceSpecB
         form = reasonForm,
         schemeName = "Test Scheme",
         submitUrl = onwardCall
-      )(fakeDataRequest(userAnswers, fakeRequestWithFormData), global)
+      )(fakeDataRequest(userAnswers, fakeRequestWithFormData))
 
       val expectedView = view.apply(
         pageTitle = "Test Title",
@@ -107,7 +107,7 @@ class CommonReasonServiceSpec extends ControllerSpecBase with CommonServiceSpecB
         form = reasonForm,
         schemeName = "Test Scheme",
         submitUrl = onwardCall
-      )(fakeDataRequest(updatedAnswers, fakeRequestWithFormData), global)
+      )(fakeDataRequest(updatedAnswers, fakeRequestWithFormData))
 
       val filledForm = reasonForm.bind(Map("value" -> "Test Reason"))
 

@@ -69,8 +69,7 @@ class CommonPhoneService @Inject()(
            paragraphText: Seq[String] = Seq(),
            submitCall: Call
          )(
-           implicit request: DataRequest[AnyContent],
-           ec: ExecutionContext): Future[Result] = {
+           implicit request: DataRequest[AnyContent]): Future[Result] = {
     val filledForm = request.userAnswers.get(phoneId).fold(form)(form.fill)
     Future.successful(Ok(
       phoneView(

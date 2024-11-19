@@ -88,7 +88,7 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with JsonMatchers w
         h1MessageKey = "postcode.title"
       )(fakeRequest, messages)
 
-      when(mockCommonPostcodeService.get(any(), any())(any(), any()))
+      when(mockCommonPostcodeService.get(any(), any())(any()))
         .thenReturn(Future.successful(Ok(expectedView)))
 
       val result: Future[Result] = route(app, httpGETRequest(httpPathGET)).value

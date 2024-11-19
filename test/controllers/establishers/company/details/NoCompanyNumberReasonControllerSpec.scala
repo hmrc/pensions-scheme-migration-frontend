@@ -66,7 +66,8 @@ class NoCompanyNumberReasonControllerSpec
         pageTitle, pageHeading, isPageHeading, form, schemeName, submitCall
       )(request, messages)
 
-      when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any(), any()))
+      when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any()))
+
         .thenReturn(Future.successful(Ok(view)))
 
       val result = route(application, httpGETRequest(httpPathGET)).value
@@ -86,7 +87,8 @@ class NoCompanyNumberReasonControllerSpec
         pageTitle, pageHeading, isPageHeading, filledForm, schemeName, submitCall
       )(request, messages)
 
-      when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any(), any()))
+      when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any()))
+
         .thenReturn(Future.successful(Ok(view)))
 
       val result = route(application, httpGETRequest(httpPathGET)).value
@@ -106,7 +108,8 @@ class NoCompanyNumberReasonControllerSpec
         pageTitle, pageHeading, isPageHeading, filledForm, schemeName, submitCall
       )(request, messages)
 
-      when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any(), any()))
+      when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any()))
+
         .thenReturn(Future.successful(Ok(view)))
       when(mockCommonReasonService.post(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(Redirect(onwardCall.url)))
