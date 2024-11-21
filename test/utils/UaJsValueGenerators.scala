@@ -203,7 +203,7 @@ trait UaJsValueGenerators {
       "companyDyDetails" -> Json.obj(
         "companyName" -> orgName
       )
-    ) ++ address.as[JsObject] ++ Json.obj("director" -> directorDetails.as[JsObject])
+    ) ++ address.as[JsObject] ++ Json.obj("director" -> Seq(directorDetails.as[JsObject]))
   }
 
   def directorJsValueGen(isDeleted: Boolean, isNinoAvailable: Boolean, index: Int): Gen[JsValue] = for {
