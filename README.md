@@ -6,9 +6,9 @@
 - [Enrolments](#enrolments)
 - [Compile & Test](#compile--test)
 - [Identity Verification Testing](#identity-verification-testing)
-- [Navigation and Dependent Services](#navigation-and-dependent-services)
+- [Navigation](#navigation)
 - [Service Documentation](#service-documentation)
-- [Endpoints](#endpoints)
+- [Dependencies](#dependencies)
 - [License](#license)
 
 ## Overview
@@ -151,15 +151,12 @@ Eventually we might want to move to iv-stubs, but currently they don't support o
 ## Navigation and Dependent Services
 The Pension Migration Frontend integrates with the Manage Pension Schemes (MPS) service and uses various stubs available on [GitHub](https://github.com/hmrc/pensions-scheme-stubs). From the Authority Wizard page you will be redirected to the dashboard. Navigate to the migration tile and select 'Add pension schemes registered on the Pension Schemes Online service' to add schemes or 'Add RAC/DACs registered on the Pension Schemes Online service' to add RAC/DACs.
 
-There are numerous APIs implemented throughout the MPS architecture, and the relevant endpoints are illustrated below. For an overview of all PODS APIs, refer to the [PODS API Documentation](https://confluence.tools.tax.service.gov.uk/display/PODSP/PODS+API+Latest+Version).
-
-
 ## Service Documentation
 [To Do]
 Include relevant links or details to any additional, service-specific documents (e.g., stubs, testing protocols) when available. 
 
-
-### Dependencies
+## Dependencies
+There are multiple microservices that this service depends on. These are:
 
 | Service                   | Link                                              |
 |---------------------------|---------------------------------------------------|
@@ -170,24 +167,6 @@ Include relevant links or details to any additional, service-specific documents 
 | auth                      | https://github.com/hmrc/auth                      |
 | contact-frontend          | https://github.com/hmrc/contact-frontend          |
 
-### Endpoints
-[TO DO]
-
-| Service                   | HTTP Method | Route                                                         | Purpose                                                                             |
-|---------------------------|-------------|---------------------------------------------------------------|-------------------------------------------------------------------------------------|
-| pensions-scheme-migration | POST        | /pensions-scheme-migration/register-scheme                    | Register legacy scheme to ETMP                                                      |
-| pensions-scheme-migration | GET         | /pensions-scheme-migration/list-of-schemes                    | Returns list of legacy scheme                                                       |
-| pensions-scheme-migration | GET         | /pensions-scheme-migration/getLegacySchemeDetails             | Returns details of legacy scheme                                                    | 
-| pensions-scheme-migration | POST        | /pensions-scheme-migration/bulk-migration                     | Put Retirement Or Deferred Annuity Contract to Work item for registration with ETMP | 
-| pensions-scheme-migration | GET         | /pensions-scheme-migration/bulk-migration/isRequestInProgress | Check for Retirement Or Deferred Annuity Contract migration in progress for a PSA   | 
-| pensions-scheme-migration | GET         | /pensions-scheme-migration/bulk-migration/isAllFailed         | Check for Retirement Or Deferred Annuity Contract migration failed for a PSA        | 
-| pensions-scheme-migration | DELETE      | /pensions-scheme-migration/bulk-migration/deleteAll           | Remove Retirement Or Deferred Annuity Contract migration for a PSA                  | 
-| pension-administrator     | GET         | /pension-administrator/get-email                              | Returns email address for a PSA                                                     | 
-| pension-administrator     | GET         | /pension-administrator/get-name                               | Returns name of a PSA                                                               | 
-| pension-administrator     | GET         | /pension-administrator/get-minimal-psa                        | Returns minimal PSA details from DES                                                | 
-| address-lookup            | POST        | /lookup                                                       | Returns a list of addresses that match a given postcode                             | 
-| email                     | POST        | /hmrc/email                                                   | Sends an email to an email address                                                  |
- 
 
 ## License
 This code is open source software Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at:
