@@ -143,6 +143,14 @@ trait UaJsValueGenerators {
       "trustees" -> Seq(trusteeDetails)
     )
   }
+
+  def uaJsValueWithNoTrustee: Gen[JsObject] = for {
+    estComDetails <- estCompanyWithNinoInDirJsValueGen(isNinoAvailable = false)
+  } yield {
+    Json.obj(
+      "establishers" -> Seq(estComDetails)
+    )
+  }
   def trusteeIndividualJsValueGen(isNinoAvailable: Boolean, index: Int): Gen[JsObject] = for {
     referenceOrNino <- Gen.const(s"CS700${index}00A")
     email <- Gen.const("aaa@gmail.com")
