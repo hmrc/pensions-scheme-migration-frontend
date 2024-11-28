@@ -26,9 +26,6 @@
 
 @layout(messages("messages__transferAll__title"), form.errors, formHasErrors = form.hasErrors) {
 
-
-    <h1 class="govuk-heading-l">@messages("messages__transferAll__title")</h1>
-
     @formHelper(submitCall, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "true") {
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
@@ -41,8 +38,7 @@
                 Fieldset(
                     legend = Some(
                         Legend(
-                            isPageHeading = true,
-                            classes = "govuk-heading-l govuk-!-margin-bottom-4"
+                            content = HtmlContent(s"<h1 class='govuk-heading-l'>${messages("messages__transferAll__title")}</h1>")
                         )
                     )
                 )
