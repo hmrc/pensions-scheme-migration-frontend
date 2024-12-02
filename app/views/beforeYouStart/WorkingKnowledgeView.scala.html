@@ -19,6 +19,7 @@
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
+    govukInsetText: GovukInsetText,
     govukButton: GovukButton
 )
 
@@ -36,7 +37,10 @@
 
         <p id="p1" class="govuk-body govuk-!-font-weight-regular">@messages("messages__workingKnowledge__p1")</p>
         <p id="p2" class="govuk-body govuk-!-font-weight-regular">@messages("messages__workingKnowledge__p2")</p>
-        <p id="p3" class="govuk-body govuk-!-font-weight-regular">@messages("messages__workingKnowledge__p3")</p>
+
+        @govukInsetText(
+        InsetText(
+        content = Text(messages("messages__workingKnowledge__p3"))))
 
         @govukRadios(
             RadiosViewModel(
@@ -44,7 +48,7 @@
                 fieldset = Fieldset( legend = Some(
                     Legend(
                         content = HtmlContent(
-                            s"""<h3 class='govuk-heading-l'>${messages("messages__workingKnowledge__title")}</h3>
+                            s"""<h3 class='govuk-heading-m'>${messages("messages__workingKnowledge__title")}</h3>
                         """.stripMargin)
                     )
                 )),
