@@ -35,19 +35,16 @@ govukButton: GovukButton
         @formHelper(action = submitCall, Symbol("autoComplete") -> "off") {
 
     @govukInput(
-    Input(
-    id = field.id,
-    name = field.name,
-    value = field.value,
-    classes = "govuk-!-width-three-quarters",
-    label = Label(
-    isPageHeading = true,
-    classes = "govuk-label--l",
-    content = Text(messages("benefitsInsuranceName.h1"))
-    ),
-    errorMessage = field.error.map(e => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args:_*))))
-    )
-    )
+        InputViewModel(
+            field = form("value"),
+            label = Label(
+            isPageHeading = true,
+            classes = "govuk-label--l",
+            content = Text(messages("benefitsInsuranceName.h1"))
+            ),
+            classes = "govuk-!-width-three-quarters"
+        )
+        )
 
         @govukButton(ButtonViewModel(Text(messages("site.save_and_continue"))).asFormSubmit)
         }
