@@ -29,8 +29,6 @@ entityType: String,
 paragraphs: Seq[String],
 submitCall: Call)(implicit request: Request[_], messages: Messages)
 
-@field = @{form("value")}
-
 @layout(messages("messages__enterEmail_pageHeading", entityType)) {
 
         @formHelper(action = submitCall, Symbol("autoComplete") -> "off") {
@@ -40,20 +38,18 @@ submitCall: Call)(implicit request: Request[_], messages: Messages)
         }
 
         @govukInput(
-            Input(
-                id = field.id,
-                name = field.name,
-                value = field.value,
-                inputType = "email",
-                classes = "govuk-input--width-10",
+            InputViewModel(
+                field = form("value"),
                 label = Label(
                     isPageHeading = true,
                     classes = "govuk-fieldset__legend--l govuk-heading--l",
                     content = Text(messages("messages__enterEmail_pageHeading", entityName))
-                ),
-                errorMessage = field.error.map(e => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args:_*))))
+                        ),
+                    classes = "govuk-!-width-three-quarters",
+                    inputType = "email"
+                )
             )
-        )
+
         @govukButton(
         ButtonViewModel(Text(messages("site.save_and_continue"))).asFormSubmit
         )

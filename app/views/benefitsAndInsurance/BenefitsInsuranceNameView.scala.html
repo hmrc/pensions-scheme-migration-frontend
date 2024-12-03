@@ -24,8 +24,6 @@ govukButton: GovukButton
 
 @(form: Form[_], schemeName: String, submitCall: Call)(implicit request: Request[_], messages: Messages)
 
-@field = @{form("value")}
-
 @layout(messages("benefitsInsuranceName.title"), formHasErrors = form.hasErrors) {
 <div>
     @if(form.errors.nonEmpty) {
@@ -43,7 +41,7 @@ govukButton: GovukButton
             content = Text(messages("benefitsInsuranceName.h1"))
             ),
             classes = "govuk-!-width-three-quarters"
-        )
+            )
         )
 
         @govukButton(ButtonViewModel(Text(messages("site.save_and_continue"))).asFormSubmit)
