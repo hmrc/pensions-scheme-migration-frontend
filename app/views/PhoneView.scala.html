@@ -24,8 +24,6 @@
 
 @(form: Form[_], schemeName: String, entityName: String, entityType: String, paragraphs: Seq[String], submitCall: Call)(implicit request: Request[_], messages: Messages)
 
-@field = @{form("value")}
-
 @layout(messages("messages__enterPhone_pageHeading", entityType)) {
     <div>
         @if(form.errors.nonEmpty) {
@@ -35,20 +33,17 @@
         @formHelper(action = submitCall, Symbol("autoComplete") -> "off") {
 
             @govukInput(
-                Input(
-                    id = field.id,
-                    name = field.name,
-                    value = field.value,
-                    inputType = "tel",
-                    classes = "govuk-input--width-10",
+                InputViewModel(
+                    field = form("value"),
                     label = Label(
                         isPageHeading = true,
-                        classes = "govuk-fieldset__legend--l",
+                        classes = "govuk-fieldset__legend--l govuk-heading--l",
                         content = Text(messages("messages__enterPhone_pageHeading", entityName))
-                    ),
-                    errorMessage = field.error.map(e => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args:_*))))
+                        ),
+                        classes = "govuk-!-width-three-quarters",
+                        inputType = "tel"
+                    )
                 )
-            )
 
             @govukButton(
                 ButtonViewModel(Text(messages("site.save_and_continue"))).asFormSubmit
