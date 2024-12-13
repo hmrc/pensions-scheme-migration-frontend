@@ -19,19 +19,11 @@ package controllers.preMigration
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import matchers.JsonMatchers
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
 import play.api.Application
-import play.api.libs.json.JsObject
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.{Enumerable, UserAnswers}
-
-import scala.concurrent.Future
-class ThereIsAProblemControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
-
-  private val templateToBeRendered = "preMigration/thereIsAProblem.njk"
+import views.html.preMigration.ThereIsAProblemView
+class ThereIsAProblemControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 
@@ -42,7 +34,6 @@ class ThereIsAProblemControllerSpec extends ControllerSpecBase with NunjucksSupp
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
   "ThereIsAProblemController" must {
@@ -50,17 +41,12 @@ class ThereIsAProblemControllerSpec extends ControllerSpecBase with NunjucksSupp
     "return OK and the correct view for a GET" in {
       mutableFakeDataRetrievalAction.setDataToReturn(Some(UserAnswers()))
 
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val request = httpGETRequest(httpPathGET)
+      val result = route(application, request).value
 
       status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
+      val view = application.injector.instanceOf[ThereIsAProblemView].apply()(request, messages)
+      compareResultAndView(result, view)
     }
-
   }
 }

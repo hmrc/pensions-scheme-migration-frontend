@@ -27,15 +27,13 @@ import models.benefitsAndInsurance.BenefitsType
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Enumerable
+import views.html.benefitsAndInsurance.BenefitsTypeView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class BenefitsTypeController @Inject()(override val messagesApi: MessagesApi,
                                        userAnswersCacheConnector: UserAnswersCacheConnector,
@@ -46,8 +44,9 @@ class BenefitsTypeController @Inject()(override val messagesApi: MessagesApi,
                                        formProvider: BenefitsTypeFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        config: AppConfig,
-                                       renderer: Renderer)(implicit ec: ExecutionContext)
-  extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
+                                       view: BenefitsTypeView
+                                       )(implicit ec: ExecutionContext)
+  extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits {
 
   private def form: Form[BenefitsType] =
     formProvider()
@@ -60,12 +59,12 @@ class BenefitsTypeController @Inject()(override val messagesApi: MessagesApi,
             form.fill(value)
           case None        => form
         }
-        val json = Json.obj(
-          "schemeName" -> schemeName,
-          "form" -> preparedForm,
-          "radios" -> BenefitsType.radios(preparedForm)
-        )
-        renderer.render("benefitsAndInsurance/benefitsType.njk", json).map(Ok(_))
+        Future.successful(Ok(view(
+          preparedForm,
+          schemeName,
+          BenefitsType.radios(preparedForm),
+          controllers.benefitsAndInsurance.routes.BenefitsTypeController.onSubmit
+        )))
       }
     }
 
@@ -76,13 +75,12 @@ class BenefitsTypeController @Inject()(override val messagesApi: MessagesApi,
           .bindFromRequest()
           .fold(
             formWithErrors => {
-              val json = Json.obj(
-                "schemeName" -> schemeName,
-                "form" -> formWithErrors,
-                "radios" -> BenefitsType.radios(formWithErrors)
-              )
-
-              renderer.render("benefitsAndInsurance/benefitsType.njk", json).map(BadRequest(_))
+              Future.successful(BadRequest(view(
+                formWithErrors,
+                schemeName,
+                BenefitsType.radios(formWithErrors),
+                controllers.benefitsAndInsurance.routes.BenefitsTypeController.onSubmit
+              )))
             },
             value => {
               val updatedUA = request.userAnswers.setOrException(BenefitsTypeId, value)

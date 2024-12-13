@@ -23,24 +23,22 @@ import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.partner.contact.EnterPhoneId
 import matchers.JsonMatchers
 import models.{NormalMode, PersonName}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.i18n.Messages
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
+import services.common.contact.CommonPhoneService
 import utils.Data.ua
 import utils.{Data, FakeNavigator, UserAnswers}
+import views.html.PhoneView
 
 import scala.concurrent.Future
 
 class EnterPhoneNumberControllerSpec extends ControllerSpecBase
-  with NunjucksSupport
+
   with JsonMatchers
   with TryValues
   with BeforeAndAfterEach {
@@ -51,22 +49,13 @@ class EnterPhoneNumberControllerSpec extends ControllerSpecBase
   private val form = formProvider("")
 
   private val userAnswers: UserAnswers = ua.set(PartnerNameId(0,0), personName).success.value
-  private val templateToBeRendered: String = "phone.njk"
 
-  private val commonJson: JsObject =
-    Json.obj(
-      "entityName" -> personName.fullName,
-      "entityType" -> Messages("messages__partner"),
-      "schemeName" -> Data.schemeName
-    )
   private val formData: String = phone
 
   override def beforeEach(): Unit = {
     reset(
-      mockRenderer,
       mockUserAnswersCacheConnector
     )
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
   private def controller(
@@ -74,18 +63,18 @@ class EnterPhoneNumberControllerSpec extends ControllerSpecBase
                         ): EnterPhoneNumberController =
     new EnterPhoneNumberController(
       messagesApi = messagesApi,
-      navigator = new FakeNavigator(desiredRoute = onwardCall),
       authenticate = new FakeAuthAction(),
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl,
       formProvider = formProvider,
-      controllerComponents = controllerComponents,
-      userAnswersCacheConnector = mockUserAnswersCacheConnector,
-      renderer = new Renderer(mockAppConfig, mockRenderer)
+      common = new CommonPhoneService(
+        controllerComponents = controllerComponents,
+        userAnswersCacheConnector = mockUserAnswersCacheConnector,
+        navigator = new FakeNavigator(desiredRoute = onwardCall),
+        phoneView = app.injector.instanceOf[PhoneView],
+        messagesApi = messagesApi
+      )
     )
-
-  private val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-  private val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
   "EnterPhoneNumberController" must {
     "return OK and the correct view for a GET" in {
@@ -94,11 +83,15 @@ class EnterPhoneNumberControllerSpec extends ControllerSpecBase
       val result: Future[Result] = controller(getData).onPageLoad(0,0, NormalMode)(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-      templateCaptor.getValue mustEqual templateToBeRendered
-      val json: JsObject = Json.obj("form" -> form)
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      val view = app.injector.instanceOf[PhoneView].apply(
+        form,
+        Data.schemeName,
+        personName.fullName,
+        Messages("messages__partner"),
+        Seq(),
+        routes.EnterPhoneNumberController.onSubmit(0,0,NormalMode)
+      )(fakeRequest, messages)
+      compareResultAndView(result, view)
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
@@ -110,11 +103,8 @@ class EnterPhoneNumberControllerSpec extends ControllerSpecBase
           .onPageLoad(0,0, NormalMode)(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
-      templateCaptor.getValue mustEqual templateToBeRendered
-      val json: JsObject = Json.obj("form" -> form.fill(formData))
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      contentAsString(result) must include(messages("messages__enterPhone_pageHeading", personName.fullName))
+      contentAsString(result) must include(formData)
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -135,15 +125,10 @@ class EnterPhoneNumberControllerSpec extends ControllerSpecBase
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
       val result: Future[Result] = controller(getData).onSubmit(0,0, NormalMode)(request)
-      val boundForm = form.bind(Map("value" -> "invalid value"))
 
       status(result) mustBe BAD_REQUEST
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject = Json.obj("form" -> Json.toJson(boundForm))
-
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      contentAsString(result) must include(messages("messages__enterPhone_pageHeading", personName.fullName))
+      contentAsString(result) must include(messages("messages__enterPhone__error_invalid"))
       verify(mockUserAnswersCacheConnector, times(0))
         .save(any(), any())(any(), any())
     }

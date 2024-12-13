@@ -24,34 +24,53 @@ import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.AddressYearsId
 import models.{Index, Mode}
 import play.api.data.Form
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.address.CommonAddressYearsService
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class AddressYearsController @Inject()(authenticate: AuthAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       formProvider: AddressYearsFormProvider,
-                                       common: CommonAddressYearsService)(implicit ec: ExecutionContext)
-  extends Retrievals {
+class AddressYearsController @Inject()(
+    val messagesApi: MessagesApi,
+    authenticate: AuthAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: AddressYearsFormProvider,
+    common: CommonAddressYearsService
+)(implicit ec: ExecutionContext) extends Retrievals with I18nSupport {
 
   private def form: Form[Boolean] =
     formProvider("individualAddressYears.error.required")
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (EstablisherNameId(index) and SchemeNameId).retrieve.map { case establisherName ~ schemeName =>
-        common.get(Some(schemeName), establisherName.fullName, Message("establisherEntityTypeIndividual"), form, AddressYearsId(index))
+      (EstablisherNameId(index) and SchemeNameId).retrieve.map {
+        case establisherName ~ schemeName =>
+          common.get(
+            Some(schemeName),
+            establisherName.fullName,
+            Messages("establisherEntityTypeIndividual"),
+            form,
+            AddressYearsId(index),
+            submitUrl = routes.AddressYearsController.onSubmit(index, mode)
+          )
       }
     }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (EstablisherNameId(index) and SchemeNameId).retrieve.map { case establisherName ~ schemeName =>
-        common.post(Some(schemeName), establisherName.fullName, Message("establisherEntityTypeIndividual"), form, AddressYearsId(index),Some(mode))
+      (EstablisherNameId(index) and SchemeNameId).retrieve.map {
+        case establisherName ~ schemeName =>
+          common.post(
+            Some(schemeName),
+            establisherName.fullName,
+            Messages("establisherEntityTypeIndividual"),
+            form,
+            AddressYearsId(index),
+            Some(mode),
+            submitUrl = routes.AddressYearsController.onSubmit(index, mode)
+          )
         }
     }
 

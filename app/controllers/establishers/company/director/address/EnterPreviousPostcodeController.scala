@@ -16,11 +16,10 @@
 
 package controllers.establishers.company.director.address
 
-import config.AppConfig
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
+import controllers.Retrievals
 import controllers.actions._
-import controllers.address.PostcodeController
 import forms.address.PostcodeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
@@ -30,70 +29,94 @@ import models._
 import models.requests.DataRequest
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.data.FormBinding.Implicits.formBinding
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.Results.{BadRequest, Redirect}
+import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
-import uk.gov.hmrc.nunjucks.NunjucksSupport
+import services.common.address.{CommonPostcodeService, CommonPostcodeTemplateData}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.UserAnswers
+import views.html.address.PostcodeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
-class EnterPreviousPostcodeController @Inject()(val appConfig: AppConfig,
-                                                override val messagesApi: MessagesApi,
-                                                val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                                val addressLookupConnector: AddressLookupConnector,
-                                                val navigator: CompoundNavigator,
-                                                authenticate: AuthAction,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
-                                                formProvider: PostcodeFormProvider,
-                                                dataUpdateService: DataUpdateService,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                val renderer: Renderer
-                                               )(implicit val ec: ExecutionContext) extends PostcodeController with I18nSupport with NunjucksSupport {
+class EnterPreviousPostcodeController @Inject()(
+    val messagesApi: MessagesApi,
+    userAnswersCacheConnector: UserAnswersCacheConnector,
+    addressLookupConnector: AddressLookupConnector,
+    navigator: CompoundNavigator,
+    authenticate: AuthAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: PostcodeFormProvider,
+    dataUpdateService: DataUpdateService,
+    common: CommonPostcodeService,
+    postcodeView: PostcodeView
+)(implicit val ec: ExecutionContext) extends I18nSupport with Retrievals {
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        get(getFormToJson(schemeName, establisherIndex, directorIndex, mode))
+        common.get(getFormToTemplate(schemeName, establisherIndex, directorIndex, mode), form)
       }
     }
 
-  def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
-    implicit request =>
-      retrieve(SchemeNameId) { schemeName =>
-        val formToJson: Form[String] => JsObject = getFormToJson(schemeName, establisherIndex, directorIndex, mode)
-        form.bindFromRequest().fold(
-          formWithErrors =>
-            renderer.render(viewTemplate, prepareJson(formToJson(formWithErrors))).map(BadRequest(_)),
-          value =>
-            addressLookupConnector.addressLookupByPostCode(value).flatMap {
-              case Nil =>
-                val json = prepareJson(formToJson(formWithError("enterPostcode.noresults")))
-                renderer.render(viewTemplate, json).map(BadRequest(_))
+  def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
+    (authenticate andThen getData andThen requireData()).async {
+      implicit request =>
+        implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-              case addresses =>
-                for {
-                  updatedAnswers <- Future.fromTry(setUpdatedAnswers(establisherIndex, directorIndex, mode, addresses, request.userAnswers))
-                  _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
-                } yield {
-                  val finalMode = Some(mode).getOrElse(NormalMode)
-                  Redirect(navigator.nextPage(EnterPreviousPostCodeId(establisherIndex, directorIndex), updatedAnswers, finalMode))
-                }
-            }
-        )
-      }
+        retrieve(SchemeNameId) { schemeName =>
+          val formToTemplate: Form[String] => CommonPostcodeTemplateData = getFormToTemplate(schemeName, establisherIndex, directorIndex, mode)
+          form.bindFromRequest().fold(
+              formWithErrors => {
+                val templateData = formToTemplate(formWithErrors)
+                Future.successful(BadRequest(postcodeView(
+                  formWithErrors,
+                  templateData.entityType,
+                  templateData.entityName,
+                  templateData.submitUrl,
+                  templateData.enterManuallyUrl,
+                  Some(templateData.schemeName),
+                  templateData.h1MessageKey
+                )))
+              },
+            value =>
+              addressLookupConnector.addressLookupByPostCode(value).flatMap {
+                case Nil =>
+                  val formWithErrors = formWithError("enterPostcode.noresults")
+                  val templateData = formToTemplate(formWithError("enterPostcode.noresults"))
+                  Future.successful(BadRequest(postcodeView(
+                    formWithErrors,
+                    templateData.entityType,
+                    templateData.entityName,
+                    templateData.submitUrl,
+                    templateData.enterManuallyUrl,
+                    Some(templateData.schemeName),
+                    templateData.h1MessageKey
+                  )))
+                case addresses =>
+                  for {
+                    updatedAnswers <- Future.fromTry(setUpdatedAnswers(establisherIndex, directorIndex, mode, addresses, request.userAnswers))
+                    _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
+                  } yield {
+                    val finalMode = Some(mode).getOrElse(NormalMode)
+                    Redirect(navigator.nextPage(EnterPreviousPostCodeId(establisherIndex, directorIndex), updatedAnswers, finalMode))
+                  }
+              }
+          )
+        }
   }
 
-  def formWithError(messageKey: String): Form[String] = {
+  private def formWithError(messageKey: String): Form[String] = {
     form.withError("value", s"messages__error__postcode_$messageKey")
   }
 
-  def form: Form[String] = formProvider("individualEnterPreviousPostcode.required", "establisherEnterPreviousPostcode.invalid")
+  private def form: Form[String] = formProvider("individualEnterPreviousPostcode.required", "establisherEnterPreviousPostcode.invalid")
 
   def setUpdatedAnswers(establisherIndex: Index, directorIndex: Index, mode: Mode, value: Seq[TolerantAddress], ua: UserAnswers): Try[UserAnswers] = {
     val updatedUserAnswers =
@@ -108,19 +131,22 @@ class EnterPreviousPostcodeController @Inject()(val appConfig: AppConfig,
     finalUpdatedUserAnswers
   }
 
+  def getFormToTemplate(schemeName: String, establisherIndex: Index, directorIndex: Index, mode: Mode
+                       )(implicit request: DataRequest[AnyContent]): Form[String] => CommonPostcodeTemplateData = {
+    val name: String = request.userAnswers.get(DirectorNameId(establisherIndex, directorIndex))
+      .map(_.fullName).getOrElse(Messages("messages__director"))
+    val submitUrl = routes.EnterPreviousPostcodeController.onSubmit(establisherIndex, directorIndex, mode)
+    val enterManuallyUrl = routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, directorIndex, mode).url
 
-  def getFormToJson(schemeName: String, establisherIndex: Index, directorIndex: Index, mode: Mode)
-                   (implicit request: DataRequest[AnyContent]): Form[String] => JsObject = {
     form => {
-      val msg = request2Messages(request)
-      val name = request.userAnswers.get(DirectorNameId(establisherIndex, directorIndex)).map(_.fullName).getOrElse(msg("messages__director"))
-      Json.obj(
-        "entityType" -> msg("messages__director"),
-        "entityName" -> name,
-        "form" -> form,
-        "enterManuallyUrl" -> routes.ConfirmPreviousAddressController.onPageLoad(establisherIndex, directorIndex, mode).url,
-        "schemeName" -> schemeName,
-        "h1MessageKey" -> "previousPostcode.title"
+      CommonPostcodeTemplateData(
+        form,
+        Messages("messages__director"),
+        name,
+        submitUrl,
+        enterManuallyUrl,
+        schemeName,
+        "previousPostcode.title"
       )
     }
   }

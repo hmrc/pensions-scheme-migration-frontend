@@ -26,13 +26,10 @@ import models.Index
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, Radios}
 import utils.UserAnswers
+import views.html.DeleteView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,10 +43,10 @@ class ConfirmDeleteDirectorController @Inject()(override val messagesApi: Messag
                                                 formProvider: ConfirmDeleteEstablisherFormProvider,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 userAnswersCacheConnector: UserAnswersCacheConnector,
-                                                renderer: Renderer
+                                                deleteView: DeleteView
                                                )(implicit val executionContext: ExecutionContext
                                                )
-  extends FrontendBaseController with I18nSupport with Retrievals with NunjucksSupport {
+  extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
@@ -58,16 +55,17 @@ class ConfirmDeleteDirectorController @Inject()(override val messagesApi: Messag
           if (director.isDeleted) {
             Future.successful(Redirect(routes.AlreadyDeletedController.onPageLoad(establisherIndex, directorIndex)))
           } else {
-            val json = Json.obj(
-              "form" -> form(director.fullName),
-              "titleMessage" -> msg"messages__confirmDeleteDirectors__title".resolve,
-              "name" -> director.fullName,
-              "hint" -> Some(Messages(s"messages__confirmDeleteDirectors__companyHint")),
-              "radios" -> Radios.yesNo(formProvider(director.fullName)(implicitly)("value")),
-              "submitUrl" -> routes.ConfirmDeleteDirectorController.onSubmit(establisherIndex, directorIndex).url,
-              "schemeName" -> existingSchemeName
-            )
-            renderer.render("delete.njk", json).map(Ok(_))
+            Future.successful(Ok(
+              deleteView(
+                form(director.fullName),
+                Messages("messages__confirmDeleteDirectors__title"),
+                director.fullName,
+                Some(Messages(s"messages__confirmDeleteDirectors__companyHint")),
+                utils.Radios.yesNo(formProvider(director.fullName)(implicitly)("value")),
+                existingSchemeName.getOrElse(""),
+                routes.ConfirmDeleteDirectorController.onSubmit(establisherIndex, directorIndex)
+              )
+            ))
           }
         } getOrElse {
           throw new RuntimeException("index page unavailable")
@@ -82,16 +80,17 @@ class ConfirmDeleteDirectorController @Inject()(override val messagesApi: Messag
 
           form(director.fullName).bindFromRequest().fold(
             (formWithErrors: Form[_]) => {
-              val json = Json.obj(
-                "form" -> formWithErrors,
-                "titleMessage" -> msg"messages__confirmDeleteDirectors__title".resolve,
-                "name" -> director.fullName,
-                "hint" -> Some(Messages(s"messages__confirmDeleteDirectors__companyHint")),
-                "radios" -> Radios.yesNo(formProvider(director.fullName)(implicitly)("value")),
-                "submitUrl" -> routes.ConfirmDeleteDirectorController.onSubmit(establisherIndex, directorIndex).url,
-                "schemeName" -> existingSchemeName
-              )
-              renderer.render("delete.njk", json).map(BadRequest(_))
+              Future.successful(BadRequest(
+                deleteView(
+                  formWithErrors,
+                  Messages("messages__confirmDeleteDirectors__title"),
+                  director.fullName,
+                  Some(Messages(s"messages__confirmDeleteDirectors__companyHint")),
+                  utils.Radios.yesNo(formProvider(director.fullName)(implicitly)("value")),
+                  existingSchemeName.getOrElse(""),
+                  routes.ConfirmDeleteDirectorController.onSubmit(establisherIndex, directorIndex)
+                )
+              ))
             },
             value => {
               val deletionResult: Try[UserAnswers] = if (value) {

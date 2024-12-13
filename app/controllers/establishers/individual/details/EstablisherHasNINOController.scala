@@ -16,8 +16,7 @@
 
 package controllers.establishers.individual.details
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.HasReferenceValueController
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.HasReferenceNumberFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -25,40 +24,34 @@ import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.details.EstablisherHasNINOId
 import models.requests.DataRequest
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import viewmodels.Message
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.details.CommonHasReferenceValueService
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class EstablisherHasNINOController @Inject()(
-                                              override val messagesApi: MessagesApi,
-                                              val navigator: CompoundNavigator,
-                                              authenticate: AuthAction,
-                                              getData: DataRetrievalAction,
-                                              requireData: DataRequiredAction,
-                                              formProvider: HasReferenceNumberFormProvider,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                              val renderer: Renderer
+class EstablisherHasNINOController @Inject()(val messagesApi: MessagesApi,
+                                             authenticate: AuthAction,
+                                             getData: DataRetrievalAction,
+                                             requireData: DataRequiredAction,
+                                             formProvider: HasReferenceNumberFormProvider,
+                                             common: CommonHasReferenceValueService
                                             )(implicit val executionContext: ExecutionContext)
-  extends HasReferenceValueController {
+  extends Retrievals with I18nSupport {
 
   private def name(index: Index)
                   (implicit request: DataRequest[AnyContent]): String =
     request
       .userAnswers
       .get(EstablisherNameId(index))
-      .fold(Message("messages__establisher"))(_.fullName)
+      .fold(Messages("messages__establisher"))(_.fullName)
 
   private def form(index: Index)
                   (implicit request: DataRequest[AnyContent]): Form[Boolean] = {
     formProvider(
-      errorMsg = Message("messages__genericHasNino__error__required", name(index))
+      errorMsg = Messages("messages__genericHasNino__error__required", name(index))
     )
   }
 
@@ -68,14 +61,15 @@ class EstablisherHasNINOController @Inject()(
 
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
-              pageTitle     = Message("messages__hasNINO", Message("messages__individual")),
-              pageHeading     = Message("messages__hasNINO", name(index)),
+            common.get(
+              pageTitle     = Messages("messages__hasNINO", Messages("messages__individual")),
+              pageHeading     = Messages("messages__hasNINO", name(index)),
               isPageHeading = true,
               id            = EstablisherHasNINOId(index),
               form          = form(index),
               schemeName    = schemeName,
-              legendClass   = "govuk-label--xl"
+              legendClass   = "govuk-label--l",
+              submitCall    = routes.EstablisherHasNINOController.onSubmit(index, mode)
             )
         }
     }
@@ -85,15 +79,16 @@ class EstablisherHasNINOController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            post(
-              pageTitle     = Message("messages__hasNINO", Message("messages__individual")),
-              pageHeading     = Message("messages__hasNINO", name(index)),
+            common.post(
+              pageTitle     = Messages("messages__hasNINO", Messages("messages__individual")),
+              pageHeading     = Messages("messages__hasNINO", name(index)),
               isPageHeading = true,
               id            = EstablisherHasNINOId(index),
               form          = form(index),
               schemeName    = schemeName,
-              legendClass   = "govuk-label--xl",
-              mode          = mode
+              legendClass   = "govuk-label--l",
+              mode          = mode,
+              submitCall    = routes.EstablisherHasNINOController.onSubmit(index, mode)
             )
         }
     }

@@ -24,29 +24,36 @@ import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.address.AddressYearsId
 import models.{Index, Mode}
 import play.api.data.Form
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.address.CommonAddressYearsService
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class AddressYearsController @Inject()(
-                                       authenticate: AuthAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       formProvider: AddressYearsFormProvider,
-                                       common: CommonAddressYearsService)(implicit ec: ExecutionContext)
-  extends Retrievals {
+    val messagesApi: MessagesApi,
+    authenticate: AuthAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: AddressYearsFormProvider,
+    common: CommonAddressYearsService
+)(implicit ec: ExecutionContext) extends Retrievals with I18nSupport {
 
-  private def form: Form[Boolean] =
-    formProvider("companyAddressYears.error.required")
+  private def form: Form[Boolean] = formProvider("companyAddressYears.error.required")
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (CompanyDetailsId(index) and SchemeNameId).retrieve.map {
         case companyDetails ~ schemeName =>
-          common.get(Some(schemeName), companyDetails.companyName, Message("messages__company"), form, AddressYearsId(index))
+          common.get(
+            Some(schemeName),
+            companyDetails.companyName,
+            Messages("messages__company"),
+            form,
+            AddressYearsId(index),
+            submitUrl = routes.AddressYearsController.onSubmit(index, mode)
+          )
       }
     }
 
@@ -54,7 +61,15 @@ class AddressYearsController @Inject()(
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (CompanyDetailsId(index) and SchemeNameId).retrieve.map {
         case companyDetails ~ schemeName =>
-          common.post(Some(schemeName), companyDetails.companyName, Message("messages__company"), form, AddressYearsId(index),Some(mode))
+          common.post(
+            Some(schemeName),
+            companyDetails.companyName,
+            Messages("messages__company"),
+            form,
+            AddressYearsId(index),
+            Some(mode),
+            submitUrl = routes.AddressYearsController.onSubmit(index, mode)
+          )
       }
     }
 }

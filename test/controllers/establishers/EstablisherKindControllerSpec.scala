@@ -29,19 +29,18 @@ import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.Result
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
+import views.html.establishers.EstablisherKindView
 
 import scala.concurrent.Future
-class EstablisherKindControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class EstablisherKindControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val index: Index = Index(0)
   private val kind: EstablisherKind = EstablisherKind.Individual
   private val userAnswers: Option[UserAnswers] = ua.set(EstablisherNameId(0), PersonName("Jane", "Doe")).toOption
-  private val templateToBeRendered = "establishers/establisherKind.njk"
   private val form: Form[EstablisherKind] = new EstablisherKindFormProvider()()
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -59,16 +58,9 @@ class EstablisherKindControllerSpec extends ControllerSpecBase with NunjucksSupp
     "value" -> Seq.empty
   )
 
-  private val jsonToPassToTemplate: Form[EstablisherKind] => JsObject = form =>
-    Json.obj(
-      "form" -> form,
-      "schemeName" -> schemeName,
-      "radios" -> EstablisherKind.radios(form)
-    )
-
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
   }
 
 
@@ -76,18 +68,19 @@ class EstablisherKindControllerSpec extends ControllerSpecBase with NunjucksSupp
 
     "return OK and the correct view for a GET" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val request = httpGETRequest(httpPathGET)
+      val result: Future[Result] = route(application, request).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = application.injector.instanceOf[EstablisherKindView].apply(
+        form,
+        schemeName,
+        EstablisherKind.radios(form),
+        routes.EstablisherKindController.onSubmit(index)
+      )(request, messages)
 
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form))
+      compareResultAndView(result, view)
     }
 
     "redirect to Session Expired page for a GET when there is no data" in {

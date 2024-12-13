@@ -16,8 +16,7 @@
 
 package controllers.establishers.partnership.partner.details
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.HasReferenceValueController
+import controllers.Retrievals
 import controllers.actions._
 import forms.HasReferenceNumberFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -25,28 +24,22 @@ import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.partner.details.PartnerHasUTRId
 import models.requests.DataRequest
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import viewmodels.Message
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.details.CommonHasReferenceValueService
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class PartnerHasUTRController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         val navigator: CompoundNavigator,
-                                         authenticate: AuthAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
-                                         formProvider: HasReferenceNumberFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                         val renderer: Renderer
-                                        )(implicit val executionContext: ExecutionContext) extends
-  HasReferenceValueController {
+class PartnerHasUTRController @Inject()(val messagesApi: MessagesApi,
+                                        authenticate: AuthAction,
+                                        getData: DataRetrievalAction,
+                                        requireData: DataRequiredAction,
+                                        formProvider: HasReferenceNumberFormProvider,
+                                        common: CommonHasReferenceValueService
+                                       )(implicit val executionContext: ExecutionContext)
+  extends Retrievals with I18nSupport {
 
   private def name(establisherIndex: Index, partnerIndex: Index)
                   (implicit request: DataRequest[AnyContent]): String =
@@ -58,7 +51,7 @@ class PartnerHasUTRController @Inject()(
   private def form(establisherIndex: Index, partnerIndex: Index)
                   (implicit request: DataRequest[AnyContent]): Form[Boolean] =
     formProvider(
-      errorMsg = Message("messages__genericHasUtr__error__required", name(establisherIndex,partnerIndex))
+      errorMsg = Messages("messages__genericHasUtr__error__required", name(establisherIndex,partnerIndex))
     )
 
   def onPageLoad( establisherIndex: Index, partnerIndex: Index,mode: Mode): Action[AnyContent] =
@@ -66,15 +59,16 @@ class PartnerHasUTRController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
-              pageTitle     = Message("messages__hasUTR", Message("messages__partner")),
-              pageHeading     = Message("messages__hasUTR", name(establisherIndex,partnerIndex)),
+            common.get(
+              pageTitle     = Messages("messages__hasUTR", Messages("messages__partner")),
+              pageHeading     = Messages("messages__hasUTR", name(establisherIndex,partnerIndex)),
               isPageHeading = true,
               id            = PartnerHasUTRId(establisherIndex, partnerIndex),
               form          = form(establisherIndex,partnerIndex),
               schemeName    = schemeName,
-              paragraphText = Seq(Message("messages__UTR__p")),
-              legendClass   = "govuk-visually-hidden"
+              paragraphText = Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2")),
+              legendClass   = "govuk-visually-hidden",
+              submitCall    = routes.PartnerHasUTRController.onSubmit(establisherIndex, partnerIndex, mode)
             )
         }
     }
@@ -84,16 +78,17 @@ class PartnerHasUTRController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            post(
-              pageTitle     = Message("messages__hasUTR", Message("messages__partner")),
-              pageHeading     = Message("messages__hasUTR", name(establisherIndex,partnerIndex)),
+            common.post(
+              pageTitle     = Messages("messages__hasUTR", Messages("messages__partner")),
+              pageHeading     = Messages("messages__hasUTR", name(establisherIndex,partnerIndex)),
               isPageHeading = true,
               id            = PartnerHasUTRId(establisherIndex, partnerIndex),
               form          = form(establisherIndex,partnerIndex),
               schemeName    = schemeName,
-              paragraphText = Seq(Message("messages__UTR__p")),
+              paragraphText = Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2")),
               legendClass   = "govuk-visually-hidden",
-              mode          = mode
+              mode          = mode,
+              submitCall    = routes.PartnerHasUTRController.onSubmit(establisherIndex, partnerIndex, mode)
             )
         }
     }

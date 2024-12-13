@@ -16,8 +16,7 @@
 
 package controllers.establishers.individual.details
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.ReasonController
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.ReasonFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -25,52 +24,47 @@ import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.details.EstablisherNoNINOReasonId
 import models.requests.DataRequest
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import viewmodels.Message
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.details.CommonReasonService
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class EstablisherNoNINOReasonController @Inject()(
-                                                   override val messagesApi: MessagesApi,
-                                                   val navigator: CompoundNavigator,
-                                                   authenticate: AuthAction,
-                                                   getData: DataRetrievalAction,
-                                                   requireData: DataRequiredAction,
-                                                   formProvider: ReasonFormProvider,
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                                   val renderer: Renderer
+class EstablisherNoNINOReasonController @Inject()(val messagesApi: MessagesApi,
+                                                  authenticate: AuthAction,
+                                                  getData: DataRetrievalAction,
+                                                  requireData: DataRequiredAction,
+                                                  formProvider: ReasonFormProvider,
+                                                  common: CommonReasonService
                                                  )(implicit val executionContext: ExecutionContext)
-  extends ReasonController {
+  extends Retrievals with I18nSupport {
 
   private def name(index: Index)
                   (implicit request: DataRequest[AnyContent]): String =
     request
       .userAnswers
       .get(EstablisherNameId(index))
-      .fold(Message("messages__establisher"))(_.fullName)
+      .fold(Messages("messages__establisher"))(_.fullName)
 
   private def form(index: Index)
                   (implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Message("messages__reason__error_ninoRequired", name(index)))
+    formProvider(Messages("messages__reason__error_ninoRequired", name(index)))
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
-              pageTitle     = Message("messages__whyNoNINO", Message("messages__individual")),
-              pageHeading     = Message("messages__whyNoNINO", name(index)),
+            common.get(
+              pageTitle     = Messages("messages__whyNoNINO", Messages("messages__individual")),
+              pageHeading     = Messages("messages__whyNoNINO", name(index)),
               isPageHeading = true,
               id            = EstablisherNoNINOReasonId(index),
               form          = form(index),
-              schemeName    = schemeName
+              schemeName    = schemeName,
+              submitUrl     = routes.EstablisherNoNINOReasonController.onSubmit(index, mode)
             )
         }
     }
@@ -80,14 +74,15 @@ class EstablisherNoNINOReasonController @Inject()(
         implicit request =>
           SchemeNameId.retrieve.map {
             schemeName =>
-              post(
-                pageTitle     = Message("messages__whyNoNINO", Message("messages__individual")),
-                pageHeading     = Message("messages__whyNoNINO", name(index)),
+              common.post(
+                pageTitle     = Messages("messages__whyNoNINO", Messages("messages__individual")),
+                pageHeading     = Messages("messages__whyNoNINO", name(index)),
                 isPageHeading = true,
                 id            = EstablisherNoNINOReasonId(index),
                 form          = form(index),
                 schemeName    = schemeName,
-                mode          = mode
+                mode          = mode,
+                submitUrl     = routes.EstablisherNoNINOReasonController.onSubmit(index, mode)
               )
           }
       }

@@ -23,24 +23,23 @@ import helpers.cya.RacDacIndividualCYAHelper
 import identifiers.racdac.ContractOrPolicyNumberId
 import matchers.JsonMatchers
 import models.{Items, ListOfLegacySchemes, RacDac}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import play.api.Application
+import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.test.Helpers._
+import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, HtmlContent, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, Key, SummaryListRow, Value}
 import uk.gov.hmrc.http.HttpResponse
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
-import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{Html, NunjucksSupport}
 import utils.Data._
 import utils.{Data, UserAnswers}
 
 import scala.concurrent.Future
-class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAfterEach  with JsonMatchers with NunjucksSupport  {
+class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAfterEach  with JsonMatchers  {
 
   private val mockListOfSchemesConnector = mock[ListOfSchemesConnector]
   private val mockRacDacIndividualCYAHelper = mock[RacDacIndividualCYAHelper]
@@ -48,10 +47,29 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
   val extraModules: Seq[GuiceableModule] = Seq(
     bind[RacDacIndividualCYAHelper].toInstance(mockRacDacIndividualCYAHelper),
     bind[ListOfSchemesConnector].toInstance(mockListOfSchemesConnector),
-    bind[MinimalDetailsConnector].toInstance(mockMinimalDetailsConnector),
+    bind[MinimalDetailsConnector].toInstance(mockMinimalDetailsConnector)
   )
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction,extraModules).build()
-  private val templateToBeRendered = "racdac/individual/check-your-answers.njk"
+  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction,extraModules).build()
+
+  private val rows = Seq(
+    SummaryListRow(
+      key = Key(Text("test-key"), classes ="govuk-!-width-one-half"),
+      value = Value(Text(Messages("site.incomplete")), classes = "govuk-!-width-one-third"),
+      actions = Some(Actions( items = List(
+        ActionItem(
+          content = HtmlContent(s"<span aria-hidden=true >${messages("site.add")}</span>"),
+          href = "",
+          visuallyHiddenText = None
+        )
+      )))
+    )
+  )
+  private def getView() = app.injector.instanceOf[views.html.racdac.individual.CheckYourAnswersView].apply(
+    controllers.racdac.individual.routes.DeclarationController.onPageLoad.url,
+    controllers.routes.PensionSchemeRedirectController.onPageLoad.url,
+    Data.psaName,
+    rows
+  )(httpGETRequest(httpPathGET),implicitly)
 
   def listOfSchemes: ListOfLegacySchemes = ListOfLegacySchemes(2, Some(fullSchemes))
   def emptySchemes: ListOfLegacySchemes = ListOfLegacySchemes(0, None)
@@ -64,32 +82,10 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
     )
   private def httpPathGET: String = routes.CheckYourAnswersController.onPageLoad.url
 
-  private val rows = Seq(
-    Row(
-      key = Key(Literal("test-key"), classes = Seq("govuk-!-width-one-half")),
-      value = Value(msg"site.incomplete", classes = Seq("govuk-!-width-one-third")),
-      actions = List(
-        Action(
-          content = Html(s"<span  aria-hidden=true >${messages("site.add")}</span>"),
-          href = "",
-          visuallyHiddenText = None
-        )
-      )
-    )
-  )
-
-  private val jsonToPassToTemplate: JsObject = Json.obj(
-    "list" -> rows,
-    "schemeName" -> schemeName,
-    "submitUrl" -> controllers.racdac.individual.routes.DeclarationController.onPageLoad.url,
-    "psaName" -> Data.psaName,
-    "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad.url
-  )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(play.twirl.api.Html("")))
     when(mockRacDacIndividualCYAHelper.detailsRows(any())(any())).thenReturn(rows)
 
   }
@@ -101,23 +97,17 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
       val userAnswers: UserAnswers = ua.set(ContractOrPolicyNumberId, "123456789").success.value
       mutableFakeDataRetrievalAction.setDataToReturn(Some(userAnswers))
       when(mockMinimalDetailsConnector.getPSAName(any(),any())).thenReturn(Future.successful(Data.psaName))
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val result = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate)
+      compareResultAndView(result, getView())
     }
 
     "redirect to List of schemes if lock can not be retrieved " in {
       mutableFakeDataRetrievalAction.setLockToReturn(None)
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val result = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.preMigration.routes.ListOfSchemesController.onPageLoad(RacDac).url)
@@ -129,21 +119,15 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
       mutableFakeDataRetrievalAction.setLockToReturn(Some(Data.migrationLock))
       when(mockMinimalDetailsConnector.getPSAName(any(),any())).thenReturn(Future.successful(Data.psaName))
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.successful(Right(listOfSchemes)))
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       when( mockUserAnswersCacheConnector.save(any(), any())(any(),any())).thenReturn(Future.successful(Json.obj()))
 
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val result = route(app, httpGETRequest(httpPathGET)).value
 
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate)
+      compareResultAndView(result, getView())
     }
 
     "retrieved data from API store it and redirect to List of schemes if racDac Empty" in {
@@ -151,7 +135,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
       mutableFakeDataRetrievalAction.setLockToReturn(Some(Data.migrationLock))
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.successful(Right(emptySchemes)))
 
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val result = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.preMigration.routes.ListOfSchemesController.onPageLoad(RacDac).url)
@@ -162,7 +146,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(
         Future.successful(Left(HttpResponse(status = BAD_REQUEST,body = "Bad Request"))))
 
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val result = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(mockAppConfig.psaOverviewUrl)

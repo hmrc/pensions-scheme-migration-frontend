@@ -19,35 +19,42 @@ package controllers.adviser
 import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
+import forms.address.PostcodeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import matchers.JsonMatchers
 import models.{NormalMode, Scheme, TolerantAddress}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.Result
+import play.api.libs.json.Json
+import play.api.mvc.Results.{BadRequest, Ok}
+import play.api.mvc.{Result, Results}
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
+import services.common.address.CommonPostcodeService
 import utils.Data.ua
 import utils.{Data, Enumerable, UserAnswers}
+import views.html.address.PostcodeView
 
 import scala.concurrent.Future
 
-class EnterPostcodeControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class EnterPostcodeControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val mockAddressLookupConnector = mock[AddressLookupConnector]
+  private val mockCommonPostcodeService = mock[CommonPostcodeService]
 
   val extraModules: Seq[GuiceableModule] = Seq(
-    bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
+    bind[AddressLookupConnector].toInstance(mockAddressLookupConnector),
+    bind[CommonPostcodeService].toInstance(mockCommonPostcodeService)
   )
+  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
+
+  private val formProvider: PostcodeFormProvider = new PostcodeFormProvider()
+  private val form = formProvider("enterPostcode.required", "messages__adviser__enterPostcode__invalid")
+  private val mode = NormalMode
 
   private val userAnswers: Option[UserAnswers] = Some(ua)
-  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
   private val httpPathGET: String = controllers.adviser.routes.EnterPostcodeController.onPageLoad(NormalMode).url
   private val httpPathPOST: String = controllers.adviser.routes.EnterPostcodeController.onSubmit(NormalMode).url
 
@@ -58,10 +65,11 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with NunjucksSuppor
   private val valuesInvalid: Map[String, Seq[String]] = Map(
     "value" -> Seq.empty
   )
+  val request = httpGETRequest(httpPathGET)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
   }
 
   "EnterPostcode Controller" must {
@@ -69,17 +77,17 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with NunjucksSuppor
     "Return OK and the correct view for a GET" in {
       val ua: UserAnswers = UserAnswers().setOrException(SchemeNameId, Data.schemeName)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+      val view = app.injector.instanceOf[PostcodeView]
+      val expectedView = view(form, "entityType", "entityName", routes.EnterPostcodeController.onSubmit(mode),
+        routes.ConfirmAddressController.onPageLoad.url, Some(Data.schemeName), h1MessageKey = "postcode.title")(fakeRequest, messages)
+      when(mockCommonPostcodeService.get(any(), any())(any()))
+        .thenReturn(Future.successful(Ok(expectedView)))
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val result: Future[Result] = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
 
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
-
-      verify(mockRenderer, times(1))
-        .render(ArgumentMatchers.eq("address/postcode.njk"), jsonCaptor.capture())(any())
-
-      (jsonCaptor.getValue \ "schemeName").toOption.map(_.as[String]) mustBe Some(Data.schemeName)
+      compareResultAndView(result, expectedView)
     }
 
     "redirect to Session Expired page for a GET when there is no data" in {
@@ -87,11 +95,11 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val result: Future[Result] = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.routes.SessionExpiredController.onPageLoad().absoluteURL()(request)
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
@@ -101,10 +109,12 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with NunjucksSuppor
         .thenReturn(Future.successful(Json.obj()))
       when(mockAddressLookupConnector.addressLookupByPostCode(any())(any(), any()))
         .thenReturn(Future.successful(seqAddresses))
+      when(mockCommonPostcodeService.post(any(), any(), any(), any(), any())(any(), any(), any()))
+        .thenReturn(Future.successful(Results.SeeOther(onwardCall.url)))
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(onwardCall.url)
@@ -112,8 +122,10 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
     "return a BAD REQUEST when invalid data is submitted" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
+      when(mockCommonPostcodeService.post(any(), any(), any(), any(), any())(any(), any(), any()))
+        .thenReturn(Future.successful(BadRequest))
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
 
       status(result) mustEqual BAD_REQUEST
 
@@ -123,12 +135,11 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with NunjucksSuppor
     "redirect to Session Expired page for a POST when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustBe controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
     }
   }
-
 }

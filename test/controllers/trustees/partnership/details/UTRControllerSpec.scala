@@ -23,68 +23,61 @@ import identifiers.trustees.partnership.PartnershipDetailsId
 import identifiers.trustees.partnership.details.PartnershipUTRId
 import matchers.JsonMatchers
 import models.{Index, NormalMode, ReferenceValue}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
-import play.twirl.api.Html
-import renderer.Renderer
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import services.common.details.CommonEnterReferenceValueService
 import utils.Data.{partnershipDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
+import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
 
 import scala.concurrent.Future
-class UTRControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with BeforeAndAfterEach {
+class UTRControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues with BeforeAndAfterEach {
 
   private val index: Index = Index(0)
   private val referenceValue: ReferenceValue = ReferenceValue("1234567890")
   private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(index), partnershipDetails).success.value
-  private val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-  private val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
+  private val formData: ReferenceValue = ReferenceValue("1234567890")
   private val formProvider: UTRFormProvider = new UTRFormProvider()
 
-  private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
-
-  private val commonJson: JsObject =
-    Json.obj(
-      "pageTitle"     -> messages("messages__enterUTR", messages("messages__partnership")),
-      "pageHeading"     -> messages("messages__enterUTR", partnershipDetails.partnershipName),
-      "schemeName"    -> schemeName,
-      "paragraphs"      -> Json.arr(messages("messages__UTR__p1"), messages("messages__UTR__p2")),
-      "legendClass"   -> "govuk-visually-hidden",
-      "isPageHeading" -> true
-    )
-
   private def controller(dataRetrievalAction: DataRetrievalAction): UTRController =
-    new UTRController(messagesApi, new FakeNavigator(desiredRoute = onwardCall), new FakeAuthAction(), dataRetrievalAction,
-      new DataRequiredActionImpl, formProvider, controllerComponents, mockUserAnswersCacheConnector, new Renderer(mockAppConfig, mockRenderer))
+    new UTRController(messagesApi, new FakeAuthAction(), dataRetrievalAction,
+      new DataRequiredActionImpl, formProvider,
+      common = new CommonEnterReferenceValueService(
+        controllerComponents = controllerComponents,
+        userAnswersCacheConnector = mockUserAnswersCacheConnector,
+        navigator = new FakeNavigator(desiredRoute = onwardCall),
+        enterReferenceValueView = app.injector.instanceOf[EnterReferenceValueView],
+        enterReferenceValueWithHintView = app.injector.instanceOf[EnterReferenceValueWithHintView],
+        messagesApi = messagesApi
+      ))
 
-  override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
+  override def beforeEach(): Unit = reset(mockUserAnswersCacheConnector)
 
   "UTRController" must {
     "return OK and the correct view for a GET" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
       val result: Future[Result] = controller(getData).onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-      jsonCaptor.getValue must containJson(commonJson)
-
+      val view = app.injector.instanceOf[EnterReferenceValueWithHintView].apply(
+        form = formProvider(),
+        pageTitle = messages("messages__enterUTR", messages("messages__partnership")),
+        pageHeading = messages("messages__enterUTR", partnershipDetails.partnershipName),
+        schemeName = schemeName,
+        legendClass = "govuk-visually-hidden",
+        paragraphs = Seq(messages("messages__UTR__p1"), messages("messages__UTR__p2")),
+        submitCall= routes.UTRController.onSubmit(0, NormalMode)
+      )(fakeRequest, messages)
+      compareResultAndView(result, view)
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
       val ua = userAnswers.set(PartnershipUTRId(0), referenceValue).success.value
       val getData = new FakeDataRetrievalAction(Some(ua))
 
@@ -92,10 +85,8 @@ class UTRControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-      jsonCaptor.getValue must containJson(commonJson)
+      contentAsString(result) must include(messages("messages__enterUTR", "the partnership"))
+      contentAsString(result) must include(formData.value)
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -111,8 +102,6 @@ class UTRControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
       val request = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
@@ -120,9 +109,9 @@ class UTRControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
 
       status(result) mustBe BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-      templateCaptor.getValue mustEqual templateToBeRendered
-      jsonCaptor.getValue must containJson(commonJson)
+      contentAsString(result) must include(messages("messages__enterUTR", "the partnership"))
+      contentAsString(result) must include(messages("messages__utr__error_invalid", partnershipDetails.partnershipName))
+
       verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
     }
   }

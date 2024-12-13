@@ -16,41 +16,34 @@
 
 package controllers.establishers.partnership
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.HasReferenceValueController
+import controllers.Retrievals
 import controllers.actions._
 import forms.HasReferenceNumberFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.partnership.OtherPartnersId
 import models.requests.DataRequest
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import viewmodels.Message
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.details.CommonHasReferenceValueService
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class OtherPartnersController @Inject()(
-                                          override val messagesApi: MessagesApi,
-                                          val navigator: CompoundNavigator,
-                                          authenticate: AuthAction,
-                                          getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction,
-                                          formProvider: HasReferenceNumberFormProvider,
-                                          val controllerComponents: MessagesControllerComponents,
-                                          val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                          val renderer: Renderer
-                                        )(implicit val executionContext: ExecutionContext) extends
-HasReferenceValueController {
+class OtherPartnersController @Inject()(val messagesApi: MessagesApi,
+                                        authenticate: AuthAction,
+                                        getData: DataRetrievalAction,
+                                        requireData: DataRequiredAction,
+                                        formProvider: HasReferenceNumberFormProvider,
+                                        common: CommonHasReferenceValueService
+                                       )(implicit val executionContext: ExecutionContext)
+  extends Retrievals with I18nSupport {
 
   private def form()
                   (implicit request: DataRequest[AnyContent]): Form[Boolean] =
     formProvider(
-      errorMsg = Message("messages__otherPartners__error__required")
+      errorMsg = Messages("messages__otherPartners__error__required")
     )
 
   def onPageLoad(index: Index,mode: Mode): Action[AnyContent] =
@@ -58,15 +51,16 @@ HasReferenceValueController {
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
-              pageTitle = Message("messages__otherPartners__title"),
-              pageHeading = Message("messages__otherPartners__heading"),
+            common.get(
+              pageTitle = Messages("messages__otherPartners__title"),
+              pageHeading = Messages("messages__otherPartners__heading"),
               isPageHeading = true,
               id = OtherPartnersId(index),
               form = form(),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__otherPartners__lede")),
-              legendClass = "govuk-visually-hidden"
+              paragraphText = Seq(Messages("messages__otherPartners__lede")),
+              legendClass = "govuk-visually-hidden",
+              submitCall = routes.OtherPartnersController.onSubmit(index, mode)
             )
         }
     }
@@ -76,16 +70,17 @@ HasReferenceValueController {
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            post(
-              pageTitle = Message("messages__otherPartners__title"),
-              pageHeading = Message("messages__otherPartners__heading"),
+            common.post(
+              pageTitle = Messages("messages__otherPartners__title"),
+              pageHeading = Messages("messages__otherPartners__heading"),
               isPageHeading = true,
               id = OtherPartnersId(index),
               form = form(),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__otherPartners__lede")),
+              paragraphText = Seq(Messages("messages__otherPartners__lede")),
               legendClass = "govuk-visually-hidden",
-              mode = mode
+              mode = mode,
+              submitCall = routes.OtherPartnersController.onSubmit(index, mode)
             )
         }
     }

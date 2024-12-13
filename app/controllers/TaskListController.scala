@@ -23,12 +23,12 @@ import identifiers.trustees.AnyTrusteesId
 import models.Scheme
 import models.requests.OptionalDataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.JsObject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import renderer.Renderer
 import services.TaskListService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswers
+import views.html.TaskListView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,8 +41,8 @@ class TaskListController @Inject()(
                                         userAnswersCacheConnector: UserAnswersCacheConnector,
                                         legacySchemeDetailsConnector : LegacySchemeDetailsConnector,
                                         val controllerComponents: MessagesControllerComponents,
-                                        renderer: Renderer
-                                  )(implicit val executionContext: ExecutionContext)
+                                        taskListView: TaskListView
+  )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
     with Retrievals {
@@ -55,7 +55,7 @@ class TaskListController @Inject()(
 
         case (Some(ua), _) =>
           implicit val userAnswers: UserAnswers = ua
-          if(userAnswers.allTrusteesAfterDelete.nonEmpty) {
+          if (userAnswers.allTrusteesAfterDelete.nonEmpty) {
             val updatedUa = userAnswers.setOrException(AnyTrusteesId, true)
             renderView(updatedUa, implicitly)
           }
@@ -74,17 +74,19 @@ class TaskListController @Inject()(
   }
 
   private def renderView(implicit userAnswers: UserAnswers, request: OptionalDataRequest[_]): Future[Result] = {
-    val json = Json.obj(
-        "schemeStatus" -> taskListService.schemeCompletionStatus,
-        "schemeStatusDescription" -> taskListService.schemeCompletionDescription,
-        "expiryDate" -> taskListService.getExpireAt,
-        "taskSections" -> taskListService.taskSections,
-        "schemeName" -> taskListService.getSchemeName,
-        "declarationEnabled" -> taskListService.declarationEnabled,
-        "declaration" -> taskListService.declarationSection,
-        "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad.url
-    )
-    renderer.render("taskList.njk", json).map(Ok(_))
+    Future.successful(Ok(taskListView(
+      taskListService.schemeCompletionStatus,
+      taskListService.schemeCompletionDescription,
+      taskListService.getExpireAt,
+      taskListService.taskSections,
+      taskListService.getSchemeName,
+      taskListService.declarationEnabled,
+      taskListService.declarationSection,
+      controllers.routes.PensionSchemeRedirectController.onPageLoad.url,
+      taskListService.isComplete
+    )))
   }
+
+
 
 }

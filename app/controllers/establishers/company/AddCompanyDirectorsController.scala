@@ -36,18 +36,14 @@ import config.AppConfig
 import controllers.Retrievals
 import controllers.actions._
 import forms.establishers.company.director.AddCompanyDirectorsFormProvider
-import helpers.AddToListHelper
 import identifiers.establishers.company.AddCompanyDirectorsId
-import models.Mode
+import models.{DirectorEntity, Mode}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.Radios
+import views.html.establishers.company.AddDirectorView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -59,43 +55,36 @@ class AddCompanyDirectorsController @Inject()(
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
                                                formProvider: AddCompanyDirectorsFormProvider,
-                                               helper: AddToListHelper,
                                                config: AppConfig,
                                                val controllerComponents: MessagesControllerComponents,
-                                               renderer: Renderer
+                                               view: AddDirectorView
                                              )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with Retrievals
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
   private val form: Form[Boolean] = formProvider()
 
   def onPageLoad(index: Int,mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData()).async {
+    (authenticate andThen getData andThen requireData()) {
       implicit request =>
 
-        val directors = request.userAnswers.allDirectorsAfterDelete(index)
-        val itemList=   helper.directorsOrPartnersItemList(directors)
-        renderer.render(
-          template = "establishers/company/addDirector.njk",
-          ctx = Json.obj(
-            "form"       -> form,
-            "itemList"      -> itemList,
-            "radios"     -> Radios.yesNo(form("value")),
-            "schemeName" -> existingSchemeName,
-            "directorSize" -> directors.size ,
-            "maxDirectors" -> config.maxDirectors
-
-          )
-        ).map(Ok(_))
+        val directors: Seq[DirectorEntity] = request.userAnswers.allDirectorsAfterDelete(index)
+        Ok(view(
+          form,
+          existingSchemeName.getOrElse("Scheme"),
+          directors.size,
+          config.maxDirectors,
+          directors,
+          utils.Radios.yesNo(form("value")),
+          routes.AddCompanyDirectorsController.onSubmit(index, mode)
+         ))
     }
 
   def onSubmit(index: Int,mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         val directors = request.userAnswers.allDirectorsAfterDelete(index)
-        val itemList=   helper.directorsOrPartnersItemList(directors)
         if (directors.isEmpty || directors.lengthCompare(config.maxDirectors) >= 0) {
           Future.successful(Redirect(
             navigator.nextPage(
@@ -107,17 +96,15 @@ class AddCompanyDirectorsController @Inject()(
         else {
           form.bindFromRequest().fold(
             formWithErrors =>
-              renderer.render(
-                template = "establishers/company/addDirector.njk",
-                ctx = Json.obj(
-                  "form"       -> formWithErrors,
-                  "itemList"      -> itemList,
-                  "radios"     -> Radios.yesNo(formWithErrors("value")),
-                  "schemeName" -> existingSchemeName,
-                  "directorSize" -> directors.size ,
-                  "maxDirectors" -> config.maxDirectors
-                )
-              ).map(BadRequest(_)),
+              Future.successful(BadRequest(view(
+                formWithErrors,
+                existingSchemeName.getOrElse("Scheme"),
+                directors.size,
+                config.maxDirectors,
+                directors,
+                utils.Radios.yesNo(formWithErrors("value")),
+                routes.AddCompanyDirectorsController.onSubmit(index, mode)
+              ))),
             value => {
 
               val ua = request.userAnswers.set(AddCompanyDirectorsId(index),value).getOrElse(request.userAnswers)

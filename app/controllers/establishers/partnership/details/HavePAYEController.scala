@@ -16,8 +16,7 @@
 
 package controllers.establishers.partnership.details
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.HasReferenceValueController
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.HasReferenceNumberFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -25,28 +24,22 @@ import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.details.HavePAYEId
 import models.requests.DataRequest
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import viewmodels.Message
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.details.CommonHasReferenceValueService
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class HavePAYEController @Inject()(
-                                              override val messagesApi: MessagesApi,
-                                              val navigator: CompoundNavigator,
-                                              authenticate: AuthAction,
-                                              getData: DataRetrievalAction,
-                                              requireData: DataRequiredAction,
-                                              formProvider: HasReferenceNumberFormProvider,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                              val renderer: Renderer
-                                            )(implicit val executionContext: ExecutionContext)
-  extends HasReferenceValueController {
+class HavePAYEController @Inject()(val messagesApi: MessagesApi,
+                                   authenticate: AuthAction,
+                                   getData: DataRetrievalAction,
+                                   requireData: DataRequiredAction,
+                                   formProvider: HasReferenceNumberFormProvider,
+                                   common: CommonHasReferenceValueService
+                                  )(implicit val executionContext: ExecutionContext)
+  extends Retrievals with I18nSupport {
 
   private def name(index: Index)
                   (implicit request: DataRequest[AnyContent]): String =
@@ -54,7 +47,7 @@ class HavePAYEController @Inject()(
 
   private def form(index: Index)
                   (implicit request: DataRequest[AnyContent]): Form[Boolean] =
-    formProvider(Message("messages__genericHavePaye__error__required", name(index)))
+    formProvider(Messages("messages__genericHavePaye__error__required", name(index)))
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
@@ -62,15 +55,16 @@ class HavePAYEController @Inject()(
 
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
-              pageTitle     = Message("messages__havePAYE", Message("messages__partnership")),
-              pageHeading     = Message("messages__havePAYE", name(index)),
+            common.get(
+              pageTitle     = Messages("messages__havePAYE", Messages("messages__partnership")),
+              pageHeading     = Messages("messages__havePAYE", name(index)),
               isPageHeading = true,
               id            = HavePAYEId(index),
               form          = form(index),
               schemeName    = schemeName,
-              paragraphText = Seq(Message("messages__havePAYE__hint")),
-              legendClass   = "govuk-visually-hidden"
+              paragraphText = Seq(Messages("messages__havePAYE__hint")),
+              legendClass   = "govuk-visually-hidden",
+              submitCall = routes.HavePAYEController.onSubmit(index, mode)
             )
         }
     }
@@ -81,16 +75,17 @@ class HavePAYEController @Inject()(
 
         SchemeNameId.retrieve.map {
           schemeName =>
-            post(
-              pageTitle     = Message("messages__havePAYE", Message("messages__partnership")),
-              pageHeading     = Message("messages__havePAYE", name(index)),
+            common.post(
+              pageTitle     = Messages("messages__havePAYE", Messages("messages__partnership")),
+              pageHeading     = Messages("messages__havePAYE", name(index)),
               isPageHeading = true,
               id            = HavePAYEId(index),
               form          = form(index),
               schemeName    = schemeName,
-              paragraphText = Seq(Message("messages__havePAYE__hint")),
+              paragraphText = Seq(Messages("messages__havePAYE__hint")),
               legendClass   = "govuk-visually-hidden",
-              mode          = mode
+              mode          = mode,
+              submitCall = routes.HavePAYEController.onSubmit(index, mode)
             )
         }
     }

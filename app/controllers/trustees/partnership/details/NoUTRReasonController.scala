@@ -16,8 +16,7 @@
 
 package controllers.trustees.partnership.details
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.ReasonController
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.ReasonFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -25,28 +24,22 @@ import identifiers.trustees.partnership.PartnershipDetailsId
 import identifiers.trustees.partnership.details.NoUTRReasonId
 import models.requests.DataRequest
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import viewmodels.Message
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.details.CommonReasonService
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class NoUTRReasonController @Inject()(
-                                                  override val messagesApi: MessagesApi,
-                                                  val navigator: CompoundNavigator,
-                                                  authenticate: AuthAction,
-                                                  getData: DataRetrievalAction,
-                                                  requireData: DataRequiredAction,
-                                                  formProvider: ReasonFormProvider,
-                                                  val controllerComponents: MessagesControllerComponents,
-                                                  val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                                  val renderer: Renderer
-                                                )(implicit val executionContext: ExecutionContext)
-  extends ReasonController {
+class NoUTRReasonController @Inject()(val messagesApi: MessagesApi,
+                                      authenticate: AuthAction,
+                                      getData: DataRetrievalAction,
+                                      requireData: DataRequiredAction,
+                                      formProvider: ReasonFormProvider,
+                                      common: CommonReasonService
+                                     )(implicit val executionContext: ExecutionContext)
+  extends Retrievals with I18nSupport {
 
   private def name(index: Index)
                   (implicit request: DataRequest[AnyContent]): String =
@@ -54,20 +47,21 @@ class NoUTRReasonController @Inject()(
 
   private def form(index: Index)
                   (implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Message("messages__reason__error_utrRequired", name(index)))
+    formProvider(Messages("messages__reason__error_utrRequired", name(index)))
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
-              pageTitle     = Message("messages__whyNoUTR_title", Message("messages__partnership")),
-              pageHeading     = Message("messages__whyNoUTR", name(index)),
+            common.get(
+              pageTitle     = Messages("messages__whyNoUTR_title", Messages("messages__partnership")),
+              pageHeading     = Messages("messages__whyNoUTR", name(index)),
               isPageHeading = true,
               id            = NoUTRReasonId(index),
               form          = form(index),
-              schemeName    = schemeName
+              schemeName    = schemeName,
+              submitUrl     = routes.NoUTRReasonController.onSubmit(index, mode)
             )
         }
     }
@@ -77,14 +71,15 @@ class NoUTRReasonController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            post(
-              pageTitle     = Message("messages__whyNoUTR_title", Message("messages__partnership")),
-              pageHeading     = Message("messages__whyNoUTR", name(index)),
+            common.post(
+              pageTitle     = Messages("messages__whyNoUTR_title", Messages("messages__partnership")),
+              pageHeading     = Messages("messages__whyNoUTR", name(index)),
               isPageHeading = true,
               id            = NoUTRReasonId(index),
               form          = form(index),
               schemeName    = schemeName,
-              mode          = mode
+              mode          = mode,
+              submitUrl     = routes.NoUTRReasonController.onSubmit(index, mode)
             )
         }
     }

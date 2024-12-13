@@ -18,8 +18,8 @@ package navigators
 
 import com.google.inject.Inject
 import identifiers.Identifier
-import models.{Mode, NormalMode}
 import models.requests.DataRequest
+import models.{Mode, NormalMode}
 import play.api.Logging
 import play.api.mvc.{AnyContent, Call}
 import utils.UserAnswers
@@ -29,7 +29,7 @@ import scala.jdk.CollectionConverters._
 class CompoundNavigator @Inject()(navigators: java.util.Set[Navigator]) extends Logging {
 
   private def defaultPage(id: Identifier): Call = {
-    logger.error(s"No navigation defined for id $id")
+    logger.warn(s"No navigation defined for id $id")
     controllers.routes.TaskListController.onPageLoad
   }
 

@@ -20,4 +20,10 @@ package object govuk {
   object all
     extends ButtonFluency
       with SummaryListFluency
+      with InputFluency
+      with RadiosFluency
+      with CheckboxFluency
+      with FieldsetFluency
+      with SelectFluency
+      with TextareaFluency
 }

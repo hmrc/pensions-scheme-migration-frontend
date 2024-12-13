@@ -21,75 +21,56 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import matchers.JsonMatchers
 import models.PageLink
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
-import play.api.libs.json.{JsObject, Json}
+import play.api.i18n.Messages
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
-import play.twirl.api.Html
-import renderer.Renderer
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
 import scala.concurrent.Future
-class MigrationTilePartialControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues  {
+class MigrationTilePartialControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues  {
 
-  private val templateToBeRendered: String = "preMigration/migrationLinksPartial.njk"
   private val mockQueueConnector = mock[BulkMigrationQueueConnector]
 
-  val viewOnlyLinks: Seq[PageLink] = Seq(
-    PageLink("view-pension-schemes", appConfig.schemesMigrationViewOnly, msg"messages__migrationLink__viewSchemesLink"),
-    PageLink("view-rac-dacs", appConfig.racDacMigrationViewOnly, msg"messages__migrationLink__viewRacDacsLink")
-  )
-
   val transferLinks: Seq[PageLink] = Seq(
-    PageLink("add-pension-schemes", appConfig.schemesMigrationTransfer, msg"messages__migrationLink__addSchemesLink"),
-    PageLink("add-rac-dacs", appConfig.racDacMigrationTransfer, msg"messages__migrationLink__addRacDacsLink")
+    PageLink("add-pension-schemes", appConfig.schemesMigrationTransfer, Text(Messages("messages__migrationLink__addSchemesLink"))),
+    PageLink("add-rac-dacs", appConfig.racDacMigrationTransfer, Text(Messages("messages__migrationLink__addRacDacsLink")))
   )
 
   val transferLinksInProgress: Seq[PageLink] = Seq(
-    PageLink("add-pension-schemes", appConfig.schemesMigrationTransfer, msg"messages__migrationLink__addSchemesLink"),
-    PageLink("check-rac-dacs", appConfig.racDacMigrationCheckStatus, msg"messages__migrationLink__checkStatusRacDacsLink")
+    PageLink("add-pension-schemes", appConfig.schemesMigrationTransfer, Text(Messages("messages__migrationLink__addSchemesLink"))),
+    PageLink("check-rac-dacs", appConfig.racDacMigrationCheckStatus, Text(Messages("messages__migrationLink__checkStatusRacDacsLink")))
   )
 
   private def controller(): MigrationTilePartialController =
     new MigrationTilePartialController(appConfig, messagesApi, new FakeAuthAction(), mockQueueConnector,
-      controllerComponents, new Renderer(mockAppConfig, mockRenderer))
+      controllerComponents)
 
   "MigrationTilePartialController" must {
 
     "return OK and the correct partial for a GET when migration feature is transfer-enabled and request is not in progress" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       when(mockQueueConnector.isRequestInProgress(any())(any(), any())).thenReturn(Future.successful(false))
-
-      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
       val result: Future[Result] = controller().migrationPartial()(fakeDataRequest())
 
       status(result) mustBe OK
+      val view = views.html.preMigration.MigrationLinksPartialView(
+        transferLinks
+      )(messages)
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(Json.obj("links" -> Json.toJson(transferLinks)))
+      compareResultAndView(result, view)
     }
 
     "return OK and the correct partial for a GET when migration feature is transfer-enabled and request is in progress" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       when(mockQueueConnector.isRequestInProgress(any())(any(), any())).thenReturn(Future.successful(true))
 
-      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
       val result: Future[Result] = controller().migrationPartial()(fakeDataRequest())
 
       status(result) mustBe OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(Json.obj("links" -> Json.toJson(transferLinksInProgress)))
+      val view = views.html.preMigration.MigrationLinksPartialView(
+        transferLinksInProgress
+      )(messages)
+      compareResultAndView(result, view)
     }
   }
 }

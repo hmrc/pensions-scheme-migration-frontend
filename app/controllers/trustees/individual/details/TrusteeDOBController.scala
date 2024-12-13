@@ -16,43 +16,35 @@
 
 package controllers.trustees.individual.details
 
-import connectors.cache.UserAnswersCacheConnector
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import controllers.dateOfBirth.DateOfBirthController
 import forms.DOBFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.details.DirectorDOBId
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.details.TrusteeDOBId
 import models.{CheckMode, Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
-import uk.gov.hmrc.viewmodels.DateInput
+import services.common.details.CommonDateOfBirthService
 import utils.UserAnswers
 
 import java.time.LocalDate
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import scala.util.Try
 
-class TrusteeDOBController @Inject()(
-                                          override val messagesApi: MessagesApi,
-                                          val navigator: CompoundNavigator,
-                                          authenticate: AuthAction,
-                                          getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction,
-                                          formProvider: DOBFormProvider,
-                                          dataUpdateService: DataUpdateService,
-                                          val controllerComponents: MessagesControllerComponents,
-                                          val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                          val renderer: Renderer
-                                        )(implicit val executionContext: ExecutionContext)
-  extends DateOfBirthController {
+class TrusteeDOBController @Inject()(val messagesApi: MessagesApi,
+                                     authenticate: AuthAction,
+                                     getData: DataRetrievalAction,
+                                     requireData: DataRequiredAction,
+                                     formProvider: DOBFormProvider,
+                                     dataUpdateService: DataUpdateService,
+                                     common: CommonDateOfBirthService
+                                    )(implicit val executionContext: ExecutionContext)
+  extends Retrievals with I18nSupport {
 
   val form: Form[LocalDate] = formProvider()
 
@@ -62,11 +54,13 @@ class TrusteeDOBController @Inject()(
 
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
+            common.get(
+              form         = form,
               dobId        = TrusteeDOBId(index),
               personNameId = TrusteeNameId(index),
               schemeName   = schemeName,
-              entityType   = Messages("messages__individual")
+              entityType   = Messages("messages__individual"),
+              call = routes.TrusteeDOBController.onSubmit(index, mode)
             )
         }
     }
@@ -76,31 +70,15 @@ class TrusteeDOBController @Inject()(
       implicit request =>
         retrieve(SchemeNameId) {
           schemeName =>
-            form.bindFromRequest().fold(
-              formWithErrors => {
-                val formWithErrorsDayIdCorrection = formWithErrors.copy(
-                  errors = formWithErrors.errors map { e => if (e.key == "date.day") e.copy(key = "date") else e }
-                )
-                TrusteeNameId(index).retrieve.map {
-                  personName =>
-                    renderer.render(
-                      template = "dob.njk",
-                      ctx = Json.obj(
-                        "form" -> formWithErrorsDayIdCorrection,
-                        "date" -> DateInput.localDate(formWithErrorsDayIdCorrection("date")),
-                        "name" -> personName.fullName,
-                        "schemeName" -> schemeName,
-                        "entityType" -> Messages("messages__individual")
-                      )
-                    ).map(BadRequest(_))
-                }
-              },
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(setUpdatedAnswers(index, mode, value, request.userAnswers))
-                  _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
-                } yield
-                  Redirect(navigator.nextPage(TrusteeDOBId(index), updatedAnswers, mode))
+            common.post(
+              form = form,
+              dobId = TrusteeDOBId(index),
+              personNameId = TrusteeNameId(index),
+              schemeName = schemeName,
+              entityType = Messages("messages__individual"),
+              mode = mode,
+              optSetUserAnswers = Some(value => setUpdatedAnswers(index, mode, value, request.userAnswers)),
+              call = routes.TrusteeDOBController.onSubmit(index, mode)
             )
         }
     }

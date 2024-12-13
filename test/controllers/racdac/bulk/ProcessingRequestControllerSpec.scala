@@ -20,21 +20,17 @@ import connectors.cache.{BulkMigrationEventsLogConnector, BulkMigrationQueueConn
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import matchers.JsonMatchers
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.{Call, Request}
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Enumerable
 
 import scala.concurrent.Future
-class ProcessingRequestControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class ProcessingRequestControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
-  private val templateToBeRendered = "racdac/processingRequest.njk"
   private val mockQueueConnector = mock[BulkMigrationQueueConnector]
   private val mockBulkMigrationEventsLogConnector = mock[BulkMigrationEventsLogConnector]
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -42,83 +38,62 @@ class ProcessingRequestControllerSpec extends ControllerSpecBase with NunjucksSu
     bind[BulkMigrationQueueConnector].to(mockQueueConnector),
     bind[BulkMigrationEventsLogConnector].to(mockBulkMigrationEventsLogConnector)
   )
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
+  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
   private def httpPathGET: String = controllers.racdac.bulk.routes.ProcessingRequestController.onPageLoad.url
 
-  private def jsonToPassToTemplate(heading: String, content: String, redirect: String): JsObject =
-    Json.obj(
-      "pageTitle" -> heading,
-      "heading" -> heading,
-      "content" -> content,
-      "continueUrl" -> redirect
-    )
+  private def getView(req: Request[_], heading: String, content: String, redirect: Option[Call]) = {
+    app.injector.instanceOf[views.html.racdac.ProcessingRequestView].apply(
+      heading,
+      heading,
+      content,
+      redirect
+    )(req, implicitly)
+  }
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockBulkMigrationEventsLogConnector)
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
   "ProcessingRequestController" must {
 
-    "return OK and the correct view for a GET when migration events log is ACCEPTED" in {
+    "return OK and redirect for a GET when migration events log is ACCEPTED" in {
       when(mockBulkMigrationEventsLogConnector.getStatus(any(), any())).thenReturn(Future.successful(ACCEPTED))
-      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val req = httpGETRequest(httpPathGET)
+      val result = route(app, req).value
 
-      status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(
-        heading = "messages__processingRequest__h1_processed",
-        content = "messages__processingRequest__content_processed",
-        redirect = routes.ConfirmationController.onPageLoad.url
-      ))
+      status(result) mustEqual SEE_OTHER
     }
 
     "return OK and the correct view for a GET when migration events log is NOT_FOUND" in {
       when(mockBulkMigrationEventsLogConnector.getStatus(any(), any())).thenReturn(Future.successful(NOT_FOUND))
-      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val req = httpGETRequest(httpPathGET)
+      val result = route(app, req).value
 
       status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(
-        heading = "messages__processingRequest__h1_processing",
-        content = "messages__processingRequest__content_processing",
-        redirect = routes.ProcessingRequestController.onPageLoad.url
+      compareResultAndView(result, getView(
+        req,
+        "messages__processingRequest__h1_processing",
+        "messages__processingRequest__content_processing",
+        Some(routes.ProcessingRequestController.onPageLoad)
       ))
     }
 
     "return OK and the correct view for a GET when migration events log is INTERNAL_SERVER_ERROR" in {
       when(mockBulkMigrationEventsLogConnector.getStatus(any(), any())).thenReturn(Future.successful(INTERNAL_SERVER_ERROR))
-      val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val req = httpGETRequest(httpPathGET)
+      val result = route(app, req).value
 
       status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(
-        heading = "messages__processingRequest__h1_failure",
-        content = "messages__processingRequest__content_failure",
-        redirect = routes.DeclarationController.onPageLoad.url
+      compareResultAndView(result, getView(
+        req,
+        "messages__processingRequest__h1_failure",
+        "messages__thereIsAProblem__p1",
+        None
       ))
     }
   }

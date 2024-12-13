@@ -22,27 +22,26 @@ import forms.PersonNameFormProvider
 import identifiers.establishers.partnership.partner.PartnerNameId
 import matchers.JsonMatchers
 import models.{Index, NormalMode, PersonName, Scheme}
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
+import views.html.PersonNameView
 
 import scala.concurrent.Future
 
-class PartnerNameControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class PartnerNameControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val index: Index = Index(0)
   private val partnerIndex: Index = Index(0)
   private val personName: PersonName = PersonName("Jane", "Doe")
   private val userAnswers: Option[UserAnswers] = ua.set(PartnerNameId(0,0), personName).toOption
-  private val templateToBeRendered = "personName.njk"
+
   private val form: Form[PersonName] = new PersonNameFormProvider()("messages__error__partner")
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -61,16 +60,9 @@ class PartnerNameControllerSpec extends ControllerSpecBase with NunjucksSupport 
     "value" -> Seq.empty
   )
 
-  private val jsonToPassToTemplate: Form[PersonName] => JsObject = form =>
-    Json.obj(
-      "form" -> form,
-      "schemeName" -> schemeName,
-      "entityType" -> Messages("messages__partner")
-    )
-
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
   }
 
 
@@ -78,37 +70,29 @@ class PartnerNameControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
     "return OK and the correct view for a GET" in {
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val request = httpGETRequest(httpPathGET)
+      val result = route(application, request).value
 
       status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form))
+      val view = application.injector.instanceOf[PersonNameView].apply(
+        form,
+        schemeName,
+        Messages("messages__partner"),
+        routes.PartnerNameController.onSubmit(index, partnerIndex, NormalMode)
+      )(request, messages)
+      compareResultAndView(result, view)
     }
 
     "return OK and the correct view for a GET when the question has previously been answered" in {
-
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
       val result = route(application, httpGETRequest(httpPathGET)).value
-
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(personName)))
+      contentAsString(result) must include(messages("messages__name_title", "the partner"))
+      contentAsString(result) must include(personName.firstName)
+      contentAsString(result) must include(personName.lastName)
     }
 
     "redirect back to list of schemes for a GET when there is no data" in {
@@ -122,9 +106,6 @@ class PartnerNameControllerSpec extends ControllerSpecBase with NunjucksSupport 
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
-
-      val expectedJson = Json.obj()
-
       when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(PartnerNameId(index,partnerIndex)), any(), any())(any()))
         .thenReturn(controllers.establishers.partnership.partner.details.routes.PartnerDOBController.onPageLoad(index,partnerIndex,NormalMode))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
@@ -132,15 +113,11 @@ class PartnerNameControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 
-      verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptor.capture)(any(), any())
-
-      jsonCaptor.getValue must containJson(expectedJson)
+      verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
 
       redirectLocation(result) mustBe Some(controllers.establishers.partnership.partner.details.routes.PartnerDOBController.onPageLoad(index,partnerIndex,NormalMode).url)
     }
@@ -152,6 +129,9 @@ class PartnerNameControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
       status(result) mustEqual BAD_REQUEST
 
+      contentAsString(result) must include(messages("messages__name_title", "the partner"))
+      contentAsString(result) must include(messages("messages__error__first_name", "partner’s"))
+      contentAsString(result) must include(messages("messages__error__last_name", "partner’s"))
       verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
     }
 

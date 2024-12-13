@@ -23,22 +23,21 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.benefitsAndInsurance.BenefitsInsuranceNameId
 import matchers.JsonMatchers
 import models.Scheme
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
-import play.api.libs.json.Reads._
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.Result
+import play.api.mvc.{Call, Result}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{insurerName, schemeName, ua}
 import utils.{Data, Enumerable, UserAnswers}
+import views.html.benefitsAndInsurance.BenefitsInsuranceNameView
 
 import scala.concurrent.Future
 
-class BenefitsInsuranceNameControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class BenefitsInsuranceNameControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -46,12 +45,6 @@ class BenefitsInsuranceNameControllerSpec extends ControllerSpecBase with Nunjuc
   private val httpPathGET: String = controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onPageLoad.url
   private val httpPathPOST: String = controllers.benefitsAndInsurance.routes.BenefitsInsuranceNameController.onSubmit.url
   private val form: Form[String] = new BenefitsInsuranceNameFormProvider()()
-
-  private val jsonToPassToTemplate: Form[String] => JsObject = form =>
-    Json.obj(
-      "form" -> form,
-      "schemeName" -> schemeName
-    )
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq("abcdef")
@@ -61,9 +54,12 @@ class BenefitsInsuranceNameControllerSpec extends ControllerSpecBase with Nunjuc
     "value" -> Seq.empty
   )
 
+  val request = FakeRequest(GET, httpPathGET)
+  override val onwardCall: Call = Call("POST", httpPathPOST)
+
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
   }
 
   "BenefitsInsuranceName Controller" must {
@@ -76,12 +72,13 @@ class BenefitsInsuranceNameControllerSpec extends ControllerSpecBase with Nunjuc
 
       status(result) mustEqual OK
 
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+      val view = application.injector.instanceOf[BenefitsInsuranceNameView].apply(
+        form,
+        schemeName,
+        onwardCall
+      )(request, messages)
 
-      verify(mockRenderer, times(1))
-        .render(ArgumentMatchers.eq("benefitsAndInsurance/benefitsInsuranceName.njk"), jsonCaptor.capture())(any())
-
-      (jsonCaptor.getValue \ "schemeName").toOption.map(_.as[String]) mustBe Some(Data.schemeName)
+      compareResultAndView(result, view)
     }
 
     "return OK and the correct view for a GET when the question has previously been answered" in {
@@ -95,12 +92,13 @@ class BenefitsInsuranceNameControllerSpec extends ControllerSpecBase with Nunjuc
 
       status(result) mustEqual OK
 
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+      val view = application.injector.instanceOf[BenefitsInsuranceNameView].apply(
+        form.fill(insurerName),
+        schemeName,
+        onwardCall
+      )(request, messages)
 
-      verify(mockRenderer, times(1))
-        .render(ArgumentMatchers.eq("benefitsAndInsurance/benefitsInsuranceName.njk"), jsonCaptor.capture())(any())
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(insurerName)))
+      compareResultAndView(result, view)
     }
 
     "redirect to Session Expired page for a GET when there is no data" in {
@@ -108,11 +106,11 @@ class BenefitsInsuranceNameControllerSpec extends ControllerSpecBase with Nunjuc
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val result: Future[Result] = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.routes.SessionExpiredController.onPageLoad().absoluteURL()(request)
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {

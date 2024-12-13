@@ -19,30 +19,21 @@ package controllers.establishers.company
 import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import forms.establishers.company.director.AddCompanyDirectorsFormProvider
-import helpers.AddToListHelper
 import identifiers.establishers.EstablisherKindId
 import identifiers.establishers.company.director.{DirectorNameId, IsNewDirectorId}
 import identifiers.establishers.company.{AddCompanyDirectorsId, CompanyDetailsId}
 import matchers.JsonMatchers
+import models._
 import models.establishers.EstablisherKind
-import models.{CompanyDetails, NormalMode, PersonName, Scheme}
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
-import play.api.data.Form
-import play.api.inject.bind
-import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.viewmodels.Radios
 import utils.Data.{companyDetails, schemeName, ua}
 import utils.{Enumerable, UserAnswers}
+import views.html.establishers.company.AddDirectorView
 
-import scala.concurrent.Future
-
-class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
   private val directorName: PersonName =
     PersonName("Jane", "Doe")
   private val userAnswers: Option[UserAnswers] =
@@ -69,23 +60,11 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with Nunjucks
         )))))))))))).toOption
   }
 
-  private val templateToBeRendered = "establishers/company/addDirector.njk"
-
-  //private val form: Form[Boolean] = new ConfirmDeleteEstablisherFormProvider()(directorName.fullName)
   private val formProvider = new AddCompanyDirectorsFormProvider()
   private val form         = formProvider()
-  val itemList: JsValue = Json.obj(
-     "name" -> directorName.fullName,
-        "changeUrl" ->  "controllers.establishers.company.director.details.routes.CheckYourAnswersController.onPageLoad(0, 0)",
-        "removeUrl" ->   "controllers.establishers.company.director.routes.ConfirmDeleteDirectorController.onPageLoad(0, 0)"
-      )
-  private val mockHelper: AddToListHelper = mock[AddToListHelper]
-
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  val extraModules: Seq[GuiceableModule] = Seq(
-    bind[AddToListHelper].toInstance(mockHelper)
-  )
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
+
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
   private def httpPathGET: String = controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(0,NormalMode).url
   private def httpPathPOST: String = controllers.establishers.company.routes.AddCompanyDirectorsController.onSubmit(0,NormalMode).url
@@ -98,23 +77,10 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with Nunjucks
     "value" -> Seq("invalid")
   )
 
-  private val jsonToPassToTemplate: Form[Boolean] => JsObject = form =>
-    Json.obj(
-      "form" -> form,
-      "itemList" -> itemList,
-      "radios" -> Radios.yesNo(form("value")),
-      "schemeName" -> schemeName,
-      "directorSize" -> 1,
-      "maxDirectors" -> mockAppConfig.maxDirectors
-    )
-
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockAppConfig)
     when(mockAppConfig.maxDirectors).thenReturn(10)
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-    when(mockHelper.directorsOrPartnersItemList(any())).thenReturn(itemList)
-
   }
 
 
@@ -122,18 +88,23 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with Nunjucks
 
     "return OK and the correct view for a GET" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val request = httpGETRequest(httpPathGET)
+      val result = route(application, request).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = application.injector.instanceOf[AddDirectorView].apply(
+        form,
+        schemeName,
+        1,
+        mockAppConfig.maxDirectors,
+        Seq(DirectorEntity(DirectorNameId(0,0), directorName.fullName, false, false, true, 1)),
+        utils.Radios.yesNo(form("value")),
+        controllers.establishers.company.routes.AddCompanyDirectorsController.onSubmit(0,NormalMode)
+      )(request, messages)
 
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form))
+      compareResultAndView(result, view)
     }
 
     "redirect to Session Expired page for a GET when there is no data" in {

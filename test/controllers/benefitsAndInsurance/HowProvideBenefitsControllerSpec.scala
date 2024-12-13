@@ -24,22 +24,21 @@ import identifiers.benefitsAndInsurance.HowProvideBenefitsId
 import matchers.JsonMatchers
 import models.Scheme
 import models.benefitsAndInsurance.BenefitsProvisionType
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
-import play.api.libs.json.Reads._
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.Result
+import play.api.mvc.{Call, Result}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.{Data, Enumerable, UserAnswers}
+import views.html.benefitsAndInsurance.HowProvideBenefitsView
 
 import scala.concurrent.Future
 
-class HowProvideBenefitsControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class HowProvideBenefitsControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -47,13 +46,6 @@ class HowProvideBenefitsControllerSpec extends ControllerSpecBase with NunjucksS
   private val httpPathGET: String = controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onPageLoad.url
   private val httpPathPOST: String = controllers.benefitsAndInsurance.routes.HowProvideBenefitsController.onSubmit.url
   private val form: Form[BenefitsProvisionType] = new HowProvideBenefitsFormProvider()()
-
-  private val jsonToPassToTemplate: Form[BenefitsProvisionType] => JsObject = form =>
-    Json.obj(
-      "form" -> form,
-      "schemeName" -> schemeName,
-      "radios" -> BenefitsProvisionType.radios(form)
-    )
 
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq("moneyPurchaseOnly")
@@ -63,9 +55,12 @@ class HowProvideBenefitsControllerSpec extends ControllerSpecBase with NunjucksS
     "value" -> Seq.empty
   )
 
+  val request = FakeRequest(GET, httpPathGET)
+  override val onwardCall: Call = Call("POST", httpPathPOST)
+
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
   }
 
   "HowProvideBEnefits Controller" must {
@@ -78,12 +73,15 @@ class HowProvideBenefitsControllerSpec extends ControllerSpecBase with NunjucksS
 
       status(result) mustEqual OK
 
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+      val view = application.injector.instanceOf[HowProvideBenefitsView].apply(
+        form,
+        schemeName,
+        BenefitsProvisionType.radios(form),
+        onwardCall
+      )(request, messages)
 
-      verify(mockRenderer, times(1))
-        .render(ArgumentMatchers.eq("benefitsAndInsurance/howProvideBenefits.njk"), jsonCaptor.capture())(any())
+      compareResultAndView(result, view)
 
-      (jsonCaptor.getValue \ "schemeName").toOption.map(_.as[String]) mustBe Some(Data.schemeName)
     }
 
     "return OK and the correct view for a GET when the question has previously been answered" in {
@@ -93,16 +91,21 @@ class HowProvideBenefitsControllerSpec extends ControllerSpecBase with NunjucksS
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
+      val filledFrom = form.fill(BenefitsProvisionType.MoneyPurchaseOnly)
+
       val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
 
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+      val view = application.injector.instanceOf[HowProvideBenefitsView].apply(
+        filledFrom,
+        schemeName,
+        BenefitsProvisionType.radios(filledFrom),
+        onwardCall
+      )(request, messages)
 
-      verify(mockRenderer, times(1))
-        .render(ArgumentMatchers.eq("benefitsAndInsurance/howProvideBenefits.njk"), jsonCaptor.capture())(any())
+      compareResultAndView(result, view)
 
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(BenefitsProvisionType.MoneyPurchaseOnly)))
     }
 
     "redirect to Session Expired page for a GET when there is no data" in {
@@ -110,11 +113,11 @@ class HowProvideBenefitsControllerSpec extends ControllerSpecBase with NunjucksS
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val result: Future[Result] = route(application, httpGETRequest(httpPathGET)).value
+      val req = httpGETRequest(httpPathGET)
+      val result: Future[Result] = route(application, req).value
 
       status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustBe controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.routes.SessionExpiredController.onPageLoad().absoluteURL()(req)
     }
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {

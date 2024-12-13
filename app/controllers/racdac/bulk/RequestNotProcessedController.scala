@@ -19,9 +19,7 @@ package controllers.racdac.bulk
 import config.AppConfig
 import controllers.actions.AuthAction
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
@@ -31,18 +29,13 @@ class RequestNotProcessedController @Inject()(val appConfig: AppConfig,
                                               override val messagesApi: MessagesApi,
                                               authenticate: AuthAction,
                                               val controllerComponents: MessagesControllerComponents,
-                                              renderer: Renderer
+                                              view: views.html.racdac.RequestNotProcessedView
                                      )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = authenticate.async {
+  def onPageLoad: Action[AnyContent] = authenticate {
     implicit request =>
-        renderer.render(
-          template = "racdac/request-not-processed.njk",
-          Json.obj(
-            "tryAgain" -> routes.TransferAllController.onPageLoad.url
-          )
-        ).map(Ok(_))
+      Ok(view(routes.TransferAllController.onPageLoad.url))
       }
   }
 

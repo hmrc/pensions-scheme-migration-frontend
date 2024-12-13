@@ -24,21 +24,22 @@ import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.partner.address.AddressYearsId
 import models.{Index, Mode}
 import play.api.data.Form
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.common.address.CommonAddressYearsService
-import viewmodels.Message
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class AddressYearsController @Inject()(authenticate: AuthAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       formProvider: AddressYearsFormProvider,
-                                       common: CommonAddressYearsService)
-                                      (implicit ec: ExecutionContext)
-  extends Retrievals
-{
+class AddressYearsController @Inject()(
+    val messagesApi: MessagesApi,
+    authenticate: AuthAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: AddressYearsFormProvider,
+    common: CommonAddressYearsService
+)(implicit ec: ExecutionContext) extends Retrievals with I18nSupport {
+
   private def form: Form[Boolean] =
     formProvider("individualAddressYears.partnership.partner.error.required")
 
@@ -46,7 +47,14 @@ class AddressYearsController @Inject()(authenticate: AuthAction,
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (PartnerNameId(establisherIndex, partnerIndex) and SchemeNameId).retrieve.map {
         case partnerName ~ schemeName =>
-          common.get(Some(schemeName), partnerName.fullName, Message("messages__partner"), form, AddressYearsId(establisherIndex, partnerIndex))
+          common.get(
+            Some(schemeName),
+            partnerName.fullName,
+            Messages("messages__partner"),
+            form,
+            AddressYearsId(establisherIndex, partnerIndex),
+            submitUrl = routes.AddressYearsController.onSubmit(establisherIndex, partnerIndex, mode)
+          )
       }
     }
 
@@ -54,7 +62,15 @@ class AddressYearsController @Inject()(authenticate: AuthAction,
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       (PartnerNameId(establisherIndex, partnerIndex) and SchemeNameId).retrieve.map {
         case partnerName ~ schemeName =>
-          common.post(Some(schemeName), partnerName.fullName, Message("messages__partner"), form, AddressYearsId(establisherIndex, partnerIndex), Some(mode))
+          common.post(
+            Some(schemeName),
+            partnerName.fullName,
+            Messages("messages__partner"),
+            form,
+            AddressYearsId(establisherIndex, partnerIndex),
+            Some(mode),
+            submitUrl = routes.AddressYearsController.onSubmit(establisherIndex, partnerIndex, mode)
+          )
       }
     }
 }

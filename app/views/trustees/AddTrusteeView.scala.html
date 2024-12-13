@@ -1,0 +1,83 @@
+@*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@this(
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukButton: GovukButton,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios: GovukRadios,
+        summaryList: templates.SummaryList
+)
+
+@(form: Form[_],
+        submitCall: Call,
+        schemeName: String,
+        itemListIncomplete: Seq[Trustee[_]],
+        itemListComplete: Seq[Trustee[_]],
+        trusteeSize: Int,
+        maxTrustees: Int,
+        radios: Seq[RadioItem]
+)(implicit request: Request[_], messages: Messages)
+
+
+@layout(messages("messages__addTrustee_title"), formHasErrors = form.hasErrors) {
+
+    @formHelper(submitCall, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "true") {
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
+
+        <h1 id="addTrustee_h1" class="govuk-heading-l">@messages("messages__addTrustee_title")</h1>
+        @summaryList(itemListIncomplete, Some("site.incomplete"), "site.add.details", "site.remove", "edit")
+
+        @summaryList(itemListComplete, Some("messages__schemeTaskList__completed"), "site.change", "site.remove", "edit-complete")
+
+        @if(trusteeSize < maxTrustees) {
+            @govukRadios(
+                RadiosViewModel(
+                    form("value"),
+                    radios,
+                    Fieldset(
+                        legend = Some(
+                            Legend(
+                                content = Text(messages("messages__addTrustee_radio_label")),
+                                isPageHeading = false,
+                                classes = "govuk-fieldset__legend--s"
+                            )
+                        )
+                    ),
+                    classes = "govuk-radios--inline"
+                )
+            )
+        }
+        @if(trusteeSize >= maxTrustees) {
+            <p class="govuk-body govuk-!-font-weight-regular">@messages("messages__addTrustees_at_maximum")</p>
+            <p class="govuk-body govuk-!-font-weight-regular">
+                @messages("messages__addCompanyDirectorsPartnersOrTrustees_tell_us_if_you_have_more")
+            </p>
+        }
+
+
+        @govukButton(
+            ButtonViewModel(
+                Text(messages("site.save_and_continue"))
+            ).asFormSubmit
+        )
+    }
+
+    @templates.ReturnLink(schemeName)
+}

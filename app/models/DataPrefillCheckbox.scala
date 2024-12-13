@@ -18,17 +18,32 @@ package models
 
 import models.prefill.{IndividualDetails => DataPrefillIndividualDetails}
 import play.api.data.Form
-import uk.gov.hmrc.viewmodels.MessageInterpolators
-import uk.gov.hmrc.viewmodels.Text.Literal
-import viewmodels.forNunjucks.Checkboxes
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Label, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.{CheckboxItem, ExclusiveCheckbox}
 
 object DataPrefillCheckbox {
 
-  def checkboxes(form: Form[_], values: Seq[DataPrefillIndividualDetails]): Seq[Checkboxes.Item] = {
-    val noneValue = "-1"
-    val items = values.map(indvDetails => Checkboxes.Checkbox(Literal(indvDetails.fullName), indvDetails.index.toString, None, None))
-    val noneOfTheAbove = Checkboxes.Checkbox(msg"messages__prefill__label__none", noneValue, Some("exclusive"), None)
-    val divider = Checkboxes.Checkbox(msg"messages__prefill__label__divider", "divider", None, Some(msg"messages__prefill__label__divider"))
-    Checkboxes.set(form("value"), items :+ divider :+ noneOfTheAbove)
+  def checkboxes(form: Form[_], values: Seq[DataPrefillIndividualDetails])(implicit messages: Messages): Seq[CheckboxItem] = {
+    val checkBoxes = values.zipWithIndex.map { case (details, index) =>
+      CheckboxItem(
+        content = Text(details.fullName),
+        label = Some(Label(content = Text(details.fullName))),
+        value = index.toString,
+        name = Some(s"value[$index]"),
+        checked = form("value").value.map(_ == details.fullName).getOrElse(false)
+      )
+    }
+
+    val noneOfTheAbove = CheckboxItem(
+      content = Text(Messages("messages__prefill__label__none")),
+      label = Some(Label(content = Text(Messages("messages__prefill__label__none")))),
+      value = "-1",
+      name = Some(s"value[${checkBoxes.length}]"),
+      checked = form("value").value.map(_ == "-1").getOrElse(false),
+      behaviour = Some(ExclusiveCheckbox)
+    )
+
+    checkBoxes :+ CheckboxItem(divider = Some("or")) :+ noneOfTheAbove
   }
 }

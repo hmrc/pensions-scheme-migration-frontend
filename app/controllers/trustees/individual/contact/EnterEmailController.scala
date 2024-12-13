@@ -16,8 +16,7 @@
 
 package controllers.trustees.individual.contact
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.EmailAddressController
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.EmailFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -26,32 +25,27 @@ import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.contact.EnterEmailId
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
+import services.common.contact.CommonEmailAddressService
 import utils.UserAnswers
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import scala.util.Try
 
 class EnterEmailController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            val navigator: CompoundNavigator,
-                                            authenticate: AuthAction,
-                                            getData: DataRetrievalAction,
-                                            requireData: DataRequiredAction,
-                                            formProvider: EmailFormProvider,
-                                            dataUpdateService: DataUpdateService,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                            val renderer: Renderer
-                                          )(implicit val executionContext: ExecutionContext)
-  extends EmailAddressController {
+                                      val messagesApi: MessagesApi,
+                                      authenticate: AuthAction,
+                                      getData: DataRetrievalAction,
+                                      requireData: DataRequiredAction,
+                                      dataUpdateService: DataUpdateService,
+                                      formProvider: EmailFormProvider,
+                                      common: CommonEmailAddressService
+                                    )(implicit val executionContext: ExecutionContext)
+  extends Retrievals with I18nSupport {
 
   private def name(index: Index)
                   (implicit request: DataRequest[AnyContent]): String =
@@ -68,13 +62,14 @@ class EnterEmailController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
+            common.get(
               entityName = name(index),
               entityType = Messages("messages__individual"),
-              id            = EnterEmailId(index),
-              form          = form(index),
-              schemeName    = schemeName,
-              paragraphText = Seq(Messages("messages__contact_details__hint", name(index)))
+              emailId = EnterEmailId(index),
+              form = form(index),
+              schemeName = schemeName,
+              paragraphText = Seq(Messages("messages__contact_details__hint", name(index))),
+              routes.EnterEmailController.onSubmit(index, mode)
             )
         }
     }
@@ -84,24 +79,16 @@ class EnterEmailController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            form(index).bindFromRequest().fold(
-              (formWithErrors: Form[_]) =>
-                renderer.render(
-                  template = "email.njk",
-                  ctx = Json.obj(
-                    "entityName" -> name(index),
-                    "entityType" -> Messages("messages__individual"),
-                    "form" -> formWithErrors,
-                    "schemeName" -> schemeName,
-                    "paragraph" -> Seq(Messages("messages__contact_details__hint", name(index)))
-                  )
-                ).map(BadRequest(_)),
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(setUpdatedAnswers(index, mode, value, request.userAnswers))
-                  _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
-                } yield
-                  Redirect(navigator.nextPage(EnterEmailId(index), updatedAnswers, mode))
+            common.post(
+              entityName = name(index),
+              entityType = Messages("messages__individual"),
+              emailId = EnterEmailId(index),
+              form = form(index),
+              schemeName = schemeName,
+              paragraphText = Seq(Messages("messages__contact_details__hint", name(index))),
+              mode = Some(mode),
+              routes.EnterEmailController.onSubmit(index, mode),
+              Some(value => setUpdatedAnswers(index, mode, value, request.userAnswers))
             )
         }
     }

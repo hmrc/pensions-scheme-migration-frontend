@@ -23,39 +23,31 @@ import helpers.cya.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import play.api.mvc.Results.Ok
+import play.api.mvc.{Action, AnyContent}
+import views.html.establishers.partnership.partner.WhatYouWillNeedView
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class WhatYouWillNeedController @Inject()(override val messagesApi: MessagesApi,
+class WhatYouWillNeedController @Inject()(val messagesApi: MessagesApi,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
-                                          val controllerComponents: MessagesControllerComponents,
-                                          val renderer: Renderer
-                                                 )(implicit val ec: ExecutionContext)
-  extends FrontendBaseController
-  with I18nSupport
-  with Retrievals
-  with NunjucksSupport {
+                                          view: WhatYouWillNeedView
+                                         )(implicit val ec: ExecutionContext)
+  extends I18nSupport with Retrievals {
 
   def onPageLoad(establisherIndex: Index): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData()).async {
+    (authenticate andThen getData andThen requireData()){
 
       implicit request =>
         val partnerIndex = request.userAnswers.allPartners(establisherIndex).size
-        renderer.render(
-          template = "establishers/partnership/partner/whatYouWillNeed.njk",
-          ctx = Json.obj(
-            "continueUrl" -> PartnerNameController.onPageLoad(establisherIndex, partnerIndex, NormalMode).url,
-            "schemeName" -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
-          )
-        ).map(Ok(_))
+        Ok(view(
+          PartnerNameController.onPageLoad(establisherIndex,partnerIndex, NormalMode).url,
+          request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
+        )
+        )
     }
 }
 

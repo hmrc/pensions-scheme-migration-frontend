@@ -1,0 +1,100 @@
+@*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@this()
+@(totalItems: Int, pagination: Int, numberOfPages: Int,pageNumber: Int, baseUrl: String)(implicit messages: Messages)
+
+@linkElement(linkNumber: Int, href: String) = {
+<a class="govuk-link govuk-pagination__link" id="pageNumber-@linkNumber" href="@href" aria-label="Page @linkNumber">@linkNumber</a>
+}
+
+@linkCurrentElement(currentPage: Int, href: String) = {
+<a class="govuk-link govuk-pagination__link" id="pageNumber-@currentPage" href="@href" aria-current="page">@currentPage</a>
+}
+
+@if(totalItems > pagination) {
+<div class="grid-row">
+ <div class="column-two-thirds">
+  <nav class="govuk-pagination" aria-label="Pagination">
+   @if(pageNumber > 1) {
+   <div class="govuk-pagination__prev">
+    <a class="govuk-link govuk-pagination__link" href="@{baseUrl + (pageNumber-1)}" rel="prev">
+     <svg class="govuk-pagination__icon govuk-pagination__icon--prev" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+      <path d="m6.5938-0.0078125-6.7266 6.7266 6.7441 6.4062 1.377-1.449-4.1856-3.9768h12.896v-2h-12.984l4.2931-4.293-1.414-1.414z"></path>
+     </svg>
+     <span class="govuk-pagination__link-title">@messages("messages__listSchemes__pagination__prev")<span class="govuk-visually-hidden"> page</span></span>
+    </a>
+   </div>
+   }
+
+   <ul class="govuk-pagination__list">
+    @if(numberOfPages <= 3) {
+    @for(linkNumber <- 1 to numberOfPages) {
+    @if(linkNumber == pageNumber) {
+    <li class="govuk-pagination__item govuk-pagination__item--current">
+     @linkCurrentElement(linkNumber, baseUrl + linkNumber)
+    </li>
+    } else {
+    <li class="govuk-pagination__item">
+     @linkElement(linkNumber, baseUrl + linkNumber)
+    </li>
+    }
+    }
+    } else {
+    <li class="govuk-pagination__item">
+     <a class="govuk-link govuk-pagination__link" href="@{baseUrl + '1'}" aria-label="Page 1">1</a>
+    </li>
+
+    @if(pageNumber > 3) {
+    <li class="govuk-pagination__item govuk-pagination__item--ellipses">&ctdot;</li>
+    }
+
+    @for(linkNumber <- Math.max(2, pageNumber - 1) to Math.min(numberOfPages - 1, pageNumber + 1)) {
+    @if(linkNumber == pageNumber) {
+    <li class="govuk-pagination__item govuk-pagination__item--current">
+      @linkCurrentElement(linkNumber, baseUrl + linkNumber)
+    </li>
+    } else {
+    <li class="govuk-pagination__item">
+      @linkElement(linkNumber, baseUrl + linkNumber)
+    </li>
+    }
+    }
+
+    @if(pageNumber < numberOfPages - 2) {
+    <li class="govuk-pagination__item govuk-pagination__item--ellipses">&ctdot;</li>
+    }
+
+    <li class="govuk-pagination__item">
+      @linkElement(numberOfPages, baseUrl + numberOfPages)
+    </li>
+    }
+   </ul>
+
+   @if(pageNumber < numberOfPages) {
+   <div class="govuk-pagination__next">
+    <a class="govuk-link govuk-pagination__link" id="pageNumber-@(pageNumber+1)" href="@{baseUrl + (pageNumber+1)}" rel="next">
+     <span class="govuk-pagination__link-title">@messages("messages__listSchemes__pagination__next")<span class="govuk-visually-hidden"> page</span></span>
+     <svg class="govuk-pagination__icon govuk-pagination__icon--next" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+      <path d="m8.107-0.0078125-1.4136 1.414 4.2926 4.293h-12.986v2h12.896l-4.1855 3.9766 1.377 1.4492 6.7441-6.4062-6.7246-6.7266z"></path>
+     </svg>
+    </a>
+   </div>
+   }
+  </nav>
+ </div>
+</div>
+}

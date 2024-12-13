@@ -24,15 +24,11 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits._
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{Json, OWrites}
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Result}
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
+import play.api.mvc.{AnyContent, Call, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
-import uk.gov.hmrc.viewmodels.Radios
 import utils.UserAnswers
-import viewmodels.Message
+import views.html.address.AddressYearsView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,52 +36,56 @@ import scala.util.Try
 
 @Singleton
 class CommonAddressYearsService @Inject()(
-                                               val controllerComponents: MessagesControllerComponents,
-                                               val renderer: Renderer,
-                                               val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                               val navigator: CompoundNavigator,
-                                               val messagesApi: MessagesApi
-                                             ) extends NunjucksSupport with FrontendHeaderCarrierProvider with I18nSupport {
-  private def viewTemplate = "address/addressYears.njk"
-
-  private case class TemplateData(
-                                   schemeName: Option[String],
-                                   entityName: String,
-                                   entityType : String,
-                                   form : Form[Boolean],
-                                   radios: Seq[Radios.Item]
-                                 )
-
-  implicit private def templateDataWrites(implicit request: DataRequest[AnyContent]): OWrites[TemplateData] = Json.writes[TemplateData]
+   userAnswersCacheConnector: UserAnswersCacheConnector,
+   navigator: CompoundNavigator,
+   val messagesApi: MessagesApi,
+   addressYearsView: AddressYearsView
+) extends FrontendHeaderCarrierProvider with I18nSupport {
 
   def get(schemeName: Option[String],
-                    entityName: String,
-                    entityType : Message,
-                    form : Form[Boolean],
-                    addressYearsId : TypedIdentifier[Boolean])(
-                     implicit request: DataRequest[AnyContent],
-                     ec: ExecutionContext): Future[Result] = {
-    val filledForm = request.userAnswers.get(addressYearsId).fold(form)(form.fill)
-    renderer.render(viewTemplate, getTemplateData(schemeName, entityName, entityType.resolve, filledForm) ).map(Ok(_))
+          entityName: String,
+          entityType : String,
+          form : Form[Boolean],
+          addressYearsId : TypedIdentifier[Boolean],
+          submitUrl: Call
+         )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+    val filledForm: Form[Boolean] = request.userAnswers.get(addressYearsId).fold(form)(form.fill)
+    Future.successful(Ok(
+      addressYearsView(
+        filledForm,
+        entityType,
+        entityName,
+        utils.Radios.yesNo(filledForm("value")),
+        schemeName,
+        submitUrl = submitUrl
+      )))
   }
 
   def post(schemeName: Option[String],
            entityName: String,
-           entityType : Message,
+           entityType : String,
            form : Form[Boolean],
            addressYearsId : TypedIdentifier[Boolean],
            mode: Option[Mode] = None,
-           optSetUserAnswers:Option[Boolean => Try[UserAnswers]] = None)
-          (implicit request: DataRequest[AnyContent],
-           ec: ExecutionContext): Future[Result] = {
+           optSetUserAnswers:Option[Boolean => Try[UserAnswers]] = None,
+           submitUrl: Call
+          )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
     form
       .bindFromRequest()
       .fold(
         formWithErrors => {
-          renderer.render(viewTemplate, getTemplateData(schemeName, entityName, entityType.resolve, formWithErrors) ).map(BadRequest(_))
+          Future.successful(BadRequest(
+            addressYearsView(
+              formWithErrors,
+              entityType,
+              entityName,
+              utils.Radios.yesNo(formWithErrors("value")),
+              schemeName,
+              submitUrl = submitUrl
+            )))
         },
         value => {
-          def defaultSetUserAnswers = (value: Boolean) => request.userAnswers.set(addressYearsId, value)
+          def defaultSetUserAnswers: Boolean => Try[UserAnswers] = (value: Boolean) => request.userAnswers.set(addressYearsId, value)
           val setUserAnswers = optSetUserAnswers.getOrElse(defaultSetUserAnswers)
           for {
             updatedAnswers <- Future.fromTry(setUserAnswers(value))
@@ -96,22 +96,5 @@ class CommonAddressYearsService @Inject()(
           }
         }
       )
-  }
-
-
-
-  private def getTemplateData(
-                      schemeName: Option[String],
-                      entityName: String,
-                      entityType : String,
-                      form : Form[Boolean]): TemplateData = {
-
-    TemplateData(
-      schemeName,
-      entityName,
-      entityType,
-      form,
-      Radios.yesNo(form("value"))
-    )
   }
 }

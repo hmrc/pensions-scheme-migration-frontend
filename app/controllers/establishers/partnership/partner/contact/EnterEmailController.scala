@@ -16,8 +16,7 @@
 
 package controllers.establishers.partnership.partner.contact
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.EmailAddressController
+import controllers.Retrievals
 import controllers.actions._
 import forms.EmailFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -25,28 +24,23 @@ import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.partner.contact.EnterEmailId
 import models.requests.DataRequest
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import viewmodels.Message
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.contact.CommonEmailAddressService
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class EnterEmailController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        val navigator: CompoundNavigator,
-                                        authenticate: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: EmailFormProvider,
-                                        val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        val renderer: Renderer
-                                       )(implicit val executionContext: ExecutionContext)
-  extends EmailAddressController {
+                                      val messagesApi: MessagesApi,
+                                      authenticate: AuthAction,
+                                      getData: DataRetrievalAction,
+                                      requireData: DataRequiredAction,
+                                      formProvider: EmailFormProvider,
+                                      common: CommonEmailAddressService
+                                    )(implicit val executionContext: ExecutionContext)
+  extends Retrievals with I18nSupport {
 
   private def name(establisherIndex: Index, partnerIndex: Index)
                   (implicit request: DataRequest[AnyContent]): String =
@@ -57,20 +51,21 @@ class EnterEmailController @Inject()(
 
   private def form(establisherIndex: Index, partnerIndex: Index)
                   (implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Message("messages__enterEmail__error_required", name(establisherIndex, partnerIndex)))
+    formProvider(Messages("messages__enterEmail__error_required", name(establisherIndex, partnerIndex)))
 
   def onPageLoad(establisherIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
+            common.get(
               entityName = name(establisherIndex, partnerIndex),
               entityType = Messages("messages__partner"),
-              id = EnterEmailId(establisherIndex, partnerIndex),
+              emailId = EnterEmailId(establisherIndex, partnerIndex),
               form = form(establisherIndex, partnerIndex),
               schemeName = schemeName,
-              paragraphText = Seq(Messages("messages__contact_details__hint", name(establisherIndex, partnerIndex)))
+              paragraphText = Seq(Messages("messages__contact_details__hint", name(establisherIndex, partnerIndex))),
+              routes.EnterEmailController.onSubmit(establisherIndex, partnerIndex, mode)
             )
         }
     }
@@ -80,14 +75,15 @@ class EnterEmailController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            post(
+            common.post(
               entityName = name(establisherIndex, partnerIndex),
               entityType = Messages("messages__partner"),
-              id = EnterEmailId(establisherIndex, partnerIndex),
+              emailId = EnterEmailId(establisherIndex, partnerIndex),
               form = form(establisherIndex, partnerIndex),
               schemeName = schemeName,
               paragraphText = Seq(Messages("messages__contact_details__hint", name(establisherIndex, partnerIndex))),
-              mode = mode
+              mode = Some(mode),
+              routes.EnterEmailController.onSubmit(establisherIndex, partnerIndex, mode)
             )
         }
     }

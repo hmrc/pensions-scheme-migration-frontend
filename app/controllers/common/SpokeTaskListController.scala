@@ -19,35 +19,32 @@ package controllers.common
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import helpers.SpokeCreationService
+import helpers.cya.CYAHelper
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.identifierUtils
 import models.entities._
 import models.requests.DataRequest
 import models.{EntitySpoke, Index, entities}
-import play.api.i18n.I18nSupport
-import play.api.libs.json.{JsObject, Json, OFormat}
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import play.twirl.api.Html
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{entityTypeError, managementTypeError}
-import viewmodels.Message
+import views.html.SpokeTaskListView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 class SpokeTaskListController @Inject() (
                                           val controllerComponents: MessagesControllerComponents,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
                                           spokeCreationService: SpokeCreationService,
-                                          renderer: Renderer
+                                          spokeTaskListView: SpokeTaskListView
                                         )
                                         (implicit val ec: ExecutionContext) extends FrontendBaseController
   with I18nSupport
   with Retrievals
-  with NunjucksSupport {
+  {
 
   //scalastyle:off
   private def getTemplateData(index: Index,
@@ -58,15 +55,15 @@ class SpokeTaskListController @Inject() (
 
 
     val emptyEntityNameMsg = entityType match {
-      case Company => Message("messages__company")
-      case Individual => Message("messages__individual")
-      case Partnership => Message("messages__partnership")
+      case Company => Messages("messages__company")
+      case Individual => Messages("messages__individual")
+      case Partnership => Messages("messages__partnership")
       case e => entityTypeError(e)
     }
 
     val managementTypeTypeMsg = pensionManagementType match {
-      case Establisher => Message("messages__tasklist__establisher")
-      case Trustee => Message("messages__tasklist__trustee")
+      case Establisher => Messages("messages__tasklist__establisher")
+      case Trustee => Messages("messages__tasklist__trustee")
       case e => managementTypeError(e)
     }
 
@@ -103,10 +100,10 @@ class SpokeTaskListController @Inject() (
     }
 
     TemplateDataFull(
-      spokes,
+      taskSections = spokes,
       entityName,
       schemeName,
-      managementTypeTypeMsg.resolve,
+      entityType = managementTypeTypeMsg,
       submitUrl.url,
       totalSpokes,
       completedCount
@@ -122,22 +119,18 @@ class SpokeTaskListController @Inject() (
                                    completedCount: Int
                                  )
 
-  implicit private val templateFormat: OFormat[TemplateDataFull] = Json.format[TemplateDataFull]
   def onPageLoad(index: Index, pensionManagementType: PensionManagementType, entityType: EntityType): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData()).async { implicit request =>
-      SchemeNameId.retrieve.map { schemeName =>
-        template(getTemplateData(index, pensionManagementType, entityType,schemeName)).map {Ok(_)}
-      }
+    (authenticate andThen getData andThen requireData()) { implicit request =>
+        val schemeName = CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly)
+        val templateData = getTemplateData(index, pensionManagementType, entityType, schemeName)
+        Ok(spokeTaskListView(
+          templateData.taskSections,
+          templateData.entityName,
+          templateData.schemeName,
+          templateData.entityType,
+          templateData.submitUrl,
+          templateData.totalSpokes,
+          templateData.completedCount
+        ))
     }
-
-
-  private def template(
-           data: TemplateDataFull
-         )(implicit request: DataRequest[AnyContent]): Future[Html] = {
-
-    renderer.render(
-      template = "spokeTaskList.njk",
-      ctx = Json.toJson(data).as[JsObject]
-    )
-  }
 }

@@ -92,20 +92,22 @@ class DataUpdateService @Inject()() extends Enumerable.Implicits {
 
   def findMatchingDirectors(index: Index)(implicit ua: UserAnswers): Seq[IndividualDetails] = {
     val filteredDirectorsSeq = allDirectors.filter(dir => !dir.isDeleted)
-    val trustee = getTrusteeDetails(index)
-    val matchingDirectors = filteredDirectorsSeq.filter { director =>
-      director.nino.map(ninoVal =>
-        trustee.nino.contains(ninoVal))
-        .getOrElse{(trustee.dob, director.dob) match {
-            case (Some(trusteeDob), Some(dirDob)) => trusteeDob.isEqual(dirDob) && trustee.fullName == director.fullName
-            case _ => false
+    val getTrustee = getTrusteeDetails(index)
+    val matchingDirectors = getTrustee.map { trustee =>
+      filteredDirectorsSeq.filter { director =>
+        director.nino.map(ninoVal => trustee.nino.contains(ninoVal))
+          .getOrElse {
+            (trustee.dob, director.dob) match {
+              case (Some(trusteeDob), Some(dirDob)) => trusteeDob.isEqual(dirDob) && trustee.fullName == director.fullName
+              case _ => false
+            }
           }
-          }
-    }
-    if (matchingDirectors.nonEmpty)
-      matchingDirectors
-    else
-      Seq()
+      }
+
+    }.toList.flatten
+
+    matchingDirectors
+
   }
 
   def allDirectors(implicit ua: UserAnswers): Seq[IndividualDetails] = {
@@ -171,13 +173,13 @@ class DataUpdateService @Inject()() extends Enumerable.Implicits {
       ua.isDirectorComplete(estIndex, directorIndex), Some(estIndex))
   }
 
-  private def getTrusteeDetails(index: Int)(implicit ua: UserAnswers): IndividualDetails = {
-    val trusteeName = ua.get(TrusteeNameId(index)).get
+  private def getTrusteeDetails(index: Int)(implicit ua: UserAnswers): Option[IndividualDetails] = {
+    val trusteeName = ua.get(TrusteeNameId(index))
     val trusteeNino = ua.get(TrusteeNINOId(index)).map(_.value)
     val trusteeDob = ua.get(TrusteeDOBId(index))
-    IndividualDetails(
-      trusteeName.firstName, trusteeName.lastName, trusteeName.isDeleted, trusteeNino, trusteeDob, index,
-      ua.isTrusteeIndividualComplete(index), Some(index))
+    trusteeName.map(name => IndividualDetails(
+      name.firstName, name.lastName, name.isDeleted, trusteeNino, trusteeDob, index,
+      ua.isTrusteeIndividualComplete(index), Some(index)))
   }
 
 

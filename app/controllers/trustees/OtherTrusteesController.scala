@@ -16,53 +16,48 @@
 
 package controllers.trustees
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.HasReferenceValueController
+import controllers.Retrievals
 import controllers.actions._
 import forms.HasReferenceNumberFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.OtherTrusteesId
 import models.NormalMode
 import models.requests.DataRequest
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import viewmodels.Message
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.details.CommonHasReferenceValueService
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class OtherTrusteesController @Inject()(
-                                          override val messagesApi: MessagesApi,
-                                          val navigator: CompoundNavigator,
-                                          authenticate: AuthAction,
-                                          getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction,
-                                          formProvider: HasReferenceNumberFormProvider,
-                                          val controllerComponents: MessagesControllerComponents,
-                                          val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                          val renderer: Renderer
-                                        )(implicit val executionContext: ExecutionContext) extends HasReferenceValueController {
+class OtherTrusteesController @Inject()(val messagesApi: MessagesApi,
+                                        authenticate: AuthAction,
+                                        getData: DataRetrievalAction,
+                                        requireData: DataRequiredAction,
+                                        formProvider: HasReferenceNumberFormProvider,
+                                        common: CommonHasReferenceValueService
+                                       )(implicit val executionContext: ExecutionContext)
+  extends Retrievals with I18nSupport {
 
   private def form()(implicit request: DataRequest[AnyContent]): Form[Boolean] =
-    formProvider(errorMsg = Message("messages__otherTrustees__error__required"))
+    formProvider(errorMsg = Messages("messages__otherTrustees__error__required"))
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
-              pageTitle = Message("messages__otherTrustees__title"),
-              pageHeading = Message("messages__otherTrustees__heading"),
+            common.get(
+              pageTitle = Messages("messages__otherTrustees__title"),
+              pageHeading = Messages("messages__otherTrustees__heading"),
               isPageHeading = true,
               id = OtherTrusteesId,
               form = form(),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__otherTrustees__lede")),
-              legendClass = "govuk-visually-hidden"
+              paragraphText = Seq(Messages("messages__otherTrustees__lede")),
+              legendClass = "govuk-visually-hidden",
+              submitCall = routes.OtherTrusteesController.onSubmit
             )
         }
     }
@@ -72,16 +67,17 @@ class OtherTrusteesController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            post(
-              pageTitle = Message("messages__otherTrustees__title"),
-              pageHeading = Message("messages__otherTrustees__heading"),
+            common.post(
+              pageTitle = Messages("messages__otherTrustees__title"),
+              pageHeading = Messages("messages__otherTrustees__heading"),
               isPageHeading = true,
               id = OtherTrusteesId,
               form = form(),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__otherTrustees__lede")),
+              paragraphText = Seq(Messages("messages__otherTrustees__lede")),
               legendClass = "govuk-visually-hidden",
-              mode = NormalMode
+              mode = NormalMode,
+              submitCall = routes.OtherTrusteesController.onSubmit
             )
         }
     }

@@ -18,31 +18,28 @@ package controllers.preMigration
 
 import config.AppConfig
 import controllers.actions.AuthAction
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.MessageInterpolators
+import views.html.preMigration.CannotMigrateView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class CannotMigrateController @Inject()(val appConfig: AppConfig,
                                         override val messagesApi: MessagesApi,
                                         authenticate: AuthAction,
                                         val controllerComponents: MessagesControllerComponents,
-                                        renderer: Renderer
+                                        cannotMigrateView: CannotMigrateView
                                     )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = authenticate.async { implicit request =>
-
-        val json: JsObject = Json.obj(
-          "param1" -> msg"messages__administrator__overview".resolve,
-          "returnUrl" -> appConfig.psaOverviewUrl
-        )
-      renderer.render("preMigration/cannotMigrate.njk", json).map(Ok(_))
-
+    Future.successful(Ok(
+      cannotMigrateView(
+        Messages("messages__administrator__overview"),
+        Call("GET", appConfig.psaOverviewUrl)
+      )
+    ))
   }
 }

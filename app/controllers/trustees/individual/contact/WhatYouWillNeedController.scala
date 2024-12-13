@@ -22,45 +22,35 @@ import helpers.cya.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.trustees.individual.TrusteeNameId
 import models.{Index, NormalMode}
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.Message
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.Results.Ok
+import play.api.mvc.{Action, AnyContent}
+import views.html.WhatYouWillNeedContactView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class WhatYouWillNeedController @Inject()(
-                                           override val messagesApi: MessagesApi,
+                                           val messagesApi: MessagesApi,
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           val renderer: Renderer
+                                           view: WhatYouWillNeedContactView
                                          )(implicit val ec: ExecutionContext)
-  extends FrontendBaseController
-    with I18nSupport
-    with Retrievals
-    with NunjucksSupport {
+  extends Retrievals
+    with I18nSupport {
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         TrusteeNameId(index).retrieve.map {
           personName =>
-            renderer.render(
-              template = "whatYouWillNeedContact.njk",
-              ctx = Json.obj(
-                "name"        -> personName.fullName,
-                "pageHeading" -> Message("messages__title_individual"),
-                "entityType" -> Message("messages__individual"),
-                "continueUrl" -> controllers.trustees.individual.contact.routes.EnterEmailController.onPageLoad(index, NormalMode).url,
-                "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
-              )
-            ).map(Ok(_))
+            Future.successful(Ok(view(
+              pageHeading = Messages("messages__title_individual"),
+              continueUrl = controllers.trustees.individual.contact.routes.EnterEmailController.onPageLoad(index, NormalMode).url,
+              name = personName.fullName,
+              schemeName = request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
+            )))
         }
     }
 }

@@ -16,8 +16,7 @@
 
 package controllers.trustees.company.details
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.HasReferenceValueController
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.HasReferenceNumberFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -25,36 +24,30 @@ import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.details.HaveCompanyNumberId
 import models.requests.DataRequest
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import viewmodels.Message
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.details.CommonHasReferenceValueService
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class HaveCompanyNumberController @Inject()(
-                                              override val messagesApi: MessagesApi,
-                                              val navigator: CompoundNavigator,
-                                              authenticate: AuthAction,
-                                              getData: DataRetrievalAction,
-                                              requireData: DataRequiredAction,
-                                              formProvider: HasReferenceNumberFormProvider,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                              val renderer: Renderer
-                                            )(implicit val executionContext: ExecutionContext)
-  extends HasReferenceValueController {
+class HaveCompanyNumberController @Inject()(val messagesApi: MessagesApi,
+                                            authenticate: AuthAction,
+                                            getData: DataRetrievalAction,
+                                            requireData: DataRequiredAction,
+                                            formProvider: HasReferenceNumberFormProvider,
+                                            common: CommonHasReferenceValueService
+                                           )(implicit val executionContext: ExecutionContext)
+  extends Retrievals with I18nSupport {
 
   private def name(index: Index)
                   (implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(CompanyDetailsId(index)).fold(Message("messages__company"))(_.companyName)
+    request.userAnswers.get(CompanyDetailsId(index)).fold(Messages("messages__company"))(_.companyName)
 
   private def form(index: Index)
                   (implicit request: DataRequest[AnyContent]): Form[Boolean] =
-    formProvider(errorMsg = Message("messages__haveCompanyNumber__error", name(index)))
+    formProvider(errorMsg = Messages("messages__haveCompanyNumber__error", name(index)))
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
@@ -62,15 +55,16 @@ class HaveCompanyNumberController @Inject()(
 
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
-              pageTitle     = Message("messages__haveCompanyNumber", Message("messages__company")),
-              pageHeading     = Message("messages__haveCompanyNumber", name(index)),
+            common.get(
+              pageTitle     = Messages("messages__haveCompanyNumber", Messages("messages__company")),
+              pageHeading   = Messages("messages__haveCompanyNumber", name(index)),
               isPageHeading = true,
               id            = HaveCompanyNumberId(index),
               form          = form(index),
               schemeName    = schemeName,
-              legendClass   = "govuk-label--xl",
-              paragraphText = Seq(Message("messages__haveCompanyNumber__p"))
+              legendClass   = "govuk-label--l",
+              paragraphText = Seq(Messages("messages__haveCompanyNumber__p")),
+              submitCall    = routes.HaveCompanyNumberController.onSubmit(index, mode)
             )
         }
     }
@@ -80,16 +74,17 @@ class HaveCompanyNumberController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            post(
-              pageTitle     = Message("messages__haveCompanyNumber", Message("messages__company")),
-              pageHeading     = Message("messages__haveCompanyNumber", name(index)),
+            common.post(
+              pageTitle     = Messages("messages__haveCompanyNumber", Messages("messages__company")),
+              pageHeading   = Messages("messages__haveCompanyNumber", name(index)),
               isPageHeading = true,
               id            = HaveCompanyNumberId(index),
               form          = form(index),
               schemeName    = schemeName,
-              legendClass   = "govuk-label--xl",
+              legendClass   = "govuk-label--l",
               mode          = mode,
-              paragraphText = Seq(Message("messages__haveCompanyNumber__p"))
+              submitCall    = routes.HaveCompanyNumberController.onSubmit(index, mode),
+              paragraphText = Seq(Messages("messages__haveCompanyNumber__p"))
             )
         }
     }

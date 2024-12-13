@@ -17,9 +17,6 @@
 package controllers
 
 import config.AppConfig
-import connectors.ListOfSchemesConnector
-import connectors.cache.LockCacheConnector
-import controllers.actions.AuthAction
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
@@ -31,21 +28,15 @@ import scala.concurrent.{ExecutionContext, Future}
 class LogoutController @Inject()(
                                   override val authConnector: AuthConnector,
                                   appConfig: AppConfig,
-                                  val controllerComponents: MessagesControllerComponents,
-                                  authenticate: AuthAction,
-                                  lockCacheConnector: LockCacheConnector,
-                                  listOfSchemesConnector:ListOfSchemesConnector
+                                  val controllerComponents: MessagesControllerComponents
                                 )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport with AuthorisedFunctions {
 
-  def onPageLoad: Action[AnyContent] = authenticate.async {
-    implicit request =>
-      lockCacheConnector.removeLockByUser.map { _ =>
-        listOfSchemesConnector.removeCache(request.psaId.id)
-        Redirect(appConfig.serviceSignOut).withNewSession
-      }
+  def onPageLoad: Action[AnyContent] = Action { request =>
+    Redirect(appConfig.serviceSignOut)
   }
+
 
   def keepAlive: Action[AnyContent] = Action.async {
   Future successful Ok("OK")

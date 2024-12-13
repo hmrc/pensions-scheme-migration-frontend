@@ -21,37 +21,22 @@ import controllers.actions._
 import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
 import models.PersonName
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
-import play.twirl.api.Html
-import renderer.Renderer
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.ua
-import utils.UserAnswers
+import utils.{Data, UserAnswers}
+import views.html.establishers.company.director.WhatYouWillNeedView
 
 import scala.concurrent.Future
 
 class WhatYouWillNeedControllerSpec
   extends ControllerSpecBase
-    with NunjucksSupport
     with JsonMatchers
     with TryValues {
 
-  private val personName: PersonName =
-    PersonName("Jane", "Doe")
-  private val userAnswers: UserAnswers =
-    ua.set(EstablisherNameId(0), personName).success.value
-  private val templateToBeRendered: String =
-    "establishers/company/director/whatYouWillNeed.njk"
-  private val json: JsObject =
-    Json.obj(
-      "continueUrl" -> "/add-pension-scheme/establisher/1/company/director/1/name",
-      "schemeName"  -> "Test scheme name"
-    )
+  private val personName: PersonName = PersonName("Jane", "Doe")
+  private val userAnswers: UserAnswers = ua.set(EstablisherNameId(0), personName).success.value
 
   private def controller(
                           dataRetrievalAction: DataRetrievalAction
@@ -61,27 +46,23 @@ class WhatYouWillNeedControllerSpec
       authenticate         = new FakeAuthAction(),
       getData              = dataRetrievalAction,
       requireData          = new DataRequiredActionImpl,
-      controllerComponents = controllerComponents,
-      renderer             = new Renderer(mockAppConfig, mockRenderer)
+      view = app.injector.instanceOf[WhatYouWillNeedView]
     )
 
   "WhatYouWillNeedController" must {
     "return OK and the correct view for a GET" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val getData = new FakeDataRetrievalAction(Some(userAnswers))
-      val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(userAnswers))
+      val result: Future[Result] = controller(new FakeDataRetrievalAction(Some(userAnswers)))
+        .onPageLoad(0)(fakeRequest)
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = app.injector.instanceOf[WhatYouWillNeedView].apply(
+        "/add-pension-scheme/establisher/1/company/director/1/name",
+        Data.schemeName
+      )(fakeRequest, messages)
 
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(json)
+      compareResultAndView(result, view)
     }
   }
 }

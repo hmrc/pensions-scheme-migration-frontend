@@ -22,26 +22,24 @@ import forms.PersonNameFormProvider
 import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
 import models.{Index, PersonName, Scheme}
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
+import views.html.PersonNameView
 
 import scala.concurrent.Future
 
-class EstablisherNameControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class EstablisherNameControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val index: Index = Index(0)
   private val personName: PersonName = PersonName("Jane", "Doe")
   private val userAnswers: Option[UserAnswers] = ua.set(EstablisherNameId(0), personName).toOption
-  private val templateToBeRendered = "personName.njk"
   private val form: Form[PersonName] = new PersonNameFormProvider()("messages__error__establisher")
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -60,16 +58,8 @@ class EstablisherNameControllerSpec extends ControllerSpecBase with NunjucksSupp
     "value" -> Seq.empty
   )
 
-  private val jsonToPassToTemplate: Form[PersonName] => JsObject = form =>
-    Json.obj(
-      "form" -> form,
-      "schemeName" -> schemeName,
-      "entityType" -> Messages("messages__individual")
-    )
-
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
 
@@ -77,37 +67,29 @@ class EstablisherNameControllerSpec extends ControllerSpecBase with NunjucksSupp
 
     "return OK and the correct view for a GET" in {
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = httpGETRequest(httpPathGET)
 
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val result = route(application, request).value
 
       status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form))
+      val view = application.injector.instanceOf[PersonNameView].apply(
+        form, schemeName,Messages("messages__individual"),
+        routes.EstablisherNameController.onSubmit(index)
+      )(request, messages)
+      compareResultAndView(result, view)
     }
 
     "return OK and the correct view for a GET when the question has previously been answered" in {
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
       val result = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(personName)))
+      contentAsString(result) must include(messages("messages__name_title", "the individual"))
+      contentAsString(result) must include(personName.firstName)
+      contentAsString(result) must include(personName.lastName)
     }
 
     "redirect back to list of schemes for a GET when there is no data" in {
@@ -122,8 +104,6 @@ class EstablisherNameControllerSpec extends ControllerSpecBase with NunjucksSupp
 
     "Save data to user answers and redirect to next page when valid data is submitted" in {
 
-      val expectedJson = Json.obj()
-
       when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(EstablisherNameId(0)), any(), any())(any()))
         .thenReturn(controllers.establishers.routes.AddEstablisherController.onPageLoad)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
@@ -131,16 +111,11 @@ class EstablisherNameControllerSpec extends ControllerSpecBase with NunjucksSupp
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 
-      verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptor.capture)(any(), any())
-
-      jsonCaptor.getValue must containJson(expectedJson)
-
+      verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
       redirectLocation(result) mustBe Some(controllers.establishers.routes.AddEstablisherController.onPageLoad.url)
     }
 
@@ -150,6 +125,10 @@ class EstablisherNameControllerSpec extends ControllerSpecBase with NunjucksSupp
       val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
 
       status(result) mustEqual BAD_REQUEST
+
+      contentAsString(result) must include(messages("messages__name_title", "the individual"))
+      contentAsString(result) must include(messages("messages__error__first_name", "establisher’s"))
+      contentAsString(result) must include(messages("messages__error__last_name", "establisher’s"))
 
       verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
     }

@@ -21,25 +21,20 @@ import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAut
 import forms.dataPrefill.DataPrefillRadioFormProvider
 import identifiers.trustees.individual.TrusteeNameId
 import matchers.JsonMatchers
-import models.PersonName
 import models.prefill.IndividualDetails
-import org.mockito.ArgumentCaptor
+import models.{DataPrefillRadio, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import renderer.Renderer
-import services.DataPrefillService
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{Data, FakeNavigator, UserAnswers}
+import views.html.DataPrefillRadioView
 
 import scala.concurrent.Future
 class DirectorAlsoTrusteeControllerSpec extends ControllerSpecBase
-  with NunjucksSupport
   with JsonMatchers
   with TryValues
   with BeforeAndAfterEach {
@@ -47,23 +42,14 @@ class DirectorAlsoTrusteeControllerSpec extends ControllerSpecBase
   private val personName: PersonName = PersonName("Jane", "Doe")
   private val formProvider: DataPrefillRadioFormProvider = new DataPrefillRadioFormProvider()
   private val form = formProvider("")
-
+  private val seqDirector: Seq[IndividualDetails] = Seq(IndividualDetails("Jane", "Doe", false, None, None, 0, true, None))
   private val userAnswers: UserAnswers = ua.set(TrusteeNameId(0), personName).success.value
-  private val templateToBeRendered: String = "dataPrefillRadio.njk"
-  private val mockDataPrefillService = mock[DataPrefillService]
 
-  private val commonJson: JsObject =
-    Json.obj(
-      "form" -> form,
-      "schemeName" -> Data.schemeName
-    )
   override def beforeEach(): Unit = {
     reset(
-      mockRenderer,
       mockUserAnswersCacheConnector,
       mockDataPrefillService
     )
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
     when(mockDataPrefillService.getListOfDirectorsToBeCopied(any())).thenReturn(Nil)
   }
 
@@ -78,28 +64,29 @@ class DirectorAlsoTrusteeControllerSpec extends ControllerSpecBase
       requireData = new DataRequiredActionImpl,
       formProvider = formProvider,
       dataPrefillService = mockDataPrefillService,
-      config = appConfig,
       controllerComponents = controllerComponents,
       userAnswersCacheConnector = mockUserAnswersCacheConnector,
-      renderer = new Renderer(mockAppConfig, mockRenderer)
+      dataPrefillRadioView = app.injector.instanceOf[DataPrefillRadioView]
     )
-
-  private val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-  private val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
   "DirectorAlsoTrusteeController" must {
     "return OK and the correct view for a GET" in {
-      when(mockDataPrefillService.getListOfDirectorsToBeCopied(any())).thenReturn(Seq(IndividualDetails("", "", false, None, None, 0, true, None)))
+      when(mockDataPrefillService.getListOfDirectorsToBeCopied(any())).thenReturn(seqDirector)
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
       val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-      templateCaptor.getValue mustEqual templateToBeRendered
-      val json: JsObject = Json.obj("form" -> form)
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      val view = app.injector.instanceOf[DataPrefillRadioView].apply(
+        form,
+        messages("messages__trustees__prefill__title"),
+        messages("messages__trustees__prefill__heading"),
+        DataPrefillRadio.radios(form, seqDirector),
+        Data.schemeName,
+        routes.DirectorAlsoTrusteeController.onSubmit(0)
+      )(fakeRequest, messages)
+      compareResultAndView(result, view)
     }
 
     "redirect to task list page for a GET when there are no directors to be copied" in {
@@ -144,15 +131,15 @@ class DirectorAlsoTrusteeControllerSpec extends ControllerSpecBase
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
       val result: Future[Result] = controller(getData).onSubmit(0)(request)
-      val boundForm = form.bind(Map("value" -> "invalid value"))
 
       status(result) mustBe BAD_REQUEST
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-      templateCaptor.getValue mustEqual templateToBeRendered
 
-      val json: JsObject = Json.obj("form" -> Json.toJson(boundForm))
+      contentAsString(result) must include(messages("messages__trustees__prefill__heading"))
+      contentAsString(result) must include(messages("error.summary.title"))
 
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      verify(mockUserAnswersCacheConnector, times(0))
+        .save(any(), any())(any(), any())
+
     }
   }
 }

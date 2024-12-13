@@ -23,23 +23,18 @@ import controllers.actions.FakeAuthAction
 import forms.YesNoFormProvider
 import matchers.JsonMatchers
 import models.{Items, ListOfLegacySchemes}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Results.Ok
-import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
+import play.api.mvc.{AnyContentAsFormUrlEncoded, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
-import play.twirl.api.Html
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.viewmodels.Radios
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import utils.Data.ua
 
 import scala.concurrent.Future
-class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with BeforeAndAfterEach{
+class TransferAllControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues with BeforeAndAfterEach{
 
   private val psaName: String = "Psa Name"
   private val formProvider: YesNoFormProvider = new YesNoFormProvider()
@@ -54,22 +49,25 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
   private val expectedResponseWithEmpty = ListOfLegacySchemes(0, None)
 
 
-  private val templateToBeRendered: String = "racdac/transferAll.njk"
   private val form: Form[Boolean] = formProvider(messages("messages__transferAll__error"))
 
-  private val commonJson: Form[Boolean] => JsObject = form => Json.obj(
-    "form" -> form,
-    "psaName" -> psaName,
-    "returnUrl" -> appConfig.psaOverviewUrl
-  )
+  private def getView(req: Request[_], radios: Seq[RadioItem], form: Form[_]) = {
+    app.injector.instanceOf[views.html.racdac.TransferAllView].apply(
+      form,
+      routes.TransferAllController.onSubmit,
+      appConfig.psaOverviewUrl,
+      psaName,
+      radios
+    )(req, implicitly)
+  }
   override def beforeEach(): Unit = {
-    reset(mockRenderer, mockUserAnswersCacheConnector)
+    reset(mockUserAnswersCacheConnector)
     when(mockMinDetailsConnector.getPSAName(any(), any())) thenReturn Future.successful(psaName)
   }
 
   private def controller: TransferAllController =
     new TransferAllController(appConfig, messagesApi, new FakeAuthAction(), formProvider, mockMinDetailsConnector,
-      mockListOfSchemesConnector, mockCurrentPstrCacheConnector, controllerComponents, new Renderer(mockAppConfig, mockRenderer))
+      mockListOfSchemesConnector, mockCurrentPstrCacheConnector, controllerComponents, app.injector.instanceOf[views.html.racdac.TransferAllView])
 
   "TransferAllController" must {
 
@@ -90,24 +88,18 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
     }
 
     "return OK and the correct view for a GET" in{
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.successful(Right(expectedResponse)))
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
-      val result: Future[Result] = controller.onPageLoad(fakeDataRequest(ua))
+      val req = fakeDataRequest(ua)
+      val result: Future[Result] = controller.onPageLoad(req)
 
       status(result) mustBe OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual  templateToBeRendered
-
-      val json: JsObject = Json.obj("radios" -> Radios.yesNo(form("value")))
-
-      jsonCaptor.getValue must containJson(commonJson(form) ++ json)
+      compareResultAndView(result,
+        getView(
+          req,
+          utils.Radios.yesNo(form("value")),
+          form
+        )
+      )
     }
 
     "return OK and the correct view for a GET for scheme with Scheme Only" in {
@@ -136,30 +128,20 @@ class TransferAllControllerSpec extends ControllerSpecBase with NunjucksSupport 
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val request = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
       val result: Future[Result] = controller.onSubmit(request)
 
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
       status(result) mustBe BAD_REQUEST
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      val json: JsObject =
-        Json.obj("radios" -> Radios.yesNo(boundForm.apply("value")))
-
-      jsonCaptor.getValue must containJson(commonJson(boundForm) ++ json)
-
+      compareResultAndView(result,
+        getView(
+          request,
+          utils.Radios.yesNo(boundForm.apply("value")),
+          boundForm
+        )
+      )
     }
 
   }

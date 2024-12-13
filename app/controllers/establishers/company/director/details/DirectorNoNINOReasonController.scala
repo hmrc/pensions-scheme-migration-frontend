@@ -16,8 +16,7 @@
 
 package controllers.establishers.company.director.details
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.ReasonController
+import controllers.Retrievals
 import controllers.actions._
 import forms.ReasonFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -26,46 +25,40 @@ import identifiers.establishers.company.director.details.DirectorNoNINOReasonId
 import identifiers.trustees.individual.details.TrusteeNoNINOReasonId
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
+import services.common.details.CommonReasonService
 import utils.UserAnswers
-import viewmodels.Message
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import scala.util.Try
 
-class DirectorNoNINOReasonController @Inject()(
-                                                override val messagesApi: MessagesApi,
-                                                val navigator: CompoundNavigator,
-                                                authenticate: AuthAction,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
-                                                formProvider: ReasonFormProvider,
-                                                dataUpdateService: DataUpdateService,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                                val renderer: Renderer
+class DirectorNoNINOReasonController @Inject()(val messagesApi: MessagesApi,
+                                               authenticate: AuthAction,
+                                               getData: DataRetrievalAction,
+                                               requireData: DataRequiredAction,
+                                               formProvider: ReasonFormProvider,
+                                               dataUpdateService: DataUpdateService,
+                                               common: CommonReasonService
                                               )(implicit val executionContext: ExecutionContext)
-  extends ReasonController {
+  extends Retrievals with I18nSupport {
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
-              pageTitle = Message("messages__whyNoNINO", Message("messages__director")),
-              pageHeading = Message("messages__whyNoNINO", name(establisherIndex, directorIndex)),
+            common.get(
+              pageTitle = Messages("messages__whyNoNINO", Messages("messages__director")),
+              pageHeading = Messages("messages__whyNoNINO", name(establisherIndex, directorIndex)),
               isPageHeading = true,
               id = DirectorNoNINOReasonId(establisherIndex, directorIndex),
               form = form(establisherIndex, directorIndex),
-              schemeName = schemeName
+              schemeName = schemeName,
+              submitUrl = routes.DirectorNoNINOReasonController.onSubmit(establisherIndex, directorIndex, mode)
             )
         }
     }
@@ -75,24 +68,16 @@ class DirectorNoNINOReasonController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            form(establisherIndex, directorIndex).bindFromRequest().fold(
-              (formWithErrors: Form[_]) =>
-                renderer.render(
-                  template = "reason.njk",
-                  ctx = Json.obj(
-                    "pageTitle" -> Message("messages__whyNoNINO", Message("messages__director")),
-                    "pageHeading" -> Message("messages__whyNoNINO", name(establisherIndex, directorIndex)),
-                    "isPageHeading" -> true,
-                    "form" -> formWithErrors,
-                    "schemeName" -> schemeName
-                  )
-                ).map(BadRequest(_)),
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
-                  _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
-                } yield
-                  Redirect(navigator.nextPage(DirectorNoNINOReasonId(establisherIndex, directorIndex), updatedAnswers, mode))
+            common.post(
+              pageTitle = Messages("messages__whyNoNINO", Messages("messages__director")),
+              pageHeading = Messages("messages__whyNoNINO", name(establisherIndex, directorIndex)),
+              isPageHeading = true,
+              id = DirectorNoNINOReasonId(establisherIndex, directorIndex),
+              form = form(establisherIndex, directorIndex),
+              schemeName = schemeName,
+              mode = mode,
+              optSetUserAnswers = Some(value => setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers)),
+              submitUrl = routes.DirectorNoNINOReasonController.onSubmit(establisherIndex, directorIndex, mode)
             )
         }
     }
@@ -102,11 +87,11 @@ class DirectorNoNINOReasonController @Inject()(
     request
       .userAnswers
       .get(DirectorNameId(establisherIndex, directorIndex))
-      .fold(Message("messages__director"))(_.fullName)
+      .fold(Messages("messages__director"))(_.fullName)
 
   private def form(establisherIndex: Index, directorIndex: Index)
                   (implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Message("messages__reason__error_ninoRequired", name(establisherIndex, directorIndex)))
+    formProvider(Messages("messages__reason__error_ninoRequired", name(establisherIndex, directorIndex)))
 
   private def setUpdatedAnswers(establisherIndex: Index, directorIndex: Index, mode: Mode, value: String, ua: UserAnswers): Try[UserAnswers] = {
     val updatedUserAnswers =

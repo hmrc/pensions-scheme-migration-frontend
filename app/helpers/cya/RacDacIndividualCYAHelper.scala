@@ -19,9 +19,8 @@ package helpers.cya
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.racdac.ContractOrPolicyNumberId
 import play.api.i18n.Messages
-import uk.gov.hmrc.viewmodels.SummaryList.Row
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.{Enumerable, UserAnswers}
-import viewmodels.Message
 
 class RacDacIndividualCYAHelper
   extends CYAHelper
@@ -29,7 +28,7 @@ class RacDacIndividualCYAHelper
 
   def detailsRows(userAnswers:UserAnswers)(
                          implicit messages: Messages
-                        ): Seq[Row] = {
+                        ): Seq[SummaryListRow] = {
     val racDacName: String =
       userAnswers.get(SchemeNameId)
         .getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
@@ -37,11 +36,11 @@ class RacDacIndividualCYAHelper
     val rowsWithoutDynamicIndices = Seq(
       Some(answerOrAddRow(
         id = SchemeNameId,
-        message = Message("messages__racdac__cya__name__label").resolve
+        message = Messages("messages__racdac__cya__name__label")
       )(userAnswers,implicitly,implicitly)),
       Some(answerOrAddRow(
         id = ContractOrPolicyNumberId,
-        message = Message("messages__racdac__cya__contract__or__policy_number__label", racDacName).resolve
+        message = Messages("messages__racdac__cya__contract__or__policy_number__label", racDacName)
       )(userAnswers,implicitly,implicitly))).flatten
 
     rowsWithDynamicIndices(rowsWithoutDynamicIndices)

@@ -26,12 +26,10 @@ import models.establishers.EstablisherKind
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{Enumerable, UserAnswers}
+import views.html.establishers.EstablisherKindView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,34 +44,34 @@ class EstablisherKindController @Inject()(
                                            formProvider: EstablisherKindFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
                                            userAnswersCacheConnector: UserAnswersCacheConnector,
-                                           renderer: Renderer
+                                           view: EstablisherKindView
                                          )(implicit val executionContext: ExecutionContext) extends
-  FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits with NunjucksSupport {
+  FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits {
 
   private val form = formProvider()
 
   def onPageLoad(index: Index): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData()).async {
+    (authenticate andThen getData andThen requireData()){
       implicit request =>
         val formWithData = request.userAnswers.get(EstablisherKindId(index)).fold(form)(form.fill)
-        val json = Json.obj(
-          "form" -> formWithData,
-          "schemeName" -> existingSchemeName,
-          "radios" -> EstablisherKind.radios(formWithData)
-        )
-        renderer.render("establishers/establisherKind.njk", json).map(Ok(_))
+        Ok(view(
+          formWithData,
+          existingSchemeName.getOrElse("Scheme"),
+          EstablisherKind.radios(formWithData),
+          routes.EstablisherKindController.onSubmit(index)
+        ))
     }
 
   def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
-          val json = Json.obj(
-            "form" -> formWithErrors,
-            "schemeName" -> existingSchemeName,
-            "radios" -> EstablisherKind.radios(formWithErrors)
-          )
-          renderer.render("establishers/establisherKind.njk", json).map(BadRequest(_))
+          Future.successful(BadRequest(view(
+            formWithErrors,
+            existingSchemeName.getOrElse("Scheme"),
+            EstablisherKind.radios(formWithErrors),
+            routes.EstablisherKindController.onSubmit(index)
+          )))
         },
         value => {
 

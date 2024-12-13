@@ -16,8 +16,7 @@
 
 package controllers.establishers.company.director.details
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.HasReferenceValueController
+import controllers.Retrievals
 import controllers.actions._
 import forms.HasReferenceNumberFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -26,49 +25,42 @@ import identifiers.establishers.company.director.details.DirectorHasUTRId
 import identifiers.trustees.individual.details.TrusteeHasUTRId
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
-import uk.gov.hmrc.viewmodels.Radios
+import services.common.details.CommonHasReferenceValueService
 import utils.UserAnswers
-import viewmodels.Message
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import scala.util.Try
 
-class DirectorHasUTRController @Inject()(
-                                          override val messagesApi: MessagesApi,
-                                          val navigator: CompoundNavigator,
-                                          authenticate: AuthAction,
-                                          getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction,
-                                          formProvider: HasReferenceNumberFormProvider,
-                                          dataUpdateService: DataUpdateService,
-                                          val controllerComponents: MessagesControllerComponents,
-                                          val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                          val renderer: Renderer
-                                        )(implicit val executionContext: ExecutionContext) extends
-  HasReferenceValueController {
+class DirectorHasUTRController @Inject()(val messagesApi: MessagesApi,
+                                         authenticate: AuthAction,
+                                         getData: DataRetrievalAction,
+                                         requireData: DataRequiredAction,
+                                         formProvider: HasReferenceNumberFormProvider,
+                                         dataUpdateService: DataUpdateService,
+                                         common: CommonHasReferenceValueService
+                                        )(implicit val executionContext: ExecutionContext)
+  extends Retrievals with I18nSupport {
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
-              pageTitle = Message("messages__hasUTR", Message("messages__director")),
-              pageHeading = Message("messages__hasUTR", name(establisherIndex, directorIndex)),
+            common.get(
+              pageTitle = Messages("messages__hasUTR", Messages("messages__director")),
+              pageHeading = Messages("messages__hasUTR", name(establisherIndex, directorIndex)),
               isPageHeading = true,
               id = DirectorHasUTRId(establisherIndex, directorIndex),
               form = form(establisherIndex, directorIndex),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__UTR__p")),
-              legendClass = "govuk-visually-hidden"
+              paragraphText = Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2")),
+              legendClass = "govuk-visually-hidden",
+              submitCall = routes.DirectorHasUTRController.onSubmit(establisherIndex, directorIndex, mode)
             )
         }
     }
@@ -83,7 +75,7 @@ class DirectorHasUTRController @Inject()(
   private def form(establisherIndex: Index, directorIndex: Index)
                   (implicit request: DataRequest[AnyContent]): Form[Boolean] =
     formProvider(
-      errorMsg = Message("messages__genericHasUtr__error__required", name(establisherIndex, directorIndex))
+      errorMsg = Messages("messages__genericHasUtr__error__required", name(establisherIndex, directorIndex))
     )
 
   def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
@@ -91,29 +83,19 @@ class DirectorHasUTRController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            form(establisherIndex, directorIndex).bindFromRequest().fold(
-              (formWithErrors: Form[_]) =>
-                renderer.render(
-                  template = templateName(Seq(Message("messages__UTR__p"))),
-                  ctx = Json.obj(
-                    "pageTitle" -> Message("messages__hasUTR", Message("messages__director")),
-                    "pageHeading" -> Message("messages__hasUTR", name(establisherIndex, directorIndex)),
-                    "isPageHeading" -> true,
-                    "form" -> formWithErrors,
-                    "radios" -> Radios.yesNo(formWithErrors("value")),
-                    "schemeName" -> schemeName,
-                    "legendClass" -> "govuk-visually-hidden",
-                    "paragraphs" -> Seq(Message("messages__UTR__p"))
-                  )
-                ).map(BadRequest(_)),
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
-                  _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
-                } yield
-                  Redirect(navigator.nextPage(DirectorHasUTRId(establisherIndex, directorIndex), updatedAnswers, mode))
+            common.post(
+              pageTitle = Messages("messages__hasUTR", Messages("messages__director")),
+              pageHeading = Messages("messages__hasUTR", name(establisherIndex, directorIndex)),
+              isPageHeading = true,
+              id = DirectorHasUTRId(establisherIndex, directorIndex),
+              form = form(establisherIndex, directorIndex),
+              schemeName = schemeName,
+              paragraphText = Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2")),
+              legendClass = "govuk-visually-hidden",
+              mode = mode,
+              submitCall = routes.DirectorHasUTRController.onSubmit(establisherIndex, directorIndex, mode),
+              optSetUserAnswers = Some(value => setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
             )
-
         }
     }
 

@@ -26,9 +26,8 @@ import models.RacDac
 import models.requests.DataRequest
 import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsString, Json, __}
+import play.api.libs.json.{JsString, __}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -49,9 +48,9 @@ class DeclarationController @Inject()(
                                        minimalDetailsConnector: MinimalDetailsConnector,
                                        pensionsSchemeConnector:PensionsSchemeConnector,
                                        val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer,
                                        emailConnector: EmailConnector,
-                                       crypto: ApplicationCrypto
+                                       crypto: ApplicationCrypto,
+                                       declarationView: views.html.racdac.DeclarationView
                                      )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
@@ -59,14 +58,15 @@ class DeclarationController @Inject()(
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData(true)).async {
       implicit request =>
-        minimalDetailsConnector.getPSAName.flatMap {
+        minimalDetailsConnector.getPSAName.map {
           psaName =>
-            val json = Json.obj(
-              "psaName" -> psaName,
-              "submitUrl" -> controllers.racdac.individual.routes.DeclarationController.onSubmit.url,
-              "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad.url
+            Ok(
+              declarationView(
+                controllers.racdac.individual.routes.DeclarationController.onSubmit,
+                controllers.routes.PensionSchemeRedirectController.onPageLoad.url,
+                psaName
+              )
             )
-            renderer.render("racdac/declaration.njk", json).map(Ok(_))
         }
     }
 

@@ -39,85 +39,82 @@ import identifiers.trustees.partnership.PartnershipDetailsId
 import identifiers.trustees.partnership.details.HavePAYEId
 import matchers.JsonMatchers
 import models.{Index, NormalMode}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
+import play.api.i18n.Messages
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
-import play.twirl.api.Html
-import renderer.Renderer
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import services.common.details.CommonHasReferenceValueService
 import utils.Data.{partnershipDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
-import viewmodels.Message
+import views.html.{HasReferenceValueView, HasReferenceValueWithHintView}
 
 import scala.concurrent.Future
-class HavePAYEControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with BeforeAndAfterEach {
+class HavePAYEControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues with BeforeAndAfterEach {
 
   private val index: Index = Index(0)
   private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(index), partnershipDetails).success.value
 
-  private val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-  private val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
   private val formProvider: HasReferenceNumberFormProvider = new HasReferenceNumberFormProvider()
-  private val form: Form[Boolean] = formProvider(Message("messages__genericHavePaye__error__required", partnershipDetails.partnershipName))
-
-  private val templateToBeRendered: String = "hasReferenceValueWithHint.njk"
-
-  private val commonJson: JsObject =
-    Json.obj(
-      "pageTitle"     -> messages("messages__havePAYE", messages("messages__partnership")),
-      "pageHeading"     -> messages("messages__havePAYE", partnershipDetails.partnershipName),
-      "schemeName"    -> schemeName,
-      "paragraphs"    -> Json.arr(messages("messages__havePAYE__hint")),
-      "legendClass"   -> "govuk-visually-hidden",
-      "isPageHeading" -> true
-    )
+  private val form: Form[Boolean] = formProvider(Messages("messages__genericHavePaye__error__required", partnershipDetails.partnershipName))
 
   private def controller(dataRetrievalAction: DataRetrievalAction): HavePAYEController =
-    new HavePAYEController(messagesApi, new FakeNavigator(desiredRoute = onwardCall), new FakeAuthAction(), dataRetrievalAction,
-      new DataRequiredActionImpl, formProvider, controllerComponents, mockUserAnswersCacheConnector, new Renderer(mockAppConfig, mockRenderer))
+    new HavePAYEController(messagesApi, new FakeAuthAction(), dataRetrievalAction,
+      new DataRequiredActionImpl, formProvider,
+      common = new CommonHasReferenceValueService(
+        controllerComponents = controllerComponents,
+        hasReferenceValueWithHintView = app.injector.instanceOf[HasReferenceValueWithHintView],
+        hasReferenceValueView = app.injector.instanceOf[HasReferenceValueView],
+        userAnswersCacheConnector = mockUserAnswersCacheConnector,
+        navigator = new FakeNavigator(desiredRoute = onwardCall),
+        messagesApi = messagesApi
+      ))
 
-  override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
+  override def beforeEach(): Unit = reset(mockUserAnswersCacheConnector)
 
   "HavePAYEController" must {
     "return OK and the correct view for a GET" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
-
       val result: Future[Result] = controller(getData).onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-      val json: JsObject = Json.obj("radios" -> Radios.yesNo(form("value")))
-      jsonCaptor.getValue must containJson(commonJson ++ json)
-
+      val view = app.injector.instanceOf[HasReferenceValueWithHintView].apply(
+        form,
+        schemeName,
+        messages("messages__havePAYE", messages("messages__partnership")),
+        messages("messages__havePAYE", partnershipDetails.partnershipName),
+        utils.Radios.yesNo(form("value")),
+        "govuk-visually-hidden",
+        Seq(messages("messages__havePAYE__hint")),
+        routes.HavePAYEController.onSubmit(0, NormalMode)
+      )(fakeRequest, messages)
+      compareResultAndView(result, view)
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
       val ua = userAnswers.set(HavePAYEId(0), true).success.value
-
       val getData = new FakeDataRetrievalAction(Some(ua))
+      val filledFrom = form.fill(true)
 
       val result: Future[Result] = controller(getData).onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-      val json: JsObject = Json.obj("radios" -> Radios.yesNo(form.fill(true).apply("value")))
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      val view = app.injector.instanceOf[HasReferenceValueWithHintView].apply(
+        filledFrom,
+        schemeName,
+        messages("messages__havePAYE", messages("messages__partnership")),
+        messages("messages__havePAYE", partnershipDetails.partnershipName),
+        utils.Radios.yesNo(filledFrom("value")),
+        "govuk-visually-hidden",
+        Seq(messages("messages__havePAYE__hint")),
+        routes.HavePAYEController.onSubmit(0, NormalMode)
+      )(fakeRequest, messages)
+      compareResultAndView(result, view)
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -133,20 +130,17 @@ class HavePAYEControllerSpec extends ControllerSpecBase with NunjucksSupport wit
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
       val request = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
       val result: Future[Result] = controller(getData).onSubmit(0, NormalMode)(request)
-      val boundForm = form.bind(Map("value" -> "invalid value"))
 
       status(result) mustBe BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-      templateCaptor.getValue mustEqual templateToBeRendered
-      val json: JsObject = Json.obj("radios" -> Radios.yesNo(boundForm.apply("value")))
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      contentAsString(result) must include(messages("messages__havePAYE", messages("messages__partnership")))
+      contentAsString(result) must include(messages("error.summary.title"))
+      contentAsString(result) must include(messages("error.boolean"))
+
       verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
     }
   }

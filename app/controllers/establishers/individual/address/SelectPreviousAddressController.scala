@@ -16,78 +16,81 @@
 
 package controllers.establishers.individual.address
 
-import config.AppConfig
-import connectors.AddressLookupConnector
-import connectors.cache.UserAnswersCacheConnector
+import controllers.Retrievals
 import controllers.actions._
-import controllers.address.{AddressListController, AddressPages}
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.address.{EnterPreviousPostCodeId, PreviousAddressId, PreviousAddressListId}
+import models.establishers.AddressPages
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.CountryOptions
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.address.{CommonAddressListService, CommonAddressListTemplateData}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
-  override val messagesApi: MessagesApi,
-  val userAnswersCacheConnector: UserAnswersCacheConnector,
-  val addressLookupConnector: AddressLookupConnector,
-  val navigator: CompoundNavigator,
-  authenticate: AuthAction,
-  getData: DataRetrievalAction,
-  requireData: DataRequiredAction,
-  formProvider: AddressListFormProvider,
-  countryOptions: CountryOptions,
-  val controllerComponents: MessagesControllerComponents,
-  val renderer: Renderer)(implicit val ec: ExecutionContext) extends AddressListController with I18nSupport
-  with NunjucksSupport with Retrievals {
+class SelectPreviousAddressController @Inject()(
+   val messagesApi: MessagesApi,
+   authenticate: AuthAction,
+   getData: DataRetrievalAction,
+   requireData: DataRequiredAction,
+   formProvider: AddressListFormProvider,
+   common:CommonAddressListService
+)(implicit val ec: ExecutionContext) extends I18nSupport with Retrievals {
 
-  override def form: Form[Int] = formProvider("selectAddress.required")
+  private def form: Form[Int] = formProvider("selectAddress.required")
 
-  def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async { implicit request =>
-    retrieve(SchemeNameId) { schemeName =>
-      getFormToJson(schemeName, index, mode).retrieve.map(get)
-    }
-  }
-
-  def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-        val addressPages: AddressPages = AddressPages(EnterPreviousPostCodeId(index), PreviousAddressListId(index), PreviousAddressId(index))
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, index, mode).retrieve.map(post(_, addressPages,
-          manualUrlCall = controllers.establishers.individual.address.routes.ConfirmPreviousAddressController.onPageLoad(index,mode)))
+        getFormToTemplate(schemeName, index, mode).retrieve.map(formToTemplate =>
+          common.get(
+            formToTemplate(form),
+            form = form,
+            submitUrl = routes.SelectPreviousAddressController.onSubmit(index, mode)
+          ))
       }
     }
 
-  def getFormToJson(schemeName:String, index: Index, mode: Mode) : Retrieval[Form[Int] => JsObject] =
+  def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
+      val addressPages: AddressPages = AddressPages(EnterPreviousPostCodeId(index), PreviousAddressListId(index), PreviousAddressId(index))
+      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+
+      retrieve(SchemeNameId) { schemeName =>
+        getFormToTemplate(schemeName, index, mode).retrieve.map(
+          common.post(
+            _,
+            addressPages,
+            manualUrlCall = routes.ConfirmPreviousAddressController.onPageLoad(index,mode),
+            form = form,
+            submitUrl = routes.ConfirmPreviousAddressController.onSubmit(index, mode)
+          ))
+      }
+    }
+
+  def getFormToTemplate(schemeName:String, index: Index, mode: Mode) : Retrieval[Form[Int] => CommonAddressListTemplateData] =
     Retrieval(
       implicit request =>
         EnterPreviousPostCodeId(index).retrieve.map { addresses =>
+          val name: String = request.userAnswers.get(EstablisherNameId(index))
+            .map(_.fullName).getOrElse(Messages("establisherEntityTypeIndividual"))
 
-          val msg = request2Messages(request)
-
-          val name = request.userAnswers.get(EstablisherNameId(index)).map(_.fullName).getOrElse(msg("establisherEntityTypeIndividual"))
-
-          form => Json.obj(
-            "form" -> form,
-            "addresses" -> transformAddressesForTemplate(addresses),
-            "entityType" -> msg("establisherEntityTypeIndividual"),
-            "entityName" -> name,
-            "enterManuallyUrl" -> controllers.establishers.individual.address.routes.ConfirmPreviousAddressController.onPageLoad(index,mode).url,
-            "schemeName" -> schemeName,
-            "h1MessageKey" -> "previousAddressList.title"
-          )
+          form =>
+            CommonAddressListTemplateData(
+              form,
+              addresses,
+              Messages("establisherEntityTypeIndividual"),
+              name,
+              routes.ConfirmPreviousAddressController.onPageLoad(index, mode).url,
+              schemeName,
+              h1MessageKey = "previousAddressList.title"
+            )
         }
     )
 }

@@ -16,8 +16,7 @@
 
 package controllers.adviser
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.EmailAddressController
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.EmailFormProvider
 import helpers.cya.MandatoryAnswerMissingException
@@ -25,28 +24,23 @@ import identifiers.adviser.{AdviserNameId, EnterEmailId}
 import identifiers.beforeYouStart.SchemeNameId
 import models.Mode
 import models.requests.DataRequest
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import viewmodels.Message
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.contact.CommonEmailAddressService
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class EnterEmailController @Inject()(
-                                      override val messagesApi: MessagesApi,
-                                      val navigator: CompoundNavigator,
+                                      val messagesApi: MessagesApi,
                                       authenticate: AuthAction,
                                       getData: DataRetrievalAction,
                                       requireData: DataRequiredAction,
                                       formProvider: EmailFormProvider,
-                                      val controllerComponents: MessagesControllerComponents,
-                                      val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                      val renderer: Renderer
+                                      common: CommonEmailAddressService
                                     )(implicit val executionContext: ExecutionContext)
-  extends EmailAddressController {
+  extends Retrievals with I18nSupport {
 
   private def name
   (implicit request: DataRequest[AnyContent]): String = {
@@ -61,13 +55,14 @@ class EnterEmailController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
+            common.get(
               entityName = name,
-              entityType = Message("messages__pension__adviser"),
-              id = EnterEmailId,
+              entityType = Messages("messages__pension__adviser"),
+              emailId = EnterEmailId,
               form = form,
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__contact_details__email__hint", name, schemeName))
+              paragraphText = Seq(Messages("messages__contact_details__email__hint", name, schemeName)),
+              routes.EnterEmailController.onSubmit(mode)
             )
         }
     }
@@ -77,14 +72,15 @@ class EnterEmailController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            post(
+            common.post(
               entityName = name,
-              entityType = Message("messages__pension__adviser"),
-              id = EnterEmailId,
+              entityType = Messages("messages__pension__adviser"),
+              emailId = EnterEmailId,
               form = form,
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__contact_details__email__hint", name, schemeName)),
-              mode = mode
+              paragraphText = Seq(Messages("messages__contact_details__email__hint", name, schemeName)),
+              mode = Some(mode),
+              routes.EnterEmailController.onSubmit(mode)
             )
         }
     }

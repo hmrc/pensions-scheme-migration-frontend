@@ -16,8 +16,7 @@
 
 package controllers.establishers.partnership.partner.details
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.EnterReferenceValueController
+import controllers.Retrievals
 import controllers.actions._
 import forms.NINOFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -25,35 +24,29 @@ import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.partner.details.PartnerNINOId
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import viewmodels.Message
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.details.CommonEnterReferenceValueService
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class PartnerEnterNINOController @Inject()(
-                                             override val messagesApi: MessagesApi,
-                                             val navigator: CompoundNavigator,
-                                             authenticate: AuthAction,
-                                             getData: DataRetrievalAction,
-                                             requireData: DataRequiredAction,
-                                             formProvider: NINOFormProvider,
-                                             val controllerComponents: MessagesControllerComponents,
-                                             val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                             val renderer: Renderer
-                                           )(implicit val executionContext: ExecutionContext)
-  extends EnterReferenceValueController{
+class PartnerEnterNINOController @Inject()(val messagesApi: MessagesApi,
+                                           authenticate: AuthAction,
+                                           getData: DataRetrievalAction,
+                                           requireData: DataRequiredAction,
+                                           formProvider: NINOFormProvider,
+                                           common: CommonEnterReferenceValueService
+                                          )(implicit val executionContext: ExecutionContext)
+  extends Retrievals with I18nSupport {
 
   private def name(establisherIndex: Index, partnerIndex: Index)
                   (implicit request: DataRequest[AnyContent]): String =
     request
       .userAnswers
       .get(PartnerNameId(establisherIndex, partnerIndex))
-      .fold(Message("messages__partner"))(_.fullName)
+      .fold(Messages("messages__partner"))(_.fullName)
 
   private def form(establisherIndex: Index, partnerIndex: Index)
                   (implicit request: DataRequest[AnyContent]): Form[ReferenceValue] =
@@ -64,15 +57,16 @@ class PartnerEnterNINOController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
-              pageTitle     = Message("messages__enterNINO_title", Message("messages__partner")),
-              pageHeading     = Message("messages__enterNINO_title", name(establisherIndex, partnerIndex)),
+            common.get(
+              pageTitle     = Messages("messages__enterNINO_title", Messages("messages__partner")),
+              pageHeading     = Messages("messages__enterNINO_title", name(establisherIndex, partnerIndex)),
               isPageHeading = true,
               id            = PartnerNINOId(establisherIndex, partnerIndex),
               form          = form(establisherIndex, partnerIndex),
               schemeName    = schemeName,
-              hintText      = Some(Message("messages__enterNINO__hint")),
-              legendClass   = "govuk-label--xl"
+              hintText      = Some(Messages("messages__enterNINO__hint")),
+              legendClass   = "govuk-label--l",
+              submitCall = routes.PartnerEnterNINOController.onSubmit(establisherIndex, partnerIndex, mode)
             )
         }
     }
@@ -82,16 +76,17 @@ class PartnerEnterNINOController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            post(
-              pageTitle     = Message("messages__enterNINO_title", Message("messages__partner")),
-              pageHeading     = Message("messages__enterNINO_title", name(establisherIndex, partnerIndex)),
+            common.post(
+              pageTitle     = Messages("messages__enterNINO_title", Messages("messages__partner")),
+              pageHeading     = Messages("messages__enterNINO_title", name(establisherIndex, partnerIndex)),
               isPageHeading = true,
               id            = PartnerNINOId(establisherIndex, partnerIndex),
               form          = form(establisherIndex, partnerIndex),
               schemeName    = schemeName,
-              hintText      = Some(Message("messages__enterNINO__hint")),
-              legendClass   = "govuk-label--xl",
-              mode          = mode
+              hintText      = Some(Messages("messages__enterNINO__hint")),
+              legendClass   = "govuk-label--l",
+              mode          = mode,
+              submitCall = routes.PartnerEnterNINOController.onSubmit(establisherIndex, partnerIndex, mode)
             )
         }
     }

@@ -16,8 +16,7 @@
 
 package controllers.establishers.partnership.partner.details
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.HasReferenceValueController
+import controllers.Retrievals
 import controllers.actions._
 import forms.HasReferenceNumberFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -25,40 +24,34 @@ import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.partner.details.PartnerHasNINOId
 import models.requests.DataRequest
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import viewmodels.Message
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.details.CommonHasReferenceValueService
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class PartnerHasNINOController @Inject()(
-                                          override val messagesApi: MessagesApi,
-                                          val navigator: CompoundNavigator,
-                                          authenticate: AuthAction,
-                                          getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction,
-                                          formProvider: HasReferenceNumberFormProvider,
-                                          val controllerComponents: MessagesControllerComponents,
-                                          val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                          val renderer: Renderer
-                                         )(implicit val executionContext: ExecutionContext) extends
-  HasReferenceValueController {
+class PartnerHasNINOController @Inject()(val messagesApi: MessagesApi,
+                                         authenticate: AuthAction,
+                                         getData: DataRetrievalAction,
+                                         requireData: DataRequiredAction,
+                                         formProvider: HasReferenceNumberFormProvider,
+                                         common: CommonHasReferenceValueService
+                                        )(implicit val executionContext: ExecutionContext)
+  extends Retrievals with I18nSupport {
 
   private def name(establisherIndex: Index, partnerIndex: Index)
                   (implicit request: DataRequest[AnyContent]): String =
     request
       .userAnswers
       .get(PartnerNameId(establisherIndex, partnerIndex))
-      .fold(Message("messages__partner"))(_.fullName)
+      .fold(Messages("messages__partner"))(_.fullName)
 
   private def form(establisherIndex: Index, partnerIndex: Index)
                   (implicit request: DataRequest[AnyContent]): Form[Boolean] = {
     formProvider(
-      errorMsg = Message("messages__genericHasNino__error__required", name(establisherIndex, partnerIndex))
+      errorMsg = Messages("messages__genericHasNino__error__required", name(establisherIndex, partnerIndex))
     )
   }
 
@@ -68,14 +61,15 @@ class PartnerHasNINOController @Inject()(
 
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
-              pageTitle     = Message("messages__hasNINO", Message("messages__partner")),
-              pageHeading     = Message("messages__hasNINO", name(establisherIndex, partnerIndex)),
+            common.get(
+              pageTitle     = Messages("messages__hasNINO", Messages("messages__partner")),
+              pageHeading     = Messages("messages__hasNINO", name(establisherIndex, partnerIndex)),
               isPageHeading = true,
               id            = PartnerHasNINOId(establisherIndex, partnerIndex),
               form          = form(establisherIndex, partnerIndex),
               schemeName    = schemeName,
-              legendClass   = "govuk-label--xl"
+              legendClass   = "govuk-label--l",
+              submitCall    = routes.PartnerHasNINOController.onSubmit(establisherIndex, partnerIndex, mode)
             )
         }
     }
@@ -85,15 +79,16 @@ class PartnerHasNINOController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            post(
-              pageTitle     = Message("messages__hasNINO", Message("messages__partner")),
-              pageHeading     = Message("messages__hasNINO", name(establisherIndex, partnerIndex)),
+            common.post(
+              pageTitle     = Messages("messages__hasNINO", Messages("messages__partner")),
+              pageHeading     = Messages("messages__hasNINO", name(establisherIndex, partnerIndex)),
               isPageHeading = true,
               id            = PartnerHasNINOId(establisherIndex, partnerIndex),
               form          = form(establisherIndex, partnerIndex),
               schemeName    = schemeName,
-              legendClass   = "govuk-label--xl",
-              mode          = mode
+              legendClass   = "govuk-label--l",
+              mode          = mode,
+              submitCall    = routes.PartnerHasNINOController.onSubmit(establisherIndex, partnerIndex, mode)
             )
         }
     }

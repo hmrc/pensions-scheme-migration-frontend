@@ -16,8 +16,7 @@
 
 package controllers.trustees.company.contacts
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.PhoneController
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.PhoneFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -25,51 +24,47 @@ import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.contacts.EnterPhoneId
 import models.requests.DataRequest
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import viewmodels.Message
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.contact.CommonPhoneService
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class EnterPhoneController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            val navigator: CompoundNavigator,
+                                            val messagesApi: MessagesApi,
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
                                             formProvider: PhoneFormProvider,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                            val renderer: Renderer
+                                            common: CommonPhoneService
                                           )(implicit val executionContext: ExecutionContext)
-  extends PhoneController {
+  extends Retrievals with I18nSupport {
 
   private def name(index: Index)
                   (implicit request: DataRequest[AnyContent]): String =
     request
       .userAnswers
       .get(CompanyDetailsId(index))
-      .fold(Message("messages__company"))(_.companyName)
+      .fold(Messages("messages__company"))(_.companyName)
 
   private def form(index: Index)(implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Message("messages__enterPhone__error_required", name(index)))
+    formProvider(Messages("messages__enterPhone__error_required", name(index)))
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
+            common.get(
               entityName = name(index),
-              entityType = Message("messages__company"),
-              id = EnterPhoneId(index),
+              entityType = Messages("messages__company"),
+              phoneId = EnterPhoneId(index),
               form = form(index),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__contact_details__phone__hint", name(index), schemeName))
+              paragraphText = Seq(Messages("messages__contact_details__phone__hint", name(index), schemeName)),
+              routes.EnterPhoneController.onSubmit(index, mode)
             )
         }
     }
@@ -79,14 +74,15 @@ class EnterPhoneController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            post(
+            common.post(
               entityName = name(index),
-              entityType = Message("messages__company"),
-              id = EnterPhoneId(index),
+              entityType = Messages("messages__company"),
+              phoneId = EnterPhoneId(index),
               form = form(index),
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__contact_details__phone__hint", name(index), schemeName)),
-              mode = mode
+              paragraphText = Seq(Messages("messages__contact_details__phone__hint", name(index), schemeName)),
+              mode = Some(mode),
+              routes.EnterPhoneController.onSubmit(index, mode)
             )
         }
     }

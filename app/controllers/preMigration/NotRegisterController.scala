@@ -20,60 +20,49 @@ import config.AppConfig
 import connectors.MinimalDetailsConnector
 import controllers.actions.AuthAction
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.MessageInterpolators
+import views.html.preMigration.NotRegisterView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class NotRegisterController @Inject()(val appConfig: AppConfig,
                                       override val messagesApi: MessagesApi,
                                       authenticate: AuthAction,
                                       val controllerComponents: MessagesControllerComponents,
                                       minimalDetailsConnector: MinimalDetailsConnector,
-                                      renderer: Renderer
+                                      notRegisterView: NotRegisterView
                                      )(implicit val executionContext: ExecutionContext) extends
   FrontendBaseController with I18nSupport {
 
   def onPageLoadScheme: Action[AnyContent] = authenticate.async {
     implicit request =>
       minimalDetailsConnector.getPSAName.flatMap { psaName =>
-        renderer.render(
-          template = "preMigration/notRegister.njk",
-          ctx =  schemeJson(psaName)
-        ).map(Ok(_))
+        Future.successful(Ok(
+          notRegisterView(
+            Messages("messages__pension_scheme"),
+            appConfig.contactHmrcUrl,
+            appConfig.psaOverviewUrl,
+            psaName
+          )
+        ))
       }
   }
 
   def onPageLoadRacDac: Action[AnyContent] = authenticate.async {
     implicit request =>
       minimalDetailsConnector.getPSAName.flatMap { psaName =>
-        renderer.render(
-          template = "preMigration/notRegister.njk",
-          ctx = racDacJson(psaName)
-        ).map(Ok(_))
+        Future.successful(Ok(
+          notRegisterView(
+            Messages("messages__racdac"),
+            appConfig.contactHmrcUrl,
+            appConfig.psaOverviewUrl,
+            psaName
+          )
+        ))
       }
   }
 
-  private def schemeJson(psaName: String)(implicit messages: Messages):JsObject = {
-    Json.obj(
-      "param1" -> msg"messages__pension_scheme".resolve,
-      "psaName" -> psaName,
-      "contactHmrcUrl" -> appConfig.contactHmrcUrl,
-      "returnUrl" -> appConfig.psaOverviewUrl
-    )
-  }
-
-  private def racDacJson(psaName: String)(implicit messages: Messages):JsObject = {
-    Json.obj(
-      "param1" -> msg"messages__racdac".resolve,
-      "psaName" -> psaName,
-      "contactHmrcUrl" -> appConfig.contactHmrcUrl,
-      "returnUrl" -> appConfig.psaOverviewUrl
-    )
-  }
 }
 

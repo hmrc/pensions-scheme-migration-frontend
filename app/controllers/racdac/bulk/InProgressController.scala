@@ -19,30 +19,26 @@ package controllers.racdac.bulk
 import config.AppConfig
 import controllers.actions._
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
 class InProgressController @Inject()(appConfig: AppConfig,
                                      override val messagesApi: MessagesApi,
                                      authenticate: AuthAction,
                                      val controllerComponents: MessagesControllerComponents,
-                                     renderer: Renderer
-                                    )(implicit ec: ExecutionContext)
+                                     inProgressView: views.html.racdac.InProgressView
+                                    )
   extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
-    authenticate.async {
+    authenticate {
       implicit request =>
-        val json = Json.obj(
-          "listOfSchemesUrl" -> appConfig.yourPensionSchemesUrl,
-          "returnUrl" -> appConfig.psaOverviewUrl
-        )
-        renderer.render("racdac/inProgress.njk", json).map(Ok(_))
+        Ok(inProgressView(
+          appConfig.yourPensionSchemesUrl,
+          appConfig.psaOverviewUrl
+        ))
     }
 }

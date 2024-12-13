@@ -27,6 +27,7 @@ site.error = Error:
 site.yes = Yes
 site.no = No
 site.add = Add
+site.date.example = For example, 31 3 2020
 site.change = Change
 site.remove = Remove
 site.add.details = Add details
@@ -133,8 +134,10 @@ messages__established_country__h1 = Which country was {0} established in?
 messages__error__scheme_country = Enter a recognised country
 messages__scheme_country__hint = Enter the country where the scheme was established
 messages__common__pick_country = Select a country
+messages__established_country__error__required = Enter a recognised country
 
 messages__workingKnowledge__title = Do you have working knowledge of pensions and pensions tax legislation?
+messages__workingKnowledge__h1 = Working knowledge of pensions
 messages__workingKnowledge__heading = Do you have working knowledge of pensions and pensions tax legislation?
 messages__workingKnowledge__p1 = There needs to be someone with working knowledge of pensions and pensions tax legislation involved with this pension scheme. This could be either you as scheme administrator or a pension practitioner or provider who is helping you.
 messages__workingKnowledge__p2 = For example, if you are an employer, or a director of an employer, who has registered a pension scheme, you might not have working knowledge of pensions and pensions tax legislation.
@@ -230,17 +233,17 @@ messages__error__common_nino = Enter a National Insurance number
 messages__error__common_nino_invalid = Enter {0}’s National Insurance number in the correct format
 
 messages__whyNoNINO = Why does {0} not have a National Insurance number?
-messages__reason__error_ninoRequired = Enter a reason why {0} does not have a NINO
+messages__reason__error_ninoRequired = Enter a reason why {0} does not have a National Insurance number
 messages__whyNoNINO__cya__visuallyHidden = the reason why {0} does not have a National Insurance number
 
 messages__hasUTR = Does {0} have a Unique Taxpayer Reference (UTR)?
-messages__UTR__p = This is a 10-digit or 13-digit number. You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.
+messages__UTR__p = This is a 10-digit or 13-digit number. For example, 12345 67890. You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.
 messages__genericHasUtr__error__required = Select yes if {0} has a Unique Taxpayer Reference
 messages__hasUTR__cya__visuallyHidden = whether {0} has a Unique Taxpayer Reference
 
-messages__enterUTR = What is {0}’s UTR?
+messages__enterUTR = What is {0}’s Unique Taxpayer Reference (UTR)?
 messages__enterUTR__cya_visuallyHidden = the UTR for {0}
-messages__UTR__p1 = This is a 10-digit or 13-digit number. It may also start or end with the letter ‘k’.
+messages__UTR__p1 = This is a 10-digit or 13-digit number. For example, 12345 67890. It may also start or end with the letter ‘k’.
 messages__UTR__p2 = You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.
 messages__utr__hint = For example, 12345 67890
 messages__enterUTR__cya_label = {0}’s UTR
@@ -250,10 +253,10 @@ messages__utr__error_maxLength = Enter a UTR in the correct format
 messages__utr__error_invalid = Enter a Unique Taxpayer Reference (UTR) in the correct format
 
 messages__reason__error_maxLength = Reason must be 160 characters or less
-messages__reason__error_invalid = Reason must only include letters, numbers and punctuation marks
-messages__whyNoUTR = Why does {0} not have a UTR?
-messages__reason__error_utrRequired = Enter a reason why {0} does not have a UTR
-messages__whyNoUTR__cya__visuallyHidden = the reason why {0} does not have a UTR
+messages__reason__error_invalid = The reason must only include letters, numbers, spaces, ampersands (&), apostrophes, hyphens and full stops.
+messages__whyNoUTR = Why does {0} not have a Unique Taxpayer Reference (UTR)?
+messages__reason__error_utrRequired = Enter a reason why {0} does not have a Unique Taxpayer Reference (UTR)
+messages__whyNoUTR__cya__visuallyHidden = the reason why {0} does not have a Unique Taxpayer Reference (UTR)
 
 messages__schemeTaskList__sectionDeclaration_header = Declaration
 messages__schemeTaskList__sectionDeclaration_incomplete = You must complete every section before you can declare.
@@ -261,7 +264,7 @@ messages__schemeTaskList__sectionDeclaration_incomplete_v1 = You need to agree t
 messages__schemeTaskList__sectionDeclaration_incomplete_v2 = You can only see the declaration when you have made any changes.
 
 messages__BeforeYouStart__title = Before you start
-messages__BeforeYouStart__lede = Before you can add your scheme to the Managing Pension Schemes service you will need to enter some additional information to complete the required scheme record.
+messages__BeforeYouStart__lede = Before you can add your scheme to the Managing Pension Schemes service you will need to enter some additional information to complete the required scheme record. This may require you to add information that has been entered before.
 messages__BeforeYouStart__lede2 = The amount of information needed will depend on how much was supplied to the Pension Schemes Online service.
 messages__BeforeYouStart__lede3 = On the next page you will see the ‘scheme details overview’. This will show you what further information you need to supply. You can also change or add to any of the information already supplied.
 messages__BeforeYouStart__list_heading = Depending on the scheme, you may need some or all of the following information:
@@ -347,6 +350,7 @@ benefitsInsuranceName.h1 = What is the name of the insurance company that secure
 benefitsInsuranceName.visuallyHidden = the name of the insurance company that secures the scheme benefits
 benefitsInsuranceName.error.required = Enter the name of the insurance company that secures the scheme benefits
 benefitsInsuranceName.error.length = Name of insurance company must be fewer than 161 characters
+benefitsInsuranceName.error.invalid = Enter the insurance company’s name only using European characters
 benefitsInsuranceUnknown = the insurance company
 
 benefitsInsurancePolicy.title = What is the policy number?
@@ -354,6 +358,7 @@ benefitsInsurancePolicy.h1 = What is the policy number with {0}?
 benefitsInsurancePolicy.noCompanyName.h1 = What is the policy number of the insurance company that secures the scheme benefits?
 benefitsInsurancePolicy.error.required = Enter the policy number of the insurance company that secures the scheme benefits
 benefitsInsurancePolicy.error.length = Policy number must be fewer than 56 characters
+benefitsInsurancePolicy.error.invalid = Enter the policy number only using European characters
 benefitsInsurancePolicy.visuallyHidden = the policy number with the insurance company that secures the scheme benefits
 
 addressList.title = What is {0}’s address?
@@ -369,8 +374,8 @@ postcode.label = Postcode
 postcode.title = What is {0}’s postcode?
 previousPostcode.title = What was {0}’s previous postcode?
 postcode.youCan = You can
-error.postcode.required = Enter a postcode
-error.postcode.invalid = Enter a postcode in the correct format
+error.postcode.required = Enter the postcode
+error.postcode.invalid = Enter a full UK postcode
 address.linkText.enterManually = enter the address manually
 
 error.address_line_1.required = Enter the first line of address
@@ -379,17 +384,17 @@ error.address_line_1.length = Address line 1 must be fewer than 36 characters
 error.address_line_2.length = Address line 2 must be fewer than 36 characters
 error.address_line_3.length = Address line 3 must be fewer than 36 characters
 error.address_line_4.length = Address line 4 must be fewer than 36 characters
-error.address_line_1.invalid = The first line of the address contains invalid characters
-error.address_line_2.invalid = The second line of the address contains invalid characters
-error.address_line_3.invalid = The third line of the address contains invalid characters
-error.address_line_4.invalid = The fourth line of the address contains invalid characters
+error.address_line_1.invalid = The first line of the address must only include letters, spaces, ampersands (&), apostrophes, hyphens and full stops
+error.address_line_2.invalid = The second line of the address must only include letters, spaces, ampersands (&), apostrophes, hyphens and full stops
+error.address_line_3.invalid = The third line of the address must only include letters, spaces, ampersands (&), apostrophes, hyphens and full stops
+error.address_line_4.invalid = The fourth line of the address must only include letters, spaces, ampersands (&), apostrophes, hyphens and full stops
 error.country.required = Enter a country
 error.country.invalid = Enter a valid country
 
 findAddress = Find address
 
 insurerEnterPostcode.required = Enter the postcode of the insurance company that secures the scheme benefits
-insurerEnterPostcode.invalid = Enter a postcode in the correct format
+insurerEnterPostcode.invalid = Enter a full UK postcode
 insurerEnterPostcode.noresults = Postcode cannot be found
 
 insurerSelectAddress.required = Select the address of the insurance company that secures the scheme benefits
@@ -448,9 +453,9 @@ messages__error__establisher = establisher’s
 messages__error__first_name = Enter the {0} first name
 messages__error__last_name = Enter the {0} last name
 messages__error__first_name_length = The first name cannot be more than 35 characters
-messages__error__first_name_invalid = Name must only include letters and punctuation marks
+messages__error__first_name_invalid = The first name must only include letters, spaces, apostrophes, hyphens, full stops and carets (^)
 messages__error__last_name_length = The last name cannot be more than 35 characters
-messages__error__last_name_invalid = Name must only include letters and punctuation marks
+messages__error__last_name_invalid = The last name must only include letters, spaces, apostrophes, hyphens, full stops and carets (^)
 messages__individualName__title = What is the individual’s name?
 
 messages__confirmDelete__error_required = Select yes if you want to delete {0}
@@ -500,10 +505,10 @@ previousAddress.title = Enter {0}’s previous address
 messages__visuallyHidden__previousAddress = the previous address for {0}
 
 enterPostcode.required = Enter a postcode
-enterPostcode.invalid = Enter a postcode in the correct format
+enterPostcode.invalid = Enter a full UK postcode
 enterPostcode.noresults = Postcode cannot be found
 
-establisherEnterPreviousPostcode.invalid = Enter a postcode in the correct format
+establisherEnterPreviousPostcode.invalid = Enter a full UK postcode
 
 selectAddress.required = Select an address
 
@@ -814,11 +819,11 @@ messages__confirmDeleteTrustee__title = Are you sure you want to delete this tru
 messages__schemeTaskList__trusteeIndividualAddress_addLink = Add address for {0}
 
 individualEnterPreviousPostcode.required = Enter a postcode
-trusteeEnterPreviousPostcode.invalid = Enter a postcode in the correct format
+trusteeEnterPreviousPostcode.invalid = Enter a full UK postcode
 
 companyEnterPreviousPostcode.required = Enter a postcode
 partnershipEnterPreviousPostcode.required = Enter a postcode
-trusteeEnterPreviousPostcode.invalid = Enter a postcode in the correct format
+trusteeEnterPreviousPostcode.invalid = Enter a full UK postcode
 
 
 individualAddressYears.error.required = Select yes if the individual has used this address for more than 1 year
@@ -843,9 +848,10 @@ messages__trusteeIndividualContactDetails__whatYouWillNeed_h1 = Contact details 
 messages__youNeedToRegister__title = You need to register
 messages__youNeedToRegister__heading = Manage and register your pension schemes
 messages__youNeedToRegister__lede = You must register to use this service before you can register a pension scheme.
-messages__youNeedToRegister__p1 = You can only use this service if you are a {0}.
+messages__youNeedToRegister__p1 = You can only use this service if you are a
 messages__youNeedToRegister__p1__link = pension scheme administrator
-messages__youNeedToRegister__p2 = If you are a {0}, you cannot register to use this service.
+messages__youNeedToRegister__p2 = If you are a
+messages__youNeedToRegister__p2_2 = , you cannot register to use this service.
 messages__youNeedToRegister__p2__link = pension scheme practitioner
 messages__youNeedToRegister__button = Register as a pension scheme administrator
 messages__youNeedToRegister__govUk__link = Exit to GOV.UK
@@ -973,13 +979,6 @@ messages__migrationLink__checkStatusRacDacsLink = Check the status of your RAC/D
 messages__pension_scheme = pension scheme
 messages__scheme = scheme
 messages__racdac = RAC/DAC
-messages__cannotAdd__title = You cannot add a {0} from the Pension Schemes Online service until spring 2022
-messages__cannotAdd__p = Select continue to view the list of {0}s registered on the Pension Schemes Online service. The list should only show active {1}s.
-messages__cannotAdd__list_head_link = Contact HMRC for help
-messages__cannotAdd__list_head = if you:
-messages__cannotAdd__li_1 = cannot see listed all the {0}s that you have registered on the Pension Schemes Online service
-messages__cannotAdd__li_2 = can see {0}s listed that you do not recognise
-messages__cannotAdd__li_3 = can see {0}s listed that are no longer active and should be wound up
 
 messages_contact_hmrc_link= Contact HMRC
 messages_notRegister_title= No {0}s registered on the Pension Schemes Online service
@@ -1040,7 +1039,7 @@ messages__listSchemes__search_result_title = Search results for list of {0}s on 
 messages__listSchemes__racDacOffset = If a RAC/DAC is no longer active, then you should wind it up on the Pension Schemes Online service.
 
 messages__listSchemes__pagination__text = Showing {0} to {1} of {2} schemes
-messages__listSchemes__pagination__prev = Prev
+messages__listSchemes__pagination__prev = Previous
 messages__listSchemes__pagination__next = Next
 messages__listSchemes__pagination__prev__ariaLabel = Previous page
 messages__listSchemes__pagination__next__ariaLabel = Next page
@@ -1095,7 +1094,7 @@ messages__adviserName__blank = Enter the name of who has working knowledge of pe
 messages__error__common__email__required = Enter an email address
 messages__error__common__phone__required = Enter a phone number
 messages__phone__invalid = Enter a phone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192
-messages__adviser__enterPostcode__invalid = Enter a postcode in the correct format
+messages__adviser__enterPostcode__invalid = Enter a full UK postcode
 messages__adviser__enterPostcode__no__results = Postcode cannot be found
 
 messages__adviser__name__cya = Who is the person with working knowledge of pensions and pensions tax legislation?

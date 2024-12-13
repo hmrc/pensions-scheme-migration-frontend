@@ -16,36 +16,30 @@
 
 package controllers.establishers.individual.details
 
-import connectors.cache.UserAnswersCacheConnector
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import controllers.dateOfBirth.DateOfBirthController
 import forms.DOBFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.individual.details.EstablisherDOBId
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.details.CommonDateOfBirthService
 
 import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class EstablisherDOBController @Inject()(
-                                          override val messagesApi: MessagesApi,
-                                          val navigator: CompoundNavigator,
-                                          authenticate: AuthAction,
-                                          getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction,
-                                          formProvider: DOBFormProvider,
-                                          val controllerComponents: MessagesControllerComponents,
-                                          val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                          val renderer: Renderer
+class EstablisherDOBController @Inject()(val messagesApi: MessagesApi,
+                                         authenticate: AuthAction,
+                                         getData: DataRetrievalAction,
+                                         requireData: DataRequiredAction,
+                                         formProvider: DOBFormProvider,
+                                         common: CommonDateOfBirthService
                                         )(implicit val executionContext: ExecutionContext)
-  extends DateOfBirthController {
+  extends Retrievals with I18nSupport {
 
   val form: Form[LocalDate] = formProvider()
 
@@ -55,11 +49,13 @@ class EstablisherDOBController @Inject()(
 
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
+            common.get(
+              form = form,
               dobId        = EstablisherDOBId(index),
               personNameId = EstablisherNameId(index),
               schemeName   = schemeName,
-              entityType   = Messages("messages__individual")
+              entityType   = Messages("messages__individual"),
+              call = routes.EstablisherDOBController.onSubmit(index, mode)
             )
         }
     }
@@ -69,12 +65,14 @@ class EstablisherDOBController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            post(
+            common.post(
+              form = form,
               dobId        = EstablisherDOBId(index),
               personNameId = EstablisherNameId(index),
               schemeName   = schemeName,
               entityType   = Messages("messages__individual"),
-              mode         = mode
+              mode         = mode,
+              call = routes.EstablisherDOBController.onSubmit(index, mode)
             )
         }
     }

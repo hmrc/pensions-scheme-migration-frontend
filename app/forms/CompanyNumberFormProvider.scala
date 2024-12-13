@@ -21,7 +21,6 @@ import models.ReferenceValue
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.i18n.Messages
-import viewmodels.Message
 
 import javax.inject.Inject
 
@@ -34,10 +33,10 @@ class CompanyNumberFormProvider @Inject()
            (implicit messages: Messages): Form[ReferenceValue] =
     Form(
       mapping(
-        "value" -> text(Message("messages__error__company_number_required", companyName))
+        "value" -> text(Messages("messages__error__company_number_required", companyName))
           .transform(noSpaceWithUpperCaseTransform, noTransform)
           .verifying(
-            validCrn(Message("messages__error__company_number_invalid"))
+            validCrn(Messages("messages__error__company_number_invalid"))
           )
       )(ReferenceValue.applyEditable)(ReferenceValue.unapplyEditable)
     )

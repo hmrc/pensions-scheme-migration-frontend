@@ -22,10 +22,13 @@ import play.api.data.Form
 import javax.inject.Inject
 
 class BenefitsInsurancePolicyFormProvider @Inject() extends Mappings {
+  val maxLength = 55
 
   def apply(): Form[String] =
     Form(
-      "value" -> text("benefitsInsurancePolicy.error.required").verifying("benefitsInsurancePolicy.error.length", _.length < 56)
-
-    )
+      "value" -> text("benefitsInsurancePolicy.error.required")
+        .verifying(
+          firstError(maxLength(maxLength, "benefitsInsurancePolicy.error.length"),
+            policyNumber("benefitsInsurancePolicy.error.invalid")
+          )))
 }

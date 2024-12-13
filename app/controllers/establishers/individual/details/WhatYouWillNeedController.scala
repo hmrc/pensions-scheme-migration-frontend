@@ -23,42 +23,32 @@ import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
 import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import play.api.mvc.Results.Ok
+import play.api.mvc.{Action, AnyContent}
+import views.html.details.WhatYouWillNeedIndividualDetailsView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
-class WhatYouWillNeedController @Inject()(
-                                           override val messagesApi: MessagesApi,
-                                           authenticate: AuthAction,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           val renderer: Renderer
+class WhatYouWillNeedController @Inject()(val messagesApi: MessagesApi,
+                                          authenticate: AuthAction,
+                                          getData: DataRetrievalAction,
+                                          requireData: DataRequiredAction,
+                                          view: WhatYouWillNeedIndividualDetailsView
                                          )(implicit val ec: ExecutionContext)
-  extends FrontendBaseController
-    with I18nSupport
-    with Retrievals
-    with NunjucksSupport {
+  extends Retrievals with I18nSupport {
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         EstablisherNameId(index).retrieve.map {
           personName =>
-            renderer.render(
-              template = "details/whatYouWillNeedIndividualDetails.njk",
-              ctx = Json.obj(
-                "name"        -> personName.fullName,
-                "entityType" -> Messages("messages__title_individual"),
-                "continueUrl" -> controllers.establishers.individual.details.routes.EstablisherDOBController.onPageLoad(index, NormalMode).url,
-                "schemeName"  -> request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
-              )
-            ).map(Ok(_))
+            Future.successful(Ok(view(
+              Messages("messages__title_individual"),
+              personName.fullName,
+              controllers.establishers.individual.details.routes.EstablisherDOBController.onPageLoad(index, NormalMode).url,
+              request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
+            )))
         }
     }
 

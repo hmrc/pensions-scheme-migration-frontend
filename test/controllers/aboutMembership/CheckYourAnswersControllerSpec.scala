@@ -20,23 +20,20 @@ import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import helpers.cya.AboutCYAHelper
 import matchers.JsonMatchers
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.{JsObject, Json}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.UserAnswers
+import views.html.CheckYourAnswersView
 
-import scala.concurrent.Future
-
-class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers {
+class CheckYourAnswersControllerSpec extends ControllerSpecBase with JsonMatchers {
   private val userAnswers: Option[UserAnswers] = Some(ua)
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val mockCyaHelper: AboutCYAHelper = mock[AboutCYAHelper]
@@ -45,7 +42,6 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
   )
 
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
-  private val templateToBeRendered = "check-your-answers.njk"
 
   private def httpPathGET: String = controllers.aboutMembership.routes.CheckYourAnswersController.onPageLoad.url
 
@@ -82,15 +78,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
     )
   )
 
-  private val jsonToPassToTemplate: JsObject = Json.obj(
-    "list" -> rows,
-    "schemeName" -> schemeName,
-    "submitUrl" -> controllers.routes.TaskListController.onPageLoad.url
-  )
-
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(play.twirl.api.Html("")))
     when(mockCyaHelper.membershipRows(any(), any())).thenReturn(rows)
   }
 
@@ -99,18 +88,19 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with NunjucksSup
 
     "return OK and the correct view for a GET" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
+      val request = FakeRequest(GET, httpPathGET)
       val result = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = application.injector.instanceOf[CheckYourAnswersView].apply(
+        controllers.routes.TaskListController.onPageLoad.url,
+        schemeName,
+        rows
+      )(request, messages)
 
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate)
+      compareResultAndView(result, view)
     }
 
   }

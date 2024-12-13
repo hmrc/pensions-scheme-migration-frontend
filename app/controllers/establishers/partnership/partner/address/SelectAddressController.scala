@@ -16,49 +16,44 @@
 
 package controllers.establishers.partnership.partner.address
 
-import config.AppConfig
-import connectors.AddressLookupConnector
-import connectors.cache.UserAnswersCacheConnector
+import controllers.Retrievals
 import controllers.actions._
-import controllers.address.{AddressListController, AddressPages}
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.partner.address.{AddressId, AddressListId, EnterPostCodeId}
+import models.establishers.AddressPages
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.CountryOptions
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.address.{CommonAddressListService, CommonAddressListTemplateData}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class SelectAddressController @Inject()(val appConfig: AppConfig,
-                                        override val messagesApi: MessagesApi,
-                                        val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                        val addressLookupConnector: AddressLookupConnector,
-                                        val navigator: CompoundNavigator,
-                                        authenticate: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: AddressListFormProvider,
-                                        countryOptions: CountryOptions,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        val renderer: Renderer)(implicit val ec: ExecutionContext) extends AddressListController with I18nSupport
-  with NunjucksSupport with Retrievals {
+class SelectAddressController @Inject()(
+    val messagesApi: MessagesApi,
+    authenticate: AuthAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: AddressListFormProvider,
+    common:CommonAddressListService
+ )(implicit val ec: ExecutionContext) extends I18nSupport with Retrievals {
 
-  override def form: Form[Int] = formProvider("selectAddress.required")
+  private def form: Form[Int] = formProvider("selectAddress.required")
 
   def onPageLoad(estIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, estIndex, partnerIndex, mode).retrieve.map(get)
+        getFormToTemplate(schemeName, estIndex, partnerIndex, mode).retrieve.map(formToTemplate =>
+          common.get(
+            formToTemplate(form),
+            form,
+            submitUrl = routes.SelectAddressController.onSubmit(estIndex, partnerIndex, mode)
+          ))
       }
     }
 
@@ -66,29 +61,36 @@ class SelectAddressController @Inject()(val appConfig: AppConfig,
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       val addressPages: AddressPages = AddressPages(EnterPostCodeId(estIndex, partnerIndex),
         AddressListId(estIndex, partnerIndex), AddressId(estIndex, partnerIndex))
+      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+
       retrieve(SchemeNameId) { schemeName =>
-        getFormToJson(schemeName, estIndex, partnerIndex, mode).retrieve.map(post(_, addressPages, Some(mode),
-          routes.ConfirmAddressController.onPageLoad(estIndex, partnerIndex, mode)))
+        getFormToTemplate(schemeName, estIndex, partnerIndex, mode).retrieve.map(
+          common.post(
+            _,
+            addressPages, Some(mode),
+            routes.ConfirmAddressController.onPageLoad(estIndex, partnerIndex, mode),
+            form = form,
+            submitUrl = routes.SelectAddressController.onSubmit(estIndex, partnerIndex, mode)
+          ))
       }
     }
 
-  def getFormToJson(schemeName: String, estIndex: Index, partnerIndex: Index, mode: Mode): Retrieval[Form[Int] => JsObject] =
+  def getFormToTemplate(schemeName: String, estIndex: Index, partnerIndex: Index, mode: Mode): Retrieval[Form[Int] => CommonAddressListTemplateData] =
     Retrieval(
       implicit request =>
         EnterPostCodeId(estIndex, partnerIndex).retrieve.map { addresses =>
-
-          val msg = request2Messages(request)
-
-          val name = request.userAnswers.get(PartnerNameId(estIndex, partnerIndex)).map(_.fullName).getOrElse(msg("messages__partner"))
+          val name: String = request.userAnswers.get(PartnerNameId(estIndex, partnerIndex))
+            .map(_.fullName).getOrElse(Messages("messages__partner"))
 
           form =>
-            Json.obj(
-              "form" -> form,
-              "addresses" -> transformAddressesForTemplate(addresses),
-              "entityType" -> msg("messages__partner"),
-              "entityName" -> name,
-              "enterManuallyUrl" -> routes.ConfirmAddressController.onPageLoad(estIndex, partnerIndex, mode).url,
-              "schemeName" -> schemeName
+            CommonAddressListTemplateData(
+              form,
+              addresses,
+              Messages("messages__partner"),
+              name,
+              routes.ConfirmAddressController.onPageLoad(estIndex, partnerIndex, mode).url,
+              schemeName,
+              h1MessageKey = "addressList.title"
             )
         }
     )

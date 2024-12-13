@@ -16,8 +16,7 @@
 
 package controllers.establishers.partnership.partner.details
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.ReasonController
+import controllers.Retrievals
 import controllers.actions._
 import forms.ReasonFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -25,27 +24,22 @@ import identifiers.establishers.partnership.partner.PartnerNameId
 import identifiers.establishers.partnership.partner.details.PartnerNoUTRReasonId
 import models.requests.DataRequest
 import models.{Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import viewmodels.Message
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.details.CommonReasonService
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class PartnerNoUTRReasonController @Inject()(override val messagesApi: MessagesApi,
-                                              val navigator: CompoundNavigator,
-                                              authenticate: AuthAction,
-                                              getData: DataRetrievalAction,
-                                              requireData: DataRequiredAction,
-                                              formProvider: ReasonFormProvider,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                              val renderer: Renderer
-                                             )(implicit val executionContext: ExecutionContext)
-  extends ReasonController {
+class PartnerNoUTRReasonController @Inject()(val messagesApi: MessagesApi,
+                                             authenticate: AuthAction,
+                                             getData: DataRetrievalAction,
+                                             requireData: DataRequiredAction,
+                                             formProvider: ReasonFormProvider,
+                                             common: CommonReasonService
+                                            )(implicit val executionContext: ExecutionContext)
+  extends Retrievals with I18nSupport {
 
   private def name(establisherIndex: Index, partnerIndex: Index)
                   (implicit request: DataRequest[AnyContent]): String =
@@ -56,20 +50,21 @@ class PartnerNoUTRReasonController @Inject()(override val messagesApi: MessagesA
 
   private def form(establisherIndex: Index, partnerIndex: Index)
                   (implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Message("messages__reason__error_utrRequired", name(establisherIndex,partnerIndex)))
+    formProvider(Messages("messages__reason__error_utrRequired", name(establisherIndex,partnerIndex)))
 
   def onPageLoad(establisherIndex: Index, partnerIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
-              pageTitle     = Message("messages__whyNoUTR", Message("messages__partner")),
-              pageHeading     = Message("messages__whyNoUTR",  name(establisherIndex,partnerIndex)),
+            common.get(
+              pageTitle     = Messages("messages__whyNoUTR", Messages("messages__partner")),
+              pageHeading     = Messages("messages__whyNoUTR",  name(establisherIndex,partnerIndex)),
               isPageHeading = true,
               id            = PartnerNoUTRReasonId(establisherIndex,partnerIndex),
               form          = form(establisherIndex,partnerIndex),
-              schemeName    = schemeName
+              schemeName    = schemeName,
+              submitUrl     = routes.PartnerNoUTRReasonController.onSubmit(establisherIndex, partnerIndex, mode)
             )
         }
     }
@@ -79,14 +74,15 @@ class PartnerNoUTRReasonController @Inject()(override val messagesApi: MessagesA
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            post(
-              pageTitle     = Message("messages__whyNoUTR", Message("messages__partner")),
-              pageHeading     = Message("messages__whyNoUTR",name(establisherIndex,partnerIndex)),
+            common.post(
+              pageTitle     = Messages("messages__whyNoUTR", Messages("messages__partner")),
+              pageHeading     = Messages("messages__whyNoUTR",name(establisherIndex,partnerIndex)),
               isPageHeading = true,
               id            = PartnerNoUTRReasonId(establisherIndex,partnerIndex),
               form          = form(establisherIndex,partnerIndex),
               schemeName    = schemeName,
-              mode          = mode
+              mode          = mode,
+              submitUrl     = routes.PartnerNoUTRReasonController.onSubmit(establisherIndex, partnerIndex, mode)
             )
         }
     }

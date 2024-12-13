@@ -19,12 +19,11 @@ package forms.establishers
 import forms.mappings.Mappings
 import play.api.data.Form
 import play.api.i18n.Messages
-import viewmodels.Message
 
 class ConfirmDeleteEstablisherFormProvider extends Mappings {
 
   def apply(name: String)(implicit messages: Messages): Form[Boolean] =
     Form(
-      "value" -> boolean(Message("messages__confirmDelete__error_required", name))
+      "value" -> boolean(Messages("messages__confirmDelete__error_required", name))
     )
 }

@@ -21,17 +21,13 @@ import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAut
 import identifiers.establishers.partnership.PartnershipDetailsId
 import matchers.JsonMatchers
 import models.{NormalMode, PartnershipDetails}
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
-import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.Result
+import play.api.i18n.{Messages, MessagesApi}
+import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import renderer.Renderer
 import utils.Data.{schemeName, ua}
 import utils.UserAnswers
-import viewmodels.Message
+import views.html.WhatYouWillNeedContactView
 
 import scala.concurrent.Future
 
@@ -42,16 +38,15 @@ class WhatYouWillNeedControllerSpec
 
   private val partnership: PartnershipDetails = PartnershipDetails("test")
   private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(0), partnership).success.value
-  private val templateToBeRendered: String = "whatYouWillNeedContact.njk"
 
-  private def json: JsObject =
-    Json.obj(
-      "name" -> partnership.partnershipName,
-      "pageHeading" -> Message("messages__title_partnership"),
-      "entityType" -> Message("messages__partnership"),
-      "continueUrl" -> routes.EnterEmailController.onPageLoad(0, NormalMode).url,
-      "schemeName" -> schemeName
-    )
+  private def getView(req: Request[_]) = {
+    app.injector.instanceOf[WhatYouWillNeedContactView].apply(
+      Messages("messages__title_partnership"),
+      routes.EnterEmailController.onPageLoad(0, NormalMode).url,
+      partnership.partnershipName,
+      schemeName
+    )(req, implicitly)
+  }
 
   private def createController(
                                 dataRetrievalAction: DataRetrievalAction
@@ -60,31 +55,21 @@ class WhatYouWillNeedControllerSpec
       authenticate = new FakeAuthAction(),
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl,
-      controllerComponents = controllerComponents,
-      renderer = new Renderer(mockAppConfig, mockRenderer)
+      view = app.injector.instanceOf[WhatYouWillNeedContactView],
+      messagesApi = app.injector.instanceOf[MessagesApi]
     )
   }
 
   "WhatYouWillNeedPartnershipContactController" must {
 
     "return OK and the correct view for a GET" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
-        val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-        val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
-      val result: Future[Result] = createController(getData).onPageLoad(0)(fakeDataRequest(userAnswers))
+      val req  = fakeDataRequest(userAnswers)
+      val result: Future[Result] = createController(getData).onPageLoad(0)(req)
 
       status(result) mustBe OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(json)
-
+      compareResultAndView(result, getView(req))
     }
 
   }

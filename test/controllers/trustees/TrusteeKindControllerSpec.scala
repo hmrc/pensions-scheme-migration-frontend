@@ -24,29 +24,26 @@ import identifiers.trustees.individual.TrusteeNameId
 import matchers.JsonMatchers
 import models.trustees.TrusteeKind
 import models.{Index, PersonName, Scheme}
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
 
 import scala.concurrent.Future
-class TrusteeKindControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class TrusteeKindControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val index: Index = Index(0)
   private val kind: TrusteeKind = TrusteeKind.Individual
   private val userAnswers: Option[UserAnswers] = ua.set(TrusteeNameId(0), PersonName("Jane", "Doe")).toOption
-  private val templateToBeRendered = "trustees/trusteeKind.njk"
   private val form: Form[TrusteeKind] = new TrusteeKindFormProvider()()
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 
-  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
+  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
   private def httpPathGET: String = controllers.trustees.routes.TrusteeKindController.onPageLoad(index).url
   private def httpPathPOST: String = controllers.trustees.routes.TrusteeKindController.onSubmit(index).url
@@ -59,16 +56,8 @@ class TrusteeKindControllerSpec extends ControllerSpecBase with NunjucksSupport 
     "value" -> Seq.empty
   )
 
-  private val jsonToPassToTemplate: Form[TrusteeKind] => JsObject = form =>
-    Json.obj(
-      "form" -> form,
-      "schemeName" -> schemeName,
-      "radios" -> TrusteeKind.radios(form)
-    )
-
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
 
@@ -76,24 +65,24 @@ class TrusteeKindControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
     "return OK and the correct view for a GET" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val req = httpGETRequest(httpPathGET)
+      val result = route(app, req).value
 
       status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form))
+      compareResultAndView(result,
+        app.injector.instanceOf[views.html.trustees.TrusteeKindView].apply(
+          form,
+          controllers.trustees.routes.TrusteeKindController.onSubmit(index),
+          schemeName,
+          TrusteeKind.radios(form)
+        )(req, implicitly)
+      )
     }
 
     "redirect back to list of schemes for a GET when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val result = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -108,7 +97,7 @@ class TrusteeKindControllerSpec extends ControllerSpecBase with NunjucksSupport 
 
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -118,7 +107,7 @@ class TrusteeKindControllerSpec extends ControllerSpecBase with NunjucksSupport 
     "return a BAD REQUEST when invalid data is submitted" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
 
       status(result) mustEqual BAD_REQUEST
 
@@ -128,7 +117,7 @@ class TrusteeKindControllerSpec extends ControllerSpecBase with NunjucksSupport 
     "redirect back to list of schemes for a POST when there is no data" in {
       mutableFakeDataRetrievalAction.setDataToReturn(None)
 
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
+      val result = route(app, httpPOSTRequest(httpPathPOST, valuesValid)).value
 
       status(result) mustEqual SEE_OTHER
 

@@ -16,8 +16,7 @@
 
 package controllers.adviser
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.PhoneController
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.PhoneFormProvider
 import helpers.cya.MandatoryAnswerMissingException
@@ -25,28 +24,23 @@ import identifiers.adviser.{AdviserNameId, EnterPhoneId}
 import identifiers.beforeYouStart.SchemeNameId
 import models.Mode
 import models.requests.DataRequest
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import viewmodels.Message
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.contact.CommonPhoneService
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class EnterPhoneController @Inject()(
-                                      override val messagesApi: MessagesApi,
-                                      val navigator: CompoundNavigator,
+                                      val messagesApi: MessagesApi,
                                       authenticate: AuthAction,
                                       getData: DataRetrievalAction,
                                       requireData: DataRequiredAction,
                                       formProvider: PhoneFormProvider,
-                                      val controllerComponents: MessagesControllerComponents,
-                                      val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                      val renderer: Renderer
+                                      common: CommonPhoneService
                                     )(implicit val executionContext: ExecutionContext)
-  extends PhoneController {
+  extends Retrievals with I18nSupport {
 
   private def name
   (implicit request: DataRequest[AnyContent]): String = {
@@ -54,20 +48,21 @@ class EnterPhoneController @Inject()(
   }
 
   private def form(implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Message("messages__error__common__phone__required"),Some(Message("messages__phone__invalid")))
+    formProvider(Messages("messages__error__common__phone__required"),Some(Messages("messages__phone__invalid")))
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
+            common.get(
               entityName = name,
-              entityType = Message("messages__pension__adviser"),
-              id = EnterPhoneId,
+              entityType = Messages("messages__pension__adviser"),
+              phoneId = EnterPhoneId,
               form = form,
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__contact_details__phone__hint", name, schemeName))
+              paragraphText = Seq(Messages("messages__contact_details__phone__hint", name, schemeName)),
+              routes.EnterPhoneController.onSubmit(mode)
             )
         }
     }
@@ -77,14 +72,15 @@ class EnterPhoneController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            post(
+            common.post(
               entityName = name,
-              entityType = Message("messages__pension__adviser"),
-              id = EnterPhoneId,
+              entityType = Messages("messages__pension__adviser"),
+              phoneId = EnterPhoneId,
               form = form,
               schemeName = schemeName,
-              paragraphText = Seq(Message("messages__contact_details__phone__hint", name, schemeName)),
-              mode = mode
+              paragraphText = Seq(Messages("messages__contact_details__phone__hint", name, schemeName)),
+              mode = Some(mode),
+              routes.EnterPhoneController.onSubmit(mode)
             )
         }
     }

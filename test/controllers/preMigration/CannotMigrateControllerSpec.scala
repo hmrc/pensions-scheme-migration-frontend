@@ -19,46 +19,29 @@ package controllers.preMigration
 import controllers.ControllerSpecBase
 import controllers.actions._
 import matchers.JsonMatchers
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
-import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.Result
+import play.api.i18n.Messages
+import play.api.mvc.{Call, Result}
 import play.api.test.Helpers.{status, _}
-import play.twirl.api.Html
-import renderer.Renderer
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.preMigration.CannotMigrateView
 
 import scala.concurrent.Future
-class CannotMigrateControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues{
-
-  private val templateToBeRendered: String = "preMigration/cannotMigrate.njk"
-
-  private def schemeJson: JsObject = Json.obj(
-    "param1" -> msg"messages__administrator__overview".resolve,
-    "returnUrl" -> appConfig.psaOverviewUrl
-  )
+class CannotMigrateControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues{
 
   private def controller(): CannotMigrateController =
-    new CannotMigrateController(appConfig, messagesApi, new FakeAuthAction(), controllerComponents, new Renderer(mockAppConfig, mockRenderer))
+    new CannotMigrateController(appConfig, messagesApi, new FakeAuthAction(), controllerComponents,
+      app.injector.instanceOf[CannotMigrateView])
 
   "CannotMigrateController" must {
     "return OK and the correct view for a GET" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
       val result: Future[Result] = controller().onPageLoad(fakeDataRequest())
 
       status(result) mustBe OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(schemeJson)
+      val view = app.injector.instanceOf[CannotMigrateView].apply(
+        Messages("messages__administrator__overview"),
+        Call("GET", appConfig.psaOverviewUrl)
+      )(fakeRequest, messages)
+      compareResultAndView(result, view)
     }
-
-
   }
 }

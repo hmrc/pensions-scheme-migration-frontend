@@ -17,50 +17,46 @@
 package controllers.trustees.individual
 
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
+import controllers.actions._
 import forms.dataPrefill.DataPrefillCheckboxFormProvider
+import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
 import models.prefill.IndividualDetails
-import org.mockito.ArgumentCaptor
+import models.{DataPrefillCheckbox, Index, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
-import play.api.libs.json.{JsObject, Json}
+import play.api.Application
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsJson, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import renderer.Renderer
-import services.DataPrefillService
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
-import utils.{Data, FakeNavigator}
+import utils.{Data, FakeNavigator, UserAnswers}
+import views.html.DataPrefillCheckboxView
 
 import scala.concurrent.Future
 class DirectorsAlsoTrusteesControllerSpec extends ControllerSpecBase
-  with NunjucksSupport
   with JsonMatchers
   with TryValues
   with BeforeAndAfterEach {
 
-  //private val personName: PersonName = PersonName("Jane", "Doe")
+
+  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
+
+  private val index: Index = Index(0)
   private val formProvider: DataPrefillCheckboxFormProvider = new DataPrefillCheckboxFormProvider()
   private val form = formProvider(6,"", "", "")
 
-  private val templateToBeRendered: String = "dataPrefillCheckbox.njk"
-  private val mockDataPrefillService = mock[DataPrefillService]
+  val request = httpGETRequest(routes.DirectorsAlsoTrusteesController.onPageLoad(0).url)
 
-  private val commonJson: JsObject =
-    Json.obj(
-      "form" -> form,
-      "schemeName" -> Data.schemeName
-    )
+  val view = app.injector.instanceOf[DataPrefillCheckboxView]
+
   override def beforeEach(): Unit = {
     reset(
-      mockRenderer,
       mockUserAnswersCacheConnector,
       mockDataPrefillService
     )
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
     when(mockDataPrefillService.getListOfDirectorsToBeCopied(any())).thenReturn(Nil)
   }
 
@@ -78,25 +74,28 @@ class DirectorsAlsoTrusteesControllerSpec extends ControllerSpecBase
       config = appConfig,
       controllerComponents = controllerComponents,
       userAnswersCacheConnector = mockUserAnswersCacheConnector,
-      renderer = new Renderer(mockAppConfig, mockRenderer)
+      view = view
     )
 
-  private val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-  private val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
   "DirectorsAlsoTrusteesController" must {
     "return OK and the correct view for a GET" in {
       when(mockDataPrefillService.getListOfDirectorsToBeCopied(any())).thenReturn(Seq(IndividualDetails("", "", false, None, None, 0, true, None)))
+      val individualName = PersonName("Jane", "Doe")
       val getData = new FakeDataRetrievalAction(Some(ua))
+      val userAnswers: Option[UserAnswers] = ua.set(EstablisherNameId(0), individualName).toOption
+      val seqCheckBox = DataPrefillCheckbox.checkboxes(form, Seq(IndividualDetails("", "", false, None, None, 0, true, None)))
+      mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
 
-      val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(ua))
+      val request = httpGETRequest(routes.DirectorsAlsoTrusteesController.onPageLoad(index).url)
+      val result: Future[Result] = controller(getData).onPageLoad(0)(request)
+
+      val view = app.injector.instanceOf[DataPrefillCheckboxView]
+        .apply(form, Data.schemeName, "messages__trustees__prefill__heading", "messages__trustees__prefill__title", seqCheckBox,
+          routes.DirectorsAlsoTrusteesController.onSubmit(Index(0)))(request, messages)
 
       status(result) mustBe OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-      templateCaptor.getValue mustEqual templateToBeRendered
-      val json: JsObject = Json.obj("form" -> form)
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      compareResultAndView(result, view)
     }
 
     "redirect to task list page for a GET when there are no directors to be copied" in {
@@ -144,8 +143,6 @@ class DirectorsAlsoTrusteesControllerSpec extends ControllerSpecBase
       val result: Future[Result] = controller(getData).onSubmit(0)(request)
 
       status(result) mustBe BAD_REQUEST
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-      templateCaptor.getValue mustEqual templateToBeRendered
     }
   }
 }

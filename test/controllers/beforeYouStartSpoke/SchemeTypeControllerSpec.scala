@@ -17,93 +17,115 @@
 package controllers.beforeYouStartSpoke
 
 import controllers.ControllerSpecBase
-import controllers.actions.MutableFakeDataRetrievalAction
+import controllers.actions._
 import forms.beforeYouStart.SchemeTypeFormProvider
 import identifiers.beforeYouStart.SchemeTypeId
 import matchers.JsonMatchers
 import models.{Scheme, SchemeType}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
+import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.Application
-import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
+import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.Data.{schemeName, ua}
-import utils.Enumerable
+import utils.Data.ua
+import utils.{Data, FakeNavigator}
+import views.html.beforeYouStart.SchemeTypeView
 
 import scala.concurrent.Future
 
-class SchemeTypeControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
-
-  private val templateToBeRendered = "beforeYouStart/schemeType.njk"
-  private val form: Form[SchemeType] = new SchemeTypeFormProvider()()
+class SchemeTypeControllerSpec extends ControllerSpecBase
+  with JsonMatchers
+  with TryValues
+  with BeforeAndAfterEach {
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-
   private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
+
+  private val formProvider: SchemeTypeFormProvider = new SchemeTypeFormProvider()
+  private val form = formProvider()
+
+  private val valuesValid: Map[String, Seq[String]] = Map(
+    "schemeType" -> Seq("single")
+  )
+
+  override def beforeEach(): Unit = {
+    reset(
+      mockUserAnswersCacheConnector
+    )
+  }
+
+  private def controller(
+                          dataRetrievalAction: DataRetrievalAction
+                        ): SchemeTypeController =
+    new SchemeTypeController(
+      messagesApi = messagesApi,
+      navigator = new FakeNavigator(desiredRoute = onwardCall),
+      authenticate = new FakeAuthAction(),
+      getData = dataRetrievalAction,
+      requireData = new DataRequiredActionImpl,
+      formProvider = formProvider,
+      controllerComponents = controllerComponents,
+      userAnswersCacheConnector = mockUserAnswersCacheConnector,
+      schemeTypeView = app.injector.instanceOf[SchemeTypeView]
+    )
 
   private def httpPathGET: String = routes.SchemeTypeController.onPageLoad.url
   private def httpPathPOST: String = routes.SchemeTypeController.onSubmit.url
 
-  private val valuesValid: Map[String, Seq[String]] = Map(
-    "schemeType.type" -> Seq("single")
-  )
-
-  private val valuesInvalid: Map[String, Seq[String]] = Map(
-    "value" -> Seq.empty
-  )
-
-  private val jsonToPassToTemplate: Form[SchemeType] => JsObject = form =>
-    Json.obj(
-      "schemeName" -> schemeName,
-      "form" -> form,
-      "radios" -> SchemeType.radios(form)
-    )
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-  }
-
-
   "SchemeTypeController" must {
 
     "return OK and the correct view for a GET" in {
-      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+      val getData = new FakeDataRetrievalAction(Some(ua))
 
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val result: Future[Result] = controller(getData).onPageLoad(fakeDataRequest(ua))
 
-      status(result) mustEqual OK
+      val view = app.injector.instanceOf[SchemeTypeView].apply(
+        form,
+        Data.schemeName,
+        routes.SchemeTypeController.onSubmit,
+        SchemeType.radios(form)
+      )(fakeRequest, messages)
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form))
+      status(result) mustBe OK
+      contentAsString(result) mustBe view.toString
     }
 
-    "return OK and the correct view for a GET when the question has previously been answered" in {
-      val userAnswers = ua.set(SchemeTypeId, SchemeType.SingleTrust).toOption.get
+    "populate the view correctly on a GET when the question has previously been answered" in {
+      val answers = ua.set(SchemeTypeId, SchemeType.SingleTrust).success.value
+      val getData = new FakeDataRetrievalAction(Some(answers))
 
-      mutableFakeDataRetrievalAction.setDataToReturn(Option(userAnswers))
+      val result: Future[Result] = controller(getData).onPageLoad(fakeDataRequest(answers))
 
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      status(result) mustBe OK
+      contentAsString(result) must include(messages("messages__scheme_type__title"))
+      contentAsString(result) must include("single")
+    }
 
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+    "redirect to the next page when valid data is submitted" in {
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
+      val request: FakeRequest[AnyContentAsFormUrlEncoded] = fakeRequest.withFormUrlEncodedBody("schemeType.type" -> "single")
 
-      val result = route(application, httpGETRequest(httpPathGET)).value
+      val getData = new FakeDataRetrievalAction(Some(ua))
+      val result: Future[Result] = controller(getData).onSubmit(request)
 
-      status(result) mustEqual OK
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardCall.url)
+      verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
+    }
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      templateCaptor.getValue mustEqual templateToBeRendered
+    "return a Bad Request and errors when invalid data is submitted" in {
+      val request: FakeRequest[AnyContentAsFormUrlEncoded] = fakeRequest.withFormUrlEncodedBody("schemeType" -> "")
+      val getData = new FakeDataRetrievalAction(Some(ua))
 
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(SchemeType.SingleTrust)))
+      val result: Future[Result] = controller(getData).onSubmit(request)
+
+      status(result) mustBe BAD_REQUEST
+      contentAsString(result) must include(messages("messages__scheme_type__title"))
+      contentAsString(result) must include(messages("messages__scheme_type__error__required"))
+      verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
     }
 
     "redirect to Session Expired page for a GET when there is no data" in {
@@ -114,40 +136,6 @@ class SchemeTypeControllerSpec extends ControllerSpecBase with NunjucksSupport w
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustBe controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme).url
-    }
-
-    "Save data to user answers and redirect to next page when valid data is submitted" in {
-
-      val expectedJson = Json.obj()
-
-      when(mockCompoundNavigator.nextPage(ArgumentMatchers.eq(SchemeTypeId), any(), any())(any()))
-        .thenReturn(routes.CheckYourAnswersController.onPageLoad)
-      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
-        .thenReturn(Future.successful(Json.obj()))
-
-      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesValid)).value
-
-      status(result) mustEqual SEE_OTHER
-
-      verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptor.capture)(any(), any())
-
-      jsonCaptor.getValue must containJson(expectedJson)
-
-      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad.url)
-    }
-
-    "return a BAD REQUEST when invalid data is submitted" in {
-      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-
-      val result = route(application, httpPOSTRequest(httpPathPOST, valuesInvalid)).value
-
-      status(result) mustEqual BAD_REQUEST
-
-      verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
     }
 
     "redirect back to list of schemes for a POST when there is no data" in {

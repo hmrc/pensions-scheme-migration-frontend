@@ -16,8 +16,7 @@
 
 package controllers.establishers.company.director.details
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.EnterReferenceValueController
+import controllers.Retrievals
 import controllers.actions._
 import forms.NINOFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -26,48 +25,42 @@ import identifiers.establishers.company.director.details.DirectorNINOId
 import identifiers.trustees.individual.details.TrusteeNINOId
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode, ReferenceValue}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.libs.json.{JsString, Json}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
+import services.common.details.CommonEnterReferenceValueService
 import utils.UserAnswers
-import viewmodels.Message
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import scala.util.Try
 
-class DirectorEnterNINOController @Inject()(
-                                             override val messagesApi: MessagesApi,
-                                             val navigator: CompoundNavigator,
+class DirectorEnterNINOController @Inject()( val messagesApi: MessagesApi,
                                              authenticate: AuthAction,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
                                              formProvider: NINOFormProvider,
                                              dataUpdateService: DataUpdateService,
-                                             val controllerComponents: MessagesControllerComponents,
-                                             val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                             val renderer: Renderer
+                                             common: CommonEnterReferenceValueService
                                            )(implicit val executionContext: ExecutionContext)
-  extends EnterReferenceValueController {
+  extends Retrievals with I18nSupport {
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
-              pageTitle = Message("messages__enterNINO_title", Message("messages__director")),
-              pageHeading = Message("messages__enterNINO_title", name(establisherIndex, directorIndex)),
+            common.get(
+              pageTitle = Messages("messages__enterNINO_title", Messages("messages__director")),
+              pageHeading = Messages("messages__enterNINO_title", name(establisherIndex, directorIndex)),
               isPageHeading = true,
               id = DirectorNINOId(establisherIndex, directorIndex),
               form = form(establisherIndex, directorIndex),
               schemeName = schemeName,
-              hintText = Some(Message("messages__enterNINO__hint")),
-              legendClass = "govuk-label--xl"
+              hintText = Some(Messages("messages__enterNINO__hint")),
+              legendClass = "govuk-label--l",
+              submitCall = routes.DirectorEnterNINOController.onSubmit(establisherIndex, directorIndex, mode)
             )
         }
     }
@@ -81,33 +74,25 @@ class DirectorEnterNINOController @Inject()(
     request
       .userAnswers
       .get(DirectorNameId(establisherIndex, directorIndex))
-      .fold(Message("messages__director"))(_.fullName)
+      .fold(Messages("messages__director"))(_.fullName)
 
   def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         retrieve(SchemeNameId) {
           schemeName =>
-            form(establisherIndex, directorIndex).bindFromRequest().fold(
-              (formWithErrors: Form[_]) =>
-                renderer.render(
-                  template = templateName(Seq(), Some(Message("messages__enterNINO__hint"))),
-                  ctx = Json.obj(
-                    "pageTitle" -> Message("messages__enterNINO_title", Message("messages__director")),
-                    "pageHeading" -> Message("messages__enterNINO_title", name(establisherIndex, directorIndex)),
-                    "isPageHeading" -> true,
-                    "form" -> formWithErrors,
-                    "schemeName" -> schemeName,
-                    "legendClass" -> "govuk-label--xl",
-                    "paragraphs" -> Seq()
-                  ) ++ Some(Message("messages__enterNINO__hint")).fold(Json.obj())(text => Json.obj("hintText" -> JsString(text)))
-                ).map(BadRequest(_)),
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
-                  _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
-                } yield
-                  Redirect(navigator.nextPage(DirectorNINOId(establisherIndex, directorIndex), updatedAnswers, mode))
+            common.post(
+              pageTitle     = Messages("messages__enterNINO_title", Messages("messages__director")),
+              pageHeading     = Messages("messages__enterNINO_title", name(establisherIndex, directorIndex)),
+              isPageHeading = true,
+              id            = DirectorNINOId(establisherIndex, directorIndex),
+              form          = form(establisherIndex,directorIndex),
+              schemeName    = schemeName,
+              hintText      = Some(Messages("messages__enterNINO__hint")),
+              legendClass   = "govuk-label--l",
+              mode          = mode,
+              optSetUserAnswers = Some(value => setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers)),
+              submitCall = routes.DirectorEnterNINOController.onSubmit(establisherIndex, directorIndex, mode)
             )
         }
     }

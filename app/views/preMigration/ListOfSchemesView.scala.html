@@ -1,0 +1,170 @@
+@*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@this(
+    layout: templates.Layout,
+    govukInsetText: GovukInsetText,
+    govukErrorSummary: GovukErrorSummary,
+    govukTable: GovukTable,
+    govukHint: GovukHint,
+    govukButton: GovukButton,
+    govukLabel: GovukLabel,
+    formHelper: FormWithCSRF,
+    paginationLinks: templates.PaginationLinks,
+    govukInput: GovukInput,
+    govukErrorMessage: GovukErrorMessage
+)
+
+@(heading: String,
+    form: Form[_],
+    submitCall: Call,
+    formErrorClass: String,
+    errorMessages: Option[Seq[ErrorMessage]],
+    inputErrorClass: String,
+    searchButton: Button,
+    schemes: Table,
+    clearLinkUrl: String,
+    numberOfSchemes: Int,
+    noResultsMessageKey: Option[String],
+    pagination: Int,
+    paginationText: String,
+    pageNumber: Int,
+    pageNumberLinks: Seq[Int],
+    returnUrl: String,
+    psaName: String,
+    racDac: Boolean,
+    listSchemeUrl: String,
+    numberOfPages: Int)(implicit request: Request[_], messages: Messages)
+
+@layout(heading, formHasErrors = form.hasErrors, fullWidthLayout = true) {
+    <div>
+        <div>
+
+            @if(form.hasErrors) {
+                @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+            }
+
+            <h1 class="govuk-heading-xl">@heading</h1>
+
+            <p class="govuk-body">
+                @if(racDac) {
+                    @messages("messages__listSchemes__racDac")
+                } else {
+                    @messages("messages__listSchemes__p1_scheme")
+                }
+            </p>
+
+
+            @formHelper(action = submitCall, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "true") {
+
+                <div class="govuk-form-group @formErrorClass govuk-!-margin-bottom-0">
+                    @if(racDac){
+                        @govukLabel(
+                            Label(
+                                content = Text(messages("messages__listSchemes__searchText_label_racDac")),
+                                isPageHeading = false,
+                                classes = "govuk-label--m",
+                                forAttr = Some("value")
+                            )
+                        )
+                        @govukHint(
+                            Hint(
+                                id = Some("value-hint"),
+                                content = HtmlContent(messages("messages__listSchemes__searchText_label_hint_racDac"))
+                            )
+                        )
+                    } else {
+                        @govukLabel(
+                            Label(
+                                content = Text(messages("messages__listSchemes__searchText_label_scheme")),
+                                isPageHeading = false,
+                                classes = "govuk-label--m",
+                                forAttr = Some("value")
+                            )
+                        )
+                        @govukHint(
+                            Hint(
+                                id = Some("value-hint"),
+                                content = HtmlContent(messages("messages__listSchemes__searchText_label_hint_scheme"))
+                            )
+                        )
+                    }
+
+                    @errorMessages.map { errorMessages =>
+                        @errorMessages.map { errorMessage =>
+                            @govukErrorMessage(errorMessage)
+                        }
+                    }
+                    <input class="govuk-input govuk-!-width-one-half govuk-!-margin-bottom-3 @inputErrorClass" id="value" name="value" type="search" value=@form.value>
+                    @govukButton(searchButton)
+                </div>
+
+                @if(form.value.isDefined) {
+                    <p class="govuk-body">
+                        <a id="clear-search-link" href="@clearLinkUrl" class="govuk-link">
+                            @messages("messages__listSchemes__searchText_clearlink")
+                        </a>
+                    </p>
+                } else {
+                    @if(racDac) {
+                        <p>
+                            @govukInsetText(
+                                InsetText(
+                                    content = Text(messages("messages__listSchemes__racDacOffset"))
+                                )
+                            )
+                        </p>
+                    }
+                }
+            }
+        </div>
+
+        @if(form.value.isDefined) {
+            @if(numberOfSchemes > 0) {
+                <div class="grid-row">
+                    <div class="column-two-thirds" role="status">
+                        <p class="govuk-margin-top-5 govuk-margin-bottom-0 govuk-body-m">
+                            @if(numberOfSchemes == 1) {
+                                @messages("messages__listSchemes__search_result")
+                            } else {
+                                @messages("messages__listSchemes__search_multipleResults", numberOfSchemes)
+                            }
+                        </p>
+                    </div>
+                </div>
+            }
+        }
+
+
+        @noResultsMessageKey.map { noResultsMessageKey =>
+            <div class="grid-row">
+                <div class="column-two-thirds" role="status">
+                    <p class="govuk-body" id="noSchemes">@noResultsMessageKey</p>
+                </div>
+            </div>
+        }
+
+        @govukTable(schemes)
+
+        @paginationLinks(numberOfSchemes, pagination, numberOfPages, pageNumber, listSchemeUrl)
+
+        <p class="govuk-body govuk-!-margin-top-4">
+            <a id="return_to_psa" href="@returnUrl" class="govuk-link">
+            @messages("return.to.link", psaName)
+            </a>
+        </p>
+    </div>
+}

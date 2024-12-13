@@ -16,64 +16,76 @@
 
 package controllers.trustees.individual.address
 
-import config.AppConfig
-import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
+import controllers.Retrievals
 import controllers.actions._
-import controllers.address.{AddressListController, AddressPages}
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.{address => Director}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address.{EnterPreviousPostCodeId, PreviousAddressId, PreviousAddressListId}
 import models._
+import models.establishers.AddressPages
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.data.FormBinding.Implicits.formBinding
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.Results.Redirect
+import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.nunjucks.NunjucksSupport
-import utils.{CountryOptions, UserAnswers}
+import services.common.address.{CommonAddressListService, CommonAddressListTemplateData}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
+import utils.UserAnswers
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
-class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
-                                                override val messagesApi: MessagesApi,
-                                                val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                                val addressLookupConnector: AddressLookupConnector,
-                                                val navigator: CompoundNavigator,
-                                                authenticate: AuthAction,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
-                                                formProvider: AddressListFormProvider,
-                                                dataUpdateService: DataUpdateService,
-                                                countryOptions: CountryOptions,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                val renderer: Renderer)(implicit val ec: ExecutionContext)
-  extends AddressListController with I18nSupport
-  with NunjucksSupport with Retrievals {
+class SelectPreviousAddressController @Inject()(
+  val messagesApi: MessagesApi,
+  userAnswersCacheConnector: UserAnswersCacheConnector,
+  navigator: CompoundNavigator,
+  authenticate: AuthAction,
+  getData: DataRetrievalAction,
+  requireData: DataRequiredAction,
+  formProvider: AddressListFormProvider,
+  dataUpdateService: DataUpdateService,
+  common:CommonAddressListService
+)(implicit val ec: ExecutionContext) extends I18nSupport with Retrievals {
 
-  override def form: Form[Int] = formProvider("selectAddress.required")
+  private def form: Form[Int] = formProvider("selectAddress.required")
 
-  def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async { implicit request =>
+  def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
     retrieve(SchemeNameId) { schemeName =>
-      getFormToJson(schemeName, index, mode).retrieve.map(get)
+      getFormToTemplate(schemeName, index, mode).retrieve.map(formToTemplate =>
+        common.get(
+          formToTemplate(form),
+          form,
+          submitUrl = routes.SelectPreviousAddressController.onSubmit(index, mode)
+        ))
     }
   }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-        val addressPages: AddressPages = AddressPages(EnterPreviousPostCodeId(index), PreviousAddressListId(index), PreviousAddressId(index))
+      val addressPages: AddressPages = AddressPages(EnterPreviousPostCodeId(index), PreviousAddressListId(index), PreviousAddressId(index))
+
       retrieve(SchemeNameId) { schemeName =>
-        val json: Form[Int] => JsObject = getFormToJson(schemeName, index, mode).retrieve.toOption.get
+        val formToTemplate: Form[Int] => CommonAddressListTemplateData = getFormToTemplate(schemeName, index, mode).retrieve.toOption.get
+        implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+
         form.bindFromRequest().fold(
           formWithErrors =>
-            renderer.render(viewTemplate, prepareJson(json(formWithErrors))).map(BadRequest(_)),
+            common.post(
+              formToTemplate,
+              addressPages,
+              Some(mode),
+              manualUrlCall = routes.ConfirmPreviousAddressController.onPageLoad(index, mode),
+              form = formWithErrors,
+              submitUrl = routes.SelectPreviousAddressController.onSubmit(index, mode)
+            ),
           value =>
             addressPages.postcodeId.retrieve.map { addresses =>
               val address = addresses(value).copy(country = Some("GB"))
@@ -89,23 +101,28 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
                 }
               } else {
                 for {
-                  updatedAnswers <-
-
-                    Future.fromTry(setUpdatedAnswersForNonUkAddr(index, mode, addressPages, address, request.userAnswers)
-                    )
+                  updatedAnswers <- Future.fromTry(setUpdatedAnswersForNonUkAddr(
+                    index,
+                    mode,
+                    addressPages,
+                    address,
+                    request.userAnswers
+                  ))
                   _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
                 } yield {
-                  Redirect(routes.ConfirmPreviousAddressController.onPageLoad(index, mode))
+                  Redirect(controllers.trustees.individual.address.routes.ConfirmPreviousAddressController.onPageLoad(index, mode))
                 }
-
               }
             }
         )
       }
     }
 
-  private def setUpdatedAnswersForUkAddr(index: Index, mode: Mode, addressPages: AddressPages,
-                                   address: TolerantAddress, ua: UserAnswers): Try[UserAnswers] = {
+  private def setUpdatedAnswersForUkAddr(index: Index,
+                                         mode: Mode,
+                                         addressPages: AddressPages,
+                                         address: TolerantAddress,
+                                         ua: UserAnswers): Try[UserAnswers] = {
     val updatedUserAnswers =
       mode match {
         case CheckMode =>
@@ -115,21 +132,27 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
               acc
             else
             {
-              val directorAddressPages: AddressPages = AddressPages(Director.EnterPreviousPostCodeId(director.mainIndex.get, director.index),
-                Director.PreviousAddressListId(director.mainIndex.get, director.index), Director.PreviousAddressId(director.mainIndex.get, director.index))
-              acc.remove(directorAddressPages.addressListPage).setOrException(directorAddressPages.addressPage,
-                address.toAddress.get)
+              val directorAddressPages: AddressPages = AddressPages(
+                Director.EnterPreviousPostCodeId(director.mainIndex.get, director.index),
+                Director.PreviousAddressListId(director.mainIndex.get, director.index),
+                Director.PreviousAddressId(director.mainIndex.get, director.index)
+              )
+              acc.remove(directorAddressPages.addressListPage)
+                .setOrException(directorAddressPages.addressPage, address.toAddress.get)
             }
           }
         case _ => ua
       }
-    val finalUpdatedUserAnswers = updatedUserAnswers.remove(addressPages.addressListPage).set(addressPages.addressPage,
-      address.toAddress.get)
+    val finalUpdatedUserAnswers = updatedUserAnswers.remove(addressPages.addressListPage)
+      .set(addressPages.addressPage, address.toAddress.get)
     finalUpdatedUserAnswers
   }
 
-  private def setUpdatedAnswersForNonUkAddr(index: Index, mode: Mode, addressPages: AddressPages,
-                                   address: TolerantAddress, ua: UserAnswers): Try[UserAnswers] = {
+  private def setUpdatedAnswersForNonUkAddr(index: Index,
+                                            mode: Mode,
+                                            addressPages: AddressPages,
+                                            address: TolerantAddress,
+                                            ua: UserAnswers): Try[UserAnswers] = {
     val updatedUserAnswers =
       mode match {
         case CheckMode =>
@@ -139,38 +162,39 @@ class SelectPreviousAddressController @Inject()(val appConfig: AppConfig,
               acc
             else
             {
-              val directorAddressPages: AddressPages = AddressPages(Director.EnterPreviousPostCodeId(director.mainIndex.get, director.index),
-                Director.PreviousAddressListId(director.mainIndex.get, director.index), Director.PreviousAddressId(director.mainIndex.get, director.index))
-              acc.remove(directorAddressPages.addressPage).setOrException(directorAddressPages.addressListPage,
-                address)
+              val directorAddressPages: AddressPages = AddressPages(
+                Director.EnterPreviousPostCodeId(director.mainIndex.get, director.index),
+                Director.PreviousAddressListId(director.mainIndex.get, director.index),
+                Director.PreviousAddressId(director.mainIndex.get, director.index)
+              )
+              acc.remove(directorAddressPages.addressPage)
+                .setOrException(directorAddressPages.addressListPage, address)
             }
           }
         case _ => ua
       }
-    val finalUpdatedUserAnswers = updatedUserAnswers.remove(addressPages.addressPage).set(addressPages.addressListPage,
-      address)
+    val finalUpdatedUserAnswers = updatedUserAnswers.remove(addressPages.addressPage)
+      .set(addressPages.addressListPage, address)
     finalUpdatedUserAnswers
   }
 
-
-  def getFormToJson(schemeName:String, index: Index, mode: Mode) : Retrieval[Form[Int] => JsObject] =
+  def getFormToTemplate(schemeName:String, index: Index, mode: Mode) : Retrieval[Form[Int] => CommonAddressListTemplateData] =
     Retrieval(
       implicit request =>
         EnterPreviousPostCodeId(index).retrieve.map { addresses =>
+          val name: String = request.userAnswers.get(TrusteeNameId(index))
+            .map(_.fullName).getOrElse(Messages("trusteeEntityTypeIndividual"))
 
-          val msg = request2Messages(request)
-
-          val name = request.userAnswers.get(TrusteeNameId(index)).map(_.fullName).getOrElse(msg("trusteeEntityTypeIndividual"))
-
-          form => Json.obj(
-            "form" -> form,
-            "addresses" -> transformAddressesForTemplate(addresses),
-            "entityType" -> msg("trusteeEntityTypeIndividual"),
-            "entityName" -> name,
-            "enterManuallyUrl" -> controllers.trustees.individual.address.routes.ConfirmPreviousAddressController.onPageLoad(index, mode).url,
-            "schemeName" -> schemeName,
-            "h1MessageKey" -> "previousAddressList.title"
-          )
+          form =>
+            CommonAddressListTemplateData(
+              form,
+              addresses,
+              Messages("trusteeEntityTypeIndividual"),
+              name,
+              routes.ConfirmPreviousAddressController.onPageLoad(index, mode).url,
+              schemeName,
+              "previousAddressList.title"
+            )
         }
     )
 }

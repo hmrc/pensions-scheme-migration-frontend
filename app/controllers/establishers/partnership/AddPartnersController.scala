@@ -36,18 +36,14 @@ import config.AppConfig
 import controllers.Retrievals
 import controllers.actions._
 import forms.establishers.partnership.partner.AddPartnersFormProvider
-import helpers.AddToListHelper
 import identifiers.establishers.partnership.AddPartnersId
-import models.Mode
+import models.{Mode, PartnerEntity}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.Radios
+import views.html.establishers.partnership.AddPartnerView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -59,43 +55,36 @@ class AddPartnersController @Inject()(
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
                                                formProvider: AddPartnersFormProvider,
-                                               helper: AddToListHelper,
                                                config: AppConfig,
                                                val controllerComponents: MessagesControllerComponents,
-                                               renderer: Renderer
+                                               view: AddPartnerView
                                              )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with Retrievals
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
   private val form: Form[Boolean] = formProvider()
 
   def onPageLoad(index: Int,mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData()).async {
+    (authenticate andThen getData andThen requireData()) {
       implicit request =>
 
-        val partners = request.userAnswers.allPartnersAfterDelete(index)
-        val itemList=   helper.directorsOrPartnersItemList(partners)
-        renderer.render(
-          template = "establishers/partnership/addPartner.njk",
-          ctx = Json.obj(
-            "form"       -> form,
-            "itemList"      -> itemList,
-            "radios"     -> Radios.yesNo(form("value")),
-            "schemeName" -> existingSchemeName,
-            "partnerSize" -> partners.size ,
-            "maxPartners" -> config.maxPartners
-
-          )
-        ).map(Ok(_))
+        val partners: Seq[PartnerEntity] = request.userAnswers.allPartnersAfterDelete(index)
+        Ok(view(
+          form,
+          existingSchemeName.getOrElse("Scheme"),
+          partners.size,
+          config.maxPartners,
+          partners,
+          utils.Radios.yesNo(form("value")),
+          routes.AddPartnersController.onSubmit(index, mode)
+        ))
     }
 
   def onSubmit(index: Int,mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         val partners = request.userAnswers.allPartnersAfterDelete(index)
-        val itemList=   helper.directorsOrPartnersItemList(partners)
         if (partners.isEmpty || partners.lengthCompare(config.maxPartners) >= 0) {
           Future.successful(Redirect(
             navigator.nextPage(
@@ -107,17 +96,15 @@ class AddPartnersController @Inject()(
         else {
           form.bindFromRequest().fold(
             formWithErrors =>
-              renderer.render(
-                template = "establishers/partnership/addPartner.njk",
-                ctx = Json.obj(
-                  "form"       -> formWithErrors,
-                  "itemList"      -> itemList,
-                  "radios"     -> Radios.yesNo(formWithErrors("value")),
-                  "schemeName" -> existingSchemeName,
-                  "partnerSize" -> partners.size ,
-                  "maxPartners" -> config.maxPartners
-                )
-              ).map(BadRequest(_)),
+              Future.successful(BadRequest(view(
+                formWithErrors,
+                existingSchemeName.getOrElse("Scheme"),
+                partners.size,
+                config.maxPartners,
+                partners,
+                utils.Radios.yesNo(formWithErrors("value")),
+                routes.AddPartnersController.onSubmit(index, mode)
+              ))),
             value => {
 
               val ua = request.userAnswers.set(AddPartnersId(index),value).getOrElse(request.userAnswers)

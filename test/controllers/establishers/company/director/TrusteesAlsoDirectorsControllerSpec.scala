@@ -17,54 +17,51 @@
 package controllers.establishers.company.director
 
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
+import controllers.actions._
 import forms.dataPrefill.DataPrefillCheckboxFormProvider
 import identifiers.establishers.company.CompanyDetailsId
 import matchers.JsonMatchers
+import models._
 import models.prefill.IndividualDetails
-import models.{CompanyDetails, entities}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
-import play.api.libs.json.{JsObject, Json}
+import play.api.Application
+import play.api.i18n.Messages
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsJson, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import renderer.Renderer
-import services.DataPrefillService
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.ua
 import utils.{Data, FakeNavigator, UserAnswers}
+import views.html.DataPrefillCheckboxView
 
 import scala.concurrent.Future
 
 class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
-  with NunjucksSupport
+
   with JsonMatchers
   with TryValues
   with BeforeAndAfterEach {
 
+
+  private val index: Index = Index(0)
+  private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
+  private val application: Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
   private val formProvider: DataPrefillCheckboxFormProvider = new DataPrefillCheckboxFormProvider()
   private val form = formProvider(6,"", "", "")
-  private val templateToBeRendered: String = "dataPrefillCheckbox.njk"
-  private val mockDataPrefillService = mock[DataPrefillService]
   private val companyDetails: CompanyDetails = CompanyDetails("test company")
-  private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(0), companyDetails).success.value
+  private val userAnswerss: UserAnswers = ua.set(CompanyDetailsId(0), companyDetails).success.value
+  val view = application.injector.instanceOf[DataPrefillCheckboxView]
 
-  private val commonJson: JsObject =
-    Json.obj(
-      "form" -> form,
-      "schemeName" -> Data.schemeName
-    )
+
   override def beforeEach(): Unit = {
     reset(
-      mockRenderer,
       mockUserAnswersCacheConnector,
       mockDataPrefillService
     )
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-    when(mockDataPrefillService.getListOfTrusteesToBeCopied(any())(any())).thenReturn(Nil)
+
+    when(mockDataPrefillService.getListOfTrusteesToBeCopied(any)(any)).thenReturn(Nil)
+
   }
 
   private def controller(
@@ -81,43 +78,47 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
       config = appConfig,
       controllerComponents = controllerComponents,
       userAnswersCacheConnector = mockUserAnswersCacheConnector,
-      renderer = new Renderer(mockAppConfig, mockRenderer)
+      view = view
     )
 
-  private val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-  private val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
   "TrusteesAlsoDirectorsController" must {
     "return OK and the correct view for a GET" in {
-      when(mockDataPrefillService.getListOfTrusteesToBeCopied(any())(any())).thenReturn(Seq(IndividualDetails("", "", false, None, None, 0, true, None)))
-      val getData = new FakeDataRetrievalAction(Some(userAnswers))
+      when(mockDataPrefillService.getListOfTrusteesToBeCopied(any)(any)).thenReturn(Seq(IndividualDetails("", "", false, None, None, 0, true, None)))
 
-      val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(userAnswers))
+      val getData = new FakeDataRetrievalAction(Some(userAnswerss))
+      val seqCheckBox = DataPrefillCheckbox.checkboxes(form, Seq(IndividualDetails("", "", false, None, None, 0, true, None)))
+      mutableFakeDataRetrievalAction.setDataToReturn(Some(userAnswerss))
+
+      val request = httpGETRequest(controllers.establishers.company.director.routes.TrusteesAlsoDirectorsController.onPageLoad(index).url)
+      val result: Future[Result] = controller(getData).onPageLoad(0)(request)
+
+      val view = application.injector.instanceOf[DataPrefillCheckboxView]
+        .apply(form, Data.schemeName, Messages("messages__directors__prefill__heading", companyDetails.companyName), "messages__directors__prefill__title", seqCheckBox,
+          controllers.establishers.company.director.routes.TrusteesAlsoDirectorsController.onSubmit(Index(0)))(request, messages)
+      verify(mockDataPrefillService, times(1)).getListOfTrusteesToBeCopied(any())(any())
+
 
       status(result) mustBe OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-      templateCaptor.getValue mustEqual templateToBeRendered
-      val json: JsObject = Json.obj("form" -> form)
-      jsonCaptor.getValue must containJson(commonJson ++ json)
+      compareResultAndView(result, view)
     }
 
     "redirect to spoke task list page for a GET when there are no trustees to be copied" in {
       when(mockDataPrefillService.getListOfTrusteesToBeCopied(any())(any())).thenReturn(Nil)
-      val getData = new FakeDataRetrievalAction(Some(userAnswers))
+      val getData = new FakeDataRetrievalAction(Some(userAnswerss))
 
-      val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(userAnswers))
+      val result: Future[Result] = controller(getData).onPageLoad(0)(fakeDataRequest(userAnswerss))
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.common.routes.SpokeTaskListController.onPageLoad(0, entities.Establisher, entities.Company).url)
     }
 
     "copy the directors and redirect to the next page when valid data is submitted with value less than max directors" in {
-      when(mockDataPrefillService.copyAllTrusteesToDirectors(any(), any(), any())).thenReturn(userAnswers)
+      when(mockDataPrefillService.copyAllTrusteesToDirectors(any(), any(), any())).thenReturn(userAnswerss)
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
       val request: FakeRequest[AnyContentAsJson] = fakeRequest.withJsonBody(Json.obj("value" -> Seq("0")))
 
-      val getData = new FakeDataRetrievalAction(Some(userAnswers))
+      val getData = new FakeDataRetrievalAction(Some(userAnswerss))
       val result: Future[Result] = controller(getData).onSubmit(0)(request)
 
       status(result) mustBe SEE_OTHER
@@ -130,7 +131,7 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
       val request: FakeRequest[AnyContentAsJson] = fakeRequest.withJsonBody(Json.obj("value" -> Seq("-1")))
 
-      val getData = new FakeDataRetrievalAction(Some(userAnswers))
+      val getData = new FakeDataRetrievalAction(Some(userAnswerss))
       val result: Future[Result] = controller(getData).onSubmit(0)(request)
 
       status(result) mustBe SEE_OTHER
@@ -140,14 +141,14 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
+      when(mockDataPrefillService.getListOfTrusteesToBeCopied(any())(any())).thenReturn(Nil)
       val request: FakeRequest[AnyContentAsJson] = fakeRequest.withJsonBody(Json.obj("value" -> Seq("invalid")))
-      val getData = new FakeDataRetrievalAction(Some(userAnswers))
+      val getData = new FakeDataRetrievalAction(Some(userAnswerss))
 
       val result: Future[Result] = controller(getData).onSubmit(0)(request)
 
       status(result) mustBe BAD_REQUEST
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-      templateCaptor.getValue mustEqual templateToBeRendered
+
     }
   }
 }

@@ -16,8 +16,7 @@
 
 package controllers.trustees.company.details
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.EnterReferenceValueController
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.PAYEFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -25,28 +24,22 @@ import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.details.PAYEId
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
-import viewmodels.Message
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.common.details.CommonEnterReferenceValueService
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class PAYEController @Inject()(
-                                override val messagesApi: MessagesApi,
-                                val navigator: CompoundNavigator,
-                                authenticate: AuthAction,
-                                getData: DataRetrievalAction,
-                                requireData: DataRequiredAction,
-                                formProvider: PAYEFormProvider,
-                                val controllerComponents: MessagesControllerComponents,
-                                val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                val renderer: Renderer
-                                             )(implicit val executionContext: ExecutionContext)
-  extends EnterReferenceValueController {
+class PAYEController @Inject()(val messagesApi: MessagesApi,
+                               authenticate: AuthAction,
+                               getData: DataRetrievalAction,
+                               requireData: DataRequiredAction,
+                               formProvider: PAYEFormProvider,
+                               common: CommonEnterReferenceValueService
+                              )(implicit val executionContext: ExecutionContext)
+  extends Retrievals with I18nSupport {
 
   private def name(index: Index)
                   (implicit request: DataRequest[AnyContent]): String =
@@ -62,16 +55,17 @@ class PAYEController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
-              pageTitle     = Message("messages__paye", Message("messages__company")),
-              pageHeading     = Message("messages__paye", name(index)),
+            common.get(
+              pageTitle     = Messages("messages__paye", Messages("messages__company")),
+              pageHeading     = Messages("messages__paye", name(index)),
               isPageHeading = true,
               id            = PAYEId(index),
               form          = form(name(index)),
               schemeName    = schemeName,
               legendClass   = "govuk-visually-hidden",
-              paragraphText = Seq(Message("messages__paye__p", name(index))),
-              hintText = Some(Message("messages__paye__hint"))
+              paragraphText = Seq(Messages("messages__paye__p", name(index))),
+              hintText = Some(Messages("messages__paye__hint")),
+              submitCall = routes.PAYEController.onSubmit(index, mode)
             )
         }
     }
@@ -81,17 +75,18 @@ class PAYEController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            post(
-              pageTitle     = Message("messages__paye", Message("messages__company")),
-              pageHeading     = Message("messages__paye", name(index)),
+            common.post(
+              pageTitle     = Messages("messages__paye", Messages("messages__company")),
+              pageHeading     = Messages("messages__paye", name(index)),
               isPageHeading = true,
               id            = PAYEId(index),
               form          = form(name(index)),
               schemeName    = schemeName,
               legendClass   = "govuk-visually-hidden",
-              paragraphText = Seq(Message("messages__paye__p", name(index))),
+              paragraphText = Seq(Messages("messages__paye__p", name(index))),
               mode          = mode,
-              hintText = Some(Message("messages__paye__hint"))
+              hintText = Some(Messages("messages__paye__hint")),
+              submitCall = routes.PAYEController.onSubmit(index, mode)
             )
         }
     }

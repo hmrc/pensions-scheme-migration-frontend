@@ -22,7 +22,8 @@ import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -36,7 +37,7 @@ trait LegacySchemeDetailsConnector {
 
 @Singleton
 class LegacySchemeDetailsConnectorImpl @Inject()(
-                                            http: HttpClient,
+                                            http: HttpClientV2,
                                             config: AppConfig
                                           ) extends LegacySchemeDetailsConnector {
 
@@ -45,8 +46,10 @@ class LegacySchemeDetailsConnectorImpl @Inject()(
   def getLegacySchemeDetails(psaId: String, pstr: String)
                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[HttpResponse, JsValue]] = {
     val (url, schemeHc) = (config.legacySchemeDetailsUrl, hc.withExtraHeaders("psaId" -> psaId, "pstr" -> pstr))
-
-    http.GET[HttpResponse](url)(implicitly, schemeHc, implicitly).map { response =>
+    val headers = Seq(("psaId", psaId), ("pstr", pstr))
+    http.get(url"$url")(schemeHc)
+      .setHeader(headers: _*)
+      .execute[HttpResponse].map { response =>
       response.status match {
         case OK =>
             Right(response.json)

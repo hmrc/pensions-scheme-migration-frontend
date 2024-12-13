@@ -28,14 +28,11 @@ import models.{DataPrefillCheckbox, Index, entities}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import services.DataPrefillService
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.{Enumerable, UserAnswers}
+import views.html.DataPrefillCheckboxView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -49,26 +46,32 @@ class TrusteesAlsoDirectorsController @Inject()(override val messagesApi: Messag
                                                 formProvider: DataPrefillCheckboxFormProvider,
                                                 dataPrefillService: DataPrefillService,
                                                 val controllerComponents: MessagesControllerComponents,
-                                                config: AppConfig,
-                                                renderer: Renderer
+                                                view: DataPrefillCheckboxView,
+                                                config: AppConfig
                                                )(implicit val executionContext: ExecutionContext) extends FrontendBaseController
-  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
+  with I18nSupport with Retrievals with Enumerable.Implicits {
+
+  private def form(implicit ua: UserAnswers, messages: Messages): Form[List[Int]] = {
+    val existingTrusteeCount = ua.allTrusteesAfterDelete.size
+    formProvider(existingTrusteeCount, "messages__trustees__prefill__multi__error__required",
+      "messages__trustees__prefill__multi__error__noneWithValue",
+      messages("messages__trustees__prefill__multi__error__moreThanTen", existingTrusteeCount, config.maxTrustees - existingTrusteeCount))
+  }
 
   def onPageLoad(establisherIndex: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
       (CompanyDetailsId(establisherIndex) and SchemeNameId).retrieve.map { case companyName ~ schemeName =>
         implicit val ua: UserAnswers = request.userAnswers
-        val seqTrustee = dataPrefillService.getListOfTrusteesToBeCopied(establisherIndex)
+        val seqTrustee = dataPrefillService.getListOfTrusteesToBeCopied(establisherIndex)(ua)
         if (seqTrustee.nonEmpty) {
-          val json = Json.obj(
-            "form" -> form(establisherIndex),
-            "schemeName" -> schemeName,
-            "pageHeading" -> msg"messages__directors__prefill__title",
-            "titleMessage" -> msg"messages__directors__prefill__heading".withArgs(companyName.companyName).resolve,
-            "dataPrefillCheckboxes" -> DataPrefillCheckbox.checkboxes(form(establisherIndex), seqTrustee)
-          )
-
-          renderer.render("dataPrefillCheckbox.njk", json).map(Ok(_))
+          Future.successful(Ok(view(
+            form,
+            schemeName,
+            Messages("messages__directors__prefill__heading", companyName.companyName),
+            "messages__directors__prefill__title",
+            DataPrefillCheckbox.checkboxes(form, seqTrustee),
+            controllers.establishers.company.director.routes.TrusteesAlsoDirectorsController.onSubmit(establisherIndex)
+          )))
         } else {
           Future(Redirect(controllers.common.routes.SpokeTaskListController.onPageLoad(establisherIndex, entities.Establisher, entities.Company)))
         }
@@ -82,14 +85,14 @@ class TrusteesAlsoDirectorsController @Inject()(override val messagesApi: Messag
         val seqTrustee = dataPrefillService.getListOfTrusteesToBeCopied(establisherIndex)
         form(establisherIndex).bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
-            val json = Json.obj(
-              "form" -> formWithErrors,
-              "schemeName" -> schemeName,
-              "pageHeading" -> msg"messages__directors__prefill__title",
-              "titleMessage" -> msg"messages__directors__prefill__heading".withArgs(companyName.companyName).resolve,
-              "dataPrefillCheckboxes" -> DataPrefillCheckbox.checkboxes(form(establisherIndex), seqTrustee)
-            )
-            renderer.render("dataPrefillCheckbox.njk", json).map(BadRequest(_))
+            Future.successful(BadRequest(view(
+              formWithErrors,
+              schemeName,
+              "messages__trustees__prefill__title",
+              "messages__trustees__prefill__heading",
+              DataPrefillCheckbox.checkboxes(form, seqTrustee),
+              controllers.establishers.company.director.routes.TrusteesAlsoDirectorsController.onSubmit(establisherIndex)
+            )))
           },
           value => {
             val uaAfterCopy: UserAnswers = if (value.headOption.getOrElse(-1) < 0) ua else

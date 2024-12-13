@@ -23,21 +23,20 @@ import identifiers.trustees.company.CompanyDetailsId
 import identifiers.trustees.company.details.CompanyNumberId
 import matchers.JsonMatchers
 import models.{Index, NormalMode, ReferenceValue}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
-import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
+import play.api.data.{Form, FormBinding}
+import play.api.libs.json.Json
+import play.api.mvc.{AnyContentAsFormUrlEncoded, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
-import play.twirl.api.Html
-import renderer.Renderer
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import services.common.details.CommonEnterReferenceValueService
 import utils.Data.{companyDetails, schemeName, ua}
 import utils.{FakeNavigator, UserAnswers}
+import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
 
 import scala.concurrent.Future
-class CompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with BeforeAndAfterEach {
+class CompanyNumberControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues with BeforeAndAfterEach {
 
   private val index: Index = Index(0)
   private val referenceValue: ReferenceValue = ReferenceValue("12345678")
@@ -45,59 +44,53 @@ class CompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
   private val formProvider: CompanyNumberFormProvider = new CompanyNumberFormProvider()
 
-  private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
-
-  private val commonJson: JsObject =
-    Json.obj(
-      "pageTitle"     -> messages("messages__companyNumber", messages("messages__company")),
-      "pageHeading"     -> messages("messages__companyNumber", companyDetails.companyName),
-      "schemeName"    -> schemeName,
-      "hintText"      -> messages("messages__companyNumber__hint"),
-      "legendClass"   -> "govuk-label--xl",
-      "isPageHeading" -> true
-    )
+  private def getView(req: Request[_], form: Form[_]) = {
+    app.injector.instanceOf[EnterReferenceValueWithHintView].apply(
+      form,
+      schemeName,
+      messages("messages__companyNumber", messages("messages__company")),
+      messages("messages__companyNumber", companyDetails.companyName),
+      "govuk-label--l",
+      Seq(),
+      Some(messages("messages__companyNumber__hint")),
+      routes.CompanyNumberController.onSubmit(index, NormalMode)
+    )(req, implicitly)
+  }
 
   private def controller(dataRetrievalAction: DataRetrievalAction): CompanyNumberController =
-    new CompanyNumberController(messagesApi, new FakeNavigator(desiredRoute = onwardCall), new FakeAuthAction(), dataRetrievalAction,
-      new DataRequiredActionImpl, formProvider, controllerComponents, mockUserAnswersCacheConnector, new Renderer(mockAppConfig, mockRenderer))
+    new CompanyNumberController(messagesApi, new FakeAuthAction(), dataRetrievalAction,
+      new DataRequiredActionImpl, formProvider,
+      common = new CommonEnterReferenceValueService(
+        controllerComponents = controllerComponents,
+        userAnswersCacheConnector = mockUserAnswersCacheConnector,
+        navigator = new FakeNavigator(desiredRoute = onwardCall),
+        enterReferenceValueView = app.injector.instanceOf[EnterReferenceValueView],
+        enterReferenceValueWithHintView = app.injector.instanceOf[EnterReferenceValueWithHintView],
+        messagesApi = messagesApi
+      ))
 
-  override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
+  override def beforeEach(): Unit = reset(mockUserAnswersCacheConnector)
 
   "CompanyNumberController" must {
     "return OK and the correct view for a GET" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
-      val result: Future[Result] = controller(getData).onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
+      val req = fakeDataRequest(userAnswers)
+      val result: Future[Result] = controller(getData).onPageLoad(0, NormalMode)(req)
 
       status(result) mustBe OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-      jsonCaptor.getValue must containJson(commonJson)
+      compareResultAndView(result, getView(req, formProvider(companyDetails.companyName)))
 
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
       val ua = userAnswers.set(CompanyNumberId(0), referenceValue).success.value
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
       val getData = new FakeDataRetrievalAction(Some(ua))
-
-      val result: Future[Result] = controller(getData).onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
+      val req = fakeDataRequest(userAnswers)
+      val result: Future[Result] = controller(getData).onPageLoad(0, NormalMode)(req)
 
       status(result) mustBe OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-      jsonCaptor.getValue must containJson(commonJson)
+      compareResultAndView(result, getView(req, formProvider(companyDetails.companyName).fill(referenceValue)))
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -113,20 +106,14 @@ class CompanyNumberControllerSpec extends ControllerSpecBase with NunjucksSuppor
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
       val request = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
       val result: Future[Result] = controller(getData).onSubmit(0, NormalMode)(request)
+      val testForm = formProvider(companyDetails.companyName).bindFromRequest()(request, FormBinding.Implicits.formBinding)
 
       status(result) mustBe BAD_REQUEST
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-      templateCaptor.getValue mustEqual templateToBeRendered
-      jsonCaptor.getValue must containJson(commonJson)
+      compareResultAndView(result, getView(request, testForm))
       verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
     }
   }

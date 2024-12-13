@@ -28,17 +28,17 @@ import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.Call
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
+import views.html.aboutMembership.MembersView
 
 import scala.concurrent.Future
 
-class FutureMembersControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with Enumerable.Implicits {
+class FutureMembersControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
   private val userAnswers: Option[UserAnswers] = Some(ua)
-  private val templateToBeRendered = "aboutMembership/members.njk"
   private val form: Form[Members] = new MembersFormProvider()(messages("futureMembers.error.required", schemeName))
 
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -56,18 +56,8 @@ class FutureMembersControllerSpec extends ControllerSpecBase with NunjucksSuppor
     "value" -> Seq.empty
   )
 
-  private val jsonToPassToTemplate: Form[Members] => JsObject = form =>
-    Json.obj(
-      "form" -> form,
-      "schemeName" -> schemeName,
-      "pageHeading" -> messages("futureMembers.title", Messages("messages__the_scheme")),
-      "titleMessage" -> messages("futureMembers.title", schemeName),
-      "radios" -> Members.radios(form)
-    )
-
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
   }
 
 
@@ -75,38 +65,47 @@ class FutureMembersControllerSpec extends ControllerSpecBase with NunjucksSuppor
 
     "return OK and the correct view for a GET" in {
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+      val onwardCall: Call = Call("POST", httpPathPOST)
+      val request = FakeRequest(GET, httpPathGET)
 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = application.injector.instanceOf[MembersView].apply(
+        form,
+        schemeName,
+        messages("futureMembers.title", Messages("messages__the_scheme")),
+        messages("futureMembers.title", schemeName),
+        Members.radios(form),
+        onwardCall
+      )(request, messages)
 
-      templateCaptor.getValue mustEqual templateToBeRendered
+      compareResultAndView(result, view)
 
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form))
     }
 
     "return OK and the correct view for a GET when the question has previously been answered" in {
       val ua = userAnswers.map(_.set(FutureMembersId, Members.One)).get.toOption.get
-
+      val onwardCall: Call = Call("POST", httpPathPOST)
+      val request = FakeRequest(GET, httpPathGET)
       mutableFakeDataRetrievalAction.setDataToReturn(Option(ua))
-
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = application.injector.instanceOf[MembersView].apply(
+        form.fill(Members.One),
+        schemeName,
+        messages("futureMembers.title", Messages("messages__the_scheme")),
+        messages("futureMembers.title", schemeName),
+        Members.radios(form),
+        onwardCall
+      )(request, messages)
 
-      templateCaptor.getValue mustEqual templateToBeRendered
+      compareResultAndView(result, view)
 
-      jsonCaptor.getValue must containJson(jsonToPassToTemplate(form.fill(Members.One)))
     }
 
     "redirect to Session Expired page for a GET when there is no data" in {

@@ -16,8 +16,7 @@
 
 package controllers.establishers.company.director.contact
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.PhoneController
+import controllers.Retrievals
 import controllers.actions._
 import forms.PhoneFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -26,46 +25,41 @@ import identifiers.establishers.company.director.contact.EnterPhoneId
 import identifiers.trustees.individual.contact.{EnterPhoneId => trusteeEnterPhoneId}
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
+import services.common.contact.CommonPhoneService
 import utils.UserAnswers
-import viewmodels.Message
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import scala.util.Try
 
 class EnterPhoneNumberController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            val navigator: CompoundNavigator,
+                                            val messagesApi: MessagesApi,
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
                                             formProvider: PhoneFormProvider,
                                             dataUpdateService: DataUpdateService,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                            val renderer: Renderer
+                                            common: CommonPhoneService
                                           )(implicit val executionContext: ExecutionContext)
-  extends PhoneController {
+  extends Retrievals with I18nSupport {
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
+            common.get(
               entityName = name(establisherIndex, directorIndex),
               entityType = Messages("messages__director"),
-              id = EnterPhoneId(establisherIndex, directorIndex),
+              phoneId = EnterPhoneId(establisherIndex, directorIndex),
               form = form(establisherIndex, directorIndex),
               schemeName = schemeName,
-              paragraphText = Seq(Messages("messages__contact_details__hint", name(establisherIndex, directorIndex)))
+              paragraphText = Seq(Messages("messages__contact_details__hint", name(establisherIndex, directorIndex))),
+              routes.EnterPhoneNumberController.onSubmit(establisherIndex, directorIndex, mode)
             )
 
         }
@@ -76,24 +70,16 @@ class EnterPhoneNumberController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            form(establisherIndex, directorIndex).bindFromRequest().fold(
-              (formWithErrors: Form[_]) =>
-                renderer.render(
-                  template = "phone.njk",
-                  ctx = Json.obj(
-                    "entityName" -> name(establisherIndex, directorIndex),
-                    "entityType" -> Messages("messages__director"),
-                    "form" -> formWithErrors,
-                    "schemeName" -> schemeName,
-                    "paragraph" -> Seq(Messages("messages__contact_details__hint", name(establisherIndex, directorIndex)))
-                  )
-                ).map(BadRequest(_)),
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
-                  _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
-                } yield
-                  Redirect(navigator.nextPage(EnterPhoneId(establisherIndex, directorIndex), updatedAnswers, mode))
+            common.post(
+              entityName = name(establisherIndex, directorIndex),
+              entityType = Messages("messages__director"),
+              phoneId = EnterPhoneId(establisherIndex, directorIndex),
+              form = form(establisherIndex, directorIndex),
+              schemeName = schemeName,
+              paragraphText = Seq(Messages("messages__contact_details__hint", name(establisherIndex, directorIndex))),
+              mode = Some(mode),
+              routes.EnterPhoneNumberController.onSubmit(establisherIndex, directorIndex, mode),
+              Some(value => setUpdatedAnswers(establisherIndex, directorIndex, mode, value, request.userAnswers))
             )
         }
     }
@@ -107,7 +93,7 @@ class EnterPhoneNumberController @Inject()(
 
   private def form(establisherIndex: Index, directorIndex: Index)
                   (implicit request: DataRequest[AnyContent]): Form[String] =
-    formProvider(Message("messages__enterPhone__error_required", name(establisherIndex, directorIndex)))
+    formProvider(Messages("messages__enterPhone__error_required", name(establisherIndex, directorIndex)))
 
   private def setUpdatedAnswers(establisherIndex: Index, directorIndex: Index, mode: Mode, value: String, ua: UserAnswers): Try[UserAnswers] = {
     val updatedUserAnswers =

@@ -19,73 +19,54 @@ package controllers.preMigration
 import controllers.ControllerSpecBase
 import controllers.actions._
 import matchers.JsonMatchers
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.TryValues
-import play.api.libs.json.{JsObject, Json}
+import play.api.i18n.Messages
 import play.api.mvc.Result
 import play.api.test.Helpers.{status, _}
-import play.twirl.api.Html
-import renderer.Renderer
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.preMigration.NoSchemeToAddView
 
 import scala.concurrent.Future
-class NoSchemeToAddControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues  {
+class NoSchemeToAddControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues  {
 
-  private val templateToBeRendered: String = "preMigration/noSchemeToAdd.njk"
   private val psaName: String = "Nigel"
-
-  private def schemeJson: JsObject = Json.obj(
-    "param1" -> msg"messages__pension_scheme".resolve,
-    "psaName" -> psaName,
-    "contactHmrcUrl" -> appConfig.contactHmrcUrl,
-    "returnUrl" -> appConfig.psaOverviewUrl
-  )
-
-  val racDacJson: JsObject = Json.obj(
-    "param1" -> msg"messages__racdac".resolve,
-    "psaName" -> psaName,
-    "contactHmrcUrl" -> appConfig.contactHmrcUrl,
-    "returnUrl" -> appConfig.psaOverviewUrl
-  )
-
   private def controller(): NoSchemeToAddController =
     new NoSchemeToAddController(appConfig, messagesApi, new FakeAuthAction(), controllerComponents,
-      mockMinimalDetailsConnector, new Renderer(mockAppConfig, mockRenderer))
+      mockMinimalDetailsConnector, app.injector.instanceOf[NoSchemeToAddView])
 
   "NotRegisterController" must {
     "return OK and the correct view for a GET for scheme" in {
-      when(mockMinimalDetailsConnector.getPSAName(any(),any())).thenReturn(Future.successful(psaName))
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
+      when(mockMinimalDetailsConnector.getPSAName(any(), any())).thenReturn(Future.successful(psaName))
       val result: Future[Result] = controller().onPageLoadScheme(fakeDataRequest())
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(schemeJson)
+      val view = app.injector.instanceOf[NoSchemeToAddView].apply(
+        Messages("messages__pension_scheme"),
+        Messages("messages__scheme"),
+        appConfig.contactHmrcUrl,
+        appConfig.yourPensionSchemesUrl,
+        appConfig.psaOverviewUrl,
+        psaName
+      )(fakeRequest, messages)
+      compareResultAndView(result, view)
     }
 
     "return OK and the correct view for a GET for rac dac" in {
       when(mockMinimalDetailsConnector.getPSAName(any(),any())).thenReturn(Future.successful(psaName))
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-      val templateCaptor : ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
       val result: Future[Result] = controller().onPageLoadRacDac(fakeDataRequest())
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-
-      jsonCaptor.getValue must containJson(racDacJson)
+      val view = app.injector.instanceOf[NoSchemeToAddView].apply(
+        Messages("messages__racdac"),
+        Messages("messages__racdac"),
+        appConfig.contactHmrcUrl,
+        appConfig.yourPensionSchemesUrl,
+        appConfig.psaOverviewUrl,
+        psaName
+      )(fakeRequest, messages)
+      compareResultAndView(result, view)
     }
   }
 }

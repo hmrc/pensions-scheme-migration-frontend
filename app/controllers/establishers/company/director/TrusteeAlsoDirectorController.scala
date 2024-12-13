@@ -26,15 +26,12 @@ import identifiers.establishers.company.director.TrusteeAlsoDirectorId
 import models.{DataPrefillRadio, Index, entities}
 import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import services.DataPrefillService
-import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.{Enumerable, UserAnswers}
+import views.html.DataPrefillRadioView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -48,9 +45,9 @@ class TrusteeAlsoDirectorController @Inject()(override val messagesApi: Messages
                                               formProvider: DataPrefillRadioFormProvider,
                                               dataPrefillService: DataPrefillService,
                                               val controllerComponents: MessagesControllerComponents,
-                                              renderer: Renderer
+                                              dataPrefillRadioView: DataPrefillRadioView
                                              )(implicit val executionContext: ExecutionContext) extends FrontendBaseController
-  with I18nSupport with Retrievals with Enumerable.Implicits with NunjucksSupport {
+  with I18nSupport with Retrievals with Enumerable.Implicits {
 
   def onPageLoad(establisherIndex: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
@@ -58,14 +55,16 @@ class TrusteeAlsoDirectorController @Inject()(override val messagesApi: Messages
         implicit val ua: UserAnswers = request.userAnswers
         val seqTrustee = dataPrefillService.getListOfTrusteesToBeCopied(establisherIndex)
         if (seqTrustee.nonEmpty) {
-          val json = Json.obj(
-            "form" -> form,
-            "schemeName" -> schemeName,
-            "pageHeading" -> msg"messages__directors__prefill__title",
-            "titleMessage" -> msg"messages__directors__prefill__heading".withArgs(companyName.companyName).resolve,
-            "radios" -> DataPrefillRadio.radios(form, seqTrustee)
-          )
-          renderer.render("dataPrefillRadio.njk", json).map(Ok(_))
+          Future.successful(Ok(
+            dataPrefillRadioView(
+              form,
+              Messages("messages__directors__prefill__title"),
+              Messages("messages__directors__prefill__heading", companyName.companyName),
+              DataPrefillRadio.radios(form, seqTrustee),
+              schemeName,
+              routes.TrusteeAlsoDirectorController.onSubmit(establisherIndex)
+            )
+          ))
         } else {
           Future(Redirect(controllers.common.routes.SpokeTaskListController.onPageLoad(establisherIndex, entities.Establisher, entities.Company)))
         }
@@ -79,15 +78,16 @@ class TrusteeAlsoDirectorController @Inject()(override val messagesApi: Messages
         val seqTrustee = dataPrefillService.getListOfTrusteesToBeCopied(establisherIndex)
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
-
-            val json = Json.obj(
-              "form" -> formWithErrors,
-              "schemeName" -> schemeName,
-              "pageHeading" -> msg"messages__directors__prefill__title",
-              "titleMessage" -> msg"messages__directors__prefill__heading".withArgs(companyName.companyName).resolve,
-              "radios" -> DataPrefillRadio.radios(form, seqTrustee)
-            )
-            renderer.render("dataPrefillRadio.njk", json).map(BadRequest(_))
+            Future.successful(BadRequest(
+              dataPrefillRadioView(
+                formWithErrors,
+                Messages("messages__directors__prefill__title"),
+                Messages("messages__directors__prefill__heading", companyName.companyName),
+                DataPrefillRadio.radios(form, seqTrustee),
+                schemeName,
+                routes.TrusteeAlsoDirectorController.onSubmit(establisherIndex)
+              )
+            ))
           },
           value => {
             def uaAfterCopy: UserAnswers = if (value < 0) ua else

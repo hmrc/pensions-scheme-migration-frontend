@@ -16,8 +16,7 @@
 
 package controllers.trustees.individual.details
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.HasReferenceValueController
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.HasReferenceNumberFormProvider
 import identifiers.beforeYouStart.SchemeNameId
@@ -26,46 +25,38 @@ import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.details.TrusteeHasNINOId
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode}
-import navigators.CompoundNavigator
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
 import services.DataUpdateService
-import uk.gov.hmrc.viewmodels.Radios
+import services.common.details.CommonHasReferenceValueService
 import utils.UserAnswers
-import viewmodels.Message
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import scala.util.Try
 
-class TrusteeHasNINOController @Inject()(
-                                              override val messagesApi: MessagesApi,
-                                              val navigator: CompoundNavigator,
-                                              authenticate: AuthAction,
-                                              getData: DataRetrievalAction,
-                                              requireData: DataRequiredAction,
-                                              formProvider: HasReferenceNumberFormProvider,
-                                              dataUpdateService: DataUpdateService,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              val userAnswersCacheConnector: UserAnswersCacheConnector,
-                                              val renderer: Renderer
-                                            )(implicit val executionContext: ExecutionContext)
-  extends HasReferenceValueController {
+class TrusteeHasNINOController @Inject()(val messagesApi: MessagesApi,
+                                         authenticate: AuthAction,
+                                         getData: DataRetrievalAction,
+                                         requireData: DataRequiredAction,
+                                         formProvider: HasReferenceNumberFormProvider,
+                                         dataUpdateService: DataUpdateService,
+                                         common: CommonHasReferenceValueService
+                                        )(implicit val executionContext: ExecutionContext)
+  extends Retrievals with I18nSupport {
 
   private def name(index: Index)
                   (implicit request: DataRequest[AnyContent]): String =
     request
       .userAnswers
       .get(TrusteeNameId(index))
-      .fold(Message("messages__trustee"))(_.fullName)
+      .fold(Messages("messages__trustee"))(_.fullName)
 
   private def form(index: Index)
                   (implicit request: DataRequest[AnyContent]): Form[Boolean] = {
     formProvider(
-      errorMsg = Message("messages__genericHasNino__error__required", name(index))
+      errorMsg = Messages("messages__genericHasNino__error__required", name(index))
     )
   }
 
@@ -75,14 +66,15 @@ class TrusteeHasNINOController @Inject()(
 
         SchemeNameId.retrieve.map {
           schemeName =>
-            get(
-              pageTitle     = Message("messages__hasNINO", Message("messages__individual")),
-              pageHeading     = Message("messages__hasNINO", name(index)),
+            common.get(
+              pageTitle     = Messages("messages__hasNINO", Messages("messages__individual")),
+              pageHeading     = Messages("messages__hasNINO", name(index)),
               isPageHeading = true,
               id            = TrusteeHasNINOId(index),
               form          = form(index),
               schemeName    = schemeName,
-              legendClass   = "govuk-label--xl"
+              legendClass   = "govuk-label--l",
+              submitCall    = routes.TrusteeHasNINOController.onSubmit(index, mode)
             )
         }
     }
@@ -92,27 +84,17 @@ class TrusteeHasNINOController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map {
           schemeName =>
-            form(index).bindFromRequest().fold(
-              (formWithErrors: Form[_]) =>
-                renderer.render(
-                  template = templateName(Seq()),
-                  ctx = Json.obj(
-                    "pageTitle" -> Message("messages__hasNINO", Message("messages__individual")),
-                    "pageHeading" -> Message("messages__hasNINO", name(index)),
-                    "isPageHeading" -> true,
-                    "form" -> formWithErrors,
-                    "radios" -> Radios.yesNo(formWithErrors("value")),
-                    "schemeName" -> schemeName,
-                    "legendClass" -> "govuk-label--xl",
-                    "paragraphs" -> Seq()
-                  )
-                ).map(BadRequest(_)),
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(setUpdatedAnswers(index, mode, value, request.userAnswers))
-                  _ <- userAnswersCacheConnector.save(request.lock, updatedAnswers.data)
-                } yield
-                  Redirect(navigator.nextPage(TrusteeHasNINOId(index), updatedAnswers, mode))
+            common.post(
+              pageTitle = Messages("messages__hasNINO", Messages("messages__individual")),
+              pageHeading = Messages("messages__hasNINO", name(index)),
+              isPageHeading = true,
+              id = TrusteeHasNINOId(index),
+              form = form(index),
+              schemeName = schemeName,
+              legendClass = "govuk-label--l",
+              mode = mode,
+              submitCall    = routes.TrusteeHasNINOController.onSubmit(index, mode),
+              optSetUserAnswers = Some(value => setUpdatedAnswers(index, mode, value, request.userAnswers))
             )
         }
     }

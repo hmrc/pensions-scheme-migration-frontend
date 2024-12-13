@@ -23,79 +23,71 @@ import identifiers.trustees.partnership.PartnershipDetailsId
 import identifiers.trustees.partnership.details.VATId
 import matchers.JsonMatchers
 import models.{Index, NormalMode, ReferenceValue}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
-import play.twirl.api.Html
-import renderer.Renderer
-import uk.gov.hmrc.viewmodels.NunjucksSupport
-import utils.Data.{partnershipDetails, schemeName, ua}
+import services.common.details.CommonEnterReferenceValueService
+import utils.Data.{partnershipDetails, ua}
 import utils.{FakeNavigator, UserAnswers}
+import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
 
 import scala.concurrent.Future
-class VATControllerSpec extends ControllerSpecBase with NunjucksSupport with JsonMatchers with TryValues with BeforeAndAfterEach {
+class VATControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues with BeforeAndAfterEach {
 
   private val index: Index = Index(0)
   private val referenceValue: ReferenceValue = ReferenceValue("123456789")
   private val userAnswers: UserAnswers = ua.set(PartnershipDetailsId(index), partnershipDetails).success.value
-
+  private val formData: ReferenceValue = ReferenceValue(value = "123456789")
   private val formProvider: VATFormProvider = new VATFormProvider()
-  private val templateToBeRendered: String = "enterReferenceValueWithHint.njk"
-  private val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-  private val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
-
-  private val commonJson: JsObject =
-    Json.obj(
-      "pageTitle"     -> messages("messages__vat", messages("messages__partnership")),
-      "pageHeading"     -> messages("messages__vat", partnershipDetails.partnershipName),
-      "schemeName"    -> schemeName,
-      "paragraphs"      -> Json.arr(messages("messages__vat__p", partnershipDetails.partnershipName)),
-      "legendClass"   -> "govuk-visually-hidden",
-      "isPageHeading" -> true
-    )
 
   private def controller(dataRetrievalAction: DataRetrievalAction): VATController =
-    new VATController(messagesApi, new FakeNavigator(desiredRoute = onwardCall), new FakeAuthAction(), dataRetrievalAction,
-      new DataRequiredActionImpl, formProvider, controllerComponents, mockUserAnswersCacheConnector, new Renderer(mockAppConfig, mockRenderer))
+    new VATController(messagesApi, new FakeAuthAction(), dataRetrievalAction,
+      new DataRequiredActionImpl, formProvider,
+      common = new CommonEnterReferenceValueService(
+        controllerComponents = controllerComponents,
+        userAnswersCacheConnector = mockUserAnswersCacheConnector,
+        navigator = new FakeNavigator(desiredRoute = onwardCall),
+        enterReferenceValueView = app.injector.instanceOf[EnterReferenceValueView],
+        enterReferenceValueWithHintView = app.injector.instanceOf[EnterReferenceValueWithHintView],
+        messagesApi = messagesApi
+      ))
 
-  override def beforeEach(): Unit = reset(mockRenderer, mockUserAnswersCacheConnector)
+  override def beforeEach(): Unit = reset(mockUserAnswersCacheConnector)
 
   "VATController" must {
     "return OK and the correct view for a GET" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
-
       val result: Future[Result] = controller(getData).onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = app.injector.instanceOf[EnterReferenceValueWithHintView].apply(
+        form = formProvider("test partnership"),
+        schemeName = "Test scheme name",
+        pageTitle = messages("messages__vat", messages("messages__partnership")),
+        pageHeading = messages("messages__vat", partnershipDetails.partnershipName),
+        legendClass = "govuk-visually-hidden",
+        paragraphs = Seq(messages("messages__vat__p", partnershipDetails.partnershipName)),
+        submitCall = routes.VATController.onSubmit(0, NormalMode)
+      )(fakeRequest, messages)
 
-      templateCaptor.getValue mustEqual templateToBeRendered
-      jsonCaptor.getValue must containJson(commonJson)
+      compareResultAndView(result, view)
 
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
       val ua = userAnswers.set(VATId(0), referenceValue).success.value
-
       val getData = new FakeDataRetrievalAction(Some(ua))
 
       val result: Future[Result] = controller(getData).onPageLoad(0, NormalMode)(fakeDataRequest(userAnswers))
 
       status(result) mustBe OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual templateToBeRendered
-      jsonCaptor.getValue must containJson(commonJson)
+      contentAsString(result) must include(messages("messages__vat", "the partnership"))
+      contentAsString(result) must include(formData.value)
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -111,8 +103,6 @@ class VATControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
       val request = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val getData = new FakeDataRetrievalAction(Some(userAnswers))
 
@@ -120,9 +110,9 @@ class VATControllerSpec extends ControllerSpecBase with NunjucksSupport with Jso
 
       status(result) mustBe BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-      templateCaptor.getValue mustEqual templateToBeRendered
-      jsonCaptor.getValue must containJson(commonJson)
+      contentAsString(result) must include(messages("messages__vat", "the partnership"))
+      contentAsString(result) must include(messages("messages__vat__error_invalid", partnershipDetails.partnershipName))
+
       verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any())
     }
   }

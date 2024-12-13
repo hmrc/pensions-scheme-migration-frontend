@@ -21,7 +21,6 @@ import controllers.Retrievals
 import controllers.actions._
 import controllers.trustees.routes.{AnyTrusteesController, NoTrusteesController}
 import forms.trustees.AddTrusteeFormProvider
-import helpers.AddToListHelper
 import identifiers.beforeYouStart.SchemeTypeId
 import identifiers.trustees.AddTrusteeId
 import models.requests.DataRequest
@@ -29,12 +28,9 @@ import models.{SchemeType, Trustee}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc._
-import renderer.Renderer
-import uk.gov.hmrc.nunjucks.NunjucksSupport
+import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.Radios
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -45,12 +41,11 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
                                      getData: DataRetrievalAction,
                                      requireData: DataRequiredAction,
                                      formProvider: AddTrusteeFormProvider,
-                                     helper: AddToListHelper,
                                      config: AppConfig,
                                      val controllerComponents: MessagesControllerComponents,
-                                     renderer: Renderer
+                                     view: views.html.trustees.AddTrusteeView
                                     )(implicit val ec: ExecutionContext)
-  extends FrontendBaseController with Retrievals with I18nSupport with NunjucksSupport {
+  extends FrontendBaseController with Retrievals with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
@@ -62,8 +57,7 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
           case (Nil, false) => navTo(AnyTrusteesController.onPageLoad)
           case (Nil, true) => navTo(NoTrusteesController.onPageLoad)
           case _ =>
-            val json: JsObject = getJson(formProvider(trustees), trustees)
-            renderer.render("trustees/addTrustee.njk", json).map(Ok(_))
+            Future.successful(Ok(getView(formProvider(trustees), trustees)))
         }
     }
 
@@ -79,25 +73,23 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
         case (Some(v), _) => navNextPage(v)
         case (_, numberOfTrustees) if numberOfTrustees >= config.maxTrustees => navNextPage(None)
         case _ =>
-          val json: JsObject = getJson(formWithErrors, trustees)
-          renderer.render("trustees/addTrustee.njk", json).map(BadRequest(_))
+          Future.successful(BadRequest(getView(formWithErrors, trustees)))
       }
   }
 
-  private def getJson(form: Form[_], trustees: Seq[Trustee[_]])(implicit request: DataRequest[AnyContent]): JsObject = {
+  private def getView(form: Form[_], trustees: Seq[Trustee[_]])(implicit request: DataRequest[AnyContent]): Html = {
     val trusteesComplete = trustees.filter(_.isCompleted)
     val trusteesIncomplete = trustees.filterNot(_.isCompleted)
-    val completeList = helper.directorsOrPartnersItemList(trusteesComplete)
-    val incompleteList  = helper.directorsOrPartnersItemList(trusteesIncomplete)
 
-    Json.obj(
-      "form" -> form,
-      "itemListIncomplete" -> incompleteList,
-      "itemListComplete" -> completeList,
-      "radios" -> Radios.yesNo(form("value")),
-      "schemeName" -> existingSchemeName,
-      "trusteeSize" -> trustees.size,
-      "maxTrustees" -> config.maxTrustees
+    view(
+      form,
+      controllers.trustees.routes.AddTrusteeController.onSubmit,
+      existingSchemeName.getOrElse(throw new RuntimeException("Scheme name not available")),
+      trusteesIncomplete,
+      trusteesComplete,
+      trustees.size,
+      config.maxTrustees,
+      utils.Radios.yesNo(form("value"))
     )
   }
 
