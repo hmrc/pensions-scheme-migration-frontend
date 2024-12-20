@@ -86,7 +86,8 @@ class DeclarationController @Inject()(
           }) recoverWith {
             case ex: UpstreamErrorResponse if ex.statusCode == UNPROCESSABLE_ENTITY =>
               Future.successful(Redirect(controllers.routes.AddingSchemeController.onPageLoad))
-            case _ =>
+            case ex =>
+              logger.warn(s"Failed to submit declaration: ${ex.getMessage}")
               Future.successful(Redirect(controllers.routes.YourActionWasNotProcessedController.onPageLoadScheme))
           }
         }
