@@ -91,7 +91,6 @@ class DeclarationController @Inject()(
                 s"""
                    |Failed to submit declaration:
                    |  PSTR: $pstrId
-                   |  PSA: $psaId
                    |  Exception: ${error.getMessage}
                    |  StackTrace: ${error.getStackTrace.mkString("\n")}
                    |""".stripMargin
