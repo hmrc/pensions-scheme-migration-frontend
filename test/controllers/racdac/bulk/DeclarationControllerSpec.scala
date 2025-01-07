@@ -84,7 +84,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
 
   "onSubmit" must {
     "redirect to next page when rac dac schemes exist" in {
-      when(mockBulkMigrationConnector.pushAll(any(), any())(any(), any())).thenReturn(Future(Json.obj()))
+      when(mockBulkMigrationConnector.pushAll(any())(any(), any())).thenReturn(Future(Json.obj()))
       when(mockCurrentPstrCacheConnector.save(any())(any(), any())).thenReturn(Future.successful(Json.obj()))
       val result = route(app, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
@@ -93,7 +93,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
     }
 
     "redirect to Request not process page when error while push" in {
-      when(mockBulkMigrationConnector.pushAll(any(), any())(any(), any())).thenReturn(Future.failed(new HttpException("No Service", SERVICE_UNAVAILABLE)))
+      when(mockBulkMigrationConnector.pushAll(any())(any(), any())).thenReturn(Future.failed(new HttpException("No Service", SERVICE_UNAVAILABLE)))
 
       val result = route(app, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
