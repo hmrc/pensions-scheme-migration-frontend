@@ -33,7 +33,7 @@ class BulkMigrationQueueConnectorSpec extends AsyncWordSpec with WireMockHelper 
   override protected def portConfigKey: String = "microservice.services.pensions-scheme-migration.port"
 
   private lazy val connector: BulkMigrationQueueConnector = injector.instanceOf[BulkMigrationQueueConnector]
-  private val bulkMigrationUrl = "/pensions-scheme-migration/bulk-migration"
+  private val bulkMigrationUrl = "/pensions-scheme-migration/bulk-migration/init"
   private val bulkMigrationIsInProgressUrl = "/pensions-scheme-migration/bulk-migration/isRequestInProgress"
   private val bulkMigrationAllFailedUrl = "/pensions-scheme-migration/bulk-migration/isAllFailed"
   private val bulkMigrationDeleteAllUrl = "/pensions-scheme-migration/bulk-migration/deleteAll"
@@ -50,7 +50,7 @@ class BulkMigrationQueueConnectorSpec extends AsyncWordSpec with WireMockHelper 
           )
       )
 
-      connector.pushAll(psaId, Json.obj()) map { res =>
+      connector.pushAll(Json.obj()) map { res =>
         res mustBe Json.obj()
       }
     }
@@ -65,7 +65,7 @@ class BulkMigrationQueueConnectorSpec extends AsyncWordSpec with WireMockHelper 
           )
       )
       recoverToExceptionIf[HttpException] {
-        connector.pushAll(psaId, Json.obj())
+        connector.pushAll(Json.obj())
       } map {
         _.responseCode mustEqual Status.INTERNAL_SERVER_ERROR
       }
