@@ -72,45 +72,6 @@ For access to the **Pension Administrator dashboard** for local development, ent
 
 ---
 
-In order to access the **Pension Practitioner dashboard** for local development, enter the following information: 
-
-**Redirect URL -** http://localhost:8204/manage-pension-schemes/dashboard 
-
-**GNAP Token -** NO 
-
-**Affinity Group -** Organisation 
-
-**Enrolment Key -** HMRC-PODSPP-ORG 
-
-**Identifier Name -** PspID 
-
-**Identifier Value -** 21000005
-
----
-
-
-
-**Dual enrolment** as both a Pension Administrator and Practitioner is also possible and can be accessed by entering:
-
-**Redirect url -** http://localhost:8204/manage-pension-schemes/overview 
-
-**GNAP Token -** NO 
-
-**Affinity Group -** Organisation 
-
-**Enrolment Key 1 -** HMRC-PODSPP-ORG Identifier 
-
-**Name 1 -** PspID Identifier 
-
-**Value 1 -** 21000005
-
-**Enrolment Key 2 -** HMRC-PODS-ORG 
-
-**Identifier Name 2 -** PsaID 
-
-**Identifier Value 2 -** A2100005
-
----
 
 To access the **Scheme Registration journey**, enter the following information:
 
@@ -162,10 +123,6 @@ There are multiple microservices that this service depends on. These are:
 | email                     | https://github.com/hmrc/email                     |
 | auth                      | https://github.com/hmrc/auth                      |
 | contact-frontend          | https://github.com/hmrc/contact-frontend          |
-
-## Service Documentation
-[To Do]
-Include relevant links or details to any additional, service-specific documents (e.g., stubs, testing protocols) when available. 
 
 ## Note on terminology
 The terms scheme reference number and submission reference number (SRN) are interchangeable within the PODS codebase; some downstream APIs use scheme reference number, some use submission reference number, probably because of oversight on part of the technical teams who developed these APIs. This detail means the same thing, the reference number that was returned from ETMP when the scheme details were submitted.
