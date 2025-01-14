@@ -31,14 +31,11 @@ class BulkMigrationQueueConnector @Inject()(config: AppConfig,
                                            ) {
 
 
-  def pushAll(psaId: String, requests: JsValue)
+  def pushAll(requests: JsValue)
              (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[JsValue] = {
 
-    val headers: Seq[(String, String)] = Seq(("psaId", psaId), ("Content-Type", "application/json"))
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
-
-    http.post(url"${config.bulkMigrationEnqueueUrl}")(hc)
-      .setHeader(headers: _*).withBody(requests).execute[HttpResponse]
+    http.post(url"${config.bulkMigrationEnqueueUrl}")(headerCarrier)
+      .withBody(requests).execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
         response.status match {

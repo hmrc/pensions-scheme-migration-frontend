@@ -20,7 +20,6 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.dataPrefill.DataPrefillCheckboxFormProvider
 import identifiers.establishers.company.CompanyDetailsId
-import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
 import models._
 import models.prefill.IndividualDetails
@@ -86,12 +85,8 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
   "TrusteesAlsoDirectorsController" must {
     "return OK and the correct view for a GET" in {
       when(mockDataPrefillService.getListOfTrusteesToBeCopied(any)(any)).thenReturn(Seq(IndividualDetails("", "", false, None, None, 0, true, None)))
-      val individualName = PersonName("Jane", "Doe")
 
       val getData = new FakeDataRetrievalAction(Some(userAnswerss))
-      val userAnswers1: UserAnswers = ua.set(CompanyDetailsId(0), companyDetails).success.value
-      val userAnswers: Option[UserAnswers] = userAnswers1.set(EstablisherNameId(0), individualName).toOption
-
       val seqCheckBox = DataPrefillCheckbox.checkboxes(form, Seq(IndividualDetails("", "", false, None, None, 0, true, None)))
       mutableFakeDataRetrievalAction.setDataToReturn(Some(userAnswerss))
 

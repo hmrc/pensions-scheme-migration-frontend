@@ -56,11 +56,6 @@ class InsurerSelectAddressControllerSpec extends ControllerSpecBase with JsonMat
   private val httpPathGET: String = controllers.benefitsAndInsurance.routes.InsurerSelectAddressController.onPageLoad.url
   private val httpPathPOST: String = controllers.benefitsAndInsurance.routes.InsurerSelectAddressController.onSubmit.url
 
-  private val seqAddresses = Seq(
-    TolerantAddress(Some("1"),Some("1"),Some("c"),Some("d"), Some("zz11zz"), Some("GB")),
-    TolerantAddress(Some("2"),Some("2"),Some("c"),Some("d"), Some("zz11zz"), Some("GB"))
-  )
-
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq("1")
   )
@@ -98,7 +93,7 @@ class InsurerSelectAddressControllerSpec extends ControllerSpecBase with JsonMat
         h1MessageKey = "addressList.title"
       )(fakeRequest, messages)
 
-      when(mockCommonAddressListService.get(any(), any(), any())(any(), any()))
+      when(mockCommonAddressListService.get(any(), any(), any())(any()))
         .thenReturn(Future.successful(Ok(expectedView)))
 
       val result: Future[Result] = route(app, httpGETRequest(httpPathGET)).value

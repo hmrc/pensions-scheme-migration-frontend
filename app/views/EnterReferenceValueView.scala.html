@@ -38,20 +38,19 @@ govukButton: GovukButton
 
         @formHelper(action = submitCall, Symbol("autocomplete") -> "off") {
 
-        @govukInput(Input(
+        @govukInput(
+        InputViewModel(
+        field = form("value"),
         label = Label(
         content = Text(messages(pageHeading)),
         isPageHeading = true,
         classes = "govuk-label--l govuk-!-margin-bottom-4"
         ),
-        id = "value",
-        name = "value",
-        value = form("value").value,
         classes = "govuk-input--width-10",
-        attributes = Map("autocomplete" -> "off"),
-        errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message)))),
-        hint = Some(Hint(content = Text(messages("messages__enterEmail_hint"))))
-        ))
+        hint = hintText.map(text => Hint(content = Text(messages(text))))
+        )
+        )
+
 
         @govukButton(Button(
         content = Text(messages("site.save_and_continue")),

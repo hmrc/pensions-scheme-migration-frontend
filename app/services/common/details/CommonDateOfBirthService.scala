@@ -50,7 +50,7 @@ class CommonDateOfBirthService @Inject()(val controllerComponents: MessagesContr
                     schemeName: String,
                     entityType: String,
                     call: Call
-                   )(implicit request: DataRequest[AnyContent], ex: ExecutionContext): Future[Result] = {
+                   )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     val preparedForm: Form[LocalDate] = {
       request.userAnswers.get[LocalDate](dobId) match {

@@ -55,7 +55,7 @@
             </p>
 
             @govukButton(
-                ButtonViewModel(Text(messages("findAddress"))).withAttribute("id", "submit")
+                ButtonViewModel(Text(messages("findAddress"))).withAttribute(("id", "submit"): (String, String))
             )
         }
     @schemeName.map { schemeName => @templates.ReturnLink(schemeName) }

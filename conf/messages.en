@@ -137,6 +137,7 @@ messages__common__pick_country = Select a country
 messages__established_country__error__required = Enter a recognised country
 
 messages__workingKnowledge__title = Do you have working knowledge of pensions and pensions tax legislation?
+messages__workingKnowledge__h1 = Working knowledge of pensions
 messages__workingKnowledge__heading = Do you have working knowledge of pensions and pensions tax legislation?
 messages__workingKnowledge__p1 = There needs to be someone with working knowledge of pensions and pensions tax legislation involved with this pension scheme. This could be either you as scheme administrator or a pension practitioner or provider who is helping you.
 messages__workingKnowledge__p2 = For example, if you are an employer, or a director of an employer, who has registered a pension scheme, you might not have working knowledge of pensions and pensions tax legislation.

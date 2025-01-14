@@ -74,7 +74,7 @@ class CommonDateOfBirthServiceSpec extends ControllerSpecBase with CommonService
         schemeName = "Test Scheme",
         entityType = "individual",
         routes.TrusteeDOBController.onSubmit(Index(0), NormalMode)
-      )(fakeDataRequest(userAnswers, fakeRequestWithFormData), global)
+      )(fakeDataRequest(userAnswers, fakeRequestWithFormData))
 
       status(result) mustBe OK
       compareResultAndView(result, expectedView)
@@ -99,7 +99,7 @@ class CommonDateOfBirthServiceSpec extends ControllerSpecBase with CommonService
         schemeName = "Test Scheme",
         entityType = "individual",
         routes.TrusteeDOBController.onSubmit(Index(0), NormalMode)
-      )(fakeDataRequest(updatedAnswers, fakeRequestWithFormData), global)
+      )(fakeDataRequest(updatedAnswers, fakeRequestWithFormData))
 
       status(result) mustBe OK
       compareResultAndView(result, expectedView)

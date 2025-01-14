@@ -56,7 +56,7 @@ class CommonAddressListService @Inject()(
   def get(template: CommonAddressListTemplateData,
           form: Form[Int],
           submitUrl : Call
-         )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
+         )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     Future.successful(Ok(addressListView(
       form,
       template.entityType,

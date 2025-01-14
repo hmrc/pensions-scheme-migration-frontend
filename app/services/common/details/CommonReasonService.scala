@@ -49,7 +49,7 @@ class CommonReasonService @Inject()(val controllerComponents: MessagesController
           form: Form[String],
           schemeName: String,
           submitUrl: Call
-         )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
+         )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     val filledForm = request.userAnswers.get[String](id).fold(form)(form.fill)
     Future.successful(Ok(reasonView(

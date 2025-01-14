@@ -65,7 +65,8 @@ class TrusteeNoNINOReasonControllerSpec
         pageTitle, pageHeading, isPageHeading, form, schemeName, submitCall
       )(request, messages)
 
-      when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any(), any()))
+      when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any()))
+
         .thenReturn(Future.successful(Ok(view)))
 
       val result = route(application, httpGETRequest(httpPathGET)).value
@@ -81,7 +82,8 @@ class TrusteeNoNINOReasonControllerSpec
         pageTitle, pageHeading, isPageHeading, filledForm, schemeName, submitCall
       )(request, messages)
 
-      when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any(), any()))
+      when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any()))
+
         .thenReturn(Future.successful(Ok(view)))
 
       when(mockCommonReasonService.post(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
@@ -105,7 +107,8 @@ class TrusteeNoNINOReasonControllerSpec
       val view = application.injector.instanceOf[ReasonView].apply(
         pageTitle, pageHeading, isPageHeading, filledForm, schemeName, submitCall
       )(request, messages)
-      when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any(), any()))
+      when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any()))
+
         .thenReturn(Future.successful(Ok(view)))
       when(mockCommonReasonService.post(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(Redirect(onwardCall.url)))
