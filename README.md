@@ -21,17 +21,14 @@ This service has a corresponding back-end microservice to support the migration 
 
 **Stubs:** https://github.com/hmrc/pensions-scheme-stubs
 
-
-
 ## Requirements
 This service is written in Scala and Play, so needs at least a [JRE] to run.
 
 **Node version:** 16.20.2
 
-**Java version:** 11
+**Java version:** 21
 
 **Scala version:** 2.13.14
-
 
 ## Running the Service
 **Service Manager Profile:** PODS_ALL
@@ -55,7 +52,6 @@ Access the Authority Wizard and login with the relevant enrolment details [here]
 ## Enrolments
 There are several different options for enrolling through the auth login stub. In order to enrol as a dummy user to access the platform for local development and testing purposes, the following details must be entered on the auth login page.
 
-
 For access to the **Pension Administrator dashboard** for local development, enter the following information: 
 
 **Redirect url -** http://localhost:8204/manage-pension-schemes/overview 
@@ -72,7 +68,6 @@ For access to the **Pension Administrator dashboard** for local development, ent
 
 ---
 
-
 To access the **Scheme Registration journey**, enter the following information:
 
 **Redirect URL -** http://localhost:8204/manage-pension-schemes/you-need-to-register 
@@ -82,7 +77,6 @@ To access the **Scheme Registration journey**, enter the following information:
 **Affinity Group -** Organisation
 
 ---
-
 
 ## Compile & Test
 **To compile:** Run `sbt compile`
