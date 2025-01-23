@@ -21,7 +21,6 @@ import matchers.JsonMatchers
 import models.prefill.IndividualDetails
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
 import utils.{Enumerable, UaJsValueGenerators, UserAnswers}
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
 
 import java.time.LocalDate
 
