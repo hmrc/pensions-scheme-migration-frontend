@@ -43,7 +43,9 @@ lazy val microservice = Project(appName, file("."))
 // prevent removal of unused code which generates warning errors due to use of third-party libs
     uglifyCompressOptions := Seq("unused=false", "dead_code=false"),
 // below line required to force asset pipeline to operate in dev rather than only prod
-    Assets / pipelineStages := Seq(concat, uglify) ,
+    // Removed uglify due to node 20 compile issues.
+    // Suspected cause minification of already minified location-autocomplete.min.js -Pavel Vjalicin
+    Assets / pipelineStages := Seq(concat),
     resolvers ++= Seq(
     Resolver.jcenterRepo,
     ),
