@@ -70,7 +70,7 @@ class EnterPostcodeController @Inject()(
       implicit request =>
         implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-      retrieve(SchemeNameId) { schemeName =>
+        retrieve(SchemeNameId) { schemeName =>
           val formToTemplate: Form[String] => CommonPostcodeTemplateData = getFormToTemplate(schemeName, establisherIndex, directorIndex, mode)
           form.bindFromRequest().fold(
             formWithErrors => {

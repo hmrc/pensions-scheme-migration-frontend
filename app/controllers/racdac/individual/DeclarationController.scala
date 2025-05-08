@@ -78,18 +78,18 @@ class DeclarationController @Inject()(
         val userAnswers = request.userAnswers
         val racDacName = userAnswers.get(SchemeNameId)
           .getOrElse(throw new RuntimeException("Scheme Name is mandatory for RAC/DAC"))
-            (for {
-              updatedUa <- Future.fromTry(userAnswers.set( __ \ "pstr",JsString(request.lock.pstr)))
-              _ <- pensionsSchemeConnector.registerScheme(UserAnswers(updatedUa.data), psaId, RacDac)
-              _ <- sendEmail(racDacName,psaId, pstrId)
-            } yield {
-              Redirect(controllers.racdac.individual.routes.ConfirmationController.onPageLoad.url)
-            })recoverWith {
-              case ex: UpstreamErrorResponse if ex.statusCode == UNPROCESSABLE_ENTITY =>
-                Future.successful(Redirect(controllers.racdac.individual.routes.AddingRacDacController.onPageLoad))
-              case _ =>
-                Future.successful(Redirect(controllers.routes.YourActionWasNotProcessedController.onPageLoadRacDac))
-            }
+        (for {
+          updatedUa <- Future.fromTry(userAnswers.set(__ \ "pstr", JsString(request.lock.pstr)))
+          _ <- pensionsSchemeConnector.registerScheme(UserAnswers(updatedUa.data), psaId, RacDac)
+          _ <- sendEmail(racDacName, psaId, pstrId)
+        } yield {
+          Redirect(controllers.racdac.individual.routes.ConfirmationController.onPageLoad.url)
+        }) recoverWith {
+          case ex: UpstreamErrorResponse if ex.statusCode == UNPROCESSABLE_ENTITY =>
+            Future.successful(Redirect(controllers.racdac.individual.routes.AddingRacDacController.onPageLoad))
+          case _ =>
+            Future.successful(Redirect(controllers.routes.YourActionWasNotProcessedController.onPageLoadRacDac))
+        }
     }
 
   private def sendEmail(schemeName: String, psaId: String, pstrId:String)

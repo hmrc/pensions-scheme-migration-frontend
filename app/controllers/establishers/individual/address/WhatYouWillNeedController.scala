@@ -45,14 +45,13 @@ class WhatYouWillNeedController @Inject()(
         val schemeName = request.userAnswers.get(SchemeNameId)
           .getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
 
-        EstablisherNameId(index).retrieve.map {
-          personName: PersonName =>
-            Future.successful(Ok(whatYouWillNeedView(
-              Messages("messages__title_individual"),
-              personName.fullName,
-              routes.EnterPostcodeController.onPageLoad(index,NormalMode).url,
-              schemeName
-            )))
+        EstablisherNameId(index).retrieve.map { personName =>
+          Future.successful(Ok(whatYouWillNeedView(
+            Messages("messages__title_individual"),
+            personName.fullName,
+            routes.EnterPostcodeController.onPageLoad(index,NormalMode).url,
+            schemeName
+          )))
         }
     }
 
