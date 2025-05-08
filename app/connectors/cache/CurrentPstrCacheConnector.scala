@@ -25,6 +25,7 @@ import play.api.mvc.Results._
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse, NotFoundException, StringContextOps}
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -45,10 +46,10 @@ class CurrentPstrCacheConnectorImpl @Inject()(config: AppConfig, http: HttpClien
   def fetch(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[JsValue]] = {
 
     val headers: Seq[(String, String)] = Seq(("Content-Type", "application/json"))
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers*)
 
     http.get(url"$url")(hc)
-      .setHeader(headers: _*)
+      .setHeader(headers*)
       .execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
@@ -67,10 +68,10 @@ class CurrentPstrCacheConnectorImpl @Inject()(config: AppConfig, http: HttpClien
           (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[JsValue] = {
 
     val headers: Seq[(String, String)] = Seq(("Content-Type", "application/json"))
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers*)
 
     http.post(url"$url")(hc)
-      .setHeader(headers: _*)
+      .setHeader(headers*)
       .withBody(value).execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
@@ -85,10 +86,10 @@ class CurrentPstrCacheConnectorImpl @Inject()(config: AppConfig, http: HttpClien
   def remove(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Result] = {
 
     val headers: Seq[(String, String)] = Seq(("Content-Type", "application/json"))
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers*)
 
     http.delete(url"$url")(hc)
-      .setHeader(headers: _*)
+      .setHeader(headers*)
       .execute[HttpResponse].map { _ =>
       Ok
     }

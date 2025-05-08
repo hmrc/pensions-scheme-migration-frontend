@@ -133,7 +133,7 @@ package object utils {
     private def removeWithOldValue(first: PathNode, second: PathNode, rest: List[PathNode], oldValue: JsValue): JsResult[JsValue] =
       Reads.optionNoError(Reads.at[JsValue](JsPath(first :: Nil)))
         .reads(oldValue).flatMap {
-        opt: Option[JsValue] =>
+          (opt: Option[JsValue]) =>
 
           opt.map(JsSuccess(_)).getOrElse {
             second match {
