@@ -23,6 +23,7 @@ import identifiers.trustees.partnership.PartnershipDetailsId
 import matchers.JsonMatchers
 import models.PartnershipDetails
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{when, verify, reset, times}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
@@ -33,6 +34,8 @@ import utils.{Data, FakeNavigator}
 import views.html.PartnershipDetailsView
 
 import scala.concurrent.Future
+
+
 class PartnershipDetailsControllerSpec extends ControllerSpecBase
 
   with JsonMatchers

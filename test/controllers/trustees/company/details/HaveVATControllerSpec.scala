@@ -25,6 +25,7 @@ import matchers.JsonMatchers
 import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
+import org.mockito.Mockito.{when, verify, reset, times}
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json.Json
@@ -37,6 +38,8 @@ import utils.{FakeNavigator, UserAnswers}
 import views.html.{HasReferenceValueView, HasReferenceValueWithHintView}
 
 import scala.concurrent.Future
+
+
 class HaveVATControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues with BeforeAndAfterEach {
 
   private val index: Index = Index(0)

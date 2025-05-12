@@ -22,6 +22,7 @@ import identifiers.trustees.company.details.NoUTRReasonId
 import matchers.JsonMatchers
 import models.CompanyDetails
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{when, verify, reset, times}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -34,6 +35,8 @@ import utils.UserAnswers
 import views.html.ReasonView
 
 import scala.concurrent.Future
+
+
 class NoUTRReasonControllerSpec
   extends ReasonControllerSpecBase
     with JsonMatchers

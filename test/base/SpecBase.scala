@@ -19,7 +19,7 @@ package base
 import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import models.requests.DataRequest
-import org.mockito.MockitoSugar.mock
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.Assertion
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
@@ -39,9 +39,8 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration.DurationInt
 import scala.language.implicitConversions
 
-trait SpecBase
-  extends PlaySpec
-    with GuiceOneAppPerSuite {
+trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
+
 
 
   val onwardCall: Call = Call("GET", "onwardCall")

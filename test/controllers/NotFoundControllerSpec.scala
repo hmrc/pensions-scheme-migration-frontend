@@ -22,6 +22,7 @@ import play.api.Application
 import play.api.test.Helpers._
 import utils.{Enumerable, UserAnswers}
 import views.html.NotFoundView
+import org.mockito.Mockito.{when, verify, reset, times}
 
 class NotFoundControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 

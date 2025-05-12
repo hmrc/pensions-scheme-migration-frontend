@@ -26,6 +26,7 @@ import models.trustees.TrusteeKind
 import models.{Index, PersonName, Scheme}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{when, verify, reset, times}
 import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.Json
@@ -34,6 +35,8 @@ import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
 
 import scala.concurrent.Future
+
+
 class TrusteeKindControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val index: Index = Index(0)

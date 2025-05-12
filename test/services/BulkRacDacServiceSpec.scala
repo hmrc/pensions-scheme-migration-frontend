@@ -21,9 +21,9 @@ import forms.racdac.RacDacBulkListFormProvider
 import matchers.JsonMatchers
 import models._
 import models.requests.{AuthenticatedRequest, BulkDataRequest}
-import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
+import org.mockito.Mockito.{when, verify, reset, times}
 import play.api.data.Form
 import play.api.http.Status._
 import play.api.i18n.Messages
@@ -34,13 +34,14 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{Table, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, TableRow}
 import utils.Data._
 import views.html.racdac.RacDacsBulkListView
+import org.scalatestplus.mockito.MockitoSugar
+
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class BulkRacDacServiceSpec extends SpecBase
   with BeforeAndAfterEach
   with ScalaFutures
-
   with MockitoSugar
   with JsonMatchers {
 

@@ -24,6 +24,7 @@ import identifiers.racdac.ContractOrPolicyNumberId
 import matchers.JsonMatchers
 import models.{Items, ListOfLegacySchemes, RacDac}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{when, verify, reset, times}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import play.api.Application
@@ -39,6 +40,8 @@ import utils.Data._
 import utils.{Data, UserAnswers}
 
 import scala.concurrent.Future
+
+
 class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAfterEach  with JsonMatchers  {
 
   private val mockListOfSchemesConnector = mock[ListOfSchemesConnector]

@@ -22,6 +22,7 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import matchers.JsonMatchers
 import models.MinPSA
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{when, verify, reset, times}
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.bind
@@ -34,6 +35,8 @@ import utils.Data.{psaName, pstr, ua}
 import utils.Enumerable
 
 import scala.concurrent.Future
+
+
 class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
   
 

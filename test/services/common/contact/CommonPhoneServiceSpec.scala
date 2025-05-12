@@ -19,8 +19,8 @@ package services.common.contact
 import controllers.ControllerSpecBase
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchersSugar.eqTo
+import org.mockito.ArgumentMatchers.{any,eq=>eqTo}
+import org.mockito.Mockito.{when, verify, reset, times}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
@@ -44,7 +44,7 @@ class CommonPhoneServiceSpec extends ControllerSpecBase with CommonServiceSpecBa
 
   private val navigator = new FakeNavigator(desiredRoute = onwardCall)
   private val form = Form("value" -> text)
-  val phoneView: PhoneView = org.mockito.MockitoSugar.mock[views.html.PhoneView]
+  val phoneView: PhoneView = mock[views.html.PhoneView]
   private val service = new CommonPhoneService(
     controllerComponents, mockUserAnswersCacheConnector, navigator, messagesApi, phoneView)
 

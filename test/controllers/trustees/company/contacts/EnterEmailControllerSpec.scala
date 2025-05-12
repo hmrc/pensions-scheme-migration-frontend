@@ -24,6 +24,7 @@ import identifiers.trustees.company.contacts.EnterEmailId
 import matchers.JsonMatchers
 import models.{CompanyDetails, NormalMode}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{when, verify, reset, times}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.i18n.Messages
 import play.api.libs.json.Json
@@ -36,6 +37,8 @@ import utils.{Data, FakeNavigator, UserAnswers}
 import views.html.EmailView
 
 import scala.concurrent.Future
+
+
 class EnterEmailControllerSpec extends ControllerSpecBase
 
   with JsonMatchers

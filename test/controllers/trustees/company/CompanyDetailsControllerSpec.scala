@@ -23,6 +23,7 @@ import identifiers.trustees.company.CompanyDetailsId
 import matchers.JsonMatchers
 import models.CompanyDetails
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{when, verify, reset, times}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.Application
 import play.api.libs.json.Json
@@ -32,6 +33,8 @@ import utils.Data.ua
 import views.html.CompanyDetailsView
 
 import scala.concurrent.Future
+
+
 class CompanyDetailsControllerSpec extends ControllerSpecBase
 
   with JsonMatchers

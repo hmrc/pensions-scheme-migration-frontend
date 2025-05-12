@@ -22,6 +22,7 @@ import identifiers.establishers.individual.address.AddressYearsId
 import models.NormalMode
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{when, verify, reset, times}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar

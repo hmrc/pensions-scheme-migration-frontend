@@ -24,6 +24,7 @@ import identifiers.trustees.individual.details.TrusteeHasUTRId
 import matchers.JsonMatchers
 import models.{NormalMode, PersonName}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{when, verify, reset, times}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
 import play.api.libs.json.Json
@@ -36,6 +37,8 @@ import utils.{FakeNavigator, UserAnswers}
 import views.html.{HasReferenceValueView, HasReferenceValueWithHintView}
 
 import scala.concurrent.Future
+
+
 class TrusteeHasUTRControllerSpec
   extends ControllerSpecBase
     with JsonMatchers

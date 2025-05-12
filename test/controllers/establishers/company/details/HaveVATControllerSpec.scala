@@ -24,6 +24,7 @@ import identifiers.establishers.company.details.HaveVATId
 import matchers.JsonMatchers
 import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{when, verify, reset, times}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
 import play.api.i18n.Messages

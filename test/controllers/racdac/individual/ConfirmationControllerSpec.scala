@@ -23,6 +23,7 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.beforeYouStart.SchemeNameId
 import matchers.JsonMatchers
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{when, verify, reset, times}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -32,6 +33,8 @@ import utils.Data.ua
 import utils.{Data, Enumerable, UserAnswers}
 
 import scala.concurrent.Future
+
+
 class ConfirmationControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val userAnswers: Option[UserAnswers] = ua.set(SchemeNameId, Data.schemeName).toOption

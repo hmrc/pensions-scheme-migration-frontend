@@ -27,12 +27,14 @@ import models.establishers.EstablisherKind
 import models.{EstablisherIndividualEntity, PersonName, Scheme}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{when, verify, reset, times}
 import play.api.Application
 import play.api.data.Form
 import play.api.test.Helpers._
 import utils.Data.{schemeName, ua}
 import utils.{Data, UserAnswers}
 import views.html.establishers.AddEstablisherView
+
 class AddEstablisherControllerSpec extends ControllerSpecBase with JsonMatchers {
   private val establisherName: String = "e f"
   private val userAnswers: Option[UserAnswers] = ua.set(EstablisherKindId(0), EstablisherKind.Individual).flatMap(

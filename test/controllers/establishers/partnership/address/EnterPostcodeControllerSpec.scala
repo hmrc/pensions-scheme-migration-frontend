@@ -24,6 +24,7 @@ import identifiers.beforeYouStart.SchemeNameId
 import matchers.JsonMatchers
 import models.{NormalMode, Scheme}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{when, verify, reset, times}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule

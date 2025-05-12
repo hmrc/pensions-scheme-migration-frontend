@@ -30,6 +30,7 @@ import play.api.test.Helpers._
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
 import views.html.AlreadyDeletedView
+
 class AlreadyDeletedControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val index: Index = Index(0)

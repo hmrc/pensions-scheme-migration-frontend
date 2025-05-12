@@ -22,7 +22,6 @@ import models.requests.AuthenticatedRequest
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.mockito.MockitoSugar.mock
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.mvc.Results.Ok

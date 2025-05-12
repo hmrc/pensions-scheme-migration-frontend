@@ -24,6 +24,7 @@ import identifiers.adviser.EnterPostCodeId
 import identifiers.beforeYouStart.SchemeNameId
 import matchers.JsonMatchers
 import models.{Scheme, TolerantAddress}
+import org.mockito.Mockito.when
 import org.mockito.ArgumentMatchers.any
 import play.api.Application
 import play.api.inject.bind
@@ -35,6 +36,7 @@ import play.api.test.Helpers._
 import services.common.address.CommonAddressListService
 import utils.{Data, Enumerable, UserAnswers}
 import views.html.address.AddressListView
+
 
 import scala.concurrent.Future
 

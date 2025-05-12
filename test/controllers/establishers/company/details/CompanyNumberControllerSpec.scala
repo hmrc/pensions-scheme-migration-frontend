@@ -24,6 +24,7 @@ import identifiers.establishers.company.details.CompanyNumberId
 import matchers.JsonMatchers
 import models.{Index, NormalMode, ReferenceValue}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{when, verify, reset, times}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.{Form, FormBinding}
 import play.api.libs.json.Json

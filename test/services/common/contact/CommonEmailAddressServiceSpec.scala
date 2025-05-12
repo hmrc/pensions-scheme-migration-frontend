@@ -19,8 +19,8 @@ package services.common.contact
 import controllers.ControllerSpecBase
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchersSugar.eqTo
+import org.mockito.ArgumentMatchers.{any,eq=>eqTo}
+import org.mockito.Mockito.{when, verify, reset, times}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
@@ -45,7 +45,7 @@ class CommonEmailAddressServiceSpec extends ControllerSpecBase with CommonServic
   private val navigator = new FakeNavigator(desiredRoute = onwardCall)
   private val form = Form("value" -> email)
 
-  val emailView: EmailView = org.mockito.MockitoSugar.mock[views.html.EmailView]
+  val emailView: EmailView = mock[views.html.EmailView]
 
   private val service = new CommonEmailAddressService(
     controllerComponents, mockUserAnswersCacheConnector, navigator, messagesApi, emailView

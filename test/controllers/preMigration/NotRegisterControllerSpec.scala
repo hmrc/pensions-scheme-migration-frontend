@@ -20,6 +20,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import matchers.JsonMatchers
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{when, verify, reset, times}
 import org.scalatest.TryValues
 import play.api.i18n.Messages
 import play.api.mvc.Result
@@ -27,6 +28,8 @@ import play.api.test.Helpers.{status, _}
 import views.html.preMigration.NotRegisterView
 
 import scala.concurrent.Future
+
+
 class NotRegisterControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues  {
 
   private val psaName: String = "Nigel"

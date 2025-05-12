@@ -24,6 +24,7 @@ import matchers.JsonMatchers
 import models.prefill.IndividualDetails
 import models.{DataPrefillRadio, PersonName}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{when, verify, reset, times}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
@@ -34,6 +35,7 @@ import utils.{Data, FakeNavigator, UserAnswers}
 import views.html.DataPrefillRadioView
 
 import scala.concurrent.Future
+
 class DirectorAlsoTrusteeControllerSpec extends ControllerSpecBase
   with JsonMatchers
   with TryValues

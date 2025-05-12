@@ -24,6 +24,7 @@ import matchers.JsonMatchers
 import models.{Items, ListOfLegacySchemes, RacDac, Scheme}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{when, verify, reset, times}
 import org.scalatest.TryValues
 import play.api.mvc.Result
 import play.api.mvc.Results._
@@ -31,6 +32,8 @@ import play.api.test.Helpers.{status, _}
 import services.{LockingService, SchemeSearchService}
 
 import scala.concurrent.Future
+
+
 class ListOfSchemesControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues  {
 
   private val mockSchemeSearchService: SchemeSearchService = mock[SchemeSearchService]

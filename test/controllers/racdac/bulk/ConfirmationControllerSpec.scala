@@ -22,6 +22,7 @@ import controllers.ControllerSpecBase
 import controllers.actions.{BulkDataAction, MutableFakeBulkDataAction}
 import matchers.JsonMatchers
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{when, verify, reset, times}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
@@ -32,6 +33,8 @@ import play.api.test.Helpers._
 import utils.{Data, Enumerable}
 
 import scala.concurrent.Future
+
+
 class ConfirmationControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val mockSchemeCacheConnector = mock[CurrentPstrCacheConnector]

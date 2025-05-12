@@ -18,7 +18,8 @@ package controllers.benefitsAndInsurance
 
 import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
-import controllers.actions.AuthActionSpec.app.environment
+import play.api.Environment
+import config.AppConfig
 import controllers.actions.MutableFakeDataRetrievalAction
 import controllers.establishers.individual.address.routes
 import forms.address.AddressFormProvider
@@ -28,6 +29,7 @@ import identifiers.benefitsAndInsurance.BenefitsInsuranceNameId
 import matchers.JsonMatchers
 import models.{NormalMode, Scheme}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{when, verify, reset, times}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -55,7 +57,7 @@ class InsurerConfirmAddressControllerSpec extends ControllerSpecBase with JsonMa
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
-  private val countryOptions: CountryOptions = new CountryOptions(environment, appConfig)
+  private val countryOptions: CountryOptions = new CountryOptions(app.injector.instanceOf[Environment], app.injector.instanceOf[AppConfig])
   private val formProvider: AddressFormProvider = new AddressFormProvider(countryOptions)
   private val form = formProvider()
 

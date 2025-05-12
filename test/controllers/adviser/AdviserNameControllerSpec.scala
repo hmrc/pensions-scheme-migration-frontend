@@ -23,6 +23,7 @@ import identifiers.adviser.AdviserNameId
 import matchers.JsonMatchers
 import models.{CheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{when, verify, reset, times}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
@@ -31,6 +32,7 @@ import play.api.test.Helpers._
 import utils.Data.ua
 import utils.{Data, FakeNavigator}
 import views.html.adviser.AdviserNameView
+import org.mockito.Mockito.{when, verify, reset, times}
 
 import scala.concurrent.Future
 

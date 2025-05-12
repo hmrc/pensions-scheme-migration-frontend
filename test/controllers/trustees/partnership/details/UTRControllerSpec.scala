@@ -24,6 +24,7 @@ import identifiers.trustees.partnership.details.PartnershipUTRId
 import matchers.JsonMatchers
 import models.{Index, NormalMode, ReferenceValue}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{when, verify, reset, times}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
@@ -35,6 +36,7 @@ import utils.{FakeNavigator, UserAnswers}
 import views.html.{EnterReferenceValueView, EnterReferenceValueWithHintView}
 
 import scala.concurrent.Future
+
 class UTRControllerSpec extends ControllerSpecBase with JsonMatchers with TryValues with BeforeAndAfterEach {
 
   private val index: Index = Index(0)

@@ -19,11 +19,11 @@ package services
 import base.SpecBase
 import matchers.JsonMatchers
 import models.requests.DataRequest
-import org.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.mvc.{AnyContent, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import utils.UserAnswers
+import org.scalatestplus.mockito.MockitoSugar
 
 trait CommonServiceSpecBase extends SpecBase with JsonMatchers with TryValues
   with BeforeAndAfterEach with MockitoSugar {

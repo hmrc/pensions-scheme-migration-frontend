@@ -21,6 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import matchers.JsonMatchers
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{when, verify, reset, times}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -29,6 +30,8 @@ import play.api.test.Helpers._
 import utils.Enumerable
 
 import scala.concurrent.Future
+
+
 class FinishedStatusControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val mockQueueConnector = mock[BulkMigrationQueueConnector]

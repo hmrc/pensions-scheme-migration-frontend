@@ -25,6 +25,7 @@ import matchers.JsonMatchers
 import models.trustees.TrusteeKind
 import models.{Index, PersonName, Scheme}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{when, verify, reset, times}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.Application
 import play.api.data.Form
@@ -35,6 +36,8 @@ import utils.{Enumerable, UserAnswers}
 import views.html.DeleteView
 
 import scala.concurrent.Future
+
+
 class ConfirmDeleteTrusteeControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
 
