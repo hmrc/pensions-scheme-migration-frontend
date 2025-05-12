@@ -113,7 +113,7 @@ class PartnerDOBControllerSpec
 
       contentAsString(result)
         .replaceAll("&amp;referrerUrl=%2F\\[.*?\\]", "&amp;referrerUrl=%2F[]")
-        .removeAllNonces() contains expectedView
+        .removeAllNonces() contains expectedView.toString()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
@@ -141,7 +141,7 @@ class PartnerDOBControllerSpec
 
       contentAsString(result)
         .replaceAll("&amp;referrerUrl=%2F\\[.*?\\]", "&amp;referrerUrl=%2F[]")
-        .removeAllNonces() contains expectedView
+        .removeAllNonces() contains expectedView.toString()
     }
 
     "redirect to the next page when valid data is submitted" in {

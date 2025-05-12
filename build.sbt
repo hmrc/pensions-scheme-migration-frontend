@@ -5,20 +5,22 @@ val appName = "pensions-scheme-migration-frontend"
 
 val silencerVersion = "1.7.0"
 
+ThisBuild / scalaVersion := "2.13.16"
+ThisBuild / majorVersion := 0
+ThisBuild / scalacOptions ++= Seq(
+  "-feature",
+  "-Xfatal-warnings",
+  "-Wconf:cat=unused-imports&src=html/.*:s",
+  "-Wconf:src=routes/.*:s"
+)
+
 lazy val microservice = Project(appName, file("."))
   .disablePlugins(JUnitXmlReportPlugin)
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .settings(
     name                             := appName,
-    majorVersion                     := 0,
-    scalaVersion                     := "2.13.12",
-    scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
-    scalacOptions += "-Wconf:src=routes/.*:s",
     libraryDependencies              ++= AppDependencies.all,
     PlayKeys.playDefaultPort         := 8213,
-    TwirlKeys.templateImports ++= Seq(
-      "config.AppConfig"
-    ),
     RoutesKeys.routesImport ++= Seq(
       "models.Index",
       "models.establishers.EstablisherKind",
@@ -32,6 +34,7 @@ lazy val microservice = Project(appName, file("."))
       "models.entities._"
     ),
     TwirlKeys.templateImports ++= Seq(
+      "config.AppConfig",
       "play.twirl.api.HtmlFormat",
       "play.twirl.api.HtmlFormat._",
       "uk.gov.hmrc.govukfrontend.views.html.components._",
@@ -46,15 +49,8 @@ lazy val microservice = Project(appName, file("."))
     // Removed uglify due to node 20 compile issues.
     // Suspected cause minification of already minified location-autocomplete.min.js -Pavel Vjalicin
     Assets / pipelineStages := Seq(concat),
-    resolvers ++= Seq(
-    Resolver.jcenterRepo,
-    ),
-    ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;.*models.*;.*repositories.*;" +
-      ".*BuildInfo.*;.*javascript.*;.*Routes.*;.*GuiceInjector;.*UserAnswersCacheConnector;" +
-      ".*ControllerConfiguration;.*LanguageSwitchController;.*LanguageSelect.*;.*TestMongoPage.*;.*ErrorTemplate.*",
-    ScoverageKeys.coverageMinimumStmtTotal := 80,
-    ScoverageKeys.coverageFailOnMinimum := true,
-    ScoverageKeys.coverageHighlighting := true,
+    resolvers ++= Seq(Resolver.jcenterRepo),
+    CodeCoverageSettings(),
     retrieveManaged := true
   )
 

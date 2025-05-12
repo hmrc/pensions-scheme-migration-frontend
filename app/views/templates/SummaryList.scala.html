@@ -22,7 +22,7 @@
 @heading.map { headingLabel => <h2 class="govuk-heading-s">@messages(headingLabel)</h2> }
 <div class="govuk-form-group">
   <dl class="govuk-summary-list hmrc-list-with-actions hmrc-list-with-actions--short">
-    @items.zipWithIndex.map { case (item, index) =>
+    @items.zipWithIndex.map { case (item: Entity[_], index) =>
     <div class="govuk-summary-list__row">
       <dt class="hmrc-add-to-a-list__identifier hmrc-add-to-a-list__identifier--light">
         @item.name
@@ -30,12 +30,12 @@
       <dd class="govuk-summary-list__actions hmrc-summary-list__actions govuk-!-width-one-half">
         <ul class="govuk-summary-list__actions-list">
           <li class="govuk-summary-list__actions-list-item">
-            <a class="govuk-link" id="@editId-@index" href="@item.editLink.getOrElse('#')">
+            <a class="govuk-link" id="@editId-@index" href="@item.editLink.getOrElse("#")">
               @messages(addDetails) <span class="govuk-visually-hidden">@messages(addDetails) @item.name </span>
             </a>
           </li>
           <li class="govuk-summary-list__actions-list-item">
-            <a class="govuk-link" href="@item.deleteLink.getOrElse('#')">
+            <a class="govuk-link" href="@item.deleteLink.getOrElse("#")">
               @messages(removeDetails) <span class="govuk-visually-hidden">@messages(removeDetails) @item.name </span>
             </a>
           </li>
