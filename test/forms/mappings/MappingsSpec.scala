@@ -142,7 +142,7 @@ class MappingsSpec extends AnyWordSpec with Matchers with OptionValues with Mapp
     val testForm = Form(
       mapping(
         "date" -> dateMapping("messages__error__date", "error.invalid_date")
-      )(TestClass.apply)(TestClass.unapply)
+      )(TestClass.apply)(tc => Some(tc.date))
     )
 
     // scalastyle:off magic.number

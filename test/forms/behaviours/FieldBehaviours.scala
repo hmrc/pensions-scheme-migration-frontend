@@ -52,7 +52,7 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
     "bind valid data" in {
 
       forAll(validDataGenerator.retryUntil(!_.matches("""^\s+$""")) -> "validDataItem") {
-        dataItem: String =>
+        (dataItem: String) =>
           val result = form.bind(Map(fieldName -> dataItem)).apply(fieldName)
           result.errors.isEmpty mustBe true
       }
@@ -89,7 +89,7 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
       }
 
       forAll(generator -> "date") {
-        dateAsText: String =>
+        (dateAsText: String) =>
           val date = LocalDate.parse(dateAsText, formatter)
           testField(dayFieldName, date.getDayOfMonth.toString)
           testField(monthFieldName, date.getMonthValue.toString)
