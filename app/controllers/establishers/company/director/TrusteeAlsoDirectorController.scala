@@ -77,7 +77,7 @@ class TrusteeAlsoDirectorController @Inject()(override val messagesApi: Messages
       (CompanyDetailsId(establisherIndex) and SchemeNameId).retrieve.map { case companyName ~ schemeName =>
         val seqTrustee = dataPrefillService.getListOfTrusteesToBeCopied(establisherIndex)
         form.bindFromRequest().fold(
-          (formWithErrors: Form[_]) => {
+          (formWithErrors: Form[?]) => {
             Future.successful(BadRequest(
               dataPrefillRadioView(
                 formWithErrors,

@@ -24,7 +24,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
 object DataPrefillRadio {
 
-  def radios(form: Form[_], values: Seq[DataPrefillIndividualDetails])(implicit messages: Messages): Seq[RadioItem] = {
+  def radios(form: Form[?], values: Seq[DataPrefillIndividualDetails])(implicit messages: Messages): Seq[RadioItem] = {
     val noneValue = "-1"
     values.map { indvDetails => {
       RadioItem(

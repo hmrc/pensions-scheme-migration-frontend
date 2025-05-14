@@ -28,7 +28,7 @@ import scala.language.implicitConversions
 
 trait Retrievals {
 
-  private def dataNotFoundRedirect(implicit request: Request[_]) = Redirect(routes.SessionExpiredController.onPageLoad().absoluteURL())
+  private def dataNotFoundRedirect(implicit request: Request[?]) = Redirect(routes.SessionExpiredController.onPageLoad().absoluteURL())
   private[controllers] def retrieve[A](id: TypedIdentifier[A])
                                       (f: A => Future[Result])
                                       (implicit request: DataRequest[AnyContent], r: Reads[A]): Future[Result] = {

@@ -28,7 +28,7 @@ import models._
 import models.entities.{EntityType, PensionManagementType}
 import play.api.i18n.Messages
 import services.DataPrefillService
-import utils.{Enumerable, UserAnswers, entityTypeError, managementTypeError}
+import utils.{Enumerable, UserAnswers, entityTypeError}
 
 import javax.inject.Inject
 
@@ -88,14 +88,14 @@ class SpokeCreationService @Inject()(dataPrefillService: DataPrefillService) ext
     )
   }
 
-  def createDirectorSpoke(entityList: Seq[Entity[_]],
+  def createDirectorSpoke(entityList: Seq[Entity[?]],
                           spoke: Spoke,
                           name: String)(implicit messages: Messages): EntitySpoke = {
     val isComplete: Option[Boolean] = Some(entityList.nonEmpty && entityList.forall(_.isCompleted))
     EntitySpoke(spoke.changeLink(name), isComplete)
   }
 
-  private def createPartnerSpoke(entityList: Seq[Entity[_]],
+  private def createPartnerSpoke(entityList: Seq[Entity[?]],
                           spoke: Spoke,
                           name: String)(implicit messages: Messages): EntitySpoke = {
     val isComplete: Option[Boolean] = {
@@ -158,18 +158,18 @@ class SpokeCreationService @Inject()(dataPrefillService: DataPrefillService) ext
     val function = pensionManagementType match {
       case entities.Establisher =>
         entityType match {
-          case entities.Company => getEstablisherCompanySpokes _
-          case entities.Individual => getEstablisherIndividualSpokes _
-          case entities.Partnership => getEstablisherPartnershipSpokes _
-          case e => entityTypeError(e)
+          case entities.Company => getEstablisherCompanySpokes
+          case entities.Individual => getEstablisherIndividualSpokes
+          case entities.Partnership => getEstablisherPartnershipSpokes
+          case null => entityTypeError(null)
         }
       case entities.Trustee => entityType match {
-        case entities.Company => getTrusteeCompanySpokes _
-        case entities.Individual => getTrusteeIndividualSpokes _
-        case entities.Partnership => getTrusteePartnershipSpokes _
-        case e => entityTypeError(e)
+        case entities.Company => getTrusteeCompanySpokes
+        case entities.Individual => getTrusteeIndividualSpokes
+        case entities.Partnership => getTrusteePartnershipSpokes
+        case null => entityTypeError(null)
       }
-      case e => managementTypeError(e)
+       case null => entityTypeError(null)
     }
 
     function(answers, name, index)

@@ -28,7 +28,7 @@ import utils.WithName
 sealed trait SchemeType
 
 object SchemeType {
-  val values: Seq[WithName with SchemeType] =
+  val values: Seq[WithName & SchemeType] =
     Seq(
       SingleTrust,
       GroupLifeDeath,
@@ -38,19 +38,19 @@ object SchemeType {
   val mappings: Map[String, SchemeType] =
     values.map(v => (v.toString, v)).toMap
 
-  def radios(form: Form[_])(implicit messages: Messages): Seq[RadioItem] = {
+  def radios(form: Form[?])(implicit messages: Messages): Seq[RadioItem] = {
     val field = form("schemeType.type")
     val items: Seq[RadioItem] = values.map(
       value =>
-      RadioItem(
-        content = Text(Messages(s"messages__scheme_type_${value.toString}")),
-        value = Some(value.toString),
-        hint = Some(Hint(
-          content = Text(Messages(s"messages__scheme_type_${value.toString}_hint")),
-          id = Some("hint-id")
-        )),
-        checked = field.value.contains(value.toString)
-      )
+        RadioItem(
+          content = Text(Messages(s"messages__scheme_type_${value.toString}")),
+          value = Some(value.toString),
+          hint = Some(Hint(
+            content = Text(Messages(s"messages__scheme_type_${value.toString}_hint")),
+            id = Some("hint-id")
+          )),
+          checked = field.value.contains(value.toString)
+        )
     )
 
     val inputHtml: Messages => Html = {
@@ -96,7 +96,7 @@ object SchemeType {
 
       case schemeTypeName if schemeTypeName == "other" =>
         (JsPath \ "schemeTypeDetails").read[String]
-          .map[SchemeType](Other)
+          .map[SchemeType](models.SchemeType.Other.apply)
           .orElse(Reads[SchemeType](_ => JsError("Other Value expected")))
 
       case schemeTypeName if mappings.keySet.contains(schemeTypeName) =>
@@ -112,11 +112,13 @@ object SchemeType {
 
       case schemeTypeName if schemeTypeName == "other" =>
         (JsPath \ "schemeTypeDetails").read[String]
-          .map[SchemeType](Other)
-          .orElse(Reads[SchemeType](_ => JsSuccess(Other(""))))
+        .map[SchemeType](models.SchemeType.Other.apply)
+        .orElse(Reads[SchemeType](_ => JsSuccess(Other(""))))
 
-      case schemeTypeName if mappings.keySet.contains(schemeTypeName) =>
-        Reads(_ => JsSuccess(mappings.apply(schemeTypeName)))
+      case schemeTypeName
+      if mappings.keySet.contains(schemeTypeName)
+      =>
+      Reads(_ => JsSuccess(mappings.apply(schemeTypeName)))
 
       case _ => Reads(_ => JsError("Invalid Scheme Type"))
     }

@@ -49,7 +49,7 @@ class EnterPhoneController @Inject()(
       .get(PartnershipDetailsId(index))
       .fold(Messages("messages__partnership"))(_.partnershipName)
 
-  private def form(index: Index)(implicit request: DataRequest[AnyContent]): Form[String] =
+  private def form()(implicit request: DataRequest[AnyContent]): Form[String] =
     formProvider(Messages("messages__enterPhone__type__error_required", Messages("messages__partnership")))
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =

@@ -84,7 +84,7 @@ class TrusteesAlsoDirectorsController @Inject()(override val messagesApi: Messag
       (CompanyDetailsId(establisherIndex) and SchemeNameId).retrieve.map { case companyName ~ schemeName =>
         val seqTrustee = dataPrefillService.getListOfTrusteesToBeCopied(establisherIndex)
         form(establisherIndex).bindFromRequest().fold(
-          (formWithErrors: Form[_]) => {
+          (formWithErrors: Form[?]) => {
             Future.successful(BadRequest(view(
               formWithErrors,
               schemeName,

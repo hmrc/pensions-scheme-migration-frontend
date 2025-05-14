@@ -79,7 +79,7 @@ class ConfirmDeleteDirectorController @Inject()(override val messagesApi: Messag
         DirectorNameId(establisherIndex, directorIndex).retrieve.map { director =>
 
           form(director.fullName).bindFromRequest().fold(
-            (formWithErrors: Form[_]) => {
+            (formWithErrors: Form[?]) => {
               Future.successful(BadRequest(
                 deleteView(
                   formWithErrors,

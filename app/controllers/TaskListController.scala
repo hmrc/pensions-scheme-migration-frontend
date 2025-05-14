@@ -73,7 +73,7 @@ class TaskListController @Inject()(
       }
   }
 
-  private def renderView(implicit userAnswers: UserAnswers, request: OptionalDataRequest[_]): Future[Result] = {
+  private def renderView(implicit userAnswers: UserAnswers, request: OptionalDataRequest[?]): Future[Result] = {
     Future.successful(Ok(taskListView(
       taskListService.schemeCompletionStatus,
       taskListService.schemeCompletionDescription,

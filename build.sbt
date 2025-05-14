@@ -12,21 +12,20 @@ lazy val microservice = Project(appName, file("."))
     name                             := appName,
     majorVersion                     := 0,
     scalaVersion                     := "3.6.4",
-    scalacOptions := Seq(
-      "-nowarn",
-      "-feature",
-      "-Wconf:src=routes/.*:silent",
-      "-Wconf:src=twirl/.*:silent",
-      "-Wconf:src=target/.*:silent",
-      "-Wconf:msg=Flag.*repeatedly:silent",
-      "-Wconf:src=routes/.*:s",
-      "-Wconf:cat=unused-imports&src=html/.*:s"
+    scalacOptions ++= Seq(
+      "-feature", // Enable feature warnings
+      "-Xfatal-warnings", // Treat warnings as errors
+      "-Wconf:src=routes/.*:silent", // Suppress warnings from routes files
+      "-Wconf:src=twirl/.*:silent",  // Suppress warnings from twirl files
+      "-Wconf:src=target/.*:silent", // Suppress warnings from target files
+      "-Wconf:msg=Flag.*repeatedly:silent", // Suppress repeated flag warnings
+      "-Wconf:msg=.*-Wunused.*:silent", // Suppress unused variable warnings
     ),
+
+
     libraryDependencies              ++= AppDependencies.all,
     PlayKeys.playDefaultPort         := 8213,
-    TwirlKeys.templateImports ++= Seq(
-      "config.AppConfig"
-    ),
+
     RoutesKeys.routesImport ++= Seq(
       "models.Index",
       "models.establishers.EstablisherKind",
@@ -39,7 +38,10 @@ lazy val microservice = Project(appName, file("."))
       "models.RacDac",
       "models.entities._"
     ),
-    TwirlKeys.templateImports ++= Seq(
+
+
+      TwirlKeys.templateImports ++= Seq(
+      "config.AppConfig",
       "play.twirl.api.HtmlFormat",
       "play.twirl.api.HtmlFormat._",
       "uk.gov.hmrc.govukfrontend.views.html.components._",
