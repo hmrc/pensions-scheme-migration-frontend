@@ -32,49 +32,52 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class ConfirmPreviousAddressController @Inject()(
-  val messagesApi: MessagesApi,
-  authenticate: AuthAction,
-  getData: DataRetrievalAction,
-  requireData: DataRequiredAction,
-  formProvider: AddressFormProvider,
-  common: CommonManualAddressService
-)(implicit ec: ExecutionContext) extends Retrievals with I18nSupport {
+                                                  val messagesApi: MessagesApi,
+                                                  authenticate: AuthAction,
+                                                  getData: DataRetrievalAction,
+                                                  requireData: DataRequiredAction,
+                                                  formProvider: AddressFormProvider,
+                                                  common: CommonManualAddressService
+                                                )(implicit ec: ExecutionContext) extends Retrievals with I18nSupport {
 
   private val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__partnership")
   private val pageTitleMessageKey: String = "previousAddress.title"
+
   private def form: Form[Address] = formProvider()
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (PartnershipDetailsId(index) and SchemeNameId).retrieve.map { case partnershipDetails ~ schemeName =>
-        common.get(
-          Some(schemeName),
-          partnershipDetails.partnershipName,
-          PreviousAddressId(index),
-          PreviousAddressListId(index),
-          AddressConfiguration.PostcodeFirst,
-          form,
-          pageTitleEntityTypeMessageKey,
-          pageTitleMessageKey,
-          submitUrl = routes.ConfirmPreviousAddressController.onSubmit(index, mode)
-        )
+      (PartnershipDetailsId(index).and(SchemeNameId)).retrieve.map {
+        case partnershipDetails ~ schemeName =>
+          common.get(
+            Some(schemeName),
+            partnershipDetails.partnershipName,
+            PreviousAddressId(index),
+            PreviousAddressListId(index),
+            AddressConfiguration.PostcodeFirst,
+            form,
+            pageTitleEntityTypeMessageKey,
+            pageTitleMessageKey,
+            submitUrl = routes.ConfirmPreviousAddressController.onSubmit(index, mode)
+          )
       }
     }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (PartnershipDetailsId(index) and SchemeNameId).retrieve.map { case partnershipDetails ~ schemeName =>
-        common.post(
-          Some(schemeName),
-          partnershipDetails.partnershipName,
-          PreviousAddressId(index),
-          AddressConfiguration.PostcodeFirst,
-          Some(mode),
-          form,
-          pageTitleEntityTypeMessageKey,
-          pageTitleMessageKey,
-          submitUrl = routes.ConfirmPreviousAddressController.onSubmit(index, mode)
-        )
+      (PartnershipDetailsId(index).and(SchemeNameId)).retrieve.map {
+        case partnershipDetails ~ schemeName =>
+          common.post(
+            Some(schemeName),
+            partnershipDetails.partnershipName,
+            PreviousAddressId(index),
+            AddressConfiguration.PostcodeFirst,
+            Some(mode),
+            form,
+            pageTitleEntityTypeMessageKey,
+            pageTitleMessageKey,
+            submitUrl = routes.ConfirmPreviousAddressController.onSubmit(index, mode)
+          )
       }
     }
 }

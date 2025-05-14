@@ -48,7 +48,7 @@ class TradingTimeController @Inject()(
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (PartnershipDetailsId(index) and SchemeNameId).retrieve.map {
+      (PartnershipDetailsId(index).and(SchemeNameId)).retrieve.map {
         case partnershipDetails ~ schemeName =>
           common.get(
             Some(schemeName),
@@ -65,7 +65,7 @@ class TradingTimeController @Inject()(
     (authenticate andThen getData andThen requireData()).async { implicit request =>
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-      (PartnershipDetailsId(index) and SchemeNameId).retrieve.map {
+      (PartnershipDetailsId(index).and(SchemeNameId)).retrieve.map {
         case partnershipDetails ~ schemeName =>
           common.post(
             Some(schemeName),

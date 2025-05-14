@@ -28,7 +28,7 @@ object identifierUtils {
   def getNameOfEntityType(index: Index,
                           pensionManagementType: PensionManagementType,
                           entityType: EntityType,
-                          emptyEntityName: String)(implicit request: DataRequest[_]): String = {
+                          emptyEntityName: String)(implicit request: DataRequest[?]): String = {
 
     def getEntityName[T](typedIdentifier: TypedIdentifier[T])
                         (block: T => String)

@@ -34,7 +34,7 @@ import javax.inject.Inject
 
 class SpokeCreationService @Inject()(dataPrefillService: DataPrefillService) extends Enumerable.Implicits {
 
-   def getAddEstablisherHeaderSpokes(answers: UserAnswers, viewOnly: Boolean)
+  def getAddEstablisherHeaderSpokes(answers: UserAnswers, viewOnly: Boolean)
                                    (implicit messages: Messages): Seq[EntitySpoke] =
     if (viewOnly)
       Nil
@@ -79,12 +79,12 @@ class SpokeCreationService @Inject()(dataPrefillService: DataPrefillService) ext
   }
 
   def getEstablisherPartnershipSpokes(answers: UserAnswers, name: String, index: Index)
-                                 (implicit messages: Messages): Seq[EntitySpoke] = {
+                                     (implicit messages: Messages): Seq[EntitySpoke] = {
     Seq(
       createSpoke(answers, EstablisherPartnershipDetails(index, answers), name),
       createSpoke(answers, EstablisherPartnershipAddress(index, answers), name),
       createSpoke(answers, EstablisherPartnershipContactDetails(index, answers), name),
-      createPartnerSpoke(answers.allPartnersAfterDelete(indexToInt(index)),EstablisherPartnerDetails(index, answers), name)
+      createPartnerSpoke(answers.allPartnersAfterDelete(indexToInt(index)), EstablisherPartnerDetails(index, answers), name)
     )
   }
 
@@ -96,10 +96,10 @@ class SpokeCreationService @Inject()(dataPrefillService: DataPrefillService) ext
   }
 
   private def createPartnerSpoke(entityList: Seq[Entity[?]],
-                          spoke: Spoke,
-                          name: String)(implicit messages: Messages): EntitySpoke = {
+                                 spoke: Spoke,
+                                 name: String)(implicit messages: Messages): EntitySpoke = {
     val isComplete: Option[Boolean] = {
-      entityList.isEmpty  match {
+      entityList.isEmpty match {
         case false if entityList.size == 1 => Some(false)
         case false =>
           Some(entityList.forall(_.isCompleted))
@@ -128,7 +128,7 @@ class SpokeCreationService @Inject()(dataPrefillService: DataPrefillService) ext
   }
 
   def getTrusteePartnershipSpokes(answers: UserAnswers, name: String, index: Index)
-                             (implicit messages: Messages): Seq[EntitySpoke] = {
+                                 (implicit messages: Messages): Seq[EntitySpoke] = {
     Seq(
       createSpoke(answers, TrusteePartnershipDetails(index, answers), name),
       createSpoke(answers, TrusteePartnershipAddress(index, answers), name),
@@ -169,7 +169,7 @@ class SpokeCreationService @Inject()(dataPrefillService: DataPrefillService) ext
         case entities.Partnership => getTrusteePartnershipSpokes
         case null => entityTypeError(null)
       }
-       case null => entityTypeError(null)
+      case null => entityTypeError(null)
     }
 
     function(answers, name, index)
