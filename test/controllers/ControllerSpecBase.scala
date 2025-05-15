@@ -25,7 +25,7 @@ import models.TolerantAddress
 import navigators.CompoundNavigator
 import org.mockito.Mockito
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{when, verify, reset, times}
+import org.mockito.Mockito.{when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.http.HeaderNames
 import play.api.inject.bind
@@ -77,7 +77,7 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
       .overrides(
         modules ++ extraModules ++ Seq[GuiceableModule](
           bind[DataRetrievalAction].toInstance(mutableFakeDataRetrievalAction)
-        ): _*
+        )*
       )
   }
 

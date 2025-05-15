@@ -29,7 +29,7 @@ import java.time.format.DateTimeFormatter
 trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Generators with OptionValues {
 
 
-  def fieldWithMaxLength(form: Form[_],
+  def fieldWithMaxLength(form: Form[?],
     fieldName: String,
     maxLength: Int,
     lengthError: FormError): Unit = {
@@ -45,7 +45,7 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
     }
   }
 
-  def fieldThatBindsValidData(form: Form[_],
+  def fieldThatBindsValidData(form: Form[?],
                               fieldName: String,
                               validDataGenerator: Gen[String]): Unit = {
 
@@ -59,7 +59,7 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
     }
   }
 
-  def mandatoryField(form: Form[_],
+  def mandatoryField(form: Form[?],
                      fieldName: String,
                      requiredError: FormError): Unit = {
 
@@ -76,7 +76,7 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
     }
   }
 
-  def dateFieldThatBindsValidData(form: Form[_], fieldName: String, generator: Gen[String]): Unit = {
+  def dateFieldThatBindsValidData(form: Form[?], fieldName: String, generator: Gen[String]): Unit = {
     "bind valid dates to day/month/year" in {
       val dayFieldName = s"$fieldName.day"
       val monthFieldName = s"$fieldName.month"
@@ -98,7 +98,7 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
     }
   }
 
-  def mandatoryDateField(form: Form[_], fieldName: String, requiredError: FormError): Unit = {
+  def mandatoryDateField(form: Form[?], fieldName: String, requiredError: FormError): Unit = {
     val dayFieldName = s"$fieldName.day"
     val monthFieldName = s"$fieldName.month"
     val yearFieldName = s"$fieldName.year"

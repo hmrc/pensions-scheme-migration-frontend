@@ -34,7 +34,7 @@ import play.api.test.Helpers._
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
 import views.html.establishers.EstablisherKindView
-import org.mockito.Mockito.{when, verify, reset, times}
+import org.mockito.Mockito.{when, verify, times}
 
 
 import scala.concurrent.Future

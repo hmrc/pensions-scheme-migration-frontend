@@ -24,7 +24,7 @@ import identifiers.establishers.partnership.partner.address.EnterPreviousPostCod
 import matchers.JsonMatchers
 import models.{NormalMode, Scheme, TolerantAddress}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{when, verify, reset, times}
+import org.mockito.Mockito.{when}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule

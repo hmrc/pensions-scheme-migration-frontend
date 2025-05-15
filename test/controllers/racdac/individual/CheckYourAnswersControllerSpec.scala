@@ -24,7 +24,7 @@ import identifiers.racdac.ContractOrPolicyNumberId
 import matchers.JsonMatchers
 import models.{Items, ListOfLegacySchemes, RacDac}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{when, verify, reset, times}
+import org.mockito.Mockito.{when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import play.api.Application

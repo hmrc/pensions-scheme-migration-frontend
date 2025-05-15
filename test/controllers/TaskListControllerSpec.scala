@@ -22,7 +22,7 @@ import matchers.JsonMatchers
 import models.{Scheme, TaskListLink}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{when, verify, reset, times}
+import org.mockito.Mockito.{when, verify, times}
 import org.scalatest.BeforeAndAfterEach
 import play.api.Application
 import play.api.inject.bind
@@ -77,7 +77,7 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
     "declaration" -> declarationSection,
     "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad.url
   )
- val expectedJson = Json.obj("anyTrustees" -> false)
+  val expectedJson = Json.obj("anyTrustees" -> false)
 
   val itemList : JsValue = json
 

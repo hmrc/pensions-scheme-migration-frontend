@@ -21,7 +21,7 @@ import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.details.TrusteeNoUTRReasonId
 import matchers.JsonMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{when, verify, reset, times}
+import org.mockito.Mockito.{when, verify, times}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.data.Form
 import play.api.mvc.AnyContentAsEmpty

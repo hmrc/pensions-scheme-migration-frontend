@@ -21,7 +21,7 @@ import forms.YesNoFormProvider
 import identifiers.TypedIdentifier
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{when, verify, reset, times}
+import org.mockito.Mockito.{when, verify, reset}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._

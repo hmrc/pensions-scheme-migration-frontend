@@ -22,7 +22,6 @@ import identifiers.establishers.company.CompanyDetailsId
 import matchers.JsonMatchers
 import models.{CompanyDetails, Index, NormalMode}
 import org.scalatest.TryValues
-import org.mockito.Mockito.{when, verify, reset, times}
 import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc.Result

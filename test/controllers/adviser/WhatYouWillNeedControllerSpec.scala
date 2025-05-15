@@ -27,8 +27,6 @@ import play.api.test.Helpers.{status, _}
 import utils.Data.ua
 import utils.{Data, UserAnswers}
 import views.html.adviser.WhatYouWillNeedView
-import org.mockito.Mockito.{when, verify, reset, times}
-
 
 import scala.concurrent.Future
 

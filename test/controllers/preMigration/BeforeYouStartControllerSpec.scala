@@ -21,7 +21,7 @@ import controllers.actions._
 import matchers.JsonMatchers
 import models.Scheme
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{when, verify, reset, times}
+import org.mockito.Mockito.{when}
 import org.scalatest.TryValues
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
@@ -50,7 +50,7 @@ class BeforeYouStartControllerSpec extends ControllerSpecBase with JsonMatchers 
     "return OK and the correct view for a GET" in {
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
       when(mockMinimalDetailsConnector.getPSAName(any(),any())).thenReturn(Future.successful(psaName))
-     val result: Future[Result] = controller().onPageLoad(fakeDataRequest())
+      val result: Future[Result] = controller().onPageLoad(fakeDataRequest())
 
       status(result) mustBe OK
       val view = app.injector.instanceOf[BeforeYouStartView].apply(

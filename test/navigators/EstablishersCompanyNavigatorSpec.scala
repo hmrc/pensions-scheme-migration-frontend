@@ -116,7 +116,7 @@ class EstablishersCompanyNavigatorSpec
     )
   }
   private def addCompanyDirectorsMoreThanTen =
-    UserAnswers(validData(Seq.fill(10)(johnDoe): _*))
+    UserAnswers(validData(Seq.fill(10)(johnDoe)*))
 
   private def addOneCompanyDir =
     UserAnswers(validData(johnDoe)).setOrException(AddCompanyDirectorsId(0), true)

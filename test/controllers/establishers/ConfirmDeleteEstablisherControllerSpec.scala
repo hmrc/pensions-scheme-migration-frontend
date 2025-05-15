@@ -28,7 +28,7 @@ import models._
 import models.establishers.EstablisherKind
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{when, verify, reset, times}
+import org.mockito.Mockito.{when, verify, times}
 import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.Json

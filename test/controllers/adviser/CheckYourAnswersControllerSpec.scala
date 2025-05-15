@@ -21,7 +21,7 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import helpers.cya.AdviserCYAHelper
 import matchers.JsonMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{when, verify, reset, times}
+import org.mockito.Mockito.{when}
 import play.api.Application
 import play.api.i18n.Messages
 import play.api.inject.bind

@@ -32,7 +32,6 @@ import play.api.test.Helpers._
 import utils.Data.ua
 import utils.{Data, FakeNavigator}
 import views.html.adviser.AdviserNameView
-import org.mockito.Mockito.{when, verify, reset, times}
 
 import scala.concurrent.Future
 
