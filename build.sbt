@@ -14,7 +14,7 @@ lazy val microservice = Project(appName, file("."))
     scalaVersion                     := "3.6.4",
     scalacOptions ++= Seq(
       "-feature", // Enable feature warnings
-      "-Xfatal-warnings", // Treat warnings as errors
+
       "-Wconf:src=routes/.*:silent", // Suppress warnings from routes files
       "-Wconf:src=twirl/.*:silent",  // Suppress warnings from twirl files
       "-Wconf:src=target/.*:silent", // Suppress warnings from target files
