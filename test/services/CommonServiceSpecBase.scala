@@ -19,7 +19,7 @@ package services
 import base.SpecBase
 import matchers.JsonMatchers
 import models.requests.DataRequest
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.mvc.{AnyContent, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
@@ -29,6 +29,7 @@ trait CommonServiceSpecBase extends SpecBase with JsonMatchers with TryValues
   with BeforeAndAfterEach with MockitoSugar {
 
   val fakeDataRequest: DataRequest[AnyContent] = fakeDataRequest()
+
   def fakeDataRequest(answers: UserAnswers, request: FakeRequest[AnyContentAsFormUrlEncoded]): DataRequest[AnyContent] =
     DataRequest(request, answers, fakeDataRequest.psaId, fakeDataRequest.lock)
 }

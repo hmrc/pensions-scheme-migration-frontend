@@ -21,6 +21,7 @@ import forms.YesNoFormProvider
 import identifiers.TypedIdentifier
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._

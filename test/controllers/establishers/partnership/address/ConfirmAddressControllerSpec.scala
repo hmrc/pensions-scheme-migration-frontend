@@ -27,6 +27,7 @@ import identifiers.establishers.partnership.PartnershipDetailsId
 import matchers.JsonMatchers
 import models.{NormalMode, Scheme}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule

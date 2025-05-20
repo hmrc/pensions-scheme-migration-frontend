@@ -24,7 +24,7 @@ import controllers.actions._
 import models.TolerantAddress
 import navigators.CompoundNavigator
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{Mockito, MockitoSugar}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.http.HeaderNames
 import play.api.inject.bind
@@ -36,12 +36,13 @@ import services.{DataPrefillService, DataUpdateService}
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import utils.{CountryOptions, Enumerable, FakeCountryOptions}
+import org.scalatestplus.mockito.MockitoSugar
 
 trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerable.Implicits with MockitoSugar {
 
   override def beforeEach(): Unit = {
-    Mockito.reset(mockUserAnswersCacheConnector)
-    Mockito.reset(mockCompoundNavigator)
+    reset(mockUserAnswersCacheConnector)
+    reset(mockCompoundNavigator)
     when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
       .thenReturn(onwardCall)
   }

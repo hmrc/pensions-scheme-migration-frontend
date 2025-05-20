@@ -26,6 +26,7 @@ import models.{Index, entities}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.RecoverMethods.recoverToSucceededIf
 import org.scalatest.{BeforeAndAfterEach, TryValues}
+import org.mockito.Mockito._
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{MessagesControllerComponents, Result}
 import play.api.test.FakeRequest

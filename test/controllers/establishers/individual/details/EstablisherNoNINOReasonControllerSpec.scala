@@ -22,6 +22,7 @@ import identifiers.establishers.individual.details.EstablisherNoNINOReasonId
 import matchers.JsonMatchers
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
+import org.mockito.Mockito._
 import play.api.data.Form
 import play.api.mvc.AnyContentAsEmpty
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}

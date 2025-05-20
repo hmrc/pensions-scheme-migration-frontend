@@ -19,8 +19,8 @@ package base
 import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import models.requests.DataRequest
-import org.mockito.MockitoSugar.mock
 import org.scalatest.Assertion
+import org.scalatestplus.mockito.MockitoSugar.mock
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
 import play.api.Application
@@ -41,7 +41,8 @@ import scala.language.implicitConversions
 
 trait SpecBase
   extends PlaySpec
-    with GuiceOneAppPerSuite {
+    with GuiceOneAppPerSuite
+   {
 
 
   val onwardCall: Call = Call("GET", "onwardCall")
@@ -62,7 +63,7 @@ trait SpecBase
 
   def injector: Injector = app.injector
 
-  def appConfig: AppConfig = injector.instanceOf[AppConfig]
+  def appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
   def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "/foo")
 

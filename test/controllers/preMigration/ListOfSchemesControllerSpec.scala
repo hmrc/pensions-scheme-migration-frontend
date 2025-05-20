@@ -24,6 +24,7 @@ import matchers.JsonMatchers
 import models.{Items, ListOfLegacySchemes, RacDac, Scheme}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
 import org.scalatest.TryValues
 import play.api.mvc.Result
 import play.api.mvc.Results._

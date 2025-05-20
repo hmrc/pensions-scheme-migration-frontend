@@ -25,6 +25,7 @@ import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.Mockito.{when, verify, reset, times}
 import play.api.data.Form
 import play.api.data.Forms.nonEmptyText
 import play.api.libs.json.Json
@@ -57,7 +58,8 @@ class CommonPostcodeServiceSpec extends ControllerSpecBase with CommonServiceSpe
     UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), Data.migrationLock)
 
   override def beforeEach(): Unit = {
-    reset(mockAddressLookupConnector, mockUserAnswersCacheConnector)
+    reset(mockAddressLookupConnector)
+    reset(mockUserAnswersCacheConnector)
   }
 
   "CommonPostcodeService" must {

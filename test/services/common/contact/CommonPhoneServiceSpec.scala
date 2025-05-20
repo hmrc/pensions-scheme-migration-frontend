@@ -19,8 +19,8 @@ package services.common.contact
 import controllers.ControllerSpecBase
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchersSugar.eqTo
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{when, verify, reset, times}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
@@ -44,7 +44,7 @@ class CommonPhoneServiceSpec extends ControllerSpecBase with CommonServiceSpecBa
 
   private val navigator = new FakeNavigator(desiredRoute = onwardCall)
   private val form = Form("value" -> text)
-  val phoneView: PhoneView = org.mockito.MockitoSugar.mock[views.html.PhoneView]
+  val phoneView: PhoneView = mock[views.html.PhoneView]
   private val service = new CommonPhoneService(
     controllerComponents, mockUserAnswersCacheConnector, navigator, messagesApi, phoneView)
 
@@ -53,8 +53,10 @@ class CommonPhoneServiceSpec extends ControllerSpecBase with CommonServiceSpecBa
   implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest(),
     UserAnswers(Json.obj("id" -> userAnswersId)), PsaId("A2110001"), Data.migrationLock)
   private val phoneId: TypedIdentifier[String] = new TypedIdentifier[String] {}
+
   override def beforeEach(): Unit = {
-    reset(phoneView, mockUserAnswersCacheConnector)
+    reset(phoneView)
+    reset(mockUserAnswersCacheConnector)
   }
 
   "CommonPhoneService" must {
@@ -64,7 +66,7 @@ class CommonPhoneServiceSpec extends ControllerSpecBase with CommonServiceSpecBa
       when(phoneView.apply(eqTo(form), eqTo("schemeName"), eqTo("entityName"), any(), any(), any())(any(), any())).thenReturn(Html("phone content"))
 
       val result = service.get("entityName", Messages("entityType"), phoneId,
-        form, "schemeName", submitCall=onwardCall)(request)
+        form, "schemeName", submitCall = onwardCall)(request)
 
       status(result) mustBe OK
 
@@ -80,7 +82,7 @@ class CommonPhoneServiceSpec extends ControllerSpecBase with CommonServiceSpecBa
         eqTo("entityName"), any(), any(), any())(any(), any())).thenReturn(Html("phone content"))
 
       val result = service.post("entityName", Messages("entityType"), phoneId, form.withError("value", "error.required"), "schemeName",
-        submitCall=onwardCall)(invalidRequest, global)
+        submitCall = onwardCall)(invalidRequest, global)
 
       status(result) mustBe BAD_REQUEST
       verify(phoneView, times(1)).apply(any(), eqTo("schemeName"), eqTo("entityName"), any(), any(), any())(any(), any())
@@ -92,7 +94,7 @@ class CommonPhoneServiceSpec extends ControllerSpecBase with CommonServiceSpecBa
 
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
 
-      val result = service.post("entityName", Messages("entityType"), phoneId, form, "schemeName", submitCall=onwardCall)(validRequest, global)
+      val result = service.post("entityName", Messages("entityType"), phoneId, form, "schemeName", submitCall = onwardCall)(validRequest, global)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardCall.url)

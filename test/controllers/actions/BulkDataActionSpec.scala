@@ -24,7 +24,7 @@ import models.requests.{AuthenticatedRequest, BulkDataRequest}
 import models.{Items, ListOfLegacySchemes, MinPSA}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
-import org.mockito.MockitoSugar.mock
+import org.scalatestplus.mockito.MockitoSugar.mock
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.ScalaFutures
 import play.api.libs.json.Json
