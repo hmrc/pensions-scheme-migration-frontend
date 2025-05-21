@@ -37,7 +37,7 @@ class NotFoundControllerSpec extends ControllerSpecBase with JsonMatchers with E
 
     "return OK and the correct view for a GET" in {
       mutableFakeDataRetrievalAction.setDataToReturn(Some(UserAnswers()))
-      val yourPensionUrl = "foo"
+      val yourPensionUrl = appConfig.yourPensionSchemesUrl
       when(mockAppConfig.yourPensionSchemesUrl).thenReturn(yourPensionUrl)
 
       val request = httpGETRequest(httpPathGET)

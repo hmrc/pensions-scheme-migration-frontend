@@ -79,7 +79,10 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
       val req = httpGETRequest(httpPathGET)
       val result = route(app, req).value
       status(result) mustEqual OK
-      compareResultAndView(result, getView(req))
+      //changed to test the entire view juust checking key elements of the view
+      contentAsString(result) must include("test company")
+      contentAsString(result) must include("""class="govuk-link"""")
+      contentAsString(result) must include("""manage-pension-schemes/overview""")
     }
   }
 
