@@ -62,8 +62,8 @@ class SchemeSuccessControllerSpec extends ControllerSpecBase with JsonMatchers w
   private val schemeName = Data.schemeName
   private val pstr = "pstr"
   private val email = Data.email
-  private val yourSchemesLink = mockAppConfig.yourPensionSchemesUrl
-  private val returnUrl = mockAppConfig.psaOverviewUrl
+  private val yourSchemesLink = appConfig.yourPensionSchemesUrl
+  private val returnUrl = appConfig.psaOverviewUrl
 
   override def beforeEach(): Unit = {
     super.beforeEach()

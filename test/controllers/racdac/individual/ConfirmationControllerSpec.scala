@@ -73,8 +73,8 @@ class ConfirmationControllerSpec extends ControllerSpecBase with JsonMatchers wi
           "pstr",
           Data.schemeName,
           Data.email,
-          mockAppConfig.yourPensionSchemesUrl,
-          mockAppConfig.psaOverviewUrl
+          appConfig.yourPensionSchemesUrl,
+          appConfig.psaOverviewUrl
         )(req, implicitly)
       )
     }

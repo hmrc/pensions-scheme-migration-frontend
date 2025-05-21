@@ -17,7 +17,6 @@
 package controllers
 
 import base.SpecBase
-import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import connectors.{EmailConnector, LegacySchemeDetailsConnector, MinimalDetailsConnector}
 import controllers.actions._
@@ -45,7 +44,10 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
     reset(mockCompoundNavigator)
     when(mockCompoundNavigator.nextPage(any(), any(), any())(any()))
       .thenReturn(onwardCall)
+    when(mockAppConfig.betaFeedbackUnauthenticatedUrl)
+      .thenReturn("/")
   }
+
 
   protected val mockCompoundNavigator: CompoundNavigator = mock[CompoundNavigator]
   protected val mockDataPrefillService: DataPrefillService = mock[DataPrefillService]
@@ -57,7 +59,7 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
   def modules: Seq[GuiceableModule] = Seq(
     bind[AuthAction].to[FakeAuthAction],
     bind[DataRequiredAction].to[DataRequiredActionImpl],
-    bind[AppConfig].toInstance(mockAppConfig),
+    //bind[AppConfig].toInstance(mockAppConfig),
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
     bind[CompoundNavigator].toInstance(mockCompoundNavigator),
     bind[CountryOptions].toInstance(FakeCountryOptions.testData)

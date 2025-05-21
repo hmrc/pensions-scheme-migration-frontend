@@ -150,7 +150,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
       val result = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(mockAppConfig.psaOverviewUrl)
+      redirectLocation(result) mustBe Some(appConfig.psaOverviewUrl)
     }
 
   }

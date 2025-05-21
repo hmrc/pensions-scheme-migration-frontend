@@ -43,8 +43,8 @@ class FinishedStatusControllerSpec extends ControllerSpecBase with JsonMatchers 
 
   private def getView(req: Request[_]) = {
     app.injector.instanceOf[views.html.racdac.FinishedStatusView].apply(
-      mockAppConfig.yourPensionSchemesUrl,
-      mockAppConfig.racDacMigrationTransfer
+      appConfig.yourPensionSchemesUrl,
+      appConfig.racDacMigrationTransfer
     )(req, implicitly)
   }
 

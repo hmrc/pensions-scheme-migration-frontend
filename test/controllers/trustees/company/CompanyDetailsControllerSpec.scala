@@ -70,8 +70,7 @@ class CompanyDetailsControllerSpec extends ControllerSpecBase
 
   "trustees CompanyDetailsController" must {
     "return OK and the correct view for a GET" in {
-
-      val view = application.injector.instanceOf[CompanyDetailsView].apply(
+      val view = injector.instanceOf[CompanyDetailsView].apply(
         form,
         Data.schemeName,
         submitCall

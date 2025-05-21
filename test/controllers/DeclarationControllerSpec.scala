@@ -117,7 +117,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
 
       verify(mockEmailConnector, times(1)).sendEmail(
         ArgumentMatchers.eq("test@test.com"),
-        ArgumentMatchers.eq("test template name"),
+        ArgumentMatchers.eq("pods_scheme_migration_confirmation"),
         ArgumentMatchers.eq(Map("psaName" -> psaName, "schemeName" -> schemeName)),
         any())(any(), any())
 

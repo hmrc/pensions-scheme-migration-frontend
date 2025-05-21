@@ -98,7 +98,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase
     }
 
     "return throw an exception when MandatoryAnswerMissingException is thrown" in {
-      when(mockCYAHelper.rows(any(), any(), any(), any(), any())(any(), any())).thenThrow(MandatoryAnswerMissingException("Mandatory answer missing"))
+      when(mockCYAHelper.rows(any(), any(), any(), any(), any())(any(), any()))
+        .thenThrow(new MandatoryAnswerMissingException("Mandatory answer missing"))
 
       val result: Future[Result] = controller(getData).onPageLoad(Index(0), Establisher, entities.Company, Details)(FakeRequest())
 
