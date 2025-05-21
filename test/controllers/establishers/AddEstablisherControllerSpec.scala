@@ -27,6 +27,7 @@ import models.establishers.EstablisherKind
 import models.{EstablisherIndividualEntity, PersonName, Scheme}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.data.Form
 import play.api.test.Helpers._

@@ -27,6 +27,7 @@ import models.establishers.EstablisherKind
 import models.{NormalMode, PartnerEntity, PersonName, Scheme}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.test.Helpers._
 import utils.Data.{partnershipDetails, schemeName, ua}

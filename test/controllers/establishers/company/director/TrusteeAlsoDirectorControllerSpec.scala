@@ -24,6 +24,7 @@ import matchers.JsonMatchers
 import models.prefill.IndividualDetails
 import models.{CompanyDetails, DataPrefillRadio, entities}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{when, verify, reset, times, never}
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
@@ -46,11 +47,10 @@ class TrusteeAlsoDirectorControllerSpec extends ControllerSpecBase
   private val seqTrustee: Seq[IndividualDetails] = Seq(IndividualDetails("Jane", "Doe", false, None, None, 0, true, None))
 
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(0), companyDetails).success.value
+
   override def beforeEach(): Unit = {
-    reset(
-      mockUserAnswersCacheConnector,
-      mockDataPrefillService
-    )
+    reset(mockUserAnswersCacheConnector)
+    reset(mockDataPrefillService)
     when(mockDataPrefillService.getListOfTrusteesToBeCopied(any())(any())).thenReturn(Nil)
   }
 

@@ -22,6 +22,7 @@ import controllers.ControllerSpecBase
 import controllers.actions.{BulkDataAction, MutableFakeBulkDataAction}
 import matchers.JsonMatchers
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
@@ -56,7 +57,7 @@ class ConfirmationControllerSpec extends ControllerSpecBase with JsonMatchers wi
   private def httpPathGET: String = controllers.racdac.bulk.routes.ConfirmationController.onPageLoad.url
 
   private def getView(request: Request[_]) = app.injector.instanceOf[views.html.racdac.ConfirmationView].apply(
-    mockAppConfig.psaOverviewUrl,
+    appConfig.psaOverviewUrl,
     Data.email
   )(request, implicitly)
 
