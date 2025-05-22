@@ -24,7 +24,7 @@ import play.api.mvc.{AnyContent, Call}
 
 class FakeNavigator(desiredRoute: Call) extends CompoundNavigator(new java.util.HashSet[Navigator]()) {
 
-  private[this] var userAnswers: Option[UserAnswers] = None
+  private var userAnswers: Option[UserAnswers] = None
 
   def lastUserAnswers: Option[UserAnswers] = userAnswers
 

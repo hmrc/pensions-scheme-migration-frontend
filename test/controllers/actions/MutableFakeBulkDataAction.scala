@@ -22,6 +22,7 @@ import play.api.mvc.Result
 
 import scala.concurrent.Future
 
+@annotation.nowarn
 class MutableFakeBulkDataAction(isRequired: Boolean) extends BulkDataAction {
   override def apply(isRequired: Boolean): BulkRetrieval = new MutableFakeBulkRetrieval
 }

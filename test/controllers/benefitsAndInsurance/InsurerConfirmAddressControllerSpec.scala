@@ -18,7 +18,7 @@ package controllers.benefitsAndInsurance
 
 import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
-import controllers.actions.AuthActionSpec.app.environment
+import play.api.Environment
 import controllers.actions.MutableFakeDataRetrievalAction
 import controllers.establishers.individual.address.routes
 import forms.address.AddressFormProvider
@@ -56,7 +56,7 @@ class InsurerConfirmAddressControllerSpec extends ControllerSpecBase with JsonMa
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
-  private val countryOptions: CountryOptions = new CountryOptions(environment, appConfig)
+  private val countryOptions: CountryOptions = new CountryOptions(app.injector.instanceOf[Environment], appConfig)
   private val formProvider: AddressFormProvider = new AddressFormProvider(countryOptions)
   private val form = formProvider()
 

@@ -21,7 +21,7 @@ import play.api.data.{Form, FormError}
 trait StringFieldBehaviours extends FieldBehaviours {
 
 
-  def fieldWithRegex(form: Form[_],
+  def fieldWithRegex(form: Form[?],
                      fieldName: String,
                      invalidString: String,
                      error: FormError): Unit = {

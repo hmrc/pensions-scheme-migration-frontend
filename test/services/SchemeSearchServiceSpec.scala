@@ -83,7 +83,7 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Scal
                       paginationText: String,
                       typeOfList: String,
                       schemeTable: components.Table,
-                      form: Form[_] = form) = {
+                      form: Form[?] = form) = {
 
     val heading = form.value match {
       case Some(_) => messages("messages__listSchemes__search_result_title", typeOfList)
@@ -170,8 +170,8 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Scal
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockAppConfig)
-    when(mockAppConfig.psaOverviewUrl) thenReturn dummyUrl
-    when(mockAppConfig.listSchemePagination) thenReturn pagination
+    when(mockAppConfig.psaOverviewUrl).thenReturn (dummyUrl)
+    when(mockAppConfig.listSchemePagination).thenReturn (pagination)
     when(mockAppConfig.psaUpdateContactDetailsUrl).thenReturn(dummyUrl)
     when(mockAppConfig.deceasedContactHmrcUrl).thenReturn(dummyUrl)
   }
@@ -183,8 +183,9 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Scal
         .thenReturn(Future.successful(Right(listOfSchemes)))
 
       whenReady(service.search(psaId, Some(pstr1), isRacDac = isRacDacFalse)) { result =>
-        result mustBe fullSchemes.filter(_.racDac == isRacDacFalse).filter(_.pstr equalsIgnoreCase pstr1)
-      }
+        result mustBe fullSchemes
+          .filter(_.racDac == isRacDacFalse)
+          .filter(_.pstr.equalsIgnoreCase(pstr1))      }
     }
     "return correct list of scheme details with search on correct pstr with rac dac" in {
 
@@ -192,7 +193,9 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Scal
         .thenReturn(Future.successful(Right(listOfSchemes)))
 
       whenReady(service.search(psaId, Some(pstr2), isRacDac = isRacDacTrue)) { result =>
-        result mustBe fullSchemes.filter(_.racDac == isRacDacTrue).filter(_.pstr equalsIgnoreCase pstr2)
+        result mustBe fullSchemes
+          .filter(_.racDac == isRacDacTrue)
+          .filter(_.pstr.equalsIgnoreCase(pstr2))
       }
     }
 
@@ -356,7 +359,7 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Scal
 
       val numberOfPages = paginationService.divide(numberOfSchemes, pagination)
 
-      when(mockAppConfig.listSchemePagination) thenReturn pagination
+      when(mockAppConfig.listSchemePagination).thenReturn (pagination)
 
       val result = service.searchAndRenderView(form, 1, None, RacDac)
 
@@ -382,7 +385,7 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Scal
 
       val numberOfPages = paginationService.divide(numberOfSchemes, pagination)
 
-      when(mockAppConfig.listSchemePagination) thenReturn pagination
+      when(mockAppConfig.listSchemePagination).thenReturn (pagination)
 
       val result = service.searchAndRenderView(form, pageNumber, None, RacDac)
 
@@ -401,7 +404,7 @@ class SchemeSearchServiceSpec extends SpecBase with BeforeAndAfterEach with Scal
       when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(minimalPSA()))
       val searchText = pstr1
       when(mockListOfSchemesConnector.getListOfSchemes(any())(any(), any())).thenReturn(Future.successful(Right(listOfSchemes)))
-      when(mockAppConfig.listSchemePagination) thenReturn 2
+      when(mockAppConfig.listSchemePagination).thenReturn(2)
       val numberOfPages =
         paginationService.divide(fullSchemes.length, 2)
 

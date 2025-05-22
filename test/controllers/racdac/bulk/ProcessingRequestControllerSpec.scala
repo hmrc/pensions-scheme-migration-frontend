@@ -43,7 +43,7 @@ class ProcessingRequestControllerSpec extends ControllerSpecBase with JsonMatche
 
   private def httpPathGET: String = controllers.racdac.bulk.routes.ProcessingRequestController.onPageLoad.url
 
-  private def getView(req: Request[_], heading: String, content: String, redirect: Option[Call]) = {
+  private def getView(req: Request[?], heading: String, content: String, redirect: Option[Call]) = {
     app.injector.instanceOf[views.html.racdac.ProcessingRequestView].apply(
       heading,
       heading,

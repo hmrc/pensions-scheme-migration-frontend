@@ -53,7 +53,7 @@ class BulkRacDacServiceSpec extends SpecBase
   private def form: Form[Boolean] = formProvider()
   private val dummyUrl = "dummyurl"
 
-  private def getView(req: Request[_], numberOfSchemes: Int, pagination: Int, pageNumber: Int, numberOfPages: Int, paginationText:String,
+  private def getView(req: Request[?], numberOfSchemes: Int, pagination: Int, pageNumber: Int, numberOfPages: Int, paginationText:String,
                       schemeTable: Table) = {
     app.injector.instanceOf[RacDacsBulkListView].apply(
       form,
@@ -89,10 +89,10 @@ class BulkRacDacServiceSpec extends SpecBase
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockAppConfig)
-    when(mockAppConfig.psaOverviewUrl) thenReturn dummyUrl
+    when(mockAppConfig.psaOverviewUrl).thenReturn (dummyUrl)
     when(mockAppConfig.psaUpdateContactDetailsUrl).thenReturn(dummyUrl)
     when(mockAppConfig.deceasedContactHmrcUrl).thenReturn(dummyUrl)
-    when(mockAppConfig.listSchemePagination) thenReturn pagination
+    when(mockAppConfig.listSchemePagination).thenReturn (pagination)
   }
 
   "mapToTable" must {
@@ -158,7 +158,7 @@ class BulkRacDacServiceSpec extends SpecBase
 
       val numberOfPages = paginationService.divide(numberOfSchemes, pagination)
 
-      when(mockAppConfig.listSchemePagination) thenReturn pagination
+      when(mockAppConfig.listSchemePagination).thenReturn (pagination)
 
       val result = service.renderRacDacBulkView(form, 1)(bulkDataRequest, implicitly)
 
@@ -182,7 +182,7 @@ class BulkRacDacServiceSpec extends SpecBase
 
       val numberOfPages = paginationService.divide(numberOfSchemes, pagination)
 
-      when(mockAppConfig.listSchemePagination) thenReturn pagination
+      when(mockAppConfig.listSchemePagination).thenReturn (pagination)
 
       val bulkDataRequest: BulkDataRequest[AnyContent] = BulkDataRequest(authReq, minPSA, twoRacDacs)
       val result = service.renderRacDacBulkView(form, pageNumber)(bulkDataRequest, implicitly)

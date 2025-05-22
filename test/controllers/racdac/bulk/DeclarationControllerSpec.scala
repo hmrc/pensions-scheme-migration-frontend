@@ -27,7 +27,7 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.libs.json.Json
-import play.api.mvc.Request
+//import play.api.mvc.Request
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpException
 import utils.Enumerable
@@ -52,21 +52,21 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
     .overrides(
       modules ++ extraModules ++ Seq[GuiceableModule](
         bind[BulkDataAction].toInstance(mutableFakeBulkDataAction)
-      ): _*
+      )*
     ).build()
   private val dummyUrl = "/dummyurl"
 
-  private def getView(request: Request[_]) = app.injector.instanceOf[views.html.racdac.DeclarationView].apply(
-    routes.DeclarationController.onSubmit,
-    dummyUrl,
-    "test company"
-  )(request, implicitly)
+//  private def getView(request: Request[?]) = app.injector.instanceOf[views.html.racdac.DeclarationView].apply(
+//    routes.DeclarationController.onSubmit,
+//    dummyUrl,
+//    "test company"
+//  )(request, implicitly)
 
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockCurrentPstrCacheConnector)
-    when(mockAppConfig.psaOverviewUrl) thenReturn dummyUrl
+    when(mockAppConfig.psaOverviewUrl).thenReturn (dummyUrl)
   }
 
   private def httpPathGET: String = controllers.racdac.bulk.routes.DeclarationController.onPageLoad.url

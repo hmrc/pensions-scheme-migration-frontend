@@ -137,7 +137,7 @@ class AuthActionSpec
 
 object AuthActionSpec extends SpecBase  {
 
-  private def fakeAuthConnector(stubbedRetrievalResult: Future[_]): AuthConnector =
+  private def fakeAuthConnector(stubbedRetrievalResult: Future[?]): AuthConnector =
     new AuthConnector {
       def authorise[A](predicate: Predicate, retrieval: Retrieval[A])
                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[A] =

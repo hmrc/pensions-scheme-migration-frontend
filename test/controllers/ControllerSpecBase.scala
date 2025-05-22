@@ -78,7 +78,7 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
       .overrides(
         modules ++ extraModules ++ Seq[GuiceableModule](
           bind[DataRetrievalAction].toInstance(mutableFakeDataRetrievalAction)
-        ): _*
+        )*
       )
   }
 

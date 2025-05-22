@@ -52,7 +52,7 @@ class TransferAllControllerSpec extends ControllerSpecBase with JsonMatchers wit
 
   private val form: Form[Boolean] = formProvider(messages("messages__transferAll__error"))
 
-  private def getView(req: Request[_], radios: Seq[RadioItem], form: Form[_]) = {
+  private def getView(req: Request[?], radios: Seq[RadioItem], form: Form[?]) = {
     app.injector.instanceOf[views.html.racdac.TransferAllView].apply(
       form,
       routes.TransferAllController.onSubmit,
@@ -63,7 +63,7 @@ class TransferAllControllerSpec extends ControllerSpecBase with JsonMatchers wit
   }
   override def beforeEach(): Unit = {
     reset(mockUserAnswersCacheConnector)
-    when(mockMinDetailsConnector.getPSAName(any(), any())) thenReturn Future.successful(psaName)
+    when(mockMinDetailsConnector.getPSAName(any(), any())).thenReturn (Future.successful(psaName))
   }
 
   private def controller: TransferAllController =

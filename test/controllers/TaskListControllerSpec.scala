@@ -37,7 +37,8 @@ import utils.Data._
 import views.html.TaskListView
 
 import scala.concurrent.Future
-class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach  with JsonMatchers {
+
+class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach with JsonMatchers {
 
   private val mockTaskListService = mock[TaskListService]
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -56,13 +57,13 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
 
   private val declarationSection =
     TaskListLink(
-    text = "You must complete every section before you can declare.",
-    target = "",
-    visuallyHiddenText = None,
-    status = false
-  )
+      text = "You must complete every section before you can declare.",
+      target = "",
+      visuallyHiddenText = None,
+      status = false
+    )
 
-  private val schemeDetailsTL : Seq[TaskListLink] =
+  private val schemeDetailsTL: Seq[TaskListLink] =
     Seq(basicDetailsSection,
       membershipDetailsSection)
 
@@ -77,9 +78,9 @@ class TaskListControllerSpec extends ControllerSpecBase with BeforeAndAfterEach 
     "declaration" -> declarationSection,
     "returnUrl" -> controllers.routes.PensionSchemeRedirectController.onPageLoad.url
   )
- val expectedJson = Json.obj("anyTrustees" -> false)
+  val expectedJson = Json.obj("anyTrustees" -> false)
 
-  val itemList : JsValue = json
+  val itemList: JsValue = json
 
   override def beforeEach(): Unit = {
     super.beforeEach()

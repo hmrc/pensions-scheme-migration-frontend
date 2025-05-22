@@ -45,7 +45,7 @@ class CompanyNumberControllerSpec extends ControllerSpecBase with JsonMatchers w
 
   private val formProvider: CompanyNumberFormProvider = new CompanyNumberFormProvider()
 
-  private def getView(req: Request[_], form: Form[_]) = {
+  private def getView(req: Request[?], form: Form[?]) = {
     app.injector.instanceOf[EnterReferenceValueWithHintView].apply(
       form,
       schemeName,

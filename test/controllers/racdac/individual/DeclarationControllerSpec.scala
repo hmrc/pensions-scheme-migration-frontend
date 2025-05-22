@@ -52,7 +52,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
   private def httpPathGET: String = controllers.racdac.individual.routes.DeclarationController.onPageLoad.url
   private def httpPathPOST: String = controllers.racdac.individual.routes.DeclarationController.onSubmit.url
 
-  private def getView(request: Request[_]) = app.injector.instanceOf[views.html.racdac.DeclarationView].apply(
+  private def getView(request: Request[?]) = app.injector.instanceOf[views.html.racdac.DeclarationView].apply(
     routes.DeclarationController.onSubmit,
     controllers.routes.PensionSchemeRedirectController.onPageLoad.url,
     psaName

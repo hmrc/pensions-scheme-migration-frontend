@@ -50,7 +50,15 @@ class CommonManualAddressServiceSpec extends ControllerSpecBase with CommonServi
     "line4" -> optional(text),
     "postcode" -> optional(text),
     "country" -> nonEmptyText
-  )(Address.apply)(Address.unapply))
+  )(Address.apply)((a: Address) => Some((
+    a.addressLine1,
+    a.addressLine2,
+    a.addressLine3,
+    a.addressLine4,
+    a.postcode,
+    a.country
+  )))
+  )
 
   private val service = new CommonManualAddressService(
     mockUserAnswersCacheConnector,

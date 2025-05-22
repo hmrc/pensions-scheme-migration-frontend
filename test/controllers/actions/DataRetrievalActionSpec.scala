@@ -51,11 +51,11 @@ class DataRetrievalActionSpec
 
     "there is no scheme data in the cache but user holds lock in locking table on the current scheme and migration data exists" must {
       "retrieve lock from current locks using credId and add it to the request and return current migration data with viewOnly false" in {
-        when(dataCacheConnector.fetch(any())(any(), any())) thenReturn Future.successful(Some(Json.obj()))
-        when(schemeCacheConnector.fetch(any(), any())) thenReturn Future(None)
-        when(schemeCacheConnector.save(any())(any(), any())) thenReturn Future(Json.toJson(lock))
-        when(lockCacheConnector.getLockByUser(any(), any())) thenReturn Future(Some(lock))
-        when(lockCacheConnector.getLockOnScheme(any())(any(), any())) thenReturn Future(Some(lock))
+        when(dataCacheConnector.fetch(any())(any(), any())).thenReturn (Future.successful(Some(Json.obj())))
+        when(schemeCacheConnector.fetch(any(), any())).thenReturn (Future(None))
+        when(schemeCacheConnector.save(any())(any(), any())).thenReturn (Future(Json.toJson(lock)))
+        when(lockCacheConnector.getLockByUser(any(), any())).thenReturn (Future(Some(lock)))
+        when(lockCacheConnector.getLockOnScheme(any())(any(), any())).thenReturn (Future(Some(lock)))
         val action = new Harness(dataCacheConnector, schemeCacheConnector, lockCacheConnector)
 
         val futureResult = action.callTransform(
@@ -76,9 +76,9 @@ class DataRetrievalActionSpec
 
     "there is no scheme data in the cache and user does not hold lock in locking table" must {
       "create request without lock and userAnswers" in {
-        when(dataCacheConnector.fetch(any())(any(), any())) thenReturn Future.successful(Some(Json.obj()))
-        when(schemeCacheConnector.fetch(any(), any())) thenReturn Future(None)
-        when(lockCacheConnector.getLockByUser(any(), any())) thenReturn Future(None)
+        when(dataCacheConnector.fetch(any())(any(), any())).thenReturn (Future.successful(Some(Json.obj())))
+        when(schemeCacheConnector.fetch(any(), any())).thenReturn( Future(None))
+        when(lockCacheConnector.getLockByUser(any(), any())).thenReturn (Future(None))
         val action = new Harness(dataCacheConnector, schemeCacheConnector, lockCacheConnector)
 
         val futureResult = action.callTransform(
@@ -98,9 +98,9 @@ class DataRetrievalActionSpec
 
     "there is scheme data in the cache and user holds lock the lock but scheme is locked by another user" must {
       "return lock from scheme data and return current migration data with viewOnly true" in {
-        when(dataCacheConnector.fetch(any())(any(), any())) thenReturn Future.successful(Some(Json.obj()))
-        when(schemeCacheConnector.fetch(any(), any())) thenReturn Future.successful(Some(Json.toJson(lock)))
-        when(lockCacheConnector.getLockOnScheme(any())(any(), any())) thenReturn Future(Some(lock.copy(credId = "non-matching-id")))
+        when(dataCacheConnector.fetch(any())(any(), any())).thenReturn (Future.successful(Some(Json.obj())))
+        when(schemeCacheConnector.fetch(any(), any())).thenReturn (Future.successful(Some(Json.toJson(lock))))
+        when(lockCacheConnector.getLockOnScheme(any())(any(), any())).thenReturn (Future(Some(lock.copy(credId = "non-matching-id"))))
         val action = new Harness(dataCacheConnector, schemeCacheConnector, lockCacheConnector)
 
         val futureResult = action.callTransform(
@@ -121,7 +121,7 @@ class DataRetrievalActionSpec
 
     "there is scheme data in the cache but data is in incorrect format" must {
       "return JsResultException" in {
-        when(schemeCacheConnector.fetch(any(), any())) thenReturn Future.successful(Some(Json.toJson("invalid-key" -> "invalid-value")))
+        when(schemeCacheConnector.fetch(any(), any())).thenReturn (Future.successful(Some(Json.toJson("invalid-key" -> "invalid-value"))))
         val action = new Harness(dataCacheConnector, schemeCacheConnector, lockCacheConnector)
 
         val futureResult = action.callTransform(
@@ -140,10 +140,10 @@ class DataRetrievalActionSpec
 
     "there is no lock on the scheme which user is trying to access but no data exists in migration-data" must {
       "set lock for current user and return request with empty userAnswers but viewOnly false" in {
-        when(dataCacheConnector.fetch(any())(any(), any())) thenReturn Future.successful(None)
-        when(schemeCacheConnector.fetch(any(), any())) thenReturn Future.successful(Some(Json.toJson(lock)))
-        when(lockCacheConnector.getLockOnScheme(any())(any(), any())) thenReturn Future(None)
-        when(lockCacheConnector.setLock(any())(any(), any())) thenReturn Future(Json.obj())
+        when(dataCacheConnector.fetch(any())(any(), any())).thenReturn (Future.successful(None))
+        when(schemeCacheConnector.fetch(any(), any())).thenReturn (Future.successful(Some(Json.toJson(lock))))
+        when(lockCacheConnector.getLockOnScheme(any())(any(), any())).thenReturn (Future(None))
+        when(lockCacheConnector.setLock(any())(any(), any())).thenReturn (Future(Json.obj()))
         val action = new Harness(dataCacheConnector, schemeCacheConnector, lockCacheConnector)
 
         val futureResult = action.callTransform(
@@ -164,10 +164,10 @@ class DataRetrievalActionSpec
 
     "there is no lock on the scheme which user is trying to access and data exists in migration-data" must {
       "set lock for current user and return request with userAnswers but viewOnly false" in {
-        when(dataCacheConnector.fetch(any())(any(), any())) thenReturn Future.successful(Some(Json.obj()))
-        when(schemeCacheConnector.fetch(any(), any())) thenReturn Future.successful(Some(Json.toJson(lock)))
-        when(lockCacheConnector.getLockOnScheme(any())(any(), any())) thenReturn Future(None)
-        when(lockCacheConnector.setLock(any())(any(), any())) thenReturn Future(Json.obj())
+        when(dataCacheConnector.fetch(any())(any(), any())).thenReturn (Future.successful(Some(Json.obj())))
+        when(schemeCacheConnector.fetch(any(), any())).thenReturn (Future.successful(Some(Json.toJson(lock))))
+        when(lockCacheConnector.getLockOnScheme(any())(any(), any())).thenReturn (Future(None))
+        when(lockCacheConnector.setLock(any())(any(), any())).thenReturn (Future(Json.obj()))
         val action = new Harness(dataCacheConnector, schemeCacheConnector, lockCacheConnector)
 
         val futureResult = action.callTransform(
