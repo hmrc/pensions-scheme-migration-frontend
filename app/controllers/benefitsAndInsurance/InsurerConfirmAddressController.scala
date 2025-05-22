@@ -44,7 +44,7 @@ class InsurerConfirmAddressController @Inject()(
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (BenefitsInsuranceNameId and SchemeNameId).retrieve.map { case insuranceCompanyName ~ schemeName =>
+      (BenefitsInsuranceNameId.and(SchemeNameId)).retrieve.map { case insuranceCompanyName ~ schemeName =>
         common.get(
           Some(schemeName),
           insuranceCompanyName,
@@ -59,7 +59,7 @@ class InsurerConfirmAddressController @Inject()(
 
   def onSubmit: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (BenefitsInsuranceNameId and SchemeNameId).retrieve.map { case insuranceCompanyName ~ schemeName =>
+      (BenefitsInsuranceNameId.and(SchemeNameId)).retrieve.map { case insuranceCompanyName ~ schemeName =>
         common.post(
           Some(schemeName),
           insuranceCompanyName,

@@ -27,7 +27,6 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.address.WhatYouWillNeedView
-
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -44,19 +43,17 @@ class WhatYouWillNeedController @Inject()(
     with Retrievals {
 
   def onPageLoad(index: Index): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData()).async {
-      implicit request =>
-        val schemeName = request.userAnswers.get(SchemeNameId)
-          .getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
+    (authenticate andThen getData andThen requireData()).async { implicit request =>
+      val schemeName = request.userAnswers.get(SchemeNameId)
+        .getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
 
-        CompanyDetailsId(index).retrieve.map {
-          companyDetails: CompanyDetails =>
-            Future.successful(Ok(whatYouWillNeedView(
-              Messages("messages__title_company"),
-              companyDetails.companyName,
-              EnterPostcodeController.onPageLoad(index, NormalMode).url,
-              schemeName
-            )))
-        }
+      CompanyDetailsId(index).retrieve.map { companyDetails  =>
+        Future.successful(Ok(whatYouWillNeedView(
+          Messages("messages__title_company"),
+          companyDetails.companyName,
+          EnterPostcodeController.onPageLoad(index, NormalMode).url,
+          schemeName
+        )))
+      }
     }
 }

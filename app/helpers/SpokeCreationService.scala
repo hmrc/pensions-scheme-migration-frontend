@@ -28,13 +28,13 @@ import models._
 import models.entities.{EntityType, PensionManagementType}
 import play.api.i18n.Messages
 import services.DataPrefillService
-import utils.{Enumerable, UserAnswers, entityTypeError, managementTypeError}
+import utils.{Enumerable, UserAnswers, entityTypeError}
 
 import javax.inject.Inject
 
 class SpokeCreationService @Inject()(dataPrefillService: DataPrefillService) extends Enumerable.Implicits {
 
-   def getAddEstablisherHeaderSpokes(answers: UserAnswers, viewOnly: Boolean)
+  def getAddEstablisherHeaderSpokes(answers: UserAnswers, viewOnly: Boolean)
                                    (implicit messages: Messages): Seq[EntitySpoke] =
     if (viewOnly)
       Nil
@@ -79,27 +79,27 @@ class SpokeCreationService @Inject()(dataPrefillService: DataPrefillService) ext
   }
 
   def getEstablisherPartnershipSpokes(answers: UserAnswers, name: String, index: Index)
-                                 (implicit messages: Messages): Seq[EntitySpoke] = {
+                                     (implicit messages: Messages): Seq[EntitySpoke] = {
     Seq(
       createSpoke(answers, EstablisherPartnershipDetails(index, answers), name),
       createSpoke(answers, EstablisherPartnershipAddress(index, answers), name),
       createSpoke(answers, EstablisherPartnershipContactDetails(index, answers), name),
-      createPartnerSpoke(answers.allPartnersAfterDelete(indexToInt(index)),EstablisherPartnerDetails(index, answers), name)
+      createPartnerSpoke(answers.allPartnersAfterDelete(indexToInt(index)), EstablisherPartnerDetails(index, answers), name)
     )
   }
 
-  def createDirectorSpoke(entityList: Seq[Entity[_]],
+  def createDirectorSpoke(entityList: Seq[Entity[?]],
                           spoke: Spoke,
                           name: String)(implicit messages: Messages): EntitySpoke = {
     val isComplete: Option[Boolean] = Some(entityList.nonEmpty && entityList.forall(_.isCompleted))
     EntitySpoke(spoke.changeLink(name), isComplete)
   }
 
-  private def createPartnerSpoke(entityList: Seq[Entity[_]],
-                          spoke: Spoke,
-                          name: String)(implicit messages: Messages): EntitySpoke = {
+  private def createPartnerSpoke(entityList: Seq[Entity[?]],
+                                 spoke: Spoke,
+                                 name: String)(implicit messages: Messages): EntitySpoke = {
     val isComplete: Option[Boolean] = {
-      entityList.isEmpty  match {
+      entityList.isEmpty match {
         case false if entityList.size == 1 => Some(false)
         case false =>
           Some(entityList.forall(_.isCompleted))
@@ -128,7 +128,7 @@ class SpokeCreationService @Inject()(dataPrefillService: DataPrefillService) ext
   }
 
   def getTrusteePartnershipSpokes(answers: UserAnswers, name: String, index: Index)
-                             (implicit messages: Messages): Seq[EntitySpoke] = {
+                                 (implicit messages: Messages): Seq[EntitySpoke] = {
     Seq(
       createSpoke(answers, TrusteePartnershipDetails(index, answers), name),
       createSpoke(answers, TrusteePartnershipAddress(index, answers), name),
@@ -158,18 +158,18 @@ class SpokeCreationService @Inject()(dataPrefillService: DataPrefillService) ext
     val function = pensionManagementType match {
       case entities.Establisher =>
         entityType match {
-          case entities.Company => getEstablisherCompanySpokes _
-          case entities.Individual => getEstablisherIndividualSpokes _
-          case entities.Partnership => getEstablisherPartnershipSpokes _
-          case e => entityTypeError(e)
+          case entities.Company => getEstablisherCompanySpokes
+          case entities.Individual => getEstablisherIndividualSpokes
+          case entities.Partnership => getEstablisherPartnershipSpokes
+          case null => entityTypeError(null)
         }
       case entities.Trustee => entityType match {
-        case entities.Company => getTrusteeCompanySpokes _
-        case entities.Individual => getTrusteeIndividualSpokes _
-        case entities.Partnership => getTrusteePartnershipSpokes _
-        case e => entityTypeError(e)
+        case entities.Company => getTrusteeCompanySpokes
+        case entities.Individual => getTrusteeIndividualSpokes
+        case entities.Partnership => getTrusteePartnershipSpokes
+        case null => entityTypeError(null)
       }
-      case e => managementTypeError(e)
+      case null => entityTypeError(null)
     }
 
     function(answers, name, index)

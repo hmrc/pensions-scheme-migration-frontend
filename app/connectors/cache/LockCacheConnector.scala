@@ -26,6 +26,7 @@ import play.api.mvc.Results._
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse, StringContextOps}
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -39,7 +40,7 @@ class LockCacheConnector @Inject()(config: AppConfig,
           (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[JsValue] = {
 
     val headers: Seq[(String, String)] = Seq(("pstr", lock.pstr),("psaId", lock.psaId), ("Content-Type", "application/json"))
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers*)
 
     http.post(url"${config.lockUrl}")(hc).withBody(Json.obj()).execute[HttpResponse].map { response =>
         response.status match {
@@ -56,7 +57,7 @@ class LockCacheConnector @Inject()(config: AppConfig,
     val headers: Seq[(String, String)] = Seq(("pstr", lock.pstr),
       ("psaId", lock.psaId),
       ("content-type", "application/json"))
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers*)
 
     get(config.lockUrl, hc)
   }
@@ -65,7 +66,7 @@ class LockCacheConnector @Inject()(config: AppConfig,
            (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[MigrationLock]] = {
 
     val headers: Seq[(String, String)] = Seq(("pstr", pstr))
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers*)
 
     get(config.lockOnSchemeUrl, hc)
   }
@@ -73,7 +74,7 @@ class LockCacheConnector @Inject()(config: AppConfig,
   def getLockByUser(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[MigrationLock]] = {
 
     val headers: Seq[(String, String)] = Seq(("content-type", "application/json"))
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers*)
 
     get(config.lockByUserUrl, hc)
   }
@@ -99,7 +100,7 @@ class LockCacheConnector @Inject()(config: AppConfig,
     val headers: Seq[(String, String)] = Seq(("pstr", lock.pstr),
       ("psaId", lock.psaId),
       ("content-type", "application/json"))
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers*)
 
     remove(config.lockUrl, hc)
   }
@@ -108,7 +109,7 @@ class LockCacheConnector @Inject()(config: AppConfig,
                 (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Result] = {
 
     val headers: Seq[(String, String)] = Seq(("pstr", pstr))
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers*)
 
     remove(config.lockOnSchemeUrl, hc)
   }
@@ -116,7 +117,7 @@ class LockCacheConnector @Inject()(config: AppConfig,
   def removeLockByUser(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Result] = {
 
     val headers: Seq[(String, String)] = Seq(("content-type", "application/json"))
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers*)
 
     remove(config.lockByUserUrl, hc)
   }

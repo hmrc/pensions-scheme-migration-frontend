@@ -16,7 +16,6 @@
 
 package controllers.trustees.individual.address
 
-import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.address.AddressFormProvider
@@ -25,7 +24,6 @@ import identifiers.establishers.company.director.{address => Director}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address.{AddressId, AddressListId}
 import models._
-import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
@@ -38,23 +36,22 @@ import scala.concurrent.ExecutionContext
 import scala.util.Try
 
 class ConfirmAddressController @Inject()(
-    val messagesApi: MessagesApi,
-    userAnswersCacheConnector: UserAnswersCacheConnector,
-    navigator: CompoundNavigator,
-    authenticate: AuthAction,
-    getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    formProvider: AddressFormProvider,
-    dataUpdateService: DataUpdateService,
-    common: CommonManualAddressService
-)(implicit ec: ExecutionContext) extends Retrievals with I18nSupport {
+                                          val messagesApi: MessagesApi,
+                                          authenticate: AuthAction,
+                                          getData: DataRetrievalAction,
+                                          requireData: DataRequiredAction,
+                                          formProvider: AddressFormProvider,
+                                          dataUpdateService: DataUpdateService,
+                                          common: CommonManualAddressService
+                                        )(implicit ec: ExecutionContext) extends Retrievals with I18nSupport {
 
   private def form: Form[Address] = formProvider()
+
   private val pageTitleEntityTypeMessageKey: Option[String] = Some("messages__individual")
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (TrusteeNameId(index) and SchemeNameId).retrieve.map { case trusteeName ~ schemeName =>
+      (TrusteeNameId(index).and(SchemeNameId)).retrieve.map { case trusteeName ~ schemeName =>
         common.get(
           Some(schemeName),
           trusteeName.fullName,
@@ -70,7 +67,7 @@ class ConfirmAddressController @Inject()(
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (TrusteeNameId(index) and SchemeNameId).retrieve.map {
+      (TrusteeNameId(index).and(SchemeNameId)).retrieve.map {
         case trusteeName ~ schemeName =>
           common.post(
             Some(schemeName),
@@ -87,7 +84,7 @@ class ConfirmAddressController @Inject()(
     }
 
   private def setUpdatedAnswers(index: Index, value: Address, mode: Mode, ua: UserAnswers): Try[UserAnswers] = {
-     val updatedUserAnswers =
+    val updatedUserAnswers =
       mode match {
         case CheckMode =>
           val directors = dataUpdateService.findMatchingDirectors(index)(ua)

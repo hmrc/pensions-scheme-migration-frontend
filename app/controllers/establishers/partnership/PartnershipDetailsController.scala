@@ -66,7 +66,7 @@ class PartnershipDetailsController @Inject()(
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         form.bindFromRequest().fold(
-          (formWithErrors: Form[_]) =>
+          (formWithErrors: Form[?]) =>
             Future.successful(BadRequest(
               partnershipDetailsView(
                formWithErrors,

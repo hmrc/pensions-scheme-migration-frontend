@@ -49,21 +49,21 @@ class SchemeSuccessController @Inject()(appConfig: AppConfig,
   def onPageLoad: Action[AnyContent] =
     (identify andThen getData andThen requireData()).async {
       implicit request =>
-          val schemeDetails = for {
-            email <- minimalDetailsConnector.getPSAEmail
-            _ <- currentPstrCacheConnector.remove
-            _ <- lockCacheConnector.removeLock(request.lock)
-            _ <- userAnswersCacheConnector.remove(request.lock.pstr)
-            _ <- listOfSchemesConnector.removeCache(request.psaId.id)
-          } yield {
-            Map(
-              "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
-              "pstr" -> request.lock.pstr,
-              "email" -> email,
-              "yourSchemesLink" -> appConfig.yourPensionSchemesUrl,
-              "returnUrl" -> appConfig.psaOverviewUrl
-            )
-          }
+        val schemeDetails = for {
+          email <- minimalDetailsConnector.getPSAEmail
+          _ <- currentPstrCacheConnector.remove
+          _ <- lockCacheConnector.removeLock(request.lock)
+          _ <- userAnswersCacheConnector.remove(request.lock.pstr)
+          _ <- listOfSchemesConnector.removeCache(request.psaId.id)
+        } yield {
+          Map(
+            "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+            "pstr" -> request.lock.pstr,
+            "email" -> email,
+            "yourSchemesLink" -> appConfig.yourPensionSchemesUrl,
+            "returnUrl" -> appConfig.psaOverviewUrl
+          )
+        }
         schemeDetails.flatMap { details =>
           Future.successful(Ok(schemeSuccessView(
             details("schemeName"),

@@ -50,7 +50,7 @@ class SpokeTaskListController @Inject() (
   private def getTemplateData(index: Index,
                                   pensionManagementType: PensionManagementType,
                                   entityType: EntityType,
-                                  schemeName: String)(implicit request: DataRequest[_]) = {
+                                  schemeName: String)(implicit request: DataRequest[?]) = {
 
 
 
@@ -58,13 +58,13 @@ class SpokeTaskListController @Inject() (
       case Company => Messages("messages__company")
       case Individual => Messages("messages__individual")
       case Partnership => Messages("messages__partnership")
-      case e => entityTypeError(e)
+      case null => entityTypeError(null)
     }
 
     val managementTypeTypeMsg = pensionManagementType match {
       case Establisher => Messages("messages__tasklist__establisher")
       case Trustee => Messages("messages__tasklist__trustee")
-      case e => managementTypeError(e)
+       case null => managementTypeError(null)
     }
 
     val entityName = identifierUtils.getNameOfEntityType(index, pensionManagementType, entityType, emptyEntityNameMsg)
@@ -79,7 +79,7 @@ class SpokeTaskListController @Inject() (
         pensionManagementType match {
           case entities.Establisher => controllers.establishers.routes.AddEstablisherController.onPageLoad
           case entities.Trustee => controllers.trustees.routes.AddTrusteeController.onPageLoad
-          case e => managementTypeError(e)
+          case null => managementTypeError(null)
         }
 
       }
@@ -91,7 +91,7 @@ class SpokeTaskListController @Inject() (
               pensionManagementType match {
                 case entities.Establisher => controllers.establishers.company.routes.CompanyDetailsController.onPageLoad(index)
                 case entities.Trustee => controllers.trustees.company.routes.CompanyDetailsController.onPageLoad(index)
-                case e => managementTypeError(e)
+                case null => managementTypeError(null)
               }
             case _ => defaultRoute
           }

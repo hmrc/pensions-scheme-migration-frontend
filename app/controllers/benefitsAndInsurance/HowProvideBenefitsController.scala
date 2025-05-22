@@ -16,7 +16,6 @@
 
 package controllers.benefitsAndInsurance
 
-import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
@@ -43,7 +42,6 @@ class HowProvideBenefitsController @Inject()(override val messagesApi: MessagesA
                                        navigator: CompoundNavigator,
                                        formProvider: HowProvideBenefitsFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
-                                       config: AppConfig,
                                        view:HowProvideBenefitsView)(implicit ec: ExecutionContext)
   extends FrontendBaseController  with I18nSupport with Retrievals with Enumerable.Implicits {
 

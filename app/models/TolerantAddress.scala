@@ -167,7 +167,17 @@ object TolerantAddress {
       (JsPath \ "addressLine4").formatNullable[String] and
       (JsPath \ "postalCode").formatNullable[String] and
       (JsPath \ "countryCode").formatNullable[String]
-    ) (TolerantAddress.apply, unlift(TolerantAddress.unapply))
+    )(TolerantAddress.apply, t =>
+    (
+      t.addressLine1,
+      t.addressLine2,
+      t.addressLine3,
+      t.addressLine4,
+      t.postcode,
+      t.country
+    )
+  )
+
 
   implicit def convert(tolerant: TolerantAddress): Option[Address] = {
     for {

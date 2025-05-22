@@ -48,7 +48,7 @@ class AddEstablisherController @Inject()(
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()) {
       implicit request =>
-        val allEstablishers: Seq[Establisher[_]] = request.userAnswers.allEstablishersAfterDelete
+        val allEstablishers: Seq[Establisher[?]] = request.userAnswers.allEstablishersAfterDelete
         if (allEstablishers.isEmpty) {
           Redirect(NoEstablishersController.onPageLoad)
         } else {
