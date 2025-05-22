@@ -72,7 +72,7 @@ class AddTrusteeControllerSpec extends ControllerSpecBase with JsonMatchers with
 
   private val maxTrustees = 5
 
-  private def getView(req: Request[_], userAnswers: Option[UserAnswers]) = app.injector.instanceOf[views.html.trustees.AddTrusteeView].apply(
+  private def getView(req: Request[?], userAnswers: Option[UserAnswers]) = app.injector.instanceOf[views.html.trustees.AddTrusteeView].apply(
     form,
     controllers.trustees.routes.AddTrusteeController.onSubmit,
     schemeName,

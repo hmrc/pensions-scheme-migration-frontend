@@ -39,7 +39,7 @@ class WhatYouWillNeedControllerSpec
   private val personName: PersonName = PersonName("Jane", "Doe")
   private val userAnswers: UserAnswers = ua.set(EstablisherNameId(0), personName).success.value
 
-  private def getView(req: Request[_]) = {
+  private def getView(req: Request[?]) = {
     app.injector.instanceOf[WhatYouWillNeedContactView].apply(
       Messages("messages__title_individual"),
       controllers.establishers.individual.contact.routes.EnterEmailController.onPageLoad(0, NormalMode).url,

@@ -59,7 +59,7 @@ class BulkDataActionSpec
 
     "there is no scheme data in the cache but the data is required" must {
       "throw the user to psa overview page" in {
-        when(schemeCacheConnector.fetch(any(), any())) thenReturn Future(None)
+        when(schemeCacheConnector.fetch(any(), any())).thenReturn (Future(None))
 
         val action = new Harness(schemeCacheConnector, listOfSchemesConnector, minimalDetailsConnector, appConfig, true)
 
@@ -81,7 +81,7 @@ class BulkDataActionSpec
     "there is no scheme data in the cache and the data is not required" must {
       "call the api, gets the min PSA details and list of rac dac schemes data, save the data in the cache and" +
         "return the Bulk Data Request with minimal psa and list of schemes" in {
-        when(schemeCacheConnector.fetch(any(), any())) thenReturn Future(None)
+        when(schemeCacheConnector.fetch(any(), any())).thenReturn (Future(None))
         when(minimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future(minPSA))
         when(listOfSchemesConnector.getListOfSchemes(any())(any(), any())).thenReturn(Future(Right(ListOfLegacySchemes(1, Some(listOfSchemes)))))
         when(schemeCacheConnector.save(any())(any(), any())).thenReturn(Future(Json.obj()))
@@ -106,7 +106,7 @@ class BulkDataActionSpec
         "return the Bulk Data Request with minimal psa but no list of schemes" in {
         reset(schemeCacheConnector)
         val listOfSchemes = List(Items("test-pstr", "", false, "test-scheme", "", Some("")))
-        when(schemeCacheConnector.fetch(any(), any())) thenReturn Future(None)
+        when(schemeCacheConnector.fetch(any(), any())).thenReturn (Future(None))
         when(minimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future(minPSA))
         when(listOfSchemesConnector.getListOfSchemes(any())(any(), any())).thenReturn(Future(Right(ListOfLegacySchemes(1, Some(listOfSchemes)))))
         when(schemeCacheConnector.save(any())(any(), any())).thenReturn(Future(Json.obj()))
@@ -129,7 +129,7 @@ class BulkDataActionSpec
     "there is scheme data in the cache" must {
       "return the Bulk Data Request with minimal psa and list of schemes" in {
         reset(schemeCacheConnector)
-        when(schemeCacheConnector.fetch(any(), any())) thenReturn Future(Some(Json.obj("schemes" -> Json.toJson(listOfSchemes), "md" -> Json.toJson(minPSA))))
+        when(schemeCacheConnector.fetch(any(), any())).thenReturn (Future(Some(Json.obj("schemes" -> Json.toJson(listOfSchemes), "md" -> Json.toJson(minPSA)))))
         val action = new Harness(schemeCacheConnector, listOfSchemesConnector, minimalDetailsConnector, appConfig, false)
 
         val futureResult = action.callRefine(AuthenticatedRequest(
@@ -149,7 +149,7 @@ class BulkDataActionSpec
     "there is invalid scheme data in the cache" must {
       "redirect to psa overview page" in {
         reset(schemeCacheConnector)
-        when(schemeCacheConnector.fetch(any(), any())) thenReturn Future(Some(Json.obj("invalid" -> "data")))
+        when(schemeCacheConnector.fetch(any(), any())).thenReturn (Future(Some(Json.obj("invalid" -> "data"))))
         val action = new Harness(schemeCacheConnector, listOfSchemesConnector, minimalDetailsConnector, appConfig, false)
 
         val futureResult = action.callRefine(AuthenticatedRequest(
@@ -169,7 +169,7 @@ class BulkDataActionSpec
       "redirect to psa delimited page" in {
         reset(schemeCacheConnector)
         reset(minimalDetailsConnector)
-        when(schemeCacheConnector.fetch(any(), any())) thenReturn Future(None)
+        when(schemeCacheConnector.fetch(any(), any())).thenReturn (Future(None))
         when(minimalDetailsConnector.getPSADetails(any())(any(), any())).thenThrow(new DelimitedAdminException)
         val action = new Harness(schemeCacheConnector, listOfSchemesConnector, minimalDetailsConnector, appConfig, false)
 
@@ -191,7 +191,7 @@ class BulkDataActionSpec
         reset(schemeCacheConnector)
         reset( minimalDetailsConnector)
         reset(listOfSchemesConnector)
-        when(schemeCacheConnector.fetch(any(), any())) thenReturn Future(None)
+        when(schemeCacheConnector.fetch(any(), any())).thenReturn (Future(None))
         when(listOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.failed(AncillaryPsaException()))
 
         val action = new Harness(schemeCacheConnector, listOfSchemesConnector, minimalDetailsConnector, appConfig, false)
@@ -214,7 +214,7 @@ class BulkDataActionSpec
         reset(schemeCacheConnector)
         reset(minimalDetailsConnector)
         reset(listOfSchemesConnector)
-        when(schemeCacheConnector.fetch(any(), any())) thenReturn Future(None)
+        when(schemeCacheConnector.fetch(any(), any())).thenReturn (Future(None))
         when(listOfSchemesConnector.getListOfSchemes(any())(any(),any())).thenReturn(Future.failed(ListOfSchemes5xxException()))
 
         val action = new Harness(schemeCacheConnector, listOfSchemesConnector, minimalDetailsConnector, appConfig, false)

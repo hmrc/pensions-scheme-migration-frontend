@@ -41,7 +41,7 @@ class FinishedStatusControllerSpec extends ControllerSpecBase with JsonMatchers 
 
   private def httpPathGET: String = controllers.racdac.bulk.routes.FinishedStatusController.onPageLoad.url
 
-  private def getView(req: Request[_]) = {
+  private def getView(req: Request[?]) = {
     app.injector.instanceOf[views.html.racdac.FinishedStatusView].apply(
       appConfig.yourPensionSchemesUrl,
       appConfig.racDacMigrationTransfer

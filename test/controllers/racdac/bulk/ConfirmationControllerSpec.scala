@@ -51,12 +51,12 @@ class ConfirmationControllerSpec extends ControllerSpecBase with JsonMatchers wi
     .overrides(
       modules ++ extraModules ++ Seq[GuiceableModule](
         bind[BulkDataAction].toInstance(mutableFakeBulkDataAction)
-      ): _*
+      )*
     ).build()
 
   private def httpPathGET: String = controllers.racdac.bulk.routes.ConfirmationController.onPageLoad.url
 
-  private def getView(request: Request[_]) = app.injector.instanceOf[views.html.racdac.ConfirmationView].apply(
+  private def getView(request: Request[?]) = app.injector.instanceOf[views.html.racdac.ConfirmationView].apply(
     appConfig.psaOverviewUrl,
     Data.email
   )(request, implicitly)
