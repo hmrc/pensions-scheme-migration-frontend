@@ -19,7 +19,7 @@
     govukButton: GovukButton
 )
 
-@(pageTitle: String, continueUrl: String, name: String)(implicit request: Request[_], messages: Messages)
+@(pageTitle: String, continueUrl: String, name: String)(implicit request: Request[?], messages: Messages)
 
 @layout(messages(pageTitle)) {
 

@@ -86,7 +86,7 @@ class ConfirmDeleteEstablisherController @Inject()(override val messagesApi: Mes
         DeletableEstablisher(details.companyName, details.isDeleted))
       case Partnership => userAnswers.get(PartnershipDetailsId(index)).map(details =>
         DeletableEstablisher(details.partnershipName, details.isDeleted))
-      case _ => None
+      case null => None
     }
   }
 
@@ -108,7 +108,7 @@ class ConfirmDeleteEstablisherController @Inject()(override val messagesApi: Mes
             PartnershipDetailsId(establisherIndex).retrieve.map { partnershipDetails =>
               updateEstablisherKind(partnershipDetails.partnershipName, establisherKind, establisherIndex, None, None,Some(partnershipDetails))
             }
-          case _ =>
+          case null =>
             throw new RuntimeException("index page unavailable")
         }
     }
@@ -121,7 +121,7 @@ class ConfirmDeleteEstablisherController @Inject()(override val messagesApi: Mes
                                     partnershipDetails: Option[PartnershipDetails])(implicit request: DataRequest[AnyContent])
   : Future[Result] = {
     form(name).bindFromRequest().fold(
-      (formWithErrors: Form[_]) => {
+      (formWithErrors: Form[?]) => {
         Future.successful(BadRequest(
           deleteView(
             formWithErrors,
@@ -146,7 +146,7 @@ class ConfirmDeleteEstablisherController @Inject()(override val messagesApi: Mes
             case Partnership => partnershipDetails.fold(Try(request.userAnswers))(
               partnership => request.userAnswers.set(PartnershipDetailsId(establisherIndex),
                 partnership.copy (isDeleted = true)))
-            case _ => Try(request.userAnswers)
+            case null => Try(request.userAnswers)
           }
         } else {
           Try(request.userAnswers)

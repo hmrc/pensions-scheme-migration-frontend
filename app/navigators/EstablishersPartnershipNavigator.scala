@@ -31,7 +31,7 @@ import utils.{Enumerable, UserAnswers}
 
 import javax.inject.Inject
 
-class EstablishersPartnershipNavigator@Inject()()
+class EstablishersPartnershipNavigator @Inject()()
   extends Navigator
     with Enumerable.Implicits {
 
@@ -60,33 +60,35 @@ class EstablishersPartnershipNavigator@Inject()()
     case PreviousAddressId(index) => cyaAddress(index)
   }
 
- override protected def editRouteMap(ua: UserAnswers)(implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
-   case PartnershipDetailsId(_) => throw new RuntimeException("index page unavailable")
-   case HaveUTRId(index) => utrRoutes(index, ua, CheckMode)
-   case PartnershipUTRId(index) => cyaDetails(index)
-   case NoUTRReasonId(index) => cyaDetails(index)
-   case HaveVATId(index) => vatRoutes(index, ua, CheckMode)
-   case VATId(index) => cyaDetails(index)
-   case HavePAYEId(index) => payeRoutes(index, ua, CheckMode)
-   case PAYEId(index) => cyaDetails(index)
-   case EnterEmailId(index) => cyaContactDetails(index)
-   case EnterPhoneId(index) => cyaContactDetails(index)
-   case AddressId(index) => cyaAddress(index)
-   case AddressListId(index) => cyaAddress(index)
-   case AddressYearsId(index) =>
-     if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index)
-     else EnterPreviousPostcodeController.onPageLoad(index, CheckMode)
-   case TradingTimeId(index) =>
-     if (ua.get(TradingTimeId(index)).contains(true)) EnterPreviousPostcodeController.onPageLoad(index, CheckMode) else cyaAddress(index)
-   case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index, CheckMode)
-   case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index, CheckMode)
-   case PreviousAddressId(index) => cyaAddress(index)
-   case PreviousAddressListId(index) => cyaAddress(index)
+  override protected def editRouteMap(ua: UserAnswers)(implicit request: DataRequest[AnyContent]): PartialFunction[Identifier, Call] = {
+    case PartnershipDetailsId(_) => throw new RuntimeException("index page unavailable")
+    case HaveUTRId(index) => utrRoutes(index, ua, CheckMode)
+    case PartnershipUTRId(index) => cyaDetails(index)
+    case NoUTRReasonId(index) => cyaDetails(index)
+    case HaveVATId(index) => vatRoutes(index, ua, CheckMode)
+    case VATId(index) => cyaDetails(index)
+    case HavePAYEId(index) => payeRoutes(index, ua, CheckMode)
+    case PAYEId(index) => cyaDetails(index)
+    case EnterEmailId(index) => cyaContactDetails(index)
+    case EnterPhoneId(index) => cyaContactDetails(index)
+    case AddressId(index) => cyaAddress(index)
+    case AddressListId(index) => cyaAddress(index)
+    case AddressYearsId(index) =>
+      if (ua.get(AddressYearsId(index)).contains(true)) cyaAddress(index)
+      else EnterPreviousPostcodeController.onPageLoad(index, CheckMode)
+    case TradingTimeId(index) =>
+      if (ua.get(TradingTimeId(index)).contains(true)) EnterPreviousPostcodeController.onPageLoad(index, CheckMode) else cyaAddress(index)
+    case EnterPostCodeId(index) => SelectAddressController.onPageLoad(index, CheckMode)
+    case EnterPreviousPostCodeId(index) => SelectPreviousAddressController.onPageLoad(index, CheckMode)
+    case PreviousAddressId(index) => cyaAddress(index)
+    case PreviousAddressListId(index) => cyaAddress(index)
   }
 
-  private def cyaDetails(index:Int) = controllers.common.routes.CheckYourAnswersController.onPageLoad(index, entities.Establisher, entities.Partnership, entities.Details)
-  private def cyaAddress(index:Int): Call = controllers.common.routes.CheckYourAnswersController.onPageLoad(index, entities.Establisher, entities.Partnership, entities.Address)
-  private def addressYears(index:Int, mode:Mode): Call = controllers.establishers.partnership.address.routes.AddressYearsController.onPageLoad(index,mode)
+  private def cyaDetails(index: Int) = controllers.common.routes.CheckYourAnswersController.onPageLoad(index, entities.Establisher, entities.Partnership, entities.Details)
+
+  private def cyaAddress(index: Int): Call = controllers.common.routes.CheckYourAnswersController.onPageLoad(index, entities.Establisher, entities.Partnership, entities.Address)
+
+  private def addressYears(index: Int, mode: Mode): Call = controllers.establishers.partnership.address.routes.AddressYearsController.onPageLoad(index, mode)
 
   private def utrRoutes(
                          index: Index,
@@ -99,7 +101,7 @@ class EstablishersPartnershipNavigator@Inject()()
       case None => controllers.routes.TaskListController.onPageLoad
     }
 
-  private def cyaContactDetails(index:Int): Call = controllers.common.routes.CheckYourAnswersController.onPageLoad(index, entities.Establisher, entities.Partnership, entities.Contacts)
+  private def cyaContactDetails(index: Int): Call = controllers.common.routes.CheckYourAnswersController.onPageLoad(index, entities.Establisher, entities.Partnership, entities.Contacts)
 
   private def vatRoutes(
                          index: Index,

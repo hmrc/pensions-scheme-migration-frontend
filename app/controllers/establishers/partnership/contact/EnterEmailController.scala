@@ -48,9 +48,11 @@ class EnterEmailController @Inject()(
       .userAnswers
       .get(PartnershipDetailsId(index))
       .fold(Messages("messages__partnership"))(_.partnershipName)
-
-  private def form(index: Index)(implicit request: DataRequest[AnyContent]): Form[String] =
+  
+  @annotation.nowarn("msg=unused explicit parameter")
+  private def form(index: Index)(implicit request: DataRequest[AnyContent]): Form[String] = {
     formProvider(Messages("messages__enterEmail__type__error_required", Messages("messages__partnership")))
+  }
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {

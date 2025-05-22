@@ -21,7 +21,7 @@ import play.api.data.{Form, Forms}
 
 class AddEstablisherFormProvider extends Mappings {
 
-  def apply(establishers: Seq[_]): Form[Option[Boolean]] = {
+  def apply(establishers: Seq[?]): Form[Option[Boolean]] = {
     if (establishers.isEmpty) {
       Form(
         "value" -> Forms.optional(boolean("messages__addEstablisher_error__selection"))

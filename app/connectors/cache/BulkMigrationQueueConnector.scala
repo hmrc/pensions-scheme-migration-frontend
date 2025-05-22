@@ -23,6 +23,7 @@ import play.api.libs.json._
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse, NotFoundException, StringContextOps}
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -48,10 +49,10 @@ class BulkMigrationQueueConnector @Inject()(config: AppConfig,
   def isRequestInProgress(psaId: String)
                          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Boolean] = {
     val headers: Seq[(String, String)] = Seq(("psaId", psaId), ("Content-Type", "application/json"))
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers*)
 
     http.get(url"${config.bulkMigrationIsInProgressUrl}")(hc)
-      .setHeader(headers: _*).execute[HttpResponse]
+      .setHeader(headers*).execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
         response.status match {
@@ -67,10 +68,10 @@ class BulkMigrationQueueConnector @Inject()(config: AppConfig,
                  (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[Boolean]] = {
 
     val headers: Seq[(String, String)] = Seq(("psaId", psaId), ("Content-Type", "application/json"))
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers*)
 
     http.get(url"${config.bulkMigrationIsAllFailedUrl}")(hc)
-      .setHeader(headers: _*)
+      .setHeader(headers*)
       .execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
@@ -93,10 +94,10 @@ class BulkMigrationQueueConnector @Inject()(config: AppConfig,
   def deleteAll(psaId: String)
                (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Boolean] = {
     val headers: Seq[(String, String)] = Seq(("psaId", psaId), ("Content-Type", "application/json"))
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers*)
 
     http.delete(url"${config.bulkMigrationDeleteAllUrl}")(hc)
-      .setHeader(headers: _*)
+      .setHeader(headers*)
       .execute[HttpResponse].map { response =>
       response.status match {
         case OK =>

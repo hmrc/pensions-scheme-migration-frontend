@@ -16,7 +16,6 @@
 
 package navigators
 
-import config.AppConfig
 import controllers.routes._
 import controllers.trustees.individual.address.routes.{EnterPreviousPostcodeController, SelectAddressController, SelectPreviousAddressController}
 import controllers.trustees.individual.contact.routes._
@@ -38,7 +37,7 @@ import utils.{Enumerable, UserAnswers}
 
 import javax.inject.Inject
 
-class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPrefillService)
+class TrusteesNavigator @Inject()(dataPrefillService: DataPrefillService)
   extends Navigator
     with Enumerable.Implicits {
 
@@ -119,7 +118,7 @@ class TrusteesNavigator @Inject()(config: AppConfig, dataPrefillService: DataPre
         controllers.trustees.company.routes.CompanyDetailsController.onPageLoad(index)
       case TrusteeKind.Partnership =>
         controllers.trustees.partnership.routes.PartnershipDetailsController.onPageLoad(index)
-      case _ => throw new RuntimeException("index page unavailable")
+      case null => throw new RuntimeException("index page unavailable")
     }
   }
 

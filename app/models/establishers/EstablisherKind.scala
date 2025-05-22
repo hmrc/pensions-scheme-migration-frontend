@@ -30,7 +30,7 @@ object EstablisherKind {
     Company, Individual, Partnership
   )
 
-  def radios(form: Form[_])(implicit messages:Messages): Seq[RadioItem] = {
+  def radios(form: Form[?])(implicit messages:Messages): Seq[RadioItem] = {
     values.map(value =>
       RadioItem(
         content = Text(Messages(s"kind.${value.toString}")),
@@ -47,7 +47,7 @@ object EstablisherKind {
   case object Partnership extends WithName("partnership") with EstablisherKind
 
   implicit val enumerable: Enumerable[EstablisherKind] =
-    Enumerable(values.map(v => v.toString -> v): _*)
+    Enumerable(values.map(v => v.toString -> v)*)
 
   //noinspection ConvertExpressionToSAM
   implicit val jsLiteral: JavascriptLiteral[EstablisherKind] = new JavascriptLiteral[EstablisherKind] {

@@ -81,7 +81,7 @@ class DirectorAlsoTrusteeController @Inject()(override val messagesApi: Messages
       SchemeNameId.retrieve.map { schemeName =>
         val seqDirector = dataPrefillService.getListOfDirectorsToBeCopied
         form.bindFromRequest().fold(
-          (formWithErrors: Form[_]) => {
+          (formWithErrors: Form[?]) => {
             Future.successful(BadRequest(
               dataPrefillRadioView(
                 formWithErrors,

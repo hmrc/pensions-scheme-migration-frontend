@@ -26,6 +26,7 @@ import play.api.mvc.Results._
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse, NotFoundException, StringContextOps}
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -51,9 +52,9 @@ class UserAnswersCacheConnectorImpl @Inject()(config: AppConfig,
   def fetch(pstr: String)
                     (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[JsValue]] = {
     val headers: Seq[(String, String)] = Seq(("Content-Type", "application/json"), ("pstr", pstr))
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers*)
 
-    http.get(url"$url")(hc).setHeader(headers: _*).execute[HttpResponse]
+    http.get(url"$url")(hc).setHeader(headers*).execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
         response.status match {
@@ -70,9 +71,9 @@ class UserAnswersCacheConnectorImpl @Inject()(config: AppConfig,
   def save(lock: MigrationLock, value: JsValue)
           (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[JsValue] = {
     val headers: Seq[(String, String)] = Seq(("pstr", lock.pstr),("psaId", lock.psaId), ("Content-Type", "application/json"))
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers*)
 
-    http.post(url"${config.dataCacheUrl}")(hc).setHeader(headers: _*).withBody(value).execute[HttpResponse]
+    http.post(url"${config.dataCacheUrl}")(hc).setHeader(headers*).withBody(value).execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
             response.status match {
@@ -87,8 +88,8 @@ class UserAnswersCacheConnectorImpl @Inject()(config: AppConfig,
   def remove(pstr: String)
                         (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Result] = {
     val headers: Seq[(String, String)] = Seq(("pstr", pstr))
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
-    http.delete(url"$url")(hc).setHeader(headers: _*).execute[HttpResponse].map { _ =>
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers*)
+    http.delete(url"$url")(hc).setHeader(headers*).execute[HttpResponse].map { _ =>
       Ok
     }
   }
