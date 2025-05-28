@@ -25,6 +25,7 @@ import models.prefill.IndividualDetails
 import models.{DataPrefillCheckbox, Index, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsJson, Result}
@@ -53,10 +54,8 @@ class DirectorsAlsoTrusteesControllerSpec extends ControllerSpecBase
   val view = app.injector.instanceOf[DataPrefillCheckboxView]
 
   override def beforeEach(): Unit = {
-    reset(
-      mockUserAnswersCacheConnector,
-      mockDataPrefillService
-    )
+    reset(mockUserAnswersCacheConnector)
+    reset(mockDataPrefillService)
     when(mockDataPrefillService.getListOfDirectorsToBeCopied(any())).thenReturn(Nil)
   }
 

@@ -25,6 +25,7 @@ import matchers.JsonMatchers
 import models.{Items, ListOfLegacySchemes}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
+import org.mockito.Mockito._
 import play.api.data.Form
 import play.api.mvc.Results.Ok
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Request, Result}
@@ -51,7 +52,7 @@ class TransferAllControllerSpec extends ControllerSpecBase with JsonMatchers wit
 
   private val form: Form[Boolean] = formProvider(messages("messages__transferAll__error"))
 
-  private def getView(req: Request[_], radios: Seq[RadioItem], form: Form[_]) = {
+  private def getView(req: Request[?], radios: Seq[RadioItem], form: Form[?]) = {
     app.injector.instanceOf[views.html.racdac.TransferAllView].apply(
       form,
       routes.TransferAllController.onSubmit,
@@ -62,7 +63,7 @@ class TransferAllControllerSpec extends ControllerSpecBase with JsonMatchers wit
   }
   override def beforeEach(): Unit = {
     reset(mockUserAnswersCacheConnector)
-    when(mockMinDetailsConnector.getPSAName(any(), any())) thenReturn Future.successful(psaName)
+    when(mockMinDetailsConnector.getPSAName(any(), any())).thenReturn (Future.successful(psaName))
   }
 
   private def controller: TransferAllController =

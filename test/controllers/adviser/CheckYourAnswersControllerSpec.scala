@@ -32,6 +32,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import utils.Data.{schemeName, ua}
 import utils.UserAnswers
 import views.html.CheckYourAnswersView
+import org.mockito.Mockito.when
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase with JsonMatchers {
   private val userAnswers: Option[UserAnswers] = Some(ua)

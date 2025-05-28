@@ -18,7 +18,7 @@ package controllers.trustees.individual.address
 
 import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
-import controllers.actions.AuthActionSpec.app.environment
+import play.api.Environment
 import controllers.actions.MutableFakeDataRetrievalAction
 import controllers.establishers.individual.address.routes
 import forms.address.AddressFormProvider
@@ -27,6 +27,7 @@ import identifiers.trustees.individual.TrusteeNameId
 import matchers.JsonMatchers
 import models.{NormalMode, Scheme}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -53,7 +54,7 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with JsonM
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
 
-  private val countryOptions: CountryOptions = new CountryOptions(environment, appConfig)
+  private val countryOptions: CountryOptions = new CountryOptions(app.injector.instanceOf[Environment], appConfig)
   private val formProvider: AddressFormProvider = new AddressFormProvider(countryOptions)
   private val form = formProvider()
   private val mode = NormalMode

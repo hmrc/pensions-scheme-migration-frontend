@@ -25,6 +25,7 @@ import matchers.JsonMatchers
 import models.{Index, NormalMode, ReferenceValue}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
+import org.mockito.Mockito._
 import play.api.data.{Form, FormBinding}
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Request, Result}
@@ -44,7 +45,7 @@ class CompanyNumberControllerSpec extends ControllerSpecBase with JsonMatchers w
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(index), companyDetails).success.value
   private val formProvider: CompanyNumberFormProvider = new CompanyNumberFormProvider()
 
-  private def getView(req: Request[_], form: Form[_]) = {
+  private def getView(req: Request[?], form: Form[?]) = {
     app.injector.instanceOf[EnterReferenceValueWithHintView].apply(
       form,
       schemeName,

@@ -109,6 +109,7 @@ class TrusteesNavigatorSpec
   private def addressYears(mode:Mode): Call =
     controllers.trustees.individual.address.routes.AddressYearsController.onPageLoad(index, mode)
 
+  @annotation.nowarn
   private def namePage(mode:Mode): Call =
     controllers.trustees.individual.routes.TrusteeNameController.onPageLoad(index)
 

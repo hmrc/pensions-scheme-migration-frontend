@@ -23,6 +23,7 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import matchers.JsonMatchers
 import models.{Items, ListOfLegacySchemes}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -94,15 +95,15 @@ class CheckStatusControllerSpec extends ControllerSpecBase with JsonMatchers wit
     "redirect to psa overview page when there is nothing in the queue and there are schemes" in {
       val listOfSchemes = List(Items("test-pstr", "", true, "test-scheme", "", Some("")))
       when(mockQueueConnector.isAllFailed(any())(any(), any())).thenReturn(Future.successful(None))
-      when(mockListSchemesConnector.getListOfSchemes(any())(any(), any())).
-        thenReturn(Future(Right(ListOfLegacySchemes(1, Some(listOfSchemes)))))
-      when(mockAppConfig.psaOverviewUrl).thenReturn("/foo")
+      when(mockListSchemesConnector.getListOfSchemes(any())(any(), any()))
+        .thenReturn(Future.successful(Right(ListOfLegacySchemes(1, Some(listOfSchemes)))))
 
       val result = route(application, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustBe "/foo"
+      redirectLocation(result).value mustBe appConfig.psaOverviewUrl
     }
+
 
     "redirect to cannot migrate page when there is nothing in the queue and list of schems has thrown AncillaryPsaException" in {
       when(mockQueueConnector.isAllFailed(any())(any(), any())).thenReturn(Future.successful(None))

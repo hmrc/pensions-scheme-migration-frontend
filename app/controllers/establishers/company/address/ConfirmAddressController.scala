@@ -46,7 +46,7 @@ class ConfirmAddressController @Inject()(
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (CompanyDetailsId(index) and SchemeNameId).retrieve.map {
+      (CompanyDetailsId(index).and(SchemeNameId)).retrieve.map {
         case companyDetails ~ schemeName =>
         common.get(
           Some(schemeName),
@@ -64,7 +64,7 @@ class ConfirmAddressController @Inject()(
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (CompanyDetailsId(index) and SchemeNameId).retrieve.map {
+      (CompanyDetailsId(index).and(SchemeNameId)).retrieve.map {
         case companyDetails ~ schemeName =>
         common.post(
           Some(schemeName),

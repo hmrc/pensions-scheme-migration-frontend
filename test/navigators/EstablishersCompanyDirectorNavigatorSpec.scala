@@ -73,6 +73,7 @@ class EstablishersCompanyDirectorNavigatorSpec
 
   private def addAddCompanyDirectorsPage(establisherIndex:Int,mode:Mode): Call = controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(establisherIndex,mode)
   private def postcode(establisherIndex:Int,directorIndex:Int,mode: Mode): Call = controllers.establishers.company.director.address.routes.EnterPostcodeController.onPageLoad(establisherIndex, directorIndex, mode)
+  @annotation.nowarn
   private def enterPreviousPostcode(estruetablisherIndex:Int,directorIndex:Int,mode:Mode): Call =
     controllers.establishers.company.director.address.routes.EnterPreviousPostcodeController.onPageLoad(establisherIndex,directorIndex,mode)
 

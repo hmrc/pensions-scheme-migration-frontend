@@ -24,6 +24,7 @@ import matchers.JsonMatchers
 import models.{Scheme, SchemeType}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
+import org.mockito.Mockito.{when, verify, reset, times}
 import play.api.Application
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}

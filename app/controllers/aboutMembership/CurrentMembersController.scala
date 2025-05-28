@@ -71,7 +71,7 @@ class CurrentMembersController @Inject()(override val messagesApi: MessagesApi,
     implicit request =>
       SchemeNameId.retrieve.map { schemeName =>
         form(schemeName).bindFromRequest().fold(
-          (formWithErrors: Form[_]) => {
+          (formWithErrors: Form[?]) => {
             Future.successful(BadRequest(view(
               formWithErrors,
               schemeName,

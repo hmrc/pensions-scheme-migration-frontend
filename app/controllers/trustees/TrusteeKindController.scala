@@ -61,7 +61,7 @@ class TrusteeKindController @Inject()(
   def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData()) {
     implicit request =>
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) => {
+        (formWithErrors: Form[?]) => {
           BadRequest(view(
             formWithErrors,
             controllers.trustees.routes.TrusteeKindController.onSubmit(index),

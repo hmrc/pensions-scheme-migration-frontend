@@ -75,7 +75,7 @@ class EstablishedCountryController @Inject()(
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
     implicit request =>
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
+        (formWithErrors: Form[?]) =>
           SchemeNameId.retrieve.map { schemeName =>
             Future.successful(BadRequest(establishedCountryView(
               formWithErrors,

@@ -27,6 +27,7 @@ import models.trustees.TrusteeKind
 import models.{PersonName, Scheme, SchemeType, TrusteeIndividualEntity}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.data.Form
 import play.api.mvc.Request
@@ -71,7 +72,7 @@ class AddTrusteeControllerSpec extends ControllerSpecBase with JsonMatchers with
 
   private val maxTrustees = 5
 
-  private def getView(req: Request[_], userAnswers: Option[UserAnswers]) = app.injector.instanceOf[views.html.trustees.AddTrusteeView].apply(
+  private def getView(req: Request[?], userAnswers: Option[UserAnswers]) = app.injector.instanceOf[views.html.trustees.AddTrusteeView].apply(
     form,
     controllers.trustees.routes.AddTrusteeController.onSubmit,
     schemeName,

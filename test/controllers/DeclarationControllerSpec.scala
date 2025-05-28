@@ -24,6 +24,7 @@ import models.MinPSA
 import org.apache.commons.lang3.StringUtils
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.bind
@@ -116,7 +117,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
 
       verify(mockEmailConnector, times(1)).sendEmail(
         ArgumentMatchers.eq("test@test.com"),
-        ArgumentMatchers.eq("test template name"),
+        ArgumentMatchers.eq("pods_scheme_migration_confirmation"),
         ArgumentMatchers.eq(Map("psaName" -> psaName, "schemeName" -> schemeName)),
         any())(any(), any())
 

@@ -22,6 +22,7 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import matchers.JsonMatchers
 import models.MinPSA
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.bind
@@ -51,7 +52,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
   private def httpPathGET: String = controllers.racdac.individual.routes.DeclarationController.onPageLoad.url
   private def httpPathPOST: String = controllers.racdac.individual.routes.DeclarationController.onSubmit.url
 
-  private def getView(request: Request[_]) = app.injector.instanceOf[views.html.racdac.DeclarationView].apply(
+  private def getView(request: Request[?]) = app.injector.instanceOf[views.html.racdac.DeclarationView].apply(
     routes.DeclarationController.onSubmit,
     controllers.routes.PensionSchemeRedirectController.onPageLoad.url,
     psaName

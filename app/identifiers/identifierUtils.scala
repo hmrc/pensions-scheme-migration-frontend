@@ -20,7 +20,7 @@ import models.entities.{Company, EntityType, Individual, Partnership, PensionMan
 import models.requests.DataRequest
 import models.{Index, entities}
 import play.api.libs.json.Reads
-import utils.{entityTypeError, managementTypeError}
+import utils.{managementTypeError}
 
 object identifierUtils {
 
@@ -28,11 +28,11 @@ object identifierUtils {
   def getNameOfEntityType(index: Index,
                           pensionManagementType: PensionManagementType,
                           entityType: EntityType,
-                          emptyEntityName: String)(implicit request: DataRequest[_]): String = {
+                          emptyEntityName: String)(implicit request: DataRequest[?]): String = {
 
     def getEntityName[T](typedIdentifier: TypedIdentifier[T])
                         (block: T => String)
-                        (implicit request: DataRequest[_],
+                        (implicit request: DataRequest[?],
                          reads: Reads[T]): String = {
       request.userAnswers
         .get(typedIdentifier)
@@ -49,7 +49,7 @@ object identifierUtils {
             getEntityName(individual.EstablisherNameId(index))(_.fullName)
           case Partnership =>
             getEntityName(partnership.PartnershipDetailsId(index))(_.partnershipName)
-          case e => entityTypeError(e)
+          case null => managementTypeError(null)
         }
       case Trustee =>
         import identifiers.trustees._
@@ -60,9 +60,9 @@ object identifierUtils {
             getEntityName(individual.TrusteeNameId(index))(_.fullName)
           case Partnership =>
             getEntityName(partnership.PartnershipDetailsId(index))(_.partnershipName)
-          case e => entityTypeError(e)
+          case null => managementTypeError(null)
         }
-      case e => managementTypeError(e)
+      case null => managementTypeError(null)
     }
   }
 }

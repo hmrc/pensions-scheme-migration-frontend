@@ -63,35 +63,35 @@ class TrusteeNoNINOReasonController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.get(
-              pageTitle     = Messages("messages__whyNoNINO", Messages("messages__individual")),
-              pageHeading     = Messages("messages__whyNoNINO", name(index)),
+              pageTitle = Messages("messages__whyNoNINO", Messages("messages__individual")),
+              pageHeading = Messages("messages__whyNoNINO", name(index)),
               isPageHeading = true,
-              id            = TrusteeNoNINOReasonId(index),
-              form          = form(index),
-              schemeName    = schemeName,
-              submitUrl     = routes.TrusteeNoNINOReasonController.onSubmit(index, mode)
+              id = TrusteeNoNINOReasonId(index),
+              form = form(index),
+              schemeName = schemeName,
+              submitUrl = routes.TrusteeNoNINOReasonController.onSubmit(index, mode)
             )
         }
     }
 
-    def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
-      (authenticate andThen getData andThen requireData()).async {
-        implicit request =>
-          SchemeNameId.retrieve.map {
-            schemeName =>
-              common.post(
-                pageTitle = Messages("messages__whyNoNINO", Messages("messages__individual")),
-                pageHeading = Messages("messages__whyNoNINO", name(index)),
-                isPageHeading = true,
-                id = TrusteeNoNINOReasonId(index),
-                form = form(index),
-                schemeName = schemeName,
-                mode = mode,
-                optSetUserAnswers = Some(value => setUpdatedAnswers(index, mode, value, request.userAnswers)),
-                submitUrl     = routes.TrusteeNoNINOReasonController.onSubmit(index, mode)
-              )
-          }
-      }
+  def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
+    (authenticate andThen getData andThen requireData()).async {
+      implicit request =>
+        SchemeNameId.retrieve.map {
+          schemeName =>
+            common.post(
+              pageTitle = Messages("messages__whyNoNINO", Messages("messages__individual")),
+              pageHeading = Messages("messages__whyNoNINO", name(index)),
+              isPageHeading = true,
+              id = TrusteeNoNINOReasonId(index),
+              form = form(index),
+              schemeName = schemeName,
+              mode = mode,
+              optSetUserAnswers = Some(value => setUpdatedAnswers(index, mode, value, request.userAnswers)),
+              submitUrl = routes.TrusteeNoNINOReasonController.onSubmit(index, mode)
+            )
+        }
+    }
 
   private def setUpdatedAnswers(index: Index, mode: Mode, value: String, ua: UserAnswers): Try[UserAnswers] = {
     val updatedUserAnswers =

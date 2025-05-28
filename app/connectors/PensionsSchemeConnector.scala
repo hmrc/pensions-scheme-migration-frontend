@@ -25,6 +25,7 @@ import play.api.libs.json._
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import utils.{HttpResponseHelper, UserAnswers}
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -39,7 +40,7 @@ class PensionsSchemeConnector @Inject()(config: AppConfig,
     val url = config.registerSchemeUrl(migrationType)
     val headers = Seq(("psaId", psaId))
     http.post(url"$url")(hc)
-      .setHeader(headers: _*)
+      .setHeader(headers*)
       .withBody(Json.toJson(answers.data)).execute[HttpResponse]. map { response =>
       response.status match {
         case OK =>

@@ -69,21 +69,21 @@ class EstablisherNoNINOReasonController @Inject()(val messagesApi: MessagesApi,
         }
     }
 
-    def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
-      (authenticate andThen getData andThen requireData()).async {
-        implicit request =>
-          SchemeNameId.retrieve.map {
-            schemeName =>
-              common.post(
-                pageTitle     = Messages("messages__whyNoNINO", Messages("messages__individual")),
-                pageHeading     = Messages("messages__whyNoNINO", name(index)),
-                isPageHeading = true,
-                id            = EstablisherNoNINOReasonId(index),
-                form          = form(index),
-                schemeName    = schemeName,
-                mode          = mode,
-                submitUrl     = routes.EstablisherNoNINOReasonController.onSubmit(index, mode)
-              )
-          }
+  def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
+    (authenticate andThen getData andThen requireData()).async {
+      implicit request =>
+        SchemeNameId.retrieve.map { schemeName =>
+          common.post(
+            pageTitle = Messages("messages__whyNoNINO", Messages("messages__individual")),
+            pageHeading = Messages("messages__whyNoNINO", name(index)),
+            isPageHeading = true,
+            id = EstablisherNoNINOReasonId(index),
+            form = form(index),
+            schemeName = schemeName,
+            mode = mode,
+            submitUrl = routes.EstablisherNoNINOReasonController.onSubmit(index, mode)
+          )
       }
+    }
+
 }

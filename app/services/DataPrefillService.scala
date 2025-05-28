@@ -27,7 +27,7 @@ import models.prefill.IndividualDetails
 import models.trustees.TrusteeKind
 import models.{PersonName, ReferenceValue}
 import play.api.libs.functional.syntax._
-import play.api.libs.json.Reads._
+import play.api.libs.json.Reads.JsObjectReducer
 import play.api.libs.json._
 import utils.{Enumerable, UserAnswers}
 
@@ -115,20 +115,21 @@ class DataPrefillService @Inject()() extends Enumerable.Implicits {
       (__ \ "hasUtr").read[Boolean].flatMap {
         case true =>
           (__ \ "hasUtr").json.copyFrom((__ \ "hasUtr").json.pick) and
-            (__ \ "utr").json.copyFrom((__ \ "utr").json.pick) reduce
+            (__ \ "utr").json.copyFrom((__ \ "utr").json.pick) reduce // Remove [JsObject]
         case false =>
           (__ \ "hasUtr").json.copyFrom((__ \ "hasUtr").json.pick) and
-            (__ \ "noUtrReason").json.copyFrom((__ \ "noUtrReason").json.pick) reduce
+            (__ \ "noUtrReason").json.copyFrom((__ \ "noUtrReason").json.pick) reduce // Remove [JsObject]
       } and
       (__ \ "hasNino").read[Boolean].flatMap {
         case true =>
           (__ \ "hasNino").json.copyFrom((__ \ "hasNino").json.pick) and
-            (__ \ "nino").json.copyFrom((__ \ "nino").json.pick) reduce
+            (__ \ "nino").json.copyFrom((__ \ "nino").json.pick) reduce // Remove [JsObject]
         case false =>
           (__ \ "hasNino").json.copyFrom((__ \ "hasNino").json.pick) and
-            (__ \ "noNinoReason").json.copyFrom((__ \ "noNinoReason").json.pick) reduce
-      } reduce
+            (__ \ "noNinoReason").json.copyFrom((__ \ "noNinoReason").json.pick) reduce // Remove [JsObject]
+      } reduce // Remove [JsObject]
   }
+
 
   def getListOfDirectorsToBeCopied(implicit ua: UserAnswers): Seq[IndividualDetails] = {
     val filteredDirectorsSeq = allDirectors.filter(dir => !dir.isDeleted && dir.isComplete)
