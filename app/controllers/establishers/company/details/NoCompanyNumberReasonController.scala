@@ -30,7 +30,7 @@ import play.api.mvc.{Action, AnyContent}
 import services.common.details.CommonReasonService
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext}
+import scala.concurrent.ExecutionContext
 
 class NoCompanyNumberReasonController @Inject()(val messagesApi: MessagesApi,
                                                 authenticate: AuthAction,

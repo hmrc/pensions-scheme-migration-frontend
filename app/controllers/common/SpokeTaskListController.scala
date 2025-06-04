@@ -64,7 +64,7 @@ class SpokeTaskListController @Inject() (
     val managementTypeTypeMsg = pensionManagementType match {
       case Establisher => Messages("messages__tasklist__establisher")
       case Trustee => Messages("messages__tasklist__trustee")
-       case null => managementTypeError(null)
+      case null => managementTypeError(null)
     }
 
     val entityName = identifierUtils.getNameOfEntityType(index, pensionManagementType, entityType, emptyEntityNameMsg)
