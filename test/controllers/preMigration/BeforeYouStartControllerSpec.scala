@@ -48,7 +48,7 @@ class BeforeYouStartControllerSpec extends ControllerSpecBase with JsonMatchers 
     "return OK and the correct view for a GET" in {
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
       when(mockMinimalDetailsConnector.getPSAName(any(),any())).thenReturn(Future.successful(psaName))
-     val result: Future[Result] = controller().onPageLoad(fakeDataRequest())
+      val result: Future[Result] = controller().onPageLoad(fakeDataRequest())
 
       status(result) mustBe OK
       val view = app.injector.instanceOf[BeforeYouStartView].apply(

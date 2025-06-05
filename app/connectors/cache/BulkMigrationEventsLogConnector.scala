@@ -37,9 +37,9 @@ class BulkMigrationEventsLogConnectorImpl @Inject()(config: AppConfig, http: Htt
   def getStatus(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Int] = {
 
     val headers: Seq[(String, String)] = Seq(("Content-Type", "application/json"))
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers*)
 
-    http.get(url"$url")(hc).setHeader(headers: _*).execute[HttpResponse]
+    http.get(url"$url")(hc).setHeader(headers*).execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
         response.status

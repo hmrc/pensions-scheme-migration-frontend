@@ -32,13 +32,13 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class ConfirmPreviousAddressController @Inject()(
-  val messagesApi: MessagesApi,
-  authenticate: AuthAction,
-  getData: DataRetrievalAction,
-  requireData: DataRequiredAction,
-  formProvider: AddressFormProvider,
-  common: CommonManualAddressService
-)(implicit ec: ExecutionContext) extends Retrievals with I18nSupport {
+                                                  val messagesApi: MessagesApi,
+                                                  authenticate: AuthAction,
+                                                  getData: DataRetrievalAction,
+                                                  requireData: DataRequiredAction,
+                                                  formProvider: AddressFormProvider,
+                                                  common: CommonManualAddressService
+                                                )(implicit ec: ExecutionContext) extends Retrievals with I18nSupport {
 
   private val pageTitleEntityTypeMessageKey: Option[String] = Some("establisherEntityTypePartnership")
   private val pageTitleMessageKey: String = "previousAddress.title"
@@ -46,7 +46,7 @@ class ConfirmPreviousAddressController @Inject()(
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (PartnershipDetailsId(index) and SchemeNameId).retrieve.map {
+      (PartnershipDetailsId(index).and(SchemeNameId)).retrieve.map {
         case partnershipDetails ~ schemeName =>
           common.get(
             Some(schemeName),
@@ -64,7 +64,7 @@ class ConfirmPreviousAddressController @Inject()(
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (PartnershipDetailsId(index) and SchemeNameId).retrieve.map {
+      (PartnershipDetailsId(index).and(SchemeNameId)).retrieve.map {
         case partnershipDetails ~ schemeName =>
           common.post(
             Some(schemeName),

@@ -85,7 +85,7 @@ class MinimalDetailsConnectorImpl @Inject()(http: HttpClientV2, config: AppConfi
   def getPSADetails(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinPSA] = {
     val headers = Seq(("loggedInAsPsa", "true"))
     http.get(url"${config.getPSAMinDetails}")(hc)
-      .setHeader(headers: _*)
+      .setHeader(headers*)
       .execute[HttpResponse] map { response =>
       response.status match {
         case OK =>

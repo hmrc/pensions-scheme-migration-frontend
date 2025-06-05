@@ -55,7 +55,7 @@ class PartnerEnterNINOControllerSpec
   private val userAnswers: UserAnswers =
     ua.set(PartnerNameId(0,0), personName).success.value
 
-  private def getView(req: Request[_], form: Form[_]) = {
+  private def getView(req: Request[?], form: Form[?]) = {
     app.injector.instanceOf[EnterReferenceValueWithHintView].apply(
       form,
       "Test scheme name",

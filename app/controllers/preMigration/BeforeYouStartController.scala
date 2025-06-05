@@ -68,7 +68,7 @@ class BeforeYouStartController @Inject()(
     }
 
 
-  private def renderView(implicit request: OptionalDataRequest[_]): Future[Result]= {
+  private def renderView(implicit request: OptionalDataRequest[?]): Future[Result]= {
     minimalDetailsConnector.getPSAName.flatMap { psaName =>
       Future.successful(Ok(beforeYouStartView(
         psaName,

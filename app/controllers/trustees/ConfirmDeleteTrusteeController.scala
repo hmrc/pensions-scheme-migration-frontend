@@ -86,7 +86,7 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
         DeletableTrustee(details.companyName, details.isDeleted))
       case Partnership => userAnswers.get(PartnershipDetailsId(index)).map(details =>
         DeletableTrustee(details.partnershipName, details.isDeleted))
-      case _ => None
+      case null => None
     }
   }
 
@@ -108,7 +108,7 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
             PartnershipDetailsId(trusteeIndex).retrieve.map { trusteeDetails =>
               updateTrusteeKind(trusteeDetails.partnershipName, trusteeKind, trusteeIndex, None, None, Some(trusteeDetails))
             }
-          case _ =>
+          case null =>
             throw new RuntimeException("index page unavailable")
         }
     }
@@ -121,7 +121,7 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
                                     partnershipDetails: Option[PartnershipDetails])(implicit request: DataRequest[AnyContent])
   : Future[Result] = {
     form(name).bindFromRequest().fold(
-      (formWithErrors: Form[_]) => {
+      (formWithErrors: Form[?]) => {
         Future.successful(BadRequest(deleteView(
             formWithErrors,
             Messages("messages__confirmDeleteTrustee__title"),
@@ -142,7 +142,7 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
               company => request.userAnswers.set(CompanyDetailsId(trusteeIndex), company.copy(isDeleted = true)))
             case Partnership => partnershipDetails.fold(Try(request.userAnswers))(
               partnership => request.userAnswers.set(PartnershipDetailsId(trusteeIndex), partnership.copy(isDeleted = true)))
-            case _ => Try(request.userAnswers)
+            case null => Try(request.userAnswers)
           }
         } else {
           Try(request.userAnswers)
@@ -167,14 +167,15 @@ class ConfirmDeleteTrusteeController @Inject()(override val messagesApi: Message
 
   private def form(name: String)(implicit messages: Messages): Form[Boolean] = formProvider(name)
 
-  private def getHintText(trusteeKind: TrusteeKind)(implicit request: DataRequest[AnyContent])
-  : Option[String] =
+  private def getHintText(trusteeKind: TrusteeKind)(implicit request: DataRequest[AnyContent]): Option[String] =
     trusteeKind match {
       case TrusteeKind.Company =>
-        Some(Messages(s"messages__confirmDeleteTrustee__companyHint"))
+        Some(Messages("messages__confirmDeleteTrustee__companyHint"))
       case TrusteeKind.Partnership =>
-        Some(Messages(s"messages__confirmDeleteTrustee__partnershipHint"))
-      case _ => None
+        Some(Messages("messages__confirmDeleteTrustee__partnershipHint"))
+      case TrusteeKind.Individual =>
+        Some(Messages("messages__confirmDeleteTrustee__individualHint"))
+      case null => None
     }
 
   private case class DeletableTrustee(name: String, isDeleted: Boolean)

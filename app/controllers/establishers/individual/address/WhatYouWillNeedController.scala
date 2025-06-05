@@ -21,7 +21,7 @@ import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import helpers.cya.MandatoryAnswerMissingException
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.individual.EstablisherNameId
-import models.{Index, NormalMode, PersonName}
+import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -45,14 +45,13 @@ class WhatYouWillNeedController @Inject()(
         val schemeName = request.userAnswers.get(SchemeNameId)
           .getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
 
-        EstablisherNameId(index).retrieve.map {
-          personName: PersonName =>
-            Future.successful(Ok(whatYouWillNeedView(
-              Messages("messages__title_individual"),
-              personName.fullName,
-              routes.EnterPostcodeController.onPageLoad(index,NormalMode).url,
-              schemeName
-            )))
+        EstablisherNameId(index).retrieve.map { personName =>
+          Future.successful(Ok(whatYouWillNeedView(
+            Messages("messages__title_individual"),
+            personName.fullName,
+            routes.EnterPostcodeController.onPageLoad(index,NormalMode).url,
+            schemeName
+          )))
         }
     }
 

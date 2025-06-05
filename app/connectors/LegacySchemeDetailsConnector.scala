@@ -48,7 +48,7 @@ class LegacySchemeDetailsConnectorImpl @Inject()(
     val (url, schemeHc) = (config.legacySchemeDetailsUrl, hc.withExtraHeaders("psaId" -> psaId, "pstr" -> pstr))
     val headers = Seq(("psaId", psaId), ("pstr", pstr))
     http.get(url"$url")(schemeHc)
-      .setHeader(headers: _*)
+      .setHeader(headers*)
       .execute[HttpResponse].map { response =>
       response.status match {
         case OK =>

@@ -77,7 +77,7 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
       }
   }
 
-  private def getView(form: Form[_], trustees: Seq[Trustee[_]])(implicit request: DataRequest[AnyContent]): Html = {
+  private def getView(form: Form[?], trustees: Seq[Trustee[?]])(implicit request: DataRequest[AnyContent]): Html = {
     val trusteesComplete = trustees.filter(_.isCompleted)
     val trusteesIncomplete = trustees.filterNot(_.isCompleted)
 

@@ -16,7 +16,6 @@
 
 package controllers.establishers.company.director.address
 
-import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.address.AddressFormProvider
@@ -25,7 +24,6 @@ import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.address.{PreviousAddressId, PreviousAddressListId}
 import identifiers.trustees.individual.address.{PreviousAddressId => trusteePreviousAddressId}
 import models._
-import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
@@ -39,8 +37,6 @@ import scala.util.Try
 
 class ConfirmPreviousAddressController @Inject()(
    val messagesApi: MessagesApi,
-   userAnswersCacheConnector: UserAnswersCacheConnector,
-   navigator: CompoundNavigator,
    authenticate: AuthAction,
    getData: DataRetrievalAction,
    requireData: DataRequiredAction,
@@ -55,7 +51,7 @@ class ConfirmPreviousAddressController @Inject()(
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.map {
+      (DirectorNameId(establisherIndex, directorIndex).and(SchemeNameId)).retrieve.map {
         case directorName ~ schemeName =>
           common.get(
             Some(schemeName),
@@ -73,7 +69,7 @@ class ConfirmPreviousAddressController @Inject()(
 
   def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.map {
+      (DirectorNameId(establisherIndex, directorIndex).and(SchemeNameId)).retrieve.map {
         case directorName ~ schemeName =>
           common.post(
             Some(schemeName),

@@ -21,7 +21,7 @@ import play.api.data.{Form, Forms}
 
 class AddTrusteeFormProvider extends Mappings {
 
-  def apply(trustees: Seq[_]): Form[Option[Boolean]] = {
+  def apply(trustees: Seq[?]): Form[Option[Boolean]] = {
     if (trustees.isEmpty) {
       Form(
         "value" -> Forms.optional(boolean("messages__addTrustee_error__selection"))

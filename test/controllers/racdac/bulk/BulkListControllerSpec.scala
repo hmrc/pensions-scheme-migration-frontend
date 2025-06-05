@@ -44,7 +44,7 @@ class BulkListControllerSpec extends ControllerSpecBase with JsonMatchers with E
     .overrides(
       modules ++ extraModules ++ Seq[GuiceableModule](
         bind[BulkDataAction].toInstance(mutableFakeBulkDataAction)
-      ): _*
+      )*
     ).build()
 
   private def httpPathGET: String = routes.BulkListController.onPageLoad.url
@@ -63,7 +63,7 @@ class BulkListControllerSpec extends ControllerSpecBase with JsonMatchers with E
   override def beforeEach(): Unit = {
     super.beforeEach()
     when(mockBulkRacDacService.renderRacDacBulkView(any(), any())(any(), any())).thenReturn(Ok(""))
-    when(mockAppConfig.psaOverviewUrl) thenReturn appConfig.psaOverviewUrl
+    when(mockAppConfig.psaOverviewUrl).thenReturn (appConfig.psaOverviewUrl)
   }
 
 
