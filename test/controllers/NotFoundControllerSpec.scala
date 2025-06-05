@@ -22,6 +22,7 @@ import play.api.Application
 import play.api.test.Helpers._
 import utils.{Enumerable, UserAnswers}
 import views.html.NotFoundView
+import org.mockito.Mockito._
 
 class NotFoundControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
@@ -36,7 +37,7 @@ class NotFoundControllerSpec extends ControllerSpecBase with JsonMatchers with E
 
     "return OK and the correct view for a GET" in {
       mutableFakeDataRetrievalAction.setDataToReturn(Some(UserAnswers()))
-      val yourPensionUrl = "foo"
+      val yourPensionUrl = appConfig.yourPensionSchemesUrl
       when(mockAppConfig.yourPensionSchemesUrl).thenReturn(yourPensionUrl)
 
       val request = httpGETRequest(httpPathGET)

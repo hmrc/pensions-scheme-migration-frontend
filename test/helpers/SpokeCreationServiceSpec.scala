@@ -42,16 +42,18 @@ import identifiers.trustees.{TrusteeKindId, company => trusteeCompany}
 import models._
 import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind
-import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
-import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.i18n.Messages
 import services.DataPrefillService
-import utils.Data.ua
 import utils.{Data, Enumerable, UserAnswers}
-
+import utils.Data.ua
 import java.time.LocalDate
+
 
 class SpokeCreationServiceSpec
   extends SpecBase
@@ -69,7 +71,7 @@ class SpokeCreationServiceSpec
   private val mockDataPrefillService = mock[DataPrefillService]
   val spokeCreationService = new SpokeCreationService(mockDataPrefillService)
 
-   "getAddEstablisherHeaderSpokes" must {
+  "getAddEstablisherHeaderSpokes" must {
     "return no spokes when no establishers and view only" in {
       val result = spokeCreationService.getAddEstablisherHeaderSpokes(ua, viewOnly = true)
       result mustBe Nil
@@ -198,10 +200,12 @@ class SpokeCreationServiceSpec
       result mustBe expectedSpoke
     }
 
-  "display all the spokes with appropriate links and incomplete status when data is returned from TPSS for company address spoke" in {
-    when(mockDataPrefillService.getListOfDirectorsToBeCopied(any)).thenReturn(Nil)
-    val userAnswers =
-      ua
+
+    "display all the spokes with appropriate links and incomplete status when data is returned from TPSS for company address spoke" in {
+
+      when(mockDataPrefillService.getListOfDirectorsToBeCopied(any)).thenReturn(Nil)
+
+      val userAnswers = ua
         .set(EstablisherKindId(0), EstablisherKind.Company).success.value
         .set(CompanyDetailsId(0), CompanyDetails("test")).success.value
         .setOrException(HaveCompanyNumberId(0), true)
@@ -209,64 +213,63 @@ class SpokeCreationServiceSpec
         .setOrException(IndividualAddressId(0), Data.address)
         .setOrException(EnterPhoneId(0), "1234567890")
 
-      val expectedSpoke =
-        Seq(
-          EntitySpoke(
-            link = SpokeTaskListLink(
-              text = "Change details for test",
-              target = cyaNoIndex(entities.Establisher, entities.Company, entities.Details).url,
-              visuallyHiddenText = None
-            ),
-            isCompleted = Some(false)
+      val expectedSpoke = Seq(
+        EntitySpoke(
+          link = SpokeTaskListLink(
+            text = "Change details for test",
+            target = cyaNoIndex(entities.Establisher, entities.Company, entities.Details).url,
+            visuallyHiddenText = None
           ),
-          EntitySpoke(
-            link = SpokeTaskListLink(
-              text = "Change address for test",
-              target = cyaNoIndex(entities.Establisher, entities.Company, entities.Address).url,
-              visuallyHiddenText = None
-            ),
-            isCompleted = Some(false)
+          isCompleted = Some(false)
+        ),
+        EntitySpoke(
+          link = SpokeTaskListLink(
+            text = "Change address for test",
+            target = cyaNoIndex(entities.Establisher, entities.Company, entities.Address).url,
+            visuallyHiddenText = None
           ),
-          EntitySpoke(
-            link = SpokeTaskListLink(
-              text = "Change contact details for test",
-              target = cyaNoIndex(entities.Establisher, entities.Company, entities.Contacts).url,
-              visuallyHiddenText = None
-            ),
-            isCompleted = Some(false)
+          isCompleted = Some(false)
+        ),
+        EntitySpoke(
+          link = SpokeTaskListLink(
+            text = "Change contact details for test",
+            target = cyaNoIndex(entities.Establisher, entities.Company, entities.Contacts).url,
+            visuallyHiddenText = None
           ),
-          EntitySpoke(
-            link = SpokeTaskListLink(
-              text = "Add directors for test",
-              target = controllers.establishers.company.director.details.routes.WhatYouWillNeedController.onPageLoad(0).url,
-              visuallyHiddenText = None
-            ),
-            isCompleted = Some(false)
-          )
+          isCompleted = Some(false)
+        ),
+        EntitySpoke(
+          link = SpokeTaskListLink(
+            text = "Add directors for test",
+            target = controllers.establishers.company.director.details.routes.WhatYouWillNeedController.onPageLoad(0).url,
+            visuallyHiddenText = None
+          ),
+          isCompleted = Some(false)
         )
+      )
 
-      val result =
-        spokeCreationService.getEstablisherCompanySpokes(
-          answers = userAnswers,
-          name = "test",
-          index = 0
-        )
+      val result = spokeCreationService.getEstablisherCompanySpokes(
+        answers = userAnswers,
+        name = "test",
+        index = 0
+      )
+
       result mustBe expectedSpoke
     }
 
-  "display all the spokes with appropriate links and change  link should display when data is returned from TPSS for director" in {
-    val userAnswers =
-      ua
-        .set(EstablisherKindId(0), EstablisherKind.Company).success.value
-        .set(CompanyDetailsId(0), CompanyDetails("test")).success.value
-        .set(DirectorNameId(0,0), PersonName("Jane", "Doe")).success.value
-        .setOrException(HaveCompanyNumberId(0), true)
-        .setOrException(CompanyNumberId(0), ReferenceValue("12345678"))
-        .setOrException(IndividualAddressId(0), Data.address)
-        .setOrException(EnterPhoneId(0), "1234567890")
 
-    val expectedSpoke =
-      Seq(
+    "display all the spokes with appropriate links ..." in {
+      val userAnswers =
+        ua
+          .set(EstablisherKindId(0), EstablisherKind.Company).success.value
+          .set(CompanyDetailsId(0), CompanyDetails("test")).success.value
+          .set(DirectorNameId(0, 0), PersonName("Jane", "Doe")).success.value
+          .setOrException(HaveCompanyNumberId(0), true)
+          .setOrException(CompanyNumberId(0), ReferenceValue("12345678"))
+          .setOrException(IndividualAddressId(0), Data.address)
+          .setOrException(EnterPhoneId(0), "1234567890")
+
+      val expectedSpoke = Seq(
         EntitySpoke(
           link = SpokeTaskListLink(
             text = "Change details for test",
@@ -294,20 +297,18 @@ class SpokeCreationServiceSpec
         EntitySpoke(
           link = SpokeTaskListLink(
             text = "Change directors for test",
-            target = controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(0,NormalMode).url,
+            target = controllers.establishers.company.routes.AddCompanyDirectorsController.onPageLoad(0, NormalMode).url,
             visuallyHiddenText = None
           ),
           Some(false)
         )
       )
-
-      val result =
-        spokeCreationService.getEstablisherCompanySpokes(
-          answers = userAnswers,
-          name = "test",
-          index = 0
-        )
-      result mustBe expectedSpoke
+      val result = spokeCreationService.getEstablisherCompanySpokes(
+        answers = userAnswers,
+        name = "test",
+        index = 0
+      )
+      result shouldBe expectedSpoke
     }
   }
 
@@ -355,7 +356,7 @@ class SpokeCreationServiceSpec
         )
 
       val result =
-      spokeCreationService.getEstablisherPartnershipSpokes(
+        spokeCreationService.getEstablisherPartnershipSpokes(
           answers = userAnswers,
           name = "test",
           index = 0
@@ -372,16 +373,16 @@ class SpokeCreationServiceSpec
           .setOrException(PartnershipUTRId(0), ReferenceValue("12345678"))
           .setOrException(PartnershipAddressId(0), Data.address)
           .setOrException(EnterEmailId(0), "11")
-          .set(identifiers.establishers.partnership.partner.address.AddressId(0,0), Data.address).success.value
-          .set(identifiers.establishers.partnership.partner.address.AddressYearsId(0,0), true).success.value
-          .set(identifiers.establishers.partnership.partner.contact.EnterEmailId(0,0), "t@t.c").success.value
-          .set(identifiers.establishers.partnership.partner.contact.EnterPhoneId(0,0), "1").success.value
-          .set(identifiers.establishers.partnership.partner.details.PartnerDOBId(0,0), LocalDate.of(2000,12,12)).success.value
-          .set(identifiers.establishers.partnership.partner.details.PartnerEnterUTRId(0,0), ReferenceValue("test")).success.value
-          .set(identifiers.establishers.partnership.partner.details.PartnerNINOId(0,0), ReferenceValue("test")).success.value
-          .set(identifiers.establishers.partnership.partner.details.PartnerHasUTRId(0,0), true).success.value
-          .set(identifiers.establishers.partnership.partner.details.PartnerHasNINOId(0,0), true).success.value
-          .set(PartnerNameId(0,0), PersonName("Jane", "Doe")).success.value
+          .set(identifiers.establishers.partnership.partner.address.AddressId(0, 0), Data.address).success.value
+          .set(identifiers.establishers.partnership.partner.address.AddressYearsId(0, 0), true).success.value
+          .set(identifiers.establishers.partnership.partner.contact.EnterEmailId(0, 0), "t@t.c").success.value
+          .set(identifiers.establishers.partnership.partner.contact.EnterPhoneId(0, 0), "1").success.value
+          .set(identifiers.establishers.partnership.partner.details.PartnerDOBId(0, 0), LocalDate.of(2000, 12, 12)).success.value
+          .set(identifiers.establishers.partnership.partner.details.PartnerEnterUTRId(0, 0), ReferenceValue("test")).success.value
+          .set(identifiers.establishers.partnership.partner.details.PartnerNINOId(0, 0), ReferenceValue("test")).success.value
+          .set(identifiers.establishers.partnership.partner.details.PartnerHasUTRId(0, 0), true).success.value
+          .set(identifiers.establishers.partnership.partner.details.PartnerHasNINOId(0, 0), true).success.value
+          .set(PartnerNameId(0, 0), PersonName("Jane", "Doe")).success.value
 
       val expectedSpoke =
         Seq(
@@ -412,7 +413,7 @@ class SpokeCreationServiceSpec
           EntitySpoke(
             link = SpokeTaskListLink(
               text = "Change partners for test",
-              target = controllers.establishers.partnership.routes.AddPartnersController.onPageLoad(0,NormalMode).url,
+              target = controllers.establishers.partnership.routes.AddPartnersController.onPageLoad(0, NormalMode).url,
               visuallyHiddenText = None
             ),
             Some(false)
@@ -567,13 +568,62 @@ class SpokeCreationServiceSpec
       result mustBe expectedSpoke
     }
 
-  "display all the spokes with appropriate links and incomplete status when data is returned from TPSS for trustee company spokes" in {
-    val userAnswers =
-      ua
+    "display all the spokes with appropriate links and incomplete status when data is returned from TPSS for trustee company spokes" in {
+
+      val userAnswers = ua
         .set(TrusteeKindId(0, TrusteeKind.Company), TrusteeKind.Company).success.value
         .set(trusteeCompany.CompanyDetailsId(0), CompanyDetails("test")).success.value
         .setOrException(trusteeCompanyDetails.HaveCompanyNumberId(0), true)
         .setOrException(trusteeCompanyDetails.CompanyNumberId(0), ReferenceValue("12345678"))
+
+      val expectedSpoke = Seq(
+        EntitySpoke(
+          link = SpokeTaskListLink(
+            text = "Change details for test",
+            target = cyaNoIndex(entities.Trustee, entities.Company, entities.Details).url,
+            visuallyHiddenText = None
+          ),
+          isCompleted = Some(false)
+        ),
+        EntitySpoke(
+          link = SpokeTaskListLink(
+            text = "Add address for test",
+            target = controllers.trustees.company.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
+            visuallyHiddenText = None
+          ),
+          isCompleted = None
+        ),
+        EntitySpoke(
+          link = SpokeTaskListLink(
+            text = "Add contact details for test",
+            target = controllers.trustees.company.contacts.routes.WhatYouWillNeedCompanyContactController.onPageLoad(0).url,
+            visuallyHiddenText = None
+          ),
+          isCompleted = None
+        )
+      )
+
+      val result = spokeCreationService.getTrusteeCompanySpokes(
+        answers = userAnswers,
+        name = "test",
+        index = 0
+      )
+
+      result mustBe expectedSpoke
+    }
+
+    "display all the spokes with appropriate links and complete status when data is returned from TPSS for trustee company spokes" in {
+      val userAnswers = ua
+        .set(EstablisherKindId(0), EstablisherKind.Company).success.value
+        .set(CompanyDetailsId(0), CompanyDetails("test")).success.value
+        .set(trusteeCompanyDetails.HaveCompanyNumberId(0), true).success.value
+        .set(trusteeCompanyDetails.CompanyNumberId(0), ReferenceValue("AB123456C")).success.value
+        .set(trusteeCompanyDetails.HaveUTRId(0), true).success.value
+        .set(trusteeCompanyDetails.CompanyUTRId(0), ReferenceValue("1234567890")).success.value
+        .set(trusteeCompanyDetails.HaveVATId(0), true).success.value
+        .set(trusteeCompanyDetails.VATId(0), ReferenceValue("123456789")).success.value
+        .set(trusteeCompanyDetails.HavePAYEId(0), true).success.value
+        .set(trusteeCompanyDetails.PAYEId(0), ReferenceValue("12345678")).success.value
 
 
       val expectedSpoke =
@@ -584,7 +634,7 @@ class SpokeCreationServiceSpec
               target = cyaNoIndex(entities.Trustee, entities.Company, entities.Details).url,
               visuallyHiddenText = None
             ),
-            isCompleted = Some(false)
+            isCompleted = Some(true)
           ),
           EntitySpoke(
             link = SpokeTaskListLink(
@@ -612,58 +662,6 @@ class SpokeCreationServiceSpec
         )
       result mustBe expectedSpoke
     }
-
-  "display all the spokes with appropriate links and complete status when data is returned from TPSS for trustee company spokes" in {
-    val userAnswers =
-      ua
-        .set(EstablisherKindId(0), EstablisherKind.Company).success.value
-        .set(CompanyDetailsId(0), CompanyDetails("test")).success.value
-        .set(trusteeCompanyDetails.HaveCompanyNumberId(0), true).success.value
-        .set(trusteeCompanyDetails.CompanyNumberId(0), ReferenceValue("AB123456C")).success.value
-        .set(trusteeCompanyDetails.HaveUTRId(0), true).success.value
-        .set(trusteeCompanyDetails.CompanyUTRId(0), ReferenceValue("1234567890")).success.value
-        .set(trusteeCompanyDetails.HaveVATId(0), true).success.value
-        .set(trusteeCompanyDetails.VATId(0), ReferenceValue("123456789")).success.value
-        .set(trusteeCompanyDetails.HavePAYEId(0), true).success.value
-        .set(trusteeCompanyDetails.PAYEId(0), ReferenceValue("12345678")).success.value
-
-
-        val expectedSpoke =
-          Seq(
-            EntitySpoke(
-              link = SpokeTaskListLink(
-                text = "Change details for test",
-                target =cyaNoIndex(entities.Trustee, entities.Company, entities.Details).url,
-                visuallyHiddenText = None
-              ),
-              isCompleted = Some(true)
-            ),
-            EntitySpoke(
-              link = SpokeTaskListLink(
-                text = "Add address for test",
-                target = controllers.trustees.company.address.routes.WhatYouWillNeedController.onPageLoad(0).url,
-                visuallyHiddenText = None
-              ),
-              isCompleted = None
-            ),
-            EntitySpoke(
-              link = SpokeTaskListLink(
-                text = "Add contact details for test",
-                target = controllers.trustees.company.contacts.routes.WhatYouWillNeedCompanyContactController.onPageLoad(0).url,
-                visuallyHiddenText = None
-              ),
-              isCompleted = None
-            )
-          )
-
-        val result =
-          spokeCreationService.getTrusteeCompanySpokes(
-            answers = userAnswers,
-            name = "test",
-            index = 0
-          )
-        result mustBe expectedSpoke
-      }
   }
 
   "getTrusteePartnershipSpokes" must {
@@ -674,7 +672,7 @@ class SpokeCreationServiceSpec
         ua
           .set(TrusteeKindId(0, TrusteeKind.Partnership), TrusteeKind.Partnership).success.value
           .set(TrusteeNameId(0), PersonName("a", "b")).success.value
-          .set(TrusteePartnershipDetailsId(0), PartnershipDetails("a b",false)).success.value
+          .set(TrusteePartnershipDetailsId(0), PartnershipDetails("a b", false)).success.value
 
       val expectedSpoke =
         Seq(
@@ -780,5 +778,4 @@ class SpokeCreationServiceSpec
     }
   }
 }
-
 

@@ -24,6 +24,7 @@ import matchers.JsonMatchers
 import models.CompanyDetails
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -69,15 +70,15 @@ class CompanyDetailsControllerSpec extends ControllerSpecBase
 
   "trustees CompanyDetailsController" must {
     "return OK and the correct view for a GET" in {
-      val result = route(application, httpGETRequest(httpPathGET)).value
-
-      status(result) mustBe OK
-
-      val view = application.injector.instanceOf[CompanyDetailsView].apply(
+      val view = injector.instanceOf[CompanyDetailsView].apply(
         form,
         Data.schemeName,
         submitCall
       )(request, messages)
+
+      val result = route(application, httpGETRequest(httpPathGET)).value
+
+      status(result) mustBe OK
 
       compareResultAndView(result, view)
     }

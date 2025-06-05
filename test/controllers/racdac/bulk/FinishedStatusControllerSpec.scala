@@ -21,6 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions.MutableFakeDataRetrievalAction
 import matchers.JsonMatchers
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -42,8 +43,8 @@ class FinishedStatusControllerSpec extends ControllerSpecBase with JsonMatchers 
 
   private def getView(req: Request[_]) = {
     app.injector.instanceOf[views.html.racdac.FinishedStatusView].apply(
-      mockAppConfig.yourPensionSchemesUrl,
-      mockAppConfig.racDacMigrationTransfer
+      appConfig.yourPensionSchemesUrl,
+      appConfig.racDacMigrationTransfer
     )(req, implicitly)
   }
 

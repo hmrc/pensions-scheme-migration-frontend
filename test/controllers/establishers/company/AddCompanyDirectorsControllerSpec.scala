@@ -27,6 +27,7 @@ import models._
 import models.establishers.EstablisherKind
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.test.Helpers._
 import utils.Data.{companyDetails, schemeName, ua}

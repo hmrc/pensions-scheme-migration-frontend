@@ -25,6 +25,7 @@ import models.prefill.IndividualDetails
 import models.{DataPrefillRadio, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
+import org.mockito.Mockito._
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
@@ -34,6 +35,7 @@ import utils.{Data, FakeNavigator, UserAnswers}
 import views.html.DataPrefillRadioView
 
 import scala.concurrent.Future
+
 class DirectorAlsoTrusteeControllerSpec extends ControllerSpecBase
   with JsonMatchers
   with TryValues
@@ -46,10 +48,9 @@ class DirectorAlsoTrusteeControllerSpec extends ControllerSpecBase
   private val userAnswers: UserAnswers = ua.set(TrusteeNameId(0), personName).success.value
 
   override def beforeEach(): Unit = {
-    reset(
-      mockUserAnswersCacheConnector,
-      mockDataPrefillService
-    )
+    reset(mockUserAnswersCacheConnector)
+    reset(mockDataPrefillService)
+
     when(mockDataPrefillService.getListOfDirectorsToBeCopied(any())).thenReturn(Nil)
   }
 

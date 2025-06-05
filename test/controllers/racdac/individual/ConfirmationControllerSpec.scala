@@ -23,6 +23,7 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.beforeYouStart.SchemeNameId
 import matchers.JsonMatchers
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -72,8 +73,8 @@ class ConfirmationControllerSpec extends ControllerSpecBase with JsonMatchers wi
           "pstr",
           Data.schemeName,
           Data.email,
-          mockAppConfig.yourPensionSchemesUrl,
-          mockAppConfig.psaOverviewUrl
+          appConfig.yourPensionSchemesUrl,
+          appConfig.psaOverviewUrl
         )(req, implicitly)
       )
     }

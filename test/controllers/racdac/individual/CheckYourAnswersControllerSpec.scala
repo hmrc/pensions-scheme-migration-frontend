@@ -25,6 +25,7 @@ import matchers.JsonMatchers
 import models.{Items, ListOfLegacySchemes, RacDac}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
+import org.mockito.Mockito._
 import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import play.api.Application
 import play.api.i18n.Messages
@@ -149,7 +150,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
       val result = route(app, httpGETRequest(httpPathGET)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(mockAppConfig.psaOverviewUrl)
+      redirectLocation(result) mustBe Some(appConfig.psaOverviewUrl)
     }
 
   }

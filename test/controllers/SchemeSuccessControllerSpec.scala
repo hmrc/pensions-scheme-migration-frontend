@@ -25,6 +25,7 @@ import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
 import models.PersonName
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -61,8 +62,8 @@ class SchemeSuccessControllerSpec extends ControllerSpecBase with JsonMatchers w
   private val schemeName = Data.schemeName
   private val pstr = "pstr"
   private val email = Data.email
-  private val yourSchemesLink = mockAppConfig.yourPensionSchemesUrl
-  private val returnUrl = mockAppConfig.psaOverviewUrl
+  private val yourSchemesLink = appConfig.yourPensionSchemesUrl
+  private val returnUrl = appConfig.psaOverviewUrl
 
   override def beforeEach(): Unit = {
     super.beforeEach()
