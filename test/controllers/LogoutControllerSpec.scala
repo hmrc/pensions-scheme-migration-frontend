@@ -36,7 +36,7 @@ class LogoutControllerSpec extends ControllerSpecBase with Results {
       val result = route(app, request).value
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some("http://localhost:9514/feedback/PODS")
+      redirectLocation(result) mustBe Some("http://localhost:9553/bas-gateway/sign-out-without-state?continue=http://localhost:9514/feedback/PODS")
     }
   }
 }
