@@ -56,14 +56,11 @@ lazy val microservice = Project(appName, file("."))
     // Removed uglify due to node 20 compile issues.
     // Suspected cause minification of already minified location-autocomplete.min.js -Pavel Vjalicin
     Assets / pipelineStages := Seq(concat),
-    resolvers ++= Seq(
-      Resolver.jcenterRepo,
-    ),
     CodeCoverageSettings(),
     retrieveManaged := true
   )
 
-lazy val testSettings: Seq[Def.Setting[_]] = Seq(
+lazy val testSettings: Seq[Def.Setting[?]] = Seq(
   javaOptions ++= Seq(
     "-Dconfig.resource=test.application.conf"
   )
