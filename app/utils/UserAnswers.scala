@@ -216,7 +216,7 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
             }
             readsForEstablisherKind.reads(jsValue)
           }
-          asJsResultSeq(jsResults.toSeq)
+          asJsResultSeq(jsResults.toSeq, "readEstablishers")
         case _ => JsSuccess(Nil)
       }
     }
@@ -297,7 +297,7 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
             readsForTrusteeKind.reads(jsValue)
           }
 
-          asJsResultSeq(jsResults.toSeq)
+          asJsResultSeq(jsResults.toSeq, "readTrustees")
         case _ => JsSuccess(Nil)
       }
     }
@@ -313,14 +313,13 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
 
   private def notDeleted: Reads[JsBoolean] = __.read(JsBoolean(false))
 
-  private def asJsResultSeq[A](jsResults: Seq[JsResult[A]]): JsResult[Seq[A]] = {
+  private def asJsResultSeq[A](jsResults: Seq[JsResult[A]], defName: String): JsResult[Seq[A]] = {
     val allErrors = jsResults.collect {
       case JsError(errors) => errors
     }.flatten
 
-    // TODO - just throw an exception here?
     if (allErrors.nonEmpty) { // If any of JSON is invalid then log warning but return the valid ones
-      logger.warn("Errors in JSON: " + allErrors)
+      logger.warn(s"Errors in JSON from $defName: $allErrors")
     }
 
     JsSuccess(jsResults.collect {
