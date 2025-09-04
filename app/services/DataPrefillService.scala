@@ -17,68 +17,87 @@
 package services
 
 import identifiers.establishers.company.director.DirectorNameId
-import identifiers.establishers.company.director.details._
+import identifiers.establishers.company.director.details.*
 import identifiers.establishers.{EstablisherKindId, EstablishersId}
 import identifiers.trustees.individual.TrusteeNameId
-import identifiers.trustees.individual.details._
-import identifiers.trustees.{TrusteeKindId, TrusteesId}
+import identifiers.trustees.individual.details.*
+import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId, TrusteesId}
 import models.establishers.EstablisherKind
 import models.prefill.IndividualDetails
 import models.trustees.TrusteeKind
 import models.{PersonName, ReferenceValue}
-import play.api.libs.functional.syntax._
+import play.api.Logging
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.Reads.JsObjectReducer
-import play.api.libs.json._
-import utils.{Enumerable, UserAnswers}
+import play.api.libs.json.*
+import utils.{DataCleanUp, Enumerable, UserAnswers}
 
 import java.time.LocalDate
 import javax.inject.Inject
+import scala.collection.Set
 import scala.language.postfixOps
 
-class DataPrefillService @Inject()() extends Enumerable.Implicits {
+class DataPrefillService @Inject()() extends Enumerable.Implicits with Logging {
 
   def copyAllDirectorsToTrustees(ua: UserAnswers, seqIndexes: Seq[Int], establisherIndex: Int): UserAnswers = {
-    val seqDirectors = (ua.data \ "establishers" \ establisherIndex \ "director").validate[JsArray].asOpt match {
-      case Some(arr) =>
-        seqIndexes.map { index =>
-          arr.value(index).transform(copyDirectorToTrustee) match {
-            case JsSuccess(value, _) => value
-            case _ => Json.obj()
+    val seqDirectors: Seq[JsObject] =
+      (ua.data \ "establishers" \ establisherIndex \ "director").validate[JsArray].asOpt match {
+        case Some(arr) =>
+          seqIndexes.map { index =>
+            arr.value(index).transform(copyDirectorToTrustee) match {
+              case JsSuccess(value, _) => value
+              case JsError(errors) => throw JsResultException(errors)
+            }
           }
-        }
-      case _ => Nil
-    }
+        case _ => Nil
+      }
 
-    val trusteeTransformer = (__ \ "trustees").json.update(
-      __.read[JsArray].map {
-        case JsArray(arr) => JsArray(arr ++ seqDirectors)
+    val trusteeTransformer =
+      (__ \ TrusteesId.toString).json.update(__.read[JsArray].map {
+        case existingTrustees@JsArray(_) =>
+          JsArray(filterTrusteeIndividuals(existingTrustees) ++ seqDirectors)
       }
     )
     transformUa(ua, trusteeTransformer)
   }
 
   def copyAllTrusteesToDirectors(ua: UserAnswers, seqIndexes: Seq[Int], establisherIndex: Int): UserAnswers = {
-    val seqTrustees = (ua.data \ "trustees").validate[JsArray].asOpt match {
-      case Some(arr) =>
-        seqIndexes.map { index =>
-          arr.value(index).transform(copyTrusteeToDirector) match {
-            case JsSuccess(value, _) => value
-            case _ => Json.obj()
+    val completeNotDeletedTrusteeIndexes: Seq[Int] =
+      allIndividualTrustees(ua).zipWithIndex.flatMap { case (trustee, index) =>
+        if (!trustee.isDeleted && trustee.isComplete) Some(index) else None
+      }
+    
+    val seqTrustees =
+      (ua.data \ TrusteesId.toString).validate[JsArray].asOpt match {
+        case Some(arr) =>
+          val trusteeIndividualArray: collection.IndexedSeq[JsValue] =
+            filterTrusteeIndividuals(arr)
+            
+          val completeNotDeletedTrustees =
+            completeNotDeletedTrusteeIndexes.map(trusteeIndividualArray(_))
+            
+          seqIndexes.map { index =>
+            completeNotDeletedTrustees(index).transform(copyTrusteeToDirector) match {
+              case JsSuccess(value, _) => value
+              case JsError(errors) =>
+                logger.error(s"copyTrusteeToDirector failed, index $index:\n $errors")
+                throw JsResultException(errors)
+            }
           }
-        }
-      case _ => Nil
-    }
-    val seqDirectors = (ua.data \ "establishers" \ establisherIndex \ "director").validate[JsArray].asOpt match {
-      case Some(arr) => arr.value
-      case _ => Nil
-    }
+        case _ => Nil
+      }
+      
+    val seqDirectors: collection.Seq[JsValue] =
+      (ua.data \ EstablishersId.toString \ establisherIndex \ "director").validate[JsArray].asOpt match {
+        case Some(arr) => arr.value
+        case _ => Nil
+      }
 
-    val establisherTransformer = (__ \ "establishers").json.update(
-      __.read[JsArray].map { arr =>
+    val establisherTransformer: Reads[JsObject] =
+      (__ \ EstablishersId.toString).json.update(__.read[JsArray].map { arr =>
         JsArray(arr.value.updated(establisherIndex, arr(establisherIndex).as[JsObject] ++
           Json.obj("director" -> (seqDirectors ++ seqTrustees))))
-      }
-    )
+      })
 
     transformUa(ua, establisherTransformer)
   }
@@ -237,7 +256,13 @@ class DataPrefillService @Inject()() extends Enumerable.Implicits {
         (JsPath \ TrusteeNINOId.toString).readNullable[ReferenceValue]
       ) ((trusteeName, dob, ninoReferenceVale) =>
       Some(IndividualDetails(
-        trusteeName.firstName, trusteeName.lastName, trusteeName.isDeleted, ninoReferenceVale.map(_.value), dob, index, ua.isTrusteeIndividualComplete(index)))
+        trusteeName.firstName,
+        trusteeName.lastName,
+        trusteeName.isDeleted,
+        ninoReferenceVale.map(_.value),
+        dob,
+        index,
+        ua.isTrusteeIndividualComplete(index)))
     )
 
     override def reads(json: JsValue): JsResult[Seq[Option[IndividualDetails]]] = {
@@ -261,6 +286,20 @@ class DataPrefillService @Inject()() extends Enumerable.Implicits {
     JsSuccess(jsResults.collect {
       case JsSuccess(i, _) => i
     })
+  }
+
+  private def filterTrusteeIndividuals(jsArray: JsArray): collection.IndexedSeq[JsValue] = {
+    DataCleanUp.filterNotEmptyObjectsAndSubsetKeys(
+      jsArray = jsArray,
+      keySet  = Set(IsTrusteeNewId.toString, TrusteeKindId.toString),
+      defName = "DataPrefillService.filterTrusteeIndividuals"
+    )
+    .filter(_
+      .\(TrusteeKindId.toString)
+      .validate[JsString]
+      .asOpt
+      .contains(JsString(TrusteeKind.Individual.toString))
+    )
   }
 
 }
