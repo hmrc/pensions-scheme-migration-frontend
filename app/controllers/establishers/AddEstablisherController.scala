@@ -16,31 +16,35 @@
 
 package controllers.establishers
 
+import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
-import controllers.actions._
+import controllers.actions.*
 import controllers.establishers.routes.NoEstablishersController
 import forms.establishers.AddEstablisherFormProvider
-import identifiers.establishers.AddEstablisherId
+import identifiers.establishers.{AddEstablisherId, EstablisherKindId, EstablishersId, IsEstablisherNewId}
 import models.Establisher
 import navigators.CompoundNavigator
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.JsObject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.UserAnswers
 import views.html.establishers.AddEstablisherView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddEstablisherController @Inject()(
-                                             override val messagesApi: MessagesApi,
-                                             navigator: CompoundNavigator,
-                                             authenticate: AuthAction,
-                                             getData: DataRetrievalAction,
-                                             requireData: DataRequiredAction,
-                                             formProvider: AddEstablisherFormProvider,
-                                             val controllerComponents: MessagesControllerComponents,
-                                             view: AddEstablisherView
-                                           )(implicit val ec: ExecutionContext)
+                                          override val messagesApi: MessagesApi,
+                                          navigator: CompoundNavigator,
+                                          authenticate: AuthAction,
+                                          getData: DataRetrievalAction,
+                                          requireData: DataRequiredAction,
+                                          formProvider: AddEstablisherFormProvider,
+                                          userAnswersCacheConnector: UserAnswersCacheConnector,
+                                          val controllerComponents: MessagesControllerComponents,
+                                          view: AddEstablisherView
+                                        )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with Retrievals
     with I18nSupport {
@@ -48,20 +52,33 @@ class AddEstablisherController @Inject()(
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()) {
       implicit request =>
-        val allEstablishers: Seq[Establisher[?]] = request.userAnswers.allEstablishersAfterDelete
-        if (allEstablishers.isEmpty) {
-          Redirect(NoEstablishersController.onPageLoad)
-        } else {
-          val form = formProvider(allEstablishers)
-          Ok(view(
-            form,
-            existingSchemeName.getOrElse("Scheme"),
-            allEstablishers.filterNot(_.isCompleted),
-            allEstablishers.filter(_.isCompleted),
-            utils.Radios.yesNo(form("value")),
-            routes.AddEstablisherController.onSubmit
-          ))
+        val userAnswersWithCleanedEstablishers: JsObject =
+          request.userAnswers.removeEmptyObjectsAndIncompleteEntities(
+            collectionKey = EstablishersId.toString,
+            keySet = Set(IsEstablisherNewId.toString, EstablisherKindId.toString)
+          )
+
+        //val allEstablishers: Seq[Establisher[?]] = request.userAnswers.allEstablishersAfterDelete
+
+        userAnswersCacheConnector.save(request.lock, userAnswersWithCleanedEstablishers).flatMap { jsValue =>
+          val allEstablishers = UserAnswers(userAnswersWithCleanedEstablishers).allEstablishersAfterDelete
+          if (allEstablishers.isEmpty) {
+            Redirect(NoEstablishersController.onPageLoad)
+          } else {
+            val form = formProvider(allEstablishers)
+            Ok(
+              view(
+                form = form,
+                schemeName = existingSchemeName.getOrElse("Scheme"),
+                itemListIncomplete = allEstablishers.filterNot(_.isCompleted),
+                itemListComplete = allEstablishers.filter(_.isCompleted),
+                radios = utils.Radios.yesNo(form("value")),
+                submitCall = routes.AddEstablisherController.onSubmit
+              )
+            )
+          }
         }
+
     }
 
   def onSubmit: Action[AnyContent] =
@@ -70,14 +87,14 @@ class AddEstablisherController @Inject()(
         val allEstablishers = request.userAnswers.allEstablishersAfterDelete
         formProvider(allEstablishers).bindFromRequest().fold(
           formWithErrors =>
-          Future.successful(BadRequest(view(
-            formWithErrors,
-            existingSchemeName.getOrElse("Scheme"),
-            allEstablishers.filterNot(_.isCompleted),
-            allEstablishers.filter(_.isCompleted),
-            utils.Radios.yesNo(formWithErrors("value")),
-            routes.AddEstablisherController.onSubmit
-          ))),
+            Future.successful(BadRequest(view(
+              formWithErrors,
+              existingSchemeName.getOrElse("Scheme"),
+              allEstablishers.filterNot(_.isCompleted),
+              allEstablishers.filter(_.isCompleted),
+              utils.Radios.yesNo(formWithErrors("value")),
+              routes.AddEstablisherController.onSubmit
+            ))),
           value =>
             Future.successful(Redirect(
               navigator.nextPage(
