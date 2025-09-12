@@ -22,7 +22,6 @@ import controllers.actions.*
 import controllers.establishers.routes.NoEstablishersController
 import forms.establishers.AddEstablisherFormProvider
 import identifiers.establishers.{AddEstablisherId, EstablisherKindId, EstablishersId, IsEstablisherNewId}
-import models.Establisher
 import navigators.CompoundNavigator
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.JsObject
@@ -49,59 +48,54 @@ class AddEstablisherController @Inject()(
     with Retrievals
     with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData()) {
-      implicit request =>
-        val userAnswersWithCleanedEstablishers: JsObject =
-          request.userAnswers.removeEmptyObjectsAndIncompleteEntities(
-            collectionKey = EstablishersId.toString,
-            keySet = Set(IsEstablisherNewId.toString, EstablisherKindId.toString)
-          )
-
-        //val allEstablishers: Seq[Establisher[?]] = request.userAnswers.allEstablishersAfterDelete
-
-        userAnswersCacheConnector.save(request.lock, userAnswersWithCleanedEstablishers).flatMap { jsValue =>
-          val allEstablishers = UserAnswers(userAnswersWithCleanedEstablishers).allEstablishersAfterDelete
-          if (allEstablishers.isEmpty) {
-            Redirect(NoEstablishersController.onPageLoad)
-          } else {
-            val form = formProvider(allEstablishers)
-            Ok(
-              view(
-                form = form,
-                schemeName = existingSchemeName.getOrElse("Scheme"),
-                itemListIncomplete = allEstablishers.filterNot(_.isCompleted),
-                itemListComplete = allEstablishers.filter(_.isCompleted),
-                radios = utils.Radios.yesNo(form("value")),
-                submitCall = routes.AddEstablisherController.onSubmit
-              )
-            )
-          }
-        }
-
-    }
-
-  def onSubmit: Action[AnyContent] =
-    (authenticate andThen getData andThen requireData()).async {
-      implicit request =>
-        val allEstablishers = request.userAnswers.allEstablishersAfterDelete
-        formProvider(allEstablishers).bindFromRequest().fold(
-          formWithErrors =>
-            Future.successful(BadRequest(view(
-              formWithErrors,
-              existingSchemeName.getOrElse("Scheme"),
-              allEstablishers.filterNot(_.isCompleted),
-              allEstablishers.filter(_.isCompleted),
-              utils.Radios.yesNo(formWithErrors("value")),
-              routes.AddEstablisherController.onSubmit
-            ))),
-          value =>
-            Future.successful(Redirect(
-              navigator.nextPage(
-                id = AddEstablisherId(value),
-                userAnswers = request.userAnswers
-              )
-            ))
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
+    implicit request =>
+      val userAnswersWithCleanedEstablishers: JsObject =
+        request.userAnswers.removeEmptyObjectsAndIncompleteEntities(
+          collectionKey = EstablishersId.toString,
+          keySet = Set(IsEstablisherNewId.toString, EstablisherKindId.toString)
         )
-    }
+
+      userAnswersCacheConnector.save(request.lock, userAnswersWithCleanedEstablishers).map { jsValue =>
+        val allEstablishers = UserAnswers(userAnswersWithCleanedEstablishers).allEstablishersAfterDelete
+        if (allEstablishers.isEmpty) {
+          Redirect(NoEstablishersController.onPageLoad)
+        } else {
+          val form = formProvider(allEstablishers)
+          Ok(
+            view(
+              form = form,
+              schemeName = existingSchemeName.getOrElse("Scheme"),
+              itemListIncomplete = allEstablishers.filterNot(_.isCompleted),
+              itemListComplete = allEstablishers.filter(_.isCompleted),
+              radios = utils.Radios.yesNo(form("value")),
+              submitCall = routes.AddEstablisherController.onSubmit
+            )
+          )
+        }
+      }
+  }
+
+  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
+    implicit request =>
+      val allEstablishers = request.userAnswers.allEstablishersAfterDelete
+      formProvider(allEstablishers).bindFromRequest().fold(
+        formWithErrors =>
+          Future.successful(BadRequest(view(
+            formWithErrors,
+            existingSchemeName.getOrElse("Scheme"),
+            allEstablishers.filterNot(_.isCompleted),
+            allEstablishers.filter(_.isCompleted),
+            utils.Radios.yesNo(formWithErrors("value")),
+            routes.AddEstablisherController.onSubmit
+          ))),
+        value =>
+          Future.successful(Redirect(
+            navigator.nextPage(
+              id = AddEstablisherId(value),
+              userAnswers = request.userAnswers
+            )
+          ))
+      )
+  }
 }
