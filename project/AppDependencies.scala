@@ -2,16 +2,17 @@ import sbt.*
 
 object AppDependencies {
 
-  private val hmrcBootstrapVersion = "9.14.0"
+  private val hmrcBootstrapVersion = "9.19.0"
+
   private val compile: Seq[ModuleID] = Seq(
     play.sbt.PlayImport.ws,
     "uk.gov.hmrc"                   %% "bootstrap-frontend-play-30"             % hmrcBootstrapVersion,
-    "org.webjars.npm"               %  "govuk-frontend"                         % "5.10.0",
+    "org.webjars.npm"               %  "govuk-frontend"                         % "5.12.0",
     "uk.gov.hmrc"                   %% "play-conditional-form-mapping-play-30"  % "3.3.0",
     "com.google.inject.extensions"  %  "guice-multibindings"                    % "4.2.3",
     "uk.gov.hmrc"                   %% "domain-play-30"                         % "12.1.0",
-    "com.fasterxml.jackson.module"  %% "jackson-module-scala"                   % "2.19.0",
-    "uk.gov.hmrc"                   %% "play-frontend-hmrc-play-30"             % "12.7.0"
+    "com.fasterxml.jackson.module"  %% "jackson-module-scala"                   % "2.20.0",
+    "uk.gov.hmrc"                   %% "play-frontend-hmrc-play-30"             % "12.10.0"
   )
 
 

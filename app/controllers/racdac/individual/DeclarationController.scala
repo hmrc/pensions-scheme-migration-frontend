@@ -18,7 +18,7 @@ package controllers.racdac.individual
 
 import audit.{AuditService, EmailAuditEvent}
 import config.AppConfig
-import connectors._
+import connectors.*
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.beforeYouStart.SchemeNameId
 import models.JourneyType.RACDAC_IND_MIG
@@ -28,9 +28,10 @@ import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsString, __}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
+import uk.gov.hmrc.crypto.PlainText
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.ApplicationCrypto
 import utils.UserAnswers
 
 import java.net.URLEncoder

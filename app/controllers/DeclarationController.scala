@@ -18,8 +18,8 @@ package controllers
 
 import audit.{AuditService, EmailAuditEvent}
 import config.AppConfig
-import connectors._
-import controllers.actions._
+import connectors.*
+import controllers.actions.*
 import identifiers.beforeYouStart.{SchemeNameId, WorkingKnowledgeId}
 import models.JourneyType.SCHEME_MIG
 import models.Scheme
@@ -28,11 +28,12 @@ import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsString, __}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
+import uk.gov.hmrc.crypto.PlainText
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswers
 import views.html.DeclarationView
+import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.ApplicationCrypto
 
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
