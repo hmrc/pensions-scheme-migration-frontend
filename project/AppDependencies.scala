@@ -12,7 +12,7 @@ object AppDependencies {
     "com.google.inject.extensions"  %  "guice-multibindings"                    % "4.2.3",
     "uk.gov.hmrc"                   %% "domain-play-30"                         % "12.1.0",
     "com.fasterxml.jackson.module"  %% "jackson-module-scala"                   % "2.20.0",
-    "uk.gov.hmrc"                   %% "play-frontend-hmrc-play-30"             % "12.10.0"
+    "uk.gov.hmrc"                   %% "play-frontend-hmrc-play-30"             % "12.17.0"
   )
 
 
