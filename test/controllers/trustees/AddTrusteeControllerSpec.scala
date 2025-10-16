@@ -27,16 +27,25 @@ import models.trustees.TrusteeKind
 import models.{PersonName, Scheme, SchemeType, TrusteeIndividualEntity}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import play.api.Application
 import play.api.data.Form
+import play.api.libs.json.JsValue
 import play.api.mvc.Request
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import utils.Data.{schemeName, ua}
 import utils.{Enumerable, UserAnswers}
+
+import scala.concurrent.Future
+
 class AddTrusteeControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
+
   private val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
-  override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, Seq()).build()
+
+  override def fakeApplication(): Application =
+    applicationBuilderMutableRetrievalAction(
+      mutableFakeDataRetrievalAction = mutableFakeDataRetrievalAction
+    ).build()
 
   private val trusteeName: String = "Jane Doe"
   private val userAnswers: Option[UserAnswers] = ua.set(TrusteeKindId(0, TrusteeKind.Individual), TrusteeKind.Individual).flatMap(
@@ -57,18 +66,11 @@ class AddTrusteeControllerSpec extends ControllerSpecBase with JsonMatchers with
     2
   )
 
-
-
   private def httpPathGET: String = controllers.trustees.routes.AddTrusteeController.onPageLoad.url
   private def httpPathPOST: String = controllers.trustees.routes.AddTrusteeController.onSubmit.url
 
-  private val valuesValid: Map[String, Seq[String]] = Map(
-    "value" -> Seq("true")
-  )
-
-  private val valuesInvalid: Map[String, Seq[String]] = Map(
-    "value" -> Seq("invalid")
-  )
+  private val valuesValid: Map[String, Seq[String]] = Map("value" -> Seq("true"))
+  private val valuesInvalid: Map[String, Seq[String]] = Map("value" -> Seq("invalid"))
 
   private val maxTrustees = 5
 
@@ -88,12 +90,14 @@ class AddTrusteeControllerSpec extends ControllerSpecBase with JsonMatchers with
     when(mockAppConfig.maxTrustees).thenReturn(maxTrustees)
   }
 
-
   "AddTrusteeController" must {
 
     "return OK and the correct view for a GET, passing the correct no of trustees and max trustees into template" in {
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(userAnswers.get.data))
+
       val ua = userAnswers.map(_.setOrException(TrusteeNameId(1), PersonName("Jane", "Doe")))
       mutableFakeDataRetrievalAction.setDataToReturn(ua)
+
 
       val req = httpGETRequest(httpPathGET)
       val result = route(app, req).value
@@ -147,6 +151,8 @@ class AddTrusteeControllerSpec extends ControllerSpecBase with JsonMatchers with
     }
 
     "redirect to no trustees page if there are no added trustees and the scheme is a single trust" in {
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(userAnswers.get.data))
+
       val userAnswersNoTrusteesSingleTrust = UserAnswers().setOrException(SchemeTypeId, SchemeType.SingleTrust)
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(userAnswersNoTrusteesSingleTrust))
@@ -158,6 +164,8 @@ class AddTrusteeControllerSpec extends ControllerSpecBase with JsonMatchers with
     }
 
     "redirect to any trustees page if there are no added trustees and the scheme is NOT a single trust" in {
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(userAnswers.get.data))
+
       val userAnswersNoTrusteesOtherTrust = UserAnswers().setOrException(SchemeTypeId, SchemeType.GroupLifeDeath)
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(userAnswersNoTrusteesOtherTrust))

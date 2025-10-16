@@ -23,18 +23,20 @@ import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.partnership.PartnershipDetailsId
 import identifiers.establishers.partnership.partner.{IsNewPartnerId, PartnerNameId}
 import identifiers.establishers.{EstablisherKindId, EstablishersId, IsEstablisherNewId}
-import identifiers.trustees.company.{CompanyDetailsId => TrusteeCompanyDetailsId}
+import identifiers.trustees.company.CompanyDetailsId as TrusteeCompanyDetailsId
 import identifiers.trustees.individual.TrusteeNameId
-import identifiers.trustees.partnership.{PartnershipDetailsId => TrusteePartnershipDetailsId}
+import identifiers.trustees.partnership.PartnershipDetailsId as TrusteePartnershipDetailsId
 import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId, TrusteesId}
-import models._
+import models.*
 import models.establishers.EstablisherKind
 import models.trustees.TrusteeKind
 import play.api.Logger
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
-import play.api.libs.json._
+import play.api.libs.json.*
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.datacompletion.{DataCompletion, DataCompletionEstablishers, DataCompletionTrustees}
 
+import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Implicits with DataCompletion
@@ -393,6 +395,38 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
           )
         }
     }.getOrElse(Seq.empty)
+
+  def removeEmptyObjectsAndIncompleteEntities(collectionKey: String, keySet: Set[String])
+                                             (implicit ec: ExecutionContext, hc: HeaderCarrier): JsObject =
+    (data \ collectionKey).validate[JsArray].asOpt match {
+      case Some(jsArray) =>
+
+        val filteredCollection: collection.IndexedSeq[JsValue] =
+          DataCleanUp.filterNotEmptyObjectsAndSubsetKeys(
+            jsArray = jsArray,
+            keySet = keySet,
+            defName = s"${this.getClass.getSimpleName}.removeEmptyObjectsAndIncompleteEntities"
+          )
+
+        val reads: Reads[JsObject] =
+          (__ \ collectionKey)
+            .json
+            .update(__.read[JsArray].map(_ => JsArray(filteredCollection)))
+
+        data.transform(reads) match {
+          case JsSuccess(value, _) =>
+            val removed = jsArray.value.size - filteredCollection.size
+
+            if (removed > 0) logger.warn(s"$collectionKey filtering succeeded. $removed elements removed")
+            value
+          case JsError(errors) =>
+            logger.warn(s"$collectionKey filtering failed: $errors")
+            data
+        }
+      case _ =>
+        data
+    }
+    
 }
 
 case class UnrecognisedEstablisherKindException(message: String) extends Exception(message)

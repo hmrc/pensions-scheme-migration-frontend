@@ -17,20 +17,23 @@
 package controllers.trustees
 
 import config.AppConfig
+import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
-import controllers.actions._
+import controllers.actions.*
 import controllers.trustees.routes.{AnyTrusteesController, NoTrusteesController}
 import forms.trustees.AddTrusteeFormProvider
 import identifiers.beforeYouStart.SchemeTypeId
-import identifiers.trustees.AddTrusteeId
+import identifiers.trustees.{AddTrusteeId, IsTrusteeNewId, TrusteeKindId, TrusteesId}
 import models.requests.DataRequest
 import models.{SchemeType, Trustee}
 import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
+import play.api.libs.json.JsObject
+import play.api.mvc.*
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.UserAnswers
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,6 +45,7 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
                                      requireData: DataRequiredAction,
                                      formProvider: AddTrusteeFormProvider,
                                      config: AppConfig,
+                                     userAnswersCacheConnector: UserAnswersCacheConnector,
                                      val controllerComponents: MessagesControllerComponents,
                                      view: views.html.trustees.AddTrusteeView
                                     )(implicit val ec: ExecutionContext)
@@ -50,14 +54,21 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        val trustees = request.userAnswers.allTrusteesAfterDelete
-        val isSingleTrust = request.userAnswers.get(SchemeTypeId).contains(SchemeType.SingleTrust)
+        val userAnswersWithCleanedTrustees: JsObject =
+          request.userAnswers.removeEmptyObjectsAndIncompleteEntities(
+            collectionKey = TrusteesId.toString,
+            keySet = Set(IsTrusteeNewId.toString, TrusteeKindId.toString)
+          )
 
-        (trustees, isSingleTrust) match {
-          case (Nil, false) => navTo(AnyTrusteesController.onPageLoad)
-          case (Nil, true) => navTo(NoTrusteesController.onPageLoad)
-          case _ =>
-            Future.successful(Ok(getView(formProvider(trustees), trustees)))
+        userAnswersCacheConnector.save(request.lock, userAnswersWithCleanedTrustees).map { _ =>
+          val trustees: Seq[Trustee[?]] = UserAnswers(userAnswersWithCleanedTrustees).allTrusteesAfterDelete
+          val isSingleTrust = request.userAnswers.get(SchemeTypeId).contains(SchemeType.SingleTrust)
+
+          (trustees, isSingleTrust) match {
+            case (Nil, false) => Redirect(AnyTrusteesController.onPageLoad)
+            case (Nil, true) => Redirect(NoTrusteesController.onPageLoad)
+            case _ => Ok(getView(formProvider(trustees), trustees))
+          }
         }
     }
 
@@ -92,6 +103,4 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
       utils.Radios.yesNo(form("value"))
     )
   }
-
-  private def navTo(call: Call): Future[Result] = Future.successful(Redirect(call))
 }

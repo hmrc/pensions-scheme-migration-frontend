@@ -27,14 +27,18 @@ import models.establishers.EstablisherKind
 import models.{EstablisherIndividualEntity, PersonName, Scheme}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import play.api.Application
 import play.api.data.Form
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import utils.Data.{schemeName, ua}
 import utils.{Data, UserAnswers}
 import views.html.establishers.AddEstablisherView
+
+import scala.concurrent.Future
+
 class AddEstablisherControllerSpec extends ControllerSpecBase with JsonMatchers {
+
   private val establisherName: String = "e f"
   private val userAnswers: Option[UserAnswers] = ua.set(EstablisherKindId(0), EstablisherKind.Individual).flatMap(
     _.set(EstablisherNameId(0), PersonName("a", "b", isDeleted = true)).flatMap(
@@ -45,7 +49,7 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with JsonMatchers 
               _.set(EstablisherKindId(2), EstablisherKind.Individual).flatMap(
                 _.set(EstablisherNameId(2), PersonName("e", "f", isDeleted = false)).flatMap(
                   _.set(IsEstablisherNewId(2), true)
-          )))))))).toOption
+                )))))))).toOption
 
   private val form: Form[Boolean] = new ConfirmDeleteEstablisherFormProvider()(establisherName)
   private lazy val mutableFakeDataRetrievalAction: MutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
@@ -53,25 +57,21 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with JsonMatchers 
   override def fakeApplication(): Application = applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction).build()
 
   private def httpPathGET: String = controllers.establishers.routes.AddEstablisherController.onPageLoad.url
+
   private def httpPathPOST: String = controllers.establishers.routes.AddEstablisherController.onSubmit.url
 
-  private val valuesValid: Map[String, Seq[String]] = Map(
-    "value" -> Seq("true")
-  )
-
-  private val valuesInvalid: Map[String, Seq[String]] = Map(
-    "value" -> Seq("invalid")
-  )
+  private val valuesValid: Map[String, Seq[String]] = Map("value" -> Seq("true"))
+  private val valuesInvalid: Map[String, Seq[String]] = Map("value" -> Seq("invalid"))
 
   override def beforeEach(): Unit = {
     super.beforeEach()
   }
 
-
   "AddEstablisherController" must {
 
     "return OK and the correct view for a GET" in {
-
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(userAnswers.get.data))
+      
       mutableFakeDataRetrievalAction.setDataToReturn(userAnswers)
       val request = httpGETRequest(httpPathGET)
       val result = route(app, httpGETRequest(httpPathGET)).value
@@ -134,6 +134,7 @@ class AddEstablisherControllerSpec extends ControllerSpecBase with JsonMatchers 
     }
 
     "redirect to no establishers page if there are no added establishers" in {
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(userAnswers.get.data))
       val noEstablishersUa = UserAnswers().setOrException(SchemeNameId, Data.schemeName)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(noEstablishersUa))
       val result = route(app, httpGETRequest(httpPathGET)).value
