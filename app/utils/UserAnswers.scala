@@ -57,7 +57,10 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
     jsValue.validate[A].fold(
       invalid =
         errors =>
-          throw JsResultException(errors),
+          throw Exception(
+            s"path(s) from JSON: ${errors.map(_._1.path.mkString(", "))}" +
+              s"\nerror messages from JSON: ${errors.flatMap(_._2.map(_.messages.head))}"
+          ),
       valid =
         response => response
     )
@@ -69,7 +72,10 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
       case JsSuccess(jsValue, _) =>
         Success(jsValue)
       case JsError(errors) =>
-        Failure(JsResultException(errors))
+        Failure(Exception(
+          s"path(s) from JSON: ${errors.map(_._1.path.mkString(", "))}" +
+            s"\nerror messages from JSON: ${errors.flatMap(_._2.map(_.messages.head))}"
+        ))
     }
 
     updatedData.map {
@@ -85,7 +91,10 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
       case JsSuccess(jsValue, _) =>
         Success(jsValue)
       case JsError(errors) =>
-        Failure(JsResultException(errors))
+        Failure(Exception(
+          s"path(s) from JSON: ${errors.map(_._1.path.mkString(", "))}" +
+          s"\nerror messages from JSON: ${errors.flatMap(_._2.map(_.messages.head))}"
+        ))
     }
 
     updatedData.flatMap {

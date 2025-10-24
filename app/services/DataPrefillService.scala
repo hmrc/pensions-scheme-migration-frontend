@@ -28,8 +28,8 @@ import models.trustees.TrusteeKind
 import models.{PersonName, ReferenceValue}
 import play.api.Logging
 import play.api.libs.functional.syntax.*
-import play.api.libs.json.Reads.JsObjectReducer
 import play.api.libs.json.*
+import play.api.libs.json.Reads.JsObjectReducer
 import utils.{DataCleanUp, Enumerable, UserAnswers}
 
 import java.time.LocalDate
@@ -37,28 +37,36 @@ import javax.inject.Inject
 import scala.collection.Set
 import scala.language.postfixOps
 
-class DataPrefillService @Inject()() extends Enumerable.Implicits with Logging {
+class DataPrefillService @Inject() extends Enumerable.Implicits with Logging {
 
   def copyAllDirectorsToTrustees(ua: UserAnswers, seqIndexes: Seq[Int], establisherIndex: Int): UserAnswers = {
     val seqDirectors: Seq[JsObject] =
-      (ua.data \ "establishers" \ establisherIndex \ "director").validate[JsArray].asOpt match {
+      (ua.data \ EstablishersId.toString \ establisherIndex \ "director").validate[JsArray].asOpt match {
         case Some(arr) =>
           seqIndexes.map { index =>
             arr.value(index).transform(copyDirectorToTrustee) match {
-              case JsSuccess(value, _) => value
-              case JsError(errors) => throw JsResultException(errors)
+              case JsSuccess(value, _) =>
+                value
+              case JsError(errors) =>
+                throw Exception(
+                  "copyAllDirectorsToTrustees copyDirectorToTrustee failed:" +
+                    s"\npath(s) from JSON: ${errors.map(_._1.path.mkString(", "))}" +
+                    s"\nerror messages from JSON: ${errors.flatMap(_._2.map(_.messages.head))}"
+                )
             }
           }
-        case _ => Nil
+        case _ =>
+          Nil
       }
 
-    val trusteeTransformer =
+    val trusteeTransformer: Reads[JsObject] =
       (__ \ TrusteesId.toString).json.update(__.read[JsArray].map {
         case existingTrustees@JsArray(_) =>
           JsArray(filterTrusteeIndividuals(existingTrustees) ++ seqDirectors)
       }
     )
-    transformUa(ua, trusteeTransformer)
+
+    transformUa(ua, trusteeTransformer, "trusteeTransformer")
   }
 
   def copyAllTrusteesToDirectors(ua: UserAnswers, seqIndexes: Seq[Int], establisherIndex: Int): UserAnswers = {
@@ -78,13 +86,18 @@ class DataPrefillService @Inject()() extends Enumerable.Implicits with Logging {
             
           seqIndexes.map { index =>
             completeNotDeletedTrustees(index).transform(copyTrusteeToDirector) match {
-              case JsSuccess(value, _) => value
+              case JsSuccess(value, _) =>
+                value
               case JsError(errors) =>
-                logger.error(s"copyTrusteeToDirector failed, index $index:\n $errors")
-                throw JsResultException(errors)
+                throw Exception(
+                  "copyAllTrusteesToDirectors copyTrusteeToDirector failed:" +
+                    s"\npath(s) from JSON: ${errors.map(_._1.path.mkString(", "))}" +
+                    s"\nerror messages from JSON: ${errors.flatMap(_._2.map(_.messages.head))}"
+                )
             }
           }
-        case _ => Nil
+        case _ =>
+          Nil
       }
       
     val seqDirectors: collection.Seq[JsValue] =
@@ -95,19 +108,29 @@ class DataPrefillService @Inject()() extends Enumerable.Implicits with Logging {
 
     val establisherTransformer: Reads[JsObject] =
       (__ \ EstablishersId.toString).json.update(__.read[JsArray].map { arr =>
-        JsArray(arr.value.updated(establisherIndex, arr(establisherIndex).as[JsObject] ++
-          Json.obj("director" -> (seqDirectors ++ seqTrustees))))
+        JsArray(
+          arr.value.updated(
+            establisherIndex,
+            arr(establisherIndex).as[JsObject] ++ Json.obj("director" -> (seqDirectors ++ seqTrustees))
+          )
+        )
       })
 
-    transformUa(ua, establisherTransformer)
+    transformUa(ua, establisherTransformer, "establisherTransformer")
   }
 
-  private def transformUa(ua: UserAnswers, transformer: Reads[JsObject]): UserAnswers = {
+  private def transformUa(ua: UserAnswers, transformer: Reads[JsObject], transformerName: String): UserAnswers =
     ua.data.transform(transformer) match {
-      case JsSuccess(value, _) => UserAnswers(value)
-      case _ => ua
+      case JsSuccess(value, _) =>
+        UserAnswers(value)
+      case JsError(errors) =>
+        logger.error(
+          s"transformUa $transformerName failed:" +
+            s"\npath(s) from JSON: ${errors.map(_._1.path.mkString(", "))}" +
+            s"\nerror messages from JSON: ${errors.flatMap(_._2.map(_.messages.head))}"
+        )
+        ua
     }
-  }
 
   private def copyDirectorToTrustee: Reads[JsObject] = {
     (__ \ "trusteeDetails" \ "firstName").json.copyFrom((__ \ "directorDetails" \ "firstName").json.pick) and
@@ -148,42 +171,72 @@ class DataPrefillService @Inject()() extends Enumerable.Implicits with Logging {
             (__ \ "noNinoReason").json.copyFrom((__ \ "noNinoReason").json.pick) reduce // Remove [JsObject]
       } reduce // Remove [JsObject]
   }
-
-
+  
   def getListOfDirectorsToBeCopied(implicit ua: UserAnswers): Seq[IndividualDetails] = {
-    val filteredDirectorsSeq = allDirectors.filter(dir => !dir.isDeleted && dir.isComplete)
+    val filteredDirectorsSeq: Seq[IndividualDetails] =
+      allDirectors.filter(dir => !dir.isDeleted && dir.isComplete)
+    
     filteredDirectorsSeq.filterNot { director =>
       val allNonDeletedTrustees = allIndividualTrustees.filter(!_.isDeleted)
 
-      director.nino.map(ninoVal =>
-        allNonDeletedTrustees.exists(_.nino.contains(ninoVal)))
-        .getOrElse(allNonDeletedTrustees.exists { trustee =>
-
-          (trustee.dob, director.dob) match {
-            case (Some(trusteeDob), Some(dirDob)) => trusteeDob.isEqual(dirDob) && trustee.fullName == director.fullName
-            case _ => false
+      director
+        .nino
+        .map(ninoVal => allNonDeletedTrustees.exists(_.nino.contains(ninoVal)))
+        .getOrElse(
+          allNonDeletedTrustees.exists { trustee =>
+            (trustee.dob, director.dob) match {
+              case (Some(trusteeDob), Some(dirDob)) =>
+                trusteeDob.isEqual(dirDob) && trustee.fullName == director.fullName
+              case _ =>
+                false
+            }
           }
-        })
+        )
     }
   }
 
   def getListOfTrusteesToBeCopied(establisherIndex: Int)(implicit ua: UserAnswers): Seq[IndividualDetails] = {
-    val filteredTrusteesSeq = allIndividualTrustees.filter(indv => !indv.isDeleted && indv.isComplete)
-    val allDirectors = (ua.data \ "establishers" \ establisherIndex \ "director").validate[JsArray].asOpt match {
-      case Some(arr) => arr.value.zipWithIndex.flatMap { jsValueWithIndex =>
-        jsValueWithIndex._1.validate[IndividualDetails](readsDirector(establisherIndex, jsValueWithIndex._2)).asOpt
+    val filteredTrusteesSeq: Seq[IndividualDetails] =
+      allIndividualTrustees.filter(individual => !individual.isDeleted && individual.isComplete)
+
+    val allDirectorsNotDeleted: collection.Seq[IndividualDetails] =
+      (ua.data \ EstablishersId.toString \ establisherIndex \ "director").validate[JsArray].asOpt match {
+        case Some(jsArray) =>
+          jsArray
+            .value
+            .zipWithIndex
+            .flatMap { case (jsValue, directorIndex) =>
+              jsValue
+                .validate[IndividualDetails](readsDirector(establisherIndex, directorIndex)) match {
+                case JsSuccess(value, _) =>
+                  Some(value)
+                case JsError(errors) =>
+                  logger.error(
+                    "getListOfTrusteesToBeCopied readsDirector failed:" +
+                      s"\npath(s) from JSON: ${errors.map(_._1.path.mkString(", "))}" +
+                      s"\nerror messages from JSON: ${errors.flatMap(_._2.map(_.messages.head))}"
+                  )
+                  None
+              }
+            }.filter(individual => !individual.isDeleted && individual.isComplete)
+        case _ =>
+          Nil
       }
-      case _ => Nil
-    }
+
     filteredTrusteesSeq.filterNot { trustee =>
-      val allDirectorsNotDeleted = allDirectors.filter(!_.isDeleted)
-      trustee.nino.map(ninoVal => allDirectorsNotDeleted.exists(_.nino.contains(ninoVal)))
-        .getOrElse(allDirectorsNotDeleted.exists { director =>
-          (trustee.dob, director.dob) match {
-            case (Some(trusteeDob), Some(dirDob)) => dirDob.isEqual(trusteeDob) && trustee.fullName == director.fullName
-            case _ => false
+      trustee
+        .nino
+        .map(ninoVal => allDirectorsNotDeleted.exists(_.nino.contains(ninoVal)))
+        .getOrElse(
+          allDirectorsNotDeleted.exists { director =>
+            (trustee.dob, director.dob) match {
+              case (Some(trusteeDob), Some(dirDob)) =>
+                dirDob.isEqual(trusteeDob) && trustee.fullName == director.fullName
+              case _ =>
+                false
+            }
           }
-        })
+        )
     }
   }
 
@@ -192,95 +245,124 @@ class DataPrefillService @Inject()() extends Enumerable.Implicits with Logging {
       case JsSuccess(directorsWithEstablishers, _) if directorsWithEstablishers.nonEmpty =>
         directorsWithEstablishers.flatten.headOption.getOrElse(Nil)
       case JsError(errors) =>
+        logger.warn(
+          "readsDirectors failed:" +
+            s"\npath(s) from JSON: ${errors.map(_._1.path.mkString(", "))}" +
+            s"\nerror messages from JSON: ${errors.flatMap(_._2.map(_.messages.head))}"
+        )
         Nil
       case _ =>
         Nil
     }
   }
 
-  private def readsDirectors(implicit ua: UserAnswers): Reads[Seq[Option[Seq[IndividualDetails]]]] = new Reads[Seq[Option[Seq[IndividualDetails]]]] {
-    private def readsAllDirectors(estIndex: Int)(implicit ua: UserAnswers): Reads[Seq[IndividualDetails]] = {
-      case JsArray(directors) =>
-        val jsResults: collection.IndexedSeq[JsResult[IndividualDetails]] = directors.zipWithIndex.map { case (jsValue, dirIndex) =>
-          readsDirector(estIndex, dirIndex).reads(jsValue)
-        }
-        asJsResultSeq(jsResults.toSeq)
-      case _ => JsSuccess(Nil)
-    }
-
-    override def reads(json: JsValue): JsResult[Seq[Option[Seq[IndividualDetails]]]] = {
-      ua.data \ EstablishersId.toString match {
-        case JsDefined(JsArray(establishers)) =>
-          val jsResults = establishers.zipWithIndex.map {
-            case (jsValue, index) =>
-              val establisherKind = (jsValue \ EstablisherKindId.toString).validate[String].asOpt
-
-              val readsForEstablisherKind = establisherKind match {
-
-                case Some(EstablisherKind.Company.toString) =>
-                  (JsPath \ "director").readNullable(readsAllDirectors(index))
-                case _ =>
-                  Reads.pure[Option[Seq[IndividualDetails]]](None)
-              }
-              readsForEstablisherKind.reads(jsValue)
-          }
+  private def readsDirectors(implicit ua: UserAnswers): Reads[Seq[Option[Seq[IndividualDetails]]]] =
+    new Reads[Seq[Option[Seq[IndividualDetails]]]] {
+      private def readsAllDirectors(estIndex: Int)(implicit ua: UserAnswers): Reads[Seq[IndividualDetails]] = {
+        case JsArray(directors) =>
+          val jsResults: collection.IndexedSeq[JsResult[IndividualDetails]] =
+            directors.zipWithIndex.map {
+              case (jsValue, dirIndex) => readsDirector(estIndex, dirIndex).reads(jsValue)
+            }
           asJsResultSeq(jsResults.toSeq)
-        case _ => JsSuccess(Nil)
+        case _ =>
+          JsSuccess(Nil)
+      }
+
+      override def reads(json: JsValue): JsResult[Seq[Option[Seq[IndividualDetails]]]] = {
+        ua.data \ EstablishersId.toString match {
+          case JsDefined(JsArray(establishers)) =>
+            val jsResults = establishers.zipWithIndex.map {
+              case (jsValue, index) =>
+                val establisherKind = (jsValue \ EstablisherKindId.toString).validate[String].asOpt
+
+                val readsForEstablisherKind = establisherKind match {
+
+                  case Some(EstablisherKind.Company.toString) =>
+                    (JsPath \ "director").readNullable(readsAllDirectors(index))
+                  case _ =>
+                    Reads.pure[Option[Seq[IndividualDetails]]](None)
+                }
+                readsForEstablisherKind.reads(jsValue)
+            }
+            asJsResultSeq(jsResults.toSeq)
+          case _ => JsSuccess(Nil)
+        }
       }
     }
-  }
 
-  private def readsDirector(estIndex: Int, directorIndex: Int)(implicit ua: UserAnswers): Reads[IndividualDetails] = (
-    (JsPath \ DirectorNameId.toString).read[PersonName] and
+  private def readsDirector(estIndex: Int, directorIndex: Int)(implicit ua: UserAnswers): Reads[IndividualDetails] =
+    (
+      (JsPath \ DirectorNameId.toString).read[PersonName] and
       (JsPath \ DirectorDOBId.toString).readNullable[LocalDate] and
       (JsPath \ DirectorNINOId.toString).readNullable[ReferenceValue]
-    ) ((directorName, dob, ninoReferenceVale) =>
-    IndividualDetails(
-      directorName.firstName, directorName.lastName, directorName.isDeleted, ninoReferenceVale.map(_.value), dob, directorIndex,
-      ua.isDirectorComplete(estIndex, directorIndex), Some(estIndex))
-  )
+    )(
+      (directorName, dob, ninoReferenceVale) =>
+        IndividualDetails(
+          firstName  = directorName.firstName,
+          lastName   = directorName.lastName,
+          isDeleted  = directorName.isDeleted,
+          nino       = ninoReferenceVale.map(_.value),
+          dob        = dob,
+          index      = directorIndex,
+          isComplete = ua.isDirectorComplete(estIndex, directorIndex),
+          mainIndex  = Some(estIndex)
+        )
+    )
 
   def allIndividualTrustees(implicit ua: UserAnswers): Seq[IndividualDetails] = {
     ua.data.validate[Seq[Option[IndividualDetails]]](readsTrustees) match {
       case JsSuccess(trustees, _) =>
         trustees.flatten
-      case JsError(_) =>
+      case JsError(errors) =>
+        logger.warn(
+          "allIndividualTrustees readsTrustees failed: " +
+            s"\npath(s) from JSON: ${errors.map(_._1.path.mkString(", "))}" +
+            s"\nerror messages from JSON: ${errors.flatMap(_._2.map(_.messages.head))}"
+        )
         Nil
     }
   }
 
-  private def readsTrustees(implicit ua: UserAnswers): Reads[Seq[Option[IndividualDetails]]] = new Reads[Seq[Option[IndividualDetails]]] {
-    private def readsIndividualTrustee(index: Int)(implicit ua: UserAnswers): Reads[Option[IndividualDetails]] = (
+  private def readsIndividualTrustee(index: Int)(implicit ua: UserAnswers): Reads[Option[IndividualDetails]] =
+    (
       (JsPath \ TrusteeNameId.toString).read[PersonName] and
-        (JsPath \ TrusteeDOBId.toString).readNullable[LocalDate] and
-        (JsPath \ TrusteeNINOId.toString).readNullable[ReferenceValue]
-      ) ((trusteeName, dob, ninoReferenceVale) =>
-      Some(IndividualDetails(
-        trusteeName.firstName,
-        trusteeName.lastName,
-        trusteeName.isDeleted,
-        ninoReferenceVale.map(_.value),
-        dob,
-        index,
-        ua.isTrusteeIndividualComplete(index)))
+      (JsPath \ TrusteeDOBId.toString).readNullable[LocalDate] and
+      (JsPath \ TrusteeNINOId.toString).readNullable[ReferenceValue]
+    )(
+      (trusteeName, dob, ninoReferenceVale) =>
+        Some(IndividualDetails(
+          firstName  = trusteeName.firstName,
+          lastName   = trusteeName.lastName,
+          isDeleted  = trusteeName.isDeleted,
+          nino       = ninoReferenceVale.map(_.value),
+          dob        = dob,
+          index      = index,
+          isComplete = UserAnswers(
+            (ua.data \ TrusteesId.toString).validate[JsArray].asOpt match {
+              case Some(jsArray) =>
+                Json.obj(TrusteesId.toString -> JsArray(filterTrusteeIndividuals(jsArray)))
+              case _ =>
+                ua.data
+            }
+          ).isTrusteeIndividualComplete(index)
+        ))
     )
 
-    override def reads(json: JsValue): JsResult[Seq[Option[IndividualDetails]]] = {
-      ua.data \ TrusteesId.toString match {
-        case JsDefined(JsArray(trustees)) =>
-          val jsResults: collection.IndexedSeq[JsResult[Option[IndividualDetails]]] = trustees.zipWithIndex.map { case (jsValue, index) =>
-            val trusteeKind = (jsValue \ TrusteeKindId.toString).validate[String].asOpt
-            val readsForTrusteeKind = trusteeKind match {
-              case Some(TrusteeKind.Individual.toString) => readsIndividualTrustee(index)
-              case _ => Reads.pure[Option[IndividualDetails]](None)
-            }
-            readsForTrusteeKind.reads(jsValue)
-          }
-          asJsResultSeq(jsResults.toSeq)
-        case _ => JsSuccess(Nil)
+  private def readsTrustees(implicit ua: UserAnswers): Reads[Seq[Option[IndividualDetails]]] =
+    (json: JsValue) =>
+      (ua.data \ TrusteesId.toString).validate[JsArray].asOpt match {
+        case Some(jsArray) =>
+          asJsResultSeq(
+            filterTrusteeIndividuals(jsArray).zipWithIndex.map {
+              case (jsValue, index) =>
+                readsIndividualTrustee(index).reads(jsValue)
+            }.toSeq
+          )
+        case _ =>
+          JsSuccess(Nil)
       }
-    }
-  }
+
 
   private def asJsResultSeq[A](jsResults: Seq[JsResult[A]]): JsResult[Seq[A]] = {
     JsSuccess(jsResults.collect {
@@ -288,7 +370,7 @@ class DataPrefillService @Inject()() extends Enumerable.Implicits with Logging {
     })
   }
 
-  private def filterTrusteeIndividuals(jsArray: JsArray): collection.IndexedSeq[JsValue] = {
+  private def filterTrusteeIndividuals(jsArray: JsArray): collection.IndexedSeq[JsValue] =
     DataCleanUp.filterNotEmptyObjectsAndSubsetKeys(
       jsArray = jsArray,
       keySet  = Set(IsTrusteeNewId.toString, TrusteeKindId.toString),
@@ -300,6 +382,5 @@ class DataPrefillService @Inject()() extends Enumerable.Implicits with Logging {
       .asOpt
       .contains(JsString(TrusteeKind.Individual.toString))
     )
-  }
 
 }
