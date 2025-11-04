@@ -20,28 +20,36 @@
 @import views.html.helper.CSPNonce
 
 @this(
-    appConfig: AppConfig,
-    govukLayout: GovukLayout,
-    hmrcHead: HmrcHead,
-    hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
-    hmrcStandardFooter: HmrcStandardFooter,
-    hmrcStandardHeader: HmrcStandardHeader,
-    standardBetaBanner: StandardBetaBanner,
-    defaultMainContentLayout: TwoThirdsMainContent,
-    hmrcScripts: HmrcScripts,
-    govukBackLink: GovukBackLink,
-    hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper
+        appConfig: AppConfig,
+        govukLayout: GovukLayout,
+        govukPhaseBanner: GovukPhaseBanner,
+        hmrcHead: HmrcHead,
+        hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
+        hmrcStandardFooter: HmrcStandardFooter,
+        hmrcStandardHeader: HmrcStandardHeader,
+        standardBetaBanner: StandardBetaBanner,
+        defaultMainContentLayout: TwoThirdsMainContent,
+        hmrcScripts: HmrcScripts,
+        govukBackLink: GovukBackLink,
+        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
+        hmrcBanner: HmrcBanner
 )
 
 @(
-    pageTitle: String,
-    timeoutEnabled: Boolean = true,
-    canSignOut: Boolean = true,
-    showBackLink: Boolean = true,
-    fullWidthLayout: Boolean = false,
-    formHasErrors: Boolean = false,
-    additionalScripts: Seq[String] = Seq()
-)(mainContent: Html)(implicit request: Request[_], messages: Messages)
+        pageTitle: String,
+        timeoutEnabled: Boolean = true,
+        canSignOut: Boolean = true,
+        showBackLink: Boolean = true,
+        fullWidthLayout: Boolean = false,
+        formHasErrors: Boolean = false,
+        additionalScripts: Seq[String] = Seq()
+)(
+        mainContent: Html
+)(
+        implicit
+        request: Request[_],
+        messages: Messages
+)
 
 @headScripts = {
     @hmrcHead(
@@ -86,15 +94,30 @@
 
 @_pageTitle = @{titlePrefix + pageTitle + " " + Messages("site.title.suffix")}
 
+@headerBlock = @{
+    if (appConfig.forceServiceNavigation) {
+        hmrcStandardHeader(
+            phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUnauthenticatedUrl)),
+            signOutUrl = if (canSignOut) Some(controllers.routes.LogoutController.onPageLoad.url) else None,
+            serviceNavigation = Some(ServiceNavigation(
+                serviceName = Some(messages("site.service_name")),
+                serviceUrl = Some(appConfig.psaOverviewUrl)
+            ))
+        )
+    } else {
+        hmrcStandardHeader(
+            phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUnauthenticatedUrl)),
+            signOutUrl = if(canSignOut) Some(controllers.routes.LogoutController.onPageLoad.url) else None,
+            serviceName = Some(messages("site.service_name")),
+            serviceUrl = Some(appConfig.psaOverviewUrl),
+        )
+    }
+}
+
 @govukLayout(
     pageTitle = Some(_pageTitle),
     headBlock = Some(headScripts),
-    headerBlock = Some(hmrcStandardHeader(
-        serviceName = Some(messages("site.service_name")),
-        serviceUrl = Some(appConfig.psaOverviewUrl),
-        signOutUrl = if(canSignOut) Some(controllers.routes.LogoutController.onPageLoad.url) else None,
-        phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUnauthenticatedUrl))
-    )),
+    headerBlock = Some(headerBlock),
     beforeContentBlock = Some(beforeContentBlock),
     scriptsBlock = Some(scripts),
     mainContentLayout = if(fullWidthLayout) None else Some(defaultMainContentLayout(_)),
