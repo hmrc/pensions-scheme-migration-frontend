@@ -28,8 +28,8 @@ import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsString, __}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.JsonCryptoService
 import uk.gov.hmrc.crypto.PlainText
-import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.ApplicationCrypto
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswers
@@ -51,7 +51,7 @@ class DeclarationController @Inject()(
                                        emailConnector: EmailConnector,
                                        minimalDetailsConnector: MinimalDetailsConnector,
                                        pensionsSchemeConnector: PensionsSchemeConnector,
-                                       crypto: ApplicationCrypto,
+                                       crypto: JsonCryptoService,
                                        declarationView: DeclarationView
                                      )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
@@ -123,8 +123,8 @@ class DeclarationController @Inject()(
   }
 
   private def callbackUrl(psaId: String, pstrId: String): String = {
-    val encryptedPsa = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(psaId)).value, StandardCharsets.UTF_8.toString)
-    val encryptedPstr = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(pstrId)).value, StandardCharsets.UTF_8.toString)
-    s"${appConfig.migrationUrl}/pensions-scheme-migration/email-response/${SCHEME_MIG}/$encryptedPsa/$encryptedPstr"
+    val encryptedPsa = URLEncoder.encode(crypto.encrypt(PlainText(psaId)), StandardCharsets.UTF_8.toString)
+    val encryptedPstr = URLEncoder.encode(crypto.encrypt(PlainText(pstrId)), StandardCharsets.UTF_8.toString)
+    s"${appConfig.migrationUrl}/pensions-scheme-migration/email-status-response/${SCHEME_MIG}/$encryptedPsa/$encryptedPstr"
   }
 }

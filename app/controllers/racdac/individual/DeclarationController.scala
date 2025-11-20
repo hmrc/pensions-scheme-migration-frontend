@@ -18,7 +18,7 @@ package controllers.racdac.individual
 
 import audit.{AuditService, EmailAuditEvent}
 import config.AppConfig
-import connectors._
+import connectors.*
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.beforeYouStart.SchemeNameId
 import models.JourneyType.RACDAC_IND_MIG
@@ -28,8 +28,8 @@ import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsString, __}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.JsonCryptoService
 import uk.gov.hmrc.crypto.PlainText
-import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.ApplicationCrypto
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswers
@@ -50,7 +50,7 @@ class DeclarationController @Inject()(
                                        pensionsSchemeConnector:PensionsSchemeConnector,
                                        val controllerComponents: MessagesControllerComponents,
                                        emailConnector: EmailConnector,
-                                       crypto: ApplicationCrypto,
+                                       crypto: JsonCryptoService,
                                        declarationView: views.html.racdac.DeclarationView
                                      )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
@@ -112,8 +112,8 @@ class DeclarationController @Inject()(
   }
 
   private def callbackUrl(psaId: String, pstrId:String): String = {
-    val encryptedPsa = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(psaId)).value, StandardCharsets.UTF_8.toString)
-    val encryptedPstr = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(pstrId)).value, StandardCharsets.UTF_8.toString)
-    s"${appConfig.migrationUrl}/pensions-scheme-migration/email-response/$RACDAC_IND_MIG/$encryptedPsa/$encryptedPstr"
+    val encryptedPsa = URLEncoder.encode(crypto.encrypt(PlainText(psaId)), StandardCharsets.UTF_8.toString)
+    val encryptedPstr = URLEncoder.encode(crypto.encrypt(PlainText(pstrId)), StandardCharsets.UTF_8.toString)
+    s"${appConfig.migrationUrl}/pensions-scheme-migration/email-status-response/$RACDAC_IND_MIG/$encryptedPsa/$encryptedPstr"
   }
 }
