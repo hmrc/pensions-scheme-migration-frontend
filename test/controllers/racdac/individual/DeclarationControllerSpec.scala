@@ -22,13 +22,14 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import matchers.JsonMatchers
 import models.MinPSA
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
+import play.api.libs.json.JsString
 import play.api.mvc.Request
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.http.HttpErrorFunctions.upstreamResponseMessage
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.Data.{psaName, pstr, ua}
@@ -58,8 +59,12 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
     psaName
   )(request, implicitly)
 
+  private val minPSA = MinPSA("test@test.com", false, Some("test company"), None, false, false)
+
   override def beforeEach(): Unit = {
     super.beforeEach()
+    mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+    when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(minPSA))
   }
 
 
@@ -68,7 +73,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
     "RacDac Individual DeclarationController" must {
 
       "return OK and the correct view for a GET" in {
-        mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+
         when(mockMinimalDetailsConnector.getPSAName(any(), any())).thenReturn(Future.successful(psaName))
         val req = httpGETRequest(httpPathGET)
         val result = route(app, req).value
@@ -79,11 +84,8 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
         )
       }
 
-      "redirect to next page when rac dac schems exist" in {
-        mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-        val minPSA = MinPSA("test@test.com", false, Some("test company"), None, false, false)
-        when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(minPSA))
-        when(mockPensionsSchemeConnector.registerScheme(any(),any(), any())(any(),any())).thenReturn(Future.successful(pstr))
+      "redirect to next page when rac dac schemes exist" in {
+        when(mockPensionsSchemeConnector.registerScheme(any(),any(), any())(any(),any())).thenReturn(Future.successful(Right(JsString(pstr))))
         when(mockEmailConnector.sendEmail(any(), any(), any(), any())(any(), any())).thenReturn(Future(EmailSent))
         val result = route(app, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
@@ -92,9 +94,6 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
       }
     }
     "redirect to your action was not processed page when backend returns 5XX" in {
-      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-      val minPSA = MinPSA("test@test.com", false, Some("test company"), None, false, false)
-      when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(minPSA))
       when(mockPensionsSchemeConnector.registerScheme(any(),any(), any())(any(),any())).thenReturn(Future.failed(
         UpstreamErrorResponse(upstreamResponseMessage("POST", "url",
           Status.INTERNAL_SERVER_ERROR, "response.body"), Status.INTERNAL_SERVER_ERROR, Status.INTERNAL_SERVER_ERROR)))
@@ -105,9 +104,6 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
       redirectLocation(result) mustBe Some(controllers.routes.YourActionWasNotProcessedController.onPageLoadRacDac.url)
     }
     "direct to adding rac/dac page when backend returns 422" in {
-      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-      val minPSA = MinPSA("test@test.com", false, Some("test company"), None, false, false)
-      when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(minPSA))
       when(mockPensionsSchemeConnector.registerScheme(any(),any(), any())(any(),any())).thenReturn(Future.failed(
         UpstreamErrorResponse(upstreamResponseMessage("POST", "url",
           Status.UNPROCESSABLE_ENTITY, "response.body"), Status.UNPROCESSABLE_ENTITY, Status.UNPROCESSABLE_ENTITY)))

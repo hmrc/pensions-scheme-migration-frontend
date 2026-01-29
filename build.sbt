@@ -1,9 +1,6 @@
 import play.sbt.routes.RoutesKeys
-import scoverage.ScoverageKeys
 
 val appName = "pensions-scheme-migration-frontend"
-
-val silencerVersion = "1.7.0"
 
 lazy val microservice = Project(appName, file("."))
   .disablePlugins(JUnitXmlReportPlugin)
@@ -21,11 +18,8 @@ lazy val microservice = Project(appName, file("."))
       "-Wconf:msg=Flag.*repeatedly:silent", // Suppress repeated flag warnings
       "-Wconf:msg=.*-Wunused.*:silent", // Suppress unused variable warnings
     ),
-
-
     libraryDependencies              ++= AppDependencies.all,
     PlayKeys.playDefaultPort         := 8213,
-
     RoutesKeys.routesImport ++= Seq(
       "models.Index",
       "models.establishers.EstablisherKind",
@@ -38,8 +32,6 @@ lazy val microservice = Project(appName, file("."))
       "models.RacDac",
       "models.entities._"
     ),
-
-
     TwirlKeys.templateImports ++= Seq(
       "config.AppConfig",
       "play.twirl.api.HtmlFormat",
@@ -59,9 +51,3 @@ lazy val microservice = Project(appName, file("."))
     CodeCoverageSettings(),
     retrieveManaged := true
   )
-
-lazy val testSettings: Seq[Def.Setting[?]] = Seq(
-  javaOptions ++= Seq(
-    "-Dconfig.resource=test.application.conf"
-  )
-)
