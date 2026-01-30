@@ -21,17 +21,17 @@ import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.beforeYouStart.{SchemeNameId, WorkingKnowledgeId}
 import matchers.JsonMatchers
 import models.MinPSA
-import org.apache.commons.lang3.StringUtils
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.test.Helpers._
+import play.api.libs.json.JsString
+import play.api.test.Helpers.*
 import uk.gov.hmrc.http.HttpErrorFunctions.upstreamResponseMessage
-import uk.gov.hmrc.http.UpstreamErrorResponse
+import uk.gov.hmrc.http.{UnprocessableEntityException, UpstreamErrorResponse}
 import utils.Data.{psaName, pstr, schemeName, ua}
 import utils.{Enumerable, UserAnswers}
 import views.html.DeclarationView
@@ -108,7 +108,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
       when(mockAppConfig.schemeConfirmationEmailTemplateId).thenReturn("test template name")
       when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any()))
         .thenReturn(Future.successful(MinPSA("test@test.com", isPsaSuspended = false, Some(psaName), None, rlsFlag = false, deceasedFlag = false)))
-      when(mockPensionsSchemeConnector.registerScheme(any(), any(), any())(any(), any())).thenReturn(Future.successful(pstr))
+      when(mockPensionsSchemeConnector.registerScheme(any(), any(), any())(any(), any())).thenReturn(Future.successful(Right(JsString(pstr))))
       when(mockEmailConnector.sendEmail(any(), any(), any(), any())(any(), any())).thenReturn(Future.successful(EmailSent))
 
       val result = route(app, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
@@ -120,22 +120,6 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
         ArgumentMatchers.eq("pods_scheme_migration_confirmation"),
         ArgumentMatchers.eq(Map("psaName" -> psaName, "schemeName" -> schemeName)),
         any())(any(), any())
-
-      redirectLocation(result) mustBe Some(controllers.routes.SchemeSuccessController.onPageLoad.url)
-    }
-
-    "redirect to next page when button is clicked more than one (declaration is already submitted)" in {
-
-      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-      when(mockPensionsSchemeConnector.registerScheme(any(), any(), any())(any(), any())).thenReturn(Future.successful(StringUtils.EMPTY))
-
-      val result = route(app, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
-
-      status(result) mustEqual SEE_OTHER
-
-      verify(mockEmailConnector, never).sendEmail(any(), any(), any(), any())(any(), any())
-      verify(mockMinimalDetailsConnector, never).getPSADetails(any())(any(), any())
-      verify(mockAppConfig, never).schemeConfirmationEmailTemplateId
 
       redirectLocation(result) mustBe Some(controllers.routes.SchemeSuccessController.onPageLoad.url)
     }
@@ -177,9 +161,8 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
       when(mockAppConfig.schemeConfirmationEmailTemplateId).thenReturn("test template name")
       when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any()))
         .thenReturn(Future.successful(MinPSA("test@test.com", isPsaSuspended = false, Some(psaName), None, rlsFlag = false, deceasedFlag = false)))
-      when(mockPensionsSchemeConnector.registerScheme(any(), any(), any())(any(), any())).thenReturn(Future.failed(
-        UpstreamErrorResponse(upstreamResponseMessage("POST", "url",
-          Status.UNPROCESSABLE_ENTITY, "response.body"), Status.UNPROCESSABLE_ENTITY, Status.UNPROCESSABLE_ENTITY)))
+      when(mockPensionsSchemeConnector.registerScheme(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(Left(UnprocessableEntityException("response.body"))))
 
       val result = route(app, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 

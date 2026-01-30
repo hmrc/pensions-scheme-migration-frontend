@@ -19,40 +19,34 @@ package connectors
 import com.google.inject.Inject
 import config.AppConfig
 import models.MigrationType
-import org.apache.commons.lang3.StringUtils
-import play.api.http.Status._
-import play.api.libs.json._
-import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
-import utils.{HttpResponseHelper, UserAnswers}
+import play.api.http.Status.*
+import play.api.libs.json.*
 import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse, LockedException, StringContextOps, UnprocessableEntityException}
+import utils.{HttpResponseHelper, UserAnswers}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PensionsSchemeConnector @Inject()(config: AppConfig,
-                                        http: HttpClientV2
-                                       ) extends HttpResponseHelper {
+class PensionsSchemeConnector @Inject()(config: AppConfig, http: HttpClientV2) extends HttpResponseHelper {
 
   def registerScheme(answers: UserAnswers, psaId: String, migrationType: MigrationType)
-                    (implicit hc: HeaderCarrier,
-                     ec: ExecutionContext): Future[String] = {
-
-    val url = config.registerSchemeUrl(migrationType)
-    val headers = Seq(("psaId", psaId))
-    http.post(url"$url")(hc)
-      .setHeader(headers*)
-      .withBody(Json.toJson(answers.data)).execute[HttpResponse]. map { response =>
-      response.status match {
-        case OK =>
-          val json = Json.parse(response.body)
-          (json \ "schemeReferenceNumber").validate[String] match {
-            case JsSuccess(value, _) => value
-            case JsError(errors) => throw JsResultException(errors)
-          }
-        case NO_CONTENT => StringUtils.EMPTY
-        case _ =>
-          handleErrorResponse("POST", url)(response)
+                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[HttpException, JsValue]] =
+    http
+      .post(url"${config.registerSchemeUrl(migrationType)}")(hc)
+      .setHeader(Seq(("psaId", psaId))*)
+      .withBody(Json.toJson(answers.data))
+      .execute[HttpResponse]
+      .map { response =>
+        response.status match {
+          case OK =>
+            Right(response.json)
+          case LOCKED =>
+            Left(LockedException(response.body))
+          case UNPROCESSABLE_ENTITY =>
+            Left(UnprocessableEntityException(response.body))
+          case _ =>
+            Left(handleErrorResponse("POST", config.registerSchemeUrl(migrationType))(response))
+        }
       }
-    }
-  }
 }

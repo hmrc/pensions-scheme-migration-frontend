@@ -19,7 +19,7 @@ package controllers
 import config.AppConfig
 import connectors.cache.{CurrentPstrCacheConnector, LockCacheConnector, UserAnswersCacheConnector}
 import connectors.{ListOfSchemesConnector, MinimalDetailsConnector}
-import controllers.actions._
+import controllers.actions.*
 import helpers.cya.CYAHelper
 import identifiers.beforeYouStart.SchemeNameId
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -28,7 +28,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.SchemeSuccessView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class SchemeSuccessController @Inject()(appConfig: AppConfig,
                                         override val messagesApi: MessagesApi,
@@ -49,29 +49,20 @@ class SchemeSuccessController @Inject()(appConfig: AppConfig,
   def onPageLoad: Action[AnyContent] =
     (identify andThen getData andThen requireData()).async {
       implicit request =>
-        val schemeDetails = for {
+        for {
           email <- minimalDetailsConnector.getPSAEmail
-          _ <- currentPstrCacheConnector.remove
-          _ <- lockCacheConnector.removeLock(request.lock)
-          _ <- userAnswersCacheConnector.remove(request.lock.pstr)
-          _ <- listOfSchemesConnector.removeCache(request.psaId.id)
+          _     <- currentPstrCacheConnector.remove
+          _     <- lockCacheConnector.removeLock(request.lock)
+          _     <- userAnswersCacheConnector.remove(request.lock.pstr)
+          _     <- listOfSchemesConnector.removeCache(request.psaId.id)
         } yield {
-          Map(
-            "schemeName" -> CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
-            "pstr" -> request.lock.pstr,
-            "email" -> email,
-            "yourSchemesLink" -> appConfig.yourPensionSchemesUrl,
-            "returnUrl" -> appConfig.psaOverviewUrl
-          )
-        }
-        schemeDetails.flatMap { details =>
-          Future.successful(Ok(schemeSuccessView(
-            details("schemeName"),
-            details("pstr"),
-            details("email"),
-            details("yourSchemesLink"),
-            details("returnUrl")
-          )))
+          Ok(schemeSuccessView(
+            schemeName      = CYAHelper.getAnswer(SchemeNameId)(request.userAnswers, implicitly),
+            pstr            = request.lock.pstr,
+            email           = email,
+            yourSchemesLink = appConfig.yourPensionSchemesUrl,
+            returnUrl       = appConfig.psaOverviewUrl
+          ))
         }
     }
 }
