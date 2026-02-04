@@ -24,18 +24,17 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
 object DataPrefillRadio {
 
-  def radios(form: Form[?], values: Seq[DataPrefillIndividualDetails])(implicit messages: Messages): Seq[RadioItem] = {
-    val noneValue = "-1"
-    values.map { indvDetails => {
+  def radios(form: Form[?], values: Seq[DataPrefillIndividualDetails])(implicit messages: Messages): Seq[RadioItem] =
+    values.map { individualDetails =>
       RadioItem(
-        content = Text(indvDetails.fullName),
-        value = Some(indvDetails.index.toString),
-        checked = form("value").value.contains(indvDetails.index.toString)
+        content = Text(individualDetails.fullName),
+        value   = Some(individualDetails.index.toString),
+        checked = form("value").value.contains(individualDetails.index.toString)
       )
-    }} :+ RadioItem(
-      content = Text(Messages("messages__prefill__label__none")),
-      value = Some(noneValue),
-      checked = form("value").value.contains(noneValue)
-    )
-  }
+    } :+
+      RadioItem(
+        content = Text(messages("messages__prefill__label__none")),
+        value   = Some("-1"),
+        checked = form("value").value.contains("-1")
+      )
 }
