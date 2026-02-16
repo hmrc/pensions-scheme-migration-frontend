@@ -91,6 +91,19 @@ trait UaJsValueGenerators {
     )
   }
 
+  def uaJsValueTwoEstablisherCompaniesThreeTrustees: Gen[JsObject] = for {
+    trustee1 <- trusteeIndividualJsValueGen(isNinoAvailable = true, 1)
+    trustee2 <- trusteeIndividualJsValueGen(isNinoAvailable = true, 2)
+    trustee3 <- trusteeIndividualJsValueGen(isNinoAvailable = true, 3)
+    estComp1 <- estCompanyWithNinoInDirJsValueGen(isNinoAvailable = true)
+    estComp2 <- estCompanyWithNinoInDirJsValueGen(isNinoAvailable = true)
+  } yield {
+    Json.obj(
+      "trustees" -> Seq(trustee1, trustee2, trustee3),
+      "establishers" -> Seq(estComp1, estComp2.-("director")),
+    )
+  }
+
   def uaJsValueWithNoNino: Gen[JsObject] = for {
     trusteeDetails <- trusteeIndividualJsValueGen(isNinoAvailable = false, 1)
     trusteeDetailsFour <- trusteeIndividualJsValueGen(isNinoAvailable = true, 4)
@@ -156,7 +169,7 @@ trait UaJsValueGenerators {
     email <- Gen.const("aaa@gmail.com")
     phone <- Gen.listOfN[Char](randomNumberFromRange(1, 24), Gen.numChar).map(_.mkString)
     address <- addressJsValueGen
-    date <- Gen.const(s"1999-0${index}-13")
+    date <- Gen.const(s"1999-0$index-13")
   } yield {
     Json.obj(
       "trusteeKind" -> "individual",
@@ -218,7 +231,7 @@ trait UaJsValueGenerators {
     referenceOrNino <- Gen.const(s"CS700${index}00A")
     contactDetails <- contactDetailsJsValueGen
     address <- addressJsValueGen
-    date <- Gen.const(s"1999-0${index}-13")
+    date <- Gen.const(s"1999-0$index-13")
   } yield {
     Json.obj(
       "directorDetails" -> Json.obj(
