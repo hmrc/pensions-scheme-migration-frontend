@@ -73,7 +73,7 @@ class TrusteeDOBControllerSpec
       getData                   = dataRetrievalAction,
       requireData               = new DataRequiredActionImpl,
       formProvider              = formProvider,
-      dataUpdateService         = mockDataUpdateService,
+      dataPrefillService = mockDataPrefillService,
       common = new CommonDateOfBirthService(
         controllerComponents = controllerComponents,
         dobView =view,

@@ -16,51 +16,33 @@
 
 package connectors
 
-import com.google.inject.{ImplementedBy, Inject, Singleton}
+import com.google.inject.Inject
 import config.AppConfig
-import play.api.Logger
-import play.api.http.Status._
+import play.api.Logging
+import play.api.http.Status.*
 import play.api.libs.json.JsValue
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-@ImplementedBy(classOf[LegacySchemeDetailsConnectorImpl])
-trait LegacySchemeDetailsConnector {
+class LegacySchemeDetailsConnector @Inject()(http: HttpClientV2, config: AppConfig) extends Logging {
 
   def getLegacySchemeDetails(psaId: String, pstr: String)
-                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[HttpResponse, JsValue]]
-
-}
-
-@Singleton
-class LegacySchemeDetailsConnectorImpl @Inject()(
-                                            http: HttpClientV2,
-                                            config: AppConfig
-                                          ) extends LegacySchemeDetailsConnector {
-
-  private val logger = Logger(classOf[LegacySchemeDetailsConnectorImpl])
-
-  def getLegacySchemeDetails(psaId: String, pstr: String)
-                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[HttpResponse, JsValue]] = {
-    val (url, schemeHc) = (config.legacySchemeDetailsUrl, hc.withExtraHeaders("psaId" -> psaId, "pstr" -> pstr))
-    val headers = Seq(("psaId", psaId), ("pstr", pstr))
-    http.get(url"$url")(schemeHc)
-      .setHeader(headers*)
-      .execute[HttpResponse].map { response =>
-      response.status match {
-        case OK =>
+                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[HttpResponse, JsValue]] =
+    http
+      .get(url"${config.legacySchemeDetailsUrl}")
+      .setHeader(Seq(("psaId", psaId), ("pstr", pstr)) *)
+      .execute[HttpResponse]
+      .map { response =>
+        response.status match {
+          case OK =>
             Right(response.json)
-        case _ =>
-          logger.error(response.body)
-          Left(response)
+          case _ =>
+            logger.error(response.body)
+            Left(response)
+        }
       }
-    }
-  }
 
 }
-
-sealed trait LegacySchemeDetailsConnectorException extends Exception
-

@@ -62,7 +62,7 @@ class DirectorHasNINOControllerSpec
       getData                   = dataRetrievalAction,
       requireData               = new DataRequiredActionImpl,
       formProvider              = formProvider,
-      dataUpdateService         = mockDataUpdateService,
+      dataPrefillService = mockDataPrefillService,
       common = new CommonHasReferenceValueService(
         controllerComponents = controllerComponents,
         hasReferenceValueWithHintView = app.injector.instanceOf[HasReferenceValueWithHintView],

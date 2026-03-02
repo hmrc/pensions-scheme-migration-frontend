@@ -25,7 +25,7 @@ import identifiers.trustees.{IsTrusteeNewId, TrusteeKindId, TrusteesId}
 import models.establishers.EstablisherKind
 import models.prefill.IndividualDetails
 import models.trustees.TrusteeKind
-import models.{PersonName, ReferenceValue}
+import models.{Index, PersonName, ReferenceValue}
 import play.api.Logging
 import play.api.libs.functional.syntax.*
 import play.api.libs.json.*
@@ -196,7 +196,8 @@ class DataPrefillService @Inject() extends Enumerable.Implicits with Logging {
     }
   }
 
-  def getListOfTrusteesToBeCopied(establisherIndex: Int)(implicit ua: UserAnswers): Seq[IndividualDetails] = {
+  def getListOfTrusteesToBeCopied(establisherIndex: Int)
+                                 (implicit ua: UserAnswers): Seq[IndividualDetails] = {
     val completeNotDeletedTrustees: Seq[IndividualDetails] =
       allIndividualTrustees.filter(trustee => !trustee.isDeleted && trustee.isComplete)
 
@@ -220,7 +221,8 @@ class DataPrefillService @Inject() extends Enumerable.Implicits with Logging {
     }
   }
 
-  private def directors(establisherIndex: Int)(implicit ua: UserAnswers): collection.Seq[IndividualDetails] =
+  private def directors(establisherIndex: Int)
+                       (implicit ua: UserAnswers): collection.Seq[IndividualDetails] =
     (ua.data \ EstablishersId.toString \ establisherIndex \ "director").validate[JsArray].asOpt match {
       case Some(jsArray) =>
         jsArray
@@ -294,7 +296,8 @@ class DataPrefillService @Inject() extends Enumerable.Implicits with Logging {
       }
     }
 
-  private def readsDirector(estIndex: Int, directorIndex: Int)(implicit ua: UserAnswers): Reads[IndividualDetails] =
+  private def readsDirector(estIndex: Int, directorIndex: Int)
+                           (implicit ua: UserAnswers): Reads[IndividualDetails] =
     (
       (JsPath \ DirectorNameId.toString).read[PersonName] and
       (JsPath \ DirectorDOBId.toString).readNullable[LocalDate] and
@@ -313,7 +316,7 @@ class DataPrefillService @Inject() extends Enumerable.Implicits with Logging {
         )
     )
 
-  def allIndividualTrustees(implicit ua: UserAnswers): Seq[IndividualDetails] = {
+  private def allIndividualTrustees(implicit ua: UserAnswers): Seq[IndividualDetails] = {
     ua.data.validate[Seq[Option[IndividualDetails]]](readsTrustees) match {
       case JsSuccess(trustees, _) =>
         trustees.flatten
@@ -327,7 +330,8 @@ class DataPrefillService @Inject() extends Enumerable.Implicits with Logging {
     }
   }
 
-  private def readsIndividualTrustee(index: Int)(implicit ua: UserAnswers): Reads[Option[IndividualDetails]] =
+  private def readsIndividualTrustee(index: Int)
+                                    (implicit ua: UserAnswers): Reads[Option[IndividualDetails]] =
     (
       (JsPath \ TrusteeNameId.toString).read[PersonName] and
       (JsPath \ TrusteeDOBId.toString).readNullable[LocalDate] and
@@ -367,11 +371,10 @@ class DataPrefillService @Inject() extends Enumerable.Implicits with Logging {
       }
 
 
-  private def asJsResultSeq[A](jsResults: Seq[JsResult[A]]): JsResult[Seq[A]] = {
+  private def asJsResultSeq[A](jsResults: Seq[JsResult[A]]): JsResult[Seq[A]] =
     JsSuccess(jsResults.collect {
       case JsSuccess(i, _) => i
     })
-  }
 
   private def filterTrusteeIndividuals(jsArray: JsArray): collection.IndexedSeq[JsValue] =
     DataCleanUp.filterNotEmptyObjectsAndSubsetKeys(
@@ -385,5 +388,70 @@ class DataPrefillService @Inject() extends Enumerable.Implicits with Logging {
       .asOpt
       .contains(JsString(TrusteeKind.Individual.toString))
     )
+
+  def findMatchingTrustee(establisherIndex: Index, directorIndex: Index)
+                         (implicit ua: UserAnswers): Option[IndividualDetails] =
+    getDirectorDetails(establisherIndex, directorIndex).flatMap { director =>
+      allIndividualTrustees.filter(indv => !indv.isDeleted).find { trustee =>
+        trustee
+          .nino
+          .map(ninoVal => director.nino.contains(ninoVal)).getOrElse {
+            (trustee.dob, director.dob) match {
+              case (Some(trusteeDob), Some(dirDob)) =>
+                dirDob.isEqual(trusteeDob) && trustee.fullName == director.fullName
+              case _ =>
+                false
+            }
+          }
+      }
+    }
+
+
+  private def getDirectorDetails(estIndex: Int, directorIndex: Int)
+                                (implicit ua: UserAnswers): Option[IndividualDetails] =
+    ua.get(DirectorNameId(estIndex, directorIndex)).map { name =>
+      IndividualDetails(
+        name.firstName,
+        name.lastName,
+        name.isDeleted,
+        ua.get(DirectorNINOId(estIndex, directorIndex)).map(_.value),
+        ua.get(DirectorDOBId(estIndex, directorIndex)),
+        directorIndex,
+        ua.isDirectorComplete(estIndex, directorIndex),
+        Some(estIndex)
+      )
+    }
+
+  def findMatchingDirectors(index: Index)
+                           (implicit ua: UserAnswers): Seq[IndividualDetails] =
+    getTrusteeDetails(index).map { trustee =>
+      allDirectors.filter(dir => !dir.isDeleted).filter { director =>
+        director
+          .nino
+          .map(ninoVal => trustee.nino.contains(ninoVal)).getOrElse {
+            (trustee.dob, director.dob) match {
+              case (Some(trusteeDob), Some(dirDob)) =>
+                trusteeDob.isEqual(dirDob) && trustee.fullName == director.fullName
+              case _ =>
+                false
+            }
+          }
+      }
+    }.toList.flatten
+
+  private def getTrusteeDetails(index: Int)
+                               (implicit ua: UserAnswers): Option[IndividualDetails] =
+    ua.get(TrusteeNameId(index)).map { name =>
+      IndividualDetails(
+        name.firstName,
+        name.lastName,
+        name.isDeleted,
+        ua.get(TrusteeNINOId(index)).map(_.value),
+        ua.get(TrusteeDOBId(index)),
+        index,
+        ua.isTrusteeIndividualComplete(index),
+        Some(index)
+      )
+    }
 
 }

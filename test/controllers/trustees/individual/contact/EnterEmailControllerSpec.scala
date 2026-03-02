@@ -67,7 +67,7 @@ class EnterEmailControllerSpec extends ControllerSpecBase
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl,
       formProvider = formProvider,
-      dataUpdateService = mockDataUpdateService,
+      dataPrefillService = mockDataPrefillService,
       common = new CommonEmailAddressService(
         controllerComponents = controllerComponents,
         userAnswersCacheConnector = mockUserAnswersCacheConnector,

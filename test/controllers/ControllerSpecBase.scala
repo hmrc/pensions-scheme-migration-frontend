@@ -19,23 +19,23 @@ package controllers
 import base.SpecBase
 import connectors.cache.UserAnswersCacheConnector
 import connectors.{EmailConnector, LegacySchemeDetailsConnector, MinimalDetailsConnector}
-import controllers.actions._
+import controllers.actions.*
 import models.TolerantAddress
 import navigators.CompoundNavigator
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.HeaderNames
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.Helpers.{GET, POST}
 import play.api.test.{FakeHeaders, FakeRequest}
-import services.{DataPrefillService, DataUpdateService}
+import services.DataPrefillService
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import utils.{CountryOptions, Enumerable, FakeCountryOptions}
-import org.scalatestplus.mockito.MockitoSugar
 
 trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerable.Implicits with MockitoSugar {
 
@@ -54,7 +54,6 @@ trait ControllerSpecBase extends SpecBase with BeforeAndAfterEach  with Enumerab
   protected val mockMinimalDetailsConnector: MinimalDetailsConnector = mock[MinimalDetailsConnector]
   protected val mockEmailConnector: EmailConnector = mock[EmailConnector]
   protected val mockLegacySchemeDetailsConnector: LegacySchemeDetailsConnector = mock[LegacySchemeDetailsConnector]
-  protected val mockDataUpdateService: DataUpdateService = mock[DataUpdateService]
 
   def modules: Seq[GuiceableModule] = Seq(
     bind[AuthAction].to[FakeAuthAction],
