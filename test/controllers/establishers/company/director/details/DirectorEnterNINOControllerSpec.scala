@@ -72,7 +72,7 @@ class DirectorEnterNINOControllerSpec
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl,
       formProvider = formProvider,
-      dataUpdateService = mockDataUpdateService,
+      dataPrefillService = mockDataPrefillService,
       common = new CommonEnterReferenceValueService(
         controllerComponents = controllerComponents,
         userAnswersCacheConnector = mockUserAnswersCacheConnector,

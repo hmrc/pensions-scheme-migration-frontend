@@ -22,18 +22,19 @@ import forms.DOBFormProvider
 import identifiers.establishers.individual.EstablisherNameId
 import identifiers.establishers.partnership.partner.details.PartnerDOBId
 import matchers.JsonMatchers
-import models.{Index, NormalMode, PersonName}
+import models.{Index, Mode, NormalMode, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.common.details.CommonDateOfBirthService
 import utils.Data.ua
 import utils.{FakeNavigator, UserAnswers}
+import views.html.DobView
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -54,7 +55,7 @@ class EstablisherDOBControllerSpec
     ua.set(EstablisherNameId(0), personName).success.value
 
   val index = Index(0)
-  val mode = NormalMode
+  val mode: Mode = NormalMode
   private def onPageLoadUrl: String = routes.EstablisherDOBController.onPageLoad(index, mode).url
   private val formData: LocalDate =
     LocalDate.parse("2000-01-01")
@@ -62,7 +63,7 @@ class EstablisherDOBControllerSpec
   private val day: Int = formData.getDayOfMonth
   private val month: Int = formData.getMonthValue
   private val year: Int = formData.getYear
-  val view = app.injector.instanceOf[views.html.DobView]
+  val view: DobView = app.injector.instanceOf[views.html.DobView]
 
   private def controller(
                           dataRetrievalAction: DataRetrievalAction
@@ -107,9 +108,7 @@ class EstablisherDOBControllerSpec
         routes.EstablisherDOBController.onSubmit(index, mode)
       )(request, messages)
 
-      contentAsString(result)
-        .replaceAll("&amp;referrerUrl=%2F\\[.*?\\]", "&amp;referrerUrl=%2F[]")
-        .removeAllNonces() contains expectedView
+      contentAsString(result).removeAllNonces() contains expectedView
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
@@ -135,9 +134,7 @@ class EstablisherDOBControllerSpec
         routes.EstablisherDOBController.onSubmit(index, mode)
       )(request, messages)
 
-      contentAsString(result)
-        .replaceAll("&amp;referrerUrl=%2F\\[.*?\\]", "&amp;referrerUrl=%2F[]")
-        .removeAllNonces() contains expectedView
+      contentAsString(result).removeAllNonces() contains expectedView
     }
 
     "redirect to the next page when valid data is submitted" in {

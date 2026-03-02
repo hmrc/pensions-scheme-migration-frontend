@@ -33,10 +33,8 @@ import models.trustees.TrusteeKind
 import play.api.Logger
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json.*
-import uk.gov.hmrc.http.HeaderCarrier
 import utils.datacompletion.{DataCompletion, DataCompletionEstablishers, DataCompletionTrustees}
 
-import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Implicits with DataCompletion
@@ -491,8 +489,7 @@ final case class UserAnswers(data: JsObject = Json.obj()) extends Enumerable.Imp
         }
     }.getOrElse(Seq.empty)
 
-  def removeEmptyObjectsAndIncompleteEntities(collectionKey: String, keySet: Set[String])
-                                             (implicit ec: ExecutionContext, hc: HeaderCarrier): JsObject =
+  def removeEmptyObjectsAndIncompleteEntities(collectionKey: String, keySet: Set[String]): JsObject =
     (data \ collectionKey).validate[JsArray].asOpt match {
       case Some(jsArray) =>
 

@@ -72,7 +72,7 @@ class EnterPhoneNumberControllerSpec extends ControllerSpecBase
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl,
       formProvider = formProvider,
-      dataUpdateService = mockDataUpdateService,
+      dataPrefillService = mockDataPrefillService,
       common = new CommonPhoneService(
         controllerComponents = controllerComponents,
         userAnswersCacheConnector = mockUserAnswersCacheConnector,

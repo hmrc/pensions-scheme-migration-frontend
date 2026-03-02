@@ -105,6 +105,55 @@ class DataPrefillServiceSpec extends SpecBase with JsonMatchers with Enumerable.
       }
     }
   }
+
+  "findMatchingTrustee" must {
+    "return the trustee which is non deleted and their nino, name and dob matched with the directors" in {
+      forAll(uaJsValueWithTrusteeMatching) {
+        ua => {
+          val result = dataPrefillService.findMatchingTrustee(0, 0)(UserAnswers(ua)).get
+          result mustBe IndividualDetails("Test", "User 1", false, Some("CS700100A"), Some(LocalDate.parse("1999-01-13")), 0, true, None)
+        }
+      }
+    }
+
+    "return no trustees when their nino, name and dob is not matching with the director" in {
+      forAll(uaJsValueWithNoTrusteeMatching) {
+        ua => {
+          val result = dataPrefillService.findMatchingTrustee(0, 0)(UserAnswers(ua))
+          result mustBe None
+        }
+      }
+    }
+  }
+
+  "findMatchingDirectors" must {
+    "return the list of Directors which is non deleted and their nino, name and dob matched with the trustee" in {
+      forAll(uaJsValueWithDirectorsMatching) {
+        ua => {
+          val result = dataPrefillService.findMatchingDirectors(0)(UserAnswers(ua))
+          result mustBe Seq(IndividualDetails("Test", "User 1", false, Some("CS700100A"), Some(LocalDate.parse("1999-01-13")), 0, true, mainIndex = Some(0)))
+        }
+      }
+    }
+
+    "return empty list when their nino, name and dob is not matching with the trustee" in {
+      forAll(uaJsValueWithNoDirectorMatching) {
+        ua => {
+          val result = dataPrefillService.findMatchingDirectors(0)(UserAnswers(ua))
+          result mustBe Nil
+        }
+      }
+    }
+
+    "return empty list when trustee is not found" in {
+      forAll(uaJsValueWithNoTrustee) {
+        ua => {
+          val result = dataPrefillService.findMatchingDirectors(1)(UserAnswers(ua))
+          result mustBe Nil
+        }
+      }
+    }
+  }
 }
 
 

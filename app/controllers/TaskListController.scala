@@ -19,7 +19,7 @@ package controllers
 import connectors.LegacySchemeDetailsConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AuthAction, DataRetrievalAction}
-import identifiers.trustees.AnyTrusteesId
+import identifiers.trustees.{AnyTrusteesId, IsTrusteeNewId, TrusteeKindId, TrusteesId}
 import models.Scheme
 import models.requests.OptionalDataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -34,15 +34,15 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TaskListController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        authenticate: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        taskListService: TaskListService,
-                                        userAnswersCacheConnector: UserAnswersCacheConnector,
-                                        legacySchemeDetailsConnector : LegacySchemeDetailsConnector,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        taskListView: TaskListView
-  )(implicit val executionContext: ExecutionContext)
+                                    override val messagesApi: MessagesApi,
+                                    authenticate: AuthAction,
+                                    getData: DataRetrievalAction,
+                                    taskListService: TaskListService,
+                                    userAnswersCacheConnector: UserAnswersCacheConnector,
+                                    legacySchemeDetailsConnector: LegacySchemeDetailsConnector,
+                                    val controllerComponents: MessagesControllerComponents,
+                                    taskListView: TaskListView
+                                  )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
     with Retrievals {
@@ -54,21 +54,39 @@ class TaskListController @Inject()(
           Future.successful(Redirect(controllers.preMigration.routes.ListOfSchemesController.onPageLoad(Scheme)))
 
         case (Some(ua), _) =>
-          implicit val userAnswers: UserAnswers = ua
+          implicit val userAnswers: UserAnswers =
+            UserAnswers(ua.removeEmptyObjectsAndIncompleteEntities(
+              collectionKey = TrusteesId.toString,
+              keySet        = Set(IsTrusteeNewId.toString, TrusteeKindId.toString)
+            ))
           if (userAnswers.allTrusteesAfterDelete.nonEmpty) {
             val updatedUa = userAnswers.setOrException(AnyTrusteesId, true)
             renderView(updatedUa, implicitly)
-          }
-          else
+          } else {
             renderView
+          }
 
         case (None, Some(lock)) =>
           legacySchemeDetailsConnector.getLegacySchemeDetails(lock.psaId, lock.pstr).flatMap {
             case Right(data) =>
-              val userAnswers: UserAnswers = UserAnswers(data.as[JsObject])
-              val updatedUa = userAnswers.setOrException(AnyTrusteesId, userAnswers.allTrusteesAfterDelete.nonEmpty)
-              userAnswersCacheConnector.save(lock, updatedUa.data).flatMap(_ => renderView(updatedUa, implicitly))
-            case _ => throw new RuntimeException("index page unavailable")
+              val userAnswers: UserAnswers =
+                UserAnswers(
+                  UserAnswers(data.as[JsObject]).removeEmptyObjectsAndIncompleteEntities(
+                    collectionKey = TrusteesId.toString,
+                    keySet        = Set(IsTrusteeNewId.toString, TrusteeKindId.toString)
+                  )
+                )
+              
+              val updatedUa: UserAnswers =
+                userAnswers.setOrException(AnyTrusteesId, userAnswers.allTrusteesAfterDelete.nonEmpty)
+              
+              userAnswersCacheConnector
+                .save(lock, updatedUa.data)
+                .flatMap { _ =>
+                  renderView(updatedUa, implicitly)
+                }
+            case _ =>
+              throw new RuntimeException("index page unavailable")
           }
       }
   }
@@ -86,7 +104,6 @@ class TaskListController @Inject()(
       taskListService.isComplete
     )))
   }
-
 
 
 }

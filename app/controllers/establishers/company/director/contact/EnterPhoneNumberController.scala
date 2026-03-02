@@ -17,18 +17,18 @@
 package controllers.establishers.company.director.contact
 
 import controllers.Retrievals
-import controllers.actions._
+import controllers.actions.*
 import forms.PhoneFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.contact.EnterPhoneId
-import identifiers.trustees.individual.contact.{EnterPhoneId => trusteeEnterPhoneId}
+import identifiers.trustees.individual.contact.EnterPhoneId as trusteeEnterPhoneId
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import services.DataUpdateService
+import services.DataPrefillService
 import services.common.contact.CommonPhoneService
 import utils.UserAnswers
 
@@ -42,7 +42,7 @@ class EnterPhoneNumberController @Inject()(
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
                                             formProvider: PhoneFormProvider,
-                                            dataUpdateService: DataUpdateService,
+                                            dataPrefillService: DataPrefillService,
                                             common: CommonPhoneService
                                           )(implicit val executionContext: ExecutionContext)
   extends Retrievals with I18nSupport {
@@ -99,7 +99,7 @@ class EnterPhoneNumberController @Inject()(
     val updatedUserAnswers =
     mode match {
       case CheckMode =>
-        dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
+        dataPrefillService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
           ua.setOrException(trusteeEnterPhoneId(trustee.index), value)
         }.getOrElse(ua)
       case _ => ua

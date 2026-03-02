@@ -19,13 +19,13 @@ package controllers.establishers.company.director.address
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
-import controllers.actions._
+import controllers.actions.*
 import forms.address.PostcodeFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.address.EnterPostCodeId
-import identifiers.trustees.individual.address.{EnterPostCodeId => trusteeEnterPostCodeId}
-import models._
+import identifiers.trustees.individual.address.EnterPostCodeId as trusteeEnterPostCodeId
+import models.*
 import models.requests.DataRequest
 import navigators.CompoundNavigator
 import play.api.data.Form
@@ -33,7 +33,7 @@ import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Results.{BadRequest, Redirect}
 import play.api.mvc.{Action, AnyContent}
-import services.DataUpdateService
+import services.DataPrefillService
 import services.common.address.{CommonPostcodeService, CommonPostcodeTemplateData}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -52,7 +52,7 @@ class EnterPostcodeController @Inject()(
     authenticate: AuthAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    dataUpdateService: DataUpdateService,
+    dataPrefillService: DataPrefillService,
     formProvider: PostcodeFormProvider,
     common: CommonPostcodeService,
     postcodeView: PostcodeView
@@ -136,7 +136,7 @@ class EnterPostcodeController @Inject()(
     val updatedUserAnswers =
     mode match {
       case CheckMode =>
-        dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
+        dataPrefillService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
           ua.setOrException(trusteeEnterPostCodeId(trustee.index), value)
         }.getOrElse(ua)
       case _ => ua

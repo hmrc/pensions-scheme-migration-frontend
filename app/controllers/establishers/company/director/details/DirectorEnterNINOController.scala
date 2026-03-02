@@ -17,7 +17,7 @@
 package controllers.establishers.company.director.details
 
 import controllers.Retrievals
-import controllers.actions._
+import controllers.actions.*
 import forms.NINOFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
@@ -28,7 +28,7 @@ import models.{CheckMode, Index, Mode, ReferenceValue}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import services.DataUpdateService
+import services.DataPrefillService
 import services.common.details.CommonEnterReferenceValueService
 import utils.UserAnswers
 
@@ -41,7 +41,7 @@ class DirectorEnterNINOController @Inject()( val messagesApi: MessagesApi,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
                                              formProvider: NINOFormProvider,
-                                             dataUpdateService: DataUpdateService,
+                                             dataPrefillService: DataPrefillService,
                                              common: CommonEnterReferenceValueService
                                            )(implicit val executionContext: ExecutionContext)
   extends Retrievals with I18nSupport {
@@ -101,7 +101,7 @@ class DirectorEnterNINOController @Inject()( val messagesApi: MessagesApi,
     val updatedUserAnswers =
       mode match {
         case CheckMode =>
-          dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
+          dataPrefillService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
             ua.setOrException(TrusteeNINOId(trustee.index), value)
           }.getOrElse(ua)
         case _ => ua

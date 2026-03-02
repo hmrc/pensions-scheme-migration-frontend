@@ -28,7 +28,7 @@ import models.{CheckMode, Index, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import services.DataUpdateService
+import services.DataPrefillService
 import services.common.details.CommonHasReferenceValueService
 import utils.UserAnswers
 
@@ -41,7 +41,7 @@ class TrusteeHasNINOController @Inject()(val messagesApi: MessagesApi,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
                                          formProvider: HasReferenceNumberFormProvider,
-                                         dataUpdateService: DataUpdateService,
+                                         dataPrefillService: DataPrefillService,
                                          common: CommonHasReferenceValueService
                                         )(implicit val executionContext: ExecutionContext)
   extends Retrievals with I18nSupport {
@@ -103,7 +103,7 @@ class TrusteeHasNINOController @Inject()(val messagesApi: MessagesApi,
     val updatedUserAnswers =
       mode match {
         case CheckMode =>
-          val directors = dataUpdateService.findMatchingDirectors(index)(ua)
+          val directors = dataPrefillService.findMatchingDirectors(index)(ua)
           directors.foldLeft[UserAnswers](ua) { (acc, director) =>
             if (director.isDeleted)
               acc

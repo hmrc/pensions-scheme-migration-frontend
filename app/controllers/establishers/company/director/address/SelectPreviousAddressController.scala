@@ -18,13 +18,13 @@ package controllers.establishers.company.director.address
 
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
-import controllers.actions._
+import controllers.actions.*
 import forms.address.AddressListFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.address.{EnterPreviousPostCodeId, PreviousAddressId, PreviousAddressListId}
-import identifiers.trustees.individual.{address => trusteeAddress}
-import models._
+import identifiers.trustees.individual.address as trusteeAddress
+import models.*
 import models.establishers.AddressPages
 import navigators.CompoundNavigator
 import play.api.data.Form
@@ -32,7 +32,7 @@ import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent}
-import services.DataUpdateService
+import services.DataPrefillService
 import services.common.address.{CommonAddressListService, CommonAddressListTemplateData}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -50,7 +50,7 @@ class SelectPreviousAddressController @Inject()(
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     formProvider: AddressListFormProvider,
-    dataUpdateService: DataUpdateService,
+    dataPrefillService: DataPrefillService,
     common:CommonAddressListService
 )(implicit val ec: ExecutionContext) extends I18nSupport with Retrievals {
 
@@ -153,7 +153,7 @@ class SelectPreviousAddressController @Inject()(
     val updatedUserAnswers =
     mode match {
       case CheckMode =>
-        dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
+        dataPrefillService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
           val trusteeAddressPages: AddressPages = AddressPages(
             trusteeAddress.EnterPreviousPostCodeId(trustee.index),
             trusteeAddress.PreviousAddressListId(trustee.index),
@@ -178,7 +178,7 @@ class SelectPreviousAddressController @Inject()(
     val updatedUserAnswers =
       mode match {
         case CheckMode =>
-          dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
+          dataPrefillService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
             val trusteeAddressPages: AddressPages = AddressPages(
               trusteeAddress.EnterPreviousPostCodeId(trustee.index),
               trusteeAddress.PreviousAddressListId(trustee.index),

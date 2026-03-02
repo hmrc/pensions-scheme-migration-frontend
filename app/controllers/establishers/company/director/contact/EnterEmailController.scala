@@ -17,18 +17,18 @@
 package controllers.establishers.company.director.contact
 
 import controllers.Retrievals
-import controllers.actions._
+import controllers.actions.*
 import forms.EmailFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.establishers.company.director.contact.EnterEmailId
-import identifiers.trustees.individual.contact.{EnterEmailId => trusteeEnterEmailId}
+import identifiers.trustees.individual.contact.EnterEmailId as trusteeEnterEmailId
 import models.requests.DataRequest
 import models.{CheckMode, Index, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import services.DataUpdateService
+import services.DataPrefillService
 import services.common.contact.CommonEmailAddressService
 import utils.UserAnswers
 
@@ -42,7 +42,7 @@ class EnterEmailController @Inject()(
                                       getData: DataRetrievalAction,
                                       requireData: DataRequiredAction,
                                       formProvider: EmailFormProvider,
-                                      dataUpdateService: DataUpdateService,
+                                      dataPrefillService: DataPrefillService,
                                       common: CommonEmailAddressService
                                     )(implicit val executionContext: ExecutionContext)
   extends Retrievals with I18nSupport {
@@ -98,7 +98,7 @@ class EnterEmailController @Inject()(
     val updatedUserAnswers =
       mode match {
         case CheckMode =>
-          dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
+          dataPrefillService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
             ua.setOrException(trusteeEnterEmailId(trustee.index), value)
           }.getOrElse(ua)
         case _ => ua

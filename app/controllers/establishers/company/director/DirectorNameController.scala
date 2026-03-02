@@ -18,7 +18,7 @@ package controllers.establishers.company.director
 
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
-import controllers.actions._
+import controllers.actions.*
 import forms.PersonNameFormProvider
 import identifiers.establishers.company.director.DirectorNameId
 import identifiers.trustees.individual.TrusteeNameId
@@ -27,7 +27,7 @@ import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.DataUpdateService
+import services.DataPrefillService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswers
 import views.html.PersonNameView
@@ -43,7 +43,7 @@ class DirectorNameController @Inject()(
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
                                         formProvider: PersonNameFormProvider,
-                                        dataUpdateService: DataUpdateService,
+                                        dataPrefillService: DataPrefillService,
                                         val controllerComponents: MessagesControllerComponents,
                                         userAnswersCacheConnector: UserAnswersCacheConnector,
                                         personNameView: PersonNameView
@@ -95,7 +95,7 @@ class DirectorNameController @Inject()(
     val updatedUserAnswers =
       mode match {
         case CheckMode =>
-          dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
+          dataPrefillService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
             ua.setOrException(TrusteeNameId(trustee.index), value)
           }.getOrElse(ua)
         case _ => ua

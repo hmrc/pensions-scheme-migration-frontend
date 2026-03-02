@@ -21,16 +21,11 @@ import play.api.data.{Form, Forms}
 
 class AddTrusteeFormProvider extends Mappings {
 
-  def apply(trustees: Seq[?]): Form[Option[Boolean]] = {
+  def apply(trustees: Seq[?]): Form[Option[Boolean]] =
     if (trustees.isEmpty) {
-      Form(
-        "value" -> Forms.optional(boolean("messages__addTrustee_error__selection"))
-      )
+      Form("value" -> Forms.optional(boolean("messages__addTrustee_error__selection")))
     } else {
-      Form(
-        "value" -> Forms.optional(boolean("messages__addTrustee_error__selection"))
-          .verifying("messages__addTrustee_error__selection", _.isDefined)
-      )
+      Form("value" -> Forms.optional(boolean("messages__addTrustee_error__selection"))
+        .verifying("messages__addTrustee_error__selection", _.isDefined))
     }
-  }
 }

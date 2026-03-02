@@ -20,7 +20,6 @@ import config.AppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.*
-import controllers.trustees.routes.{AnyTrusteesController, NoTrusteesController}
 import forms.trustees.AddTrusteeFormProvider
 import identifiers.beforeYouStart.SchemeTypeId
 import identifiers.trustees.{AddTrusteeId, IsTrusteeNewId, TrusteeKindId, TrusteesId}
@@ -36,7 +35,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswers
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
                                      navigator: CompoundNavigator,
@@ -61,46 +60,49 @@ class AddTrusteeController @Inject()(override val messagesApi: MessagesApi,
           )
 
         userAnswersCacheConnector.save(request.lock, userAnswersWithCleanedTrustees).map { _ =>
-          val trustees: Seq[Trustee[?]] = UserAnswers(userAnswersWithCleanedTrustees).allTrusteesAfterDelete
-          val isSingleTrust = request.userAnswers.get(SchemeTypeId).contains(SchemeType.SingleTrust)
+          val trustees: Seq[Trustee[?]] =
+            UserAnswers(userAnswersWithCleanedTrustees).allTrusteesAfterDelete
+          val isSingleTrust: Boolean =
+            request.userAnswers.get(SchemeTypeId).contains(SchemeType.SingleTrust)
 
           (trustees, isSingleTrust) match {
-            case (Nil, false) => Redirect(AnyTrusteesController.onPageLoad)
-            case (Nil, true) => Redirect(NoTrusteesController.onPageLoad)
-            case _ => Ok(getView(formProvider(trustees), trustees))
+            case (Nil, false) =>
+              Redirect(routes.AnyTrusteesController.onPageLoad)
+            case (Nil, true) =>
+              Redirect(routes.NoTrusteesController.onPageLoad)
+            case _ =>
+              Ok(getView(formProvider(trustees), trustees))
           }
         }
     }
 
-  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData()).async {
-    implicit request =>
-      def navNextPage(v: Option[Boolean]): Future[Result] =
-        Future.successful(Redirect(navigator.nextPage(AddTrusteeId(v), request.userAnswers)))
+  def onSubmit: Action[AnyContent] =
+    (authenticate andThen getData andThen requireData()) {
+      implicit request =>
+        def navNextPage(v: Option[Boolean]): Result =
+          Redirect(navigator.nextPage(AddTrusteeId(v), request.userAnswers))
 
-      val trustees = request.userAnswers.allTrusteesAfterDelete
-      val formWithErrors = formProvider(trustees).bindFromRequest()
+        val trustees: Seq[Trustee[?]] =
+          request.userAnswers.allTrusteesAfterDelete
 
-      (formWithErrors.value, trustees.length) match {
-        case (Some(v), _) => navNextPage(v)
-        case (_, numberOfTrustees) if numberOfTrustees >= config.maxTrustees => navNextPage(None)
-        case _ =>
-          Future.successful(BadRequest(getView(formWithErrors, trustees)))
-      }
-  }
+        formProvider(trustees).bindFromRequest().fold(
+          formWithErrors =>
+            BadRequest(getView(formWithErrors, trustees)),
+          value =>
+            if (trustees.length >= config.maxTrustees) navNextPage(None) else navNextPage(value)
+        )
+    }
 
-  private def getView(form: Form[?], trustees: Seq[Trustee[?]])(implicit request: DataRequest[AnyContent]): Html = {
-    val trusteesComplete = trustees.filter(_.isCompleted)
-    val trusteesIncomplete = trustees.filterNot(_.isCompleted)
-
+  private def getView(form: Form[?], trustees: Seq[Trustee[?]])
+                     (implicit request: DataRequest[AnyContent]): Html =
     view(
-      form,
-      controllers.trustees.routes.AddTrusteeController.onSubmit,
-      existingSchemeName.getOrElse(throw new RuntimeException("Scheme name not available")),
-      trusteesIncomplete,
-      trusteesComplete,
-      trustees.size,
-      config.maxTrustees,
-      utils.Radios.yesNo(form("value"))
+      form               = form,
+      submitCall         = controllers.trustees.routes.AddTrusteeController.onSubmit,
+      schemeName         = existingSchemeName.getOrElse(throw new RuntimeException("Scheme name not available")),
+      itemListIncomplete = trustees.filterNot(_.isCompleted),
+      itemListComplete   = trustees.filter(_.isCompleted),
+      trusteeSize        = trustees.size,
+      maxTrustees        = config.maxTrustees,
+      radios             = utils.Radios.yesNo(form("value"))
     )
-  }
 }
