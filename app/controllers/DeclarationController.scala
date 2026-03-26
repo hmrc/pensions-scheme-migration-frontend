@@ -35,7 +35,7 @@ import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.{HttpException, UnprocessableEntityException}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswers
-import views.html.DeclarationView
+import views.html.{DeclarationView, UKResidencyDeclarationView}
 
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -54,7 +54,8 @@ class DeclarationController @Inject()(
                                        minimalDetailsConnector: MinimalDetailsConnector,
                                        pensionsSchemeConnector: PensionsSchemeConnector,
                                        crypto: JsonCryptoService,
-                                       declarationView: DeclarationView
+                                       declarationView: DeclarationView,
+                                       ukResidencyView: UKResidencyDeclarationView
                                      )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
@@ -65,12 +66,23 @@ class DeclarationController @Inject()(
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.map { schemeName =>
-          Future.successful(Ok(declarationView(
-            schemeName          = schemeName,
-            isCompany           = true,
-            hasWorkingKnowledge = request.userAnswers.get(WorkingKnowledgeId).contains(true),
-            submitCall          = routes.DeclarationController.onSubmit
-          )))
+          Future.successful(Ok(
+            if (appConfig.podsUkResidency) {
+              ukResidencyView(
+                schemeName = schemeName,
+                isCompany = true,
+                hasWorkingKnowledge = request.userAnswers.get(WorkingKnowledgeId).contains(true),
+                submitCall = routes.DeclarationController.onSubmit
+              )
+            } else {
+              declarationView(
+                schemeName = schemeName,
+                isCompany = true,
+                hasWorkingKnowledge = request.userAnswers.get(WorkingKnowledgeId).contains(true),
+                submitCall = routes.DeclarationController.onSubmit
+              )
+            }
+          ))
         }
     }
 
@@ -81,7 +93,7 @@ class DeclarationController @Inject()(
           (for {
             updatedUa <- Future.fromTry(request.userAnswers.set(__ \ "pstr", JsString(request.lock.pstr)))
             apiResult <- pensionsSchemeConnector.registerScheme(UserAnswers(updatedUa.data), request.psaId.id, Scheme)
-            result    <- processApiResult(apiResult, schemeName, request.psaId, request.lock.pstr)
+            result <- processApiResult(apiResult, schemeName, request.psaId, request.lock.pstr)
           } yield {
             result
           }) recoverWith {
@@ -107,7 +119,7 @@ class DeclarationController @Inject()(
     }
 
   private def logError(error: Throwable)
-              (implicit request: DataRequest[AnyContent]): Unit =
+                      (implicit request: DataRequest[AnyContent]): Unit =
     logger.error(
       s"""
          |Failed to submit declaration:
@@ -123,11 +135,11 @@ class DeclarationController @Inject()(
 
     minimalDetailsConnector.getPSADetails(psaId) flatMap { minimalPsa =>
       emailConnector.sendEmail(
-        emailAddress = minimalPsa.email,
-        templateName = appConfig.schemeConfirmationEmailTemplateId,
-        params = Map("psaName" -> minimalPsa.name, "schemeName" -> schemeName),
-        callbackUrl(psaId, pstrId)
-      )
+          emailAddress = minimalPsa.email,
+          templateName = appConfig.schemeConfirmationEmailTemplateId,
+          params = Map("psaName" -> minimalPsa.name, "schemeName" -> schemeName),
+          callbackUrl(psaId, pstrId)
+        )
         .map {
           status =>
             auditService.sendEvent(EmailAuditEvent(psaId, SCHEME_MIG, minimalPsa.email, pstrId))
