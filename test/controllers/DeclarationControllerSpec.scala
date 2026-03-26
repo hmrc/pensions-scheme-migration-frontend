@@ -34,7 +34,7 @@ import uk.gov.hmrc.http.HttpErrorFunctions.upstreamResponseMessage
 import uk.gov.hmrc.http.{UnprocessableEntityException, UpstreamErrorResponse}
 import utils.Data.{psaName, pstr, schemeName, ua}
 import utils.{Enumerable, UserAnswers}
-import views.html.DeclarationView
+import views.html.{DeclarationView, UKResidencyDeclarationView}
 
 import scala.concurrent.Future
 
@@ -60,46 +60,101 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
     reset(mockMinimalDetailsConnector)
     reset(mockPensionsSchemeConnector)
     reset(mockAppConfig)
+    when(mockAppConfig.podsUkResidency).thenReturn(false)
   }
 
   "DeclarationController" must {
 
-    "return OK with WorkingKnowledgeId true and the correct view for a GET" in {
-      val ua: UserAnswers = UserAnswers()
-        .setOrException(SchemeNameId, schemeName)
-        .setOrException(WorkingKnowledgeId, true)
-      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-      val request = httpGETRequest(httpPathGET)
-      val result = route(app, request).value
-      status(result) mustEqual OK
+    "return OK with WorkingKnowledgeId true and the correct view for a GET" when {
+      "ukResidency toggle is disabled" in {
+        val ua: UserAnswers = UserAnswers()
+          .setOrException(SchemeNameId, schemeName)
+          .setOrException(WorkingKnowledgeId, true)
+        mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
-      val view = app.injector.instanceOf[DeclarationView].apply(
-        schemeName,
-        true,
-        true,
-        routes.DeclarationController.onSubmit
-      )(request, messages)
-      compareResultAndView(result, view)
+        when(mockAppConfig.podsUkResidency).thenReturn(false)
+
+        val request = httpGETRequest(httpPathGET)
+        val result = route(app, request).value
+        status(result) mustEqual OK
+
+        val view = app.injector.instanceOf[DeclarationView].apply(
+          schemeName,
+          true,
+          true,
+          routes.DeclarationController.onSubmit
+        )(request, messages)
+        compareResultAndView(result, view)
+      }
+      "ukResidency toggle is enabled" in {
+
+        val ua: UserAnswers = UserAnswers()
+          .setOrException(SchemeNameId, schemeName)
+          .setOrException(WorkingKnowledgeId, true)
+        mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+
+        when(mockAppConfig.podsUkResidency).thenReturn(true)
+
+        val request = httpGETRequest(httpPathGET)
+        val result = route(app, request).value
+
+        status(result) mustEqual OK
+
+        val view = app.injector.instanceOf[UKResidencyDeclarationView].apply(
+          schemeName,
+          true,
+          true,
+          routes.DeclarationController.onSubmit
+        )(request, messages)
+        compareResultAndView(result, view)
+      }
     }
 
-    "return OK with WorkingKnowledgeId false and the correct view for a GET" in {
-      val ua: UserAnswers = UserAnswers()
-        .setOrException(SchemeNameId, schemeName)
-        .setOrException(WorkingKnowledgeId, false)
+    "return OK with WorkingKnowledgeId false and the correct view for a GET" when {
+      "ukResidency toggle is disabled" in {
+        val ua: UserAnswers = UserAnswers()
+          .setOrException(SchemeNameId, schemeName)
+          .setOrException(WorkingKnowledgeId, false)
 
-      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-      val request = httpGETRequest(httpPathGET)
-      val result = route(app, request).value
+        when(mockAppConfig.podsUkResidency).thenReturn(false)
 
-      status(result) mustEqual OK
+        mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+        val request = httpGETRequest(httpPathGET)
+        val result = route(app, request).value
 
-      val view = app.injector.instanceOf[DeclarationView].apply(
-        schemeName,
-        true,
-        false,
-        routes.DeclarationController.onSubmit
-      )(request, messages)
-      compareResultAndView(result, view)
+        status(result) mustEqual OK
+
+        val view = app.injector.instanceOf[DeclarationView].apply(
+          schemeName,
+          true,
+          false,
+          routes.DeclarationController.onSubmit
+        )(request, messages)
+        compareResultAndView(result, view)
+      }
+      "ukResidency toggle is enabled" in {
+
+        val ua: UserAnswers = UserAnswers()
+          .setOrException(SchemeNameId, schemeName)
+          .setOrException(WorkingKnowledgeId, false)
+
+        when(mockAppConfig.podsUkResidency).thenReturn(true)
+
+        mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+        val request = httpGETRequest(httpPathGET)
+        val result = route(app, request).value
+
+
+        status(result) mustEqual OK
+
+        val view = app.injector.instanceOf[UKResidencyDeclarationView].apply(
+          schemeName,
+          true,
+          false,
+          routes.DeclarationController.onSubmit
+        )(request, messages)
+        compareResultAndView(result, view)
+      }
     }
 
     "redirect to next page when button is clicked" in {
@@ -139,6 +194,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
       status(result) mustEqual SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.YourActionWasNotProcessedController.onPageLoadScheme.url)
     }
+
     "redirect to task list page when backend returns Error" in {
 
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))

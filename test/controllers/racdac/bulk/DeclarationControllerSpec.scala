@@ -22,27 +22,32 @@ import controllers.ControllerSpecBase
 import controllers.actions.{BulkDataAction, MutableFakeBulkDataAction}
 import matchers.JsonMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.libs.json.Json
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.http.HttpException
+import utils.Data.psaName
 import utils.Enumerable
+import views.html.racdac.{DeclarationView, UKResidencyDeclarationView}
 
 import scala.concurrent.Future
+
 class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val mockBulkMigrationConnector = mock[BulkMigrationQueueConnector]
   private val mockCurrentPstrCacheConnector = mock[CurrentPstrCacheConnector]
 
   private val mutableFakeBulkDataAction: MutableFakeBulkDataAction = new MutableFakeBulkDataAction(false)
+
   val extraModules: Seq[GuiceableModule] = Seq(
     bind[BulkMigrationQueueConnector].to(mockBulkMigrationConnector),
     bind[EmailConnector].toInstance(mockEmailConnector),
     bind[CurrentPstrCacheConnector].toInstance(mockCurrentPstrCacheConnector)
   )
+
   override def fakeApplication(): Application = new GuiceApplicationBuilder()
     .configure(
       "metrics.jvm" -> false,
@@ -51,14 +56,18 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
     .overrides(
       modules ++ extraModules ++ Seq[GuiceableModule](
         bind[BulkDataAction].toInstance(mutableFakeBulkDataAction)
-      )*
+      ) *
     ).build()
+
   private val dummyUrl = "/dummyurl"
 
   override def beforeEach(): Unit = {
     super.beforeEach()
+    reset(mockAppConfig)
     reset(mockCurrentPstrCacheConnector)
-    when(mockAppConfig.psaOverviewUrl).thenReturn (dummyUrl)
+    when(mockAppConfig.psaOverviewUrl).thenReturn(dummyUrl)
+    when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(psaName))
+    when(mockAppConfig.podsUkResidency).thenReturn(false)
   }
 
   private def httpPathGET: String = controllers.racdac.bulk.routes.DeclarationController.onPageLoad.url
@@ -68,9 +77,38 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
   "onPageLoad" must {
 
     "return OK and the correct view for a GET" in {
+      when(mockAppConfig.psaOverviewUrl).thenReturn(dummyUrl)
       val req = httpGETRequest(httpPathGET)
       val result = route(app, req).value
       status(result) mustEqual OK
+
+      val view = app.injector.instanceOf[DeclarationView].apply(
+        routes.DeclarationController.onSubmit,
+        dummyUrl,
+        psaName
+      )(req, messages)
+      compareResultAndView(result, view
+
+      //changed to test the entire view juust checking key elements of the view
+      contentAsString(result) must include("test company")
+      contentAsString(result) must include("""class="govuk-link"""")
+      contentAsString(result) must include("""manage-pension-schemes/overview""")
+    }
+    "return OK and the correct view for a GET when toggle is enabled" in {
+      when(mockAppConfig.podsUkResidency).thenReturn(true)
+      when(mockMinimalDetailsConnector.getPSAName(any(), any())).thenReturn(Future.successful(psaName))
+
+      val req = httpGETRequest(httpPathGET)
+      val result = route(app, req).value
+      status(result) mustEqual OK
+
+      val view = app.injector.instanceOf[UKResidencyDeclarationView].apply(
+        routes.DeclarationController.onSubmit,
+        dummyUrl,
+        psaName
+      )(req, messages)
+      compareResultAndView(result, view)
+
       //changed to test the entire view juust checking key elements of the view
       contentAsString(result) must include("test company")
       contentAsString(result) must include("""class="govuk-link"""")
