@@ -87,7 +87,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
         dummyUrl,
         psaName
       )(req, messages)
-      compareResultAndView(result, view
+      compareResultAndView(result, view)
 
       //changed to test the entire view juust checking key elements of the view
       contentAsString(result) must include("test company")
