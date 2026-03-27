@@ -21,6 +21,7 @@ import connectors.cache.{BulkMigrationQueueConnector, CurrentPstrCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{BulkDataAction, MutableFakeBulkDataAction}
 import matchers.JsonMatchers
+import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.*
 import play.api.Application
@@ -31,7 +32,7 @@ import play.api.test.Helpers.*
 import uk.gov.hmrc.http.HttpException
 import utils.Data.psaName
 import utils.Enumerable
-import views.html.racdac.{DeclarationView, UKResidencyDeclarationView}
+import views.html.racdac.DeclarationView
 
 import scala.concurrent.Future
 
@@ -49,10 +50,6 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
   )
 
   override def fakeApplication(): Application = new GuiceApplicationBuilder()
-    .configure(
-      "metrics.jvm" -> false,
-      "metrics.enabled" -> false
-    )
     .overrides(
       modules ++ extraModules ++ Seq[GuiceableModule](
         bind[BulkDataAction].toInstance(mutableFakeBulkDataAction)
@@ -60,6 +57,12 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
     ).build()
 
   private val dummyUrl = "/dummyurl"
+
+  val layout = app.injector.instanceOf[views.html.templates.Layout]
+  val formHelper = app.injector.instanceOf[uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF]
+  val govukButton = app.injector.instanceOf[uk.gov.hmrc.govukfrontend.views.html.components.GovukButton]
+
+  val declarationView = new views.html.racdac.DeclarationView(layout, formHelper, govukButton)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -75,24 +78,24 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
   private def httpPathPOST: String = controllers.racdac.bulk.routes.DeclarationController.onSubmit.url
 
   "onPageLoad" must {
-
     "return OK and the correct view for a GET" in {
       when(mockAppConfig.psaOverviewUrl).thenReturn(dummyUrl)
       val req = httpGETRequest(httpPathGET)
       val result = route(app, req).value
       status(result) mustEqual OK
 
-      val view = app.injector.instanceOf[DeclarationView].apply(
-        routes.DeclarationController.onSubmit,
-        dummyUrl,
-        psaName
-      )(req, messages)
-      compareResultAndView(result, view)
+      val body = contentAsString(result)
+      val doc = Jsoup.parse(body)
 
-      //changed to test the entire view juust checking key elements of the view
-      contentAsString(result) must include("test company")
-      contentAsString(result) must include("""class="govuk-link"""")
-      contentAsString(result) must include("""manage-pension-schemes/overview""")
+      doc.title() must include("Declaration")
+      doc.select("form").attr("action") mustBe routes.DeclarationController.onSubmit.url
+      val bullets = doc.select("ul.govuk-list li").eachText()
+      bullets must contain allOf(
+        "you understand that as the scheme administrator you are responsible for discharging the functions conferred or imposed on the scheme administrator of the pension scheme by the Finance Act 2004 and you intend to discharge those functions at all times",
+        "you will comply with all information notices issued to the scheme administrator under the Finance Act 2004 or the Finance Act 2008 — you understand that you may be liable to a penalty and the pension scheme may be de-registered if you fail to properly discharge those functions",
+        "you understand that you may be liable to a penalty and the pension scheme may be de-registered if a false statement is made in any information you provide and that false statements may also lead to prosecution"
+      )
+
     }
     "return OK and the correct view for a GET when toggle is enabled" in {
       when(mockAppConfig.podsUkResidency).thenReturn(true)
@@ -102,17 +105,17 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
       val result = route(app, req).value
       status(result) mustEqual OK
 
-      val view = app.injector.instanceOf[UKResidencyDeclarationView].apply(
-        routes.DeclarationController.onSubmit,
-        dummyUrl,
-        psaName
-      )(req, messages)
-      compareResultAndView(result, view)
+      val body = contentAsString(result)
+      val doc = Jsoup.parse(body)
 
-      //changed to test the entire view juust checking key elements of the view
-      contentAsString(result) must include("test company")
-      contentAsString(result) must include("""class="govuk-link"""")
-      contentAsString(result) must include("""manage-pension-schemes/overview""")
+      doc.text() must include("Declaration")
+      doc.select("form").attr("action") mustBe routes.DeclarationController.onSubmit.url
+      val bullets = doc.select("ul.govuk-list li").eachText()
+      bullets must contain allOf(
+        "you understand that as the scheme administrator you are responsible for discharging the functions conferred or imposed on the scheme administrator of the pension scheme by the Finance Act 2004 and you intend to discharge those functions at all times",
+        "you will comply with all information notices issued to the scheme administrator under the Finance Act 2004 or the Finance Act 2008 — you understand that you may be liable to a penalty and the pension scheme may be de-registered if you fail to properly discharge those functions",
+        "you understand that you may be liable to a penalty and the pension scheme may be de-registered if a false statement is made in any information you provide and that false statements may also lead to prosecution"
+      )
     }
   }
 
