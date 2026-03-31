@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.AppConfig
 import connectors.{EmailConnector, EmailSent, MinimalDetailsConnector, PensionsSchemeConnector}
 import controllers.actions.MutableFakeDataRetrievalAction
 import identifiers.beforeYouStart.{SchemeNameId, WorkingKnowledgeId}
@@ -37,26 +38,26 @@ import scala.concurrent.Future
 
 class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers {
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockEmailConnector, mockMinimalDetailsConnector, mockPensionsSchemeConnector)
+    mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
+    when(mockAppConfig.podsUkResidency).thenReturn(false)
+  }
   private val mutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val mockPensionsSchemeConnector = mock[PensionsSchemeConnector]
+  private def httpPathGET = controllers.routes.DeclarationController.onPageLoad.url
+  private def httpPathPOST = controllers.routes.DeclarationController.onSubmit.url
 
   val extraModules: Seq[GuiceableModule] = Seq(
     bind[EmailConnector].toInstance(mockEmailConnector),
     bind[MinimalDetailsConnector].toInstance(mockMinimalDetailsConnector),
-    bind[PensionsSchemeConnector].toInstance(mockPensionsSchemeConnector)
+    bind[PensionsSchemeConnector].toInstance(mockPensionsSchemeConnector),
+    bind[AppConfig].toInstance(mockAppConfig)
   )
 
   override def fakeApplication(): Application =
     applicationBuilderMutableRetrievalAction(mutableFakeDataRetrievalAction, extraModules).build()
-
-  private def httpPathGET = controllers.routes.DeclarationController.onPageLoad.url
-  private def httpPathPOST = controllers.routes.DeclarationController.onSubmit.url
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockEmailConnector, mockMinimalDetailsConnector, mockPensionsSchemeConnector, mockAppConfig)
-    when(mockAppConfig.podsUkResidency).thenReturn(false)
-  }
 
   "DeclarationController GET" must {
 

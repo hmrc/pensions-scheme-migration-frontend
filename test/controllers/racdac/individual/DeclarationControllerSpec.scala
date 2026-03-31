@@ -69,7 +69,6 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
     "RacDac Individual DeclarationController" must {
 
       "return OK and render the correct content" in {
-        when(mockAppConfig.podsUkResidency).thenReturn(false)
         mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
         when(mockMinimalDetailsConnector.getPSAName(any(), any())).thenReturn(Future.successful(psaName))
 

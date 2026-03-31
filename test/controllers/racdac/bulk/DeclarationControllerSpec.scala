@@ -16,6 +16,7 @@
 
 package controllers.racdac.bulk
 
+import config.AppConfig
 import connectors.EmailConnector
 import connectors.cache.{BulkMigrationQueueConnector, CurrentPstrCacheConnector}
 import controllers.ControllerSpecBase
@@ -29,10 +30,12 @@ import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.libs.json.Json
 import play.api.test.Helpers.*
+import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton}
 import uk.gov.hmrc.http.HttpException
 import utils.Data.psaName
 import utils.Enumerable
 import views.html.racdac.DeclarationView
+import views.html.templates.Layout
 
 import scala.concurrent.Future
 
@@ -46,7 +49,8 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
   val extraModules: Seq[GuiceableModule] = Seq(
     bind[BulkMigrationQueueConnector].to(mockBulkMigrationConnector),
     bind[EmailConnector].toInstance(mockEmailConnector),
-    bind[CurrentPstrCacheConnector].toInstance(mockCurrentPstrCacheConnector)
+    bind[CurrentPstrCacheConnector].toInstance(mockCurrentPstrCacheConnector),
+    bind[AppConfig].toInstance(mockAppConfig)
   )
 
   override def fakeApplication(): Application = new GuiceApplicationBuilder()
@@ -58,15 +62,14 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
 
   private val dummyUrl = "/dummyurl"
 
-  val layout = app.injector.instanceOf[views.html.templates.Layout]
-  val formHelper = app.injector.instanceOf[uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF]
-  val govukButton = app.injector.instanceOf[uk.gov.hmrc.govukfrontend.views.html.components.GovukButton]
+  val layout: Layout = app.injector.instanceOf[views.html.templates.Layout]
+  val formHelper: FormWithCSRF = app.injector.instanceOf[uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF]
+  val govukButton: GovukButton = app.injector.instanceOf[uk.gov.hmrc.govukfrontend.views.html.components.GovukButton]
 
   val declarationView = new views.html.racdac.DeclarationView(layout, formHelper, govukButton)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockAppConfig)
     reset(mockCurrentPstrCacheConnector)
     when(mockAppConfig.psaOverviewUrl).thenReturn(dummyUrl)
     when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(psaName))
@@ -91,9 +94,9 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
       doc.select("form").attr("action") mustBe routes.DeclarationController.onSubmit.url
       val bullets = doc.select("ul.govuk-list li").eachText()
       bullets must contain allOf(
-        "you understand that as the scheme administrator you are responsible for discharging the functions conferred or imposed on the scheme administrator of the pension scheme by the Finance Act 2004 and you intend to discharge those functions at all times",
-        "you will comply with all information notices issued to the scheme administrator under the Finance Act 2004 or the Finance Act 2008 — you understand that you may be liable to a penalty and the pension scheme may be de-registered if you fail to properly discharge those functions",
-        "you understand that you may be liable to a penalty and the pension scheme may be de-registered if a false statement is made in any information you provide and that false statements may also lead to prosecution"
+        "you understand that as the scheme administrator you are responsible for discharging the functions conferred or imposed on the scheme administrator of the pension scheme by the Finance Act 2004 and you intend to discharge those functions at all times, whether resident in the United Kingdom, or another EU member state or non-member EEA state",
+        "you will comply with all information notices issued to the scheme administrator under the Finance Act 2004 or the Finance Act 2008. You understand that you may be liable to a penalty and the pension scheme may be de-registered if you fail to properly discharge those functions",
+        "you understand that you may be liable to a penalty and the pension scheme may be de-registered if a false statement is made in any information you provide and that false statements may also lead to prosecution."
       )
 
     }
