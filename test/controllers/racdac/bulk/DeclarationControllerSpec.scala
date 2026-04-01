@@ -16,49 +16,64 @@
 
 package controllers.racdac.bulk
 
+import config.AppConfig
 import connectors.EmailConnector
 import connectors.cache.{BulkMigrationQueueConnector, CurrentPstrCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{BulkDataAction, MutableFakeBulkDataAction}
 import matchers.JsonMatchers
+import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.libs.json.Json
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
+import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton}
 import uk.gov.hmrc.http.HttpException
+import utils.Data.psaName
 import utils.Enumerable
+import views.html.racdac.DeclarationView
+import views.html.templates.Layout
 
 import scala.concurrent.Future
+
 class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val mockBulkMigrationConnector = mock[BulkMigrationQueueConnector]
   private val mockCurrentPstrCacheConnector = mock[CurrentPstrCacheConnector]
 
   private val mutableFakeBulkDataAction: MutableFakeBulkDataAction = new MutableFakeBulkDataAction(false)
+
   val extraModules: Seq[GuiceableModule] = Seq(
     bind[BulkMigrationQueueConnector].to(mockBulkMigrationConnector),
     bind[EmailConnector].toInstance(mockEmailConnector),
-    bind[CurrentPstrCacheConnector].toInstance(mockCurrentPstrCacheConnector)
+    bind[CurrentPstrCacheConnector].toInstance(mockCurrentPstrCacheConnector),
+    bind[AppConfig].toInstance(mockAppConfig)
   )
+
   override def fakeApplication(): Application = new GuiceApplicationBuilder()
-    .configure(
-      "metrics.jvm" -> false,
-      "metrics.enabled" -> false
-    )
     .overrides(
       modules ++ extraModules ++ Seq[GuiceableModule](
         bind[BulkDataAction].toInstance(mutableFakeBulkDataAction)
-      )*
+      ) *
     ).build()
+
   private val dummyUrl = "/dummyurl"
+
+  val layout: Layout = app.injector.instanceOf[views.html.templates.Layout]
+  val formHelper: FormWithCSRF = app.injector.instanceOf[uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF]
+  val govukButton: GovukButton = app.injector.instanceOf[uk.gov.hmrc.govukfrontend.views.html.components.GovukButton]
+
+  val declarationView = new views.html.racdac.DeclarationView(layout, formHelper, govukButton)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockCurrentPstrCacheConnector)
-    when(mockAppConfig.psaOverviewUrl).thenReturn (dummyUrl)
+    when(mockAppConfig.psaOverviewUrl).thenReturn(dummyUrl)
+    when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(psaName))
+    when(mockAppConfig.podsUkResidency).thenReturn(false)
   }
 
   private def httpPathGET: String = controllers.racdac.bulk.routes.DeclarationController.onPageLoad.url
@@ -66,15 +81,44 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
   private def httpPathPOST: String = controllers.racdac.bulk.routes.DeclarationController.onSubmit.url
 
   "onPageLoad" must {
-
     "return OK and the correct view for a GET" in {
+      when(mockAppConfig.psaOverviewUrl).thenReturn(dummyUrl)
       val req = httpGETRequest(httpPathGET)
       val result = route(app, req).value
       status(result) mustEqual OK
-      //changed to test the entire view juust checking key elements of the view
-      contentAsString(result) must include("test company")
-      contentAsString(result) must include("""class="govuk-link"""")
-      contentAsString(result) must include("""manage-pension-schemes/overview""")
+
+      val body = contentAsString(result)
+      val doc = Jsoup.parse(body)
+
+      doc.title() must include("Declaration")
+      doc.select("form").attr("action") mustBe routes.DeclarationController.onSubmit.url
+      val bullets = doc.select("ul.govuk-list li").eachText()
+      bullets must contain allOf(
+        "you understand that as the scheme administrator you are responsible for discharging the functions conferred or imposed on the scheme administrator of the pension scheme by the Finance Act 2004 and you intend to discharge those functions at all times, whether resident in the United Kingdom, or another EU member state or non-member EEA state",
+        "you will comply with all information notices issued to the scheme administrator under the Finance Act 2004 or the Finance Act 2008. You understand that you may be liable to a penalty and the pension scheme may be de-registered if you fail to properly discharge those functions",
+        "you understand that you may be liable to a penalty and the pension scheme may be de-registered if a false statement is made in any information you provide and that false statements may also lead to prosecution."
+      )
+
+    }
+    "return OK and the correct view for a GET when toggle is enabled" in {
+      when(mockAppConfig.podsUkResidency).thenReturn(true)
+      when(mockMinimalDetailsConnector.getPSAName(any(), any())).thenReturn(Future.successful(psaName))
+
+      val req = httpGETRequest(httpPathGET)
+      val result = route(app, req).value
+      status(result) mustEqual OK
+
+      val body = contentAsString(result)
+      val doc = Jsoup.parse(body)
+
+      doc.text() must include("Declaration")
+      doc.select("form").attr("action") mustBe routes.DeclarationController.onSubmit.url
+      val bullets = doc.select("ul.govuk-list li").eachText()
+      bullets must contain allOf(
+        "you understand that as the scheme administrator you are responsible for discharging the functions conferred or imposed on the scheme administrator of the pension scheme by the Finance Act 2004 and you intend to discharge those functions at all times",
+        "you will comply with all information notices issued to the scheme administrator under the Finance Act 2004 or the Finance Act 2008 — you understand that you may be liable to a penalty and the pension scheme may be de-registered if you fail to properly discharge those functions",
+        "you understand that you may be liable to a penalty and the pension scheme may be de-registered if a false statement is made in any information you provide and that false statements may also lead to prosecution"
+      )
     }
   }
 

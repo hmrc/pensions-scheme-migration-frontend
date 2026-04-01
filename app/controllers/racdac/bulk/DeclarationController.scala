@@ -37,7 +37,8 @@ class DeclarationController @Inject()(
                                        bulkMigrationQueueConnector: BulkMigrationQueueConnector,
                                        getData: BulkDataAction,
                                        schemeCacheConnector: CurrentPstrCacheConnector,
-                                       declarationView: views.html.racdac.DeclarationView
+                                       declarationView: views.html.racdac.DeclarationView,
+                                       ukResidencyView: views.html.racdac.UKResidencyDeclarationView
                                      )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
@@ -45,11 +46,21 @@ class DeclarationController @Inject()(
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData(true)) {
       implicit request =>
-        Ok(declarationView(
-          routes.DeclarationController.onSubmit,
-          appConfig.psaOverviewUrl,
-          request.md.name
-        ))
+        Ok(
+          if (appConfig.podsUkResidency) {
+            ukResidencyView(
+              routes.DeclarationController.onSubmit,
+              appConfig.psaOverviewUrl,
+              request.md.name
+            )
+          } else {
+            declarationView(
+              routes.DeclarationController.onSubmit,
+              appConfig.psaOverviewUrl,
+              request.md.name
+            )
+          }
+        )
     }
 
   private val logger = Logger(classOf[DeclarationController])

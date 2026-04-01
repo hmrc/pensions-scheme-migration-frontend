@@ -97,4 +97,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val emailSendForce: Boolean = config.getOptional[Boolean]("email.force").getOrElse(false)
   lazy val migrationDataTTL: Int = config.get[Int]("migration-data-cache.timeToLiveInDays")
   lazy val forceServiceNavigation: Boolean = config.getOptional[Boolean]("play-frontend-hmrc.forceServiceNavigation").getOrElse(false)
+  lazy val podsUkResidency: Boolean = config.getOptional[Boolean]("pods.ukResidency").getOrElse(false)
+
 }

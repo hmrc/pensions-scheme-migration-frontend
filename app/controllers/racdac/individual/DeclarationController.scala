@@ -47,11 +47,12 @@ class DeclarationController @Inject()(
                                        requireData: DataRequiredAction,
                                        auditService: AuditService,
                                        minimalDetailsConnector: MinimalDetailsConnector,
-                                       pensionsSchemeConnector:PensionsSchemeConnector,
+                                       pensionsSchemeConnector: PensionsSchemeConnector,
                                        val controllerComponents: MessagesControllerComponents,
                                        emailConnector: EmailConnector,
                                        crypto: JsonCryptoService,
-                                       declarationView: views.html.racdac.DeclarationView
+                                       declarationView: views.html.racdac.DeclarationView,
+                                       ukResidencyDeclarationView: views.html.racdac.UKResidencyDeclarationView
                                      )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
@@ -62,11 +63,19 @@ class DeclarationController @Inject()(
         minimalDetailsConnector.getPSAName.map {
           psaName =>
             Ok(
-              declarationView(
-                controllers.racdac.individual.routes.DeclarationController.onSubmit,
-                controllers.routes.PensionSchemeRedirectController.onPageLoad.url,
-                psaName
-              )
+              if (appConfig.podsUkResidency) {
+                ukResidencyDeclarationView(
+                  controllers.racdac.individual.routes.DeclarationController.onSubmit,
+                  controllers.routes.PensionSchemeRedirectController.onPageLoad.url,
+                  psaName
+                )
+              } else {
+                declarationView(
+                  controllers.racdac.individual.routes.DeclarationController.onSubmit,
+                  controllers.routes.PensionSchemeRedirectController.onPageLoad.url,
+                  psaName
+                )
+              }
             )
         }
     }
@@ -93,7 +102,7 @@ class DeclarationController @Inject()(
         }
     }
 
-  private def sendEmail(schemeName: String, psaId: String, pstrId:String)
+  private def sendEmail(schemeName: String, psaId: String, pstrId: String)
                        (implicit request: DataRequest[AnyContent]): Future[EmailStatus] = {
     logger.debug(s"Sending Rac Dac migration email for $psaId")
     minimalDetailsConnector.getPSADetails(psaId) flatMap { minimalPsa =>
@@ -111,7 +120,7 @@ class DeclarationController @Inject()(
     }
   }
 
-  private def callbackUrl(psaId: String, pstrId:String): String = {
+  private def callbackUrl(psaId: String, pstrId: String): String = {
     val encryptedPsa = URLEncoder.encode(crypto.encrypt(PlainText(psaId)), StandardCharsets.UTF_8.toString)
     val encryptedPstr = URLEncoder.encode(crypto.encrypt(PlainText(pstrId)), StandardCharsets.UTF_8.toString)
     s"${appConfig.migrationUrl}/pensions-scheme-migration/email-status-response/$RACDAC_IND_MIG/$encryptedPsa/$encryptedPstr"
