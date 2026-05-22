@@ -61,7 +61,6 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
     super.beforeEach()
     mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
     when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(minPSA))
-    when(mockAppConfig.podsUkResidency).thenReturn(false)
   }
 
   "DeclarationController" must {
@@ -79,26 +78,6 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
 
         val doc = Jsoup.parse(contentAsString(result))
         doc.select("h1.govuk-heading-l").text() mustBe "Declaration"
-        val bullets = doc.select("ul.govuk-list li").eachText()
-
-        bullets.get(0) mustBe "you understand that as the scheme administrator you are responsible for discharging the functions conferred or imposed on the scheme administrator of the pension scheme by the Finance Act 2004 and you intend to discharge those functions at all times, whether resident in the United Kingdom, or another EU member state or non-member EEA state"
-        bullets.get(1) mustBe "you will comply with all information notices issued to the scheme administrator under the Finance Act 2004 or the Finance Act 2008. You understand that you may be liable to a penalty and the pension scheme may be de-registered if you fail to properly discharge those functions"
-        bullets.get(2) mustBe "you understand that you may be liable to a penalty and the pension scheme may be de-registered if a false statement is made in any information you provide and that false statements may also lead to prosecution."
-      }
-
-      "return OK and render the correct content when toggle is enabled" in {
-        when(mockAppConfig.podsUkResidency).thenReturn(true)
-        mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-        when(mockMinimalDetailsConnector.getPSAName(any(), any())).thenReturn(Future.successful(psaName))
-
-        val request = httpGETRequest(httpPathGET)
-        val result = route(app, request).value
-
-        status(result) mustBe OK
-
-        val doc = Jsoup.parse(contentAsString(result))
-        doc.select("h1.govuk-heading-l").text() mustBe "Declaration"
-
         val bullets = doc.select("ul.govuk-list li").eachText()
 
         bullets.get(0) mustBe "you understand that as the scheme administrator you are responsible for discharging the functions conferred or imposed on the scheme administrator of the pension scheme by the Finance Act 2004 and you intend to discharge those functions at all times"
