@@ -35,7 +35,7 @@ import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.{HttpException, UnprocessableEntityException}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswers
-import views.html.{DeclarationView, UKResidencyDeclarationView}
+import views.html.DeclarationView
 
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -54,8 +54,7 @@ class DeclarationController @Inject()(
                                        minimalDetailsConnector: MinimalDetailsConnector,
                                        pensionsSchemeConnector: PensionsSchemeConnector,
                                        crypto: JsonCryptoService,
-                                       declarationView: DeclarationView,
-                                       ukResidencyView: UKResidencyDeclarationView
+                                       declarationView: DeclarationView
                                      )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
@@ -67,21 +66,12 @@ class DeclarationController @Inject()(
       implicit request =>
         SchemeNameId.retrieve.map { schemeName =>
           Future.successful(Ok(
-            if (appConfig.podsUkResidency) {
-              ukResidencyView(
-                schemeName = schemeName,
-                isCompany = true,
-                hasWorkingKnowledge = request.userAnswers.get(WorkingKnowledgeId).contains(true),
-                submitCall = routes.DeclarationController.onSubmit
-              )
-            } else {
-              declarationView(
-                schemeName = schemeName,
-                isCompany = true,
-                hasWorkingKnowledge = request.userAnswers.get(WorkingKnowledgeId).contains(true),
-                submitCall = routes.DeclarationController.onSubmit
-              )
-            }
+            declarationView(
+              schemeName = schemeName,
+              isCompany = true,
+              hasWorkingKnowledge = request.userAnswers.get(WorkingKnowledgeId).contains(true),
+              submitCall = routes.DeclarationController.onSubmit
+            )
           ))
         }
     }

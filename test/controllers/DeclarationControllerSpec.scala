@@ -42,7 +42,6 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers {
     super.beforeEach()
     reset(mockEmailConnector, mockMinimalDetailsConnector, mockPensionsSchemeConnector)
     mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-    when(mockAppConfig.podsUkResidency).thenReturn(false)
   }
   private val mutableFakeDataRetrievalAction = new MutableFakeDataRetrievalAction()
   private val mockPensionsSchemeConnector = mock[PensionsSchemeConnector]
@@ -61,39 +60,14 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers {
 
   "DeclarationController GET" must {
 
-    "render declaration view when toggle is disabled" in {
-      when(mockAppConfig.podsUkResidency).thenReturn(false)
+    "render declaration view" in {
       val ua = UserAnswers().setOrException(SchemeNameId, schemeName).setOrException(WorkingKnowledgeId, true)
       mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
 
       val request = httpGETRequest(httpPathGET)
       val result = route(app, request).value
 
-      val bulletsToggleFalse = Seq(
-        "you understand that as scheme administrator you are responsible for discharging the functions conferred or imposed on the scheme administrator of the pension scheme by Finance Act 2004 and you intend to discharge those functions at all times, whether resident in the United Kingdom or another EU member state or non-member EEA state",
-        "you will comply with all information notices issued to the scheme administrator under the Finance Act 2004 or the Finance Act 2008 and you understand that you may be liable to a penalty and the pension scheme may be de-registered if you fail to properly discharge those functions",
-        "you understand that you may be liable to a penalty and the pension scheme may be de-registered if a false statement is made on this application, or in any information you provide in connection with this application, and that false statements may also lead to prosecution",
-        "you are a fit and proper person to be the scheme administrator, with a working knowledge of pensions and the scheme administrator duties and liabilities",
-        "you understand that where HMRC believes that if any of the persons who are the scheme administrator are not a fit and proper person, HMRC may refuse to register the scheme or, if the scheme is already registered, HMRC may de-register the scheme"
-      )
-
-      status(result) mustBe OK
-      val bulletsList = Jsoup.parse(contentAsString(result))
-        .select("ul.govuk-list li")
-        .eachText()
-
-      bulletsList must contain allElementsOf bulletsToggleFalse
-    }
-
-    "render UK residency declaration view when toggle is enabled" in {
-      when(mockAppConfig.podsUkResidency).thenReturn(true)
-      val ua = UserAnswers().setOrException(SchemeNameId, schemeName).setOrException(WorkingKnowledgeId, true)
-      mutableFakeDataRetrievalAction.setDataToReturn(Some(ua))
-
-      val request = httpGETRequest(httpPathGET)
-      val result = route(app, request).value
-
-      val bulletsToggleTrue = Seq(
+      val expectedBullets = Seq(
         "you understand that as the scheme administrator you are responsible for discharging the functions conferred or imposed on the scheme administrator of the pension scheme by the Finance Act 2004 and you intend to discharge those functions at all times",
         "you will comply with all information notices issued to the scheme administrator under the Finance Act 2004 or the Finance Act 2008 — you understand that you may be liable to a penalty and the pension scheme may be de-registered if you fail to properly discharge those functions",
         "you understand that you may be liable to a penalty and the pension scheme may be de-registered if a false statement is made in any information you provide and that false statements may also lead to prosecution",
@@ -106,7 +80,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers {
         .select("ul.govuk-list li")
         .eachText()
 
-      bulletsList must contain allElementsOf bulletsToggleTrue
+      bulletsList must contain allElementsOf expectedBullets
     }
   }
 

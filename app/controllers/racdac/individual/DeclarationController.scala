@@ -51,8 +51,7 @@ class DeclarationController @Inject()(
                                        val controllerComponents: MessagesControllerComponents,
                                        emailConnector: EmailConnector,
                                        crypto: JsonCryptoService,
-                                       declarationView: views.html.racdac.DeclarationView,
-                                       ukResidencyDeclarationView: views.html.racdac.UKResidencyDeclarationView
+                                       declarationView: views.html.racdac.DeclarationView
                                      )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
@@ -63,19 +62,11 @@ class DeclarationController @Inject()(
         minimalDetailsConnector.getPSAName.map {
           psaName =>
             Ok(
-              if (appConfig.podsUkResidency) {
-                ukResidencyDeclarationView(
-                  controllers.racdac.individual.routes.DeclarationController.onSubmit,
-                  controllers.routes.PensionSchemeRedirectController.onPageLoad.url,
-                  psaName
-                )
-              } else {
-                declarationView(
-                  controllers.racdac.individual.routes.DeclarationController.onSubmit,
-                  controllers.routes.PensionSchemeRedirectController.onPageLoad.url,
-                  psaName
-                )
-              }
+              declarationView(
+                controllers.racdac.individual.routes.DeclarationController.onSubmit,
+                controllers.routes.PensionSchemeRedirectController.onPageLoad.url,
+                psaName
+              )
             )
         }
     }
