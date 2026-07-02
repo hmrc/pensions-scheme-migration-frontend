@@ -62,7 +62,7 @@ class DataPrefillService @Inject() extends Enumerable.Implicits with Logging {
     val trusteeTransformer: Reads[JsObject] =
       (__ \ TrusteesId.toString).json.update(__.read[JsArray].map {
         case existingTrustees@JsArray(_) =>
-          JsArray(filterTrusteeIndividuals(existingTrustees) ++ seqDirectors)
+          JsArray(existingTrustees.value ++ seqDirectors)
       }
     )
 
