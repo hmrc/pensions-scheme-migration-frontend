@@ -20,6 +20,7 @@ import base.SpecBase
 import matchers.JsonMatchers
 import models.prefill.IndividualDetails
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
+import play.api.libs.json.{JsValue, Json}
 import utils.{Enumerable, UaJsValueGenerators, UserAnswers}
 
 import java.time.LocalDate
@@ -38,6 +39,47 @@ class DataPrefillServiceSpec extends SpecBase with JsonMatchers with Enumerable.
           (path \ 0 \ "trusteeDetails" \ "lastName").as[String] mustBe "User 1"
         }
       }
+    }
+
+    "preserve existing company trustees when copying selected directors to trustees" in {
+      val ua = Json.obj(
+        "establishers" -> Json.arr(Json.obj(
+          "director" -> Json.arr(director("Copied", "Director"))
+        )),
+        "trustees" -> Json.arr(companyTrustee("Test & Co Trustees Ltd"))
+      )
+
+      val result = dataPrefillService.copyAllDirectorsToTrustees(UserAnswers(ua), Seq(0), 0)
+      val trustees = result.data \ "trustees"
+
+      (trustees \ 0 \ "trusteeKind").as[String] mustBe "company"
+      (trustees \ 0 \ "companyDetails" \ "companyName").as[String] mustBe "Test & Co Trustees Ltd"
+      (trustees \ 1 \ "trusteeKind").as[String] mustBe "individual"
+      (trustees \ 1 \ "trusteeDetails" \ "firstName").as[String] mustBe "Copied"
+      (trustees \ 1 \ "trusteeDetails" \ "lastName").as[String] mustBe "Director"
+    }
+
+    "remove empty and partial trustee objects when copying selected directors to trustees" in {
+      val ua = Json.obj(
+        "establishers" -> Json.arr(Json.obj(
+          "director" -> Json.arr(director("Copied", "Director"))
+        )),
+        "trustees" -> Json.arr(
+          companyTrustee("Test & Co Trustees Ltd"),
+          Json.obj(),
+          Json.obj(
+            "isTrusteeNew" -> true,
+            "trusteeKind" -> "company"
+          )
+        )
+      )
+
+      val result = dataPrefillService.copyAllDirectorsToTrustees(UserAnswers(ua), Seq(0), 0)
+      val trustees = (result.data \ "trustees").as[Seq[JsValue]]
+
+      trustees.size.mustBe(2)
+      (result.data \ "trustees" \ 0 \ "companyDetails" \ "companyName").as[String] mustBe "Test & Co Trustees Ltd"
+      (result.data \ "trustees" \ 1 \ "trusteeDetails" \ "firstName").as[String] mustBe "Copied"
     }
   }
 
@@ -154,9 +196,49 @@ class DataPrefillServiceSpec extends SpecBase with JsonMatchers with Enumerable.
       }
     }
   }
+
+  private def companyTrustee(companyName: String) =
+    Json.obj(
+      "trusteeKind" -> "company",
+      "companyDetails" -> Json.obj(
+        "companyName" -> companyName
+      ),
+      "hasCompanyNumber" -> false,
+      "noCompanyNumberReason" -> "No company number",
+      "hasUtr" -> false,
+      "noUtrReason" -> "No UTR",
+      "hasVat" -> false,
+      "hasPaye" -> false
+    )
+
+  private def director(firstName: String, lastName: String) =
+    Json.obj(
+      "directorDetails" -> Json.obj(
+        "firstName" -> firstName,
+        "lastName" -> lastName,
+        "isDeleted" -> false
+      ),
+      "dateOfBirth" -> "1999-01-13",
+      "directorContactDetails" -> Json.obj(
+        "emailAddress" -> "director@example.com",
+        "phoneNumber" -> "01234567890"
+      ),
+      "address" -> Json.obj(
+        "addressLine1" -> "1 Test Street",
+        "addressLine2" -> "Test Town",
+        "postcode" -> "ZZ1 1ZZ",
+        "country" -> "GB"
+      ),
+      "addressYears" -> true,
+      "hasUtr" -> false,
+      "noUtrReason" -> "No UTR",
+      "hasNino" -> true,
+      "nino" -> Json.obj(
+        "value" -> "CS700100A",
+        "isEditable" -> false
+      )
+    )
 }
-
-
 
 
 
