@@ -102,7 +102,7 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
             val updatedUa = uaAfterCopy.setOrException(DirectorsAlsoTrusteesId(establisherIndex), value)
               .setOrException(IsTrusteeNewId(establisherIndex), value = true)
               .setOrException(TrusteeKindId(establisherIndex, TrusteeKind.Individual), TrusteeKind.Individual)
-            userAnswersCacheConnector.save(request.lock, updatedUa.data).map { _ =>
+            userAnswersCacheConnector.save(request.lock, uaAfterCopy.data).map { _ =>
               Redirect(navigator.nextPage(DirectorsAlsoTrusteesId(establisherIndex), updatedUa))
             }
           }

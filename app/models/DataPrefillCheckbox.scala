@@ -29,9 +29,9 @@ object DataPrefillCheckbox {
       CheckboxItem(
         content = Text(details.fullName),
         label = Some(Label(content = Text(details.fullName))),
-        value = details.index.toString,
+        value = index.toString,
         name = Some(s"value[$index]"),
-        checked = form("value").value.flatMap(_.headOption).map(_.toString == details.index.toString).getOrElse(false)
+        checked = form("value").value.map(_ == details.fullName).getOrElse(false)
       )
     }
 
@@ -40,7 +40,7 @@ object DataPrefillCheckbox {
       label = Some(Label(content = Text(Messages("messages__prefill__label__none")))),
       value = "-1",
       name = Some(s"value[${checkBoxes.length}]"),
-      checked = form("value").value.flatMap(_.headOption).map(_.toString == "-1").getOrElse(false),
+      checked = form("value").value.map(_ == "-1").getOrElse(false),
       behaviour = Some(ExclusiveCheckbox)
     )
 
