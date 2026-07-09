@@ -22,12 +22,13 @@ import forms.dataPrefill.DataPrefillCheckboxFormProvider
 import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
 import models.prefill.IndividualDetails
+import org.mockito.ArgumentCaptor
 import models.{DataPrefillCheckbox, Index, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import org.mockito.Mockito._
 import play.api.Application
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -122,6 +123,34 @@ class DirectorsAlsoTrusteesControllerSpec extends ControllerSpecBase
       verify(mockDataPrefillService, times(1)).copyAllDirectorsToTrustees(any(), any(), any())
     }
 
+    "save copied user answers containing existing company trustee when valid data is submitted" in {
+      val uaAfterCopy = UserAnswers(Json.obj(
+        "trustees" -> Json.arr(
+          companyTrustee("Test & Co Trustees Ltd"),
+          copiedIndividualTrustee("Copied", "Director")
+        )
+      ))
+      val jsonCaptor: ArgumentCaptor[JsObject] = ArgumentCaptor.forClass(classOf[JsObject])
+
+      when(mockDataPrefillService.copyAllDirectorsToTrustees(any(), any(), any())).thenReturn(uaAfterCopy)
+      when(mockDataPrefillService.getListOfDirectorsToBeCopied(any()))
+        .thenReturn(Seq(IndividualDetails("Copied", "Director", false, None, None, 0, true, Some(0))))
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
+
+      val request: FakeRequest[AnyContentAsJson] = fakeRequest.withJsonBody(Json.obj("value" -> Seq("0")))
+      val getData = new FakeDataRetrievalAction(Some(ua))
+      val result: Future[Result] = controller(getData).onSubmit(0)(request)
+
+      status(result) mustBe SEE_OTHER
+      verify(mockUserAnswersCacheConnector, times(1)).save(any(), jsonCaptor.capture())(any(), any())
+
+      val savedJson = jsonCaptor.getValue
+      (savedJson \ "trustees" \ 0 \ "trusteeKind").as[String] mustBe "company"
+      (savedJson \ "trustees" \ 0 \ "companyDetails" \ "companyName").as[String] mustBe "Test & Co Trustees Ltd"
+      (savedJson \ "trustees" \ 1 \ "trusteeKind").as[String] mustBe "individual"
+      (savedJson \ "trustees" \ 1 \ "trusteeDetails" \ "firstName").as[String] mustBe "Copied"
+    }
+
     "don't copy the directors and redirect to the next page when the value is none of the above" in {
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
       val request: FakeRequest[AnyContentAsJson] = fakeRequest.withJsonBody(Json.obj("value" -> Seq("-1")))
@@ -144,4 +173,21 @@ class DirectorsAlsoTrusteesControllerSpec extends ControllerSpecBase
       status(result) mustBe BAD_REQUEST
     }
   }
+
+  private def companyTrustee(companyName: String): JsObject =
+    Json.obj(
+      "trusteeKind" -> "company",
+      "companyDetails" -> Json.obj(
+        "companyName" -> companyName
+      )
+    )
+
+  private def copiedIndividualTrustee(firstName: String, lastName: String): JsObject =
+    Json.obj(
+      "trusteeKind" -> "individual",
+      "trusteeDetails" -> Json.obj(
+        "firstName" -> firstName,
+        "lastName" -> lastName
+      )
+    )
 }
