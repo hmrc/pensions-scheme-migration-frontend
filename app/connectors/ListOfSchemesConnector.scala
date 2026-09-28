@@ -56,7 +56,7 @@ class ListOfSchemesConnectorImpl @Inject()(
     val headers = Seq(("psaId", psaId))
 
     http.get(url"$url")(schemeHc)
-      .setHeader(headers: _*)
+      .setHeader(headers*)
       .execute[HttpResponse].map { response =>
       response.status match {
         case OK =>
@@ -77,7 +77,7 @@ class ListOfSchemesConnectorImpl @Inject()(
             (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
     val (url, schemeHc) = (config.listOfSchemesRemoveCacheUrl, hc.withExtraHeaders("psaId" -> psaId))
     val headers = Seq(("psaId", psaId))
-    http.delete(url"$url")(schemeHc).setHeader(headers: _*).execute[HttpResponse].map(_ => Ok)
+    http.delete(url"$url")(schemeHc).setHeader(headers*).execute[HttpResponse].map(_ => Ok)
   }
   private val ancillaryPsaError: String = "Administrator is a subordinate in mapping table"
 

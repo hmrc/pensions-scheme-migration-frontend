@@ -1,9 +1,6 @@
 import play.sbt.routes.RoutesKeys
-import scoverage.ScoverageKeys
 
 val appName = "pensions-scheme-migration-frontend"
-
-val silencerVersion = "1.7.0"
 
 lazy val microservice = Project(appName, file("."))
   .disablePlugins(JUnitXmlReportPlugin)
@@ -11,14 +8,18 @@ lazy val microservice = Project(appName, file("."))
   .settings(
     name                             := appName,
     majorVersion                     := 0,
-    scalaVersion                     := "2.13.12",
-    scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
-    scalacOptions += "-Wconf:src=routes/.*:s",
+    scalaVersion                     := "3.6.4",
+    scalacOptions ++= Seq(
+      "-feature", // Enable feature warnings
+      "-Xfatal-warnings", // Treat warnings as errors
+      "-Wconf:src=routes/.*:silent", // Suppress warnings from routes files
+      "-Wconf:src=twirl/.*:silent",  // Suppress warnings from twirl files
+      "-Wconf:src=target/.*:silent", // Suppress warnings from target files
+      "-Wconf:msg=Flag.*repeatedly:silent", // Suppress repeated flag warnings
+      "-Wconf:msg=.*-Wunused.*:silent", // Suppress unused variable warnings
+    ),
     libraryDependencies              ++= AppDependencies.all,
     PlayKeys.playDefaultPort         := 8213,
-    TwirlKeys.templateImports ++= Seq(
-      "config.AppConfig"
-    ),
     RoutesKeys.routesImport ++= Seq(
       "models.Index",
       "models.establishers.EstablisherKind",
@@ -32,6 +33,7 @@ lazy val microservice = Project(appName, file("."))
       "models.entities._"
     ),
     TwirlKeys.templateImports ++= Seq(
+      "config.AppConfig",
       "play.twirl.api.HtmlFormat",
       "play.twirl.api.HtmlFormat._",
       "uk.gov.hmrc.govukfrontend.views.html.components._",
@@ -40,25 +42,12 @@ lazy val microservice = Project(appName, file("."))
       "uk.gov.hmrc.hmrcfrontend.views.html.helpers._",
       "viewmodels.govuk.all._",
     ),
-// prevent removal of unused code which generates warning errors due to use of third-party libs
+    // prevent removal of unused code which generates warning errors due to use of third-party libs
     uglifyCompressOptions := Seq("unused=false", "dead_code=false"),
-// below line required to force asset pipeline to operate in dev rather than only prod
-    Assets / pipelineStages := Seq(concat, uglify) ,
-    resolvers ++= Seq(
-    Resolver.jcenterRepo,
-    ),
-    ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;.*models.*;.*repositories.*;" +
-      ".*BuildInfo.*;.*javascript.*;.*Routes.*;.*GuiceInjector;.*UserAnswersCacheConnector;" +
-      ".*ControllerConfiguration;.*LanguageSwitchController;.*LanguageSelect.*;.*TestMongoPage.*;.*ErrorTemplate.*",
-    ScoverageKeys.coverageMinimumStmtTotal := 80,
-    ScoverageKeys.coverageFailOnMinimum := true,
-    ScoverageKeys.coverageHighlighting := true,
-    retrieveManaged := true,
-    update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
+    // below line required to force asset pipeline to operate in dev rather than only prod
+    // Removed uglify due to node 20 compile issues.
+    // Suspected cause minification of already minified location-autocomplete.min.js -Pavel Vjalicin
+    Assets / pipelineStages := Seq(concat),
+    CodeCoverageSettings(),
+    retrieveManaged := true
   )
-
-lazy val testSettings: Seq[Def.Setting[_]] = Seq(
-  javaOptions ++= Seq(
-    "-Dconfig.resource=test.application.conf"
-  )
-)

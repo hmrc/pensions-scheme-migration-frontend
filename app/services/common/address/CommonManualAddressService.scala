@@ -139,14 +139,14 @@ class CommonManualAddressService @Inject()(
   }
 
   private def getTemplateData(
-                               schemeName: Option[String],
-                               entityName: String,
-                               form: Form[Address],
-                               addressLocation: AddressConfiguration,
-                               pageTitleEntityTypeMessageKey: Option[String],
-                               pageTitleMessageKey: String,
-                               submitUrl: Call
-                             )(implicit request: DataRequest[AnyContent]): TemplateData = {
+            schemeName: Option[String],
+            entityName: String,
+            form: Form[Address],
+            addressLocation: AddressConfiguration,
+            pageTitleEntityTypeMessageKey: Option[String],
+            pageTitleMessageKey: String,
+            submitUrl: Call
+          )(implicit request: DataRequest[AnyContent]): TemplateData = {
     val messages = request2Messages
     val h1MessageKey = pageTitleMessageKey
     val pageTitle = pageTitleEntityTypeMessageKey match {

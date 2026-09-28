@@ -33,7 +33,7 @@ import play.api.data.FormBinding.Implicits.formBinding
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Results.{BadRequest, Redirect}
 import play.api.mvc.{Action, AnyContent}
-import services.DataUpdateService
+import services.DataPrefillService
 import services.common.address.{CommonPostcodeService, CommonPostcodeTemplateData}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -53,7 +53,7 @@ class EnterPreviousPostcodeController @Inject()(
    getData: DataRetrievalAction,
    requireData: DataRequiredAction,
    formProvider: PostcodeFormProvider,
-   dataUpdateService: DataUpdateService,
+   dataPrefillService: DataPrefillService,
    common: CommonPostcodeService,
    postcodeView: PostcodeView
 )(implicit val ec: ExecutionContext) extends I18nSupport with Retrievals {
@@ -139,7 +139,7 @@ class EnterPreviousPostcodeController @Inject()(
     val updatedUserAnswers =
       mode match {
         case CheckMode =>
-          val directors = dataUpdateService.findMatchingDirectors(index)(ua)
+          val directors = dataPrefillService.findMatchingDirectors(index)(ua)
           directors.foldLeft[UserAnswers](ua) { (acc, director) =>
             if (director.isDeleted)
               acc

@@ -24,8 +24,6 @@ govukButton: GovukButton
 
 @(form: Form[_], schemeName: String, heading: String, submitCall: Call)(implicit request: Request[_], messages: Messages)
 
-@field = @{form("value")}
-
 @layout(messages("benefitsInsurancePolicy.h1", messages("benefitsInsuranceUnknown")), formHasErrors = form.hasErrors) {
 <div>
     @if(form.errors.nonEmpty) {
@@ -34,20 +32,17 @@ govukButton: GovukButton
 
         @formHelper(action = submitCall, Symbol("autoComplete") -> "off") {
 
-    @govukInput(
-    Input(
-    id = field.id,
-    name = field.name,
-    value = field.value,
-    classes = "govuk-!-width-three-quarters",
-    label = Label(
-    isPageHeading = true,
-    classes = "govuk-label--l",
-    content = Text(messages(heading))
-    ),
-    errorMessage = field.error.map(e => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args:_*))))
-    )
-    )
+        @govukInput(
+            InputViewModel(
+                field = form("value"),
+                label = Label(
+                isPageHeading = true,
+                classes = "govuk-label--l",
+                content = Text(messages(heading))
+                ),
+                classes = "govuk-!-width-three-quarters"
+            )
+        )
 
         @govukButton(ButtonViewModel(Text(messages("site.save_and_continue"))).asFormSubmit)
         }

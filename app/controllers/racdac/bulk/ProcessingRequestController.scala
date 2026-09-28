@@ -27,7 +27,7 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class ProcessingRequestController @Inject()(val appConfig: AppConfig,
-                                             override val messagesApi: MessagesApi,
+                                            override val messagesApi: MessagesApi,
                                             authenticate: AuthAction,
                                             val controllerComponents: MessagesControllerComponents,
                                             bulkMigrationEventsLogConnector: BulkMigrationEventsLogConnector,
@@ -39,38 +39,24 @@ class ProcessingRequestController @Inject()(val appConfig: AppConfig,
   def onPageLoad: Action[AnyContent] =
     authenticate.async {
       implicit request =>
-        bulkMigrationEventsLogConnector.getStatus.map { status =>
-          val (header, content, redirect) = headerContentAndRedirect(status)
-          Ok(processingRequestView(
-            header,
-            header,
-            content,
-            redirect
-          ))
+        bulkMigrationEventsLogConnector.getStatus.map {
+          case ACCEPTED =>
+            Redirect(routes.ConfirmationController.onPageLoad)
+          case NOT_FOUND =>
+            Ok(processingRequestView(
+              "messages__processingRequest__h1_processing",
+              "messages__processingRequest__h1_processing",
+              "messages__processingRequest__content_processing",
+              Some(routes.ProcessingRequestController.onPageLoad)
+            ))
+          case _ =>
+            Ok(processingRequestView(
+              "messages__processingRequest__h1_failure",
+              "messages__processingRequest__h1_failure",
+              "messages__thereIsAProblem__p1",
+              None
+            ))
         }
     }
-
-  private def headerContentAndRedirect(status: Int): (String, String, String) = {
-    status match {
-      case ACCEPTED =>
-        Tuple3(
-          "messages__processingRequest__h1_processed",
-          "messages__processingRequest__content_processed",
-          routes.ConfirmationController.onPageLoad.url
-        )
-      case NOT_FOUND =>
-        Tuple3(
-          "messages__processingRequest__h1_processing",
-          "messages__processingRequest__content_processing",
-          routes.ProcessingRequestController.onPageLoad.url
-        )
-      case _ =>
-        Tuple3(
-          "messages__processingRequest__h1_failure",
-          "messages__processingRequest__content_failure",
-          routes.DeclarationController.onPageLoad.url
-        )
-    }
-  }
 }
 

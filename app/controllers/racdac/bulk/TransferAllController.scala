@@ -72,7 +72,7 @@ class TransferAllController @Inject()(appConfig: AppConfig,
   def onSubmit: Action[AnyContent] = authenticate.async {
     implicit request =>
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) => minimalDetailsConnector.getPSAName.map { psaName =>
+        (formWithErrors: Form[?]) => minimalDetailsConnector.getPSAName.map { psaName =>
           BadRequest(transferAllView(
             formWithErrors,
             routes.TransferAllController.onSubmit,

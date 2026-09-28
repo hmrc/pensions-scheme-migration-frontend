@@ -48,7 +48,8 @@ class EnterPhoneController @Inject()(
       .userAnswers
       .get(PartnershipDetailsId(index))
       .fold(Messages("messages__partnership"))(_.partnershipName)
-
+  
+  @annotation.nowarn("msg=unused explicit parameter")
   private def form(index: Index)(implicit request: DataRequest[AnyContent]): Form[String] =
     formProvider(Messages("messages__enterPhone__type__error_required", Messages("messages__partnership")))
 

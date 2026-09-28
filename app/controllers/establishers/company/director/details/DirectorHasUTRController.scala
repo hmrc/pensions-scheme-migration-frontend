@@ -17,7 +17,7 @@
 package controllers.establishers.company.director.details
 
 import controllers.Retrievals
-import controllers.actions._
+import controllers.actions.*
 import forms.HasReferenceNumberFormProvider
 import identifiers.beforeYouStart.SchemeNameId
 import identifiers.establishers.company.director.DirectorNameId
@@ -28,7 +28,7 @@ import models.{CheckMode, Index, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import services.DataUpdateService
+import services.DataPrefillService
 import services.common.details.CommonHasReferenceValueService
 import utils.UserAnswers
 
@@ -41,7 +41,7 @@ class DirectorHasUTRController @Inject()(val messagesApi: MessagesApi,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
                                          formProvider: HasReferenceNumberFormProvider,
-                                         dataUpdateService: DataUpdateService,
+                                         dataPrefillService: DataPrefillService,
                                          common: CommonHasReferenceValueService
                                         )(implicit val executionContext: ExecutionContext)
   extends Retrievals with I18nSupport {
@@ -58,7 +58,7 @@ class DirectorHasUTRController @Inject()(val messagesApi: MessagesApi,
               id = DirectorHasUTRId(establisherIndex, directorIndex),
               form = form(establisherIndex, directorIndex),
               schemeName = schemeName,
-              paragraphText = Seq(Messages("messages__UTR__p")),
+              paragraphText = Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2")),
               legendClass = "govuk-visually-hidden",
               submitCall = routes.DirectorHasUTRController.onSubmit(establisherIndex, directorIndex, mode)
             )
@@ -90,7 +90,7 @@ class DirectorHasUTRController @Inject()(val messagesApi: MessagesApi,
               id = DirectorHasUTRId(establisherIndex, directorIndex),
               form = form(establisherIndex, directorIndex),
               schemeName = schemeName,
-              paragraphText = Seq(Messages("messages__UTR__p")),
+              paragraphText = Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2")),
               legendClass = "govuk-visually-hidden",
               mode = mode,
               submitCall = routes.DirectorHasUTRController.onSubmit(establisherIndex, directorIndex, mode),
@@ -103,7 +103,7 @@ class DirectorHasUTRController @Inject()(val messagesApi: MessagesApi,
     val updatedUserAnswers =
       mode match {
         case CheckMode =>
-          dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
+          dataPrefillService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
             ua.setOrException(TrusteeHasUTRId(trustee.index), value)
           }.getOrElse(ua)
         case _ => ua

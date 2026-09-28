@@ -30,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class LockingService @Inject()(lockCacheConnector: LockCacheConnector,
                                schemeCacheConnector: CurrentPstrCacheConnector){
 
-  def initialLockSetupAndRedirect(pstr: String, request: AuthenticatedRequest[_],isRacDac:Boolean=false)
+  def initialLockSetupAndRedirect(pstr: String, request: AuthenticatedRequest[?],isRacDac:Boolean=false)
                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Result] = {
     val lock = MigrationLock(pstr, request.externalId, request.psaId.id)
     schemeCacheConnector.save(Json.toJson(lock)).flatMap { _ =>

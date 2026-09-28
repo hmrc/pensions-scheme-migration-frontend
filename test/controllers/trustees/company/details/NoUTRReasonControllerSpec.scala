@@ -23,6 +23,7 @@ import matchers.JsonMatchers
 import models.CompanyDetails
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
+import org.mockito.Mockito._
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
@@ -65,6 +66,7 @@ class NoUTRReasonControllerSpec
       )(request, messages)
 
       when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any()))
+
         .thenReturn(Future.successful(Ok(view)))
 
       val result = route(application, httpGETRequest(httpPathGET)).value
@@ -85,6 +87,7 @@ class NoUTRReasonControllerSpec
       )(request, messages)
 
       when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any()))
+
         .thenReturn(Future.successful(Ok(view)))
 
       val result = route(application, httpGETRequest(httpPathGET)).value
@@ -105,6 +108,7 @@ class NoUTRReasonControllerSpec
       )(request, messages)
 
       when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any()))
+
         .thenReturn(Future.successful(Ok(view)))
       when(mockCommonReasonService.post(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(Redirect(onwardCall.url)))

@@ -55,7 +55,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val bulkMigrationIsAllFailedUrl: String = s"$migrationUrl${config.get[String](path = "urls.bulkMigrationIsAllFailed")}"
   lazy val bulkMigrationDeleteAllUrl: String = s"$migrationUrl${config.get[String](path = "urls.bulkMigrationDeleteAll")}"
   lazy val bulkMigrationEventsLogStatusUrl: String = s"$migrationUrl${config.get[String](path = "urls.bulkMigrationEventsLogStatus")}"
-  def featureToggleUrl(toggle:String) : String = s"$migrationUrl${config.get[String]("urls.featureToggle").format(toggle)}"
 
   lazy val legacySchemeDetailsUrl: String = s"$migrationUrl${config.get[String](path = "urls.legacySchemeDetails")}"
   lazy val listOfSchemesUrl: String = s"$migrationUrl${config.get[String](path = "urls.listOfSchemes")}"
@@ -97,4 +96,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val individualMigrationConfirmationEmailTemplateId: String = loadConfig("email.individualMigrationConfirmationTemplateId")
   lazy val emailSendForce: Boolean = config.getOptional[Boolean]("email.force").getOrElse(false)
   lazy val migrationDataTTL: Int = config.get[Int]("migration-data-cache.timeToLiveInDays")
+  lazy val forceServiceNavigation: Boolean = config.getOptional[Boolean]("play-frontend-hmrc.forceServiceNavigation").getOrElse(false)
+
 }

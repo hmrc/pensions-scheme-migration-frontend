@@ -23,6 +23,7 @@ import identifiers.trustees.AnyTrusteesId
 import matchers.JsonMatchers
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
+import org.mockito.Mockito._
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Request, Result}
@@ -46,7 +47,7 @@ class AnyTrusteesControllerSpec extends ControllerSpecBase
   private val form: Form[Boolean] =
     formProvider(messages("messages__otherTrustees__error__required"))
 
-  private def getView(req: Request[_], form: Form[_], radios: Seq[RadioItem]) = {
+  private def getView(req: Request[?], form: Form[?], radios: Seq[RadioItem]) = {
     app.injector.instanceOf[views.html.trustees.AnyTrusteesView].apply(
       form,
       controllers.trustees.routes.AnyTrusteesController.onSubmit,

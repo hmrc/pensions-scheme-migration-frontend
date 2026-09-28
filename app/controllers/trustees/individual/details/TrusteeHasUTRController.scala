@@ -28,7 +28,7 @@ import models.{CheckMode, Index, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import services.DataUpdateService
+import services.DataPrefillService
 import services.common.details.CommonHasReferenceValueService
 import utils.UserAnswers
 
@@ -41,7 +41,7 @@ class TrusteeHasUTRController @Inject()(val messagesApi: MessagesApi,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
                                         formProvider: HasReferenceNumberFormProvider,
-                                        dataUpdateService: DataUpdateService,
+                                        dataPrefillService: DataPrefillService,
                                         common: CommonHasReferenceValueService
                                        )(implicit val executionContext: ExecutionContext)
   extends Retrievals with I18nSupport {
@@ -72,7 +72,7 @@ class TrusteeHasUTRController @Inject()(val messagesApi: MessagesApi,
               id            = TrusteeHasUTRId(index),
               form          = form(index),
               schemeName    = schemeName,
-              paragraphText = Seq(Messages("messages__UTR__p")),
+              paragraphText = Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2")),
               legendClass   = "govuk-visually-hidden",
               submitCall    = routes.TrusteeHasUTRController.onSubmit(index, mode)
             )
@@ -92,7 +92,7 @@ class TrusteeHasUTRController @Inject()(val messagesApi: MessagesApi,
               id = TrusteeHasUTRId(index),
               form = form(index),
               schemeName = schemeName,
-              paragraphText = Seq(Messages("messages__UTR__p")),
+              paragraphText = Seq(Messages("messages__UTR__p1"), Messages("messages__UTR__p2")),
               legendClass = "govuk-visually-hidden",
               mode = mode,
               submitCall    = routes.TrusteeHasUTRController.onSubmit(index, mode),
@@ -105,7 +105,7 @@ class TrusteeHasUTRController @Inject()(val messagesApi: MessagesApi,
     val updatedUserAnswers =
       mode match {
         case CheckMode =>
-          val directors = dataUpdateService.findMatchingDirectors(index)(ua)
+          val directors = dataPrefillService.findMatchingDirectors(index)(ua)
           directors.foldLeft[UserAnswers](ua) { (acc, director) =>
             if (director.isDeleted)
               acc

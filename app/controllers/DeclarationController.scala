@@ -18,19 +18,21 @@ package controllers
 
 import audit.{AuditService, EmailAuditEvent}
 import config.AppConfig
-import connectors._
-import controllers.actions._
+import connectors.*
+import controllers.actions.*
 import identifiers.beforeYouStart.{SchemeNameId, WorkingKnowledgeId}
 import models.JourneyType.SCHEME_MIG
 import models.Scheme
 import models.requests.DataRequest
-import play.api.i18n.Lang.logger
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsString, __}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.libs.json.{JsString, JsValue, __}
+import play.api.mvc.Results.Redirect
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import services.JsonCryptoService
 import uk.gov.hmrc.crypto.PlainText
-import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.ApplicationCrypto
-import uk.gov.hmrc.http.UpstreamErrorResponse
+import uk.gov.hmrc.domain.PsaId
+import uk.gov.hmrc.http.{HttpException, UnprocessableEntityException}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswers
 import views.html.DeclarationView
@@ -51,23 +53,26 @@ class DeclarationController @Inject()(
                                        emailConnector: EmailConnector,
                                        minimalDetailsConnector: MinimalDetailsConnector,
                                        pensionsSchemeConnector: PensionsSchemeConnector,
-                                       crypto: ApplicationCrypto,
+                                       crypto: JsonCryptoService,
                                        declarationView: DeclarationView
                                      )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
-    with Retrievals {
+    with Retrievals
+    with Logging {
 
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
-        val hasWorkingKnowledge = if (request.userAnswers.get(WorkingKnowledgeId).contains(true)) true else false
         SchemeNameId.retrieve.map { schemeName =>
-            Future.successful(Ok(declarationView(
-              schemeName, true, hasWorkingKnowledge,
-              routes.DeclarationController.onSubmit
-              ))
+          Future.successful(Ok(
+            declarationView(
+              schemeName = schemeName,
+              isCompany = true,
+              hasWorkingKnowledge = request.userAnswers.get(WorkingKnowledgeId).contains(true),
+              submitCall = routes.DeclarationController.onSubmit
             )
+          ))
         }
     }
 
@@ -75,23 +80,44 @@ class DeclarationController @Inject()(
     (authenticate andThen getData andThen requireData()).async {
       implicit request =>
         SchemeNameId.retrieve.map { schemeName =>
-          val psaId = request.psaId.id
-          val pstrId = request.lock.pstr
-          val userAnswers = request.userAnswers
           (for {
-            updatedUa <- Future.fromTry(userAnswers.set(__ \ "pstr", JsString(request.lock.pstr)))
-            apiResult <- pensionsSchemeConnector.registerScheme(UserAnswers(updatedUa.data), psaId, Scheme)
-            _ <- if (apiResult.nonEmpty) sendEmail(schemeName, psaId, pstrId) else Future(EmailNotSent)
+            updatedUa <- Future.fromTry(request.userAnswers.set(__ \ "pstr", JsString(request.lock.pstr)))
+            apiResult <- pensionsSchemeConnector.registerScheme(UserAnswers(updatedUa.data), request.psaId.id, Scheme)
+            result <- processApiResult(apiResult, schemeName, request.psaId, request.lock.pstr)
           } yield {
-            Redirect(routes.SchemeSuccessController.onPageLoad)
+            result
           }) recoverWith {
-            case ex: UpstreamErrorResponse if ex.statusCode == UNPROCESSABLE_ENTITY =>
-              Future.successful(Redirect(controllers.routes.AddingSchemeController.onPageLoad))
-            case _ =>
+            case error =>
+              logError(error)
               Future.successful(Redirect(controllers.routes.YourActionWasNotProcessedController.onPageLoadScheme))
           }
         }
     }
+
+  private def processApiResult(apiResult: Either[HttpException, JsValue], schemeName: String, psaId: PsaId, pstr: String)
+                              (implicit request: DataRequest[AnyContent]): Future[Result] =
+    apiResult match {
+      case Right(_) =>
+        sendEmail(schemeName, psaId.id, pstr)
+          .map(_ => Redirect(controllers.routes.SchemeSuccessController.onPageLoad))
+      case Left(e: UnprocessableEntityException) =>
+        logger.warn(s"422 response from registerScheme call: ${e.message}")
+        Future.successful(Redirect(controllers.routes.AddingSchemeController.onPageLoad))
+      case Left(e) =>
+        logError(e)
+        Future.successful(Redirect(controllers.routes.YourActionWasNotProcessedController.onPageLoadScheme))
+    }
+
+  private def logError(error: Throwable)
+                      (implicit request: DataRequest[AnyContent]): Unit =
+    logger.error(
+      s"""
+         |Failed to submit declaration:
+         |  PSTR: ${request.lock.pstr}
+         |  Exception: ${error.getMessage}
+         |  StackTrace: ${error.getStackTrace.mkString("\n")}
+         |""".stripMargin
+    )
 
   private def sendEmail(schemeName: String, psaId: String, pstrId: String)
                        (implicit request: DataRequest[AnyContent]): Future[EmailStatus] = {
@@ -99,11 +125,11 @@ class DeclarationController @Inject()(
 
     minimalDetailsConnector.getPSADetails(psaId) flatMap { minimalPsa =>
       emailConnector.sendEmail(
-        emailAddress = minimalPsa.email,
-        templateName = appConfig.schemeConfirmationEmailTemplateId,
-        params = Map("psaName" -> minimalPsa.name, "schemeName" -> schemeName),
-        callbackUrl(psaId, pstrId)
-      )
+          emailAddress = minimalPsa.email,
+          templateName = appConfig.schemeConfirmationEmailTemplateId,
+          params = Map("psaName" -> minimalPsa.name, "schemeName" -> schemeName),
+          callbackUrl(psaId, pstrId)
+        )
         .map {
           status =>
             auditService.sendEvent(EmailAuditEvent(psaId, SCHEME_MIG, minimalPsa.email, pstrId))
@@ -115,8 +141,8 @@ class DeclarationController @Inject()(
   }
 
   private def callbackUrl(psaId: String, pstrId: String): String = {
-    val encryptedPsa = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(psaId)).value, StandardCharsets.UTF_8.toString)
-    val encryptedPstr = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(pstrId)).value, StandardCharsets.UTF_8.toString)
-    s"${appConfig.migrationUrl}/pensions-scheme-migration/email-response/${SCHEME_MIG}/$encryptedPsa/$encryptedPstr"
+    val encryptedPsa = URLEncoder.encode(crypto.encrypt(PlainText(psaId)), StandardCharsets.UTF_8.toString)
+    val encryptedPstr = URLEncoder.encode(crypto.encrypt(PlainText(pstrId)), StandardCharsets.UTF_8.toString)
+    s"${appConfig.migrationUrl}/pensions-scheme-migration/email-status-response/$SCHEME_MIG/$encryptedPsa/$encryptedPstr"
   }
 }

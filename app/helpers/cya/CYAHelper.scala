@@ -178,4 +178,4 @@ object CYAHelper {
 }
 
 case class MandatoryAnswerMissingException(missingField:String)
-  extends Exception(s"An answer which was mandatory is missing from scheme details returned from TPSS: $missingField")
+  extends RuntimeException(s"An answer which was mandatory is missing from scheme details returned from TPSS: $missingField")

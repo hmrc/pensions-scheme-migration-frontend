@@ -45,12 +45,12 @@ class CommonDateOfBirthService @Inject()(val controllerComponents: MessagesContr
   extends FrontendHeaderCarrierProvider with I18nSupport with Retrievals {
 
   def get(form: Form[LocalDate],
-                    dobId: TypedIdentifier[LocalDate],
-                    personNameId: TypedIdentifier[PersonName],
-                    schemeName: String,
-                    entityType: String,
-                    call: Call
-                   )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+          dobId: TypedIdentifier[LocalDate],
+          personNameId: TypedIdentifier[PersonName],
+          schemeName: String,
+          entityType: String,
+          call: Call
+         )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     val preparedForm: Form[LocalDate] = {
       request.userAnswers.get[LocalDate](dobId) match {
@@ -59,21 +59,21 @@ class CommonDateOfBirthService @Inject()(val controllerComponents: MessagesContr
       }
     }
     personNameId.retrieve.map {
-      personName: PersonName =>
+      personName =>
         Future.successful(Ok(dobView(preparedForm, personName.fullName,
-             schemeName, entityType, call)))
+          schemeName, entityType, call)))
     }
   }
 
   def post(form: Form[LocalDate],
-                     dobId: TypedIdentifier[LocalDate],
-                     personNameId: TypedIdentifier[PersonName],
-                     schemeName: String,
-                     entityType: String,
-                     mode: Mode,
-                     optSetUserAnswers: Option[LocalDate => Try[UserAnswers]] = None,
-                     call: Call
-                    )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] =
+           dobId: TypedIdentifier[LocalDate],
+           personNameId: TypedIdentifier[PersonName],
+           schemeName: String,
+           entityType: String,
+           mode: Mode,
+           optSetUserAnswers: Option[LocalDate => Try[UserAnswers]] = None,
+           call: Call
+          )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] =
 
     form.bindFromRequest().fold(
       formWithErrors => {
@@ -83,11 +83,10 @@ class CommonDateOfBirthService @Inject()(val controllerComponents: MessagesContr
           errors = formWithErrors.errors map { e => if (e.key == "date.day") e.copy(key = "date") else e }
         )
         personNameId.retrieve.map {
-          personName: PersonName =>
-
+          personName =>
             Future.successful(BadRequest(dobView(
               formWithErrorsDayIdCorrection,
-                personName.fullName, schemeName, entityType, call)))
+              personName.fullName, schemeName, entityType, call)))
         }
       },
       value => {

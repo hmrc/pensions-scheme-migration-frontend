@@ -25,6 +25,7 @@ import identifiers.benefitsAndInsurance.InsurerEnterPostCodeId
 import matchers.JsonMatchers
 import models.{Scheme, TolerantAddress}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -55,7 +56,7 @@ class InsurerSelectAddressControllerSpec extends ControllerSpecBase with JsonMat
 
   private val httpPathGET: String = controllers.benefitsAndInsurance.routes.InsurerSelectAddressController.onPageLoad.url
   private val httpPathPOST: String = controllers.benefitsAndInsurance.routes.InsurerSelectAddressController.onSubmit.url
-  
+
   private val valuesValid: Map[String, Seq[String]] = Map(
     "value" -> Seq("1")
   )

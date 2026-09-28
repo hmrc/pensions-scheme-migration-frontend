@@ -19,24 +19,20 @@
     govukButton: GovukButton
 )
 
-@(pageTitle: String, heading: String, content: String, continueUrl: String)(implicit request: Request[_], messages: Messages)
+@(pageTitle: String, heading: String, content: String, continueUrl: Option[Call])(implicit request: Request[_], messages: Messages)
 
-@layout(messages(pageTitle)) {
-
-
-    @if(heading == "messages__processingRequest__h1_processing") {
-        <meta http-equiv="refresh" content="4"/>
+@scripts = @{
+    if(heading == "messages__processingRequest__h1_processing") {
+        Seq("javascripts/auto-refresh.js")
+    } else {
+        Seq()
     }
+}
 
+@layout(messages(pageTitle), additionalScripts = scripts) {
     <h1 class="govuk-heading-l">
         @messages(heading)
     </h1>
 
-    <p class="govuk-body">@messages(content)</p>
-
-    @govukButton(
-        ButtonViewModel(
-            Text(messages("site.continue"))
-        ).withAttribute("id" -> "submit").asLink(continueUrl)
-    )
+    <p class="govuk-body">@messages(content) @continueUrl.map { continue => <a href="@{continue.url}">Click here to manually refresh the page.</a>}</p>
 }

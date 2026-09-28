@@ -53,6 +53,13 @@ class AddressFormProvider @Inject()(countryOptions: CountryOptions) extends Addr
         "country"),
 
       "country" -> countryMapping(countryOptions, "error.country.required", "error.country.invalid")
-    )(Address.apply)(Address.unapply)
+    )(Address.apply)((a: Address) => Some((
+      a.addressLine1,
+      a.addressLine2,
+      a.addressLine3,
+      a.addressLine4,
+      a.postcode,
+      a.country
+    )))
   )
 }

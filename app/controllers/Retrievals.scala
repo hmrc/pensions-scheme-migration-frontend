@@ -28,7 +28,7 @@ import scala.language.implicitConversions
 
 trait Retrievals {
 
-  private def dataNotFoundRedirect(implicit request: Request[_]) = Redirect(routes.SessionExpiredController.onPageLoad().absoluteURL())
+  private def dataNotFoundRedirect(implicit request: Request[?]) = Redirect(routes.SessionExpiredController.onPageLoad().absoluteURL())
   private[controllers] def retrieve[A](id: TypedIdentifier[A])
                                       (f: A => Future[Result])
                                       (implicit request: DataRequest[AnyContent], r: Reads[A]): Future[Result] = {
@@ -52,13 +52,17 @@ trait Retrievals {
     def retrieve(implicit request: DataRequest[AnyContent]): Either[Future[Result], A]
 
     def and[B](query: Retrieval[B]): Retrieval[A ~ B] =
-      (request: DataRequest[AnyContent]) => {
-        for {
-          a <- self.retrieve(request)
-          b <- query.retrieve(request)
-        } yield new ~(a, b)
+      new Retrieval[A ~ B] {
+        def retrieve(implicit request: DataRequest[AnyContent]): Either[Future[Result], A ~ B] = {
+          for {
+            a <- self.retrieve
+            b <- query.retrieve
+          } yield new ~(a, b)
+        }
       }
   }
+
+
 
   // scalastyle:off class.name
   case class ~[A, B](a: A, b: B)
@@ -66,8 +70,12 @@ trait Retrievals {
   object Retrieval {
 
     def apply[A](f: DataRequest[AnyContent] => Either[Future[Result], A]): Retrieval[A] =
-      (request: DataRequest[AnyContent]) => f(request)
+      new Retrieval[A] {
+        def retrieve(implicit request: DataRequest[AnyContent]): Either[Future[Result], A] =
+          f(request)
+      }
   }
+
 
   implicit def fromId[A](id: TypedIdentifier[A])(implicit rds: Reads[A]): Retrieval[A] =
     Retrieval {

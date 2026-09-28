@@ -38,7 +38,7 @@ class WhatYouWillNeedCompanyContactControllerSpec
   private val company: CompanyDetails = CompanyDetails("test")
   private val userAnswers: UserAnswers = ua.set(CompanyDetailsId(0), company).success.value
 
-  private def getView(req: Request[_]) = {
+  private def getView(req: Request[?]) = {
     app.injector.instanceOf[WhatYouWillNeedContactView].apply(
       Messages("messages__title_company"),
       controllers.trustees.company.contacts.routes.EnterEmailController.onPageLoad(0, NormalMode).url,

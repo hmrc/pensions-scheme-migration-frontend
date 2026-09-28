@@ -23,7 +23,7 @@
 @(param1: String, returnUrl: Call)(implicit request: Request[_], messages: Messages)
 @layout(messages("messages__cannotMigrate__title")) {
     <div>
-        <h1 class="govuk-heading-xl">@messages("messages__cannotMigrate__title")</h1>
+        <h1 class="govuk-heading-l">@messages("messages__cannotMigrate__title")</h1>
         <p class="govuk-body">@messages("messages__cannotMigrate__p")</p>
 
         @formHelper(action = returnUrl, Symbol("autoComplete") -> "off") {

@@ -37,10 +37,10 @@ class InProgressControllerSpec extends ControllerSpecBase with JsonMatchers with
 
   private def httpPathGET: String = controllers.racdac.bulk.routes.InProgressController.onPageLoad.url
 
-  private def getView(req: Request[_]) = {
+  private def getView(req: Request[?]) = {
     app.injector.instanceOf[views.html.racdac.InProgressView].apply(
-      mockAppConfig.yourPensionSchemesUrl,
-      mockAppConfig.psaOverviewUrl
+      appConfig.yourPensionSchemesUrl,
+      appConfig.psaOverviewUrl
     )(req, implicitly)
   }
 

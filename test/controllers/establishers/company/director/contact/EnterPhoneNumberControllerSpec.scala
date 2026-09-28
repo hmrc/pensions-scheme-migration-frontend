@@ -24,6 +24,7 @@ import identifiers.establishers.company.director.contact.EnterPhoneId
 import matchers.JsonMatchers
 import models.{NormalMode, PersonName}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
 import org.scalatest.{BeforeAndAfterEach, TryValues}
 import play.api.Application
 import play.api.i18n.Messages
@@ -71,7 +72,7 @@ class EnterPhoneNumberControllerSpec extends ControllerSpecBase
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl,
       formProvider = formProvider,
-      dataUpdateService = mockDataUpdateService,
+      dataPrefillService = mockDataPrefillService,
       common = new CommonPhoneService(
         controllerComponents = controllerComponents,
         userAnswersCacheConnector = mockUserAnswersCacheConnector,

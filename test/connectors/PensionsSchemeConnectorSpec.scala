@@ -17,19 +17,23 @@
 package connectors
 
 import com.fasterxml.jackson.core.JsonParseException
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import models.RacDac
-import org.apache.commons.lang3.StringUtils
-import org.scalatest.matchers.must.Matchers._
+import org.scalatest.matchers.must.Matchers.*
 import org.scalatest.wordspec.AsyncWordSpec
-import org.scalatest.{OptionValues, RecoverMethods}
+import org.scalatest.{EitherValues, OptionValues, RecoverMethods}
 import play.api.http.Status
-import play.api.http.Status.{NO_CONTENT, OK}
-import play.api.libs.json.{JsObject, JsResultException, Json}
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, UpstreamErrorResponse}
+import play.api.http.Status.OK
+import play.api.libs.json.{JsObject, Json}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, LockedException, UnprocessableEntityException, UpstreamErrorResponse}
 import utils.{Data, WireMockHelper}
 
-class PensionsSchemeConnectorSpec extends AsyncWordSpec with WireMockHelper with OptionValues with RecoverMethods {
+class PensionsSchemeConnectorSpec
+  extends AsyncWordSpec
+    with WireMockHelper
+    with OptionValues
+    with EitherValues
+    with RecoverMethods {
 
   private implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
@@ -52,24 +56,7 @@ class PensionsSchemeConnectorSpec extends AsyncWordSpec with WireMockHelper with
     )
   "registerScheme" must {
 
-    "return EMPTY STRING for NO_CONTENT response" in {
-      server.stubFor(
-        post(urlEqualTo(registerSchemeUrl))
-          .withHeader("Content-Type", equalTo("application/json"))
-          .withHeader("psaId", equalTo(psaId))
-          .withRequestBody(equalToJson(Json.stringify(Data.ua.data)))
-          .willReturn(
-            aResponse.withStatus(NO_CONTENT)
-              .withHeader("Content-Type", "application/json")
-          )
-      )
-
-      connector.registerScheme(Data.ua, psaId, RacDac) map { res =>
-        res mustBe StringUtils.EMPTY
-      }
-    }
-
-    "return right schemeReferenceNumber for a valid request/response" in {
+    "return Right schemeReferenceNumber for a valid request/response" in {
       server.stubFor(
         post(urlEqualTo(registerSchemeUrl))
           .withHeader("Content-Type", equalTo("application/json"))
@@ -83,7 +70,7 @@ class PensionsSchemeConnectorSpec extends AsyncWordSpec with WireMockHelper with
       )
 
       connector.registerScheme(Data.ua, psaId, RacDac) map { res =>
-        res mustBe schemeId
+        res.value mustBe Json.obj("schemeReferenceNumber" -> schemeId)
       }
     }
 
@@ -121,6 +108,42 @@ class PensionsSchemeConnectorSpec extends AsyncWordSpec with WireMockHelper with
       }
     }
 
+    "return Left UnprocessableEntityException for a 422 response" in {
+
+      server.stubFor(
+        post(urlEqualTo(registerSchemeUrl))
+          .withRequestBody(equalTo(Json.stringify(Json.toJson(Data.ua.data))))
+          .willReturn(
+            aResponse()
+              .withStatus(Status.UNPROCESSABLE_ENTITY)
+              .withHeader("Content-Type", "application/json")
+              .withBody("error")
+          )
+      )
+      connector.registerScheme(Data.ua, psaId, RacDac).map {
+        res =>
+          res.left.value mustBe a[UnprocessableEntityException]
+      }
+    }
+
+    "return Left LockedException for a 423 response" in {
+
+      server.stubFor(
+        post(urlEqualTo(registerSchemeUrl))
+          .withRequestBody(equalTo(Json.stringify(Json.toJson(Data.ua.data))))
+          .willReturn(
+            aResponse()
+              .withStatus(Status.LOCKED)
+              .withHeader("Content-Type", "application/json")
+              .withBody("locked")
+          )
+      )
+      connector.registerScheme(Data.ua, psaId, RacDac).map {
+        res =>
+          res.left.value mustBe a[LockedException]
+      }
+    }
+
     "throw JsonParseException if there are JSON parse errors" in {
 
       server.stubFor(
@@ -137,23 +160,5 @@ class PensionsSchemeConnectorSpec extends AsyncWordSpec with WireMockHelper with
         connector.registerScheme(Data.ua, psaId, RacDac)
       }
     }
-
-    "throw JsResultException if the JSON is not valid" in {
-
-      server.stubFor(
-        post(urlEqualTo(registerSchemeUrl))
-          .withRequestBody(equalTo(Json.stringify(Json.toJson(Data.ua.data))))
-          .willReturn(
-            aResponse()
-              .withStatus(Status.OK)
-              .withHeader("Content-Type", "application/json")
-              .withBody("{}")
-          )
-      )
-      recoverToSucceededIf[JsResultException] {
-        connector.registerScheme(Data.ua, psaId, RacDac)
-      }
-    }
-
   }
 }

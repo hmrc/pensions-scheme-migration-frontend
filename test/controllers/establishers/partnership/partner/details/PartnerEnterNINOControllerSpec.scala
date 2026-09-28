@@ -25,6 +25,7 @@ import matchers.JsonMatchers
 import models.{NormalMode, PersonName, ReferenceValue}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
+import org.mockito.Mockito._
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json.Json
@@ -54,13 +55,13 @@ class PartnerEnterNINOControllerSpec
   private val userAnswers: UserAnswers =
     ua.set(PartnerNameId(0,0), personName).success.value
 
-  private def getView(req: Request[_], form: Form[_]) = {
+  private def getView(req: Request[?], form: Form[?]) = {
     app.injector.instanceOf[EnterReferenceValueWithHintView].apply(
       form,
       "Test scheme name",
       "What is the partner’s National Insurance number?",
       "What is Jane Doe’s National Insurance number?",
-      "govuk-label--xl",
+      "govuk-label--l",
       Seq(),
       Some(Messages("messages__enterNINO__hint")),
       routes.PartnerEnterNINOController.onSubmit(0, 0, NormalMode)

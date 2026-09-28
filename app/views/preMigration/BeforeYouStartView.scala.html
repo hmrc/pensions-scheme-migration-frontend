@@ -36,7 +36,7 @@
         </ul>
 
         @govukButton(
-            ButtonViewModel(Text(messages("site.continue"))).asLink(continueUrl.url).withAttribute("id", "submit")
+            ButtonViewModel(Text(messages("site.continue"))).asLink(continueUrl.url).withAttribute(("id", "submit"): (String, String))
         )
 
         <p class="govuk-body">

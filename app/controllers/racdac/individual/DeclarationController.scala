@@ -18,7 +18,7 @@ package controllers.racdac.individual
 
 import audit.{AuditService, EmailAuditEvent}
 import config.AppConfig
-import connectors._
+import connectors.*
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.beforeYouStart.SchemeNameId
 import models.JourneyType.RACDAC_IND_MIG
@@ -28,8 +28,8 @@ import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsString, __}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.JsonCryptoService
 import uk.gov.hmrc.crypto.PlainText
-import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.ApplicationCrypto
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswers
@@ -47,10 +47,10 @@ class DeclarationController @Inject()(
                                        requireData: DataRequiredAction,
                                        auditService: AuditService,
                                        minimalDetailsConnector: MinimalDetailsConnector,
-                                       pensionsSchemeConnector:PensionsSchemeConnector,
+                                       pensionsSchemeConnector: PensionsSchemeConnector,
                                        val controllerComponents: MessagesControllerComponents,
                                        emailConnector: EmailConnector,
-                                       crypto: ApplicationCrypto,
+                                       crypto: JsonCryptoService,
                                        declarationView: views.html.racdac.DeclarationView
                                      )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
@@ -79,21 +79,21 @@ class DeclarationController @Inject()(
         val userAnswers = request.userAnswers
         val racDacName = userAnswers.get(SchemeNameId)
           .getOrElse(throw new RuntimeException("Scheme Name is mandatory for RAC/DAC"))
-            (for {
-              updatedUa <- Future.fromTry(userAnswers.set( __ \ "pstr",JsString(request.lock.pstr)))
-              _ <- pensionsSchemeConnector.registerScheme(UserAnswers(updatedUa.data), psaId, RacDac)
-              _ <- sendEmail(racDacName,psaId, pstrId)
-            } yield {
-              Redirect(controllers.racdac.individual.routes.ConfirmationController.onPageLoad.url)
-            })recoverWith {
-              case ex: UpstreamErrorResponse if ex.statusCode == UNPROCESSABLE_ENTITY =>
-                Future.successful(Redirect(controllers.racdac.individual.routes.AddingRacDacController.onPageLoad))
-              case _ =>
-                Future.successful(Redirect(controllers.routes.YourActionWasNotProcessedController.onPageLoadRacDac))
-            }
+        (for {
+          updatedUa <- Future.fromTry(userAnswers.set(__ \ "pstr", JsString(request.lock.pstr)))
+          _ <- pensionsSchemeConnector.registerScheme(UserAnswers(updatedUa.data), psaId, RacDac)
+          _ <- sendEmail(racDacName, psaId, pstrId)
+        } yield {
+          Redirect(controllers.racdac.individual.routes.ConfirmationController.onPageLoad.url)
+        }) recoverWith {
+          case ex: UpstreamErrorResponse if ex.statusCode == UNPROCESSABLE_ENTITY =>
+            Future.successful(Redirect(controllers.racdac.individual.routes.AddingRacDacController.onPageLoad))
+          case _ =>
+            Future.successful(Redirect(controllers.routes.YourActionWasNotProcessedController.onPageLoadRacDac))
+        }
     }
 
-  private def sendEmail(schemeName: String, psaId: String, pstrId:String)
+  private def sendEmail(schemeName: String, psaId: String, pstrId: String)
                        (implicit request: DataRequest[AnyContent]): Future[EmailStatus] = {
     logger.debug(s"Sending Rac Dac migration email for $psaId")
     minimalDetailsConnector.getPSADetails(psaId) flatMap { minimalPsa =>
@@ -111,9 +111,9 @@ class DeclarationController @Inject()(
     }
   }
 
-  private def callbackUrl(psaId: String, pstrId:String): String = {
-    val encryptedPsa = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(psaId)).value, StandardCharsets.UTF_8.toString)
-    val encryptedPstr = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(pstrId)).value, StandardCharsets.UTF_8.toString)
-    s"${appConfig.migrationUrl}/pensions-scheme-migration/email-response/$RACDAC_IND_MIG/$encryptedPsa/$encryptedPstr"
+  private def callbackUrl(psaId: String, pstrId: String): String = {
+    val encryptedPsa = URLEncoder.encode(crypto.encrypt(PlainText(psaId)), StandardCharsets.UTF_8.toString)
+    val encryptedPstr = URLEncoder.encode(crypto.encrypt(PlainText(pstrId)), StandardCharsets.UTF_8.toString)
+    s"${appConfig.migrationUrl}/pensions-scheme-migration/email-status-response/$RACDAC_IND_MIG/$encryptedPsa/$encryptedPstr"
   }
 }

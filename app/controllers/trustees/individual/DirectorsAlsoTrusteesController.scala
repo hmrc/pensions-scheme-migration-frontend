@@ -84,7 +84,7 @@ class DirectorsAlsoTrusteesController @Inject()(override val messagesApi: Messag
       SchemeNameId.retrieve.map { schemeName =>
         val seqDirector = dataPrefillService.getListOfDirectorsToBeCopied
         form.bindFromRequest().fold(
-          (formWithErrors: Form[_]) => {
+          (formWithErrors: Form[?]) => {
             Future.successful(BadRequest(view(
               formWithErrors,
               schemeName,

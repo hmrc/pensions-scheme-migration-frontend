@@ -137,6 +137,7 @@ messages__common__pick_country = Select a country
 messages__established_country__error__required = Enter a recognised country
 
 messages__workingKnowledge__title = Do you have working knowledge of pensions and pensions tax legislation?
+messages__workingKnowledge__h1 = Working knowledge of pensions
 messages__workingKnowledge__heading = Do you have working knowledge of pensions and pensions tax legislation?
 messages__workingKnowledge__p1 = There needs to be someone with working knowledge of pensions and pensions tax legislation involved with this pension scheme. This could be either you as scheme administrator or a pension practitioner or provider who is helping you.
 messages__workingKnowledge__p2 = For example, if you are an employer, or a director of an employer, who has registered a pension scheme, you might not have working knowledge of pensions and pensions tax legislation.
@@ -172,7 +173,7 @@ messages__newSchemeTaskList__membershipDetails_changeLink = Change {0}’s membe
 messages__newSchemeTaskList__membershipDetails_addLink = Add {0}’s membership details
 messages__newSchemeTaskList__benefitsAndInsuranceDetails_changeLink = Change {0}’s benefits and insurance details
 messages__newSchemeTaskList__benefitsAndInsuranceDetails_addLink = Add {0}’s benefits and insurance details
-messages__newSchemeTaskList__workingKnowledge_changeLink = Change details for {0}
+messages__newSchemeTaskList__workingKnowledge_changeLink = Change working knowledge details for {0}
 messages__newSchemeTaskList__workingKnowledge_addLink = Add a person or company that has working knowledge
 messages__newSchemeTaskList__establishers_changeLink = Change {0}’s establishers
 messages__newSchemeTaskList__establishers_addLink = Add {0}’s establishers
@@ -232,17 +233,17 @@ messages__error__common_nino = Enter a National Insurance number
 messages__error__common_nino_invalid = Enter {0}’s National Insurance number in the correct format
 
 messages__whyNoNINO = Why does {0} not have a National Insurance number?
-messages__reason__error_ninoRequired = Enter a reason why {0} does not have a NINO
+messages__reason__error_ninoRequired = Enter a reason why {0} does not have a National Insurance number
 messages__whyNoNINO__cya__visuallyHidden = the reason why {0} does not have a National Insurance number
 
 messages__hasUTR = Does {0} have a Unique Taxpayer Reference (UTR)?
-messages__UTR__p = This is a 10-digit or 13-digit number. You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.
+messages__UTR__p = This is a 10-digit or 13-digit number. For example, 12345 67890. You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.
 messages__genericHasUtr__error__required = Select yes if {0} has a Unique Taxpayer Reference
 messages__hasUTR__cya__visuallyHidden = whether {0} has a Unique Taxpayer Reference
 
-messages__enterUTR = What is {0}’s UTR?
+messages__enterUTR = What is {0}’s Unique Taxpayer Reference (UTR)?
 messages__enterUTR__cya_visuallyHidden = the UTR for {0}
-messages__UTR__p1 = This is a 10-digit or 13-digit number. It may also start or end with the letter ‘k’.
+messages__UTR__p1 = This is a 10-digit or 13-digit number. For example, 12345 67890. It may also start or end with the letter ‘k’.
 messages__UTR__p2 = You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.
 messages__utr__hint = For example, 12345 67890
 messages__enterUTR__cya_label = {0}’s UTR
@@ -253,9 +254,9 @@ messages__utr__error_invalid = Enter a Unique Taxpayer Reference (UTR) in the co
 
 messages__reason__error_maxLength = Reason must be 160 characters or less
 messages__reason__error_invalid = The reason must only include letters, numbers, spaces, ampersands (&), apostrophes, hyphens and full stops.
-messages__whyNoUTR = Why does {0} not have a UTR?
-messages__reason__error_utrRequired = Enter a reason why {0} does not have a UTR
-messages__whyNoUTR__cya__visuallyHidden = the reason why {0} does not have a UTR
+messages__whyNoUTR = Why does {0} not have a Unique Taxpayer Reference (UTR)?
+messages__reason__error_utrRequired = Enter a reason why {0} does not have a Unique Taxpayer Reference (UTR)
+messages__whyNoUTR__cya__visuallyHidden = the reason why {0} does not have a Unique Taxpayer Reference (UTR)
 
 messages__schemeTaskList__sectionDeclaration_header = Declaration
 messages__schemeTaskList__sectionDeclaration_incomplete = You must complete every section before you can declare.
@@ -300,17 +301,17 @@ benefitsAndInsurance.p2b3 = the insurance company’s address
 
 messages__declaration__title = Declaration
 messages__declaration__declare = By continuing you declare that:
-messages__declaration__statement1 = you understand that as scheme administrator you are responsible for discharging the functions conferred or imposed on the scheme administrator of the pension scheme by Finance Act 2004 and you intend to discharge those functions at all times, whether resident in the United Kingdom or another EU member state or non-member EEA state
-messages__declaration__statement2 = you will comply with all information notices issued to the scheme administrator under the Finance Act 2004 or the Finance Act 2008 and you understand that you may be liable to a penalty and the pension scheme may be de-registered if you fail to properly discharge those functions
-messages__declaration__statement3 = you understand that you may be liable to a penalty and the pension scheme may be de-registered if a false statement is made on this application, or in any information you provide in connection with this application, and that false statements may also lead to prosecution
+messages__declaration__statement1 = you understand that as the scheme administrator you are responsible for discharging the functions conferred or imposed on the scheme administrator of the pension scheme by the Finance Act 2004 and you intend to discharge those functions at all times
+messages__declaration__statement2 = you will comply with all information notices issued to the scheme administrator under the Finance Act 2004 or the Finance Act 2008 — you understand that you may be liable to a penalty and the pension scheme may be de-registered if you fail to properly discharge those functions
+messages__declaration__statement3 = you understand that you may be liable to a penalty and the pension scheme may be de-registered if a false statement is made in any information you provide and that false statements may also lead to prosecution
 messages__declaration__statement4_working_knowledge = you are a fit and proper person to be the scheme administrator, with a working knowledge of pensions and the scheme administrator duties and liabilities
 messages__declaration__statement4_no_working_knowledge = you do not have a working knowledge of pensions and the scheme administrator duties and liabilities but you are otherwise a fit and proper person and have appointed an adviser to the pension scheme, who does have that knowledge
 messages__declaration__statement5 = you understand that where HMRC believes that if any of the persons who are the scheme administrator are not a fit and proper person, HMRC may refuse to register the scheme or, if the scheme is already registered, HMRC may de-register the scheme
 
 
-messages__declaration__statementRacDac1 = you understand that as the scheme administrator you are responsible for discharging the functions conferred or imposed on the scheme administrator of the pension scheme by the Finance Act 2004 and you intend to discharge those functions at all times, whether resident in the United Kingdom, or another EU member state or non-member EEA state
-messages__declaration__statementRacDac2 = you will comply with all information notices issued to the scheme administrator under the Finance Act 2004 or the Finance Act 2008. You understand that you may be liable to a penalty and the pension scheme may be de-registered if you fail to properly discharge those functions
-messages__declaration__statementRacDac3 = you understand that you may be liable to a penalty and the pension scheme may be de-registered if a false statement is made in any information you provide and that false statements may also lead to prosecution.
+messages__declaration__statementRacDac1 = you understand that as the scheme administrator you are responsible for discharging the functions conferred or imposed on the scheme administrator of the pension scheme by the Finance Act 2004 and you intend to discharge those functions at all times
+messages__declaration__statementRacDac2 = you will comply with all information notices issued to the scheme administrator under the Finance Act 2004 or the Finance Act 2008 — you understand that you may be liable to a penalty and the pension scheme may be de-registered if you fail to properly discharge those functions
+messages__declaration__statementRacDac3 = you understand that you may be liable to a penalty and the pension scheme may be de-registered if a false statement is made in any information you provide and that false statements may also lead to prosecution
 
 
 isInvestmentRegulated.title = Is the scheme investment regulated?
@@ -383,10 +384,10 @@ error.address_line_1.length = Address line 1 must be fewer than 36 characters
 error.address_line_2.length = Address line 2 must be fewer than 36 characters
 error.address_line_3.length = Address line 3 must be fewer than 36 characters
 error.address_line_4.length = Address line 4 must be fewer than 36 characters
-error.address_line_1.invalid = The first line of the address contains invalid characters
-error.address_line_2.invalid = The second line of the address contains invalid characters
-error.address_line_3.invalid = The third line of the address contains invalid characters
-error.address_line_4.invalid = The fourth line of the address contains invalid characters
+error.address_line_1.invalid = The first line of the address must only include letters, spaces, ampersands (&), apostrophes, hyphens and full stops
+error.address_line_2.invalid = The second line of the address must only include letters, spaces, ampersands (&), apostrophes, hyphens and full stops
+error.address_line_3.invalid = The third line of the address must only include letters, spaces, ampersands (&), apostrophes, hyphens and full stops
+error.address_line_4.invalid = The fourth line of the address must only include letters, spaces, ampersands (&), apostrophes, hyphens and full stops
 error.country.required = Enter a country
 error.country.invalid = Enter a valid country
 

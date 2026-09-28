@@ -25,6 +25,7 @@ import matchers.JsonMatchers
 import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
+import org.mockito.Mockito._
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json.Json
@@ -73,7 +74,7 @@ class HaveCompanyNumberControllerSpec extends ControllerSpecBase with JsonMatche
         messages("messages__haveCompanyNumber", messages("messages__company")),
         messages("messages__haveCompanyNumber", companyDetails.companyName),
         utils.Radios.yesNo(form("value")),
-        "govuk-label--xl",
+        "govuk-label--l",
         Seq(messages("messages__haveCompanyNumber__p")),
         routes.HaveCompanyNumberController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)
@@ -95,7 +96,7 @@ class HaveCompanyNumberControllerSpec extends ControllerSpecBase with JsonMatche
         messages("messages__haveCompanyNumber", messages("messages__company")),
         messages("messages__haveCompanyNumber", companyDetails.companyName),
         utils.Radios.yesNo(filledFrom("value")),
-        "govuk-label--xl",
+        "govuk-label--l",
         Seq(messages("messages__haveCompanyNumber__p")),
         routes.HaveCompanyNumberController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)

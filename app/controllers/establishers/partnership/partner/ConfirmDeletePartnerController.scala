@@ -80,7 +80,7 @@ class ConfirmDeletePartnerController @Inject()(override val messagesApi: Message
         PartnerNameId(establisherIndex, partnerIndex).retrieve.map { partner =>
 
           form(partner.fullName).bindFromRequest().fold(
-            (formWithErrors: Form[_]) => {
+            (formWithErrors: Form[?]) => {
               Future.successful(BadRequest(
                 deleteView(
                   formWithErrors,

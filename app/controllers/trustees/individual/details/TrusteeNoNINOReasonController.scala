@@ -28,7 +28,7 @@ import models.{CheckMode, Index, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import services.DataUpdateService
+import services.DataPrefillService
 import services.common.details.CommonReasonService
 import utils.UserAnswers
 
@@ -41,7 +41,7 @@ class TrusteeNoNINOReasonController @Inject()(val messagesApi: MessagesApi,
                                               getData: DataRetrievalAction,
                                               requireData: DataRequiredAction,
                                               formProvider: ReasonFormProvider,
-                                              dataUpdateService: DataUpdateService,
+                                              dataPrefillService: DataPrefillService,
                                               common: CommonReasonService
                                              )(implicit val executionContext: ExecutionContext)
   extends Retrievals with I18nSupport {
@@ -63,41 +63,41 @@ class TrusteeNoNINOReasonController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.get(
-              pageTitle     = Messages("messages__whyNoNINO", Messages("messages__individual")),
-              pageHeading     = Messages("messages__whyNoNINO", name(index)),
+              pageTitle = Messages("messages__whyNoNINO", Messages("messages__individual")),
+              pageHeading = Messages("messages__whyNoNINO", name(index)),
               isPageHeading = true,
-              id            = TrusteeNoNINOReasonId(index),
-              form          = form(index),
-              schemeName    = schemeName,
-              submitUrl     = routes.TrusteeNoNINOReasonController.onSubmit(index, mode)
+              id = TrusteeNoNINOReasonId(index),
+              form = form(index),
+              schemeName = schemeName,
+              submitUrl = routes.TrusteeNoNINOReasonController.onSubmit(index, mode)
             )
         }
     }
 
-    def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
-      (authenticate andThen getData andThen requireData()).async {
-        implicit request =>
-          SchemeNameId.retrieve.map {
-            schemeName =>
-              common.post(
-                pageTitle = Messages("messages__whyNoNINO", Messages("messages__individual")),
-                pageHeading = Messages("messages__whyNoNINO", name(index)),
-                isPageHeading = true,
-                id = TrusteeNoNINOReasonId(index),
-                form = form(index),
-                schemeName = schemeName,
-                mode = mode,
-                optSetUserAnswers = Some(value => setUpdatedAnswers(index, mode, value, request.userAnswers)),
-                submitUrl     = routes.TrusteeNoNINOReasonController.onSubmit(index, mode)
-              )
-          }
-      }
+  def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
+    (authenticate andThen getData andThen requireData()).async {
+      implicit request =>
+        SchemeNameId.retrieve.map {
+          schemeName =>
+            common.post(
+              pageTitle = Messages("messages__whyNoNINO", Messages("messages__individual")),
+              pageHeading = Messages("messages__whyNoNINO", name(index)),
+              isPageHeading = true,
+              id = TrusteeNoNINOReasonId(index),
+              form = form(index),
+              schemeName = schemeName,
+              mode = mode,
+              optSetUserAnswers = Some(value => setUpdatedAnswers(index, mode, value, request.userAnswers)),
+              submitUrl = routes.TrusteeNoNINOReasonController.onSubmit(index, mode)
+            )
+        }
+    }
 
   private def setUpdatedAnswers(index: Index, mode: Mode, value: String, ua: UserAnswers): Try[UserAnswers] = {
     val updatedUserAnswers =
       mode match {
         case CheckMode =>
-          val directors = dataUpdateService.findMatchingDirectors(index)(ua)
+          val directors = dataPrefillService.findMatchingDirectors(index)(ua)
           directors.foldLeft[UserAnswers](ua) { (acc, director) =>
             if (director.isDeleted)
               acc

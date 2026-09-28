@@ -24,7 +24,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.{CheckboxItem, Excl
 
 object DataPrefillCheckbox {
 
-  def checkboxes(form: Form[_], values: Seq[DataPrefillIndividualDetails])(implicit messages: Messages): Seq[CheckboxItem] = {
+  def checkboxes(form: Form[?], values: Seq[DataPrefillIndividualDetails])(implicit messages: Messages): Seq[CheckboxItem] = {
     val checkBoxes = values.zipWithIndex.map { case (details, index) =>
       CheckboxItem(
         content = Text(details.fullName),

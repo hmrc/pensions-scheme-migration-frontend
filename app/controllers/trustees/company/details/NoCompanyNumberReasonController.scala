@@ -58,32 +58,32 @@ class NoCompanyNumberReasonController @Inject()(val messagesApi: MessagesApi,
         SchemeNameId.retrieve.map {
           schemeName =>
             common.get(
-              pageTitle     = Messages("messages__whyNoCompanyNumber", Messages("messages__company")),
-              pageHeading     = Messages("messages__whyNoCompanyNumber", name(index)),
+              pageTitle = Messages("messages__whyNoCompanyNumber", Messages("messages__company")),
+              pageHeading = Messages("messages__whyNoCompanyNumber", name(index)),
               isPageHeading = true,
-              id            = NoCompanyNumberReasonId(index),
-              form          = form(index),
-              schemeName    = schemeName,
-              submitUrl     = routes.NoCompanyNumberReasonController.onSubmit(index, mode)
+              id = NoCompanyNumberReasonId(index),
+              form = form(index),
+              schemeName = schemeName,
+              submitUrl = routes.NoCompanyNumberReasonController.onSubmit(index, mode)
             )
         }
     }
 
-    def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
-      (authenticate andThen getData andThen requireData()).async {
-        implicit request =>
-          SchemeNameId.retrieve.map {
-            schemeName =>
-              common.post(
-                pageTitle     = Messages("messages__whyNoCompanyNumber", Messages("messages__company")),
-                pageHeading     = Messages("messages__whyNoCompanyNumber", name(index)),
-                isPageHeading = true,
-                id            = NoCompanyNumberReasonId(index),
-                form          = form(index),
-                schemeName    = schemeName,
-                mode          = mode,
-                submitUrl     = routes.NoCompanyNumberReasonController.onSubmit(index, mode)
-              )
-          }
-      }
+  def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
+    (authenticate andThen getData andThen requireData()).async {
+      implicit request =>
+        SchemeNameId.retrieve.map {
+          schemeName =>
+            common.post(
+              pageTitle = Messages("messages__whyNoCompanyNumber", Messages("messages__company")),
+              pageHeading = Messages("messages__whyNoCompanyNumber", name(index)),
+              isPageHeading = true,
+              id = NoCompanyNumberReasonId(index),
+              form = form(index),
+              schemeName = schemeName,
+              mode = mode,
+              submitUrl = routes.NoCompanyNumberReasonController.onSubmit(index, mode)
+            )
+        }
+    }
 }

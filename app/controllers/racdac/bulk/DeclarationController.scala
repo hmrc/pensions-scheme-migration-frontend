@@ -45,11 +45,13 @@ class DeclarationController @Inject()(
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData(true)) {
       implicit request =>
-        Ok(declarationView(
-          routes.DeclarationController.onSubmit,
-          appConfig.psaOverviewUrl,
-          request.md.name
-        ))
+        Ok(
+          declarationView(
+            routes.DeclarationController.onSubmit,
+            appConfig.psaOverviewUrl,
+            request.md.name
+          )
+        )
     }
 
   private val logger = Logger(classOf[DeclarationController])
@@ -57,12 +59,11 @@ class DeclarationController @Inject()(
   def onSubmit: Action[AnyContent] =
     (authenticate andThen getData(false)).async {
       implicit request =>
-        val psaId = request.request.psaId.id
         val racDacSchemes = request.lisOfSchemes.filter(_.racDac).map { items =>
           RacDacRequest(items.schemeName, items.policyNo.getOrElse(
             throw new RuntimeException("Policy Number is mandatory for RAC/DAC")), items.pstr, items.declarationDate, items.schemeOpenDate)
         }
-        bulkMigrationQueueConnector.pushAll(psaId, Json.toJson(racDacSchemes)).flatMap { e =>
+        bulkMigrationQueueConnector.pushAll(Json.toJson(racDacSchemes)).flatMap { e =>
           val confirmationData = Json.obj(
             "confirmationData" -> Json.obj(
               "email" -> request.md.email,

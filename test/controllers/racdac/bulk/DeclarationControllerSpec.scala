@@ -16,56 +16,54 @@
 
 package controllers.racdac.bulk
 
+import config.AppConfig
 import connectors.EmailConnector
 import connectors.cache.{BulkMigrationQueueConnector, CurrentPstrCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{BulkDataAction, MutableFakeBulkDataAction}
 import matchers.JsonMatchers
+import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.*
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.libs.json.Json
-import play.api.mvc.Request
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.http.HttpException
+import utils.Data.psaName
 import utils.Enumerable
 
 import scala.concurrent.Future
+
 class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers with Enumerable.Implicits {
 
   private val mockBulkMigrationConnector = mock[BulkMigrationQueueConnector]
   private val mockCurrentPstrCacheConnector = mock[CurrentPstrCacheConnector]
 
   private val mutableFakeBulkDataAction: MutableFakeBulkDataAction = new MutableFakeBulkDataAction(false)
+
   val extraModules: Seq[GuiceableModule] = Seq(
     bind[BulkMigrationQueueConnector].to(mockBulkMigrationConnector),
     bind[EmailConnector].toInstance(mockEmailConnector),
-    bind[CurrentPstrCacheConnector].toInstance(mockCurrentPstrCacheConnector)
+    bind[CurrentPstrCacheConnector].toInstance(mockCurrentPstrCacheConnector),
+    bind[AppConfig].toInstance(mockAppConfig)
   )
+
   override def fakeApplication(): Application = new GuiceApplicationBuilder()
-    .configure(
-      "metrics.jvm" -> false,
-      "metrics.enabled" -> false
-    )
     .overrides(
       modules ++ extraModules ++ Seq[GuiceableModule](
         bind[BulkDataAction].toInstance(mutableFakeBulkDataAction)
-      ): _*
+      ) *
     ).build()
+
   private val dummyUrl = "/dummyurl"
-
-  private def getView(request: Request[_]) = app.injector.instanceOf[views.html.racdac.DeclarationView].apply(
-    routes.DeclarationController.onSubmit,
-    dummyUrl,
-    "test company"
-  )(request, implicitly)
-
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockCurrentPstrCacheConnector)
-    when(mockAppConfig.psaOverviewUrl) thenReturn dummyUrl
+    when(mockAppConfig.psaOverviewUrl).thenReturn(dummyUrl)
+    when(mockMinimalDetailsConnector.getPSADetails(any())(any(), any())).thenReturn(Future.successful(psaName))
   }
 
   private def httpPathGET: String = controllers.racdac.bulk.routes.DeclarationController.onPageLoad.url
@@ -73,18 +71,29 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
   private def httpPathPOST: String = controllers.racdac.bulk.routes.DeclarationController.onSubmit.url
 
   "onPageLoad" must {
-
     "return OK and the correct view for a GET" in {
+      when(mockAppConfig.psaOverviewUrl).thenReturn(dummyUrl)
       val req = httpGETRequest(httpPathGET)
       val result = route(app, req).value
       status(result) mustEqual OK
-      compareResultAndView(result, getView(req))
+
+      val body = contentAsString(result)
+      val doc = Jsoup.parse(body)
+
+      doc.title() must include("Declaration")
+      doc.select("form").attr("action") mustBe routes.DeclarationController.onSubmit.url
+      val bullets = doc.select("ul.govuk-list li").eachText()
+      bullets must contain allOf(
+        "you understand that as the scheme administrator you are responsible for discharging the functions conferred or imposed on the scheme administrator of the pension scheme by the Finance Act 2004 and you intend to discharge those functions at all times",
+        "you will comply with all information notices issued to the scheme administrator under the Finance Act 2004 or the Finance Act 2008 — you understand that you may be liable to a penalty and the pension scheme may be de-registered if you fail to properly discharge those functions",
+        "you understand that you may be liable to a penalty and the pension scheme may be de-registered if a false statement is made in any information you provide and that false statements may also lead to prosecution"
+      )
     }
   }
 
   "onSubmit" must {
     "redirect to next page when rac dac schemes exist" in {
-      when(mockBulkMigrationConnector.pushAll(any(), any())(any(), any())).thenReturn(Future(Json.obj()))
+      when(mockBulkMigrationConnector.pushAll(any())(any(), any())).thenReturn(Future(Json.obj()))
       when(mockCurrentPstrCacheConnector.save(any())(any(), any())).thenReturn(Future.successful(Json.obj()))
       val result = route(app, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 
@@ -93,7 +102,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with JsonMatchers wit
     }
 
     "redirect to Request not process page when error while push" in {
-      when(mockBulkMigrationConnector.pushAll(any(), any())(any(), any())).thenReturn(Future.failed(new HttpException("No Service", SERVICE_UNAVAILABLE)))
+      when(mockBulkMigrationConnector.pushAll(any())(any(), any())).thenReturn(Future.failed(new HttpException("No Service", SERVICE_UNAVAILABLE)))
 
       val result = route(app, httpPOSTRequest(httpPathPOST, Map("value" -> Seq("false")))).value
 

@@ -30,6 +30,7 @@ import play.api.mvc.{Action, AnyContent}
 import services.common.contact.CommonEmailAddressService
 
 import javax.inject.Inject
+import scala.annotation.unused
 import scala.concurrent.ExecutionContext
 
 class EnterEmailController @Inject()(
@@ -49,8 +50,9 @@ class EnterEmailController @Inject()(
       .get(PartnershipDetailsId(index))
       .fold(Messages("messages__partnership"))(_.partnershipName)
 
-  private def form(index: Index)(implicit request: DataRequest[AnyContent]): Form[String] =
+  private def form(@unused index: Index)(implicit request: DataRequest[AnyContent]): Form[String] = {
     formProvider(Messages("messages__enterEmail__type__error_required", Messages("messages__partnership")))
+  }
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async {

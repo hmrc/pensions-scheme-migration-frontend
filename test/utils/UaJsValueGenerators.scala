@@ -91,6 +91,19 @@ trait UaJsValueGenerators {
     )
   }
 
+  def uaJsValueTwoEstablisherCompaniesThreeTrustees: Gen[JsObject] = for {
+    trustee1 <- trusteeIndividualJsValueGen(isNinoAvailable = true, 1)
+    trustee2 <- trusteeIndividualJsValueGen(isNinoAvailable = true, 2)
+    trustee3 <- trusteeIndividualJsValueGen(isNinoAvailable = true, 3)
+    estComp1 <- estCompanyWithNinoInDirJsValueGen(isNinoAvailable = true)
+    estComp2 <- estCompanyWithNinoInDirJsValueGen(isNinoAvailable = true)
+  } yield {
+    Json.obj(
+      "trustees" -> Seq(trustee1, trustee2, trustee3),
+      "establishers" -> Seq(estComp1, estComp2.-("director")),
+    )
+  }
+
   def uaJsValueWithNoNino: Gen[JsObject] = for {
     trusteeDetails <- trusteeIndividualJsValueGen(isNinoAvailable = false, 1)
     trusteeDetailsFour <- trusteeIndividualJsValueGen(isNinoAvailable = true, 4)
@@ -143,12 +156,20 @@ trait UaJsValueGenerators {
       "trustees" -> Seq(trusteeDetails)
     )
   }
+
+  def uaJsValueWithNoTrustee: Gen[JsObject] = for {
+    estComDetails <- estCompanyWithNinoInDirJsValueGen(isNinoAvailable = false)
+  } yield {
+    Json.obj(
+      "establishers" -> Seq(estComDetails)
+    )
+  }
   def trusteeIndividualJsValueGen(isNinoAvailable: Boolean, index: Int): Gen[JsObject] = for {
     referenceOrNino <- Gen.const(s"CS700${index}00A")
     email <- Gen.const("aaa@gmail.com")
     phone <- Gen.listOfN[Char](randomNumberFromRange(1, 24), Gen.numChar).map(_.mkString)
     address <- addressJsValueGen
-    date <- Gen.const(s"1999-0${index}-13")
+    date <- Gen.const(s"1999-0$index-13")
   } yield {
     Json.obj(
       "trusteeKind" -> "individual",
@@ -203,14 +224,14 @@ trait UaJsValueGenerators {
       "companyDyDetails" -> Json.obj(
         "companyName" -> orgName
       )
-    ) ++ address.as[JsObject] ++ Json.obj("director" -> directorDetails.as[JsObject])
+    ) ++ address.as[JsObject] ++ Json.obj("director" -> Seq(directorDetails.as[JsObject]))
   }
 
   def directorJsValueGen(isDeleted: Boolean, isNinoAvailable: Boolean, index: Int): Gen[JsValue] = for {
     referenceOrNino <- Gen.const(s"CS700${index}00A")
     contactDetails <- contactDetailsJsValueGen
     address <- addressJsValueGen
-    date <- Gen.const(s"1999-0${index}-13")
+    date <- Gen.const(s"1999-0$index-13")
   } yield {
     Json.obj(
       "directorDetails" -> Json.obj(

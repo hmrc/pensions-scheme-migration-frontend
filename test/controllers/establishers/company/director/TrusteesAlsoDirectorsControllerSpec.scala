@@ -20,12 +20,12 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.dataPrefill.DataPrefillCheckboxFormProvider
 import identifiers.establishers.company.CompanyDetailsId
-import identifiers.establishers.individual.EstablisherNameId
 import matchers.JsonMatchers
 import models._
 import models.prefill.IndividualDetails
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.i18n.Messages
 import play.api.libs.json.Json
@@ -56,10 +56,8 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
 
 
   override def beforeEach(): Unit = {
-    reset(
-      mockUserAnswersCacheConnector,
-      mockDataPrefillService
-    )
+    reset(mockUserAnswersCacheConnector)
+    reset(mockDataPrefillService)
 
     when(mockDataPrefillService.getListOfTrusteesToBeCopied(any)(any)).thenReturn(Nil)
 
@@ -88,7 +86,6 @@ class TrusteesAlsoDirectorsControllerSpec extends ControllerSpecBase
       when(mockDataPrefillService.getListOfTrusteesToBeCopied(any)(any)).thenReturn(Seq(IndividualDetails("", "", false, None, None, 0, true, None)))
 
       val getData = new FakeDataRetrievalAction(Some(userAnswerss))
-
       val seqCheckBox = DataPrefillCheckbox.checkboxes(form, Seq(IndividualDetails("", "", false, None, None, 0, true, None)))
       mutableFakeDataRetrievalAction.setDataToReturn(Some(userAnswerss))
 

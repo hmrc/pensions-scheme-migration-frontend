@@ -16,36 +16,32 @@
 
 package controllers.establishers.company.director.address
 
-import connectors.cache.UserAnswersCacheConnector
-import controllers.Retrievals
-import controllers.actions._
-import forms.address.AddressFormProvider
-import identifiers.beforeYouStart.SchemeNameId
-import identifiers.establishers.company.director.DirectorNameId
-import identifiers.establishers.company.director.address.{AddressId, AddressListId}
-import identifiers.trustees.individual.address.{AddressId => trusteeAddressId}
-import models._
-import navigators.CompoundNavigator
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
-import services.DataUpdateService
-import services.common.address.CommonManualAddressService
-import utils.UserAnswers
+ import controllers.Retrievals
+ import controllers.actions.*
+ import forms.address.AddressFormProvider
+ import identifiers.beforeYouStart.SchemeNameId
+ import identifiers.establishers.company.director.DirectorNameId
+ import identifiers.establishers.company.director.address.{AddressId, AddressListId}
+ import identifiers.trustees.individual.address.AddressId as trusteeAddressId
+ import models.*
+ import play.api.data.Form
+ import play.api.i18n.{I18nSupport, MessagesApi}
+ import play.api.mvc.{Action, AnyContent}
+ import services.DataPrefillService
+ import services.common.address.CommonManualAddressService
+ import utils.UserAnswers
 
-import javax.inject.Inject
-import scala.concurrent.ExecutionContext
-import scala.util.Try
+ import javax.inject.Inject
+ import scala.concurrent.ExecutionContext
+ import scala.util.Try
 
 class ConfirmAddressController @Inject()(
    val messagesApi: MessagesApi,
-   userAnswersCacheConnector: UserAnswersCacheConnector,
-   navigator: CompoundNavigator,
    authenticate: AuthAction,
    getData: DataRetrievalAction,
    requireData: DataRequiredAction,
    formProvider: AddressFormProvider,
-   dataUpdateService: DataUpdateService,
+   dataPrefillService: DataPrefillService,
    common: CommonManualAddressService
 )(implicit ec: ExecutionContext) extends Retrievals with I18nSupport {
 
@@ -54,7 +50,7 @@ class ConfirmAddressController @Inject()(
 
   def onPageLoad(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.map {
+      DirectorNameId(establisherIndex, directorIndex).and(SchemeNameId).retrieve.map {
         case directorName ~ schemeName =>
           common.get(
             Some(schemeName),
@@ -71,7 +67,7 @@ class ConfirmAddressController @Inject()(
 
   def onSubmit(establisherIndex: Index, directorIndex: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (DirectorNameId(establisherIndex, directorIndex) and SchemeNameId).retrieve.map {
+      DirectorNameId(establisherIndex, directorIndex).and(SchemeNameId).retrieve.map {
         case directorName ~ schemeName =>
           common.post(
             Some(schemeName),
@@ -91,7 +87,7 @@ class ConfirmAddressController @Inject()(
     val updatedUserAnswers =
       mode match {
         case CheckMode =>
-          dataUpdateService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
+          dataPrefillService.findMatchingTrustee(establisherIndex, directorIndex)(ua).map { trustee =>
             ua.setOrException(trusteeAddressId(trustee.index), value)
           }.getOrElse(ua)
         case _ => ua

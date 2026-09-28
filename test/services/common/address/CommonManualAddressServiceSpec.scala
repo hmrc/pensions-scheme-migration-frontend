@@ -24,6 +24,7 @@ import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.Mockito._
 import play.api.data.Form
 import play.api.data.Forms.{mapping, nonEmptyText, optional, text}
 import play.api.libs.json.Json
@@ -49,7 +50,15 @@ class CommonManualAddressServiceSpec extends ControllerSpecBase with CommonServi
     "line4" -> optional(text),
     "postcode" -> optional(text),
     "country" -> nonEmptyText
-  )(Address.apply)(Address.unapply))
+  )(Address.apply)((a: Address) => Some((
+    a.addressLine1,
+    a.addressLine2,
+    a.addressLine3,
+    a.addressLine4,
+    a.postcode,
+    a.country
+  )))
+  )
 
   private val service = new CommonManualAddressService(
     mockUserAnswersCacheConnector,

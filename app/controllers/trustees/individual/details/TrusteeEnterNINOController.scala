@@ -28,7 +28,7 @@ import models.{CheckMode, Index, Mode, ReferenceValue}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import services.DataUpdateService
+import services.DataPrefillService
 import services.common.details.CommonEnterReferenceValueService
 import utils.UserAnswers
 
@@ -41,7 +41,7 @@ class TrusteeEnterNINOController @Inject()(val messagesApi: MessagesApi,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
                                            formProvider: NINOFormProvider,
-                                           dataUpdateService: DataUpdateService,
+                                           dataPrefillService: DataPrefillService,
                                            common: CommonEnterReferenceValueService
                                           )(implicit val executionContext: ExecutionContext)
   extends Retrievals with I18nSupport {
@@ -70,7 +70,7 @@ class TrusteeEnterNINOController @Inject()(val messagesApi: MessagesApi,
               form          = form(index),
               schemeName    = schemeName,
               hintText      = Some(Messages("messages__enterNINO__hint")),
-              legendClass   = "govuk-label--xl",
+              legendClass   = "govuk-label--l",
               submitCall = routes.TrusteeEnterNINOController.onSubmit(index, mode)
             )
         }
@@ -90,7 +90,7 @@ class TrusteeEnterNINOController @Inject()(val messagesApi: MessagesApi,
               schemeName = schemeName,
               hintText = Some(Messages("messages__enterNINO__hint")),
               paragraphText = Seq(),
-              legendClass = "govuk-label--xl",
+              legendClass = "govuk-label--l",
               mode = mode,
               optSetUserAnswers = Some(value => setUpdatedAnswers(index, mode, value, request.userAnswers)),
               submitCall = routes.TrusteeEnterNINOController.onSubmit(index, mode)
@@ -102,7 +102,7 @@ class TrusteeEnterNINOController @Inject()(val messagesApi: MessagesApi,
     val updatedUserAnswers =
       mode match {
         case CheckMode =>
-          val directors = dataUpdateService.findMatchingDirectors(index)(ua)
+          val directors = dataPrefillService.findMatchingDirectors(index)(ua)
           directors.foldLeft[UserAnswers](ua) { (acc, director) =>
             if (director.isDeleted)
               acc

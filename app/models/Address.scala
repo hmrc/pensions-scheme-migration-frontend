@@ -18,12 +18,14 @@ package models
 
 import play.api.libs.json._
 
-case class Address(addressLine1: String,
-                   addressLine2: String,
-                   addressLine3: Option[String],
-                   addressLine4: Option[String],
-                   postcode: Option[String],
-                   country: String)
+case class Address(
+                    addressLine1: String,
+                    addressLine2: String,
+                    addressLine3: Option[String],
+                    addressLine4: Option[String],
+                    postcode: Option[String],
+                    country: String
+                  )
 
 object Address {
   implicit val formatsAddress: Format[Address] = Json.format[Address]

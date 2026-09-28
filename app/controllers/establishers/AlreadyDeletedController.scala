@@ -65,7 +65,7 @@ class AlreadyDeletedController @Inject()(override val messagesApi: MessagesApi,
       case Individual => EstablisherNameId(index).retrieve.map(_.fullName)
       case Company => CompanyDetailsId(index).retrieve.map(_.companyName)
       case Partnership => PartnershipDetailsId(index).retrieve.map(_.partnershipName)
-      case _ => Right("Unimplemented functionality")
+      case null => Right("Unimplemented functionality")
     }
   }
 }

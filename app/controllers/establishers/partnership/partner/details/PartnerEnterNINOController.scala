@@ -65,7 +65,7 @@ class PartnerEnterNINOController @Inject()(val messagesApi: MessagesApi,
               form          = form(establisherIndex, partnerIndex),
               schemeName    = schemeName,
               hintText      = Some(Messages("messages__enterNINO__hint")),
-              legendClass   = "govuk-label--xl",
+              legendClass   = "govuk-label--l",
               submitCall = routes.PartnerEnterNINOController.onSubmit(establisherIndex, partnerIndex, mode)
             )
         }
@@ -84,7 +84,7 @@ class PartnerEnterNINOController @Inject()(val messagesApi: MessagesApi,
               form          = form(establisherIndex, partnerIndex),
               schemeName    = schemeName,
               hintText      = Some(Messages("messages__enterNINO__hint")),
-              legendClass   = "govuk-label--xl",
+              legendClass   = "govuk-label--l",
               mode          = mode,
               submitCall = routes.PartnerEnterNINOController.onSubmit(establisherIndex, partnerIndex, mode)
             )

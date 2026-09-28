@@ -25,6 +25,7 @@ import matchers.JsonMatchers
 import models.{NormalMode, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
+import org.mockito.Mockito._
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
@@ -61,7 +62,7 @@ class DirectorHasNINOControllerSpec
       getData                   = dataRetrievalAction,
       requireData               = new DataRequiredActionImpl,
       formProvider              = formProvider,
-      dataUpdateService         = mockDataUpdateService,
+      dataPrefillService = mockDataPrefillService,
       common = new CommonHasReferenceValueService(
         controllerComponents = controllerComponents,
         hasReferenceValueWithHintView = app.injector.instanceOf[HasReferenceValueWithHintView],
@@ -92,7 +93,7 @@ class DirectorHasNINOControllerSpec
         "Does the director have a National Insurance number?",
         "Does Jane Doe have a National Insurance number?",
         utils.Radios.yesNo(form("value")),
-        "govuk-label--xl",
+        "govuk-label--l",
         routes.DirectorHasNINOController.onSubmit(0,0,NormalMode)
       )(fakeRequest, messages)
       compareResultAndView(result, view)
@@ -117,7 +118,7 @@ class DirectorHasNINOControllerSpec
         "Does the director have a National Insurance number?",
         "Does Jane Doe have a National Insurance number?",
         utils.Radios.yesNo(filledFrom("value")),
-        "govuk-label--xl",
+        "govuk-label--l",
         routes.DirectorHasNINOController.onSubmit(0, 0, NormalMode)
       )(fakeRequest, messages)
       compareResultAndView(result, view)

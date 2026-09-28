@@ -43,7 +43,7 @@ trait Constraints {
   val regexVat = """^\d{9}$"""
   val regexPaye = """^[0-9]{3}[0-9A-Za-z]{1,13}$"""
   val regexSafeText = """^[a-zA-Z0-9À-ÿ !#$%&'‘’"“”«»()*+,./:;=?@\\\[\]|~£€¥\—–‐_^`-]{1,160}$"""
-  val regexAddressLine = """^[A-Za-z0-9 &!'‘’(),./—–‐-]{1,35}$"""
+  val regexAddressLine = """^[A-Za-z0-9 &!'‘’\"“”(),./—–‐-]{1,35}$"""
   val adviserNameRegex = """^[a-zA-Z0-9À-ÿ !#$%&'‘’\"“”«»()*+,./:;=?@\\\[\]|~£€¥\—–‐_^`-]{1,107}$"""
   val regexPolicyNumber = """^[a-zA-Z0-9À-ÿ !#$%&'‘’"“”«»()*+,./:;=?@\\\[\]|~£€¥\—–‐_^`-]{1,55}$"""
 
@@ -158,10 +158,10 @@ trait Constraints {
     }
 
 
-  protected def nonEmptySeq(errorKey: String): Constraint[Seq[_]] = Constraint {
+  protected def nonEmptySeq(errorKey: String): Constraint[Seq[?]] = Constraint {
     case seq: Seq[_] =>
       if (seq.nonEmpty) Valid else Invalid(errorKey)
-    case _ =>
+    case null =>
       Invalid("error.invalid")
   }
 

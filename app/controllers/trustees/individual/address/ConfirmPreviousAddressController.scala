@@ -16,7 +16,6 @@
 
 package controllers.trustees.individual.address
 
-import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.address.AddressFormProvider
@@ -25,11 +24,10 @@ import identifiers.establishers.company.director.{address => Director}
 import identifiers.trustees.individual.TrusteeNameId
 import identifiers.trustees.individual.address.{PreviousAddressId, PreviousAddressListId}
 import models._
-import navigators.CompoundNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import services.DataUpdateService
+import services.DataPrefillService
 import services.common.address.CommonManualAddressService
 import utils.UserAnswers
 
@@ -39,13 +37,11 @@ import scala.util.Try
 
 class ConfirmPreviousAddressController @Inject()(
    val messagesApi: MessagesApi,
-   userAnswersCacheConnector: UserAnswersCacheConnector,
-   navigator: CompoundNavigator,
    authenticate: AuthAction,
    getData: DataRetrievalAction,
    requireData: DataRequiredAction,
    formProvider: AddressFormProvider,
-   dataUpdateService: DataUpdateService,
+   dataPrefillService: DataPrefillService,
    common: CommonManualAddressService
 )(implicit ec: ExecutionContext) extends Retrievals with I18nSupport {
 
@@ -56,7 +52,7 @@ class ConfirmPreviousAddressController @Inject()(
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (TrusteeNameId(index) and SchemeNameId).retrieve.map {
+      TrusteeNameId(index).and(SchemeNameId).retrieve.map {
         case trusteeName ~ schemeName =>
           common.get(
             Some(schemeName),
@@ -74,7 +70,7 @@ class ConfirmPreviousAddressController @Inject()(
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData()).async { implicit request =>
-      (TrusteeNameId(index) and SchemeNameId).retrieve.map {
+      TrusteeNameId(index).and(SchemeNameId).retrieve.map {
         case trusteeName ~ schemeName =>
           common.post(
             Some(schemeName),
@@ -95,7 +91,7 @@ class ConfirmPreviousAddressController @Inject()(
     val updatedUserAnswers =
       mode match {
       case CheckMode =>
-        val directors = dataUpdateService.findMatchingDirectors(index)(ua)
+        val directors = dataPrefillService.findMatchingDirectors(index)(ua)
         directors.foldLeft[UserAnswers](ua) { (acc, director) =>
           if (director.isDeleted) acc
           else acc.setOrException(Director.PreviousAddressId(director.mainIndex.get, director.index), value)

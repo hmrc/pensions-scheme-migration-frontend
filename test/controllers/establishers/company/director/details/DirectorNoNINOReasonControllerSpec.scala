@@ -22,6 +22,7 @@ import identifiers.establishers.company.director.details.DirectorNoNINOReasonId
 import matchers.JsonMatchers
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
+import org.mockito.Mockito._
 import play.api.data.Form
 import play.api.mvc.AnyContentAsEmpty
 import play.api.mvc.Results.{BadRequest, Ok, Redirect}
@@ -67,6 +68,7 @@ class DirectorNoNINOReasonControllerSpec
       )(request, messages)
 
       when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any()))
+
         .thenReturn(Future.successful(Ok(view)))
 
       val result = route(application, httpGETRequest(httpPathGET)).value
@@ -88,6 +90,7 @@ class DirectorNoNINOReasonControllerSpec
       )(request, messages)
 
       when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any()))
+
         .thenReturn(Future.successful(Ok(view)))
 
       val result = route(application, httpGETRequest(httpPathGET)).value
@@ -108,6 +111,7 @@ class DirectorNoNINOReasonControllerSpec
       )(request, messages)
 
       when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any()))
+
         .thenReturn(Future.successful(Ok(view)))
       when(mockCommonReasonService.post(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(Redirect(onwardCall.url)))

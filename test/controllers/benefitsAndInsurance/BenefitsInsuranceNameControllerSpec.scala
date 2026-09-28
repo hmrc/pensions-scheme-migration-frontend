@@ -25,6 +25,7 @@ import matchers.JsonMatchers
 import models.Scheme
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}

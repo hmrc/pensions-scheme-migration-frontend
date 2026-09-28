@@ -25,6 +25,7 @@ import matchers.JsonMatchers
 import models.{Index, NormalMode, ReferenceValue}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
+import org.mockito.Mockito._
 import play.api.data.{Form, FormBinding}
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Request, Result}
@@ -44,13 +45,13 @@ class CompanyNumberControllerSpec extends ControllerSpecBase with JsonMatchers w
 
   private val formProvider: CompanyNumberFormProvider = new CompanyNumberFormProvider()
 
-  private def getView(req: Request[_], form: Form[_]) = {
+  private def getView(req: Request[?], form: Form[?]) = {
     app.injector.instanceOf[EnterReferenceValueWithHintView].apply(
       form,
       schemeName,
       messages("messages__companyNumber", messages("messages__company")),
       messages("messages__companyNumber", companyDetails.companyName),
-      "govuk-label--xl",
+      "govuk-label--l",
       Seq(),
       Some(messages("messages__companyNumber__hint")),
       routes.CompanyNumberController.onSubmit(index, NormalMode)

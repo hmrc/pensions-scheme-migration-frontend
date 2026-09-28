@@ -65,7 +65,7 @@ class CompanyNumberController @Inject()(val messagesApi: MessagesApi,
               form          = form(index),
               schemeName    = schemeName,
               hintText      = Some(Messages("messages__companyNumber__hint")),
-              legendClass   = "govuk-label--xl",
+              legendClass   = "govuk-label--l",
               submitCall    = routes.CompanyNumberController.onSubmit(index, mode)
             )
         }
@@ -84,7 +84,7 @@ class CompanyNumberController @Inject()(val messagesApi: MessagesApi,
               form          = form(index),
               schemeName    = schemeName,
               hintText      = Some(Messages("messages__companyNumber__hint")),
-              legendClass   = "govuk-label--xl",
+              legendClass   = "govuk-label--l",
               mode          = mode,
               submitCall    = routes.CompanyNumberController.onSubmit(index, mode)
             )

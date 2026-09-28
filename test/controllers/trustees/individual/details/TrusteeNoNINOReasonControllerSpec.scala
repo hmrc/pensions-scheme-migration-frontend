@@ -22,6 +22,7 @@ import identifiers.trustees.individual.details.TrusteeNoNINOReasonId
 import matchers.JsonMatchers
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
+import org.mockito.Mockito._
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsEmpty
@@ -66,6 +67,7 @@ class TrusteeNoNINOReasonControllerSpec
       )(request, messages)
 
       when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any()))
+
         .thenReturn(Future.successful(Ok(view)))
 
       val result = route(application, httpGETRequest(httpPathGET)).value
@@ -82,6 +84,7 @@ class TrusteeNoNINOReasonControllerSpec
       )(request, messages)
 
       when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any()))
+
         .thenReturn(Future.successful(Ok(view)))
 
       when(mockCommonReasonService.post(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
@@ -106,6 +109,7 @@ class TrusteeNoNINOReasonControllerSpec
         pageTitle, pageHeading, isPageHeading, filledForm, schemeName, submitCall
       )(request, messages)
       when(mockCommonReasonService.get(any(), any(), any(), any(), any(), any(), any())(any()))
+
         .thenReturn(Future.successful(Ok(view)))
       when(mockCommonReasonService.post(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(Redirect(onwardCall.url)))

@@ -36,7 +36,7 @@ object BenefitsType extends Enumerable.Implicits {
     CashBalanceAndOtherMoneyPurchaseBenefits
   )
 
-  def radios(form: Form[_])(implicit messages: Messages): Seq[RadioItem] = {
+  def radios(form: Form[?])(implicit messages: Messages): Seq[RadioItem] = {
     values.map(value =>
       RadioItem(
         content = Text(Messages(s"benefitsType.${value.toString}")),
@@ -47,6 +47,6 @@ object BenefitsType extends Enumerable.Implicits {
   }
 
   implicit val enumerable: Enumerable[BenefitsType] =
-    Enumerable(values.map(v => v.toString -> v): _*)
+    Enumerable(values.map(v => v.toString -> v)*)
 
 }

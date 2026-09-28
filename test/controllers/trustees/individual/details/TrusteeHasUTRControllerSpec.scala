@@ -25,6 +25,7 @@ import matchers.JsonMatchers
 import models.{NormalMode, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, TryValues}
+import org.mockito.Mockito._
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
@@ -60,7 +61,7 @@ class TrusteeHasUTRControllerSpec
       getData                   = dataRetrievalAction,
       requireData               = new DataRequiredActionImpl,
       formProvider              = formProvider,
-      dataUpdateService         = mockDataUpdateService,
+      dataPrefillService = mockDataPrefillService,
       common = new CommonHasReferenceValueService(
         controllerComponents = controllerComponents,
         hasReferenceValueWithHintView = app.injector.instanceOf[HasReferenceValueWithHintView],
@@ -94,6 +95,8 @@ class TrusteeHasUTRControllerSpec
         utils.Radios.yesNo(form("value")),
         "govuk-visually-hidden",
         Seq("This is a 10-digit or 13-digit number. " +
+          "For example, 12345 67890. " +
+          "It may also start or end with the letter ‘k’.",
           "You can find it on tax returns and other documents from HMRC. " +
           "It might be called ‘reference’, ‘UTR’ or ‘official use’."),
         routes.TrusteeHasUTRController.onSubmit(0, NormalMode)
@@ -121,8 +124,10 @@ class TrusteeHasUTRControllerSpec
         utils.Radios.yesNo(filledFrom("value")),
         "govuk-visually-hidden",
         Seq("This is a 10-digit or 13-digit number. " +
+          "For example, 12345 67890. " +
+          "It may also start or end with the letter ‘k’.",
           "You can find it on tax returns and other documents from HMRC. " +
-          "It might be called ‘reference’, ‘UTR’ or ‘official use’."),
+            "It might be called ‘reference’, ‘UTR’ or ‘official use’."),
         routes.TrusteeHasUTRController.onSubmit(0, NormalMode)
       )(fakeRequest, messages)
       compareResultAndView(result, view)

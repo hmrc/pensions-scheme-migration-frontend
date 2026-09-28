@@ -312,7 +312,8 @@ class ConstraintsSpec extends SpecBase with Constraints with RegexBehaviourSpec 
     val validAddress = Table(
       "address",
       "1 Main St.",
-      "Apt/12"
+      "Apt/12",
+      "“15 Quotation Street”"
     )
 
     val invalidAddress = Table(

@@ -38,7 +38,7 @@
                     legend = Some(Legend(
                         content = Text(messages("addressYears.title", entityName)),
                         isPageHeading = true,
-                        classes = "govuk-fieldset__legend--l govuk-!-margin-bottom-8"
+                        classes = "govuk-fieldset__legend--l govuk-!-margin-bottom-4"
                     ))
                 ),
                 classes = "govuk-radios--inline"
@@ -46,7 +46,7 @@
         )
 
         @govukButton(
-            ButtonViewModel(Text(messages("site.save_and_continue"))).withAttribute("id", "submit")
+            ButtonViewModel(Text(messages("site.save_and_continue"))).withAttribute(("id", "submit"): (String, String))
         )
     }
 
