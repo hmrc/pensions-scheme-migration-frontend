@@ -26,7 +26,6 @@ trait ButtonFluency {
   object ButtonViewModel {
     def apply(content: Content): Button =
       Button(
-        element = Some("button"),
         content = content
       )
   }
@@ -41,9 +40,11 @@ trait ButtonFluency {
 
     def asLink(href: String): Button =
       button.copy(
-        element = Some("a"),
         href = Some(href)
       )
+
+    def withAttribute(key: String, value: String): Button =
+      withAttribute(key -> value)
 
     def withAttribute(attribute: (String, String)): Button =
       button.copy(attributes = button.attributes + attribute)

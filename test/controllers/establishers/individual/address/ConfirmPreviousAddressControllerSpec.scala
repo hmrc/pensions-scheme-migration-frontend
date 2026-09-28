@@ -101,7 +101,7 @@ class ConfirmPreviousAddressControllerSpec extends ControllerSpecBase with JsonM
         postcodeEntry = false, postcodeFirst = false
       )(fakeRequest, messages)
 
-      when(mockCommonManualAddressService.get(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any()))
+      when(mockCommonManualAddressService.get(any(), any(), any(), any(), any(), any(), any(), any(), any())(any()))
         .thenReturn(Future.successful(Ok(expectedView)))
 
 

@@ -82,7 +82,7 @@ class EnterPreviousPostcodeControllerSpec extends ControllerSpecBase with JsonMa
         Some(Data.schemeName),
         h1MessageKey = "previousPostcode.title"
       )(fakeRequest, messages)
-      when(mockCommonPostcodeService.get(any(), any())(any(), any()))
+      when(mockCommonPostcodeService.get(any(), any())(any()))
         .thenReturn(Future.successful(Ok(expectedView)))
 
       val result: Future[Result] = route(app, httpGETRequest(httpPathGET)).value

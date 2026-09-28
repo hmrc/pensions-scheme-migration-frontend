@@ -71,7 +71,7 @@ class CommonHasReferenceValueServiceSpec extends ControllerSpecBase with CommonS
         form = yesNoForm,
         schemeName = "Test Scheme",
         submitCall = onwardCall
-      )(fakeDataRequest(ua, fakeRequestWithFormData), global)
+      )(fakeDataRequest(ua, fakeRequestWithFormData))
 
 
       status(result) mustBe OK

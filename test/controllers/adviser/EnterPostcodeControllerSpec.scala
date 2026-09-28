@@ -80,7 +80,7 @@ class EnterPostcodeControllerSpec extends ControllerSpecBase with JsonMatchers w
       val view = app.injector.instanceOf[PostcodeView]
       val expectedView = view(form, "entityType", "entityName", routes.EnterPostcodeController.onSubmit(mode),
         routes.ConfirmAddressController.onPageLoad.url, Some(Data.schemeName), h1MessageKey = "postcode.title")(fakeRequest, messages)
-      when(mockCommonPostcodeService.get(any(), any())(any(), any()))
+      when(mockCommonPostcodeService.get(any(), any())(any()))
         .thenReturn(Future.successful(Ok(expectedView)))
 
       val result: Future[Result] = route(app, httpGETRequest(httpPathGET)).value

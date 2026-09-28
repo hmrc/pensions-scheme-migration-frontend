@@ -80,7 +80,7 @@ class CommonAddressListServiceSpec extends CommonServiceSpecBase
 
       val result = service.get(templateData, form,
         submitUrl = routes.SelectAddressController.onSubmit(establisherIndex = 0, directorIndex = 0, mode = NormalMode)
-      )(request, global)
+      )(request)
 
       status(result) mustBe OK
     }

@@ -70,7 +70,7 @@ class CommonManualAddressService @Inject()(
           pageTitleEntityTypeMessageKey: Option[String] = None,
           pageTitleMessageKey: String = pageTitleMessageKey,
           submitUrl: Call
-         )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
+         )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     val preparedForm = request.userAnswers.get(addressPage) match {
       case None => request.userAnswers.get(selectedAddress) match {
@@ -139,14 +139,14 @@ class CommonManualAddressService @Inject()(
   }
 
   private def getTemplateData(
-            schemeName: Option[String],
-            entityName: String,
-            form: Form[Address],
-            addressLocation: AddressConfiguration,
-            pageTitleEntityTypeMessageKey: Option[String] = None,
-            pageTitleMessageKey: String,
-            submitUrl: Call
-          )(implicit request: DataRequest[AnyContent]): TemplateData = {
+                               schemeName: Option[String],
+                               entityName: String,
+                               form: Form[Address],
+                               addressLocation: AddressConfiguration,
+                               pageTitleEntityTypeMessageKey: Option[String],
+                               pageTitleMessageKey: String,
+                               submitUrl: Call
+                             )(implicit request: DataRequest[AnyContent]): TemplateData = {
     val messages = request2Messages
     val h1MessageKey = pageTitleMessageKey
     val pageTitle = pageTitleEntityTypeMessageKey match {

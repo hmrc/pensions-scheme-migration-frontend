@@ -48,7 +48,7 @@ class CommonAddressYearsService @Inject()(
           form : Form[Boolean],
           addressYearsId : TypedIdentifier[Boolean],
           submitUrl: Call
-         )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
+         )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     val filledForm: Form[Boolean] = request.userAnswers.get(addressYearsId).fold(form)(form.fill)
     Future.successful(Ok(
       addressYearsView(

@@ -66,7 +66,7 @@ class CommonEmailAddressServiceSpec extends ControllerSpecBase with CommonServic
     "get the view correctly on get" in {
       when(emailView.apply(eqTo(form), eqTo("schemeName"), eqTo("entityName"), any(), any(), any())(any(), any())).thenReturn(Html("email content"))
 
-      val result = service.get("entityName", Messages("entityType"), emailId, form, "schemeName", submitCall = onwardCall)(request, global)
+      val result = service.get("entityName", Messages("entityType"), emailId, form, "schemeName", submitCall = onwardCall)(request)
 
       status(result) mustBe OK
 

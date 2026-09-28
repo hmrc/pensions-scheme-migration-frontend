@@ -64,7 +64,7 @@ class CommonPhoneServiceSpec extends ControllerSpecBase with CommonServiceSpecBa
       when(phoneView.apply(eqTo(form), eqTo("schemeName"), eqTo("entityName"), any(), any(), any())(any(), any())).thenReturn(Html("phone content"))
 
       val result = service.get("entityName", Messages("entityType"), phoneId,
-        form, "schemeName", submitCall=onwardCall)(request, global)
+        form, "schemeName", submitCall=onwardCall)(request)
 
       status(result) mustBe OK
 

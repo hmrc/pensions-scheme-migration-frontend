@@ -90,7 +90,7 @@ class CommonManualAddressServiceSpec extends ControllerSpecBase with CommonServi
         AddressConfiguration.PostcodeFirst,
         form,
         submitUrl = onwardCall
-      )(request, global)
+      )(request)
 
       status(result) mustBe OK
     }

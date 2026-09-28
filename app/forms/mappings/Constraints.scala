@@ -22,7 +22,6 @@ import uk.gov.hmrc.domain.Nino
 import utils.CountryOptions
 
 import java.time.LocalDate
-import scala.language.implicitConversions
 
 trait Constraints {
   // scalastyle: off method.length
@@ -158,11 +157,6 @@ trait Constraints {
           .headOption.getOrElse(Valid)
     }
 
-  implicit def convertToOptionalConstraint[T](constraint: Constraint[T]): Constraint[Option[T]] =
-    Constraint {
-      case Some(t) => constraint.apply(t)
-      case _ => Valid
-    }
 
   protected def nonEmptySeq(errorKey: String): Constraint[Seq[_]] = Constraint {
     case seq: Seq[_] =>

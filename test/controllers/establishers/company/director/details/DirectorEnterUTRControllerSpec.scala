@@ -48,8 +48,6 @@ class DirectorEnterUTRControllerSpec
     PersonName("Jane", "Doe")
   private val formProvider: UTRFormProvider =
     new UTRFormProvider()
-  private val form: Form[ReferenceValue] =
-    formProvider()
   private val userAnswers: UserAnswers =
     ua.set(DirectorNameId(0,0), personName).success.value
 

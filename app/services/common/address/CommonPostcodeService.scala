@@ -57,7 +57,7 @@ class CommonPostcodeService @Inject()(
 
   def get(formToTemplate: Form[String] => CommonPostcodeTemplateData,
           form: Form[String]
-         )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
+         )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     val templateData = formToTemplate(form)
     Future.successful(Ok(postcodeView(
       form,

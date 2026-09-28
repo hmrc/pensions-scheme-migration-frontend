@@ -53,7 +53,7 @@ class CommonHasReferenceValueService @Inject()(val controllerComponents: Message
            paragraphText: Seq[String] = Seq(),
            legendClass: String = "govuk-fieldset__legend--s",
            submitCall: Call
-         )(implicit request: DataRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
+         )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     val preparedForm: Form[Boolean] =
       request.userAnswers.get[Boolean](id) match {
