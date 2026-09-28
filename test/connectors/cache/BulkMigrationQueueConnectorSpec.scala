@@ -21,7 +21,7 @@ import org.scalatest.matchers.must.Matchers._
 import org.scalatest.wordspec.AsyncWordSpec
 import org.scalatest.{OptionValues, RecoverMethods}
 import play.api.http.Status
-import play.api.http.Status.OK
+import play.api.http.Status.{NO_CONTENT, OK}
 import play.api.libs.json.{JsBoolean, Json}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 import utils.WireMockHelper
@@ -114,7 +114,7 @@ class BulkMigrationQueueConnectorSpec extends AsyncWordSpec with WireMockHelper 
     "return None if nothing in the queue" in {
       server.stubFor(
         get(urlEqualTo(bulkMigrationAllFailedUrl))
-          .willReturn(aResponse.withStatus(204))
+          .willReturn(aResponse.withStatus(NO_CONTENT))
       )
 
       connector.isAllFailed(psaId) map { res =>

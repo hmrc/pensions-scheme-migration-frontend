@@ -43,10 +43,10 @@ class WhatYouWillNeedController @Inject()(val messagesApi: MessagesApi,
 
       implicit request =>
         val partnerIndex = request.userAnswers.allPartners(establisherIndex).size
-        Ok(view(
-          PartnerNameController.onPageLoad(establisherIndex,partnerIndex, NormalMode).url,
-          request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
-        )
+          Ok(view(
+            PartnerNameController.onPageLoad(establisherIndex,partnerIndex, NormalMode).url,
+            request.userAnswers.get(SchemeNameId).getOrElse(throw MandatoryAnswerMissingException(SchemeNameId.toString))
+          )
         )
     }
 }
