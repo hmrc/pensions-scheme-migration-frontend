@@ -90,7 +90,7 @@ class CurrentPstrCacheConnectorSpec extends AsyncWordSpec with WireMockHelper wi
         post(urlEqualTo(dataCacheUrl))
           .withRequestBody(equalTo(Json.stringify(json)))
           .willReturn(
-            aResponse.withStatus(200)
+            aResponse.withStatus(Status.OK)
           )
       )
 
